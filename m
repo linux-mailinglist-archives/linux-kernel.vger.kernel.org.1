@@ -2,156 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFC727F20A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4E627F1FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgI3S6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:58:22 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44742 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730869AbgI3S6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:58:17 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UIw7KU118484;
-        Wed, 30 Sep 2020 13:58:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601492287;
-        bh=r6h/O2PjxfEWS94nIe+nlsfr+zbArpU8w66AAlts2ZE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=oJBTPE8Ps/buGatSMCqHxZC08NSqDgAibx0fS1iyNis7TLVuIIkFA6lFzxYDf/PMT
-         g+yr4ub+m6qq69qA/hE8g3XyjTP8XXxdflywU302BxmGSSC9/Ew0zuu5cTn0ldWLWJ
-         6IEKaIR9FLJCvX9DlS40yBkLe2rZcOvuVg2tsTAY=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIw7dJ065693;
-        Wed, 30 Sep 2020 13:58:07 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 13:58:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 13:58:07 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UIvX3J007008;
-        Wed, 30 Sep 2020 13:58:04 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v14 10/15] mtd: spi-nor: Parse SFDP SCCR Map
-Date:   Thu, 1 Oct 2020 00:27:27 +0530
-Message-ID: <20200930185732.6201-11-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930185732.6201-1-p.yadav@ti.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
+        id S1730718AbgI3S5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730117AbgI3S5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 14:57:44 -0400
+Received: from mail.kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8869420708;
+        Wed, 30 Sep 2020 18:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601492263;
+        bh=7DBLzj0AFFlixJiM06qjIevaCnAyUlyySzwLvB3SMq8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BAfMb8awL1XSSox57K+L81UtE9Cfh84GFPeDCXMiY+kTCOmF/2W3TxeOQtj3gSgnM
+         gGTkrGlZjwHp3/l2sjRdtUijcat5FlLnmMaS8yExI8x16/uKepDsNbL0RQQoRdH+nm
+         kVFlvOWP/MakWcvdL3c2spY2xJFDTmFsUamwRqeg=
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v5.9-rc7
+Date:   Wed, 30 Sep 2020 11:57:42 -0700
+Message-Id: <20200930185742.4044166-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+The following changes since commit d2249bf25c565b6e310453962fef63f8d38677a6:
 
-Parse just the 22nd dword and look for the 'DTR Octal Mode Enable
-Volatile bit'.
+  clk: qcom: lpass: Correct goto target in lpass_core_sc7180_probe() (2020-09-10 13:42:35 -0700)
 
-SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes
-that don't define the optional SFDP SCCR Map. For the others,
-let the SFDP do its job and fill the SNOR_F_IO_MODE_EN_VOLATILE
-flag. We avoid this way polluting the flash flags when declaring
-one.
+are available in the Git repository at:
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/sfdp.c | 52 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index ebc1188f7533..0b5b9ea44cfc 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -21,6 +21,10 @@
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
- #define SFDP_4BAIT_ID		0xff84  /* 4-byte Address Instruction Table */
- #define SFDP_PROFILE1_ID	0xff05	/* xSPI Profile 1.0 table. */
-+#define SFDP_SCCR_MAP_ID	0xff87	/*
-+					 * Status, Control and Configuration
-+					 * Register Map.
-+					 */
- 
- #define SFDP_SIGNATURE		0x50444653U
- 
-@@ -1195,6 +1199,50 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
- 	return ret;
- }
- 
-+#define SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE		BIT(31)
-+
-+/**
-+ * spi_nor_parse_sccr() - Parse the Status, Control and Configuration Register
-+ *                        Map.
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @sccr_header:	pointer to the 'struct sfdp_parameter_header' describing
-+ *			the SCCR Map table length and version.
-+ * @params:		pointer to the 'struct spi_nor_flash_parameter' to be.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_parse_sccr(struct spi_nor *nor,
-+			      const struct sfdp_parameter_header *sccr_header,
-+			      struct spi_nor_flash_parameter *params)
-+{
-+	u32 *dwords, addr;
-+	size_t len;
-+	int ret;
-+	u8 io_mode_en_volatile;
-+
-+	len = sccr_header->length * sizeof(*dwords);
-+	dwords = kmalloc(len, GFP_KERNEL);
-+	if (!dwords)
-+		return -ENOMEM;
-+
-+	addr = SFDP_PARAM_HEADER_PTP(sccr_header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-+	if (ret)
-+		goto out;
-+
-+	le32_to_cpu_array(dwords, sccr_header->length);
-+
-+	io_mode_en_volatile = FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
-+					dwords[22]);
-+
-+	if (io_mode_en_volatile)
-+		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
-+
-+out:
-+	kfree(dwords);
-+	return ret;
-+}
-+
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -1300,6 +1348,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_profile1(nor, param_header, params);
- 			break;
- 
-+		case SFDP_SCCR_MAP_ID:
-+			err = spi_nor_parse_sccr(nor, param_header, params);
-+			break;
-+
- 		default:
- 			break;
- 		}
+for you to fetch changes up to b02cf0c4736c65c6667f396efaae6b5521e82abf:
+
+  clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk (2020-09-22 12:54:41 -0700)
+
+----------------------------------------------------------------
+Another batch of clk driver fixes
+
+ - Make sure DRAM and ChipID region doesn't get disabled on Exynos
+ - Fix a SATA failure on Tegra
+ - Fix the emac_ptp clk divider on stratix10
+
+----------------------------------------------------------------
+Dinh Nguyen (1):
+      clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk
+
+Marek Szyprowski (2):
+      clk: samsung: Keep top BPLL mux on Exynos542x enabled
+      clk: samsung: exynos4: mark 'chipid' clock as CLK_IGNORE_UNUSED
+
+Stephen Boyd (2):
+      Merge tag 'v5.9-clk-samsung-fixes' of https://git.kernel.org/.../snawrocki/clk into clk-fixes
+      Merge tag 'for-5.10-clk' of git://git.kernel.org/.../tegra/linux into clk-fixes
+
+Thierry Reding (3):
+      clk: tegra: Capitalization fixes
+      clk: tegra: Always program PLL_E when enabled
+      clk: tegra: Fix missing prototype for tegra210_clk_register_emc()
+
+ drivers/clk/samsung/clk-exynos4.c    | 4 ++--
+ drivers/clk/samsung/clk-exynos5420.c | 5 +++++
+ drivers/clk/socfpga/clk-s10.c        | 2 +-
+ drivers/clk/tegra/clk-pll.c          | 7 ++-----
+ drivers/clk/tegra/clk-tegra210-emc.c | 2 ++
+ 5 files changed, 12 insertions(+), 8 deletions(-)
+
 -- 
-2.28.0
-
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
