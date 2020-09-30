@@ -2,65 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE8C27DE3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0687227DE41
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729782AbgI3CHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:07:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:59918 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729322AbgI3CHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:07:17 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 4AD38A032FA2821EFCA6;
-        Wed, 30 Sep 2020 10:07:12 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 30 Sep 2020 10:07:04 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Chunxin Zang <zangchunxin@bytedance.com>
-Subject: [PATCH -next] mm/vmscan: Drop duplicated code in drop_slab_node
-Date:   Wed, 30 Sep 2020 10:06:59 +0800
-Message-ID: <20200930020659.139283-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+        id S1729857AbgI3CHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:07:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:34092 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729816AbgI3CHe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:07:34 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 8EAC5B54DD;
+        Wed, 30 Sep 2020 10:07:28 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P19667T139951023531776S1601431634383390_;
+        Wed, 30 Sep 2020 10:07:28 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <961a5b8020e5b0f0d53535798d99975a>
+X-RL-SENDER: yifeng.zhao@rock-chips.com
+X-SENDER: zyf@rock-chips.com
+X-LOGIN-NAME: yifeng.zhao@rock-chips.com
+X-FST-TO: miquel.raynal@bootlin.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Yifeng Zhao <yifeng.zhao@rock-chips.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yifeng Zhao <yifeng.zhao@rock-chips.com>
+Subject: [PATCH v10 0/8] Add Rockchip NFC drivers for RK3308 and others
+Date:   Wed, 30 Sep 2020 10:07:06 +0800
+Message-Id: <20200930020710.7394-1-yifeng.zhao@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patches fix same issue and both add fatal
-signal check in drop_slab_node, kill a duplicated check.
 
-  "mm/vmscan: add a fatal signals check in drop_slab_node"
-  "mm/vmscan: fix infinite loop in drop_slab_node"
+Rockchp's NFC(Nand Flash Controller) has four versions: V600, V622, V800 and
+V900.This series patch can support all four versions.
 
-Cc: Chunxin Zang <zangchunxin@bytedance.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/vmscan.c | 3 ---
- 1 file changed, 3 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index eae57d092931..980155e257bf 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -699,9 +699,6 @@ void drop_slab_node(int nid)
- 	do {
- 		struct mem_cgroup *memcg = NULL;
- 
--		if (fatal_signal_pending(current))
--			return;
--
- 		if (fatal_signal_pending(current))
- 			return;
- 
+Changes in v10:
+- Fix compile error on master v5.9-rc7
+
+Changes in v9:
+- The nfc->buffer will realloc while the page size of the second mtd
+  is large than the first one
+- Fix coding style.
+- Remove struct rk_nfc_clk.
+- Prepend some function with rk_nfc_.
+- Replace function readl_poll_timeout_atomic with readl_relaxed_poll_timeout.
+- Remove function rk_nfc_read_byte and rk_nfc_write_byte.
+- Don't select the die if 'check_only == true' in function rk_nfc_exec_op.
+- Modify function rk_nfc_write_page and rk_nfc_write_page_raw.
+
+Changes in v8:
+- Fix make dt_binding_check error
+
+Changes in v7:
+- Fix some wrong define
+- Rebase to linux-next.
+- Fix coding style.
+- Reserved 4 bytes at the beginning of the oob area.
+- Page raw read and write included ecc data.
+
+Changes in v6:
+- Fix some wrong define
+- Modified the definition of compatible
+- The mtd->name set by NAND label property.
+- Add some comments.
+- Fix compile error.
+
+Changes in v5:
+- Fix some wrong define.
+- Add boot-medium define.
+- Remove some compatible define.
+- Add boot blocks support  with different ECC for bootROM.
+- Rename rockchip-nand.c to rockchip-nand-controller.c.
+- Unification of other variable names.
+- Remove some compatible define.
+
+Changes in v4:
+- The compatible define with rkxx_nfc.
+- Add assigned-clocks.
+- Fix some wrong defineChanges in.
+- Define platform data structure for the register offsets.
+- The compatible define with rkxx_nfc.
+- Use SET_SYSTEM_SLEEP_PM_OPS to define PM_OPS.
+- Use exec_op instead of legacy hooks.
+
+Changes in v3:
+- Change the title for the dt-bindings.
+
+Changes in v2:
+- Fix compile error.
+- Include header files sorted by file name.
+
+Yifeng Zhao (8):
+  dt-bindings: mtd: Describe Rockchip RK3xxx NAND flash controller
+  mtd: rawnand: rockchip: NFC drivers for RK3308, RK2928 and others
+  MAINTAINERS: add maintainers to ROCKCHIP NFC
+  arm64: dts: rockchip: Add NFC node for RK3308 SoC
+  arm64: dts: rockchip: Add NFC node for PX30 SoC
+  arm: dts: rockchip: Add NFC node for RV1108 SoC
+  arm: dts: rockchip: Add NFC node for RK2928 and other SoCs
+  arm: dts: rockchip: Add NFC node for RK3036 SoC
+
+ .../mtd/rockchip,nand-controller.yaml         |  162 ++
+ MAINTAINERS                                   |    4 +-
+ arch/arm/boot/dts/rk3036.dtsi                 |   52 +
+ arch/arm/boot/dts/rk3xxx.dtsi                 |    9 +
+ arch/arm/boot/dts/rv1108.dtsi                 |   11 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   15 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      |   15 +
+ drivers/mtd/nand/raw/Kconfig                  |   12 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 1455 +++++++++++++++++
+ 10 files changed, 1734 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+ create mode 100644 drivers/mtd/nand/raw/rockchip-nand-controller.c
+
 -- 
-2.26.2
+2.17.1
+
+
 
