@@ -2,238 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC02327EF06
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003DA27EF09
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730833AbgI3QXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:23:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36108 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725355AbgI3QXc (ORCPT
+        id S1731054AbgI3QX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3QX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:23:32 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601483010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=9S+BmjiS7UIOm1/vk3QmBdmFzkjQ9DHvoMiK/KH/PnQ=;
-        b=ZST0ESrkh9ta8CgcTqiQ7HDfA61qcTYn1EASWU99YQj32ulSaY8PB4scgL8DNL4+JitifO
-        GYuBix3+1LBpcwtmbMT104G/vGSC+USKAYH4H+NXY3wp5fjG6CoXWGT+n38wkj8uWErYTV
-        HYJPgxnzNjXx9LJ3X9XojbUwzCX41a4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-NjajD40hMg2GSghFOvXfkw-1; Wed, 30 Sep 2020 12:23:28 -0400
-X-MC-Unique: NjajD40hMg2GSghFOvXfkw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 169F5188C126;
-        Wed, 30 Sep 2020 16:23:26 +0000 (UTC)
-Received: from [10.36.112.204] (ovpn-112-204.ams2.redhat.com [10.36.112.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A96215D9D3;
-        Wed, 30 Sep 2020 16:23:22 +0000 (UTC)
-Subject: Re: [PATCH v5 04/17] device-dax/kmem: replace release_resource() with
- release_mem_region()
-To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160106112239.30709.15909567572288425294.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <86f450e7-d1a7-3d82-b486-afd6682c5942@redhat.com>
-Date:   Wed, 30 Sep 2020 18:23:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 30 Sep 2020 12:23:57 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F21C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:23:57 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o5so1976799qke.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ooUSvbCCQ9/XhBGfI5xDVoSXEnZoggM8/6CQ7IOBuLU=;
+        b=wQ/TGV8c8PlmdEq+jT/W1dX3KDqA/BEHU2VPsDzS1l9twAENIje8FcQ8oS5/64gH0F
+         VgLclN+CCwJfNQrntLX0wsuvnN9rTEMcg/2rKplbu4XZmxzWqGiHucWEuOs/WJ3yUkON
+         509dZF89GdCgx9Dgq/VDdQU29w4oQUKchFbPDVIeiv2jl9uBfh1DHSXqo0bRMen2epVj
+         pQ5WEWZq9t/UnStHrGBW8i0SncvpBwdUR3TSzvd3X77VZX6N2cGWzU/jyEJGW5/MfnS2
+         xE6p8yDbSTr4reH0qItRLYeU3dBEleYhqOVhxrolLYN00XymccWwX3KubBNsW0jsA9cQ
+         cn3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ooUSvbCCQ9/XhBGfI5xDVoSXEnZoggM8/6CQ7IOBuLU=;
+        b=M1CTA9O8ZxmzHQiJHHiwALwLZ1PB3S7DzJszATQdvzQekNQZa+kas88nkG1NeXst45
+         0TKY3RF2paysWxncIlGx7Qqse3YUMg/B0nptMZz0SxopNoRHEhrMMjJsT1zts6Jzc9jI
+         0cio6t+RCDrbkIiHB+GHTg+y8hRygZ+6W6hiwDm2KAkbE36HD3QVJNmWFcOkLV0JMbjk
+         AHkHTf7NM2a4iB4J4Y1coX+DHIcqKRWGCLIaoqqZaamVR7kD7ndrXn/Rf8aLc2ztO4y4
+         6f6JR0SoiZaDOCJe/63mRuV4/QQHcOI7sgAXKrawkadZbSWLfO3bKq83Nxr+1OQio10T
+         FtiQ==
+X-Gm-Message-State: AOAM530+H/XQ8+YTz8NINBlTarJvy7cGCiraCm64o6slLqsLOfbpE6vn
+        ukUClzvnqUBN7UtKmibqZh0ig/28ZR4bo6qUqAt3bA==
+X-Google-Smtp-Source: ABdhPJylr1gW0t3ia3PYtP7yp06E3otEfURzAVU4eG0Usov95cnoflHs4AdMplvwO7njKKxiZAVs8HPAG49OHZi0XyI=
+X-Received: by 2002:a37:a4c5:: with SMTP id n188mr3467803qke.8.1601483035866;
+ Wed, 30 Sep 2020 09:23:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <160106112239.30709.15909567572288425294.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200927145737.GA4746@zn.tnic> <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
+ <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
+ <20200928083819.GD1685@zn.tnic> <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic> <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+ <20200928202353.GI1685@zn.tnic> <20200929083336.GA21110@zn.tnic>
+ <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com> <20200930161711.GH6810@zn.tnic>
+In-Reply-To: <20200930161711.GH6810@zn.tnic>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 30 Sep 2020 18:23:44 +0200
+Message-ID: <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.20 21:12, Dan Williams wrote:
-> Towards removing the mode specific @dax_kmem_res attribute from the
-> generic 'struct dev_dax', and preparing for multi-range support, change
-> the kmem driver to use the idiomatic release_mem_region() to pair with
-> the initial request_mem_region(). This also eliminates the need to open
-> code the release of the resource allocated by request_mem_region().
-> 
-> As there are no more dax_kmem_res users, delete this struct member.
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Vishal Verma <vishal.l.verma@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Brice Goglin <Brice.Goglin@inria.fr>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jia He <justin.he@arm.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/dax/dax-private.h |    3 ---
->  drivers/dax/kmem.c        |   20 +++++++-------------
->  2 files changed, 7 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 6779f683671d..12a2dbc43b40 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -42,8 +42,6 @@ struct dax_region {
->   * @dev - device core
->   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
->   * @range: resource range for the instance
-> - * @dax_mem_res: physical address range of hotadded DAX memory
-> - * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
->   */
->  struct dev_dax {
->  	struct dax_region *region;
-> @@ -52,7 +50,6 @@ struct dev_dax {
->  	struct device dev;
->  	struct dev_pagemap *pgmap;
->  	struct range range;
-> -	struct resource *dax_kmem_res;
->  };
->  
->  static inline u64 range_len(struct range *range)
-> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> index 6fe2cb1c5f7c..e56fc688bdc5 100644
-> --- a/drivers/dax/kmem.c
-> +++ b/drivers/dax/kmem.c
-> @@ -33,7 +33,7 @@ int dev_dax_kmem_probe(struct device *dev)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
->  	struct range range = dax_kmem_range(dev_dax);
-> -	struct resource *new_res;
-> +	struct resource *res;
->  	char *res_name;
->  	int numa_node;
->  	int rc;
-> @@ -56,8 +56,8 @@ int dev_dax_kmem_probe(struct device *dev)
->  		return -ENOMEM;
->  
->  	/* Region is permanently reserved if hotremove fails. */
-> -	new_res = request_mem_region(range.start, range_len(&range), res_name);
-> -	if (!new_res) {
-> +	res = request_mem_region(range.start, range_len(&range), res_name);
-> +	if (!res) {
->  		dev_warn(dev, "could not reserve region [%#llx-%#llx]\n", range.start, range.end);
->  		kfree(res_name);
->  		return -EBUSY;
-> @@ -69,23 +69,20 @@ int dev_dax_kmem_probe(struct device *dev)
->  	 * inherit flags from the parent since it may set new flags
->  	 * unknown to us that will break add_memory() below.
->  	 */
-> -	new_res->flags = IORESOURCE_SYSTEM_RAM;
-> +	res->flags = IORESOURCE_SYSTEM_RAM;
->  
->  	/*
->  	 * Ensure that future kexec'd kernels will not treat this as RAM
->  	 * automatically.
->  	 */
-> -	rc = add_memory_driver_managed(numa_node, new_res->start,
-> -				       resource_size(new_res), kmem_name);
-> +	rc = add_memory_driver_managed(numa_node, range.start, range_len(&range), kmem_name);
->  	if (rc) {
-> -		release_resource(new_res);
-> -		kfree(new_res);
-> +		release_mem_region(range.start, range_len(&range));
->  		kfree(res_name);
->  		return rc;
->  	}
->  
->  	dev_set_drvdata(dev, res_name);
-> -	dev_dax->dax_kmem_res = new_res;
->  
->  	return 0;
->  }
-> @@ -95,7 +92,6 @@ static int dev_dax_kmem_remove(struct device *dev)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
->  	struct range range = dax_kmem_range(dev_dax);
-> -	struct resource *res = dev_dax->dax_kmem_res;
->  	const char *res_name = dev_get_drvdata(dev);
->  	int rc;
->  
-> @@ -114,10 +110,8 @@ static int dev_dax_kmem_remove(struct device *dev)
->  	}
->  
->  	/* Release and free dax resources */
-> -	release_resource(res);
-> -	kfree(res);
-> +	release_mem_region(range.start, range_len(&range));
+On Wed, Sep 30, 2020 at 6:17 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> Hi,
+>
+> one more thing I just spotted. The default install of syzkaller here
+> runs the guest with this on the kernel command line:
+>
+> 2020/09/30 17:56:18 running command: qemu-system-x86_64 []string{"-m", "2048",
+> "-smp", "2", "-display", ... "-append", "earlyprintk=serial oops=panic ...
+>  nmi_watchdog=panic panic_on_warn=1 panic=1 ftrace_dump_on_oops=orig_cpu rodata=n
+>                                                                         ^^^^^^^^^^
+>
+> which basically leaves guest kernel's memory RW and it gets caught
+> immediately on vm boot by CONFIG_DEBUG_WX.
+>
+> This pretty much explains why kernel text can get corrupted with a stray
+> pointer write or so. So what's the use case for rodata=n?
+>
+> [    2.478136] Kernel memory protection disabled.
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Does that work? AFAIKs,
 
-__release_region(&iomem_resource, (start), (n)) -> __release_region()
+Ha!
 
-will only remove stuff that is IORESOURCE_BUSY.
+Here is the answer:
+https://github.com/google/syzkaller/blob/master/tools/create-gce-image.sh#L189
 
-Maybe storing it in drvdata is indeed the easiest way to remove it from
-struct dax_region.
+# rodata=n: mark_rodata_ro becomes very slow with KASAN (lots of PGDs)
 
--- 
-Thanks,
+I have some vague memory that there was some debug double checking
+that pages are indeed read-only and that debug check was slow, but it
+was always executed without rodata=n.
 
-David / dhildenb
-
+> [    2.478689] x86/mm: Checking user space page tables
+> [    2.550163] ------------[ cut here ]------------
+> [    2.550736] x86/mm: Found insecure W+X mapping at address entry_SYSCALL_64+0x0/0x29
+> [    2.551612] WARNING: CPU: 1 PID: 1 at arch/x86/mm/dump_pagetables.c:246 note_page+0x81f/0x13a0
+> [    2.552577] Kernel panic - not syncing: panic_on_warn set ...
+> [    2.553240] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7+ #5
+> [    2.553953] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> [    2.554922] Call Trace:
+> [    2.555233]  dump_stack+0x9c/0xcf
+> [    2.555633]  panic+0x250/0x5a0
+> [    2.556004]  ? __warn_printk+0xf8/0xf8
+> [    2.556450]  ? console_trylock+0xb0/0xb0
+> [    2.556914]  ? __warn.cold+0x5/0x44
+> [    2.557332]  ? note_page+0x81f/0x13a0
+> [    2.557768]  __warn.cold+0x20/0x44
+> [    2.558176]  ? note_page+0x81f/0x13a0
+> [    2.558641]  report_bug+0x168/0x1b0
+> [    2.559059]  handle_bug+0x3c/0x60
+> [    2.559458]  exc_invalid_op+0x14/0x40
+> [    2.559894]  asm_exc_invalid_op+0x12/0x20
+> [    2.560368] RIP: 0010:note_page+0x81f/0x13a0
+> [    2.560870] Code: 26 00 80 3d 9a d0 7f 02 00 0f 85 82 f9 ff ff e8 47 3c 26 00 4c 89 e6 48 c7 c7 40 aff
+> [    2.562951] RSP: 0000:ffff88800e9f7a90 EFLAGS: 00010282
+> [    2.563554] RAX: 0000000000000000 RBX: ffff88800e9f7e00 RCX: 0000000000000000
+> [    2.564361] RDX: ffff88800e9edb80 RSI: 0000000000000004 RDI: ffffed1001d3ef44
+> [    2.565167] RBP: 0000000000000200 R08: 0000000000000001 R09: 0000000000000003
+> [    2.565973] R10: ffffed1001d3eefd R11: 0000000000000001 R12: ffffffff96e00000
+> [    2.566780] R13: 00000000000001e3 R14: 0000000000000000 R15: ffff88800e9f7e58
+> [    2.567587]  ? __kprobes_text_end+0xb3598/0xb3598
+> [    2.568122]  ? __entry_text_end+0x1fea85/0x1fea85
+> [    2.568754]  ? __entry_text_end+0x1fea85/0x1fea85
+> [    2.569288]  ? __entry_text_end+0x1fea85/0x1fea85
+> [    2.569821]  ptdump_hole+0x61/0x90
+> [    2.570212]  ? ptdump_pte_entry+0x100/0x100
+> [    2.570712]  walk_pgd_range+0xdb8/0x15f0
+> [    2.571178]  walk_page_range_novma+0xd9/0x140
+> [    2.571689]  ? walk_page_range+0x2b0/0x2b0
+> [    2.572171]  ? console_unlock+0x58f/0xb10
+> [    2.572644]  ptdump_walk_pgd+0xcd/0x180
+> [    2.573099]  ptdump_walk_pgd_level_core+0x13c/0x1b0
+> [    2.573663]  ? effective_prot+0xb0/0xb0
+> [    2.574117]  ? vprintk_emit+0x214/0x380
+> [    2.574601]  ? ptdump_walk_pgd_level_core+0x1b0/0x1b0
+> [    2.575186]  ? memtype_copy_nth_element+0x1a0/0x1a0
+> [    2.575752]  ? __kprobes_text_end+0xb3598/0xb3598
+> [    2.576300]  ? pti_user_pagetable_walk_pmd+0x130/0x460
+> [    2.576894]  ? __kprobes_text_end+0xb3598/0xb3598
+> [    2.577441]  ? __kprobes_text_end+0xb3598/0xb3598
+> [    2.577988]  ? __kprobes_text_end+0xb3598/0xb3598
+> [    2.578564]  ? rest_init+0xdd/0xdd
+> [    2.578972]  ptdump_walk_user_pgd_level_checkwx.cold+0x31/0x36
+> [    2.579640]  pti_finalize+0x7b/0x170
+> [    2.580066]  kernel_init+0x5b/0x183
+> [    2.580484]  ret_from_fork+0x22/0x30
+> [    2.581010] Dumping ftrace buffer:
+> [    2.581456]    (ftrace buffer empty)
+> ffffffffbfffffff)
+> [    2.583137] Rebooting in 1 seconds..
+> 2020/09/30 17:56:23 failed to create instance: failed to read from qemu: EOF
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
