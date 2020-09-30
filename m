@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE76527F605
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B6527F60A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbgI3X3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI3X3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:29:48 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633F7C061755;
-        Wed, 30 Sep 2020 16:29:47 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id x69so4253983lff.3;
-        Wed, 30 Sep 2020 16:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vSrJVmwIsZm2lv8EiSG21HgOKivmR5gP15fo1x1Whk8=;
-        b=e8KW8l6VHc8gITvzq29HhCP2+lxp7DRe7tjnm7U69SsPGV2b0WWo9u7eUrfeTZx0BS
-         2/onvk/XipWDiOrXu56cY9gZ4N04HwdvzwjLCz8d9mmpKAxJqT/r3wzZFFxEtQKA2UE1
-         joYfgZlUxU7JZ6t/OMVP8Rb7i6JplSohjwIFhONrQ5oIgdNzPV1fmU0vsfWCqQnAM2h6
-         xU4aO7fJHHJ7okKmMEY6KypL4Mt3vqy6VGkkz6+2sqPQd/dldLWlWnRSCwQxlvPajGvE
-         EEH133xlqNJmt04pNzplXTm1fVq4Rtr+jdy+Qb1MZZVgoZJSItVTPfDMQGfPOp7pUhyG
-         KY7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vSrJVmwIsZm2lv8EiSG21HgOKivmR5gP15fo1x1Whk8=;
-        b=kUfJMw4g1/PHj5DQX4hMZLfijTEInjWvc/EOSHUabazIh7VWDzi+er76WpypglpRLj
-         vKeboXMJGK+JHXdofxvfogaQkv66RtMuimJ+SMjwlLlmdQCChPhRz6noAOa5/ullCDb1
-         EbIiDl+7B5UNcVUELK9xFScmi+H69VMEwV/T71828fPSQiM1KDdsb6mnpoM0vIDRzUEW
-         AN0zvh3CXb+3sO/CQIFsLhdGZsnh6xJJ3ibR4HPIAknMoXT84lhOVYXGN4MDXOf46h/J
-         NcA9jBNbr6EFT/bVqs10ledbZxNVoiyMojD53fMVTzodo/Z5G8g+OY9Qm7RcTEEP+5qo
-         w5UA==
-X-Gm-Message-State: AOAM530vyqRjwhLFx8rSdnczgZoMh5Ch+79EMaycdHblu0QDJKH9fnYP
-        4JCDJG0VnvRR+UVjloMctwMl9A0qEy+roQ==
-X-Google-Smtp-Source: ABdhPJzka8xGlsoG6nXTpFOMV67ZAks+d8d6SKBB+bS9orheOXjEaSO5PF4+2OCBZfkzK9MhR+Ewhw==
-X-Received: by 2002:a19:5e4a:: with SMTP id z10mr1487420lfi.380.1601508585876;
-        Wed, 30 Sep 2020 16:29:45 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-229-94.NA.cust.bahnhof.se. [98.128.229.94])
-        by smtp.gmail.com with ESMTPSA id x14sm345628lfc.93.2020.09.30.16.29.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:29:45 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] iio: accel: mma8452: Constify static struct attribute_group
-Date:   Thu,  1 Oct 2020 01:29:39 +0200
-Message-Id: <20200930232939.31131-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1731778AbgI3Xc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:32:28 -0400
+Received: from gate.crashing.org ([63.228.1.57]:54927 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731017AbgI3Xc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:32:27 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 08UNQ0cZ009821;
+        Wed, 30 Sep 2020 18:26:00 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 08UNQ0Yc009819;
+        Wed, 30 Sep 2020 18:26:00 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 30 Sep 2020 18:25:59 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shuo.a.liu@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20200930232559.GC28786@gate.crashing.org>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com> <20200922114311.38804-5-shuo.a.liu@intel.com> <20200927105152.GG88650@kroah.com> <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com> <20200930111612.GZ2628@hirez.programming.kicks-ass.net> <20200930161036.GY28786@gate.crashing.org> <20200930171346.GC2628@hirez.programming.kicks-ass.net> <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of mma8452_event_attribute_group is to assign its address
-to the event_attrs field in the iio_info struct, which is a const
-pointer. Make it const to allow the compiler to put it in read-only
-memory. This was the only non-const static struct in drivers/iio.
+On Wed, Sep 30, 2020 at 12:14:03PM -0700, Nick Desaulniers wrote:
+> Do we need register local storage here?
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/iio/accel/mma8452.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Depends what you want.  It looks like you do:
 
-diff --git a/drivers/iio/accel/mma8452.c b/drivers/iio/accel/mma8452.c
-index bf1d2c8afdbd..b0176d936423 100644
---- a/drivers/iio/accel/mma8452.c
-+++ b/drivers/iio/accel/mma8452.c
-@@ -1187,7 +1187,7 @@ static struct attribute *mma8452_event_attributes[] = {
- 	NULL,
- };
- 
--static struct attribute_group mma8452_event_attribute_group = {
-+static const struct attribute_group mma8452_event_attribute_group = {
- 	.attrs = mma8452_event_attributes,
- };
- 
--- 
-2.28.0
+> static inline long bar(unsigned long hcall_id)
+> {
+>   long result;
+>   asm volatile("movl %1, %%r8d\n\t"
+>   "vmcall\n\t"
+>     : "=a" (result)
+>     : "ir" (hcall_id)
+>     : );
+>   return result;
+> }
 
+"result" as output from the asm is in %rax, and the compiler will
+shuffle that to wherever it needs it as the function return value.  That
+part will work fine.
+
+But how you are accessing %r8d is not correct, that needs to be a local
+register asm (or r8 be made a fixed reg, probably not what you want ;-) )
+
+
+Segher
