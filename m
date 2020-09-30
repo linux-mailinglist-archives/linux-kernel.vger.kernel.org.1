@@ -2,188 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF37D27EFEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D3B27EFEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgI3RGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:06:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3RGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:06:40 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0B3620754;
-        Wed, 30 Sep 2020 17:06:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601485599;
-        bh=pfFqKmno0xxxC7k8EPmb9aW9qRKFhPRyCWbExsn4vvM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o4EOLMWFTqY+DVkl67iBDF4Opq+llI4PVMKDzrU4owMyYQXWgk8e7t11/ijJR1L5A
-         7kwJ0xBX3zy44ncyDjLMOPRKbBRfkh9yp1eUCR9/vGTnfs3qYB7JOVEGFlJ4E9bd4V
-         0HxBWkKB4UDtMhPFDkD6eodbKFgt3Pma9GrPQQwQ=
-Date:   Wed, 30 Sep 2020 10:06:37 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 35/52] docs: fs: fscrypt.rst: get rid of :c:type: tags
-Message-ID: <20200930170637.GB9698@sol.localdomain>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <689d790237b64fc7d81fcf97ac303cc1dbdd33d4.1601467849.git.mchehab+huawei@kernel.org>
- <20200930162144.GA9698@sol.localdomain>
- <20200930185333.66dacbc6@coco.lan>
+        id S1730962AbgI3RHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:07:06 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:26720 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgI3RHF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 13:07:05 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UH2aqf016391;
+        Wed, 30 Sep 2020 10:06:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=LDwEU+pZIYoQ9+aUGRIpvjwnaqjZAXgCppopOKP52EM=;
+ b=MhGhbM8fphZm/LiVQmiyAQrWEyfwJrraTO866ml4vi5naQnmzBqOdfcNf7e0wV6ts4+w
+ +e1Ex/PKMoylRUvueIc1IhHS6yoRjhVYdUw1OCpqdmavwuaX71KdU6NUWitzfEqiw8og
+ a+MzzxHj05/aVhHe8hmhDymI3OZe/WgErY7cOnFIwpKSjGCmHICWJG8gKWKHlU73lmwC
+ 1SfA94vC5IzAu1MWMMThg6WHelMuURUx5SBOLyxy4Wrv5ftoETbi0hzyOJZZjjXzNFmI
+ iM86JR/RgpoUC95wOy+l6K2qXtkcwOHnvXqMAnv3T1s4ru/+C+KlY11Q31JZQUS9RccW Hw== 
+Received: from nam02-bl2-obe.outbound.protection.outlook.com (mail-bl2nam02lp2057.outbound.protection.outlook.com [104.47.38.57])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 33t26xq3s2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Sep 2020 10:06:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S4Eb1jNl+Glm/jOHrAxUnaUjISZwx1AxUZuaZvkWGO/POAlpt2dMqEaRmX5sEPqJpIXAJcjuQfmRBtCUmT4YCAmngRBGIBT1xKFi0s0me6lQruCyaODJvJrHjK7d0ww/zsWAZv9V+G7TQT8lFEydYHcBJKKS+3LAgvrdVlrVTYf/kJ2DArVbiDO07cnjFlvjRPPZncLHS0jWOvz2+9g3ulWXNNAeYfKuvghaFosliDU4izLR4k2Dr77YpjAfW6VhNqrx31V5Fi85Cl+QgI0BKAwXS95/Lt1At7rJVFAcVOayYXgiuac5wzs+EGDWvXimKGBGWhGNpwS7uQntevj7Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDwEU+pZIYoQ9+aUGRIpvjwnaqjZAXgCppopOKP52EM=;
+ b=TJ4Ca6P0wntlTuiPl3XV0WjUlM8ktjNxa596rF4aOBsCFpTQx+yPRVN7ZI8C3REvoGTZjiUhSouVAzsZVNH4+ATNAOyh/MxbQ9Zq3p/4jd6Zs8k1QlEye23zmKZTJ0OobzKv1yjpB5x4J+5yQmX0TouI8kTSTO5zBOmBLESVSFl74G+2Wb39O98NIdoDu/jWP81APvQ+MuMLeiN0cgjPeuZGrJxtWuZxqgW6/DP6zFjb+NHA0uUg3T1x1HX4irFViqVOOk9rNz5d78y+ZE4ZKJ2kvGkNwC1lxfsU5tIQ7wh4hQu8DiyyKVtjb4L/T0sp2xQKSEO0oRfYoii0EdGVpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LDwEU+pZIYoQ9+aUGRIpvjwnaqjZAXgCppopOKP52EM=;
+ b=goVMIeUgVfRHBer59j+IiwemnIYbRIL3KeC3R13rKlOaOJlNCtppS+3crrzeP1lJEV9PYjpEXkdeeWLyZ85bSr/Z2ZNmfzEfDBVf+MAiEpKiA8mputWoSn2BIxtKG/rW8B7s3moS+m4BDVBgzFf4yRKAs367FndyLhYN0HJ9/VQ=
+Received: from SN2PR07MB2557.namprd07.prod.outlook.com (2603:10b6:804:12::9)
+ by SN6PR07MB5646.namprd07.prod.outlook.com (2603:10b6:805:e3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 30 Sep
+ 2020 17:06:50 +0000
+Received: from SN2PR07MB2557.namprd07.prod.outlook.com
+ ([fe80::9506:77c:74e4:caf8]) by SN2PR07MB2557.namprd07.prod.outlook.com
+ ([fe80::9506:77c:74e4:caf8%11]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
+ 17:06:50 +0000
+From:   Athani Nadeem Ladkhan <nadeem@cadence.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kishon@ti.com" <kishon@ti.com>, Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+Subject: RE: [PATCH v2] PCI: Cadence: Add quirk for Gen2 controller to do
+ autonomous speed change.
+Thread-Topic: [PATCH v2] PCI: Cadence: Add quirk for Gen2 controller to do
+ autonomous speed change.
+Thread-Index: AQHWkdgyO198gx0BFk+Kvm6f02xHwql2rzSAgArDZrA=
+Date:   Wed, 30 Sep 2020 17:06:49 +0000
+Message-ID: <SN2PR07MB255790961476555221B24752D8330@SN2PR07MB2557.namprd07.prod.outlook.com>
+References: <20200923183427.9258-1-nadeem@cadence.com>
+ <20200923203809.GA2289779@bjorn-Precision-5520>
+In-Reply-To: <20200923203809.GA2289779@bjorn-Precision-5520>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbmFkZWVtXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctNTI2Zjk1Y2MtMDMzZi0xMWViLWFlOGMtZDQ4MWQ3OWExZmRlXGFtZS10ZXN0XDUyNmY5NWNlLTAzM2YtMTFlYi1hZThjLWQ0ODFkNzlhMWZkZWJvZHkudHh0IiBzej0iNTUyMCIgdD0iMTMyNDU5NTkyMDc2MDAyOTIwIiBoPSJ6UlFoT09Ua0tkV2loTXdxZjJoVWxkSDFoTTA9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [59.145.174.78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ff5228a-f472-4ca1-9f0d-08d8656338c3
+x-ms-traffictypediagnostic: SN6PR07MB5646:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR07MB5646D4168AF515A34788E445D8330@SN6PR07MB5646.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2eeITYgJ9saCBJa+NUB+wcMXLthdIa5SbmSbTbvgMj+ZLg7N4g4sq5k8Zmtjua7A4CsYxdBkZn05PXQ4glJhYeejYCJauEfNHC49S12c2xOFrAnfTV/S2LWdB+o55ciRgcNADay4XEBfwYHeGfbxfW/B3nZKpF9V0DzAeFFUS8Ej+3O7Kc/rKPAtyXpHRmk5Z1T1b1lvEBGR3VPhBTRr+iGN3zZow8rmXbiAoh/RHE2a9BBlRtGAfVYuxO1nkOE74bzdVEqffDaOFxpvB70hjWESFok3jNQBCZc4tj3IpQKYHiJEDBE7eSNz5ENrdscDsEtGQwNsXQlJgkjtCGpWezTKBnUjJxls+DOEGDgIx/BJvOu8JozYsn2YkgL3HSzSzx9r6LLVEF1vGmH7ch9nmhHFP40KtbYntXi4YlCTo10=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR07MB2557.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(36092001)(83380400001)(186003)(7696005)(316002)(6506007)(53546011)(26005)(54906003)(52536014)(71200400001)(2906002)(66946007)(8676002)(76116006)(66476007)(6916009)(5660300002)(66446008)(86362001)(64756008)(66556008)(8936002)(33656002)(478600001)(4326008)(9686003)(107886003)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: S0rcgcZiNcCIRzYBElbj7HMjHe+x7rR8DMF+MlMvMN3SKD/ox/3rOb+VM12xyTFSZr9g/VCovdHqTB61vVx6oo3EaiW2zPxVh+p4pxT7vcUsc6eJHW+b7x4UR5JT84kDOCeBUJrie7cLmkY52gs5LlQg6bwPEhobwaEbg22Yh/hWK1bJEzhhYpHMyf0B2cn0qWEwQ1PZ7itfrzprSZiBMm6Wa8ceJtmCVrwPY3kVVRpgkVyYEUN5o/1DLyyBz2zezxFYiIOX66hCxb5wCKCZ0WqYeCN2Pn0xhG6FUxBeorgT/25dEDcFJZNF8axp8P6l3lrhERG90JTwT7+ZMHedtR3mUAeRIg0JqOkCzMp5t2qzwaE0NpsmvHfJJK0ep8MZr3r8bsNeD5VR9ErcRoao/8sSgOQoKMqU9wc248+hkqo7tgdznbGhY3AnAQx1btAtiEq0+CxmGZqUw697bs0bfLRa6t+kzxlxy1wvlndEcl6OqOeGfqvz709g/IhS/j9f1LcAG6AAgezYSPiYWa+o5gn9MoKLV0FCtpR9kvs0eFJQLTBA0oZCfuQww68mlSyO6iX39PB8HJZlfvkThkhOgwWjeI7XawKP2jQqZ4NCoSiHVx4ySAKWrhQWCiwLFhQTvzpfTn4bsvu57JD8+xXYPA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930185333.66dacbc6@coco.lan>
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN2PR07MB2557.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ff5228a-f472-4ca1-9f0d-08d8656338c3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 17:06:50.0227
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gvNM8dqVCYV86bgtiW2EE6fFFNZtwtZIacz+GGSULYYCYFfmA4FNeNFfRVCpVvqLpVDmmjUejQqKKxTg9vnw4n5pAzkpWQK8N94/YO/3Skc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR07MB5646
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_09:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
+ adultscore=0 priorityscore=1501 clxscore=1011 spamscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 06:53:33PM +0200, Mauro Carvalho Chehab wrote:
-> Hi Eric,
-> 
-> Em Wed, 30 Sep 2020 09:21:44 -0700
-> Eric Biggers <ebiggers@kernel.org> escreveu:
-> 
-> > On Wed, Sep 30, 2020 at 03:24:58PM +0200, Mauro Carvalho Chehab wrote:
-> > > The :c:type: tag has problems with Sphinx 3.x, as structs
-> > > there should be declared with c:struct.
-> > > 
-> > > So, remove them, relying at automarkup.py extension to
-> > > convert them into cross-references.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > What does this patch series apply to?  Cover letter says next-20200922, but it
-> > doesn't apply.
-> > 
-> > It's very difficult to review patches without any way to apply them.
-> 
-> I double checked: it is against next-20200922. The reason of
-> not being today's next is that I didn't want any new warnings
-> to be introduced before I finish this patch series.
-> 
-> Anyway, I'm planning to do a rebase tomorrow on the top of the 
-> latest -next.
-> 
+Hi Bjorn,
 
-Doesn't work.  Here's what I did:
-
-e@sol ~/linux $ git checkout -f next-20200922
-Updating files: 100% (9850/9850), done.
-HEAD is now at e64997027d5f Add linux-next specific files for 20200922
-
-e@sol ~/linux $ b4 am 689d790237b64fc7d81fcf97ac303cc1dbdd33d4.1601467849.git.mchehab+huawei@kernel.org
-Looking up https://lore.kernel.org/linux-fscrypt/689d790237b64fc7d81fcf97ac303cc1dbdd33d4.1601467849.git.mchehab%2Bhuawei%40kernel.org
-Grabbing thread from lore.kernel.org/linux-fscrypt
-Analyzing 7 messages in the thread
----
-Thread incomplete, attempting to backfill
-Grabbing thread from lore.kernel.org/linux-doc
-Loaded 59 messages from https://lore.kernel.org/linux-doc/
-Grabbing thread from lore.kernel.org/alsa-devel
-Grabbing thread from lore.kernel.org/linux-fpga
-Grabbing thread from lore.kernel.org/lkml
-Loaded 2 messages from https://lore.kernel.org/lkml/
-Successfully backfilled missing patches
----
-Writing ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.mbx
-  [PATCH v4 01/52] docs: cdomain.py: add support for a new Sphinx 3.1+ tag
-  [PATCH v4 02/52] docs: cdomain.py: extend it to handle new Sphinx 3.x tags
-  [PATCH v4 03/52] docs: conf.py: disable automarkup for Sphinx 3.x
-  [PATCH v4 04/52] scripts: kernel-doc: make it more compatible with Sphinx 3.x
-  [PATCH v4 05/52] scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx 3.x
-  [PATCH v4 06/52] scripts: kernel-doc: fix troubles with line counts
-  [PATCH v4 07/52] scripts: kernel-doc: reimplement -nofunction argument
-  [PATCH v4 08/52] scripts: kernel-doc: fix typedef identification
-  [PATCH v4 09/52] scripts: kernel-doc: don't mangle with parameter list
-  [PATCH v4 10/52] docs: kerneldoc.py: append the name of the parsed doc file
-  [PATCH v4 11/52] docs: kerneldoc.py: add support for kerneldoc -nosymbol
-  [PATCH v4 12/52] media: docs: make CEC documents compatible with Sphinx 3.1+
-  [PATCH v4 13/52] media: docs: make V4L documents more compatible with Sphinx 3.1+
-  [PATCH v4 14/52] media: docs: make DVB documents more compatible with Sphinx 3.1+
-  [PATCH v4 15/52] media: docs: make MC documents more compatible with Sphinx 3.1+
-  [PATCH v4 16/52] media: docs: make RC documents more compatible with Sphinx 3.1+
-  [PATCH v4 17/52] media: cec-core.rst: don't use c:type for structs
-  [PATCH v4 18/52] math64.h: kernel-docs: Convert some markups into normal comments
-    + Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-  [PATCH v4 19/52] memblock: get rid of a :c:type leftover
-  [PATCH v4 20/52] drm: drm_dsc.h: fix a kernel-doc markup
-  [PATCH v4 21/52] docs: remove some replace macros like |struct foo|
-  [PATCH v4 22/52] docs: get rid of :c:type explicit declarations for structs
-    + Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-    + Reviewed-by: André Almeida <andrealmeid@collabora.com>
-  [PATCH v4 23/52] docs: trace-uses.rst: remove bogus c-domain tags
-    + Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-  [PATCH v4 24/52] docs: it_IT: fix namespace collisions at locking.rst
-  [PATCH v4 25/52] docs: net: ieee802154.rst: fix C expressions
-  [PATCH v4 26/52] docs: genericirq.rst: don't document chip.c functions twice
-  [PATCH v4 27/52] docs: kernel-api.rst: drop kernel/irq/manage.c kernel-doc tag
-  [PATCH v4 28/52] docs: remove sound API duplication
-    + Reviewed-by: Takashi Iwai <tiwai@suse.de>
-  [PATCH v4 29/52] docs: basics.rst: move kernel-doc workqueue markups to workqueue.rst
-  [PATCH v4 30/52] docs: scsi: target.rst: remove iSCSI transport class kernel-doc markup
-  [PATCH v4 31/52] docs: device_link.rst: remove duplicated kernel-doc include
-  [PATCH v4 32/52] docs: basics.rst: get rid of rcu kernel-doc macros
-  [PATCH v4 33/52] docs: net: statistics.rst: remove a duplicated kernel-doc
-  [PATCH v4 34/52] docs: pstore-blk.rst: fix kernel-doc tags
-  [PATCH v4 35/52] docs: fs: fscrypt.rst: get rid of :c:type: tags
-  [PATCH v4 36/52] docs: devices.rst: get rid of :c:type macros
-  [PATCH v4 37/52] docs: sound: writing-an-alsa-driver.rst: get rid of :c:type
-    + Reviewed-by: Takashi Iwai <tiwai@suse.de>
-  [PATCH v4 38/52] docs: block: typec_bus.rst: get rid of :c:type
-    + Reviewed-by: André Almeida <andrealmeid@collabora.com>
-  [PATCH v4 39/52] docs: writing-an-alsa-driver.rst: fix some bad c:func: markups
-    + Reviewed-by: Takashi Iwai <tiwai@suse.de>
-  [PATCH v4 40/52] docs: fpga: replace :c:member: macros
-  [PATCH v4 41/52] docs: kgdb.rst: fix :c:type: usages
-  [PATCH v4 42/52] docs: libata.rst: fix a wrong usage of :c:type: tag
-  [PATCH v4 43/52] docs: infrastructure.rst: don't include firmware kernel-doc
-  [PATCH v4 44/52] docs: gpu: i915.rst: Fix several C duplication warnings
-  [PATCH v4 45/52] docs: devices.rst: fix a C reference markup
-  [PATCH v4 46/52] docs: it_IT: hacking.rst: fix a typo on a markup
-  [PATCH v4 47/52] docs: mei.rst: fix a C expression markup
-  [PATCH v4 48/52] docs: basics.rst: avoid duplicated C function declaration
-  [PATCH v4 49/52] workqueue: fix a kernel-doc warning
-    + Acked-by: Tejun Heo <tj@kernel.org>
-  [PATCH v4 50/52] scripts: kernel-doc: try to use c:function if possible
-  [PATCH v4 51/52] docs: conf.py: fix c:function support with Sphinx 3.x
-  [PATCH v4 52/52] docs: conf.py: change the Sphinx 3.x+ text
----
-Total patches: 52
----
-Cover: ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.cover
- Link: https://lore.kernel.org/r/cover.1601467849.git.mchehab+huawei@kernel.org
- Base: not found
-       git am ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.mbx
-
-e@sol ~/linux $ git am ./v4_20200930_mchehab_huawei_fix_html_build_with_sphinx_3_1_and_above.mbx
-Applying: docs: cdomain.py: add support for a new Sphinx 3.1+ tag
-Applying: docs: cdomain.py: extend it to handle new Sphinx 3.x tags
-Applying: docs: conf.py: disable automarkup for Sphinx 3.x
-Applying: scripts: kernel-doc: make it more compatible with Sphinx 3.x
-Applying: scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx 3.x
-Applying: scripts: kernel-doc: fix troubles with line counts
-Applying: scripts: kernel-doc: reimplement -nofunction argument
-Applying: scripts: kernel-doc: fix typedef identification
-Applying: scripts: kernel-doc: don't mangle with parameter list
-Applying: docs: kerneldoc.py: append the name of the parsed doc file
-Applying: docs: kerneldoc.py: add support for kerneldoc -nosymbol
-Applying: media: docs: make CEC documents compatible with Sphinx 3.1+
-Applying: media: docs: make V4L documents more compatible with Sphinx 3.1+
-error: patch failed: Documentation/userspace-api/media/v4l/hist-v4l2.rst:202
-error: Documentation/userspace-api/media/v4l/hist-v4l2.rst: patch does not apply
-error: patch failed: Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst:227
-error: Documentation/userspace-api/media/v4l/vidioc-enum-fmt.rst: patch does not apply
-Patch failed at 0013 media: docs: make V4L documents more compatible with Sphinx 3.1+
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Thursday, September 24, 2020 2:08 AM
+> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+> Cc: Tom Joseph <tjoseph@cadence.com>; lorenzo.pieralisi@arm.com;
+> robh@kernel.org; bhelgaas@google.com; linux-pci@vger.kernel.org; linux-
+> kernel@vger.kernel.org; kishon@ti.com; Milind Parab
+> <mparab@cadence.com>; Swapnil Kashinath Jakhade
+> <sjakhade@cadence.com>
+> Subject: Re: [PATCH v2] PCI: Cadence: Add quirk for Gen2 controller to do
+> autonomous speed change.
+>=20
+> EXTERNAL MAIL
+>=20
+>=20
+> Something like:
+>=20
+>   PCI: cadence: Retrain Link to work around Gen2 training defect
+>=20
+> to match history (see "git log --oneline drivers/pci/controller/cadence/p=
+cie-
+> cadence-host.c").
+This will be corrected in patch version 3.
+>=20
+> On Wed, Sep 23, 2020 at 08:34:27PM +0200, Nadeem Athani wrote:
+> > Cadence controller will not initiate autonomous speed change if
+> > strapped as Gen2. The Retrain bit is set as a quirk to trigger this
+> > speed change.
+>=20
+> To match the spec terminology:
+>=20
+>   Set the Retrain Link bit ...
+This will be corrected in patch version 3.
+>=20
+> Obviously I don't know the details of your device or even how PCIe works =
+at
+> this level.  But IIUC a link always comes up at 2.5 GT/s first and then t=
+he
+> upstream and downstream components negotiate the highest speed they
+> both support.  It sounds like your controller doesn't actually do this
+> negotiation unless you set the Retrain Link bit?
+Some Gen2 controller variants doesn't support this negotiation. Hence requi=
+red to set the Retrain Link bit.
+This will be handled in much better way in patch version 3.
+>=20
+> Is cdns_pcie_host_init_root_port() the only time this needs to be done?  =
+We
+> don't have to worry about doing this again after a reset, hot-add event, =
+etc?
+Yes. Only during init.
+>=20
+> > Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> > ---
+> >  drivers/pci/controller/cadence/pcie-cadence-host.c | 14 ++++++++++++++
+> >  drivers/pci/controller/cadence/pcie-cadence.h      | 15 ++++++++++++++=
++
+> >  2 files changed, 29 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > index 4550e0d469ca..a2317614268d 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > @@ -83,6 +83,9 @@ static int cdns_pcie_host_init_root_port(struct
+> cdns_pcie_rc *rc)
+> >  	struct cdns_pcie *pcie =3D &rc->pcie;
+> >  	u32 value, ctrl;
+> >  	u32 id;
+> > +	u32 link_cap =3D CDNS_PCIE_LINK_CAP_OFFSET;
+>=20
+> This is not actually the link cap offset.  Based on the usage, this appea=
+rs to be
+> the offset of the PCIe Capability.
+This will be corrected in patch version 3.
+>=20
+> > +	u8 sls;
+> > +	u16 lnk_ctl;
+> >
+> >  	/*
+> >  	 * Set the root complex BAR configuration register:
+> > @@ -111,6 +114,17 @@ static int cdns_pcie_host_init_root_port(struct
+> cdns_pcie_rc *rc)
+> >  	if (rc->device_id !=3D 0xffff)
+> >  		cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID, rc->device_id);
+> >
+> > +	/* Quirk to enable autonomous speed change for GEN2 controller */
+> > +	/* Reading Supported Link Speed value */
+> > +	sls =3D PCI_EXP_LNKCAP_SLS &
+> > +		cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP);
+>=20
+> The conventional way to write this would be
+>=20
+>   sls =3D cdns_pcie_rp_readb(pcie, link_cap + PCI_EXP_LNKCAP) &
+>     PCI_EXP_LNKCAP_SLS;
+This will be corrected in patch version 3.
+>=20
+> > +	if (sls =3D=3D PCI_EXP_LNKCAP_SLS_5_0GB) {
+> > +		/* Since this a Gen2 controller, set Retrain Link(RL) bit */
+> > +		lnk_ctl =3D cdns_pcie_rp_readw(pcie, link_cap +
+> PCI_EXP_LNKCTL);
+> > +		lnk_ctl |=3D PCI_EXP_LNKCTL_RL;
+> > +		cdns_pcie_rp_writew(pcie, link_cap + PCI_EXP_LNKCTL,
+> lnk_ctl);
+> > +	}
+> > +
+> >  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_REVISION, 0);
+> >  	cdns_pcie_rp_writeb(pcie, PCI_CLASS_PROG, 0);
+> >  	cdns_pcie_rp_writew(pcie, PCI_CLASS_DEVICE,
+> PCI_CLASS_BRIDGE_PCI);
+> > diff --git a/drivers/pci/controller/cadence/pcie-cadence.h
+> > b/drivers/pci/controller/cadence/pcie-cadence.h
+> > index feed1e3038f4..fe560480c573 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> > @@ -120,6 +120,7 @@
+> >   */
+> >  #define CDNS_PCIE_RP_BASE	0x00200000
+> >
+> > +#define CDNS_PCIE_LINK_CAP_OFFSET 0xC0
+>=20
+> Use lower-case in hex as the rest of the file does.
+This will be corrected in patch version 3.
+>=20
+> >  /*
+> >   * Address Translation Registers
+> > @@ -413,6 +414,20 @@ static inline void cdns_pcie_rp_writew(struct
+> cdns_pcie *pcie,
+> >  	cdns_pcie_write_sz(addr, 0x2, value);  }
+> >
+> > +static inline u8 cdns_pcie_rp_readb(struct cdns_pcie *pcie, u32 reg)
+> > +{
+> > +	void __iomem *addr =3D pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+> > +
+> > +	return cdns_pcie_read_sz(addr, 0x1); }
+> > +
+> > +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
+> > +{
+> > +	void __iomem *addr =3D pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+> > +
+> > +	return cdns_pcie_read_sz(addr, 0x2); }
+> > +
+> >  /* Endpoint Function register access */  static inline void
+> > cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
+> >  					  u32 reg, u8 value)
+> > --
+> > 2.15.0
+> >
