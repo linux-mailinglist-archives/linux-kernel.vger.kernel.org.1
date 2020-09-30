@@ -2,76 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9360F27E643
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4016227E64E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgI3KMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S1729184AbgI3KNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgI3KMC (ORCPT
+        with ESMTP id S1727426AbgI3KNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:12:02 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53250C061755;
-        Wed, 30 Sep 2020 03:12:02 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kNZ5I-00DgIQ-L9; Wed, 30 Sep 2020 12:11:40 +0200
-Message-ID: <1449cdbe49b428b7d16a199ebc4c9aef73d6564c.camel@sipsolutions.net>
-Subject: Re: [PATCH] [v2] wireless: Initial driver submission for pureLiFi
- devices
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     Srinivasan Raju <srini.raju@purelifi.com>,
-        mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Date:   Wed, 30 Sep 2020 12:11:24 +0200
-In-Reply-To: <20200930095526.GM3094@unreal> (sfid-20200930_115542_649430_AD2127A0)
-References: <20200924151910.21693-1-srini.raju@purelifi.com>
-         <20200928102008.32568-1-srini.raju@purelifi.com>
-         <20200930051602.GJ3094@unreal> <87d023elrc.fsf@codeaurora.org>
-         <20200930095526.GM3094@unreal> (sfid-20200930_115542_649430_AD2127A0)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Wed, 30 Sep 2020 06:13:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D683C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=W1wURALxMMUQTe3egz5elA9sPppPaX+TnLqDpjm379E=; b=Cx85e2biBURTkq3433QCZ5DZbt
+        Ia+DJlE9d+eEynt8AW/ICxfRnUU6u9CYgrfhZU6EU+G4N3ZG3JAP4FORG2I+7AsxQk1XSctUS9pCE
+        MT9UbEmVJjHuZvW9S/vfuVVN3xq9DD+tiD6fG4kSmS880bhcZbU2mGa9byq777FO/uFb8soQYHBtG
+        23IRLWj8uOlwwIcscoaq1WZtBnsEfZss/89v07ga4N01y2o48feU3V6LkmEotSOj7/X4qK1fpizEj
+        /GqGgyeq2KSapI0EX0IsWB4SR1JqVKF1IyZe+no6wgDiRnnVD+VSouxPA6UHxgWJ6ND1eQhmtkfrB
+        pzszJKFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNZ6S-00010w-K6; Wed, 30 Sep 2020 10:12:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8DF63302753;
+        Wed, 30 Sep 2020 12:12:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 76B0E203C0AA7; Wed, 30 Sep 2020 12:12:51 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 12:12:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] objtool and cross compilation
+Message-ID: <20200930101251.GX2628@hirez.programming.kicks-ass.net>
+References: <cover.thread-e6a24b.your-ad-here.call-01601459756-ext-4914@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.thread-e6a24b.your-ad-here.call-01601459756-ext-4914@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 12:55 +0300, Leon Romanovsky wrote:
-> On Wed, Sep 30, 2020 at 11:01:27AM +0300, Kalle Valo wrote:
-> > Leon Romanovsky <leon@kernel.org> writes:
-> > 
-> > > > diff --git a/drivers/net/wireless/purelifi/Kconfig
-> > > b/drivers/net/wireless/purelifi/Kconfig
-> > > > new file mode 100644
-> > > > index 000000000000..ff05eaf0a8d4
-> > > > --- /dev/null
-> > > > +++ b/drivers/net/wireless/purelifi/Kconfig
-> > > > @@ -0,0 +1,38 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +config WLAN_VENDOR_PURELIFI
-> > > > +	bool "pureLiFi devices"
-> > > > +	default y
-> > > 
-> > > "N" is preferred default.
-> > 
-> > In most cases that's true, but for WLAN_VENDOR_ configs 'default y'
-> > should be used. It's the same as with NET_VENDOR_.
-> 
-> I would like to challenge it, why is that?
-> Why do I need to set "N", every time new vendor upstreams its code?
+On Wed, Sep 30, 2020 at 11:58:24AM +0200, Vasily Gorbik wrote:
+> This is based on v5.9-rc7, before "other architectures support" patches
+> starting pouring in.
 
-You don't. The WLAN_VENDOR_* settings are not supposed to affect the
-build, just the Kconfig visibility.
-
-johannes
-
+Please base on: tip/objtool/core, as is they no longer apply.
