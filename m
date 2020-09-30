@@ -2,109 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143DF27F4B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1221627F4B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731214AbgI3V7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:59:17 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:43255 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731489AbgI3V6w (ORCPT
+        id S1731569AbgI3V7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731525AbgI3V7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:58:52 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id F39C6FB5;
-        Wed, 30 Sep 2020 17:58:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 30 Sep 2020 17:58:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        oregontracks.org; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=fm1; bh=ERnpPU+gIC6hydkrdvGearFQ2eli18omiMWIHaoJwrQ=; b=jak1o
-        tPPEZcX5KQaEmGn769aCBi2pcsoW9RUlDVzTD5faTpByCcGLdHR0SrELsonU7y9/
-        WJK/Kl0kjpk6muynrg3WtbbwJ0RmfIQDU6lKbMj0RqwcQYXjcB/GlqLpS3Z/g4cd
-        kVGxl5tF2tmff5N7B3qqI7iRVRwy4LmEoxhVKGU/+mt4BMdtNVwKw9wugNIokMSc
-        N2ThANnUI+J+hq77Wz0oPUFwGikyZtD3NtC9jXws6MoKfKZrwR4diUv4u2wxqBai
-        vK44jcO7kA8DX6t6Ecygg3uuCrrFS5b+9m1SpqlSZ1Zpci5HHVI8VYiNWh9G1gDG
-        1l+cjIDS010AAQcEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=ERnpPU+gIC6hydkrdvGearFQ2eli18omiMWIHaoJwrQ=; b=nU7ZUdoW
-        M/jkPOSsbg61FhOFV+8Y7eVFEDXbGw+0C3jFQRDtbuSpkh3yzAb50cJOK6c37RYJ
-        2WIgAS/IgI5sT/CVLoMEus4rnZOygrrKXgkTrV5CQBnrgJjIWId7uPN1NG2Gjfl9
-        27Z9Oq7Zv9Iw2SblTLqCzoB6f5xgrHWScl8aP8oVtyH8c5k43h4w0bnW3ZU0iC4W
-        K5wZ1pK78W6fRrblcMCm5homdMsCV+144hUqXr9YpwJA/vK0Y8fPuKY1qXpaqCT+
-        pPGomnCgmlgwuIYEOijqz3YaXBZeeTylIGmEKt8REmefc9CLBSOpF7q1Estp5POS
-        1tO6jmWGvF41WA==
-X-ME-Sender: <xms:mv90X3xQYZcZoOcAX0rtYVsQ79Q-abprsfSDLeib4zmMTRpxhCG2Zw>
-    <xme:mv90X_TIBOXlDz6yKQ-Bn8hS1DMi2R8vLqAEp6DvUxv3QZX8CSJ4ShHR2SC0R4dvD
-    UcPFoqfKI3cna-U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpefuvggrnhcuggcumfgvlhhlvgihuceoshgvrghnvhhkrdguvghv
-    sehorhgvghhonhhtrhgrtghkshdrohhrgheqnecuggftrfgrthhtvghrnhepheekffetie
-    duieffleekleevffdtlefhiedtieegffelueefvdfggedvfeevtdetnecukfhppedvgedr
-    vddtrddugeekrdegleenucevlhhushhtvghrufhiiigvpedutdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepshgvrghnvhhkrdguvghvsehorhgvghhonhhtrhgrtghkshdrohhrgh
-X-ME-Proxy: <xmx:mv90XxUg5Z8hJvhv-tY3UrE9wTDExdvi0zHAJ2N6kB3beqpvHJs7Kg>
-    <xmx:mv90XxjzoP1oOQQqWp3jlPj2CZDHK1ceN4pgntFTTsDY0bTE5ul5nQ>
-    <xmx:mv90X5DVUr6LHemN54_E21yYj8bc6O0ji-j6fisbal1-wRWRXhsvsQ>
-    <xmx:mv90XzB4wrB7cg9VVUGJJGjlkiXSLeaHuFfgNF6ZgEYycVCxVwgY_A>
-Received: from arch-ashland-svkelley.hsd1.or.comcast.net (c-24-20-148-49.hsd1.or.comcast.net [24.20.148.49])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 18A6D328005E;
-        Wed, 30 Sep 2020 17:58:48 -0400 (EDT)
-From:   Sean V Kelley <seanvk.dev@oregontracks.org>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
-        qiuxu.zhuo@intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [PATCH v7 13/13] PCI/AER: Add RCEC AER error injection support
-Date:   Wed, 30 Sep 2020 14:58:20 -0700
-Message-Id: <20200930215820.1113353-14-seanvk.dev@oregontracks.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
-References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+        Wed, 30 Sep 2020 17:59:03 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D255C0613D1;
+        Wed, 30 Sep 2020 14:59:02 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j2so3407063wrx.7;
+        Wed, 30 Sep 2020 14:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uqE6Mh2sYfo4tgUmRr6sl/PAIoTS+UVdNxwJsWBXCU4=;
+        b=NvPRKn3dA6l5RXbq3WkESW1+d5iP4vGq17jekovdpqMe+QrbYVpt6WmoZ8hIBN+FxA
+         q1NcObA43tepNKn55MilClNznaVqsjp7ObayNJlmEQsWBnDyZ+QiuBZzHIgb0vnWH1bi
+         igZKyyLIoXVmgBxkmmtxzMsTtZBeURJRvNQDaiw9vWI68jmN4SAo7nfkksRAucT8O85D
+         HqXfHQe8/7nca0lL+62hMaW73yw8wMBl9NuGsPQ342Lpu69bHkUUbU2jcguWU2YHApwm
+         ApcrFhO6oPSrA1A9D9FiJ6xlxkGkuNdXQU8b5MlJnj8MZ/TlNvw9cQyJQF9azXlrwYll
+         jm/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uqE6Mh2sYfo4tgUmRr6sl/PAIoTS+UVdNxwJsWBXCU4=;
+        b=qTBGPAmeFjpPYq6AQsXbMic7ChMTJD8e5/xaiclfT3pBQK6xcmGQRIHb0RQN9Pd3Hn
+         Edypc5YqHtBq/+NIkSm7D0gchH2mPZzXVFSs+ETDNxpopPtBdBaQILv36xV1lc9KO9rK
+         1XpLJAWFtL1Snlh9fjXKH3gZf2o6auFEr0GTmOp0tcrwwpS6WEzdIxMGLRE6FPbX6t1v
+         Jx/lsS47oxPEbeh3S0myGfHMajkdqGRcFiw5lOgkM2mi74dUBqCzp2A1skmFrwxdCnnf
+         mHEwCRn5+q6Nyf7Vc0mYvQnK7Yzg9gnRlcUy2k5vu6h+BhfUxVciab+v/DEr4Jg1tALS
+         jy/A==
+X-Gm-Message-State: AOAM531zc59F3TQe/PSanXHmk9iin2eX+0/qG75OVrjL+01ffdH7f9dX
+        yEuwuI52DL2SXayxIgNCPsu2+7vEAmyw6UKUWCs=
+X-Google-Smtp-Source: ABdhPJxGOJ9Mo51pAxsUuGGzPRDK0ZK+E5vDcUhEuPDOJE1I5nQKZVq7jb50KzcoIVBZIqqPpakJuCTdZ7GXgw7Z3wY=
+X-Received: by 2002:adf:eb86:: with SMTP id t6mr5163555wrn.411.1601503141172;
+ Wed, 30 Sep 2020 14:59:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200926130306.13843-5-kholk11@gmail.com> <202010010458.1600JqDl-lkp@intel.com>
+In-Reply-To: <202010010458.1600JqDl-lkp@intel.com>
+From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
+Date:   Wed, 30 Sep 2020 23:58:50 +0200
+Message-ID: <CAK7fi1Yvaj+Emad8GboLHSu6v-E81pX=GmCtmwm=utzQEtu2Cg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] clk: qcom: Add SDM660 GPU Clock Controller (GPUCC) driver
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andy Gross <agross@kernel.org>, kbuild-all@lists.01.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        MSM <linux-arm-msm@vger.kernel.org>, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+The kernel test robot is wrong: this commit builds fine by
+merging in the required patch series (464958) named
+"Qualcomm clock fixes and preparation for SDM660"
+https://lore.kernel.org/patchwork/project/lkml/list/?series=464958
 
-The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
-and also have the AER capability. So add RCEC support to the current AER
-error injection driver.
+In that series there is a commit that generalizes the MSM8996-only
+gfx3d clock ops and introduces the definition of clk_rcg2_gfx3d.
 
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index c2cbf425afc5..011a6c54b4e3 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Neither root port nor RCEC found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.28.0
-
+Il giorno mer 30 set 2020 alle ore 22:46 kernel test robot
+<lkp@intel.com> ha scritto:
+>
+> Hi,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on clk/clk-next]
+> [also build test ERROR on robh/for-next linux/master linus/master v5.9-rc7 next-20200930]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+> config: m68k-allmodconfig (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/0551514b1ab723837163a8c4cd84d22831e38019
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
+>         git checkout 0551514b1ab723837163a8c4cd84d22831e38019
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> drivers/clk/qcom/gpucc-sdm660.c:106:15: error: variable 'gfx3d_clk_src' has initializer but incomplete type
+>      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+>          |               ^~~~~~~~~~~~~~
+> >> drivers/clk/qcom/gpucc-sdm660.c:107:3: error: 'struct clk_rcg2_gfx3d' has no member named 'div'
+>      107 |  .div = 2,
+>          |   ^~~
+>    drivers/clk/qcom/gpucc-sdm660.c:107:9: warning: excess elements in struct initializer
+>      107 |  .div = 2,
+>          |         ^
+>    drivers/clk/qcom/gpucc-sdm660.c:107:9: note: (near initialization for 'gfx3d_clk_src')
+> >> drivers/clk/qcom/gpucc-sdm660.c:108:3: error: 'struct clk_rcg2_gfx3d' has no member named 'rcg'
+>      108 |  .rcg = {
+>          |   ^~~
+> >> drivers/clk/qcom/gpucc-sdm660.c:108:9: error: extra brace group at end of initializer
+>      108 |  .rcg = {
+>          |         ^
+>    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
+>    drivers/clk/qcom/gpucc-sdm660.c:108:9: warning: excess elements in struct initializer
+>    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
+> >> drivers/clk/qcom/gpucc-sdm660.c:121:3: error: 'struct clk_rcg2_gfx3d' has no member named 'hws'
+>      121 |  .hws = (struct clk_hw*[]){
+>          |   ^~~
+>    drivers/clk/qcom/gpucc-sdm660.c:121:9: warning: excess elements in struct initializer
+>      121 |  .hws = (struct clk_hw*[]){
+>          |         ^
+>    drivers/clk/qcom/gpucc-sdm660.c:121:9: note: (near initialization for 'gfx3d_clk_src')
+> >> drivers/clk/qcom/gpucc-sdm660.c:139:25: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
+>      139 |     .hw = &gfx3d_clk_src.rcg.clkr.hw,
+>          |                         ^
+>    drivers/clk/qcom/gpucc-sdm660.c:257:45: error: 'NO_RET_PERIPH' undeclared here (not in a function)
+>      257 |  .flags = CLAMP_IO | SW_RESET | AON_RESET | NO_RET_PERIPH,
+>          |                                             ^~~~~~~~~~~~~
+>    drivers/clk/qcom/gpucc-sdm660.c:277:34: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
+>      277 |  [GFX3D_CLK_SRC] = &gfx3d_clk_src.rcg.clkr,
+>          |                                  ^
+> >> drivers/clk/qcom/gpucc-sdm660.c:106:30: error: storage size of 'gfx3d_clk_src' isn't known
+>      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+>          |                              ^~~~~~~~~~~~~
+>
+> vim +/gfx3d_clk_src +106 drivers/clk/qcom/gpucc-sdm660.c
+>
+>    105
+>  > 106  static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+>  > 107          .div = 2,
+>  > 108          .rcg = {
+>    109                  .cmd_rcgr = 0x1070,
+>    110                  .mnd_width = 0,
+>    111                  .hid_width = 5,
+>    112                  .parent_map = gpucc_parent_map_1,
+>    113                  .clkr.hw.init = &(struct clk_init_data){
+>    114                          .name = "gfx3d_clk_src",
+>    115                          .parent_data = gpucc_parent_data_1,
+>    116                          .num_parents = 4,
+>    117                          .ops = &clk_gfx3d_ops,
+>    118                          .flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+>    119                  },
+>    120          },
+>  > 121          .hws = (struct clk_hw*[]){
+>    122                  &gpucc_cxo_clk.clkr.hw,
+>    123                  &gpu_pll0_pll_out_main.clkr.hw,
+>    124                  &gpu_pll1_pll_out_main.clkr.hw,
+>    125          }
+>    126  };
+>    127
+>    128  static struct clk_branch gpucc_gfx3d_clk = {
+>    129          .halt_reg = 0x1098,
+>    130          .halt_check = BRANCH_HALT,
+>    131          .hwcg_reg = 0x1098,
+>    132          .hwcg_bit = 1,
+>    133          .clkr = {
+>    134                  .enable_reg = 0x1098,
+>    135                  .enable_mask = BIT(0),
+>    136                  .hw.init = &(struct clk_init_data){
+>    137                          .name = "gpucc_gfx3d_clk",
+>    138                          .parent_data = &(const struct clk_parent_data){
+>  > 139                                  .hw = &gfx3d_clk_src.rcg.clkr.hw,
+>    140                          },
+>    141                          .num_parents = 1,
+>    142                          .ops = &clk_branch2_ops,
+>    143                          .flags = CLK_SET_RATE_PARENT,
+>    144                  },
+>    145          },
+>    146  };
+>    147
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
