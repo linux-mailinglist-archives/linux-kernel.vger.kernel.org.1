@@ -2,145 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEF927E7D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179CC27E7D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729470AbgI3Lpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:45:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57312 "EHLO mga07.intel.com"
+        id S1729570AbgI3Lpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:45:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:34684 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3Lpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:45:40 -0400
-IronPort-SDR: jSf/wI54As06nlC8Y7nN1NQgQ0CFcfvX00a7DUwMEw8psTxJPhMi2hV/x8/dlmmKxlJLz4bdGn
- KVSLuA9wVhDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="226572529"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="226572529"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 04:45:34 -0700
-IronPort-SDR: uxqs9CHThJukvG6Ul9PCkD+sHZL+L4tNH90Neuemx0IqnR9TY2Ult9AxGr9cEeRtH9k4hbwVO9
- IOo2JlEjfDhg==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="415692174"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 04:45:31 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 78C8120330; Wed, 30 Sep 2020 14:45:29 +0300 (EEST)
-Date:   Wed, 30 Sep 2020 14:45:29 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v6 1/3] media: i2c: ov772x: Parse endpoint properties
-Message-ID: <20200930114529.GM26842@paasikivi.fi.intel.com>
-References: <20200917174224.11430-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200917174224.11430-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1729424AbgI3Lpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:45:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A8E730E;
+        Wed, 30 Sep 2020 04:45:51 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 170DA3F6CF;
+        Wed, 30 Sep 2020 04:45:48 -0700 (PDT)
+Subject: Re: [PATCH v7 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, sumit.garg@linaro.org, swboyd@chromium.org,
+        catalin.marinas@arm.com, will@kernel.org,
+        Julien Thierry <julien.thierry@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Pouloze <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+References: <20200924110706.254996-1-alexandru.elisei@arm.com>
+ <20200924110706.254996-6-alexandru.elisei@arm.com>
+ <14a0562fee95d5c7aa5bc6b67d213858@kernel.org>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <3379a8af-67ae-f71f-316d-3baa5fadc6dd@arm.com>
+Date:   Wed, 30 Sep 2020 12:46:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917174224.11430-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <14a0562fee95d5c7aa5bc6b67d213858@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Hello,
 
-On Thu, Sep 17, 2020 at 06:42:22PM +0100, Lad Prabhakar wrote:
-> Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
-> to determine the bus type and store it in the driver structure.
-> 
-> Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/media/i2c/ov772x.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> index 2cc6a678069a..f61a3f09ad64 100644
-> --- a/drivers/media/i2c/ov772x.c
-> +++ b/drivers/media/i2c/ov772x.c
-> @@ -31,6 +31,7 @@
->  #include <media/v4l2-ctrls.h>
->  #include <media/v4l2-device.h>
->  #include <media/v4l2-event.h>
-> +#include <media/v4l2-fwnode.h>
->  #include <media/v4l2-image-sizes.h>
->  #include <media/v4l2-subdev.h>
->  
-> @@ -434,6 +435,7 @@ struct ov772x_priv {
->  #ifdef CONFIG_MEDIA_CONTROLLER
->  	struct media_pad pad;
->  #endif
-> +	enum v4l2_mbus_type		  bus_type;
->  };
->  
->  /*
-> @@ -1348,6 +1350,34 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
->  	.pad	= &ov772x_subdev_pad_ops,
->  };
->  
-> +static int ov772x_parse_dt(struct i2c_client *client,
-> +			   struct ov772x_priv *priv)
-> +{
-> +	struct v4l2_fwnode_endpoint bus_cfg;
-> +	struct fwnode_handle *ep;
-> +	int ret;
-> +
-> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
-> +					    NULL);
-> +	if (!ep) {
-> +		dev_err(&client->dev, "Endpoint node not found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+On 9/29/20 9:11 AM, Marc Zyngier wrote:
+> On 2020-09-24 12:07, Alexandru Elisei wrote:
+>> From: Julien Thierry <julien.thierry@arm.com>
+>>
+>> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
+>> NMI context, defer waking the vcpu to an irq_work queue.
+>>
+>> A vcpu can be freed while it's not running by kvm_destroy_vm(). Prevent
+>> running the irq_work for a non-existent vcpu by calling irq_work_sync() on
+>> the PMU destroy path.
+>>
+>> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+>> Cc: Marc Zyngier <marc.zyngier@arm.com>
+>> Cc: Will Deacon <will.deacon@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
+>> Cc: kvm@vger.kernel.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
+>> Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
+>> [Alexandru E.: Added irq_work_sync()]
+>> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> ---
+>> I suggested in v6 that I will add an irq_work_sync() to
+>> kvm_pmu_vcpu_reset(). It turns out it's not necessary: a vcpu reset is done
+>> by the vcpu being reset with interrupts enabled, which means all the work
+>> has had a chance to run before the reset takes place.
+>
+> I don't understand your argument about interrupts being enabled. The real
+> reason for not needing any synchronization is that all that the queued work
+> does is to kick the vcpu. Given that the vcpu is resetting, no amount of
+> kicking is going to change anything (it is already outside of the guest).
+>
+> Things are obviously different on destroy, where the vcpu is actively going
+> away and we need to make sure we don't use stale data.
 
-Please zero the entire struct, i.e. do this assignment in the declaration.
+Like you and Will noticed, the above really doesn't make much sense. The reason we
+don't need to wait for the irq_work to be finished on reset is indeed that the
+vcpu isn't freed, so we will never trigger a use-after-free bug.
 
-You can also use v4l2_fwnode_endpoint_parse() if you're not using the link
-frequencies --- sensor drivers generally should but you could only add them
-as optional at this point (out of scope of this patch).
+>
+>>
+>>  arch/arm64/kvm/pmu-emul.c | 26 +++++++++++++++++++++++++-
+>>  include/kvm/arm_pmu.h     |  1 +
+>>  2 files changed, 26 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+>> index f0d0312c0a55..81916e360b1e 100644
+>> --- a/arch/arm64/kvm/pmu-emul.c
+>> +++ b/arch/arm64/kvm/pmu-emul.c
+>> @@ -269,6 +269,7 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
+>>
+>>      for (i = 0; i < ARMV8_PMU_MAX_COUNTERS; i++)
+>>          kvm_pmu_release_perf_event(&pmu->pmc[i]);
+>> +    irq_work_sync(&vcpu->arch.pmu.overflow_work);
+>>  }
+>>
+>>  u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
+>> @@ -433,6 +434,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
+>>      kvm_pmu_update_state(vcpu);
+>>  }
+>>
+>> +/**
+>> + * When perf interrupt is an NMI, we cannot safely notify the vcpu
+>> corresponding
+>> + * to the event.
+>> + * This is why we need a callback to do it once outside of the NMI context.
+>> + */
+>> +static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
+>> +{
+>> +    struct kvm_vcpu *vcpu;
+>> +    struct kvm_pmu *pmu;
+>> +
+>> +    pmu = container_of(work, struct kvm_pmu, overflow_work);
+>> +    vcpu = kvm_pmc_to_vcpu(pmu->pmc);
+>> +
+>> +    kvm_vcpu_kick(vcpu);
+>> +}
+>> +
+>>  /**
+>>   * When the perf event overflows, set the overflow status and inform the vcpu.
+>>   */
+>> @@ -465,7 +482,11 @@ static void kvm_pmu_perf_overflow(struct
+>> perf_event *perf_event,
+>>
+>>      if (kvm_pmu_overflow_status(vcpu)) {
+>>          kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
+>> -        kvm_vcpu_kick(vcpu);
+>> +
+>> +        if (!in_nmi())
+>> +            kvm_vcpu_kick(vcpu);
+>> +        else
+>> +            irq_work_queue(&vcpu->arch.pmu.overflow_work);
+>>      }
+>>
+>>      cpu_pmu->pmu.start(perf_event, PERF_EF_RELOAD);
+>> @@ -764,6 +785,9 @@ static int kvm_arm_pmu_v3_init(struct kvm_vcpu *vcpu)
+>>              return ret;
+>>      }
+>>
+>> +    init_irq_work(&vcpu->arch.pmu.overflow_work,
+>> +              kvm_pmu_perf_overflow_notify_vcpu);
+>> +
+>>      vcpu->arch.pmu.created = true;
+>>      return 0;
+>>  }
+>> diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+>> index 6db030439e29..dbf4f08d42e5 100644
+>> --- a/include/kvm/arm_pmu.h
+>> +++ b/include/kvm/arm_pmu.h
+>> @@ -27,6 +27,7 @@ struct kvm_pmu {
+>>      bool ready;
+>>      bool created;
+>>      bool irq_level;
+>> +    struct irq_work overflow_work;
+>
+> Nit: placing this new field right after the pmc array would avoid creating
+> an unnecessary padding in the structure. Not a big deal, and definitely
+> something we can sort out when applying the patch.
 
-> +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
-> +	if (ret)
-> +		goto error_fwnode_put;
-> +
-> +	priv->bus_type = bus_cfg.bus_type;
-> +	v4l2_fwnode_endpoint_free(&bus_cfg);
-> +
-> +error_fwnode_put:
-> +	fwnode_handle_put(ep);
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * i2c_driver function
->   */
-> @@ -1415,6 +1445,10 @@ static int ov772x_probe(struct i2c_client *client)
->  		goto error_clk_put;
->  	}
->  
-> +	ret = ov772x_parse_dt(client, priv);
-> +	if (ret)
-> +		goto error_clk_put;
-> +
->  	ret = ov772x_video_probe(priv);
->  	if (ret < 0)
->  		goto error_gpio_put;
-> -- 
-> 2.17.1
-> 
+That makes sense, overflow_work must be aligned to 8 bytes, and there are 16
+elements in the pmc array, which means no padding is required for the
+overflow_work field.
 
--- 
-Sakari Ailus
+Thanks,
+Alex
