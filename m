@@ -2,227 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6D27E931
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF0727E92A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730061AbgI3NHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:07:41 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:19737 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729995AbgI3NHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:07:41 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 6470224001C;
-        Wed, 30 Sep 2020 13:07:38 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 15:07:37 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, jic23@kernel.org,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com
-Subject: Re: [PATCH v3 4/4] iio: adc: at91_adc: remove platform data and move
- defs in driver file
-Message-ID: <20200930130737.GH2804081@piout.net>
-References: <20200930125216.90424-1-alexandru.ardelean@analog.com>
- <20200930125216.90424-5-alexandru.ardelean@analog.com>
+        id S1730062AbgI3NEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:04:06 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:48894 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725771AbgI3NED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:04:03 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id E7FD14130F;
+        Wed, 30 Sep 2020 13:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1601471040; x=1603285441; bh=njVa9cplwqkKacO5snuH36/Bo
+        YnsXd9WkIp7KVh22W4=; b=DzYrn8U4Ujk/W1+h6DsWmSjEeguylOsSX2hS2dMPA
+        4ePHPgmlTkpCQF+NH1q3Iw+7GyPrYCJ6eCIYl8MAwTRX/RdYCn0BPQ88qWRQfk/T
+        bD3pdGK35uKUIu0XgL88EZpNNjKCoB6unKJ5qvJnAxbqgKDY2XFzTJwtfcoeHV3B
+        +U=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dvIGsKiEPSWw; Wed, 30 Sep 2020 16:04:00 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id C084041207;
+        Wed, 30 Sep 2020 16:04:00 +0300 (MSK)
+Received: from localhost.localdomain (10.199.2.122) by
+ T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Wed, 30 Sep 2020 16:04:00 +0300
+Message-ID: <4a5945534f7b41cb799c044ec8c9d31c61d5beda.camel@yadro.com>
+Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
+ SPI_NOR_HAS_TB
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Sep 2020 16:07:53 +0300
+In-Reply-To: <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
+References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
+         <20200921112450.4824-2-i.mikhaylov@yadro.com>
+         <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930125216.90424-5-alexandru.ardelean@analog.com>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.199.2.122]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2020 15:52:16+0300, Alexandru Ardelean wrote:
-> The AT91 ADC driver no longer uses the 'at91_add_device_adc' platform data
-> type. This is no longer used (at least in mainline drivers).
-
-s/drivers/boards/
-
+On Wed, 2020-09-30 at 15:06 +0530, Vignesh Raghavendra wrote:
 > 
-> This change removes the platform-data initialization from the driver, since
-> it is mostly dead code now.
-
-It is definitively dead code, it has been a while that board file
-support has been removed for the platforms with this ADC.
-
+> On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
+> > Some chips like macronix don't have TB(Top/Bottom protection)
+> > bit in the status register. Do not write tb_mask inside status
+> > register, unless SPI_NOR_HAS_TB is present for the chip.
+> > 
 > 
-> Some definitions [from the platform data at91_adc.h include] have been to
-> be moved in the driver, since they are needed in the driver.
-
-s/to be//
-
+> Not entirely accurate.. Macronix chips have TB bit in config register
+> and is OTP and hence should not be touched ideally...
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/adc/at91_adc.c             | 51 ++++++++++----------------
->  include/linux/platform_data/at91_adc.h | 49 -------------------------
->  2 files changed, 20 insertions(+), 80 deletions(-)
->  delete mode 100644 include/linux/platform_data/at91_adc.h
-> 
-> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> index 473bffe84fbd..d0e56b1b5949 100644
-> --- a/drivers/iio/adc/at91_adc.c
-> +++ b/drivers/iio/adc/at91_adc.c
-> @@ -22,8 +22,6 @@
->  #include <linux/slab.h>
->  #include <linux/wait.h>
->  
-> -#include <linux/platform_data/at91_adc.h>
-> -
->  #include <linux/iio/iio.h>
->  #include <linux/iio/buffer.h>
->  #include <linux/iio/trigger.h>
-> @@ -153,6 +151,25 @@
->  #define TOUCH_SHTIM                    0xa
->  #define TOUCH_SCTIM_US		10		/* 10us for the Touchscreen Switches Closure Time */
->  
-> +enum atmel_adc_ts_type {
-> +	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> +	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> +	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> +};
-> +
-> +/**
-> + * struct at91_adc_trigger - description of triggers
-> + * @name:		name of the trigger advertised to the user
-> + * @value:		value to set in the ADC's trigger setup register
-> +			to enable the trigger
-> + * @is_external:	Does the trigger rely on an external pin?
-> + */
-> +struct at91_adc_trigger {
-> +	const char	*name;
-> +	u8		value;
-> +	bool		is_external;
-> +};
-> +
->  /**
->   * struct at91_adc_reg_desc - Various informations relative to registers
->   * @channel_base:	Base offset for the channel data registers
-> @@ -957,30 +974,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
->  	return ret;
->  }
->  
-> -static int at91_adc_probe_pdata(struct at91_adc_state *st,
-> -				struct platform_device *pdev)
-> -{
-> -	struct at91_adc_data *pdata = pdev->dev.platform_data;
-> -
-> -	if (!pdata)
-> -		return -EINVAL;
-> -
-> -	st->caps = (struct at91_adc_caps *)
-> -			platform_get_device_id(pdev)->driver_data;
-> -
-> -	st->use_external = pdata->use_external_triggers;
-> -	st->vref_mv = pdata->vref;
-> -	st->channels_mask = pdata->channels_used;
-> -	st->num_channels = st->caps->num_channels;
-> -	st->startup_time = pdata->startup_time;
-> -	st->trigger_number = pdata->trigger_number;
-> -	st->trigger_list = pdata->trigger_list;
-> -	st->registers = &st->caps->registers;
-> -	st->touchscreen_type = pdata->touchscreen_type;
-> -
-> -	return 0;
-> -}
-> -
->  static const struct iio_info at91_adc_info = {
->  	.read_raw = &at91_adc_read_raw,
->  };
-> @@ -1157,11 +1150,7 @@ static int at91_adc_probe(struct platform_device *pdev)
->  
->  	st = iio_priv(idev);
->  
-> -	if (pdev->dev.of_node)
-> -		ret = at91_adc_probe_dt(idev, pdev);
-> -	else
-> -		ret = at91_adc_probe_pdata(st, pdev);
-> -
-> +	ret = at91_adc_probe_dt(idev, pdev);
->  	if (ret) {
->  		dev_err(&pdev->dev, "No platform data available.\n");
->  		return -EINVAL;
+> You still need to "read" that bit to determine actual scheme (Top vs
+> Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
+> flag for macronix flashes.
 
-You can simply do:
+Vignesh, that's the point about this commit to generalize this part about TB bit
+plus there is already exist SPI_NOR_HAS_TB flag which representing state of TB
+existence. I didn't add any support for macronix's TB bit, that's true but
+that's enough to make macronix chips able to use lock mechanism with default
+'use_top' or any other chips which doesn't have TB bit.
 
-	if (ret)
-		return ret;
+> I guess macronix does not support SR_SRWD right? This needs special
+> treatment as well.
 
-The debug message is not relevant anymore.
+It does support SR_SRWD as well. No need any special treatment here.
 
-You can also remove:
+Thanks.
 
-	if (!node)
-		return -EINVAL;
-
-from at91_adc_probe_dt, there is no way the driver will probe without a
-DT node.
-
-
-> diff --git a/include/linux/platform_data/at91_adc.h b/include/linux/platform_data/at91_adc.h
-> deleted file mode 100644
-> index f20eaeb827ce..000000000000
-> --- a/include/linux/platform_data/at91_adc.h
-> +++ /dev/null
-> @@ -1,49 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> -/*
-> - * Copyright (C) 2011 Free Electrons
-> - */
-> -
-> -#ifndef _AT91_ADC_H_
-> -#define _AT91_ADC_H_
-> -
-> -enum atmel_adc_ts_type {
-> -	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-> -	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-> -	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-> -};
-> -
-> -/**
-> - * struct at91_adc_trigger - description of triggers
-> - * @name:		name of the trigger advertised to the user
-> - * @value:		value to set in the ADC's trigger setup register
-> -			to enable the trigger
-> - * @is_external:	Does the trigger rely on an external pin?
-> - */
-> -struct at91_adc_trigger {
-> -	const char	*name;
-> -	u8		value;
-> -	bool		is_external;
-> -};
-> -
-> -/**
-> - * struct at91_adc_data - platform data for ADC driver
-> - * @channels_used:		channels in use on the board as a bitmask
-> - * @startup_time:		startup time of the ADC in microseconds
-> - * @trigger_list:		Triggers available in the ADC
-> - * @trigger_number:		Number of triggers available in the ADC
-> - * @use_external_triggers:	does the board has external triggers availables
-> - * @vref:			Reference voltage for the ADC in millivolts
-> - * @touchscreen_type:		If a touchscreen is connected, its type (4 or 5 wires)
-> - */
-> -struct at91_adc_data {
-> -	unsigned long			channels_used;
-> -	u8				startup_time;
-> -	struct at91_adc_trigger		*trigger_list;
-> -	u8				trigger_number;
-> -	bool				use_external_triggers;
-> -	u16				vref;
-> -	enum atmel_adc_ts_type		touchscreen_type;
-> -};
-> -
-> -extern void __init at91_add_device_adc(struct at91_adc_data *data);
-> -#endif
-> -- 
-> 2.17.1
-> 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
