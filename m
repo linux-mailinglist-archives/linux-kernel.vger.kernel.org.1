@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BCA27E7E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80A927E7EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729569AbgI3LxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:53:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35572 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728430AbgI3LxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:53:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601466788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TVH10QBD4QWRUGMBlREqgeRjVHRrmm+FuSJ/Eew8yco=;
-        b=VowLJc1ITAfAlVhj2ZDwVam39q5V44kLMbF8ZxcIv9Wacz9Euky9v8jXiZbv5NFmBgT9Bj
-        fm/k50gxoJ9oesUhf9oLSnAyks8N6X99uWIqL9d4Kv1zgQn2EmNj70yki0vLMs889zwj0n
-        1+ga3KEVHYQN3ihKFl5qZnfFr6SUwaY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B29DAAD39;
-        Wed, 30 Sep 2020 11:53:08 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 13:53:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 1/2] printk: avoid and/or handle record truncation
-Message-ID: <20200930115307.GD29288@alley>
-References: <20200930090134.8723-1-john.ogness@linutronix.de>
- <20200930090134.8723-2-john.ogness@linutronix.de>
- <20200930094316.GB987@jagdpanzerIV.localdomain>
- <87imbv1s0d.fsf@jogness.linutronix.de>
- <20200930112836.GC29288@alley>
- <87ft6z1oe7.fsf@jogness.linutronix.de>
+        id S1729610AbgI3Lxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3Lxe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:53:34 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E7DC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:53:33 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so1477846wrv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3zdVvKUiJ3XeC/vkqQQH/4KWS4wblWtvBCpqUTc2vCY=;
+        b=TCiL/Ow2l394SQAIf9E+NXOjWbI+WiUZG7czSxAutmvCNiJtnVGmyAKFcrIxA3P6TG
+         iem9fGPWkXCjpFIzTsrLgfR626HY6Dh7O/ew2TTQLIy2ZNIHCeNp9b7Wl+HJk1EWv1Gj
+         vqmTiip3ypcHhHa8hHcZCjbold9Ay6FWuC+t710keQKAnwnO7wWEs1lWQMUfMxNLsT/Z
+         4mqvNWl0iEMvmKTsL/IRlRGh3Vl5KqJVxNjhMsOf2+m8p6v6ks5w4zXOyQaTezHxih6U
+         Tgca1XosUIDPyHpReL6b1b1BJyH95NW2xkoyok6wGBC3xiSwPzTDPZH8AQSERNh9bCe2
+         Gj4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3zdVvKUiJ3XeC/vkqQQH/4KWS4wblWtvBCpqUTc2vCY=;
+        b=CXH6Y1GQw2atbkg5VAmzThx+HzVCKfzsbBdyrNYWCpytN1WYlrYB6sRrR11Mobu09J
+         Nj1aLBcLoZtZP24F9NS9evLUDAS/tXTZfTbEbvtdMR/dInOhV7hKINGcgdhj9wEFKifv
+         3GMyZaznpmQc5dYkP8zyRaiikTUqpZXzyb4zGw9yTrEi0Kzmh4Uarjq+Ul+/LSW+ib6a
+         4Mx2Y8twgU+Nu1c3DEfIA4dvdFR3XnmNMomPn043EI1ZxCronM6n3NIbbBajwhnFqVuV
+         v6CcxNwaNGu8HRlneksvIGjBXPMiuUuXL8yEetzZxG1qJU4BjFkshV37pYK2mvxCz95k
+         b61Q==
+X-Gm-Message-State: AOAM533BV0tqpbtl/jvgFWlbwMCqAmrhAQyi89LQqrqzc8EwsxQoMmuy
+        LUir6UdCMp95jAs50B0Mle3yj+80fAybrofT
+X-Google-Smtp-Source: ABdhPJynAyzrltVOO76tuR2J6MDfUIbi/vTOpYZLQJ7fsMqXMDV/uBFWBXb2toRs7bpZsX3qQln9GA==
+X-Received: by 2002:a5d:554c:: with SMTP id g12mr2743183wrw.294.1601466811718;
+        Wed, 30 Sep 2020 04:53:31 -0700 (PDT)
+Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id s12sm2222353wmd.20.2020.09.30.04.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 04:53:30 -0700 (PDT)
+From:   Alexandre Bailon <abailon@baylibre.com>
+To:     linux-remoteproc@vger.kernel.org
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        jstephan@baylibre.com, stephane.leprovost@mediatek.com,
+        gpain@baylibre.com, mturquette@baylibre.com,
+        Alexandre Bailon <abailon@baylibre.com>
+Subject: [RFC PATCH 0/4] Add a RPMsg driver to support AI Processing Unit (APU)
+Date:   Wed, 30 Sep 2020 13:53:46 +0200
+Message-Id: <20200930115350.5272-1-abailon@baylibre.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft6z1oe7.fsf@jogness.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-09-30 13:48:56, John Ogness wrote:
-> On 2020-09-30, Petr Mladek <pmladek@suse.com> wrote:
-> > Anyway, I see hardcoded limit more like a hack. It limits something
-> > somewhere so that some other code somewhere else is safe to use.
-> >
-> > And printk.c is really bad from this point. It sometimes does not
-> > check for overflow because it "knows" that the buffers are big
-> > enough. But it is error prone code, especially when there are more
-> > limits defined (pure text, prefix, extended prefix). And it
-> > will be worse if we allow to add more optional information
-> > into the prefix.
-> 
-> So should I post a v3 where the checks are added? Or should I add
-> comments where checks would be, explaining why the checks are not
-> needed?
+This adds a RPMsg driver that implements communication between the CPU and an
+APU.
+This uses VirtIO buffer to exchange messages but for sharing data, this uses
+a dmabuf, mapped to be shared between CPU (userspace) and APU.
+The driver is relatively generic, and should work with any SoC implementing
+hardware accelerator for AI if they use support remoteproc and VirtIO.
 
-If you have these locations still in head then it would be nice
-to add the checks.
+For the people interested by the firmware or userspace library,
+the sources are available here:
+https://github.com/BayLibre/open-amp/tree/v2020.01-mtk/apps/examples/apu
 
-But it is not urgent. We should be on the safe side. Both ways
-to store new messages are limited again now.
+Alexandre Bailon (3):
+  Add a RPMSG driver for the APU in the mt8183
+  rpmsg: apu_rpmsg: update the way to store IOMMU mapping
+  rpmsg: apu_rpmsg: Add an IOCTL to request IOMMU mapping
 
-Anyway, please do so in a followup patch. I would like to push this
-patchset into linux-next ASAP so that the robots could continue
-finding new bugs.
+Julien STEPHAN (1):
+  rpmsg: apu_rpmsg: Add support for async apu request
 
-Best Regards,
-Petr
+ drivers/rpmsg/Kconfig          |   9 +
+ drivers/rpmsg/Makefile         |   1 +
+ drivers/rpmsg/apu_rpmsg.c      | 752 +++++++++++++++++++++++++++++++++
+ drivers/rpmsg/apu_rpmsg.h      |  52 +++
+ include/uapi/linux/apu_rpmsg.h |  47 +++
+ 5 files changed, 861 insertions(+)
+ create mode 100644 drivers/rpmsg/apu_rpmsg.c
+ create mode 100644 drivers/rpmsg/apu_rpmsg.h
+ create mode 100644 include/uapi/linux/apu_rpmsg.h
+
+-- 
+2.26.2
+
