@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BED27EEB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2D427EEBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730503AbgI3QPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
+        id S1727749AbgI3QRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgI3QPH (ORCPT
+        with ESMTP id S1725800AbgI3QRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:15:07 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C80AC061755;
-        Wed, 30 Sep 2020 09:15:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j11so3717718ejk.0;
-        Wed, 30 Sep 2020 09:15:07 -0700 (PDT)
+        Wed, 30 Sep 2020 12:17:03 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C54C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:17:02 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o21so1650777qtp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kE8pUQeSQicwQZVIKpx0wVouaS5mSuVoVumXEb40dpU=;
-        b=vEs2gDaVZYsmIz2uXHTT7F2ngJyj01YBJq55PGeSXgHDmGf/n4UsDeXaDm46ygSWl+
-         efw+9lrPs9eWvVHSNSjyZ7+KtwpVID96yPPy22qiPjtn/2ACxIo71CkXzJJRBTlmUYgw
-         9CfR7CbsUp5mxsRO3P2DCZAoMUE5FhgulKrYIhghlfpFIDnbLClNbrTClv0RIYlF+074
-         s8bk2o2ttzVL1idJ8S2+KbWwCgIOI95Gc/j9/yJHMHPTIgmm7Itlvgzwso/5V8W42TxM
-         Sbm2Tm2Sv67JwEY7KgLv25inXUuN+0wIeVhUg7esxLG4Pavb4sbI7oyAvM8uRqZKoTPu
-         YcQQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JZY7IkOxUO2WtSrHCoZN7KXpMFh8Rwt0omYmTHUHNl4=;
+        b=i7/525RLEklIyW3bA2LXx382jGzfNe95GLBndd9505PWMw9xr1wDofo7qjfs3kB9Pf
+         9qnwJQxxOVHy+5RwvUHslqgBNJmATW5BV/DTA6Rpm9OEsnFAhh2SOq8evnWd9GvQq0I+
+         B3MFKxgvsZvNbknoLD/ZqxQ6tEIolmOCJXXb0jGCph5SZHW2jmD9y27BF43y/5CNmzYu
+         sQ+5kF35xp405EfTwPRUbILNBRSsabNIZIlIYox69xiXXdQMc/5t9NGkd5btnDuTWaRB
+         LoaAetDrGqG2px22wE71GnTNX0lQ93ukkYWCA2wWUUp0u/vi4gOJenopnCdZiqTpTon3
+         b9Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kE8pUQeSQicwQZVIKpx0wVouaS5mSuVoVumXEb40dpU=;
-        b=UFnKY+w4esU4S7J9RT/YxfERDPAcXxRJkhHS57ikesKPCPjelglr58RK9n2GMiGUo7
-         OMq6zuA7nyrgP4B3Xi/CidOoln7Yu4dOz//pSnBucqsHtdlH/fYxyA1C6h2B6vS3J2r6
-         WXxvmu5wTNx6eRSSVZIN1qF6M48BmzzEwvXhMoPclvM6a9+YiupJ4Npcb0TyxpAV4HVy
-         9r5PYZZpyT6pmhd5fen8fk7AEXFyNgml2WFV6e9sQzUETbs4jY7Iuwb4omFQ+uCydO61
-         GdHCcV9+lGkvE+JsxWo1CDS9W51tYsnADgp/OiCkg7uU/obUSvfTlpq178olm/1pEoDJ
-         3vZg==
-X-Gm-Message-State: AOAM53209bq/m+jsqLtA504p9VmBqJ50tvA8CDjEsdZpOew6YSXV7OpY
-        mzfCnOzpbwfAs12yStsO7gELvtRuM1o=
-X-Google-Smtp-Source: ABdhPJw6+D6kvpNUGSeOdQb4MLX0XxcMPxQ+Z1guG4ri+sfmREV9+TL9tPln+WLbWcuDblAdz9OWFQ==
-X-Received: by 2002:a17:906:f110:: with SMTP id gv16mr3078005ejb.257.1601482506094;
-        Wed, 30 Sep 2020 09:15:06 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id dv25sm1977144ejb.69.2020.09.30.09.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 09:15:04 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 18:15:03 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add
- devm_tegra_get_memory_controller()
-Message-ID: <20200930161503.GF3833404@ulmo>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-2-nicoleotsuka@gmail.com>
- <20200930152320.GA3833404@ulmo>
- <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
- <20200930160355.GC3833404@ulmo>
- <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JZY7IkOxUO2WtSrHCoZN7KXpMFh8Rwt0omYmTHUHNl4=;
+        b=EmXPwuTDTkQ2bOghSWpu6pTVFaWBvjxlByf0nKYlCyo5DETetbbQ8khcYcukgVa6Tw
+         hbRgYAaGGcd+IGEZzTHJfVMWkC8gYIKODowAQkW638tLNRT686IF9p+2+BH9ld1UITD6
+         iad1Us3rYG73ulCgKJMviWpX4Y9I8C48g3bTFgPmpIWNwPOO9nTsdWv9ntOovbvy4ogE
+         JkIMdM7aK4WIYbRprxX8dF0O1tP97G4whN4snfgVZgisy8WTTPRQl3UXeDsIW7Xc2BkZ
+         tzbFzgW8pzMi3o1h3VhzslhPS4MsPhRW+GJ9qutZ1T+KHGO81ggYR/ww5x24huzRmRwY
+         ZRZw==
+X-Gm-Message-State: AOAM5339vn5QIdpGMaOwcmUlBdTNzeDNPqrSe2k98cyAsy0T8UnYOggf
+        e+LUY6er96BosudtKDSe8ZIEkU9DL5N9VXNjbuW6Ww==
+X-Google-Smtp-Source: ABdhPJxBEkBgZgKjnM7X/Mmh3bTRF1FeA7vARxKZypuzswiC74hpD6oVnVF4qSdlYjVuxr+tF4ZYhzExMKNZwMjmbsI=
+X-Received: by 2002:ac8:5215:: with SMTP id r21mr2978567qtn.257.1601482621148;
+ Wed, 30 Sep 2020 09:17:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
-Content-Disposition: inline
-In-Reply-To: <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+References: <CAKBsNO=G_t6KrAYXcnMy07HyR8yrFELFoknd=9CnHBM-CJij=A@mail.gmail.com>
+ <000000000000b8d3ef05b02efa93@google.com> <CACT4Y+aBTN3HzDWADsvD053T=qszSu5wGTCijM-kj9xZXDHTyg@mail.gmail.com>
+ <20200926065704.GA661191@kroah.com> <f7073a07-d00a-8f0e-c9b1-7878a3c065f8@gmail.com>
+In-Reply-To: <f7073a07-d00a-8f0e-c9b1-7878a3c065f8@gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 30 Sep 2020 18:16:49 +0200
+Message-ID: <CACT4Y+a3-_C3MJtyo1UC6NcwNPnU2bmhGeGKo7OPh54CVkq1CQ@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] KMSAN: uninit-value in rt2500usb_probe_hw
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg KH <greg@kroah.com>, Andrey Konovalov <andreyknvl@google.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        syzbot <syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---eDB11BtaWSyaBkpc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 30, 2020 at 07:06:27PM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 19:03, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
-> >> 30.09.2020 18:23, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
-> >>>> From: Dmitry Osipenko <digetx@gmail.com>
-> >>>>
-> >>>> Multiple Tegra drivers need to retrieve Memory Controller and hence =
-there
-> >>>> is quite some duplication of the retrieval code among the drivers. L=
-et's
-> >>>> add a new common helper for the retrieval of the MC.
-> >>>>
-> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >>>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> >>>> ---
-> >>>>
-> >>>> Changelog
-> >>>> v2->v3:
-> >>>>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
-> >>>> v1->v2:
-> >>>>  * N/A
-> >>>>
-> >>>>  drivers/memory/tegra/mc.c | 39 ++++++++++++++++++++++++++++++++++++=
-+++
-> >>>>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
-> >>>>  2 files changed, 56 insertions(+)
+On Wed, Sep 30, 2020 at 5:57 PM Anant Thazhemadam
+<anant.thazhemadam@gmail.com> wrote:
+> On 26/09/20 12:27 pm, Greg KH wrote:
+> > On Sat, Sep 26, 2020 at 08:53:07AM +0200, Dmitry Vyukov via Linux-kernel-mentees wrote:
+> >> On Sat, Sep 26, 2020 at 5:25 AM syzbot
+> >> <syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com> wrote:
+> >>> Hello,
 > >>>
-> >>> Let's not add this helper, please. If a device needs a reference to t=
-he
-> >>> memory controller, it should have a phandle to the memory controller =
-in
-> >>> device tree so that it can be looked up explicitly.
+> >>> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 > >>>
-> >>> Adding this helper is officially sanctioning that it's okay not to ha=
-ve
-> >>> that reference and that's a bad idea.
+> >>> Reported-and-tested-by: syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com
+> >>>
+> >>> Tested on:
+> >>>
+> >>> commit:         c5a13b33 kmsan: clang-format core
+> >>> git tree:       https://github.com/google/kmsan.git master
+> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=41fca8ac7f9e770a
+> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=35c80b2190255a410f66
+> >>> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> >>>
+> >>> Note: testing is done by a robot and is best-effort only.
+> >> Hi Anant,
 > >>
-> >> And please explain why it's a bad idea, I don't see anything bad here =
-at
-> >> all.
-> >=20
-> > Well, you said yourself in a recent comment that we should avoid global
-> > variables. devm_tegra_get_memory_controller() is nothing but a glorified
-> > global variable.
->=20
-> This is not a variable, but a common helper function which will remove
-> the duplicated code and will help to avoid common mistakes like a missed
-> put_device().
+> >> I see you are testing lots of USB bugs. USB subsystem is currently
+> >> broken, testing of any USB bugs will give false "no crash" results,
+> >> see:
+> >> https://lore.kernel.org/linux-kernel-mentees/CACT4Y+YmbmrH9gCCnCzP-FYa-dKxx9qhKZ+RQxi1f-+Hoj1SUg@mail.gmail.com/
+> > Fixes for this USB problem are in my tree now and should show up in
+> > linux-next on Monday.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Is there any chance you could identify the commit that fixes this bug?
+> It would help us close the bug for good. :)
 
-Yeah, you're right: this is actually much worse than a global variable.
-It's a helper function that needs 50+ lines in order to effectively
-access a global variable.
-
-You could write this much simpler by doing something like this:
-
-	static struct tegra_mc *global_mc;
-
-	int tegra_mc_probe(...)
-	{
-		...
-
-		global_mc =3D mc;
-
-		...
-	}
-
-	struct tegra_mc *tegra_get_memory_controller(void)
-	{
-		return global_mc;
-	}
-
-The result is *exactly* the same, except that this is actually more
-honest. Nicolin's patch *pretends* that it isn't using a global variable
-by wrapping a lot of complicated code around it.
-
-But that doesn't change the fact that this accesses a singleton object
-without actually being able to tie it to the device in the first place.
-
-Thierry
-
---eDB11BtaWSyaBkpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90rwcACgkQ3SOs138+
-s6EaixAAqbOV/ijTS5FkR08q2KCQomBCj0Q4t0RdougoBkbNGOffkJbO06l69JQP
-S1o6d+r6P1rpZj/2K6/7VyzCqLCa5zpA19R7/GDyBJ+DO0TSQ93WxBIf4XgVoprP
-igWzDkJiEFISjKNl3MP2KjxkYFDMC/ZQy4GF3bJvRpjFq4tVCYggaAAU7aeMutxa
-DnChwV37zJvFT/6bIFu4gI+VJaBjfxzn36ahS4iGUQkOgF8z7dKcXK9tUwheomYb
-sdayQ1WlKlrQQ8SnrodoFDNooEhBPZeLC3O4iNonxnetZbgmoZ8xt0M0OaMnFi/M
-/xSqK1eJSn7RVL0+x1hajlsuJdYYhrnKPzUzLZIdBWFcJCIXrMIZ08dpwnkTbzjv
-45JoaaQlyOg4HQgSuWi/p0p709nzuY9lJID+/2R4HwkKDgVC/NdCtHJHgoZBHqyF
-khK3kGeXhfQfsNjPfjbbZoADbymdTAt7W5VebFpIjtXooXmeyTX1uBVGRgrpnBD/
-WIi1Z8GO3slDFlGk7RukIUqgvzwy/YJopV/E7oLsg/4V6SloATkgVCPNUrGiBmVu
-5x3n9/ES2Uye/ALQa1TPJ4Jg155hqPrnxA6EYicSiVfHOjfMsECZGXinGiAIo6rX
-4JKNpEcoJan0+1BcPKjTfXVMzU6pZcjbqgBbTi4qViDSxtYKkGQ=
-=u6UA
------END PGP SIGNATURE-----
-
---eDB11BtaWSyaBkpc--
+I think Greg meant the fix for the general USB brokenness, not a fix
+for this syzbot bug. This bug is not fixed to the best of syzbot
+knowledge.
