@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD0827EA64
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C2A27EA67
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730315AbgI3N4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:56:53 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33642 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730188AbgI3N4x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:56:53 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UDuoHR003116;
-        Wed, 30 Sep 2020 08:56:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601474210;
-        bh=nvddhHYdrm6PO2SjKBJhzcvT4yhTqPyQ2t4w9s9uIpk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fUkWuUeprgjwR67Z8Ea0EKrgqCLqbHFQcqjz4eUG6pPZNneE28dXp7YeHo+Kwbgwe
-         ajUmU5ZPFfX+Zs0eoCPuaK709AZx16Hi6MPoFGrJMeEA3pVSoakkf1AWpEygTJLuJ8
-         PbPi3d8K33ExQUVQh22cbp/bYWdcphZfCfdwOf6Y=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08UDuos8015651
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 08:56:50 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 08:56:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 08:56:48 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UDujjo107072;
-        Wed, 30 Sep 2020 08:56:46 -0500
-Subject: Re: [PATCH 11/11] soc: ti: k3-socinfo: Add entry for AM64 SoC family
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, <nm@ti.com>,
-        <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>,
-        "Nori, Sekhar" <nsekhar@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Anna, Suman" <s-anna@ti.com>
-References: <20200928083429.17390-1-peter.ujfalusi@ti.com>
- <20200928083429.17390-12-peter.ujfalusi@ti.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <aa10c7a1-ddbd-a3ae-3035-f26a5ce073ae@ti.com>
-Date:   Wed, 30 Sep 2020 16:56:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730392AbgI3N5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:57:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60312 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730304AbgI3N5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 09:57:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601474239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=60/DuYzuTuu/RoGHpnTicjya4jLSFnDAPXQjHEwUDFQ=;
+        b=YtfW45QdidqHBbd17iP9wT7uGPvIRxr/c0yC65aXrvoGRW7/BD7fVlpWy2HKlodtox1A7F
+        z5LGkoyKJm8mWG7Ah5ML4FZ7XnA9SUAvddM1zO1a4uVEgqZiPYCowhrZkf0Fwo6QCOehcB
+        gN+JEBVRMTsK/G6Mz0hlb8/qlrkW6vc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82DDDAC8B;
+        Wed, 30 Sep 2020 13:57:19 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 15:57:18 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, tkjos@google.com,
+        Mohammed Khajapasha <mkhaja@codeaurora.org>
+Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
+ hotplug path
+Message-ID: <20200930135718.GI29288@alley>
+References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
+ <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200928083429.17390-12-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/09/2020 11:34, Peter Ujfalusi wrote:
-> It's JTAG PARTNO is 0xBB38.
+On Wed 2020-09-23 17:08:32, Prasad Sodagudi wrote:
+> From: Mohammed Khajapasha <mkhaja@codeaurora.org>
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->   drivers/soc/ti/k3-socinfo.c | 1 +
->   1 file changed, 1 insertion(+)
+> The thread which initiates the hot plug can get scheduled
+> out, while trying to acquire the console lock,
+> thus increasing the hot plug latency. This option
+> allows to selectively disable the console flush and
+> in turn reduce the hot plug latency.
 > 
-> diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
-> index bbbc2d2b7091..a14ec68846dd 100644
-> --- a/drivers/soc/ti/k3-socinfo.c
-> +++ b/drivers/soc/ti/k3-socinfo.c
-> @@ -40,6 +40,7 @@ static const struct k3_soc_id {
->   	{ 0xBB5A, "AM65X" },
->   	{ 0xBB64, "J721E" },
->   	{ 0xBB6D, "J7200" },
-> +	{ 0xBB38, "AM64" }
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 9b75f6b..f02d3ef 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2996,13 +3000,15 @@ static int __init printk_late_init(void)
+>  			unregister_console(con);
+>  		}
+>  	}
+> +#ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
+>  	ret = cpuhp_setup_state_nocalls(CPUHP_PRINTK_DEAD, "printk:dead", NULL,
+>  					console_cpu_notify);
+>  	WARN_ON(ret < 0);
+>  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "printk:online",
+>  					console_cpu_notify, NULL);
+>  	WARN_ON(ret < 0);
+> -	return 0;
+> +#endif
+> +	return ret;
 
-Shouldn't it be AM64X
+Just a comment from the printk-side view. This change is wrong, definitely.
 
->   };
->   
->   static int
-> 
+The above calls are needed with the current printk() design. They make
+sure that someone would actually push the messages to the console.
+Otherwise they might stay hidden seconds/minutes/hour/days until
+another random printk() does the job.
 
--- 
-Best regards,
-grygorii
+They will not be needed with the ongoing printk rework[1] where
+the consoles will get handled by a dedicated kthread.
+
+[1] https://lore.kernel.org/lkml/87k1acz5rx.fsf@linutronix.de/
+
+Best Regards,
+Petr
