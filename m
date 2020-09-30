@@ -2,100 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222F727EDCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6798B27EDDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730722AbgI3Ptz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:49:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
+        id S1728410AbgI3PvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgI3Pty (ORCPT
+        with ESMTP id S1725872AbgI3PvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:49:54 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF7BC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:49:54 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id di5so1110264qvb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:49:54 -0700 (PDT)
+        Wed, 30 Sep 2020 11:51:15 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F860C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:51:14 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bb1so1279107plb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r8/IDDg3h30xL2yKxOXfAZ6SYDQxULsHhio1WiSzVoE=;
-        b=b3/eSZrxq9ZmquVDBHUWHZcW8jE3GZMuVJn04cLVnXRpAKQlax71RkHw+TItyAcXOf
-         D1/wbcVY1Tp22JA5trNf+ZAjp240f5Hp/IFo/bGRg5t96yAw73K+jPG6eeK7GgW9RdEC
-         ny3mkwjN6Jbxx0cHBrAXUvhnEjA9uZ2q77xjQDVhYp6ayW0dfk4vY+vvylLCH4n3iIou
-         EBVZoV1Mq2driC9DQmvoOR/tuiJl+S81PanPTc7I0Y30DOZRuJSte5ZddOgYWDDA+3Ku
-         d6XBGCk1g17KTfCR9ZIbDx02vyCkW9AKXbdcDIwXXfv6XZ3jt79qZ0dt4xkzIRLPTPkL
-         OZRQ==
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vpAOYUtfsOyAnKG5VAGbK9i/Ip7+aawrrhrrv5e7Aow=;
+        b=f3RBVLLIxzZH0O+nmMeo4aAZ/5pDTI5pFFd7hPJEQNI4d9h2/IXnVGAS9oy1GRMLPv
+         22WHfdrYrR2Xze3Ubmk8qql6DTlpb54OUs6KVISU4qZJRzgwVvKAWRcAWjVH9X8CQJ5w
+         YMSKo3P5PgDvF5nzhm0i/FvAeTUnRvw9gNxAo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r8/IDDg3h30xL2yKxOXfAZ6SYDQxULsHhio1WiSzVoE=;
-        b=BXcWjWajvm3tRRookARxD+wR4AG4EVWN98+89KbOj8guenw2P8zbVXmT7YByZ7SAa8
-         ITNWPK4OWWxmjBhBdLmT0kl1W/7nHc5liBwWDhorVtIGiYvLit5k8qLk+6hpIYGd9wi2
-         MyRkA5U0CT0pFtNMPXHFhPfA3H4s4gJOgIQsiBTx+2UnJs+fmkQcu4Prhj6SCyNwwGBb
-         t3VOLBKCvPY++hpRTTn6E3V5phS/fI+FX3uRFM0Ru13GThXdGh7jlyrVHDaYJX/xlNNv
-         /f3ul0OZnE3sATzw1YBPEtYce/I5qlmHhI/oFZJS94wrMSGEIxwDCrtQ8fGSHKvEM5O2
-         Yq4Q==
-X-Gm-Message-State: AOAM5300g8x55PewdeWiA5hqfWI43GQmMh1K9owBWpMyXVe/YW2SBMeA
-        6mh5p85+fwrWEjhUDfLACaczz9ZF9GpdDXKvZnTmRg==
-X-Google-Smtp-Source: ABdhPJz35tnMcZ3NgGf2cA0sbRzUPpGd/75eBd+InpyMs61ib5CN5zyPrAngEN4AeGJwKtjR6R96dAebjOvm9ebx2O0=
-X-Received: by 2002:ad4:4d52:: with SMTP id m18mr2946409qvm.55.1601480993835;
- Wed, 30 Sep 2020 08:49:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAPcyv4iPuRWSv_do_h8stU0-SiWxtKkQWvzBEU+78fDE6VffmA@mail.gmail.com> <20200930050455.GA6810@zn.tnic>
-In-Reply-To: <20200930050455.GA6810@zn.tnic>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 30 Sep 2020 08:49:42 -0700
-Message-ID: <CAPcyv4j=eyVMbcnrGDGaPe4AVXy5pJwa6EapH3ePh+JdF6zxnQ@mail.gmail.com>
-Subject: Re: [PATCH v9 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user, kernel}
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable <stable@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        0day robot <lkp@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vpAOYUtfsOyAnKG5VAGbK9i/Ip7+aawrrhrrv5e7Aow=;
+        b=nNX5g6Qcv7LxwCLgxgRlho4gE7rlp6TctLFPxlmDxvK5kwR28iwJHrjJ09XZt9wSY/
+         9Rd4bzbOP9bvgEw+4hqmH/xuVtOqgJDPwZ1sBOsnukSqMrS6PpyFS5tcrF5yuSH1pP/j
+         pKkDx3qtklmVtpDtx/zAWUSmU+IY3oc+ZTZSP8Sonhcg+zbCTPhLFi2oLOQbZIhPSZZV
+         QG2/S5qRopoVW44ys0HLPx2GxQoxBlB3g4wOxbcQNzqCBC75sOjKxaNuSu1UuqwxC9CL
+         KZuEZc+ewKhTyd+PDCTs1d+LHQgMsemaNHWAQqoS8HW6pvv5JPLhcNMaWDLrfmT/2X1H
+         Fj3w==
+X-Gm-Message-State: AOAM531VVXFGM8amhF4D6iu9LexEzCtYvJuHmmXiD9oWvmjetAlYfA8E
+        wnfNF6pkRnMIpSbo8FUycCgB3A==
+X-Google-Smtp-Source: ABdhPJzHs0GayQ9rUgfEDKB4ax/PNP+Us+d3WU+XwlorKT3a0zGMeb844e3NFc+EANxiNp6A1d4CtA==
+X-Received: by 2002:a17:90a:ee0d:: with SMTP id e13mr3287288pjy.227.1601481073583;
+        Wed, 30 Sep 2020 08:51:13 -0700 (PDT)
+Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
+        by smtp.googlemail.com with ESMTPSA id a18sm2505677pgw.50.2020.09.30.08.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 08:51:12 -0700 (PDT)
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
+        takafumi@sslab.ics.keio.ac.jp, Don Brace <don.brace@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kevin Barnett <kevin.barnett@microsemi.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Scott Teel <scott.teel@microsemi.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2] scsi: hpsa: fix memory leak in hpsa_init_one
+Date:   Wed, 30 Sep 2020 15:50:59 +0000
+Message-Id: <20200930155100.11528-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:05 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Tue, Sep 29, 2020 at 03:32:07PM -0700, Dan Williams wrote:
-> > Given that Linus was the primary source of review feedback on these
-> > patches and a version of them have been soaking in -next with only a
-> > minor conflict report with vfs.git for the entirety of the v5.9-rc
-> > cycle (left there inadvertently while I was on leave), any concerns
-> > with me sending this to Linus directly during the merge window?
->
-> What's wrong with them going through tip?
+When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
+free in the error handler.
 
-There's been a paucity of response on these after converging on the
-feedback from Linus. They missed v5.9, and I started casting about for
-what could be done to make sure they did not also miss v5.10 if the
-quiet continued. The preference is still "through tip".
+Fix this by adding free when hpsa_scsi_add_host fails.
 
-> But before that pls have a look at this question I have here:
->
-> https://lkml.kernel.org/r/20200929102512.GB21110@zn.tnic
->
-> Thx.
+This patch also renames the numbered labels to detailed names.
 
-Thanks, Boris, will do.
+Fixes: cf47723763a7 ("hpsa: correct initialization order issue")
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+---
+ drivers/scsi/hpsa.c | 52 +++++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
+index 48d5da59262b..4911ca22efe4 100644
+--- a/drivers/scsi/hpsa.c
++++ b/drivers/scsi/hpsa.c
+@@ -8691,19 +8691,19 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (!h->lockup_detected) {
+ 		dev_err(&h->pdev->dev, "Failed to allocate lockup detector\n");
+ 		rc = -ENOMEM;
+-		goto clean1;	/* aer/h */
++		goto out_destroy_workqueue;	/* aer/h */
+ 	}
+ 	set_lockup_detected_for_all_cpus(h, 0);
+ 
+ 	rc = hpsa_pci_init(h);
+ 	if (rc)
+-		goto clean2;	/* lu, aer/h */
++		goto out_free_lockup_detected;	/* lu, aer/h */
+ 
+ 	/* relies on h-> settings made by hpsa_pci_init, including
+ 	 * interrupt_mode h->intr */
+ 	rc = hpsa_scsi_host_alloc(h);
+ 	if (rc)
+-		goto clean2_5;	/* pci, lu, aer/h */
++		goto out_free_pci_init;	/* pci, lu, aer/h */
+ 
+ 	sprintf(h->devname, HPSA "%d", h->scsi_host->host_no);
+ 	h->ctlr = number_of_controllers;
+@@ -8719,7 +8719,7 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			dac = 0;
+ 		} else {
+ 			dev_err(&pdev->dev, "no suitable DMA available\n");
+-			goto clean3;	/* shost, pci, lu, aer/h */
++			goto out_scsi_host_put;	/* shost, pci, lu, aer/h */
+ 		}
+ 	}
+ 
+@@ -8728,13 +8728,13 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	rc = hpsa_request_irqs(h, do_hpsa_intr_msi, do_hpsa_intr_intx);
+ 	if (rc)
+-		goto clean3;	/* shost, pci, lu, aer/h */
++		goto out_scsi_host_put;	/* shost, pci, lu, aer/h */
+ 	rc = hpsa_alloc_cmd_pool(h);
+ 	if (rc)
+-		goto clean4;	/* irq, shost, pci, lu, aer/h */
++		goto out_free_irqs;	/* irq, shost, pci, lu, aer/h */
+ 	rc = hpsa_alloc_sg_chain_blocks(h);
+ 	if (rc)
+-		goto clean5;	/* cmd, irq, shost, pci, lu, aer/h */
++		goto out_free_cmd_pool;	/* cmd, irq, shost, pci, lu, aer/h */
+ 	init_waitqueue_head(&h->scan_wait_queue);
+ 	init_waitqueue_head(&h->event_sync_wait_queue);
+ 	mutex_init(&h->reset_mutex);
+@@ -8747,25 +8747,25 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	spin_lock_init(&h->devlock);
+ 	rc = hpsa_put_ctlr_into_performant_mode(h);
+ 	if (rc)
+-		goto clean6; /* sg, cmd, irq, shost, pci, lu, aer/h */
++		goto out_free_sg_chain_blocks; /* sg, cmd, irq, shost, pci, lu, aer/h */
+ 
+ 	/* create the resubmit workqueue */
+ 	h->rescan_ctlr_wq = hpsa_create_controller_wq(h, "rescan");
+ 	if (!h->rescan_ctlr_wq) {
+ 		rc = -ENOMEM;
+-		goto clean7;
++		goto out_free_performant_mode;
+ 	}
+ 
+ 	h->resubmit_wq = hpsa_create_controller_wq(h, "resubmit");
+ 	if (!h->resubmit_wq) {
+ 		rc = -ENOMEM;
+-		goto clean7;	/* aer/h */
++		goto out_free_performant_mode;	/* aer/h */
+ 	}
+ 
+ 	h->monitor_ctlr_wq = hpsa_create_controller_wq(h, "monitor");
+ 	if (!h->monitor_ctlr_wq) {
+ 		rc = -ENOMEM;
+-		goto clean7;
++		goto out_free_performant_mode;
+ 	}
+ 
+ 	/*
+@@ -8795,20 +8795,20 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			 * cannot goto clean7 or free_irqs will be called
+ 			 * again. Instead, do its work
+ 			 */
+-			hpsa_free_performant_mode(h);	/* clean7 */
+-			hpsa_free_sg_chain_blocks(h);	/* clean6 */
+-			hpsa_free_cmd_pool(h);		/* clean5 */
++			hpsa_free_performant_mode(h);	/* out_free_performant_mode */
++			hpsa_free_sg_chain_blocks(h);	/* out_free_sg_chain_blocks */
++			hpsa_free_cmd_pool(h);		/* out_free_cmd_pool */
+ 			/*
+ 			 * skip hpsa_free_irqs(h) clean4 since that
+ 			 * was just called before request_irqs failed
+ 			 */
+-			goto clean3;
++			goto out_scsi_host_put;
+ 		}
+ 
+ 		rc = hpsa_kdump_soft_reset(h);
+ 		if (rc)
+ 			/* Neither hard nor soft reset worked, we're hosed. */
+-			goto clean7;
++			goto out_free_performant_mode;
+ 
+ 		dev_info(&h->pdev->dev, "Board READY.\n");
+ 		dev_info(&h->pdev->dev,
+@@ -8854,7 +8854,7 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	/* hook into SCSI subsystem */
+ 	rc = hpsa_scsi_add_host(h);
+ 	if (rc)
+-		goto clean7; /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
++		goto out_free_lastlogicals; /* ll, perf, sg, cmd, irq, shost, pci, lu, aer/h */
+ 
+ 	/* Monitor the controller for firmware lockups */
+ 	h->heartbeat_sample_interval = HEARTBEAT_SAMPLE_INTERVAL;
+@@ -8869,26 +8869,28 @@ static int hpsa_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 				HPSA_EVENT_MONITOR_INTERVAL);
+ 	return 0;
+ 
+-clean7: /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
++out_free_lastlogicals: /* ll, perf, sg, cmd, irq, shost, pci, lu, aer/h */
++	kfree(h->lastlogicals);
++out_free_performant_mode: /* perf, sg, cmd, irq, shost, pci, lu, aer/h */
+ 	hpsa_free_performant_mode(h);
+ 	h->access.set_intr_mask(h, HPSA_INTR_OFF);
+-clean6: /* sg, cmd, irq, pci, lockup, wq/aer/h */
++out_free_sg_chain_blocks: /* sg, cmd, irq, pci, lockup, wq/aer/h */
+ 	hpsa_free_sg_chain_blocks(h);
+-clean5: /* cmd, irq, shost, pci, lu, aer/h */
++out_free_cmd_pool: /* cmd, irq, shost, pci, lu, aer/h */
+ 	hpsa_free_cmd_pool(h);
+-clean4: /* irq, shost, pci, lu, aer/h */
++out_free_irqs: /* irq, shost, pci, lu, aer/h */
+ 	hpsa_free_irqs(h);
+-clean3: /* shost, pci, lu, aer/h */
++out_scsi_host_put: /* shost, pci, lu, aer/h */
+ 	scsi_host_put(h->scsi_host);
+ 	h->scsi_host = NULL;
+-clean2_5: /* pci, lu, aer/h */
++out_free_pci_init: /* pci, lu, aer/h */
+ 	hpsa_free_pci_init(h);
+-clean2: /* lu, aer/h */
++out_free_lockup_detected: /* lu, aer/h */
+ 	if (h->lockup_detected) {
+ 		free_percpu(h->lockup_detected);
+ 		h->lockup_detected = NULL;
+ 	}
+-clean1:	/* wq/aer/h */
++out_destroy_workqueue:	/* wq/aer/h */
+ 	if (h->resubmit_wq) {
+ 		destroy_workqueue(h->resubmit_wq);
+ 		h->resubmit_wq = NULL;
+-- 
+2.17.1
+
