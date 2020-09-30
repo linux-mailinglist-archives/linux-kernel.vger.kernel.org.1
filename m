@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD8927F5FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260F427F5EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732326AbgI3X1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:27:22 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:60299 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729617AbgI3XZ3 (ORCPT
+        id S1732226AbgI3XZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729617AbgI3XZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:25:29 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 7DAB696C;
-        Wed, 30 Sep 2020 19:24:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 30 Sep 2020 19:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=U
-        Uv/ycHKk0VmQ9jog/Fu42gbcuiVRCdjLJbHAyQkcMA=; b=ivLuxv4Q55f1KpcuS
-        +cwKbc+rREjpPqhNs+z6z6vjquCNIcj/E8v8Busu2VtTJ16rgl8jXLEQjMa40b1D
-        ReI1SEVJg30OsggeJY9AInJEz/bd9bbSxaQL8V53iPVzbmGxfhHD4MFwlVStlBwX
-        aqRjDgpgWhsmi6JhdsEugslTbAqczxPq5QFgGIMssgwiFRxmgLKxaHJkOqd33zb+
-        MuLo/0gCKdB1eeNJEp1lVmD+y7WeJqOoItZ5ISqVZOD0fTGSEijlsx7T3sNwFh83
-        WW3/9jZdXT1zRIKZKd3Sk1e9PtvZJzDJjWvFXIMzjAN9WPjctu81EuHOPrC5sD1E
-        x0vuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=UUv/ycHKk0VmQ9jog/Fu42gbcuiVRCdjLJbHAyQkc
-        MA=; b=NiIOs+5J+ArBtzNXG9vmBi8u7JjTh87LIZHMCkPCZH2PN4i+5633Sijoe
-        ouCmaU+C+bvwasFuxNWPFL/DlP77sTXfxsoK/g6MYoImqKTejhm4xwtx2ecJqSJh
-        /Kx4k2Mcpn9Z2DX63sPvi270Mnu6uRs7l3eoAbVYL8VAhJGK9kq3fswLVBPOxisp
-        Fw8s46jiYOVH8cy0i5Ov/yR7Ljysxlup7/9XHm5HZF8PLwyMPrqZOaDFyZ5kYp9i
-        8rNnWKVPpINdn/CzafZq0hA4cAHRvJuhacxWIfGhv2QDoGvdLz9m39k+2YlpcD9D
-        8anKe2R87M80SjVwpdVQinitLhbIA==
-X-ME-Sender: <xms:yhN1X9H9snWiSjRa58ptv2FGpb0ejiIwBgz0Vxgf8oUxCBJTFTGSTw>
-    <xme:yhN1XyX04W_qDhH9mL9Eyd4Nv8JDhhy3Nwt2FaPz3AlwpsKaBLdIXHCc6r5UofNA8
-    MdXk4zdRwpO886sjl0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpefhuedvvdelieevgeegjeeukeeuleejtdejfeetfeeujeefvdeltdethffh
-    ueekffenucfkphepjeefrddvudejrddutddriedtnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:yhN1X_KJCsR49coiERRTusNVu4W6LEty5EA-9M2lS4RyJADZ5xQxmA>
-    <xmx:yhN1XzGUZzwU4FtsJ9oTnlhQyjxNwOvP4Ao75Mv1L6MQTWidE9f2Mw>
-    <xmx:yhN1XzXjrR73t55KZ2EZyMOBk2zVvk1dFlU4TuiKiVpURYMIQ09lbA>
-    <xmx:yxN1X0t5pelLdbmhvSRf_uhEPTbbqZwnT9SjA1c3AMwZl1T6qsRQScXk04aFhoda>
-Received: from cisco (c-73-217-10-60.hsd1.co.comcast.net [73.217.10.60])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1A15E3064610;
-        Wed, 30 Sep 2020 19:24:57 -0400 (EDT)
-Date:   Wed, 30 Sep 2020 17:24:56 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Jann Horn <jannh@google.com>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <20200930232456.GB1260245@cisco>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco>
- <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco>
- <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+        Wed, 30 Sep 2020 19:25:22 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0142FC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:25:22 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t7so817488pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xDjCTFpuAGajcYoYQRKav1NGKlBUCU2vGca1k3rNRe4=;
+        b=sgW39YT7FReySKVopcfwZWvT5D3KG7q/X/vkUBbjyYyjZaTm1ko3b3NI43/SU/i5T/
+         cQ0Hu06XBkfa4B19MUzK1eVU+q3uYRo44yY/8BxJXMSUkJkwd4jCtlkWLGPN6MrEjaPu
+         ext7ioq0QeLDmoM8RZTAurip8rfT5zGg7QmV2SqXH7irub3qYSCqriQznx28has9tJIK
+         64aePySQbIoylcADP6SkE7Ei9ydfW8qo5N0BsnLwf08gX5obKi57gSW/oGeK3uCe3bXZ
+         pB8JJji6TdkrGibj/QQ91v4Zo26XHcgAhiag3LwMhAneOc7ms9/sx9vAHtgemFiPz/IU
+         9EPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xDjCTFpuAGajcYoYQRKav1NGKlBUCU2vGca1k3rNRe4=;
+        b=fL+r4Fq6DFAM3+VJRf8X0iX86Zduqtx8eG3QkNQYVKERMWL2DK90AeeK42zhreHBDf
+         +fib8c5CVYVsWkh6fEEZatf8hWe9sZe1doNLrW9hxxjiNqKe9XRvMUkn4oGnyXmroD1O
+         XBWwQvQU3TClsBosQLdh49BABlllwKKfoO75v6kOYl7TnRA/VDYy5RgzEqYTJYyoLukB
+         4Ja/HwN9ErieYLtUNFYxe2fInEtVdokSkCRNrh9O4roUrPVXOIOyhToFZgh7z7Op0nUY
+         xQK0rdVtGe+Q8jJmh9cm9QUVIRUyttZ2vVizkUHL2A/THzwESw3bxgDrp0QRNZTBV7Wy
+         FyNg==
+X-Gm-Message-State: AOAM532i4FUzZUqr2dn5VJzu3hAA7wuNyL+b75LajswK3/WIo8tXM6dr
+        lDd5LpBBc39Ir3CRpmcLUlM=
+X-Google-Smtp-Source: ABdhPJw9UeEnHYXJrL66zl9X2vwgTC8BuwcL2zYgQuCRMNHgo1lYDWEib6u2gUH4jwyiOdSHIQj8OA==
+X-Received: by 2002:a17:90a:2e89:: with SMTP id r9mr4724974pjd.82.1601508321459;
+        Wed, 30 Sep 2020 16:25:21 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id c201sm3908847pfb.216.2020.09.30.16.25.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 16:25:20 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 08:25:18 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v2 1/2] printk: avoid and/or handle record truncation
+Message-ID: <20200930232518.GA496@jagdpanzerIV.localdomain>
+References: <20200930090134.8723-1-john.ogness@linutronix.de>
+ <20200930090134.8723-2-john.ogness@linutronix.de>
+ <20200930094316.GB987@jagdpanzerIV.localdomain>
+ <87imbv1s0d.fsf@jogness.linutronix.de>
+ <20200930112836.GC29288@alley>
+ <87ft6z1oe7.fsf@jogness.linutronix.de>
+ <20200930115307.GD29288@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+In-Reply-To: <20200930115307.GD29288@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
-> On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
-> > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
-> > > >>        ┌─────────────────────────────────────────────────────┐
-> > > >>        │FIXME                                                │
-> > > >>        ├─────────────────────────────────────────────────────┤
-> > > >>        │From my experiments,  it  appears  that  if  a  SEC‐ │
-> > > >>        │COMP_IOCTL_NOTIF_RECV   is  done  after  the  target │
-> > > >>        │process terminates, then the ioctl()  simply  blocks │
-> > > >>        │(rather than returning an error to indicate that the │
-> > > >>        │target process no longer exists).                    │
-> > > >
-> > > > Yeah, I think Christian wanted to fix this at some point,
-> > >
-> > > Do you have a pointer that discussion? I could not find it with a
-> > > quick search.
-> > >
-> > > > but it's a
-> > > > bit sticky to do.
-> > >
-> > > Can you say a few words about the nature of the problem?
-> >
-> > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp:
-> > notify about unused filter"). So maybe there's a bug here?
+On (20/09/30 13:53), Petr Mladek wrote:
 > 
-> That thing only notifies on ->poll, it doesn't unblock ioctls; and
-> Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
-> commit doesn't have any effect on this kind of usage.
+> Anyway, please do so in a followup patch. I would like to push this
+> patchset into linux-next ASAP so that the robots could continue
+> finding new bugs.
 
-Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
-we don't have a count of all of them, unfortunately.
+ACK.
 
-We could maybe look inside the wait_list, but that will probably make
-people angry :)
-
-Tycho
+	-ss
