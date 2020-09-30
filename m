@@ -2,91 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D2127E151
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D886D27E127
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgI3GkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgI3GkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:40:09 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970F7C061755;
-        Tue, 29 Sep 2020 23:40:07 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id q123so513192pfb.0;
-        Tue, 29 Sep 2020 23:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=CuQL0DR3SznyNcaZUnBt+RDDBya3xXYL9URyxcOJ1YQ=;
-        b=gdyYML4LIy0Pdw++JhCkK7u4U1wFZnA8uJbeuQA1lieBfwc2mWJTImgPa4okxwBwU+
-         7Cpxg11IVNDt9c4MxpyzPsF9hkNa0mZKIuYUOauANppORHKXO6F7IM0ANyN8xFPbGJbY
-         GDNTZYHcrsPEyjwtwGq8h0wLRZNrdy15dGdFGHa4MuPOzhEY/XSpH3yaHv1KTpJxajWe
-         JIPS02rpuLzl2fohPPRlCImqKeYswcD7WvW8qh5cowrqufAoOLb8IEr+z9NcavRVYzYz
-         GP4FsvYYyRim3Jw0EVz+AYp9R1xoP8VadFXh3Fk4VbC5COmQcn3YvD52NQHeI+73MnTl
-         qFmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=CuQL0DR3SznyNcaZUnBt+RDDBya3xXYL9URyxcOJ1YQ=;
-        b=A/rodfkWgTLDH5LiODqsp4e+fvzJREmlvukqKLzGfgRh4qPaB/Sa1ENTq8aJIbZRMg
-         2Me4/lS7yiEK8vsM4HmMd0ilJEbGhA4/ZjlJRPQv0BItrkmuqVfY6OXK629J9cv7qizl
-         2zjndEy39ZRYwk4ho17M2qk8HtdRqTnlGyAnUzPEBscaqQhQPYMSksx3kMEUJidc1xnA
-         Zz0ys4oC/7PK93oLf/LpTqQDzmsrOLtjQlyciku6lWa7RobsQkUeVdNw5pEVVaiVuAU6
-         1J+dTPQ1D4BfYrKsBTRC2gPvWKJxQUYyZcbbtk5hx5xiJB+cR/OYYRtwQ6afgVFgbC9Y
-         jQOg==
-X-Gm-Message-State: AOAM530RI540kwGzsQkCZSoGsya+85V4B0uZk5sF4mcTqjNanP5Ky2pO
-        wNaifeJxOFEJVKwzleStFx8=
-X-Google-Smtp-Source: ABdhPJwMXyQIrNYgvg/rRxGeX/z84x0C4XNLbkL7O43oL1U271A5d0VsrXfDRcCHFORysZTBfTZ0oA==
-X-Received: by 2002:a63:5b5c:: with SMTP id l28mr993289pgm.243.1601448007009;
-        Tue, 29 Sep 2020 23:40:07 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id v21sm905557pgl.39.2020.09.29.23.40.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 23:40:06 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 23:34:36 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20200930063435.GC16460@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-3-nicoleotsuka@gmail.com>
- <db183fdf-d566-599a-94ff-cfab0e08aa7a@gmail.com>
- <931eb16b-4529-2c20-c696-c57a9138aded@gmail.com>
+        id S1725891AbgI3GgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:36:00 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17107 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgI3Gf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:35:59 -0400
+IronPort-SDR: fQTnIapm0dTvTlWDBeIQM8eEYdgRjr/KW4ua03+YMwTLyryGstKQG7abhD0fybfgXuzAdSsv6r
+ 2OvA8U5Nzbcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="162436191"
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="162436191"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:35:58 -0700
+IronPort-SDR: fafcu320OZH1ERuI4MiOsRdpfu4AXEkXKMnQ8UF7u/TiZMrnRwVs175i6bCgC6hxNNjHphzt4B
+ /LzsoCl7bxnw==
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="495887540"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 23:35:57 -0700
+Date:   Wed, 30 Sep 2020 08:35:53 +0200
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] rpmsg: core: Add channel creation internal API
+Message-ID: <20200930063553.GB20683@ubuntu>
+References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
+ <20200922001000.899956-3-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <931eb16b-4529-2c20-c696-c57a9138aded@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200922001000.899956-3-mathieu.poirier@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:20:50AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 08:10, Dmitry Osipenko пишет:
-> > 30.09.2020 03:30, Nicolin Chen пишет:
-> >>  static void tegra_smmu_release_device(struct device *dev)
-> > 
-> > The tegra_get_memory_controller() uses of_find_device_by_node(), hence
-> > tegra_smmu_release_device() should put_device(mc) in order to balance
-> > back the refcounting.
-> > 
+On Mon, Sep 21, 2020 at 06:09:52PM -0600, Mathieu Poirier wrote:
+> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 > 
-> Actually, the put_device(mc) should be right after
-> tegra_get_memory_controller() in tegra_smmu_probe_device() because SMMU
-> is a part of MC, hence MC can't just go away.
+> Add the channel creation API as a first step to be able to define the
+> name service announcement as a rpmsg driver independent from the RPMsg
+> virtio bus.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+>  drivers/rpmsg/rpmsg_core.c     | 45 ++++++++++++++++++++++++++++++++++
+>  drivers/rpmsg/rpmsg_internal.h | 12 +++++++++
+>  2 files changed, 57 insertions(+)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+> index 91de940896e3..50a835eaf1ba 100644
+> --- a/drivers/rpmsg/rpmsg_core.c
+> +++ b/drivers/rpmsg/rpmsg_core.c
+> @@ -20,6 +20,51 @@
+>  
+>  #include "rpmsg_internal.h"
+>  
+> +/**
+> + * rpmsg_create_channel() - create a new rpmsg channel
+> + * using its name and address info.
+> + * @rpdev: rpmsg driver
 
-Hmm..I found that there is no put_device() call in tegra20-devfreq.
-Should we just put_device(pdev->dev) in tegra_get_memory_controller?
+device
+
+> + * @chinfo: channel_info to bind
+> + *
+> + * Returns a pointer to the new rpmsg device on success, or NULL on error.
+> + */
+> +struct rpmsg_device *
+> +	rpmsg_create_channel(struct rpmsg_device *rpdev,
+
+You might call this nitpicking, but we already have two indentation styles for 
+functions:
+
+return_type function(type1 arg1,
+			...)
+
+(my personal preference, it also has sub-variants - depending on the aligning 
+of the second line and any following lines, and one more moving "type1 arg1" 
+to the second line)
+
+return_type
+function(...
+
+and now you're also introducing the third style - with "function" indented... 
+Maybe we don't need more of those, particularly since now with 100 chars per 
+line in most cases the very first style can be used.
+
+> +			     struct rpmsg_channel_info *chinfo)
+> +{
+> +	if (WARN_ON(!rpdev))
+> +		return NULL;
+> +	if (!rpdev->ops || !rpdev->ops->create_channel) {
+> +		dev_err(&rpdev->dev, "no create_channel ops found\n");
+> +		return NULL;
+> +	}
+> +
+> +	return rpdev->ops->create_channel(rpdev, chinfo);
+> +}
+> +EXPORT_SYMBOL(rpmsg_create_channel);
+> +
+> +/**
+> + * rpmsg_release_channel() - release a rpmsg channel
+> + * using its name and address info.
+> + * @rpdev: rpmsg driver
+
+device
+
+> + * @chinfo: channel_info to bind
+> + *
+> + * Returns 0 on success or an appropriate error value.
+> + */
+> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
+> +			  struct rpmsg_channel_info *chinfo)
+> +{
+> +	if (WARN_ON(!rpdev))
+> +		return -EINVAL;
+> +	if (!rpdev->ops || !rpdev->ops->release_channel) {
+> +		dev_err(&rpdev->dev, "no release_channel ops found\n");
+> +		return -EPERM;
+
+ENOSYS or EOPNOTSUPP? I'm never sure which one is appropriate for 
+this kind of errors.
+
+> +	}
+> +
+> +	return rpdev->ops->release_channel(rpdev, chinfo);
+> +}
+> +EXPORT_SYMBOL(rpmsg_release_channel);
+> +
+>  /**
+>   * rpmsg_create_ept() - create a new rpmsg_endpoint
+>   * @rpdev: rpmsg channel device
+> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> index 3fc83cd50e98..587f723757d4 100644
+> --- a/drivers/rpmsg/rpmsg_internal.h
+> +++ b/drivers/rpmsg/rpmsg_internal.h
+> @@ -20,6 +20,8 @@
+>  
+>  /**
+>   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+> + * @create_channel:	create backend-specific channel, optional
+> + * @release_channel:	release backend-specific channel, optional
+
+Are they really optional? You return errors if they aren't available.
+
+>   * @create_ept:		create backend-specific endpoint, required
+>   * @announce_create:	announce presence of new channel, optional
+>   * @announce_destroy:	announce destruction of channel, optional
+> @@ -29,6 +31,11 @@
+>   * advertise new channels implicitly by creating the endpoints.
+>   */
+>  struct rpmsg_device_ops {
+> +	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
+> +					     struct rpmsg_channel_info *chinfo);
+> +	int (*release_channel)(struct rpmsg_device *rpdev,
+> +			       struct rpmsg_channel_info *chinfo);
+> +
+>  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
+>  					    rpmsg_rx_cb_t cb, void *priv,
+>  					    struct rpmsg_channel_info chinfo);
+> @@ -75,6 +82,11 @@ int rpmsg_unregister_device(struct device *parent,
+>  struct device *rpmsg_find_device(struct device *parent,
+>  				 struct rpmsg_channel_info *chinfo);
+>  
+> +struct rpmsg_device *
+> +rpmsg_create_channel(struct rpmsg_device *rpdev,
+> +		     struct rpmsg_channel_info *chinfo);
+> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
+> +			  struct rpmsg_channel_info *chinfo);
+>  /**
+>   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
+>   * @rpdev:	prepared rpdev to be used for creating endpoints
+> -- 
+> 2.25.1
+> 
