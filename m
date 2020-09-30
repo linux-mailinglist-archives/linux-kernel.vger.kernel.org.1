@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FF227F5A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C010A27F5AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732029AbgI3XGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:06:24 -0400
-Received: from mail-am6eur05on2130.outbound.protection.outlook.com ([40.107.22.130]:8224
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730528AbgI3XGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:06:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UJiMeClGkiVH4ibl/KAKve9g5KOZYH8Ug35YGj79vhjGIBqexns+bMT9x6+UTUZ49ihFqJuUEYxHBnTQA5ZUJXps8hKN45QDEPd0cetEpCTI3mTro/l4fcbEZMkZptTIjNSFQc2ETwXntgU9RijriO31QZXG7BbU8mPybcYTeVXhcCt3h6VPhr7UeRRny89+hO46AEkL0dZQupZyLWISJ9KLYmc4uPNaUcuvTz0sNYxi4Ol39yizoLLu+MHImiECYj3bx4pw1Jqwt7nafvxvzI0c6RKLM30IGVGolTS6w9eoRPkHUci59LTJXLFhSPPMOnec12ejpsCyxduO2Q85Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cIdJqxLhKr/tt8MB5/L593xo3J4JFXoteB6dOpvjfiA=;
- b=azp0vPbCLhOjGsnqOxH16hxdVKPckv6Pxc3WBBzU0P2MDg6de/Wyf0Vd87e8gkeBu+S6N7Z4uaBB0xeV7qClYtg1/i8naunst62zACFSziGAFg1feHTwdrtRpstWDYo3Z8tEO0fBNYHMwnX1XOdlSqm1zP8BfTu1Sw8HK/P19KcxUBeqCCQnTIUkHwfO6+hgnDByv66wrAvD2+r+OYfAK0xBULHaPSnl2ZUwsc6qHx883qKUzkCYYX240A6QEhdJ5kBhmmw8Dpv7HGsc8sMsI6FnsTtvXs1X1kZlLpwifdFfDi9VW1FhF77uHOm2shClzeUY6Pa7uj+ZigVvBYtGIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cIdJqxLhKr/tt8MB5/L593xo3J4JFXoteB6dOpvjfiA=;
- b=hVBd9uc+gRahf5FxTr7WQ1MqJPSuN1C9lKMcG0QK4O06acA7cuU+r0ltoZ9tp+8Yy+/8sH1y+NkoOvlYzGhPLb00d4UMbu33GkMPHt14gol8FgyWCFIsnOuVijia2BUJXfLzIgZVkWA5GtxJRPMaIPF0AdqGycMkkvGOv0eYYdg=
-Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none
- header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0460.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:58::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.28; Wed, 30 Sep 2020 23:06:09 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 23:06:08 +0000
-Date:   Thu, 1 Oct 2020 02:06:05 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20200930230605.GB13107@plvision.eu>
-References: <20200929130446.0c2630d2@canb.auug.org.au>
- <20201001080916.1f006d72@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001080916.1f006d72@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM7PR03CA0002.eurprd03.prod.outlook.com
- (2603:10a6:20b:130::12) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S1732042AbgI3XHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732031AbgI3XG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:06:58 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17549C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:06:58 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id q21so3531907ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=u8kk68jq1HQ3VEfmqtlvvatNWaRvmOdWcvJpkeSRa5s=;
+        b=VsW6xiYSmK1t2NVArskem6LSjWsvY2T0UvhVsyLThKXIOmko48cmupYThDRVbepg7S
+         fJfqNoEXczTRpqMeA41zTl/xOEKTr5IM+h/1zy8OeQVWIwBUv15k+5MhaNsM/b9Ulkqz
+         0pT/q6KbRrA9uAoTqQYbefJu9Kj5ElssFg0EVD6lQZiQuruNTGHrkdmCcqvivUIY7Que
+         4zRK4/MaYykCt8olJxm2aTMTR9P3TQ3KiGO4+v1TWmZlF5YxcC1SE+3jCx4bdW3pqIAq
+         izTthn6tdDi2gOjHaLYhnnZPh4UUT6sRTvmH+Wsobw2V4pnkvwcMeI0+7ntEt/JHjeQl
+         a34Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=u8kk68jq1HQ3VEfmqtlvvatNWaRvmOdWcvJpkeSRa5s=;
+        b=bNJszdkQB6+tZNysaRVgDijdPCiHMdl01nksPxSnXUHpKr8tkUW+zhguGhUmrmTrms
+         cLJ8hW5gPN4B7ek3i1iObzzPedOB2Rkly62Y9mX+p4u9POHSix9GwJuEj8Oa2XKjnwn6
+         z08eT7H+wTfHC33czMQ2AVvf/5fYBNApijxReh9kRhGg0gP5u6xyFxn78ZQrGuG/cRiC
+         w7lKZv161allHeMDqggMkyWFh1kByeuT5af+1JZVBIg6XO59sbJFsZF5HUFgCb0feAB8
+         NmeFOl2ORI0uCv9pfyyQpGUrvA3oSVjzRMu5MSuZ8qgxTijVPlmZ+FrYmiyRNqWC97W0
+         wX/g==
+X-Gm-Message-State: AOAM532Sub16WpcUrCE6WjTzKIoRUpqCvDWWCGTHdmTIOa1HKmAAzI9d
+        hcPD/0fP6+jybgsraBurhddw1MMavQZx3i4r
+X-Google-Smtp-Source: ABdhPJyKxZXSJZHwRvONe0FVQWKpUkGFgaqv3MBGaQg4v4c7Xy8x4Hdi96VUMfV/tn6TvIt+150cGg==
+X-Received: by 2002:a05:6830:1d1:: with SMTP id r17mr3101583ota.311.1601507217496;
+        Wed, 30 Sep 2020 16:06:57 -0700 (PDT)
+Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
+        by smtp.gmail.com with ESMTPSA id h14sm783171otl.0.2020.09.30.16.06.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 16:06:56 -0700 (PDT)
+Subject: Re: [PATCH 1/2] dt-bindings: drm/bridge: ti-sn65dsi86: Replace
+ #pwm-cells
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20200930223532.77755-1-bjorn.andersson@linaro.org>
+ <20200930223532.77755-2-bjorn.andersson@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <7ff13ed2-5fe4-01b5-d1d7-0916f0630196@kali.org>
+Date:   Wed, 30 Sep 2020 18:06:55 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM7PR03CA0002.eurprd03.prod.outlook.com (2603:10a6:20b:130::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Wed, 30 Sep 2020 23:06:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 178b945a-15cc-4815-f1a4-08d865956a97
-X-MS-TrafficTypeDiagnostic: HE1P190MB0460:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB046093BCBD937534F863761095330@HE1P190MB0460.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 55YbfEwL0gGrwRfhuzcApXXh4ycu/0KQot90muj4S8WaczVd4O7VJASqriJRBf5iwcZbqY7gHr1aAylqiiYqpxSlTYUFA7gKAFk+ATXosQGhnVIZHPtyfPiYw56r/XaryAG3v6BITp/KPVUv4w4bfnWFGR/iTA1qSpPHV8olgu4JTDgcOBcoXWnTjrWRM2QhKTK3T94N92neG7PF/6n47i4DuuUVFmVZDe4hF9i41KRlSxucM+nRC+RuEA8r51GvlRr8wvMO0FYeK9E6HSX9Uupu02pOoCv5AVg+G8h274SzGYjx8y5+MiAw6b6wriRXc/CgCw4S15VCtXiFEYznOkCmtgFmSBoKtls54RSQfFlKBvp5VPMnxkd/lEcJuqI+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39830400003)(136003)(366004)(55016002)(478600001)(16526019)(36756003)(86362001)(33656002)(4744005)(186003)(956004)(2616005)(8936002)(2906002)(66946007)(4326008)(8886007)(8676002)(1076003)(66556008)(54906003)(7696005)(52116002)(44832011)(6916009)(66476007)(26005)(83380400001)(316002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: sNdOQI9cGlJQv0mX+CgMHIrXN3E3jNR3BeHdgevQ8XfiAapnxrhbh+jq1LXj103BgzGbZY+MPSh0qR6anfs5twT+Dxxhuic97VoBGa3r+s+RFm+w3QWBad57QlJIgSKcFTBc5eIvuRutk1CD7LJP+bvr7E/rVq26QI+igchcyfu6H5W6Nz2gtx7kOyJEyBG6EindQT2d68rxjZBA+EcOph75STR1C9sMvw+586YCSjdkT4WlzG4t1hXnOArRsKLq6lDo0Wj/9eFdujeR1PoXZMqlwuuuthTzJPW4juFcvUxhrZO7KRLZCLtaqyO34MdXkDsRacSaj0Le0+ZHniNG1qgcr3NkhdFHsIX89hfDOUMsV/V3ttDLTfo4iW4/VvW7HVfgJg3iGg6L4zoIRiVbcZrOQwaoOJjmGO1psECwETedbraOWi4itle2JL+jllWKSsPzl4B1sEXsU7w17OAN1fSMV2TshP9KDiLaNjJIPE5FRczrh8TWtS8IMtujv7+gS4H2YG3QEImjd3FRXm/lQbCboaEzCfT2AN3kdYqKK+Q5WCFG7ZwJVbH7FhNCZpd59yrH0R+I7IgTcW1pQ7i/xoUr+KhaU1dHHSSBDLB21AXOzadQiAUh72qu0azcq0d3cACSqNqfP8N/rxYMcLbi9A==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 178b945a-15cc-4815-f1a4-08d865956a97
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 23:06:08.8179
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sQXN6wr2BMB1Z/1EieYlPN+XmfsaZGyvecKxKJ3VYiu0UfCjORU3t2fxUun3IxW/2UosdkDoL/QUZs+9LxUnSPKak1aslMf43Bcc6bNQAVk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0460
+In-Reply-To: <20200930223532.77755-2-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On Thu, Oct 01, 2020 at 08:09:16AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-[CUT]
-> 
-> I am still getting this build failure ...
-> 
-> -- 
+On 9/30/20 5:35 PM, Bjorn Andersson wrote:
+> While the signal on GPIO4 to drive the backlight controller indeed is
+> pulse width modulated its purpose is specifically to control the
+> brightness of a backlight.
+>
+> Drop the #pwm-cells and instead expose a new property to configure the
+> granularity of the backlight PWM signal.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> index f8622bd0f61e..e380218b4646 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> @@ -66,9 +66,12 @@ properties:
+>        1-based to match the datasheet.  See ../../gpio/gpio.txt for more
+>        information.
+>  
+> -  '#pwm-cells':
+> -    const: 1
+> -    description: See ../../pwm/pwm.yaml for description of the cell formats.
+> +  ti,backlight-scale:
+> +    description:
+> +      The granularity of brightness for the PWM signal provided on GPIO4, if
+> +      this property is specified.
+> +    minimum: 0
+> +    maximum: 65535
+>  
+>    ports:
+>      type: object
 
-I just 've checked linux-next/master and it builds fine at least with my custom
-config, do/how I need to handle this case ?
 
-I see the changes you applied already in linux-next/master.
-
-> Cheers,
-> Stephen Rothwell
-
+Tested-By: Steev Klimaszewski <steev@kali.org>
 
