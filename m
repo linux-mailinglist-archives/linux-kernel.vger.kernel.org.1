@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2FF27E491
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270CD27E4A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgI3JOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:14:06 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:59895 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgI3JOF (ORCPT
+        id S1729126AbgI3JOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:14:34 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35120 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgI3JO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:14:05 -0400
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7C84C24000E;
-        Wed, 30 Sep 2020 09:14:02 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 11:14:01 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v2 4/4] iio: adc: at91_adc: remove of_match_ptr() usage
-Message-ID: <20200930091401.GE2804081@piout.net>
-References: <20200930060008.42134-1-alexandru.ardelean@analog.com>
- <20200930060008.42134-5-alexandru.ardelean@analog.com>
- <20200930074728.GD2804081@piout.net>
- <CA+U=DsofSvQKwSQEye9ONYMJkKiL9er6sH2FTLH-5SgmmnPqOA@mail.gmail.com>
+        Wed, 30 Sep 2020 05:14:28 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U9ENoI035023;
+        Wed, 30 Sep 2020 04:14:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601457263;
+        bh=F1UBBxuJBBt4i9B5EabYSjDpVXsLLY8WCh/WDwvs4ko=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=YXaWa3Jf0MhiprwqLEwVg4A5Jr59PfudNiFSsnKL52m5t8a+SG3ZT/iRpyL3wHQbc
+         64hQangtImQ41T/BPQuDQ1BxfbQx7mwO4GyFz9gdqTOJTtEzot4b55cd9hfyfYmFbL
+         wO6Be1UVoG0OBfYQ5BE/r/wtcGGiIB8hl0JudUAQ=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9EN6X122184;
+        Wed, 30 Sep 2020 04:14:23 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 04:14:22 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 04:14:22 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U9DuJf116385;
+        Wed, 30 Sep 2020 04:14:20 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
+        <robh+dt@kernel.org>, <vigneshr@ti.com>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+Subject: [PATCH 08/18] dmaengine: ti: k3-udma-glue: Configure the dma_dev for rings
+Date:   Wed, 30 Sep 2020 12:14:02 +0300
+Message-ID: <20200930091412.8020-9-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+U=DsofSvQKwSQEye9ONYMJkKiL9er6sH2FTLH-5SgmmnPqOA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/2020 11:46:06+0300, Alexandru Ardelean wrote:
-> On Wed, Sep 30, 2020 at 10:48 AM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> >
-> > Hi,
-> >
-> > On 30/09/2020 09:00:08+0300, Alexandru Ardelean wrote:
-> > > Since the driver should be allowed to build without OF support, the
-> > > of_match_ptr() is redundant.
-> > >
-> >
-> > This can probably be squashed with the previous commit.
-> >
-> > Also, I think that you should really make the driver DT only else, the
-> > driver will carry dead code and there will be no reminder that a cleanup
-> > is needed.
-> >
-> > I can take care of that if you feel that this is more work than what you
-> > wanted to spend on this driver.
-> 
-> Ah, you're saying remove the old pdata?
+Rings in RING mode should be using the DMA device for DMA API as in this
+mode the ringacc will not access the ring memory in any ways, but the DMA
+is.
 
-Yes, since you are making the driver DT only, the pdata has to be
-removed, don't forget to also remove the header file.
+Fix up the ring configuration and set the dma_dev unconditionally and let
+the ringacc driver to select the correct device to use for DMA API.
 
-> I can do that while waiting for other of my patches to go in.
-> 
-> >
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > ---
-> > >  drivers/iio/adc/at91_adc.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> > > index 7d846a2852a5..473bffe84fbd 100644
-> > > --- a/drivers/iio/adc/at91_adc.c
-> > > +++ b/drivers/iio/adc/at91_adc.c
-> > > @@ -1466,7 +1466,7 @@ static struct platform_driver at91_adc_driver = {
-> > >       .id_table = at91_adc_ids,
-> > >       .driver = {
-> > >                  .name = DRIVER_NAME,
-> > > -                .of_match_table = of_match_ptr(at91_adc_dt_ids),
-> > > +                .of_match_table = at91_adc_dt_ids,
-> > >                  .pm = &at91_adc_pm_ops,
-> > >       },
-> > >  };
-> > > --
-> > > 2.17.1
-> > >
-> >
-> > --
-> > Alexandre Belloni, Bootlin
-> > Embedded Linux and Kernel engineering
-> > https://bootlin.com
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/dma/ti/k3-udma-glue.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
+index a53bc4707ae8..f39825ce288a 100644
+--- a/drivers/dma/ti/k3-udma-glue.c
++++ b/drivers/dma/ti/k3-udma-glue.c
+@@ -280,6 +280,10 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+ 		goto err;
+ 	}
+ 
++	/* Set the dma_dev for the rings to be configured */
++	cfg->tx_cfg.dma_dev = k3_udma_glue_tx_get_dma_device(tx_chn);
++	cfg->txcq_cfg.dma_dev = cfg->tx_cfg.dma_dev;
++
+ 	ret = k3_ringacc_ring_cfg(tx_chn->ringtx, &cfg->tx_cfg);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to cfg ringtx %d\n", ret);
+@@ -589,6 +593,10 @@ static int k3_udma_glue_cfg_rx_flow(struct k3_udma_glue_rx_channel *rx_chn,
+ 		goto err_rflow_put;
+ 	}
+ 
++	/* Set the dma_dev for the rings to be configured */
++	flow_cfg->rx_cfg.dma_dev = k3_udma_glue_rx_get_dma_device(rx_chn);
++	flow_cfg->rxfdq_cfg.dma_dev = flow_cfg->rx_cfg.dma_dev;
++
+ 	ret = k3_ringacc_ring_cfg(flow->ringrx, &flow_cfg->rx_cfg);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to cfg ringrx %d\n", ret);
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
