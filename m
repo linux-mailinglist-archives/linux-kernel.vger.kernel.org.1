@@ -2,101 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE86C27E503
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ACD27E50D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgI3JVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:21:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727746AbgI3JV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:21:29 -0400
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 687812075F;
-        Wed, 30 Sep 2020 09:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601457688;
-        bh=WW8CAJWhJonVz80Z15S+f0UfVSWGlcSR9+MnjppwNVE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D7bKfqTk7NZn7bGGx6g9rjABSHMAKQj8oaGfnwaAOaVdGURo/0X//nj2bfySKoahv
-         kph+bbsNd6Ye+z9WtfBlwFUsWND1paKZ8FSYVDWv3xww1riXcp1E24Cqbn7nHQSkXL
-         1wKpyifb4znNf9O6wr+4d81oz24PuWbz//k+ptlQ=
-Received: by mail-ej1-f47.google.com with SMTP id u21so1777658eja.2;
-        Wed, 30 Sep 2020 02:21:28 -0700 (PDT)
-X-Gm-Message-State: AOAM531VUCLa24aurGD0LoZCUeFk1Fw0qz9/DFNdAI93tdD8+VWpYyxn
-        sbC5CbatMMrBwvBFr1uHTiw2c5XRTVugLovzDEc=
-X-Google-Smtp-Source: ABdhPJwdsZCPxNB8K7fSYTzc0yeFM/DWRSchSPzmJTZ1As6HEIyDEhVNDE4TT6Npkvzia8J28AdVSPLx8On9VyKD0u8=
-X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1789347ejd.119.1601457686869;
- Wed, 30 Sep 2020 02:21:26 -0700 (PDT)
+        id S1729134AbgI3JVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729240AbgI3JVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:21:40 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05182C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:21:40 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y2so1253904lfy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nDALLkEBZ3g+XnHosKYd5kNAL+8/krUGOWN367VieQw=;
+        b=UcVYPUG6V9xpIygyNaSFeeW11q0jC3otxEzCW5tdEYBbg2lLdQhtIH7CzmwXgKaiS3
+         1BN34bY6ziO20ONgBRrIi18eR/G5aXmO560OEv6xdTyBRf4JCzkCpB427MuiEvyInR0A
+         K1YF0fdMW0euDWU9AxB7jUAjIjslPtI2sA3sjcWu3vR6aBxRwHPJrSTscaBI0qtD5NRu
+         reohlHs1BYRxasdl0rGel7ICYX3AyV6n+L4LSDD1LD78OLCIEjdMmVasW84Auj566N/r
+         8/jTnB3duHLfevNiq7WjY3GFi/su0eLx3h548CZm0cVu9W5GLXxydMB4vCcbwB6fwx55
+         ejew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nDALLkEBZ3g+XnHosKYd5kNAL+8/krUGOWN367VieQw=;
+        b=hLgOtf3mE5ST3wSk5KfZOLp5Z9jFQ8QQtY8aZt/FsNmwvaI/ONws1HaGUITXD9K/BT
+         VRKIza214Bsc0ZMegcj3r1i8vDI0j/+P9/I/x/cN8tpCVq3wpAR2mICOFkIiJqlLQFUN
+         KribvqlZozKgAIYNuPEOipSVKB1fe6mqJmugtM+WQafPpL+YNYWYO9t3XMJG2OaD7910
+         78MAxOTY5knf69MdmST99HqcctN+76IMsG+unqerW8ZXQo/zHJe3RBoL2XOhpz7dlZqA
+         jSuhpwSa0DrGiseJ1fsTtCYWAUczQqWKtmLTYNLlIPAvMP9P3Q7YCstlyA3PqdTsRFaq
+         o7bw==
+X-Gm-Message-State: AOAM533apSEgyqa1mc4vyIKKAM8jw7yWzb4uud0thSKR4eLqtv9Sr5au
+        sv8xGrn9wxmO0kWMlEIkCV+nIVZ48YSdZ5ewgau9zA==
+X-Google-Smtp-Source: ABdhPJwA8MFQ966zPAFFRvo1oCHuuRNQ2mM89Bj+Zwhrq8WSo27dINGhXF6SeriHIm3TsyAfpOcS/0a0OIVG6S2W3I8=
+X-Received: by 2002:a19:6c2:: with SMTP id 185mr512735lfg.441.1601457698203;
+ Wed, 30 Sep 2020 02:21:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com> <20200930084258.25493-3-nicoleotsuka@gmail.com>
-In-Reply-To: <20200930084258.25493-3-nicoleotsuka@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 30 Sep 2020 11:21:14 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
-Message-ID: <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and .attach_dev
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200903133528.8595-1-lars.povlsen@microchip.com>
+ <20200903133528.8595-2-lars.povlsen@microchip.com> <CACRpkdZUQG1T_Bx5G275tSjDez0skDKGSc370B57FZ35NA6iEA@mail.gmail.com>
+ <87r1r5wky3.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87r1r5wky3.fsf@soft-dev15.microsemi.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 30 Sep 2020 11:21:27 +0200
+Message-ID: <CACRpkdYxK6Uf1_3Me7hbJZ+rPAUXCj4k7D2e5je7iBNZosEtQw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: Add bindings for
+ pinctrl-mchp-sgpio driver
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> Previously the driver relies on bus_set_iommu() in .probe() to call
-> in .probe_device() function so each client can poll iommus property
-> in DTB to configure fwspec via tegra_smmu_configure(). According to
-> the comments in .probe(), this is a bit of a hack. And this doesn't
-> work for a client that doesn't exist in DTB, PCI device for example.
->
-> Actually when a device/client gets probed, the of_iommu_configure()
-> will call in .probe_device() function again, with a prepared fwspec
-> from of_iommu_configure() that reads the SWGROUP id in DTB as we do
-> in tegra-smmu driver.
->
-> Additionally, as a new helper devm_tegra_get_memory_controller() is
-> introduced, there's no need to poll the iommus property in order to
-> get mc->smmu pointers or SWGROUP id.
->
-> This patch reworks .probe_device() and .attach_dev() by doing:
-> 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
-> 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
-> 3) Calling devm_tegra_get_memory_controller() in .probe_device()
-> 4) Also dropping the hack in .probe() that's no longer needed.
->
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->
-> Changelog
-> v2->v3
->  * Used devm_tegra_get_memory_controller() to get mc pointer
->  * Replaced IS_ERR_OR_NULL with IS_ERR in .probe_device()
-> v1->v2
->  * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
->    with tegra_get_memory_controller call.
->  * Dropped the hack in tegra_smmu_probe().
->
->  drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
->  1 file changed, 36 insertions(+), 108 deletions(-)
->
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 6a3ecc334481..636dc3b89545 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -61,6 +61,8 @@ struct tegra_smmu_as {
->         u32 attr;
->  };
->
-> +static const struct iommu_ops tegra_smmu_ops;
+Hi Lars,
 
-I cannot find in this patch where this is assigned.
+thanks for working on this!
 
-Best regards,
-Krzysztof
+On Sun, Sep 13, 2020 at 9:11 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+
+> > What I do not understand is why this GPIO controller is placed in the
+> > bindings of the pin controllers? Do you plan to add pin control
+> > properties to the bindings in the future?
+>
+> I have made provisions for some of the generic pinconf parameters, and
+> since the controller also has support for some alternate modes like
+> (syncronized) blink at various rates, I thought I better add it as
+> pinctrl straight away.
+
+OK fair enough let's keep the bindings here.
+
+BTW the latter function sounds like some kind of PWM?
+
+> >> +  gpio-controller: true
+> >> +
+> >> +  '#gpio-cells':
+> >> +    description: GPIO consumers must specify four arguments, first the
+> >> +      port number, then the bit number, then a input/output flag and
+> >> +      finally the GPIO flags (from include/dt-bindings/gpio/gpio.h).
+> >> +      The dt-bindings/gpio/mchp-sgpio.h file define manifest constants
+> >> +      PIN_INPUT and PIN_OUTPUT.
+> >> +    const: 4
+> >
+> > I do not follow this new third input/output flag at all.
+>
+> Its actually a sort of bank address, since the individual "pins" are
+> unidirectional.
+
+I'm a bit confused here...
+The standard advice for any "banked" GPIOs is to represent
+each "bank" as a separate node (with a corresponding gpio_chip
+in the Linux kernel). Then you can just use the standard
+bindings to pick a line from one of these nodes.
+
+> The PIN_INPUT/PIN_OUTPUT is defined in similar fashion in other pinctrl
+> binding header files... I can drop the define and use, but as it will be
+> used to address individual pins, I think it adds to readability.
+
+Hmmm. What makes these names expecially confusing is the
+Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml defines:
+input-enable
+input-disable
+output-enable
+output-high
+output-low
+
+In the Linux kernel further there is:
+include/linux/pinctrl/pinconf-generic.h that defines:
+PIN_CONFIG_INPUT_ENABLE
+PIN_CONFIG_OUTPUT_ENABLE
+PIN_CONFIG_OUTPUT
+
+Since you are using the pin control framework this gets really
+hard to hash out.
+
+I don't really understand why it is needed.
+
+> Like this (excerpts from a DT with a switchdev driver using SFP's and
+> LED's on sgpio):
+>
+> /{
+>         leds {
+>                 compatible = "gpio-leds";
+>                 led@0 {
+>                         label = "eth60:yellow";
+>                         gpios = <&sgpio1 28 0 PIN_OUTPUT GPIO_ACTIVE_LOW>;
+>                         default-state = "off";
+>                 };
+>                 ...
+>         };
+> };
+
+If what you intend to achieve is to make the GPIO come up in output mode,
+you can either just have the driver do that as needed by the consumer.
+If you absolutely have to do it in the device tree, then implement
+pin control (pin config) and have it something like this:
+
+leds {
+        compatible = "gpio-leds";
+        pinctrl-names = "default";
+        pinctrl-0 = <&my_led_pinctrl>;
+        led@0 {
+                label = "eth60:yellow";
+                gpios = <&sgpio1 28 GPIO_ACTIVE_LOW>;
+                default-state = "off";
+        };
+        ...
+
+        my_led_pinctrl: pinctrl-led {
+                pins = "gpio95"; // Just an example way of referring to the pin
+                bias-disable;
+                output-enable;
+        };
+};
+
+> >> +  microchip,sgpio-port-ranges:
+> >> +    description: This is a sequence of tuples, defining intervals of
+> >> +      enabled ports in the serial input stream. The enabled ports must
+> >> +      match the hardware configuration in order for signals to be
+> >> +      properly written/read to/from the controller holding
+> >> +      registers. Being tuples, then number of arguments must be
+> >> +      even. The tuples mast be ordered (low, high) and are
+> >> +      inclusive. Arguments must be between 0 and 31.
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> >> +    minItems: 2
+> >> +    maxItems: 64
+> >
+> > And you are *absolutely sure* that you can't just figure this out
+> > from the compatible string? Or add a few compatible strings for
+> > the existing variants?
+>
+> Yes, this really needs to be configured for each board individually -
+> and cant be probed. It defines how the bitstream to/from the shift
+> registers is constructed/demuxed.
+
+And you have considered the option of simply letting the driver
+check which board we are then? The property at the very
+top of the device tree.
+
+if (of_machine_is_compatible("my_board")) {
+    ....
+} else if (of_machine_is_compatible("my_other_board")) {
+    ....
+}
+
+So that you simply use the board compatible string to determine
+this?
+
+> >> +/* mchp-sgpio specific pin type defines */
+> >> +#undef PIN_OUTPUT
+> >> +#undef PIN_INPUT
+> >> +#define PIN_OUTPUT     0
+> >> +#define PIN_INPUT      1
+> >
+> > I'm not a fan of this. It seems like something that should be set in
+> > response to the gpiochip callbacks .direction_input and
+> > .direction_output callbacks.
+> >
+>
+> As I tried to explain above, its a part of the pin address - aka bank
+> selector - whether your are accessing the input or the output side. And
+> since the directions have totally different - and concurrent - use, they
+> need to be individually addressed, not "configured".
+>
+> In the example presented, sgpio2-p28b0 IN is loss-of-signal, and the
+> OUT is the sfp tx-disable control.
+
+I suspect the proper way to do it is to create one node for
+the input side and one node for the output side and also create
+two different gpio chips in the kernel.
+
+my-device {
+       compatible = "my-device";
+       gpioin: input-gpio {
+           ....
+       };
+       gpioout: output-gpio {
+           ....
+       };
+};
+
+Note: I didn't think over the naming in this example.
+
+You will need code in your driver to parse the subnodes and
+populate two gpio_chips.
+
+Yours,
+Linus Walleij
