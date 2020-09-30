@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF8E27EB21
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E0F27EB23
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730588AbgI3OlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        id S1730612AbgI3Olc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728496AbgI3Ok6 (ORCPT
+        with ESMTP id S1728149AbgI3Olb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:40:58 -0400
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B694AC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:40:56 -0700 (PDT)
-Received: by mail-oo1-xc43.google.com with SMTP id h8so539226ooc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:40:56 -0700 (PDT)
+        Wed, 30 Sep 2020 10:41:31 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A08C061755;
+        Wed, 30 Sep 2020 07:41:31 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x69so2464693lff.3;
+        Wed, 30 Sep 2020 07:41:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6b9hnX2G64nHYkcKgImBn4GO3JVZ67n72WKYlTb2dHo=;
-        b=TI1JCTbQ3khiLx83bo4E/5ZO+zmnG0wY9cboKI1lf75VgdrzTXY96vLxA69hrZ6YkD
-         btjzbbfcRpU7EEenzLRF4NFLTUk5D5qp63ht+XtjpOlWYzW0ExesLAuLyxA+kigYmit4
-         f+mLpKXVVuT6GlWU5eYa9BaLldgNTLMgq0h4A=
+        bh=6Lys2W6r4uZ+JX1Onj0nOj2DyGILV+GiicWVaaDTbhY=;
+        b=JNkZLJZ5MRllsBCJdpRE1u37X/c/q+oLZP1F3LbzZqGrxmckGpJY1wzFXFntooiqf2
+         Dq4ZuCHwjgbTQc2wZMmjUNwhJ6tqgcd0l7i2fDpyKp3WZlK/J3bFqiptDqZEhscCRES2
+         NWvYyPr02rFZV2fhwK26+p3v1viIJTajPF59U2bWQYrzQ53ote0tQqY8kLhN4oZbjeQO
+         bWtweB34MvLdZarKsjtCMdgN4mJ2PEJ3MFvZYq9x4LOtId/KS42HlUUzosFOKLEPlJJJ
+         eb4M8m7kD/mo83ymWXeFTeCgay65yiUnTvOkD1/bIdMBsoJxtt2tUmlDSiwo8fDSHdBm
+         oQqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6b9hnX2G64nHYkcKgImBn4GO3JVZ67n72WKYlTb2dHo=;
-        b=E0Q3S9HldqOxBrL285dziyDx6gw5IHx9X8wBFNBP5hJhCt9lo3bc23kkPhMbZb+58N
-         8MsNYChpWvWpGqFAfmQ36Fb/GOhr3VGcTiaReSsUEFdBzBBDNhJM+NuOxiCsw3NFdBjx
-         Fq7mCjh4o21/gwzwfzYNue3lToyYAMikBxZhQuGlPFVhxQOiZqNKHkxFTn2RAgCgAs21
-         0P0OcEXnzJXJXRFmg9MbE2szESyGu0H0xIvtS/7N2JZAcaribhNpqMTXccv+54G4QkyO
-         VTxIv785fCGCz13+Z76a8KawSEpaJBZIYnl2C3DDsM4akqzsZeurTMmYbAnLmUXtS1EX
-         T5bA==
-X-Gm-Message-State: AOAM532ktQ3CaAG/9AXGgGF+wmo3lug1OpbvjYEf8sM9gsShRC7zCP45
-        u/50H3s2FBXsn1Mj6gNlEB0iCA==
-X-Google-Smtp-Source: ABdhPJw1xZpxdN63OUNapjBcs1g5g2FNUEnh07FiIh26wCC6X0cPU9sAHQAFTeWbOgF+o5DoLObLFA==
-X-Received: by 2002:a4a:91db:: with SMTP id e27mr2177639ooh.59.1601476855757;
-        Wed, 30 Sep 2020 07:40:55 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w7sm438188oon.2.2020.09.30.07.40.54
+        bh=6Lys2W6r4uZ+JX1Onj0nOj2DyGILV+GiicWVaaDTbhY=;
+        b=PLqusE2mzyoFfViWxfAKtrWFtnIuPEmfMkR0//0hOsX/EJ0fLNV/cV/02gsFg8xQoP
+         xTndFEZrOYG3BSrA5p4tUWdF1AR6P0M6k5B80f7v03IGu9gvu4rRC+94w1wFycQxfJqf
+         Fs+RrTISHuSzuIxtjlnkHwmuQLm/hgJhdRaQXRVVapI6WAIzFdiidhJWiNoiddrlKJqD
+         Dm9gv+ZdTF9+Zxq8a/u4shjH5mEnj64aRD9M0p6nMNvnC5Ce9vGPFppo2WpQDQ+VHpQ8
+         UH40Og+UyiSx7VCBlOOpN8kCd5cGI4zi7XU08jHpsecuHleToIO2u3TLxOAlFnuLMrW6
+         tmeg==
+X-Gm-Message-State: AOAM530bnFiZmlHxo0lp/89O2znGGfqwlrjCQkDGSnJ3G1bKPwxXcrHZ
+        HZYbaYEM1Je2eKyaWFyqVnzuaQOE7vk=
+X-Google-Smtp-Source: ABdhPJxZteRnCj4CyjWFcyNQ7qma6ukKblkKDrRwCBv2GJXz+iCTYWRhMG04fbUpOIdXG+DUQQJSeg==
+X-Received: by 2002:a19:e03:: with SMTP id 3mr902474lfo.488.1601476889348;
+        Wed, 30 Sep 2020 07:41:29 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id e14sm175616ljp.15.2020.09.30.07.41.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 07:40:55 -0700 (PDT)
-Subject: Re: [PATCH 4.9 000/121] 4.9.238-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wed, 30 Sep 2020 07:41:28 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] memory: tegra: Add
+ devm_tegra_get_memory_controller()
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, krzk@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200929105930.172747117@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6e6c8d4a-2d21-294a-38d3-0f97f9986387@linuxfoundation.org>
-Date:   Wed, 30 Sep 2020 08:40:54 -0600
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-2-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f9712d4c-8497-ca84-0d8a-d33eb6abc513@gmail.com>
+Date:   Wed, 30 Sep 2020 17:41:27 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200929105930.172747117@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200930084258.25493-2-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 4:59 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.238 release.
-> There are 121 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.238-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+...
+> +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device_node *np;
+> +	struct tegra_mc *mc;
+> +	int err;
+> +
+> +	np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
+> +	if (!np)
+> +		return ERR_PTR(-ENOENT);
+> +
+> +	pdev = of_find_device_by_node(np);
+> +	of_node_put(np);
+> +	if (!pdev)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	mc = platform_get_drvdata(pdev);
+> +	if (!mc) {
+> +		put_device(mc->dev);
 
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+This should be put_device(&pdev->dev). Please always be careful while
+copying someones else code :)
