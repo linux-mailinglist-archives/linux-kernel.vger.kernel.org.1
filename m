@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562FA27EAAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8035827EAB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbgI3OLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:11:11 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57368 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730188AbgI3OLK (ORCPT
+        id S1730287AbgI3OMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3OMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:11:10 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UE41ir152392;
-        Wed, 30 Sep 2020 14:11:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=vzEB3YJL3N7wUcPuw7796PUa/Oe8OTJqZE6lGZWzKqY=;
- b=hvDPSp5EhGQJBANchZKLY9BN/2RajUpy7MAOl1FT0qS96URst14atzsaQLLhOVBEkgie
- Ife4/GwLspGlEAynhNApm5lGyMegsZbhvnf0akBK3ufi6ekM3s8sPmRIxxma9zqNaih5
- fJN68a9WI3Tzk/Q/XeawZyZMpUgII6nSHcF5m2176cXHwJvTuunYua0sEaLNkwYARGmp
- i43Th00WXm/PpFfGHAz5i97/ysflCIx52mGX9uHrl0kdxppPpkS4QE5QE55n9ce/c4sE
- oIQFiqlX/LWn+liIGnSE7GRnb51oNQCx2PSJLJP3yX6SCH9rtP+rSmBWBoAbEq0d5O8l Lw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 33su5b0t1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 14:10:59 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UEAngu185133;
-        Wed, 30 Sep 2020 14:10:59 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33tfdtyuu6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 14:10:58 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08UEAviB028625;
-        Wed, 30 Sep 2020 14:10:57 GMT
-Received: from [10.74.86.12] (/10.74.86.12)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Sep 2020 07:10:57 -0700
-Subject: Re: [PATCH 2/2] xen/gntdev.c: Convert get_user_pages*() to
- pin_user_pages*()
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>
-References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
- <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com>
- <8a608871-af25-fee6-24ea-24d78010cd6c@oracle.com>
- <CAFqt6zbKdzFDq6TTadQqQhwZPsZKJLW0LE9ER-qTHm7y3raw9w@mail.gmail.com>
- <a3df6cac-4d29-a5cf-2bb2-35a8834aef64@oracle.com>
- <CAFqt6za1JzbnxK1nuYZhGaj_MxRc33cbTXo7MyP+CgXTfYRXfg@mail.gmail.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <e4a103cd-d244-8f9c-b717-ca3795f6b8dc@oracle.com>
-Date:   Wed, 30 Sep 2020 10:10:55 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        Wed, 30 Sep 2020 10:12:21 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5A1C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:12:19 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id e2so1033946vsr.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=99ip5umDvqCM2tLIiv2DcTtnVo0ZbZNaMiQiBwA7G0E=;
+        b=kGqBEX6MJfsLKmeE6S5FREFU4HGdbI3VGKDYaHCUAahtQFxDUKBuxuSO1jHDi9EsLm
+         1UlC85NvQtVys0FtZzrXj/PGFWGP4vCkEdjX+tM2hPLYvaJOPTZg7L/h5jacfWS7koEa
+         ToW/Wq8f0CLSPtDpAGcfpus/wQ5UPE84JKqYzUSBPQnoJLn0ADf9dHBmFIow7/hMIUXb
+         k+KKipdUN0wV01OruLZJPyw3gQQpHlyFvnAvtIEfvFNO8RW7MQA2a/rAhxa4yjhPIUXj
+         XK9j1H3Tkx1nfEF8l+/BRQ78/WmSwBchsScAaK3Hn2CC6yP7UZrf4/1a3NMGv/rvnJQY
+         ZPEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=99ip5umDvqCM2tLIiv2DcTtnVo0ZbZNaMiQiBwA7G0E=;
+        b=swKyuBu/Imc9bROThIGJ2JAYaIDpB1v1VmkLiwfV3bPgO7BBixgJnvd2feyXAvqP9l
+         fYOFZ5PkvqtC+amBp8urqIaqzNbLPOPth4TJw0BoRnCGwiLbO0AGHWfWPgtGEs/8FWC4
+         I3qxeiiHuaNI2XGrcbO+NrAW9z55Qcfy0e5vW01VSrGlLyynZvK0i9Ru3yNUA8ikAinf
+         wBo9CuGoZ91FIv/mg8sSfdWtupkEnPzatQP4lTWBCsj490+LDGZQFkK5VcAHlRpWZxyL
+         GCXz8t62y4J+3cKHJrLHL6hnrvnzkMbLsjpkpXrShU+Jq/HLMjHOnmMLV2olZ4L6x6zS
+         wzhA==
+X-Gm-Message-State: AOAM532vyS+UGIpVtOMx1Zs5WM/xRJ5zDfa3RoFWNN0Y5QHoi72YVnbr
+        1SwG0qaDmT2N0VrP7QXejVnSynBAzmGOpiuyuC8=
+X-Google-Smtp-Source: ABdhPJwdQc8v67RpIcDq8+zwO1ZaVvhObkR0atw52PS4x/1AiCg5dIdK98U77Eb7bxW7ZCLpUZtwQVoPbsqCX9YBVlo=
+X-Received: by 2002:a05:6102:20e:: with SMTP id z14mr1440852vsp.17.1601475138758;
+ Wed, 30 Sep 2020 07:12:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFqt6za1JzbnxK1nuYZhGaj_MxRc33cbTXo7MyP+CgXTfYRXfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300112
+Received: by 2002:ab0:380d:0:0:0:0:0 with HTTP; Wed, 30 Sep 2020 07:12:18
+ -0700 (PDT)
+Reply-To: mrsbirdggie@gmail.com
+From:   "Mrs. Birdggie William" <anniemariane11@gmail.com>
+Date:   Wed, 30 Sep 2020 14:12:18 +0000
+Message-ID: <CA+4DY8iBaU1HHKowL98gnFTAG+GCaoH-3HzgGhQ4Sh5Z7XA_-g@mail.gmail.com>
+Subject: My Beloved One.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/29/20 10:14 PM, Souptick Joarder wrote:
-> On Tue, Sep 29, 2020 at 6:00 PM <boris.ostrovsky@oracle.com> wrote:
->>
->>
->> On 9/29/20 8:09 AM, Souptick Joarder wrote:
->>> On Fri, Sep 11, 2020 at 8:12 PM <boris.ostrovsky@oracle.com> wrote:
->>>>
->>>> On 9/6/20 2:51 AM, Souptick Joarder wrote:
->>>>> In 2019, we introduced pin_user_pages*() and now we are converting
->>>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
->>>>> be referred for more information. This is case 5 as per document [1].
->>>>>
->>>>> [1] Documentation/core-api/pin_user_pages.rst
->>>>>
->>>>> [2] "Explicit pinning of user-space pages":
->>>>>         https://lwn.net/Articles/807108/
->>>>>
->>>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
->>>>> Cc: John Hubbard <jhubbard@nvidia.com>
->>>>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->>>>> Cc: Juergen Gross <jgross@suse.com>
->>>>> Cc: David Vrabel <david.vrabel@citrix.com>
->>>>
->>>> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
->>> Are these 2 patches queued for 5.10-rc1 ?
->>
->>
->> Yes, I am preparing the branch. (BTW, your second patch appears to have been either manually edited or not generated on top of the first patch. Please don't do this next time)
-> 
-> I created it on top of the first one and didn't edit manually.
-> I was able to apply it in my local repository.
-> What was the error ?
-> 
-
-
-Patch 1:
-
-+		if (batch->writeable && !PageDirty(batch->pages[i]))
-
-
-Patch 2:
-
--		if(batch->writeable && !PageDirty(batch->pages[i]))
-
-
-
-This doesn't look to me like usual whitespace damage in-flight. Anyway, this has been applied to for-linus-5.10
-
-
--boris
+My Beloved One,
+Greetings to you and your family. My name is Mrs. Birdggie William 58
+years childless and widow suffering from Esophageal Cancer, my husband
+died after testing positive for the corona virus and recently my
+doctor told me that I have a few months to live due to the critical
+condition of my cancer illness. Having known my condition I decided to
+donate my late husband funds worth US $7.5 Million to help the poor,
+widows and orphanages which in return will bring blessing for my soul
+when i die.
+I took this decision because my relatives and friends have failed me
+and plundered so much of my money since my illness. If you are
+interested to receive this money to help the poor and widows, kindly
+reply me back for more details.
+Thanks and remain blessed with your family.
+Sincerely yours,
+=C2=A0Mrs. Birdggie William
