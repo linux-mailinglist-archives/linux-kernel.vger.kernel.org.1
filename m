@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6989527DDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0216127DDAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgI3BUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 21:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S1729594AbgI3BUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 21:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728968AbgI3BUC (ORCPT
+        with ESMTP id S1729477AbgI3BUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:20:02 -0400
+        Tue, 29 Sep 2020 21:20:04 -0400
 Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DE6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:20:02 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id j11so415410ejk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:20:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02737C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:20:03 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id u21so398480eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 18:20:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=from:mime-version:date:message-id:subject:to:cc;
-        bh=ceFxcTCYRKLuxiHOByyD9j4jdBXW0kpXxXjKaD9WHxg=;
-        b=DBxbgXYayiYwdgCUHtw8cmgK7E4F3rxLk6W7yvJ77q+SAVcL7yCMFoaBjRW3LbGxUD
-         7Y72wPJpphNqkQjX8sFI1D0s32NfQLIqUDqItk4OWZNA4NeVImf3ZqOYwLKdt0W/3Xei
-         /eUTntmGs/UcQijT4MgKu1zdcPxuj6EJF9JBHBNegG3z40hskBdBFyXeN18Ay2pbtsCV
-         HYHm+IyYEp0zuULgqnmHTej+SaPLEr63COCMsbbFIGm78MBCMAE/ZIivjfGj2DKyT7EA
-         B/ceRn094uhLjQGlCllBfqCkBsXEq3yshO8sX/B0YN6fs7DLA7hBB5mB2eNlE0jkFNwk
-         dmHg==
+        h=from:in-reply-to:references:mime-version:date:message-id:subject:to
+         :cc;
+        bh=FJ8M+pHggei1WQdL/4TrI43/85X7WQS6HxNpsqYJ8eA=;
+        b=FciCqs7O89TYrgwgKLvIjXoyAZkwsaZpE6Nuzeap1QJBgETGE1A3XhDed3ACffrhl9
+         pI/uN6ZpsSHpqckKdJkUo29P7om+6IGaEzMistNwRXKqBM4TQLElVxZsPT/YPGdSnm37
+         ELe8Jvzmh45qfbqhnAeWgOAGD+6ZAXUr8tynXL+2fU26DTNrrzA7kC3BBysLWmV5diB4
+         GASCTl2Zgh380AIVbpjd3FciicoUwmHzW+dk4UZQDc/WEW9T3Ggbj4Umwe27DOEOGT6h
+         GNbA2xZRC/wjnx70Cl0n+8QTXm+YZUkZMFTR0S2FSA3KBqyuXTbvTEV5AZt331tdi2kx
+         RYFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:mime-version:date:message-id:subject:to:cc;
-        bh=ceFxcTCYRKLuxiHOByyD9j4jdBXW0kpXxXjKaD9WHxg=;
-        b=hR9oi1t5OCSmfyCoOIejAM0ok7OKydh9bD297vH5EuL0ODkGBUgaT6IXgs+xReb/AW
-         pfdYOksGDOTm3bfe4XVC00iahBUI+GhxPjJfoaKHHGcZ61g3tvXy6/G3icZQt/7vW5CK
-         7AciVarXOHWZNcIh4eFbHC2iR8TrDlo83QZ2qRSKT30EvVxVsH0X7E23E/6E4PVnIMXi
-         Zv6To4xQx4SYbeoY5vSFCm7YpRD5KU7gImquQFgVuR2X+ZShB8wxR0FMVvDksF8cI4dB
-         GFsFVTAZeyF4oBB3/TRJa1yKYJfqZQBWyukeY2Up0uenpGpEB0QnNLAd2YYgEZOfB5d4
-         b44g==
-X-Gm-Message-State: AOAM531EE96Oa+uiOEkOtT13+RlBt0SD8ov8dom/c+V6Mapp3gLe8861
-        rTNPv8m8tMTqYRyH3zjwgpiI+ViGPwyE5mXZiO1dU7MpDgc=
-X-Google-Smtp-Source: ABdhPJxIukGJ1NgumS/+8d48NIsdATIpf5NHra52OAWr6P/EU6U3IDQj2RSqcmptxqHfgaPNTaVX9nfHEaSsOliJ0CI=
-X-Received: by 2002:a17:907:64d:: with SMTP id wq13mr364490ejb.513.1601428800706;
- Tue, 29 Sep 2020 18:20:00 -0700 (PDT)
+        h=x-gm-message-state:from:in-reply-to:references:mime-version:date
+         :message-id:subject:to:cc;
+        bh=FJ8M+pHggei1WQdL/4TrI43/85X7WQS6HxNpsqYJ8eA=;
+        b=XRg4/aQnZeWTv2OMTNg+R7kaCFHiNckEmV/3fPmAMntrh8G1UZPvJHjkAdLT+xgSTq
+         gUIOyiiyeYY1PR2S1aAUwnIPCfeQeDIH0h48G/4jlHszFDo/6RrD2LMoeiJwADtD+5vW
+         sofGdzooBsW/AO6fbb9Z1D9Hpp1cPVQSNIAgTtxSxHIFO4bnMQKANaz0qbaFX/HtuWOk
+         Yf89gmsix4f6T6oDxbjot7M1jwYRcp80Qw4frUqI+9Yh9l0bQ1U93T+GEMd1N0kUaLpk
+         KnUlKi1YJeD13rWX/kKU4Fjq6T3feIvclHQ/yXA6ZNA8Cfm4LZMnRn2ptAKcA1azAh1E
+         K4tA==
+X-Gm-Message-State: AOAM531XeZik/KFd7Rzj30tsKROL2GCZy9CjGyluMIuz314fSho+nJSn
+        NRyY7mEE2ET4+YoWlpW4XoLxFsY8xklVYFyQjhS4Sg==
+X-Google-Smtp-Source: ABdhPJzeVsqTjOdTgnQ+hOnlnWn0pG7xOE1ZrHUkyx2qFe5zL92TP/PmsJUyfJx4bTRaC1pNobIQ3TeqVhuZQYimHzI=
+X-Received: by 2002:a17:906:c447:: with SMTP id ck7mr412804ejb.358.1601428802412;
+ Tue, 29 Sep 2020 18:20:02 -0700 (PDT)
 Received: from 913411032810 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 29 Sep 2020 18:19:59 -0700
+ HTTPREST; Tue, 29 Sep 2020 18:20:00 -0700
 From:   Jann Horn <jannh@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+In-Reply-To: <20200930011944.19869-1-jannh@google.com>
+References: <20200930011944.19869-1-jannh@google.com>
 MIME-Version: 1.0
-Date:   Tue, 29 Sep 2020 18:19:59 -0700
-Message-ID: <CAG48ez3SG6ngZLtasxJ6LABpOnqCz5-QHqb0B4k44TQ8F9n6+w@mail.gmail.com>
-Subject: [PATCH 1/4] mm/gup_benchmark: Take the mmap lock around GUP
+Date:   Tue, 29 Sep 2020 18:20:00 -0700
+Message-ID: <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
+Subject: [PATCH 3/4] mmap locking API: Don't check locking if the mm isn't
+ live yet
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         "Eric W . Biederman" <ebiederm@xmission.com>,
@@ -61,80 +66,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be safe against concurrent changes to the VMA tree, we must take the
-mmap lock around GUP operations (excluding the GUP-fast family of
-operations, which will take the mmap lock by themselves if necessary).
+In preparation for adding a mmap_assert_locked() check in
+__get_user_pages(), teach the mmap_assert_*locked() helpers that it's fine
+to operate on an mm without locking in the middle of execve() as long as
+it hasn't been installed on a process yet.
 
-This code is only for testing, and it's only reachable by root through
-debugfs, so this doesn't really have any impact; however, if we want to add
-lockdep asserts into the GUP path, we need to have clean locking here.
+Existing code paths that do this are (reverse callgraph):
+
+  get_user_pages_remote
+    get_arg_page
+      copy_strings
+      copy_string_kernel
+      remove_arg_zero
+    tomoyo_dump_page
+      tomoyo_print_bprm
+      tomoyo_scan_bprm
+      tomoyo_environ
 
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
-This series should go on top of the coredump locking series (in
-particular "mm/gup: Take mmap_lock in get_dump_page()"), which is
-already in the mm tree.
+ fs/exec.c                 |  8 ++++++++
+ include/linux/mm_types.h  |  9 +++++++++
+ include/linux/mmap_lock.h | 16 ++++++++++++----
+ 3 files changed, 29 insertions(+), 4 deletions(-)
 
- mm/gup_benchmark.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c
-index be690fa66a46..558595610650 100644
---- a/mm/gup_benchmark.c
-+++ b/mm/gup_benchmark.c
-@@ -71,6 +71,8 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
- 	int nr;
- 	struct page **pages;
- 	int ret = 0;
-+	bool needs_mmap_lock =
-+		cmd != GUP_FAST_BENCHMARK && cmd != PIN_FAST_BENCHMARK;
-
- 	if (gup->size > ULONG_MAX)
- 		return -EINVAL;
-@@ -80,6 +82,11 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
- 	if (!pages)
- 		return -ENOMEM;
-
-+	if (needs_mmap_lock && mmap_read_lock_killable(current->mm)) {
-+		ret = -EINTR;
-+		goto free_pages;
-+	}
-+
- 	i = 0;
- 	nr = gup->nr_pages_per_call;
- 	start_time = ktime_get();
-@@ -119,9 +126,8 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
- 					    NULL);
- 			break;
- 		default:
--			kvfree(pages);
- 			ret = -EINVAL;
--			goto out;
-+			goto unlock;
+diff --git a/fs/exec.c b/fs/exec.c
+index a91003e28eaa..c02b0e8e1c0b 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1129,6 +1129,14 @@ static int exec_mmap(struct mm_struct *mm)
  		}
+ 	}
 
- 		if (nr <= 0)
-@@ -149,8 +155,11 @@ static int __gup_benchmark_ioctl(unsigned int cmd,
- 	end_time = ktime_get();
- 	gup->put_delta_usec = ktime_us_delta(end_time, start_time);
++#if defined(CONFIG_LOCKDEP) || defined(CONFIG_DEBUG_VM)
++	/*
++	 * From here on, the mm may be accessed concurrently, and proper locking
++	 * is required for things like get_user_pages_remote().
++	 */
++	mm->mmap_lock_required = 1;
++#endif
++
+ 	task_lock(tsk);
+ 	active_mm = tsk->active_mm;
+ 	membarrier_exec_mmap(mm);
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index ed028af3cb19..89fee0d0d652 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -552,6 +552,15 @@ struct mm_struct {
+ 		atomic_long_t hugetlb_usage;
+ #endif
+ 		struct work_struct async_put_work;
++#if defined(CONFIG_LOCKDEP) || defined(CONFIG_DEBUG_VM)
++		/*
++		 * Notes whether this mm has been installed on a process yet.
++		 * If not, only the task going through execve() can access this
++		 * mm, and no locking is needed around get_user_pages_remote().
++		 * This flag is only used for debug checks.
++		 */
++		bool mmap_lock_required;
++#endif
+ 	} __randomize_layout;
 
-+unlock:
-+	if (needs_mmap_lock)
-+		mmap_read_unlock(current->mm);
-+free_pages:
- 	kvfree(pages);
--out:
- 	return ret;
+ 	/*
+diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+index 0707671851a8..c4fd874954d7 100644
+--- a/include/linux/mmap_lock.h
++++ b/include/linux/mmap_lock.h
+@@ -77,14 +77,22 @@ static inline void
+mmap_read_unlock_non_owner(struct mm_struct *mm)
+
+ static inline void mmap_assert_locked(struct mm_struct *mm)
+ {
+-	lockdep_assert_held(&mm->mmap_lock);
+-	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
++#if defined(CONFIG_LOCKDEP) || defined(CONFIG_DEBUG_VM)
++	if (mm->mmap_lock_required) {
++		lockdep_assert_held(&mm->mmap_lock);
++		VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
++	}
++#endif
  }
 
+ static inline void mmap_assert_write_locked(struct mm_struct *mm)
+ {
+-	lockdep_assert_held_write(&mm->mmap_lock);
+-	VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
++#if defined(CONFIG_LOCKDEP) || defined(CONFIG_DEBUG_VM)
++	if (mm->mmap_lock_required) {
++		lockdep_assert_held_write(&mm->mmap_lock);
++		VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
++	}
++#endif
+ }
 
-base-commit: fb0155a09b0224a7147cb07a4ce6034c8d29667f
-prerequisite-patch-id: 08f97130a51898a5f6efddeeb5b42638577398c7
-prerequisite-patch-id: 577664d761cd23fe9031ffdb1d3c9ac313572c67
-prerequisite-patch-id: dc29a39716aa8689f80ba2767803d9df3709beaa
-prerequisite-patch-id: 42b1b546d33391ead2753621f541bcc408af1769
-prerequisite-patch-id: 2cbb839f57006f32e21f4229e099ae1bd782be24
-prerequisite-patch-id: 1b4daf01cf61654a5ec54b5c3f7c7508be7244ee
-prerequisite-patch-id: f46cc8c99f1909fe2a65fbc3cf1f6bc57489a086
+ #endif /* _LINUX_MMAP_LOCK_H */
 -- 
 2.28.0.709.gb0816b6eb0-goog
