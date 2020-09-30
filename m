@@ -2,312 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685AD27E7BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E52B27E7C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgI3Lky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:40:54 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35271 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728149AbgI3Lkx (ORCPT
+        id S1729451AbgI3LnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgI3LnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:40:53 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200930114051euoutp0164085ce551c9895728347e521f46a716~5jON87-021166111661euoutp01O
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:40:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200930114051euoutp0164085ce551c9895728347e521f46a716~5jON87-021166111661euoutp01O
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601466051;
-        bh=2TmK0Cd2dcSjEXv4p3j4u0LUwJ5ah0OK12YGNxuOZKs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=b7UET/pgRcwPwe9osf3BN7PYSippSgIBv3wjn3jp9E4xBxH9TiswGNtSeurbixWh0
-         bHnjXGkdlipa33PmQs1jPIQu130TzZRWE7Xejg4wvqGj6BNRbleXmEOhHqTaNWkVkE
-         RCMcfRFDlSz9FJqzhEMmfIHLaQt8dWNa47xLX75w=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200930114050eucas1p253e6bb99c55b23d7e23ee7e47068eddd~5jONi5pZ22053920539eucas1p2u;
-        Wed, 30 Sep 2020 11:40:50 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 52.35.05997.2CE647F5; Wed, 30
-        Sep 2020 12:40:50 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200930114050eucas1p2fd39f213b4cf82068b79c97992a9acc7~5jOM_Kj8T2053920539eucas1p2t;
-        Wed, 30 Sep 2020 11:40:50 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200930114050eusmtrp2dbf62baaf4a76d1d8c4378b53f17c14b~5jOM9XYDf3088230882eusmtrp2D;
-        Wed, 30 Sep 2020 11:40:50 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-ed-5f746ec2195e
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id E2.5A.06314.1CE647F5; Wed, 30
-        Sep 2020 12:40:50 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200930114049eusmtip213d9a422c8f9f21b008628d18f0fab22~5jOMWPT_T2020420204eusmtip2G;
-        Wed, 30 Sep 2020 11:40:49 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] drm/bridge: tc358764: restore connector support
-Date:   Wed, 30 Sep 2020 13:40:42 +0200
-Message-Id: <20200930114042.5806-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSe0gTcRzvd7fdzuHimpa/tCwWJQZqVsiBFr2wI/+JKILC5sxLLTdtNy0H
-        lq20udSs8NHsxdJ8peYwUyHT+Zg6NkVnTCkkE01TpJyIPbTNU/vv8+Tz/eOLo8JMriceK1PQ
-        cpkkToTxOXUdCz1+BplCvKf6oy85VGXhkta5GYwcmJ9Aya6pAQ6Z8aCIR/Y3PsHIgp4mhKxs
-        +8wjDdnnydKFt+AQn5qxpfGoQvVjLtWZ04dQw/eMCFWUN4BR2bXlgGrOesShZvXeJ/Fz/JAo
-        Oi42iZYHHIzgx5jHm7AEXdD1r3qfVGDw0wAXHBL7YeuYhaMBfFxIlAI4OWhCWGIHUJfftUJm
-        AdQvZWOrlU77S5Q1SgAsM9dw1iq95SM8ZwojAqFmWrPccCdCoar1MdcZQokOBN6qzQNOw404
-        DkfrWxAn5hA7oWZEvYwFRAj8MW7ksnPbYMWb5uU5SPzGYHu9DmGNY3CquAWw2A1OGmt5LN4C
-        lxqeI2zhNoBfLJU8lmQC2K8qWGkEw0+WX477cMdNvrC6MYCVD8P5yleIU4bEemib3uCUUQd8
-        WJePsrIAqtOFbHoX1Bqr1mZbevtWIhQ0qHycspAIh3d+piI5wFv7f+oFAOXAg05kpNE0s1dG
-        X/NnJFImURbtfzFeqgeOHzEtGu31oPFPpAEQOBC5CiIgIxZyJUlMstQAII6K3AVHzKYLQkGU
-        JFlJy+PF8sQ4mjEAL5wj8hDs002EC4loiYK+QtMJtHzVRXAXz1SQty630Po3d77dYt5+9IBr
-        9Wblfa333bH3bfzhb6FJvSnMQsHrssWzAX25yu4TS1bs0pmt/AraOjqIe+4YUbyrGUoLCy7W
-        PvNQ67+HbewwpN9siMgJGhRkSbHu7htofKfpVGGJV7vqw9imyEBxVYqy5GmxfMg2Z7VR9stX
-        T2szRBwmRhK4G5Uzkn8A6ElyHwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrILMWRmVeSWpSXmKPExsVy+t/xe7qH8kriDVp8LW6tO8dqceXrezaL
-        q99fMlucfHOVxaJz4hJ2i8u75rBZzDi/j8li7ZG77BaH+qItVvzcyujA5fH+Riu7x+yOmawe
-        JyZcYvK4332cyWPJtKtsHn1bVjF6HOidzOLxeZNcAEeUnk1RfmlJqkJGfnGJrVK0oYWRnqGl
-        hZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsbZ5/vYChaZVTzepN7AeEi3i5GTQ0LAROLE
-        l8XMXYxcHEICSxklTr3ZzwyRkJE4Oa2BFcIWlvhzrYsNougTo8S0WZ0sIAk2AUOJrrcgCU4O
-        EQEPieZvx9lBipgFzjBJ/Dz8BqxbWMBd4smOg0wgNouAqkTXow4wm1fARuLj8+NQG+QlVm84
-        wDyBkWcBI8MqRpHU0uLc9NxiQ73ixNzi0rx0veT83E2MwODdduzn5h2MlzYGH2IU4GBU4uFN
-        kCiOF2JNLCuuzD3EKMHBrCTC63T2dJwQb0piZVVqUX58UWlOavEhRlOg5ROZpUST84GRBYwe
-        Q1NDcwtLQ3Njc2MzCyVx3g6BgzFCAumJJanZqakFqUUwfUwcnFINjM41Bs8WVUVeXi6Zs1p8
-        0vVkNRaFy8GaBwq78u9c/G3+1KH/evaKlV/bJmjqppyZNoux1rT7euZkV37G/QtWiZ9K/MK/
-        IXrDammJRh7l+Yqs9+Wur7h1wNuOd61KfNS/zRbaK87qN7ivYW9aueBFhLFtmU1vWu+75/GK
-        ue5L2zdpF7AlWwhLKrEUZyQaajEXFScCABuioW50AgAA
-X-CMS-MailID: 20200930114050eucas1p2fd39f213b4cf82068b79c97992a9acc7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200930114050eucas1p2fd39f213b4cf82068b79c97992a9acc7
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200930114050eucas1p2fd39f213b4cf82068b79c97992a9acc7
-References: <CGME20200930114050eucas1p2fd39f213b4cf82068b79c97992a9acc7@eucas1p2.samsung.com>
+        Wed, 30 Sep 2020 07:43:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FF4C061755;
+        Wed, 30 Sep 2020 04:43:09 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CABF3A61;
+        Wed, 30 Sep 2020 13:43:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601466188;
+        bh=qCXhZOr13G8G9oYQF2tgn0I9aUvQ6/ueiYSB0qru238=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pklqDojWkjtFEn6ea4X8bj/Y+rDFxgsCHLGTDfZ69iwABRLZZqc+TsbkqDNxQQaFO
+         nF3jErBnzCMj1kzu+KYhRwCvdkR3sjbY/1AunMaJvz3kBM1Qr5XtzJV1EtkZnZhkLP
+         buUNszKmhEhy9KN6Q+uZRS3aRBzDu/PtfOQbfnYM=
+Date:   Wed, 30 Sep 2020 14:42:31 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Jan Luebbe <jlu@pengutronix.de>
+Subject: Re: [PATCH v2 1/5] media: mt9p031: Add support for 8 bit and 10 bit
+ formats
+Message-ID: <20200930114231.GH5689@pendragon.ideasonboard.com>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200930105133.139981-1-s.riedmueller@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch restores DRM connector registration in the TC358764 bridge
-driver and restores usage of the old drm_panel_* API, thus allows dynamic
-panel registration. This fixes panel operation on Exynos5250-based
-Arndale board.
+Hi Stefan,
 
-This is equivalent to the revert of the following commits:
-1644127f83bc "drm/bridge: tc358764: add drm_panel_bridge support"
-385ca38da29c "drm/bridge: tc358764: drop drm_connector_(un)register"
-and removal of the calls to drm_panel_attach()/drm_panel_detach(), which
-were no-ops and has been removed in meanwhile.
+Thank you for the patch.
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
----
-As I've reported and Andrzej Hajda pointed, the reverted patches break
-operation of the panel on the Arndale board. Noone suggested how to fix
-the regression, I've decided to send a revert until a new solution is
-found.
+On Wed, Sep 30, 2020 at 12:51:29PM +0200, Stefan Riedmueller wrote:
+> From: Christian Hemp <c.hemp@phytec.de>
+> 
+> Aside from 12 bit monochrome or color format the sensor implicitly
+> supports 10 and 8 bit formats as well by simply dropping the
+> corresponding LSBs.
 
-The issues with tc358764 might be automatically resolved once the Exynos
-DSI itself is converted to DRM bridge:
-https://patchwork.kernel.org/cover/11770683/
-but that approach has also its own issues so far.
+That's not how it should work though. If you set the format on
+MEDIA_BUS_FMT_SGRBG8_1X8 through the pipeline for instance, you will end
+up capturing the 8 LSB, not the 8 MSB.
 
-Resend reason: added Sam Ravnborg to CC:
+What's your use case for this ?
 
-Best regards,
-Marek Szyprowski
----
- drivers/gpu/drm/bridge/tc358764.c | 107 +++++++++++++++++++++++++-----
- 1 file changed, 92 insertions(+), 15 deletions(-)
+> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+> [jlu@pengutronix.de: simplified by dropping v4l2_colorspace handling]
+> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> ---
+> Changes in v2:
+>  - Use unsigned int for num_fmts and loop variable in find_datafmt
+>  - Remove superfluous const qualifier from find_datafmt
+> ---
+>  drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++--------
+>  1 file changed, 40 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> index dc23b9ed510a..2e6671ef877c 100644
+> --- a/drivers/media/i2c/mt9p031.c
+> +++ b/drivers/media/i2c/mt9p031.c
+> @@ -116,6 +116,18 @@ enum mt9p031_model {
+>  	MT9P031_MODEL_MONOCHROME,
+>  };
+>  
+> +static const u32 mt9p031_color_fmts[] = {
+> +	MEDIA_BUS_FMT_SGRBG8_1X8,
+> +	MEDIA_BUS_FMT_SGRBG10_1X10,
+> +	MEDIA_BUS_FMT_SGRBG12_1X12,
+> +};
+> +
+> +static const u32 mt9p031_monochrome_fmts[] = {
+> +	MEDIA_BUS_FMT_Y8_1X8,
+> +	MEDIA_BUS_FMT_Y10_1X10,
+> +	MEDIA_BUS_FMT_Y12_1X12,
+> +};
+> +
+>  struct mt9p031 {
+>  	struct v4l2_subdev subdev;
+>  	struct media_pad pad;
+> @@ -138,6 +150,9 @@ struct mt9p031 {
+>  	struct v4l2_ctrl *blc_auto;
+>  	struct v4l2_ctrl *blc_offset;
+>  
+> +	const u32 *fmts;
+> +	unsigned int num_fmts;
+> +
+>  	/* Registers cache */
+>  	u16 output_control;
+>  	u16 mode2;
+> @@ -148,6 +163,17 @@ static struct mt9p031 *to_mt9p031(struct v4l2_subdev *sd)
+>  	return container_of(sd, struct mt9p031, subdev);
+>  }
+>  
+> +static u32 mt9p031_find_datafmt(struct mt9p031 *mt9p031, u32 code)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < mt9p031->num_fmts; i++)
+> +		if (mt9p031->fmts[i] == code)
+> +			return mt9p031->fmts[i];
+> +
+> +	return mt9p031->fmts[mt9p031->num_fmts-1];
+> +}
+> +
+>  static int mt9p031_read(struct i2c_client *client, u8 reg)
+>  {
+>  	return i2c_smbus_read_word_swapped(client, reg);
+> @@ -476,10 +502,11 @@ static int mt9p031_enum_mbus_code(struct v4l2_subdev *subdev,
+>  {
+>  	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
+>  
+> -	if (code->pad || code->index)
+> +	if (code->pad || code->index >= mt9p031->num_fmts)
+>  		return -EINVAL;
+>  
+> -	code->code = mt9p031->format.code;
+> +	code->code = mt9p031->fmts[code->index];
+> +
+>  	return 0;
+>  }
+>  
+> @@ -573,6 +600,8 @@ static int mt9p031_set_format(struct v4l2_subdev *subdev,
+>  	__format->width = __crop->width / hratio;
+>  	__format->height = __crop->height / vratio;
+>  
+> +	__format->code = mt9p031_find_datafmt(mt9p031, format->format.code);
+> +
+>  	format->format = *__format;
+>  
+>  	return 0;
+> @@ -951,10 +980,7 @@ static int mt9p031_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
+>  
+>  	format = v4l2_subdev_get_try_format(subdev, fh->pad, 0);
+>  
+> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> -		format->code = MEDIA_BUS_FMT_Y12_1X12;
+> -	else
+> -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> +	format->code = mt9p031_find_datafmt(mt9p031, 0);
+>  
+>  	format->width = MT9P031_WINDOW_WIDTH_DEF;
+>  	format->height = MT9P031_WINDOW_HEIGHT_DEF;
+> @@ -1121,10 +1147,14 @@ static int mt9p031_probe(struct i2c_client *client,
+>  	mt9p031->crop.left = MT9P031_COLUMN_START_DEF;
+>  	mt9p031->crop.top = MT9P031_ROW_START_DEF;
+>  
+> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> -		mt9p031->format.code = MEDIA_BUS_FMT_Y12_1X12;
+> -	else
+> -		mt9p031->format.code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> +	if (mt9p031->model == MT9P031_MODEL_MONOCHROME) {
+> +		mt9p031->fmts = mt9p031_monochrome_fmts;
+> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_monochrome_fmts);
+> +	} else {
+> +		mt9p031->fmts = mt9p031_color_fmts;
+> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_color_fmts);
+> +	}
+> +	mt9p031->format.code = mt9p031_find_datafmt(mt9p031, 0);
+>  
+>  	mt9p031->format.width = MT9P031_WINDOW_WIDTH_DEF;
+>  	mt9p031->format.height = MT9P031_WINDOW_HEIGHT_DEF;
 
-diff --git a/drivers/gpu/drm/bridge/tc358764.c b/drivers/gpu/drm/bridge/tc358764.c
-index d89394bc5aa4..c1e35bdf9232 100644
---- a/drivers/gpu/drm/bridge/tc358764.c
-+++ b/drivers/gpu/drm/bridge/tc358764.c
-@@ -153,9 +153,10 @@ static const char * const tc358764_supplies[] = {
- struct tc358764 {
- 	struct device *dev;
- 	struct drm_bridge bridge;
-+	struct drm_connector connector;
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(tc358764_supplies)];
- 	struct gpio_desc *gpio_reset;
--	struct drm_bridge *panel_bridge;
-+	struct drm_panel *panel;
- 	int error;
- };
- 
-@@ -209,6 +210,12 @@ static inline struct tc358764 *bridge_to_tc358764(struct drm_bridge *bridge)
- 	return container_of(bridge, struct tc358764, bridge);
- }
- 
-+static inline
-+struct tc358764 *connector_to_tc358764(struct drm_connector *connector)
-+{
-+	return container_of(connector, struct tc358764, connector);
-+}
-+
- static int tc358764_init(struct tc358764 *ctx)
- {
- 	u32 v = 0;
-@@ -271,11 +278,43 @@ static void tc358764_reset(struct tc358764 *ctx)
- 	usleep_range(1000, 2000);
- }
- 
-+static int tc358764_get_modes(struct drm_connector *connector)
-+{
-+	struct tc358764 *ctx = connector_to_tc358764(connector);
-+
-+	return drm_panel_get_modes(ctx->panel, connector);
-+}
-+
-+static const
-+struct drm_connector_helper_funcs tc358764_connector_helper_funcs = {
-+	.get_modes = tc358764_get_modes,
-+};
-+
-+static const struct drm_connector_funcs tc358764_connector_funcs = {
-+	.fill_modes = drm_helper_probe_single_connector_modes,
-+	.destroy = drm_connector_cleanup,
-+	.reset = drm_atomic_helper_connector_reset,
-+	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-+};
-+
-+static void tc358764_disable(struct drm_bridge *bridge)
-+{
-+	struct tc358764 *ctx = bridge_to_tc358764(bridge);
-+	int ret = drm_panel_disable(bridge_to_tc358764(bridge)->panel);
-+
-+	if (ret < 0)
-+		dev_err(ctx->dev, "error disabling panel (%d)\n", ret);
-+}
-+
- static void tc358764_post_disable(struct drm_bridge *bridge)
- {
- 	struct tc358764 *ctx = bridge_to_tc358764(bridge);
- 	int ret;
- 
-+	ret = drm_panel_unprepare(ctx->panel);
-+	if (ret < 0)
-+		dev_err(ctx->dev, "error unpreparing panel (%d)\n", ret);
- 	tc358764_reset(ctx);
- 	usleep_range(10000, 15000);
- 	ret = regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-@@ -296,28 +335,71 @@ static void tc358764_pre_enable(struct drm_bridge *bridge)
- 	ret = tc358764_init(ctx);
- 	if (ret < 0)
- 		dev_err(ctx->dev, "error initializing bridge (%d)\n", ret);
-+	ret = drm_panel_prepare(ctx->panel);
-+	if (ret < 0)
-+		dev_err(ctx->dev, "error preparing panel (%d)\n", ret);
-+}
-+
-+static void tc358764_enable(struct drm_bridge *bridge)
-+{
-+	struct tc358764 *ctx = bridge_to_tc358764(bridge);
-+	int ret = drm_panel_enable(ctx->panel);
-+
-+	if (ret < 0)
-+		dev_err(ctx->dev, "error enabling panel (%d)\n", ret);
- }
- 
- static int tc358764_attach(struct drm_bridge *bridge,
- 			   enum drm_bridge_attach_flags flags)
-+{
-+	struct tc358764 *ctx = bridge_to_tc358764(bridge);
-+	struct drm_device *drm = bridge->dev;
-+	int ret;
-+
-+	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
-+		DRM_ERROR("Fix bridge driver to make connector optional!");
-+		return -EINVAL;
-+	}
-+
-+	ctx->connector.polled = DRM_CONNECTOR_POLL_HPD;
-+	ret = drm_connector_init(drm, &ctx->connector,
-+				 &tc358764_connector_funcs,
-+				 DRM_MODE_CONNECTOR_LVDS);
-+	if (ret) {
-+		DRM_ERROR("Failed to initialize connector\n");
-+		return ret;
-+	}
-+
-+	drm_connector_helper_add(&ctx->connector,
-+				 &tc358764_connector_helper_funcs);
-+	drm_connector_attach_encoder(&ctx->connector, bridge->encoder);
-+	ctx->connector.funcs->reset(&ctx->connector);
-+	drm_connector_register(&ctx->connector);
-+
-+	return 0;
-+}
-+
-+static void tc358764_detach(struct drm_bridge *bridge)
- {
- 	struct tc358764 *ctx = bridge_to_tc358764(bridge);
- 
--	return drm_bridge_attach(bridge->encoder, ctx->panel_bridge,
--				 bridge, flags);
-+	drm_connector_unregister(&ctx->connector);
-+	ctx->panel = NULL;
-+	drm_connector_put(&ctx->connector);
- }
- 
- static const struct drm_bridge_funcs tc358764_bridge_funcs = {
-+	.disable = tc358764_disable,
- 	.post_disable = tc358764_post_disable,
-+	.enable = tc358764_enable,
- 	.pre_enable = tc358764_pre_enable,
- 	.attach = tc358764_attach,
-+	.detach = tc358764_detach,
- };
- 
- static int tc358764_parse_dt(struct tc358764 *ctx)
- {
--	struct drm_bridge *panel_bridge;
- 	struct device *dev = ctx->dev;
--	struct drm_panel *panel;
- 	int ret;
- 
- 	ctx->gpio_reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-@@ -326,16 +408,12 @@ static int tc358764_parse_dt(struct tc358764 *ctx)
- 		return PTR_ERR(ctx->gpio_reset);
- 	}
- 
--	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
--	if (ret)
--		return ret;
--
--	panel_bridge = devm_drm_panel_bridge_add(dev, panel);
--	if (IS_ERR(panel_bridge))
--		return PTR_ERR(panel_bridge);
-+	ret = drm_of_find_panel_or_bridge(ctx->dev->of_node, 1, 0, &ctx->panel,
-+					  NULL);
-+	if (ret && ret != -EPROBE_DEFER)
-+		dev_err(dev, "cannot find panel (%d)\n", ret);
- 
--	ctx->panel_bridge = panel_bridge;
--	return 0;
-+	return ret;
- }
- 
- static int tc358764_configure_regulators(struct tc358764 *ctx)
-@@ -381,7 +459,6 @@ static int tc358764_probe(struct mipi_dsi_device *dsi)
- 		return ret;
- 
- 	ctx->bridge.funcs = &tc358764_bridge_funcs;
--	ctx->bridge.type = DRM_MODE_CONNECTOR_LVDS;
- 	ctx->bridge.of_node = dev->of_node;
- 
- 	drm_bridge_add(&ctx->bridge);
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
