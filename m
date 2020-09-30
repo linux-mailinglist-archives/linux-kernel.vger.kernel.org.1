@@ -2,151 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16A927E347
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB5227E349
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbgI3IF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:05:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725440AbgI3IF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:05:29 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 615432072E;
-        Wed, 30 Sep 2020 08:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601453128;
-        bh=7JYxs9JSU+BxuljUNkjSTE7tyNPi9bfc9U9063UfASs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=1tq323Rfi4bfF5jkhFvFM3www8VuwlCCwtOEL6rGlNhu9BVfipz23YgAs7FSDf8/1
-         lNK4uVkB1Ojn4kD4vgb3BFHRWe7dz3XyrifwR5RPXUaLFMTzvqs+8ZK2qe3glwFlYj
-         OSMCVo3Sax9FkjMYbNtdzoZMUcuMw2eu3uQT2aMA=
-Date:   Wed, 30 Sep 2020 09:05:23 +0100
-From:   Will Deacon <will@kernel.org>
-To:     joro@8bytes.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, jean-philippe@linaro.org,
-        kernel-team@android.com
-Subject: [GIT PULL] iommu/arm-smmu: Updates for 5.10
-Message-ID: <20200930080523.GA15805@willie-the-truck>
+        id S1728516AbgI3IFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:05:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44580 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728169AbgI3IFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:05:48 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 2C31B29AF80
+Subject: Re: media/master bisection:
+ v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT on
+ qemu_arm-virt-gicv3
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <5f72d499.1c69fb81.81d5b.6937@mx.google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        kernelci-results@groups.io
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <ebd6520a-85c3-c955-ee16-88e0c6995855@collabora.com>
+Date:   Wed, 30 Sep 2020 09:05:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5f72d499.1c69fb81.81d5b.6937@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+Please see the bisection report below about a regression in
+v4l2-compliance on vivid.
 
-Please pull these arm-smmu updates for 5.10. Summary in the tag, but the
-big thing here is the long-awaited SVM enablement from Jean-Philippe.
-We're not quite done yet, but this pull extends the SMMUv3 driver so that
-we're very close to being able to share page-tables directly with the CPU.
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
-Other than that, there are a couple of things to note:
 
-  1. My PGP subkeys expired. I've updated them here:
+The full results for v4l2-compliance on vivid for
+v5.9-rc4-471-gc0c8db7bc953 show 22 individual test case
+regressions which might all be due to a single issue:
 
-	https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/3E542FD9.asc
+  https://kernelci.org/test/plan/id/5f728c108b008d61f4bf9db7/
 
-     and I've also mailed an updated copy for inclusion in the pgpkeys
-     repository on kernel.org, but it hasn't landed yet:
+For comparison, this is the results from the previous revision in
+the media tree:
 
-	https://lore.kernel.org/keys/20200929222707.GA14916@willie-the-truck/T/#u
+  https://kernelci.org/test/plan/id/5f6b44ddea4abb1888bf9db4/
 
-  2. The SVM enablement has a dependency on some ASID allocation rework
-     in the arm64 tree, so I made a shared branch and pulled that in here
-     too.
+Also worth noting is that the v4l2-compliance test suite was
+updated on Friday 25th, in-between the revisions mentioned above.
+So the issue might have been present earlier but not detected.
 
-Please shout if you run into any problems.
+Hope this helps!
 
-Will
+Thanks,
+Guillaume
 
---->8
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+On 29/09/2020 07:30, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> media/master bisection: v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT on qemu_arm-virt-gicv3
+> 
+> Summary:
+>   Start:      c0c8db7bc953 media: MAINTAINERS: remove Maxime Jourdan as maintainer of Amlogic VDEC
+>   Plain log:  https://storage.kernelci.org/media/master/v5.9-rc4-471-gc0c8db7bc953/arm/multi_v7_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_arm-virt-gicv3.txt
+>   HTML log:   https://storage.kernelci.org/media/master/v5.9-rc4-471-gc0c8db7bc953/arm/multi_v7_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_arm-virt-gicv3.html
+>   Result:     2f491463497a media: vivid: Add support to the CSC API
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       media
+>   URL:        https://git.linuxtv.org/media_tree.git
+>   Branch:     master
+>   Target:     qemu_arm-virt-gicv3
+>   CPU arch:   arm
+>   Lab:        lab-collabora
+>   Compiler:   gcc-8
+>   Config:     multi_v7_defconfig+virtualvideo
+>   Test case:  v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 2f491463497ad43bc06968a334747c6b6b20fc74
+> Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> Date:   Thu Aug 27 21:46:09 2020 +0200
+> 
+>     media: vivid: Add support to the CSC API
+>     
+>     The CSC API (Colorspace conversion) allows userspace to try
+>     to configure the colorspace, transfer function, Y'CbCr/HSV encoding
+>     and the quantization for capture devices. This patch adds support
+>     to the CSC API in vivid.
+>     Using the CSC API, userspace is allowed to do the following:
+>     
+>     - Set the colorspace.
+>     - Set the xfer_func.
+>     - Set the ycbcr_enc function for YUV formats.
+>     - Set the hsv_enc function for HSV formats
+>     - Set the quantization for YUV and RGB formats.
+>     
+>     Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>     Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>     Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> 
+> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+> index e94beef008c8..eadf28ab1e39 100644
+> --- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+> +++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+> @@ -560,6 +560,7 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
+>  	unsigned factor = 1;
+>  	unsigned w, h;
+>  	unsigned p;
+> +	bool user_set_csc = !!(mp->flags & V4L2_PIX_FMT_FLAG_SET_CSC);
+>  
+>  	fmt = vivid_get_format(dev, mp->pixelformat);
+>  	if (!fmt) {
+> @@ -633,13 +634,30 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
+>  			(fmt->bit_depth[p] / fmt->vdownsampling[p])) /
+>  			(fmt->bit_depth[0] / fmt->vdownsampling[0]);
+>  
+> -	mp->colorspace = vivid_colorspace_cap(dev);
+> -	if (fmt->color_enc == TGP_COLOR_ENC_HSV)
+> -		mp->hsv_enc = vivid_hsv_enc_cap(dev);
+> -	else
+> +	if (!user_set_csc || !v4l2_is_colorspace_valid(mp->colorspace))
+> +		mp->colorspace = vivid_colorspace_cap(dev);
+> +
+> +	if (!user_set_csc || !v4l2_is_xfer_func_valid(mp->xfer_func))
+> +		mp->xfer_func = vivid_xfer_func_cap(dev);
+> +
+> +	if (fmt->color_enc == TGP_COLOR_ENC_HSV) {
+> +		if (!user_set_csc || !v4l2_is_hsv_enc_valid(mp->hsv_enc))
+> +			mp->hsv_enc = vivid_hsv_enc_cap(dev);
+> +	} else if (fmt->color_enc == TGP_COLOR_ENC_YCBCR) {
+> +		if (!user_set_csc || !v4l2_is_ycbcr_enc_valid(mp->ycbcr_enc))
+> +			mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
+> +	} else {
+>  		mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
+> -	mp->xfer_func = vivid_xfer_func_cap(dev);
+> -	mp->quantization = vivid_quantization_cap(dev);
+> +	}
+> +
+> +	if (fmt->color_enc == TGP_COLOR_ENC_YCBCR ||
+> +	    fmt->color_enc == TGP_COLOR_ENC_RGB) {
+> +		if (!user_set_csc || !v4l2_is_quant_valid(mp->quantization))
+> +			mp->quantization = vivid_quantization_cap(dev);
+> +	} else {
+> +		mp->quantization = vivid_quantization_cap(dev);
+> +	}
+> +
+>  	memset(mp->reserved, 0, sizeof(mp->reserved));
+>  	return 0;
+>  }
+> @@ -769,6 +787,14 @@ int vivid_s_fmt_vid_cap(struct file *file, void *priv,
+>  	if (vivid_is_sdtv_cap(dev))
+>  		dev->tv_field_cap = mp->field;
+>  	tpg_update_mv_step(&dev->tpg);
+> +	dev->tpg.colorspace = mp->colorspace;
+> +	dev->tpg.xfer_func = mp->xfer_func;
+> +	if (dev->fmt_cap->color_enc == TGP_COLOR_ENC_YCBCR)
+> +		dev->tpg.ycbcr_enc = mp->ycbcr_enc;
+> +	else
+> +		dev->tpg.hsv_enc = mp->hsv_enc;
+> +	dev->tpg.quantization = mp->quantization;
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-common.c b/drivers/media/test-drivers/vivid/vivid-vid-common.c
+> index 76b0be670ebb..19701fe72030 100644
+> --- a/drivers/media/test-drivers/vivid/vivid-vid-common.c
+> +++ b/drivers/media/test-drivers/vivid/vivid-vid-common.c
+> @@ -920,6 +920,31 @@ int vivid_enum_fmt_vid(struct file *file, void  *priv,
+>  	fmt = &vivid_formats[f->index];
+>  
+>  	f->pixelformat = fmt->fourcc;
+> +
+> +	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE &&
+> +	    f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> +		return 0;
+> +	/*
+> +	 * For capture devices, we support the CSC API.
+> +	 * We allow userspace to:
+> +	 * 1. set the colorspace
+> +	 * 2. set the xfer_func
+> +	 * 3. set the ycbcr_enc on YUV formats
+> +	 * 4. set the hsv_enc on HSV formats
+> +	 * 5. set the quantization on YUV and RGB formats
+> +	 */
+> +	f->flags |= V4L2_FMT_FLAG_CSC_COLORSPACE;
+> +	f->flags |= V4L2_FMT_FLAG_CSC_XFER_FUNC;
+> +
+> +	if (fmt->color_enc == TGP_COLOR_ENC_YCBCR) {
+> +		f->flags |= V4L2_FMT_FLAG_CSC_YCBCR_ENC;
+> +		f->flags |= V4L2_FMT_FLAG_CSC_QUANTIZATION;
+> +	} else if (fmt->color_enc == TGP_COLOR_ENC_HSV) {
+> +		f->flags |= V4L2_FMT_FLAG_CSC_HSV_ENC;
+> +	} else if (fmt->color_enc == TGP_COLOR_ENC_RGB) {
+> +		f->flags |= V4L2_FMT_FLAG_CSC_QUANTIZATION;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+> index 150ee16ebd81..a3083529b698 100644
+> --- a/include/media/v4l2-common.h
+> +++ b/include/media/v4l2-common.h
+> @@ -539,4 +539,33 @@ static inline void v4l2_buffer_set_timestamp(struct v4l2_buffer *buf,
+>  	buf->timestamp.tv_usec = ts.tv_nsec / NSEC_PER_USEC;
+>  }
+>  
+> +static inline bool v4l2_is_colorspace_valid(__u32 colorspace)
+> +{
+> +	return colorspace > V4L2_COLORSPACE_DEFAULT &&
+> +	       colorspace <= V4L2_COLORSPACE_DCI_P3;
+> +}
+> +
+> +static inline bool v4l2_is_xfer_func_valid(__u32 xfer_func)
+> +{
+> +	return xfer_func > V4L2_XFER_FUNC_DEFAULT &&
+> +	       xfer_func <= V4L2_XFER_FUNC_SMPTE2084;
+> +}
+> +
+> +static inline bool v4l2_is_ycbcr_enc_valid(__u8 ycbcr_enc)
+> +{
+> +	return ycbcr_enc > V4L2_YCBCR_ENC_DEFAULT &&
+> +	       ycbcr_enc <= V4L2_YCBCR_ENC_SMPTE240M;
+> +}
+> +
+> +static inline bool v4l2_is_hsv_enc_valid(__u8 hsv_enc)
+> +{
+> +	return hsv_enc == V4L2_HSV_ENC_180 || hsv_enc == V4L2_HSV_ENC_256;
+> +}
+> +
+> +static inline bool v4l2_is_quant_valid(__u8 quantization)
+> +{
+> +	return quantization == V4L2_QUANTIZATION_FULL_RANGE ||
+> +	       quantization == V4L2_QUANTIZATION_LIM_RANGE;
+> +}
+> +
+>  #endif /* V4L2_COMMON_H_ */
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [01cc2ec6ea044731e939e5e47f7e115b86f49465] media: atomisp: cleanup __printf() atributes on printk messages
+> git bisect good 01cc2ec6ea044731e939e5e47f7e115b86f49465
+> # bad: [c0c8db7bc95397f32fe60ff8b07c746a69fb22de] media: MAINTAINERS: remove Maxime Jourdan as maintainer of Amlogic VDEC
+> git bisect bad c0c8db7bc95397f32fe60ff8b07c746a69fb22de
+> # bad: [aaffa0126a111d65f4028c503c76192d4cc93277] media: rcar-vin: Fix a reference count leak.
+> git bisect bad aaffa0126a111d65f4028c503c76192d4cc93277
+> # bad: [25d8cf786d34b5167f2c01e092eeedcb0ae58628] media: staging: rkisp1: rsz: set flags to 0 in enum_mbus_code cb
+> git bisect bad 25d8cf786d34b5167f2c01e092eeedcb0ae58628
+> # good: [327296920f9dedfc6ba4ef8f5a686c9667c65f38] media: mtk-vcodec: venc: set OUTPUT buffers field to V4L2_FIELD_NONE
+> git bisect good 327296920f9dedfc6ba4ef8f5a686c9667c65f38
+> # good: [21d387b8d372f859d9e87fdcc7c3b4a432737f4d] media: mx2_emmaprp: Fix memleak in emmaprp_probe
+> git bisect good 21d387b8d372f859d9e87fdcc7c3b4a432737f4d
+> # good: [b38c73ca1c213bbf8a872b334a6bb835becfaba5] media: v4l2: add support for colorspace conversion API (CSC) for video capture
+> git bisect good b38c73ca1c213bbf8a872b334a6bb835becfaba5
+> # bad: [62aacfa9bf93f94f6949338e0c7a2ed4c4bd2c2a] media: v4l2: extend the CSC API to subdevice.
+> git bisect bad 62aacfa9bf93f94f6949338e0c7a2ed4c4bd2c2a
+> # bad: [2f491463497ad43bc06968a334747c6b6b20fc74] media: vivid: Add support to the CSC API
+> git bisect bad 2f491463497ad43bc06968a334747c6b6b20fc74
+> # first bad commit: [2f491463497ad43bc06968a334747c6b6b20fc74] media: vivid: Add support to the CSC API
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#1739): https://groups.io/g/kernelci-results/message/1739
+> Mute This Topic: https://groups.io/mt/77191137/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
-
-for you to fetch changes up to e2eae09939a89e0994f7965ba3c676a5eac8b4b0:
-
-  iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate() (2020-09-29 16:25:52 +0100)
-
-----------------------------------------------------------------
-Arm SMMU updates for 5.10
-
-- Continued SVM enablement, where page-table is shared with CPU
-
-- Groundwork to support integrated SMMU with Adreno GPU
-
-- Allow disabling of MSI-based polling on the kernel command-line
-
-- Minor driver fixes and cleanups (octal permissions, error messages, ...)
-
-----------------------------------------------------------------
-Barry Song (3):
-      iommu/arm-smmu-v3: replace symbolic permissions by octal permissions for module parameter
-      iommu/arm-smmu-v3: replace module_param_named by module_param for disable_bypass
-      iommu/arm-smmu-v3: permit users to disable msi polling
-
-Jean-Philippe Brucker (9):
-      iommu/arm-smmu-v3: Fix endianness annotations
-      arm64: mm: Pin down ASIDs for sharing mm with devices
-      arm64: cpufeature: Export symbol read_sanitised_ftr_reg()
-      iommu/io-pgtable-arm: Move some definitions to a header
-      iommu/arm-smmu-v3: Move definitions to a header
-      iommu/arm-smmu-v3: Share process page tables
-      iommu/arm-smmu-v3: Seize private ASID
-      iommu/arm-smmu-v3: Check for SVA features
-      iommu/arm-smmu-v3: Add SVA device feature
-
-Jordan Crouse (3):
-      iommu/arm-smmu: Pass io-pgtable config to implementation specific function
-      iommu/arm-smmu: Add support for split pagetables
-      iommu/arm-smmu: Prepare for the adreno-smmu implementation
-
-Rob Clark (1):
-      iommu/arm-smmu: Constify some helpers
-
-Will Deacon (1):
-      Merge branch 'for-next/svm' of git://git.kernel.org/.../arm64/linux into for-joerg/arm-smmu/updates
-
-Yu Kuai (1):
-      iommu/qcom: add missing put_device() call in qcom_iommu_of_xlate()
-
-Zenghui Yu (1):
-      iommu/arm-smmu-v3: Fix l1 stream table size in the error message
-
-Zhou Wang (1):
-      iommu/arm-smmu-v3: Ensure queue is read after updating prod pointer
-
- MAINTAINERS                                     |   3 +-
- arch/arm64/include/asm/barrier.h                |   1 +
- arch/arm64/include/asm/io.h                     |   1 +
- arch/arm64/include/asm/mmu.h                    |   3 +
- arch/arm64/include/asm/mmu_context.h            |  11 +-
- arch/arm64/kernel/cpufeature.c                  |   1 +
- arch/arm64/mm/context.c                         | 105 ++-
- drivers/iommu/Kconfig                           |  10 +
- drivers/iommu/arm/arm-smmu-v3/Makefile          |   5 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 248 +++++++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c     | 843 +++++-------------------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h     | 723 ++++++++++++++++++++
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c      |   3 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.c           | 102 ++-
- drivers/iommu/arm/arm-smmu/arm-smmu.h           |  84 ++-
- drivers/iommu/arm/arm-smmu/qcom_iommu.c         |   8 +-
- drivers/iommu/io-pgtable-arm.c                  |  27 +-
- drivers/iommu/io-pgtable-arm.h                  |  30 +
- 18 files changed, 1410 insertions(+), 798 deletions(-)
- create mode 100644 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
- create mode 100644 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
- create mode 100644 drivers/iommu/io-pgtable-arm.h
