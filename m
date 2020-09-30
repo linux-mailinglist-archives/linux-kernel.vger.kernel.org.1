@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69A727E6E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A0227E6E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgI3KmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S1729218AbgI3Kmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3KmB (ORCPT
+        with ESMTP id S1728819AbgI3Kmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:42:01 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B072FC061755;
-        Wed, 30 Sep 2020 03:42:01 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k8so924608pfk.2;
-        Wed, 30 Sep 2020 03:42:01 -0700 (PDT)
+        Wed, 30 Sep 2020 06:42:49 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B19BC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:42:48 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id j76so925247ybg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:42:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9PUVuYIAR3dsuoBiBsw/RZdRsjKZPpHWKBbXuKbDzwc=;
-        b=TotQ5KO1k06WtIu22CRFT3dk/TqwrOVUrHQqITSA7RPgZjx6kPnkXk80M0XPYy13o/
-         tvzXsN06FNvHxrDEU4pYzJ6xNLNi1KqlJw7Q3Ttq4DcRFVfzN8CR2me9QJGfvX1t5SD2
-         pRgXHiFPNDlO39Idj0WfRHPwZnUhrp90z/Iyu+MkBxn7TcPyYUmXdm534piI+tdThpZe
-         cbZcjsdiXMCPdNB4SlDA2e2EOxfZpG94sYzf+EsMynvTJu9H0lDgJ19QNyh+3xl6GnuW
-         EjmR7Xn4svgOSmwTfhToSiTnTak+g6sdYTdg57m0dJoS/89jn/asKV4Jpir8rMiwrQG5
-         thhw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
+        b=LGDRjfPKm4Tfb2wKIO+sjyby0aq/eeGL27bp3jowR04I2ijC6NxDvnswff0orC/OvO
+         DIWnPK9XO5lL7ttg1aXmedlBLYnHOtQnC7mNlD8mwwjplZq32kpT92zs1CaBbqp3t1Eh
+         km3DI02+nD04NgKN7s/6hd7g2ltzjDArHAl21NeCev9BRIX+ffGEHDQ72DgocvLpFhQL
+         4ScmsK8em1ovDhWs1rVMHysq/97gSVmzhU+WfxsNsT5Xxyy1SvPOxX/kNyAc+jmHtt7z
+         xOYom1EvjzCn0Cni860I2B3qha/RNw+N4effH0wIm6noM/kAu7W/6Oc3xJF/gQUp8I3x
+         WCpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9PUVuYIAR3dsuoBiBsw/RZdRsjKZPpHWKBbXuKbDzwc=;
-        b=Ct/UBY8UTCqTbhfn0nOleZFCswBgjr4tOSyHT0esLw/dQWPCwZ66w6YnhqeMS1sGTu
-         3WoE50G9J/TnJV2YXBHmQD0yDT7E4CadTnVMel0VNyMWUfcccLAJrI2xftJkliyM1kLX
-         eC6TdY9j3vMtw4IjajRv5RMu4UYu6pDunnyQU0ctST2qVJQ4xoGHzHBqk2LKtdILGvZ4
-         d4KlExCQF3eXyLNZCZ+wE1vIdPjk+cVIyBlGuPusxNnEBMT8k4wRce1MhydaDgfXSScA
-         SF9UCO/DstCD+7bLVCB9dTGpWxznOahtiayFFVM20W5FmrOVgODKXpfHu6meJesMIVzj
-         TnmQ==
-X-Gm-Message-State: AOAM5316tAgCFhSicwvtcVqviVkQVNTBL7GfGyuPqqSwRmkJFyamGL9h
-        xDWJO+n+AR0Yn6tbWnhQsFw=
-X-Google-Smtp-Source: ABdhPJzWNvBir+nQe8cAzPzySMJQIsCctw7pje1panx0WeVO3T/pHdZpInaWEXRM1KbGPe7oSPNwlQ==
-X-Received: by 2002:a63:da13:: with SMTP id c19mr1693718pgh.68.1601462521219;
-        Wed, 30 Sep 2020 03:42:01 -0700 (PDT)
-Received: from [192.168.1.200] (flh2-125-196-131-224.osk.mesh.ad.jp. [125.196.131.224])
-        by smtp.gmail.com with ESMTPSA id u22sm1670248pgi.85.2020.09.30.03.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 03:42:00 -0700 (PDT)
-Subject: Re: [PATCH 2/3] exfat: remove useless check in exfat_move_file()
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        motai.hirotaka@aj.mitsubishielectric.co.jp,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        'Sungjong Seo' <sj1557.seo@samsung.com>
-References: <CGME20200911044511epcas1p4d62863352e65c534cd6080dd38d54b26@epcas1p4.samsung.com>
- <20200911044506.13912-1-kohada.t2@gmail.com>
- <015f01d68bd1$95ace4d0$c106ae70$@samsung.com>
- <8a430d18-39ac-135f-d522-90d44276faf8@gmail.com>
- <8c9701d6956a$13898560$3a9c9020$@samsung.com>
- <000001d6956b$e7bab2e0$b73018a0$@samsung.com>
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-Message-ID: <6a0364e6-2192-439d-f874-11402dc8009c@gmail.com>
-Date:   Wed, 30 Sep 2020 19:41:58 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=rQKMQ1kqbR8Gl0+GJv0CY/jTM8wgLqzh+7PcecIdixo=;
+        b=MVIH42ZbVYZ84UnayxJK+T+DFnfB5MpSfeJbAKVeuxNznluXBUHkeLfwTY+nf1PeL9
+         9MXjwSqE3pf7mMptdcqSS80O+Y8rWLo7DdpyxeCtQMnm9Yi1C0VcBswdPii/OX92CXWG
+         Ze0ux6XcQ7EjwhWFLr/s5CcBuiEyLpufLAXkUhl2IBoITWTiZ+3mGBPQ3025d85NBfhZ
+         G9qqCO6nlXI2yQi6RsZvu/YnMwYtgW+UfoSr5tR9Uz8pKLjto7aHl/XDDn3ED0MKtOVp
+         hXE46tC7v6L4ZT9W2R+sd5o3WFeDMWyoOq7NKuU0I7vbONxAXkc7d+XroEyh8Zrb281R
+         g7+w==
+X-Gm-Message-State: AOAM5332tO6L/blieVMjQmDzy1knFwE0Qpc8IUZzR89MLOi9iJQhI+sL
+        y0rj5kdhqM0PHn+mMigctfnMsQcgjORfryv9lSY=
+X-Google-Smtp-Source: ABdhPJyEFYE3rSxkSy37ZPcNNyRqEfnfa0e1rCcP2jgE5qX8O9xoU7IYXAIJ1cuJdy6BC7oi3j78uSJEUtVGuYLRygY=
+X-Received: by 2002:a25:c014:: with SMTP id c20mr2236780ybf.12.1601462566412;
+ Wed, 30 Sep 2020 03:42:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000001d6956b$e7bab2e0$b73018a0$@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a25:105:0:0:0:0:0 with HTTP; Wed, 30 Sep 2020 03:42:45 -0700 (PDT)
+Reply-To: robertandersonhappy1@gmail.com
+From:   robert <robertanderson6120@gmail.com>
+Date:   Wed, 30 Sep 2020 03:42:45 -0700
+Message-ID: <CAG4ip=ghaeVBMa9F6fu+hBbY_K19ZD3GNDFA6A_vGq4yo40nQw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good day my good friend.
 
->>> BTW
->>> Are you busy now?
->> I'm sorry, I'm so busy for my full time work :( Anyway, I'm trying to review serious bug patches or
->> bug reports first.
->> Other patches, such as clean-up or code refactoring, may take some time to review.
->>
->>> I am waiting for your reply about "integrates dir-entry getting and
->>> validation" patch.
->> As I know, your patch is being under review by Namjae.
-> I already gave comments and a patch, but you said you can't do it.
-> I'm sorry, But I can't accept an incomplete patch. I will directly fix it later.
+How are you doing today? It has been long i hear from you, what is going on
+your side? Today i am very much happy to inform you about my success in
+getting those inheritance funds transferred under the co-operation of a new
+partner from India Asia. He is a Canadian but based in India, but presently
+i'm in India for investment projects with my own share of the total sum of
+millions dollars. meanwhile, i didn't forget your past efforts and attempts
+to assist me in transferring those inheritance funds despite that it failed
+us some how, i want you to contact my secretary in Lome Togo Republic West
+Africa, her name is solomon brand, this is he email address (
+solomonbrand003@gmail.com ), ask her to contact Ecobank were i
+kept the sum of $350,000.00, for your compensation, this compensation fund
+is for all the past efforts and attempts to assist me in the passed
+transaction. I appreciated your efforts at that time very much. so feel
+free and contact my secretary Mr solomon brand, and instruct her where
+Ecobank will transfer the total sum of $350,000.00.
 
-Of course, I understand that you can't accept a under-discussed patch.
+Please do let me know immediately Ecobank transfer the fund $350.000.00
+into your own bank account, in the moment, I am too busy here because of
+the investment projects which i am having with my new partner at hand, so
+get in touch with Mr solomon brand on he email address, he will
+contact Ecobank on your behalf without any delay. Stay safe of Covid 19.
 
-I think you know what I'm trying to do, with previous patches.
-Unfortunately, I couldn't implement it properly using the patch you provided.
-But I don't think the checksum and name-lenth issues should be left unresolved.
-(How do you think?)
-So I want you to think with me.
-
-I still feel we haven't discussed this enough.
-I still don't understand what you think is the problem with the patch.
-Where and what kind of problems do you think the patch has?
-- performance?
-- wrong behavior?
-- readability?
-- runtime cost?
-- style?
-- other?
-
-I think I explained the reason for each implementation.
-If it's not enough, I'd like to explain it in more detail.
-
-
-BR
----
-Tetsuhiro Kohada <kohada.t2@gmail.com>
+Best regards,
+Dr. robert anderson
