@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE50727E561
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DCF27E579
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgI3Jkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
+        id S1728599AbgI3JqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgI3Jkf (ORCPT
+        with ESMTP id S1725779AbgI3JqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:40:35 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1BCC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:40:33 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w1so1108224edr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 02:40:33 -0700 (PDT)
+        Wed, 30 Sep 2020 05:46:08 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0F5C061755;
+        Wed, 30 Sep 2020 02:46:07 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y20so705605pll.12;
+        Wed, 30 Sep 2020 02:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pxwl6vJ7NlP3+dTWpMovM7e1DudeEOjt0JB5STP1e8w=;
-        b=ZitIgb1o3RtIlUrhpJ50PCc/UK8UVLIRyv79th9TeWsA8csJknxt1K/sb9Ht6tYoTx
-         BLtAWOb+pSfZDkg+9pRWdog0HwUnFm+uL/WMhoxcOffuEKjIbluG4WHAJ3qXvKiKzYIh
-         3TJvXpz0sSfCNGC0TkdOtY5jd0duQ+r0RlVqXXG6P8EqcaezSN3KIIM9c8YfDK1MBaht
-         do4yJAVcsApOJYZ5TBHdmoJJ3BXniQcBifxCWLVrb53mwJVQ5t67v0T6xkjsLw6FiBix
-         xwHg9y1q51Hc41LthumOPD2TbOVFjIvYk+kgItPFb4RwJzD49bMDP83q1xfWheTB49EK
-         aCOQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=w6x76gtOHsFZbRIC64IzxvoZiSxuFZiWjvjCw4IeBQg=;
+        b=p2mQDBcCc34wHPCS1PNzUjlkF5oBkaoVSc4y0UTqBTEU0wukBKhr3l7IugLFhsWwPk
+         sBCNpg2XDBk2OENMWkcxe87s5sTNnAguKCXJ6TDg0ls1rcGx0XE7jUu5FlJ7zDFPzzEX
+         2HzpcJjkCPTBS1Ppm4WKw0azG0UEKk1tjgWweFP0qty95Bj5RJ2laAt37HL+UhYr84ET
+         5e6ww1KK+tiIzJtD09T1/N6lgRK8YaMCWpGRjgcyGZ7ci/KArqSTfDL0wvfQ+6yfCzRr
+         NpL977c4gkkhKnv3cQBQGpUIUkJiFUDixoD5gzENfM+OELC4byQ2AvKrHFt8FeG0C9OR
+         xXtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pxwl6vJ7NlP3+dTWpMovM7e1DudeEOjt0JB5STP1e8w=;
-        b=EigxQhmitHSKSdT348nax0i0GR19bAt0XnP21gzjyV/ukE1MmlyVAZFJ05BR3/oU1g
-         J2Hl/6LHFwvVU38d3NZAojXnsr4PyW1n57i9cx02Rtl+4RcPazwo9c9Oj4BBotzF6Y18
-         OdgdqC3PSp+FSxSjZYo46qI2DW9+hNaq8rRgmdiFhkfSbYgoykDjLyr7+5WgBs/2QWvc
-         HHI1T6JxNBpJ3WYrryVQZHEaLHrt5XELIY/sCUaXjLawBMncuRNEk1efQbkUd/roKyA8
-         H1koxBBZ7oLLAnFrLpIFnMxHpWmWvVFmdjUJOrHQ95VeQ0A8e8y6vVhNS+KMbGQkRIld
-         Kbvw==
-X-Gm-Message-State: AOAM530qSxUOMPq3WuUrG9Qz6/ZG8NMBcw38/roPDGhuyNEBR+CrX9+V
-        NdjbOZ1EJUVG+vhpFKWyqJy69AxYgWUrRJIjX9fJyw==
-X-Google-Smtp-Source: ABdhPJzwbGBzKP6VvMUQcxMG01XenJjUKeVs2qSsw3fsj4YoYAy9TZVtvNOrKyJwfTgT8Op4iITpLqXD7NLusQrUxfc=
-X-Received: by 2002:a50:e442:: with SMTP id e2mr1802575edm.186.1601458832682;
- Wed, 30 Sep 2020 02:40:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=w6x76gtOHsFZbRIC64IzxvoZiSxuFZiWjvjCw4IeBQg=;
+        b=kqDAtKc2rT7WbYp/Qk5DNLHOYS+UsMmhaUJMvW9W8rU8fmKMrQDPyCE/7pj03x4jmp
+         5xuB/5tTHvoqoqB1uzUmHsGg6j8U94PQHRfJ8PKZgqN2iijMNrIPt8n8aqgKkGE2hd1/
+         VJdPWzUD1p08szPVP5+lhWxR1x+i0LhLPuCwrc0V+JdCvDAYUh/x6lTeMyPM8Df97VXs
+         9h7k/xVyNQBIhSpfTqEF6LEq9njNGdbRlG6Yfk/K5FwAbYmqqz7w8GVOB8MtwgOQPq/6
+         oDd3QbRmgO7bXzT7FiQ3E+jxTBUVbsSN1MBi7/rf7iiRhudDifgiupwZ0Z+2WEAfgQum
+         PdKA==
+X-Gm-Message-State: AOAM531ywgK9V7KDCkyZ4QNfsPfGYsfh+1pneo5E+7JG3QiJSsup2/75
+        BzD98TcFU+ioALPT7SEOuCk=
+X-Google-Smtp-Source: ABdhPJzm6vd4n3L4meRW311HnXuqF9jAY2zYIatqFAbTkPoW7zP6m1SSm9AGlDm9UQ7WkSMcF9YWjQ==
+X-Received: by 2002:a17:90b:33cb:: with SMTP id lk11mr1797687pjb.98.1601459167352;
+        Wed, 30 Sep 2020 02:46:07 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id j26sm1890991pfa.160.2020.09.30.02.46.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 02:46:07 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 02:40:32 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930094032.GA6686@Asurada-Nvidia>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200930092053.2114-1-mike.looijmans@topic.nl>
-In-Reply-To: <20200930092053.2114-1-mike.looijmans@topic.nl>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 30 Sep 2020 11:40:22 +0200
-Message-ID: <CAMpxmJVdRfJJ_Wvf-fVdpvbnEWvpOtiYhRwkoASZnvFAjTDmGw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: gpio: pca953x: Add support for the
- NXP PCAL9554B/C
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPeF8D0A6PGVbi_7RedO-DFd70sjGcJOjx-gCJ7Cd8k0YQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:21 AM Mike Looijmans <mike.looijmans@topic.nl> wrote:
->
-> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
-> with 8 GPIOs, latched interrupts and some advanced configuration
-> options. The "C" version only differs in I2C address.
->
-> This adds the entry to the devicetree bindings.
->
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-> ---
-> v2: Split devicetree and code into separate patches
->
->  Documentation/devicetree/bindings/gpio/gpio-pca953x.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt b/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
-> index 3126c3817e2a..99dc1936f633 100644
-> --- a/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
-> @@ -20,6 +20,7 @@ Required properties:
->         nxp,pcal6416
->         nxp,pcal6524
->         nxp,pcal9535
-> +       nxp,pcal9554b
->         nxp,pcal9555a
->         maxim,max7310
->         maxim,max7312
-> --
-> 2.17.1
->
+On Wed, Sep 30, 2020 at 11:21:14AM +0200, Krzysztof Kozlowski wrote:
+> On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> >
+> > Previously the driver relies on bus_set_iommu() in .probe() to call
+> > in .probe_device() function so each client can poll iommus property
+> > in DTB to configure fwspec via tegra_smmu_configure(). According to
+> > the comments in .probe(), this is a bit of a hack. And this doesn't
+> > work for a client that doesn't exist in DTB, PCI device for example.
+> >
+> > Actually when a device/client gets probed, the of_iommu_configure()
+> > will call in .probe_device() function again, with a prepared fwspec
+> > from of_iommu_configure() that reads the SWGROUP id in DTB as we do
+> > in tegra-smmu driver.
+> >
+> > Additionally, as a new helper devm_tegra_get_memory_controller() is
+> > introduced, there's no need to poll the iommus property in order to
+> > get mc->smmu pointers or SWGROUP id.
+> >
+> > This patch reworks .probe_device() and .attach_dev() by doing:
+> > 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
+> > 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
+> > 3) Calling devm_tegra_get_memory_controller() in .probe_device()
+> > 4) Also dropping the hack in .probe() that's no longer needed.
+> >
+> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > ---
+> >
+> > Changelog
+> > v2->v3
+> >  * Used devm_tegra_get_memory_controller() to get mc pointer
+> >  * Replaced IS_ERR_OR_NULL with IS_ERR in .probe_device()
+> > v1->v2
+> >  * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
+> >    with tegra_get_memory_controller call.
+> >  * Dropped the hack in tegra_smmu_probe().
+> >
+> >  drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
+> >  1 file changed, 36 insertions(+), 108 deletions(-)
+> >
+> > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> > index 6a3ecc334481..636dc3b89545 100644
+> > --- a/drivers/iommu/tegra-smmu.c
+> > +++ b/drivers/iommu/tegra-smmu.c
+> > @@ -61,6 +61,8 @@ struct tegra_smmu_as {
+> >         u32 attr;
+> >  };
+> >
+> > +static const struct iommu_ops tegra_smmu_ops;
+> 
+> I cannot find in this patch where this is assigned.
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Because it's already set in probe():
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/iommu/tegra-smmu.c#n1162
+
+And my PATCH-3 sets it for PCI bus also.
+
+Thanks
