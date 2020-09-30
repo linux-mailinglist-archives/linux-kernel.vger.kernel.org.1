@@ -2,170 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837D427EE08
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB18027EE0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbgI3P5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S1730993AbgI3P5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgI3P5C (ORCPT
+        with ESMTP id S1725799AbgI3P5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:57:02 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF26C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:57:01 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id o20so623173ook.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:57:01 -0700 (PDT)
+        Wed, 30 Sep 2020 11:57:15 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D953DC061755;
+        Wed, 30 Sep 2020 08:57:15 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id p15so1134150qvk.5;
+        Wed, 30 Sep 2020 08:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ci9ZCjxVBxd29K7YcHD/doaBSJTqujx95brcxvxl6t8=;
-        b=Hj1XSQwQKzS7Hc+toawQfniOOnc6Ogr1LAE/g2szmnNsFmrOdnfgmzpQCrdAezAtTO
-         SQ2VAx7+As4+qtuR6gAIiqISJrjVUNycta60eE3BHsj8rpT3StjheGM5sSBD23/QvdOh
-         3jPC+h7CaEqvwqxypfurjDoWCehSrD+RGFRufetP0qquBWxdoExadkwrLUiUQ4XFHBpr
-         RvIR0/IlNYp28eKrC0U1knfno9nOj40DkfJWu0Zj3jJkeqb4hfE20ejHU3V5mR2FOBHP
-         5hi7ZtxL9sHaD6/KOt4IuilQjUkg0A9xTqSm+PKDsjgFBLhhq+JkyQVTpDwAU5RPLTxO
-         7DYA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XxcDnFkM12RjQdmqBTOpljbeUrELtp9vvZfj8rq32tM=;
+        b=hASQXTOMn064a1WetUtXRjnhaI2+e6zWriulG2iO0sy/35zAsvf5xsQRw0srPf/JsW
+         tHPzOxjdmDfcZaGxY+GJ+sjMnUlSHvDFWBa7vV0u9ODmuKvsSrzhaWkAHiw8i6UkYH3P
+         +jbZYEYJ4tSGZH3fx28mvpkSfVwdgl5mGnVvwshrsCIbqR1DB8g/PLrSHIpDv+eXCgyZ
+         KUmTdubE9InzTWfeGGk//saJ/O9uT6EX0V5Whdz4qa3dR6mi0BreGfSHpFIudrGn8TiT
+         ZTdmlitV2hj51UBDW//zv60xNv1nsbxiWrQ7gHrp0wZELe0E9lpX6xyMRWGNtOadYORX
+         D0pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ci9ZCjxVBxd29K7YcHD/doaBSJTqujx95brcxvxl6t8=;
-        b=aLHwHAqXQiyKC3yvelaQvXn6oq1/VHg0jVyxza+IhIJCiJNpHhWbkPMlw7xYJ+CWQe
-         9y/vlwO/UUTa1EGm4ZEPOiVwnPplhj3b3hfYV0SadW9ixuCNYMhkdfV6H/oKb8PZEo7t
-         7s1KR+349jhcjTEow0ZEu1gG0bxxxHj5oGcxbq8Ed6svDpqlzLn0PlCaroaRlmKJXbZ5
-         E6gO4Q2wuuG6Pc/sRhptv9Mr42eEykzCUcFNQF2M45vzOcata4+JFkagfBPl3V28yXsW
-         0VEeNac3OXf6Ep3OhQTr8C+L74h2Tp9fuQtdpnDcTsPzoFpAfSuSbiTc9xLAPwTq3zkp
-         3Mpg==
-X-Gm-Message-State: AOAM533QbTrwpTdNuSrn8Kj2Yd9IrkMmP1os3K2a5VV5YwV24c9wel4W
-        tF9RAQYt+bGIrLTm/vLmnhrbz+6R4sEQ6VdpSKNLXw==
-X-Google-Smtp-Source: ABdhPJzp/IB64gFwxF8qSk9RJC7rf4HZmkiChirppE2FNBVA45dgsh8vr+RflAPRdKUNkuWnSpIQtuXb0qU3ChKNaqA=
-X-Received: by 2002:a4a:95f1:: with SMTP id p46mr2288291ooi.93.1601481420233;
- Wed, 30 Sep 2020 08:57:00 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XxcDnFkM12RjQdmqBTOpljbeUrELtp9vvZfj8rq32tM=;
+        b=FXxkhp/dirlVQjN1oZPOOYxvSVBnYgTgDS4keVdG4qnpppGu2V6U0r6/I2jdaB82Gk
+         KRd71FTnh00gu5dyDSxmSPreTC+s3ZT9bvNqucb3Q8ar/lSqVa31SGZpt58sd/ld6hGS
+         9XsfW0j/hr/wwiVDCxE4xceVohN+yLGfuWCaL9QPU599Kg0+GC6sC9mf+tDV9zysNzBw
+         7uSdy7yv/NRXbnbfWoCiVe574IRfssxM4cafZVcsOzlqtt8v5QdFP74H6nVZgJbhzkPR
+         EVcM9011kPov19sK9I3BMZ/k2hW3O04ty/RyWrmGSvzBF++POYBwhUFp7ZDvl3cCdq+Z
+         76kg==
+X-Gm-Message-State: AOAM530IbwIltzqEqxCGls0MJeXRMC0/DwWZZiC7pblCibvpoXJaLifr
+        l3gffASPOagasf/UeoDUlFE=
+X-Google-Smtp-Source: ABdhPJzg4a+tqrLjy8JKUXgO06dZZjKIwVdLjHU5Qg3sw4AcBcoffkOMXIEcGLD+0nPRiZ4KgqrGQw==
+X-Received: by 2002:a0c:8091:: with SMTP id 17mr3097080qvb.19.1601481434987;
+        Wed, 30 Sep 2020 08:57:14 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:e9fa])
+        by smtp.gmail.com with ESMTPSA id t43sm2880747qtc.54.2020.09.30.08.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 08:57:14 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 30 Sep 2020 11:57:13 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 49/52] workqueue: fix a kernel-doc warning
+Message-ID: <20200930155713.GB4441@mtj.duckdns.org>
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <1d025719a6f6a55fcb5f8a9c382ed846cec9a4d9.1601467849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20200929142826.951084251@linuxfoundation.org>
-In-Reply-To: <20200929142826.951084251@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 30 Sep 2020 21:26:48 +0530
-Message-ID: <CA+G9fYup1i8WnQpcg28hkq9jgQTTkuiiEfOVSnm_3wS-1sijiA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/244] 4.19.149-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d025719a6f6a55fcb5f8a9c382ed846cec9a4d9.1601467849.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 19:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.149 release.
-> There are 244 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 01 Oct 2020 14:27:43 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.149-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Wed, Sep 30, 2020 at 03:25:12PM +0200, Mauro Carvalho Chehab wrote:
+> As warned by Sphinx:
+> 
+> 	./Documentation/core-api/workqueue:400: ./kernel/workqueue.c:1218: WARNING: Unexpected indentation.
+> 
+> the return code table is currently not recognized, as it lacks
+> markups.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Please route however you see fit.
 
-Summary
-------------------------------------------------------------------------
+Thanks.
 
-kernel: 4.19.149-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 78ef55ba27c378ac3e6106230e18472fc48e6851
-git describe: v4.19.148-245-g78ef55ba27c3
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.148-245-g78ef55ba27c3
-
-
-No regressions (compared to build v4.19.148)
-
-No Fixes (compared to build v4.19.148)
-
-
-Ran 24678 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kvm-unit-tests
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-fs-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-containers-tests
-* ltp-open-posix-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+tejun
