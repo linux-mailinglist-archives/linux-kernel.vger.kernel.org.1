@@ -2,140 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5046F27E2E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8264727E2E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgI3HsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:48:23 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53677 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725440AbgI3HsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:48:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UAYdEKG_1601452096;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UAYdEKG_1601452096)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 30 Sep 2020 15:48:16 +0800
-Date:   Wed, 30 Sep 2020 15:48:16 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
- the freelist in unset_migratetype_isolate()
-Message-ID: <20200930074816.GA40431@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200928182110.7050-1-david@redhat.com>
- <20200928182110.7050-4-david@redhat.com>
- <20200929091803.GB36904@L-31X9LVDL-1304.local>
- <21d9ea16-863b-19fe-e5b7-841bb4228c6d@redhat.com>
+        id S1725873AbgI3HuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgI3HuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:50:17 -0400
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 187C8207F7;
+        Wed, 30 Sep 2020 07:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601452216;
+        bh=XMkG4CRcSUmqrUkqWbqF30W5YmNW2OrB0+Qepd8DgkA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ezIfisKv6W2CuL3d1P6dUrGxSfaaZ77FNyLgngc/wgfBnBHUp4z17ymWQqLbb2RFo
+         yady0QyoiSFBjL/Kk5zpqKPWJhVtL0vQDMOCakmOeCkakOu8N1Jp3G1Fpr6lymgyEy
+         l68H5s4ghX2qOA8r2Ki6tzj4/jXvx40k66tCs2ds=
+Received: by mail-ej1-f41.google.com with SMTP id u21so1419378eja.2;
+        Wed, 30 Sep 2020 00:50:16 -0700 (PDT)
+X-Gm-Message-State: AOAM532BiByiBqyOu3eOJMmZPDzH6lJ/WTGheB8zvGKFghAILGGfe2XG
+        FpZ13XcmqfVToen2ELPrVJQOnhh54pzZADeGThw=
+X-Google-Smtp-Source: ABdhPJwHhACx43/+PmnGhf5MTFazuCpDBORXLcYkJ0K6Hty3Vz1pREf6ZJc9SBid/dw0iuTNb9zXDzoSqTHETpY9e9A=
+X-Received: by 2002:a17:906:491:: with SMTP id f17mr1507972eja.454.1601452214499;
+ Wed, 30 Sep 2020 00:50:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21d9ea16-863b-19fe-e5b7-841bb4228c6d@redhat.com>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-2-nicoleotsuka@gmail.com> <CAJKOXPeye7b0j1oB21JmBwc277_1RYWQ0SC0Otf+F62HK=sjjA@mail.gmail.com>
+ <20200930072542.GC13876@Asurada-Nvidia>
+In-Reply-To: <20200930072542.GC13876@Asurada-Nvidia>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 30 Sep 2020 09:50:03 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeV6+CW1jX_55yXAS=uANPGm9oup_NoYkobuQenuoddzw@mail.gmail.com>
+Message-ID: <CAJKOXPeV6+CW1jX_55yXAS=uANPGm9oup_NoYkobuQenuoddzw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function tegra_get_memory_controller
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:12:14PM +0200, David Hildenbrand wrote:
->On 29.09.20 11:18, Wei Yang wrote:
->> On Mon, Sep 28, 2020 at 08:21:08PM +0200, David Hildenbrand wrote:
->>> Page isolation doesn't actually touch the pages, it simply isolates
->>> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
->>>
->>> We already place pages to the tail of the freelists when undoing
->>> isolation via __putback_isolated_page(), let's do it in any case
->>> (e.g., if order <= pageblock_order) and document the behavior.
->>>
->>> Add a "to_tail" parameter to move_freepages_block() but introduce a
->>> a new move_to_free_list_tail() - similar to add_to_free_list_tail().
+On Wed, 30 Sep 2020 at 09:31, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 >
->s/a a/a/
+> Hi Krzysztof,
 >
->>>
->>> This change results in all pages getting onlined via online_pages() to
->>> be placed to the tail of the freelist.
->>>
->>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->>> Cc: Mel Gorman <mgorman@techsingularity.net>
->>> Cc: Michal Hocko <mhocko@kernel.org>
->>> Cc: Dave Hansen <dave.hansen@intel.com>
->>> Cc: Vlastimil Babka <vbabka@suse.cz>
->>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->>> Cc: Oscar Salvador <osalvador@suse.de>
->>> Cc: Mike Rapoport <rppt@kernel.org>
->>> Cc: Scott Cheloha <cheloha@linux.ibm.com>
->>> Cc: Michael Ellerman <mpe@ellerman.id.au>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>> include/linux/page-isolation.h |  4 ++--
->>> mm/page_alloc.c                | 35 +++++++++++++++++++++++-----------
->>> mm/page_isolation.c            | 12 +++++++++---
->>> 3 files changed, 35 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/include/linux/page-isolation.h b/include/linux/page-isolation.h
->>> index 572458016331..3eca9b3c5305 100644
->>> --- a/include/linux/page-isolation.h
->>> +++ b/include/linux/page-isolation.h
->>> @@ -36,8 +36,8 @@ static inline bool is_migrate_isolate(int migratetype)
->>> struct page *has_unmovable_pages(struct zone *zone, struct page *page,
->>> 				 int migratetype, int flags);
->>> void set_pageblock_migratetype(struct page *page, int migratetype);
->>> -int move_freepages_block(struct zone *zone, struct page *page,
->>> -				int migratetype, int *num_movable);
->>> +int move_freepages_block(struct zone *zone, struct page *page, int migratetype,
->>> +			 bool to_tail, int *num_movable);
->>>
->>> /*
->>>  * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
->>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>> index 9e3ed4a6f69a..d5a5f528b8ca 100644
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -905,6 +905,15 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
->>> 	list_move(&page->lru, &area->free_list[migratetype]);
->>> }
->>>
->>> +/* Used for pages which are on another list */
->>> +static inline void move_to_free_list_tail(struct page *page, struct zone *zone,
->>> +					  unsigned int order, int migratetype)
->>> +{
->>> +	struct free_area *area = &zone->free_area[order];
->>> +
->>> +	list_move_tail(&page->lru, &area->free_list[migratetype]);
->>> +}
->>> +
->> 
->> Would it be better to pass the *to_tail* to move_to_free_list(), so we won't
->> have a new function?
+> On Wed, Sep 30, 2020 at 09:21:39AM +0200, Krzysztof Kozlowski wrote:
+> > On Wed, 30 Sep 2020 at 02:35, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > >
+> > > This can be used by both tegra-smmu and tegra20-devfreq drivers.
+> > >
+> > > Suggested-by: Dmitry Osipenko <digetx@gmail.com>
+> > > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > > ---
+> > >
+> > > Changelog
+> > > v1->v2
+> > >  * N/A
+> > >
+> > >  drivers/memory/tegra/mc.c | 23 +++++++++++++++++++++++
+> > >  include/soc/tegra/mc.h    |  1 +
+> > >  2 files changed, 24 insertions(+)
+> > >
+> > > diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
+> > > index ec8403557ed4..09352ad66dcc 100644
+> > > --- a/drivers/memory/tegra/mc.c
+> > > +++ b/drivers/memory/tegra/mc.c
+> > > @@ -42,6 +42,29 @@ static const struct of_device_id tegra_mc_of_match[] = {
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
+> >
+> > > +struct tegra_mc *tegra_get_memory_controller(void)
+> > > +{
+> >
+> > Add kerneldoc and mention dropping of reference to the device after use.
 >
->Hi,
+> I am abort to use Dmitry's devm_ one in my next version:
+> https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
 >
->thanks for the review!
->
->See discussion in RFC + cover letter:
->
->"Add a "to_tail" parameter to move_freepages_block() but introduce a new
->move_to_free_list_tail() - similar to add_to_free_list_tail()."
+> Could I just skip the kerneldoc part? Otherwise, would you please
+> tell me which kerneldoc file I should update?
 
-Hmm, sounds reasonable.
+His version is almost the same as yours so it does not matter - you
+declare an exported function, so you need to document it. kerneldoc
+goes to the C file.
+https://elixir.bootlin.com/linux/latest/source/Documentation/doc-guide/kernel-doc.rst
 
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-
--- 
-Wei Yang
-Help you, Help me
+Best regards,
+Krzysztof
