@@ -2,101 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D9827EAB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564CE27EAB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbgI3ONx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:13:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56480 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730261AbgI3ONw (ORCPT
+        id S1730432AbgI3OOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730247AbgI3OOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:13:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UE55JZ169228;
-        Wed, 30 Sep 2020 14:13:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=0Tu7KhorhnS/GIgWf3boys7UzLxnsTMgPv4MJWNbOQQ=;
- b=vNXiy2Wtl3YwsT2l8/AWOCHnMwzzFPJ1qFVmauADuTBDp5hEqsBUd7Zuxz5DJKg2Ooei
- Dtn8maNiYM6BKDP12m++U0FgGdp+ndorl7rKR6eT6HKjeK7sWzHq/lHhMloEAlVeBXuo
- 1RT9+Wq7CqOCmhQFXQpbfD2ovOrbdLkW9pC4hoZ2zElDjbAarogPP0xw1gmTfLVc24YB
- 1I/Ni30dAC2Hsvo/Qc8NyXEXrORZiJpcBNqIqb8u+lzoiSV9/kv495DUUR0iG32IJ4px
- g8SQLItT/sN8Nyja6DVDUty5kd5shT11yQlwTN4OlW783pdTxqOj5A/NZM+SKTKqMgW2 Zg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33sx9n8nf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 14:13:44 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UEAoC3185373;
-        Wed, 30 Sep 2020 14:13:43 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 33tfdu00ef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 14:13:43 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08UEDgB7020641;
-        Wed, 30 Sep 2020 14:13:42 GMT
-Received: from [10.74.86.12] (/10.74.86.12)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Sep 2020 07:13:41 -0700
-Subject: Re: [PATCH] xen/arm: do not setup the runstate info page if kpti is
- enabled
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Bertrand Marquis <Bertrand.Marquis@arm.com>, jgross@suse.com
-References: <20200924234955.15455-1-sstabellini@kernel.org>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <4aca4d30-f418-bfab-8a9c-74f349f4ca02@oracle.com>
-Date:   Wed, 30 Sep 2020 10:13:39 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.1
+        Wed, 30 Sep 2020 10:14:03 -0400
+Received: from smtp3.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB791C061755;
+        Wed, 30 Sep 2020 07:14:02 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp3.goneo.de (Postfix) with ESMTP id C899423FEE3;
+        Wed, 30 Sep 2020 16:13:59 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.959
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.959 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.059, BAYES_00=-1.9] autolearn=ham
+Received: from smtp3.goneo.de ([127.0.0.1])
+        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BhW1fQLlSaAP; Wed, 30 Sep 2020 16:13:57 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp3.goneo.de (Postfix) with ESMTPSA id A814D23F6E1;
+        Wed, 30 Sep 2020 16:13:57 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 16:13:52 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930141352.kt6bpudj2t57ogp3@lem-wkst-02.lemonage>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20200930095204.GA1585476@kroah.com>
+ <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
+ <20200930105238.GA1592367@kroah.com>
+ <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
+ <20200930115106.GB1603625@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924234955.15455-1-sstabellini@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300112
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930115106.GB1603625@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 7:49 PM, Stefano Stabellini wrote:
+On Wed, Sep 30, 2020 at 01:51:06PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 30, 2020 at 01:27:20PM +0200, Lars Poeschel wrote:
+> > On Wed, Sep 30, 2020 at 12:52:38PM +0200, Greg Kroah-Hartman wrote:
+> > > On Wed, Sep 30, 2020 at 12:01:26PM +0200, Uwe Kleine-König wrote:
+> > > > On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrote:
+> > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > > > Hello,
+> > > > > > 
+> > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > > > Cc:.
+> > > > > > 
+> > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > thank you for your review!
+> > > > > > > 
+> > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > 
+> > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > > > 
+> > > > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > > > accomplish you way.
+> > > > > > > 
+> > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > > > I use udev rules to adjust permissions.
+> > > > > > 
+> > > > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > > > details in the sysfs code I would expect that the exported stuff is
+> > > > > > available instantly once the write used to export the PWM is completed.
+> > > > > > So changing the permissions can be done directly after triggering the
+> > > > > > export in the same process.
+> > > > > 
+> > > > > It looks like userspace wants to see when a pwmX device shows up, right?
+> > > > > 
+> > > > > And it's not because those devices do not belong to any class or bus, so
+> > > > > they are just "floating" out there (they might show up under
+> > > > > /sys/bus/virtual, if you set things up right, which I don't think is
+> > > > > happening here...)
+> > > > > 
+> > > > > So yes, you need to create a class, or assign this to a bus, which is
+> > > > > fine, but it looks like no one is doing that.  Don't create new classes
+> > > > > dynamically, but rather, just assign this to the existing pwm class.
+> > > > > What's wrong with that?  I saw an older patch that did that, what did
+> > > > > that break?
+> > > > 
+> > > > Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did you
+> > > > read the reverting commit's log message? (i.e.
+> > > > c289d6625237aa785b484b4e94c23b3b91ea7e60)
+> > > > 
+> > > > I guess the breakage is that the resulting name then is:
+> > > > 
+> > > > 	"pwm%d", pwm->id
+> > > > 
+> > > > where pwm->id is a number unique to the pwmchip. So doing
+> > > > 
+> > > > 	echo 0 > pwmchip1/export
+> > > > 	echo 0 > pwmchip2/export
+> > > > 
+> > > > breaks because both want to create pwm0 in the class directory.
+> > > 
+> > > Ah, that makes more sense why that didn't work.
+> > > 
+> > > Ok, can the "name" of the new export chip be changed?  Is that
+> > > hard-coded somewhere in userspace tools already?  Depending on that, the
+> > > solution for this will change...
+> > 
+> > I know that back then, when sysfs for pwm was created, Thierry didn't
+> > want to have one global namespace like gpio sysfs has. What you ask for
+> > is something like:
+> > 	pwm-{chipnumber}-{pwmnumber}
+> > Right ? Can that be considered non-global ?
+> 
+> Yes, and that's just "global" for the pwm class namespace.
+> 
+> > Thierry's mail from back then is here:
+> > https://lore.kernel.org/lkml/20130408081745.GA21392@avionic-0098.mockup.avionic-design.de/
+> > 
+> > A short search on github I found this:
+> > https://github.com/vsergeev/c-periphery/blob/d34077d7ee45fa7d1947cc0174919452fac31597/src/pwm.c#L74
+> > 
+> > Seems to match your hardcoded criteria ?
+> 
+> Yes, ugh :(
+> 
+> Ok, now I see why the "lots of pwm classes!" patch was proposed.
+> 
+> And maybe that's really the only way forward here, as the chip namespace
+> is the only unique thing.
+> 
+> But wow, it feels wrong...
 
-> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
->
-> The VCPUOP_register_runstate_memory_area hypercall takes a virtual
-> address of a buffer as a parameter. The semantics of the hypercall are
-> such that the virtual address should always be valid.
->
-> When KPTI is enabled and we are running userspace code, the virtual
-> address is not valid, thus, Linux is violating the semantics of
-> VCPUOP_register_runstate_memory_area.
->
-> Do not call VCPUOP_register_runstate_memory_area when KPTI is enabled.
->
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
-> CC: Bertrand Marquis <Bertrand.Marquis@arm.com>
-> CC: boris.ostrovsky@oracle.com
-> CC: jgross@suse.com
+Would the following feel better:
+* use the new naming scheme you proposed for pwm's :
+  pwm-{chipnumber}-{pwmnumber}
+* assign the normal pwm class to the exported pwm devices. That lets
+  them appear in the global /sys/class/pwm directory as e.g. pwm-0-0
+* maintain backward compatibility through symlinks e.g.:
+  pwmchip0/pwm0 -> ../pwm-0-0
 
+Or does this feel even more horrible ?
+I may miss some subtleties.
 
-Applied to for-linus-5.10
-
-
-
--boris
-
+Regards,
+Lars
