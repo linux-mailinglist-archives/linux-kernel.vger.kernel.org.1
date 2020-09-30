@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6B527EAD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055ED27EAD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgI3OWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:22:30 -0400
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:31144 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbgI3OW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:22:28 -0400
-IronPort-SDR: Afrq/gzrfOjT+dMh3NfKC6+dYWsC1Fb2ocxiGTquYDdlTVp70yH8b2f+NALq9oE4CMUBhSDLvN
- YPewrZoX1tYb7S2uAnnjaD8+m2ijhxIWZchwTzEA1h/gZ34z0heoNee0feKyG/HGKHjzOouI3p
- fpADusCMZkeFKYq4g10099bltWyZEfp6FIUEcjimvQG2JGqWxFV8Kw/kMeMnevEOs6nFaczbcQ
- wrPhlA3k1s0sVwNh/TtYirqT7aN0wCo0LEyuqXv8V09NBXfqrtfd4y4OHwSxDeRn7wliY+eGY3
- zOc=
-X-IronPort-AV: E=Sophos;i="5.77,322,1596528000"; 
-   d="scan'208";a="53417079"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa3.mentor.iphmx.com with ESMTP; 30 Sep 2020 06:22:27 -0800
-IronPort-SDR: y9+A998YjR6q49z2cDHsIN872VKx6hZNMQKQ6zyksUxgYG4UVvDDEnwiLr+SVwNP0biouD9Nj1
- b8ufBFqM08oBmnYSzD4cT93yVWxPe+RTSGeUyDrfO9V5kqKdjzTueFwLCRF9slUJ/x7cKxup/d
- T23Ha1pnuc2ZA1PNRlqzyo4Gv7jMkKx4yiQuI70+SPhzXoXQSY9zrAqA6KvLXyI+schb+hOKZO
- D6c67r4quUt6oXpmzAnLeMx44vrPB3EbyXPM83aIblDexJZHGRNs8azTi0if80FNE84/vF9pwR
- V5s=
-Subject: Re: [PATCH v2 1/3] dt-bindings: input: atmel: add compatible for
- mXT1386
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>,
-        <digetx@gmail.com>, <jonathanh@nvidia.com>, <nick@shmanahar.org>,
-        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <erosca@de.adit-jv.com>,
-        <andrew_gabbasov@mentor.com>
-References: <20200925135257.21138-1-jiada_wang@mentor.com>
- <20200925135257.21138-2-jiada_wang@mentor.com>
- <20200928065909.GC2837573@ulmo>
-From:   "Wang, Jiada" <jiada_wang@mentor.com>
-Message-ID: <81e78fe0-7f9a-e477-fcd0-db05b27dccbf@mentor.com>
-Date:   Wed, 30 Sep 2020 23:22:22 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730508AbgI3OXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726680AbgI3OXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:23:31 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BACBF20709;
+        Wed, 30 Sep 2020 14:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601475811;
+        bh=pINutTAllKNrOxvh9eBLUiQGJF57WCSpPIcKD+TgvwE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wOm9XY7G3LjDR5NbyAZSpMyQTH90xpvpkBDGnvJwQnf/RxvZYo0bMTUf/nW4Vwm27
+         LxBapNA1DwycI7LbvZq7qob63IVAXsD9KgiH1ypaCP06FGYlrhmAj4YRuEarwZ20PU
+         /8RNSeDgkcebLR1ofrZf4ACH3DVpPZ/Nd+lbPD1M=
+Date:   Wed, 30 Sep 2020 17:23:23 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 19/52] memblock: get rid of a :c:type leftover
+Message-ID: <20200930142323.GL2142832@kernel.org>
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <0aab04f62bc3dfa82394e20d61c05c6efbfb4859.1601467849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200928065909.GC2837573@ulmo>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SVR-ORW-MBX-09.mgc.mentorg.com (147.34.90.209) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0aab04f62bc3dfa82394e20d61c05c6efbfb4859.1601467849.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry
+Hello Mauro,
 
-Thanks for your comment
-
-On 2020/09/28 15:59, Thierry Reding wrote:
-> On Fri, Sep 25, 2020 at 10:52:55PM +0900, Jiada Wang wrote:
->> Document the mXT1386 compatible string.
->>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
->>   Documentation/devicetree/bindings/input/atmel,maxtouch.txt | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
->> index c88919480d37..c13fc0f3f00b 100644
->> --- a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
->> +++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
->> @@ -3,6 +3,7 @@ Atmel maXTouch touchscreen/touchpad
->>   Required properties:
->>   - compatible:
->>       atmel,maxtouch
->> +    atmel,mXT1386
+On Wed, Sep 30, 2020 at 03:24:42PM +0200, Mauro Carvalho Chehab wrote:
+> chanseset b3a7bb1851c8 ("docs: get rid of :c:type explicit declarations for structs")
+> removed several :c:type: markups, except by one.
 > 
-> Compatible strings are preferred to be all lowercase.
-
-I will update to use lowercase
-
-Thanks,
-Jiada
+> Now, Sphinx 3.x complains about it:
 > 
-> Thierry
+> 	.../Documentation/core-api/boot-time-mm:26: ../mm/memblock.c:51: WARNING: Unparseable C cross-reference: 'struct\nmemblock_type'
+> 	Invalid C declaration: Expected identifier in nested name, got keyword: struct [error at 6]
+> 	  struct
+> 	memblock_type
+> 	  ------^
+
+Maybe this warning is caused by '\n' between struct and memblock_type?
+There are two more occurences of :c:type: around and they do not seem to
+cause warnings.
+
+> As, on Sphinx 3.x, the right markup is c:struct:`foo`.
 > 
+> So, let's remove it, relying on automarkup.py to convert it.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  mm/memblock.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 165f40a8a254..326c6b3fec1d 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -50,8 +50,8 @@
+>   *
+>   * Each region is represented by :c:type:`struct memblock_region` that
+
+Can you please also convert this one?
+
+>   * defines the region extents, its attributes and NUMA node id on NUMA
+> - * systems. Every memory type is described by the :c:type:`struct
+> - * memblock_type` which contains an array of memory regions along with
+> + * systems. Every memory type is described by the struct memblock_type
+> + * which contains an array of memory regions along with
+>   * the allocator metadata. The "memory" and "reserved" types are nicely
+>   * wrapped with :c:type:`struct memblock`. This structure is statically
+
+And this?
+
+>   * initialized at build time. The region arrays are initially sized to
+> -- 
+> 2.26.2
+> 
+
+-- 
+Sincerely yours,
+Mike.
