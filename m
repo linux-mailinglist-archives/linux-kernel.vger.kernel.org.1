@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F88E27DE5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B4C27DE5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729729AbgI3CN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:13:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21945 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3CNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:13:25 -0400
-IronPort-SDR: 2WEv/sCmOI1qsrTJIG9Z7GaRyZl6HoY27nXvQ1FSONilzfQnFzw00oZHiLzPFUWf8eCHtCet2V
- /VnS+hNrbnLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="149992005"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="149992005"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:13:21 -0700
-IronPort-SDR: FJyrZEh6ZOMuNPm60Wg/zUHGX/lDG+r8ko7tfeHGWasqKzo0338pD0NjMhdPz6R3FaJy2bG72E
- D2E6sNIAe9eA==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="457486650"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:13:21 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Youquan Song <youquan.song@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] x86/mce: Drop AMD specific "DEFERRED" case from Intel severity rule list
-Date:   Tue, 29 Sep 2020 19:13:13 -0700
-Message-Id: <20200930021313.31810-3-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200930021313.31810-1-tony.luck@intel.com>
-References: <20200927221917.GB4746@zn.tnic>
- <20200930021313.31810-1-tony.luck@intel.com>
+        id S1729768AbgI3COa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729322AbgI3COa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:14:30 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E34AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:14:30 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id d2so55917vkd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JUU/C8onyKlPySCRSWT+QTeeD0ZR4lGerEsMoIi67e4=;
+        b=K2WoCboVWCFeycF6Cel1OxgEYyPECxfD4z6C6iz6yw4uA4s2K9sv3S1wAWR85Vk+gG
+         qg06ACp4f9siDISwnA27+75sDaZLCpNq0gCfsduvOb59OJHIsgnlhbc66FSI1OFcVOl+
+         yvZLTVs2IsolT45igftD4Z0i4rhGNXjMVeFh9ARzdfLA6lblkSfQVR5letffC8THPpp6
+         7psdUWlY4zZwHIZLhkdfMQku0UCt9TedPW4WgyLm/QyT6t5QFrX6nYjJ9TkO+wa3C7+d
+         7kScSZb0f78h+ELxUrXK1e+D9sxGNzqbdDgSXUs0JUXoIkqYEZz0g79Tj7b2crnzr5Wi
+         Lv7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JUU/C8onyKlPySCRSWT+QTeeD0ZR4lGerEsMoIi67e4=;
+        b=ISrQu9R7t+4ZO37YU4q9LiTasNZWvDq+vPQByQRY2MD9txhPKOc84y3M+mqbkG3Xtn
+         f7kMBsuXqOhIM/THToHXLjWQKoTA6Murk5mXgk8XNdKesjdIExddmNc0q5kAGcRaDatf
+         BsxSqQMQEvnkk7Xv3lOwHiVYWHJtdeLWTIuqodwnmkWQVp+w6jzu+keKCxOU4ALEsxJk
+         BJ004x5NIw1M/5GaKH4jTYdrhO9BtgJZxWyRR7CZV+AfpkVljHorVlPewEVCgs5dqxUP
+         hWXZZ8P0jAQOzAa9cMMEtAZ9sNQWpteucOPI/AB2e5JeCCNTdTZMm7K8NAEioma1/G6r
+         7JRw==
+X-Gm-Message-State: AOAM531nCZj6vbm9H8DxWOoXOuFyP1nwvUyw/nvH9YtSmzJ8MJSqThez
+        3bwj4sj8AqpvES7JEBu7tILpXtb5VCfQydXrSp8=
+X-Google-Smtp-Source: ABdhPJx5O7kvI1mEB2B2sDiokcvWeYJVvanpoDMf53buvyuf9FBFg/1rOW24ZgAQCBoagEqAxE7FaHmtZ0S/kyBf7z0=
+X-Received: by 2002:a1f:9bc2:: with SMTP id d185mr194775vke.23.1601432069317;
+ Tue, 29 Sep 2020 19:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
+ <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com> <8a608871-af25-fee6-24ea-24d78010cd6c@oracle.com>
+ <CAFqt6zbKdzFDq6TTadQqQhwZPsZKJLW0LE9ER-qTHm7y3raw9w@mail.gmail.com> <a3df6cac-4d29-a5cf-2bb2-35a8834aef64@oracle.com>
+In-Reply-To: <a3df6cac-4d29-a5cf-2bb2-35a8834aef64@oracle.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Wed, 30 Sep 2020 07:44:17 +0530
+Message-ID: <CAFqt6za1JzbnxK1nuYZhGaj_MxRc33cbTXo7MyP+CgXTfYRXfg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] xen/gntdev.c: Convert get_user_pages*() to pin_user_pages*()
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Way back in v3.19 Intel and AMD shared the same machine check severity
-grading code. So it made sense to add a case for AMD DEFERRED errors in
-commit e3480271f592 ("x86, mce, severity: Extend the the mce_severity mechanism to handle UCNA/DEFERRED error")
+On Tue, Sep 29, 2020 at 6:00 PM <boris.ostrovsky@oracle.com> wrote:
+>
+>
+> On 9/29/20 8:09 AM, Souptick Joarder wrote:
+> > On Fri, Sep 11, 2020 at 8:12 PM <boris.ostrovsky@oracle.com> wrote:
+> >>
+> >> On 9/6/20 2:51 AM, Souptick Joarder wrote:
+> >>> In 2019, we introduced pin_user_pages*() and now we are converting
+> >>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+> >>> be referred for more information. This is case 5 as per document [1].
+> >>>
+> >>> [1] Documentation/core-api/pin_user_pages.rst
+> >>>
+> >>> [2] "Explicit pinning of user-space pages":
+> >>>         https://lwn.net/Articles/807108/
+> >>>
+> >>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> >>> Cc: John Hubbard <jhubbard@nvidia.com>
+> >>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> >>> Cc: Juergen Gross <jgross@suse.com>
+> >>> Cc: David Vrabel <david.vrabel@citrix.com>
+> >>
+> >> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> > Are these 2 patches queued for 5.10-rc1 ?
+>
+>
+> Yes, I am preparing the branch. (BTW, your second patch appears to have been either manually edited or not generated on top of the first patch. Please don't do this next time)
 
-But later in v4.2 AMD switched to a separate grading function in
-commit bf80bbd7dcf5 ("x86/mce: Add an AMD severities-grading function")
-
-Belatedly drop the DEFERRED case from the Intel rule list.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/severity.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index 567ce09a0286..e0722461bb57 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -96,10 +96,6 @@ static struct severity {
- 		PANIC, "In kernel and no restart IP",
- 		EXCP, KERNEL_RECOV, MCGMASK(MCG_STATUS_RIPV, 0)
- 		),
--	MCESEV(
--		DEFERRED, "Deferred error",
--		NOSER, MASK(MCI_STATUS_UC|MCI_STATUS_DEFERRED|MCI_STATUS_POISON, MCI_STATUS_DEFERRED)
--		),
- 	MCESEV(
- 		KEEP, "Corrected error",
- 		NOSER, BITCLR(MCI_STATUS_UC)
--- 
-2.21.1
-
+I created it on top of the first one and didn't edit manually.
+I was able to apply it in my local repository.
+What was the error ?
