@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5836327E509
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5465A27E4FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgI3JVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:21:37 -0400
-Received: from atl4mhfb03.myregisteredsite.com ([209.17.115.119]:58934 "EHLO
-        atl4mhfb03.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729157AbgI3JVd (ORCPT
+        id S1729060AbgI3JVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728877AbgI3JVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:21:33 -0400
-Received: from jax4mhob16.registeredsite.com (jax4mhob16.registeredsite.com [64.69.218.104])
-        by atl4mhfb03.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 08U9LSPD029983
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:21:31 -0400
-Received: from mailpod.hostingplatform.com (atl4qobmail01pod0.registeredsite.com [10.30.71.203])
-        by jax4mhob16.registeredsite.com (8.14.4/8.14.4) with ESMTP id 08U9L8de036536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:21:08 -0400
-Received: (qmail 32270 invoked by uid 0); 30 Sep 2020 09:20:59 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 30 Sep 2020 09:20:59 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-gpio@vger.kernel.org
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v2 2/2] gpio: pca953x: Add support for the NXP PCAL9554B/C
-Date:   Wed, 30 Sep 2020 11:20:53 +0200
-Message-Id: <20200930092053.2114-2-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200930092053.2114-1-mike.looijmans@topic.nl>
-References: <20200930092053.2114-1-mike.looijmans@topic.nl>
+        Wed, 30 Sep 2020 05:21:06 -0400
+Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E213C061755;
+        Wed, 30 Sep 2020 02:21:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp1.goneo.de (Postfix) with ESMTP id 9BEED23F11A;
+        Wed, 30 Sep 2020 11:21:02 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.989
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.989 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.089, BAYES_00=-1.9] autolearn=ham
+Received: from smtp1.goneo.de ([127.0.0.1])
+        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4AnRcm7mO10H; Wed, 30 Sep 2020 11:21:01 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp1.goneo.de (Postfix) with ESMTPSA id 487A123F15A;
+        Wed, 30 Sep 2020 11:21:01 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 11:20:56 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
-with 8 GPIOs, latched interrupts and some advanced configuration
-options. The "C" version only differs in I2C address.
+Hi Uwe,
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Split devicetree and code into separate patches
+thank you for your review!
 
- drivers/gpio/gpio-pca953x.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> Hello Lars,
+> 
+> On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > From: Lars Poeschel <poeschel@lemonage.de>
+> > 
+> > This adds a class to exported pwm devices.
+> > Exporting a pwm through sysfs did not yield udev events. The
+> 
+> I wonder what is your use-case here. This for sure also has a place to
+> be mentioned in the commit log. I suspect there is a better way to
+> accomplish you way.
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index bd2e96c34f82..fb946b01512d 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -90,6 +90,7 @@ static const struct i2c_device_id pca953x_id[] = {
- 	{ "pcal6416", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
- 	{ "pcal6524", 24 | PCA953X_TYPE | PCA_LATCH_INT, },
- 	{ "pcal9535", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
-+	{ "pcal9554b", 8  | PCA953X_TYPE | PCA_LATCH_INT, },
- 	{ "pcal9555a", 16 | PCA953X_TYPE | PCA_LATCH_INT, },
- 
- 	{ "max7310", 8  | PCA953X_TYPE, },
-@@ -1237,6 +1238,7 @@ static const struct of_device_id pca953x_dt_ids[] = {
- 	{ .compatible = "nxp,pcal6416", .data = OF_953X(16, PCA_LATCH_INT), },
- 	{ .compatible = "nxp,pcal6524", .data = OF_953X(24, PCA_LATCH_INT), },
- 	{ .compatible = "nxp,pcal9535", .data = OF_953X(16, PCA_LATCH_INT), },
-+	{ .compatible = "nxp,pcal9554b", .data = OF_953X( 8, PCA_LATCH_INT), },
- 	{ .compatible = "nxp,pcal9555a", .data = OF_953X(16, PCA_LATCH_INT), },
- 
- 	{ .compatible = "maxim,max7310", .data = OF_953X( 8, 0), },
--- 
-2.17.1
+Use-case is to be able to use a pwm from a non-root userspace process.
+I use udev rules to adjust permissions.
 
+> > dev_uevent_filter function does filter-out devices without a bus or
+> > class.
+> > This was already addressed in commit
+> > commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
+> > but this did cause problems and the commit got reverted with
+> > commit c289d6625237 ("Revert "pwm: Set class for exported channels in
+> > sysfs"")
+> > 
+> > pwm's have to be local to its pwmchip, so we create an individual class
+> > for each pwmchip
+> 
+> This sounds conceptually wrong. 
+
+I suspect you mean the second part is wrong and we agree on the first
+part, that pwm's have to be local to its pwmchip.
+
+There seems to be a need for this as 7e5d1fd75c3d tried this already.
+Problem with this approach was, that the pwms where not local to their
+pwmchip and if you then have the same pwm number exported from different
+pwmchips this did collide.
+
+Ok, now the uevent_ops filter function blocks the uevent I want to see
+based on if device has a bus or a class set.
+
+Can you recommend a better solution ?
+Write a different filter function for this case ?
+
+> > and assign this class to the pwm belonging to the
+> > pwmchip. This does better map to structure that is also visible in
+> > sysfs.
+> > 
+> > Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> > ---
+> >  drivers/pwm/sysfs.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
+> > index 449dbc0f49ed..e2dfbc335366 100644
+> > --- a/drivers/pwm/sysfs.c
+> > +++ b/drivers/pwm/sysfs.c
+> > @@ -259,7 +259,7 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
+> >  	export->child.release = pwm_export_release;
+> >  	export->child.parent = parent;
+> >  	export->child.devt = MKDEV(0, 0);
+> > -	export->child.groups = pwm_groups;
+> > +	export->child.class = parent->class;
+> >  	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
+> >  
+> >  	ret = device_register(&export->child);
+> > @@ -499,6 +499,9 @@ void pwmchip_sysfs_export(struct pwm_chip *chip)
+> >  		dev_warn(chip->dev,
+> >  			 "device_create failed for pwm_chip sysfs export\n");
+> >  	}
+> > +
+> > +	parent->class = class_create(THIS_MODULE, parent->kobj.name);
+> 
+> This needs error handling.
+
+If this concept has a chance after discussion, I will change this.
+
+Thanks again,
+Lars
