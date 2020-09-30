@@ -2,186 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0551227F533
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC3727F54D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgI3WeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
+        id S1731688AbgI3WkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3WeC (ORCPT
+        with ESMTP id S1731670AbgI3WkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:34:02 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3BCC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:34:02 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id y13so4304224iow.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:34:02 -0700 (PDT)
+        Wed, 30 Sep 2020 18:40:16 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFEBC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:40:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x14so3499289oic.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 15:40:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+S9ma2h9nZrG9Sat/6z/ehgUrIx5BYnTDTi/tV6A6k4=;
-        b=I3B14Ii7kuDQDslqdcm/IPjckSxnWQUi4OXiqFU5KnR6INOv6VpiNMsKafQ5WPIWKg
-         y2bajmGzD1rNhvlzwFClWar0ikBP4/uBWoA0C5AIioOc9u5Qy+hLDKGyiJuDAig84rJh
-         nvY5JO9BFmvI4PaW1xUI39uEIaKeW/xIF0Es347XU7ez+qoUU6h+16taGC2220lkx2gj
-         jHPKf+0/YkVuJj29oS5lvnIYbm/umJ1IFWfA0PteJzWDPswwnDe9Gn6VhbByGJ6sN0Ze
-         KFb0pNkX+tt1HhZx8sOK80US9EPdKzS9/kAz5ORuPm/wl3DRgUm9/tHFeCOrJCm8WC/K
-         InOw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Q03gpzYZKFx4WbmDyv5/MoHJyzVeXQE9aurdxl6jkE=;
+        b=S8gdE9fvVQaxNMP5Tk07sOhi1O9IPbRElmRLsx6QZ4qwMH5OwpbW7cPFTFaQkbOq4Q
+         BVKhFHBXh7ogQPPqOp16wDNufm1pdR73IKAHuSdTjxlJ7/z251VQR3+dcP8HvY6Xn2cO
+         HYGQc2oQDtnTShDnCi4xJ8BP2jpCvEHstXq++V+bWH1EjYzS/dTMbql4zbpRGzG6TDFs
+         VJuH0A2oHnZVTWEKDQqImr/HJ05iz3yp54KJLRxKoTMeJa1wBDGcZii5g/xGH8RBKFnq
+         r9ydfl+B3mMgWs23jHmBHGtJFk2d118/fxUgH19PjPaam1rE4DmlKePcRMN/5tVrcOiz
+         aRsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+S9ma2h9nZrG9Sat/6z/ehgUrIx5BYnTDTi/tV6A6k4=;
-        b=O131kCZpz+mEMls/p8PU4WvB15vrS1lpuSpROSW/32O4o1tILPdeYP2csrXQoZNxfv
-         H7YZLBtyLevWBTtelAr5Sm1ayb8rOVsPUenYMZ8tpouSVu0qNkchbO9s/g9LPbIFWndR
-         pbJzJMXuUwCJtWueQhYpvm9qI0E1QiZFZDhFCqM9Gao9nir4+ap59Ip4iJZ7YLNEd+oK
-         Y9m/v396LyUsX2NtXESww6iIHCGeRw0uIYmkkbZDkERwTtAKrZSJJ8/D5qyiDnugcaDN
-         l2jQhDQb75VEv9OieQvukHPM5sPA2uTAgEdpFshaOGRRPbIBd15qae0JEQjt6+WHLbja
-         QKfA==
-X-Gm-Message-State: AOAM532GQj/OKWuFO/5FBOHYmLL0l56r0Cto62+cgpykqfMyS2C2Vry/
-        hFUu/9RwGAi3+XbYSb6yVshFNssjCU/Dxgp3gxrakw==
-X-Google-Smtp-Source: ABdhPJwLWfY5kfVzNFAU16o9aKJQSSccovFArV9jJq7IdHkyon92S/JDGl+GtDilvhp1G6pIJ7JPsrdWg3jKU46iWPY=
-X-Received: by 2002:a05:6638:1643:: with SMTP id a3mr3730239jat.4.1601505241093;
- Wed, 30 Sep 2020 15:34:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1Q03gpzYZKFx4WbmDyv5/MoHJyzVeXQE9aurdxl6jkE=;
+        b=S79bjBm3IT3bQ4096vsG8oIjMDej5Db38KhZ9CQlea/SLeFF7+1efTuIxVXCJ//UHP
+         lGCr+CNDIx/+gGRZqK7Rwg6AMoLJ/7zHHh7dSW+976Nc5jt2CclCVnY4lJV+66pY3Sun
+         YdMFf6cts9i0vksgky3apfF43OsC0yQnOVX1T+aA/wrmW8AiQNE1sRuzwJGkr9xS3smW
+         CL1ELWfp1ouyFMFxjDj3JmbfB5LeVApIczf7G1tIzOMOYI1YaXcX3T72jebXam3qVbDq
+         Yk9V1TOvEWnRQctGi3DVvyQLvPAtftalUOQGkUfBol+FvSUMqahafrPdyNZmQPJfk20B
+         4T7Q==
+X-Gm-Message-State: AOAM533DJHTNxRZO/Rl3v7c5/hc/VZbtFLYMNsdegfndQR4ZtOijyU5c
+        BrEa3AqyQsGyA7/0aN1Z1MFwhQ==
+X-Google-Smtp-Source: ABdhPJyfioIRVXxFrO8udLEGAlCapQ6/ekLaouaVOiQBLkxLGmHem4ShXrogGhVvqMPo8mzsPd3mcg==
+X-Received: by 2002:aca:d693:: with SMTP id n141mr2683787oig.26.1601505614911;
+        Wed, 30 Sep 2020 15:40:14 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p8sm781364oot.29.2020.09.30.15.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 15:40:14 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Douglas Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH 0/2] drm/bridge: ti-sn65dsi86: Support backlight controls
+Date:   Wed, 30 Sep 2020 17:35:30 -0500
+Message-Id: <20200930223532.77755-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-21-bgardon@google.com>
- <20200930181556.GJ32672@linux.intel.com> <d2bcf512-00f3-8499-420d-b31690bdb511@redhat.com>
-In-Reply-To: <d2bcf512-00f3-8499-420d-b31690bdb511@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 30 Sep 2020 15:33:50 -0700
-Message-ID: <CANgfPd9h_Epb8qZZ6qCP5BKD0DOYv5v2NQm-J2ajq9_wXfWb1g@mail.gmail.com>
-Subject: Re: [PATCH 20/22] kvm: mmu: NX largepage recovery for TDP MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:56 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 30/09/20 20:15, Sean Christopherson wrote:
-> > On Fri, Sep 25, 2020 at 02:23:00PM -0700, Ben Gardon wrote:
-> >> +/*
-> >> + * Clear non-leaf SPTEs and free the page tables they point to, if those SPTEs
-> >> + * exist in order to allow execute access on a region that would otherwise be
-> >> + * mapped as a large page.
-> >> + */
-> >> +void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm)
-> >> +{
-> >> +    struct kvm_mmu_page *sp;
-> >> +    bool flush;
-> >> +    int rcu_idx;
-> >> +    unsigned int ratio;
-> >> +    ulong to_zap;
-> >> +    u64 old_spte;
-> >> +
-> >> +    rcu_idx = srcu_read_lock(&kvm->srcu);
-> >> +    spin_lock(&kvm->mmu_lock);
-> >> +
-> >> +    ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
-> >> +    to_zap = ratio ? DIV_ROUND_UP(kvm->stat.nx_lpage_splits, ratio) : 0;
-> >
-> > This is broken, and possibly related to Paolo's INIT_LIST_HEAD issue.  The TDP
-> > MMU never increments nx_lpage_splits, it instead has its own counter,
-> > tdp_mmu_lpage_disallowed_page_count.  Unless I'm missing something, to_zap is
-> > guaranteed to be zero and thus this is completely untested.
->
-> Except if you do shadow paging (through nested EPT) and then it bombs
-> immediately. :)
->
-> > I don't see any reason for a separate tdp_mmu_lpage_disallowed_page_count,
-> > a single VM can't have both a legacy MMU and a TDP MMU, so it's not like there
-> > will be collisions with other code incrementing nx_lpage_splits.   And the TDP
-> > MMU should be updating stats anyways.
->
-> This is true, but having two counters is necessary (in the current
-> implementation) because otherwise you zap more than the requested ratio
-> of pages.
->
-> The simplest solution is to add a "bool tdp_page" to struct
-> kvm_mmu_page, so that you can have a single list of
-> lpage_disallowed_pages and a single thread.  The while loop can then
-> dispatch to the right "zapper" code.
+The TI SN65DSI86 support driving a backlight driver using a signal
+exposed on GPIO4, implement this as a backlight device.
 
-I actually did add that bool in patch 4: kvm: mmu: Allocate and free
-TDP MMU roots.
-I'm a little nervous about putting them in the same list, but I agree
-it would definitely simplify the implementation of reclaim.
+Bjorn Andersson (2):
+  dt-bindings: drm/bridge: ti-sn65dsi86: Replace #pwm-cells
+  drm/bridge: ti-sn65dsi86: Expose backlight controls
 
->
-> Anyway this patch is completely broken, so let's kick it away to the
-> next round.
+ .../bindings/display/bridge/ti,sn65dsi86.yaml |   9 +-
+ drivers/gpu/drm/bridge/Kconfig                |   1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c         | 143 +++++++++++++++++-
+ 3 files changed, 146 insertions(+), 7 deletions(-)
 
-Understood, sorry I didn't test this one better. I'll incorporate your
-feedback and include it in the next series.
+-- 
+2.28.0
 
->
-> Paolo
->
-> >> +
-> >> +    while (to_zap &&
-> >> +           !list_empty(&kvm->arch.tdp_mmu_lpage_disallowed_pages)) {
-> >> +            /*
-> >> +             * We use a separate list instead of just using active_mmu_pages
-> >> +             * because the number of lpage_disallowed pages is expected to
-> >> +             * be relatively small compared to the total.
-> >> +             */
-> >> +            sp = list_first_entry(&kvm->arch.tdp_mmu_lpage_disallowed_pages,
-> >> +                                  struct kvm_mmu_page,
-> >> +                                  lpage_disallowed_link);
-> >> +
-> >> +            old_spte = *sp->parent_sptep;
-> >> +            *sp->parent_sptep = 0;
-> >> +
-> >> +            list_del(&sp->lpage_disallowed_link);
-> >> +            kvm->arch.tdp_mmu_lpage_disallowed_page_count--;
-> >> +
-> >> +            handle_changed_spte(kvm, kvm_mmu_page_as_id(sp), sp->gfn,
-> >> +                                old_spte, 0, sp->role.level + 1);
-> >> +
-> >> +            flush = true;
-> >> +
-> >> +            if (!--to_zap || need_resched() ||
-> >> +                spin_needbreak(&kvm->mmu_lock)) {
-> >> +                    flush = false;
-> >> +                    kvm_flush_remote_tlbs(kvm);
-> >> +                    if (to_zap)
-> >> +                            cond_resched_lock(&kvm->mmu_lock);
-> >> +            }
-> >> +    }
-> >> +
-> >> +    if (flush)
-> >> +            kvm_flush_remote_tlbs(kvm);
-> >> +
-> >> +    spin_unlock(&kvm->mmu_lock);
-> >> +    srcu_read_unlock(&kvm->srcu, rcu_idx);
-> >> +}
-> >> +
-> >> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> >> index 2ecb047211a6d..45ea2d44545db 100644
-> >> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> >> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> >> @@ -43,4 +43,6 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> >>
-> >>  bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
-> >>                                 struct kvm_memory_slot *slot, gfn_t gfn);
-> >> +
-> >> +void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm);
-> >>  #endif /* __KVM_X86_MMU_TDP_MMU_H */
-> >> --
-> >> 2.28.0.709.gb0816b6eb0-goog
-> >>
-> >
->
