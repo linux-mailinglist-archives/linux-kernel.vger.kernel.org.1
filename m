@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE0A27F5B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BDE27F5C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732083AbgI3XLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
+        id S1732089AbgI3XMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730528AbgI3XK7 (ORCPT
+        with ESMTP id S1730528AbgI3XMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:10:59 -0400
-X-Greylist: delayed 30990 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 30 Sep 2020 16:10:59 PDT
-Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6EA48C061755;
-        Wed, 30 Sep 2020 16:10:59 -0700 (PDT)
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id 728F02BE086;
-        Thu,  1 Oct 2020 00:10:58 +0100 (BST)
-Date:   Thu, 1 Oct 2020 00:10:57 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu
-Subject: Re: [PATCH] MIPS: remove the obsolete RM7000 extended interrupts
- handler
-In-Reply-To: <20200930212131.GA14275@alpha.franken.de>
-Message-ID: <alpine.LFD.2.21.2009302342030.333514@eddie.linux-mips.org>
-References: <20200912142306.3604968-1-fazilyildiran@gmail.com> <20200918135053.GB19202@alpha.franken.de> <alpine.LFD.2.21.2009301529080.333514@eddie.linux-mips.org> <20200930212131.GA14275@alpha.franken.de>
+        Wed, 30 Sep 2020 19:12:01 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AEBC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id g4so3685920edk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
+        b=Qj7K/vkx1A15tnnaZGTfZl+ftwHdXkr1sOL1XvvbJjxZt6685kUiCjB86O17zRpzT+
+         fjB3agEdH+lpJttlavg86WCDK/CZ/w8oa+3tm66zd471+mfvUnVBT4hdtV9fr6yowepg
+         +X46wdd3diEHymNJT8fTyl2VcCe6QysxchzK/I0DHPed+T2YFKyVudi6rWQpwhEcD3et
+         sd6uMoaB9fxNujxXaN2i+lH8Mzxt31C5S20E50O40rHcNBtvsXjvgoQYX09+AQJ5Z0i6
+         m98jq1Z/UM0SauyOxFb+wrxUMwuh71pRjyiDIAwjbJtiW/Y3Mc80NcR6gKB3CqeK9jM1
+         /Btg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
+        b=Qq2qXt48ZxW9aFLTMSS/vgSsAPXdJYT7hA9LJkQnz0j1Vvy/TPYlg5BjU3j2dRdhfw
+         3QfhCPSTtNAS+wJDirb45DQNTF1/o+RCmr7mv1O/w4PV7SJwDljzZCgaQ3gER5FRYdWr
+         72aynM2M7gnBRmaqPr3ht/RcitI+8ZaaUwmjqUxduGbAlpt49Iueb7hOhA04kk8GquOG
+         u2MRmDZUX9tbSFvPv0TunQev9b3MCegYPiEsg12AWIfu4HHcRwWKM5wqMrSy/nOjAu4F
+         wKPO5GuwywLn+Q/uq3ifPJAKFF6lLTfUTAE6EGvUYMbE++yJgDwfm7np8HFoBIcqDvfm
+         Vgdg==
+X-Gm-Message-State: AOAM532Snb+b8PyQ/GBayZJscYOc51UDD+2sEuu9KG7eTLjLyk2b3drR
+        w8SfyRbpbXfy6hOQdC/oup0PrNqtLjj6eVpmPYJOgQ==
+X-Google-Smtp-Source: ABdhPJwrGlHwTQPZ++L0mLOF85y9/7LbEqNJ1w3mzMjO76tBkyLKmj9U5lGPSOwZW9qqkPLK2MLrOgZEPPp5jfWkAiQ=
+X-Received: by 2002:a50:e807:: with SMTP id e7mr5401960edn.84.1601507519254;
+ Wed, 30 Sep 2020 16:11:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+In-Reply-To: <20200930230327.GA1260245@cisco>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 01:11:33 +0200
+Message-ID: <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020, Thomas Bogendoerfer wrote:
-
-> > > not yet;-) I have an RM7000 based system in my basement... I'm also
-> > > not sure, if R7k O2s need that.
-> > 
-> >  One of the more exotic Malta daughtercards used that too I believe.  I'd 
-> > have to check the docs.  Of course getting hands on such a daughtercard is 
-> > another matter, but we continue having RM7000 enabled for the Malta.
-> 
-> I've checked interrupts on P6064 and doesn't use the "extented" interrupts.
-> And since O2 uses the same CPU connector for all CPU boards I doubt it
-> it either.
-
- Mind that interrupts can be asserted in the RM7k via an external write 
-request too, and I'm fairly sure SGI hardware would use that rather than 
-interrupt inputs given that R4000/R4400 SC/MC CPUs only have Int*(0) wired 
-and all the remaining interrupts are only available via a processor write.  
-Have you checked that?
-
-> What about Malta ? 
-
- So this is the CoreBonito64 daughtercard, which can have either an RM5261 
-or an RM7061 processor installed.  The Int*(9:6) inputs are not mentioned, 
-which I take it means unconnected, and ExtRqst* has a pull-up and is 
-otherwise wired to a debug connector only.  Which makes me conclude this 
-feature cannot be used in a standard application with this card.
-
- NB there is another interrupt controller embedded in the Bonito64 system 
-controller, which on the CoreBonito64, conversely, can actually be enabled 
-with a jumper and used, but it's not usually either.
-
-  Maciej
+T24gVGh1LCBPY3QgMSwgMjAyMCBhdCAxOjAzIEFNIFR5Y2hvIEFuZGVyc2VuIDx0eWNob0B0eWNo
+by5waXp6YT4gd3JvdGU6DQo+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDEwOjM0OjUxUE0gKzAy
+MDAsIE1pY2hhZWwgS2VycmlzayAobWFuLXBhZ2VzKSB3cm90ZToNCj4gPiBPbiA5LzMwLzIwIDU6
+MDMgUE0sIFR5Y2hvIEFuZGVyc2VuIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBTZXAgMzAsIDIwMjAg
+YXQgMDE6MDc6MzhQTSArMDIwMCwgTWljaGFlbCBLZXJyaXNrIChtYW4tcGFnZXMpIHdyb3RlOg0K
+PiA+ID4+ICAgICAgICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilJANCj4gPiA+PiAgICAgICAg4pSCRklYTUUgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICDilIINCj4gPiA+PiAgICAgICAg4pSc4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkDQo+ID4gPj4gICAgICAgIOKUgkZy
+b20gbXkgZXhwZXJpbWVudHMsICBpdCAgYXBwZWFycyAgdGhhdCAgaWYgIGEgIFNFQ+KAkCDilIIN
+Cj4gPiA+PiAgICAgICAg4pSCQ09NUF9JT0NUTF9OT1RJRl9SRUNWICAgaXMgIGRvbmUgIGFmdGVy
+ICB0aGUgIHRhcmdldCDilIINCj4gPiA+PiAgICAgICAg4pSCcHJvY2VzcyB0ZXJtaW5hdGVzLCB0
+aGVuIHRoZSBpb2N0bCgpICBzaW1wbHkgIGJsb2NrcyDilIINCj4gPiA+PiAgICAgICAg4pSCKHJh
+dGhlciB0aGFuIHJldHVybmluZyBhbiBlcnJvciB0byBpbmRpY2F0ZSB0aGF0IHRoZSDilIINCj4g
+PiA+PiAgICAgICAg4pSCdGFyZ2V0IHByb2Nlc3Mgbm8gbG9uZ2VyIGV4aXN0cykuICAgICAgICAg
+ICAgICAgICAgICDilIINCj4gPiA+DQo+ID4gPiBZZWFoLCBJIHRoaW5rIENocmlzdGlhbiB3YW50
+ZWQgdG8gZml4IHRoaXMgYXQgc29tZSBwb2ludCwNCj4gPg0KPiA+IERvIHlvdSBoYXZlIGEgcG9p
+bnRlciB0aGF0IGRpc2N1c3Npb24/IEkgY291bGQgbm90IGZpbmQgaXQgd2l0aCBhDQo+ID4gcXVp
+Y2sgc2VhcmNoLg0KPiA+DQo+ID4gPiBidXQgaXQncyBhDQo+ID4gPiBiaXQgc3RpY2t5IHRvIGRv
+Lg0KPiA+DQo+ID4gQ2FuIHlvdSBzYXkgYSBmZXcgd29yZHMgYWJvdXQgdGhlIG5hdHVyZSBvZiB0
+aGUgcHJvYmxlbT8NCj4NCj4gSSByZW1lbWJlcmVkIHdyb25nLCBpdCdzIGFjdHVhbGx5IGluIHRo
+ZSB0cmVlOiA5OWNkYjhiOWE1NzMgKCJzZWNjb21wOg0KPiBub3RpZnkgYWJvdXQgdW51c2VkIGZp
+bHRlciIpLiBTbyBtYXliZSB0aGVyZSdzIGEgYnVnIGhlcmU/DQoNClRoYXQgdGhpbmcgb25seSBu
+b3RpZmllcyBvbiAtPnBvbGwsIGl0IGRvZXNuJ3QgdW5ibG9jayBpb2N0bHM7IGFuZA0KTWljaGFl
+bCdzIHNhbXBsZSBjb2RlIHVzZXMgU0VDQ09NUF9JT0NUTF9OT1RJRl9SRUNWIHRvIHdhaXQuIFNv
+IHRoYXQNCmNvbW1pdCBkb2Vzbid0IGhhdmUgYW55IGVmZmVjdCBvbiB0aGlzIGtpbmQgb2YgdXNh
+Z2UuDQo=
