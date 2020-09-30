@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BD727EBEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CA427EC21
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgI3PKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        id S1730772AbgI3PP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730601AbgI3PKF (ORCPT
+        with ESMTP id S1728480AbgI3PPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:10:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1ABC0613D0;
-        Wed, 30 Sep 2020 08:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5MQ9wWjMl2wFlC5FFeBBoGdxqFKxERQlgHCfOe6SJqc=; b=BuH49sEnpXdPdqBuzbVs2V633x
-        nj0QNsnZGyV7Ur1XjcD+GgLOUPiioSSgYAd5LQANsJHnqdR8DPJWazR4b6fyMIXitNoG7i2qACEk+
-        x90zdteFRAk01MpO/bR6H/INrJI1XI2Z43TfeD0w4o67kW8JKU7F7v72SRgVVditUoo8hvSGVzDht
-        IAsFpsrXy2rohggWiPlFlZ49/3gB8uDSMyALzcjv+0EyTng6cu9mrYkRLaKyDQJSYJSgaeqtXpg7T
-        r4qwLvOvtVk6qnTcZdu5tJ+aiAkiq/I/XPzY9EzutGsKlZpzzVHG+lZEakQO08fZJbB9Z3UwWnHbB
-        qlCH3W+Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNdjU-0007EC-6u; Wed, 30 Sep 2020 15:09:28 +0000
-Date:   Wed, 30 Sep 2020 16:09:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200930150928.GR20115@casper.infradead.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <20200929130529.GE2142832@kernel.org>
- <20200929141216.GO2628@hirez.programming.kicks-ass.net>
- <20200929145813.GA3226834@linux.ibm.com>
- <20200929151552.GS2628@hirez.programming.kicks-ass.net>
- <20200930102745.GC3226834@linux.ibm.com>
+        Wed, 30 Sep 2020 11:15:11 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C00C061755;
+        Wed, 30 Sep 2020 08:15:10 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id v23so1921405ljd.1;
+        Wed, 30 Sep 2020 08:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jw4xUwJEw3PBdXJ5pKldJCzPzGe94a2UdzCi5f8tbUA=;
+        b=YFJ0lf8QP0Q8nhVCwx9JJ+oihFfCYDo1Wzs9JVlPOKiCPw3NwvecDKw8eiYEVxwBrF
+         ac7nmF8Cxbl4CecpkPDMKfur68yFEkbMR3iZqKcOYtQb6w3cLTVemZTme8OaV6ktMa5E
+         dwrHPbSBABbVwzDyFJmADESi5yP8mFl19fW12ButrUFw20GRWsD6BsfDFavhWIlkU+vr
+         2lRQJYAkAbRigzWOItphQQSpkb7uQ8841vo2PjUCGB2A170L47qDi0u7zj69utDCTJnQ
+         UGYdVm+qQOWoD8y2dMPHLPWqZW8nnzQFvBf7hIHXABx33j7cNMXHSyJkHYTcsSfQ4QOl
+         qXKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jw4xUwJEw3PBdXJ5pKldJCzPzGe94a2UdzCi5f8tbUA=;
+        b=qvnAweD+kCoYkTDjpeBXL3L7W2lMjOY379HQ/eNm4lffWiuqPEcUHC4zdHdmfxLLqI
+         7FJtQ9FLqcKdSCLjFFMlJyz8i/ig+6BgUvBf8LLTdnY3Ot49DcuvFWJVZyOrg7t8DTaF
+         s7oe6UDPQUy0EXWwrFHWps5Z6j1S2ThVhmBniBRZyMwJougqywzuYvBd/jztgX8VXEDF
+         ay0lQHeqzu4aD/vOmSlec2GhJ1LumoS9tehrsSY8EiEiyrx1b6KAQ2lzuLN8TidHpg1Z
+         cKsGUaQUBg+OdBfO4gOXTElkeoZAuivQtk3Mlgk1dJQx/eA2UyFA0ygjZlBi1BhRoRYS
+         8XOA==
+X-Gm-Message-State: AOAM533AjklMuG4OJh8PjVF+qsq+YfLnqw8GfmHlTjwD7s7TJvSy7riE
+        OT46X2piwWTG852JAbqHISZAM/sGOZ4=
+X-Google-Smtp-Source: ABdhPJxdKp0HTLF54QUNCDS/RfutzAYTnKkUdZ+hvKfjD8MXi3huuEOAUhUKVfxoX4xcVoirspXW6A==
+X-Received: by 2002:a05:6512:370e:: with SMTP id z14mr1115113lfr.80.1601478585016;
+        Wed, 30 Sep 2020 08:09:45 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id l8sm223130lfc.124.2020.09.30.08.09.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 08:09:44 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, krzk@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <30808bd3-a546-e981-00ff-34c07ee1a678@gmail.com>
+Date:   Wed, 30 Sep 2020 18:09:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930102745.GC3226834@linux.ibm.com>
+In-Reply-To: <20200930084258.25493-3-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:27:45PM +0300, Mike Rapoport wrote:
-> On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
-> > On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
-> > > On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
-> > 
-> > > > It will drop them down to 4k pages. Given enough inodes, and allocating
-> > > > only a single sekrit page per pmd, we'll shatter the directmap into 4k.
-> > > 
-> > > Why? Secretmem allocates PMD-size page per inode and uses it as a pool
-> > > of 4K pages for that inode. This way it ensures that
-> > > __kernel_map_pages() is always called on PMD boundaries.
-> > 
-> > Oh, you unmap the 2m page upfront? I read it like you did the unmap at
-> > the sekrit page alloc, not the pool alloc side of things.
-> > 
-> > Then yes, but then you're wasting gobs of memory. Basically you can pin
-> > 2M per inode while only accounting a single page.
-> 
-> Right, quite like THP :)
+...
+>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>  				 struct device *dev)
+>  {
+> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+>  	struct tegra_smmu_as *as = to_smmu_as(domain);
+> -	struct device_node *np = dev->of_node;
+> -	struct of_phandle_args args;
+>  	unsigned int index = 0;
+>  	int err = 0;
+>  
+> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> -					   &args)) {
+> -		unsigned int swgroup = args.args[0];
+> -
+> -		if (args.np != smmu->dev->of_node) {
+> -			of_node_put(args.np);
+> -			continue;
+> -		}
+> -
+> -		of_node_put(args.np);
+> +	if (!fwspec || fwspec->ops != &tegra_smmu_ops)
+> +		return -ENOENT;
 
-Huh?  THP accounts every page it allocates.  If you allocate 2MB,
-it accounts 512 pages.  And THP are reclaimable by vmscan, this is
-obviously not.
+In previous reply you said that these fwspec checks are borrowed from
+the arm-smmu driver, but I'm now looking at what other drivers do and I
+don't see them having this check.
 
+Hence I'm objecting the need to have this check here. You either should
+give a rational to having the check or it should be removed.
+
+Please never blindly copy foreign code, you should always double-check it.
