@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D1A27EF98
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25D527EF9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbgI3Qsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbgI3Qse (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:48:34 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C817C061755;
-        Wed, 30 Sep 2020 09:48:34 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 40CC129CD44
-Subject: Re: [PATCH v4 38/52] docs: block: typec_bus.rst: get rid of :c:type
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Jens Axboe <axboe@kernel.dk>, Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <c54f21c6406b86099b537fdde1b0ab35b0ea770d.1601467849.git.mchehab+huawei@kernel.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <c6ee0141-f339-f8aa-d557-db8c1d2e37a5@collabora.com>
-Date:   Wed, 30 Sep 2020 13:48:25 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730034AbgI3QuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:50:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:26966 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbgI3QuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:50:16 -0400
+IronPort-SDR: aN1wGeLA+aeDar5oKadN3ZfoxG3Eowspzt1lihENPdSWi/rUXGultcI7etEtlUhh39EWaWkRff
+ i9f8TfPFyz9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161722144"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="161722144"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:50:16 -0700
+IronPort-SDR: tKGfD5O3mCHK23VKErmBNC6CAvp2WNrGSQ1hUKWZUGkin+21CXJED6SZxnWegYhV3r9hiwujla
+ lgtNmmEQii8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="294088143"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Sep 2020 09:50:16 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id E802958033E;
+        Wed, 30 Sep 2020 09:50:15 -0700 (PDT)
+Message-ID: <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
+Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Lee Jones <lee.jones@linaro.org>, hdegoede@redhat.com,
+        andriy.shevchenko@linux.intel.com
+Cc:     dvhart@infradead.org, andy@infradead.org,
+        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Date:   Wed, 30 Sep 2020 09:50:15 -0700
+In-Reply-To: <20200930071250.GI6148@dell>
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+         <20200911194549.12780-2-david.e.box@linux.intel.com>
+         <20200929095106.GG6148@dell>
+         <e23b255493c78d80558b9226920b3c7d54d7c84f.camel@linux.intel.com>
+         <20200930071250.GI6148@dell>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <c54f21c6406b86099b537fdde1b0ab35b0ea770d.1601467849.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 10:25 AM, Mauro Carvalho Chehab wrote:
-> The :c:type macros are not used properly there, as reported
-> by Sphinx 3:
+On Wed, 2020-09-30 at 08:12 +0100, Lee Jones wrote:
+> On Tue, 29 Sep 2020, David E. Box wrote:
 > 
-> 	./Documentation/block/blk-mq.rst:112: WARNING: Unparseable C cross-reference: 'hctx->dispatch'
-> 	Invalid C declaration: Expected end of definition. [error at 4]
-> 	  hctx->dispatch
-> 	  ----^
+> > On Tue, 2020-09-29 at 10:51 +0100, Lee Jones wrote:
+> > > On Fri, 11 Sep 2020, David E. Box wrote:
+> > > 
+> > > > Add Out of Band Management Services Module device ID to Intel
+> > > > PMT
+> > > > driver.
+> > > > 
+> > > > Signed-off-by: Alexander Duyck <
+> > > > alexander.h.duyck@linux.intel.com>
+> > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > > ---
+> > > >  drivers/mfd/intel_pmt.c | 4 ++++
+> > > >  1 file changed, 4 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> > > > index 0e572b105101..8f9970ab3026 100644
+> > > > --- a/drivers/mfd/intel_pmt.c
+> > > > +++ b/drivers/mfd/intel_pmt.c
+> > > > @@ -55,6 +55,8 @@ struct pmt_platform_info {
+> > > >  	unsigned long quirks;
+> > > >  };
+> > > >  
+> > > > +static const struct pmt_platform_info pmt_info;
+> > > > +
+> > > >  static const struct pmt_platform_info tgl_info = {
+> > > >  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG
+> > > > |
+> > > >  		  PMT_QUIRK_TABLE_SHIFT,
+> > > > @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev
+> > > > *pdev)
+> > > >  	pm_runtime_get_sync(&pdev->dev);
+> > > >  }
+> > > >  
+> > > > +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
+> > > >  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
+> > > >  static const struct pci_device_id pmt_pci_ids[] = {
+> > > > +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
+> > > 
+> > > Why are you supplying an empty struct?
+> > 
+> > Because the OOBMSM device doesn't need code provided driver data,
+> > but
+> > info is dereferenced in several areas. We also use kmemdup to copy
+> > driver_data under the assumption that it was provided. We could
+> > allow
+> > for NULL if driver_data is referenced directly.
 > 
-> Also, they won't be generating any cross references.
-> 
-> So, replace them by a literal markup.
+> Just check for NULL.  No need to create and send bogus data.
 
-Your commit message says "docs: block: typec_bus.rst: ...", but the name
-of this file is "blk-mq.rst".
+Sure. If you haven't already, please note that this patch was pulled
+into the V6 series in the link below. You accepted V5 but Hans
+suggested some late changes after reviewing the new crashlog driver in
+this patchset. So rather than have separate patchsets with a
+dependency, we bundled them all into the original. We'll make these
+changes in V7 now.
 
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+https://lore.kernel.org/patchwork/patch/1313166/
 
-After solving the issue above:
-
-Reviewed-by: André Almeida <andrealmeid@collabora.com>
-
-> ---
->  Documentation/block/blk-mq.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-> index 86a632af02b0..a980d23af48c 100644
-> --- a/Documentation/block/blk-mq.rst
-> +++ b/Documentation/block/blk-mq.rst
-> @@ -110,9 +110,9 @@ block layer removes requests from the associated software queues and tries to
->  dispatch to the hardware.
->  
->  If it's not possible to send the requests directly to hardware, they will be
-> -added to a linked list (:c:type:`hctx->dispatch`) of requests. Then,
-> +added to a linked list (``hctx->dispatch``) of requests. Then,
->  next time the block layer runs a queue, it will send the requests laying at the
-> -:c:type:`dispatch` list first, to ensure a fairness dispatch with those
-> +``dispatch`` list first, to ensure a fairness dispatch with those
->  requests that were ready to be sent first. The number of hardware queues
->  depends on the number of hardware contexts supported by the hardware and its
->  device driver, but it will not be more than the number of cores of the system.
-> 
+David
 
