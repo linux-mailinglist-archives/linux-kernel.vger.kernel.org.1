@@ -2,97 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95A527EFC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7804927EFC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731077AbgI3Qz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:55:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725355AbgI3Qz0 (ORCPT
+        id S1729940AbgI3Q47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:56:59 -0400
+Received: from mxout04.lancloud.ru ([89.108.124.63]:56054 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Q46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:55:26 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601484925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B8EZjCnkyFc1cMjpMH0gu6rS7aovGZS/4aH0BOoM7mI=;
-        b=TmR1CVaGn7ozshOVYmFOBUJ8i+gDE9aWIzbHUzQLy3cgpYfnwz/hynQKlyx87Ts8j2QkpI
-        HhzgaJcfeLFdWUuOmwSo1hR5xzLCEL/6RJOfg3rGipSjOpOfq5y+MzmJTfOGlxx0sD+FOz
-        fXCU24GjudA/V0+E/4TAkYvJSiXRuJw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-XjuwIYULOwGdZPOKmkt3Rg-1; Wed, 30 Sep 2020 12:55:22 -0400
-X-MC-Unique: XjuwIYULOwGdZPOKmkt3Rg-1
-Received: by mail-wm1-f71.google.com with SMTP id y18so64101wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:55:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B8EZjCnkyFc1cMjpMH0gu6rS7aovGZS/4aH0BOoM7mI=;
-        b=aYaOkJ97yQtfOJEllSmf0j9cHz7vXWyM64LLtD9rDZQLVn/RQlbKE3nwncHvtuIs/b
-         EKcY7U0RZKzsz31/LKPr8EZTjN9ezxz+o8UeaOqlxOFLuY70BTPEPAnRQZFVahPETWnf
-         dWT3Xsh7i2AWs2Fbg/MI/sfPqg0JlCBFd7uDQILVLT647X9z2NnZTbqs9nHZmp5pRITo
-         YyJEsqxvT3RmWNm0KBba/MsM1nu5jf7R5/2Fg96Xrg3Jz8dhRtJF+ERrOl5m3q6MMIzt
-         Acf3bSNY1fKOHA5hCbMQpaLmqbs3IdWtygXkH4fTD5sF2Dsag1vji7a7qWScHo+By245
-         mEhQ==
-X-Gm-Message-State: AOAM533zvFqOzYdM+yAoZbeHT3hWZEwoQZhUyPftycm4fALADJGr9cpd
-        oKqnV0FVYZJzMpoFVoiSTGTypf6xgwZXia3ZEC2ER23WmWY3Zo4/R1Z0f8ZgJtgZVOU51Ul/P6Z
-        uJ1VjvjhZt5JiAFdwhd01HhAp
-X-Received: by 2002:a1c:b703:: with SMTP id h3mr3915207wmf.131.1601484920439;
-        Wed, 30 Sep 2020 09:55:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpqMWMCf8rNOLTb8uVhzIBXgspOLuTByal+8MYiknPL2xBZbFeEcfJ4nRe0PKpiG562hHDqw==
-X-Received: by 2002:a1c:b703:: with SMTP id h3mr3915176wmf.131.1601484920155;
-        Wed, 30 Sep 2020 09:55:20 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id h4sm4746659wrm.54.2020.09.30.09.55.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 09:55:19 -0700 (PDT)
-Subject: Re: [PATCH 10/22] kvm: mmu: Add TDP MMU PF handler
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-11-bgardon@google.com>
- <20200930163740.GD32672@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4ee2a2cf-625b-3c10-a7da-75677ea37aa3@redhat.com>
-Date:   Wed, 30 Sep 2020 18:55:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 30 Sep 2020 12:56:58 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 590B22153BFA
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Date:   Wed, 30 Sep 2020 19:56:52 +0300
+From:   Elvira Khabirova <e.khabirova@omprussia.ru>
+To:     <op-tee@lists.trustedfirmware.org>
+CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <k.karasev@omprussia.ru>, <s.shtylyov@omprussia.ru>,
+        <vesa.jaaskelainen@vaisala.com>
+Subject: [PATCH v2] tee: add support for application-based session login
+ methods
+Message-ID: <20200930195652.5c316c3e@akathisia>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200930163740.GD32672@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.255.69.56]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1903.lancloud.ru (fd00:f066::73)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 18:37, Sean Christopherson wrote:
->> +
->> +	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root_hpa)))
->> +		return RET_PF_RETRY;
-> I feel like we should kill off these silly WARNs in the existing code instead
-> of adding more.  If they actually fired, I'm pretty sure that they would
-> continue firing and spamming the kernel log until the VM is killed as I don't
-> see how restarting the guest will magically fix anything.
+GP TEE Client API in addition to login methods already supported
+in the kernel also defines several application-based methods:
+TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
+TEEC_LOGIN_GROUP_APPLICATION.
 
-This is true, but I think it's better to be defensive.  They're
-certainly all candidates for KVM_BUG_ON.
+It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
+depending on the identity of the program, being persistent within one
+implementation, across multiple invocations of the application
+and across power cycles, enabling them to be used to disambiguate
+persistent storage. The exact nature is REE-specific.
 
-Paolo
+As the exact method of generating application identifier strings may
+vary between vendors, setups and installations, add two suggested
+methods and an exact framework for vendors to extend upon.
+
+Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
+---
+ drivers/tee/Kconfig    |  29 +++++++++
+ drivers/tee/tee_core.c | 133 ++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 154 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
+index 6488b66d69dd..cd8f02a3d488 100644
+--- a/drivers/tee/Kconfig
++++ b/drivers/tee/Kconfig
+@@ -10,6 +10,35 @@ config TEE
+ 	  This implements a generic interface towards a Trusted Execution
+ 	  Environment (TEE).
+ 
++choice
++	prompt "Application ID for client UUID"
++	depends on TEE
++	default TEE_APPID_PATH
++	help
++	  This option allows to choose which method will be used to generate
++	  application identifiers for client UUID generation when login methods
++	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
++	  and TEE_LOGIN_GROUP_APPLICATION are used.
++	  Please be mindful of the security of each method in your particular
++	  installation.
++
++	config TEE_APPID_PATH
++		bool "Path-based application ID"
++		help
++		  Use the executable's path as an application ID.
++
++	config TEE_APPID_SECURITY
++		bool "Security extended attribute based application ID"
++		help
++		  Use the executable's security extended attribute as an application ID.
++endchoice
++
++config TEE_APPID_SECURITY_XATTR
++	string "Security extended attribute to use for application ID"
++	depends on TEE_APPID_SECURITY
++	help
++	  Attribute to be used as an application ID (with the security prefix removed).
++
+ if TEE
+ 
+ menu "TEE drivers"
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 67186d00a52f..31fb244b59ed 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -16,9 +16,12 @@
+ 
+ #include <linux/cdev.h>
+ #include <linux/cred.h>
++#include <linux/file.h>
+ #include <linux/fs.h>
+ #include <linux/idr.h>
++#include <linux/mm.h>
+ #include <linux/module.h>
++#include <linux/security.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
+ #include <linux/uaccess.h>
+@@ -31,7 +34,7 @@
+ 
+ #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
+ 
+-#define TEE_UUID_NS_NAME_SIZE	128
++#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
+ 
+ /*
+  * TEE Client UUID name space identifier (UUIDv4)
+@@ -136,6 +139,72 @@ static int tee_release(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_TEE_APPID_SECURITY
++static const char *get_app_id(void **data)
++{
++	struct file *exe_file;
++	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
++	int len;
++
++	exe_file = get_mm_exe_file(current->mm);
++	if (!exe_file)
++		return ERR_PTR(-ENOENT);
++
++	if (!exe_file->f_inode) {
++		fput(exe_file);
++		return ERR_PTR(-ENOENT);
++	}
++
++	/*
++	 * An identifier string for the binary. Depends on the implementation.
++	 * Could be, for example, a string containing the application vendor ID,
++	 * or the binary's signature, or its hash and a timestamp.
++	 */
++	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
++	if (len < 0)
++		return ERR_PTR(len);
++
++	fput(exe_file);
++
++	return *data;
++}
++#endif /* CONFIG_TEE_APPID_SECURITY */
++
++#ifdef CONFIG_TEE_APPID_PATH
++static const char *get_app_id(void **data)
++{
++	struct file *exe_file;
++	char *path;
++
++	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
++	if (!*data)
++		return ERR_PTR(-ENOMEM);
++
++	exe_file = get_mm_exe_file(current->mm);
++	if (!exe_file) {
++		kfree(*data);
++		return ERR_PTR(-ENOENT);
++	}
++
++	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
++	if (IS_ERR(path)) {
++		kfree(*data);
++		return path;
++	}
++
++	fput(exe_file);
++
++	return path;
++}
++#endif /* CONFIG_TEE_APPID_PATH */
++
++#if defined(CONFIG_TEE_APPID_PATH) || defined(CONFIG_TEE_APPID_SECURITY)
++static void free_app_id(void *data)
++{
++	kfree(data);
++}
++#endif /* CONFIG_TEE_APPID_PATH || CONFIG_TEE_APPID_SECURITY */
++
+ /**
+  * uuid_v5() - Calculate UUIDv5
+  * @uuid: Resulting UUID
+@@ -208,6 +277,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	gid_t ns_grp = (gid_t)-1;
+ 	kgid_t grp = INVALID_GID;
+ 	char *name = NULL;
++	void *app_id_data = NULL;
++	const char *app_id = NULL;
+ 	int name_len;
+ 	int rc;
+ 
+@@ -228,6 +299,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	 * For TEEC_LOGIN_GROUP:
+ 	 * gid=<gid>
+ 	 *
++	 * For TEEC_LOGIN_APPLICATION:
++	 * app=<application id>
++	 *
++	 * For TEEC_LOGIN_USER_APPLICATION:
++	 * uid=<uid>:app=<application id>
++	 *
++	 * For TEEC_LOGIN_GROUP_APPLICATION:
++	 * gid=<gid>:app=<application id>
+ 	 */
+ 
+ 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
+@@ -238,10 +317,6 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 	case TEE_IOCTL_LOGIN_USER:
+ 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
+ 				    current_euid().val);
+-		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+-			rc = -E2BIG;
+-			goto out_free_name;
+-		}
+ 		break;
+ 
+ 	case TEE_IOCTL_LOGIN_GROUP:
+@@ -254,10 +329,49 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 
+ 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x",
+ 				    grp.val);
+-		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+-			rc = -E2BIG;
++		break;
++
++	case TEE_IOCTL_LOGIN_APPLICATION:
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
++			goto out_free_name;
++		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
++				    app_id);
++		free_app_id(app_id_data);
++		break;
++
++	case TEE_IOCTL_LOGIN_USER_APPLICATION:
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
++			goto out_free_name;
++		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
++				    current_euid().val, app_id);
++		free_app_id(app_id_data);
++		break;
++
++	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
++		memcpy(&ns_grp, connection_data, sizeof(gid_t));
++		grp = make_kgid(current_user_ns(), ns_grp);
++		if (!gid_valid(grp) || !in_egroup_p(grp)) {
++			rc = -EPERM;
++			goto out_free_name;
++		}
++
++		app_id = get_app_id(&app_id_data);
++		if (IS_ERR(app_id)) {
++			rc = PTR_ERR(app_id);
+ 			goto out_free_name;
+ 		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
++				    grp.val, app_id);
++		free_app_id(app_id_data);
+ 		break;
+ 
+ 	default:
+@@ -265,7 +379,10 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+ 		goto out_free_name;
+ 	}
+ 
+-	rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
++	if (name_len < TEE_UUID_NS_NAME_SIZE)
++		rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
++	else
++		rc = -E2BIG;
+ out_free_name:
+ 	kfree(name);
+ 
+-- 
+2.17.1
 
