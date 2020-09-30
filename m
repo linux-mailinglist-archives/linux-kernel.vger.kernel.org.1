@@ -2,160 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BA027F367
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3505A27F373
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730264AbgI3UgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 16:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S1730188AbgI3Ul5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 16:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3UgR (ORCPT
+        with ESMTP id S1725355AbgI3Ul4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 16:36:17 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11ECC061755;
-        Wed, 30 Sep 2020 13:36:16 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z17so3760698lfi.12;
-        Wed, 30 Sep 2020 13:36:16 -0700 (PDT)
+        Wed, 30 Sep 2020 16:41:56 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948C9C061755;
+        Wed, 30 Sep 2020 13:41:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so2058105pfa.10;
+        Wed, 30 Sep 2020 13:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=FvVU3w+wKNrGmSSrpD1fuhyo1DsqW+d7YWGQnG2VgIU=;
-        b=pRjjZ074ybsg1YxE4qraHShSd8LDsjv4ETsECqDd/VFayRIW+63mGICoDt8RqUP4I4
-         2akClrjBlw2sGnVdOdYd7l3hG/Vq8ya+Nnhuh9jsOOQLLEssR2yk6Zi3ueP/Jqf0l1LM
-         eh3boBbCXJJNuaTppIteQb4dCgNnKvDw55HdlkO0ZpeyOuwx/HEccdYmXWpylriTf0o2
-         R3u7qsuODlXbwWGnr87mJP47ab/qGHaEeWG4D8nwKI00sokjiJtLtVdMFuZpxVsriXuw
-         CuVSqAhPF6wTWYec85Yke1Usd5oU0E1fXGF0ZrHJlpNWhWApCb+pkB4cDAupEOx+0s52
-         caHQ==
+        bh=fKcEMy/ulXrnRj6nhbg7hxEiGUdxQcOBj8d9p5GeIrs=;
+        b=dEMDCtG4Z8qeThTZjQSOV5VHZGsWYSPocP8+QB50e8Ff5aVZFQaP4AttnqsUN61UlM
+         WuTkEr1O1+kOZsiqxThUtIIVfX6d84IQRDYm84K95UVwW3xzg4dJRUwMXuTwrTw5mlGF
+         H3Ln4wcHNXa1OUniVjJRghT+eEk3lJ77ZJyR18IosybkkDAGmGC7gLPAsqdwxTkcd53z
+         AxDBQtj2wXXbooKRbY3yzb1UzvtBVpreboS7xcBsu5Y69SPYySlv6kAIb1cczxiS0GCE
+         t80P9PvOgL01FcRv4K347XKV/bNOzHWEbn9vEnaZ1BwEpLitz5n2ePuwElmWFz9OTph/
+         BHCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FvVU3w+wKNrGmSSrpD1fuhyo1DsqW+d7YWGQnG2VgIU=;
-        b=hRH/YBOwfVscl+K1Z9/rlRttW9urtd7IpGl9Vxx83CN/hRba7CDg+XoX08JZoBDaCD
-         OxcgzWpM++rAhNfObM7U2jixhO7Wnr0zemWMUXwalK94s6EdsdjqZRhUWoeZDIBHD/Tg
-         KJYaC2rs7AIG2OK3cBlsE9yv5QoN5UFKi9orvFYfcWA/4MxOmAM0W4VaqXFHqIaNMAUG
-         sfNZ6GCCWx2RuPdoMG006YsELRFymADeb9vMThHqeBpJfI8r9CF9ZbL38hAToIPkCiFC
-         q/+RZs3WHs1ZsnDoXKNCeZEvpnVO/4sC8lbHmbfZMLcU7OEcJtoNoZbgRshNFkFsCP8K
-         0NJA==
-X-Gm-Message-State: AOAM532F27V8k9Iz5xYScGzPPHpg3vZySNsteAqkcT/cn/xa/ji6Ym6k
-        BCmCBkxYyS3e/0mqwHFNS/hcEU5DFUf0/PW+
-X-Google-Smtp-Source: ABdhPJyO/xuwQDU03jhAhiML4MgJebyzTY0GvISjG9zVY9mj+iTPJS7F1V10Ii/DUNNERq3e5z9gcw==
-X-Received: by 2002:a05:6512:3692:: with SMTP id d18mr1331274lfs.62.1601498175210;
-        Wed, 30 Sep 2020 13:36:15 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id b197sm304632lfd.251.2020.09.30.13.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 13:36:14 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Wed, 30 Sep 2020 22:36:12 +0200
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200930203612.GA22035@pc636>
-References: <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
- <20200925154741.GI3389@dhcp22.suse.cz>
- <20200929162514.GA8768@pc636>
- <20200930092732.GP2277@dhcp22.suse.cz>
- <20200930123535.GB18005@pc636>
- <20200930124413.GU2277@dhcp22.suse.cz>
- <20200930133954.GA19235@pc636>
- <20200930164600.GW2277@dhcp22.suse.cz>
+        bh=fKcEMy/ulXrnRj6nhbg7hxEiGUdxQcOBj8d9p5GeIrs=;
+        b=J1Vi6wufgu9guogAYSIW0wSJMtF+qLqUJcJOMfq9X/5EuddCJKByW+rAPX2OVX03N+
+         GBwQWUBVxAB+LnowAG6nckA3pXp/nUuNLl+EVJ2AyuGCAZ3rx1mzIsNa+keQpItlTBUP
+         N0NkrhqTiRKIzjm+XlPqMv6IJJloK3D9+FQ6lk3XwWDiiXEzapCtaMhfKtGdByIW1mzS
+         vSKUbpeTeQShdU7arewgbvYRafGKWcGfeji3pLXMNmQmJTdxbxq8gnprxWeCNMWVJEUW
+         tJVNUgHyoSqqgEhf+aX9AMSCekzBfWXfD/TyGrVnJWUlpTprC3rXX3C8y2Bv2Y0irh3Z
+         YIEw==
+X-Gm-Message-State: AOAM530jbqEmGkVsMnLmG2K06JYkdyZ4507CuUQCshETLyNfxqW0Iy+B
+        xBUaa3IINch9rSj2MPY308k=
+X-Google-Smtp-Source: ABdhPJzLUM8z+Nxjy5D9N+ZEMW0GlDyPlbp49BmUAFMqmD/WlERu9xu3u5TBCCZifBmTcJBEUKnV+Q==
+X-Received: by 2002:a63:f104:: with SMTP id f4mr3546772pgi.365.1601498515932;
+        Wed, 30 Sep 2020 13:41:55 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id p11sm3545097pfq.130.2020.09.30.13.41.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 13:41:55 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 13:36:18 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     joro@8bytes.org, krzk@kernel.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930203618.GC2110@Asurada-Nvidia>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200930164600.GW2277@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200930153131.GB3833404@ulmo>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 06:46:00PM +0200, Michal Hocko wrote:
-> On Wed 30-09-20 15:39:54, Uladzislau Rezki wrote:
-> > On Wed, Sep 30, 2020 at 02:44:13PM +0200, Michal Hocko wrote:
-> > > On Wed 30-09-20 14:35:35, Uladzislau Rezki wrote:
-> > > > On Wed, Sep 30, 2020 at 11:27:32AM +0200, Michal Hocko wrote:
-> > > > > On Tue 29-09-20 18:25:14, Uladzislau Rezki wrote:
-> > > > > > > > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> > > > > > > > to provide a memory service for contexts which are not allowed to
-> > > > > > > > sleep, RCU is part of them. Both flags used to provide such ability
-> > > > > > > > before but not anymore.
-> > > > > > > > 
-> > > > > > > > Do you agree with it?
-> > > > > > > 
-> > > > > > > Yes this sucks. But this is something that we likely really want to live
-> > > > > > > with. We have to explicitly _document_ that really atomic contexts in RT
-> > > > > > > cannot use the allocator. From the past discussions we've had this is
-> > > > > > > likely the most reasonable way forward because we do not really want to
-> > > > > > > encourage anybody to do something like that and there should be ways
-> > > > > > > around that. The same is btw. true also for !RT. The allocator is not
-> > > > > > > NMI safe and while we should be able to make it compatible I am not
-> > > > > > > convinced we really want to.
-> > > > > > > 
-> > > > > > > Would something like this be helpful wrt documentation?
-> > > > > > > 
-> > > > > > > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > > > > index 67a0774e080b..9fcd47606493 100644
-> > > > > > > --- a/include/linux/gfp.h
-> > > > > > > +++ b/include/linux/gfp.h
-> > > > > > > @@ -238,7 +238,9 @@ struct vm_area_struct;
-> > > > > > >   * %__GFP_FOO flags as necessary.
-> > > > > > >   *
-> > > > > > >   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> > > > > > > - * watermark is applied to allow access to "atomic reserves"
-> > > > > > > + * watermark is applied to allow access to "atomic reserves".
-> > > > > > > + * The current implementation doesn't support NMI and other non-preemptive context
-> > > > > > > + * (e.g. raw_spin_lock).
-> > > > > > >   *
-> > > > > > >   * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
-> > > > > > >   * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
-> > > > > > > 
-> > > > > > To me it is clear. But also above conflicting statement:
-> > > > > > 
-> > > > > > <snip>
-> > > > > > %GFP_ATOMIC users can not sleep and need the allocation to succeed. A %lower
-> > > > > > <snip>
-> > > > > > 
-> > > > > > should be rephrased, IMHO.
-> > > > > 
-> > > > > Any suggestions? Or more specifics about which part is conflicting? It
-> > > > > tries to say that there is a higher demand to succeed even though the
-> > > > > context cannot sleep to take active measures to achieve that. So the
-> > > > > only way to achieve that is to break the watermakrs to a certain degree
-> > > > > which is making them more "higher class" than other allocations.
-> > > > > 
-> > > > Michal, i had only one concern about it. It says that %GFP_ATOMIC users
-> > > > can not sleep, i.e. callers know that they are in atomic, thus no any
-> > > > sleeping, but the chose they make will force them to sleep.
-> > > 
-> > > I am not sure I follow you here. Do you mean they will be forced to
-> > > sleep with PREEMPT_RT?
-> > > 
-> > Exactly :)
+On Wed, Sep 30, 2020 at 05:31:31PM +0200, Thierry Reding wrote:
+> On Wed, Sep 30, 2020 at 01:42:57AM -0700, Nicolin Chen wrote:
+> > Previously the driver relies on bus_set_iommu() in .probe() to call
+> > in .probe_device() function so each client can poll iommus property
+> > in DTB to configure fwspec via tegra_smmu_configure(). According to
+> > the comments in .probe(), this is a bit of a hack. And this doesn't
+> > work for a client that doesn't exist in DTB, PCI device for example.
+> > 
+> > Actually when a device/client gets probed, the of_iommu_configure()
+> > will call in .probe_device() function again, with a prepared fwspec
+> > from of_iommu_configure() that reads the SWGROUP id in DTB as we do
+> > in tegra-smmu driver.
+> > 
+> > Additionally, as a new helper devm_tegra_get_memory_controller() is
+> > introduced, there's no need to poll the iommus property in order to
+> > get mc->smmu pointers or SWGROUP id.
+> > 
+> > This patch reworks .probe_device() and .attach_dev() by doing:
+> > 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
+> > 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
+> > 3) Calling devm_tegra_get_memory_controller() in .probe_device()
+> > 4) Also dropping the hack in .probe() that's no longer needed.
+> > 
+> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+[...]
+> >  static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
+> >  {
+> > -	struct device_node *np = dev->of_node;
+> > -	struct tegra_smmu *smmu = NULL;
+> > -	struct of_phandle_args args;
+> > -	unsigned int index = 0;
+> > -	int err;
+> > -
+> > -	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> > -					  &args) == 0) {
+> > -		smmu = tegra_smmu_find(args.np);
+> > -		if (smmu) {
+> > -			err = tegra_smmu_configure(smmu, dev, &args);
+> > -			of_node_put(args.np);
+> > -
+> > -			if (err < 0)
+> > -				return ERR_PTR(err);
+> > -
+> > -			/*
+> > -			 * Only a single IOMMU master interface is currently
+> > -			 * supported by the Linux kernel, so abort after the
+> > -			 * first match.
+> > -			 */
+> > -			dev_iommu_priv_set(dev, smmu);
+> > -
+> > -			break;
+> > -		}
+> > +	struct tegra_mc *mc = devm_tegra_get_memory_controller(dev);
+> > +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
 > 
-> We can make that more specific once RT patchset is merged. As of now
-> this is not the thing in the Linus tree. I believe there will be more to
-> clarify about atomic contexts in the RT tree as it means something else
-> than people are used to think.
+> It looks to me like the only reason why you need this new global API is
+> because PCI devices may not have a device tree node with a phandle to
+> the IOMMU. However, SMMU support for PCI will only be enabled if the
+> root complex has an iommus property, right? In that case, can't we
+> simply do something like this:
 > 
-Fair enough. Currently we have only the Kconfig CONFIG_PREEMPT_RT
-symbol, so RT patches are still not in place.
+> 	if (dev_is_pci(dev))
+> 		np = find_host_bridge(dev)->of_node;
+> 	else
+> 		np = dev->of_node;
+> 
+> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+> sure that exists.
+> 
+> Once we have that we can still iterate over the iommus property and do
+> not need to rely on this global variable.
 
---
-Vlad Rezki
+I agree that it'd work. But I was hoping to simplify the code
+here if it's possible. Looks like we have an argument on this
+so I will choose to go with your suggestion above for now.
+
+> > -		of_node_put(args.np);
+> > -		index++;
+> > -	}
+> > +	/* An invalid mc pointer means mc and smmu drivers are not ready */
+> > +	if (IS_ERR(mc))
+> > +		return ERR_PTR(-EPROBE_DEFER);
+> >  
+> > -	if (!smmu)
+> > +	/*
+> > +	 * IOMMU core allows -ENODEV return to carry on. So bypass any call
+> > +	 * from bus_set_iommu() during tegra_smmu_probe(), as a device will
+> > +	 * call in again via of_iommu_configure when fwspec is prepared.
+> > +	 */
+> > +	if (!mc->smmu || !fwspec || fwspec->ops != &tegra_smmu_ops)
+> >  		return ERR_PTR(-ENODEV);
+> >  
+> > -	return &smmu->iommu;
+> > +	dev_iommu_priv_set(dev, mc->smmu);
+> > +
+> > +	return &mc->smmu->iommu;
+> >  }
+> >  
+> >  static void tegra_smmu_release_device(struct device *dev)
+> > @@ -1089,16 +1027,6 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+> >  	if (!smmu)
+> >  		return ERR_PTR(-ENOMEM);
+> >  
+> > -	/*
+> > -	 * This is a bit of a hack. Ideally we'd want to simply return this
+> > -	 * value. However the IOMMU registration process will attempt to add
+> > -	 * all devices to the IOMMU when bus_set_iommu() is called. In order
+> > -	 * not to rely on global variables to track the IOMMU instance, we
+> > -	 * set it here so that it can be looked up from the .probe_device()
+> > -	 * callback via the IOMMU device's .drvdata field.
+> > -	 */
+> > -	mc->smmu = smmu;
+> 
+> I don't think this is going to work. I distinctly remember putting this
+> here because we needed access to this before ->probe_device() had been
+> called for any of the devices.
+
+Do you remember which exact part of code needs to access mc->smmu
+before ->probe_device() is called?
+
+What I understood is that IOMMU core didn't allow ERR_PTR(-ENODEV)
+return value from ->probe_device(), previously ->add_device(), to
+carry on when you added this code/driver:
+    commit 8918465163171322c77a19d5258a95f56d89d2e4
+    Author: Thierry Reding <treding@nvidia.com>
+    Date:   Wed Apr 16 09:24:44 2014 +0200
+        memory: Add NVIDIA Tegra memory controller support
+
+..until the core had a change one year later:
+    commit 38667f18900afe172a4fe44279b132b4140f920f
+    Author: Joerg Roedel <jroedel@suse.de>
+    Date:   Mon Jun 29 10:16:08 2015 +0200
+        iommu: Ignore -ENODEV errors from add_device call-back
+
+As my commit message of this change states, ->probe_device() will
+be called in from both bus_set_iommu() and really_probe() of each
+device through of_iommu_configure() -- the later one initializes
+an fwspec by polling the iommus property in the IOMMU core, same
+as what we do here in tegra-smmu. If this works, we can probably
+drop the hack here and get rid of tegra_smmu_configure().
