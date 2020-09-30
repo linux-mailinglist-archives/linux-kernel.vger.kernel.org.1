@@ -2,162 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E364527E57C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BB927E587
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgI3JqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:46:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
+        id S1729102AbgI3JrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:47:23 -0400
+Received: from muru.com ([72.249.23.125]:45762 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728570AbgI3JqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:46:20 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1C112075F;
-        Wed, 30 Sep 2020 09:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601459179;
-        bh=JC8eFB/Fh2ebPONieoeEroqX545MkCOXw/7xJvIp4Fo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C6usw7dqILJphPfhlYXxx43CrQrvszp2QVPRIcvq2A/zm4n6tuEEmj0tekNHtMPn1
-         I798NUKhzxGaq2aRFkn8yDxDMBq6jLG1Je7ywpfUUFxPgrciQtHbLpHfOB41XxLcnj
-         pIqBuvIzKy8JrMFIYDiOcyhCcwohccFnYXBV7pHo=
-Received: by pali.im (Postfix)
-        id 844A09D2; Wed, 30 Sep 2020 11:46:16 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 11:46:16 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Removal of HCI commands, userspace bluetooth regression?
-Message-ID: <20200930094616.qmpophucxwpgu7tz@pali>
-References: <20191228171212.56anj4d4kvjeqhms@pali>
- <45BB2908-4E16-4C74-9DB4-8BAD93B42A21@holtmann.org>
- <20200104102436.bhqagqrfwupj6hkm@pali>
- <20200209132137.7pi4pgnassosh3ax@pali>
- <20200414225618.zgh5h4jexahfukdl@pali>
- <20200808132747.4byefjg5ysddgkel@pali>
- <20200929213254.difivzrhapk766xp@pali>
- <20200930080205.GA1571308@kroah.com>
- <20200930082534.rrck6qb3fntm25wz@pali>
- <20200930092043.GB1580803@kroah.com>
+        id S1728999AbgI3JrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:47:20 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 7435E810D;
+        Wed, 30 Sep 2020 09:47:20 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 12:47:14 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Trent Piepho <tpiepho@gmail.com>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Christina Quast <cquast@hanoverdisplays.com>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+Message-ID: <20200930094714.GR9471@atomide.com>
+References: <20200924054324.GB9471@atomide.com>
+ <CA+7tXigg+h3v61AVMaYRKa_ZwznehOUPEESMqXKsNDNCrFph3w@mail.gmail.com>
+ <20200924060645.GD9471@atomide.com>
+ <CA+7tXijkS8UMFk4t=DuKjZZNnThbRarPQvxwxjg-uJFTKJRsXA@mail.gmail.com>
+ <20200924070443.GF9471@atomide.com>
+ <CA+7tXihBdw9AOGL7Hp2cH9+ii8fUXaaZZDUP3icyeOkMuGm4qA@mail.gmail.com>
+ <20200930051521.GN9471@atomide.com>
+ <CA+7tXig=3hbFXfmYMC5Hd1Zc2n-6uGXbMePPw_Cr4bOsyt7QQA@mail.gmail.com>
+ <20200930091526.GQ9471@atomide.com>
+ <CA+7tXihYb6AHrQLpO9UDHV7YFbzo_Pm8EdXNJXX+tJXX-L6UYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930092043.GB1580803@kroah.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CA+7tXihYb6AHrQLpO9UDHV7YFbzo_Pm8EdXNJXX+tJXX-L6UYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 30 September 2020 11:20:43 Greg Kroah-Hartman wrote:
-> On Wed, Sep 30, 2020 at 10:25:34AM +0200, Pali Rohár wrote:
-> > On Wednesday 30 September 2020 10:02:05 Greg Kroah-Hartman wrote:
-> > > On Tue, Sep 29, 2020 at 11:32:54PM +0200, Pali Rohár wrote:
-> > > > CCing other lists and maintainers, hopefully, somebody would have a time to look at it...
-> > > > 
-> > > > On Saturday 08 August 2020 15:27:47 Pali Rohár wrote:
-> > > > > On Wednesday 15 April 2020 00:56:18 Pali Rohár wrote:
-> > > > > > On Sunday 09 February 2020 14:21:37 Pali Rohár wrote:
-> > > > > > > On Saturday 04 January 2020 11:24:36 Pali Rohár wrote:
-> > > > > > > > On Saturday 04 January 2020 10:44:52 Marcel Holtmann wrote:
-> > > > > > > > > Hi Pali,
-> > > > > > > > > 
-> > > > > > > > > > I wrote a simple script "sco_features.pl" which show all supported
-> > > > > > > > > > codecs by local HCI bluetooth adapter. Script is available at:
-> > > > > > > > > > 
-> > > > > > > > > > https://github.com/pali/hsphfpd-prototype/blob/prototype/sco_features.pl
-> > > > > > > > > > 
-> > > > > > > > > > And I found out that OCF_READ_LOCAL_CODECS HCI command cannot be send by
-> > > > > > > > > > non-root user. Kernel returns "Operation not permitted" error.
-> > > > > > > > > > 
-> > > > > > > > > > What is reason that kernel blocks OCF_READ_LOCAL_CODECS command for
-> > > > > > > > > > non-root users? Without it (audio) application does not know which
-> > > > > > > > > > codecs local bluetooth adapter supports.
-> > > > > > > > > > 
-> > > > > > > > > > E.g. OCF_READ_LOCAL_EXT_FEATURES or OCF_READ_VOICE_SETTING commands can
-> > > > > > > > > > be send also by non-root user and kernel does not block them.
-> > > > > > > > > 
-> > > > > > > > > actually the direct access to HCI commands is being removed. So we have no plans to add new commands into the list since that it what the kernel is suppose to handle. If we wanted to expose this, then it has to be via mgmt.
-> > > > > > > > 
-> > > > > > > > Hi Marcel! Thank you for information. I have not know that this API is
-> > > > > > > > "deprecated" and is going to be removed. But userspace audio
-> > > > > > > > applications need to know what bluetooth adapter supports, so can you
-> > > > > > > > export result of these commands to userspace? My script linked above
-> > > > > > > > calls: OCF_READ_VOICE_SETTING, OCF_READ_LOCAL_COMMANDS,
-> > > > > > > > OCF_READ_LOCAL_EXT_FEATURES, OCF_READ_LOCAL_CODECS
-> > > > > > > 
-> > > > > > > Hello! Just a gently reminder for this question. How to retrieve
-> > > > > > > information about supported codecs from userspace by non-root user?
-> > > > > > > Because running all bluetooth audio applications by root is not really a
-> > > > > > > solution. Plus if above API for root user is going to be removed, what
-> > > > > > > is a replacement?
-> > > > > > 
-> > > > > > Hello!
-> > > > > > 
-> > > > > > I have not got any answer to my email from Marcel for months, so I'm
-> > > > > > adding other developers to loop. Could somebody tell me that is the
-> > > > > > replacement API if above one is going to be removed?
-> > > > > > 
-> > > > > > I was not able to find any documentation where could be described this
-> > > > > > API nor information about deprecation / removal.
-> > > > > > 
-> > > > > > And are you aware of the fact that removing of API could potentially
-> > > > > > break existing applications?
-> > > > > > 
-> > > > > > I really need to know which API should I use, because when I use API
-> > > > > > which is going to be removed, then my application stops working. And I
-> > > > > > really want to avoid it.
-> > > > > > 
-> > > > > > Also I have not got any response yet, how can I read list of supported
-> > > > > > codecs by bluetooth adapter by ordinary non-root user? Audio application
-> > > > > > needs to know list of supported codecs and it is really insane to run it
-> > > > > > as root.
-> > > > > 
-> > > > > Hello! This is just another reminder that I have not got any reply to
-> > > > > this email.
-> > > > > 
-> > > > > Does silence mean that audio applications are expected to work only
-> > > > > under root account and ordinary users are not able to use audio and list
-> > > > > supported codecs?
-> > > > 
-> > > > Hello! I have not got any reply for this issue for 10 months and if you
-> > > > are going to remove (or after these 10 months you already did it?)
-> > > > existing HCI API from kernel it would break existing and working
-> > > > userspace application. How do you want to handle such regressions?
-> > > 
-> > > What git commit caused this regression?
-> > 
-> > Hello! Marcel in January wrote that access for HCI commands is being
-> > removed from kernel. I do not know if he managed to do it in since
-> > January, but I'm going to check it...
+* Trent Piepho <tpiepho@gmail.com> [200930 09:34]:
+> On Wed, Sep 30, 2020 at 2:15 AM Tony Lindgren <tony@atomide.com> wrote:
+> >
+> > * Trent Piepho <tpiepho@gmail.com> [200930 08:35]:
+> > > The closest thing would be the generic pin config type bindings, which
+> > > go in the pinctrl driver's nodes, and look like this:
+> > > &am335x_pinmux {
+> > >     pinctrl_yoyo_reset: yoyogrp {
+> > >         pins = "foo";
+> > >         function = "gpio";
+> > >         bias-pull-up;
+> > >     };
+> > > };
+> >
+> > There's a bit of a dtb size and boot time issue for adding properties
+> > for each pin where that needs to be done for several hundred pins :)
 > 
-> So you don't see a regression/problem, but are saying there is one?
+> pins is list, multiple pins can be specified at once.  Otherwise the
+> property name would be "pin" and not "pins"  There's also a groups
+> property to refer to multiple pins at once, e.g.
+> 
+> arch/mips/boot/dts/ingenic/ci20.dts-    pins_mmc1: mmc1 {
+> arch/mips/boot/dts/ingenic/ci20.dts-            function = "mmc1";
+> arch/mips/boot/dts/ingenic/ci20.dts:            groups =
+> "mmc1-1bit-d", "mmc1-4bit-d";
+> arch/mips/boot/dts/ingenic/ci20.dts-            bias-disable;
+> arch/mips/boot/dts/ingenic/ci20.dts-    };
+> 
+> arch/mips/boot/dts/pic32/pic32mzda_sk.dts-      user_leds_s0: user_leds_s0 {
+> arch/mips/boot/dts/pic32/pic32mzda_sk.dts:              pins = "H0", "H1", "H2";
+> arch/mips/boot/dts/pic32/pic32mzda_sk.dts-              output-low;
+> arch/mips/boot/dts/pic32/pic32mzda_sk.dts-              microchip,digital;
+> arch/mips/boot/dts/pic32/pic32mzda_sk.dts-      };
 
-Hello!
+Right.
 
-Planed removal of used API would be a regression. Marcel wrote that it
-is "being removed". Nobody reacted to that fact for 10 months so I did
-not know if this comment was lost and removal is already in progress.
-Or if something was changed and removal is not planned anymore.
+> > > Is "some additional property for specifying generic conf flags"
+> > > different from the existing pinctrl-single,bias-pullup, etc.
+> > > properties?  Because splitting the data cell into two parts doesn't
+> > > make any difference to those.
+> >
+> > So with an interrupt style binding with generic pinconf flags we can
+> > leave out the parsing of multiple properties for each pin. Sure the
+> > pin is only referenced by the controller like you pointed out but the
+> > pinconf flags could be generic.
+> 
+> Where do these flags go?  In pinctrl-single,pins?  Like:
+> 
+> pinctrl-single,pins = <AM335X_PIN_MDC MUX_MODE7 PIN_INPUT_PULLUP>;
+> 
+> But PIN_INPUT_PULLUP is a generic flag?  Which is translated into the
+> proper value by??
 
-So are you aware that it will break applications?
+Yes that's what I was thinking, something like this with generic flags:
 
-> odd...
+pinctrl-single,pins = <AM335X_PIN_MDC (PIN_INPUT | PIN_PULLUP) MUX_MODE7>;
 
-I think it is not a good idea to do something and then check what happen
-if there are people who know that such thing is in use and for sure it
-will break something.
+> Or are you talking about replacing the existing pinctrl-0,
+> pinctrl-names properties with a totally different system that looks
+> more like gpio and interrupt handles?
 
-And also I still did not get any response what is the replacement of
-that API.
+That would be even better :) Might be just too much to deal with..
+
+In any case the parser code could already be generic if we had generic
+flags based on #pinctrl-cells.
+
+Regards,
+
+Tony
