@@ -2,271 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4AB27EBB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50CF27EBBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730744AbgI3PCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgI3PCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:02:13 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EE2920789;
-        Wed, 30 Sep 2020 15:02:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601478132;
-        bh=MdE1i8KgB3QnwXcjilTU0w0symDifwqpaU/PORoVu5I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FolePRkIR98oqR+FMUde+BLZiLt3IVCR4Cn3rd8ymzuvFEg3vAfWdViIMcnz0FnKC
-         X0UvJyZ131W481CJsVWVIdORGvVd+ZmgM8deQvU+OCTVSSZWSGJqDw0VhjtieB3XB6
-         eOWzS6qGAr1MyAnPrkhNVsNrT4p5+SX5nKPEvYeY=
-Received: by mail-oi1-f180.google.com with SMTP id 185so1988831oie.11;
-        Wed, 30 Sep 2020 08:02:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530TfWqAWulx87rU7fHKKozKFYPd5H3RMn8JoZh2E7HUp1/5y7dW
-        gKy80ua8o+zbyatKlo1db8V5duXkFh0jx4yIzg==
-X-Google-Smtp-Source: ABdhPJxGWMQf9BR7BPtzdlH19vuVhLB7nPfhp5mLIHpIIUIFAco8YDsbqZom1mvT7pQuhqCygZo++TAN9SGz8m3PAfY=
-X-Received: by 2002:aca:7543:: with SMTP id q64mr1661890oic.147.1601478131261;
- Wed, 30 Sep 2020 08:02:11 -0700 (PDT)
+        id S1729247AbgI3PDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgI3PDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:03:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E5EC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:03:07 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kNddI-0007wM-E3; Wed, 30 Sep 2020 17:03:04 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kNddH-0002HX-2B; Wed, 30 Sep 2020 17:03:03 +0200
+Date:   Wed, 30 Sep 2020 17:03:02 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20200930150302.n3kcw3lzepug53za@pengutronix.de>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20200930095204.GA1585476@kroah.com>
+ <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
+ <20200930105238.GA1592367@kroah.com>
+ <20200930112720.xiff3xwmfu3gjypk@lem-wkst-02.lemonage>
+ <20200930115106.GB1603625@kroah.com>
+ <20200930141352.kt6bpudj2t57ogp3@lem-wkst-02.lemonage>
 MIME-Version: 1.0
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com> <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
- <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
- <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20200928093911.GB12010@e121166-lin.cambridge.arm.com> <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com> <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
-In-Reply-To: <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 30 Sep 2020 10:01:59 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
-Message-ID: <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of dw_child_pcie_ops
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "Z.q. Hou" <zhiqiang.hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fn2q5sadp7dee75g"
+Content-Disposition: inline
+In-Reply-To: <20200930141352.kt6bpudj2t57ogp3@lem-wkst-02.lemonage>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 8:22 AM Kishon Vijay Abraham I <kishon@ti.com> wrot=
+
+--fn2q5sadp7dee75g
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 30, 2020 at 04:13:52PM +0200, Lars Poeschel wrote:
+> On Wed, Sep 30, 2020 at 01:51:06PM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 30, 2020 at 01:27:20PM +0200, Lars Poeschel wrote:
+> > > On Wed, Sep 30, 2020 at 12:52:38PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Sep 30, 2020 at 12:01:26PM +0200, Uwe Kleine-K=F6nig wrote:
+> > > > > On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrot=
 e:
->
-> Hi,
->
-> On 29/09/20 10:41 pm, Rob Herring wrote:
-> > On Tue, Sep 29, 2020 at 10:24 AM Gustavo Pimentel
-> > <Gustavo.Pimentel@synopsys.com> wrote:
-> >>
-> >> On Tue, Sep 29, 2020 at 5:5:41, Z.q. Hou <zhiqiang.hou@nxp.com> wrote:
-> >>
-> >>> Hi Lorenzo,
-> >>>
-> >>> Thanks a lot for your comments!
-> >>>
-> >>>> -----Original Message-----
-> >>>> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> >>>> Sent: 2020=E5=B9=B49=E6=9C=8828=E6=97=A5 17:39
-> >>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
-> >>>> Cc: Rob Herring <robh@kernel.org>; linux-kernel@vger.kernel.org; PCI
-> >>>> <linux-pci@vger.kernel.org>; Bjorn Helgaas <bhelgaas@google.com>;
-> >>>> Gustavo Pimentel <gustavo.pimentel@synopsys.com>; Michael Walle
-> >>>> <michael@walle.cc>; Ard Biesheuvel <ardb@kernel.org>
-> >>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
-> >>>> dw_child_pcie_ops
-> >>>>
-> >>>> On Thu, Sep 24, 2020 at 04:24:47AM +0000, Z.q. Hou wrote:
-> >>>>> Hi Rob,
-> >>>>>
-> >>>>> Thanks a lot for your comments!
-> >>>>>
-> >>>>>> -----Original Message-----
-> >>>>>> From: Rob Herring <robh@kernel.org>
-> >>>>>> Sent: 2020=E5=B9=B49=E6=9C=8818=E6=97=A5 23:28
-> >>>>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
-> >>>>>> Cc: linux-kernel@vger.kernel.org; PCI <linux-pci@vger.kernel.org>;
-> >>>>>> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>; Bjorn Helgaas
-> >>>>>> <bhelgaas@google.com>; Gustavo Pimentel
-> >>>>>> <gustavo.pimentel@synopsys.com>; Michael Walle
-> >>>> <michael@walle.cc>;
-> >>>>>> Ard Biesheuvel <ardb@kernel.org>
-> >>>>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
-> >>>>>> dw_child_pcie_ops
-> >>>>>>
-> >>>>>> On Fri, Sep 18, 2020 at 5:02 AM Z.q. Hou <zhiqiang.hou@nxp.com>
-> >>>> wrote:
-> >>>>>>>
-> >>>>>>> Hi Rob,
-> >>>>>>>
-> >>>>>>> Thanks a lot for your comments!
-> >>>>>>>
-> >>>>>>>> -----Original Message-----
-> >>>>>>>> From: Rob Herring <robh@kernel.org>
-> >>>>>>>> Sent: 2020=E5=B9=B49=E6=9C=8817=E6=97=A5 4:29
-> >>>>>>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
-> >>>>>>>> Cc: linux-kernel@vger.kernel.org; PCI
-> >>>>>>>> <linux-pci@vger.kernel.org>; Lorenzo Pieralisi
-> >>>>>>>> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas
-> >>>>>>>> <bhelgaas@google.com>; Gustavo Pimentel
-> >>>>>>>> <gustavo.pimentel@synopsys.com>; Michael Walle
-> >>>>>> <michael@walle.cc>;
-> >>>>>>>> Ard Biesheuvel <ardb@kernel.org>
-> >>>>>>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
-> >>>>>>>> dw_child_pcie_ops
-> >>>>>>>>
-> >>>>>>>> On Tue, Sep 15, 2020 at 11:49 PM Zhiqiang Hou
-> >>>>>> <Zhiqiang.Hou@nxp.com>
-> >>>>>>>> wrote:
-> >>>>>>>>>
-> >>>>>>>>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> >>>>>>>>>
-> >>>>>>>>> On NXP Layerscape platforms, it results in SError in the
-> >>>>>>>>> enumeration of the PCIe controller, which is not connecting
-> >>>>>>>>> with an Endpoint device. And it doesn't make sense to
-> >>>>>>>>> enumerate the Endpoints when the PCIe link is down. So this
-> >>>>>>>>> patch added the link up check to avoid to fire configuration
-> >>>> transactions on link down bus.
-> >>>>>>>>
-> >>>>>>>> Michael reported the same issue as well.
-> >>>>>>>>
-> >>>>>>>> What happens if the link goes down between the check and the
-> >>>> access?
-> >>>>>>>
-> >>>>>>> This patch cannot cover this case, and will get the SError.
-> >>>>>>> But I think it makes sense to avoid firing transactions on link d=
-own bus.
-> >>>>>>
-> >>>>>> That's impossible to do without a race even in h/w.
-> >>>>>
-> >>>>> Agree.
-> >>>>>
-> >>>>>>
-> >>>>>>>> It's a racy check. I'd like to find an alternative solution.
-> >>>>>>>> It's even worse if Layerscape is used in ECAM mode. I looked at
-> >>>>>>>> the EDK2 setup for layerscape[1] and it looks like root ports
-> >>>>>>>> are just skipped if link
-> >>>>>> is down.
-> >>>>>>>> Maybe a link down just never happens once up, but if so, then we
-> >>>>>>>> only need to check it once and fail probe.
-> >>>>>>>
-> >>>>>>> Many customers connect the FPGA Endpoint, which may establish PCI=
-e
-> >>>>>>> link after the PCIe enumeration and then rescan the PCIe bus, so =
-I
-> >>>>>>> think it should not exit the probe of root port even if there is
-> >>>>>>> not link up
-> >>>>>> during enumeration.
-> >>>>>>
-> >>>>>> That's a good reason. I want to unify the behavior here as it vari=
-es
-> >>>>>> per platform currently and wasn't sure which way to go.
-> >>>>>>
-> >>>>>>
-> >>>>>>>> I've dug into this a bit more and am curious about the
-> >>>>>>>> PCIE_ABSERR register setting which is set to:
-> >>>>>>>>
-> >>>>>>>> #define PCIE_ABSERR_SETTING 0x9401 /* Forward error of
-> >>>>>>>> non-posted request */
-> >>>>>>>>
-> >>>>>>>> It seems to me this is not what we want at least for config
-> >>>>>>>> accesses, but commit 84d897d6993 where this was added seems to
-> >>>>>>>> say otherwise. Is it not possible to configure the response per =
-access
-> >>>> type?
-> >>>>>>>
-> >>>>>>> Thanks a lot for your investigation!
-> >>>>>>> The story is like this: Some customers worry about these silent
-> >>>>>>> error (DWC PCIe IP won't forward the error of outbound non-post
-> >>>>>>> request by default), so we were pushed to enable the error
-> >>>>>>> forwarding to AXI in the commit
-> >>>>>>> 84d897d6993 as you saw. But it cannot differentiate the config
-> >>>>>>> transactions from the MEM_rd, except the Vendor ID access, which
-> >>>>>>> is controlled by a separate bit and it was set to not forward
-> >>>>>>> error of access
-> >>>>>> of Vendor ID.
-> >>>>>>> So we think it's okay to enable the error forwarding, the SError
-> >>>>>>> should not occur, because after the enumeration it won't access
-> >>>>>>> the
-> >>>>>> non-existent functions.
-> >>>>>>
-> >>>>>> We've rejected upstream support for platforms aborting on config
-> >>>>>> accesses[1]. I think there's clear consensus that aborting is the
-> >>>>>> wrong behavior.
-> >>>>>>
-> >>>>>> Do MEM_wr errors get forwarded? Seems like that would be enough.
-> >>>>>> Also, wouldn't page faults catch most OOB accesses anyways? You ne=
-ed
-> >>>>>> things page aligned anyways with an IOMMU and doing userspace acce=
-ss
-> >>>>>> or guest assignment.
-> >>>>>
-> >>>>> Yes, errors of MEM_wr can be forwarded.
-> >>>>>
-> >>>>>>
-> >>>>>> Here's another idea, how about only enabling forwarding errors if
-> >>>>>> the link is up? If really would need to be configured any time the
-> >>>>>> link state changes rather than just at probe. I'm not sure if you
-> >>>>>> have a way to disable it on link down though.
-> >>>>>
-> >>>>> Dug deeper into this issue and found the setting of not forwarding
-> >>>>> error of non-existent Vender ID access counts on the link partner: =
-1.
-> >>>>> When there is a link partner (namely link up), it will return 0xfff=
-f
-> >>>>> when read non-existent function Vendor ID and won't forward error t=
-o
-> >>>>> AXI.  2. When no link partner (link down), it will forward the erro=
-r
-> >>>>> of reading non-existent function Vendor ID to AXI and result in
-> >>>>> SError.
-> >>>>>
-> >>>>> I think this is a DWC PCIe IP specific issue but not get feedback f=
-rom
-> >>>>> design team.  I'm thinking to disable this error forwarding just li=
-ke
-> >>>>> other platforms, since when these errors (UR, CA and CT) are detect=
-ed,
-> >>>>> AER driver can also report the error and try to recover.
-> >>>>
-> >>>> I take this as you shall send a patch to fix this issue shortly, is =
-this correct ?
-> >>>
-> >>> The issue becomes complex:
-> >>> I reviewed the DWC PCIe databook of verion 4.40a which is used on Lay=
-erscape platforms, and it said that " Your RC application should not genera=
-te CFG requests until it has confirmed that the link is up by sampling the =
-smlh_link_up and rmlh_link_up outputs".
-> >>> So, the link up checking should not be remove before each outbound CF=
-G access.
-> >>> Gustavo, can you share more details on the link up checking? Does it =
-only exist in the 4.40a?
-> >>
-> >> Hi Zhiqiang,
-> >>
-> >> According to the information that I got from the IP team you are corre=
-ct,
-> >> the same requirement still exists on the newer IP versions.
-> >
-> > How is that possible in a race free way?
-> >
-> > Testing on meson and layerscape (with the forwarding of errors
-> > disabled) shows a link check is not needed. But then dra7xx seems to
-> > need one (or has some f/w setup).
->
-> Yeah, I don't see any registers in the DRA7x PCIe wrapper for disabling
-> error forwarding.
+> > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K=F6nig wr=
+ote:
+> > > > > > > Hello,
+> > > > > > >=20
+> > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc =
+a bit to
+> > > > > > > Cc:.
+> > > > > > >=20
+> > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > > > > thank you for your review!
+> > > > > > > >=20
+> > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K=F6ni=
+g wrote:
+> > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemona=
+ge.de wrote:
+> > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > > > >=20
+> > > > > > > > > > This adds a class to exported pwm devices.
+> > > > > > > > > > Exporting a pwm through sysfs did not yield udev events=
+=2E The
+> > > > > > > > >=20
+> > > > > > > > > I wonder what is your use-case here. This for sure also h=
+as a place to
+> > > > > > > > > be mentioned in the commit log. I suspect there is a bett=
+er way to
+> > > > > > > > > accomplish you way.
+> > > > > > > >=20
+> > > > > > > > Use-case is to be able to use a pwm from a non-root userspa=
+ce process.
+> > > > > > > > I use udev rules to adjust permissions.
+> > > > > > >=20
+> > > > > > > Hmm, how do you trigger the export? Without being aware of al=
+l the
+> > > > > > > details in the sysfs code I would expect that the exported st=
+uff is
+> > > > > > > available instantly once the write used to export the PWM is =
+completed.
+> > > > > > > So changing the permissions can be done directly after trigge=
+ring the
+> > > > > > > export in the same process.
+> > > > > >=20
+> > > > > > It looks like userspace wants to see when a pwmX device shows u=
+p, right?
+> > > > > >=20
+> > > > > > And it's not because those devices do not belong to any class o=
+r bus, so
+> > > > > > they are just "floating" out there (they might show up under
+> > > > > > /sys/bus/virtual, if you set things up right, which I don't thi=
+nk is
+> > > > > > happening here...)
+> > > > > >=20
+> > > > > > So yes, you need to create a class, or assign this to a bus, wh=
+ich is
+> > > > > > fine, but it looks like no one is doing that.  Don't create new=
+ classes
+> > > > > > dynamically, but rather, just assign this to the existing pwm c=
+lass.
+> > > > > > What's wrong with that?  I saw an older patch that did that, wh=
+at did
+> > > > > > that break?
+> > > > >=20
+> > > > > Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did=
+ you
+> > > > > read the reverting commit's log message? (i.e.
+> > > > > c289d6625237aa785b484b4e94c23b3b91ea7e60)
+> > > > >=20
+> > > > > I guess the breakage is that the resulting name then is:
+> > > > >=20
+> > > > > 	"pwm%d", pwm->id
+> > > > >=20
+> > > > > where pwm->id is a number unique to the pwmchip. So doing
+> > > > >=20
+> > > > > 	echo 0 > pwmchip1/export
+> > > > > 	echo 0 > pwmchip2/export
+> > > > >=20
+> > > > > breaks because both want to create pwm0 in the class directory.
+> > > >=20
+> > > > Ah, that makes more sense why that didn't work.
+> > > >=20
+> > > > Ok, can the "name" of the new export chip be changed?  Is that
+> > > > hard-coded somewhere in userspace tools already?  Depending on that=
+, the
+> > > > solution for this will change...
+> > >=20
+> > > I know that back then, when sysfs for pwm was created, Thierry didn't
+> > > want to have one global namespace like gpio sysfs has. What you ask f=
+or
+> > > is something like:
+> > > 	pwm-{chipnumber}-{pwmnumber}
+> > > Right ? Can that be considered non-global ?
+> >=20
+> > Yes, and that's just "global" for the pwm class namespace.
+> >=20
+> > > Thierry's mail from back then is here:
+> > > https://lore.kernel.org/lkml/20130408081745.GA21392@avionic-0098.mock=
+up.avionic-design.de/
+> > >=20
+> > > A short search on github I found this:
+> > > https://github.com/vsergeev/c-periphery/blob/d34077d7ee45fa7d1947cc01=
+74919452fac31597/src/pwm.c#L74
+> > >=20
+> > > Seems to match your hardcoded criteria ?
+> >=20
+> > Yes, ugh :(
+> >=20
+> > Ok, now I see why the "lots of pwm classes!" patch was proposed.
+> >=20
+> > And maybe that's really the only way forward here, as the chip namespace
+> > is the only unique thing.
+> >=20
+> > But wow, it feels wrong...
+>=20
+> Would the following feel better:
+> * use the new naming scheme you proposed for pwm's :
+>   pwm-{chipnumber}-{pwmnumber}
+> * assign the normal pwm class to the exported pwm devices. That lets
+>   them appear in the global /sys/class/pwm directory as e.g. pwm-0-0
+> * maintain backward compatibility through symlinks e.g.:
+>   pwmchip0/pwm0 -> ../pwm-0-0
 
-It's a DWC port logic register AFAICT, but perhaps not present in all versi=
-ons.
+My preferred way forward is: Create a proper device (i.e. something like
+/dev/pwmchipX) and make that usable with atomic operations. Then we
+don't need to go through sysfs and can modify more than one property at
+a time.
 
-Rob
+But other than that your suggestion sounds better than one class per
+chip.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--fn2q5sadp7dee75g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl90niMACgkQwfwUeK3K
+7AlSeQgAkCGYtDvTBYPjGGmdrPO6/TOkAYjIrZpmQiQgbg+fUHFDsoOzvSN5E4zL
+XfqH1pEojWDZQlnuS7VGjuQBFQbU6BAnCcz4nIpqRncWc+A8R4h+Q6I0/IIH39BL
+QHm6VhjXl/EL5J0ZuzhoZiX1Xs7XvOwyO0I3djZXp9xGHRSPjm69OSmj2BcFj9UA
+jb0qGw6bgoCPZi6eueYvZJwBpiQPvTDATPItrw10aHv1rYmBW6K0ZKU/iVjK1J6V
+2k3RvjXDbwn2D4KNFN0TgnFGiUIHsZhqlWO+qtm5OYCVfxjHsNf0PSbsQCnw/9f9
+YCgo1vccisXIChgXpOd29AV2FyIS+g==
+=fnwZ
+-----END PGP SIGNATURE-----
+
+--fn2q5sadp7dee75g--
