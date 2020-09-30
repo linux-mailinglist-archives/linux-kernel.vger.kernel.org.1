@@ -2,300 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7804927EFC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F06127EFC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729940AbgI3Q47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:56:59 -0400
-Received: from mxout04.lancloud.ru ([89.108.124.63]:56054 "EHLO
-        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Q46 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:56:58 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 590B22153BFA
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Date:   Wed, 30 Sep 2020 19:56:52 +0300
-From:   Elvira Khabirova <e.khabirova@omprussia.ru>
-To:     <op-tee@lists.trustedfirmware.org>
-CC:     <jens.wiklander@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <k.karasev@omprussia.ru>, <s.shtylyov@omprussia.ru>,
-        <vesa.jaaskelainen@vaisala.com>
-Subject: [PATCH v2] tee: add support for application-based session login
- methods
-Message-ID: <20200930195652.5c316c3e@akathisia>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731047AbgI3Q5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:57:41 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40787 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3Q5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:57:40 -0400
+IronPort-SDR: 0npcKAL53ecuQhJjqC8MKfUR2KrfCxK3kNpAa68bDL9vC89OS2eTeElxR706r5pNFRvcZhYYY/
+ lQ3E5m748v2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="224090047"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="224090047"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:57:39 -0700
+IronPort-SDR: xgByRAS1TUQW6FtwogJdlBUEjw+uFGJXHQTS2GTLfGkhvG3qi1lGYOLmsck3UytTgMIQ/Y4qiq
+ 0fyK6ra7Qqyg==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="350727926"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 09:57:37 -0700
+Date:   Wed, 30 Sep 2020 09:57:34 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 03/22] kvm: mmu: Init / Uninit the TDP MMU
+Message-ID: <20200930165734.GE32672@linux.intel.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-4-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [89.255.69.56]
-X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
- LFEX1903.lancloud.ru (fd00:f066::73)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925212302.3979661-4-bgardon@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GP TEE Client API in addition to login methods already supported
-in the kernel also defines several application-based methods:
-TEEC_LOGIN_APPLICATION, TEEC_LOGIN_USER_APPLICATION, and
-TEEC_LOGIN_GROUP_APPLICATION.
+On Fri, Sep 25, 2020 at 02:22:43PM -0700, Ben Gardon wrote:
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> new file mode 100644
+> index 0000000000000..8241e18c111e6
+> --- /dev/null
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#include "tdp_mmu.h"
+> +
+> +static bool __read_mostly tdp_mmu_enabled = true;
+> +module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
 
-It specifies credentials generated for TEEC_LOGIN_APPLICATION as only
-depending on the identity of the program, being persistent within one
-implementation, across multiple invocations of the application
-and across power cycles, enabling them to be used to disambiguate
-persistent storage. The exact nature is REE-specific.
+This param should not exist until the TDP MMU is fully functional, e.g. running
+KVM against "kvm: mmu: Support zapping SPTEs in the TDP MMU" immediately hits a
+BUG() in the rmap code.  I haven't wrapped my head around the entire series to
+grok whether it make sense to incrementally enable the TDP MMU, but my gut says
+that's probably non-sensical.  The local variable can exist (default to false)
+so that you can flip a single switch to enable the code instead of having to
+plumb in the variable to its consumers.
 
-As the exact method of generating application identifier strings may
-vary between vendors, setups and installations, add two suggested
-methods and an exact framework for vendors to extend upon.
-
-Signed-off-by: Elvira Khabirova <e.khabirova@omprussia.ru>
----
- drivers/tee/Kconfig    |  29 +++++++++
- drivers/tee/tee_core.c | 133 ++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 154 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-index 6488b66d69dd..cd8f02a3d488 100644
---- a/drivers/tee/Kconfig
-+++ b/drivers/tee/Kconfig
-@@ -10,6 +10,35 @@ config TEE
- 	  This implements a generic interface towards a Trusted Execution
- 	  Environment (TEE).
- 
-+choice
-+	prompt "Application ID for client UUID"
-+	depends on TEE
-+	default TEE_APPID_PATH
-+	help
-+	  This option allows to choose which method will be used to generate
-+	  application identifiers for client UUID generation when login methods
-+	  TEE_LOGIN_APPLICATION, TEE_LOGIN_USER_APPLICATION
-+	  and TEE_LOGIN_GROUP_APPLICATION are used.
-+	  Please be mindful of the security of each method in your particular
-+	  installation.
-+
-+	config TEE_APPID_PATH
-+		bool "Path-based application ID"
-+		help
-+		  Use the executable's path as an application ID.
-+
-+	config TEE_APPID_SECURITY
-+		bool "Security extended attribute based application ID"
-+		help
-+		  Use the executable's security extended attribute as an application ID.
-+endchoice
-+
-+config TEE_APPID_SECURITY_XATTR
-+	string "Security extended attribute to use for application ID"
-+	depends on TEE_APPID_SECURITY
-+	help
-+	  Attribute to be used as an application ID (with the security prefix removed).
-+
- if TEE
- 
- menu "TEE drivers"
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 67186d00a52f..31fb244b59ed 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -16,9 +16,12 @@
- 
- #include <linux/cdev.h>
- #include <linux/cred.h>
-+#include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/idr.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/tee_drv.h>
- #include <linux/uaccess.h>
-@@ -31,7 +34,7 @@
- 
- #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
- 
--#define TEE_UUID_NS_NAME_SIZE	128
-+#define TEE_UUID_NS_NAME_SIZE	PATH_MAX
- 
- /*
-  * TEE Client UUID name space identifier (UUIDv4)
-@@ -136,6 +139,72 @@ static int tee_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+#ifdef CONFIG_TEE_APPID_SECURITY
-+static const char *get_app_id(void **data)
-+{
-+	struct file *exe_file;
-+	const char *name = CONFIG_TEE_APPID_SECURITY_XATTR;
-+	int len;
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file)
-+		return ERR_PTR(-ENOENT);
-+
-+	if (!exe_file->f_inode) {
-+		fput(exe_file);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	/*
-+	 * An identifier string for the binary. Depends on the implementation.
-+	 * Could be, for example, a string containing the application vendor ID,
-+	 * or the binary's signature, or its hash and a timestamp.
-+	 */
-+	len = security_inode_getsecurity(exe_file->f_inode, name, data, true);
-+	if (len < 0)
-+		return ERR_PTR(len);
-+
-+	fput(exe_file);
-+
-+	return *data;
-+}
-+#endif /* CONFIG_TEE_APPID_SECURITY */
-+
-+#ifdef CONFIG_TEE_APPID_PATH
-+static const char *get_app_id(void **data)
-+{
-+	struct file *exe_file;
-+	char *path;
-+
-+	*data = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-+	if (!*data)
-+		return ERR_PTR(-ENOMEM);
-+
-+	exe_file = get_mm_exe_file(current->mm);
-+	if (!exe_file) {
-+		kfree(*data);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	path = file_path(exe_file, *data, TEE_UUID_NS_NAME_SIZE);
-+	if (IS_ERR(path)) {
-+		kfree(*data);
-+		return path;
-+	}
-+
-+	fput(exe_file);
-+
-+	return path;
-+}
-+#endif /* CONFIG_TEE_APPID_PATH */
-+
-+#if defined(CONFIG_TEE_APPID_PATH) || defined(CONFIG_TEE_APPID_SECURITY)
-+static void free_app_id(void *data)
-+{
-+	kfree(data);
-+}
-+#endif /* CONFIG_TEE_APPID_PATH || CONFIG_TEE_APPID_SECURITY */
-+
- /**
-  * uuid_v5() - Calculate UUIDv5
-  * @uuid: Resulting UUID
-@@ -208,6 +277,8 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	gid_t ns_grp = (gid_t)-1;
- 	kgid_t grp = INVALID_GID;
- 	char *name = NULL;
-+	void *app_id_data = NULL;
-+	const char *app_id = NULL;
- 	int name_len;
- 	int rc;
- 
-@@ -228,6 +299,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	 * For TEEC_LOGIN_GROUP:
- 	 * gid=<gid>
- 	 *
-+	 * For TEEC_LOGIN_APPLICATION:
-+	 * app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_USER_APPLICATION:
-+	 * uid=<uid>:app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_GROUP_APPLICATION:
-+	 * gid=<gid>:app=<application id>
- 	 */
- 
- 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-@@ -238,10 +317,6 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	case TEE_IOCTL_LOGIN_USER:
- 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
- 				    current_euid().val);
--		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
--			rc = -E2BIG;
--			goto out_free_name;
--		}
- 		break;
- 
- 	case TEE_IOCTL_LOGIN_GROUP:
-@@ -254,10 +329,49 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 
- 		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x",
- 				    grp.val);
--		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
--			rc = -E2BIG;
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_APPLICATION:
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-+				    app_id);
-+		free_app_id(app_id_data);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
-+			goto out_free_name;
-+		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x:app=%s",
-+				    current_euid().val, app_id);
-+		free_app_id(app_id_data);
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-+		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-+		grp = make_kgid(current_user_ns(), ns_grp);
-+		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-+			rc = -EPERM;
-+			goto out_free_name;
-+		}
-+
-+		app_id = get_app_id(&app_id_data);
-+		if (IS_ERR(app_id)) {
-+			rc = PTR_ERR(app_id);
- 			goto out_free_name;
- 		}
-+
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x:app=%s",
-+				    grp.val, app_id);
-+		free_app_id(app_id_data);
- 		break;
- 
- 	default:
-@@ -265,7 +379,10 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 		goto out_free_name;
- 	}
- 
--	rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
-+	if (name_len < TEE_UUID_NS_NAME_SIZE)
-+		rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
-+	else
-+		rc = -E2BIG;
- out_free_name:
- 	kfree(name);
- 
--- 
-2.17.1
-
+  kernel BUG at arch/x86/kvm/mmu/mmu.c:1427!
+  invalid opcode: 0000 [#1] SMP
+  CPU: 4 PID: 1218 Comm: stable Not tainted 5.9.0-rc4+ #44
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:rmap_get_first.isra.0+0x51/0x60 [kvm]
+  Code: <0f> 0b 45 31 c0 4c 89 c0 c3 66 0f 1f 44 00 00 0f 1f 44 00 00 49 b9
+  RSP: 0018:ffffc9000099fb50 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: 0000000000001000 RCX: 0000000000000000
+  RDX: ffffc9000099fb60 RSI: ffffc9000099fb58 RDI: ffff88816b1a7ec8
+  RBP: ffff88816b1a7e70 R08: ffff888173c95000 R09: ffff88816b1a7448
+  R10: 00000000000000f8 R11: ffff88817bd29c70 R12: ffffc90000981000
+  R13: ffffc9000099fbac R14: ffffc90000989a88 R15: ffff88816b1a7ec8
+  FS:  00007f7a755fd700(0000) GS:ffff88817bd00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f7a60141000 CR3: 000000016b031004 CR4: 0000000000172ea0
+  Call Trace:
+   __kvm_mmu_prepare_zap_page+0x98/0x330 [kvm]
+   kvm_mmu_zap_all_fast+0x100/0x190 [kvm]
+   kvm_page_track_flush_slot+0x54/0x80 [kvm]
+   kvm_set_memslot+0x198/0x640 [kvm]
+   kvm_delete_memslot+0x59/0xc0 [kvm]
+   __kvm_set_memory_region+0x494/0x560 [kvm]
+   ? khugepaged+0x470/0x2230
+   ? mem_cgroup_charge_statistics.isra.0+0x1c/0x40
+   kvm_set_memory_region+0x27/0x40 [kvm]
+   kvm_vm_ioctl+0x379/0xca0 [kvm]
+   ? do_user_addr_fault+0x1ad/0x3a7
+   __x64_sys_ioctl+0x83/0xb0
+   do_syscall_64+0x33/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
