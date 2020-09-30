@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B79727EF20
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E31227EF25
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731035AbgI3Q10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Q1Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:27:25 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76CAC061755;
-        Wed, 30 Sep 2020 09:27:24 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b124so1497670pfg.13;
-        Wed, 30 Sep 2020 09:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=earzXYgcHhW5P7q3Fe1nQFt0BCBrbypIUJ3jhj8eCtI=;
-        b=uOko5veGYfYAxeiAITpgwq2oq9YmLxIjW8sxs0ojSXRCoj1rDuNDOdJV5Sv4FF6rrs
-         WWomq9t21+NwWl4AMGnvpR8o0buRjZekpMusCuIibOew6GV9110S7GWryQJxstJU/ll+
-         kzYQoOzTpZb+RhhEvAl0P4niDHTIW1Gg+etJIos3KgsBvQ4sFhBe/jF0Zqs0p7mfqlmK
-         D1bz4KEctA3irUIXO7teL/kNXikcnXFGksBnYGrddopH1Sawir5giGVDdr7hu1t3mA3S
-         vthI6FaJQX40O1t8cnlUS3KdoS0ZIpEwTTEPmX4Q/3NksgQbb4hE3jysU5zXulgcj0Mo
-         by/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=earzXYgcHhW5P7q3Fe1nQFt0BCBrbypIUJ3jhj8eCtI=;
-        b=kgIFE69sD1+GK7CoRQzFBA24muEZ/vERY2kw9OrHUVRZDFkWqXFPf6ds6qzSt2nWFL
-         7H4FS7mSsPdkWd+XvaX67dLcz7ye2Ufk19ANHhN9NT74NY7OFbcatklgHChgRN20lp0z
-         TlIm3v6VW3FGy2DpeRcwuCqdAaG/2AG4wMXSOpL8lm4kH+UEH2EEEn4UpeY2ZacXurp0
-         g0d1kGq4Rlw+EKJKZK+Iv6VQ1hH1CO1HlZ1nF2g6daGDrcM2nHqqv4q+QoIhSwYRqF1H
-         5CFB4Aih+p46e6eEeTHIdC+X2M+GZaKZ0OX8XrndtF0xHJjO8orUaL9cpNHBCACsUhDq
-         PHLw==
-X-Gm-Message-State: AOAM530E7WZBiy7MIWBDTVJAHytZCIPRn+YF9YDL/6hizX1eNsHCT0PQ
-        /bBDcNXHOkUBIh7AdIOEZiA=
-X-Google-Smtp-Source: ABdhPJzzkyMHm8rzDW1vQw6MKGthxfjt7dVFJQ127HXQRXlF7hTS/LHe6CG9Uk4Sitiu0ZDGa2792A==
-X-Received: by 2002:aa7:989c:0:b029:142:2501:3973 with SMTP id r28-20020aa7989c0000b029014225013973mr3508830pfl.56.1601483244237;
-        Wed, 30 Sep 2020 09:27:24 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id q18sm3144759pfg.158.2020.09.30.09.27.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 09:27:23 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 09:27:22 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] srcu: avoid escaped section names
-Message-ID: <20200930162722.GC236767@ubuntu-m3-large-x86>
-References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
- <20200929192549.501516-1-ndesaulniers@google.com>
+        id S1731244AbgI3Q1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:27:42 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36366 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727681AbgI3Q1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:27:42 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kNex1-00GvTY-5D; Wed, 30 Sep 2020 18:27:31 +0200
+Date:   Wed, 30 Sep 2020 18:27:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v1 7/7] net/fsl: Use _ADR ACPI object to
+ register PHYs
+Message-ID: <20200930162731.GP3996795@lunn.ch>
+References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+ <20200930160430.7908-8-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929192549.501516-1-ndesaulniers@google.com>
+In-Reply-To: <20200930160430.7908-8-calvin.johnson@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 12:25:49PM -0700, 'Nick Desaulniers' via Clang Built Linux wrote:
-> The stringification operator, `#`, in the preprocessor escapes strings.
-> For example, `# "foo"` becomes `"\"foo\""`.  GCC and Clang differ in how
-> they treat section names that contain \".
-> 
-> The portable solution is to not use a string literal with the
-> preprocessor stringification operator.
-> 
-> Link: https://bugs.llvm.org/show_bug.cgi?id=42950
-> Fixes: commit fe15b50cdeee ("srcu: Allocate per-CPU data for DEFINE_SRCU() in modules")
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Hi Calvin
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>  	priv->has_a011043 = device_property_read_bool(&pdev->dev,
+>  						      "fsl,erratum-a011043");
+> -
+> -	ret = of_mdiobus_register(bus, np);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "cannot register MDIO bus\n");
+> +	if (is_of_node(pdev->dev.fwnode)) {
+> +		ret = of_mdiobus_register(bus, np);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "cannot register MDIO bus\n");
+> +			goto err_registration;
+> +		}
+> +	} else if (is_acpi_node(pdev->dev.fwnode)) {
+> +		priv->is_little_endian = true;
+> +		/* Mask out all PHYs from auto probing. */
+> +		bus->phy_mask = ~0;
+> +		ret = mdiobus_register(bus);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "mdiobus register err(%d)\n", ret);
+> +			return ret;
+> +		}
+> +
+> +		fwnode = pdev->dev.fwnode;
 
-> ---
-> Changes V1->V2:
-> * drop unrelated Kconfig changes accidentally committed in v1.
-> 
->  include/linux/srcutree.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/srcutree.h b/include/linux/srcutree.h
-> index 9cfcc8a756ae..9de652f4e1bd 100644
-> --- a/include/linux/srcutree.h
-> +++ b/include/linux/srcutree.h
-> @@ -124,7 +124,7 @@ struct srcu_struct {
->  # define __DEFINE_SRCU(name, is_static)					\
->  	is_static struct srcu_struct name;				\
->  	struct srcu_struct * const __srcu_struct_##name			\
-> -		__section("___srcu_struct_ptrs") = &name
-> +		__section(___srcu_struct_ptrs) = &name
->  #else
->  # define __DEFINE_SRCU(name, is_static)					\
->  	static DEFINE_PER_CPU(struct srcu_data, name##_srcu_data);	\
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
+> +	/* Loop over the child nodes and register a phy_device for each PHY */
+> +		fwnode_for_each_child_node(fwnode, child) {
+> +			status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(child),
+> +						       "_ADR", NULL, &addr);
+> +			if (ACPI_FAILURE(status)) {
+> +				pr_debug("_ADR returned %d\n", status);
+> +				continue;
+> +			}
+> +
+> +			if (addr < 0 || addr >= PHY_MAX_ADDR)
+> +				continue;
+> +
+> +			ret = fwnode_mdiobus_register_phy(bus, child, addr);
+> +			if (ret == -ENODEV)
+> +				dev_err(&bus->dev,
+> +					"MDIO device at address %lld is missing.\n",
+> +					addr);
+> +		}
+
+Hi Calvin
+
+This looping over the properties should be in the core, in the same
+way of_mdiobus_register() loops over the OF properties in the core.
+We don't want MDIO drivers doing this in their own way, with their own
+bugs.
+
+    Andrew
