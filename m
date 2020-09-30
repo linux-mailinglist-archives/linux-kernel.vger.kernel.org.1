@@ -2,155 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4D827E481
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1908327E484
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728587AbgI3JHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3JHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:07:46 -0400
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B3A920754;
-        Wed, 30 Sep 2020 09:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601456865;
-        bh=QoRVG2ebL4cYUkaDCdQ+XmLDYvdbkAU8qZxPoMO2OvA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fAaNPtZYczrVnTRPGPKuBg2P1dPhUVHEUL1d0LXPrJcOo267+aOR5jgZ/OFb2dXO+
-         WmRQqT547I44Af3QcPadn9HEr18c4x+4bs8/rQGIyNCwBJVwlyxXRUIx3pfkrmYYEY
-         HuTmfdLzO44aNkMdWbUGq2sp926bRQlqe4lC5mQk=
-Received: by mail-ed1-f46.google.com with SMTP id b12so982527edz.11;
-        Wed, 30 Sep 2020 02:07:45 -0700 (PDT)
-X-Gm-Message-State: AOAM532V05ghpTSSVYhOF/FKyT73j4B/ZFDswquBPJThKhjZkQM4S+UJ
-        xw8IXQ0kNfE3d2DdS6hzhrf1AO+AUWLaWR3eiOk=
-X-Google-Smtp-Source: ABdhPJy99itcN7QqkgpBPHPZKE/4+UE/c02bs+SRlW4UIgty1u286CHggezxKIpL5nZfYg2asdRVfKIYnaN7peEAvas=
-X-Received: by 2002:aa7:da16:: with SMTP id r22mr1692538eds.132.1601456863786;
- Wed, 30 Sep 2020 02:07:43 -0700 (PDT)
+        id S1728702AbgI3JHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:07:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14788 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725776AbgI3JHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:07:52 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7D8F18A9CA45CAADD438;
+        Wed, 30 Sep 2020 17:07:49 +0800 (CST)
+Received: from [10.174.179.33] (10.174.179.33) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 30 Sep 2020 17:07:42 +0800
+Subject: Re: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>
+CC:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        <linux-acpi@vger.kernel.org>, <devel@acpica.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200928194554.3423466-1-natechancellor@gmail.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <a39af625-6e2e-3cb2-ece5-ea2b2dbb7c21@huawei.com>
+Date:   Wed, 30 Sep 2020 17:07:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com> <20200930084258.25493-2-nicoleotsuka@gmail.com>
-In-Reply-To: <20200930084258.25493-2-nicoleotsuka@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 30 Sep 2020 11:07:32 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPd7XSAty_2_6i3bEcoRwJ9HdoE+TKGu1G6ozZ9xYC7M6Q@mail.gmail.com>
-Message-ID: <CAJKOXPd7XSAty_2_6i3bEcoRwJ9HdoE+TKGu1G6ozZ9xYC7M6Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add devm_tegra_get_memory_controller()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200928194554.3423466-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.33]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"On Wed, 30 Sep 2020 at 10:48, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> From: Dmitry Osipenko <digetx@gmail.com>
->
-> Multiple Tegra drivers need to retrieve Memory Controller and hence there
-> is quite some duplication of the retrieval code among the drivers. Let's
-> add a new common helper for the retrieval of the MC.
->
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+On 2020/9/29 3:45, Nathan Chancellor wrote:
+> After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
+> ACPI static tables that are not SRAT"):
+> 
+> $ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e ACPI_NFIT
+> 
+> $ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
+> drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
+> drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
+> function ‘pxm_to_node’; did you mean ‘xa_to_node’?
+> [-Werror=implicit-function-declaration]
+>   3010 |   ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
+>        |                           ^~~~~~~~~~~
+>        |                           xa_to_node
+> cc1: some warnings being treated as errors
+> ...
+> 
+> Add a stub function like acpi_map_pxm_to_node had so that the build
+> continues to work.
+> 
+> Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI static tables that are not SRAT")
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 > ---
->
-> Changelog
-> v2->v3:
->  * Replaced with Dimtry's devm_tegra_get_memory_controller()
-> v1->v2:
->  * N/A
->
->  drivers/memory/tegra/mc.c | 39 +++++++++++++++++++++++++++++++++++++++
->  include/soc/tegra/mc.h    | 17 +++++++++++++++++
->  2 files changed, 56 insertions(+)
->
-> diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-> index ec8403557ed4..dd691dc3738e 100644
-> --- a/drivers/memory/tegra/mc.c
-> +++ b/drivers/memory/tegra/mc.c
-> @@ -42,6 +42,45 @@ static const struct of_device_id tegra_mc_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
->
-> +static void tegra_mc_devm_action_put_device(void *data)
-
-devm_tegra_memory_controller_put()
-
+> 
+> I am not sure if this is the right place or value for this. It looks
+> like there is going to be another stub function added here, which is
+> going through -mm:
+> 
+> https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stgit@dwillia2-desk3.amr.corp.intel.com
+> 
+>   include/acpi/acpi_numa.h | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
+> index fdebcfc6c8df..09eb3bc20ff5 100644
+> --- a/include/acpi/acpi_numa.h
+> +++ b/include/acpi/acpi_numa.h
+> @@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
+>   extern void bad_srat(void);
+>   extern int srat_disabled(void);
+>   
+> +#else				/* CONFIG_ACPI_NUMA */
+> +static inline int pxm_to_node(int pxm)
 > +{
-> +       struct tegra_mc *mc = data;
-> +
-> +       put_device(mc->dev);
+> +	return 0;
 > +}
-> +
-> +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
+>   #endif				/* CONFIG_ACPI_NUMA */
+>   #endif				/* __ACP_NUMA_H */
 
-Usually 'get' is a suffix (e.g. clk, gpiod, iio, led), so:
-devm_tegra_memory_controller_get()
+Looks good to me,
 
-> +{
-> +       struct platform_device *pdev;
-> +       struct device_node *np;
-> +       struct tegra_mc *mc;
-> +       int err;
-> +
-> +       np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
-> +       if (!np)
-> +               return ERR_PTR(-ENOENT);
-> +
-> +       pdev = of_find_device_by_node(np);
-> +       of_node_put(np);
-> +       if (!pdev)
-> +               return ERR_PTR(-ENODEV);
-> +
-> +       mc = platform_get_drvdata(pdev);
-> +       if (!mc) {
-> +               put_device(mc->dev);
-> +               return ERR_PTR(-EPROBE_DEFER);
-> +       }
-> +
-> +       err = devm_add_action(dev, tegra_mc_devm_action_put_device, mc);
-> +       if (err) {
-> +               put_device(mc->dev);
-> +               return ERR_PTR(err);
-> +       }
-> +
-> +       return mc;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_tegra_get_memory_controller);
-> +
->  static int tegra_mc_block_dma_common(struct tegra_mc *mc,
->                                      const struct tegra_mc_reset *rst)
->  {
-> diff --git a/include/soc/tegra/mc.h b/include/soc/tegra/mc.h
-> index 1238e35653d1..c05142e3e244 100644
-> --- a/include/soc/tegra/mc.h
-> +++ b/include/soc/tegra/mc.h
-> @@ -184,4 +184,21 @@ struct tegra_mc {
->  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
->  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
->
-> +#ifdef CONFIG_TEGRA_MC
-> +/**
-> + * devm_tegra_get_memory_controller() - Get the tegra_mc pointer.
-> + * @dev: Device that will be interacted with
-
-This is not precise enough and there is no interaction with 'dev' in
-devm_tegra_get_memory_controller(). Something like: "Device that owns
-the pointer to tegra memory controller"
-
-> + *
-> + * Return: ERR_PTR() on error or a valid pointer to a struct tegra_mc.
-> + *
-> + * The mc->dev counter will be automatically put by the device management code.
-
-1. s/mc/tegra_mc/ (it's the first occurence of word mc here)
-2. "kerneldoc goes to the C file". Not to the header.
-
-Best regards,
-Krzysztof
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
