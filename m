@@ -2,84 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A875E27DEA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C39327DEA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgI3C4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 22:56:21 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:54686 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729446AbgI3C4V (ORCPT
+        id S1729860AbgI3C5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729446AbgI3C5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:56:21 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U2twGF098527;
-        Wed, 30 Sep 2020 02:55:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=arBB1GzB/23tXWluKJLKML5+6S3nCBobGzeCaA/fTcI=;
- b=QScqhZfSChderxegYgtp0jBqOACVXl+ujjaVVikXk9sIPKlE//+Etddux7AbTbEMEZQI
- ZeOlSY0waUVkt6og9ErVSW/yH3ySixcaLXmoE2RjqnX69usmw/DKwrHOeq3lKvReilvo
- Vkl9B3OKkwKG83cT9DkulSVMWAoH51Scz335M6UA3jwCC6+PozNb60kE1+X1ejiPLyIV
- Jwa65ZeHizzPNy/sLbL9B5/Vi7gHIbEFsP6yCYTr/2TZCq6ysO4j8Xz9rjM9nEAiHWqF
- +wCwPlq5PB9tyDBlgPfbQ7q563IFSmdxH/d4edPIMOIoXVObJInKBF/WBOVr4ljdEGDU vg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 33su5ax9wm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 02:55:57 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U2srNq155005;
-        Wed, 30 Sep 2020 02:55:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33uv2eqap5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 02:55:57 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08U2tqBA002662;
-        Wed, 30 Sep 2020 02:55:52 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Sep 2020 19:55:52 -0700
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: ufs-exynos: use
- devm_platform_ioremap_resource_byname()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mu18geih.fsf@ca-mkp.ca.oracle.com>
-References: <20200916084017.14086-1-huobean@gmail.com>
-Date:   Tue, 29 Sep 2020 22:55:48 -0400
-In-Reply-To: <20200916084017.14086-1-huobean@gmail.com> (Bean Huo's message of
-        "Wed, 16 Sep 2020 10:40:17 +0200")
+        Tue, 29 Sep 2020 22:57:21 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59707C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:57:19 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id s19so129721plp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 19:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CdiVN4MoIYXNti+D+K08kG5fvyK/5dVLiPfaQfAKwuc=;
+        b=st7S9SNAhg2fIivqpQzhvrmcfW5mzGTGWG1LtzKvUjHGTdp9KEpCjllhjbUkwx8WMn
+         p+cm1bIZEbYMfWgnoa4eAa+w8rrpDyy6EioF5U9eOyqidEfxrmln7sdWs2yOwSMV3nO/
+         Pay10GF4e4N7hV0bKa6EAtxlwraP7NZsceZJljRUjsjHPwwAe2sMnECuiu4rO9lbmXQ7
+         /w5bVInm5XamYfffGzqU1JfC/KFvZBOXUYsy+0bmp1AGwShCNSodR80vnTfEYSwkh8VB
+         j07h44UWD3b/JibpXDuqHYCJgEh7xtwuiZfR5xl7OPdxhe5PT9k493K2YrBfb/zTdEi3
+         IhSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CdiVN4MoIYXNti+D+K08kG5fvyK/5dVLiPfaQfAKwuc=;
+        b=ZYp4FN1S92dxk1a+WE/zsvu7NsmZf2/dZt5lhUlPe8W18K3RZei6x2w+2FiEYJR6LL
+         /yzlt36E0MNlhAILwFKe5z5Jb70vw5B5vi0Mm3MJ/xVc6RXatOkHycvBL//mftym8vx/
+         xVauzorTn+Iy8Zpu6E0oBLW50EZfCyWa2nwJtjPZWfSP9Ardi4fTvHr3lPi1HyEiN8zr
+         aFtVLPmW8UbRHNT3387pTpR73DaX5tlzXRrgc1cyhTv/uXdW8gIazlQsr2UNwiqxaVaI
+         gKiJkbx4+ANtYfw/D9jibJrt/XD9V6ZeeIYw53/jW1u2l3V13f4KDaBMcVAGnVHweTHm
+         2VBg==
+X-Gm-Message-State: AOAM530oJgEjjndVAUb0HgJN2V7mNJyWgrMVOAGeVPYz3vnAw5SvmQOB
+        yRQdEfgpcGRmkanOLOOWtMvo3aeTRh+iKjWV9O6dgw==
+X-Google-Smtp-Source: ABdhPJzX8idHqOKVy8umpqeXFwxgXNk3IKXSzqUAsXAqoXS95sel9yV5OAk2sSs+jMNGas6VmwSpjHHlG7L1C4y7lw4=
+X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr550726pjr.229.1601434638340;
+ Tue, 29 Sep 2020 19:57:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- suspectscore=1 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300020
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
- malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300020
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915125947.26204-4-songmuchun@bytedance.com> <07e7d497-e800-be28-dfea-047579c3b27d@oracle.com>
+In-Reply-To: <07e7d497-e800-be28-dfea-047579c3b27d@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 30 Sep 2020 10:56:42 +0800
+Message-ID: <CAMZfGtWZ739Qd+9WZYtBTbQLjEqJa2BRa=5NBP9QMJQjsJS0mg@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH 03/24] mm/hugetlb: Introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 30, 2020 at 7:41 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 9/15/20 5:59 AM, Muchun Song wrote:
+> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> > whether to enable the feature of freeing unused vmemmap associated
+> > with HugeTLB pages.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  fs/Kconfig | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >
+> > diff --git a/fs/Kconfig b/fs/Kconfig
+> > index 976e8b9033c4..61e9c08096ca 100644
+> > --- a/fs/Kconfig
+> > +++ b/fs/Kconfig
+> > @@ -245,6 +245,21 @@ config HUGETLBFS
+> >  config HUGETLB_PAGE
+> >       def_bool HUGETLBFS
+> >
+> > +config HUGETLB_PAGE_FREE_VMEMMAP
+> > +     bool "Free unused vmemmap associated with HugeTLB pages"
+> > +     default n
+> > +     depends on HUGETLB_PAGE
+> > +     depends on SPARSEMEM_VMEMMAP
+> > +     depends on HAVE_BOOTMEM_INFO_NODE
+> > +     help
+> > +       There are many struct page structure associated with each HugeTLB
+> > +       page. But we only use a few struct page structure. In this case,
+> > +       it waste some memory. It is better to free the unused struct page
+> > +       structures to buddy system which can save some memory. For
+> > +       architectures that support it, say Y here.
+> > +
+> > +       If unsure, say N.
+> > +
+>
+> I could be wrong, but I believe the convention is introduce the config
+> option at the same time code which depends on the option is introduced.
+> Therefore, it might be better to combine with the next patch.
 
-Bean,
+Yeah, great. Will do that. Thanks.
 
-> Use devm_platform_ioremap_resource_byname() to simplify the code.
+>
+> Also, it looks like most of your development was done on x86.  Should
+> this option be limited to x86 only for now?
 
-Applied to 5.10/scsi-staging, thanks!
+Now only the x86 has the HAVE_BOOTMEM_INFO_NODE option. So
+maybe this is enough :)
+
+> --
+> Mike Kravetz
+
+
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Yours,
+Muchun
