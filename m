@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4E627F1FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9961727F249
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 21:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbgI3S5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730117AbgI3S5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:57:44 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
+        id S1730753AbgI3TC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 15:02:59 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:47460 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729806AbgI3TC7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 15:02:59 -0400
+X-Greylist: delayed 324 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 15:02:58 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 6F246A13C6;
+        Wed, 30 Sep 2020 18:57:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mixK6SbgLMhN; Wed, 30 Sep 2020 18:57:34 +0000 (UTC)
+Received: from jupiter.simonsouth.net (unknown [108.162.141.195])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8869420708;
-        Wed, 30 Sep 2020 18:57:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601492263;
-        bh=7DBLzj0AFFlixJiM06qjIevaCnAyUlyySzwLvB3SMq8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BAfMb8awL1XSSox57K+L81UtE9Cfh84GFPeDCXMiY+kTCOmF/2W3TxeOQtj3gSgnM
-         gGTkrGlZjwHp3/l2sjRdtUijcat5FlLnmMaS8yExI8x16/uKepDsNbL0RQQoRdH+nm
-         kVFlvOWP/MakWcvdL3c2spY2xJFDTmFsUamwRqeg=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clk fixes for v5.9-rc7
-Date:   Wed, 30 Sep 2020 11:57:42 -0700
-Message-Id: <20200930185742.4044166-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
+        by mailout.easymail.ca (Postfix) with ESMTPSA id 6BED9A13B2;
+        Wed, 30 Sep 2020 18:57:18 +0000 (UTC)
+From:   Simon South <simon@simonsouth.net>
+To:     robh+dt@kernel.org, heiko@sntech.de, smoch@web.de,
+        t.schramm@manjaro.org, jbx6244@gmail.com, katsuhiro@katsuster.net,
+        sigmaris@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Simon South <simon@simonsouth.net>
+Subject: [PATCH] arm64: dts: rockchip: Pinebook Pro: Use supported PCIe link speed
+Date:   Wed, 30 Sep 2020 14:56:27 -0400
+Message-Id: <20200930185627.5918-1-simon@simonsouth.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit d2249bf25c565b6e310453962fef63f8d38677a6:
+On Pinebook Pro laptops with an NVMe SSD installed, prevent random
+crashes in the NVMe driver by not attempting to use a PCIe link speed
+higher than that supported by the RK3399 SoC.
 
-  clk: qcom: lpass: Correct goto target in lpass_core_sc7180_probe() (2020-09-10 13:42:35 -0700)
+See commit 712fa1777207 ("arm64: dts: rockchip: add max-link-speed for
+rk3399").
 
-are available in the Git repository at:
+Fixes: 5a65505a6988 ("arm64: dts: rockchip: Add initial support for Pinebook Pro")
+Signed-off-by: Simon South <simon@simonsouth.net>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
-
-for you to fetch changes up to b02cf0c4736c65c6667f396efaae6b5521e82abf:
-
-  clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk (2020-09-22 12:54:41 -0700)
-
-----------------------------------------------------------------
-Another batch of clk driver fixes
-
- - Make sure DRAM and ChipID region doesn't get disabled on Exynos
- - Fix a SATA failure on Tegra
- - Fix the emac_ptp clk divider on stratix10
-
-----------------------------------------------------------------
-Dinh Nguyen (1):
-      clk: socfpga: stratix10: fix the divider for the emac_ptp_free_clk
-
-Marek Szyprowski (2):
-      clk: samsung: Keep top BPLL mux on Exynos542x enabled
-      clk: samsung: exynos4: mark 'chipid' clock as CLK_IGNORE_UNUSED
-
-Stephen Boyd (2):
-      Merge tag 'v5.9-clk-samsung-fixes' of https://git.kernel.org/.../snawrocki/clk into clk-fixes
-      Merge tag 'for-5.10-clk' of git://git.kernel.org/.../tegra/linux into clk-fixes
-
-Thierry Reding (3):
-      clk: tegra: Capitalization fixes
-      clk: tegra: Always program PLL_E when enabled
-      clk: tegra: Fix missing prototype for tegra210_clk_register_emc()
-
- drivers/clk/samsung/clk-exynos4.c    | 4 ++--
- drivers/clk/samsung/clk-exynos5420.c | 5 +++++
- drivers/clk/socfpga/clk-s10.c        | 2 +-
- drivers/clk/tegra/clk-pll.c          | 7 ++-----
- drivers/clk/tegra/clk-tegra210-emc.c | 2 ++
- 5 files changed, 12 insertions(+), 8 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+index 06d48338c836..219b7507a10f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+@@ -790,7 +790,6 @@ &pcie_phy {
+ &pcie0 {
+ 	bus-scan-delay-ms = <1000>;
+ 	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
+-	max-link-speed = <2>;
+ 	num-lanes = <4>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pcie_clkreqn_cpm>;
 -- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+2.28.0
+
