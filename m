@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E7227E366
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6546F27E371
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbgI3IPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        id S1728565AbgI3IQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728384AbgI3IPQ (ORCPT
+        with ESMTP id S1725776AbgI3IQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:15:16 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F10C061755;
-        Wed, 30 Sep 2020 01:15:16 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id l126so657057pfd.5;
-        Wed, 30 Sep 2020 01:15:16 -0700 (PDT)
+        Wed, 30 Sep 2020 04:16:57 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CF9C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:16:56 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id u126so764953oif.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R35UUTJMurgzHTEafJYZTtjQpMJxWZuFDoF37yOkcQI=;
-        b=oCO0WZF93LZom3p+7Exyf36KYLBTH+Vg4OU1Fk9w1nLfafBwxftGcp/uFPpvWYZ5ME
-         LXgDDJKRA6lI0Mmy4XV4ZE3iyMsgCUEF5bczv39NaV/dy3ZT+L2M/Z0rRrM2pgDaUV08
-         xc78QnBdQZAWntkrH7d3rJbkTup1A9qX32GX9yeOpmzDneQqdeDwm+QJYvWcBg1bIZst
-         s6Jys4LvRS+YgogB1ckqawQi77x7n4SbuHcq4jynzQ9HBCLv0LPEzVJtJ5fI8UmGnUUu
-         fiZ2zqv6qZt5a9DuCnLuufO8Fsr29JxIdBvOOZceTYzQNRddc3z9ioql/AzsylYhYBh2
-         FVbw==
+        d=endlessos-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=AKQiGQLmY10/gIWA0SDoC53W53f+kHTJ7UW7pSl7JfM=;
+        b=YA/W6xVw9FbWi0Sp3dLaxoj9wD+T2dj7f/a6q8ay7aNoe80KwTLusZVdDA018dYmCP
+         7td6HMS7Bb5kkQD0kMy9mUN5jDJ0lGrxUQ7n5cShVMHYDxNjiysVNNbI53dmip4K9dlE
+         9MQkzFKRiwffiXYzjftbWK5W13+9pUjgN9iUF3qydNLlSV20m34cz3LgYdcMB3R/HN4I
+         Cok5Bscg+p6wZo2LrR1e2SVVDZN72FaBzUJ5TJbv/rS1VCAVi+46tunvalKpT+103Ls/
+         g1ATgIeFhLZdvcEkCZshOMeUT5NR4aWTmvJ390sc9v6eyO9hr45IOoeniSKT+crQC8Rg
+         TePw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R35UUTJMurgzHTEafJYZTtjQpMJxWZuFDoF37yOkcQI=;
-        b=h8SEXdkzzLSH8uhr5KRxBl0Z+ilEQ1VBK9QhBBAcFEoAuJwHDWySez7utDgXgwbk6i
-         0MBdg9M8OiJVXH/8Ha42cbYD6hZwFLnfxLdvpX0J+2BZVPXUPYGkaVMNODBGF9bZwrgj
-         6BaeQ0VxSpE2pf/Iaj+kNJlSVvyStk9UNaJiLCFM7H8pOq4LGKzHvwGYvtG9BWnFR0hv
-         nlsDtnc2GA37Hf8l4rgdIkoa+iTWBxqv7siTKma5YcAvFPj6OtZBfEvuPIdZ39D1Je9G
-         zu08XpwBhaOh5B02qB1mLalBQIrBe1ZQqcxQSlf659J7dkn1Z/kaVP22NuEmjQABp4LZ
-         3rDQ==
-X-Gm-Message-State: AOAM530WYxhb1f3BnFihr5sRDSvSvN38UPj6l9MYOf9ngOoLvqAuVX0Z
-        S2vTQ0dUvx+BVUx/Iv4Arw==
-X-Google-Smtp-Source: ABdhPJyoP2JOVUZou7mzbgih+WLmU0/MgzGa7mx4dbmq8QnnAnfd/u10joRGySLrvFVHgnckJTGXvg==
-X-Received: by 2002:a63:c1e:: with SMTP id b30mr1267597pgl.345.1601453715878;
-        Wed, 30 Sep 2020 01:15:15 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.140.181])
-        by smtp.gmail.com with ESMTPSA id 1sm1371684pgm.4.2020.09.30.01.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 01:15:14 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
-        shipujin.t@gmail.com
-Subject: [PATCH] tty: serial: mvebu-uart: Remove unused variable 'ret'
-Date:   Wed, 30 Sep 2020 16:14:59 +0800
-Message-Id: <20200930081459.1269-1-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=AKQiGQLmY10/gIWA0SDoC53W53f+kHTJ7UW7pSl7JfM=;
+        b=VfU+n/3Y6EkICxzFDCQtaX7aXVtJ3PFzRFrn0xhd9q8PRXxueZm1BAR9hn17+IR44G
+         0VWLKCn6hf6EUKOrRQFzl+dP/pE9HFyXPTOHSvomOCDfHol/1jXizaXERaVkaNCYlisT
+         HZR7FmI6CfWjJcjPSpdotU08qKFW2MxDSPfaWuCVTTKiykQ3I1P7uzk0Zr4v0MXbFyIt
+         dTiB6Ib7clDV/N6VWMUn/KlIycbdXIcD4iYTlp3uCkfh0HetCts5qpc26FL+0i2BJc+H
+         St7baimL/2e9s963qWjUKS62bRjZdZ1pz/3u5r3MQOAnZSiT7ZusnkAceguWHaRH277T
+         OkJg==
+X-Gm-Message-State: AOAM532kfEfw2+ct7pOFnLkJWM6SpIMGkvjZhv9maSzatBfOK5EZjtTr
+        M/fNmmMiz8lWUKlMxikc86CKlKrhO2METTwdz+L/gQ==
+X-Google-Smtp-Source: ABdhPJz1/708zpvypccyPVVTBws21KyJToPY9rQKjjUg4mtn6ZsOwkottpFEbqjg9GpU0LuekGO0ZcSSR/wm9EW5J7s=
+X-Received: by 2002:aca:57c5:: with SMTP id l188mr721993oib.161.1601453815621;
+ Wed, 30 Sep 2020 01:16:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Jian-Hong Pan <jhp@endlessos.org>
+Date:   Wed, 30 Sep 2020 16:15:19 +0800
+Message-ID: <CAPpJ_ecS3LOYUMdrodMoxMRQ_4q4M06uyGzBBf+W8MrjP08-EA@mail.gmail.com>
+Subject: [QUESTION] Enable the wireless module on Pinebook Pro
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Linux Upstreaming Team <linux@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ret' variable is now defined but not used in mvebu_uart_probe(),
-causing this warning:
+Hi,
 
-  drivers/tty/serial/mvebu-uart.c: In function ‘mvebu_uart_probe’:
-  drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable ‘ret’ [-Wunused-variable]
+According to the preloaded system Manjaro ARM on Pinebook Pro [1], I
+found the firmware files in ap6256-firmware package [2] enable the
+wireless module, including WiFi and Bluetooth.
+If we want to redistribute the firmware files to linux-firmware
+repository or other distros, which kind of license should follow?
 
-Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
----
- drivers/tty/serial/mvebu-uart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1] https://www.pine64.org/pinebook-pro/
+[2] https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firmware
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index 7443c0506eb4..118b29912289 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
- 							   &pdev->dev);
- 	struct uart_port *port;
- 	struct mvebu_uart *mvuart;
--	int ret, id, irq;
-+	int id, irq;
- 
- 	if (!reg) {
- 		dev_err(&pdev->dev, "no registers defined\n");
--- 
-2.18.1
-
+Jian-Hong Pan
