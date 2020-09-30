@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAF027EFA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4498127EFA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgI3Qu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:50:59 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51136 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Qu7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:50:59 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 4FDA729CD77
-Subject: Re: [PATCH v4 22/52] docs: get rid of :c:type explicit declarations
- for structs
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Satya Tangirala <satyat@google.com>,
-        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
-        alsa-devel@alsa-project.org, linux-fpga@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <fd8bf973-3c22-a492-39e5-2164ce6724db@collabora.com>
-Date:   Wed, 30 Sep 2020 13:50:46 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731240AbgI3Qvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3Qvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:51:47 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FD65206C9;
+        Wed, 30 Sep 2020 16:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601484706;
+        bh=MwdJW4mqrWOrBCkHeReFHIvPIJHWwvzq0/1WZ3thz34=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0QiwqGrru7E0hnFByyf199zgzY5HfiHmMto2K2DP2GQaRpF+SQylW3LD64x0jYywQ
+         GcH0r71FBZ2SrN2dwCGbIV3fjNBJqBLpm/gW0SCLI6mvVwTGAH152XfnjfVFnYbu9N
+         wSMSXIznFZBAd5pNwXWXfAuppEMtLhJPcm6C38Ms=
+Date:   Wed, 30 Sep 2020 19:51:42 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Maor Gottlieb <maorg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
+ from pages
+Message-ID: <20200930165142.GS3094@unreal>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-5-leon@kernel.org>
+ <20200929195929.GA803555@nvidia.com>
+ <20200930095321.GL3094@unreal>
+ <20200930114527.GE816047@nvidia.com>
+ <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
+ <20200930115837.GF816047@nvidia.com>
+ <7e09167f-c57a-cdfe-a842-c920e9421e53@nvidia.com>
+ <20200930151406.GM816047@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <f74a2b4e1c8c475b5a053f5edd9da5a818be4b1f.1601467849.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930151406.GM816047@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 10:24 AM, Mauro Carvalho Chehab wrote:
-> The :c:type:`foo` only works properly with structs before
-> Sphinx 3.x.
-> 
-> On Sphinx 3.x, structs should now be declared using the
-> .. c:struct, and referenced via :c:struct tag.
-> 
-> As we now have the automarkup.py macro, that automatically
-> convert:
-> 	struct foo
-> 
-> into cross-references, let's get rid of that, solving
-> several warnings when building docs with Sphinx 3.x.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/block/blk-mq.rst                |  8 +++----
+On Wed, Sep 30, 2020 at 12:14:06PM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 30, 2020 at 06:05:15PM +0300, Maor Gottlieb wrote:
+> > This is right only for the last iteration. E.g. in the first iteration in
+> > case that there are more pages (left_pages), then we allocate
+> > SG_MAX_SINGLE_ALLOC.† We don't know how many pages from the second iteration
+> > will be squashed to the SGE from the first iteration.
+>
+> Well, it is 0 or 1 SGE's. Check if the first page is mergable and
+> subtract one from the required length?
+>
+> I dislike this sg_mark_end() it is something that should be internal,
+> IMHO.
 
-Regarding blk-mq.rst:
+I don't think so, but Maor provided possible solution.
+Can you take the patches?
 
-Reviewed-by: Andr√© Almeida <andrealmeid@collabora.com>
+Thanks
+
+>
+> Jason
