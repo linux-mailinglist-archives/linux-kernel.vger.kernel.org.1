@@ -2,115 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE80227EEC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D44627EECE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731068AbgI3QSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728744AbgI3QSD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:18:03 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E137C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:18:01 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id k13so642011oor.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QY2l/Yt+N6Qm5zwEsafOSNC/Vn5PVtgIOgVEBv2bpzc=;
-        b=enqjfInlrBuTD//8bd1nIYeKHK/pBJcmYVk1pRtxQAJfynhwLhsAbwJu/a8NGRTBng
-         EPXUmFjbMGVH3UDVYZRS2LyQi7OmXp+RLZbpPOzDU6pdcLQRnsiOtS+sh9A93BUBwh3N
-         zkVrB6Q0VSXEBP2FcH4Spiaq8QDmQpIMgkK/VoyLy6G7J4xw3Z8my9GrNyUo6OtP0ouE
-         GnIXWKIDIW8mY4gIJqZOW4d7ko3aarGG32xxla4i7ivAhHS3jmDA18ZzjMzvT4K3K4rg
-         Eq/XE+0/52E4tDpTOxwoVFRMD0P3+qaSZHWxqD5ivAXZa9gZ9u/syditveIyoiT/pg8j
-         J4Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QY2l/Yt+N6Qm5zwEsafOSNC/Vn5PVtgIOgVEBv2bpzc=;
-        b=D6mrMwnLirfTocSFeqAVXrdtQQxExf2MIi02cGIF16UCvfNbkIHpqwIRR6yPw27kFb
-         JIWoKWBKXj431Wfe3uWxZw6409Pc1rpQ334yy9fh4Ql01GFFRjtyRgv5EH/t3q6ISwnJ
-         q000PccD1bojoALwL3a9iWK56ZeER+cRj4BURO1z7EbQQ+Fx893/qYQI5NwudtS1qRzb
-         QeKfKp3sSODOYLKG+DHQ+wdfHw/Bb7W4O92ZXbFYQnM3G4CVtD4Ex6YcFADnrPOBe8kP
-         /Y5EnwA5+0bUXH9HBGSdDNAQTZM35yO5ATMCM8nh0OS8XKw/ULTQsokroUsL0d3oPcnf
-         Skrg==
-X-Gm-Message-State: AOAM531iZUpcg5nY/CPNet+UnWJEh08PaXI1rDU5OlLHvQ+kE4V8AOJz
-        dpgif95o49ZFoqtHmc58nd+NzoLKhWkx8E4ZeANXPw==
-X-Google-Smtp-Source: ABdhPJwwfh1/zkpRwXrKHRDJQHq/uW5ADaFJO6+Jcorf/fVowmls8HVvF/f/Gsmv2V+j+VYAEwZTs/wmqYcI/M6B+BM=
-X-Received: by 2002:a4a:95f1:: with SMTP id p46mr2358703ooi.93.1601482680767;
- Wed, 30 Sep 2020 09:18:00 -0700 (PDT)
+        id S1731155AbgI3QSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:18:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728744AbgI3QSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:18:37 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F223120708;
+        Wed, 30 Sep 2020 16:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601482716;
+        bh=FZDd9NrX/b3X4mhyCraw4fkVuDp38h8GVcG5bQ6IPOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D7dOdHbAvycDMu4PnK4XYyk/tC2brcv/Hwix+oIE4qjeoZ8xW7wMDdN4A2R/g3WIa
+         YsGQKbpds+73FShsHxCwNy5uwRqdPjJnXOk/I1BvRu+y8S+Z+icclMvJ14HjPP/src
+         NX4ao28aABFZeohCKkrOJrqptQ1EcL5/zsbgYr1c=
+Date:   Wed, 30 Sep 2020 18:18:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        "open list:USB ACM DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 5/6] can: usb: etas_es58X: add support for ETAS ES58X
+ CAN USB interfaces
+Message-ID: <20200930161838.GB1663344@kroah.com>
+References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
+ <20200930144602.10290-6-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-References: <20200928202650.2530280-1-keescook@chromium.org>
-In-Reply-To: <20200928202650.2530280-1-keescook@chromium.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 30 Sep 2020 21:47:49 +0530
-Message-ID: <CA+G9fYtAWPuL=SEd3=K0WF3xVu6wwx4ETLadASxKKs0dMYbdWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Extract run_kselftest.sh and generate stand-alone
- test list
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Tim.Bird@sony.com, lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930144602.10290-6-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 01:56, Kees Cook <keescook@chromium.org> wrote:
->
-> v2:
-> - update documentation
-> - include SPDX line in extracted script
-> v1: https://lore.kernel.org/linux-kselftest/20200925234527.1885234-1-keescook@chromium.org/
->
->
-> Hi!
->
-> I really like Hangbin Liu's intent[1] but I think we need to be a little
-> more clean about the implementation. This extracts run_kselftest.sh from
-> the Makefile so it can actually be changed without embeds, etc. Instead,
-> generate the test list into a text file. Everything gets much simpler.
-> :)
->
-> And in patch 2, I add back Hangbin Liu's new options (with some extra
-> added) with knowledge of "collections" (i.e. Makefile TARGETS) and
-> subtests. This should work really well with LAVA too, which needs to
-> manipulate the lists of tests being run.
->
-> Thoughts?
+On Wed, Sep 30, 2020 at 11:45:32PM +0900, Vincent Mailhol wrote:
+> +	num_element =
+> +	    es58x_msg_num_element(es58x_dev->dev,
+> +				  bulk_rx_loopback_msg->rx_loopback_msg,
+> +				  msg_len);
+> +	if (unlikely(num_element <= 0))
+> +		return num_element;
 
-I have tested this patch set on LAVA with full run and it went well.
+Meta-comment on your use of 'unlikely' everywhere.  Please drop it, it's
+only to be used if you can actually measure the difference in a
+benchmark.  You are dealing with USB devices, which are really really
+slow here.  Also, humans make horrible guessers for this type of thing,
+the compiler and CPU can get this right much more often than we can, and
+we had the numbers for it (someone measured that 80-90% of our usages of
+these markings are actually wrong on modern cpus).
 
->
-> -Kees
->
-> [1] https://lore.kernel.org/lkml/20200914022227.437143-1-liuhangbin@gmail.com/
->
-> Kees Cook (3):
->   selftests: Extract run_kselftest.sh and generate stand-alone test list
->   selftests/run_kselftest.sh: Make each test individually selectable
->   doc: dev-tools: kselftest.rst: Update examples and paths
->
->  Documentation/dev-tools/kselftest.rst    | 35 +++++----
->  tools/testing/selftests/Makefile         | 26 ++-----
->  tools/testing/selftests/lib.mk           |  5 +-
->  tools/testing/selftests/run_kselftest.sh | 93 ++++++++++++++++++++++++
->  4 files changed, 124 insertions(+), 35 deletions(-)
->  create mode 100755 tools/testing/selftests/run_kselftest.sh
->
-> --
-> 2.25.1
->
+So just drop them all, it makes the code simpler to read and understand,
+and the cpu can actually go faster.
 
-- Naresh
+thanks,
+
+greg k-h
