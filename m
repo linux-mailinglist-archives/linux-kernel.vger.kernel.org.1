@@ -2,115 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1703127E739
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FE027E73D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgI3KyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3KyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:54:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4139FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:54:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f092a005c3b806e425f5e5c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2a00:5c3b:806e:425f:5e5c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729332AbgI3Kym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgI3Kyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:54:41 -0400
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2E71B1EC027B;
-        Wed, 30 Sep 2020 12:54:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601463257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=WL1myHE/ZtfyxVu6FcNzOVHaU5bWBkNp7k6YwK+1ZeE=;
-        b=Iuixgu/tN0hMXg9g5Mp+cl0nk34W+SK5JVD1mcZBDg0kg8adeXUXY00JdUqTLIDUKY9432
-        RRCRB5CHTA2bkPUU98kIivOvL9SA7rfFEBN0/nKXUs5pl4U6E5v4guIiSHAeUmVqSUXl97
-        gldoi9z0h19BxaD36k9Q6p6DTCVgd7w=
-Date:   Wed, 30 Sep 2020 12:54:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20200930105408.GE6810@zn.tnic>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id DA51020754
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601463281;
+        bh=ddv7KUcya5X97yhlDyId8wharLoZ0UcUxUGD2QWgNh4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W1vVZaHGP6Bvxw+u+a9xRUNWaXlTJlVPvbqwQRlrxtJALTV91uN//I77wqvHT7moa
+         SBBL6ZutpA/w8sIPiE21zUe7XFjde2zdYx41pXE1NB48hEO3dh66UFQNQW6XuCSqtW
+         mzk3MftQZcmWO6STukPBpmv7e6+V8D+lAHu6qPCU=
+Received: by mail-ej1-f52.google.com with SMTP id z23so2075998ejr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:54:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531+v7ZAwu3Ctx6rp284ECcrWF+CcZTaYpRHMZBoqi1oxfrZi7Jp
+        77tHYeQHTk9QYaDBsv0fnhMmuyeMeNSrqLJYkv0=
+X-Google-Smtp-Source: ABdhPJxZAPYsXeGQmJUdOIf4BxUahQKpPUDBior8DwXyJMNMmx1LZGo0fZoMgLd7MLY4uOxPoHPKZ3MCf+itgq0axbs=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr2094592ejd.119.1601463279578;
+ Wed, 30 Sep 2020 03:54:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200922114311.38804-5-shuo.a.liu@intel.com>
+References: <20200830122922.3884-1-shawnguo@kernel.org>
+In-Reply-To: <20200830122922.3884-1-shawnguo@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 30 Sep 2020 12:54:28 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPekUJzdKBxtG7BSPbJw172hAogMgLrNDQEGBNnRjY+FxQ@mail.gmail.com>
+Message-ID: <CAJKOXPekUJzdKBxtG7BSPbJw172hAogMgLrNDQEGBNnRjY+FxQ@mail.gmail.com>
+Subject: Re: [PATCH] get_maintainer: add email addresses from dts files
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Joe Perches <joe@perches.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:42:58PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> The Service VM communicates with the hypervisor via conventional
-> hypercalls. VMCALL instruction is used to make the hypercalls.
-> 
-> ACRN hypercall ABI:
->   * Hypercall number is in R8 register.
->   * Up to 2 parameters are in RDI and RSI registers.
->   * Return value is in RAX register.
+On Sun, 30 Aug 2020 at 14:31, Shawn Guo <shawnguo@kernel.org> wrote:
+>
+> MAINTAINER file will get bloated quickly if individual section entry
+> is created for each .dts/.dtsi file.  Add the email address from dts
+> files to get_maintainer output for saving unnecessary patching on
+> MAINTAINER file.
+>
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+> ---
+>  scripts/get_maintainer.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-I'm assuming this is already cast in stone in the HV and it cannot be
-changed?
+I thought this was applied... but seems not, so my previous email
+could be ignored.
 
-> Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
-> register as direct register constraints, here are two ways to use R8 in
-> extended asm:
->   1) use explicit register variable as input
->   2) use supported constraint as input with a explicit MOV to R8 in
->      beginning of asm
-> 
-> The number of instructions of above two ways are same.
-> Asm code from 1)
->   38:   41 b8 00 00 00 80       mov    $0x80000000,%r8d
->   3e:   48 89 c7                mov    %rax,%rdi
->   41:   0f 01 c1                vmcall
-> Here, writes to the lower dword (%r8d) clear the upper dword of %r8 when
-> the CPU is in 64-bit mode.
-> 
-> Asm code from 2)
->   38:   48 89 c7                mov    %rax,%rdi
->   3b:   49 b8 00 00 00 80 00    movabs $0x80000000,%r8
->   42:   00 00 00
->   45:   0f 01 c1                vmcall
-> 
-> Choose 1) for code simplicity and a little bit of code size
-> optimization.
+I like this approach because contact details for specific boards are
+useful. So +1 from me:
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-What?
-
-How much "optimization" is this actually? A couple of bytes?
-
-And all that for this
-
-	/* Nothing can come between the r8 assignment and the asm: */
-
-restriction?
-
-If it is only a couple of bytes, just do the explicit MOV to %r8 and
-f'get about it.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Krzysztof
