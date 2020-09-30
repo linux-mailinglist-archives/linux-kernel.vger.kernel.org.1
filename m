@@ -2,48 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A89427DF09
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EAE27DF05
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727720AbgI3Dgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:36:51 -0400
-Received: from mail.aranzadi.es ([195.76.174.39]:40887 "EHLO mail.aranzadi.es"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3Dgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:36:51 -0400
-X-Greylist: delayed 9408 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 23:36:50 EDT
-Received: from User (unknown [94.102.54.227])
-        by mail.aranzadi.es (Postfix) with ESMTP id AC3EB140685;
-        Wed, 30 Sep 2020 04:57:28 +0200 (CEST)
-Reply-To: <angcampbell12@gmail.com>
-From:   "Angela Campbell" <angcampbel12@gmail.com>
-Subject: request!! .
-Date:   Tue, 29 Sep 2020 19:52:32 -0700
+        id S1728236AbgI3Dff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:35:35 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:49344 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgI3Dfd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 23:35:33 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U3PG2l147179;
+        Wed, 30 Sep 2020 03:34:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=RmEynA6LQnNSJgRokfZmIJv2wPjJiLYa9Smp1fW3sn0=;
+ b=wB9y2JZv33IrUblBmUxNwC/9buxPg/aDPh8L8XrIBHCG94ngBhhogN4hx/x82Z+ynB2m
+ RBy2sq4uzTps/Hf1+ltj1YZUo2UZbyGnT9S2gx/zZ2VpgS7FEd9SylklF/iT8iyW8oUP
+ 2PtiQgdyvDUrI0OYFsqd79FIbH6XjdRo0jK7WRExGn3bGsIqtwRSmngJXSQrLogjP+sW
+ wFN7UmuVqjWt1F3wER/MO35CYTZhrNqZmb4vkn0hj3xdqQoIHyWFOdH0itVCAGiK0mL8
+ z4VJGJvJe3+bzwOsKtbsH4ykaecEkLd0TJB72i7pYagarc8cSpyXT2P5cZwpmlON45pL qw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33su5axc0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 03:34:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U3QVEX064891;
+        Wed, 30 Sep 2020 03:34:58 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33tfhygkxa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 03:34:58 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08U3YsxL027460;
+        Wed, 30 Sep 2020 03:34:54 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Sep 2020 20:34:54 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        fthain@telegraphics.com.au, linux@armlinux.org.uk,
+        schmitzmic@gmail.com, jejb@linux.ibm.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: remove redundant initialization of variable ret
+Date:   Tue, 29 Sep 2020 23:34:47 -0400
+Message-Id: <160143685413.27701.2383412443851810355.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200918090747.44645-1-jingxiangfeng@huawei.com>
+References: <20200918090747.44645-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20200930025728.AC3EB140685@mail.aranzadi.es>
-To:     undisclosed-recipients:;
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300023
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am sorry for interrupting your day, with due respect trust and humility, I write to you this proposal, which I believe would be of great interest to you. I am looking for a reliable and capable partner that will assist my family and I to transfer funds to his personal or company account for investment purposes because of my health..
-I am Mrs. Angela Campbell, the wife of Late Mr. Mike Campbell, who was a Commercial Farmer and cocoa merchant in Bindura and Harare, the economic city of Zimbabwe.
+On Fri, 18 Sep 2020 17:07:47 +0800, Jing Xiangfeng wrote:
 
-My husband was among the people that were murdered in cold blood by the President Robert Mugabe Administration during the land dispute that just happened in Zimbabwe wholly affected the white farmers and this resulted to the killing and mob action by Zimbabwean war veterans and some lunatics in the society. In fact, a lot of people were killed because of this land reformed Act.
+> The variable ret is being initialized with '-ENOMEM' that is
+> meaningless. So remove it.
 
-Please for further details, kindly email me with your direct contact informations to my private email address: angcampbell12@gmail.com 
+Applied to 5.10/scsi-queue, thanks!
 
-Full Name:|Home Address|Telephone Number|Mobile Number|Date of Birth| Occupation:.
+[1/1] scsi: oak: Remove redundant initialization of variable ret
+      https://git.kernel.org/mkp/scsi/c/713a846884ce
 
-Please do notify me immediately you receive this proposal.
-
-Thanks and God bless you
-
-Mrs. Angela Campbell and (Family).
+-- 
+Martin K. Petersen	Oracle Linux Engineering
