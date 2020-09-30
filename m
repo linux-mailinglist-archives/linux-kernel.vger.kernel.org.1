@@ -2,237 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A008C27EA42
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C90527EA4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730361AbgI3NrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:47:20 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:19522 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgI3NrP (ORCPT
+        id S1730255AbgI3NvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728149AbgI3NvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 09:47:15 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UDZKg7016371;
-        Wed, 30 Sep 2020 09:47:08 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33syg67k8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 09:47:07 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08UDl6ir053314
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 30 Sep 2020 09:47:06 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 30 Sep 2020 06:46:57 -0700
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 30 Sep 2020 06:46:46 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 30 Sep 2020 06:46:57 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08UDkQ8e026146;
-        Wed, 30 Sep 2020 09:46:58 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC:     <linux-kernel@vger.kernel.org>, <jic23@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 4/4] iio: adc: at91_adc: remove platform data and move defs in driver file
-Date:   Wed, 30 Sep 2020 16:50:48 +0300
-Message-ID: <20200930135048.11530-5-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200930135048.11530-1-alexandru.ardelean@analog.com>
-References: <20200930135048.11530-1-alexandru.ardelean@analog.com>
+        Wed, 30 Sep 2020 09:51:12 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A844DC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:51:10 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n10so1207581qtv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 06:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=eclypsium.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YmjGHJDSLD445MzK0ZHH2zcKo0LcYsCTK8O0XEHvNPE=;
+        b=hSyO/kDGmOQ7Dmh1PdLQbvlPl8ycNDTIn1QHxi3eKr0ds5wpxEMvKkn40uGFwY8neu
+         UsONdpeiTq92eM4iwi38Hnk8GT5nIf969ie38Q1OV5zskMWvYsIWAx7vHrHbE5/n3Yo1
+         AmSWvO9CaRxr0jfFSDMl7OZNrSzwsLmuyBIe8rkaZFsVhTutsflfL4+8+YYJZCRU+wL9
+         ZIaMuD0ZzYTu/sXU62ZOUJtQ1ohKhuzbG3imcLqN8lLRuuQGiJ4HvaYgQ0Ce53+Do8JD
+         JHhL00lvKeYhcAfvGoBxqVadyKZM5RSaHVgq/2+UjumxsJuhDYVfL8yA3uOHO0NdAnpC
+         MTcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YmjGHJDSLD445MzK0ZHH2zcKo0LcYsCTK8O0XEHvNPE=;
+        b=oWcSXtXmOp0vRp33FDsTDYnFWDxGU57F/HkEtdC4apjCn+1/pEYJ3662g4Vwv6/yiS
+         rBpNB2DB0u0hyPXP3mBEEy0B3mAiBgRDda9ChOpAEnaaq5uAO6bKuaH77wvcks86eDXd
+         ddBqRk/n32oaFpLAbbYMBRQW2G0q1YTM+6MbdVFN+kRv5US5e2HpZymTeuQxeNuBhdgp
+         Jyftlarwdw2UwPQjeF3dW/icRdUoW5/d2/x4h026Ot8kGuBSsEweK8f1SAmeGf2Z/Os0
+         +NuEl6HoFEXJMwncjC8Wf/9dTxJ8LejPq/GTb3fB0XKesz0emwWJRnEOC7ntIq2HlLfv
+         Rnkg==
+X-Gm-Message-State: AOAM530HceU5sGfyB/D2Awpm2wpGZS7OC6Iy/cFhIShMU8+reZXm045D
+        Am4VGMY2KR7nuIeV7mBEP1aCww==
+X-Google-Smtp-Source: ABdhPJwLN3DrwH4o0moTLli9BNmHMEo1GZaRrJjuhOeQ9R/a6auEof7aMdctsiBBjokQL9ig2vG8hA==
+X-Received: by 2002:aed:2b63:: with SMTP id p90mr2284241qtd.71.1601473869706;
+        Wed, 30 Sep 2020 06:51:09 -0700 (PDT)
+Received: from localhost ([190.190.138.51])
+        by smtp.gmail.com with ESMTPSA id y29sm2510008qtj.20.2020.09.30.06.51.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 06:51:09 -0700 (PDT)
+From:   Daniel Gutson <daniel.gutson@eclypsium.com>
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] Platform integrity information in sysfs (version 9)
+Date:   Wed, 30 Sep 2020 10:51:01 -0300
+Message-Id: <20200930135101.5424-1-daniel.gutson@eclypsium.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_07:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 suspectscore=2 lowpriorityscore=0
- spamscore=0 bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300108
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AT91 ADC driver no longer uses the 'at91_add_device_adc' platform data
-type. This is no longer used (at least in mainline boards).
+This patch serie adds a misc kernel module and extends the intel-spi drivers
+to publish platform integrity data in the sys-fs.
+Please check the comments in the following patches of this serie for further
+details.
 
-This change removes the platform-data initialization from the driver, since
-it is mostly dead code now.
+Daniel Gutson (2):
+  Platform integrity information in sysfs (version 9)
+  This patch exports the BIOS Write Enable (bioswe), BIOS Lock Enable
+    (biosle), and the SMM BIOS Write Protect (SMM_BIOSWP) fields of the
+    BIOS Control register using the platform-integrity misc kernel
+    module. The idea is to keep adding more flags, not only from the BC
+    but also from other registers in following versions.
 
-Some definitions [from the platform data at91_adc.h include] have been
-moved in the driver, since they are needed in the driver.
+ .../ABI/stable/sysfs-class-platform-integrity | 23 +++++
+ MAINTAINERS                                   |  7 ++
+ drivers/misc/Kconfig                          | 11 +++
+ drivers/misc/Makefile                         |  1 +
+ drivers/misc/platform-integrity.c             | 57 ++++++++++++
+ drivers/mtd/spi-nor/controllers/Kconfig       |  1 +
+ .../mtd/spi-nor/controllers/intel-spi-pci.c   | 75 +++++++++++++++-
+ .../spi-nor/controllers/intel-spi-platform.c  |  2 +-
+ drivers/mtd/spi-nor/controllers/intel-spi.c   | 90 ++++++++++++++++++-
+ drivers/mtd/spi-nor/controllers/intel-spi.h   |  9 +-
+ include/linux/platform-integrity.h            | 19 ++++
+ 11 files changed, 288 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-class-platform-integrity
+ create mode 100644 drivers/misc/platform-integrity.c
+ create mode 100644 include/linux/platform-integrity.h
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/at91_adc.c             | 60 ++++++++++----------------
- include/linux/platform_data/at91_adc.h | 49 ---------------------
- 2 files changed, 22 insertions(+), 87 deletions(-)
- delete mode 100644 include/linux/platform_data/at91_adc.h
-
-diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-index 473bffe84fbd..be6abf739881 100644
---- a/drivers/iio/adc/at91_adc.c
-+++ b/drivers/iio/adc/at91_adc.c
-@@ -22,8 +22,6 @@
- #include <linux/slab.h>
- #include <linux/wait.h>
- 
--#include <linux/platform_data/at91_adc.h>
--
- #include <linux/iio/iio.h>
- #include <linux/iio/buffer.h>
- #include <linux/iio/trigger.h>
-@@ -153,6 +151,25 @@
- #define TOUCH_SHTIM                    0xa
- #define TOUCH_SCTIM_US		10		/* 10us for the Touchscreen Switches Closure Time */
- 
-+enum atmel_adc_ts_type {
-+	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
-+	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
-+	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
-+};
-+
-+/**
-+ * struct at91_adc_trigger - description of triggers
-+ * @name:		name of the trigger advertised to the user
-+ * @value:		value to set in the ADC's trigger setup register
-+			to enable the trigger
-+ * @is_external:	Does the trigger rely on an external pin?
-+ */
-+struct at91_adc_trigger {
-+	const char	*name;
-+	u8		value;
-+	bool		is_external;
-+};
-+
- /**
-  * struct at91_adc_reg_desc - Various informations relative to registers
-  * @channel_base:	Base offset for the channel data registers
-@@ -873,9 +890,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
- 	int i = 0, ret;
- 	u32 prop;
- 
--	if (!node)
--		return -EINVAL;
--
- 	st->caps = of_device_get_match_data(&pdev->dev);
- 
- 	st->use_external = of_property_read_bool(node, "atmel,adc-use-external-triggers");
-@@ -957,30 +971,6 @@ static int at91_adc_probe_dt(struct iio_dev *idev,
- 	return ret;
- }
- 
--static int at91_adc_probe_pdata(struct at91_adc_state *st,
--				struct platform_device *pdev)
--{
--	struct at91_adc_data *pdata = pdev->dev.platform_data;
--
--	if (!pdata)
--		return -EINVAL;
--
--	st->caps = (struct at91_adc_caps *)
--			platform_get_device_id(pdev)->driver_data;
--
--	st->use_external = pdata->use_external_triggers;
--	st->vref_mv = pdata->vref;
--	st->channels_mask = pdata->channels_used;
--	st->num_channels = st->caps->num_channels;
--	st->startup_time = pdata->startup_time;
--	st->trigger_number = pdata->trigger_number;
--	st->trigger_list = pdata->trigger_list;
--	st->registers = &st->caps->registers;
--	st->touchscreen_type = pdata->touchscreen_type;
--
--	return 0;
--}
--
- static const struct iio_info at91_adc_info = {
- 	.read_raw = &at91_adc_read_raw,
- };
-@@ -1157,15 +1147,9 @@ static int at91_adc_probe(struct platform_device *pdev)
- 
- 	st = iio_priv(idev);
- 
--	if (pdev->dev.of_node)
--		ret = at91_adc_probe_dt(idev, pdev);
--	else
--		ret = at91_adc_probe_pdata(st, pdev);
--
--	if (ret) {
--		dev_err(&pdev->dev, "No platform data available.\n");
--		return -EINVAL;
--	}
-+	ret = at91_adc_probe_dt(idev, pdev);
-+	if (ret)
-+		return ret;
- 
- 	platform_set_drvdata(pdev, idev);
- 
-diff --git a/include/linux/platform_data/at91_adc.h b/include/linux/platform_data/at91_adc.h
-deleted file mode 100644
-index f20eaeb827ce..000000000000
---- a/include/linux/platform_data/at91_adc.h
-+++ /dev/null
-@@ -1,49 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (C) 2011 Free Electrons
-- */
--
--#ifndef _AT91_ADC_H_
--#define _AT91_ADC_H_
--
--enum atmel_adc_ts_type {
--	ATMEL_ADC_TOUCHSCREEN_NONE = 0,
--	ATMEL_ADC_TOUCHSCREEN_4WIRE = 4,
--	ATMEL_ADC_TOUCHSCREEN_5WIRE = 5,
--};
--
--/**
-- * struct at91_adc_trigger - description of triggers
-- * @name:		name of the trigger advertised to the user
-- * @value:		value to set in the ADC's trigger setup register
--			to enable the trigger
-- * @is_external:	Does the trigger rely on an external pin?
-- */
--struct at91_adc_trigger {
--	const char	*name;
--	u8		value;
--	bool		is_external;
--};
--
--/**
-- * struct at91_adc_data - platform data for ADC driver
-- * @channels_used:		channels in use on the board as a bitmask
-- * @startup_time:		startup time of the ADC in microseconds
-- * @trigger_list:		Triggers available in the ADC
-- * @trigger_number:		Number of triggers available in the ADC
-- * @use_external_triggers:	does the board has external triggers availables
-- * @vref:			Reference voltage for the ADC in millivolts
-- * @touchscreen_type:		If a touchscreen is connected, its type (4 or 5 wires)
-- */
--struct at91_adc_data {
--	unsigned long			channels_used;
--	u8				startup_time;
--	struct at91_adc_trigger		*trigger_list;
--	u8				trigger_number;
--	bool				use_external_triggers;
--	u16				vref;
--	enum atmel_adc_ts_type		touchscreen_type;
--};
--
--extern void __init at91_add_device_adc(struct at91_adc_data *data);
--#endif
--- 
-2.17.1
-
+--
+2.25.1
