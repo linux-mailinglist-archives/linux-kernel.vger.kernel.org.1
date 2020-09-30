@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECCA27EC0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B7127EC00
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730877AbgI3POI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728480AbgI3PNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:13:52 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C45F20657;
-        Wed, 30 Sep 2020 15:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601478831;
-        bh=20hVTAxNHIbbLo1KoLt7DBWKDyOMxLVh+tG3kh/LsKY=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=V0pS8kLOq2Vgb/KHuR46WzIccN2RuUSsQFHf5OYixz9Kf1KVGpoix/eX4W1fucobY
-         WzqGwdS/9nZ+XurbUJ5WCIv+lcTfqAFbCiqI+7NO1LTtNwsXbiCnp5p8lFj85oIaT4
-         caTvN7z9ZtFy+eEK3BUViNveLGX3vGvf6OQgIMKU=
-Date:   Wed, 30 Sep 2020 16:12:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20200930145353.3043699-1-alexandre.belloni@bootlin.com>
-References: <20200930145353.3043699-1-alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH] spi: atmel: remove unnecessary include
-Message-Id: <160147877281.10117.17929784495637755359.b4-ty@kernel.org>
+        id S1730611AbgI3PNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:13:07 -0400
+Received: from esa2.mentor.iphmx.com ([68.232.141.98]:9476 "EHLO
+        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgI3PNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:13:04 -0400
+IronPort-SDR: 6Anc4nr5oU8XvQrGJJniItZuZKLBgVjp9y8pQsOOXIhcz3X96H0iqamr7kiuuHwXErsx22z5fO
+ UUnSvCjMNewlzRS/Zx3hHQkbrAP3Ev46pNhfglEZoXpAZhMw18IDUMoV4VNWKRTK+WBHB41HEj
+ Ts+yuwBZlfgu1Wot8VeuSsBfPAHYwoVaceF7sZzlW7NwWRpxbgNcKrEr3Dz0kgL46BoHQN4B0p
+ vYqn+jBgKSkbNy/sHII7419GL+m0FiWE4/3EvQNF2QPa+ZG/3+6OU9KvzzuHE/vp/hBIOv6dZM
+ 5LU=
+X-IronPort-AV: E=Sophos;i="5.77,322,1596528000"; 
+   d="scan'208";a="53484658"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+  by esa2.mentor.iphmx.com with ESMTP; 30 Sep 2020 07:13:04 -0800
+IronPort-SDR: 6IY6l9bHcwso4ZDr9MYtr+cFNKFn7ryaW26lQzqGIP6ASGpVymFV1EBcrR0J03wYz64Qiir+uL
+ OPWaBI3XB+j5JlzPZ35mwqoR9KV1uIBnxRhruzptSbZuqWEnTertrCaUqlMp7PkKlnhR7+0FGq
+ fZ4zwiYx5T2h9C8iAch/46SuXOZ0I7Nf4+AaYRHJzCxRt8eDr9UhfIgPxwiS0Vm45t+sEltX7L
+ UcpmSl/K2BOUVLYPY1smNK8NtzWzz5ukIrFX0jCUBKMeCzdEx61ZIDbvg694MFsI2jCRc88h+D
+ R4w=
+From:   Jiada Wang <jiada_wang@mentor.com>
+To:     <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <digetx@gmail.com>,
+        <jonathanh@nvidia.com>
+CC:     <nick@shmanahar.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <andrew_gabbasov@mentor.com>,
+        <jiada_wang@mentor.com>
+Subject: [PATCH v3 0/3] implement I2C retries for mXT1368
+Date:   Thu, 1 Oct 2020 00:12:56 +0900
+Message-ID: <20200930151259.18119-1-jiada_wang@mentor.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 16:53:52 +0200, Alexandre Belloni wrote:
-> Since commit d5fab59cab18 ("spi: atmel: trivial: remove unused fields in
-> DMA structure"), the driver is not using any definitions from
-> linux/platform_data/dma-atmel.h, stop including it.
+According to datasheet, mXT1386 chip has a WAKE line, it is used
+to wake the chip up from deep sleep mode before communicating with
+it via the I2C-compatible interface.
+    
+if the WAKE line is connected to a GPIO line, the line must be
+asserted 25 ms before the host attempts to communicate with the
+mXT1386.
+If the WAKE line is connected to the SCL pin, the mXT1386 will send
+a NACK on the first attempt to address it, the host must then retry
+25 ms later.
+    
+This patch adds compatible string "atmel,mXT1386" for mXT1386 controller,
+when I2C transfer on mXT1386 fails, retry the transfer once after a
+25 ms sleep.
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Jiada Wang (3):
+  dt-bindings: input: atmel: add compatible for mXT1386
+  Input: atmel_mxt_ts - implement I2C retries for mXT1368
+  ARM: tegra: add mXT1386 compatible
 
-Thanks!
+---
+v3:
+change compatible string to lowercase
 
-[1/1] spi: atmel: remove unnecessary include
-      commit: af223edd07b619749f7abc3e1db1933ac56d2e3e
+v2:
+add bool retry_i2c_transfers to struct mxt_data,
+to indicate whether retry is needed when i2c transfer fails
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+v1: initial version
+---
+ .../bindings/input/atmel,maxtouch.txt         |  1 +
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |  2 +-
+ drivers/input/touchscreen/atmel_mxt_ts.c      | 62 +++++++++++++++----
+ 3 files changed, 52 insertions(+), 13 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-- 
+2.17.1
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
