@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E19E27E36B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E7227E366
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgI3IPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:15:42 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:15270 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728480AbgI3IPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:15:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601453741; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=N3XLsnLsoWMhDr+Ofmek2gL/NSFD+dt99yk0CTYcLhY=; b=MDuLYIVwIe/S31GWhXAGu553kRkAu2QtdHcgX2raafL9Qi0Npi416niuzoObv4ekaN/ZL0Cl
- 7XVXbKvuCwLR2f0JS40D6NfT7lzgqMK3y4J/RRgQowOn4UAzm/CgZ8NvoFqGCnRwGWzoysJw
- pgK0oN9GhAi5UQSmn8OGQjUcR6Y=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f743e7eaada82eaa4f87f62 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 08:14:54
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B6C61C433FE; Wed, 30 Sep 2020 08:14:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E59FC433CA;
-        Wed, 30 Sep 2020 08:14:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0E59FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V1 3/3] arm64: dts: qcom: sm8150: Add LLC support for sm8150
-Date:   Wed, 30 Sep 2020 13:44:14 +0530
-Message-Id: <8f0e818485941076d62a8dc9f711b0fb868ba080.1601452132.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1601452132.git.schowdhu@codeaurora.org>
-References: <cover.1601452132.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1601452132.git.schowdhu@codeaurora.org>
-References: <cover.1601452132.git.schowdhu@codeaurora.org>
+        id S1728426AbgI3IPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728384AbgI3IPQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:15:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F10C061755;
+        Wed, 30 Sep 2020 01:15:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so657057pfd.5;
+        Wed, 30 Sep 2020 01:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R35UUTJMurgzHTEafJYZTtjQpMJxWZuFDoF37yOkcQI=;
+        b=oCO0WZF93LZom3p+7Exyf36KYLBTH+Vg4OU1Fk9w1nLfafBwxftGcp/uFPpvWYZ5ME
+         LXgDDJKRA6lI0Mmy4XV4ZE3iyMsgCUEF5bczv39NaV/dy3ZT+L2M/Z0rRrM2pgDaUV08
+         xc78QnBdQZAWntkrH7d3rJbkTup1A9qX32GX9yeOpmzDneQqdeDwm+QJYvWcBg1bIZst
+         s6Jys4LvRS+YgogB1ckqawQi77x7n4SbuHcq4jynzQ9HBCLv0LPEzVJtJ5fI8UmGnUUu
+         fiZ2zqv6qZt5a9DuCnLuufO8Fsr29JxIdBvOOZceTYzQNRddc3z9ioql/AzsylYhYBh2
+         FVbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R35UUTJMurgzHTEafJYZTtjQpMJxWZuFDoF37yOkcQI=;
+        b=h8SEXdkzzLSH8uhr5KRxBl0Z+ilEQ1VBK9QhBBAcFEoAuJwHDWySez7utDgXgwbk6i
+         0MBdg9M8OiJVXH/8Ha42cbYD6hZwFLnfxLdvpX0J+2BZVPXUPYGkaVMNODBGF9bZwrgj
+         6BaeQ0VxSpE2pf/Iaj+kNJlSVvyStk9UNaJiLCFM7H8pOq4LGKzHvwGYvtG9BWnFR0hv
+         nlsDtnc2GA37Hf8l4rgdIkoa+iTWBxqv7siTKma5YcAvFPj6OtZBfEvuPIdZ39D1Je9G
+         zu08XpwBhaOh5B02qB1mLalBQIrBe1ZQqcxQSlf659J7dkn1Z/kaVP22NuEmjQABp4LZ
+         3rDQ==
+X-Gm-Message-State: AOAM530WYxhb1f3BnFihr5sRDSvSvN38UPj6l9MYOf9ngOoLvqAuVX0Z
+        S2vTQ0dUvx+BVUx/Iv4Arw==
+X-Google-Smtp-Source: ABdhPJyoP2JOVUZou7mzbgih+WLmU0/MgzGa7mx4dbmq8QnnAnfd/u10joRGySLrvFVHgnckJTGXvg==
+X-Received: by 2002:a63:c1e:: with SMTP id b30mr1267597pgl.345.1601453715878;
+        Wed, 30 Sep 2020 01:15:15 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.140.181])
+        by smtp.gmail.com with ESMTPSA id 1sm1371684pgm.4.2020.09.30.01.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 01:15:14 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
+        shipujin.t@gmail.com
+Subject: [PATCH] tty: serial: mvebu-uart: Remove unused variable 'ret'
+Date:   Wed, 30 Sep 2020 16:14:59 +0800
+Message-Id: <20200930081459.1269-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LLCC system cache controller entry for sm8150 to support sm8150
-for LLCC.
+'ret' variable is now defined but not used in mvebu_uart_probe(),
+causing this warning:
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+  drivers/tty/serial/mvebu-uart.c: In function ‘mvebu_uart_probe’:
+  drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable ‘ret’ [-Wunused-variable]
+
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/tty/serial/mvebu-uart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index f0a872e02686..71037a1bb217 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -490,7 +490,14 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
+diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
+index 7443c0506eb4..118b29912289 100644
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
+ 							   &pdev->dev);
+ 	struct uart_port *port;
+ 	struct mvebu_uart *mvuart;
+-	int ret, id, irq;
++	int id, irq;
  
--		ufs_mem_hc: ufshc@1d84000 {
-+	        system-cache-controller@9200000 {
-+                        compatible = "qcom,sm8150-llcc";
-+                        reg = <0 0x09200000 0 0x200000>, <0 0x09600000 0 0x50000>;
-+                        reg-names = "llcc_base", "llcc_broadcast_base";
-+                        interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
-+                 };
-+
-+        	ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
- 			reg = <0 0x01d84000 0 0x2500>;
+ 	if (!reg) {
+ 		dev_err(&pdev->dev, "no registers defined\n");
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.18.1
 
