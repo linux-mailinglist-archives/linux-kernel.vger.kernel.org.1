@@ -2,140 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A9327EA98
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D787027EAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgI3OID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:08:03 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35419 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgI3OID (ORCPT
+        id S1730509AbgI3OJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:09:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728232AbgI3OJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:08:03 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DE1435803A5;
-        Wed, 30 Sep 2020 10:08:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 30 Sep 2020 10:08:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=4CHUtjs8mTgMe07nNzKeBnPZaAj
-        ouHv1QvsW52wUJnY=; b=QvysVhAr1anAS+8xcvEpN4LnvWRvzv9xsYLawfZy3j+
-        i1a57pdELNNICdEnaOD5MlN2hd1AvZLcKcNsLEDpUFts0P9pG64b35Xz52YHhKeG
-        oNPzniULzux5UL78pjAdGYQ8b3cqaDue/CmaZA0OfHmK61Uowj6ZKwYSyDOh1Dpl
-        BMmUoIxatxxOauWvuphSwAI6sY4yx9wOqjhHJoi5jxAjXYbaZRCQHJXyb11hTk3F
-        HV1k8sgDN4oxWr89a+m6NGqpFabUlhshQGN6Vbfzd8itCkBxKGGEg/Sf2qZPB1x3
-        rfp1MBj6cKRK2KdXAjY5JZz97UN/8Jpwbc600WZboQQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4CHUtj
-        s8mTgMe07nNzKeBnPZaAjouHv1QvsW52wUJnY=; b=oPTj1pq76Ldo2+cGdIN+ib
-        rZXITHKW/cK4VeorcMv99OHlFFmd7JmK2Urf1c42EDrujnm0scKQQm7X2dn9VKkO
-        bt7mIG190HIoOKtp5Po2KLuRXhGbBtBU/WqIon0Rj0Po0YjinAPoLVYEvamhiU2x
-        Ch667bcmVfdJELn6VW35RXQVMAuvBt4XCjv5VfQwIbP8xTj1gaFjJvcOTWj6mLQZ
-        vMth0Peibm4faJYkyzmLOzZPrpK6BN+1vrZBWix/1dYxHvyrcjXMOJThoH1ufjQB
-        NcFhzPUe7HRi8O2g0tmzwIoJD2xog/MKcfZ9yIwjTCkczHfcaptz3g5zt65buZdA
-        ==
-X-ME-Sender: <xms:QJF0X0LLAvg0NVn075J81KHsVYstEul1Mj8FNzugQauMcZpNwcHiEA>
-    <xme:QJF0X0LzmwAo40g9_SgXbANShQorA0CFVANg0oQ5NAAPF5D4jq7MY7Db_ttNMffzo
-    y20D_a0bDERqL4HzOw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedvgdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:QJF0X0s3LNPP7OoFaVhMBl7W7Ezld7UXKzWxRd9asmOrTBPfOE8KNw>
-    <xmx:QJF0XxZZiOurhk2ei2IJbNrM0yNaajW6pyGpFGupYQiQ6rg0Eh74aA>
-    <xmx:QJF0X7Z2ozlN9wg44ynRnvbHMqWy2VqyvXlqNmDNo2EcRErseIQ2kQ>
-    <xmx:QZF0X5BSCCBq8SdTYH93oBvlNYAoa2AA4uqUMAm9Q6w-IKpJ6fkj9Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5C9A53280059;
-        Wed, 30 Sep 2020 10:08:00 -0400 (EDT)
-Date:   Wed, 30 Sep 2020 16:07:58 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-Message-ID: <20200930140758.gummt3umouva3wyu@gilmour.lan>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
- <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
- <20200929221526.GA1370981@ubuntu-m3-large-x86>
+        Wed, 30 Sep 2020 10:09:41 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601474979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BW7uLfGCMrQUZdSLMLVihbl9+TW3zw87gKappFOf/4A=;
+        b=VargSTXzetTm/YpdoPnNxj7CAL4psv8YtLvduCRMp2/YAJ1kZBmZ0X9dwCqBaqPIw8pbwA
+        ed9i9AURJnMmImQKpKlEVflekqUMeJzIDNMZrcOEOZ3Ud7RY4AGD+u2aOlGOhXjT1ZUH/L
+        bSdxddTZxfgxKexaPbyBufP7wikuZao=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-aNxpaBMePuOl9nE1WlTolw-1; Wed, 30 Sep 2020 10:09:34 -0400
+X-MC-Unique: aNxpaBMePuOl9nE1WlTolw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E36C186DD2B;
+        Wed, 30 Sep 2020 14:09:30 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 810415C1D0;
+        Wed, 30 Sep 2020 14:09:20 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 08:09:19 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     guomin_chen@sina.com
+Cc:     Cornelia Huck <cohuck@redhat.com>, Jiang Yi <giangyi@amazon.com>,
+        Marc Zyngier <maz@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        guomin chen <gchen.guomin@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqbypass: fix error handle when
+ irq_bypass_register_producer() return fails
+Message-ID: <20200930080919.1a9c66f8@x1.home>
+In-Reply-To: <1601470479-26848-1-git-send-email-guomin_chen@sina.com>
+References: <1601470479-26848-1-git-send-email-guomin_chen@sina.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nmd2zrhuwo3r2vsl"
-Content-Disposition: inline
-In-Reply-To: <20200929221526.GA1370981@ubuntu-m3-large-x86>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nmd2zrhuwo3r2vsl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please version your postings so we know which one to consider as the
+current proposal.
 
-Hi Nathan,
+On Wed, 30 Sep 2020 20:54:39 +0800
+guomin_chen@sina.com wrote:
 
-On Tue, Sep 29, 2020 at 03:15:26PM -0700, Nathan Chancellor wrote:
-> On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
-> > Now that all the drivers have been adjusted for it, let's bring in the
-> > necessary device tree changes.
-> >=20
-> > The VEC and PV3 are left out for now, since it will require a more spec=
-ific
-> > clock setup.
-> >=20
-> > Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> > Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> > Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> > Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->=20
-> Apologies if this has already been reported or have a solution but this
-> patch (and presumably series) breaks output to the serial console after
-> a certain point during init. On Raspbian, I see systemd startup messages
-> then the output just turns into complete garbage. It looks like this
-> patch is merged first in linux-next, which is why my bisect fell on the
-> DRM merge. I am happy to provide whatever information could be helpful
-> for debugging this. I am on the latest version of the firmware
-> (currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
+> From: guomin chen <guomin_chen@sina.com>
+> 
+> When the producer object registration fails,In the future, due to
+> incorrect matching when unregistering, list_del(&producer->node)
+> may still be called, then trigger a BUG:
+> 
+>     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+>     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+>     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+>     ...
+>     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1 (dead000000000100)
+>     ------------[ cut here ]------------
+>     kernel BUG at lib/list_debug.c:47!
+>     invalid opcode: 0000 [#1] SMP NOPTI
+>     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G      E
+>     -------- - -4.18.0-193.6.3.el8.x86_64 #1
+>     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
+>     BIOS -[IVE636Z-2.13]- 07/18/2019
+>     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
+>     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8 8c bc
+>           ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8 78 bc
+>           ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f 0b 48
+>           89 f2 48 89 fe
+>     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
+>     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 0000000000000000
+>     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf4d6a08
+>     RBP: 0000000000000000 R08: 000000000000084b R09: 000000000000005d
+>     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe863000
+>     R13: 00000000000000c2 R14: 0000000000000000 R15: 0000000000000000
+>     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
+>     knlGS:0000000000000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 00000000007626e0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     PKRU: 55555554
+>     Call Trace:
+>         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
+>         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
+>         ? load_fixmap_gdt+0x22/0x30
+>         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
+>         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
+>         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
+>         do_vfs_ioctl+0xa4/0x630
+>         ? syscall_trace_enter+0x1d3/0x2c0
+>         ksys_ioctl+0x60/0x90
+>         __x64_sys_ioctl+0x16/0x20
+>         do_syscall_64+0x5b/0x1a0
+>         entry_SYSCALL_64_after_hwframe+0x65/0xca
+> 
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: Jiang Yi <giangyi@amazon.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: guomin chen <guomin_chen@sina.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_intrs.c | 13 +++++++++++--
+>  drivers/vhost/vdpa.c              |  7 +++++++
+>  2 files changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+> index 1d9fb25..c371943 100644
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -352,12 +352,21 @@ static int vfio_msi_set_vector_signal(struct vfio_pci_device *vdev,
+>  	vdev->ctx[vector].producer.token = trigger;
+>  	vdev->ctx[vector].producer.irq = irq;
+>  	ret = irq_bypass_register_producer(&vdev->ctx[vector].producer);
+> -	if (unlikely(ret))
+> +	if (unlikely(ret)) {
+>  		dev_info(&pdev->dev,
+>  		"irq bypass producer (token %p) registration fails: %d\n",
+>  		vdev->ctx[vector].producer.token, ret);
+>  
+> -	vdev->ctx[vector].trigger = trigger;
+> +		kfree(vdev->ctx[vector].name);
+> +		eventfd_ctx_put(trigger);
+> +
+> +		cmd = vfio_pci_memory_lock_and_enable(vdev);
+> +		free_irq(irq, trigger);
+> +		vfio_pci_memory_unlock_and_restore(vdev, cmd);
+> +
+> +		vdev->ctx[vector].trigger = NULL;
+> +	} else
+> +		vdev->ctx[vector].trigger = trigger;
+>  
+>  	return 0;
+>  }
 
-Unfortunately, the miniUART is in the same clock tree than the core
-clock and will thus have those kind of issues when the core clock is
-changed (which is also something that one should expect when using the
-DRM or other drivers).
+Once again, the irq bypass registration cannot cause the vector setup
+to fail, either by returning an error code or failing to configure the
+vector while returning success.  It's my assertion that we simply need
+to set the producer.token to NULL on failure such that unregistering
+the producer will not generate a match, as you've done below.  The
+vector still works even if this registration fails.
 
-The only real workaround there would be to switch to one of the PL011
-UARTs. I guess we can also somehow make the UART react to the core clock
-frequency changes, but that's going to require some effort
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 796fe97..4e082b8 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -107,6 +107,13 @@ static void vhost_vdpa_setup_vq_irq(struct vhost_vdpa *v, u16 qid)
+>  	vq->call_ctx.producer.token = vq->call_ctx.ctx;
+>  	vq->call_ctx.producer.irq = irq;
+>  	ret = irq_bypass_register_producer(&vq->call_ctx.producer);
+> +	if (unlikely(ret)) {
+> +		/*
+> +		 * If registration failed,
+> +		 * there is no need to unregister later.
+> +		 */
+> +		vq->call_ctx.producer.token = NULL;
+> +	}
+>  	spin_unlock(&vq->call_ctx.ctx_lock);
+>  }
+>  
 
-Maxime
+'ret' is otherwise unused in this function, so we could simply remove
+ret and change this to
 
---nmd2zrhuwo3r2vsl
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (irq_bypass_register_producer(&vq->call_ctx.producer)) {
+		/* avoid generating bogus match on unregister */
+		vq->call_ctx.producer.token = NULL;
+	}
 
------BEGIN PGP SIGNATURE-----
+Also please submit vfio and vdpa as separate patches so that the
+respective maintainer for each area can handle them.  Thanks,
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3SRPgAKCRDj7w1vZxhR
-xSt+AP0ayZmAvs/uQrHYd/JCYiYkSNEVkD1lmyO4nYjMymxRSwEA8vrzDPVI/xKN
-0eYP8+ZWTkPuacJT4sSnKcZCYSzHcwE=
-=YIDd
------END PGP SIGNATURE-----
+Alex
 
---nmd2zrhuwo3r2vsl--
