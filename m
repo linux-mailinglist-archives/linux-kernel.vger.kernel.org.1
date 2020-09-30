@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6546F27E371
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9922227E378
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbgI3IQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S1728656AbgI3IRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3IQ5 (ORCPT
+        with ESMTP id S1727746AbgI3IRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:16:57 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CF9C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:16:56 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u126so764953oif.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:16:56 -0700 (PDT)
+        Wed, 30 Sep 2020 04:17:09 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27138C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:17:08 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id o8so564147pll.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:17:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=AKQiGQLmY10/gIWA0SDoC53W53f+kHTJ7UW7pSl7JfM=;
-        b=YA/W6xVw9FbWi0Sp3dLaxoj9wD+T2dj7f/a6q8ay7aNoe80KwTLusZVdDA018dYmCP
-         7td6HMS7Bb5kkQD0kMy9mUN5jDJ0lGrxUQ7n5cShVMHYDxNjiysVNNbI53dmip4K9dlE
-         9MQkzFKRiwffiXYzjftbWK5W13+9pUjgN9iUF3qydNLlSV20m34cz3LgYdcMB3R/HN4I
-         Cok5Bscg+p6wZo2LrR1e2SVVDZN72FaBzUJ5TJbv/rS1VCAVi+46tunvalKpT+103Ls/
-         g1ATgIeFhLZdvcEkCZshOMeUT5NR4aWTmvJ390sc9v6eyO9hr45IOoeniSKT+crQC8Rg
-         TePw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/cvEEeM/Z0ruOyi2iZix2HZSBL+TU1UmTGUs1ZgCyb0=;
+        b=JCEThkzLTx4ooLRLiBbmFPfIsWDAfs5Lm6Wr+sO7vDFbjgeA7+dvgsGcDvbmukrfj1
+         VML8KgePgNcp+0EhJeDpNdZsmigMk6O5ZLFgYxlcTRTDDthNCCBRB9goQ9kJmIQb0xKj
+         4VgPMljdHIDfcSeYeuhJdQx79LnjTuqu6+HFjWeq+3krfjgrZhy1uwMXDICa1Co4ZjlS
+         Xe+Vn3jLjqRsKfHtlLaM01AhqMEtHqHsI0phr9hELf6C25SEEds6Ank5DqKwtMKi8JFu
+         ioZClvoh3+xcoT0nS2FVcwpYfAX0zM0yDeuULhfDLjo8hln5dHhL9y6hX5bVCTHKkKtP
+         K+JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=AKQiGQLmY10/gIWA0SDoC53W53f+kHTJ7UW7pSl7JfM=;
-        b=VfU+n/3Y6EkICxzFDCQtaX7aXVtJ3PFzRFrn0xhd9q8PRXxueZm1BAR9hn17+IR44G
-         0VWLKCn6hf6EUKOrRQFzl+dP/pE9HFyXPTOHSvomOCDfHol/1jXizaXERaVkaNCYlisT
-         HZR7FmI6CfWjJcjPSpdotU08qKFW2MxDSPfaWuCVTTKiykQ3I1P7uzk0Zr4v0MXbFyIt
-         dTiB6Ib7clDV/N6VWMUn/KlIycbdXIcD4iYTlp3uCkfh0HetCts5qpc26FL+0i2BJc+H
-         St7baimL/2e9s963qWjUKS62bRjZdZ1pz/3u5r3MQOAnZSiT7ZusnkAceguWHaRH277T
-         OkJg==
-X-Gm-Message-State: AOAM532kfEfw2+ct7pOFnLkJWM6SpIMGkvjZhv9maSzatBfOK5EZjtTr
-        M/fNmmMiz8lWUKlMxikc86CKlKrhO2METTwdz+L/gQ==
-X-Google-Smtp-Source: ABdhPJz1/708zpvypccyPVVTBws21KyJToPY9rQKjjUg4mtn6ZsOwkottpFEbqjg9GpU0LuekGO0ZcSSR/wm9EW5J7s=
-X-Received: by 2002:aca:57c5:: with SMTP id l188mr721993oib.161.1601453815621;
- Wed, 30 Sep 2020 01:16:55 -0700 (PDT)
-MIME-Version: 1.0
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Wed, 30 Sep 2020 16:15:19 +0800
-Message-ID: <CAPpJ_ecS3LOYUMdrodMoxMRQ_4q4M06uyGzBBf+W8MrjP08-EA@mail.gmail.com>
-Subject: [QUESTION] Enable the wireless module on Pinebook Pro
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Upstreaming Team <linux@endlessm.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/cvEEeM/Z0ruOyi2iZix2HZSBL+TU1UmTGUs1ZgCyb0=;
+        b=BdKUsVZEH5WYx+eXyKFrlbdG2ia8E0bIAV82ah6hN8XIg2uKTtFjPCytksR6tkIWks
+         w7+dYv2TzTkdtVzP+qSMQutpv6SsUbCI36s6F7m/Q3gwp38MaHQQsOHGHNIlgfPsm04a
+         o1Q2566XaRhaaG3e5o/cBSKy9vzGtL48SywY0/+AqxxknqK0RnhkdDWqSP0NYisUpqtv
+         ePxzXvm1SFfL+2S1rW7ksQ8sEmoKSGjzC30sowK7bWcthZCvqjJPyFQWXTKjejMRD0PI
+         R0909tC/A04Zr7AX3KSSJq7DMKajlImhXv1quwsGlot4pQpoSSJzDue2K7Frg9wsmJqR
+         BB8w==
+X-Gm-Message-State: AOAM5324+diDFPC1oZ4tgBVqaZ0avsU5x7CNowGKOjsXnW3plVy5h0iz
+        K2UiRn+qR115NbbxdkgZ+yX8hQ==
+X-Google-Smtp-Source: ABdhPJw6zqfzW5NM53QibTPT4D+nBqiYb2YZ7SPWAWrKED2U+JVnR9RY/gc0qz2xe57Gx3sileGsCQ==
+X-Received: by 2002:a17:902:768a:b029:d2:ac2f:8945 with SMTP id m10-20020a170902768ab02900d2ac2f8945mr1261857pll.61.1601453827631;
+        Wed, 30 Sep 2020 01:17:07 -0700 (PDT)
+Received: from localhost.localdomain (li519-153.members.linode.com. [66.175.222.153])
+        by smtp.gmail.com with ESMTPSA id q15sm1385345pje.29.2020.09.30.01.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 01:17:07 -0700 (PDT)
+From:   Jun Nie <jun.nie@linaro.org>
+To:     devicetree@vger.kernel.org, georgi.djakov@linaro.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh@kernel.org
+Cc:     shawn.guo@linaro.org, Jun Nie <jun.nie@linaro.org>
+Subject: [PATCH 0/5] Consolidate RPM interconnect and support to MSM8939
+Date:   Wed, 30 Sep 2020 16:16:40 +0800
+Message-Id: <20200930081645.3434-1-jun.nie@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch set split shared RPM based interconnect operation code and add
+support to MSM8939 interconnect.
 
-According to the preloaded system Manjaro ARM on Pinebook Pro [1], I
-found the firmware files in ap6256-firmware package [2] enable the
-wireless module, including WiFi and Bluetooth.
-If we want to redistribute the firmware files to linux-firmware
-repository or other distros, which kind of license should follow?
+Jun Nie (5):
+  interconnect: qcom: Consolidate interconnect RPM support
+  interconnect: qcom: qcs404: use shared code
+  dt-bindings: interconnect: single yaml file for RPM interconnect
+    drivers
+  dt-bindings: interconnect: Add Qualcomm MSM8939 DT bindings
+  interconnect: qcom: Add MSM8939 interconnect provider driver
 
-[1] https://www.pine64.org/pinebook-pro/
-[2] https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firmware
+ .../bindings/interconnect/qcom,qcs404.yaml    |  77 ----
+ .../{qcom,msm8916.yaml => qcom,rpm.yaml}      |  28 +-
+ drivers/interconnect/qcom/Kconfig             |   9 +
+ drivers/interconnect/qcom/Makefile            |   5 +-
+ drivers/interconnect/qcom/icc-rpm.c           | 194 ++++++++++
+ drivers/interconnect/qcom/icc-rpm.h           |  73 ++++
+ drivers/interconnect/qcom/msm8916.c           | 241 +-----------
+ drivers/interconnect/qcom/msm8939.c           | 355 ++++++++++++++++++
+ drivers/interconnect/qcom/qcs404.c            | 242 +-----------
+ .../dt-bindings/interconnect/qcom,msm8939.h   | 105 ++++++
+ 10 files changed, 776 insertions(+), 553 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,qcs404.yaml
+ rename Documentation/devicetree/bindings/interconnect/{qcom,msm8916.yaml => qcom,rpm.yaml} (72%)
+ create mode 100644 drivers/interconnect/qcom/icc-rpm.c
+ create mode 100644 drivers/interconnect/qcom/icc-rpm.h
+ create mode 100644 drivers/interconnect/qcom/msm8939.c
+ create mode 100644 include/dt-bindings/interconnect/qcom,msm8939.h
 
-Jian-Hong Pan
+-- 
+2.17.1
+
