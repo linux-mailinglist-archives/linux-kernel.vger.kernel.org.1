@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1BD27F117
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CC527F11C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbgI3SLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:11:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58484 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3SLp (ORCPT
+        id S1727468AbgI3SNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3SNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:11:45 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601489503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXtBXXhiMVMdTYSCyK9KnC71AtIKQfsWx/V0UzZjSqs=;
-        b=aalLhxTTFAUQOEA4S+jPMN0XZ7VE8ERlzT82B+AOWxenX32nsqgLWa/bYiqvfiOxx0w1Dc
-        sV9R+Hp52bFesJRNB+HmHnqCYvBJXznlZPPdx+d9EwYl8ewLltm1Hcym/Ph1xDZyzKjJhL
-        ZVs5Cw93bo+IiNxdmuCp3JcjzVSx6XSx551yPOrwgtVK/KEsPd0HKXZqyH23xMbaok4fD5
-        my8dTS5Y90I/giCW/fia+Yn5S/NE4gRRwcr5l+mByPUetyDTSTO15kuyfJ0C1TdjqTXL+l
-        vicJtFiTWlmeiyaxl2Tbjh5IEvtXABQE3fDj45VcPymN9gXwFrPKlNHV6tPRrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601489503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXtBXXhiMVMdTYSCyK9KnC71AtIKQfsWx/V0UzZjSqs=;
-        b=+0cpSGl+ZP0wOxBV5o33UW0ETwb2OixJ9wUOzToxF/4Yxscw/i8EIRz4QPlc5qG84wdWZD
-        QI0HtoTSaEP0J8Dg==
-To:     "Dey\, Megha" <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        ravi.v.shankar@intel.com
-Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
-In-Reply-To: <e07aa723-12cd-7eb7-392a-642f96b98f79@intel.com>
-References: <20200826111628.794979401@linutronix.de> <10b5d933-f104-7699-341a-0afb16640d54@intel.com> <87v9fvix5f.fsf@nanos.tec.linutronix.de> <20200930114301.GD816047@nvidia.com> <87k0wbi94b.fsf@nanos.tec.linutronix.de> <e07aa723-12cd-7eb7-392a-642f96b98f79@intel.com>
-Date:   Wed, 30 Sep 2020 20:11:43 +0200
-Message-ID: <878scri17k.fsf@nanos.tec.linutronix.de>
+        Wed, 30 Sep 2020 14:13:13 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BBC1C061755;
+        Wed, 30 Sep 2020 11:13:13 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id b19so2395403lji.11;
+        Wed, 30 Sep 2020 11:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=neVvJjs8c8bnzQTfnKBgO53z26IPreK1g9kdkYUUonU=;
+        b=hDKBPjhNVCdON2TvhwIhpW/zP6mHde6niZ1Kj3AsnP6TQpdT1uBFTGrX/CTagSk1PQ
+         x7LMhMvr/7bt9SN3VroDNeikyHNZcuznuV6vowNu4BWrr6kgf1jYswasF3Xd6NSYFNqF
+         aCxbg82Za5Kb9QqeCbxgg+4lPaJM9CQ5RY9wP/ZlJz3l810He+6jev63s6NW4VynZwqk
+         tJ6RVcdNWhh7KErMZj2lR8NolmdKbCZOAFFItTwI4p0Du0LpE7Jw9cJGCd6Q5FlgjeJq
+         Sk4lU2jZETyOQsKBk2Ny7BtO/iyg9jFK/pkZOsd5Lc5qGOvQ6DfNOixGTMt0v0wdOiCm
+         x9NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=neVvJjs8c8bnzQTfnKBgO53z26IPreK1g9kdkYUUonU=;
+        b=DFg6z9nPLV+BEmLXHXNq70+3UzXx+4ybt9CPQVjLBG8/4I8jr6amFj0ImTa4N9RpAr
+         uJMvPX+8UvGA16letDDD+hYZRMb4kzCFsjPeKbavxNeooSDwNOYxOxmaKm3A7Z04XHYX
+         kXKUsz9OkSMK+Ydu6KxFQM6dHYuezgFpdFd8rHQuufBm3/iGQW50JH/9agMwN+FLCli4
+         HibZa+UJxmf44ZnMt72qO02qH2hxPU1MEOP/6JsnBS9Q/ldalfdJIIzOpB2lbwksy/ll
+         jI6LH9NlgIihTRqvLaJAKkLvWIeLO/v7pcrYqhhtop01tlQh+80EurDlGPI8sA0bfwPY
+         B6xg==
+X-Gm-Message-State: AOAM5307+rH7E93+l4bCWKhYggOn9c2yfuzFDKEr++JjcGYF+cIqY8Vr
+        VNKLaxiFlgZOLsyn8aMfKl7q4oby+ae+I4Tr0hqkcyX7i9c=
+X-Google-Smtp-Source: ABdhPJwi4skFBmkml53yW11TCCKQjer605mrxcpW475RC9XSEEeDIlSwAYtZHbq7TgMxJbe+e45Jz82P7TtarTnavj8=
+X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr1282761ljr.2.1601489590202;
+ Wed, 30 Sep 2020 11:13:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 30 Sep 2020 11:12:58 -0700
+Message-ID: <CAADnVQLV86GcC5fE68Eiv0aM9g7o3a5ZDh0kmXv7Tba4x-jRbg@mail.gmail.com>
+Subject: mb2q experience and couple issues
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Megha,
+Hi Thomas,
 
-On Wed, Sep 30 2020 at 10:25, Megha Dey wrote:
-> On 9/30/2020 8:20 AM, Thomas Gleixner wrote:
->>>> Your IMS patches? Why do you need something special again?
->
-> By IMS patches, I meant your IMS driver patch that was updated (as it 
-> was untested, it had some compile errors and we removed the IMS_QUEUE
-> parts) :
+For the last couple years we've been using mb2q tool to normalize patches
+and it worked wonderfully.
+Recently we've hit few bugs:
+curl -s https://patchwork.kernel.org/patch/11807443/mbox/ >
+/tmp/mbox.i; ~/bin/mb2q --mboxout mbox.o /tmp/mbox.i
+Drop Message w/o Message-ID: No subject
+No patches found in mbox
 
-Ok.
+I've tried to debug it, but couldn't figure out what's going on.
+The subject and message-id fields are parsed correctly,
+but later something happens.
+Could you please take a look?
 
-> The whole patchset can be found here:
->
-> https://lore.kernel.org/lkml/f4a085f1-f6de-2539-12fe-c7308d243a4a@intel.com/
->
-> It would be great if you could review the IMS patches :)
+Another issue we've hit was that some mailers split message-id
+into few lines like this:
+curl -s https://patchwork.kernel.org/patch/11809399/mbox/|grep -2 Message-Id:
+Subject: [PATCH bpf-next v4 1/6] bpf: add classid helper only based on skb->sk
+Date: Wed, 30 Sep 2020 17:18:15 +0200
+Message-Id:
+ <ed633cf27a1c620e901c5aa99ebdefb028dce600.1601477936.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 
-It somehow slipped through the cracks. I'll have a look.
+That was an easy fix:
+- mid = pmsg.msgid.lstrip('<').rstrip('>')
++ mid = pmsg.msgid.lstrip('\n').lstrip(' ').lstrip('<').rstrip('>')
 
-> We were hoping to get IMS in the 5.10 merge window :)
+The tglx/quilttools.git doesn't have this fix, so I'm guessing you
+haven't seen it yet.
 
-Hope dies last, right?
-
->>> We might be able to put together a mockup just to prove it
->> If that makes Megha's stuff going that would of course be appreciated,
->> but we can defer the IMS_QUEUE part for later. It's orthogonal to the
->> IMS_ARRAY stuff.
->
-> In our patch series, we have removed the IMS_QUEUE stuff and retained 
-> only the IMS_ARRAY parts > as that was sufficient for us.
-
-That works. We can add that back when Jason has his puzzle pieces
-sorted.
-
-Thanks,
-
-        tglx
+Thanks!
