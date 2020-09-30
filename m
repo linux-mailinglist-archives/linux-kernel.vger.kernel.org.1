@@ -2,388 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6595427DDF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A607527DE32
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 03:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729662AbgI3Bxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 21:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3Bxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:53:30 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65F9820754;
-        Wed, 30 Sep 2020 01:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601430807;
-        bh=lypUyOA1xr9VE/tv0ok7w874fVvfarUizY0sLsP6U/o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NIH0teORf68xKUmOTOdqkcDdId2HeHp+mmxqSSiRi2vyZg+UQvkOxXSN3dQ51R/m6
-         +NtduLYyM/5ku2zHo31hQ6ukmZkJR62THVF/qHadbVqGSAiw2xvwcUH5yq0cvYThTA
-         ssTRn8DtkS60qWKFmgMDR7j82iCoJGWewFHdPP20=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 187613523039; Tue, 29 Sep 2020 18:53:27 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 18:53:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20200930015327.GX29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
+        id S1729766AbgI3B7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 21:59:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49982 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729643AbgI3B7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:59:12 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6F2CE4379591761CCE4F;
+        Wed, 30 Sep 2020 09:59:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 30 Sep 2020
+ 09:59:04 +0800
+Subject: Re: [PATCH v4 12/20] dt-bindings: arm: hisilicon: convert
+ hisilicon,hi3798cv200-perictrl bindings to json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     devicetree <devicetree@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>, Libin <huawei.libin@huawei.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20200928151324.2134-1-thunder.leizhen@huawei.com>
+ <20200928151324.2134-13-thunder.leizhen@huawei.com>
+ <20200928191425.GA3099266@bogus>
+ <0568ed90-c6ac-ae1c-45ee-cdc6526d3fcf@huawei.com>
+ <30a08e22-f8bb-1e42-087b-995dc525eaa4@huawei.com>
+ <2d382466-5b91-7b43-2d12-8f7ceafe3691@huawei.com>
+ <CAL_Jsq+zwCsgnyARCW6cdWWgefoWYd374r1OejP5B4aJ8Hivwg@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <9c785b7c-c049-4151-cad1-88d453e86b04@huawei.com>
+Date:   Wed, 30 Sep 2020 09:59:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929120756.GC2277@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAL_Jsq+zwCsgnyARCW6cdWWgefoWYd374r1OejP5B4aJ8Hivwg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:07:56PM +0200, Michal Hocko wrote:
-> On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
-> [...]
 
-Apologies for the delay, but today has not been boring.
 
-> > This commit therefore uses preemptible() to determine whether allocation
-> > is possible at all for double-argument kvfree_rcu().
+On 2020/9/29 21:52, Rob Herring wrote:
+> On Tue, Sep 29, 2020 at 8:25 AM Leizhen (ThunderTown)
+> <thunder.leizhen@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2020/9/29 17:21, Leizhen (ThunderTown) wrote:
+>>>
+>>>
+>>> On 2020/9/29 11:18, Leizhen (ThunderTown) wrote:
+>>>>
+>>>>
+>>>> On 2020/9/29 3:14, Rob Herring wrote:
+>>>>> On Mon, Sep 28, 2020 at 11:13:16PM +0800, Zhen Lei wrote:
+>>>>>> Convert the Hisilicon Hi3798CV200 Peripheral Controller binding to DT
+>>>>>> schema format using json-schema.
+>>>>>>
+>>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>>> ---
+>>>>>>  .../controller/hisilicon,hi3798cv200-perictrl.txt  | 21 ----------
+>>>>>>  .../controller/hisilicon,hi3798cv200-perictrl.yaml | 45 ++++++++++++++++++++++
+>>>>>>  2 files changed, 45 insertions(+), 21 deletions(-)
+>>>>>>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>>>>>>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.yaml
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>>>>>> deleted file mode 100644
+>>>>>> index 0d5282f4670658d..000000000000000
+>>>>>> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+>>>>>> +++ /dev/null
+>>>>>> @@ -1,21 +0,0 @@
+>>>>>> -Hisilicon Hi3798CV200 Peripheral Controller
+>>>>>> -
+>>>>>> -The Hi3798CV200 Peripheral Controller controls peripherals, queries
+>>>>>> -their status, and configures some functions of peripherals.
+>>>>>> -
+>>>>>> -Required properties:
+>>>>>> -- compatible: Should contain "hisilicon,hi3798cv200-perictrl", "syscon"
+>>>>>> -  and "simple-mfd".
+>>>>>> -- reg: Register address and size of Peripheral Controller.
+>>>>>> -- #address-cells: Should be 1.
+>>>>>> -- #size-cells: Should be 1.
+>>>>>> -
+>>>>>> -Examples:
+>>>>>> -
+>>>>>> -  perictrl: peripheral-controller@8a20000 {
+>>>>>> -          compatible = "hisilicon,hi3798cv200-perictrl", "syscon",
+>>>>>> -                       "simple-mfd";
+>>>>>> -          reg = <0x8a20000 0x1000>;
+>>>>>> -          #address-cells = <1>;
+>>>>>> -          #size-cells = <1>;
+>>>>>> -  };
+>>>>>> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.yaml
+>>>>>> new file mode 100644
+>>>>>> index 000000000000000..4e547017e368393
+>>>>>> --- /dev/null
+>>>>>> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.yaml
+>>>>>> @@ -0,0 +1,45 @@
+>>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>>>> +%YAML 1.2
+>>>>>> +---
+>>>>>> +$id: http://devicetree.org/schemas/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.yaml#
+>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>> +
+>>>>>> +title: Hisilicon Hi3798CV200 Peripheral Controller
+>>>>>> +
+>>>>>> +maintainers:
+>>>>>> +  - Wei Xu <xuwei5@hisilicon.com>
+>>>>>> +
+>>>>>> +description: |
+>>>>>> +  The Hi3798CV200 Peripheral Controller controls peripherals, queries
+>>>>>> +  their status, and configures some functions of peripherals.
+>>>>>> +
+>>>>>> +properties:
+>>>>>> +  compatible:
+>>>>>> +    items:
+>>>>>> +      - const: hisilicon,hi3798cv200-perictrl
+>>>>>> +      - const: syscon
+>>>>>> +      - const: simple-mfd
+>>>>>> +
+>>>>>> +  reg:
+>>>>>> +    description: Register address and size
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  '#address-cells':
+>>>>>> +    const: 1
+>>>>>> +
+>>>>>> +  '#size-cells':
+>>>>>> +    const: 1
+>>>>>
+>>>>> That implies child nodes. You need some sort of schema for them.
+>>>>
+>>>> OK, I will drop #address-cells and #size-cells in this binding.
+>>>
+>>> I think I misunderstood. I shoud describe child nodes here.
+>>>
+>>> It's National Day the day after tomorrow, total eight days off. It's so hurry.
+>>> I'll give up this patch! And do it for v5.11
+>>
+>> I searched the dtsi, these two properties are required by property "ranges", so
+>> I will add it.
 > 
-> This deserves a comment. Because GFP_ATOMIC is possible for many
-> !preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
-> others that are a problem. You are taking a conservative approach which
-> is fine but it would be good to articulate that explicitly.
+> 'ranges' also implies there are child nodes as does 'simple-mfd', so
+> whatever child nodes you have are missing and need to be documented
+> too. Also, 'ranges' implies the child nodes are memory-mapped, but
+> 'simple-mfd' implies they are not. 'simple-bus' is what should be used
+> for memory-mapped children.
 
-Good point, and so I have added the following as a header comment to
-the add_ptr_to_bulk_krc_lock() function:
+Sorry, The reason for the jet lag, I went straight home after I sent the
+version 5 of these patches last night after 10 p.m. I saw you had applied
+the new one. Thanks for the information you showed me here.
 
-// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-// state specified by flags.  If can_sleep is true, the caller must
-// be schedulable and not be holding any locks or mutexes that might be
-// acquired by the memory allocator or anything that it might invoke.
-// If !can_sleep, then if !preemptible() no allocation will be undertaken,
-// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
-// the aforementioned deadlock possibilities.  Returns true iff ptr was
-// successfully recorded, else the caller must use a fallback.
-
-The updated patch is shown below.
-
-Of course, to Vlastimil's point, lockless access to the allocator
-would significantly reduce the level of confusion posed by this code.
-But that is a separate issue at the moment.
-
-> > If !preemptible(),
-> > then allocation is not possible, and kvfree_rcu() falls back to using
-> > the less cache-friendly rcu_head approach.  Even when preemptible(),
-> > the caller might be involved in reclaim, so the GFP_ flags used by
-> > double-argument kvfree_rcu() must avoid invoking reclaim processing.
 > 
-> Could you be more specific? Is this about being called directly in the
-> reclaim context and you want to prevent a recursion? If that is the
-> case, do you really need to special case this in any way? Any memory
-> reclaim will set PF_MEMALLOC so allocations called from that context
-> will not perform reclaim. So if you are called from the reclaim directly
-> then you might want to do GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN.
-> That should handle both from-the-recalim and outside of reclaim contexts
-> just fine (assuming you don't allocated from !preemptible()) context.
-
-My thought was to point you at Daniel Vetter, but you already got in
-touch with him, so thank you for that!
-
-> > Note that single-argument kvfree_rcu() must be invoked in sleepable
-> > contexts, and that its fallback is the relatively high latency
-> > synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
-> > GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
-> > memory allocator.
-> [...]
-> >  static inline bool
-> > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-> > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> > +	unsigned long *flags, void *ptr, bool can_sleep)
-> >  {
-> >  	struct kvfree_rcu_bulk_data *bnode;
-> > +	bool can_alloc_page = preemptible();
-> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+> Rob
 > 
-> This is quite confusing IMHO. At least without a further explanation.
-> can_sleep is not as much about sleeping as it is about the reclaim
-> recursion AFAIU your changelog, right?
-
-No argument on it being confusing, and I hope that the added header
-comment helps.  But specifically, can_sleep==true is a promise by the
-caller to be schedulable and not to be holding any lock/mutex/whatever
-that might possibly be acquired by the memory allocator or by anything
-else that the memory allocator might invoke, to your point, including
-for but one example the reclaim logic.
-
-The only way that can_sleep==true is if this function was invoked due
-to a call to single-argument kvfree_rcu(), which must be schedulable
-because its fallback is to invoke synchronize_rcu().
-
-> >  	int idx;
-> >  
-> > -	if (unlikely(!krcp->initialized))
-> > +	*krcp = krc_this_cpu_lock(flags);
-> > +	if (unlikely(!(*krcp)->initialized))
-> >  		return false;
-> >  
-> > -	lockdep_assert_held(&krcp->lock);
-> >  	idx = !!is_vmalloc_addr(ptr);
-> >  
-> >  	/* Check if a new block is required. */
-> > -	if (!krcp->bkvhead[idx] ||
-> > -			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > -		bnode = get_cached_bnode(krcp);
-> > -		if (!bnode) {
-> > -			/*
-> > -			 * To keep this path working on raw non-preemptible
-> > -			 * sections, prevent the optional entry into the
-> > -			 * allocator as it uses sleeping locks. In fact, even
-> > -			 * if the caller of kfree_rcu() is preemptible, this
-> > -			 * path still is not, as krcp->lock is a raw spinlock.
-> > -			 * With additional page pre-allocation in the works,
-> > -			 * hitting this return is going to be much less likely.
-> > -			 */
-> > -			if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> > -				return false;
-> > -
-> > -			/*
-> > -			 * NOTE: For one argument of kvfree_rcu() we can
-> > -			 * drop the lock and get the page in sleepable
-> > -			 * context. That would allow to maintain an array
-> > -			 * for the CONFIG_PREEMPT_RT as well if no cached
-> > -			 * pages are available.
-> > -			 */
-> > -			bnode = (struct kvfree_rcu_bulk_data *)
-> > -				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> > +	if (!(*krcp)->bkvhead[idx] ||
-> > +			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-> > +		bnode = get_cached_bnode(*krcp);
-> > +		if (!bnode && can_alloc_page) {
-> > +			krc_this_cpu_unlock(*krcp, *flags);
-> > +			bnode = kmalloc(PAGE_SIZE, gfp);
+> .
 > 
-> What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
-> using the page allocator directly be better?
 
-Well, you guys gave me considerable heat about abusing internal allocator
-interfaces, and kmalloc() and kfree() seem to be about as non-internal
-as you can get and still be invoking the allocator.  ;-)
-
-Again, please see below for the updated patch.  The only change from
-the earlier verison is the addition of the header comment mentioned above.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 3a8e10ea2a2ecf59a33d7d80ad6c4372c0c27f78
-Author: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Date:   Tue Sep 22 21:06:22 2020 +0200
-
-    rcu/tree: Allocate a page when caller is preemptible
-    
-    The current memory-allocation interface poses the following challenges:
-    
-    a)      In kernels built with CONFIG_PROVE_RAW_LOCK_NESTING, lockdep
-            complains ("BUG: Invalid wait context").  This complaint is due
-            to the memory allocator acquiring non-raw spinlocks while a raw
-            spinlocks is held.  This problem can also arise if kvfree_rcu()
-            is invoked while holding a raw spinlock.
-    
-    b)      In -rt kernels built with CONFIG_PREEMPT_RT, the situation
-            described in (a) above results in an attempt to acquire a
-            sleeplock while holding a spinlock, which is of course forbidden.
-            This can lead to "BUG: scheduling while atomic".
-    
-    c)      Please note that call_rcu() is invoked from raw atomic context,
-            so that kfree_rcu() and kvfree_rcu() are therefore also expected
-            to be callable from atomic raw context as well.
-    
-    However given that CONFIG_PREEMPT_COUNT is unconditionally enabled
-    by the earlier commits in this series, the preemptible() macro now
-    properly detects preempt-disable code regions even in kernels built
-    with CONFIG_PREEMPT_NONE.
-    
-    This commit therefore uses preemptible() to determine whether allocation
-    is possible at all for double-argument kvfree_rcu().  If !preemptible(),
-    then allocation is not possible, and kvfree_rcu() falls back to using
-    the less cache-friendly rcu_head approach.  Even when preemptible(),
-    the caller might be involved in reclaim, so the GFP_ flags used by
-    double-argument kvfree_rcu() must avoid invoking reclaim processing.
-    
-    Note that single-argument kvfree_rcu() must be invoked in sleepable
-    contexts, and that its fallback is the relatively high latency
-    synchronize_rcu().  Single-argument kvfree_rcu() therefore uses
-    GFP_KERNEL|__GFP_RETRY_MAYFAIL to allow limited sleeping within the
-    memory allocator.
-    
-    Link: https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
-    Fixes: 3042f83f19be ("rcu: Support reclaim for head-less object")
-    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    [ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
-    Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 8ce77d9..39ac930 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3166,7 +3166,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 			krc_this_cpu_unlock(krcp, flags);
- 
- 			if (bkvhead[i])
--				free_page((unsigned long) bkvhead[i]);
-+				kfree(bkvhead[i]);
- 
- 			cond_resched_tasks_rcu_qs();
- 		}
-@@ -3290,44 +3290,37 @@ static void kfree_rcu_monitor(struct work_struct *work)
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
- 
-+// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
-+// state specified by flags.  If can_sleep is true, the caller must
-+// be schedulable and not be holding any locks or mutexes that might be
-+// acquired by the memory allocator or anything that it might invoke.
-+// If !can_sleep, then if !preemptible() no allocation will be undertaken,
-+// otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
-+// the aforementioned deadlock possibilities.  Returns true iff ptr was
-+// successfully recorded, else the caller must use a fallback.
- static inline bool
--kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
-+add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-+	unsigned long *flags, void *ptr, bool can_sleep)
- {
- 	struct kvfree_rcu_bulk_data *bnode;
-+	bool can_alloc_page = preemptible();
-+	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
- 	int idx;
- 
--	if (unlikely(!krcp->initialized))
-+	*krcp = krc_this_cpu_lock(flags);
-+	if (unlikely(!(*krcp)->initialized))
- 		return false;
- 
--	lockdep_assert_held(&krcp->lock);
- 	idx = !!is_vmalloc_addr(ptr);
- 
- 	/* Check if a new block is required. */
--	if (!krcp->bkvhead[idx] ||
--			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
--		bnode = get_cached_bnode(krcp);
--		if (!bnode) {
--			/*
--			 * To keep this path working on raw non-preemptible
--			 * sections, prevent the optional entry into the
--			 * allocator as it uses sleeping locks. In fact, even
--			 * if the caller of kfree_rcu() is preemptible, this
--			 * path still is not, as krcp->lock is a raw spinlock.
--			 * With additional page pre-allocation in the works,
--			 * hitting this return is going to be much less likely.
--			 */
--			if (IS_ENABLED(CONFIG_PREEMPT_RT))
--				return false;
--
--			/*
--			 * NOTE: For one argument of kvfree_rcu() we can
--			 * drop the lock and get the page in sleepable
--			 * context. That would allow to maintain an array
--			 * for the CONFIG_PREEMPT_RT as well if no cached
--			 * pages are available.
--			 */
--			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-+	if (!(*krcp)->bkvhead[idx] ||
-+			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
-+		bnode = get_cached_bnode(*krcp);
-+		if (!bnode && can_alloc_page) {
-+			krc_this_cpu_unlock(*krcp, *flags);
-+			bnode = kmalloc(PAGE_SIZE, gfp);
-+			*krcp = krc_this_cpu_lock(flags);
- 		}
- 
- 		/* Switch to emergency path. */
-@@ -3336,15 +3329,15 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- 
- 		/* Initialize the new block. */
- 		bnode->nr_records = 0;
--		bnode->next = krcp->bkvhead[idx];
-+		bnode->next = (*krcp)->bkvhead[idx];
- 
- 		/* Attach it to the head. */
--		krcp->bkvhead[idx] = bnode;
-+		(*krcp)->bkvhead[idx] = bnode;
- 	}
- 
- 	/* Finally insert. */
--	krcp->bkvhead[idx]->records
--		[krcp->bkvhead[idx]->nr_records++] = ptr;
-+	(*krcp)->bkvhead[idx]->records
-+		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
- 
- 	return true;
- }
-@@ -3382,24 +3375,20 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		ptr = (unsigned long *) func;
- 	}
- 
--	krcp = krc_this_cpu_lock(&flags);
--
- 	// Queue the object but don't yet schedule the batch.
- 	if (debug_rcu_head_queue(ptr)) {
- 		// Probable double kfree_rcu(), just leak.
- 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
- 			  __func__, head);
- 
--		// Mark as success and leave.
--		success = true;
--		goto unlock_return;
-+		return;
- 	}
- 
- 	/*
- 	 * Under high memory pressure GFP_NOWAIT can fail,
- 	 * in that case the emergency path is maintained.
- 	 */
--	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
-+	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
- 	if (!success) {
- 		if (head == NULL)
- 			// Inline if kvfree_rcu(one_arg) call.
-@@ -4394,23 +4383,12 @@ static void __init kfree_rcu_batch_init(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
--		struct kvfree_rcu_bulk_data *bnode;
- 
- 		for (i = 0; i < KFREE_N_BATCHES; i++) {
- 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
- 			krcp->krw_arr[i].krcp = krcp;
- 		}
- 
--		for (i = 0; i < rcu_min_cached_objs; i++) {
--			bnode = (struct kvfree_rcu_bulk_data *)
--				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
--
--			if (bnode)
--				put_cached_bnode(krcp, bnode);
--			else
--				pr_err("Failed to preallocate for %d CPU!\n", cpu);
--		}
--
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
- 		krcp->initialized = true;
- 	}
