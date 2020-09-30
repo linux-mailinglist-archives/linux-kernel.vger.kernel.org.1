@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3016527DFE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889A527DFEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725896AbgI3FIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:08:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:24900 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3FI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:08:29 -0400
-IronPort-SDR: YsKGLSEBhbxslnml5eBNM2bTyjbBd1edMNBXPsxdaT6PHVFHPS0+UGHSfmeT4etPjc2Kd4MpLY
- cGoFBlmia4xQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="226516583"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="226516583"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 22:08:25 -0700
-IronPort-SDR: 1zNnmGLO5DpVJkXdDf7JJ3OdVAnfUHijc1TOvsSZKuDZBsacmzZ4liUuV1fJIg7b1avCuaOmNz
- zm9BDMlQ2cvg==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="338939911"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 22:08:24 -0700
-Date:   Tue, 29 Sep 2020 22:08:21 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 02/22] kvm: mmu: Introduce tdp_iter
-Message-ID: <20200930050821.GC29405@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-3-bgardon@google.com>
+        id S1725830AbgI3FKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3FKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 01:10:04 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B6FC061755;
+        Tue, 29 Sep 2020 22:10:03 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u8so581063lff.1;
+        Tue, 29 Sep 2020 22:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cEH+zGuhb7boZPnK+5qwlskD7dzNXbs2N7hqt0FYXtI=;
+        b=JEKFiD9IhMc0d2BR62xEDLkwxPUNZ5O5AdjXzgRfQBoaNRDPyAaOzVSksh5qzthbOn
+         cYaL2EEnInhh9d9qCI/VzTHM1UAFrtLeelC6pPjdHatdMhlXKjkbIwO7k0//RsZkRsjS
+         423U++/3789kQEX1LWZcA5NE/DgIeZJI+acgQJ9GYvKAG4XiCcvjr/EDmHXnhenbvhwx
+         tuH8F9P/YTm19nRrmsNVTDY6ylX+zAyu5FzeFSHMQ0xbRSvwdp3IfcWatk/brX3Rh49h
+         ptCq5FurX26gGHPZHjo9Rvr1ERKApIQju9F9KmmigUZ9gY3kmkYyPPHkqXtglU0jw/ww
+         +Fsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cEH+zGuhb7boZPnK+5qwlskD7dzNXbs2N7hqt0FYXtI=;
+        b=WjX9P8Z0UwYDVMSCc7211iHSboENiwIpjR6AqZ7acdesEvUohqEc43a9LITZ/5d2N6
+         URZvI1vKDtzntx0bmT3HrWNAa/Sg7Nn2x9XaNpniRc9rnozsj3CgI3+R2BPuL2DWazFm
+         b9/MpjAtgZRHDa42DSU4FCFOXeSE0+wPWREkRBYvtvE6YjE/bccLNspa1IQlVR7VyaPZ
+         Kkr4v6JjCWK3bvA9Nwr4jKolEMApqODKIskris1pdNbx26VFwwFJ4kP0dTfTIGjQgPoW
+         SYx7L2twQXiV5VPyfNYBaO8O6g4DLgtCex0BE3Xuf8dCOrCcESq77XFOOHt2QRlC2uwH
+         msZw==
+X-Gm-Message-State: AOAM532cI/Swnz8r4ar17ONqjtIXPfPbFxa/rlEr8/2EecFPDAVhNR4t
+        eo3KGY3Q+QgfOxnmu9EghmVqqxZYkO8=
+X-Google-Smtp-Source: ABdhPJyOrfcyT8AJjKsE9UZTICu54D13qTLp0F9P1YPzBCvcB7eAm/HnfeYg1e2/Xa+QzTIeCRVeNA==
+X-Received: by 2002:a19:8bc2:: with SMTP id n185mr211884lfd.211.1601442601966;
+        Tue, 29 Sep 2020 22:10:01 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id v196sm54763lfa.96.2020.09.29.22.10.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 22:10:00 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, krzk@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-4-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <27b155ec-97ab-98f6-7b48-3fded875d5cc@gmail.com>
+Date:   Wed, 30 Sep 2020 08:10:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925212302.3979661-3-bgardon@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200930003013.31289-4-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:22:42PM -0700, Ben Gardon wrote:
-> diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-> new file mode 100644
-> index 0000000000000..b102109778eac
-> --- /dev/null
-> +++ b/arch/x86/kvm/mmu/tdp_iter.h
-> @@ -0,0 +1,53 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+30.09.2020 03:30, Nicolin Chen пишет:
+...
+> +#ifdef CONFIG_PCI
+> +	if (!iommu_present(&pci_bus_type)) {
 
-Kernel style is to use C++ comments for the SPDX headers in .c and .h (and
-maybe.S too?).
+Could you please explain why this check is needed?
