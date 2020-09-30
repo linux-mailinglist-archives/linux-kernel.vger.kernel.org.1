@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C65227E39A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C2627E39E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgI3IV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:21:59 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:36625 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3IV6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:21:58 -0400
-Received: by mail-ej1-f68.google.com with SMTP id qp15so596118ejb.3;
-        Wed, 30 Sep 2020 01:21:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AnmAiSuhryQgiuxCIfxiMUZ49Ib7mZfhe2r0FxsXtiE=;
-        b=GtKPAZXKGPXwppctpag5iZuRloh9/fyKcCxqy4bhe9U3jwXoNYsg5Tf5eX+2C2/P+b
-         pjE+J7kPwywHNqZhPcTyalxi13yyxu7JNFykkthO5gTsGYMiLgjru/jOi75nMVTSq27K
-         +RB63Vt+HXFvYFMne0zFXXXRPPsq0XsshdNXtQA8p0m5oUUSXYDGy5ZCTa6dtfD+0nau
-         lPFHSfLdbc0lyInXtduUU2z0ImQKN90ub/FARlximRnQpiEpAjPua846XF9HF57c8kK9
-         LLdlhd8agzd6NKc/WhhqSpKhYkAbHPwWh1D3Blj03Iy5yA5/kiacPT4/cgws+sZCHcP5
-         mitg==
-X-Gm-Message-State: AOAM532c4HnvWZzTGrvg8u72paR6RvtmCYEdzn9jC1tzYKZUapwqfNvl
-        8ue0wxECtjsbcedQQMjU/vA=
-X-Google-Smtp-Source: ABdhPJw6bec972tmVwZG7C2+NMX7qUMnT5frUQjSPPMYma2uOjjVneMUDze1KIu5PUu2+7riorwpWw==
-X-Received: by 2002:a17:906:7f15:: with SMTP id d21mr1674985ejr.470.1601454116954;
-        Wed, 30 Sep 2020 01:21:56 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id j15sm925412ejs.5.2020.09.30.01.21.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 01:21:56 -0700 (PDT)
-Subject: Re: [PATCH] tty: serial: mvebu-uart: Remove unused variable 'ret'
-To:     Pujin Shi <shipujin.t@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hankinsea@gmail.com
-References: <20200930081459.1269-1-shipujin.t@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <bfa595ba-52a1-aab7-d6c8-8af7607b3281@kernel.org>
-Date:   Wed, 30 Sep 2020 10:21:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200930081459.1269-1-shipujin.t@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728394AbgI3IY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:24:56 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:35538 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725776AbgI3IYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:24:55 -0400
+Received: from localhost.localdomain (unknown [159.226.5.100])
+        by APP-03 (Coremail) with SMTP id rQCowACnrVXMQHRftxmjAA--.49057S2;
+        Wed, 30 Sep 2020 16:24:45 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     paul@crapouillou.net, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/ingenic: remove redundant null check
+Date:   Wed, 30 Sep 2020 08:24:41 +0000
+Message-Id: <20200930082441.52621-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowACnrVXMQHRftxmjAA--.49057S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7JF4UZF47GFy5Wry3ZFy8Grg_yoW8Jr4Upa
+        y7JrWFkan7ZF4j9F98Ja9rG3W5ta17WFyI9F15G3ZrKFn8AFyvvFyFy347ZFn0yr1xCF43
+        JwnrCFy8uF40kFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5RrW7UUUUU==
+X-Originating-IP: [159.226.5.100]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQQPA102Zm8Z1gAAss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30. 09. 20, 10:14, Pujin Shi wrote:
-> 'ret' variable is now defined but not used in mvebu_uart_probe(),
-> causing this warning:
-> 
->   drivers/tty/serial/mvebu-uart.c: In function ‘mvebu_uart_probe’:
->   drivers/tty/serial/mvebu-uart.c:806:6: warning: unused variable ‘ret’ [-Wunused-variable]
-> 
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+Because clk_disable_unprepare already checked NULL clock parameter,
+so the additional checks are unnecessary, just remove them.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> ---
->  drivers/tty/serial/mvebu-uart.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-> index 7443c0506eb4..118b29912289 100644
-> --- a/drivers/tty/serial/mvebu-uart.c
-> +++ b/drivers/tty/serial/mvebu-uart.c
-> @@ -803,7 +803,7 @@ static int mvebu_uart_probe(struct platform_device *pdev)
->  							   &pdev->dev);
->  	struct uart_port *port;
->  	struct mvebu_uart *mvuart;
-> -	int ret, id, irq;
-> +	int id, irq;
->  
->  	if (!reg) {
->  		dev_err(&pdev->dev, "no registers defined\n");
-> 
-
-thanks,
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index b7074161ccf0..9dce02e779ad 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -932,8 +932,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	return 0;
+ 
+ err_devclk_disable:
+-	if (priv->lcd_clk)
+-		clk_disable_unprepare(priv->lcd_clk);
++	clk_disable_unprepare(priv->lcd_clk);
+ err_pixclk_disable:
+ 	clk_disable_unprepare(priv->pix_clk);
+ 	return ret;
+@@ -953,8 +952,7 @@ static void ingenic_drm_unbind(struct device *dev)
+ {
+ 	struct ingenic_drm *priv = dev_get_drvdata(dev);
+ 
+-	if (priv->lcd_clk)
+-		clk_disable_unprepare(priv->lcd_clk);
++	clk_disable_unprepare(priv->lcd_clk);
+ 	clk_disable_unprepare(priv->pix_clk);
+ 
+ 	drm_dev_unregister(&priv->drm);
 -- 
-js
-suse labs
+2.17.1
+
