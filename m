@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9691227E0F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00C027E0FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgI3GWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:22:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgI3GWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:22:55 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E6772075A;
-        Wed, 30 Sep 2020 06:22:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601446974;
-        bh=EXxvDUn4XGcHD/Ca0uIvwF+PRWacJD69F4bcem0AxSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cehjbcseNzUjHSH9H/NUjRZOIUzHKfq3q9Ty7fj3LwMusdc294CGdNFS7gdzKtiiK
-         WI3Y6zw4SOZB4Y+SdZFlplaofN7HquwtrvQZ+Gb1v7JjPvLnN0MAysxbZB2TYeExGL
-         zOFWw3q77zfFM0MabdV5ksP31I3MmAp6bGMxarjQ=
-Date:   Wed, 30 Sep 2020 08:22:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Dave Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>,
-        Ping-Ke Shih <pkshih@realtek.com>
-Subject: Re: [patch V2 21/36] net: usb: kaweth: Replace kaweth_control() with
- usb_control_msg()
-Message-ID: <20200930062258.GA1471881@kroah.com>
-References: <20200929202509.673358734@linutronix.de>
- <20200929203501.588965483@linutronix.de>
+        id S1727929AbgI3GYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:24:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37910 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725320AbgI3GYX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 02:24:23 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601447061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sQlVHYMhn8vBG9J1bK/w3aggY2ujDQ0L8SzsncwRqMk=;
+        b=VuxG861R5+rZHpSXlYQNvOIwz4/8nVM2NkCsa3t90XjGJIHEFMPhk4ENViGanXTtPCR+0Z
+        zPRw0pd1HdTFP8EFBHQqA9h/Y/g8QsYhHOQo3xkdp+4Z1CjtN4/djIRwXrC+3W7MJe0gsd
+        GcOsI8HE7s/QUn3taH52w7JuGeuG0sc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-i2dY4SpqPy-PD_T6LPM6fw-1; Wed, 30 Sep 2020 02:24:19 -0400
+X-MC-Unique: i2dY4SpqPy-PD_T6LPM6fw-1
+Received: by mail-wr1-f70.google.com with SMTP id a10so202034wrw.22
+        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:24:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sQlVHYMhn8vBG9J1bK/w3aggY2ujDQ0L8SzsncwRqMk=;
+        b=r3u+EKKxkHEKTPI4DGPJbsWS2lPV8UCDG62orsbEFUqUmgdyqdcBXufKfzUqHeHFNG
+         lTJVB1hKsOpshzBO59y5GpdQ5lYel/xY2BHLirEINZrv/2LcVdDpzBhzPf4ZBhL+vaqV
+         KSQtjabSfBFijXuB7lNWaqK9Irkgu9XW8CuHz+f3Fwp0kvd603UyWieTOTsxk+so4iPx
+         B3xmt1F7MrUy9HogeBbAWT/nfQ2f68U8tIpr64hiNJDb89Br6vS5yAucrTuWOD61XMPP
+         fLdVofm75JrffbRTolw4aYskBKVIuk7cXdz8fsGhCkX+oL0x+svSYe18zAkRUVMuS5Xk
+         zx9A==
+X-Gm-Message-State: AOAM530GjRg+UboWUw13RZdvsSxPB7fH1CZ85sYb2zJYV1fkJjhrJhze
+        bIiSGfjGKHFFQ9L1drT/ms/zKILWU1G6L+PSr2z6LAeLGa8vMoQ8uX7gGZExhQn5G5B1mZ3+fES
+        Di2EIL7ELOESf8QTgKSFUV0QL
+X-Received: by 2002:a5d:66c1:: with SMTP id k1mr1256571wrw.34.1601447058643;
+        Tue, 29 Sep 2020 23:24:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGcdxJdjm9pMwDJq9hEe59B3jvrWEmZgnX+vF1hzorRoj7r5nqs307SpW+Di5YlvUMjSDFTA==
+X-Received: by 2002:a5d:66c1:: with SMTP id k1mr1256535wrw.34.1601447058417;
+        Tue, 29 Sep 2020 23:24:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
+        by smtp.gmail.com with ESMTPSA id 63sm1246438wrc.63.2020.09.29.23.24.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 23:24:17 -0700 (PDT)
+Subject: Re: [PATCH 02/22] kvm: mmu: Introduce tdp_iter
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-3-bgardon@google.com>
+ <20200930052336.GD29405@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <61d23bc0-771d-9110-6528-3658a55ccba6@redhat.com>
+Date:   Wed, 30 Sep 2020 08:24:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929203501.588965483@linutronix.de>
+In-Reply-To: <20200930052336.GD29405@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:25:30PM +0200, Thomas Gleixner wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 30/09/20 07:24, Sean Christopherson wrote:
+> Maybe use the params, if only to avoid the line wrap?
 > 
-> kaweth_control() is almost the same as usb_control_msg() except for the
-> memory allocation mode (GFP_ATOMIC vs GFP_NOIO) and the in_interrupt()
-> check.
+> 	iter->gfn = goal_gfn - (goal_gfn % KVM_PAGES_PER_HPAGE(root_level));
 > 
-> All the invocations of kaweth_control() are within the probe function in
-> fully preemtible context so there is no reason to use atomic allocations,
-> GFP_NOIO which is used by usb_control_msg() is perfectly fine.
-> 
-> Replace kaweth_control() invocations from probe with usb_control_msg().
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Actually, peeking further into the file, this calculation is repeated in both
+> try_step_up and try_step_down,  probably worth adding a helper of some form.
 
-Note, the usb_control_msg_send/recv() new functions that will show up in
-5.10-rc1 will help a bit with this logic, but for what you have now,
-this is fine, nice cleanups.
+Also it's written more concisely as
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	iter->gfn = goal_gfn & -KVM_PAGES_PER_HPAGE(iter->level);
+
+> 
+> 
+> 	bool done;
+> 
+> 	if (try_step_down(iter))
+> 		return;
+> 
+> 	do {
+> 		done = try_step_side(iter);
+> 	} while (!done && try_step_up(iter));
+> 
+> 	iter->valid = done;
+
+I pointed out something similar in my review, my version was
+
+	bool done;
+
+	if (try_step_down(iter))
+		return;
+
+	do {
+		if (try_step_side(iter))
+			return;
+	} while (try_step_up(iter));
+	iter->valid = false;
+
+Paolo
+
