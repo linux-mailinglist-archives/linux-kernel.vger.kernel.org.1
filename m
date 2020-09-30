@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5318527E909
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB07427E90F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgI3M54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:57:56 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:57378 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3M54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 08:57:56 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7480d10000>; Wed, 30 Sep 2020 20:57:53 +0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
- 2020 12:57:38 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 12:57:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UjpbJ1re4W/9wjakAEdLliBAhIS7pf5Q5JGD5OgKeU/xsXuufIHTsAIqNWVC3hFhp2bHFEZjB9Jx8YqbXbA3kBSBmyXz+IEepXO64I2x5GC2y0S63sd1FaJVn7DEPIKHdSsSPFoZTTHYfA8noAxpVGsmAmouHtREEx7qVzj0Hh/lOaBQoFbUuRMn3IYZbxnMhxgNVEhzmlEb9zwAhDBxRbeJ1KR7Oqn475Y8rlvAWSyiwEQzxbpTPeAy+OBbY0Lfbql9xTXvBXIXgbM2QtihuoMtCoS6nVVZGetrBSKUn4B/+vW1x6doREhxK/2yFmwEJytFxSoh3k6JQUrQd6nOrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xUH51rA3HlHLJikqE7iyQmhXDVNQppUQ5K9nEJCgL5c=;
- b=bHLxeNeEd5yreVY5bWEPVBzjz/N8kto8yHsB2Pni3Ev3qLkaP0jScx7dCJMZJKyxNcQwbZw+kdgfD/g6bwML5lBlBm1PVaZB1sKDRGqZFJavvYvbR4Zcu28jLuIDmJSXjwZ5RQyFQtjVuz5u4f1754SRED/IDMLA8mBUyAhCVDtdD8bkjh0QFeHeEq2w+XzHlt9k6fejiJ8V8WMWVfomOLCuiSyb5b4Q+HwHHRy2LPTkdQSDDUHwxVPgyN+GSbitbFe7abYnsZImhiVyZ6nobzfBdDsYFkKi/tQQCpsEDPI98wCqH+IUpQj/hOD47r2OSDWrmlGp5+TWpFTDC1myFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0108.namprd12.prod.outlook.com (2603:10b6:4:58::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Wed, 30 Sep
- 2020 12:57:35 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 12:57:35 +0000
-Date:   Wed, 30 Sep 2020 09:57:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Derrick, Jonathan" <jonathan.derrick@intel.com>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "sivanich@hpe.com" <sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "Lu, Baolu" <baolu.lu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "steve.wahl@hpe.com" <steve.wahl@hpe.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rja@hpe.com" <rja@hpe.com>, "joro@8bytes.org" <joro@8bytes.org>,
-        "sthemmin@microsoft.com" <sthemmin@microsoft.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-Subject: Re: [patch V2 24/46] PCI: vmd: Mark VMD irqdomain with
- DOMAIN_BUS_VMD_MSI
-Message-ID: <20200930125733.GI816047@nvidia.com>
-References: <20200826111628.794979401@linutronix.de>
- <20200826112333.047315047@linutronix.de>
- <20200831143940.GA1152540@nvidia.com>
- <1d284a478d4e5bf4a247ee83afa1b8b45f9e1b3f.camel@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1d284a478d4e5bf4a247ee83afa1b8b45f9e1b3f.camel@intel.com>
-X-ClientProxiedBy: MN2PR20CA0001.namprd20.prod.outlook.com
- (2603:10b6:208:e8::14) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1729917AbgI3M7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 08:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728149AbgI3M7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:59:07 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE7FC061755;
+        Wed, 30 Sep 2020 05:59:05 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d19so984245pld.0;
+        Wed, 30 Sep 2020 05:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BGONJfBGfiZJ8B5gVDKbSF1BVGKwQjHdLl3ddJo9tVY=;
+        b=eJKbz8Q0kBy+c9iBIWhnx+5lDxtWn3fntLUDzpGUW709Er3KPWJPiwrRw6GnRMJeGn
+         xodi9WCSndpOjnrfs4XfsryyUrXfJmelVfDFngugKTT/TIFNXxrsEiPfUMqP1E3vrCD3
+         Ujq0ESsfFS5bbg1mDhmeYuLR1dazAfdE7Uq5/bVNFR4L68c6+6C+ex5KCWxd9DrWxrL8
+         l9Xg8oS6UFCyOsOj81oskbHKdF5QskffRIDpTO3vpxBIuOadWbgZ13hoHaeNF+VI1jCG
+         Vaato+9lnzp0K1IkdzExljN8tXbUqiyHcLJodvjhypXRNCpVPsE8Zc3bZbit2DkzcNcL
+         wkmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BGONJfBGfiZJ8B5gVDKbSF1BVGKwQjHdLl3ddJo9tVY=;
+        b=XcDpRX9WBby5LwdzMylUwuFWKrA/Ght8FeTOa7z5YWM8OxNOPMW71tgjPmzpoAqZg0
+         xvG1a1+3xjHMIQtgV50sfFUhYsCCZuXOIF7MCaW/ztZbKdrxFVyvCfeRmt7jg+FfJdpm
+         qhtaDNIEn+0h/szy4hLtwyOOzBsQgbr+gZ9KQwd7UP1lztpcCRcGJDK2Tf5gpMY2+nQi
+         pSmAk5i8hl0iZlKeZiD9YnvlF23i4Rq0zYGEq/szJzquvvmUVQ3bMqeulRItagWOnmcS
+         Tc3F/mqu6Dyjf+SJ/4WWWwEw7ldCF3E0qx8R8HeyE/u8/zajG/wUVfyfPu7Zlq5aHFOB
+         /2gw==
+X-Gm-Message-State: AOAM530iv9Ek+lHdQFVZsq1odtSVwKNpbAmr029sXQJyEw0nOJrqw3e8
+        h+5Xy2miB5QItI1iRwp1eQ==
+X-Google-Smtp-Source: ABdhPJwbSPtClFFI3ea1mNKe4eO1VEd6GSD/SvuAQtvcm7zxPoV0QkXo2AazrpiYHQjW/KT/XysBXQ==
+X-Received: by 2002:a17:90b:30c2:: with SMTP id hi2mr921373pjb.89.1601470745283;
+        Wed, 30 Sep 2020 05:59:05 -0700 (PDT)
+Received: from PWN ([161.117.80.159])
+        by smtp.gmail.com with ESMTPSA id u15sm2536438pjx.50.2020.09.30.05.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 05:59:04 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 08:58:55 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200930125855.GA1155358@PWN>
+References: <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
+ <20200925101300.GA890211@PWN>
+ <20200925132551.GF438822@phenom.ffwll.local>
+ <20200929123420.GA1143575@PWN>
+ <CAKMK7uFY2zv0adjKJ_ORVFT7Zzwn075MaU0rEU7_FuqENLR=UA@mail.gmail.com>
+ <20200930071151.GA1152145@PWN>
+ <20200930095317.GX438822@phenom.ffwll.local>
+ <20200930105553.GA1154238@PWN>
+ <CAKMK7uFzWZgs4rvqSXqn_ifr8utG_rNw54+y6CWjdV=Epak-iQ@mail.gmail.com>
+ <20200930115211.GC1603625@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0001.namprd20.prod.outlook.com (2603:10b6:208:e8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Wed, 30 Sep 2020 12:57:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNbfp-003wyO-G7; Wed, 30 Sep 2020 09:57:33 -0300
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601470673; bh=xUH51rA3HlHLJikqE7iyQmhXDVNQppUQ5K9nEJCgL5c=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=fPKN+2fo1SWx2AFfe5Sod7f9GcDofAGU4IIDgZh0mVcj3B1tjR7IeNneStA1aOGzC
-         NOGoR1HZLm7J4/GUqSByIVkuXKWqM7TZt1zIYQ0XN1nvDf1IEjZrBQuIRxASftKi5w
-         l7dwWIEpLXdcJ18SDsti6YtKpaSGriuCPFH6FN5rMZ9jlBfxXSFfF1ULUhe5ETStkN
-         UxSB9/A6OUo8Yi+1YdkuzuDfor8d+BSwbitLNqtZNlhWHXwyMsuon3UNFWr12sRDv8
-         bmpsocyTHzbsSzP3naiUDslkYVwp2kFLDVW5WWjVPp6H1clZUbMP4lLuVKM+P7kzof
-         /zTQVFzW2Vwdw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930115211.GC1603625@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:45:30PM +0000, Derrick, Jonathan wrote:
-> Hi Jason
+On Wed, Sep 30, 2020 at 01:52:11PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 30, 2020 at 01:25:14PM +0200, Daniel Vetter wrote:
+> > On Wed, Sep 30, 2020 at 12:56 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > > Yes, and built-in fonts don't use refcount. Or maybe we can let
+> > > find_font() and get_default_font() kmalloc() a copy of built-in font
+> > > data, then keep track of refcount for both user and built-in fonts, but
+> > > that will waste a few K of memory for each built-in font we use...
+> > 
+> > A possible trick for this would be to make sure built-in fonts start
+> > out with a refcount of 1. So never get freed. Plus maybe a check that
+> > if the name is set, then it's a built-in font and if we ever underflow
+> > the refcount we just WARN, but don't free anything.
+> > 
+> > Another trick would be kern_font_get/put wrappers (we'd want those
+> > anyway if the userspace fonts are refcounted) and if kern_font->name
+> > != NULL (i.e. built-in font with name) then we simply don't call
+> > kref_get/put.
 > 
-> On Mon, 2020-08-31 at 11:39 -0300, Jason Gunthorpe wrote:
-> > On Wed, Aug 26, 2020 at 01:16:52PM +0200, Thomas Gleixner wrote:
-> > > From: Thomas Gleixner <tglx@linutronix.de>
-> > > 
-> > > Devices on the VMD bus use their own MSI irq domain, but it is not
-> > > distinguishable from regular PCI/MSI irq domains. This is required
-> > > to exclude VMD devices from getting the irq domain pointer set by
-> > > interrupt remapping.
-> > > 
-> > > Override the default bus token.
-> > > 
-> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > >  drivers/pci/controller/vmd.c |    6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > +++ b/drivers/pci/controller/vmd.c
-> > > @@ -579,6 +579,12 @@ static int vmd_enable_domain(struct vmd_
-> > >  		return -ENODEV;
-> > >  	}
-> > >  
-> > > +	/*
-> > > +	 * Override the irq domain bus token so the domain can be distinguished
-> > > +	 * from a regular PCI/MSI domain.
-> > > +	 */
-> > > +	irq_domain_update_bus_token(vmd->irq_domain, DOMAIN_BUS_VMD_MSI);
-> > > +
-> > 
-> > Having the non-transparent-bridge hold a MSI table and
-> > multiplex/de-multiplex IRQs looks like another good use case for
-> > something close to pci_subdevice_msi_create_irq_domain()?
-> > 
-> > If each device could have its own internal MSI-X table programmed
-> > properly things would work alot better. Disable capture/remap of the
-> > MSI range in the NTB.
+> Ick, don't do that, the first trick of having them start out with an
+> increased reference count is the best way here.  Makes the code simpler
+> and no special cases for the tear-down path.
 
-> We can disable the capture and remap in newer devices so we don't even
-> need the irq domain.
+I see, I'll just let them start out with 1, and only check `->name !=
+NULL` in kern_font_put(). Thank you!
 
-You'd still need an irq domain, it just comes from
-pci_subdevice_msi_create_irq_domain() instead of internal to this
-driver.
+Peilin Ye
 
-> I would however like to determine if the MSI data bits could be used
-> for individual devices to have the IRQ domain subsystem demultiplex the
-> virq from that and eliminate the IRQ list iteration.
-
-Yes, exactly. This new pci_subdevice_msi_create_irq_domain() creates
-*proper* fully functional interrupts, no need for any IRQ handler in
-this driver.
-
-> A concern I have about that scheme is virtualization as I think those
-> bits are used to route to the virtual vector.
-
-It should be fine with this patch series, consult with Megha how
-virtualization is working with IDXD/etc
-
-Jason
