@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8A127EF96
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D1A27EF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgI3QsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:48:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46924 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgI3QsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:48:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601484503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZtN3pR3Z/oium5GfdXD2uz9/2bfNv63HFSibvAivduA=;
-        b=ieofj3pAkg5i6Sr6TjB0RUnbe67x+W/JYtJE8sv+gEAJGMujLFV76gqC6+h7tVN7LQ6OoL
-        ClD+6YbWWbEVgIXXTgtUA/jAPy+RbYWK2LjHJIhvdgRWbnBbGxmx2WaR/glH8FtjG5gZGK
-        R4tWOE6K525nzZztXdKKP697OLJn/h4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B0A1AFA9;
-        Wed, 30 Sep 2020 16:48:23 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 18:48:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200930164822.GX2277@dhcp22.suse.cz>
-References: <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
- <20200925154741.GI3389@dhcp22.suse.cz>
- <20200930152517.GA1470428@google.com>
+        id S1730966AbgI3Qsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgI3Qse (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:48:34 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C817C061755;
+        Wed, 30 Sep 2020 09:48:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 40CC129CD44
+Subject: Re: [PATCH v4 38/52] docs: block: typec_bus.rst: get rid of :c:type
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Jens Axboe <axboe@kernel.dk>, Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+ <c54f21c6406b86099b537fdde1b0ab35b0ea770d.1601467849.git.mchehab+huawei@kernel.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <c6ee0141-f339-f8aa-d557-db8c1d2e37a5@collabora.com>
+Date:   Wed, 30 Sep 2020 13:48:25 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930152517.GA1470428@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c54f21c6406b86099b537fdde1b0ab35b0ea770d.1601467849.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30-09-20 11:25:17, Joel Fernandes wrote:
-> On Fri, Sep 25, 2020 at 05:47:41PM +0200, Michal Hocko wrote:
-> > On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
-> > > > > > > 
-> > > > > > > All good points!
-> > > > > > > 
-> > > > > > > On the other hand, duplicating a portion of the allocator functionality
-> > > > > > > within RCU increases the amount of reserved memory, and needlessly most
-> > > > > > > of the time.
-> > > > > > > 
-> > > > > > 
-> > > > > > But it's very similar to what mempools are for.
-> > > > > > 
-> > > > > As for dynamic caching or mempools. It requires extra logic on top of RCU
-> > > > > to move things forward and it might be not efficient way. As a side
-> > > > > effect, maintaining of the bulk arrays in the separate worker thread
-> > > > > will introduce other drawbacks:
-> > > > 
-> > > > This is true but it is also true that it is RCU to require this special
-> > > > logic and we can expect that we might need to fine tune this logic
-> > > > depending on the RCU usage. We definitely do not want to tune the
-> > > > generic page allocator for a very specific usecase, do we?
-> > > > 
-> > > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> > > to provide a memory service for contexts which are not allowed to
-> > > sleep, RCU is part of them. Both flags used to provide such ability
-> > > before but not anymore.
-> > > 
-> > > Do you agree with it?
-> > 
-> > Yes this sucks. But this is something that we likely really want to live
-> > with. We have to explicitly _document_ that really atomic contexts in RT
-> > cannot use the allocator. From the past discussions we've had this is
-> > likely the most reasonable way forward because we do not really want to
-> > encourage anybody to do something like that and there should be ways
-> > around that. The same is btw. true also for !RT. The allocator is not
-> > NMI safe and while we should be able to make it compatible I am not
-> > convinced we really want to.
-> > 
-> > Would something like this be helpful wrt documentation?
-> > 
-> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> > index 67a0774e080b..9fcd47606493 100644
-> > --- a/include/linux/gfp.h
-> > +++ b/include/linux/gfp.h
-> > @@ -238,7 +238,9 @@ struct vm_area_struct;
-> >   * %__GFP_FOO flags as necessary.
-> >   *
-> >   * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-> > - * watermark is applied to allow access to "atomic reserves"
-> > + * watermark is applied to allow access to "atomic reserves".
-> > + * The current implementation doesn't support NMI and other non-preemptive context
-> > + * (e.g. raw_spin_lock).
+On 9/30/20 10:25 AM, Mauro Carvalho Chehab wrote:
+> The :c:type macros are not used properly there, as reported
+> by Sphinx 3:
 > 
-> I think documenting is useful.
+> 	./Documentation/block/blk-mq.rst:112: WARNING: Unparseable C cross-reference: 'hctx->dispatch'
+> 	Invalid C declaration: Expected end of definition. [error at 4]
+> 	  hctx->dispatch
+> 	  ----^
 > 
-> Could it be more explicit in what the issue is? Something like:
+> Also, they won't be generating any cross references.
 > 
-> * Even with GFP_ATOMIC, calls to the allocator can sleep on PREEMPT_RT
-> systems. Therefore, the current low-level allocator implementation does not
-> support being called from special contexts that are atomic on RT - such as
-> NMI and raw_spin_lock. Due to these constraints and considering calling code
-> usually has no control over the PREEMPT_RT configuration, callers of the
-> allocator should avoid calling the allocator from these cotnexts even in
-> non-RT systems.
+> So, replace them by a literal markup.
 
-I do not mind documenting RT specific behavior but as mentioned in other
-reply, this should likely go via RT tree for now. There is likely more
-to clarify about atomicity for PREEMPT_RT.
--- 
-Michal Hocko
-SUSE Labs
+Your commit message says "docs: block: typec_bus.rst: ...", but the name
+of this file is "blk-mq.rst".
+
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+After solving the issue above:
+
+Reviewed-by: André Almeida <andrealmeid@collabora.com>
+
+> ---
+>  Documentation/block/blk-mq.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+> index 86a632af02b0..a980d23af48c 100644
+> --- a/Documentation/block/blk-mq.rst
+> +++ b/Documentation/block/blk-mq.rst
+> @@ -110,9 +110,9 @@ block layer removes requests from the associated software queues and tries to
+>  dispatch to the hardware.
+>  
+>  If it's not possible to send the requests directly to hardware, they will be
+> -added to a linked list (:c:type:`hctx->dispatch`) of requests. Then,
+> +added to a linked list (``hctx->dispatch``) of requests. Then,
+>  next time the block layer runs a queue, it will send the requests laying at the
+> -:c:type:`dispatch` list first, to ensure a fairness dispatch with those
+> +``dispatch`` list first, to ensure a fairness dispatch with those
+>  requests that were ready to be sent first. The number of hardware queues
+>  depends on the number of hardware contexts supported by the hardware and its
+>  device driver, but it will not be more than the number of cores of the system.
+> 
+
