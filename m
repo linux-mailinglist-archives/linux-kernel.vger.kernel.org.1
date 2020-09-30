@@ -2,170 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ABF27EB33
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A0627EB3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgI3Oon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:44:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbgI3Oon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:44:43 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730689AbgI3Opi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:45:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730272AbgI3Oph (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:45:37 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601477136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=XVWQp+sLhBmvUA8h/roMi5oHAKQz8zXP4pU7zsey/PU=;
+        b=b964O6uO1ozD7VCnt4/iJaEGAA4b3O3wi61/2PQqVQcO40bqSgLg7iqqpbHx2wJP8BTKlR
+        nuRrSXHOD0bPr6to3PqKpENtlSMW2FsaEbGbnnWHluYuScWn18L/DVZRbYDF9WG4tCoECm
+        J9p117yZrkRKqWtLuzAQPKz2PMkk8yQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-e6gCzBMwNE6TrMjfCM972g-1; Wed, 30 Sep 2020 10:45:30 -0400
+X-MC-Unique: e6gCzBMwNE6TrMjfCM972g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5903D207C3;
-        Wed, 30 Sep 2020 14:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601477082;
-        bh=BOq6LyRCWyDbwgviicHXV9zK30oNwH9I4OjbgV2jSu4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XR0RwAIPyQ/gwoNxiS88Uk+kAVw3+/FLiFaigjZLT4HV5VQy4Ww3O/g1jXuWikQzB
-         axjW1dfGZqeWCCzdNQ6XaP0mZluNmin2ugM6f0bP5BYuoUoxuCvjwCrdqTFSL0yXKl
-         an1D6qvzFpsL6App6vM17CZ0c760qmr7PMCWCUPM=
-Received: by mail-ot1-f43.google.com with SMTP id g96so2032251otb.12;
-        Wed, 30 Sep 2020 07:44:42 -0700 (PDT)
-X-Gm-Message-State: AOAM533d9h10XEX0w2wLxklXpB5bU3PFcMIIcO/1mSFzae9Vn0E4Iijc
-        598+QmRS2B0xeSP/roqmYLxLYJgp/iPXmha6sg==
-X-Google-Smtp-Source: ABdhPJwNZ8YRYNRFl8N0imfJdwtVm0sAg6EbUrKo41F4WMvrHs3g9tMmeVkEIDtGWsvHj9HWx1E7yxbfEqO0Uhna7Hw=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1646798otp.107.1601477081549;
- Wed, 30 Sep 2020 07:44:41 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95B9B1018F65;
+        Wed, 30 Sep 2020 14:45:25 +0000 (UTC)
+Received: from [10.36.113.220] (ovpn-113-220.ams2.redhat.com [10.36.113.220])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A62D95579B;
+        Wed, 30 Sep 2020 14:45:12 +0000 (UTC)
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+To:     jejb@linux.ibm.com, Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
+ <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+ <20200929130529.GE2142832@kernel.org>
+ <20200929141216.GO2628@hirez.programming.kicks-ass.net>
+ <20200929145813.GA3226834@linux.ibm.com>
+ <20200929151552.GS2628@hirez.programming.kicks-ass.net>
+ <20200930102745.GC3226834@linux.ibm.com>
+ <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <6568383f-4e43-2fe4-ecf1-8a55e306440b@redhat.com>
+Date:   Wed, 30 Sep 2020 16:45:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200929201701.GA1080459@bogus> <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu> <20200930124915.GA1826870@google.com>
-In-Reply-To: <20200930124915.GA1826870@google.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 30 Sep 2020 09:44:30 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
-Message-ID: <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 7:49 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Hi Alan,
->
-> On Tue, Sep 29, 2020 at 09:32:29PM -0400, Alan Stern wrote:
-> > On Tue, Sep 29, 2020 at 03:09:12PM -0700, Matthias Kaehlcke wrote:
-> > > Hi Rob,
-> > >
-> > > On Tue, Sep 29, 2020 at 03:17:01PM -0500, Rob Herring wrote:
-> > > > As I said in prior version, this separate node and 'hub' phandle is not
-> > > > going to work. You are doing this because you want a platform driver for
-> > > > "realtek,rts5411". That may be convenient for Linux, but doesn't reflect
-> > > > the h/w.
-> > >
-> > > I agree that the hardware representation isn't totally straightforward, however
-> > > the description isn't limited to Linux:
-> > >
-> > > - there is a single IC (like the Realtek RTS5411)
-> > > - the IC may require several resources to be initialized in a certain way
-> > >   - this may require executing hardware specific code by some driver, which
-> > >     isn't a USB device driver
-> > > - the IC can 'contain' multiple USB hub devices, which can be connected to
-> > >   separate USB busses
-> > > - the IC doesn't have a control bus, which somewhat resembles the
-> > >   'simple-audio-amplifier' driver, which also registers a platform device
-> > >   to initialize its resources
-> > >
-> > > - to provide the functionality of powering down the hub conditionally during
-> > >   system suspend the driver (whether it's a platform driver or something else)
-> > >   needs know which USB (hub) devices correspond to it. This is a real world
-> > >   problem, on hardware that might see wide distribution.
-> > >
-> > > There were several attempts to solve this problem in the past, but none of them
-> > > was accepted. So far Alan Stern seems to think the driver (not necessarily the
-> > > binding as is) is a suitable solution, Greg KH also spent time reviewing it,
-> > > without raising conceptual concerns. So it seems we have solution that would
-> > > be generally landable from the USB side.
+On 30.09.20 16:39, James Bottomley wrote:
+> On Wed, 2020-09-30 at 13:27 +0300, Mike Rapoport wrote:
+>> On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
+>>> On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
+>>>> On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra wrote:
+>>>>> It will drop them down to 4k pages. Given enough inodes, and
+>>>>> allocating only a single sekrit page per pmd, we'll shatter the
+>>>>> directmap into 4k.
+>>>>
+>>>> Why? Secretmem allocates PMD-size page per inode and uses it as a
+>>>> pool of 4K pages for that inode. This way it ensures that
+>>>> __kernel_map_pages() is always called on PMD boundaries.
+>>>
+>>> Oh, you unmap the 2m page upfront? I read it like you did the unmap
+>>> at the sekrit page alloc, not the pool alloc side of things.
+>>>
+>>> Then yes, but then you're wasting gobs of memory. Basically you can
+>>> pin 2M per inode while only accounting a single page.
+>>
+>> Right, quite like THP :)
+>>
+>> I considered using a global pool of 2M pages for secretmem and
+>> handing 4K pages to each inode from that global pool. But I've
+>> decided to waste memory in favor of simplicity.
+> 
+> I can also add that the user space consumer of this we wrote does its
+> user pool allocation at a 2M granularity, so nothing is actually
+> wasted.
 
-Just as I spend no time reviewing the driver side typically, I don't
-think Alan or Greg spend any time on the DT side.
+... for that specific user space consumer. (or am I missing something?)
 
-> > > I understand that your goal is to keep the device tree sane, which I'm sure
-> > > can be challenging. If you really can't be convinced that the binding might
-> > > be acceptable in its current or similiar form then please offer guidance
-> > > on possible alternatives which allow to achieve the same functionality.
-> >
-> > You're really trying to represent this special IC in DT, right?
->
-> Yes
->
-> > Maybe  if you don't call it a "hub" but instead something that better reflects
-> > what it actually is and does, the description will be more palatable.
+-- 
+Thanks,
 
-It's a hub. The name is not the problem.
+David / dhildenb
 
-> Thanks for your suggestion.
->
-> Datasheets from different manufacturers refer to these ICs as "USB hub
-> controller". Calling the node "usb-hub-controller" would indeed help to
-> distinguish it from the USB hub devices and represent existing hardware.
-> And the USB device could have a "hub-controller" property, which also
-> would be clearer than the current "hub" property.
-
-There aren't 2 (or 3) devices here. There's a single USB device (a
-hub) and the DT representation should reflect that.
-
-We already have hubs in DT. See [1][2][3][4]. What's new here? Simply,
-vdd-supply needs to be enabled for the hub to be enumerated. That's
-not a unique problem for USB, but common for all "discoverable" buses
-with MDIO being the most recent example I pointed you to. I'm not sure
-what happened with the previous attempt for USB[5]. It didn't look
-like there was a major issue. 'generic' power sequencing can't really
-handle every case, but as long as bindings allow doing something
-device specific I don't care so much. The driver side can evolve. The
-DT bindings can't.
-
-So what should this look like? There are 2 issues here. First, how do
-we represent a USB3 device if that means multiple ports. I'm not
-really sure other than it needs to be defined and documented. I think
-the choices are: ignore the USB3 part (USB2 is always there and what's
-used for enumeration, right?) or allow multiple ports in reg. Do hubs
-really have 2 ports for each connection?
-
-The 2nd issue is where do extra properties for a device go. That's
-nothing new nor special to USB. They go with the device node. We
-already went thru that with the last attempt.
-
-So for this case, we'd have something like this:
-
-    usb_controller {
-        dr_mode = "host";
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        hub@1 {
-            compatible = "usbbda,5411";
-            reg = <1>;
-            vdd-supply = <&pp3300_hub>;
-        };
-    };
-
-This is no different than needing a reset line deasserted as the prior
-attempt did.
-
-Rob
-
-[1] arch/arm/boot/dts/omap5-uevm.dts
-[2] arch/arm/boot/dts/omap5-igep0050.dts
-[3] arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-[4] arch/arm/boot/dts/bcm283x-rpi-lan7515.dtsi
-[5] https://lore.kernel.org/lkml/CAPDyKFpOQWTPpdd__OBP1DcW58CbqnygGAOxiEFq5kqqvCm0QA@mail.gmail.com/
