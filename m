@@ -2,172 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6706727F0C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A61C27F0E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731545AbgI3RwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
+        id S1730241AbgI3Rxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731518AbgI3RwA (ORCPT
+        with ESMTP id S1725799AbgI3Rxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:52:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E227C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=ix+nhROFgS2R/TvryqxFuXEm6pOX6uuPKFVKed32kPg=; b=o71az0TAGIt+o23t9vEEPg9kBX
-        49t5J7kjHFOTFFFV1reywEKaB+iF5d6lYqgVAc7lLH43QPfngUbCNFDu6idG354NtO0I20tYUmc/S
-        ZNAXVCDrReTupKXsw6F5l3EHk46VQsKDWXEuoaEZwsGrnxoyazLXMES+Zm9kzi1lpuCrDw+OOKSKn
-        N9e7DoOAmhqH/Xf3idF4DAirJzTM4dZVdj0+5Xss/2Veo4YkuL/fEADv9DU6/Q4fO8Mv09yhcRXRO
-        AJrpiNZlL0BIfp1/UyxfaKevrL7DT2VegvYl4HXyjB6G5Xg6D8J438SNVin3yQs9fbhbLooyU+aY6
-        Vr5NdFSA==;
-Received: from [2001:4bb8:180:7b62:c70:4a89:bc61:4] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNgGc-0001DO-6R; Wed, 30 Sep 2020 17:51:50 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-Subject: [PATCH 10/10] mm: remove alloc_vm_area
-Date:   Wed, 30 Sep 2020 19:51:33 +0200
-Message-Id: <20200930175133.1252382-11-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930175133.1252382-1-hch@lst.de>
-References: <20200930175133.1252382-1-hch@lst.de>
+        Wed, 30 Sep 2020 13:53:34 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87817C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:53:34 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id h17so2697415otr.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nmx3GK+BJ0d4VG1MnUd724aknrThpuCxNaLSY0XJ58c=;
+        b=xS8WcxEVpDZKYDvgXPcKeyIkiQzftLTmFl1axoEXs0Fs32CiYI0KH+BPVPgCu6eiKV
+         42m2Uh5QfSYCU0vvxw0usyqGn8nqfxXeCy3g2usLicSNcT3LdNDZfvdwf2eAoq7kTuUn
+         9URHPG0/NHIcclklxub5afY/bGPhuRywQDtbKL7okklvJqXiNrbmgeAh+yJ+QxgUEhP6
+         hk7YmdzwYb0o2+fEnedyN4Tsc2cDh2t4jFOssNAd5XW6hSFR06iTvsNyKW9recaLnIvs
+         frv4wfZLcvUgM3BDXaCuxAd4Wmdo5FgaXCj0KLCCh2DcHUXmGuk2btBzop8MkZn+T8E/
+         O/UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nmx3GK+BJ0d4VG1MnUd724aknrThpuCxNaLSY0XJ58c=;
+        b=mEdCopCZcmy3scHK5aFftdesKkWFLbk6i21FahjiRQevy0E3iDyPRxeop68Y4PrJjC
+         RU7hlNgc/1/FT4rbukVCBAvAiU05mxIti4jwmdHZloCpnc9RNg8/VtoEYuBNzFrbq7bZ
+         sUamm5qM0sIkPHagpQ1bDAeIvAKyn4N1BWCEDZVdqkLmxLNc5LVIg1PvQg4DRc0AIX7i
+         vWTUSVfd5SGw4Oz9hCm529tOQn0lRiehy/CnvJ3eboEez10nr9ESeiecIDRDs3Vu9MnB
+         7qL2KECAdnT4/bkJCFBkXZTA/Xsrb/c/HZJOFG4LnfKjOLWNX1XO6fNZP3LV3FjQeJ1v
+         3O7w==
+X-Gm-Message-State: AOAM530g7FmMrA1773viHHsUDnZPJtCUwJnlYtOgxf8ecncoa79Qatdn
+        1WxVU23GI1PoIntChRYVMX0UbA==
+X-Google-Smtp-Source: ABdhPJzpc1y+G2Mh4hI2b6mUBCT6UIG0Wm+AK1cTWmMfvdiwkQpSWSp64VdS6GC+wwAIzRfTI4QyCA==
+X-Received: by 2002:a9d:2925:: with SMTP id d34mr2284108otb.140.1601488413886;
+        Wed, 30 Sep 2020 10:53:33 -0700 (PDT)
+Received: from x1 ([2600:1702:da0:ff40:985b:42bd:cfe:59b7])
+        by smtp.gmail.com with ESMTPSA id c19sm555297ooq.35.2020.09.30.10.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 10:53:33 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 12:53:30 -0500
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>
+Subject: Re: [PATCH] pinctrl: single: check if #pinctrl-cells exceeds 3
+Message-ID: <20200930175330.GA1295202@x1>
+References: <20200913210825.2022552-1-drew@beagleboard.org>
+ <CACRpkdZXu9g_Rq7707-6hXqPVfbxPBcrnR8KwLm+zOgS_EabAQ@mail.gmail.com>
+ <20200930051659.GO9471@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930051659.GO9471@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All users are gone now.
+On Wed, Sep 30, 2020 at 08:16:59AM +0300, Tony Lindgren wrote:
+> * Linus Walleij <linus.walleij@linaro.org> [200929 12:51]:
+> > On Sun, Sep 13, 2020 at 11:17 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > 
+> > > The property #pinctrl-cells can either be 2 or 3.  There is currently
+> > > only a check to make sure that #pinctrl-cells is 2 or greater.  This
+> > > patch adds a check to make sure it is not greater than 3.
+> > >
+> > > Fixes: a13395418888 ("pinctrl: single: parse #pinctrl-cells = 2")
+> > > Reported-by: Trent Piepho <tpiepho@gmail.com>
+> > > Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
+> > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > 
+> > Tony, does this and the other patch look good to you?
+> 
+> Hmm well the description looks a bit confusing, #pinctrl-cells can
+> also be 1 that's the default. Might be worth clarifying that part.
+> 
+> Regards,
+> 
+> Tony
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/vmalloc.h |  5 +----
- mm/nommu.c              |  7 ------
- mm/vmalloc.c            | 48 -----------------------------------------
- 3 files changed, 1 insertion(+), 59 deletions(-)
+Yes, that was my fault for confusing #pinctrl-cells with
+pinctrl_spec.args_count.
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index c77efeac242514..938eaf9517e266 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -169,6 +169,7 @@ extern struct vm_struct *__get_vm_area_caller(unsigned long size,
- 					unsigned long flags,
- 					unsigned long start, unsigned long end,
- 					const void *caller);
-+void free_vm_area(struct vm_struct *area);
- extern struct vm_struct *remove_vm_area(const void *addr);
- extern struct vm_struct *find_vm_area(const void *addr);
- 
-@@ -204,10 +205,6 @@ static inline void set_vm_flush_reset_perms(void *addr)
- }
- #endif
- 
--/* Allocate/destroy a 'vmalloc' VM area. */
--extern struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes);
--extern void free_vm_area(struct vm_struct *area);
--
- /* for /dev/kmem */
- extern long vread(char *buf, char *addr, unsigned long count);
- extern long vwrite(char *buf, char *addr, unsigned long count);
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 75a327149af127..9272f30e4c4726 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -354,13 +354,6 @@ void vm_unmap_aliases(void)
- }
- EXPORT_SYMBOL_GPL(vm_unmap_aliases);
- 
--struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
--{
--	BUG();
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(alloc_vm_area);
--
- void free_vm_area(struct vm_struct *area)
- {
- 	BUG();
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index e2a2ded8d93478..3bc5b832451ef2 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3083,54 +3083,6 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
- }
- EXPORT_SYMBOL(remap_vmalloc_range);
- 
--static int f(pte_t *pte, unsigned long addr, void *data)
--{
--	pte_t ***p = data;
--
--	if (p) {
--		*(*p) = pte;
--		(*p)++;
--	}
--	return 0;
--}
--
--/**
-- * alloc_vm_area - allocate a range of kernel address space
-- * @size:	   size of the area
-- * @ptes:	   returns the PTEs for the address space
-- *
-- * Returns:	NULL on failure, vm_struct on success
-- *
-- * This function reserves a range of kernel address space, and
-- * allocates pagetables to map that range.  No actual mappings
-- * are created.
-- *
-- * If @ptes is non-NULL, pointers to the PTEs (in init_mm)
-- * allocated for the VM area are returned.
-- */
--struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
--{
--	struct vm_struct *area;
--
--	area = get_vm_area_caller(size, VM_IOREMAP,
--				__builtin_return_address(0));
--	if (area == NULL)
--		return NULL;
--
--	/*
--	 * This ensures that page tables are constructed for this region
--	 * of kernel virtual address space and mapped into init_mm.
--	 */
--	if (apply_to_page_range(&init_mm, (unsigned long)area->addr,
--				size, f, ptes ? &ptes : NULL)) {
--		free_vm_area(area);
--		return NULL;
--	}
--
--	return area;
--}
--EXPORT_SYMBOL_GPL(alloc_vm_area);
--
- void free_vm_area(struct vm_struct *area)
- {
- 	struct vm_struct *ret;
--- 
-2.28.0
+- if #pinctrl-cells = <1>, then pinctrl_spec.args_count = 2
+- if #pinctrl-cells = <2>, then pinctrl_spec.args_count = 3
+- all other values are not valid
 
+I will post a v2.
+
+Thanks,
+Drew
