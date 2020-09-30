@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A810F27E0B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688A527E0AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgI3Fzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
+        id S1725833AbgI3Fx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgI3Fzk (ORCPT
+        with ESMTP id S1725320AbgI3Fx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:55:40 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE57C061755;
-        Tue, 29 Sep 2020 22:55:40 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t13so345860plb.10;
-        Tue, 29 Sep 2020 22:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ZKt1l06WBiOe5oSa8hvHMMaReLuZvec2hHg90p7XYZw=;
-        b=Ha0J0YFFJbPQksFeyj5p+V9nuCr+5BSKAknv2WvbX953a+2DlUmJ6wy4K5XDXRMwg7
-         /w7xQHmu0IsodtL9hWFAu0/LxDx0sVH6qUsXvXBhHK7esn1M2Aou30kHiz1SDOxk761X
-         vxUyVBUPJ2B8jXI8kN97kwkIGvgDD0FcJ5h4Fw7+z2yAoOYB9btAMfuVVTpmx2+CeJUB
-         DevOO0PMjyiFRJibfaW261V/zpVf9oLYHnydIaPfI5f9lSwAts/e92P/sDn41w5Ixg/g
-         7wUnFg5WSW0+OzdRzb8dHqwT6qYP+LjOUaBy3MPcxvwiMITWeesV6FCzwRlmtAdCS6DO
-         urVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ZKt1l06WBiOe5oSa8hvHMMaReLuZvec2hHg90p7XYZw=;
-        b=dH7gl+ek8X1+cyMSDu3dAKREvM2yN0mwyqdYWBe3y2O0qqLP+RGBIYByv7Nk6i7P/o
-         zZRCc/cnzQ37Ulx2pu30uPhNVQofva/E03vnvC5l3KAhbO8/VTPy87b5KEufaLfu/cR1
-         Klm5R7IUUsqMa6E3NWZDaJkf3McV8V+NZq1rXLKOfDWpx/Vm49CdzQTTAxPpM7JBbt+X
-         H0ilvvZsPMXMOKdOCr4VPI6uAu4weFrLgpTj+fE0r0uxDQsFuqzNFul+dg5yUR1HWSPC
-         /1isKvg2uGibQGo7a5hmWQVmo5GWzl+oemVmcWr7g0RB96c0IEbV1MYYEfisupgnhJ+K
-         qlHQ==
-X-Gm-Message-State: AOAM533LUpZ8EY16T2Z1cWjOJEd8fxiUax3iZuCXQdW6q0V0xlXxTN+/
-        BCol2c0uQ1XPOYzzHu74Avw=
-X-Google-Smtp-Source: ABdhPJxxPH3+l0h0b3d77zTykpSEcWgLoj6N2dP/iZ7QevPI0t6mFehpDdcbtQHqGWvYygqI0MFMIw==
-X-Received: by 2002:a17:90a:104f:: with SMTP id y15mr1019025pjd.45.1601445339766;
-        Tue, 29 Sep 2020 22:55:39 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id n2sm773071pfe.208.2020.09.29.22.55.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Sep 2020 22:55:39 -0700 (PDT)
-Date:   Tue, 29 Sep 2020 22:50:09 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20200930055008.GH31821@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-3-nicoleotsuka@gmail.com>
- <db183fdf-d566-599a-94ff-cfab0e08aa7a@gmail.com>
- <931eb16b-4529-2c20-c696-c57a9138aded@gmail.com>
+        Wed, 30 Sep 2020 01:53:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0E1C061755;
+        Tue, 29 Sep 2020 22:53:57 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 05:53:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601445236;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJiB2fm5x1gGbnFhUb8vMcHWNb8zswnIRVSN8p+W8Y8=;
+        b=fnFFnCkyRfYMzZ8oYXe77ODzsmh0I/EqGl21V2K0N14ULGncEBCMuCSJGdeSpa7LyQbLkO
+        gOVnb+uqKfdXPNJ40CT2bsEveLmLXYRYqeqxI8SRHDgHttJeE5xY+JAfki6wHF+vuQS19v
+        mBzPbNyhVZg42imWzJNNoQZYjav78qEPTFB+UbnwhcpkHws1ntOsbGZMbzVFOxm8a8fbH3
+        4SZ/HZMMVwafl8K8sb/ltQFXSvvjrXFx07COSO8jyuyOlspfxG7GU6byYc6iOYI+QIIYEl
+        qHKV4ONrzlRhMF20s2/fXZ6h4VqWbDHPsKNG7lnvoyhQPu2fiY0NT4x3G0OI8w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601445236;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJiB2fm5x1gGbnFhUb8vMcHWNb8zswnIRVSN8p+W8Y8=;
+        b=9pgamrm6+29OAdlb+d0SAh+kMtv05z3mDPNLffHS86zn3sSWgCM/K8bpddhzrKxJbuXHiU
+        tL/lQlwDQmJB0nDA==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Drop AMD-specific "DEFERRED" case from Intel
+ severity rule list
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200930021313.31810-3-tony.luck@intel.com>
+References: <20200930021313.31810-3-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <931eb16b-4529-2c20-c696-c57a9138aded@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <160144523516.7002.14378369290028684589.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:20:50AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 08:10, Dmitry Osipenko пишет:
-> > 30.09.2020 03:30, Nicolin Chen пишет:
-> >>  static void tegra_smmu_release_device(struct device *dev)
-> > 
-> > The tegra_get_memory_controller() uses of_find_device_by_node(), hence
-> > tegra_smmu_release_device() should put_device(mc) in order to balance
-> > back the refcounting.
-> > 
-> 
-> Actually, the put_device(mc) should be right after
-> tegra_get_memory_controller() in tegra_smmu_probe_device() because SMMU
-> is a part of MC, hence MC can't just go away.
+The following commit has been merged into the ras/core branch of tip:
 
-Will add it. Thanks for pointing it out!
+Commit-ID:     ed9705e4ad1c19ae51ed0cb4c112f9eb6dfc69fc
+Gitweb:        https://git.kernel.org/tip/ed9705e4ad1c19ae51ed0cb4c112f9eb6dfc69fc
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Tue, 29 Sep 2020 19:13:13 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 30 Sep 2020 07:49:58 +02:00
+
+x86/mce: Drop AMD-specific "DEFERRED" case from Intel severity rule list
+
+Way back in v3.19 Intel and AMD shared the same machine check severity
+grading code. So it made sense to add a case for AMD DEFERRED errors in
+commit
+
+  e3480271f592 ("x86, mce, severity: Extend the the mce_severity mechanism to handle UCNA/DEFERRED error")
+
+But later in v4.2 AMD switched to a separate grading function in
+commit
+
+  bf80bbd7dcf5 ("x86/mce: Add an AMD severities-grading function")
+
+Belatedly drop the DEFERRED case from the Intel rule list.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200930021313.31810-3-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/severity.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index 567ce09..e072246 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -97,10 +97,6 @@ static struct severity {
+ 		EXCP, KERNEL_RECOV, MCGMASK(MCG_STATUS_RIPV, 0)
+ 		),
+ 	MCESEV(
+-		DEFERRED, "Deferred error",
+-		NOSER, MASK(MCI_STATUS_UC|MCI_STATUS_DEFERRED|MCI_STATUS_POISON, MCI_STATUS_DEFERRED)
+-		),
+-	MCESEV(
+ 		KEEP, "Corrected error",
+ 		NOSER, BITCLR(MCI_STATUS_UC)
+ 		),
