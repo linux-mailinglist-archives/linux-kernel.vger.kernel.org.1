@@ -2,205 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C933F27DFAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB5527DFBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 06:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgI3Eqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 00:46:37 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:10627 "EHLO z5.mailgun.us"
+        id S1725790AbgI3EzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 00:55:13 -0400
+Received: from mga12.intel.com ([192.55.52.136]:31011 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725385AbgI3Eqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 00:46:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601441196; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=A3rhz6VOuxhz1gApk6ziXDpUvE+cY9p88hAOu1BpWd4=;
- b=BcoJJZkGca/NFSIu0KGBhS/Z/93Chl++RQDTxMWoy32IwqvL4EQ4XhTSTKThPNNGW2H1JRNm
- Sppkx9SyWOS4ViR1IuWs2DPxojdynDLVdfY+WDxXSg0ds5Z4Aa1kJLtDp8H8SyDOthU1xL+G
- 09CSjf+vek8LMKmAZWl6gaQN1cU=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f740da019fe605f25eb03f3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 04:46:24
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 35D6DC43385; Wed, 30 Sep 2020 04:46:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BAD36C433C8;
-        Wed, 30 Sep 2020 04:46:22 +0000 (UTC)
+        id S1725320AbgI3EzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 00:55:12 -0400
+IronPort-SDR: jOYmpoi3BxEnB105Yduqe/PoXneGFYipkazUrRxfLYfA828YGB9WHaFLgV3I5xxej1SHSigmA6
+ p8dNLqilqEbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="141767286"
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="141767286"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 21:55:10 -0700
+IronPort-SDR: IAJJo5M+pPLzNlpO4DFYzHrLsiEpU4dcZqKJL8hCYBH0T0Mf4g0OeAIh5qLzDP4VHokRLCVdhq
+ LEuDcfo2JQJQ==
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="495478578"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 21:55:09 -0700
+Date:   Tue, 29 Sep 2020 21:55:08 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 01/22] kvm: mmu: Separate making SPTEs from set_spte
+Message-ID: <20200930045508.GA29405@linux.intel.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-2-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 29 Sep 2020 21:46:22 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to
- system heap
-In-Reply-To: <20200926042453.67517-6-john.stultz@linaro.org>
-References: <20200926042453.67517-1-john.stultz@linaro.org>
- <20200926042453.67517-6-john.stultz@linaro.org>
-Message-ID: <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925212302.3979661-2-bgardon@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-25 21:24, John Stultz wrote:
-> Reuse/abuse the pagepool code from the network code to speed
-> up allocation performance.
-> 
-> This is similar to the ION pagepool usage, but tries to
-> utilize generic code instead of a custom implementation.
-> 
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Liam Mark <lmark@codeaurora.org>
-> Cc: Laura Abbott <labbott@kernel.org>
-> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> Cc: Hridya Valsaraju <hridya@google.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: Ørjan Eide <orjan.eide@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->  drivers/dma-buf/heaps/Kconfig       |  1 +
->  drivers/dma-buf/heaps/system_heap.c | 32 +++++++++++++++++++++++++----
->  2 files changed, 29 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/Kconfig 
-> b/drivers/dma-buf/heaps/Kconfig
-> index a5eef06c4226..f13cde4321b1 100644
-> --- a/drivers/dma-buf/heaps/Kconfig
-> +++ b/drivers/dma-buf/heaps/Kconfig
-> @@ -1,6 +1,7 @@
->  config DMABUF_HEAPS_SYSTEM
->  	bool "DMA-BUF System Heap"
->  	depends on DMABUF_HEAPS
-> +	select PAGE_POOL
->  	help
->  	  Choose this option to enable the system dmabuf heap. The system 
-> heap
->  	  is backed by pages from the buddy allocator. If in doubt, say Y.
-> diff --git a/drivers/dma-buf/heaps/system_heap.c
-> b/drivers/dma-buf/heaps/system_heap.c
-> index 882a632e9bb7..9f57b4c8ae69 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -20,6 +20,7 @@
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/vmalloc.h>
-> +#include <net/page_pool.h>
-> 
->  struct dma_heap *sys_heap;
-> 
-> @@ -46,6 +47,7 @@ struct dma_heap_attachment {
->  static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, 
-> LOW_ORDER_GFP};
->  static const unsigned int orders[] = {8, 4, 0};
->  #define NUM_ORDERS ARRAY_SIZE(orders)
-> +struct page_pool *pools[NUM_ORDERS];
-> 
->  static struct sg_table *dup_sg_table(struct sg_table *table)
->  {
-> @@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct
-> dma_buf *dmabuf)
->  	struct system_heap_buffer *buffer = dmabuf->priv;
->  	struct sg_table *table;
->  	struct scatterlist *sg;
-> -	int i;
-> +	int i, j;
-> 
->  	table = &buffer->sg_table;
->  	for_each_sg(table->sgl, sg, table->nents, i) {
->  		struct page *page = sg_page(sg);
-> 
-> -		__free_pages(page, compound_order(page));
-> +		for (j = 0; j < NUM_ORDERS; j++) {
-> +			if (compound_order(page) == orders[j])
-> +				break;
-> +		}
-> +		page_pool_put_full_page(pools[j], page, false);
->  	}
->  	sg_free_table(table);
->  	kfree(buffer);
-> @@ -300,8 +306,7 @@ static struct page
-> *alloc_largest_available(unsigned long size,
->  			continue;
->  		if (max_order < orders[i])
->  			continue;
-> -
-> -		page = alloc_pages(order_flags[i], orders[i]);
-> +		page = page_pool_alloc_pages(pools[i], order_flags[i]);
->  		if (!page)
->  			continue;
->  		return page;
-> @@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops = 
-> {
->  static int system_heap_create(void)
->  {
->  	struct dma_heap_export_info exp_info;
-> +	int i;
+On Fri, Sep 25, 2020 at 02:22:41PM -0700, Ben Gardon wrote:
+> +static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+> +		    unsigned int pte_access, int level,
+> +		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
+> +		    bool can_unsync, bool host_writable)
+> +{
+> +	u64 spte = 0;
+> +	struct kvm_mmu_page *sp;
+> +	int ret = 0;
 > +
-> +	for (i = 0; i < NUM_ORDERS; i++) {
-> +		struct page_pool_params pp;
+> +	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
+> +		return 0;
 > +
-> +		memset(&pp, 0, sizeof(pp));
-> +		pp.order = orders[i];
-> +		pp.dma_dir = DMA_BIDIRECTIONAL;
-> +		pools[i] = page_pool_create(&pp);
+> +	sp = sptep_to_sp(sptep);
 > +
-> +		if (IS_ERR(pools[i])) {
-> +			int j;
-> +
-> +			pr_err("%s: page pool creation failed!\n", __func__);
-> +			for (j = 0; j < i; j++)
-> +				page_pool_destroy(pools[j]);
-> +			return PTR_ERR(pools[i]);
-> +		}
-> +	}
-> 
->  	exp_info.name = "system";
->  	exp_info.ops = &system_heap_ops;
+> +	spte = make_spte(vcpu, pte_access, level, gfn, pfn, *sptep, speculative,
+> +			 can_unsync, host_writable, sp_ad_disabled(sp), &ret);
+> +	if (!spte)
+> +		return 0;
 
-This is cool, I didn't know about this pooling code under /net/core.  
-Nice and compact.
+This is an impossible condition.  Well, maybe it's theoretically possible
+if page track is active, with EPT exec-only support (shadow_present_mask is
+zero), and pfn==0.  But in that case, returning early is wrong.
 
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Rather than return the spte, what about returning 'ret', passing 'new_spte'
+as a u64 *, and dropping the bail early path?  That would also eliminate
+the minor wart of make_spte() relying on the caller to initialize 'ret'.
+
+> +
+> +	if (spte & PT_WRITABLE_MASK)
+> +		kvm_vcpu_mark_page_dirty(vcpu, gfn);
+> +
+>  	if (mmu_spte_update(sptep, spte))
+>  		ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
+>  	return ret;
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
+> 
