@@ -2,174 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE40F27F5AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FF227F5A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732010AbgI3XF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:05:57 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:43469 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730528AbgI3XEB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:04:01 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id C3B1D9E6;
-        Wed, 30 Sep 2020 19:03:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 30 Sep 2020 19:03:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=X
-        tI1tB6xpmgOimSVGwz0nFQ2Aj6bySi3TmcGUJtNKDE=; b=YjqRrknkoRvFSexBK
-        tWIx+0K77PM+g0q6zBEER8Mt7P/9XETbBwjWGh7driOG1BR0O0UdsvYOnDTthRRc
-        ZtHljtdgwIjc9VuXtrIcDEuKUTe6uU0+QeVPTIGm6he4GXmt5AsJuNGuoQP8On+1
-        T7L2sLAcw2uTnMsQOtb02PP3pBoDmPd2KeF8pXrWX8dmLM/KPPvGosaD6qnSEHdA
-        orkj6krPdLFTt3LWnJgHvHVeIQu8JeHkZR5UPUJiZ9AKn7+zmcYtk9vPPYQAIW67
-        8rfHmpgRHqQbLV/Gi6um89WtsDHHNE9+JHhA5SK3BDv7cZeA3D55UAstc6hoS8a2
-        1ddsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=XtI1tB6xpmgOimSVGwz0nFQ2Aj6bySi3TmcGUJtNK
-        DE=; b=NQaPjYn0VYYM79zUlgVbI/HpUJfbGPk21tjYqk0fMqaQ+2xwfkmvV6TIS
-        pWiapS+Fyws9Z5VApdOhGuBwN/Y80rPEh+aeZiXrI373/amdb0AVVblB4/LcZqzR
-        EX7YCPM9MOVnsisrs8onXRMXzKU/1SA8FJrP+OGAh5APWHI6LdFxOepBQLBNFo+Q
-        s0DQWONJfi5XBUNM+PSLrC9UyGEAm5fPUVKhJUUCHwnm2vwIfMm0NXkV+ykLZA1D
-        ZB8lJ2B+MBD/0IkkzdX8wFplAMhfKL6aJEq5E4vvQ9aRHwPQcBoaTM0hkJ4wMSm3
-        0Jabe0jwdeHE+vpIy58XYf+HZv2jg==
-X-ME-Sender: <xms:wg51X5uj72nxaBN5fR3YSdO-qFbV_CB9A-VQ8jm8XnNanmrnzt8aLg>
-    <xme:wg51XycH4OzurAZwKlJz8r0cp0T0_Pct30D0uSeq7bp5L_Cugw99nNA6sHHmSOQUz
-    yT9SdbT9jsYltIC0PI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddukecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpefhuedvvdelieevgeegjeeukeeuleejtdejfeetfeeujeefvdeltdethffh
-    ueekffenucfkphepjeefrddvudejrddutddriedtnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:wg51X8xtJIO64eSz3Q3M080KKG4JsHDj7Xiqdk0jQHSVU5u4kJcJjg>
-    <xmx:wg51XwN0G_bf6PI8i2pSy7aoPH3QowMLTbZ9x9Tu8Penm-lNtPlKbQ>
-    <xmx:wg51X5_b8jwQjzwKX0LihTsNRq6mbv5nYniW8rg6cHHtW5WkhK8iqw>
-    <xmx:ww51X9WkyHuURkpU7U4m7pwqtnbF1rpD9uOCHNOs5bTWUUeKuWgnsGDTfR_ZJcnT>
-Received: from cisco (c-73-217-10-60.hsd1.co.comcast.net [73.217.10.60])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1083A3064686;
-        Wed, 30 Sep 2020 19:03:29 -0400 (EDT)
-Date:   Wed, 30 Sep 2020 17:03:27 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <20200930230327.GA1260245@cisco>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco>
- <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1732029AbgI3XGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:06:24 -0400
+Received: from mail-am6eur05on2130.outbound.protection.outlook.com ([40.107.22.130]:8224
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730528AbgI3XGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:06:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UJiMeClGkiVH4ibl/KAKve9g5KOZYH8Ug35YGj79vhjGIBqexns+bMT9x6+UTUZ49ihFqJuUEYxHBnTQA5ZUJXps8hKN45QDEPd0cetEpCTI3mTro/l4fcbEZMkZptTIjNSFQc2ETwXntgU9RijriO31QZXG7BbU8mPybcYTeVXhcCt3h6VPhr7UeRRny89+hO46AEkL0dZQupZyLWISJ9KLYmc4uPNaUcuvTz0sNYxi4Ol39yizoLLu+MHImiECYj3bx4pw1Jqwt7nafvxvzI0c6RKLM30IGVGolTS6w9eoRPkHUci59LTJXLFhSPPMOnec12ejpsCyxduO2Q85Ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cIdJqxLhKr/tt8MB5/L593xo3J4JFXoteB6dOpvjfiA=;
+ b=azp0vPbCLhOjGsnqOxH16hxdVKPckv6Pxc3WBBzU0P2MDg6de/Wyf0Vd87e8gkeBu+S6N7Z4uaBB0xeV7qClYtg1/i8naunst62zACFSziGAFg1feHTwdrtRpstWDYo3Z8tEO0fBNYHMwnX1XOdlSqm1zP8BfTu1Sw8HK/P19KcxUBeqCCQnTIUkHwfO6+hgnDByv66wrAvD2+r+OYfAK0xBULHaPSnl2ZUwsc6qHx883qKUzkCYYX240A6QEhdJ5kBhmmw8Dpv7HGsc8sMsI6FnsTtvXs1X1kZlLpwifdFfDi9VW1FhF77uHOm2shClzeUY6Pa7uj+ZigVvBYtGIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cIdJqxLhKr/tt8MB5/L593xo3J4JFXoteB6dOpvjfiA=;
+ b=hVBd9uc+gRahf5FxTr7WQ1MqJPSuN1C9lKMcG0QK4O06acA7cuU+r0ltoZ9tp+8Yy+/8sH1y+NkoOvlYzGhPLb00d4UMbu33GkMPHt14gol8FgyWCFIsnOuVijia2BUJXfLzIgZVkWA5GtxJRPMaIPF0AdqGycMkkvGOv0eYYdg=
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0460.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:58::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.28; Wed, 30 Sep 2020 23:06:09 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::c1ab:71de:6bc2:89fe%6]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 23:06:08 +0000
+Date:   Thu, 1 Oct 2020 02:06:05 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20200930230605.GB13107@plvision.eu>
+References: <20200929130446.0c2630d2@canb.auug.org.au>
+ <20201001080916.1f006d72@canb.auug.org.au>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+In-Reply-To: <20201001080916.1f006d72@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM7PR03CA0002.eurprd03.prod.outlook.com
+ (2603:10a6:20b:130::12) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM7PR03CA0002.eurprd03.prod.outlook.com (2603:10a6:20b:130::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Wed, 30 Sep 2020 23:06:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 178b945a-15cc-4815-f1a4-08d865956a97
+X-MS-TrafficTypeDiagnostic: HE1P190MB0460:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB046093BCBD937534F863761095330@HE1P190MB0460.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 55YbfEwL0gGrwRfhuzcApXXh4ycu/0KQot90muj4S8WaczVd4O7VJASqriJRBf5iwcZbqY7gHr1aAylqiiYqpxSlTYUFA7gKAFk+ATXosQGhnVIZHPtyfPiYw56r/XaryAG3v6BITp/KPVUv4w4bfnWFGR/iTA1qSpPHV8olgu4JTDgcOBcoXWnTjrWRM2QhKTK3T94N92neG7PF/6n47i4DuuUVFmVZDe4hF9i41KRlSxucM+nRC+RuEA8r51GvlRr8wvMO0FYeK9E6HSX9Uupu02pOoCv5AVg+G8h274SzGYjx8y5+MiAw6b6wriRXc/CgCw4S15VCtXiFEYznOkCmtgFmSBoKtls54RSQfFlKBvp5VPMnxkd/lEcJuqI+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39830400003)(136003)(366004)(55016002)(478600001)(16526019)(36756003)(86362001)(33656002)(4744005)(186003)(956004)(2616005)(8936002)(2906002)(66946007)(4326008)(8886007)(8676002)(1076003)(66556008)(54906003)(7696005)(52116002)(44832011)(6916009)(66476007)(26005)(83380400001)(316002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: sNdOQI9cGlJQv0mX+CgMHIrXN3E3jNR3BeHdgevQ8XfiAapnxrhbh+jq1LXj103BgzGbZY+MPSh0qR6anfs5twT+Dxxhuic97VoBGa3r+s+RFm+w3QWBad57QlJIgSKcFTBc5eIvuRutk1CD7LJP+bvr7E/rVq26QI+igchcyfu6H5W6Nz2gtx7kOyJEyBG6EindQT2d68rxjZBA+EcOph75STR1C9sMvw+586YCSjdkT4WlzG4t1hXnOArRsKLq6lDo0Wj/9eFdujeR1PoXZMqlwuuuthTzJPW4juFcvUxhrZO7KRLZCLtaqyO34MdXkDsRacSaj0Le0+ZHniNG1qgcr3NkhdFHsIX89hfDOUMsV/V3ttDLTfo4iW4/VvW7HVfgJg3iGg6L4zoIRiVbcZrOQwaoOJjmGO1psECwETedbraOWi4itle2JL+jllWKSsPzl4B1sEXsU7w17OAN1fSMV2TshP9KDiLaNjJIPE5FRczrh8TWtS8IMtujv7+gS4H2YG3QEImjd3FRXm/lQbCboaEzCfT2AN3kdYqKK+Q5WCFG7ZwJVbH7FhNCZpd59yrH0R+I7IgTcW1pQ7i/xoUr+KhaU1dHHSSBDLB21AXOzadQiAUh72qu0azcq0d3cACSqNqfP8N/rxYMcLbi9A==
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 178b945a-15cc-4815-f1a4-08d865956a97
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 23:06:08.8179
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sQXN6wr2BMB1Z/1EieYlPN+XmfsaZGyvecKxKJ3VYiu0UfCjORU3t2fxUun3IxW/2UosdkDoL/QUZs+9LxUnSPKak1aslMf43Bcc6bNQAVk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
-> Hi Tycho,
-> 
-> Thanks for taking time to look at the page!
-> 
-> On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
-> >>        2. In order that the supervisor process can obtain  notifications
-> >>           using  the  listening  file  descriptor, (a duplicate of) that
-> >>           file descriptor must be passed from the target process to  the
-> >>           supervisor process.  One way in which this could be done is by
-> >>           passing the file descriptor over a UNIX domain socket  connec‐
-> >>           tion between the two processes (using the SCM_RIGHTS ancillary
-> >>           message type described in unix(7)).   Another  possibility  is
-> >>           that  the  supervisor  might  inherit  the file descriptor via
-> >>           fork(2).
-> > 
-> > It is technically possible to inherit the fd via fork, but is it
-> > really that useful? The child process wouldn't be able to actually do
-> > the syscall in question, since it would have the same filter.
-> 
-> D'oh! Yes, of course.
-> 
-> I think I was reaching because in an earlier conversation
-> you replied:
-> 
-> [[
-> > 3. The "target process" passes the "listening file descriptor"
-> >    to the "monitoring process" via the UNIX domain socket.
-> 
-> or some other means, it doesn't have to be with SCM_RIGHTS.
-> ]]
-> 
-> So, what other means?
-> 
-> Anyway, I removed the sentence mentioning fork().
+Hi Stephen,
 
-Whatever means people want :). fork() could work (it's how some of the
-tests for this feature work, but it's not particularly useful I don't
-think), clone(CLONE_FILES) is similar, seccomp_putfd, or maybe even
-cloning it via some pidfd interface that might be invented for
-re-opening files.
-
-> >>        ┌─────────────────────────────────────────────────────┐
-> >>        │FIXME                                                │
-> >>        ├─────────────────────────────────────────────────────┤
-> >>        │From my experiments,  it  appears  that  if  a  SEC‐ │
-> >>        │COMP_IOCTL_NOTIF_RECV   is  done  after  the  target │
-> >>        │process terminates, then the ioctl()  simply  blocks │
-> >>        │(rather than returning an error to indicate that the │
-> >>        │target process no longer exists).                    │
-> > 
-> > Yeah, I think Christian wanted to fix this at some point,
+On Thu, Oct 01, 2020 at 08:09:16AM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Do you have a pointer that discussion? I could not find it with a 
-> quick search.
+[CUT]
 > 
-> > but it's a
-> > bit sticky to do.
+> I am still getting this build failure ...
 > 
-> Can you say a few words about the nature of the problem?
+> -- 
 
-I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp:
-notify about unused filter"). So maybe there's a bug here?
+I just 've checked linux-next/master and it builds fine at least with my custom
+config, do/how I need to handle this case ?
 
-> >>        ┌─────────────────────────────────────────────────────┐
-> >>        │FIXME                                                │
-> >>        ├─────────────────────────────────────────────────────┤
-> >>        │Interestingly, after the event  had  been  received, │
-> >>        │the  file descriptor indicates as writable (verified │
-> >>        │from the source code and by experiment). How is this │
-> >>        │useful?                                              │
-> > 
-> > You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
-> > reasonable.
-> 
-> No, I'm saying something more fundamental: why is the FD indicating as
-> writable? Can you write something to it? If yes, what? If not, then
-> why do these APIs want to say that the FD is writable?
+I see the changes you applied already in linux-next/master.
 
-You can't via read(2) or write(2), but conceptually NOTIFY_RECV and
-NOTIFY_SEND are reading and writing events from the fd. I don't know
-that much about the poll interface though -- is it possible to
-indicate "here's a pseudo-read event"? It didn't look like it, so I
-just (ab-)used POLLIN and POLLOUT, but probably that's wrong.
+> Cheers,
+> Stephen Rothwell
 
-Tycho
+
