@@ -2,137 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C6727E67D
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A611227E687
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728884AbgI3KXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:23:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58040 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725776AbgI3KXy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:23:54 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UA34eX132050;
-        Wed, 30 Sep 2020 06:23:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=YKyQ5xIGCX9cBGV7qWvKGTfjYt2RfE/ZUqLP41WpN9Y=;
- b=OPQeB8/TXPU21NApO7Y8QRgvuvIU+4/Y2UVS6Z+jtk6vOr0lpUE9wiViWs791dgkEjQ0
- 6M8uYI89+YiYJCD5sl8FkCGDQBytsUIsjC2+kWNhIXv9POSy/y6jNBmR5f8YlmHxK+5C
- aE6fu8a/dBwTQR/FadpucrcCLqUmy+ks9tB4lBCVKamE6IFHGFJliVjl4vWTAKXDtSb9
- iBKNDnioMGHTrYGLgaUjSdlIp08Zdfy1LDaVekq81KRhw3UooEobm72CXyMlSHcyxl7/
- 7+lQugajvDkI2yJ/6eiZVuWFGxpQqMO/kGekxIm76WQnyxQ4Y/zWIw0bPeGK6ilZgoOZ pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vqa6spju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 06:23:46 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UA3X99132864;
-        Wed, 30 Sep 2020 06:23:46 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vqa6sphq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 06:23:44 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UAMufJ019373;
-        Wed, 30 Sep 2020 10:23:42 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 33sw98a8kj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 10:23:42 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UANe1c30081390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 10:23:40 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2409A4203F;
-        Wed, 30 Sep 2020 10:23:40 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9DE242042;
-        Wed, 30 Sep 2020 10:23:38 +0000 (GMT)
-Received: from oc8242746057.ibm.com.com (unknown [9.171.39.113])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Sep 2020 10:23:38 +0000 (GMT)
-From:   Alexander Egorenkov <egorenar@linux.ibm.com>
-To:     dyoung@redhat.com, bhe@redhat.com, vgoyal@redhat.com,
-        lijiang@redhat.com
-Cc:     ebiederm@xmission.com, akpm@linux-foundation.org,
-        ktkhai@virtuozzo.com, keescook@chromium.org,
-        christian.brauner@ubuntu.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>
-Subject: [PATCH v3 1/1] kdump: append uts_namespace.name offset to VMCOREINFO
-Date:   Wed, 30 Sep 2020 12:23:28 +0200
-Message-Id: <20200930102328.396488-1-egorenar@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729188AbgI3KY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:24:56 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:57008 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727657AbgI3KYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:24:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601461492; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8kp18v6HuIXRC2ri0p2ZUzJlvj22ggsUu9ZY0e6lPc8=;
+ b=rSq+eiboz5alYxlMLJ+WTlqd1awkXgzKTJigxp+R3cOjBokbBPbP7Dm+RXBWNluE7YR48+oQ
+ l7nt0/xvuMVAEd4X57ntNFxpjN/3HvckVfgvj730o1BAiLd7gzCLjbhU9aHhNLlW79KXAnD4
+ T05uGLrYDIYLy0aNNC71LU9JTSc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f745cf3cc21f6157a0fbfab (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 10:24:51
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BD06EC433CB; Wed, 30 Sep 2020 10:24:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C22ACC433C8;
+        Wed, 30 Sep 2020 10:24:48 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_05:2020-09-29,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009300075
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 30 Sep 2020 15:54:48 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, peterz@infradead.org
+Cc:     alexander.shishkin@linux.intel.com, linux-arm-msm@vger.kernel.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>, leo.yan@linaro.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCHv2 1/2] coresight: tmc-etf: Fix NULL pointer
+ dereference in tmc_enable_etf_sink_perf()
+In-Reply-To: <751bd7d9fc65cdd3f1d118814193e9d925e2f56f.1601292571.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1601292571.git.saiprakash.ranjan@codeaurora.org>
+ <751bd7d9fc65cdd3f1d118814193e9d925e2f56f.1601292571.git.saiprakash.ranjan@codeaurora.org>
+Message-ID: <c0e1f99a0a2480dfc8d788bb424d3f08@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The offset of the field 'init_uts_ns.name' has changed
-since commit 9a56493f6942 ("uts: Use generic ns_common::count").
+On 2020-09-28 17:07, Sai Prakash Ranjan wrote:
+> There was a report of NULL pointer dereference in ETF enable
+> path for perf CS mode with PID. It is almost 100% reproducible
+> when the process to monitor is something very active such as
+> chrome and only with ETF as the sink. Currently in a bid to
+> find the pid, the owner is dereferenced via task_pid_nr() call
+> in tmc_enable_etf_sink_perf(). With owner being NULL, we get a
+> NULL pointer dereference, so check the owner before dereferencing
+> it to prevent the system crash.
+> 
+>  perf record -e cs_etm/@tmc_etf0/ -N -p <pid>
+> 
+> Unable to handle kernel NULL pointer dereference at virtual address
+> 0000000000000548
+> Mem abort info:
+>   ESR = 0x96000006
+>   EC = 0x25: DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> Data abort info:
+>   ISV = 0, ISS = 0x00000006
+>   CM = 0, WnR = 0
+> 
+> Call trace:
+>  tmc_enable_etf_sink+0xe4/0x280
+>  coresight_enable_path+0x168/0x1fc
+>  etm_event_start+0x8c/0xf8
+>  etm_event_add+0x38/0x54
+>  event_sched_in+0x194/0x2ac
+>  group_sched_in+0x54/0x12c
+>  flexible_sched_in+0xd8/0x120
+>  visit_groups_merge+0x100/0x16c
+>  ctx_flexible_sched_in+0x50/0x74
+>  ctx_sched_in+0xa4/0xa8
+>  perf_event_sched_in+0x60/0x6c
+>  perf_event_context_sched_in+0x98/0xe0
+>  __perf_event_task_sched_in+0x5c/0xd8
+>  finish_task_switch+0x184/0x1cc
+>  schedule_tail+0x20/0xec
+>  ret_from_fork+0x4/0x18
+> 
 
-Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
++Peter,
 
-Make the offset of the field 'uts_namespace.name' available
-in VMCOREINFO because tools like 'crash-utility' and
-'makedumpfile' must be able to read it from crash dumps.
+I could reproduce this (without my band-aid patch 100%) even on the 
+latest
+coresight-next tip which is on 5.9-rc5 with my debian installed on
+SDM845 based board.
 
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
----
+Hi Peter, sorry to bother you. We observe that the NULL pointer is
+propagated from events core code(in the call trace below), is it even
+valid for the owner(task) to be NULL?
 
-v2 -> v3:
- * Added documentation to vmcoreinfo.rst
- * Use the short form of the commit reference
+Reproduction is as simple as below:
 
-v1 -> v2:
- * Improved commit message
- * Added link to the discussion of the uts namespace changes
+perf record -e cs_etm/@tmc_etf0/ -N -p 1
 
- Documentation/admin-guide/kdump/vmcoreinfo.rst | 6 ++++++
- kernel/crash_core.c                            | 1 +
- 2 files changed, 7 insertions(+)
+[   16.411231] Unable to handle kernel NULL pointer dereference at 
+virtual address 0000000000000468
+[   16.420080] Mem abort info:
+[   16.422903]   ESR = 0x96000004
+[   16.425988]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   16.431345]   SET = 0, FnV = 0
+[   16.434429]   EA = 0, S1PTW = 0
+[   16.437602] Data abort info:
+[   16.440506]   ISV = 0, ISS = 0x00000004
+[   16.444377]   CM = 0, WnR = 0
+[   16.447372] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001f078c000
+[   16.453858] [0000000000000468] pgd=0000000000000000, 
+p4d=0000000000000000
+[   16.460704] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[   16.466323] Modules linked in:
+[   16.469409] CPU: 5 PID: 2795 Comm: systemd Not tainted 
+5.9.0-rc5-g1aeb4770c2f1-dirty #6
+[   16.484046] pstate: 80400085 (Nzcv daIf +PAN -UAO BTYPE=--)
+[   16.489668] pc : tmc_enable_etf_sink+0x74/0x2e8
+[   16.494237] lr : tmc_enable_etf_sink+0x50/0x2e8
+[   16.498807] sp : ffff800010c73b20
+[   16.502149] x29: ffff800010c73b20 x28: ffff0001712b0008
+[   16.507510] x27: ffff00017c76b308 x26: ffffa1e8a227dc80
+[   16.512860] x25: 0000000000000002 x24: ffff00017c766768
+[   16.518217] x23: 0000000000000080 x22: ffff000171c192e0
+[   16.523575] x21: ffff000173868000 x20: ffff000171c19280
+[   16.528934] x19: 0000000000000002 x18: ffffffffffffffff
+[   16.534293] x17: 0000000000000000 x16: 0000000000000000
+[   16.539652] x15: ffffa1e8a1ec9948 x14: ffff800090c738a7
+[   16.545011] x13: ffff800010c738b5 x12: 0000000000000028
+[   16.550369] x11: ffffa1e8a1eea000 x10: 0000000000000000
+[   16.555728] x9 : 0000000000000000 x8 : 00000aeb00000aeb
+[   16.561088] x7 : 003000000000000c x6 : 0000000000000001
+[   16.566447] x5 : 0000000000000002 x4 : 0000000000000001
+[   16.571805] x3 : 0000000000000000 x2 : 0000000000000001
+[   16.577163] x1 : 0000000000000000 x0 : 00000000ffffffff
+[   16.582523] Call trace:
+[   16.584998]  tmc_enable_etf_sink+0x74/0x2e8
+[   16.589219]  coresight_enable_path+0xd8/0x208
+[   16.593608]  etm_event_start+0xe8/0x128
+[   16.597481]  etm_event_add+0x44/0x60
+[   16.601094]  event_sched_in.isra.139+0xd0/0x218
+[   16.605664]  merge_sched_in+0x148/0x370
+[   16.609536]  visit_groups_merge.constprop.147+0x124/0x490
+[   16.614973]  ctx_sched_in+0xc4/0x168
+[   16.618575]  perf_event_sched_in+0x6c/0xa8
+[   16.622706]  __perf_event_task_sched_in+0x1a0/0x1b0
+[   16.627623]  finish_task_switch+0x19c/0x248
+[   16.631843]  schedule_tail+0x20/0x120
+[   16.635535]  ret_from_fork+0x4/0x1c
+[   16.639060] Code: 54000f20 f9400301 b9406680 f9414821 (b9446839)
+[   16.645215] ---[ end trace bf238834e81d5892 ]---
+[   16.649877] Kernel panic - not syncing: Fatal exception
 
-diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-index e44a6c01f336..3861a25faae1 100644
---- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-+++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-@@ -39,6 +39,12 @@ call.
- User-space tools can get the kernel name, host name, kernel release
- number, kernel version, architecture name and OS type from it.
- 
-+(uts_namespace, name)
-+---------------------
-+
-+Offset of the name's member. Crash Utility and Makedumpfile get
-+the start address of the init_uts_ns.name from this.
-+
- node_online_map
- ---------------
- 
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index 106e4500fd53..173fdc261882 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
- 	VMCOREINFO_PAGESIZE(PAGE_SIZE);
- 
- 	VMCOREINFO_SYMBOL(init_uts_ns);
-+	VMCOREINFO_OFFSET(uts_namespace, name);
- 	VMCOREINFO_SYMBOL(node_online_map);
- #ifdef CONFIG_MMU
- 	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
+
+Thanks,
+Sai
+
 -- 
-2.26.2
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
