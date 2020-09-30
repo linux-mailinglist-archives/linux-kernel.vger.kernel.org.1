@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B9227E392
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF4527E396
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbgI3IT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:19:28 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:59882 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725535AbgI3IT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:19:28 -0400
-Received: from localhost.localdomain (unknown [159.226.5.100])
-        by APP-03 (Coremail) with SMTP id rQCowAC3vlZ1P3Rfy_SiAA--.33255S2;
-        Wed, 30 Sep 2020 16:19:01 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, daniel@ffwll.ch, airlied@linux.ie
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/bridge: ti-sn65dsi86: remove redundant null check
-Date:   Wed, 30 Sep 2020 08:18:59 +0000
-Message-Id: <20200930081859.52431-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAC3vlZ1P3Rfy_SiAA--.33255S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF4UZF47GFy5Wry3ZFy8Grg_yoWfJwc_CF
-        n8trZFgan8Zrnakr47Cw43Zr9Fyw1q9FWkGw10qa93Jr90vry3u34Igry5XrnruF1UJF17
-        Jw1DGF13Ars7ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0eyxtUUUUU==
-X-Originating-IP: [159.226.5.100]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYPA1z4jeNkuwAAsU
+        id S1728471AbgI3ITw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgI3ITw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:19:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30524C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:19:52 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601453990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=rZrly6olnokuVeon5dpD/FuXUcu5p0ca4GP2VT0oyos=;
+        b=mxjWLJ+wcFe9EPGD0MrMLMDd4rbWIzGlFWraCcvkNxQj3fzgPeI58syLeameaXIp91l2gl
+        HJK0bbQbHW9SXrtMhn73/zhxQOzfD1URaKGZZ/cfATWnQlZ3N8xIWumeCnmD+QrLNw7KiB
+        9QowOpd7HTk+YPGdMf+IRhZHHXnaoAmp5QQlnphiXP2ht3/FVBxH3SV8GRI8d0gJ+/TjoJ
+        gGu0BBjHhAFjufkXgxJkxL1QgMxMEKNXk+cF3xdNi1kFl50h0fI5Xrvyv8I5JqQ8wz6G/u
+        GQJV4MvQ9LTnNeAZVSQjC1A10gVpHGQuC7XCzDSquCcS6HRswT1IxJVFwA6p2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601453990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=rZrly6olnokuVeon5dpD/FuXUcu5p0ca4GP2VT0oyos=;
+        b=wOkIboveHJN9bFt0Kz8imqUChyNW9xtdz1GbaS/mhJ2Zu8MoLFuuIvjwylC1hN5t2CcV5S
+        mQYcPqAd4O/AW+Dw==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org
+Subject: [PATCH] x86/mce: Use idtentry_nmi_enter/exit()
+Date:   Wed, 30 Sep 2020 10:19:49 +0200
+Message-ID: <87mu17ism2.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare already checked NULL clock parameter,
-so the additional checks are unnecessary, just remove it
+The recent fix for NMI vs. IRQ state tracking missed to apply the cure to
+the MCE handler.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Fixes: ba1f2b2eaa2a ("x86/entry: Fix NMI vs IRQ state tracking")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 5b6e19ecbc84..1b01836f1eb1 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -819,8 +819,7 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1904,6 +1904,8 @@ void (*machine_check_vector)(struct pt_r
+ 
+ static __always_inline void exc_machine_check_kernel(struct pt_regs *regs)
  {
- 	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
++	bool irq_state;
++
+ 	WARN_ON_ONCE(user_mode(regs));
  
--	if (pdata->refclk)
--		clk_disable_unprepare(pdata->refclk);
-+	clk_disable_unprepare(pdata->refclk);
+ 	/*
+@@ -1914,7 +1916,7 @@ static __always_inline void exc_machine_
+ 	    mce_check_crashing_cpu())
+ 		return;
  
- 	pm_runtime_put_sync(pdata->dev);
+-	nmi_enter();
++	irq_state = idtentry_enter_nmi(regs);
+ 	/*
+ 	 * The call targets are marked noinstr, but objtool can't figure
+ 	 * that out because it's an indirect call. Annotate it.
+@@ -1925,7 +1927,7 @@ static __always_inline void exc_machine_
+ 	if (regs->flags & X86_EFLAGS_IF)
+ 		trace_hardirqs_on_prepare();
+ 	instrumentation_end();
+-	nmi_exit();
++	idtentry_exit_nmi(regs, irq_state);
  }
--- 
-2.17.1
-
+ 
+ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
