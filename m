@@ -2,147 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE0B27ED59
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303A927ED72
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgI3Pha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728819AbgI3Pha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:37:30 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05318C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:37:30 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id db4so1105911qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f33WCIAH8fqh3HtODTce+QpZynRoHkBXlYY23wB6w0M=;
-        b=YcRB+jn05sxsPmn29ggeNKLPC35F3Fgeo9dlMcBpeJP7YQggaTEHKer4vn+aKh+04M
-         qkz5w7J/ldhj0GuiSB50yI1dDikAkWNQ2ymSRtiJ5DccL392sh4ELzMV4TrEaqnOo9Zl
-         QAG/L2FP3uXRmVvGMRpY5Dkj1psjTQAUuHF/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f33WCIAH8fqh3HtODTce+QpZynRoHkBXlYY23wB6w0M=;
-        b=m4ESg+hwV/gbzxy4XqIPsJar1B4/VZziULQcJGKuhldEwD5Dzzc9YOb0Yng4nfY96I
-         3ypTPJP9xJYEUP/4xqS8rMpJM4XlcPh810DXRSYQugP1GviRNiIoFGj+0Kpojb5mOiuL
-         z44gz9PjNjNtjTtPe4dLWz5XiibVol44xMXkd/BTt2h+GWavlkaVsJIrwyIinpT1NRmT
-         NBvRIXfFewdIwmBh3N23tIiaahW9X7hDBfsxtgR7imhKz3vuIfwZpgToZRXxCMOxlKD/
-         plWaZQldpNT3JaDIrs2FAhiaD6ucj3bIRjkfAr1PPhbYBg/5u3WaQR1cAwOMH8VhCzNo
-         uKeA==
-X-Gm-Message-State: AOAM530KqPIXAdNS6V5b/KYMARoXl/RWRPvcZIY/HFFBgtlMRKSRYwFC
-        nNI4lcG6HjVw2seA3IJcArkTgg==
-X-Google-Smtp-Source: ABdhPJwL89nU9VHEeW9R8TLUy2btHOZxU2SW1wrLvLM6oOVg5SrbqHUDuGDJKx5PaLSQppvxqhp/7A==
-X-Received: by 2002:ad4:55ec:: with SMTP id bu12mr2988504qvb.0.1601480249018;
-        Wed, 30 Sep 2020 08:37:29 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id v8sm2688643qkb.23.2020.09.30.08.37.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 08:37:00 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 11:37:00 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200930153700.GA1472573@google.com>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+        id S1731164AbgI3Pii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:38:38 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23518 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgI3Pid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:38:33 -0400
+IronPort-SDR: Rxx2rytSC/4QPVc8Iyb29J00cBh+Xc2UigoX0ZRCbtSjIWnN8KltExgzUup6xSVgZ3noUFLInx
+ nnKZir5LJjpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="141883719"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="141883719"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 08:38:33 -0700
+IronPort-SDR: 3g1ArE64tf93Mj0CVDgjreXVKrPAFugAVt4cjflUfy7T0NmU/tLG2FIYNI7GqHfZhrov/M7hqd
+ OH01N6fhRmKw==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="350706648"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 08:38:32 -0700
+Date:   Wed, 30 Sep 2020 08:38:31 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH 04/22] kvm: mmu: Allocate and free TDP MMU roots
+Message-ID: <20200930153824.GA32672@linux.intel.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-5-bgardon@google.com>
+ <20200930060610.GA29659@linux.intel.com>
+ <6a5b78f8-0fbe-fbec-8313-f7759e2483b0@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+In-Reply-To: <6a5b78f8-0fbe-fbec-8313-f7759e2483b0@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 04:39:53PM +0200, Vlastimil Babka wrote:
-> On 9/30/20 12:07 AM, Uladzislau Rezki wrote:
-> > On Tue, Sep 29, 2020 at 12:15:34PM +0200, Vlastimil Babka wrote:
-> >> On 9/18/20 9:48 PM, Uladzislau Rezki (Sony) wrote:
-> >> 
-> >> After reading all the threads and mulling over this, I am going to deflect from
-> >> Mel and Michal and not oppose the idea of lockless allocation. I would even
-> >> prefer to do it via the gfp flag and not a completely separate path. Not using
-> >> the exact code from v1, I think it could be done in a way that we don't actually
-> >> look at the new flag until we find that pcplist is empty - which should not
-> >> introduce overhead to the fast-fast path when pcpclist is not empty. It's more
-> >> maintainable that adding new entry points, IMHO.
-> >> 
-> > Thanks for reading all that from the beginning! It must be tough due to the
-> > fact there were lot of messages in the threads, so at least i was lost.
+On Wed, Sep 30, 2020 at 08:26:28AM +0200, Paolo Bonzini wrote:
+> On 30/09/20 08:06, Sean Christopherson wrote:
+> >> +static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
+> >> +{
+> >> +	struct kvm_mmu_page *root;
+> >> +	union kvm_mmu_page_role role;
+> >> +
+> >> +	role = vcpu->arch.mmu->mmu_role.base;
+> >> +	role.level = vcpu->arch.mmu->shadow_root_level;
+> >> +	role.direct = true;
+> >> +	role.gpte_is_8_bytes = true;
+> >> +	role.access = ACC_ALL;
+> >> +
+> >> +	spin_lock(&vcpu->kvm->mmu_lock);
+> >> +
+> >> +	/* Search for an already allocated root with the same role. */
+> >> +	root = find_tdp_mmu_root_with_role(vcpu->kvm, role);
+> >> +	if (root) {
+> >> +		get_tdp_mmu_root(vcpu->kvm, root);
+> >> +		spin_unlock(&vcpu->kvm->mmu_lock);
+> > Rather than manually unlock and return, this can be
 > > 
-> > I agree that adding a new entry or separate lock-less function can be considered
-> > as something that is hard to maintain. I have a question here. I mean about your
-> > different look at it:
+> > 	if (root)
+> > 		get_tdp_mmju_root();
 > > 
-> > <snip>
-> > bool is_pcp_cache_empty(gfp_t gfp)
-> > {
-> >     struct per_cpu_pages *pcp;
-> >     struct zoneref *ref;
-> >     unsigned long flags;
-> >     bool empty;
+> > 	spin_unlock()
 > > 
-> >     ref = first_zones_zonelist(node_zonelist(
-> >             numa_node_id(), gfp), gfp_zone(gfp), NULL);
-> >     if (!ref->zone)
-> >             return true;
+> > 	if (!root)
+> > 		root = alloc_tdp_mmu_root();
 > > 
-> >     local_irq_save(flags);
-> >     pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
-> >     empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
-> >     local_irq_restore(flags);
+> > 	return root;
 > > 
-> >     return empty;
-> > }
-> > 
-> > disable_irq();
-> > if (!is_pcp_cache_empty(GFP_NOWAIT))
-> >     __get_free_page(GFP_NOWAIT);
-> > enable_irq();
-> > <snip>
-> > 
-> > Do you mean to have something like above? I mean some extra API
-> > function that returns true or false if fast-fast allocation can
-> > either occur or not. Above code works just fine and never touches
-> > main zone->lock.
-> > 
-> > i.e. Instead of introducing an extra GFP_LOCKLESS flag or any new
-> > extra lock-less function. We could have something that checks a
-> > pcp page cache list, thus it can guarantee that a request would
-> > be accomplish using fast-fast path.
+> > You could also add a helper to do the "get" along with the "find".  Not sure
+> > if that's worth the code.
 > 
-> No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> the allocator (different from what you posted in previous version) so that it
-> only looks at the flag after it tries to allocate from pcplist and finds out
-> it's empty. So, no inventing of new page allocator entry points or checks such
-> as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> affect existing fast paths.
+> All in all I don't think it's any clearer than Ben's code.  At least in
+> his case the "if"s clearly point at the double-checked locking pattern.
 
-I like the idea of a new flag too :) After all telling the allocator more
-about what your context can tolerate, via GFP flags, is not without
-precedent.
+Actually, why is this even dropping the lock to do the alloc?  The allocs are
+coming from the caches, which are designed to be invoked while holding the
+spin lock.
 
-thanks,
+Also relevant is that, other than this code, the only user of
+find_tdp_mmu_root_with_role() is kvm_tdp_mmu_root_hpa_for_role(), and that
+helper is itself unused.  I.e. the "find" can be open coded.
 
- - Joel
+Putting those two together yields this, which IMO is much cleaner.
+
+static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
+{
+        union kvm_mmu_page_role role;
+	struct kvm *kvm = vcpu->kvm;
+        struct kvm_mmu_page *root;
+
+	role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
+
+        spin_lock(&kvm->mmu_lock);
+
+        /* Check for an existing root before allocating a new one. */
+        for_each_tdp_mmu_root(kvm, root) {
+                if (root->role.word == role.word) {
+                        get_tdp_mmu_root(root);
+                        spin_unlock(&kvm->mmu_lock);
+                        return root;
+                }
+        }
+
+        root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
+        root->root_count = 1;
+
+        list_add(&root->link, &kvm->arch.tdp_mmu_roots);
+
+        spin_unlock(&kvm->mmu_lock);
+
+        return root;
+}
 
