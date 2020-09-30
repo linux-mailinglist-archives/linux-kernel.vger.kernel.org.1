@@ -2,116 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B327EE32
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7249527EE36
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730912AbgI3QDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:03:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3QDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:03:46 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A59920B1F;
-        Wed, 30 Sep 2020 16:03:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601481825;
-        bh=d/UjG1nCA1JG1VOl7i+9DvO19UCGEZ9Pdk/X/fb/ck8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wzDoDL/qM/Yr0keCU1jzREn08ZPYsNisltjAzc3f4vAn4wsl2W7uoUPhxPImmzpst
-         SImiiaeh80Tv1oN/CLEQChq5Iqy+flOvgDHDeU3xdikc55FFlI7tjsYp744z/LiyWi
-         X/k2vJcHsoB3xILrSG+mxNRc7rPsb/SoV4T3acYI=
-Received: by mail-ot1-f42.google.com with SMTP id 60so2339861otw.3;
-        Wed, 30 Sep 2020 09:03:45 -0700 (PDT)
-X-Gm-Message-State: AOAM5305egLXfsphWrFZkEF95gMd4nU/7c2tuT2BOjKuZVExJ4uvkhFj
-        L+hnz/JmUkb9okCaps1UFcipwsSo18IK0JSOWyc=
-X-Google-Smtp-Source: ABdhPJx9uZma2udofiaFu+pMAJ3U7PlPQjF1ps5+9/+UIA10uI7fIWGY7tBvGFRSGepCVP85EfK3bYfKIoTWI8TWRjY=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr1938806otk.108.1601481824405;
- Wed, 30 Sep 2020 09:03:44 -0700 (PDT)
+        id S1730959AbgI3QEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3QD7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:03:59 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3640C061755;
+        Wed, 30 Sep 2020 09:03:59 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id qp15so2685999ejb.3;
+        Wed, 30 Sep 2020 09:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HkhKHMINiSKqraOzIt5AxpBzpOhikgq//AotPkRaIHM=;
+        b=PA0vKez2xLCTX95LNGOxIfgXhECvVxQWPz9lTjS8LRwfyNeNFGu2aC9k+fWUANP5i+
+         CyfIiWv03oxjhmcTPAvXyWnDS1ElIY5rdfxye5KC89MQ2zgRxyuXu2nlJwv7J9YjH5KO
+         TVSjIndlsxvUCj0CIhqDSsK/ymQ0sy4WZE7/cqs9VS42PGAOSeWCv0GzGC+ZxOYdwhFr
+         /NpIG/X/n3SxrRiz6H4rVNLiBgv51Kzg19FK4QMlz0KWA7I0pbBrGUUw80Kzo/VV6bSq
+         TPtGtqRRdSY5Hfeuo1f+8eqd3CT95PUoXBvKNv/z+qsFzgIocPu8CTQvcnhKUkz0Jy+E
+         YDOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HkhKHMINiSKqraOzIt5AxpBzpOhikgq//AotPkRaIHM=;
+        b=H2DHzzIEiQ66DdltnlTqDBdSox2/9dSFaqLWfVZlcMfhxO6oJF1dKl/dGV+1DeY8Og
+         iVw52Vq02VIrvDzRsOtEtLfpJJJdYI/sFjwZobva58RIcY6sECGd6us4Hes5GFVG9O0+
+         xvOr/ZdyX9sLLbpohV2uvDOoCgI8Rj3uzhwTCNN86YW5g3dYlcQvdEwU/js7uO+43Ujn
+         Lty6bQjJAsh8h3cRFESEIiT/XmA9x4ralBx8a3+57VI5dFadEnhxqufthnVK5jLcztUw
+         C7Dyjo5wkcnyCysyt/3mbpAQqXtLdoT36eLjmbYDxBwB6IWmtpPFCeATmbyPyNrHf9qO
+         iM0Q==
+X-Gm-Message-State: AOAM532V3iDwPebvJXF2ZO4ngrxwB4LrjHBm8c6cVWu5HWJZDKEiB/JX
+        NIk4Y1Pk60Jd68YckEg1Nw0=
+X-Google-Smtp-Source: ABdhPJztk+9riNAmQmBHmoVtNpIQJe2sCTHfApl0Io1rReAg/lC07AvYf4F+aedZqiTec8nxyuiHAQ==
+X-Received: by 2002:a17:906:c10c:: with SMTP id do12mr3442838ejc.527.1601481838354;
+        Wed, 30 Sep 2020 09:03:58 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id va25sm1535615ejb.72.2020.09.30.09.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:03:56 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 18:03:55 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] memory: tegra: Add
+ devm_tegra_get_memory_controller()
+Message-ID: <20200930160355.GC3833404@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-2-nicoleotsuka@gmail.com>
+ <20200930152320.GA3833404@ulmo>
+ <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
 MIME-Version: 1.0
-References: <20200930130123.8064-1-colin.king@canonical.com> <CAAUqJDuDsgLZ_7i=knqFNkqWJn+G3FqE3Yv=RBLr27mBMJk1Cg@mail.gmail.com>
-In-Reply-To: <CAAUqJDuDsgLZ_7i=knqFNkqWJn+G3FqE3Yv=RBLr27mBMJk1Cg@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 30 Sep 2020 18:03:33 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF2AzFkcyWzUHagq4xD_4BHpiscrPurndmJmJyp2KgXJg@mail.gmail.com>
-Message-ID: <CAMj1kXF2AzFkcyWzUHagq4xD_4BHpiscrPurndmJmJyp2KgXJg@mail.gmail.com>
-Subject: Re: [PATCH][next][resend] lib/mpi: fix off-by-one check on index "no"
-To:     =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Waiman Long <longman@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 16:36, Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.co=
-m> wrote:
->
-> st 30. 9. 2020 o 15:04 Colin King <colin.king@canonical.com> nap=C3=ADsal=
-(a):
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > There is an off-by-one range check on the upper limit of
-> > index "no".  Fix this by changing the > comparison to >=3D
->
-> Note that this doesn't completely fix the bug though... (see below)
->
 
-And by the same reasoning, it does not address the coverity issue
-either, since the out of bounds read is still executed.
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 18:23, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
+> >> From: Dmitry Osipenko <digetx@gmail.com>
+> >>
+> >> Multiple Tegra drivers need to retrieve Memory Controller and hence th=
+ere
+> >> is quite some duplication of the retrieval code among the drivers. Let=
+'s
+> >> add a new common helper for the retrieval of the MC.
+> >>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> >> ---
+> >>
+> >> Changelog
+> >> v2->v3:
+> >>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
+> >> v1->v2:
+> >>  * N/A
+> >>
+> >>  drivers/memory/tegra/mc.c | 39 +++++++++++++++++++++++++++++++++++++++
+> >>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
+> >>  2 files changed, 56 insertions(+)
+> >=20
+> > Let's not add this helper, please. If a device needs a reference to the
+> > memory controller, it should have a phandle to the memory controller in
+> > device tree so that it can be looked up explicitly.
+> >=20
+> > Adding this helper is officially sanctioning that it's okay not to have
+> > that reference and that's a bad idea.
+>=20
+> And please explain why it's a bad idea, I don't see anything bad here at
+> all.
 
-> >
-> > Addresses-Coverity: ("Out-of-bounds read")
-> > Fixes: a8ea8bdd9df9 ("lib/mpi: Extend the MPI library")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >
-> > resend to Cc linux-crypto
-> >
-> > ---
-> >  lib/mpi/mpiutil.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
-> > index 3c63710c20c6..632d0a4bf93f 100644
-> > --- a/lib/mpi/mpiutil.c
-> > +++ b/lib/mpi/mpiutil.c
-> > @@ -69,7 +69,7 @@ postcore_initcall(mpi_init);
-> >   */
-> >  MPI mpi_const(enum gcry_mpi_constants no)
-> >  {
-> > -       if ((int)no < 0 || no > MPI_NUMBER_OF_CONSTANTS)
-> > +       if ((int)no < 0 || no >=3D MPI_NUMBER_OF_CONSTANTS)
-> >                 pr_err("MPI: invalid mpi_const selector %d\n", no);
->
-> What the code does is it just logs an error if the value is out of
-> range, but then it happily continues dereferencing the array anyway...
-> In the original libgcrypt code [1] (which BTW needs this patch, too),
-> there is log_bug() instead of pr_err(), which doesn't just log the
-> error, but also abort()'s the program. BUG() would be the correct
-> kernel equivalent for log_bug(). It seems the whole kernel's MPI
-> library clone should be re-audited for other instances of pr_*()'s
-> that should in fact be BUG()'s (or even better, WARN_ONCE()'s with
-> proper error handling, but that might diverge the code from libgcrypt
-> too much...).
->
-> [1] https://github.com/gpg/libgcrypt/blob/9cd92ebae21900e54cc3d8b607c8ed1=
-afbf2eb9b/mpi/mpiutil.c#L773
->
-> >         if (!constants[no])
-> >                 pr_err("MPI: MPI subsystem not initialized\n");
-> > --
-> > 2.27.0
-> >
+Well, you said yourself in a recent comment that we should avoid global
+variables. devm_tegra_get_memory_controller() is nothing but a glorified
+global variable.
+
+Thierry
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90rGgACgkQ3SOs138+
+s6GNCA//RmVL3YPvq5/wzuzC1PrFzor/z7ya4L8jXrY6RgwgFYvK0hZnd6ahOBf9
+DZIzr/0k5igUwAL7vrDTk3tJKvQDLf1Eqwg7QtEuEC4KXJcZbjynCcZsUepoaQFz
+S2EQK7GfB21xSjCwhbIzOPgiqY2XajMbsjlDheK5qey7L2HASK1YxdIRyxPoHOHB
+ixLUH1IAi+LQjnv8j8HZqiEaod0X2r28NvUdFPH1Ch2UbCqR8peyfScJIfM4ZoKo
+u4s0G2Yi8znwKlU8YQ5aNjHc0LBlgH3kDvhB6p2ShK5o9w8oq7XiY5NMIHWrH7yI
+HNGOhsppRt/qQXh1aoqOyKv1VVqFwqTfq/meCETwIuOpeV0OQPcDFHS6alg+unvS
+E3jQPojcULvadHcWqStW5GnkomQC47VCB+1h71vfUQIPZkdd1XfaxohfsXMleSrN
+6hKlnsTl6Y1cDDx6BMfHpgGGEOfv3GGUX9gq5eD9FoSzRTs497eazwClGHxSiHTp
+fixSVclWwdwLDt0RtpMw9KE2T69sUrhwhxihjXzZ6RawvJNfRLE1GvHgJJnaZo+Y
+0p+o5WVy+Rzsyg5CvFkYE8XMr/dwtyociFCSZmSYj9L+QywvKot5eFB0MCZJinwd
+aKoG26J4OB3vJbtiYZDiNOlnjxRRG45ha6wivOJML11+viSNyII=
+=Bu7G
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
