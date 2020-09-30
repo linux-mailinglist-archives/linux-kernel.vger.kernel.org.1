@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12DC27E5E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0397927E5E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728930AbgI3KBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
+        id S1728957AbgI3KCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgI3KBa (ORCPT
+        with ESMTP id S1728169AbgI3KCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:01:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADAAC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:01:30 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kNYvP-0005ZA-RS; Wed, 30 Sep 2020 12:01:27 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kNYvO-0005Lj-Dz; Wed, 30 Sep 2020 12:01:26 +0200
-Date:   Wed, 30 Sep 2020 12:01:26 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20200930100126.rtjfnmbc54m7vrwd@pengutronix.de>
-References: <20200929121953.2817843-1-poeschel@lemonage.de>
- <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
- <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
- <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
- <20200930095204.GA1585476@kroah.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7xv3k4q6xheyahri"
-Content-Disposition: inline
-In-Reply-To: <20200930095204.GA1585476@kroah.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Wed, 30 Sep 2020 06:02:11 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46258C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:02:11 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id fa1so656348pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 03:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=TPF6YKdz4OEVC8EPsySKMAkJJaxtO9jBU1rqnEtldNQ=;
+        b=d+s3AQEKnZn0OUF8cNY4yT+LUckpBFghzZVuu+U7ioW4R2aIqwBgmJrSD+5JOj6gd+
+         qxr9Mc+YgJ1OKrCQNHzmQmy45PtPZW5+P7BbwP8yAhajEXBW3ESNI85knwwULO7eLzHE
+         0TeHmbljVjTZLcc85C444BNdUDb8tBGrIiFyInuzHe1l+zxA9OWIXfY8u+jg1f79VPw4
+         qOdDEXgPkXQBP0GCGs+kw1iQK2HRyHUpsBnRPdc7WSuJLUCRTzR2ekZD4Kh5nP7x0jhj
+         Oz2sYP/KdGJUWNDbEjKzCnjpFv+vC3y6MCjILfu3LDItpfmUs/tEYmzmlRtXDFUEI+7a
+         /TSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TPF6YKdz4OEVC8EPsySKMAkJJaxtO9jBU1rqnEtldNQ=;
+        b=TyK596yOtJQLH1d1d5RUozalPn+0IK0NH9AEEXQjTXtY4y53PTGHMrraQiORh3zFi0
+         lqyc0gTHmyzdLSsNgwr3H6MxzIkwSMmSyw173ZSBwjm3jIoQ+u4UAw+3hWFAEXj0sOlZ
+         vh/YLJ8GbEmc7cNLJDdZXek4mBawqUxCV4ADGOiPQFgD6aqu1gahAkM3cA+eiQ+KpxJ/
+         v5lYYfpFQFl5ZTXceocP7n1swB2fvCMi1GTx12BcR8BLmtxviHmweMKU5IhabfPCyqot
+         +7yGjlOo+thHDeG9qJzqfULtHMJNgyfT8mrL1EpNGCy0gpgwPMr6YeA8UyGnoXzW+7US
+         VGrA==
+X-Gm-Message-State: AOAM530iyNJG5Vf7idRkoSGF3Dj4Xxt1OuysssLQ25Pku2E3PJVL9M5F
+        fI6UJN8N8UjBXGNxBy0kHG9cIQ==
+X-Google-Smtp-Source: ABdhPJya4sefjAvwlYSQDZpNkFyXnQ071yq6/CRkAkkWEECUcxm265GOdq0m1WwIOXZJGigPPPROFA==
+X-Received: by 2002:a17:902:9343:b029:d1:f3e1:c190 with SMTP id g3-20020a1709029343b02900d1f3e1c190mr1846628plp.2.1601460130636;
+        Wed, 30 Sep 2020 03:02:10 -0700 (PDT)
+Received: from localhost.localdomain (li519-153.members.linode.com. [66.175.222.153])
+        by smtp.gmail.com with ESMTPSA id b2sm1890002pfp.3.2020.09.30.03.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 03:02:10 -0700 (PDT)
+From:   Jun Nie <jun.nie@linaro.org>
+To:     stephan@gerhold.net, bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org
+Cc:     shawn.guo@linaro.org, Jun Nie <jun.nie@linaro.org>
+Subject: [PATCH v3 0/2] Add MSM8939 RPM power domains
+Date:   Wed, 30 Sep 2020 18:01:43 +0800
+Message-Id: <20200930100145.9457-1-jun.nie@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add MSM8939 RPM power domains and associated document. This is based on
+Stephan's patch set to reuse max state definition:
+https://lore.kernel.org/linux-arm-msm/20200916104135.25085-1-stephan@gerhold.net/
 
---7xv3k4q6xheyahri
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes vs v2:
+ - fix max power domain state value.
+ - trim code layout.
 
-On Wed, Sep 30, 2020 at 11:52:04AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-K=F6nig wrote:
-> > Hello,
-> >=20
-> > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
-> > Cc:.
-> >=20
-> > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
-> > > thank you for your review!
-> > >=20
-> > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-K=F6nig wrote:
-> > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrot=
-e:
-> > > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > >=20
-> > > > > This adds a class to exported pwm devices.
-> > > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > >=20
-> > > > I wonder what is your use-case here. This for sure also has a place=
- to
-> > > > be mentioned in the commit log. I suspect there is a better way to
-> > > > accomplish you way.
-> > >=20
-> > > Use-case is to be able to use a pwm from a non-root userspace process.
-> > > I use udev rules to adjust permissions.
-> >=20
-> > Hmm, how do you trigger the export? Without being aware of all the
-> > details in the sysfs code I would expect that the exported stuff is
-> > available instantly once the write used to export the PWM is completed.
-> > So changing the permissions can be done directly after triggering the
-> > export in the same process.
->=20
-> It looks like userspace wants to see when a pwmX device shows up, right?
->=20
-> And it's not because those devices do not belong to any class or bus, so
-> they are just "floating" out there (they might show up under
-> /sys/bus/virtual, if you set things up right, which I don't think is
-> happening here...)
->=20
-> So yes, you need to create a class, or assign this to a bus, which is
-> fine, but it looks like no one is doing that.  Don't create new classes
-> dynamically, but rather, just assign this to the existing pwm class.
-> What's wrong with that?  I saw an older patch that did that, what did
-> that break?
+Jun Nie (2):
+  dt-bindings: power: rpmpd: Add MSM8939 RPM power domains
+  soc: qcom: rpmpd: Add MSM8939 power-domains
 
-Are you refering to 7e5d1fd75c3dde9fc10c4472b9368089d1b81d00? Did you
-read the reverting commit's log message? (i.e.
-c289d6625237aa785b484b4e94c23b3b91ea7e60)
+ .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
+ drivers/soc/qcom/rpmpd.c                      | 27 +++++++++++++++++++
+ include/dt-bindings/power/qcom-rpmpd.h        | 10 +++++++
+ 3 files changed, 38 insertions(+)
 
-I guess the breakage is that the resulting name then is:
+-- 
+2.17.1
 
-	"pwm%d", pwm->id
-
-where pwm->id is a number unique to the pwmchip. So doing
-
-	echo 0 > pwmchip1/export
-	echo 0 > pwmchip2/export
-
-breaks because both want to create pwm0 in the class directory.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7xv3k4q6xheyahri
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl90V3MACgkQwfwUeK3K
-7AlntQf/R1R9cQ5tQpSeeAntycOo/UUJOVKzsVmeInnAqGh0Npj4pD+vQQIL/6OK
-4y2yQirWYIWl439kqT0ADXeltyn7tbhx8D9ZqRAPMvV3N7KpxEUDD8Nuaklp2ubG
-I1wwsKm3I4cbZVGxe2UyPmsbVokf3B87lw5/78sJuKa1stIWLevqhNH35UzGKTbi
-0rwo17NfG1No0ZYcTwur4CrRkuWC/AUJMkzA6tOSm51acig7OeBW/EcMZ/aYouiW
-thcCrzQ8kWhjuubjzo9WDP9TLRzeJEIa8Vygwj/5BiyfVyeK0z9q4XEybMMbHuIv
-KiobhMbwcZcDUvaefT09A2Zp2Ghiog==
-=at+8
------END PGP SIGNATURE-----
-
---7xv3k4q6xheyahri--
