@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2657827F183
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A8027F186
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgI3Smy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S1729734AbgI3SnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgI3Smy (ORCPT
+        with ESMTP id S1725771AbgI3SnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:42:54 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F2BC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:42:53 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id e5so2890604ils.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:42:53 -0700 (PDT)
+        Wed, 30 Sep 2020 14:43:10 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D15C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:43:08 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e11so612905wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:43:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=baVH8D4ycog5eLQHQ1VEWx+mLxOlpC3JYeRNA6pOF4M=;
-        b=BgDX9tTUCb8DXlDo/3vG5xiod+SvtLEWtMf3EqWdYGu1CNpOMYswndy+C26ARLoVjy
-         87/G/kE6dtE9eb4Cxyczof++WX9+n0obxoHMgJGun3Arzf3R8R80zbdwJXT4VH7pZV4x
-         D4BgPXZcf4MqPDt5d+QP7NP7OhBGp02e4CADYLFlPE13k22wW5zm4GG04Dy0TtJYmC+5
-         TXQyDR16wU59bKsvgh6Ib9gxL0z3K6aCbC77XdYZyWZrB2/AnDSKPYDxzDG9lGnLCBHL
-         NlYwVTvcGnPGwcZ9QNnOYegfItwqnybyxm2D0vMBa6koVuOjWJs5bj6XCr3dy1DBjM7U
-         H+Wg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Hgch/OU0fUgiG3/fTy3bhBDktVyr1lWgsfs92Fqm60E=;
+        b=Gy4xqQj07MvJJi/1fgMrYLmwe96RaUqcWYCzIfzOjDedCQ54s1LDQ0WMennSf+Tvm4
+         U0mjGZGoklNdXahK1oYoGCpAQlytuhQ41jhjNdiFaAx+eH1yZVU7JCpyKJiDgKGCmCWK
+         x/eGs/YuSRHCnmRJpDh/O/h+fa+lckVhktl8SqdRkMSdxv85yZ/1jF65X88ZZBzhe6Sf
+         TfTK9i3N5qiBdV1N/wc14dn7IGbmuZA2mBA7gPZ8kHieI0ZXWhQIxYEd4lDjYraV2A83
+         NCGY5kyx88iMvrBeU2dQJ7UjQHTw6SXwP7DaJJYPEfGj9jkYW/NmbGTlQtvCn4D7jnDY
+         wiXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=baVH8D4ycog5eLQHQ1VEWx+mLxOlpC3JYeRNA6pOF4M=;
-        b=CuFFgfkWsh7Urjs2iLYREEJHzuId8/0mRS2pkIl1VvmG/zUEIjIhWtR7g9bdxu8yJK
-         VpWs4EzsZ27a+tOEJ0oZs0v7teQbyzx31/mRa64g9sudREgRuaXkmAK1+wNbYcE5J3eQ
-         XLobnVm3z3yw6g9rNRrEjLzSCeUiYgpqt/BxBG+523MBtOAnK3KZBmZJ50iw8EShoL7h
-         CHu5Y3cunDB+jLRWnnXR10LMAWM+z1FWXsvm/Pljot7gzIfa8iE0Hpi3Yx3JOSCznjfS
-         mbc5f8o/CEABMMI4ltXprXo7KWdMShEZ30n5EsPIYtVSNGXIROr4h9wPVeYV7QtaaQtj
-         XeGQ==
-X-Gm-Message-State: AOAM531ys8I7I1jOdBfK8hhXo6HZmCGU1BIVKBsSgH8MEmgfsVKLQUzy
-        ylwScVj1Q+NGErXe5uEAVkKynnQ+aKeEeBhcoS6JMw==
-X-Google-Smtp-Source: ABdhPJxZ/ifnxPqNMAuVGsrBI8knZ5ukEyX/3MLbg0PHpe9uRKkbEaTKhDC47ECxk+6nrXFZVMIlaVHtdL7f7FsKCNk=
-X-Received: by 2002:a92:5b02:: with SMTP id p2mr2776850ilb.283.1601491372954;
- Wed, 30 Sep 2020 11:42:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com> <20200925212302.3979661-4-bgardon@google.com>
- <20200930165734.GE32672@linux.intel.com> <2633cc07-f106-25ba-0ab9-d4a422aca171@redhat.com>
-In-Reply-To: <2633cc07-f106-25ba-0ab9-d4a422aca171@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 30 Sep 2020 11:42:42 -0700
-Message-ID: <CANgfPd_NABYVqWqQLoxW8AVNQCL3jXYM+u7_oToQFm+SDa3AvA@mail.gmail.com>
-Subject: Re: [PATCH 03/22] kvm: mmu: Init / Uninit the TDP MMU
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Hgch/OU0fUgiG3/fTy3bhBDktVyr1lWgsfs92Fqm60E=;
+        b=FKGYpzz0+5joIIrWx9ZMHLVPjkKIgCg/VR36HonoRQWD51jxgjo8/GV/HsyIlJDllF
+         Du9eRYaiC17v/cFm1hyv3fBXYIkzjh5uSQs4NDpPkrTg/i3MnjSH43Zt8Vtw8XVUQ0b5
+         jgRMfnexNSDk3/QYjrgZsIb4eCiULLt/4w7VFP6G4jErtLLakTLpmrXO5WU5oIWFGWBZ
+         cg76UdF2ffwOkzlDc9YgRiRk+LgMMDlfu4NqPvN63WmWRYXvuB4/8FcX8q768DWyIKrO
+         uWGuPPG93+mEM2kzhkUo/K8tf/BIVph9nl3pDMznlKcHuUyDkG33dloz2GrcxeAjSf7Q
+         6i3w==
+X-Gm-Message-State: AOAM531gpDHAsrYj71Dnj5vkAndy/heHe+Yto1Ta9jovOI2RMakIAHoQ
+        eK6SLVjBnZ/l9UBdGUtESzqUa0AHSKa2bg==
+X-Google-Smtp-Source: ABdhPJzGABrgVbqXqM0qsgciuACgzThRniFfbVtpTIiaUkUkhZ00iFN3+fVGYavAFupDn2rREYgquA==
+X-Received: by 2002:a7b:cbcb:: with SMTP id n11mr4407645wmi.5.1601491387204;
+        Wed, 30 Sep 2020 11:43:07 -0700 (PDT)
+Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id d13sm4318214wrp.44.2020.09.30.11.43.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Sep 2020 11:43:06 -0700 (PDT)
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] tracing: remove a pointless assignment
+Date:   Wed, 30 Sep 2020 19:43:03 +0100
+Message-Id: <20200930184303.22896-1-sudipm.mukherjee@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:39 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 30/09/20 18:57, Sean Christopherson wrote:
-> >> +
-> >> +static bool __read_mostly tdp_mmu_enabled = true;
-> >> +module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
-> > This param should not exist until the TDP MMU is fully functional, e.g. running
-> > KVM against "kvm: mmu: Support zapping SPTEs in the TDP MMU" immediately hits a
-> > BUG() in the rmap code.  I haven't wrapped my head around the entire series to
-> > grok whether it make sense to incrementally enable the TDP MMU, but my gut says
-> > that's probably non-sensical.
->
-> No, it doesn't.  Whether to add the module parameter is kind of
-> secondary, but I agree it shouldn't be true---not even at the end of
-> this series, since fast page fault for example is not implemented yet.
->
-> Paolo
->
-I fully agree, sorry about that. I should have at least defaulted the
-module parameter to false before sending the series out. I'll remedy
-that in the next patch set. (Unless you beat me to it, Paolo)
+The variable 'len' has been assigned a value but is not used after that.
+So, remove the assignement.
+
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+---
+ kernel/trace/trace.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index d3c75aab44ad..e13cb3baeff0 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -6662,7 +6662,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+ 		written = -EFAULT;
+ 	} else
+ 		written = cnt;
+-	len = cnt;
+ 
+ 	if (tr->trace_marker_file && !list_empty(&tr->trace_marker_file->triggers)) {
+ 		/* do not add \n before testing triggers, but add \0 */
+-- 
+2.11.0
+
