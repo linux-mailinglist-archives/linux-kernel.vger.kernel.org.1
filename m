@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FAC27F0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FB027F0AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731385AbgI3Rjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:39:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34606 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725385AbgI3Rjo (ORCPT
+        id S1731447AbgI3RmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:42:20 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:51392 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgI3RmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:39:44 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601487582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TZu2yzQOUkV+i1qfHrvNEBe2+2yFsnEQhQroRKDZ2nQ=;
-        b=e5UpyoCLW91qZ7V7M1vmPGjMDkcppkneHH1exoZyC5Ohm1H0kKysuS548j1ab1l/kjjL6C
-        Pj8U95ezXFdmsEalkiy7JUhAHrc1Hb1NbtQ4H/Y4EigLMx2wPYv1hVUJpF7C8pTrXe5WN3
-        xgeScbIFCo63NbRYeobvtITteuo3B7s=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-AWJrqCbPMHyeWXHruygS3Q-1; Wed, 30 Sep 2020 13:39:40 -0400
-X-MC-Unique: AWJrqCbPMHyeWXHruygS3Q-1
-Received: by mail-wr1-f71.google.com with SMTP id a12so871958wrg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:39:40 -0700 (PDT)
+        Wed, 30 Sep 2020 13:42:20 -0400
+Received: by mail-il1-f198.google.com with SMTP id e3so2122181ilq.18
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:42:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TZu2yzQOUkV+i1qfHrvNEBe2+2yFsnEQhQroRKDZ2nQ=;
-        b=icp1lcVs/u7o8VbOwZpPgViiJ832YksjXdtMmFfAyVXrMHKxd6L/c+Im46xYhqdLSS
-         pkui1Y5JE7+avFG69cye6CzPBcbyE4WKjCq92ow/TvFrnQ0Izgw70utTaio5K50UQwH/
-         7NoQie01+O18zFcS+M6+AuOgzQ3SBFyLBQbuTr3st2qYB+hDOQ5TSa9suU70Y30rMC2w
-         OUDNcE7+cicfAJRVDD+cyijrqCDWG8FdjUz0tgazI6ezDUY5otW607JP6erJeKTnd5jV
-         93MmLVuDn3JxX21RjR50fGiFNo6sg9BTh9S9bqHo723hIIw1K6AFdLnp4/p2Q6k39Bst
-         gpbA==
-X-Gm-Message-State: AOAM531dxFPNt+ZyddvEqdB7DZme82RbO52DCLUKb8ASaBVMmvIQLHBe
-        lzcGHOzRq0b7dckR7CYvhPxX923W0A5/m47MhdeJpg4z3UllX2Y2HEYGVMD8duVD8XT+uvkuxA9
-        dVhtlqeZhnxPN8i90NNN37kt+
-X-Received: by 2002:a05:600c:2252:: with SMTP id a18mr4483687wmm.154.1601487579702;
-        Wed, 30 Sep 2020 10:39:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwO2v6b1MLDbXuOGsIlDoiN82H14bkUhC2J/AKOCMVJMmYPj0XDIDRB5bjedoAROwucfpsoYA==
-X-Received: by 2002:a05:600c:2252:: with SMTP id a18mr4483660wmm.154.1601487579513;
-        Wed, 30 Sep 2020 10:39:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id o4sm4123220wrv.86.2020.09.30.10.39.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 10:39:38 -0700 (PDT)
-Subject: Re: [PATCH 03/22] kvm: mmu: Init / Uninit the TDP MMU
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-4-bgardon@google.com>
- <20200930165734.GE32672@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2633cc07-f106-25ba-0ab9-d4a422aca171@redhat.com>
-Date:   Wed, 30 Sep 2020 19:39:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=gFm1XYQPKEm64e3IzyGsuW+y9Ev3roInvd+o9HWt0+4=;
+        b=uIZB9s7Z+SnCAymQUcz3X4F4skZfemcm5Zie+qk2rBmImMQLJ5BLtG+6NKMUOOTK2/
+         AgTsIuuQ25JN0doM69KtS0jlBFEWE18zJu8dlQFa6/PxtkSIyKzvOX7bPfEP1HayYJjC
+         RHPIH4broH7ClnvvyFFhnTjdKj3qRY+25WR0z9RTxBuf+OAaKCddDOWb9rSXR0ub1C4q
+         4jxr3O80xxWHKoP5Imi1LndjqojA2cOzP/ssJ6pxho8cbqAZBxUYC6Cd7ABq62+UVVH3
+         hZzXj2r2PS5GGGAYDIYf5dgr1nl0i/HUVFTwIyoW2ayP71e23AWRJ2V3Gc21oxY3Myp0
+         2LQQ==
+X-Gm-Message-State: AOAM530loBMPwxs4fG+/mSqTebGZATCQHI8a6Dn0+jGDRvYXooHZ/e9R
+        T+KLQyHKXUbVbzmCsBhPEsdhuZothEm8TcNVpRbR88ruiBAF
+X-Google-Smtp-Source: ABdhPJwnu9ZDb3d6uC4lwGErimwV67tihcQIJZwN2yFAJRDttab0qePiaifswtJFkcHsTrKljmcnCVFQC440Qby+tSYZkoguNzN1
 MIME-Version: 1.0
-In-Reply-To: <20200930165734.GE32672@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:21cc:: with SMTP id c12mr2455264ioc.81.1601487738554;
+ Wed, 30 Sep 2020 10:42:18 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 10:42:18 -0700
+In-Reply-To: <0000000000009dac0205b05ab52a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c4d11a05b08b6b56@google.com>
+Subject: Re: general protection fault in tcf_generic_walker
+From:   syzbot <syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 18:57, Sean Christopherson wrote:
->> +
->> +static bool __read_mostly tdp_mmu_enabled = true;
->> +module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
-> This param should not exist until the TDP MMU is fully functional, e.g. running
-> KVM against "kvm: mmu: Support zapping SPTEs in the TDP MMU" immediately hits a
-> BUG() in the rmap code.  I haven't wrapped my head around the entire series to
-> grok whether it make sense to incrementally enable the TDP MMU, but my gut says
-> that's probably non-sensical.
+syzbot has found a reproducer for the following issue on:
 
-No, it doesn't.  Whether to add the module parameter is kind of
-secondary, but I agree it shouldn't be true---not even at the end of
-this series, since fast page fault for example is not implemented yet.
+HEAD commit:    2b3e981a Merge branch 'mptcp-Fix-for-32-bit-DATA_FIN'
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16537247900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=99a7c78965c75e07
+dashboard link: https://syzkaller.appspot.com/bug?extid=b47bc4f247856fb4d9e1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1412a5a7900000
 
-Paolo
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b47bc4f247856fb4d9e1@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 0 PID: 8855 Comm: syz-executor.1 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:tcf_dump_walker net/sched/act_api.c:240 [inline]
+RIP: 0010:tcf_generic_walker+0x367/0xba0 net/sched/act_api.c:343
+Code: 24 31 ff 48 89 de e8 c8 55 eb fa 48 85 db 74 3f e8 3e 59 eb fa 48 8d 7d 30 48 b9 00 00 00 00 00 fc ff df 48 89 f8 48 c1 e8 03 <80> 3c 08 00 0f 85 26 07 00 00 48 8b 5d 30 31 ff 48 2b 1c 24 48 89
+RSP: 0018:ffffc9000b6ff3a8 EFLAGS: 00010202
+RAX: 0000000000000004 RBX: c0000000ffffaae4 RCX: dffffc0000000000
+RDX: ffff8880a82aa140 RSI: ffffffff868ae502 RDI: 0000000000000020
+RBP: fffffffffffffff0 R08: 0000000000000000 R09: ffff8880a8c41e07
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809f226340
+R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+FS:  00007f156f7fa700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d25128b348 CR3: 00000000a7d3d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ tc_dump_action+0x6d5/0xe60 net/sched/act_api.c:1609
+ netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2246
+ __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2354
+ netlink_dump_start include/linux/netlink.h:246 [inline]
+ rtnetlink_rcv_msg+0x70f/0xad0 net/core/rtnetlink.c:5526
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dd99
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f156f7f9c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000002d3c0 RCX: 000000000045dd99
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000005
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffc8f863a6f R14: 00007f156f7fa9c0 R15: 000000000118bf2c
+Modules linked in:
+---[ end trace 5123f6b953bfe0e8 ]---
+RIP: 0010:tcf_dump_walker net/sched/act_api.c:240 [inline]
+RIP: 0010:tcf_generic_walker+0x367/0xba0 net/sched/act_api.c:343
+Code: 24 31 ff 48 89 de e8 c8 55 eb fa 48 85 db 74 3f e8 3e 59 eb fa 48 8d 7d 30 48 b9 00 00 00 00 00 fc ff df 48 89 f8 48 c1 e8 03 <80> 3c 08 00 0f 85 26 07 00 00 48 8b 5d 30 31 ff 48 2b 1c 24 48 89
+RSP: 0018:ffffc9000b6ff3a8 EFLAGS: 00010202
+RAX: 0000000000000004 RBX: c0000000ffffaae4 RCX: dffffc0000000000
+RDX: ffff8880a82aa140 RSI: ffffffff868ae502 RDI: 0000000000000020
+RBP: fffffffffffffff0 R08: 0000000000000000 R09: ffff8880a8c41e07
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809f226340
+R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+FS:  00007f156f7fa700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d251258ed8 CR3: 00000000a7d3d000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
