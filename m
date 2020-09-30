@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A63327EFBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95A527EFC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731325AbgI3QyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3QyR (ORCPT
+        id S1731077AbgI3Qz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:55:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45765 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725355AbgI3Qz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:54:17 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A68C061755;
-        Wed, 30 Sep 2020 09:54:15 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id f1so1382386plo.13;
-        Wed, 30 Sep 2020 09:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=a+511h/yRt0hAA530rhVf+uoJRBXRfwSraxYw7O/kA4=;
-        b=gIyzm/LMhzk6FmcrH/7F0RNZbSSNuIox03V/NLAc7uhQqZOnGw/v9WAuwtjpk4/RQY
-         XEpq9jhXtvSdVu94k5qKQOY3C5IEKNbbw5Bvf0KfJCtDCzFqXGNuWsXiBHXvhWSYSSLC
-         LkMgyB5FEeg5osBePET6/2KYORZWx7FaA54whxElkY+wMODcQ1mWmgEF2rxIa99COPLs
-         Du3GQhn5WOMk1QnHxrVk5fyHenVzPaJ0WuPTdRshqMsDj6smYr400lgsVHYIVG7f+CUd
-         tufeR0zq0+xx5Dw9a5Qx6WFxekg7M+70Da60wDPBpZoBeb7pSlWA/U1MmPVaLKhnBN7t
-         WukQ==
+        Wed, 30 Sep 2020 12:55:26 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601484925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B8EZjCnkyFc1cMjpMH0gu6rS7aovGZS/4aH0BOoM7mI=;
+        b=TmR1CVaGn7ozshOVYmFOBUJ8i+gDE9aWIzbHUzQLy3cgpYfnwz/hynQKlyx87Ts8j2QkpI
+        HhzgaJcfeLFdWUuOmwSo1hR5xzLCEL/6RJOfg3rGipSjOpOfq5y+MzmJTfOGlxx0sD+FOz
+        fXCU24GjudA/V0+E/4TAkYvJSiXRuJw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-XjuwIYULOwGdZPOKmkt3Rg-1; Wed, 30 Sep 2020 12:55:22 -0400
+X-MC-Unique: XjuwIYULOwGdZPOKmkt3Rg-1
+Received: by mail-wm1-f71.google.com with SMTP id y18so64101wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:55:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a+511h/yRt0hAA530rhVf+uoJRBXRfwSraxYw7O/kA4=;
-        b=LFfxyHhgKtSQmpuvTFxvdgcwPds5xnkEL70cFXmd/9whLUnXTUn+OYstQ/F410Vwiw
-         6PBYHDisfnp6Y3IgV8b+iM/hq8ehvLBJ4fpA84BP6C3kp24xFlP0Jf7NbnugYZ1neva1
-         nxH4KAj8sFcEmM7Pwam0b+LOHBeznIR5xkMHwiC8BGXFUX5x13wumgBtYfpS8pVYmfPC
-         q+AxRzneWMVt4BOh+iJ7HYQiC7NopTahhZdE9JptVfDvu95DeNv/p15p5v2rprO5yCkR
-         8xK0Mgpycu42ly1CNSagA5MfwT+mvv0CZ+vXr1BHsKQqlHxz7vUiZ3pG1F0hyh2YwcUf
-         2deA==
-X-Gm-Message-State: AOAM530OwpzbEKjibhP9SK3urVOCtiT1LVs5uZD3Twe7NO5AIsypnXuA
-        ztHC/c+6loOqS7HFPcJECVs=
-X-Google-Smtp-Source: ABdhPJxwezn+YlJ0I0Lsa/QSD/QW96cOmMj3PWOOxNwHQmumz6Lo0kuB7h+fFEjaG5LEvcuSBTpVLg==
-X-Received: by 2002:a17:90a:bc08:: with SMTP id w8mr3317041pjr.168.1601484855301;
-        Wed, 30 Sep 2020 09:54:15 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id l141sm2960368pfd.47.2020.09.30.09.54.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 09:54:14 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 09:54:12 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, bmc-sw@aspeedtech.com
-Subject: Re: [PATCH 3/3] ARM: dts: add ehci uhci enable in evb dts
-Message-ID: <20200930165411.GC25872@taoren-ubuntu-R90MNF91>
-References: <20200930040823.26065-1-ryan_chen@aspeedtech.com>
- <20200930040823.26065-4-ryan_chen@aspeedtech.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=B8EZjCnkyFc1cMjpMH0gu6rS7aovGZS/4aH0BOoM7mI=;
+        b=aYaOkJ97yQtfOJEllSmf0j9cHz7vXWyM64LLtD9rDZQLVn/RQlbKE3nwncHvtuIs/b
+         EKcY7U0RZKzsz31/LKPr8EZTjN9ezxz+o8UeaOqlxOFLuY70BTPEPAnRQZFVahPETWnf
+         dWT3Xsh7i2AWs2Fbg/MI/sfPqg0JlCBFd7uDQILVLT647X9z2NnZTbqs9nHZmp5pRITo
+         YyJEsqxvT3RmWNm0KBba/MsM1nu5jf7R5/2Fg96Xrg3Jz8dhRtJF+ERrOl5m3q6MMIzt
+         Acf3bSNY1fKOHA5hCbMQpaLmqbs3IdWtygXkH4fTD5sF2Dsag1vji7a7qWScHo+By245
+         mEhQ==
+X-Gm-Message-State: AOAM533zvFqOzYdM+yAoZbeHT3hWZEwoQZhUyPftycm4fALADJGr9cpd
+        oKqnV0FVYZJzMpoFVoiSTGTypf6xgwZXia3ZEC2ER23WmWY3Zo4/R1Z0f8ZgJtgZVOU51Ul/P6Z
+        uJ1VjvjhZt5JiAFdwhd01HhAp
+X-Received: by 2002:a1c:b703:: with SMTP id h3mr3915207wmf.131.1601484920439;
+        Wed, 30 Sep 2020 09:55:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpqMWMCf8rNOLTb8uVhzIBXgspOLuTByal+8MYiknPL2xBZbFeEcfJ4nRe0PKpiG562hHDqw==
+X-Received: by 2002:a1c:b703:: with SMTP id h3mr3915176wmf.131.1601484920155;
+        Wed, 30 Sep 2020 09:55:20 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
+        by smtp.gmail.com with ESMTPSA id h4sm4746659wrm.54.2020.09.30.09.55.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 09:55:19 -0700 (PDT)
+Subject: Re: [PATCH 10/22] kvm: mmu: Add TDP MMU PF handler
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-11-bgardon@google.com>
+ <20200930163740.GD32672@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4ee2a2cf-625b-3c10-a7da-75677ea37aa3@redhat.com>
+Date:   Wed, 30 Sep 2020 18:55:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930040823.26065-4-ryan_chen@aspeedtech.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200930163740.GD32672@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:08:23PM +0800, Ryan Chen wrote:
-> Add EHCI UHCI enable build in aspeed-ast2600-evb.dts
-> 
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+On 30/09/20 18:37, Sean Christopherson wrote:
+>> +
+>> +	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root_hpa)))
+>> +		return RET_PF_RETRY;
+> I feel like we should kill off these silly WARNs in the existing code instead
+> of adding more.  If they actually fired, I'm pretty sure that they would
+> continue firing and spamming the kernel log until the VM is killed as I don't
+> see how restarting the guest will magically fix anything.
 
-Reviewed-by: Tao Ren <rentao.bupt@gmail.com>
+This is true, but I think it's better to be defensive.  They're
+certainly all candidates for KVM_BUG_ON.
+
+Paolo
+
