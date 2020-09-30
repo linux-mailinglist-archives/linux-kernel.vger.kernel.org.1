@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876E027F524
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117F827F52A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731629AbgI3W3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:29:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22224 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730398AbgI3W3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:29:40 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UM2Dse065892;
-        Wed, 30 Sep 2020 18:29:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=bqnKSnYGkMCTbMLLZkuOCFSYLg7Fmfo08VtiyWQBCJY=;
- b=tus6AHdOze2k/FZcRkIhwA8epIJYOL//4BpfUwO49ALKs672nn5a2t6SitBCUye85DXF
- XNqu4Oi+8lLZdTAoXMDlzC37cS9M8TwpM8fL5KmlAU/tv9ZxwTtBsU7uAtH79Rgfo4Nq
- yTg0iwUOC4Ib0lTehGtyDh7Quc2AKvSK7ekFPyWl889T4wyNlughAKRaKaEeVy71aopo
- ZIHWTnW9s1GFXfJ+T5alL37BW+9rZJp0gO/K5q8YGuUSJJR2MtCE5jjtyArRE7pbZvUn
- BLiwg8htBmPdn4PBMlfXG0U0I7q3wt2qY+PYKZV8UeCXPKWadP93Y8Ecp8OFIRwjza4N IQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33w2618ycp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 18:29:39 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UMMslD009593;
-        Wed, 30 Sep 2020 18:29:39 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33w2618ybs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 18:29:39 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UMROl7013228;
-        Wed, 30 Sep 2020 22:29:36 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 33sw984utx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 22:29:36 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UMTXhU14549402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 22:29:33 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9ABFAE045;
-        Wed, 30 Sep 2020 22:29:33 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F4118AE04D;
-        Wed, 30 Sep 2020 22:29:32 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.63.21])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Sep 2020 22:29:32 +0000 (GMT)
-Date:   Thu, 1 Oct 2020 00:29:30 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v10 09/16] s390/vfio-ap: allow assignment of unavailable
- AP queues to mdev device
-Message-ID: <20201001002930.26185810.pasic@linux.ibm.com>
-In-Reply-To: <76600ed5-60cc-c530-56db-43f7026d8c8e@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-10-akrowiak@linux.ibm.com>
-        <20200927014902.1a1a0d8c.pasic@linux.ibm.com>
-        <76600ed5-60cc-c530-56db-43f7026d8c8e@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        id S1730263AbgI3WcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:32:21 -0400
+Received: from mga05.intel.com ([192.55.52.43]:33895 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725799AbgI3WcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:32:21 -0400
+IronPort-SDR: xOC0ktZfK1NCNWeQogukt8i330INMNoUsqwMibEqWS0UwC+Gwc39nP2491n0TvpnPDsbBdY9lJ
+ UmmUHaZZAxfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="247286591"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="247286591"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 15:32:19 -0700
+IronPort-SDR: Q7rxTOYZCmdrYkAyQbw0lh7HWMnLV4/XuKBvDgBo1VQoNDv2ETCE5XAs1PQ1BJnxZZojLYXOdv
+ zUvQHx6xucDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="308332496"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 30 Sep 2020 15:32:08 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id B4156A8; Thu,  1 Oct 2020 01:32:07 +0300 (EEST)
+Date:   Thu, 1 Oct 2020 01:32:07 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
+        lokeshgidra@google.com, kernel-team@android.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Zhenyu Ye <yezhenyu2@huawei.com>, Jia He <justin.he@arm.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Brian Geffon <bgeffon@google.com>,
+        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 0/5] Speed up mremap on large regions
+Message-ID: <20200930223207.5xepuvu6wr6xw5bb@black.fi.intel.com>
+References: <20200930222130.4175584-1-kaleshsingh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- adultscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
- spamscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300174
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930222130.4175584-1-kaleshsingh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 08:59:36 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> >> @@ -572,6 +455,11 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
-> >>   	DECLARE_BITMAP(aqm, AP_DOMAINS);
-> >>   
-> >>   	list_for_each_entry(lstdev, &matrix_dev->mdev_list, node) {
-> >> +		/*
-> >> +		 * If either of the input masks belongs to the mdev to which an
-> >> +		 * AP resource is being assigned, then we don't need to verify
-> >> +		 * that mdev's masks.
-> >> +		 */
-> >>   		if (matrix_mdev == lstdev)
-> >>   			continue;
-> >>     
-> > Seems unrelated.  
+On Wed, Sep 30, 2020 at 10:21:17PM +0000, Kalesh Singh wrote:
+> mremap time can be optimized by moving entries at the PMD/PUD level if
+> the source and destination addresses are PMD/PUD-aligned and
+> PMD/PUD-sized. Enable moving at the PMD and PUD levels on arm64 and
+> x86. Other architectures where this type of move is supported and known to
+> be safe can also opt-in to these optimizations by enabling HAVE_MOVE_PMD
+> and HAVE_MOVE_PUD.
 > 
-> What seems unrelated? The matrix_mdev passed in is the mdev to which 
-> assignment is
-> being made. This function is verifying that no APQN assigned to the 
-> matrix_mdev is
-> assigned to any other mdev. Since we are looping through all mdevs here, 
-> we are
-> skipping the verification if the current mdev being examined is the same 
-> as the matrix_mdev
-> to which the assignment is being made. Maybe I'm not understanding your 
-> point here.
+> Observed Performance Improvements for remapping a PUD-aligned 1GB-sized
+> region on x86 and arm64:
+> 
+>     - HAVE_MOVE_PMD is already enabled on x86 : N/A
+>     - Enabling HAVE_MOVE_PUD on x86   : ~13x speed up
+> 
+>     - Enabling HAVE_MOVE_PMD on arm64 : ~ 8x speed up
+>     - Enabling HAVE_MOVE_PUD on arm64 : ~19x speed up
+> 
+>           Altogether, HAVE_MOVE_PMD and HAVE_MOVE_PUD
+>           give a total of ~150x speed up on arm64.
 
-Sorry I did not explain myself clear enough. By seems unrelated, I mean
-that while valid possibly it does not contribute towards achieving the
-objective of the patch (as stated by the commit message and the short
-description).
+Is there a *real* workload that benefit from HAVE_MOVE_PUD?
 
-AFAICT this is about documenting some pre-existing logic that is not
-changed, nor it needs to be changed to achieve the objective.
-
-This patch does not change the function at all (except for the
-comment). If the comment is about the new arguments, then is
-belongs to "implement in-use callback for vfio_ap driver" where those
-were added.
-
-BTW I find the comment hard to understand because I don't see "If either
-of the input masks belongs to the mdev to which an  AP resource is being
-assigned expressed in the code.
-
-I would rather have the docstring of the function updated so the
-relationship of the three arguments is clear.
-
-Regards,
-Halil
+-- 
+ Kirill A. Shutemov
