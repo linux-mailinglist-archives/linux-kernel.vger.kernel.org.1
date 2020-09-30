@@ -2,144 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB71127EED2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5577527EF02
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731166AbgI3QS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:18:56 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:60320 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727426AbgI3QSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:18:55 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id A26AD41304;
-        Wed, 30 Sep 2020 16:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1601482732; x=1603297133; bh=BaLuW/JZFO3VU5hu0YrWImsNB
-        z/UdPmOUw6h808shmY=; b=TnVKoem5KMWup9u/DFo59aZHTADOJgEfWYHjbVLkB
-        uPgYKjMYPq99Uix48euP14d4ZYek0j0NccsIE/8ESKz2AicikRCrr48v4OcxmhS1
-        N6ipQbPmnZJvy4glp1rrFJA6G/O4kVo2+ivkxAeq6x0V5BIjyPwDb2BAMETQrLw+
-        Ro=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Xz0a6kCL6vTL; Wed, 30 Sep 2020 19:18:52 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 79A3C4125E;
-        Wed, 30 Sep 2020 19:18:51 +0300 (MSK)
-Received: from localhost.localdomain (10.199.2.78) by T-EXCH-04.corp.yadro.com
- (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 30
- Sep 2020 19:18:50 +0300
-Message-ID: <ff66efae07b4b97ac5f891e6b37c348105dc17db.camel@yadro.com>
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
- SPI_NOR_HAS_TB
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Date:   Wed, 30 Sep 2020 19:22:45 +0300
-In-Reply-To: <758b2772-3c44-1184-066e-df890d05a21a@ti.com>
-References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
-         <20200921112450.4824-2-i.mikhaylov@yadro.com>
-         <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
-         <4a5945534f7b41cb799c044ec8c9d31c61d5beda.camel@yadro.com>
-         <758b2772-3c44-1184-066e-df890d05a21a@ti.com>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        id S1731182AbgI3QW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:22:57 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51078 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgI3QW5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:22:57 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0EE5A1C0B81; Wed, 30 Sep 2020 18:22:55 +0200 (CEST)
+Date:   Wed, 30 Sep 2020 18:22:54 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anton Eidelman <anton@lightbitslabs.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 196/245] nvme: fix possible deadlock when I/O is
+ blocked
+Message-ID: <20200930162254.GB23434@duo.ucw.cz>
+References: <20200929105946.978650816@linuxfoundation.org>
+ <20200929105956.511527430@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.2.78]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
+Content-Disposition: inline
+In-Reply-To: <20200929105956.511527430@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 19:30 +0530, Vignesh Raghavendra wrote:
-> 
-> On 9/30/20 6:37 PM, Ivan Mikhaylov wrote:
-> > On Wed, 2020-09-30 at 15:06 +0530, Vignesh Raghavendra wrote:
-> > > On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
-> > > > Some chips like macronix don't have TB(Top/Bottom protection)
-> > > > bit in the status register. Do not write tb_mask inside status
-> > > > register, unless SPI_NOR_HAS_TB is present for the chip.
-> > > > 
-> > > 
-> > > Not entirely accurate.. Macronix chips have TB bit in config register
-> > > and is OTP and hence should not be touched ideally...
-> > > 
-> > > You still need to "read" that bit to determine actual scheme (Top vs
-> > > Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
-> > > flag for macronix flashes.
-> > 
-> > Vignesh, that's the point about this commit to generalize this part about TB
-> > bit
-> > plus there is already exist SPI_NOR_HAS_TB flag which representing state of
-> > TB
-> > existence. I didn't add any support for macronix's TB bit, that's true but
-> > that's enough to make macronix chips able to use lock mechanism with default
-> > 'use_top' or any other chips which doesn't have TB bit.
-> 
-> Right, but 2/2 "enables" locking mechanism for Macronix flashes. Therefore
-> its 
-> necessary to take TB bit into account so that implementation is correct. 
-> What if OTP bit is set as "use_bottom"? Although this is non default, 
-> we need to take care of this case for correctness.
 
-Maybe wording of my commit message is incorrect, let's try to think about this
-commit without macronix words in it. What do you think? Just additional patch
-for control TB writes.
+--9zSXsLTf0vkW971A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-mtd: spi-nor: do not touch TB bit without SPI_NOR_HAS_TB
-    
-Do not write tb_mask inside status register, unless SPI_NOR_HAS_TB is   		
-present for the chip.
+Hi!
 
-If we talking from OTP point for Macronix then in this case better way to make
-lock/unlock inside macronix.c which brings a lot of copypaste. I'll try to
-rework it.
+> [ Upstream commit 3b4b19721ec652ad2c4fe51dfbe5124212b5f581 ]
+>=20
+> Revert fab7772bfbcf ("nvme-multipath: revalidate nvme_ns_head gendisk
+> in nvme_validate_ns")
+>=20
+> When adding a new namespace to the head disk (via nvme_mpath_set_live)
+> we will see partition scan which triggers I/O on the mpath device node.
+> This process will usually be triggered from the scan_work which holds
+> the scan_lock. If I/O blocks (if we got ana change currently have only
+> available paths but none are accessible) this can deadlock on the head
+> disk bd_mutex as both partition scan I/O takes it, and head disk revalida=
+tion
+> takes it to check for resize (also triggered from scan_work on a different
+> path). See trace [1].
+>=20
+> The mpath disk revalidation was originally added to detect online disk
+> size change, but this is no longer needed since commit cb224c3af4df
+> ("nvme: Convert to use set_capacity_revalidate_and_notify") which already
+> updates resize info without unnecessarily revalidating the disk (the
+> mpath disk doesn't even implement .revalidate_disk fop).
 
-> > > I guess macronix does not support SR_SRWD right? This needs special
-> > > treatment as well.
-> > 
-> > It does support SR_SRWD as well. No need any special treatment here.
-> > 
-> 
-> I did not find it in one Macronix datasheet at least:
-> https://www.macronix.com/Lists/Datasheet/Attachments/7902/MX25L25673G,%203V,%20256Mb,%20v1.6.pdf
-> 
-> Are you sure all Macronix flashes support SRWD?
-> 
+Commit cb224c3af4df ("nvme: Convert to use
+set_capacity_revalidate_and_notify") is not in 4.19-stable.
 
-No, I'm not sure, I did it more than month ago and I've checked BP0-X bits +
-SRWD bits in the documentation at this time for whole set of chips in
-macronix.c. This one (mx25l25673g) not even listed in macronix.c. Also SRWD was
-present there until 1.3 rev for this chip from documentation.
+Does that mean we'll no longer detect disk size changes after this?
 
-I've noticed one thing also:
+Best regards,
+									Pavel
 
-	{ "mx25l51245g", INFO(0xc2201a, 0, 64 * 1024, 1024,
-			      SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-			      SPI_NOR_4BIT_BP) },
-	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
-			      SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-			      SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
-			      SPI_NOR_4BIT_BP) },
+> index faa7feebb6095..84fcfcdb8ba5f 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -1599,7 +1599,6 @@ static void __nvme_revalidate_disk(struct gendisk *=
+disk, struct nvme_id_ns *id)
+>  	if (ns->head->disk) {
+>  		nvme_update_disk_info(ns->head->disk, ns, id);
+>  		blk_queue_stack_limits(ns->head->disk->queue, ns->queue);
+> -		revalidate_disk(ns->head->disk);
+>  	}
+>  #endif
+>=20
 
-mx25l51245g and mx66l51235l have same id and different flags(SECT_4K).
-As example if you have mx66l51235l, driver will take mx25l51245g because it
-comes first in the chip list. I don't think that's right but I didn't find
-information how to distinguish them.
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Thanks.
+--9zSXsLTf0vkW971A
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3Sw3gAKCRAw5/Bqldv6
+8t4DAJ4rcxxp+UnUWIjiAXQB7wbfwWEb5QCePmHmhzP4Yk6dyrSZjnESc5/eNhk=
+=aSgn
+-----END PGP SIGNATURE-----
+
+--9zSXsLTf0vkW971A--
