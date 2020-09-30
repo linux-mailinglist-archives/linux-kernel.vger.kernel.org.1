@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8016927E9A8
+	by mail.lfdr.de (Postfix) with ESMTP id EECD327E9A9
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgI3N04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38720 "EHLO mail.kernel.org"
+        id S1730589AbgI3N07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:26:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730260AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730252AbgI3NZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:22 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 737B32076E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 674F423A59;
         Wed, 30 Sep 2020 13:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472321;
-        bh=uaW4C+I+Tu+DdiBRbypIkyBAmHzHYL3ISOLOIWi0ZTU=;
+        bh=J74G5kQSa0vkKhBu17975/ADBNsJSxOJrcSKfNRKnzY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txyZ7e7tvItqe+4qMtr18WsfTNM+djtdIA9FszFy+d/iBOmEdLCPDEnWCublpsouR
-         xYA7EFIJcPV7fEXFnNX734LWNoL8H+STz4O9ncJl2kbqIWI5awdN5Sd1Wv+ixM5tJv
-         mtXCpQopmWqzjm/49Qc+1w2ECWgTf8TOylTrQfKM=
+        b=wxGgsHwXeXTaXkiV7JB5mez6CDXAp0V2tE93kNoEahHC3IxDdQqOsnofJ0YBrdBfY
+         sP1OwxUliY/qkay9AG7Ub8C1RYURI9oa7Q9+g2FNADjmzDL8rs8jf9IpgRfkFcv4FN
+         CfW4e4Fq6LfV4EImOg/YBPgUFX5lTdp4JqLha5Eg=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6h-001XKn-Ju; Wed, 30 Sep 2020 15:25:19 +0200
+        id 1kNc6h-001XKr-LK; Wed, 30 Sep 2020 15:25:19 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 42/52] docs: libata.rst: fix a wrong usage of :c:type: tag
-Date:   Wed, 30 Sep 2020 15:25:05 +0200
-Message-Id: <0730caf6e54c355d4560e23eece296993d4908c2.1601467849.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 43/52] docs: infrastructure.rst: don't include firmware kernel-doc
+Date:   Wed, 30 Sep 2020 15:25:06 +0200
+Message-Id: <eaca248efdc9ef7a2bccde8bf4ddbc13223f333d.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -46,33 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usage of :c:type: to reference to a struct member is wrong,
-as pointed by Sphinx 3:
+Those are already documented at:
 
-	./Documentation/driver-api/libata.rst:511: WARNING: Unparseable C cross-reference: 'qc->complete_fn'
-	Invalid C declaration: Expected end of definition. [error at 2]
-	  qc->complete_fn
-	  --^
+	Documentation/driver-api/firmware/request_firmware.rst
 
-Instead, let's use :c:expr: for such purpose.
+Including it twice is causing lots of warnings:
+
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'request_firmware'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'firmware_request_nowarn'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'request_firmware_direct'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'firmware_request_platform'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'firmware_request_cache'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'request_firmware_into_buf'.
+	./Documentation/driver-api/infrastructure.rst: WARNING: Duplicate C declaration, also defined in 'driver-api/firmware/request_firmware'.
+	Declaration is 'request_firmware_nowait'.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/libata.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/driver-api/infrastructure.rst | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/Documentation/driver-api/libata.rst b/Documentation/driver-api/libata.rst
-index e2f87b82b074..d477e296bda5 100644
---- a/Documentation/driver-api/libata.rst
-+++ b/Documentation/driver-api/libata.rst
-@@ -508,7 +508,7 @@ also complete commands.
+diff --git a/Documentation/driver-api/infrastructure.rst b/Documentation/driver-api/infrastructure.rst
+index 06d98c4526df..e38d79be4e16 100644
+--- a/Documentation/driver-api/infrastructure.rst
++++ b/Documentation/driver-api/infrastructure.rst
+@@ -28,9 +28,6 @@ Device Drivers Base
+ .. kernel-doc:: drivers/base/node.c
+    :internal:
  
- 2. ATA_QCFLAG_ACTIVE is cleared from qc->flags.
- 
--3. :c:func:`qc->complete_fn` callback is invoked. If the return value of the
-+3. :c:expr:`qc->complete_fn` callback is invoked. If the return value of the
-    callback is not zero. Completion is short circuited and
-    :c:func:`ata_qc_complete` returns.
+-.. kernel-doc:: drivers/base/firmware_loader/main.c
+-   :export:
+-
+ .. kernel-doc:: drivers/base/transport_class.c
+    :export:
  
 -- 
 2.26.2
