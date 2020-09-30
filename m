@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8035827EAB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744D827EAB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgI3OMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3OMV (ORCPT
+        id S1730300AbgI3ONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:13:21 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:59138 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3ONU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:12:21 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5A1C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:12:19 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id e2so1033946vsr.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=99ip5umDvqCM2tLIiv2DcTtnVo0ZbZNaMiQiBwA7G0E=;
-        b=kGqBEX6MJfsLKmeE6S5FREFU4HGdbI3VGKDYaHCUAahtQFxDUKBuxuSO1jHDi9EsLm
-         1UlC85NvQtVys0FtZzrXj/PGFWGP4vCkEdjX+tM2hPLYvaJOPTZg7L/h5jacfWS7koEa
-         ToW/Wq8f0CLSPtDpAGcfpus/wQ5UPE84JKqYzUSBPQnoJLn0ADf9dHBmFIow7/hMIUXb
-         k+KKipdUN0wV01OruLZJPyw3gQQpHlyFvnAvtIEfvFNO8RW7MQA2a/rAhxa4yjhPIUXj
-         XK9j1H3Tkx1nfEF8l+/BRQ78/WmSwBchsScAaK3Hn2CC6yP7UZrf4/1a3NMGv/rvnJQY
-         ZPEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=99ip5umDvqCM2tLIiv2DcTtnVo0ZbZNaMiQiBwA7G0E=;
-        b=swKyuBu/Imc9bROThIGJ2JAYaIDpB1v1VmkLiwfV3bPgO7BBixgJnvd2feyXAvqP9l
-         fYOFZ5PkvqtC+amBp8urqIaqzNbLPOPth4TJw0BoRnCGwiLbO0AGHWfWPgtGEs/8FWC4
-         I3qxeiiHuaNI2XGrcbO+NrAW9z55Qcfy0e5vW01VSrGlLyynZvK0i9Ru3yNUA8ikAinf
-         wBo9CuGoZ91FIv/mg8sSfdWtupkEnPzatQP4lTWBCsj490+LDGZQFkK5VcAHlRpWZxyL
-         GCXz8t62y4J+3cKHJrLHL6hnrvnzkMbLsjpkpXrShU+Jq/HLMjHOnmMLV2olZ4L6x6zS
-         wzhA==
-X-Gm-Message-State: AOAM532vyS+UGIpVtOMx1Zs5WM/xRJ5zDfa3RoFWNN0Y5QHoi72YVnbr
-        1SwG0qaDmT2N0VrP7QXejVnSynBAzmGOpiuyuC8=
-X-Google-Smtp-Source: ABdhPJwdQc8v67RpIcDq8+zwO1ZaVvhObkR0atw52PS4x/1AiCg5dIdK98U77Eb7bxW7ZCLpUZtwQVoPbsqCX9YBVlo=
-X-Received: by 2002:a05:6102:20e:: with SMTP id z14mr1440852vsp.17.1601475138758;
- Wed, 30 Sep 2020 07:12:18 -0700 (PDT)
+        Wed, 30 Sep 2020 10:13:20 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UE3pWr152280;
+        Wed, 30 Sep 2020 14:13:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=U/RoOYQ4A4TqJFSLqRj2gU8U+HDYbbjA5tSPrITjo2w=;
+ b=pd+f1r6ljAVpW4XX8XAk2WCmCz/PDmzXqqGHiA1BN4LGQ11n2MOtkVB9Vk4qTy8rbY6A
+ kRzKSDfd/KQjcxKZtLoXzmkqMkK5vw/R7KY4jipGkWoP2c8DbfInFlo3NT/ic5i5R2qR
+ CCWTurP812znbdfzn1i5nPu7Gojc8g17J0NWmAL1GDJS/jpbmJ3in80HIODFtsUhkc9q
+ 4o5XYUtaBtm+HhBRkzwZdXviD5SmTvkpmyAt3uKYfOGZNiqNqzjf6Ab+ZhcCOS8qwDJq
+ vmFG5ypOVJcDK/MpLVQNkKsWqAFIic6PztWh3EgNFqqXqE0EdY+66TgCwM9JDHRtDgiS 1Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33su5b0tcj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 30 Sep 2020 14:13:01 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08UEAuc6120305;
+        Wed, 30 Sep 2020 14:13:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33uv2fe7pp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Sep 2020 14:13:00 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08UECwlq023022;
+        Wed, 30 Sep 2020 14:12:59 GMT
+Received: from [10.74.86.12] (/10.74.86.12)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Sep 2020 07:12:58 -0700
+Subject: Re: [PATCH] xen: remove redundant initialization of variable ret
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, jgross@suse.com,
+        sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20200919031702.32192-1-jingxiangfeng@huawei.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <73499fa3-fe37-46b8-0276-7e4f42a98f40@oracle.com>
+Date:   Wed, 30 Sep 2020 10:12:56 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-Received: by 2002:ab0:380d:0:0:0:0:0 with HTTP; Wed, 30 Sep 2020 07:12:18
- -0700 (PDT)
-Reply-To: mrsbirdggie@gmail.com
-From:   "Mrs. Birdggie William" <anniemariane11@gmail.com>
-Date:   Wed, 30 Sep 2020 14:12:18 +0000
-Message-ID: <CA+4DY8iBaU1HHKowL98gnFTAG+GCaoH-3HzgGhQ4Sh5Z7XA_-g@mail.gmail.com>
-Subject: My Beloved One.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200919031702.32192-1-jingxiangfeng@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ suspectscore=2 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009300112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Beloved One,
-Greetings to you and your family. My name is Mrs. Birdggie William 58
-years childless and widow suffering from Esophageal Cancer, my husband
-died after testing positive for the corona virus and recently my
-doctor told me that I have a few months to live due to the critical
-condition of my cancer illness. Having known my condition I decided to
-donate my late husband funds worth US $7.5 Million to help the poor,
-widows and orphanages which in return will bring blessing for my soul
-when i die.
-I took this decision because my relatives and friends have failed me
-and plundered so much of my money since my illness. If you are
-interested to receive this money to help the poor and widows, kindly
-reply me back for more details.
-Thanks and remain blessed with your family.
-Sincerely yours,
-=C2=A0Mrs. Birdggie William
+
+On 9/18/20 11:17 PM, Jing Xiangfeng wrote:
+> After commit 9f51c05dc41a ("pvcalls-front: Avoid
+> get_free_pages(GFP_KERNEL) under spinlock"), the variable ret is being
+> initialized with '-ENOMEM' that is meaningless. So remove it.
+>
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+
+
+Applied to for-linus-5.10
+
+
+
+-boris
+
