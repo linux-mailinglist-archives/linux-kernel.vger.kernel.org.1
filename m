@@ -2,124 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC51427E7FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7C427E804
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729483AbgI3L4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3L4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:56:05 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BF6C061755;
-        Wed, 30 Sep 2020 04:56:05 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so1444821wmm.2;
-        Wed, 30 Sep 2020 04:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=/e6Hsi9CMtqzZnIKCBnu9x6TRjKgsku17Kje/SLQgxk=;
-        b=nlytbkeZSQFvQ/dR3WEjx/pwtK7fPq36kiqhAaienevjAo7N39meQZ+oCzvJ8Hdk36
-         zb3yDbtBqYI5xXInfZjty6fztpwTm6J+bcTL24prz4UefHiqknsBNMVSjWdMzb4ZB5fk
-         49rbsC7fXQJp+G1RTlP3jQl5Xuzr8oEHF4dAe0RBLS9Ehp1S+NKLj1GXn/Cpf806KL4n
-         LaDG2OlTUFxy5wEVrx6Ky9QyTkCLzujagGAUMOt5b8oQP9myED9WkJM+oJdvtpAUJZdo
-         4CViUbJhF3GsbjNgLEjQ3r84syUAEAR4MA+YqC++ldHpa4TgCvNBUM5yo/eW7/UEAL3z
-         97eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=/e6Hsi9CMtqzZnIKCBnu9x6TRjKgsku17Kje/SLQgxk=;
-        b=txwL1jxCQAH1QELXZmlMoJJriykvjDHui912PEE1FGkxtevM6ki6yqXloxKEyji84w
-         hFQGy4bMsv2uagOl7tb1wMrrVZSRXFbDRYf56UYDMA8BYaUgOy/dlZyWkwAOe+OgYCZx
-         Kqn2r5RlEtTsUoHssQVv16LQW8hOEPLs8NW+fjee2Ebre+HDCLsgCzdNHDhJm1ibUDED
-         DIGNVFwR6BUGTTAq/52udu1i9rxQAqkAomQ6amguNMWcldht8gVWCz6c2tSmz+VDGZ4G
-         v/MnIWTy2fjhOz1sOKvDTRiq1Vgxo+17YjdOafoQ0slPpY2cNomjeyn27UbqsxEcM/JD
-         Az+w==
-X-Gm-Message-State: AOAM532YBRtfC40Gp/zNEOnKDy/mXROW1WKveMPkTVn5+uZrBwiGZ9ir
-        /5s21jW97d7LNU5N0k2XubI7I4kt+JbjmA==
-X-Google-Smtp-Source: ABdhPJzZbgSCxiYKhLE3ZvqSSKxPBlptlSX/RpWq51eO1owDHr5yHk+gVbqlEv3e9tLdz8/hoIu3aw==
-X-Received: by 2002:a1c:f008:: with SMTP id a8mr2740833wmb.155.1601466963922;
-        Wed, 30 Sep 2020 04:56:03 -0700 (PDT)
-Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.gmail.com with ESMTPSA id h4sm2996187wrm.54.2020.09.30.04.56.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 30 Sep 2020 04:56:03 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Sudeep Holla'" <sudeep.holla@arm.com>
-Cc:     "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Andy Gross'" <agross@kernel.org>,
-        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
-        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
-        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <20200929162926.139-1-ansuelsmth@gmail.com> <20200930092954.GA7125@bogus>
-In-Reply-To: <20200930092954.GA7125@bogus>
-Subject: RE: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq scaling driver
-Date:   Wed, 30 Sep 2020 13:56:01 +0200
-Message-ID: <006c01d69720$abd3f230$037bd690$@gmail.com>
+        id S1729552AbgI3L5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725776AbgI3L5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:57:38 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 94C962075F;
+        Wed, 30 Sep 2020 11:57:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601467057;
+        bh=jTIPj0hDxe4dQiOvFbebYyAKYwFyXODykvNjRZ/EYfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BPm4lfm7efSRjxS7P4PqAemAG+Hd5iwQzN+jXJ26OpB0Z5nygh3nJ6/3VN4KSJ0mM
+         T7nBJNyJqEI+lWY/v1AhBku2qi3F8Yple32MpMTW/nq5pRlMqLmQasFq/rQ5OayNHS
+         uK0jvxXt2iEMqm8at1LTWqTbB0c85UddUoxYLBSk=
+Date:   Wed, 30 Sep 2020 13:57:40 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>, Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Denis Efremov <efremov@linux.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 1/8] sysfs: Add sysfs_emit and sysfs_emit_at to format
+ sysfs output
+Message-ID: <20200930115740.GA1611809@kroah.com>
+References: <cover.1600285923.git.joe@perches.com>
+ <884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQHRHCX89vsNM0cZY8BINv1SaJtjIwLCr4YDqXXwJVA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq
-> scaling driver
+Kees, and Rafael, I don't know if you saw this proposal from Joe for
+sysfs files, questions below:
+
+On Wed, Sep 16, 2020 at 01:40:38PM -0700, Joe Perches wrote:
+> Output defects can exist in sysfs content using sprintf and snprintf.
 > 
-> On Tue, Sep 29, 2020 at 06:29:24PM +0200, Ansuel Smith wrote:
-> > Qcom L2 Krait CPUs use the generic cpufreq-dt driver and doesn't
-actually
-> > scale the Cache frequency when the CPU frequency is changed. This
-> > devfreq driver register with the cpu notifier and scale the Cache
-> > based on the max Freq across all core as the CPU cache is shared across
-> > all of them. If provided this also scale the voltage of the regulator
-> > attached to the CPU cache. The scaling logic is based on the CPU freq
-> > and the 3 scaling interval are set by the device dts.
-> >
+> sprintf does not know the PAGE_SIZE maximum of the temporary buffer
+> used for outputting sysfs content and it's possible to overrun the
+> PAGE_SIZE buffer length.
 > 
-> I have raised this concern before. I am worried this kind of independent
-> CPU and cache frequency controls make way for clkscrew kind of attacks.
-> Why can't the clocks be made parent/child or secondary and automatically
-> updated when CPU clocks are changed.
+> Add a generic sysfs_emit function that knows that the size of the
+> temporary buffer and ensures that no overrun is done.
 > 
-> --
-> Regards,
-> Sudeep
+> Add a generic sysfs_emit_at function that can be used in multiple
+> call situations that also ensures that no overrun is done.
+> 
+> Validate the output buffer argument to be page aligned.
+> Validate the offset len argument to be within the PAGE_SIZE buf.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  Documentation/filesystems/sysfs.rst |  8 ++---
+>  fs/sysfs/file.c                     | 55 +++++++++++++++++++++++++++++
+>  include/linux/sysfs.h               | 15 ++++++++
+>  3 files changed, 73 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
+> index 5a3209a4cebf..004d490179f3 100644
+> --- a/Documentation/filesystems/sysfs.rst
+> +++ b/Documentation/filesystems/sysfs.rst
+> @@ -241,12 +241,10 @@ Other notes:
+>    is 4096.
+>  
+>  - show() methods should return the number of bytes printed into the
+> -  buffer. This is the return value of scnprintf().
+> +  buffer.
+>  
+> -- show() must not use snprintf() when formatting the value to be
+> -  returned to user space. If you can guarantee that an overflow
+> -  will never happen you can use sprintf() otherwise you must use
+> -  scnprintf().
+> +- show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+> +  the value to be returned to user space.
+>  
+>  - store() should return the number of bytes used from the buffer. If the
+>    entire buffer has been used, just return the count argument.
+> diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+> index eb6897ab78e7..96d0da65e088 100644
+> --- a/fs/sysfs/file.c
+> +++ b/fs/sysfs/file.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/mm.h>
+>  
+>  #include "sysfs.h"
+>  
+> @@ -707,3 +708,57 @@ int sysfs_change_owner(struct kobject *kobj, kuid_t kuid, kgid_t kgid)
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(sysfs_change_owner);
+> +
+> +/**
+> + *	sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer.
+> + *	@buf:	start of PAGE_SIZE buffer.
+> + *	@fmt:	format
+> + *	@...:	optional arguments to @format
+> + *
+> + *
+> + * Returns number of characters written to @buf.
+> + */
+> +int sysfs_emit(char *buf, const char *fmt, ...)
+> +{
+> +	va_list args;
+> +	int len;
+> +
+> +	if (WARN(!buf || offset_in_page(buf),
+> +		 "invalid sysfs_emit: buf:%p\n", buf))
+> +		return 0;
+> +
+> +	va_start(args, fmt);
+> +	len = vscnprintf(buf, PAGE_SIZE, fmt, args);
+> +	va_end(args);
+> +
+> +	return len;
+> +}
+> +EXPORT_SYMBOL_GPL(sysfs_emit);
+> +
+> +/**
+> + *	sysfs_emit_at - scnprintf equivalent, aware of PAGE_SIZE buffer.
+> + *	@buf:	start of PAGE_SIZE buffer.
+> + *	@at:	offset in @buf to start write in bytes
+> + *		@at must be >= 0 && < PAGE_SIZE
+> + *	@fmt:	format
+> + *	@...:	optional arguments to @fmt
+> + *
+> + *
+> + * Returns number of characters written starting at &@buf[@at].
+> + */
+> +int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
+> +{
+> +	va_list args;
+> +	int len;
+> +
+> +	if (WARN(!buf || offset_in_page(buf) || at < 0 || at >= PAGE_SIZE,
+> +		 "invalid sysfs_emit_at: buf:%p at:%d\n", buf, at))
+> +		return 0;
+> +
+> +	va_start(args, fmt);
+> +	len = vscnprintf(buf + at, PAGE_SIZE - at, fmt, args);
+> +	va_end(args);
+> +
+> +	return len;
+> +}
+> +EXPORT_SYMBOL_GPL(sysfs_emit_at);
 
-I don't think I understand this fully. Anyway about the clkscrew attack, the
-range are set on the dts so unless someone actually wants to have a
-vulnerable
-system, the range can't be changes at runtime. The devfreq governor is set
-to
-immutable and can't be changes AFAIK.
+These feel sane, but I'm loath to have a ton of churn for no good
+reason.
 
-About 'automatically updated when CPU changes', the cache is shared across 2
-core and they scale independently. We can be in situation where one cpu is
-at
-max and one at idle freq and the cache is set to idle. To fix this at every
-change
-the clk should find the max value and I think this would make all the clk
-scaling
-very slow. If you have any suggestion on how I can implement this better,
-I'm
-more than happy to address them. For now, the lack of this kind of cache
-scale,
-make the system really slow since by default the init of the cpu and cache
-clks
-put them at the lowest frequency and nobody changes that. (we have cpufreq
-scaling support but the cache is never actually scaled)
+If we make all sysfs show/store functions use these calls instead of
+sprintf(), it "feels" like that might address the objections that people
+have had in the past where they are nervous about "bare" sprintf()
+calls, right?
 
+It also might make things easier to audit where we can see much easier
+where sysfs files are doing "foolish" things by calling sysfs_emit_at()
+a bunch of times they shouldn't be, and maybe automate the documentation
+of sysfs files in a better way.
 
+So I guess I'm asking for another developer to at least agree that this
+feels like the right way forward here.  I don't want to start down this
+path, only to roll them all back as it feels like pointless churn.
+
+thanks,
+
+greg k-h
