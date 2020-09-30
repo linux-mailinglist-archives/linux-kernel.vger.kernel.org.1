@@ -2,82 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95AD27ECF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CAB27ED07
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgI3Paa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:30:30 -0400
-Received: from smtprelay0042.hostedemail.com ([216.40.44.42]:34586 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730851AbgI3Pa2 (ORCPT
+        id S1730729AbgI3Pbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbgI3Pbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:30:28 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id E5188181D302B;
-        Wed, 30 Sep 2020 15:30:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2538:2553:2560:2563:2682:2685:2828:2859:2892:2911:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4425:5007:6119:6742:7903:9012:9025:9040:10004:10400:10848:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13072:13161:13229:13311:13357:13439:13618:14181:14659:14721:14777:21063:21067:21080:21433:21451:21611:21627:21740:21788:21819:30003:30022:30054:30055:30056:30067:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: vase23_3d0218b27193
-X-Filterd-Recvd-Size: 2476
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 30 Sep 2020 15:30:22 +0000 (UTC)
-Message-ID: <f92c0644700ef7adc703907f95e4332f94d7aa7b.camel@perches.com>
-Subject: Re: [PATCH v6 2/3] MAINTAINERS: Add Purism Librem 5 section to the
- list
-From:   Joe Perches <joe@perches.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
-        kernel@puri.sm, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        Anson.Huang@nxp.com, agx@sigxcpu.org, angus@akkea.ca,
-        broonie@kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Wed, 30 Sep 2020 08:30:20 -0700
-In-Reply-To: <CAJKOXPcJUg+a8rJEn1D-_Ex3HEyHi7TZdh8VGPr9C23xq8L2pA@mail.gmail.com>
-References: <20200821121755.24599-1-martin.kepplinger@puri.sm>
-         <20200821121755.24599-2-martin.kepplinger@puri.sm>
-         <20200830131459.GL32096@dragon>
-         <CAJKOXPcJUg+a8rJEn1D-_Ex3HEyHi7TZdh8VGPr9C23xq8L2pA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 30 Sep 2020 11:31:38 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B68C061755;
+        Wed, 30 Sep 2020 08:31:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so3471014eja.2;
+        Wed, 30 Sep 2020 08:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GQ+QciihMmxst/0zRv51AWM5s8LUs2MsZl6VvL+SYew=;
+        b=l/k1LR8TC1z0fC5fy2fy08r63R7eGpR3i1LrTcGYD/JujjpDS47TRdxX5M4l1lzPY4
+         Sorp/3LaoevnyxeRBoKxaLwa/W/GgtwF1vi+kE5lI1kUOAqzV7TeepINGKN/ORl0wppL
+         elKrH2QH96btK5rqSqUnSEIfD+kUoIgNv/REQo80OfkGgBcC/BDQ1/K4xjhsX2BAnsca
+         hF0hBmZPaz7U2kd/f04Ig5aKA2iZixGtjuh76g9xlfjXNjnEFy13YCQq+ypuAhmrIqrM
+         IJcZRhaKKMLNtX1Hiw+Xf70XilefX1hJLHY+zPk9/C3YWwqpsR3jSmiu89zFFAumc3to
+         ynyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GQ+QciihMmxst/0zRv51AWM5s8LUs2MsZl6VvL+SYew=;
+        b=Fjg+HmtV+k7A2xjaHFX6BWUBFPSGlwb9Zk0f27KqJ2WbguG7aPCdbnTyD5jgWJSjhd
+         4SgwlcTQQVzJMCCVqCMrZagrvmaND3vL5aZ0iMOr7Cgw1NzvFyiJbQTQu1snmHX3/NaD
+         Q7+NE82vEtzEZlAOln3M5l2gzFoxi800ELMZc2RJg97S6vhAn1F2dD1TidaqTgj4XTF/
+         8VVSVzbfF+FwMKUfOQIi6EmvUdW/UF3A7BbqnkbJOZty0+tPALgUrYjbeNsjJflj73a7
+         Lee1M8L7FA+dwDtsrkn5enSzWppJo6yb6G8B7Q4HVSkC3+AauyGWYrwk9VRoYVIoLtLy
+         OIYA==
+X-Gm-Message-State: AOAM533C5oNJKDoaVN3FLcMMoIA6MtBN1k3BUvYpZlQgXelwsmkQ4ZU0
+        fNhz6NWwTYAEWjT3Oe+bU7c=
+X-Google-Smtp-Source: ABdhPJz/A7wNImE0eB1aa4tmPvsTghk9VoJMMbhBz8FvSzSuJxmPq8kOu4GYGFhDPidJ2RALp8Pk8Q==
+X-Received: by 2002:a17:906:2ac5:: with SMTP id m5mr3390476eje.210.1601479894477;
+        Wed, 30 Sep 2020 08:31:34 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id e4sm1827755edk.38.2020.09.30.08.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 08:31:33 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 17:31:31 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, krzk@kernel.org, digetx@gmail.com,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930153131.GB3833404@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+In-Reply-To: <20200930084258.25493-3-nicoleotsuka@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 12:50 +0200, Krzysztof Kozlowski wrote:
-> On Sun, 30 Aug 2020 at 15:15, Shawn Guo <shawnguo@kernel.org> wrote:
-> > On Fri, Aug 21, 2020 at 02:17:54PM +0200, Martin Kepplinger wrote:
-> > > Add development information for the devicetree files for hardware
-> > > by Purism SPC.
-> > > 
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > 
-> > I decided to drop this patch from my queue, as I took the suggestion
-> > from Joe and sent a patch to have get_maintainer report email address
-> > in the dts file.
-> > 
-> > Shawn
-> > 
-> > [1] https://lkml.org/lkml/2020/8/30/118
-> 
-> Shawn, Joe,
-> 
-> Cool idea! Multiple times I needed review/testing for individual
-> boards and this should be faster than going through git history.
-> 
-> Could you tell me how this is supposed to work for DTS/DTSI files? It
-> seems it ignores the comments, so usual copyright notice does not have
-> an effect. Where to put the address?
 
-The get_maintainer.pl script reads an existing file and
-looks for whatever appears to be an email address.
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It does not ignore comments.
+On Wed, Sep 30, 2020 at 01:42:57AM -0700, Nicolin Chen wrote:
+> Previously the driver relies on bus_set_iommu() in .probe() to call
+> in .probe_device() function so each client can poll iommus property
+> in DTB to configure fwspec via tegra_smmu_configure(). According to
+> the comments in .probe(), this is a bit of a hack. And this doesn't
+> work for a client that doesn't exist in DTB, PCI device for example.
+>=20
+> Actually when a device/client gets probed, the of_iommu_configure()
+> will call in .probe_device() function again, with a prepared fwspec
+> from of_iommu_configure() that reads the SWGROUP id in DTB as we do
+> in tegra-smmu driver.
+>=20
+> Additionally, as a new helper devm_tegra_get_memory_controller() is
+> introduced, there's no need to poll the iommus property in order to
+> get mc->smmu pointers or SWGROUP id.
+>=20
+> This patch reworks .probe_device() and .attach_dev() by doing:
+> 1) Using fwspec to get swgroup id in .attach_dev/.dettach_dev()
+> 2) Removing DT polling code, tegra_smmu_find/tegra_smmu_configure()
+> 3) Calling devm_tegra_get_memory_controller() in .probe_device()
+> 4) Also dropping the hack in .probe() that's no longer needed.
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>=20
+> Changelog
+> v2->v3
+>  * Used devm_tegra_get_memory_controller() to get mc pointer
+>  * Replaced IS_ERR_OR_NULL with IS_ERR in .probe_device()
+> v1->v2
+>  * Replaced in .probe_device() tegra_smmu_find/tegra_smmu_configure()
+>    with tegra_get_memory_controller call.
+>  * Dropped the hack in tegra_smmu_probe().
+>=20
+>  drivers/iommu/tegra-smmu.c | 144 ++++++++++---------------------------
+>  1 file changed, 36 insertions(+), 108 deletions(-)
+>=20
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index 6a3ecc334481..636dc3b89545 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -61,6 +61,8 @@ struct tegra_smmu_as {
+>  	u32 attr;
+>  };
+> =20
+> +static const struct iommu_ops tegra_smmu_ops;
+> +
+>  static struct tegra_smmu_as *to_smmu_as(struct iommu_domain *dom)
+>  {
+>  	return container_of(dom, struct tegra_smmu_as, domain);
+> @@ -484,60 +486,50 @@ static void tegra_smmu_as_unprepare(struct tegra_sm=
+mu *smmu,
+>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>  				 struct device *dev)
+>  {
+> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+>  	struct tegra_smmu *smmu =3D dev_iommu_priv_get(dev);
+>  	struct tegra_smmu_as *as =3D to_smmu_as(domain);
+> -	struct device_node *np =3D dev->of_node;
+> -	struct of_phandle_args args;
+>  	unsigned int index =3D 0;
+>  	int err =3D 0;
+> =20
+> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> -					   &args)) {
+> -		unsigned int swgroup =3D args.args[0];
+> -
+> -		if (args.np !=3D smmu->dev->of_node) {
+> -			of_node_put(args.np);
+> -			continue;
+> -		}
+> -
+> -		of_node_put(args.np);
+> +	if (!fwspec || fwspec->ops !=3D &tegra_smmu_ops)
+> +		return -ENOENT;
+> =20
+> +	for (index =3D 0; index < fwspec->num_ids; index++) {
+>  		err =3D tegra_smmu_as_prepare(smmu, as);
+> -		if (err < 0)
+> -			return err;
+> +		if (err)
+> +			goto disable;
+> =20
+> -		tegra_smmu_enable(smmu, swgroup, as->id);
+> -		index++;
+> +		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
+>  	}
+> =20
+>  	if (index =3D=3D 0)
+>  		return -ENODEV;
+> =20
+>  	return 0;
+> +
+> +disable:
+> +	while (index--) {
+> +		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
+> +		tegra_smmu_as_unprepare(smmu, as);
+> +	}
+> +
+> +	return err;
+>  }
+> =20
+>  static void tegra_smmu_detach_dev(struct iommu_domain *domain, struct de=
+vice *dev)
+>  {
+> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+>  	struct tegra_smmu_as *as =3D to_smmu_as(domain);
+> -	struct device_node *np =3D dev->of_node;
+>  	struct tegra_smmu *smmu =3D as->smmu;
+> -	struct of_phandle_args args;
+>  	unsigned int index =3D 0;
+> =20
+> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> -					   &args)) {
+> -		unsigned int swgroup =3D args.args[0];
+> -
+> -		if (args.np !=3D smmu->dev->of_node) {
+> -			of_node_put(args.np);
+> -			continue;
+> -		}
+> -
+> -		of_node_put(args.np);
+> +	if (!fwspec || fwspec->ops !=3D &tegra_smmu_ops)
+> +		return;
+> =20
+> -		tegra_smmu_disable(smmu, swgroup, as->id);
+> +	for (index =3D 0; index < fwspec->num_ids; index++) {
+> +		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
+>  		tegra_smmu_as_unprepare(smmu, as);
+> -		index++;
+>  	}
+>  }
+> =20
+> @@ -807,80 +799,26 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct i=
+ommu_domain *domain,
+>  	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
+>  }
+> =20
+> -static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
+> -{
+> -	struct platform_device *pdev;
+> -	struct tegra_mc *mc;
+> -
+> -	pdev =3D of_find_device_by_node(np);
+> -	if (!pdev)
+> -		return NULL;
+> -
+> -	mc =3D platform_get_drvdata(pdev);
+> -	if (!mc)
+> -		return NULL;
+> -
+> -	return mc->smmu;
+> -}
+> -
+> -static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *=
+dev,
+> -				struct of_phandle_args *args)
+> -{
+> -	const struct iommu_ops *ops =3D smmu->iommu.ops;
+> -	int err;
+> -
+> -	err =3D iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
+> -	if (err < 0) {
+> -		dev_err(dev, "failed to initialize fwspec: %d\n", err);
+> -		return err;
+> -	}
+> -
+> -	err =3D ops->of_xlate(dev, args);
+> -	if (err < 0) {
+> -		dev_err(dev, "failed to parse SW group ID: %d\n", err);
+> -		iommu_fwspec_free(dev);
+> -		return err;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
+>  {
+> -	struct device_node *np =3D dev->of_node;
+> -	struct tegra_smmu *smmu =3D NULL;
+> -	struct of_phandle_args args;
+> -	unsigned int index =3D 0;
+> -	int err;
+> -
+> -	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> -					  &args) =3D=3D 0) {
+> -		smmu =3D tegra_smmu_find(args.np);
+> -		if (smmu) {
+> -			err =3D tegra_smmu_configure(smmu, dev, &args);
+> -			of_node_put(args.np);
+> -
+> -			if (err < 0)
+> -				return ERR_PTR(err);
+> -
+> -			/*
+> -			 * Only a single IOMMU master interface is currently
+> -			 * supported by the Linux kernel, so abort after the
+> -			 * first match.
+> -			 */
+> -			dev_iommu_priv_set(dev, smmu);
+> -
+> -			break;
+> -		}
+> +	struct tegra_mc *mc =3D devm_tegra_get_memory_controller(dev);
+> +	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
 
+It looks to me like the only reason why you need this new global API is
+because PCI devices may not have a device tree node with a phandle to
+the IOMMU. However, SMMU support for PCI will only be enabled if the
+root complex has an iommus property, right? In that case, can't we
+simply do something like this:
 
+	if (dev_is_pci(dev))
+		np =3D find_host_bridge(dev)->of_node;
+	else
+		np =3D dev->of_node;
+
+? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+sure that exists.
+
+Once we have that we can still iterate over the iommus property and do
+not need to rely on this global variable.
+
+> -		of_node_put(args.np);
+> -		index++;
+> -	}
+> +	/* An invalid mc pointer means mc and smmu drivers are not ready */
+> +	if (IS_ERR(mc))
+> +		return ERR_PTR(-EPROBE_DEFER);
+> =20
+> -	if (!smmu)
+> +	/*
+> +	 * IOMMU core allows -ENODEV return to carry on. So bypass any call
+> +	 * from bus_set_iommu() during tegra_smmu_probe(), as a device will
+> +	 * call in again via of_iommu_configure when fwspec is prepared.
+> +	 */
+> +	if (!mc->smmu || !fwspec || fwspec->ops !=3D &tegra_smmu_ops)
+>  		return ERR_PTR(-ENODEV);
+> =20
+> -	return &smmu->iommu;
+> +	dev_iommu_priv_set(dev, mc->smmu);
+> +
+> +	return &mc->smmu->iommu;
+>  }
+> =20
+>  static void tegra_smmu_release_device(struct device *dev)
+> @@ -1089,16 +1027,6 @@ struct tegra_smmu *tegra_smmu_probe(struct device =
+*dev,
+>  	if (!smmu)
+>  		return ERR_PTR(-ENOMEM);
+> =20
+> -	/*
+> -	 * This is a bit of a hack. Ideally we'd want to simply return this
+> -	 * value. However the IOMMU registration process will attempt to add
+> -	 * all devices to the IOMMU when bus_set_iommu() is called. In order
+> -	 * not to rely on global variables to track the IOMMU instance, we
+> -	 * set it here so that it can be looked up from the .probe_device()
+> -	 * callback via the IOMMU device's .drvdata field.
+> -	 */
+> -	mc->smmu =3D smmu;
+
+I don't think this is going to work. I distinctly remember putting this
+here because we needed access to this before ->probe_device() had been
+called for any of the devices.
+
+Thierry
+
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90pNMACgkQ3SOs138+
+s6G7QA//XGftMbLm6fRUKoKS/Cmf6fM3+TAW+NS8MyjN5o1E1LEY9a8Gyzm5W0cu
+ywcAkD+hjyCrhnmzVidi3oi1bxBhRgtUq3Zcye3eH42osro0O4PU6A+8s2zIYp7R
+tdQcRNSaNcx1uw5RRn4znzhuNWxHwAGDtI6H0KkGe6eagfxAFV2kkc+5PqkZQFRT
+fmLgPUa6Tt8jI+RkoeOvnu0s1iF1tCE76NYuM3GrW8sOopl9BARntPP9fTjRLvss
+JJXuHrchrF4uhJPYrBxgbMFZZFBVsvbncf7kXqqnK0QWMAuNDWrLD+5upbtXtifG
+sKzrTpRfHkVyWHLmYigvdYBl2yafyDM3a0aPslKwob/+rA8UGmjJ/IuS28Bjb8eh
+MVncdJO9a+cue0tUjW9jk3jF0p+FnAOa/7cYKN6q4CJ+sEgOLGmNdtHEKOiiPsVE
+WdA0gMmiSsRBMA8E3aZzqHx74WSXWLzjc+FRIsZnFG8AqK51O7AkG2hlciJu5Q8S
+UuM6Sd/Q4CRmb/gK8wxLz3zQxwTooqsxTMHf/CF2ase8z/PeED6DE3N3/Ec3IHTs
+pXD4g7r6yVG5UF+zdCpiZPP7etxIG0OfVVQpOaOsND3mkCs2MkqFc55eIUGe/HYH
+EpmTMcTkpty+UDUcdjfWB80e4eMD4DQZ9/pjkSjLbg45/AgsKdk=
+=9hqH
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
