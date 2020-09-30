@@ -2,92 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB327E623
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACBC27E626
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729472AbgI3KDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S1729499AbgI3KDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbgI3KDK (ORCPT
+        with ESMTP id S1728169AbgI3KDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:03:10 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D27EC061755;
-        Wed, 30 Sep 2020 03:03:10 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 197so793830lfo.11;
-        Wed, 30 Sep 2020 03:03:10 -0700 (PDT)
+        Wed, 30 Sep 2020 06:03:38 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8CCC061755;
+        Wed, 30 Sep 2020 03:03:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id i1so1180286edv.2;
+        Wed, 30 Sep 2020 03:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6qspn01NWn8HRLwIZnHAxe0/BySrc7LTnFF+a+HiA10=;
-        b=n56H9rODV05DjWdDRaDEeOMCcqS/xeqc/Oy4IzVrD0cY2BUznVLlKKM1Lm3NRywEJh
-         IBu9VXwqtpAR9I/PJETWqBG5CVEWR4eNuwP1dhYH4w5ew2iDXC6CBTjXC2wEu1jCXLXF
-         yzpqP+Qcj3p0JESHrDYdR+6GxRc0JbAPtUlS+HXRw63YSlpBi84tM2Zy7+wq0AvWwXbX
-         dXPXNHPBgNRO0W6oy29KZ4+fHBC+cX9krS3NHYlmBLs1QiVV5Fql5zTu9uhsmf54GSNB
-         Ep8fg7xJIq5VaGoZSUqJsC2Xyh4cUVvMmOL3uug4s8wxs9wrCM5FJEKfwWIysDEX7plB
-         VfWA==
+         :cc;
+        bh=6eQSQ6FMnZx16wQvvPmbkhXd684nRo0x3+8qlc61yUM=;
+        b=alS7dDEGuV4wmRGvSI8MpVFj3ADR2+0BLdTdfC8IHPG/PdoPB9rDdPD4+Xve4tgpns
+         AlFsf5uGjeIA4HMUhmGX/PavIGwJvDhB8uCCxz1fqwwab0DKs25ZEpMA1uz1hVjKUlNO
+         ujIyfMoamY1isWfOf0Wsa9uEZP0R0I8xo8XXFRiCEIFll/jm7CCl7FvyE4UYfh72S3KZ
+         prfJQkLnEx4WrTfC4rqczMIgS9QOQ448KT4Npb0ggjdW9G/nMknyv4mGckub+m/IHsus
+         3o+gUCjQjELn+37PCFOVjvZP4391yeGg7NQzn+cZguD2X2Zb7kzm54PPvB+LmEVg0WgW
+         J+xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6qspn01NWn8HRLwIZnHAxe0/BySrc7LTnFF+a+HiA10=;
-        b=WuHC5sH5m7TBeJSfvr66z5rNx8xUsxr1WZjVdtSbogRvw9EDnl/hXymzaQ84QZnaFG
-         ysZjqIIYjHhjPdOA3xFkXJIYL2po6kMXZLrbni3YxKhErU2gBeoF6uyVh+ynuCoNSA2Y
-         liqEVQkLDR4DrWYmmOeElM40VThHQqeGpAz4Enwg7qin5xv9+iwrRpLX9gYtTWJXbqqY
-         cZZVlLXIMwINX/RUqCjx9407c1zc0UMdHCCpds2PnFRlLUk4zHVkXQBVFDyEY878FotE
-         Gwu436TRGCi8u3c2AHEOV7TtX8uDxgZGsK3VykJ4f0wUnwwDbUC2moTpQwonOAt5/bKG
-         ajXg==
-X-Gm-Message-State: AOAM531mTH66xR+YaV+0DEw5rSlw31VpQIXfGqRPCImKaWtiAUO5nI0a
-        J/cr6IQZ0zsoSE2zhXCTAm4E+QFyg4huX11Uv/Q=
-X-Google-Smtp-Source: ABdhPJwkpM/1GjBv0FpeirzkqG0YElUX8P+nWSjaVIVCOIbtDJQXUUG2xAlxm8QlAuUkM3ZV9Qxz6UBOOPxlP5Camew=
-X-Received: by 2002:a19:4a83:: with SMTP id x125mr653912lfa.38.1601460188546;
- Wed, 30 Sep 2020 03:03:08 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=6eQSQ6FMnZx16wQvvPmbkhXd684nRo0x3+8qlc61yUM=;
+        b=msKjUde5gc+mK8T3r7XWXjXzwIxTdc4xfGRNdvCMIbr1Ay5Bg6qxwTGh5OMQJCfkAy
+         ly4rW9G/veUpb0RlKYi/ZT25C7dwpEnhAghzmbhDfD7G+GyWW4gCv+xqOX7PA0Y0sFQy
+         sc9agNAKPwtVZQC7hvW+w31E7X/EbcPnYCivD/38AvzyZXhxFwhWXMu4rqzi1P472Jqk
+         fGS8iptcJdP2vzCyjS5zY2ucEl/UrcIfByh08WjUc5IKywKK1vIq/KLaPmwrcc4UvRHE
+         msiHXt2JhN/1ROGK0ty66BoTlPD0MHVQn54Y82tflv2lLdgFbsFhjVaHQtkFd7aVXivr
+         FhqA==
+X-Gm-Message-State: AOAM5337nIo9+pCrsfSveonLB+aHIHTXCALJBC3z+1f0ig4a4bxiZU3d
+        IiKILuSRWs5t+E/eUwGwax/N73lUj0nJOaZX8oQ=
+X-Google-Smtp-Source: ABdhPJxR5hV4zOtsFOzsL6EL+KZ6ESN/CFb5VXbcf7LwE2ck5lociA0bO/XmS8syuCiqRWUxehOX6j1zplyi1vedF/s=
+X-Received: by 2002:aa7:ce15:: with SMTP id d21mr1825762edv.284.1601460216593;
+ Wed, 30 Sep 2020 03:03:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <1601277584-5526-1-git-send-email-u0084500@gmail.com>
- <1601277584-5526-2-git-send-email-u0084500@gmail.com> <20200929150624.GA583524@bogus>
- <CADiBU3_7wj7W2evOAG1GM991OigPYy4FXraeOLCVreaMO86HXw@mail.gmail.com> <20200930094224.GA4974@sirena.org.uk>
-In-Reply-To: <20200930094224.GA4974@sirena.org.uk>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Wed, 30 Sep 2020 18:02:56 +0800
-Message-ID: <CADiBU3_My=dpV1ef82PSs5wme8q1-fgPxoTLiQbJRcYd6KZw_A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] regulator: rtmv20: Add DT-binding document for
- Richtek RTMV20
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, cy_huang <cy_huang@richtek.com>,
-        devicetree@vger.kernel.org
+References: <1601208668-6285-1-git-send-email-guomin_chen@sina.com>
+ <20200929145435.7a4fbac9@x1.home> <20200929152525.24900f6c@x1.home>
+In-Reply-To: <20200929152525.24900f6c@x1.home>
+From:   gchen chen <gchen.guomin@gmail.com>
+Date:   Wed, 30 Sep 2020 18:03:31 +0800
+Message-ID: <CAEEwsfSqrZ7NLTqasBJ77_oCOop=mkuMSvAFxd+fVLZQwhe0OA@mail.gmail.com>
+Subject: Re: [PATCH] vfio/pci: when irq_bypass_register_producer() return
+ fails, we need to clean it up and return -EINVAL. instead of return true.
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     guomin_chen@sina.com, Cornelia Huck <cohuck@redhat.com>,
+        Jiang Yi <giangyi@amazon.com>, Marc Zyngier <maz@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2020=E5=B9=B49=E6=9C=8830=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:43=E5=AF=AB=E9=81=93=EF=BC=9A
+> On Tue, 29 Sep 2020 14:54:35 -0600
+> Alex Williamson <alex.williamson@redhat.com> wrote:
 >
-> On Wed, Sep 30, 2020 at 10:23:49AM +0800, ChiYuan Huang wrote:
->
-> >    Due to that already merged into your regulator for-next git, may I
-> > send the patch to fix Rob's comment?
->
-> Of course, yes please.
-
-OK, Thx.
->
-> > And I also found one line need to be added into rtmv20 probe phase.
-> > Please check below.
-> >         /*
-> >          * keep in shutdown mode to minimize the current consumption
-> >          * and also mark regcache as dirty
-> >          */
-> > +      regcache_cache_only(priv->regmap, true);
-> >         regcache_mark_dirty(priv->regmap);
-> >         gpiod_set_value(priv->enable_gpio, 0);
+> > On Sun, 27 Sep 2020 20:11:08 +0800
+> > guomin_chen@sina.com wrote:
 > >
-> > Can I directly merge into one that includes Rob's comment and the
-> > above line to be added?
+> > > From: guomin chen <guomin_chen@sina.com>
+> > >
+> > > Since eventfd "fds" is passed as a parameter by the upper-level
+> > > application,when "fds" has multiple identical 'fd', it causes
+> > > multiple different vfio_pci_irq_ctx->trigger and producer->token
+> > > pointing to the same eventfd file. Although all but the first one
+> > > can register successfully,all others fail to register.
+> > >
+> > > So when others producer released later, the list_del(&producer->node)
+> > > will be called due to the different producer->token pointing to the
+> > > same eventfd file, then triggering the BUG():
+> > >
+> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+> > >     vfio-pci 0000:db:00.0: irq bypass producer (token 0000000060c8cda5) registration fails: -16
+> > >     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1 (dead000000000100)
+> > >     ------------[ cut here ]------------
+> > >     kernel BUG at lib/list_debug.c:47!
+> > >     invalid opcode: 0000 [#1] SMP NOPTI
+> > >     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G      E
+> > >     -------- - -4.18.0-193.6.3.el8.x86_64 #1
+> > >     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
+> > >     BIOS -[IVE636Z-2.13]- 07/18/2019
+> > >     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
+> > >     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8 8c bc
+> > >       ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8 78 bc
+> > >       ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f 0b 48
+> > >       89 f2 48 89 fe
+> > >     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
+> > >     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 0000000000000000
+> > >     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf4d6a08
+> > >     RBP: 0000000000000000 R08: 000000000000084b R09: 000000000000005d
+> > >     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe863000
+> > >     R13: 00000000000000c2 R14: 0000000000000000 R15: 0000000000000000
+> > >     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
+> > >     knlGS:0000000000000000
+> > >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > >     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 00000000007626e0
+> > >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > >     PKRU: 55555554
+> > >     Call Trace:
+> > >         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
+> > >         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
+> > >         ? load_fixmap_gdt+0x22/0x30
+> > >         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
+> > >         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
+> > >         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
+> > >         do_vfs_ioctl+0xa4/0x630
+> > >         ? syscall_trace_enter+0x1d3/0x2c0
+> > >         ksys_ioctl+0x60/0x90
+> > >         __x64_sys_ioctl+0x16/0x20
+> > >         do_syscall_64+0x5b/0x1a0
+> > >         entry_SYSCALL_64_after_hwframe+0x65/0xca
+> > >
+> > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > Cc: Cornelia Huck <cohuck@redhat.com>
+> > > Cc: Jiang Yi <giangyi@amazon.com>
+> > > Cc: Marc Zyngier <maz@kernel.org>
+> > > Cc: Peter Xu <peterx@redhat.com>
+> > > Cc: Eric Auger <eric.auger@redhat.com>
+> > > Cc: kvm@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > Signed-off-by: guomin chen <guomin_chen@sina.com>
+> > > ---
+> > >  drivers/vfio/pci/vfio_pci_intrs.c | 15 +++++++++++++--
+> > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
+> > > index 1d9fb25..dd3a495 100644
+> > > --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> > > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> > > @@ -352,10 +352,21 @@ static int vfio_msi_set_vector_signal(struct vfio_pci_device *vdev,
+> > >     vdev->ctx[vector].producer.token = trigger;
+> > >     vdev->ctx[vector].producer.irq = irq;
+> > >     ret = irq_bypass_register_producer(&vdev->ctx[vector].producer);
+> > > -   if (unlikely(ret))
+> > > -           dev_info(&pdev->dev,
+> > > +   if (unlikely(ret)) {
+> > > +           dev_err(&pdev->dev,
+> > >             "irq bypass producer (token %p) registration fails: %d\n",
+> > >             vdev->ctx[vector].producer.token, ret);
+> > > +
+> > > +           kfree(vdev->ctx[vector].name);
+> > > +           eventfd_ctx_put(trigger);
+> > > +
+> > > +           cmd = vfio_pci_memory_lock_and_enable(vdev);
+> > > +           free_irq(irq, trigger);
+> > > +           vfio_pci_memory_unlock_and_restore(vdev, cmd);
+> > > +
+> > > +           vdev->ctx[vector].trigger = NULL;
+> > > +           return -EINVAL;
+> > > +   }
+> > >
+> > >     vdev->ctx[vector].trigger = trigger;
+> > >
+> >
+> > This is not the correct solution.  Registering an IRQ bypass is an
+> > accelerator, not a requirement.  Failure should never cause the ioctl
+> > to fail.  The scenario you describe is a valid user configuration, the
+> > issue is that the de-registration passes a bogus producer object that
+> > was never successfully registered, causing a false match.  Therefore I
+> > believe the solution is to simply clear the token on registration
+> > failure to prevent that bogus match.  That should result in all the
+> > additional producer objects with the same trigger harmlessly falling
+> > out of the unregister function.  Can you validate and post such a
+> > patch?  Thanks,
 >
-> Please make it a separate patch.
-I'll send the separate patch by next.
+> BTW, vhost_vdpa_setup_vq_irq() has the same bug (Cc MST & Jason).
+> Thanks,
+>
+> Alex
+>
+Well, thank you very much for you explanation of IRQ bypass.
+I'll continue to analyze and validate it.
+Thanks Alex.
