@@ -2,268 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6AD27F19E
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399E827F1A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729690AbgI3SvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgI3SvA (ORCPT
+        id S1729844AbgI3SvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:51:16 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2488 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725771AbgI3SvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:51:00 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE79C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:50:59 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id h23so581633vkn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wmSfumn0oWbMOwz8WPSPk+BKE/F10/vN5718M+CpeNM=;
-        b=hH0+us0sRtFEVg0PsQyWSZvQ4iL+djff3KUZxz4imKnBgS7e5010RMX600shlL/VJC
-         /w/hAww6D1bbhZbdCn3h3BeZ69Y26sYtdKurWIPWWIhN60O9RXZlVu34DiEWBE58mTQ9
-         FOWZgUgOwCZSQyObRXpkt/D7K110F/HOctD9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wmSfumn0oWbMOwz8WPSPk+BKE/F10/vN5718M+CpeNM=;
-        b=bAlc4bg9GfQHlTWXsXguNmIaVH0E5tet+Em8P7xR3HWWsWKeJJx94F1SP5t/cF9Etf
-         +Te/uDzMhZBWxfyDVGaNBjXCwsf3ByRmRoO1UUxzohke3yfM0b1yTBkv3KWuXTGulNaI
-         73mL8ggpTJA4S03P1VB2yzvQAwME2/HSbmzifwj2p3ppqPLpvZEql2vgmdYXWOLkDW+7
-         A3PYhr9gA6KUOzHjWsC6jknaJhy4hX2JHsy+FlnfI5IBF+iuTekylDSr9Yp8tIKUKAtI
-         6WDJTBMYSQVW+75OPZl/sw4pZpCPj5UYw6HrxjMBiamrLgidShe9jPeW5xkC2hPQDBb7
-         RKpA==
-X-Gm-Message-State: AOAM533jqXMI7bcY3uVQ7SYbanD0mvhGsUuXzj2Ouqw0AB3BStrcuHaO
-        9JfK8S3RjLox7VskHzZCnonwg39cIrBGZwA/jr9bRQ==
-X-Google-Smtp-Source: ABdhPJyDxibOsNy6cxlRZP77c/QEsD8f1tOqt9bE+8HZX9EmQDTq3Num5DOIzF+72rNdfpVgS1IdXJERY5+AWjlHNVk=
-X-Received: by 2002:a1f:95c4:: with SMTP id x187mr2666792vkd.10.1601491857873;
- Wed, 30 Sep 2020 11:50:57 -0700 (PDT)
+        Wed, 30 Sep 2020 14:51:16 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f74d3700000>; Wed, 30 Sep 2020 11:50:24 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
+ 2020 18:51:09 +0000
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.51) by
+ HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 30 Sep 2020 18:51:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N+zxFYw91wL1/C4wFwbQEYm+7NHM8E1AZ8F6oadgIeyZctxyidXdmhETx7n1N0EiO3pYtj94pae7OWTrKogAguVTXTQDg8fmGMK2NDf44AuZP7D3If69DRC4Zx/91naEs13t9GudZO33wXGCEEL9FfYVBIueJLXVq3q3IKQDYjCbO+RHE6Et3qc90Pz6BoviDTWDU/tzfRCUQiUpHWhOWMOUfGTGlegf8zKcx+mv15cKpEMT0eH4h385XjVztyWC3hq9naKKE9btOcXmsmZF/PO4z0Y3eNzbsquvrNHapeD/mPiRdeNFk8OVSIKaSvsJnoRupRryte3oQfDKQIi5DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FOi6aT5JY7VhLnV3Z8NYw2z6y8P6KLonvyYhymTC9Jo=;
+ b=I9gutspRKLsBhGPip37tV3WMcRd0f/ZVcWhcdJUc2byyeTyfPGQCJA/1QmED2kuI/s8GmAGJS2FMDgv4ia/PNPLRDB5WspKwh0s5ACGm94LLTHKMS2idPIiuHfK/fDED7T2cZnjNedEEqmF6IbzuieY2mQczPjfFUPK1KAuw/8gqysN1Oc7UMVpTUPyy4ovDRzsfHKVV+yVqPtZixdm8kVsF6Y94+z1BLhoPM8Np4/uVXLZvovUv3DSXtUiRhS9KudaXMF66ucX56Az9l82QvJKnwy4kd3r1rPX3yBiDXcwOCGfiL0XzDS+K9lNqzMFaMIlBXLUMGbrVGY7Egxp+dQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4011.namprd12.prod.outlook.com (2603:10b6:5:1c5::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Wed, 30 Sep
+ 2020 18:51:05 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 18:51:05 +0000
+Date:   Wed, 30 Sep 2020 15:51:03 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     Dave Jiang <dave.jiang@intel.com>, <vkoul@kernel.org>,
+        <megha.dey@intel.com>, <maz@kernel.org>, <bhelgaas@google.com>,
+        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
+        <ashok.raj@intel.com>, <yi.l.liu@intel.com>, <baolu.lu@intel.com>,
+        <kevin.tian@intel.com>, <sanjay.k.kumar@intel.com>,
+        <tony.luck@intel.com>, <jing.lin@intel.com>,
+        <dan.j.williams@intel.com>, <kwankhede@nvidia.com>,
+        <eric.auger@redhat.com>, <parav@mellanox.com>, <rafael@kernel.org>,
+        <netanelg@mellanox.com>, <shahafs@mellanox.com>,
+        <yan.y.zhao@linux.intel.com>, <pbonzini@redhat.com>,
+        <samuel.ortiz@intel.com>, <mona.hossain@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <x86@kernel.org>, <linux-pci@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 05/18] dmaengine: idxd: add IMS support in base driver
+Message-ID: <20200930185103.GT816047@nvidia.com>
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+ <160021248979.67751.3799965857372703876.stgit@djiang5-desk3.ch.intel.com>
+ <87sgazgl0b.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87sgazgl0b.fsf@nanos.tec.linutronix.de>
+X-ClientProxiedBy: MN2PR20CA0057.namprd20.prod.outlook.com
+ (2603:10b6:208:235::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20200924131318.2654747-1-balsini@android.com> <20200924131318.2654747-4-balsini@android.com>
-In-Reply-To: <20200924131318.2654747-4-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 30 Sep 2020 20:50:46 +0200
-Message-ID: <CAJfpegu=0QtzqSOGi_yd48eL3hgG1Hqf_YO2prWeiHBwwMHZyA@mail.gmail.com>
-Subject: Re: [PATCH V9 3/4] fuse: Introduce synchronous read and write for passthrough
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR20CA0057.namprd20.prod.outlook.com (2603:10b6:208:235::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Wed, 30 Sep 2020 18:51:04 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kNhBv-004KoW-EB; Wed, 30 Sep 2020 15:51:03 -0300
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601491824; bh=FOi6aT5JY7VhLnV3Z8NYw2z6y8P6KLonvyYhymTC9Jo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=dznN3RUUtbBT6eXa10zVADnFdgjMWwSpCg/elXgF33cvQGyUfzz1a+j/aGrAHwZh3
+         Z/21CKUlJ01erPcQIVqXGc0RBsfnKx3Bit07565gV3YHbLwyk1xR16tYaH2+NJchUE
+         8D0ETpzfYSHeEmGlnv0s6dgNAjhFmd4tZ8SZQNPLJkeR29ca7yRpPFs00WYg5B/Yj5
+         YD6yIGZRB+NlmpnAj+QhM0Yjm6s7zs1OmSpZXZHPgpmineW2teGAMJGIufiAxkdve5
+         Et0M+cEP9R8qI+FknqXPchTpkuOVfjYlbB4UvGDoVU3rwf4xlVKvydNuUnAU4s4kKq
+         oUFLQB1Xl6oyw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:13 PM Alessio Balsini <balsini@android.com> wrote:
->
-> All the read and write operations performed on fuse_files which have the
-> passthrough feature enabled are forwarded to the associated lower file
-> system file via VFS.
->
-> Sending the request directly to the lower file system avoids the userspace
-> round-trip that, because of possible context switches and additional
-> operations might reduce the overall performance, especially in those cases
-> where caching doesn't help, for example in reads at random offsets.
->
-> Verifying if a fuse_file has a lower file system file associated for
-> passthrough can be done by checking the validity of its passthrough_filp
-> pointer. This pointer is not NULL only if passthrough has been successfully
-> enabled via the appropriate ioctl().
-> When a read/write operation is requested for a FUSE file with passthrough
-> enabled, a new equivalent VFS request is generated, which instead targets
-> the lower file system file.
-> The VFS layer performs additional checks that allows for safer operations,
-> but may cause the operation to fail if the process accessing the FUSE file
-> system does not have access to the lower file system. This often happens in
-> passthrough file systems, where the FUSE daemon is responsible for the
-> enforcement of the lower file system access policies. In order to preserve
-> this behavior, the current process accessing the FUSE file with passthrough
-> enabled receives the privileges of the FUSE daemon while performing the
-> read/write operation, emulating a behavior used in overlayfs. These
-> privileges will be reverted as soon as the IO operation completes. This
-> feature does not provide any higher security privileges to those processes
-> accessing the FUSE file system with passthrough enabled. This because it is
-> still the FUSE daemon responsible for enabling or not the passthrough
-> feature at file open time, and should enable the feature only after
-> appropriate access policy checks.
->
-> This change only implements synchronous requests in passthrough, returning
-> an error in the case of ansynchronous operations, yet covering the majority
-> of the use cases.
->
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-> ---
->  fs/fuse/file.c        |  8 +++-
->  fs/fuse/fuse_i.h      |  2 +
->  fs/fuse/passthrough.c | 93 +++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 101 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 6c0ec742ce74..c3289ff0cd33 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1552,7 +1552,9 @@ static ssize_t fuse_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->         if (is_bad_inode(file_inode(file)))
->                 return -EIO;
->
-> -       if (!(ff->open_flags & FOPEN_DIRECT_IO))
-> +       if (ff->passthrough_filp)
-> +               return fuse_passthrough_read_iter(iocb, to);
-> +       else if (!(ff->open_flags & FOPEN_DIRECT_IO))
->                 return fuse_cache_read_iter(iocb, to);
->         else
->                 return fuse_direct_read_iter(iocb, to);
-> @@ -1566,7 +1568,9 @@ static ssize_t fuse_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->         if (is_bad_inode(file_inode(file)))
->                 return -EIO;
->
-> -       if (!(ff->open_flags & FOPEN_DIRECT_IO))
-> +       if (ff->passthrough_filp)
-> +               return fuse_passthrough_write_iter(iocb, from);
-> +       else if (!(ff->open_flags & FOPEN_DIRECT_IO))
->                 return fuse_cache_write_iter(iocb, from);
->         else
->                 return fuse_direct_write_iter(iocb, from);
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 67bf5919f8d6..b0764ca4c4fd 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -1109,5 +1109,7 @@ void fuse_free_conn(struct fuse_conn *fc);
->
->  int fuse_passthrough_setup(struct fuse_req *req, unsigned int fd);
->  void fuse_passthrough_release(struct fuse_file *ff);
-> +ssize_t fuse_passthrough_read_iter(struct kiocb *iocb, struct iov_iter *to);
-> +ssize_t fuse_passthrough_write_iter(struct kiocb *iocb, struct iov_iter *from);
->
->  #endif /* _FS_FUSE_I_H */
-> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-> index 86ab4eafa7bf..f70c0ef6945b 100644
-> --- a/fs/fuse/passthrough.c
-> +++ b/fs/fuse/passthrough.c
-> @@ -2,6 +2,99 @@
->
->  #include "fuse_i.h"
->
-> +#include <linux/uio.h>
-> +
-> +static void fuse_copyattr(struct file *dst_file, struct file *src_file)
-> +{
-> +       struct inode *dst = file_inode(dst_file);
-> +       struct inode *src = file_inode(src_file);
-> +
-> +       i_size_write(dst, i_size_read(src));
-> +}
-> +
-> +static rwf_t iocbflags_to_rwf(int ifl)
-> +{
-> +       rwf_t flags = 0;
-> +
-> +       if (ifl & IOCB_APPEND)
-> +               flags |= RWF_APPEND;
-> +       if (ifl & IOCB_DSYNC)
-> +               flags |= RWF_DSYNC;
-> +       if (ifl & IOCB_HIPRI)
-> +               flags |= RWF_HIPRI;
-> +       if (ifl & IOCB_NOWAIT)
-> +               flags |= RWF_NOWAIT;
-> +       if (ifl & IOCB_SYNC)
-> +               flags |= RWF_SYNC;
-> +
-> +       return flags;
-> +}
-> +
-> +static const struct cred *
-> +fuse_passthrough_override_creds(const struct file *fuse_filp)
-> +{
-> +       struct inode *fuse_inode = file_inode(fuse_filp);
-> +       struct fuse_conn *fc = fuse_inode->i_sb->s_fs_info;
-> +
-> +       return override_creds(fc->creator_cred);
-> +}
-> +
-> +ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
-> +                                  struct iov_iter *iter)
-> +{
-> +       ssize_t ret;
-> +       const struct cred *old_cred;
-> +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> +       struct fuse_file *ff = fuse_filp->private_data;
-> +       struct file *passthrough_filp = ff->passthrough_filp;
-> +
-> +       if (!iov_iter_count(iter))
-> +               return 0;
-> +
-> +       old_cred = fuse_passthrough_override_creds(fuse_filp);
-> +       if (is_sync_kiocb(iocb_fuse)) {
-> +               ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> +                                   iocbflags_to_rwf(iocb_fuse->ki_flags));
-> +       } else {
-> +               ret = -EIO;
-> +       }
+On Wed, Sep 30, 2020 at 08:47:00PM +0200, Thomas Gleixner wrote:
 
-Just do vfs_iter_read() unconditionally, instead of returning EIO.
-It will work fine, except it won't be async.
+> > +	pci_read_config_dword(pdev, SIOVCAP(dvsec), &val32);
+> > +	if ((val32 & 0x1) && idxd->hw.gen_cap.max_ims_mult) {
+> > +		idxd->ims_size = idxd->hw.gen_cap.max_ims_mult * 256ULL;
+> > +		dev_dbg(dev, "IMS size: %u\n", idxd->ims_size);
+> > +		set_bit(IDXD_FLAG_SIOV_SUPPORTED, &idxd->flags);
+> > +		dev_dbg(&pdev->dev, "IMS supported for device\n");
+> > +		return;
+> > +	}
+> > +
+> > +	dev_dbg(&pdev->dev, "SIOV unsupported for device\n");
+> 
+> It's really hard to find the code inside all of this dev_dbg()
+> noise. But why is this capability check done in this driver? Is this
+> capability stuff really IDXD specific or is the next device which
+> supports this going to copy and pasta the above?
 
-Yeah, I know next patch is going to fix this, but still, lets not make
-this patch return silly errors.
+It is the weirdest thing, IMHO. Intel defined a dvsec cap in their
+SIOV cookbook, but as far as I can see it serves no purpose at
+all.
 
-> +       revert_creds(old_cred);
-> +
-> +       return ret;
-> +}
-> +
-> +ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
-> +                                   struct iov_iter *iter)
-> +{
-> +       ssize_t ret;
-> +       const struct cred *old_cred;
-> +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> +       struct fuse_file *ff = fuse_filp->private_data;
-> +       struct inode *fuse_inode = file_inode(fuse_filp);
-> +       struct file *passthrough_filp = ff->passthrough_filp;
-> +
-> +       if (!iov_iter_count(iter))
-> +               return 0;
-> +
-> +       inode_lock(fuse_inode);
-> +
-> +       old_cred = fuse_passthrough_override_creds(fuse_filp);
-> +       if (is_sync_kiocb(iocb_fuse)) {
-> +               file_start_write(passthrough_filp);
-> +               ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> +                                   iocbflags_to_rwf(iocb_fuse->ki_flags));
-> +               file_end_write(passthrough_filp);
-> +               if (ret > 0)
-> +                       fuse_copyattr(fuse_filp, passthrough_filp);
-> +       } else {
-> +               ret = -EIO;
-> +       }
+Last time I asked I got some unclear mumbling about "OEMs".
 
-And the same here.
+I expect you'll see all Intel drivers copying this code.
 
-> +       revert_creds(old_cred);
-> +       inode_unlock(fuse_inode);
-> +
-> +       return ret;
-> +}
-> +
->  int fuse_passthrough_setup(struct fuse_req *req, unsigned int fd)
->  {
->         int ret;
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+Jason
