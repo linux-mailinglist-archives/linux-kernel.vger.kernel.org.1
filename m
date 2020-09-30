@@ -2,198 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5671C27E7F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A9627E7F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbgI3Lxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729666AbgI3Lxn (ORCPT
+        id S1729790AbgI3LyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:54:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12551 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727997AbgI3LyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:53:43 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2169C0613D7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:53:38 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j2so1459605wrx.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qfj+TClPlVYbpelD2YZsoi79IQBZqKkdlSt5zFsjIAs=;
-        b=XsLsT1M+AlmtzTtVzfmpzEdnlyNhgSN9Vm8/VlqSDOFx3bzC+XKoQ6tfO8635GE2tB
-         K4vNvrMU0OcJbL5ljhMpoGtOKhgbOkp5FrOVTy+N0F82YWhBZHVCuDVdyGRE1fg1PgGn
-         jzTp9PjGVE07lHazWB3jPXMvDMVbJU+/5UQOaU5HwqXr3dI68pK7GE043+co0vkKxtw+
-         bpmODmoZ0zaZTG5p5ikahzCupx34VdUhGSItgXN754D+DE0eO5hlStfSH5xPGlO9LqwD
-         kKr6RQDtIOXnWwTkySeNkk2hKiAqaWuGQT2si3rGDyPrmvi2QX8DxX5HrBD4MxCEz4hG
-         BrDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qfj+TClPlVYbpelD2YZsoi79IQBZqKkdlSt5zFsjIAs=;
-        b=a3XJ6Zvqg+suwY3Zsn26BGgUjJYqImLNAv47U9jFGzcm9lMIfxOJ2QJgj68HLIGM/D
-         SVbw0ZrVujSCCTFFqOXR9Kya0eU0hL9jkNrOjk8qeNXID3ARpdDwLIp3o+6VcfuL8T6E
-         qRu0eIKK/+iA9YHaqJRYzo6jY7y4tbenVp62+uYae80qLMvZEZp+pUNx8hmdOuO9LLN/
-         QEOv8xW0kTs5bN9Ggome/Ui2zmoobBsY3IWOK/4SHPj39bWbaPJ1rTVuvLysg586+MBa
-         eGgFxcJcjS0mw8wuzm29kU5KXpD396PGI1wQsqCP6iJJt9M0YkN/2bWqU98eSsGkpw6Q
-         OdAg==
-X-Gm-Message-State: AOAM530jaZC3j7wrfmtOh8BQ6c/cn5vJ8/uiJHqTur16ANX2C0JmYKvH
-        TRxw8mLxAHCQ38GWS30r4qgqEw==
-X-Google-Smtp-Source: ABdhPJxX79nVu9DHdEnVM3doUa5RIopeAThnQgQyTX9yOm+uhr5xThuu8COX5hYqqQapikbSC/0cAQ==
-X-Received: by 2002:adf:fd8c:: with SMTP id d12mr2696721wrr.283.1601466817417;
-        Wed, 30 Sep 2020 04:53:37 -0700 (PDT)
-Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id s12sm2222353wmd.20.2020.09.30.04.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 04:53:36 -0700 (PDT)
-From:   Alexandre Bailon <abailon@baylibre.com>
-To:     linux-remoteproc@vger.kernel.org
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        jstephan@baylibre.com, stephane.leprovost@mediatek.com,
-        gpain@baylibre.com, mturquette@baylibre.com,
-        Alexandre Bailon <abailon@baylibre.com>
-Subject: [RFC PATCH 4/4] rpmsg: apu_rpmsg: Add an IOCTL to request IOMMU mapping
-Date:   Wed, 30 Sep 2020 13:53:50 +0200
-Message-Id: <20200930115350.5272-5-abailon@baylibre.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200930115350.5272-1-abailon@baylibre.com>
-References: <20200930115350.5272-1-abailon@baylibre.com>
+        Wed, 30 Sep 2020 07:54:10 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f74717c0003>; Wed, 30 Sep 2020 04:52:28 -0700
+Received: from [172.27.13.156] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Sep
+ 2020 11:54:01 +0000
+Subject: Re: [PATCH rdma-next v4 4/4] RDMA/umem: Move to allocate SG table
+ from pages
+To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>,
+        "Jani Nikula" <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        "Roland Scheidegger" <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-5-leon@kernel.org>
+ <20200929195929.GA803555@nvidia.com> <20200930095321.GL3094@unreal>
+ <20200930114527.GE816047@nvidia.com>
+From:   Maor Gottlieb <maorg@nvidia.com>
+Message-ID: <80c49ff1-52c7-638f-553f-9de8130b188d@nvidia.com>
+Date:   Wed, 30 Sep 2020 14:53:58 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930114527.GE816047@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601466748; bh=JrI2d4YXJ+ZJzjvNkbDB4ae47+R0rDj3IRn0QrupftE=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=DjIqutJWn/y5vqmm+F2zgD3Ixz/8fSMX3REWMs9bRFv3zCf7HHOv860pefzmHelab
+         IwuLVcprYTQ7cnNyelJq0g3Qt63DXytSdX6pRVHwOYeq3Dl+XeYFqFCp+T/LQzlLQr
+         GGWGWlVCcNJCaTgBB+V67t6kiaOoAOv5ELsu9N/zXPclP/Ado1L8nCrjRNb+I2ImiI
+         c5s5FZTmrFLTsFRphu+wdQsTw2eTd5XeZWPlKJJHx+1e7T1KAcX+GKHfbNCkCI5j7O
+         y6JYiuNVKDNS6zEYGFaMswMBr0QOxCqJJcoffkt9MZm4eULAdfxZiR5wHB0851d8LS
+         dJDsIwJ3rGjZA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the kernel is automatically doing an IOMMU memory mapping.
-But we want to do it automatically for two reasons:
-- to reduce the overhead of each APU operation
-- to get the device address and use it as input for an operation
-This adds 2 IOCTL to manually IOMMU map and unmap memory.
 
-Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
----
- drivers/rpmsg/apu_rpmsg.c      | 52 ++++++++++++++++++++++++++++++----
- include/uapi/linux/apu_rpmsg.h |  7 +++++
- 2 files changed, 53 insertions(+), 6 deletions(-)
+On 9/30/2020 2:45 PM, Jason Gunthorpe wrote:
+> On Wed, Sep 30, 2020 at 12:53:21PM +0300, Leon Romanovsky wrote:
+>> On Tue, Sep 29, 2020 at 04:59:29PM -0300, Jason Gunthorpe wrote:
+>>> On Sun, Sep 27, 2020 at 09:46:47AM +0300, Leon Romanovsky wrote:
+>>>> @@ -296,11 +223,17 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
+>>>>   			goto umem_release;
+>>>>
+>>>>   		cur_base += ret * PAGE_SIZE;
+>>>> -		npages   -= ret;
+>>>> -
+>>>> -		sg = ib_umem_add_sg_table(sg, page_list, ret,
+>>>> -			dma_get_max_seg_size(device->dma_device),
+>>>> -			&umem->sg_nents);
+>>>> +		npages -= ret;
+>>>> +		sg = __sg_alloc_table_from_pages(
+>>>> +			&umem->sg_head, page_list, ret, 0, ret << PAGE_SHIFT,
+>>>> +			dma_get_max_seg_size(device->dma_device), sg, npages,
+>>>> +			GFP_KERNEL);
+>>>> +		umem->sg_nents = umem->sg_head.nents;
+>>>> +		if (IS_ERR(sg)) {
+>>>> +			unpin_user_pages_dirty_lock(page_list, ret, 0);
+>>>> +			ret = PTR_ERR(sg);
+>>>> +			goto umem_release;
+>>>> +		}
+>>>>   	}
+>>>>
+>>>>   	sg_mark_end(sg);
+>>> Does it still need the sg_mark_end?
+>> It is preserved here for correctness, the release logic doesn't rely on
+>> this marker, but it is better to leave it.
+> I mean, my read of __sg_alloc_table_from_pages() is that it already
+> placed it, the final __alloc_table() does it?
+>
+> Jason
 
-diff --git a/drivers/rpmsg/apu_rpmsg.c b/drivers/rpmsg/apu_rpmsg.c
-index 343bd08a859a..4c064feddf5a 100644
---- a/drivers/rpmsg/apu_rpmsg.c
-+++ b/drivers/rpmsg/apu_rpmsg.c
-@@ -114,7 +114,7 @@ static int apu_rpmsg_callback(struct rpmsg_device *rpdev, void *data, int count,
- }
- 
- static struct apu_buffer *apu_device_memory_map(struct rpmsg_apu *apu,
--		uint32_t fd, struct rpmsg_request *rpmsg_req)
-+						uint32_t fd)
- {
- 	struct rpmsg_device *rpdev = apu->rpdev;
- 	struct apu_buffer *buffer;
-@@ -129,10 +129,6 @@ static struct apu_buffer *apu_device_memory_map(struct rpmsg_apu *apu,
- 	list_for_each_entry(buffer, &apu->buffers, node) {
- 		if (buffer->fd == fd) {
- 			kref_get(&buffer->refcount);
--			if (rpmsg_req)
--				list_add(&buffer->req_node,
--					 &rpmsg_req->buffers);
--
- 			return buffer;
- 		}
- 	}
-@@ -230,6 +226,44 @@ static void apu_device_memory_unmap(struct kref *ref)
- 	kfree(buffer);
- }
- 
-+static int apu_iommu_mmap_ioctl(struct rpmsg_apu *apu, void __user *argp)
-+{
-+	struct apu_iommu_mmap apu_iommu_mmap;
-+	struct apu_buffer *buffer;
-+	int ret;
-+
-+	if (copy_from_user(&apu_iommu_mmap, argp, sizeof(apu_iommu_mmap)))
-+		return -EFAULT;
-+
-+	buffer = apu_device_memory_map(apu, apu_iommu_mmap.fd);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	apu_iommu_mmap.da = buffer->iova;
-+	if (copy_to_user(argp, &apu_iommu_mmap, sizeof(apu_iommu_mmap)))
-+		ret = -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int apu_iommu_munmap_ioctl(struct rpmsg_apu *apu, void __user *argp)
-+{
-+	u32 fd;
-+	struct apu_buffer *buffer, *tmp;
-+
-+	if (copy_from_user(&fd, argp, sizeof(fd)))
-+		return -EFAULT;
-+
-+	list_for_each_entry_safe(buffer, tmp, &apu->buffers, node) {
-+		if (buffer->fd == fd) {
-+			kref_put(&buffer->refcount, apu_device_memory_unmap);
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static int apu_send_request(struct rpmsg_apu *apu,
- 			    struct apu_request *req)
- {
-@@ -266,7 +300,7 @@ static int apu_send_request(struct rpmsg_apu *apu,
- 
- 	INIT_LIST_HEAD(&rpmsg_req->buffers);
- 	for (i = 0; i < req->count; i++) {
--		buffer = apu_device_memory_map(apu, fd[i], rpmsg_req);
-+		buffer = apu_device_memory_map(apu, fd[i]);
- 		if (IS_ERR(buffer)) {
- 			ret = PTR_ERR(buffer);
- 			goto err_free_memory;
-@@ -417,6 +451,12 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 		}
- 		spin_unlock_irqrestore(&apu->ctx_lock, flags);
- 
-+		break;
-+	case APU_IOMMU_MMAP:
-+		ret = apu_iommu_mmap_ioctl(apu, argp);
-+		break;
-+	case APU_IOMMU_MUNMAP:
-+		ret = apu_iommu_munmap_ioctl(apu, argp);
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/include/uapi/linux/apu_rpmsg.h b/include/uapi/linux/apu_rpmsg.h
-index f61207520254..e9b841dcbcb4 100644
---- a/include/uapi/linux/apu_rpmsg.h
-+++ b/include/uapi/linux/apu_rpmsg.h
-@@ -31,10 +31,17 @@ struct apu_request {
- 	__u8 data[0];
- };
- 
-+struct apu_iommu_mmap {
-+	__u32 fd;
-+	__u32 da;
-+};
-+
- /* Send synchronous request to an APU */
- 
- #define APU_SEND_REQ_IOCTL		_IOW(0xb7, 0x2, struct apu_request)
- #define APU_GET_NEXT_AVAILABLE_IOCTL	_IOR(0xb7, 0x3, __u16)
- #define APU_GET_RESP			_IOWR(0xb7, 0x4, struct apu_request)
-+#define APU_IOMMU_MMAP			_IOWR(0xb7, 0x5, struct apu_iommu_mmap)
-+#define APU_IOMMU_MUNMAP		_IOWR(0xb7, 0x6, __u32)
- 
- #endif
--- 
-2.26.2
+
+It marks the last allocated sge, but not the last populated sge (with page).
 
