@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C9327E3FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E2427E406
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgI3Ims (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:42:48 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:48656 "EHLO cstnet.cn"
+        id S1728622AbgI3IoZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 04:44:25 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2929 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725535AbgI3Ims (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:42:48 -0400
-Received: from localhost.localdomain (unknown [159.226.5.100])
-        by APP-03 (Coremail) with SMTP id rQCowAB3L1z7RHRfZnOjAA--.46271S2;
-        Wed, 30 Sep 2020 16:42:36 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     qii.wang@mediatek.com, matthias.bgg@gmail.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: mediatek: remove redundant null check
-Date:   Wed, 30 Sep 2020 08:42:33 +0000
-Message-Id: <20200930084233.53085-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAB3L1z7RHRfZnOjAA--.46271S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7JF4UZF47GFy5Wr1DWF4fGrg_yoW8JrW8pF
-        WxGr9Yyr47XFWj9F1DXw4q9ry5ta13GF9agr45Ga4fWr45tr1vvFW5Ka4DZF1IyrWxtw17
-        Xr1DKrnrGFyjk3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
-        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7
-        xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jw2-5UUUUU=
-X-Originating-IP: [159.226.5.100]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAsPA18J9rWkNgAAsI
+        id S1725776AbgI3IoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:44:25 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id B202F8CDE30D2099234E;
+        Wed, 30 Sep 2020 09:44:23 +0100 (IST)
+Received: from localhost (10.52.127.162) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Wed, 30 Sep
+ 2020 09:44:23 +0100
+Date:   Wed, 30 Sep 2020 09:42:41 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+CC:     Nathan Chancellor <natechancellor@gmail.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, <linux-acpi@vger.kernel.org>,
+        <devel@acpica.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ACPI / NUMA: Add stub function for pxm_to_node
+Message-ID: <20200930094241.00002949@Huawei.com>
+In-Reply-To: <c313dcd3-7fab-00eb-15f2-65a3a51f7bd5@infradead.org>
+References: <20200928194554.3423466-1-natechancellor@gmail.com>
+        <c313dcd3-7fab-00eb-15f2-65a3a51f7bd5@infradead.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.127.162]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare already checked NULL clock parameter,
-so the additional checks are unnecessary, just remove it
+On Tue, 29 Sep 2020 13:13:24 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/i2c/busses/i2c-mt65xx.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+> On 9/28/20 12:45 PM, Nathan Chancellor wrote:
+> > After commit 01feba590cd6 ("ACPI: Do not create new NUMA domains from
+> > ACPI static tables that are not SRAT"):
+> > 
+> > $ scripts/config --file arch/x86/configs/x86_64_defconfig -d NUMA -e ACPI_NFIT
+> > 
+> > $ make -skj"$(nproc)" distclean defconfig drivers/acpi/nfit/
+> > drivers/acpi/nfit/core.c: In function ‘acpi_nfit_register_region’:
+> > drivers/acpi/nfit/core.c:3010:27: error: implicit declaration of
+> > function ‘pxm_to_node’; did you mean ‘xa_to_node’?
+> > [-Werror=implicit-function-declaration]
+> >  3010 |   ndr_desc->target_node = pxm_to_node(spa->proximity_domain);
+> >       |                           ^~~~~~~~~~~
+> >       |                           xa_to_node
+> > cc1: some warnings being treated as errors
+> > ...
+> > 
+> > Add a stub function like acpi_map_pxm_to_node had so that the build
+> > continues to work.
+> > 
+> > Fixes: 01feba590cd6 ("ACPI: Do not create new NUMA domains from ACPI static tables that are not SRAT")
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > ---
+> > 
+> > I am not sure if this is the right place or value for this. It looks
+> > like there is going to be another stub function added here, which is
+> > going through -mm:
+> > 
+> > https://lkml.kernel.org/r/159643094925.4062302.14979872973043772305.stgit@dwillia2-desk3.amr.corp.intel.com
+> > 
+> >  include/acpi/acpi_numa.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
+> > index fdebcfc6c8df..09eb3bc20ff5 100644
+> > --- a/include/acpi/acpi_numa.h
+> > +++ b/include/acpi/acpi_numa.h
+> > @@ -22,5 +22,10 @@ extern int acpi_numa __initdata;
+> >  extern void bad_srat(void);
+> >  extern int srat_disabled(void);
+> >  
+> > +#else				/* CONFIG_ACPI_NUMA */
+> > +static inline int pxm_to_node(int pxm)
+> > +{
+> > +	return 0;
+> > +}
+> >  #endif				/* CONFIG_ACPI_NUMA */
+> >  #endif				/* __ACP_NUMA_H */
+> > 
+> > base-commit: eb6335b68ce3fc85a93c4c6cd3bb6bc5ac490efe  
+> 
+> OK, that works/builds. It doesn't quite apply cleanly to linux-next-20200929
+> but that's a minor detail and easy to get around.
+> 
+> Thanks.
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+>
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 0cbdfbe605b5..48d37de827e1 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -449,8 +449,7 @@ static int mtk_i2c_clock_enable(struct mtk_i2c *i2c)
- 	return 0;
- 
- err_arb:
--	if (i2c->have_pmic)
--		clk_disable_unprepare(i2c->clk_pmic);
-+	clk_disable_unprepare(i2c->clk_pmic);
- err_pmic:
- 	clk_disable_unprepare(i2c->clk_main);
- err_main:
-@@ -461,11 +460,9 @@ static int mtk_i2c_clock_enable(struct mtk_i2c *i2c)
- 
- static void mtk_i2c_clock_disable(struct mtk_i2c *i2c)
- {
--	if (i2c->clk_arb)
--		clk_disable_unprepare(i2c->clk_arb);
-+	clk_disable_unprepare(i2c->clk_arb);
- 
--	if (i2c->have_pmic)
--		clk_disable_unprepare(i2c->clk_pmic);
-+	clk_disable_unprepare(i2c->clk_pmic);
- 
- 	clk_disable_unprepare(i2c->clk_main);
- 	clk_disable_unprepare(i2c->clk_dma);
--- 
-2.17.1
+Looks correct to me.  Thanks!
+
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
 
