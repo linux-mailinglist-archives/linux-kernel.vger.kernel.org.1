@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DA527E117
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B47827E11C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgI3GaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:30:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgI3GaL (ORCPT
+        id S1727755AbgI3GcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3GcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:30:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601447410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j86M+7uzw2vXNKqDCk9DKrNbVH+omew22uwCG12+/cY=;
-        b=SOJeIr5zacf+uAUbm0JIVIgLZDRHUhU2X5PYJWjcvOHDdqu2TRB3WKrVovnfAk5JeG6nW7
-        ho+x+/HKXl94FP/mnuig423KAm5NswYbyqyO4jUsF16VzvL0ztLpiWlkxW2ZWnc2MLZtnH
-        APEzxNlhPVkHMtnyIrTGnUUWwDIXGx4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-46-TVSMIYQzNL26s75IzM3Y4g-1; Wed, 30 Sep 2020 02:30:08 -0400
-X-MC-Unique: TVSMIYQzNL26s75IzM3Y4g-1
-Received: by mail-wm1-f71.google.com with SMTP id b20so310121wmj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 29 Sep 2020 23:30:08 -0700 (PDT)
+        Wed, 30 Sep 2020 02:32:24 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B27FC061755;
+        Tue, 29 Sep 2020 23:32:23 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id q8so750569lfb.6;
+        Tue, 29 Sep 2020 23:32:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3VXdqYD5mLaS1mNtGut0e8DjZwBTzbu+70S04GgZNgE=;
+        b=LcQzy050EZalf2qpmr9trF0VPQjIjWYoZb8sVqO80WQjOpquIS5pk4F54nzBliLaMv
+         3olCtvJ+qtiMq9pezX6RxjDsuTt0jn4aKcPqaAIfz3WvylgNEWYdwNepowcRJcXVn6Gs
+         Q6w+QQSVi/odYVYafmow53w972C4SVgaiYwGL0zVmg3M7dj1GsuTYaVtzz9aCpmebhU2
+         pxf5PDCv+6NznBzQwmvzZFU5VCMDqJmml2TxQOneorLWc853lIclVFbo9dK4EcVydNrc
+         VVvPsnVUdlSaSnoaaTvqKGABHmfoHlPGwV+EK0mxWiGmK/uWZt3BVtmfiVout8MD02IN
+         6e+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=j86M+7uzw2vXNKqDCk9DKrNbVH+omew22uwCG12+/cY=;
-        b=DselNTTGUvSjgFDs5LnKcuZDgWpiOQRY6MmvL1ds999e/yopa0ZjDTTzMg1F9Fco2s
-         zg0cDU4t42V7I/pUKd2W0eEn/7uuuKxV/wcEYqe5xCcVQZhzbopDDW+q0Ys0cA3+pQVO
-         WBBlx6C9B+zirbua22607Fder/K4wXHjuFPDUMS72C4nM8MLXCaZII48KoHbIBk5QPKy
-         m9emSE9OE583GLlbMSGrAAsV55+GKRS6R2XqM9cr+paRNg1qKpWbmTgy4b0gdy/9hVVz
-         3v+OebgompAV5Tb7oDW/e65Ns445Io0suJ31U4zQhQgbOstJTLdVDYx/RzxdwUb1GwqY
-         gKow==
-X-Gm-Message-State: AOAM531SO6PXNtWX86RqjZlfPLfkQRKV1kXD6iwEL+awIaZRtQLRV+31
-        cSN0B5kt69BzCJChY/LXv2Yq29sV5Y/UeuTh40qjROVdO6urbx7adVhb23Xzbzsx4+u6x8HzJla
-        4eM8wIWLEPs8OXx6YYkNrfUBG
-X-Received: by 2002:a5d:6691:: with SMTP id l17mr1305374wru.10.1601447407147;
-        Tue, 29 Sep 2020 23:30:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyASWaG3yl3m26xkbJUdvbhGIpEfJMjIX5qb3Td12Uo50xunQLlbIDptoRdxeQDVz3TMDgW1Q==
-X-Received: by 2002:a5d:6691:: with SMTP id l17mr1305344wru.10.1601447406965;
-        Tue, 29 Sep 2020 23:30:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
-        by smtp.gmail.com with ESMTPSA id m13sm1022054wml.5.2020.09.29.23.30.04
+        bh=3VXdqYD5mLaS1mNtGut0e8DjZwBTzbu+70S04GgZNgE=;
+        b=V41BKu+GCf4aNAO840ciQt7dnn2/Dt6dwZdiaGt8dHTql3WlvK8sanm0PXyJ1zz9Ny
+         PiAw8IYdqseS2qs8r91jlzPfhfSJhwcuO/RVjlsLpEYXH6VA7JMeiqz0EOLP/NtjV0VF
+         lBlK29e1eWOJxNw1u0QTeAx7nnsD4f0pTgreiVu7+G7w/9kNpbYHh9rW7bzWYYVjXNsd
+         LZ45sx2CTUxrunjmPHGwNTZn8cHjUe61ALNRqLvLgY4aQ2fQDIViVNl6MkrXTAoRxLiB
+         zWS1JY7axP6qXFtaNk12UGE2LF5C4ILkyBi3+0A9pV0FpBoQK0wt+t7AIA5b2bZdwpn/
+         5h8w==
+X-Gm-Message-State: AOAM533W3nd+iNzttZXie/ydnke5JcvM7k4GjgRtNmaMItDdYiRWKVVt
+        0IieMTJiA9xrctmcUYbzp1SEs1WJxjU=
+X-Google-Smtp-Source: ABdhPJxtz5X8Ydt5H29th5vtTUu5WnUXnmwg6pfBKoUvhlPcRiWNg7TvK0ExxmdCcyc2hvCHS2q3yQ==
+X-Received: by 2002:ac2:5190:: with SMTP id u16mr313979lfi.314.1601447541818;
+        Tue, 29 Sep 2020 23:32:21 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id d24sm76325lfn.140.2020.09.29.23.32.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Sep 2020 23:30:06 -0700 (PDT)
-Subject: Re: [PATCH 00/22] Introduce the TDP MMU
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200930061903.GD29659@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <13590996-ac0c-71bc-1946-7966fcbf94ba@redhat.com>
-Date:   Wed, 30 Sep 2020 08:30:05 +0200
+        Tue, 29 Sep 2020 23:32:21 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] memory: tegra: Add helper function
+ tegra_get_memory_controller
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-2-nicoleotsuka@gmail.com>
+ <93803d8b-9863-e977-fa87-a03e877b095d@gmail.com>
+ <20200930054455.GF31821@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2f752179-5ad3-c000-8794-494c79f7b21f@gmail.com>
+Date:   Wed, 30 Sep 2020 09:32:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200930061903.GD29659@linux.intel.com>
+In-Reply-To: <20200930054455.GF31821@Asurada-Nvidia>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 08:19, Sean Christopherson wrote:
-> In case Paolo is feeling trigger happy, I'm going to try and get through the
-> second half of this series tomorrow.
+30.09.2020 08:44, Nicolin Chen пишет:
+> On Wed, Sep 30, 2020 at 08:12:10AM +0300, Dmitry Osipenko wrote:
+>> 30.09.2020 03:30, Nicolin Chen пишет:
+>> ...
+>>>  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
+>>>  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
+>>> +struct tegra_mc *tegra_get_memory_controller(void);
+>>>  
+>>>  #endif /* __SOC_TEGRA_MC_H__ */
+>>>
+>>
+>> This will conflict with the tegra20-devfreq driver, you should change it
+>> as well.
+> 
+> Will remove that in v3.
+> 
+> Thanks
+> 
 
-I'm indeed feeling trigger happy about this series, but I wasn't
-planning to include it in kvm.git this week.  I'll have my version
-posted by tomorrow, and I'll include some of your feedback already when
-it does not make incremental review too much harder.
+Please also consider to add a resource-managed variant, similar to what
+I did here:
 
-Paolo
+https://github.com/grate-driver/linux/commit/2105e7664063772d72fefe9696bdab0b688b9de2
 
+I was going to use it in the next iteration of the memory interconnect
+series.
+
+But now it also will be good if you could add the devm variant to yours
+SMMU patchset since you're already about to touch the tegra20-devfreq
+driver. I'll then rebase my patches on top of yours patch.
