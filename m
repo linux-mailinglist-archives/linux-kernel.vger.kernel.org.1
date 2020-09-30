@@ -2,169 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5900227E637
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856CA27E63A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 12:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgI3KH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 06:07:56 -0400
-Received: from mail-eopbgr00082.outbound.protection.outlook.com ([40.107.0.82]:45731
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725823AbgI3KHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 06:07:55 -0400
+        id S1729041AbgI3KIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 06:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgI3KIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 06:08:10 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01D8C061755;
+        Wed, 30 Sep 2020 03:08:08 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o8so740386pll.4;
+        Wed, 30 Sep 2020 03:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=topicbv.onmicrosoft.com; s=selector2-topicbv-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZxS7GM7+KijueT7DihdJ80kmgVED18awfsRm+yLU+5Q=;
- b=UcWE3koAPzIwgo8g/8bwcjBREn+5SxkAjqaYjjgUP0BoN8tvV5bY0yS9OrlYolHRsAYZNbJYELCX+C/s9gYD4T2qOEsRGOh+sAEiDzz3LRZYa5s0YvzYMz0lUuoRW6A8NXqXdMiwrdgsukWAom0sNKeOQEAZ68WiecGBzBkX+Mw=
-Received: from DB8PR09CA0025.eurprd09.prod.outlook.com (2603:10a6:10:a0::38)
- by DB8PR04MB6617.eurprd04.prod.outlook.com (2603:10a6:10:10f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
- 2020 10:07:49 +0000
-Received: from DB5EUR01FT033.eop-EUR01.prod.protection.outlook.com
- (2603:10a6:10:a0:cafe::35) by DB8PR09CA0025.outlook.office365.com
- (2603:10a6:10:a0::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35 via Frontend
- Transport; Wed, 30 Sep 2020 10:07:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 40.68.112.65)
- smtp.mailfrom=topicproducts.com; vger.kernel.org; dkim=none (message not
- signed) header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=topic.nl;
-Received-SPF: Pass (protection.outlook.com: domain of topicproducts.com
- designates 40.68.112.65 as permitted sender) receiver=protection.outlook.com;
- client-ip=40.68.112.65; helo=westeu12-emailsignatures-cloud.codetwo.com;
-Received: from westeu12-emailsignatures-cloud.codetwo.com (40.68.112.65) by
- DB5EUR01FT033.mail.protection.outlook.com (10.152.4.248) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.34 via Frontend Transport; Wed, 30 Sep 2020 10:07:48 +0000
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (104.47.0.52) by westeu12-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Wed, 30 Sep 2020 10:07:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V2HpWOQ7o0jSCwHfpcDXVg8OyM1kVZReCImbVhtGauzwb+UiUTHJRXaytKFT+keHZXc/ds+GSzkKmT/WuSwBluMGC6Mp1UjaUa5cQsJHYffzM7ppXc1rqtakK2+af+AiJgXdA1+pqITXZ3s1QBl5sMGUWZhnCzidaUwIDIC6f3cUab4BmBQIsBJ2pSuSPmDL42/cFFomICHNIyW6rclGwCNalt5vFz71Tt4kUstQstY1PRRgrG4xZtcg6YU83PVicao4b7VJmbKW01qTsCPXOq+6xlzpBQ72B2D+w5AI7Edsi6oXGp/rqJCSz5X+UIi4lQ8d+sabA23VhXs89E/WDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EE7tiUrabzMPHZVZhsD8Feaesc/PQaiys2CF5DmQvdI=;
- b=PgyCNUlXT9h5oQUjYDWrO4i9+1NEqIrZFYAlySkIPSIHJ81bm0igdoTnc4FAmv+IFhoimYRleYj5V6obst9wkRckkg5+2LU07uQG132u4o/KsV9fY0ufBvOuIhps8REgLuMlNCRILbJrDRwCPVBHmtyufIdL03DggOrGRyI+gbqc4iUzvcMGCJu0v1s62fzCp4LyirRpMllm5VtkMJ6lVvYW1PHVX+O1Cqeu1ZcgJPvEovl0zARE/epgEWzPqk6yJwcvwQIdLOERMcGiVbhYMon3rnfS9jMzs3BsM90fZ+tnd34Kuzw7+x3NKXMJtsUU+i7a+ewuO03Kce0Ws+hQeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=topicproducts.com; dmarc=pass action=none header.from=topic.nl;
- dkim=pass header.d=topic.nl; arc=none
-Authentication-Results-Original: vger.kernel.org; dkim=none (message not
- signed) header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=topic.nl;
-Received: from DB8PR04MB6523.eurprd04.prod.outlook.com (2603:10a6:10:10f::26)
- by DB8PR04MB7034.eurprd04.prod.outlook.com (2603:10a6:10:128::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
- 2020 10:07:42 +0000
-Received: from DB8PR04MB6523.eurprd04.prod.outlook.com
- ([fe80::35e9:2f0b:112b:28c3]) by DB8PR04MB6523.eurprd04.prod.outlook.com
- ([fe80::35e9:2f0b:112b:28c3%6]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 10:07:42 +0000
-Subject: Re: [PATCH v2 1/2] dt-bindings: gpio: pca953x: Add support for the
- NXP PCAL9554B/C
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200930092053.2114-1-mike.looijmans@topic.nl>
- <CACRpkdbsYcmv9m2EiQNgPDZ0MdjPnWTxXvnqATVPvWpB=8Oqkw@mail.gmail.com>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.5eb0d16d-0739-462d-9899-c160471e2953@emailsignatures365.codetwo.com>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.6831bd86-b84f-4c24-a597-93882807faca@emailsignatures365.codetwo.com>
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-Organization: Topic
-Message-ID: <5faea0b8-aaa4-3a02-6086-16ba43f282ea@topic.nl>
-Date:   Wed, 30 Sep 2020 12:07:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CACRpkdbsYcmv9m2EiQNgPDZ0MdjPnWTxXvnqATVPvWpB=8Oqkw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [83.128.90.119]
-X-ClientProxiedBy: AM0P190CA0010.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:190::20) To DB8PR04MB6523.eurprd04.prod.outlook.com
- (2603:10a6:10:10f::26)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.130] (83.128.90.119) by AM0P190CA0010.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Wed, 30 Sep 2020 10:07:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ad1bab4-343c-4570-6310-08d86528af1b
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7034:|DB8PR04MB6617:
-X-Microsoft-Antispam-PRVS: <DB8PR04MB6617AAF9293842E4E9E8E01796330@DB8PR04MB6617.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: ytGHGKP/Zd/uTAbvwsxEYoTz85fgasIKOn2877/NsuDfCSD1Sk5CrVdpj+BAJsjekTQIWvHBj6cLvMmsweegxcTXrrfUMAsg+FZkf609kTAy6BCBwAQrxiT/nDiG0Hi0zwYwW7nSAOYJJJGbQ1v9SJSAdVAFVxJnXk0HVizCZRBeO7MLpvAn5vSqM3Jlt/4y6m6iGPda2f6XxoGvX2s0u4RtSFu4RRxli5Cb6IjtPE6UhBRXRDryCvx/486dEKokj6fEKYjfeDxaXMJBd0vdRjhEUZviI8sHMKdysBPn8IDjeOBe419POawDay7r+D0IG/6nYyF8/jQ0ISFby34BNNq2FAFNUxfUN/+aUvayk32A26R2GJbRYIpsGirR4bsw
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6523.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(396003)(346002)(39840400004)(42882007)(36756003)(2906002)(66476007)(66556008)(8676002)(66946007)(956004)(2616005)(186003)(44832011)(16526019)(26005)(316002)(54906003)(36916002)(16576012)(6486002)(6916009)(4744005)(31686004)(52116002)(4326008)(8936002)(83170400001)(478600001)(5660300002)(53546011)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: KFUOZw4CLKcsdSH57oNHkh/6itKVuU1Fcz0mZ1o78To3zD/qOh4vPJkOQWYmSYk/uqXPjoAfiHkqpu48UXIqDntHMKC4imt+5YXO6UOVxoQth2eqJHKTss4o+ysffCihjStYtzKRBBX6V4L+BiMpL9JvieRYVeTZoyq3azUr7+KOr3m3Z8PahA+Om+bG+SZ5iVY+nVtl6dxLoKTEOj1//uGdSZRNbyot2AMPwDtn2zhDl1bJcWuFUZX2C5dn1olxNId9nyCQ0ItK0PqOH6jl8Y9LWdIeL1Itw2NL8G0DtZ3AfvVPbgqe+yUPO6hQHFLPXMKm3+sfuV+Ouzku2L2kMRsAi5Gnq9E3GIfhR1Tp93o90iuRB9N1u8DL7zOsZMyEoWCjovA0xq1RxEfCb/endG4Ad9lnl4lJ7PmHCvK3ogMcwDNX4AwBqiBL3rzL6RyvGNr1hIvvK8Hmt2NZpHf56eNdJY1UGtuqwvEWA3mEpiPiLbdXYZ7XWL85XmdNVOaIzDKyDe//zw0406Zf/YMNfQ5wp2y4a0rqZLrgSVXp94GmLimHeSRos5XugQ1Li8QjVrrbj3zZC56FnnVLI5yG7xjhWuU1hK1bP6o8HsZUAjHmxTk31f9XbPeLGv1+a+C4InMca85ZLEe3RewknT4EJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7034
-X-CodeTwo-MessageID: e4421d3e-5538-4136-8b98-d7c3efbe421b.20200930100744@westeu12-emailsignatures-cloud.codetwo.com
-X-CodeTwoProcessed: true
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB5EUR01FT033.eop-EUR01.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: e75fd26f-9590-4be0-a81e-08d86528ab2e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YVWJe3AvLR8n+L46yUCEk1+wjwJ50oq6rsWWV6Bk0kd8EqnvDsWxq9KREzma+T4U5f9sll9yh/raCrR8ke/tUTr9VgR6Okax5jcQszZ8R4fUEdSb9VMGYxpbM/7TBw3EyKKEUNY7m0ETHB6F7VmfPfvhM89mTrHlbzXNoOk6VvlQGiw5VJ1uBdZ7Rl0lCDdiCaiCJ7l2tEyBi0jWpZLg/lKSeBaHqmgodwHfhSWQy0XVe4oET1e6W7hhouEFn2Jko/+Rtml7ULrcr7CL6p73QA8vNz7TvGCeFjPoxzbVV57QxzWoZ34LCFPudPpKglS8Kt4gQimNFvaGCmq6xE6bBsHGrLUU34EUGSt7211DyWFRPiEnEHhg3AbY/jSjhDfH8KUaUCvlVBTvpKCYQfHjwWqpMcvdpt9yNwhjq6IFDaFW1teeL3FU6fUPDDMLMOMVKrVR2pRVZzChKPTn2E4T1nFJ1SnvMYcZKVC1H9niVXlTdhz3hgZTMFJcZbeGalcv
-X-Forefront-Antispam-Report: CIP:40.68.112.65;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu12-emailsignatures-cloud.codetwo.com;PTR:westeu12-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(396003)(136003)(39840400004)(376002)(346002)(46966005)(7636003)(31686004)(7596003)(83080400001)(6486002)(36756003)(356005)(8936002)(83170400001)(15974865002)(53546011)(2906002)(47076004)(336012)(42882007)(82310400003)(186003)(16526019)(31696002)(5660300002)(26005)(6916009)(478600001)(4326008)(70206006)(8676002)(70586007)(2616005)(36916002)(44832011)(956004)(16576012)(54906003)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 10:07:48.1561
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ad1bab4-343c-4570-6310-08d86528af1b
-X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[40.68.112.65];Helo=[westeu12-emailsignatures-cloud.codetwo.com]
-X-MS-Exchange-CrossTenant-AuthSource: DB5EUR01FT033.eop-EUR01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6617
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=J79PYh+YG6CxEahOKOzwWNzxXckvEZvz+zkRIh8R3bk=;
+        b=aqnRTB3P9Gc961joSkJGkqWS6p98cxn134wjmt2cjr+w+xbHA6xi/QyliX3KEujMv3
+         bHQxMr05DeQFl9yyIoWZIz9SrhjtUkii1Mui5tHFoH91EVqU/ngkr8IFmj2PoZFIG3QB
+         s7M1/i3F0KtDY9vr4Zn3+tMuqVZBMRzChlxowshvo8gmLlRe3Lv5aI+t3iRqfPhDeZzY
+         0m6To2hJq0AXPxUewkT2ejTlpHpnClr4ZQIf/CEQzQ63mRWvkQhUaGwRSOBaumQ/sYVo
+         P+LMhdOy6YCfddV7T7191L782Zw4nymcFKQjr/CAr5VSdHB3RMra6BVWgci1H97ngVsU
+         zhCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=J79PYh+YG6CxEahOKOzwWNzxXckvEZvz+zkRIh8R3bk=;
+        b=UHP/MTuQ8nNp8shTx3/aYCStwXY++thFzb1L8cQvRkfRG2pHO+2mJT3zZifL/hBsVH
+         E1M/I8yWhtGx62NbFqclL9UWY9mMCcitD65evl25X4Oh5XjiF+pF6tuVITH/LdT/S+z0
+         hvvmtF+XkwBABeweXQ6vXfl0hUAt2b/6Uy95L6FNw+fRll5ZfXQmHkLSiymcIKduS6MB
+         NmoCWaWIxXNHl9PolRFDrpiMu+lfJKhMzcQP6VYv8xk7A4TW29lBYqSiRsTwKVwP+ywi
+         B/reAUx/GewcJPxwMLhPSzVaIzfvW5myEcMfY2O+L0dslYCidHbC91HQaWxtaXLMM9KI
+         /kJA==
+X-Gm-Message-State: AOAM533QfhcNdbs/9i+QfoXSp8QONYd4UxTaIKJRBx1KQijUiQ9tFgib
+        Io0IhVoLKTalWQbz/n1lZVED3EHqRZ8=
+X-Google-Smtp-Source: ABdhPJyRu1hQOQHXNEFOdH6oRtNCGsOsgoAe3yUUkFVzXXnn5JKOyd7LbzPNdJZEeZsF31Rc7PiJdw==
+X-Received: by 2002:a17:902:8c8b:b029:d2:6356:8b43 with SMTP id t11-20020a1709028c8bb02900d263568b43mr1742662plo.34.1601460488076;
+        Wed, 30 Sep 2020 03:08:08 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:46b:9c58:dff:2627:f8ff:93b4])
+        by smtp.gmail.com with ESMTPSA id 25sm1736396pgo.34.2020.09.30.03.08.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Sep 2020 03:08:07 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org, robh+dt@kernel.org
+Cc:     lgirdwood@gmail.com, cy_huang@richtek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH] regulator: rtmv20: Update DT binding document and property name parsing
+Date:   Wed, 30 Sep 2020 18:08:00 +0800
+Message-Id: <1601460480-4259-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-Met vriendelijke groet / kind regards,=0A=
-=0A=
-Mike Looijmans=0A=
-System Expert=0A=
-=0A=
-=0A=
-TOPIC Embedded Products B.V.=0A=
-Materiaalweg 4, 5681 RJ Best=0A=
-The Netherlands=0A=
-=0A=
-T: +31 (0) 499 33 69 69=0A=
-E: mike.looijmans@topicproducts.com=0A=
-W: www.topicproducts.com=0A=
-=0A=
-Please consider the environment before printing this e-mail=0A=
-On 30-09-2020 11:50, Linus Walleij wrote:
-> On Wed, Sep 30, 2020 at 11:21 AM Mike Looijmans <mike.looijmans@topic.nl>=
- wrote:
->
->> The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
->> with 8 GPIOs, latched interrupts and some advanced configuration
->> options. The "C" version only differs in I2C address.
->>
->> This adds the entry to the devicetree bindings.
->>
->> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
->> ---
->> v2: Split devicetree and code into separate patches
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> This patch 1/2 does not apply to my tree, I suppose Rob has
-> to apply it?
->
-> I will try to apply 2/2.
->
-> Yours,
-> Linus Walleij
-I based the patches on the current master. Well, master a few days ago.=20
-A rebase on current master also had no complaints.
+1. Add vendor suffix to all proprietary properties.
+2. Fix typo.
+3. Change lsw to normal property, not pattern property.
+4. Due to item 1, modify source code for property parsing.
 
---=20
-Mike Looijmans
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ .../regulator/richtek,rtmv20-regulator.yaml        | 53 +++++++++-------------
+ drivers/regulator/rtmv20-regulator.c               | 36 ++++++++-------
+ 2 files changed, 42 insertions(+), 47 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+index 4cb4b68..a8ccb5c 100644
+--- a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+@@ -26,108 +26,99 @@ properties:
+ 
+   wakeup-source: true
+ 
+-  interrupts-extend:
++  interrupts:
+     maxItems: 1
+ 
+   enable-gpios:
+     description: A connection of the 'enable' gpio line.
+     maxItems: 1
+ 
+-  ld-pulse-delay-us:
++  richtek,ld-pulse-delay-us:
+     description: |
+       load current pulse delay in microsecond after strobe pin pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 100000
+     default: 0
+ 
+-  ld-pulse-width-us:
++  richtek,ld-pulse-width-us:
+     description: |
+       Load current pulse width in microsecond after strobe pin pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 10000
+     default: 1200
+ 
+-  fsin1-delay-us:
++  richtek,fsin1-delay-us:
+     description: |
+       Fsin1 pulse high delay in microsecond after vsync signal pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 100000
+     default: 23000
+ 
+-  fsin1-width-us:
++  richtek,fsin1-width-us:
+     description: |
+       Fsin1 pulse high width in microsecond after vsync signal pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 40
+     maximum: 10000
+     default: 160
+ 
+-  fsin2-delay-us:
++  richtek,fsin2-delay-us:
+     description: |
+       Fsin2 pulse high delay in microsecond after vsync signal pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 100000
+     default: 23000
+ 
+-  fsin2-width-us:
++  richtek,fsin2-width-us:
+     description: |
+       Fsin2 pulse high width in microsecond after vsync signal pulse high.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 40
+     maximum: 10000
+     default: 160
+ 
+-  es-pulse-width-us:
++  richtek,es-pulse-width-us:
+     description: Eye safety function pulse width limit in microsecond.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 10000
+     default: 1200
+ 
+-  es-ld-current-microamp:
++  richtek,es-ld-current-microamp:
+     description: Eye safety function load current limit in microamp.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 6000000
+     default: 3000000
+ 
+-  lbp-level-microvolt:
++  richtek,lbp-level-microvolt:
+     description: Low battery protection level in microvolt.
+-    $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 2400000
+     maximum: 3700000
+     default: 2700000
+ 
+-  lbp-enable:
++  richtek,lbp-enable:
+     description: Low battery protection function enable control.
+     type: boolean
+ 
+-  strobe-polarity-high:
++  richtek,strobe-polarity-high:
+     description: Strobe pin active polarity control.
+     type: boolean
+ 
+-  vsync-polarity-high:
++  richtek,vsync-polarity-high:
+     description: Vsync pin active polarity control.
+     type: boolean
+ 
+-  fsin-enable:
++  richtek,fsin-enable:
+     description: Fsin function enable control.
+     type: boolean
+ 
+-  fsin-output:
++  richtek,fsin-output:
+     description: Fsin function output control.
+     type: boolean
+ 
+-  es-enable:
++  richtek,es-enable:
+     description: Eye safety function enable control.
+     type: boolean
+ 
+-patternProperties:
+-  "lsw":
++  lsw:
++    description: load switch current regulator description.
+     type: object
+     $ref: "regulator.yaml#"
+ 
+@@ -135,7 +126,7 @@ required:
+   - compatible
+   - reg
+   - wakeup-source
+-  - interrupts-extend
++  - interrupts
+   - enable-gpios
+   - lsw
+ 
+@@ -152,11 +143,11 @@ examples:
+         compatible = "richtek,rtmv20";
+         reg = <0x34>;
+         wakeup-source;
+-        interrupts-extend = <&gpio26 2 IRQ_TYPE_LEVEL_LOW>;
++        interrupts-extended = <&gpio26 2 IRQ_TYPE_LEVEL_LOW>;
+         enable-gpios = <&gpio26 3 0>;
+ 
+-        strobe-polarity-high;
+-        vsync-polarity-high;
++        richtek,strobe-polarity-high;
++        richtek,vsync-polarity-high;
+ 
+         lsw {
+                 regulator-name = "rtmv20,lsw";
+diff --git a/drivers/regulator/rtmv20-regulator.c b/drivers/regulator/rtmv20-regulator.c
+index 1075b10..05fd8e7c 100644
+--- a/drivers/regulator/rtmv20-regulator.c
++++ b/drivers/regulator/rtmv20-regulator.c
+@@ -166,28 +166,32 @@ static int rtmv20_properties_init(struct rtmv20_priv *priv)
+ 		u32 addr;
+ 		u32 mask;
+ 	} props[] = {
+-		{ "ld-pulse-delay-us", 0, 0, 100000, 100, RTMV20_REG_PULSEDELAY,
++		{ "richtek,ld-pulse-delay-us", 0, 0, 100000, 100, RTMV20_REG_PULSEDELAY,
+ 			RTMV20_DELAY_MASK },
+-		{ "ld-pulse-width-us", 1200, 0, 10000, 1, RTMV20_REG_PULSEWIDTH,
++		{ "richtek,ld-pulse-width-us", 1200, 0, 10000, 1, RTMV20_REG_PULSEWIDTH,
+ 			RTMV20_WIDTH_MASK },
+-		{ "fsin1-delay-us", 23000, 0, 100000, 100, RTMV20_REG_FSIN1CTRL1,
++		{ "richtek,fsin1-delay-us", 23000, 0, 100000, 100, RTMV20_REG_FSIN1CTRL1,
+ 			RTMV20_DELAY_MASK },
+-		{ "fsin1-width-us", 160, 40, 10000, 40, RTMV20_REG_FSIN1CTRL3, RTMV20_WIDTH2_MASK },
+-		{ "fsin2-delay-us", 23000, 0, 100000, 100, RTMV20_REG_FSIN2CTRL1,
++		{ "richtek,fsin1-width-us", 160, 40, 10000, 40, RTMV20_REG_FSIN1CTRL3,
++			RTMV20_WIDTH2_MASK },
++		{ "richtek,fsin2-delay-us", 23000, 0, 100000, 100, RTMV20_REG_FSIN2CTRL1,
+ 			RTMV20_DELAY_MASK },
+-		{ "fsin2-width-us", 160, 40, 10000, 40, RTMV20_REG_FSIN2CTRL3, RTMV20_WIDTH2_MASK },
+-		{ "es-pulse-width-us", 1200, 0, 10000, 1, RTMV20_REG_ESPULSEWIDTH,
++		{ "richtek,fsin2-width-us", 160, 40, 10000, 40, RTMV20_REG_FSIN2CTRL3,
++			RTMV20_WIDTH2_MASK },
++		{ "richtek,es-pulse-width-us", 1200, 0, 10000, 1, RTMV20_REG_ESPULSEWIDTH,
+ 			RTMV20_WIDTH_MASK },
+-		{ "es-ld-current-microamp", 3000000, 0, 6000000, 30000, RTMV20_REG_ESLDCTRL1,
+-			RTMV20_LDCURR_MASK },
+-		{ "lbp-level-microvolt", 2700000, 2400000, 3700000, 100000, RTMV20_REG_LBP,
++		{ "richtek,es-ld-current-microamp", 3000000, 0, 6000000, 30000,
++			RTMV20_REG_ESLDCTRL1, RTMV20_LDCURR_MASK },
++		{ "richtek,lbp-level-microvolt", 2700000, 2400000, 3700000, 100000, RTMV20_REG_LBP,
+ 			RTMV20_LBPLVL_MASK },
+-		{ "lbp-enable", 0, 0, 1, 1, RTMV20_REG_LBP, RTMV20_LBPEN_MASK },
+-		{ "strobe-polarity-high", 1, 0, 1, 1, RTMV20_REG_LDCTRL2, RTMV20_STROBEPOL_MASK },
+-		{ "vsync-polarity-high", 1, 0, 1, 1, RTMV20_REG_LDCTRL2, RTMV20_VSYNPOL_MASK },
+-		{ "fsin-enable", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_FSINEN_MASK },
+-		{ "fsin-output", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_FSINOUT_MASK },
+-		{ "es-enable", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_ESEN_MASK },
++		{ "richtek,lbp-enable", 0, 0, 1, 1, RTMV20_REG_LBP, RTMV20_LBPEN_MASK },
++		{ "richtek,strobe-polarity-high", 1, 0, 1, 1, RTMV20_REG_LDCTRL2,
++			RTMV20_STROBEPOL_MASK },
++		{ "richtek,vsync-polarity-high", 1, 0, 1, 1, RTMV20_REG_LDCTRL2,
++			RTMV20_VSYNPOL_MASK },
++		{ "richtek,fsin-enable", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_FSINEN_MASK },
++		{ "richtek,fsin-output", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_FSINOUT_MASK },
++		{ "richtek,es-enable", 0, 0, 1, 1, RTMV20_REG_ENCTRL, RTMV20_ESEN_MASK },
+ 	};
+ 	int i, ret;
+ 
+-- 
+2.7.4
 
