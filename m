@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864FB27E9D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEF427E9CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 15:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgI3N2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 09:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
+        id S1730745AbgI3N2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 09:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730196AbgI3NZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730209AbgI3NZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 09:25:21 -0400
 Received: from mail.kernel.org (unknown [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C966221E7;
+        by mail.kernel.org (Postfix) with ESMTPSA id 85AD0221EC;
         Wed, 30 Sep 2020 13:25:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601472320;
-        bh=l4ZnRkqZgd8x5ZpSMUuNxg1b7AqKFMTZgq0sXQ4YesA=;
+        bh=pYfN+ieQDEUX+k8Yfc6bcFKKurTB/rbuEY6mHTD/h2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IHbW5oI4/RtT4HYSSPeE8X1EzBAUE8t8/JWXbqCOvcxyIyaVyHWr5EFUmIsO7qVZ3
-         8QHoWObwSmDtB0OW83b5GQOAMyHB/H6Ic+naNump2W81Vo82S16HzCQa7NE2yev42h
-         StlL7adO+cQpZCRYWnUAZGsJtC2fBMmYH4AyuhRw=
+        b=CMuLT/JDOHCnRn6h9cTT+zryRTbRTftIjSwvS6kkH7Fr3ZpdrM69pE8T6P6qMZfpO
+         p7mB49kXxyVtfLjx9e0xryn7JdPUU8xjPnJlJF5Mhjt/K10hLHjCbZkuaAFHaZVrpx
+         Vy42sPJvQzXxM4QdaxNi6DYwjyo/+E5699PnLNro=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kNc6g-001XJf-IO; Wed, 30 Sep 2020 15:25:18 +0200
+        id 1kNc6g-001XJh-Jv; Wed, 30 Sep 2020 15:25:18 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v4 19/52] memblock: get rid of a :c:type leftover
-Date:   Wed, 30 Sep 2020 15:24:42 +0200
-Message-Id: <0aab04f62bc3dfa82394e20d61c05c6efbfb4859.1601467849.git.mchehab+huawei@kernel.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 20/52] drm: drm_dsc.h: fix a kernel-doc markup
+Date:   Wed, 30 Sep 2020 15:24:43 +0200
+Message-Id: <3d467022325e15bba8dcb13da8fb730099303266.1601467849.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601467849.git.mchehab+huawei@kernel.org>
 References: <cover.1601467849.git.mchehab+huawei@kernel.org>
@@ -46,41 +49,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-chanseset b3a7bb1851c8 ("docs: get rid of :c:type explicit declarations for structs")
-removed several :c:type: markups, except by one.
+As warned by Sphinx:
 
-Now, Sphinx 3.x complains about it:
-
-	.../Documentation/core-api/boot-time-mm:26: ../mm/memblock.c:51: WARNING: Unparseable C cross-reference: 'struct\nmemblock_type'
+	./Documentation/gpu/drm-kms-helpers:305: ./include/drm/drm_dsc.h:587: WARNING: Unparseable C cross-reference: 'struct'
 	Invalid C declaration: Expected identifier in nested name, got keyword: struct [error at 6]
 	  struct
-	memblock_type
 	  ------^
 
-As, on Sphinx 3.x, the right markup is c:struct:`foo`.
-
-So, let's remove it, relying on automarkup.py to convert it.
+The markup for one struct is wrong, as struct is used twice.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- mm/memblock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/drm/drm_dsc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 165f40a8a254..326c6b3fec1d 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -50,8 +50,8 @@
+diff --git a/include/drm/drm_dsc.h b/include/drm/drm_dsc.h
+index 887954cbfc60..732f32740c86 100644
+--- a/include/drm/drm_dsc.h
++++ b/include/drm/drm_dsc.h
+@@ -588,7 +588,7 @@ struct drm_dsc_picture_parameter_set {
+  * This structure represents the DSC PPS infoframe required to send the Picture
+  * Parameter Set metadata required before enabling VESA Display Stream
+  * Compression. This is based on the DP Secondary Data Packet structure and
+- * comprises of SDP Header as defined &struct struct dp_sdp_header in drm_dp_helper.h
++ * comprises of SDP Header as defined &struct dp_sdp_header in drm_dp_helper.h
+  * and PPS payload defined in &struct drm_dsc_picture_parameter_set.
   *
-  * Each region is represented by :c:type:`struct memblock_region` that
-  * defines the region extents, its attributes and NUMA node id on NUMA
-- * systems. Every memory type is described by the :c:type:`struct
-- * memblock_type` which contains an array of memory regions along with
-+ * systems. Every memory type is described by the struct memblock_type
-+ * which contains an array of memory regions along with
-  * the allocator metadata. The "memory" and "reserved" types are nicely
-  * wrapped with :c:type:`struct memblock`. This structure is statically
-  * initialized at build time. The region arrays are initially sized to
+  * @pps_header: Header for PPS as per DP SDP header format of type
 -- 
 2.26.2
 
