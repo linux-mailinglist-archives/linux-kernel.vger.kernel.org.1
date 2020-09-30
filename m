@@ -2,106 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E55C27EA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A92D27EA8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730484AbgI3OAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:00:48 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53938 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730234AbgI3OAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:00:47 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08UE0VBs038428;
-        Wed, 30 Sep 2020 09:00:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601474431;
-        bh=B4u4mPz3Mw0LWhoGuVNSTssSPC917P+CIGSb15A4hlk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=HuLb35l3qVY0R4iQuUpbG12KK1BH1M14KiX+3CG0sEhVDnvsNV/C2lXv0MuGEOv/y
-         mShBnIKWtxw06mQ7AB+tvkjZNmeKeNUtNA4frQHE8qI5EI5Iy1ekwtbUtoJl14N5pS
-         E9lXlNd1YTIPpYFAde86ECU4VPFTMSC80ILBfsNE=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UE0VoW017073;
-        Wed, 30 Sep 2020 09:00:31 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
- Sep 2020 09:00:31 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 30 Sep 2020 09:00:31 -0500
-Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08UE0Srx039832;
-        Wed, 30 Sep 2020 09:00:29 -0500
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: do not touch TB bit without
- SPI_NOR_HAS_TB
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20200921112450.4824-1-i.mikhaylov@yadro.com>
- <20200921112450.4824-2-i.mikhaylov@yadro.com>
- <9bfb10df-64d8-4a5e-b0ad-a8b5f4efc56f@ti.com>
- <4a5945534f7b41cb799c044ec8c9d31c61d5beda.camel@yadro.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <758b2772-3c44-1184-066e-df890d05a21a@ti.com>
-Date:   Wed, 30 Sep 2020 19:30:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730279AbgI3OEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:04:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:36946 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730104AbgI3OEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:04:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 01F2F30E;
+        Wed, 30 Sep 2020 07:04:05 -0700 (PDT)
+Received: from [10.57.54.5] (unknown [10.57.54.5])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 801673F6CF;
+        Wed, 30 Sep 2020 07:04:02 -0700 (PDT)
+Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
+ in Energy Model
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20200929121610.16060-1-lukasz.luba@arm.com>
+ <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
+ <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
+ <62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <1f713ff6-32f6-4ea6-b7f7-4c61f097cf2a@arm.com>
+Date:   Wed, 30 Sep 2020 15:04:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <4a5945534f7b41cb799c044ec8c9d31c61d5beda.camel@yadro.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/30/20 6:37 PM, Ivan Mikhaylov wrote:
-> On Wed, 2020-09-30 at 15:06 +0530, Vignesh Raghavendra wrote:
+On 9/30/20 11:55 AM, Rajendra Nayak wrote:
+> 
+> On 9/30/2020 1:55 PM, Lukasz Luba wrote:
+>> Hi Douglas,
 >>
->> On 9/21/20 4:54 PM, Ivan Mikhaylov wrote:
->>> Some chips like macronix don't have TB(Top/Bottom protection)
->>> bit in the status register. Do not write tb_mask inside status
->>> register, unless SPI_NOR_HAS_TB is present for the chip.
+>> On 9/30/20 12:53 AM, Doug Anderson wrote:
+>>> Hi,
 >>>
+>>> On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> The Energy Model (EM) can store power values in milli-Watts or in 
+>>>> abstract
+>>>> scale. This might cause issues in the subsystems which use the EM for
+>>>> estimating the device power, such as:
+>>>> - mixing of different scales in a subsystem which uses multiple
+>>>>    (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
+>>>> - assuming that energy [milli-Joules] can be derived from the EM power
+>>>>    values which might not be possible since the power scale doesn't 
+>>>> have to
+>>>>    be in milli-Watts
+>>>>
+>>>> To avoid misconfiguration add the needed documentation to the EM and
+>>>> related subsystems: EAS and IPA.
+>>>>
+>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>>> ---
+>>>>   .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
+>>>>   Documentation/power/energy-model.rst                | 13 
+>>>> +++++++++++++
+>>>>   Documentation/scheduler/sched-energy.rst            |  5 +++++
+>>>>   3 files changed, 26 insertions(+)
+>>>
+>>> I haven't read through these files in massive detail, but the quick
+>>> skim makes me believe that your additions seem sane.  In general, I'm
+>>> happy with documenting reality, thus:
+>>>
+>>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 >>
->> Not entirely accurate.. Macronix chips have TB bit in config register
->> and is OTP and hence should not be touched ideally...
+>> Thank you for the review.
 >>
->> You still need to "read" that bit to determine actual scheme (Top vs
->> Bottom). This is needs to be done before 2/2 enables SPI_NOR_HAS_LOCK
->> flag for macronix flashes.
+>>>
+>>> I will note: you haven't actually updated the device tree bindings.
+>>> Thus, presumably, anyone who is specifying these numbers in the device
+>>> tree is still supposed to specify them in a way that mW can be
+>>> recovered, right?  Said another way: nothing about your patches makes
+>>> it OK to specify numbers in device trees using an "abstract scale",
+>>> right?
+>>
+>> For completeness, we are talking here about the binding from:
+>> Documentation/devicetree/bindings/arm/cpus.yaml
+>> which is 'dynamic-power-coefficient'. Yes, it stays untouched, also the
+>> unit (uW/MHz/V^2) which then allows to have mW in the power
+>> values in the EM.
 > 
-> Vignesh, that's the point about this commit to generalize this part about TB bit
-> plus there is already exist SPI_NOR_HAS_TB flag which representing state of TB
-> existence. I didn't add any support for macronix's TB bit, that's true but
-> that's enough to make macronix chips able to use lock mechanism with default
-> 'use_top' or any other chips which doesn't have TB bit.
+> So for platforms where 'dynamic-power-coefficient' is specified in 
+> device tree,
+> its always expected to be derived from 'real' power numbers on these 
+> platforms in
+> 'real' mW?
 
-Right, but 2/2 "enables" locking mechanism for Macronix flashes. Therefore its 
-necessary to take TB bit into account so that implementation is correct. 
-What if OTP bit is set as "use_bottom"? Although this is non default, 
-we need to take care of this case for correctness.
+Yes, the purpose and the name of that binding was only for 'real'
+power in mW.
 
 > 
->> I guess macronix does not support SR_SRWD right? This needs special
->> treatment as well.
+> Atleast on Qualcomm platforms we have these numbers scaled, so in 
+> essence it
+> can't be used to derive 'real' mW values. That said we also do not have 
+> any of
+> the 'platform might face potential issue of mixing devices in one 
+> thermal zone
+> of two scales' problem.
+
+If you have these numbers scaled, then it's probably documented
+somewhere in your docs for your OEMs, because they might assume it's in
+uW/MHz/V^2 (according to the bindings doc). If not, they probably
+realized it during the measurements and comparison (that the power in
+EM is not what they see on the power meter).
+This binding actually helps those developers who take the experiments
+and based on measured power values, store derived coefficient.
+Everyone can just measure in local setup and compare the results
+easily, speaking the same language (proposing maybe a patch adjusting
+the value in DT).
+
 > 
-> It does support SR_SRWD as well. No need any special treatment here.
+> So the question is, can such platforms still use 
+> 'dynamic-power-coefficient'
+> in device tree and create an abstract scale? The other way of doing this 
+> would
+> be to *not* specify this value in device tree and have these values 
+> stored in the
+> cpufreq driver and register a custom callback to do the math.
+
+But then we would also have to change the name of that binding.
+
+I'd recommend you the second way that you've described. It will avoid
+your OEMs confusion. In your cpufreq driver you can simply register
+to EM using the em_dev_register_perf_domain(). In your local
+callback you can do whatever you need (read driver array, firmware,
+DT, scale or not, etc).
+The helper code in dev_pm_opp_of_register_em() is probably not suited
+for your use case (when you don't want to share the real power of the
+SoC).
+
+> 
+> It just feels like jumping through hoops just to deal with the fact that 
+> the
+> device tree bindings say its expected to be in mW and can't be abstract.
 > 
 
-I did not find it in one Macronix datasheet at least:
-https://www.macronix.com/Lists/Datasheet/Attachments/7902/MX25L25673G,%203V,%20256Mb,%20v1.6.pdf
+I don't want to add more confusion into the EM power values topic.
+Overloading the meaning of that binding would create more mess.
 
-Are you sure all Macronix flashes support SRWD?
-
-> Thanks.
-> 
+Regards,
+Lukasz
