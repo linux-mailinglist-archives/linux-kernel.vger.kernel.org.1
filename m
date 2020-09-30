@@ -2,94 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2568927EDE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEADD27EDED
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgI3Pw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
+        id S1730832AbgI3PxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgI3Pw6 (ORCPT
+        with ESMTP id S1725837AbgI3PxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:52:58 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B39C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d23so1283132pll.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
+        Wed, 30 Sep 2020 11:53:16 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0603BC061755;
+        Wed, 30 Sep 2020 08:53:16 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id c8so2410551edv.5;
+        Wed, 30 Sep 2020 08:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=/xkIWni8SgM73BFi4hmvbWE+41W2IJ3UZaLFsKLGrO0=;
-        b=M7Rpj6HkNrkx/NYoCjDpdd8guTiZAXIj1AzQyO7qCGRK1o1otWJB44tKHxsiBiTlxk
-         Xt1q0quZP6YK9skgCohk66ZUEO50v+aOJV828C7ZjkbTD9Y1gxqmsUjpH7mNINOsXtA1
-         53v+cY61EOY6HKy9dydKEOy/FaWxa5SNmrWAs=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=KDQZGvk0JkFdokli8ewGDoQ88Bh+KyqHPkmTFuM4sN0=;
+        b=ASUZZ95zVqX6zun4WV2cHuoSaVfylBtUFd5fTB1mkLFepzB8PIBBWDCPAzkTlciPef
+         YMWTvODp4Bv5Gh4ljYfw4Ohzzh6/QAdlnEm5H0bTMxW0Ce/1+MYeSPz/tlZaPIkEdkYI
+         +p0UG3kM44jBQBCDkc8wvgmHpT8qZ/ijZBkqhTGYuYDiGk6c2JgLakeXfj5q34IgyH/Y
+         NfGjXJEo2rU+otc359bSjHxzPdc+To+MAYco4LvusshstxwuE7hiOiJpNqjWy4gcXJrq
+         CYmvr2HKgrQzRTO8wacAlTdlqmLemt93fSlXmaQepm/eakWnI0twohYoV1NlnBaD8pRz
+         AxBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/xkIWni8SgM73BFi4hmvbWE+41W2IJ3UZaLFsKLGrO0=;
-        b=TRgHXTdM7CmSLi0u88KGgUMOoSgtXH42kkIj5CowCi8S6C0gUjSzAGih56wETclLlg
-         AFiQNTMeGvlf4svkRp624VICqwlR3er/QFs/d9ek5oBFa0F4hpfdYm42Mr5xlfeplXEt
-         FP/2etwQZ6Tzkim35kPbSccfaFQ3Us8Ci27R0Iuc+/gY2/pNSfaiXoX3XOj/QQ7RoNXT
-         bCDOqj+4tgJ07T0mVbiPs2VRTp6k2t8qhhwkqXHeRcnz2sdIZbxiDMXeMudVEGsKDhxg
-         ffY3iy1uknzfjNBhIqbzKdmT1alKBIQ0mUskN7NmBBPNHBFT2uvP99CQTXPS6yoFMDwo
-         9j3Q==
-X-Gm-Message-State: AOAM531E9g/VFDH2tNDjRqq9nAe5cb97tCIcxYacYNxzDp6Vus2HMqZx
-        g89eVzGE++XAy9u7NA4NvBbBrw==
-X-Google-Smtp-Source: ABdhPJxan0UpaLux6JIjM9Vs6ukVwn7rRVFayoREveaALuHTa6YagFd00MEr3S9yFKisVPQ0l1dC5w==
-X-Received: by 2002:a17:902:9047:b029:d2:8d1f:1629 with SMTP id w7-20020a1709029047b02900d28d1f1629mr3229942plz.44.1601481178259;
-        Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id z28sm3142765pfq.81.2020.09.30.08.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 08:52:57 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
-Date:   Wed, 30 Sep 2020 15:52:38 +0000
-Message-Id: <20200930155244.12114-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=KDQZGvk0JkFdokli8ewGDoQ88Bh+KyqHPkmTFuM4sN0=;
+        b=nbilRkcibxOswu5TwQpc1+IgLfdUOyyQOkXgbTxSBRuktbltBaXi1EyUmJUPKizozC
+         tsEcKy4pguFB3LGzGiUQKHwyMl7aJ7r0lx8J9lklRntGkCFf+RJqC1m5UfW+CU8TbeQ5
+         ATj8U/SAf3XAhBlJ7E7YbK8cOv+sFAmilX+ZJK6nlkBultKGYNcsJf762U2TgDCUcanF
+         Rfe8EfV5jvBuZK3L3sjWDwClwuJxXoSdnLeHpOY4aJKVTooCcIn3pNSlVV84m7bBUIeh
+         I2ntDcW0O6BpBbqViSO+7Vw1bGKC1LEz5ecVrJN45kQmf1pCXwq8S0He12iS05/LJZj+
+         PJSw==
+X-Gm-Message-State: AOAM531m7FdOM1fRen7XmgjbNMXkNKkjB4rgNDk/02g06VeaAKPrdUFn
+        cgFi8H6k5PYLH+yV8BcgKJiXnJmu/LltnpR2KnI=
+X-Google-Smtp-Source: ABdhPJyTjUV/XRMDis5FIGkqzMizZEnCmM+iodG6+Z64Wj8n+6f8Ul3AqFpN9ekcH0mp8h7/xtQFpFdr3dVpPSCCgr0=
+X-Received: by 2002:aa7:cf98:: with SMTP id z24mr3349861edx.241.1601481194525;
+ Wed, 30 Sep 2020 08:53:14 -0700 (PDT)
+MIME-Version: 1.0
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Date:   Wed, 30 Sep 2020 21:23:03 +0530
+Message-ID: <CAKBsNOkLhK6awg91R6w3b-RD4JD-jV=uGqsX8-V7w-KDmOuF4g@mail.gmail.com>
+Subject: Re: KMSAN: kernel-infoleak in scsi_cmd_ioctl
+To:     syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com
+Cc:     axboe@kernel.dk, glider@google.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dvb_create_media_graph fails, the debugfs kept inside client should
-be released. However, the current implementation does not release them.
-
-Fix this by adding a new goto label to call smsdvb_debugfs_release.
-
-Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
- drivers/media/common/siano/smsdvb-main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 88f90dfd368b..ae17407e477a 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1169,12 +1169,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	rc = dvb_create_media_graph(&client->adapter, true);
- 	if (rc < 0) {
- 		pr_err("dvb_create_media_graph failed %d\n", rc);
--		goto client_error;
-+		goto media_graph_error;
- 	}
- 
- 	pr_info("DVB interface registered.\n");
- 	return 0;
- 
-+media_graph_error:
-+	smsdvb_debugfs_release(client);
-+
- client_error:
- 	dvb_unregister_frontend(&client->frontend);
- 
--- 
-2.17.1
-
+#syz fix: ptrace: Prevent kernel-infoleak in ptrace_get_syscall_info()
