@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5896127F0A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB06527F0A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 19:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731448AbgI3Rht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 13:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731335AbgI3Rht (ORCPT
+        id S1731468AbgI3RiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 13:38:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57930 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726540AbgI3RiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 13:37:49 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3E4C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:37:47 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y4so2316721ljk.8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nbODIVmtMlo+oLH9Hrd8YGZI1ZfekrJ3et3L9IP3emw=;
-        b=XMWwh4Nz6o2C7++lYVkhjkwC5h4Fg1CtBXKYaVfnuMN0DhI1MS18W9JzZHWGJ190qC
-         3Yn6DG46RbfYlASND+TtT+IOlnxrJmcLcxSLeHwbkQyZdViuFmTwIWAZBeD8IoS0NgJU
-         9/iu6348F5EBEQr0YdW3SqexfZcYhbP+g0Ce9IocdnoKHCkTPkissYZFeY5D/HkbZaUV
-         s9mlzqY4RyugivLGjSCtbpu4TEyGPKucmg/Kefjoa7DrChvJ+I+QfArOGA35WACDbwal
-         gY6BbBKRqovl/O0BCwOEWFasJnokCoS90w4YSuXv4Xd+jcRUCcQt1litY3yaF4F5TaZU
-         Qiug==
+        Wed, 30 Sep 2020 13:38:05 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601487484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rbVSMX0ofjyA4TlGb7f37SdNgbEI+lBF5+h+rIMhjwE=;
+        b=EF7PRwT7R1cApRXYfRs0HRMlDbMlYLX1qbGJPGC3eWgQy56GHLC60OqhG6o6DklKSP9XV+
+        jQQ/K/G8Y7nsZVNja0oQuE2wDCLXGLI6WIplKonXrdejq6Wu8uevqd+B8RdFLEYUXZ9qHT
+        H0AHjlrbBNQx+EUwX6NvqqadL5jhFMA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-wBzMgYSbNhCTV3v_HxKGlg-1; Wed, 30 Sep 2020 13:38:01 -0400
+X-MC-Unique: wBzMgYSbNhCTV3v_HxKGlg-1
+Received: by mail-wm1-f71.google.com with SMTP id 73so106217wma.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 10:38:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nbODIVmtMlo+oLH9Hrd8YGZI1ZfekrJ3et3L9IP3emw=;
-        b=j4TUbdEOVyGgER/E54z8dGgqQhSFJLpHcZ0IoqCL3OpyuIfg9jV7sEx+aJGK4x4PLK
-         BCKqi4bKUUuMmGtsW3n+FBoAaG/A87+bXRNKjNkelFl9WlJ/J1j7Enz8al9xal27M87B
-         GoNoH2h8cL89o28VuiX4gKAMuN4t572ajSN2QlNCAuvyrw1QXKdaIDmh64tog5zVMpMH
-         72DXi76pW6NXMx7bXzYN5OaOpRg47H9QFMMX/S+7XnrIYa9p0Qj3ZvvU44F38TNLmKB+
-         WwkrtlIVkuIMVoFHVBzZLBYQ4HUOWWmv+yI4LuiGDgX/WmmvugzwBWFcgCxmS/Y5fGAu
-         aufA==
-X-Gm-Message-State: AOAM530f2SFFqP/xACgC+3aIGGeU2a4uqAqESxpSQJSybOWZUSYIW9X9
-        FI9yDhoreKLMBKbQN7iAFOV5mw==
-X-Google-Smtp-Source: ABdhPJyqDCDXp1ZYRf9156ssXFOuXiNaysi5BzWkXQEbMYcWMwfcZgmysMuz722U1SrRArZ4ULE7OA==
-X-Received: by 2002:a2e:89ca:: with SMTP id c10mr1263859ljk.223.1601487465710;
-        Wed, 30 Sep 2020 10:37:45 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id 77sm261464lfg.199.2020.09.30.10.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 10:37:45 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 19:37:44 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, kernel-team@android.com,
-        samuel@dionne-riel.com
-Subject: Re: [PATCH v2] of: address: Work around missing device_type property
- in pcie nodes
-Message-ID: <20200930173744.GG1516931@oden.dyn.berto.se>
-References: <20200819094255.474565-1-maz@kernel.org>
- <20200930162722.GF1516931@oden.dyn.berto.se>
- <977f60f07a4cb5c59f0e5f8a9dfb3993@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rbVSMX0ofjyA4TlGb7f37SdNgbEI+lBF5+h+rIMhjwE=;
+        b=Wx6DRxV1+MCi1aTyBBXRhn3ZnkfrAu9BQrcOAIyS2Tf/0Mt7uzna0x/dTGxxoXsH0i
+         r+0GUWV9pRAIPlfOQBPkj9VFKyjUUD7XXyu5WPoNIZdqe3upHAxRq2X8/PPFo86QR/b+
+         VcWxUE1FxIk3DV5FG7utcO4L0mAQ+fPoXlW7YEu/N9XCY7DfO2qdxxM7vDhhUIPcFRt6
+         iMIKIkL470ro8kG6ebyAuzw+oJhxRf8pFSZnlqhnsOFCF/XsyjPNbUI3ZP7uyUtSyacZ
+         uxKxAeInk9Dw3A6zEQy8yspaMr4U1g9UGqvhHFovDh3/1/ijbWJ70dmSFCjlxyRr6KX6
+         cWfQ==
+X-Gm-Message-State: AOAM532DI0WLqSIheAdNKZ/A9snABuR4/jaXLFDQswgHEQmlFd8ok/8z
+        jdf5KahCEhuLu3+F0DrEfkveKNTpliT7IoAwlGQAdiqi6OHB2pj8s3L6l+vr4u6M5H0jT01Uifa
+        85ucJhh6eE642thwe2A5p7D+n
+X-Received: by 2002:a7b:c307:: with SMTP id k7mr4415213wmj.31.1601487480427;
+        Wed, 30 Sep 2020 10:38:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxp1wDZFnmFzUCxHS34y6dw6TXiGHDizdhqmNG6eghuz6QpGoY9QXzZ0SsDF1zWzIGheprEfg==
+X-Received: by 2002:a7b:c307:: with SMTP id k7mr4415181wmj.31.1601487480144;
+        Wed, 30 Sep 2020 10:38:00 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:75e3:aaa7:77d6:f4e4? ([2001:b07:6468:f312:75e3:aaa7:77d6:f4e4])
+        by smtp.gmail.com with ESMTPSA id k6sm3757940wmi.1.2020.09.30.10.37.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 10:37:59 -0700 (PDT)
+Subject: Re: [PATCH 10/22] kvm: mmu: Add TDP MMU PF handler
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-11-bgardon@google.com>
+ <20200930163740.GD32672@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b123d506-fa33-db3f-1166-4b0ec1d6dc1e@redhat.com>
+Date:   Wed, 30 Sep 2020 19:37:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <977f60f07a4cb5c59f0e5f8a9dfb3993@kernel.org>
+In-Reply-To: <20200930163740.GD32672@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On 30/09/20 18:37, Sean Christopherson wrote:
+>> +	ret = page_fault_handle_target_level(vcpu, write, map_writable,
+>> +					     as_id, &iter, pfn, prefault);
+>> +
+>> +	/* If emulating, flush this vcpu's TLB. */
+> Why?  It's obvious _what_ the code is doing, the comment should explain _why_.
+> 
+>> +	if (ret == RET_PF_EMULATE)
+>> +		kvm_make_request(KVM_REQ_TLB_FLUSH, vcpu);
+>> +
+>> +	return ret;
+>> +}
 
-On 2020-09-30 18:23:21 +0100, Marc Zyngier wrote:
-> Hi Niklas,
-> 
-> [+ Samuel]
-> 
-> On 2020-09-30 17:27, Niklas Söderlund wrote:
-> > Hi Marc,
-> > 
-> > I'm afraid this commit breaks booting my rk3399 device.
-> > 
-> > I bisected the problem to this patch merged as [1]. I'm testing on a
-> > Scarlet device and I'm using the unmodified upstream
-> > rk3399-gru-scarlet-inx.dtb for my tests.
-> > 
-> > The problem I'm experience is a black screen after the bootloader and
-> > the device is none responsive over the network. I have no serial console
-> > to this device so I'm afraid I can't tell you if there is anything
-> > useful on to aid debugging there.
-> > 
-> > If I try to test one commit earlier [2] the system boots as expected and
-> > everything works as it did for me in v5.8 and earlier. I have worked
-> > little with this device and have no clue about what is really on the PCI
-> > buss. But running from [2] I have this info about PCI if it's helpful,
-> > please ask if somethings missing.
-> 
-> Please see the thread at [1]. The problem was reported a few weeks back
-> by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
+In particular it seems to be only needed in this case...
 
-Thanks for providing a solution.
++	/*
++	 * If the page fault was caused by a write but the page is write
++	 * protected, emulation is needed. If the emulation was skipped,
++	 * the vCPU would have the same fault again.
++	 */
++	if ((make_spte_ret & SET_SPTE_WRITE_PROTECTED_PT) && write)
++		ret = RET_PF_EMULATE;
++
 
-> 
-> Rob, Lorenzo, any update on this?
-> 
->         M.
-> 
-> [1]
-> https://lore.kernel.org/linux-devicetree/20200829164920.7d28e01a@DUFFMAN/
-> -- 
-> Jazz is not dead. It just smells funny...
+... corresponding to this code in mmu.c
 
--- 
-Regards,
-Niklas Söderlund
+        if (set_spte_ret & SET_SPTE_WRITE_PROTECTED_PT) {
+                if (write_fault)
+                        ret = RET_PF_EMULATE;
+                kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
+        }
+
+So it should indeed be better to make the code in
+page_fault_handle_target_level look the same as mmu/mmu.c.
+
+Paolo
+
