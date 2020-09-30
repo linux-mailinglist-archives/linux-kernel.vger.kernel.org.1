@@ -2,82 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEA727F5E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A0527F5E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732194AbgI3XVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731255AbgI3XVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732190AbgI3XVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 30 Sep 2020 19:21:24 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A39AC061755
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731255AbgI3XVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:21:23 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72865C0613D0
         for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id f70so2557073ybg.13
+Received: by mail-pg1-x543.google.com with SMTP id s31so2292616pga.7
         for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yrpPLLVt8wKM3iqW9ZiiFDeORkAMwl036WYIC41BrP0=;
-        b=v4Ukut/5haJelh51Q3Yfml8ane6b7t82geBuv+2gaQgEs7KTFY0XlEY69WChsLfVKu
-         MKvforcAyLkkgaa7rglJ2+OT5drFkLjoGnSVKR1ClTCDPWgwyPWkp9f4KtNHjpAEUB5D
-         WBDA0M+/5S4H7l8nRuf30gXeG2CinxtBkGclBiTw2uFIMuQSxpH358o0yKc+B7MQM0wm
-         8qL7D+zuckxZ0AXMvLoe/vi9XMS/qSbaqEC3kEoXW4LmY+nJ/o98nU7+Jn8nmxMxFmcR
-         hWjQr7zTggVTGLGQ6RFHDxplYrS7pVyiHN0DHo4tXTmMaTwtXCkWrxbuOHWe7aAX9c+w
-         VXJg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
+        b=TZcivgXw3I1epH9uT9vdPCWx/4ExuFu3+g4x3a/AhrJ47vzwURw8KdgwcFvZLA4x6R
+         N43c1jc09gyZaUIARtJRdVpNBz8HLiKvE3J/YzFFtLaGuQ5vdTXiZAYuWGd1EBHOC14M
+         xS08nPZAgFW9Y6dbf3e9FfTYtNlPH/Srf7U4I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yrpPLLVt8wKM3iqW9ZiiFDeORkAMwl036WYIC41BrP0=;
-        b=GAb9rrtZaDc9pHCCx8vRuMCWZXGHWYw0MdJBuITejpF7P2WBwvE4WqoyJ7ZdqhVRpO
-         hfwwdipyfixrl0KAh/puij7Qey5mlpesio0mFUy7pDfP2O6c+PyS6rrifShsow3KMux9
-         QTW74BLfIJbS0GmHbTRyZbKexzsG9OrF8LdsxlZJUKoN9XeW6gaJlbTqeLEeegdjIk7J
-         axq5LE5/Ha67WjrsxGDMW3bsoBSffqScrFRdU6V/iP4FAJ/gsVl83hNTn2hNkmVp/JOq
-         1WV0BEx2fC3fpS4gGklbWqnZPOM2f1U4QXkyYxpkanrynh3jCxki6TVaelDgXbZbiXeP
-         yG2g==
-X-Gm-Message-State: AOAM532j/AIYFj1QKxbzTSkNVHcXqp5sPFd80myYd5CAqmqZrIsV8cOC
-        +gqyJBZDPB86oCFXhgoOfnLKSQJPI3oPvOqpamEAvA==
-X-Google-Smtp-Source: ABdhPJzwEtWH0sHKPzgO//AINaKkaCCF9YqLLPoAQVMrYySJaubkHVFJMEgfvcio/aElNZn9XksgnqO18MZt6T21T7E=
-X-Received: by 2002:a25:5056:: with SMTP id e83mr6551483ybb.287.1601508082038;
- Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAG48ez3SG6ngZLtasxJ6LABpOnqCz5-QHqb0B4k44TQ8F9n6+w@mail.gmail.com>
-In-Reply-To: <CAG48ez3SG6ngZLtasxJ6LABpOnqCz5-QHqb0B4k44TQ8F9n6+w@mail.gmail.com>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Wed, 30 Sep 2020 16:21:09 -0700
-Message-ID: <CANN689ESNEt7Ju0_jSVeP-37J+a0AvXsVRzNQ-s2cjM--AND+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm/gup_benchmark: Take the mmap lock around GUP
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
+        b=ixG9/WJJE/0FDYsefWxH9RI+SDwJzpkysv1EAw7f8iEr/IB7olO4kUJlWtdFHEYbMF
+         3MxBxMXmCbL9QT8Ga8u2brQKnsaKeB/CVgx3MwDzdnnjvh0P+8TLnJZr25zL6qhJS4E4
+         9/TGLvWaJxoB3ARrDTRvl8QoZE1GNZRPKKj3v/gIpcEHmbyL6A7ixQPBkaTwaJ1o0RfU
+         dHxIk9PxKkCVipD0BgdqLt9hag0uLI7ZXRWr+OEPG0wZVNckU1uJ/8ebw4wjLjHy58on
+         LKDgn+eFHGhHd4uvRpsbhN8vOFwIKqb2EfDGfs33EJ1kZ+UV1OwCM4ad0yUdRkBdpv78
+         Z66g==
+X-Gm-Message-State: AOAM533E/MbpZ7b1q2Vxehy4WprIyf1Oo1A1HwyjuYM0b5+JJMBGDhWQ
+        bdKw1yqTWyq2E8gLvoaOYbS7DA==
+X-Google-Smtp-Source: ABdhPJxuU0x2CWFLEU2A+WDs32aP0TdSrFtCY2CLnbAl54vDjrmQMaeG/VBOLgLEbehuqlqMS0xYoQ==
+X-Received: by 2002:a17:902:7002:b029:d2:950a:d82a with SMTP id y2-20020a1709027002b02900d2950ad82amr4444416plk.72.1601508082978;
+        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 206sm3071721pgh.26.2020.09.30.16.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 16:21:21 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202009301612.E9DD7361@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <202009301554.590642EBE@keescook>
+ <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 6:20 PM Jann Horn <jannh@google.com> wrote:
-> To be safe against concurrent changes to the VMA tree, we must take the
-> mmap lock around GUP operations (excluding the GUP-fast family of
-> operations, which will take the mmap lock by themselves if necessary).
->
-> This code is only for testing, and it's only reachable by root through
-> debugfs, so this doesn't really have any impact; however, if we want to add
-> lockdep asserts into the GUP path, we need to have clean locking here.
->
-> Signed-off-by: Jann Horn <jannh@google.com>
+On Thu, Oct 01, 2020 at 01:08:04AM +0200, Jann Horn wrote:
+> [adding x86 folks to enhance bikeshedding]
+> 
+> On Thu, Oct 1, 2020 at 12:59 AM Kees Cook <keescook@chromium.org> wrote:
+> > On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
+> > > From: YiFei Zhu <yifeifz2@illinois.edu>
+> > >
+> > > Currently the kernel does not provide an infrastructure to translate
+> > > architecture numbers to a human-readable name. Translating syscall
+> > > numbers to syscall names is possible through FTRACE_SYSCALL
+> > > infrastructure but it does not provide support for compat syscalls.
+> > >
+> > > This will create a file for each PID as /proc/pid/seccomp_cache.
+> > > The file will be empty when no seccomp filters are loaded, or be
+> > > in the format of:
+> > > <arch name> <decimal syscall number> <ALLOW | FILTER>
+> > > where ALLOW means the cache is guaranteed to allow the syscall,
+> > > and filter means the cache will pass the syscall to the BPF filter.
+> > >
+> > > For the docker default profile on x86_64 it looks like:
+> > > x86_64 0 ALLOW
+> > > x86_64 1 ALLOW
+> > > x86_64 2 ALLOW
+> > > x86_64 3 ALLOW
+> > > [...]
+> > > x86_64 132 ALLOW
+> > > x86_64 133 ALLOW
+> > > x86_64 134 FILTER
+> > > x86_64 135 FILTER
+> > > x86_64 136 FILTER
+> > > x86_64 137 ALLOW
+> > > x86_64 138 ALLOW
+> > > x86_64 139 FILTER
+> > > x86_64 140 ALLOW
+> > > x86_64 141 ALLOW
+> [...]
+> > > diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
+> > > index 7b3a58271656..33ccc074be7a 100644
+> > > --- a/arch/x86/include/asm/seccomp.h
+> > > +++ b/arch/x86/include/asm/seccomp.h
+> > > @@ -19,13 +19,16 @@
+> > >  #ifdef CONFIG_X86_64
+> > >  # define SECCOMP_ARCH_DEFAULT                        AUDIT_ARCH_X86_64
+> > >  # define SECCOMP_ARCH_DEFAULT_NR             NR_syscalls
+> > > +# define SECCOMP_ARCH_DEFAULT_NAME           "x86_64"
+> > >  # ifdef CONFIG_COMPAT
+> > >  #  define SECCOMP_ARCH_COMPAT                        AUDIT_ARCH_I386
+> > >  #  define SECCOMP_ARCH_COMPAT_NR             IA32_NR_syscalls
+> > > +#  define SECCOMP_ARCH_COMPAT_NAME           "x86_32"
+> >
+> > I think this should be "ia32"? Is there a good definitive guide on this
+> > naming convention?
+> 
+> "man 2 syscall" calls them "x86-64" and "i386". The syscall table
+> files use ABI names "i386" and "64". The syscall stub prefixes use
+> "x64" and "ia32".
+> 
+> I don't think we have a good consistent naming strategy here. :P
 
-Acked-by: Michel Lespinasse <walken@google.com>
+Agreed. And with "i386" being so hopelessly inaccurate, I prefer
+"ia32" ... *shrug*
 
-Thanks for these cleanups :)
+I would hope we don't have to be super-pedantic and call them "x86-64" and "IA-32". :P
 
 -- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
+Kees Cook
