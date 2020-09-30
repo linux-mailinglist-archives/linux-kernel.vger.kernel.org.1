@@ -2,180 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9968D27F448
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D180F27F452
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgI3ViW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
+        id S1730871AbgI3VlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgI3ViW (ORCPT
+        with ESMTP id S1725814AbgI3VlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:38:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA14FC061755;
-        Wed, 30 Sep 2020 14:38:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601501900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6E7rSUIBVCJugx0T9Vuji43R9ZFkmGP5/w3wntstorY=;
-        b=bkS2E0y0MlzWGA6pA28NTcdKfLABfMU71UbxP3zzVdGO7xGTup6aI/gr+R0fqRkuL8lIrM
-        rt3ebBC44vXB2Vrmk77dONx07d0GfOWarYpHFh2GrQW8WBBuypzcDIWZm8pmk3xL3HTR1S
-        FaATDutnAAXVKo3Pn8CMKUKe6+J4YcR7vO0qoiakBZjkYvoUd4pJWTTonUXeV+K389Npe/
-        MAtCzcpLDcClbtd3IqXKmy3Ig/4PCl5iQ1GxSFTimfvShTY0pY1+6ysOzrF42qQoC6G2Tv
-        iYvFBAE895gc5v99eF0xLWkRUhElVd+ilrMfVlzxY+iJ01PWOLuCbDyeoVYpJQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601501900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6E7rSUIBVCJugx0T9Vuji43R9ZFkmGP5/w3wntstorY=;
-        b=RZNlRRxLJ9pRMXZENSVanXWmjaMV405d6WJuzxmX216yg+7seJgMuqS/CuBSmjwNKBEwOn
-        pnbSGUAKHyIl1CCg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech
-Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars in enable_l1d_flush_for_task()
-In-Reply-To: <20200930183552.GG2628@hirez.programming.kicks-ass.net>
-References: <20200928124457.27289-1-lukas.bulwahn@gmail.com> <20200929071211.GJ2628@hirez.programming.kicks-ass.net> <20200929083709.GC2651@hirez.programming.kicks-ass.net> <87eemji887.fsf@nanos.tec.linutronix.de> <20200930170316.GB2628@hirez.programming.kicks-ass.net> <87blhni1pg.fsf@nanos.tec.linutronix.de> <20200930183552.GG2628@hirez.programming.kicks-ass.net>
-Date:   Wed, 30 Sep 2020 23:38:19 +0200
-Message-ID: <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
+        Wed, 30 Sep 2020 17:41:08 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D67C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:41:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d6so2242588pfn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ne0Tvj0LHDNoNtT3tCH3e2zAqdrRlJSiwY/+6OCzSRk=;
+        b=kbGgM2Os4lnrxJsMIgRxFQNFc6xu0BbOErzR7ku01j8+p1FHcxDfpz5h9so3n1uMsv
+         7A9aI6yGddKPtt+1pNiFLdkJ+/xVeKtTMUdAzZc/cy2SfT0SxmKkyZGt+7yB5jd1c0z4
+         dagyXQLQyS0zenl5ndJttkryDst1MwxCbc20q/3d5JpRkpF1BSPPj++dfYEIg6+DWe9Q
+         K1OiYlbIAA8aXSAGmdNvPBRBXlr9Ta9U60l6z5fRTAVd3ue4cB4lhpKuUBzXYgBcsJCy
+         buhIaN2YbRTp9NQ5R5/pWu+440bd8w1RwQBGQT2w4Cpy3hf2RnXwxa9m8iwMLnmVxfVQ
+         1l2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ne0Tvj0LHDNoNtT3tCH3e2zAqdrRlJSiwY/+6OCzSRk=;
+        b=B7gDtu5w2qAsGDdd0abPGTZVUNJkyi7IDD6mU75/Jo2PoOcuyd2LYI9wjTx9kaaU2g
+         Rbct+fJqJNGfeftHUywxTkVoovmo5vt27oMpRTBG2xBoJAzMr665BnOgsQ+9wiXfquAu
+         KRE59xNritRtYM9FvtM8cRm7cvuv510D0HSErtpLv5C5UHVpFQJvUvIVzVd8q5sYSDYI
+         LAme2HE26SqJ/7CDDFxaSf7R0/lol0QzMBjmBCNzR15myF1qmtSceg4tXkMo+5Yz0gDa
+         ZQeO+bghEmf/sQLa9qYdXEPaG92ut0gL8PIPrYfoZVAS0u1dPayp466UfeVz85uWdPi5
+         zADg==
+X-Gm-Message-State: AOAM53083g23kwxHKRSh94CVHWHTRunU84a2pmueptmVKvvBTxVgKtUt
+        COOP0FevMmfu0gumAhb6ClBzbO79gyN5UcJBM947mwQasXkmmQ==
+X-Google-Smtp-Source: ABdhPJxmQZ2xAuUPBAlKfZHL8pW+RLFby0uRw4CRW7TnQmWa/w64csKigs9yFzxKQ9LMeF1owhbyN9G+WFkvvDvrwlE=
+X-Received: by 2002:a17:902:c40d:b029:d2:93e8:1f4b with SMTP id
+ k13-20020a170902c40db02900d293e81f4bmr4285228plk.29.1601502066090; Wed, 30
+ Sep 2020 14:41:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+ <20200929192549.501516-1-ndesaulniers@google.com> <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+ <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com> <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+In-Reply-To: <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 30 Sep 2020 14:40:54 -0700
+Message-ID: <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+To:     Joe Perches <joe@perches.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30 2020 at 20:35, Peter Zijlstra wrote:
-> On Wed, Sep 30, 2020 at 08:00:59PM +0200, Thomas Gleixner wrote:
->> On Wed, Sep 30 2020 at 19:03, Peter Zijlstra wrote:
->> > On Wed, Sep 30, 2020 at 05:40:08PM +0200, Thomas Gleixner wrote:
->> > Also, that preempt_disable() in there doesn't actually do anything.
->> > Worse, preempt_disable(); for_each_cpu(); is an anti-pattern. It mixes
->> > static_cpu_has() and boot_cpu_has() in the same bloody condition and has
->> > a pointless ret variable.
+On Wed, Sep 30, 2020 at 12:16 PM Joe Perches <joe@perches.com> wrote:
 >
-> Also, I forgot to add, it accesses ->cpus_mask without the proper
-> locking, so it could be reading intermediate state from whatever cpumask
-> operation that's in progress.
-
-Yes. I saw that after hitting send. :(
-
->> I absolutely agree and I really missed it when looking at it before
->> merging. cpus_read_lock()/unlock() is the right thing to do if at all.
->> 
->> > It's shoddy code, that only works if you align the planets right. We
->> > really shouldn't provide interfaces that are this bad.
->> >
->> > It's correct operation is only by accident.
->> 
->> True :(
->> 
->> I understand Balbirs problem and it makes some sense to provide a
->> solution. We can:
->> 
->>     1) reject set_affinity() if the task has that flush muck enabled
->>        and user space tries to move it to a SMT enabled core
->> 
->>     2) disable the muck if if detects that it is runs on a SMT enabled
->>        core suddenly (hotplug says hello)
->> 
->>        This one is nasty because there is no feedback to user space
->>        about the wreckage.
+> Use a more generic form for __section that requires quotes to avoid
+> complications with clang and gcc differences.
 >
-> That's and, right, not or. because 1) deals with sched_setffinity()
-> and 2) deals wit hotplug.
+> Remove the quote operator # from compiler_attributes.h __section macro.
+>
+> Convert all unquoted __section(foo) uses to quoted __section("foo").
+> Also convert __attribute__((section("foo"))) uses to __section("foo")
+> even if the __attribute__ has multiple list entry forms.
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>
+> This is the current output from the script against next-20200930
+> attached in this link:
+>
+> https://lore.kernel.org/lkml/0e582a7f5144a33f465978d97701f9b3dcc377f3.camel@perches.com/
+>
+> It might be useful to run the script immediately before
+> the next -rc1.
 
-It was meant as AND of course.
+$ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+powernv_defconfig
+$ ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- make CC=clang -j71
+...
+arch/powerpc/boot/main.c:193:44: error: expected ';' after top level declarator
+static char cmdline[BOOT_COMMAND_LINE_SIZE]
+                                           ^
+                                           ;
+$ git blame arch/powerpc/boot/main.c -L 193 | head -n2
+a2dd5da77f2cc arch/powerpc/boot/main.c (Anton Blanchard
+2014-04-14 21:54:05 +1000 193) static char
+cmdline[BOOT_COMMAND_LINE_SIZE]
+9d04187c25477 arch/powerpc/boot/main.c (Joe Perches
+2020-09-30 12:16:43 -0700 194)   __section("__builtin_cmdline");
 
-> Now 1) requires an arch hook in sched_setaffinity(), something I'm not
-> keen on providing, once we provide it, who knows what strange and
-> wonderful things archs will dream up.
+Looks like arch/powerpc/boot/main.c doesn't include
+compiler_attributes.h? Preprocessing it doesn't expand __section as
+expected.  I think scripts/Makefile.lib's c_flags injects this via
+-include flag.
 
-I don't think so. We can have that magic in core:
+(x86_64, arm, and arm64 defconfigs worked fine for me otherwise).
 
-#ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
-static bool paranoid_l1d_valid(struct task_struct *tsk,
-                               const struct cpumask *msk)
-{
-	if (!test_tsk_thread_flag(tsk, TIF_SPEC_L1D_FLUSH))
-        	return true;
-        /* Do magic stuff */
-        return res;
-}
-#else
-static bool paranoid_l1d_valid(struct task_struct *tsk,
-                               const struct cpumask *msk)
-{
-	return true;
-}
-#endif
-
-It's a pretty well defined problem and having the magic in core code
-prevents an arch hook which allows abuse of all sorts.
-
-And the same applies to enable_l1d_flush_for_task(). The only
-architecture specific nonsense are the checks whether the CPU bug is
-there and whether the hardware supports L1D flushing.
-
-So we can have:
-
-#ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
-int paranoid_l1d_enable(struct task_struct *tsk)
-{
-        /* Do the SMT validation under the proper locks */
-        if (!res)
-        	set_task_thread_flag(tsk, TIF_SPEC_L1D_FLUSH);
-        return res;
-}
-#endif
-
-> And 2) also happens on hot-un-plug, when the task's affinity gets
-> forced because it became empty. No user feedback there either, and
-> information is lost.
-
-Of course. It's both that suddenly SMT gets enabled on a core which was
-isolated and when the last isolated core in the tasks CPU mask goes
-offline.
-
-> I suppose we can do 2) but send a signal. That would cover all cases and
-> keep it in arch code. But yes, that's pretty terrible too.
-
-Bah. I just looked at the condition to flush:
-
-        if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
-                (prev_mm & LAST_USER_MM_L1D_FLUSH))
-                l1d_flush_hw();
-
-That fails to flush when SMT is disabled globally. Balbir?
-
-Of course this should be:
-
-        if (!this_cpu_read(cpu_info.smt_active) && (prev_mm & LAST_USER_MM_L1D_FLUSH))
-                l1d_flush_hw();
-
-Now we can make this:
-
-        if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
-        	if (!this_cpu_read(cpu_info.smt_active))
-                	l1d_flush_hw();
-                else
-                	task_work_add(...);
-
-And that task work clears the flag and sends a signal. We're not going
-to send a signal from switch_mm() ....
-
+https://lore.kernel.org/lkml/46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com/
+-- 
 Thanks,
-
-        tglx
+~Nick Desaulniers
