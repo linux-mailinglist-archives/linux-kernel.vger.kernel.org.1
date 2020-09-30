@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E983027E7FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC51427E7FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729295AbgI3LzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:55:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36816 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3LzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:55:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601466906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ejKNHE0UFyqEBk7h2uyf05l7nr1RUgj4PZw1uir7ohM=;
-        b=O8pXse5o8S+FxLSPFYMYcfq2SlzbpWZEp3RD4tOpHDzwYYNe731ThPPRGT2xhrVQiLy//v
-        YbeJKQiuOAbDh5o6K1grN9ZErKnERRIiE0bxiHF4Sx9zl+8Q+ljsb7sQiv64MHAI+MV1kQ
-        wi8eoc+3cMeYlejinBpW3Q8HOpA0kuk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E255AE1B;
-        Wed, 30 Sep 2020 11:55:06 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 13:55:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
-Message-ID: <20200930115505.GT2277@dhcp22.suse.cz>
-References: <20200928175428.4110504-1-zi.yan@sent.com>
+        id S1729483AbgI3L4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgI3L4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:56:05 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BF6C061755;
+        Wed, 30 Sep 2020 04:56:05 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so1444821wmm.2;
+        Wed, 30 Sep 2020 04:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=/e6Hsi9CMtqzZnIKCBnu9x6TRjKgsku17Kje/SLQgxk=;
+        b=nlytbkeZSQFvQ/dR3WEjx/pwtK7fPq36kiqhAaienevjAo7N39meQZ+oCzvJ8Hdk36
+         zb3yDbtBqYI5xXInfZjty6fztpwTm6J+bcTL24prz4UefHiqknsBNMVSjWdMzb4ZB5fk
+         49rbsC7fXQJp+G1RTlP3jQl5Xuzr8oEHF4dAe0RBLS9Ehp1S+NKLj1GXn/Cpf806KL4n
+         LaDG2OlTUFxy5wEVrx6Ky9QyTkCLzujagGAUMOt5b8oQP9myED9WkJM+oJdvtpAUJZdo
+         4CViUbJhF3GsbjNgLEjQ3r84syUAEAR4MA+YqC++ldHpa4TgCvNBUM5yo/eW7/UEAL3z
+         97eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=/e6Hsi9CMtqzZnIKCBnu9x6TRjKgsku17Kje/SLQgxk=;
+        b=txwL1jxCQAH1QELXZmlMoJJriykvjDHui912PEE1FGkxtevM6ki6yqXloxKEyji84w
+         hFQGy4bMsv2uagOl7tb1wMrrVZSRXFbDRYf56UYDMA8BYaUgOy/dlZyWkwAOe+OgYCZx
+         Kqn2r5RlEtTsUoHssQVv16LQW8hOEPLs8NW+fjee2Ebre+HDCLsgCzdNHDhJm1ibUDED
+         DIGNVFwR6BUGTTAq/52udu1i9rxQAqkAomQ6amguNMWcldht8gVWCz6c2tSmz+VDGZ4G
+         v/MnIWTy2fjhOz1sOKvDTRiq1Vgxo+17YjdOafoQ0slPpY2cNomjeyn27UbqsxEcM/JD
+         Az+w==
+X-Gm-Message-State: AOAM532YBRtfC40Gp/zNEOnKDy/mXROW1WKveMPkTVn5+uZrBwiGZ9ir
+        /5s21jW97d7LNU5N0k2XubI7I4kt+JbjmA==
+X-Google-Smtp-Source: ABdhPJzZbgSCxiYKhLE3ZvqSSKxPBlptlSX/RpWq51eO1owDHr5yHk+gVbqlEv3e9tLdz8/hoIu3aw==
+X-Received: by 2002:a1c:f008:: with SMTP id a8mr2740833wmb.155.1601466963922;
+        Wed, 30 Sep 2020 04:56:03 -0700 (PDT)
+Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.gmail.com with ESMTPSA id h4sm2996187wrm.54.2020.09.30.04.56.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Sep 2020 04:56:03 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Sudeep Holla'" <sudeep.holla@arm.com>
+Cc:     "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
+        "'Kyungmin Park'" <kyungmin.park@samsung.com>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <20200929162926.139-1-ansuelsmth@gmail.com> <20200930092954.GA7125@bogus>
+In-Reply-To: <20200930092954.GA7125@bogus>
+Subject: RE: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq scaling driver
+Date:   Wed, 30 Sep 2020 13:56:01 +0200
+Message-ID: <006c01d69720$abd3f230$037bd690$@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: it
+Thread-Index: AQHRHCX89vsNM0cZY8BINv1SaJtjIwLCr4YDqXXwJVA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 28-09-20 13:53:58, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+> Subject: Re: [PATCH v2 1/2] devfreq: qcom: Add L2 Krait Cache devfreq
+> scaling driver
 > 
-> Hi all,
+> On Tue, Sep 29, 2020 at 06:29:24PM +0200, Ansuel Smith wrote:
+> > Qcom L2 Krait CPUs use the generic cpufreq-dt driver and doesn't
+actually
+> > scale the Cache frequency when the CPU frequency is changed. This
+> > devfreq driver register with the cpu notifier and scale the Cache
+> > based on the max Freq across all core as the CPU cache is shared across
+> > all of them. If provided this also scale the voltage of the regulator
+> > attached to the CPU cache. The scaling logic is based on the CPU freq
+> > and the 3 scaling interval are set by the device dts.
+> >
 > 
-> This patchset adds support for 1GB PUD THP on x86_64. It is on top of
-> v5.9-rc5-mmots-2020-09-18-21-23. It is also available at:
-> https://github.com/x-y-z/linux-1gb-thp/tree/1gb_thp_v5.9-rc5-mmots-2020-09-18-21-23
+> I have raised this concern before. I am worried this kind of independent
+> CPU and cache frequency controls make way for clkscrew kind of attacks.
+> Why can't the clocks be made parent/child or secondary and automatically
+> updated when CPU clocks are changed.
 > 
-> Other than PUD THP, we had some discussion on generating THPs and contiguous
-> physical memory via a synchronous system call [0]. I am planning to send out a
-> separate patchset on it later, since I feel that it can be done independently of
-> PUD THP support.
+> --
+> Regards,
+> Sudeep
 
-While the technical challenges for the kernel implementation can be
-discussed before the user API is decided I believe we cannot simply add
-something now and then decide about a proper interface. I have raised
-few basic questions we should should find answers for before the any
-interface is added. Let me copy them here for easier reference
-- THP allocation time - #PF and/or madvise context
-- lazy/sync instantiation
-- huge page sizes controllable by the userspace?
-- aggressiveness - how hard to try
-- internal fragmentation - allow to create THPs on sparsely or unpopulated
-  ranges
-- do we need some sort of access control or privilege check as some THPs
-  would be a really scarce (like those that require pre-reservation).
--- 
-Michal Hocko
-SUSE Labs
+I don't think I understand this fully. Anyway about the clkscrew attack, the
+range are set on the dts so unless someone actually wants to have a
+vulnerable
+system, the range can't be changes at runtime. The devfreq governor is set
+to
+immutable and can't be changes AFAIK.
+
+About 'automatically updated when CPU changes', the cache is shared across 2
+core and they scale independently. We can be in situation where one cpu is
+at
+max and one at idle freq and the cache is set to idle. To fix this at every
+change
+the clk should find the max value and I think this would make all the clk
+scaling
+very slow. If you have any suggestion on how I can implement this better,
+I'm
+more than happy to address them. For now, the lack of this kind of cache
+scale,
+make the system really slow since by default the init of the cpu and cache
+clks
+put them at the lowest frequency and nobody changes that. (we have cpufreq
+scaling support but the cache is never actually scaled)
+
+
