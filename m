@@ -2,173 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BF427EB68
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E8727EB6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730694AbgI3Ova (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730107AbgI3Ova (ORCPT
+        id S1730635AbgI3OwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:52:07 -0400
+Received: from sonic307-54.consmr.mail.ir2.yahoo.com ([87.248.110.31]:42207
+        "EHLO sonic307-54.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729767AbgI3OwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:51:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3118DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 07:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W4DdKoxfvdKsR8PRimAS7ldYMonqH3ldpjLy8Yobicg=; b=s6lW8g8/tKXaBJs3rxSlbvUNJA
-        hFxZ7gOhGXgfbeJ/YxLKWpuCIblP0e3j7k997PlaZVgtRPe6ys+Mk1iM6D+QaX2OG+5JuScfyLrr4
-        IfrxjIEv1vRpf229BAxp5IpUDVoAIrinRAL+nT/K7+DKYeMoVYsr+FqgeR5DLy1rM+oJHTOGeHGrw
-        MCUwWJkcNytj4pjUmk9ektPnD2zfvoTAc6oWI0MAuEh20Lh5c4OIBbc91INP95rwPQgiR54RmvH+p
-        kN28qGuWq9l1QP9RJFZBAUGonyvmJSAx9Askw7QydzGJQe9BSBKW90t5oGMcry9F2bhuN0jp/Un3v
-        uwoBWRgg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNdRr-000651-0H; Wed, 30 Sep 2020 14:51:15 +0000
-Date:   Wed, 30 Sep 2020 15:51:14 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/12] mm/truncate,shmem: Handle truncates that split
- THPs
-Message-ID: <20200930145114.GQ20115@casper.infradead.org>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-12-willy@infradead.org>
- <20200930115919.GS10896@quack2.suse.cz>
+        Wed, 30 Sep 2020 10:52:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601477525; bh=7PUrz7v13XZDkUHQ72RKX5eruhHSBppdn3HEsndeWz4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tO2RVlD3PoqPdTTOREt/cF9CaUmIc58/f3Qunr07JOcIxWplJ+CAXDBbFUnND8MvadRVCq3VSKyg9KsJ3D/Y22m7EQPrfvF9+pgHOudSzznf5se4m9G59CZ0c1i5/nQwpppyi7PvJaisgPYtP2ctlHStrRrGx7WTSJm2dXsL+hCErX3l2uUWqQIvNgdZLKpOFhjuVIbBMaJeYn2rcsqKg4cvvr5m+JNbgMxjRw4eiOtx9ysjAUaXcRj/mL5RrUyQ9qrCtQfBTG+3+DS1zVFuhhr4fXMK8vZe7S5CsPb+YdwACE/CwXycZnoEgZdm6Yjs+nT3Y/JO9smrJfaFLCNkHg==
+X-YMail-OSG: tdzCWCQVM1kXkRSIaVhbCqppWsA1Q7OkX8_Bm.IthjkplEu1N78Sil036WikTL6
+ rEdet690SC2Gax4w8EJRVAu1lsrTyo2.vcyotsCKYiWIv9TJ3u0V5S0oc.UuJu8Tmw7Jvd5Oybn9
+ U5Go5KtOiThn0tc6ErM0OgLCgFavWrdaS55WhRBvkSSdbH35YQBYJ83jHrAdVO49k8cWHwqaK4lT
+ _aRNx.AH8vjj9Y7CMoigb.WxR7if7NrSKp0A4sgltoFfa.ygkRtMemxCIQKv24tAREB8cA1vegUn
+ gUrmKw8IHbM8ClNuJYUI_cdWSVRncjwSEjnmt6KGj4GATq9AZfjMO0ItfyJwCgirU4Kss7g6WzPw
+ Nnj9u4Nhf0L5Tjy7YvFbzRUCtzOtIBlFRoBOX7_sbGd4MWSqX1QQ0js9jSBtFdtWqYwLrwL9Y3bg
+ pOLYrjho2aqKD2JevlIZdbf0aCQgkxLVqWV2_anX.8TDSui8TB4GTerQ1DNQKFb0eLQsTN5BL01F
+ ZRI9dJvhgYEaYGYUmKqM7ELHWPU3yIQRgRqhvLZUrgEX8YtzW1zXkPRsNyX5r_Qu3Sr9sQJyadv3
+ gfNoGSR13nDWc8TJZ.BT0Aay2Tc08turmeq7y57JuRMNxfEPowYjOIlm4sJ9B7_hLhwQATtz7JvJ
+ kM.szhh8g438C1x0OGtd7eXk1L4yBrP7A30IkSVd_jtrsFruBrjprcxY3tlZuEoGp68i8Cy9bjC1
+ 7kNrrGFLp_3pvqrcEHZSCwUEu6vvlUUAF4gho7jLEkeg1yky_TZN7pwQT_NwdnwqtFKwy4khzeX7
+ LKuL7IRAanOgPfe2EKx5w3TO.2uAdwrpA98hOIPGe5Br3fP9CNE5Sa2UcTv8kILsU0qVDWebqVsy
+ SdIs_mLqY7TOTRGwifV.a.wKEort7tcI0D0tnSpMGPj_pA55aA5TLV5qiafglVgYptTWoKPOThrt
+ 7dLmmytHywC0DwqS5zpU8clWKJbkJblu5lSPP4ROGOI4dLgMixjyiJcMHTLdoYXCfuNeQ7t8uwha
+ AEVo9OGiQrKliD80axhRg3D6IEPpsnzJT0UmmH6d88eRb6hxWtTuZn_saPWOGNpDf1nSH_sgZ3.h
+ SMUZock5hUSIFNjnCE051fugHryRHiyqxrksHPtu6asS8AtMkCi7C1L.DINz.Ovq.LYtnVdmbxBH
+ E36HbSWzYmgQw_sWhbYuOBNnqbGQAx25iXVXbWogYwrpK39wRDQlVJ0PIuimqAkNOMM4yJQXb.hy
+ DakpE_Ru5NxNexjYG53.F7yaLhxa1KQtfIqt7m3X0Ttg9orrunUML4cDF2kDkACOGHGGnCnjrw4i
+ 3emJfRhnKh7WErI9DIE.GiO0lxTvbgewpMydp6BrJGzDhtD08QfFYPlmJowY_tTnDwMtvq42p08W
+ JReh.G3q6_hAexmWsb4nbJRbjRnkwJZnhv5AoNKjdo5F__g97RA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ir2.yahoo.com with HTTP; Wed, 30 Sep 2020 14:52:05 +0000
+Date:   Wed, 30 Sep 2020 14:52:03 +0000 (UTC)
+From:   Sgt Vivian Robert <sgtvivianrobert1@gmail.com>
+Reply-To: sgtvivianrobert1@gmail.com
+Message-ID: <816352826.454094.1601477523791@mail.yahoo.com>
+Subject: kindly respond to my mail
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930115919.GS10896@quack2.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <816352826.454094.1601477523791.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.96 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:59:19PM +0200, Jan Kara wrote:
-> > @@ -931,33 +904,39 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
-> >  		index++;
-> >  	}
-> >  
-> > -	if (partial_start) {
-> > -		struct page *page = NULL;
-> > -		shmem_getpage(inode, start - 1, &page, SGP_READ);
-> > -		if (page) {
-> > -			unsigned int top = PAGE_SIZE;
-> > -			if (start > end) {
-> > -				top = partial_end;
-> > -				partial_end = 0;
-> > -			}
-> > -			zero_user_segment(page, partial_start, top);
-> > -			set_page_dirty(page);
-> > -			unlock_page(page);
-> > -			put_page(page);
-> > +	index = -1;
-> > +	if (end != -1 && ((lend + 1) % PAGE_SIZE))
-> 				    ^^
-> Hum, is this guaranteed to compile properly on 32-bit archs without
-> optimization? It would be 64-bit division... Maybe we don't care, it just
-> caught my eye...
 
-Looks like GCC properly reduces it:
 
-00000000 <f>:
-int f(long long x)
-{
-	if ((x + 1) % 4096)
-   0:	8b 44 24 04          	mov    0x4(%esp),%eax
-   4:	83 c0 01             	add    $0x1,%eax
-   7:	25 ff 0f 00 00       	and    $0xfff,%eax
-   c:	0f 95 c0             	setne  %al
-   f:	0f b6 c0             	movzbl %al,%eax
-		return 1;
-	return 0;
-}
-  12:	c3                   	ret    
+Good Day, I am glad to contact you through this medium I=E2=80=99m Sgt Vivi=
+an Robert am from united state, 28 years old single I am the only surviving=
+ child of my late parents, I am America female soldier presently in Afghani=
+stan for the training, advising the Afghan forces and also helping in stabi=
+lizing the country against security challenges, am Actually seeking your as=
+sistance to evacuate the sum of $3.5 million, This money I got it as my rew=
+ard in service by Afghanistan government to support me for my Good job in t=
+heir land. Right now, I want you to stand as my beneficiary and receive the=
+ fund my certificate of deposit from the Bank where this fund deposited and=
+ my authorization letter is with me now.My contact with you is not by my po=
+wer but it is divinely made for God's purpose to be fulfilled in our lives.=
+ I want you to be rest assured that this transaction is legitimate and a 10=
+0% risk free involvement, all you have to do is to keep it secret and confi=
+dential to yourself , this transaction will not take more than 7 working ba=
+nking days for the money to get into your account based on your sincerity a=
+nd cooperation. i want you to take 40% Percent of the total money for your =
+personal use While 20% Percent of the money will go to charity, people in t=
+he street and helping the orphanage the remaining 40% percent of the total =
+money .you will assist me to invest it in a good profitable Venture or you =
+keep it for me until I arrive your country. If you=E2=80=99re willing to as=
+sist me contact me through my email address =E2=80=9Csgtvivianrobert1@gmail=
+.com.
 
-> BTW you could just drop end != -1 part because end == -1 iff lend == -1 so
-> (lend + 1) % PAGE_SIZE is stronger.
-
-Yes.  I think that actually makes it easier to read.
-
-> > +		index = lend >> PAGE_SHIFT;
-> > +	page = NULL;
-> > +	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
-> > +	if (page) {
-> > +		bool same_page;
-> > +
-> > +		page = thp_head(page);
-> > +		same_page = lend + 1 < page_offset(page) + thp_size(page);
-> 			    ^^^^^^^^ Just lend here?
-
-Oops.  Yes.  If lstart is 4096 and lend is 8191, this is definitely same_page.
-
-> > -	if (partial_end) {
-> > -		struct page *page = NULL;
-> > +
-> > +	if (index != -1)
-> >  		shmem_getpage(inode, end, &page, SGP_READ);
-> > -		if (page) {
-> > -			zero_user_segment(page, 0, partial_end);
-> > -			set_page_dirty(page);
-> > -			unlock_page(page);
-> > -			put_page(page);
-> > -		}
-> > +	if (page) {
-> > +		page = thp_head(page);
-> > +		set_page_dirty(page);
-> > +		if (!truncate_inode_partial_page(page, lstart, lend))
-> > +			end = page->index;
-> > +		unlock_page(page);
-> > +		put_page(page);
-> >  	}
-> > -	if (start >= end)
-> > -		return;
-> 
-> You use 'index' effectively as bool in all of the above (only ever check
-> index != -1). And effectively you only use it to communicate whether tail
-> partial page got already handled or not. Maybe there's some less cryptic
-> way to achieve that? Even separate bool just for that would be probably
-> better that this.
-
-As you note below, it makes more sense in truncate.c and for my own
-sanity I was trying to keep the two functions as similar as possible.
-I'm not sure why I looked up the page with 'end' instead of 'index'.
-
-This didn't end up being as big a simplification as I thought it was going
-to be.  I think I'll reintroduce partial_end as a bool, like you suggest.
-
-> >  	index = start;
-> >  	while (index < end) {
-> 
-> > diff --git a/mm/truncate.c b/mm/truncate.c
-> > index d62aeffbffcc..06ed2f93069d 100644
-> > --- a/mm/truncate.c
-> > +++ b/mm/truncate.c
-> > @@ -224,6 +224,53 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * Handle partial (transparent) pages.  The page may be entirely within the
-> > + * range if a split has raced with us.  If not, we zero the part of the
-> > + * page that's within the (start, end] range, and then split the page if
->                              ^ '[' here - start is inclusive as well...
-
-Good point.
-
-> > + * it's a THP.  split_page_range() will discard pages which now lie beyond
-> > + * i_size, and we rely on the caller to discard pages which lie within a
-> > + * newly created hole.
-> > + *
-> > + * Returns false if THP splitting failed so the caller can can avoid
-> 							  ^^^^^^^ just 'can'
-
-You're going to put Randy out of a job ;-)
-
+Sgt Vivian Robert
