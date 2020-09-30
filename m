@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F27127F16F
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C76F27F179
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 20:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbgI3Shh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 14:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Shh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:37:37 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE4DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:37:36 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id c2so2818384otp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 11:37:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GZokKNgMejCKfo0F2vRKE9nImzYNSzp/HUH90Pr6PJU=;
-        b=Iz7k38YFYItPAO2RtiflnlRb5+BDWfPx9FQCvvU2f8SdCl7V1y7fJW6E60irWiBOlQ
-         fH9GEK1n0pwT4bpaxG/cqFn7l9Zse+u3/d1Pt4ggVZd6tM3YSzezV3iBWBtU9IY/SgXQ
-         GGeYqXdFFnSWXcgBytqYXCxu9xUWTpvQgSvlA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GZokKNgMejCKfo0F2vRKE9nImzYNSzp/HUH90Pr6PJU=;
-        b=tumvHBZkOHUJlNLqXw1M3fbX68XIrplPuckkfkaljBDg6hb+/zozynArPUshP+ubrV
-         Gl/R7Mo5PuGm0/gai+RkrLuePec6fQzG+JFeBMP3HdPaNoejKGL47OAlYGImrfZKN1bE
-         TCw1KlI3XT50UVx+8/FK3EhtPNQonitjyVk0n6vcQO66VI8DCMF48BrrEGFrSDux96/t
-         NxgdV7HwFTShEPi7+RFjGX5me6aYLNldfGWYdHT7/0l5pcAQeLLO9FvQBNdPTgff17nR
-         1vlHsoVtMrgRiPSmgB4t8ZLMr0NxB/2OXHOP3KMurSA93oCyvzjq019kYj1kqLGcjAHe
-         seOA==
-X-Gm-Message-State: AOAM5318p0VUCG9a4Mt54NucX1ksLETQgkk7nCSS6eBU9n5qkjCDuy4o
-        u+wApJirYIsiCbvAnbDoFmKZQMhOIVbtYYKNvoGDeg==
-X-Google-Smtp-Source: ABdhPJzmG8KuipdmIEStVjCt4k/yD8YpcM6mVrZ29T55c3684BNdLJdgOsz6wDtmq5u1TIJFW1qJF02gBOu8zFVEiX4=
-X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr2508122otq.188.1601491055725;
- Wed, 30 Sep 2020 11:37:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200924135853.875294-1-hch@lst.de> <20200925194349.d0ee9dbedb2ec48f0bfcd2ec@linux-foundation.org>
- <20200926062959.GA3427@lst.de> <160128801808.6464.1013594053120198786@jlahtine-mobl.ger.corp.intel.com>
- <20200928123741.GA4999@lst.de> <160138340987.15771.13645983702040612672@jlahtine-mobl.ger.corp.intel.com>
- <20200930144839.GA897@lst.de>
-In-Reply-To: <20200930144839.GA897@lst.de>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 30 Sep 2020 20:37:24 +0200
-Message-ID: <CAKMK7uE98o-ELvPZ0YVWjrVWgESVEEz5OSexA_qU64qemihyRg@mail.gmail.com>
-Subject: Re: remove alloc_vm_area v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>, X86 ML <x86@kernel.org>,
-        "moderated list:DRM DRIVERS FOR XEN" <xen-devel@lists.xenproject.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux MM <linux-mm@kvack.org>
+        id S1729819AbgI3Skm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 14:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgI3Skm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 14:40:42 -0400
+Received: from tzanussi-mobl (c-98-220-232-140.hsd1.il.comcast.net [98.220.232.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30FE020708;
+        Wed, 30 Sep 2020 18:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601491241;
+        bh=Nw45fjTRE6xb20gbtpxGUyzJM+N++BLrf5o52RUDaZQ=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=a69fToStglxxjDs+cTAw2R0aCprljyGox26FvJX2OqeppzWp0pg9RnqhOmbvIa3sU
+         EGYj4xXw0qE6/6ZtyOB9YAB/pRjTBHDJV3G6stb8TBGALl6z+Ydx3GyBFnQRHdM2B2
+         8EXuV1mWXNHOUYSRwUJKT+HRvNVTc8IzxaAyyQdY=
+Message-ID: <832ee35903df56214b864e8042f24c7358a99668.camel@kernel.org>
+Subject: Re: [PATCH 2/3] tracing: Fix parse_synth_field() error handling
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Sep 2020 13:40:39 -0500
+In-Reply-To: <CAJHvVcgBxBa_CHhRYGiwKEK=0RVzBFrNc3Z9YP+3M_N1PLXFTQ@mail.gmail.com>
+References: <cover.1601410890.git.zanussi@kernel.org>
+         <834e9060c2e7e3272e25d8bfc6e7566639c18aa9.1601410890.git.zanussi@kernel.org>
+         <CAJHvVcgBxBa_CHhRYGiwKEK=0RVzBFrNc3Z9YP+3M_N1PLXFTQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 4:48 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Sep 29, 2020 at 03:43:30PM +0300, Joonas Lahtinen wrote:
-> > Hmm, those are both committed after our last -next pull request, so they
-> > would normally only target next merge window. drm-next closes the merge
-> > window around -rc5 already.
-> >
-> > But, in this specific case those are both Fixes: patches with Cc: stable,
-> > so they should be pulled into drm-intel-next-fixes PR.
-> >
-> > Rodrigo, can you cherry-pick those patches to -next-fixes that you send
-> > to Dave?
->
-> They still haven't made it to linux-next.  I think for now I'll just
-> rebase without them again and then you can handle the conflicts for
-> 5.11.
+Hi Axel,
 
-Yeah after -rc6 drm is frozen for features, so anything that's stuck
-in subordinate trees rolls over to the next merge cycle. To avoid
-upsetting sfr from linux-next we keep those -next branches out of
-linux-next until after -rc1 again. iow, rebasing onto linux-next and
-smashing this into 5.10 sounds like the right approach (since everyone
-else freezes a bunch later afaik).
+On Tue, 2020-09-29 at 14:56 -0700, Axel Rasmussen wrote:
+> On Tue, Sep 29, 2020 at 1:33 PM Tom Zanussi <zanussi@kernel.org>
+> wrote:
+> > 
+> > synth_field_size() returns either the size or an error.  However,
+> > the
+> > code assigns the return val to ssize_t which is unsigned, and then
+> > tests whether it's less than 0, which it isn't so discards the
+> > error.
+> 
+> I think the patch is correct, but the commit message is not.
+> field->size is a size_t (unsigned), not an ssize_t (signed). I think
+> this should say instead something like:
+> 
+> synth_field_size() returns either a positive size or an error (zero
+> or
+> a negative value). However, the existing code assumes the only error
+> value is 0. It doesn't handle negative error codes, as it assigns
+> directly to field->size (a size_t; unsigned), thereby interpreting
+> the
+> error code as a valid size instead.
+> 
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Yes, that's better - I used the above text in v2.
+
+> > 
+> > Do the test before assignment to field->size.
+> > 
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> >  kernel/trace/trace_events_synth.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_synth.c
+> > b/kernel/trace/trace_events_synth.c
+> > index a9cd7793f7ea..6e7282c7b530 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -465,6 +465,7 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >         struct synth_field *field;
+> >         const char *prefix = NULL, *field_type = argv[0],
+> > *field_name, *array;
+> >         int len, ret = 0;
+> > +       int size;
+> 
+> Why not make this an ssize_t
+
+Yep, makes sense.  Changed in v2, thanks!
+
+Tom
+
+> 
+> > 
+> >         if (field_type[0] == ';')
+> >                 field_type++;
+> > @@ -520,11 +521,12 @@ static struct synth_field
+> > *parse_synth_field(int argc, const char **argv,
+> >                         field->type[len - 1] = '\0';
+> >         }
+> > 
+> > -       field->size = synth_field_size(field->type);
+> > -       if (!field->size) {
+> > +       size = synth_field_size(field->type);
+> > +       if (size < 0) {
+> >                 ret = -EINVAL;
+> >                 goto free;
+> >         }
+> > +       field->size = size;
+> > 
+> >         if (synth_field_is_string(field->type))
+> >                 field->is_string = true;
+> > --
+> > 2.17.1
+> > 
+
