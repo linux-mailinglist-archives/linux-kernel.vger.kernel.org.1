@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E31427F359
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0132C27F35D
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 22:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729724AbgI3UaV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 30 Sep 2020 16:30:21 -0400
-Received: from mga01.intel.com ([192.55.52.88]:24851 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3UaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 16:30:21 -0400
-IronPort-SDR: F48IeYyoWinqLupFKSDYFhEl0U+6r0hae7r7M2GeCjXzm+tPScQETKh7lQIP3bQ5L5Xc/v8Ndb
- MvL0eB+NVuwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="180701706"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="180701706"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 13:30:16 -0700
-IronPort-SDR: +AhPWNhx2/qXo3uQSZ2QlvlaRaqCMkptrBN4fTTkITcvRxI2jappvFVUI8LneBHXIpTGHqWhDS
- 9gYOFqT7nxuw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="457797102"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2020 13:30:15 -0700
-Received: from lcsmsx601.ger.corp.intel.com (10.109.210.10) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 30 Sep 2020 13:30:14 -0700
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- LCSMSX601.ger.corp.intel.com (10.109.210.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 30 Sep 2020 23:30:12 +0300
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
- Wed, 30 Sep 2020 23:30:12 +0300
-From:   "Winkler, Tomas" <tomas.winkler@intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 47/52] docs: mei.rst: fix a C expression markup
-Thread-Topic: [PATCH v4 47/52] docs: mei.rst: fix a C expression markup
-Thread-Index: AQHWly0r6MNRt/94V0aRzRNN6iB9NqmBon9A
-Date:   Wed, 30 Sep 2020 20:30:12 +0000
-Message-ID: <3d1fd098e3bf43af9144bd6c068ee9aa@intel.com>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <34a9c9aaf8d5f922eac76fbd66a1a20da6b80714.1601467849.git.mchehab+huawei@kernel.org>
-In-Reply-To: <34a9c9aaf8d5f922eac76fbd66a1a20da6b80714.1601467849.git.mchehab+huawei@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.184.70.1]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1730111AbgI3Uc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 16:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3Uc5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 16:32:57 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8F3C061755;
+        Wed, 30 Sep 2020 13:32:57 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id q123so2081066pfb.0;
+        Wed, 30 Sep 2020 13:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3LuZlvNy3ggiD9uof21qZJxBoN+uubQpiJaQlUZV0tQ=;
+        b=Ol8mExBTTOYnj6tzAyYWffJGTGvDOaKnZXMsSR/IJ77sPHQ0WVJaCH5VfzPgu5WZjf
+         phLMoIpxTk3vjTBoiBxGV+oIH8sfFAf1Mm7VImeaUk+wEQhP4VMMQmQtvo0PwR1sNCrI
+         Pv2/47e/lZg7aFgVCEFwxhUvBjNniyOgdtbEAYDWhS3fbSDgvuSaP3aCTPpjUVVA/aEX
+         hs1PzyV22o5xvsCdxrLbu+BUOPYy8lVW8+1Tr+6/l9z6lKminCPtjceRWqSo5MDBO7eo
+         bbfoX3HbAG8Z25G4QTqpvoee0WmoMM6gnfgz3Y810AFaYCHq9WYrsv7E8PjwXZilkwhj
+         xJmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3LuZlvNy3ggiD9uof21qZJxBoN+uubQpiJaQlUZV0tQ=;
+        b=oa/eW6m5II9wXaEn9RBxftlCWHb4Ljj7kA3DYscH5fZNjXz5zo4oBbRFMseKmksmMO
+         0NAYUb6EZpVecYXWuKSHyROeg6zdLBY4WyVdDqnn96mUjdMnD/yaYIbSHqWg0OUr9qWS
+         NivVHZAtdguM9N8Qt59YJg6/4cS9vsK+RHCzAzW0AS22Npu5TXylAb+PCGYcEfUC5i0c
+         H1BueY3/1brzBdb7eOuMnT+oHhaixY1jIKA6fmtPxP83+1iwq0xs+pE56bnhZiB5zFqX
+         Y0p1y6JsSlkjjC0ZD5wG8auAmstan9lJ5DLkguN7yWkrgbgvWUBWM+2QwWbDqbzViE0L
+         s+6Q==
+X-Gm-Message-State: AOAM531NYfydSllICEJBkAqdP5n5sccVGsMPBXt+t5lIZSU+O4F9Yanb
+        Kg9vsviNB7j+kG4g2VZ+3U3ZgajcGDaZBQ==
+X-Google-Smtp-Source: ABdhPJxTjUUlc0jT3Pvvzr5Gvp1pg7yZ7pwzPqcw68QBQ2rRR7E7gZKiC/l+ds1I18RTNQh2oxFoQw==
+X-Received: by 2002:aa7:9f81:0:b029:142:2501:34d9 with SMTP id z1-20020aa79f810000b0290142250134d9mr3772330pfr.50.1601497976817;
+        Wed, 30 Sep 2020 13:32:56 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b11sm3322010pfo.15.2020.09.30.13.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 13:32:56 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: Support bridge 802.1Q while untagging
+Date:   Wed, 30 Sep 2020 13:31:03 -0700
+Message-Id: <20200930203103.225677-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The intent of 412a1526d067 ("net: dsa: untag the bridge pvid from rx
+skbs") is to transparently untag the bridge's default_pvid when the
+Ethernet switch can only support egress tagged of that default_pvid
+towards the CPU port.
 
-> Sphinx 3.x doesn't allow expressions using :c:func markup:
-> 
-> 	./Documentation/driver-api/mei/mei.rst:41: WARNING: Unparseable
-> C cross-reference: 'close(int fd)'
-> 	Invalid C declaration: Expected end of definition. [error at 5]
-> 	  close(int fd)
-> 	  -----^
-> 
-> So, convert it into a :c:expr.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Acked-by: Tomas Winkler <tomas.winkler@intel.com>
+Prior to this commit, users would have to configure an 802.1Q upper on
+the bridge master device when the bridge is configured with
+vlan_filtering=0 in order to pop the VLAN tag:
 
-> ---
->  Documentation/driver-api/mei/mei.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/driver-api/mei/mei.rst b/Documentation/driver-
-> api/mei/mei.rst
-> index cea0b69ec216..4f2ced4ccdc6 100644
-> --- a/Documentation/driver-api/mei/mei.rst
-> +++ b/Documentation/driver-api/mei/mei.rst
-> @@ -38,7 +38,7 @@ Because some of the Intel ME features can change the
-> system
->  configuration, the driver by default allows only a privileged
->  user to access it.
-> 
-> -The session is terminated calling :c:func:`close(int fd)`.
-> +The session is terminated calling :c:expr:`close(fd)`.
-> 
->  A code snippet for an application communicating with Intel AMTHI client:
-> 
-> --
-> 2.26.2
+ip link add name br0 type bridge vlan_filtering=0
+ip link add link br0 name br0.1 type vlan id 1
+
+After this commit we added support for managing a switch port 802.1Q
+upper but those are not usually added as bridge members, and if they do,
+they do not actually require any special management, the data path would
+pop the desired VLAN tag accordingly.
+
+What we want to preserve is that use case and to manage when the user
+creates that 802.1Q upper for the bridge port.
+
+While we are it, call __vlan_find_dev_deep_rcu() which makes use the
+VLAN group array which is faster.
+
+As soon as we return the VLAN tagged SKB though it will be used by the
+following call path:
+
+netif_receive_skb_list_internal
+  -> __netif_receive_skb_list_core
+    -> __netif_receive_skb_core
+      -> vlan_do_receive()
+
+which uses skb->vlan_proto, if we do not set it to the appropriate VLAN
+protocol, we will leave it set to what the DSA master has set
+(ETH_P_XDSA).
+
+Fixes: 412a1526d067 ("net: dsa: untag the bridge pvid from rx skbs")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ net/dsa/dsa_priv.h | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/net/dsa/dsa_priv.h b/net/dsa/dsa_priv.h
+index 0348dbab4131..3456b53d4d53 100644
+--- a/net/dsa/dsa_priv.h
++++ b/net/dsa/dsa_priv.h
+@@ -247,12 +247,10 @@ static inline struct sk_buff *dsa_untag_bridge_pvid(struct sk_buff *skb)
+ 	 * supports because vlan_filtering is 0. In that case, we should
+ 	 * definitely keep the tag, to make sure it keeps working.
+ 	 */
+-	netdev_for_each_upper_dev_rcu(dev, upper_dev, iter) {
+-		if (!is_vlan_dev(upper_dev))
+-			continue;
+-
+-		if (vid == vlan_dev_vlan_id(upper_dev))
+-			return skb;
++	upper_dev = __vlan_find_dev_deep_rcu(br, htons(proto), vid);
++	if (upper_dev) {
++		skb->vlan_proto = vlan_dev_vlan_proto(upper_dev);
++		return skb;
+ 	}
+ 
+ 	__vlan_hwaccel_clear_tag(skb);
+-- 
+2.25.1
 
