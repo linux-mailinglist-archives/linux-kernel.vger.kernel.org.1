@@ -2,141 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B079527E52B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D25F27E534
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgI3Jb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:31:27 -0400
-Received: from mga03.intel.com ([134.134.136.65]:32507 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgI3Jb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:31:27 -0400
-IronPort-SDR: FG60x8jxEubEureGBMSuX/y0AkhoaMW8eV1y2gHwsPCgWi6VzYmb/R7UVEVlQQK/xN+lYzJqxF
- 5oVxRE3+WkiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="162462304"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="162462304"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 02:31:26 -0700
-IronPort-SDR: xM4l5HUa0fzsNcmwYCuoLVFZ4VJugXXLFy+dgQtO9JiJE1j1t0MlMojIv7DqrAByHNDoXmalVX
- FooC7wFH5Zdg==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="308096666"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 02:31:23 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kNYSD-002z0o-I0; Wed, 30 Sep 2020 12:31:17 +0300
-Date:   Wed, 30 Sep 2020 12:31:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     wsa@kernel.org, xqiu@google.com, kunyi@google.com,
-        benjaminfair@google.com, avifishman70@gmail.com, joel@jms.id.au,
-        tmaimon77@gmail.com, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using
- debugfs.
-Message-ID: <20200930093117.GY3956970@smile.fi.intel.com>
-References: <20200930071342.98691-1-tali.perry1@gmail.com>
+        id S1728723AbgI3Jdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:33:42 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:48304 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725776AbgI3Jdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:33:41 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 532C016F16B06CA127DE;
+        Wed, 30 Sep 2020 17:33:37 +0800 (CST)
+Received: from euler.huawei.com (10.175.124.27) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 30 Sep 2020 17:32:35 +0800
+From:   Wei Li <liwei391@huawei.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH v2] drivers/perf: Add support for ARMv8.3-SPE
+Date:   Wed, 30 Sep 2020 17:31:35 +0800
+Message-ID: <20200930093136.30301-1-liwei391@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930071342.98691-1-tali.perry1@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:13:42AM +0300, Tali Perry wrote:
-> Systems that can dinamically add and remove slave devices
+Armv8.3 extends the SPE by adding:
+- Alignment field in the Events packet, and filtering on this event
+  using PMSEVFR_EL1.
+- Support for the Scalable Vector Extension (SVE).
 
-dynamically
+The main additions for SVE are:
+- Recording the vector length for SVE operations in the Operation Type
+  packet. It is not possible to filter on vector length.
+- Incomplete predicate and empty predicate fields in the Events packet,
+  and filtering on these events using PMSEVFR_EL1.
 
-> often need to change the bus speed in runtime.
+Update the check of pmsevfr for empty/partial predicated SVE and
+alignment event in SPE driver. For adaption by the version of SPE,
+expose 'pmsver' as cap attribute to userspace.
 
-> This patch exposes the bus frequency to the user.
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+v1 -> v2:
+ - Rename 'pmuver' to 'pmsver', change it's type to 'u16' from 'int'.
+   (Suggested by Will and Leo.)
+ - Expose 'pmsver' as cap attribute through sysfs, instead of printing.
+   (Suggested by Will.)
+---
+ arch/arm64/include/asm/sysreg.h |  4 +++-
+ drivers/perf/arm_spe_pmu.c      | 18 ++++++++++++++++--
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
-Expose the bus frequency to the user.
-
-> This feature can also be used for test automation.
-
-In general I think that DT overlays or so should be user rather than this.
-If we allow to change bus speed settings for debugging purposes it might make
-sense to do this on framework level for all drivers which support that (via
-additional callback or so).
-
-> Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-> ---
->  drivers/i2c/busses/i2c-npcm7xx.c | 36 ++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
-> index 2ad166355ec9..44e2340c1893 100644
-> --- a/drivers/i2c/busses/i2c-npcm7xx.c
-> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
-> @@ -2208,6 +2208,41 @@ static const struct i2c_algorithm npcm_i2c_algo = {
->  /* i2c debugfs directory: used to keep health monitor of i2c devices */
->  static struct dentry *npcm_i2c_debugfs_dir;
->  
-> +static int i2c_speed_get(void *data, u64 *val)
-> +{
-> +	struct npcm_i2c *bus = data;
-> +
-> +	*val = (u64)bus->bus_freq;
-> +	return 0;
-> +}
-> +
-> +static int i2c_speed_set(void *data, u64 val)
-> +{
-> +	struct npcm_i2c *bus = data;
-> +	int ret;
-> +
-> +	if (val < (u64)I2C_FREQ_MIN_HZ || val > (u64)I2C_FREQ_MAX_HZ)
-> +		return -EINVAL;
-> +
-> +	if (val == (u64)bus->bus_freq)
-> +		return 0;
-> +
-> +	i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
-> +
-> +	npcm_i2c_int_enable(bus, false);
-> +
-> +	ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
-> +
-> +	i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
-
-While all these explicit castings?
-
-> +
-> +	if (ret)
-> +		return -EAGAIN;
-> +
-> +	return 0;
-> +}
-
-> +
-
-No need to have this blank line
-
-> +DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%lld\n");
-> +
->  static void npcm_i2c_init_debugfs(struct platform_device *pdev,
->  				  struct npcm_i2c *bus)
->  {
-> @@ -2223,6 +2258,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
->  	debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
->  	debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
->  	debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
-> +	debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
->  
->  	bus->debugfs = d;
->  }
-
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 554a7e8ecb07..f4f9c1fc6398 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -281,7 +281,6 @@
+ #define SYS_PMSFCR_EL1_ST_SHIFT		18
+ 
+ #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+-#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
+ 
+ #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+ #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
+@@ -787,6 +786,9 @@
+ #define ID_AA64DFR0_PMUVER_8_5		0x6
+ #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
+ 
++#define ID_AA64DFR0_PMSVER_8_2		0x1
++#define ID_AA64DFR0_PMSVER_8_3		0x2
++
+ #define ID_DFR0_PERFMON_SHIFT		24
+ 
+ #define ID_DFR0_PERFMON_8_1		0x4
+diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+index cc00915ad6d1..52e7869f5621 100644
+--- a/drivers/perf/arm_spe_pmu.c
++++ b/drivers/perf/arm_spe_pmu.c
+@@ -54,7 +54,7 @@ struct arm_spe_pmu {
+ 	struct hlist_node			hotplug_node;
+ 
+ 	int					irq; /* PPI */
+-
++	u16					pmsver;
+ 	u16					min_period;
+ 	u16					counter_sz;
+ 
+@@ -80,6 +80,15 @@ struct arm_spe_pmu {
+ /* Keep track of our dynamic hotplug state */
+ static enum cpuhp_state arm_spe_pmu_online;
+ 
++static u64 sys_pmsevfr_el1_mask[] = {
++	[ID_AA64DFR0_PMSVER_8_2] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
++		GENMASK_ULL(15, 12) | BIT_ULL(7) | BIT_ULL(5) | BIT_ULL(3) |
++		BIT_ULL(1),
++	[ID_AA64DFR0_PMSVER_8_3] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
++		GENMASK_ULL(18, 17) | GENMASK_ULL(15, 11) | BIT_ULL(7) |
++		BIT_ULL(5) | BIT_ULL(3) | BIT_ULL(1),
++};
++
+ enum arm_spe_pmu_buf_fault_action {
+ 	SPE_PMU_BUF_FAULT_ACT_SPURIOUS,
+ 	SPE_PMU_BUF_FAULT_ACT_FATAL,
+@@ -93,6 +102,7 @@ enum arm_spe_pmu_capabilities {
+ 	SPE_PMU_CAP_FEAT_MAX,
+ 	SPE_PMU_CAP_CNT_SZ = SPE_PMU_CAP_FEAT_MAX,
+ 	SPE_PMU_CAP_MIN_IVAL,
++	SPE_PMU_CAP_PMSVER,
+ };
+ 
+ static int arm_spe_pmu_feat_caps[SPE_PMU_CAP_FEAT_MAX] = {
+@@ -110,6 +120,8 @@ static u32 arm_spe_pmu_cap_get(struct arm_spe_pmu *spe_pmu, int cap)
+ 		return spe_pmu->counter_sz;
+ 	case SPE_PMU_CAP_MIN_IVAL:
+ 		return spe_pmu->min_period;
++	case SPE_PMU_CAP_PMSVER:
++		return spe_pmu->pmsver;
+ 	default:
+ 		WARN(1, "unknown cap %d\n", cap);
+ 	}
+@@ -143,6 +155,7 @@ static struct attribute *arm_spe_pmu_cap_attr[] = {
+ 	SPE_CAP_EXT_ATTR_ENTRY(ernd, SPE_PMU_CAP_ERND),
+ 	SPE_CAP_EXT_ATTR_ENTRY(count_size, SPE_PMU_CAP_CNT_SZ),
+ 	SPE_CAP_EXT_ATTR_ENTRY(min_interval, SPE_PMU_CAP_MIN_IVAL),
++	SPE_CAP_EXT_ATTR_ENTRY(pmsver, SPE_PMU_CAP_PMSVER),
+ 	NULL,
+ };
+ 
+@@ -670,7 +683,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
+ 	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
+ 		return -ENOENT;
+ 
+-	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
++	if (arm_spe_event_to_pmsevfr(event) & ~sys_pmsevfr_el1_mask[spe_pmu->pmsver])
+ 		return -EOPNOTSUPP;
+ 
+ 	if (attr->exclude_idle)
+@@ -937,6 +950,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
+ 			fld, smp_processor_id());
+ 		return;
+ 	}
++	spe_pmu->pmsver = (u16)fld;
+ 
+ 	/* Read PMBIDR first to determine whether or not we have access */
+ 	reg = read_sysreg_s(SYS_PMBIDR_EL1);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
