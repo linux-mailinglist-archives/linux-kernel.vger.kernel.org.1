@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A464C27EB3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7990E27EB42
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgI3Op2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbgI3Op2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:45:28 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A80C2076B;
-        Wed, 30 Sep 2020 14:45:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601477127;
-        bh=uitBVKzK5eSn73NODN0g6lArFVEY6TVlvPfSJuwxRog=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ULFKs8MYBPpiqQu9MBrLsNEHx/tm50uUej7Oti/iYe0yc1Wmcsal4PX8aWnJ4XD96
-         6Jd91IncKleF/Z9bSvRxgYWR8bx2aFpDQn6W1PUnr34P/6UEO9p/yk0w3IkTKUbF9Z
-         9nEQ2FHAAVO7vXhS6OvEE4pyR++fZ5e6EicOi2nc=
-Received: by mail-ed1-f54.google.com with SMTP id w1so2157856edr.3;
-        Wed, 30 Sep 2020 07:45:27 -0700 (PDT)
-X-Gm-Message-State: AOAM531Wo+yjLl1SYdFsVxMkOH8RwWJz+oGGAFrKggZzjKY9L/0jEQ5b
-        JhHwWG0CdguCZxAmRSusx3nA2mF+n3t7dl1hbIA=
-X-Google-Smtp-Source: ABdhPJzAYe0nAYLDdCHSY4Z+CtKlLw49Vw78B00scxZ8PBmBf3t4Ca/lTesoegejXmkdHGsdERiqGGLJZbHQ8XRJMPY=
-X-Received: by 2002:a50:e78f:: with SMTP id b15mr3191569edn.104.1601477125978;
- Wed, 30 Sep 2020 07:45:25 -0700 (PDT)
+        id S1730696AbgI3Oqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:46:37 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:29453 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbgI3Oqh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:46:37 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d69 with ME
+        id aEmH2300J2lQRaH03EmS5y; Wed, 30 Sep 2020 16:46:33 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 30 Sep 2020 16:46:33 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-usb@vger.kernel.org (open list:USB ACM DRIVER)
+Subject: [PATCH v2 0/6] can: add support for ETAS ES58X CAN USB
+Date:   Wed, 30 Sep 2020 23:45:27 +0900
+Message-Id: <20200930144602.10290-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
+References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-2-nicoleotsuka@gmail.com> <f9712d4c-8497-ca84-0d8a-d33eb6abc513@gmail.com>
-In-Reply-To: <f9712d4c-8497-ca84-0d8a-d33eb6abc513@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 30 Sep 2020 16:45:13 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfbCRDY7TUZ4HXphrd6boWYEKb_DMOxth3ucPTB2UCUtw@mail.gmail.com>
-Message-ID: <CAJKOXPfbCRDY7TUZ4HXphrd6boWYEKb_DMOxth3ucPTB2UCUtw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] memory: tegra: Add devm_tegra_get_memory_controller()
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 16:41, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> ...
-> > +struct tegra_mc *devm_tegra_get_memory_controller(struct device *dev)
-> > +{
-> > +     struct platform_device *pdev;
-> > +     struct device_node *np;
-> > +     struct tegra_mc *mc;
-> > +     int err;
-> > +
-> > +     np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
-> > +     if (!np)
-> > +             return ERR_PTR(-ENOENT);
-> > +
-> > +     pdev = of_find_device_by_node(np);
-> > +     of_node_put(np);
-> > +     if (!pdev)
-> > +             return ERR_PTR(-ENODEV);
-> > +
-> > +     mc = platform_get_drvdata(pdev);
-> > +     if (!mc) {
-> > +             put_device(mc->dev);
->
-> This should be put_device(&pdev->dev). Please always be careful while
-> copying someones else code :)
+The purpose of this patch series is to introduce a new CAN USB
+driver to support ETAS USB interfaces (ES58X series).
 
-Good catch. I guess devm_add_action_or_reset() would also work... or
-running Smatch on new code. Smatch should point it out.
+During development, issues in drivers/net/can/dev.c where discovered,
+the fix for those issues are included in this patch series.
 
-Best regards,
-Krzysztof
+We also propose to add two helper functions in include/linux/can/dev.h
+which we think can benefit other drivers: get_can_len() and
+can_bit_time().
+
+The driver indirectly relies on https://lkml.org/lkml/2020/9/26/251
+([PATCH] can: raw: add missing error queue support) for the call to
+skb_tx_timestamp() to work but can still compile without it.
+
+*Side notes*: scripts/checkpatch.pl returns 4 'checks' findings in
+[PATCH 5/6]. All those findings are of type: "Macro argument reuse 'x'
+possible side-effects?".  Those arguments reuse are actually made by
+calling either __stringify() or sizeof_field() which are both
+pre-processor constant. Furthermore, those macro are never called with
+arguments sensible to side-effects. So no actual side effect would
+occur.
+
+ChangeLog:
+v2:
+  - Fixed -W1 warnings in PATCH 5/6 (v1 was tested with GCC -WExtra
+  but not with -W1).
+  - Added lsusb -v information in PATCH 6/6 and rephrased the comment.
+  - Take care to put everyone in CC of each of the patch of the series
+  (sorry for the mess in v1...)
+
+Vincent Mailhol (6):
+  can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ
+    context
+  can: dev: add a helper function to get the correct length of Classical
+    frames
+  can: dev: __can_get_echo_skb(): fix the return length
+  can: dev: add a helper function to calculate the duration of one bit
+  can: usb: etas_es58X: add support for ETAS ES58X CAN USB interfaces
+  usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
+
+ drivers/net/can/dev.c                       |   26 +-
+ drivers/net/can/usb/Kconfig                 |    9 +
+ drivers/net/can/usb/Makefile                |    1 +
+ drivers/net/can/usb/etas_es58x/Makefile     |    3 +
+ drivers/net/can/usb/etas_es58x/es581_4.c    |  559 ++++
+ drivers/net/can/usb/etas_es58x/es581_4.h    |  237 ++
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2725 +++++++++++++++++++
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  700 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   |  648 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.h   |  243 ++
+ drivers/usb/class/cdc-acm.c                 |   11 +
+ include/linux/can/dev.h                     |   38 +
+ 12 files changed, 5186 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/net/can/usb/etas_es58x/Makefile
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.h
+
+-- 
+2.26.2
+
