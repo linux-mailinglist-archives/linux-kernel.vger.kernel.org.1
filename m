@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D021C27F3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCADE27F3F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbgI3VCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgI3VCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:02:42 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A2162071E;
-        Wed, 30 Sep 2020 21:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601499761;
-        bh=hEW2lfnz94TX8YvGzA25neEhx4sqLqPCJj+osYv0f84=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kB0qqgz2Qg5kqmagsLjOnmi5VS9A0KdFC8OuKPMCmSb2lPxu2++Ex4nxbEuKwSUnM
-         wIn6zAXZkNhnq6dfT7ziW+s9r4bjatfxBsm+TUVSRjvk0De9MdnqQkidBm6zy/HFp1
-         QH7/bokmJ01Sqi/yNifloTTQduQJ4nzPjOkHBiIg=
-Date:   Wed, 30 Sep 2020 16:08:24 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] mtd: rawnand: Replace one-element array with
- flexible-array member
-Message-ID: <20200930210824.GA12277@embeddedor>
+        id S1730341AbgI3VKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728031AbgI3VKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:10:36 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EDBC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:10:36 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id q123so2180669pfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:10:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=43NmDXRdfvytQQYY6+SkI5I3v0G1ZKlfq1R/B+8Rbe8=;
+        b=aznXL+Mf1oo937XoxBdAUWYbrGQBox+mHPLXOBi8fxELvJxmtN4Oh2fdCubtsfNRrA
+         rDHSxjRXgFROvxwZKbrgkOQaw+IdYULTR8nRNYUFnd02K6q1DKbVRP6qGTIrAq/ntqIt
+         uicIip4Sy8y/dZqila87XWTqZiy3eaEQT/WgQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=43NmDXRdfvytQQYY6+SkI5I3v0G1ZKlfq1R/B+8Rbe8=;
+        b=l9gceFbxgEYgBuxg0fgHG0JZBJCu2AIEx9YVYGgTLnoprOrmVhtsVGJaBfpcBaQPRr
+         USu4w5ZSmcELcHyP5Hj2AyFj8I8i/xv1UjkoC+i7GBoVQmMQ4PqUScXND6utPyBjx3dO
+         MZcrHJnMGijESAAPH5F4Tnp8W75MF+8yr191UFEcfUQpCkbuBfK5Oy59sWEKIrS9rGg/
+         ZeR58uiKE5vWUu8rtsFyCQvDjQ9f0f599p+bc3onxlukCaXIKfySVnIJl8tISFLCJvMV
+         IS/SWWdls6gkilfVrFRClyvXvKHqtK/63s/VZpWnlOxVrPVxG7ERFGfs5OjExw4OgM2R
+         LrVA==
+X-Gm-Message-State: AOAM530ddSgy/ITYyux9iyoREtgLQsWD1Nm47KFV5iOLP3Rg8KUWgfyv
+        X+wBFLjIVtHTkzI+m8fi86Kyrw==
+X-Google-Smtp-Source: ABdhPJyw4kR2hvM1gD9zLPKC5ogvJTlrWuluJmqFM9fB7y/1oreMiPXLmURVREruQgKi3Vr48qMMIg==
+X-Received: by 2002:a17:902:c40d:b029:d2:562d:db9 with SMTP id k13-20020a170902c40db02900d2562d0db9mr4239380plk.46.1601500235715;
+        Wed, 30 Sep 2020 14:10:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n2sm3182853pja.41.2020.09.30.14.10.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 14:10:34 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 14:10:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v4 00/29] Add support for Clang LTO
+Message-ID: <202009301402.27A40DD1@keescook>
+References: <20200929214631.3516445-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200929214631.3516445-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Tue, Sep 29, 2020 at 02:46:02PM -0700, Sami Tolvanen wrote:
+> Furthermore, patches 4-8 include Peter's patch for generating
+> __mcount_loc with objtool, and build system changes to enable it on
+> x86. With these patches, we no longer need to annotate functions
+> that have non-call references to __fentry__ with LTO, which makes
+> supporting dynamic ftrace much simpler.
 
-Refactor the code according to the use of a flexible-array member
-instead of a one-element array. Also, make use of the struct_size()
-helper to calculate the size of the allocation for _nand_. In order
-to keep the code as maintainable as possible and to keep _cs_ as an
-array, add a new macro CS_N to aid in the allocation size calculation,
-in case there is a need for more Chip Select IDs in the future. In the
-meantime, the macro is set to 1. This also avoids having to use a magic
-number '1' as the last argument for struct_size().
+Peter, can you take patches 4-8 into -tip? I think it'd make sense
+to keep them together. Steven, it sounds like you're okay with the
+changes (i.e. Sami showed the one concern you had was already handled)?
+Getting these into v5.10 would be really really nice.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+I'd really like to get the tree-spanning prerequisites nailed down
+for this series. It's been difficult to coordinate given the multiple
+maintainers. :)
 
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/5f7473c0.Vv4h6yzXSga90P04%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/mtd/nand/raw/tegra_nand.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Specifically these patches:
 
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index fbf67722a049..43b8359dcd85 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -163,6 +163,9 @@
- 				HWSTATUS_RBSY_MASK(NAND_STATUS_READY) | \
- 				HWSTATUS_RBSY_VALUE(NAND_STATUS_READY))
- 
-+/* Number of Chip Selects. Currently, only one. */
-+#define CS_N			1
-+
- struct tegra_nand_controller {
- 	struct nand_controller controller;
- 	struct device *dev;
-@@ -183,7 +186,7 @@ struct tegra_nand_chip {
- 	u32 config;
- 	u32 config_ecc;
- 	u32 bch_config;
--	int cs[1];
-+	int cs[];
- };
- 
- static inline struct tegra_nand_controller *
-@@ -1086,14 +1089,14 @@ static int tegra_nand_chips_init(struct device *dev,
- 		return -EINVAL;
- 	}
- 
--	/* Retrieve CS id, currently only single die NAND supported */
-+	/* Retrieve CS id, currently only single-die NAND supported */
- 	ret = of_property_read_u32(np_nand, "reg", &cs);
- 	if (ret) {
- 		dev_err(dev, "could not retrieve reg property: %d\n", ret);
- 		return ret;
- 	}
- 
--	nand = devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
-+	nand = devm_kzalloc(dev, struct_size(nand, cs, CS_N), GFP_KERNEL);
- 	if (!nand)
- 		return -ENOMEM;
- 
+Peter Zijlstra (1):
+  objtool: Add a pass for generating __mcount_loc
+
+Sami Tolvanen (4):
+  objtool: Don't autodetect vmlinux.o
+  tracing: move function tracer options to Kconfig
+  tracing: add support for objtool mcount
+  x86, build: use objtool mcount
+
+https://lore.kernel.org/lkml/20200929214631.3516445-5-samitolvanen@google.com/
+https://lore.kernel.org/lkml/20200929214631.3516445-6-samitolvanen@google.com/
+https://lore.kernel.org/lkml/20200929214631.3516445-7-samitolvanen@google.com/
+https://lore.kernel.org/lkml/20200929214631.3516445-8-samitolvanen@google.com/
+https://lore.kernel.org/lkml/20200929214631.3516445-9-samitolvanen@google.com/
+
+Thanks!
+
 -- 
-2.27.0
-
+Kees Cook
