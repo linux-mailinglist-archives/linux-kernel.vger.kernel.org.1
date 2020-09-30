@@ -2,194 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D92D27EF8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAC327EF50
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731338AbgI3Qpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:45:30 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:47510 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725355AbgI3Qpa (ORCPT
+        id S1730915AbgI3QfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgI3QfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:45:30 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UGiqnr015684;
-        Wed, 30 Sep 2020 09:45:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=rbEsOsyJ6CEq8/KXKFG+D7C9LJQOgG+1yy+DITy0690=;
- b=Udr2IUMrXVVHVsDFTkuruSb4REzJcdSO00zUuK8YqWwj7TV9bXSaOoglS4pDeTnZQv7a
- uu6OiEFZYTSXQKdlN95MYCAMMcZEEfWVG9uhijLDDBGKUElc9yHjwtAUxITOv+g51RQY
- V6QJIK8oDaw6FmALXEYzjkINSolmDvs5oGQtY8NMSCch4zis8Pi5jRo7J4urqHLb7P23
- rAaVLDt8mgzz8qCdZDgsq/HQ+DdIaTT/tpB2L6l9N8hpZdSQOO814VNDNs+lmM639Gqv
- 0ZKoCgicRAY/bV8SkLejDa8nNJEjs3ZJhO4+e8+it8GvghDn118pb/8kBaUzjFajbiu5 xw== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 33t55pb34n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 09:45:27 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
- 2020 09:45:26 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
- 2020 09:45:25 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 30 Sep 2020 09:45:25 -0700
-Received: from cavium.com.marvell.com (unknown [10.29.8.35])
-        by maili.marvell.com (Postfix) with ESMTP id B651B3F7040;
-        Wed, 30 Sep 2020 09:45:22 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <davem@davemloft.net>, Hariprasad Kelam <hkelam@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>
-Subject: [net PATCH v2 4/4] octeontx2-pf: Fix synchnorization issue in mbox
-Date:   Wed, 30 Sep 2020 21:39:35 +0530
-Message-ID: <1601482175-15044-1-git-send-email-gakula@marvell.com>
-X-Mailer: git-send-email 1.7.1
+        Wed, 30 Sep 2020 12:35:24 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A63C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:35:23 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l17so2534653edq.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v+misetaEJ1mwAT301R0A9ZIkFxdOGA996KoWa9fftk=;
+        b=Sh6cwwahX+/y+BSWSCbArvYObCc1HWuntrcLxuME+7ufy6lS8eVNK//JaRPTKxHkMW
+         /vI8TjEolAzzydnudtc2FOmU3njVteq6rwfp7z26pcwIJ/RgtV+gmPoQq2+bX1bE0ivo
+         27/jAYWu30gafN/4p4RpUq/aWe96VB6akyMRA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v+misetaEJ1mwAT301R0A9ZIkFxdOGA996KoWa9fftk=;
+        b=g1CkSeTl8gWBTKYi7p25vzOGrpBVLIlL/E7YOHT5UYyqxUeMQjrFWn5bhG19b5d5/K
+         zd8mUJsX+ImYd9LS7AlRZXkpUlJHpynVs5r9KR+KeLq7yarGpcsMZbu3WWWYiNCB68y6
+         FLuoyXWej0n5pOLIyAd4M3o3pwAQbijO0xXH/q6sgRiHWv8sZKsvQfwGA6AJj11DGJ3o
+         z1utvfFnamVOY6iaCBlINcKif3BQz4OVoZcalxTaDtRw4oESBXP/G2PCY56yd1qjgEbT
+         yUzI5+H5u0FzQTUk8lM92k0Qx6x962qNM1A9il9pgtLFSNmGl82+9hAUg8pjjTSqulxP
+         7SPw==
+X-Gm-Message-State: AOAM531e2QXXGbaLEhXxlvPxY+Mw2M6oOafuiyc3wIxyMl2it3aLANcW
+        Y89WaoiKFSHGDclAIKsUJHVsa4AHbWfQ7w==
+X-Google-Smtp-Source: ABdhPJy4jVa3kHhMwjqQDc52xlVNCNwbj+D0m5TpzrxI0KRR+LIx5/vzVodvy+t4qqu9FQuuj4m+Fg==
+X-Received: by 2002:a50:f1cd:: with SMTP id y13mr3696177edl.358.1601483722083;
+        Wed, 30 Sep 2020 09:35:22 -0700 (PDT)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
+        by smtp.gmail.com with ESMTPSA id j14sm1942989edr.91.2020.09.30.09.35.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 09:35:21 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id m6so2550757wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 09:35:21 -0700 (PDT)
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr1237100lfg.344.1601483329141;
+ Wed, 30 Sep 2020 09:28:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_09:2020-09-30,2020-09-30 signatures=0
+References: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CAPcyv4iPuRWSv_do_h8stU0-SiWxtKkQWvzBEU+78fDE6VffmA@mail.gmail.com>
+ <20200930050455.GA6810@zn.tnic> <CAPcyv4j=eyVMbcnrGDGaPe4AVXy5pJwa6EapH3ePh+JdF6zxnQ@mail.gmail.com>
+ <20200930162403.GI6810@zn.tnic>
+In-Reply-To: <20200930162403.GI6810@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 30 Sep 2020 09:28:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjmtMDW2oUfGrXTKcESqEHx1vWCqO65o051UNL-cX9AAg@mail.gmail.com>
+Message-ID: <CAHk-=wjmtMDW2oUfGrXTKcESqEHx1vWCqO65o051UNL-cX9AAg@mail.gmail.com>
+Subject: Re: [PATCH v9 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user, kernel}
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        stable <stable@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        0day robot <lkp@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+On Wed, Sep 30, 2020 at 9:24 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> Ok, I'll try to queue them but pls respin soonish. That is, if Linus
+> cuts -rc8 we have plenty of time but he didn't sound 100% on the -rc8
+> thing.
 
-Mbox implementation in octeontx2 driver has three states
-alloc, send and reset in mbox response. VF allocate and
-sends message to PF for processing, PF ACKs them back and
-reset the mbox memory. In some case we see synchronization
-issue where after msgs_acked is incremented and before
-mbox_reset API is called, if current execution is scheduled
-out and a different thread is scheduled in which checks for
-msgs_acked. Since the new thread sees msgs_acked == msgs_sent
-it will try to allocate a new message and to send a new mbox
-message to PF.Now if mbox_reset is scheduled in, PF will see
-'0' in msgs_send.
-This patch fixes the issue by calling mbox_reset before
-incrementing msgs_acked flag for last processing message and
-checks for valid message size.
+Oh, it's pretty much 100%.
 
-Fixes: d424b6c02 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/mbox.c     | 12 ++++++++++--
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h     |  1 +
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 11 ++++++-----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c |  4 ++--
- 4 files changed, 19 insertions(+), 9 deletions(-)
+I can't imagine what would make me skip an rc8 at this point.
+Everything looks good right now (but not rc7, we had a stupid bug),
+but I'd rather wait a week than fins another silly bug the day after
+release (like happened in rc7)..
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
-index 387e33f..2718fe2 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
-@@ -17,7 +17,7 @@
- 
- static const u16 msgs_offset = ALIGN(sizeof(struct mbox_hdr), MBOX_MSG_ALIGN);
- 
--void otx2_mbox_reset(struct otx2_mbox *mbox, int devid)
-+void __otx2_mbox_reset(struct otx2_mbox *mbox, int devid)
- {
- 	void *hw_mbase = mbox->hwbase + (devid * MBOX_SIZE);
- 	struct otx2_mbox_dev *mdev = &mbox->dev[devid];
-@@ -26,13 +26,21 @@ void otx2_mbox_reset(struct otx2_mbox *mbox, int devid)
- 	tx_hdr = hw_mbase + mbox->tx_start;
- 	rx_hdr = hw_mbase + mbox->rx_start;
- 
--	spin_lock(&mdev->mbox_lock);
- 	mdev->msg_size = 0;
- 	mdev->rsp_size = 0;
- 	tx_hdr->num_msgs = 0;
- 	tx_hdr->msg_size = 0;
- 	rx_hdr->num_msgs = 0;
- 	rx_hdr->msg_size = 0;
-+}
-+EXPORT_SYMBOL(__otx2_mbox_reset);
-+
-+void otx2_mbox_reset(struct otx2_mbox *mbox, int devid)
-+{
-+	struct otx2_mbox_dev *mdev = &mbox->dev[devid];
-+
-+	spin_lock(&mdev->mbox_lock);
-+	__otx2_mbox_reset(mbox, devid);
- 	spin_unlock(&mdev->mbox_lock);
- }
- EXPORT_SYMBOL(otx2_mbox_reset);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 6dfd0f9..ab43378 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -93,6 +93,7 @@ struct mbox_msghdr {
- };
- 
- void otx2_mbox_reset(struct otx2_mbox *mbox, int devid);
-+void __otx2_mbox_reset(struct otx2_mbox *mbox, int devid);
- void otx2_mbox_destroy(struct otx2_mbox *mbox);
- int otx2_mbox_init(struct otx2_mbox *mbox, void __force *hwbase,
- 		   struct pci_dev *pdev, void __force *reg_base,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 5d620a3..2fb4567 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -370,8 +370,8 @@ static int otx2_forward_vf_mbox_msgs(struct otx2_nic *pf,
- 		dst_mbox = &pf->mbox;
- 		dst_size = dst_mbox->mbox.tx_size -
- 				ALIGN(sizeof(*mbox_hdr), MBOX_MSG_ALIGN);
--		/* Check if msgs fit into destination area */
--		if (mbox_hdr->msg_size > dst_size)
-+		/* Check if msgs fit into destination area and has valid size */
-+		if (mbox_hdr->msg_size > dst_size || !mbox_hdr->msg_size)
- 			return -EINVAL;
- 
- 		dst_mdev = &dst_mbox->mbox.dev[0];
-@@ -526,10 +526,10 @@ static void otx2_pfvf_mbox_up_handler(struct work_struct *work)
- 
- end:
- 		offset = mbox->rx_start + msg->next_msgoff;
-+		if (mdev->msgs_acked == (vf_mbox->up_num_msgs - 1))
-+			__otx2_mbox_reset(mbox, 0);
- 		mdev->msgs_acked++;
- 	}
--
--	otx2_mbox_reset(mbox, vf_idx);
- }
- 
- static irqreturn_t otx2_pfvf_mbox_intr_handler(int irq, void *pf_irq)
-@@ -803,10 +803,11 @@ static void otx2_pfaf_mbox_handler(struct work_struct *work)
- 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
- 		otx2_process_pfaf_mbox_msg(pf, msg);
- 		offset = mbox->rx_start + msg->next_msgoff;
-+		if (mdev->msgs_acked == (af_mbox->num_msgs - 1))
-+			__otx2_mbox_reset(mbox, 0);
- 		mdev->msgs_acked++;
- 	}
- 
--	otx2_mbox_reset(mbox, 0);
- }
- 
- static void otx2_handle_link_event(struct otx2_nic *pf)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-index 92a3db6..2f90f17 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
-@@ -99,10 +99,10 @@ static void otx2vf_vfaf_mbox_handler(struct work_struct *work)
- 		msg = (struct mbox_msghdr *)(mdev->mbase + offset);
- 		otx2vf_process_vfaf_mbox_msg(af_mbox->pfvf, msg);
- 		offset = mbox->rx_start + msg->next_msgoff;
-+		if (mdev->msgs_acked == (af_mbox->num_msgs - 1))
-+			__otx2_mbox_reset(mbox, 0);
- 		mdev->msgs_acked++;
- 	}
--
--	otx2_mbox_reset(mbox, 0);
- }
- 
- static int otx2vf_process_mbox_msg_up(struct otx2_nic *vf,
--- 
-2.7.4
+We're talking literal "biblical burning bushes telling me to do a
+release" kind of events to skip rc8 by now.
 
+           Linus
