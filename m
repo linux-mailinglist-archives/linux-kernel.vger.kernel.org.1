@@ -2,89 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E67227DEBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14B627DEC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 05:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbgI3DNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 29 Sep 2020 23:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgI3DNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 23:13:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D14C061755;
-        Tue, 29 Sep 2020 20:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZdPsP/+B1OF420qqHgB+/SxMYEAFyf2O+eNfuVQ7neg=; b=pcQTc4aAZnW0R9sFBt3cL+TWW2
-        UFhibNgovuZb7lVeEiW2VQuRLrhkVRCtOGu38lpi0Fq6INx3+iPr0GodqLPFtavq3SO5mhE43/8Pw
-        zOjjZ/Z2WJQ82xE6yTM5fRoFCKT9fGUOi0mtn3dJafoT97dd1gXtp45WIGdjGtojk8lO+FX/+S995
-        laKMTXrPutRO2RM92p3K6qygPeAG25AuxdGkf11idsufBTPq/lPyXh1re1B9bl4GDDtsoqSr69KGS
-        6E5A8/HBI10VK3Pd69FxUmPhZjco+K3tav8KBqQ3HUTDZus1LC4TnmhplcQ0k+G6NNP9qKuwCiJBB
-        38GQyy+g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNSYB-0008Ti-S1; Wed, 30 Sep 2020 03:13:04 +0000
-Date:   Wed, 30 Sep 2020 04:13:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH 00/24] mm/hugetlb: Free some vmemmap pages of hugetlb
- page
-Message-ID: <20200930031303.GN20115@casper.infradead.org>
-References: <20200915125947.26204-1-songmuchun@bytedance.com>
- <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com>
+        id S1729933AbgI3DSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 23:18:41 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14735 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729784AbgI3DSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 23:18:40 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6F123A76FA735C0EF8B9;
+        Wed, 30 Sep 2020 11:18:37 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.253) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 30 Sep 2020 11:18:28 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v6 00/17] add support for Hisilicon SD5203 SoC
+Date:   Wed, 30 Sep 2020 11:16:55 +0800
+Message-ID: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31eac1d8-69ba-ed2f-8e47-d957d6bb908c@oracle.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:58:18PM -0700, Mike Kravetz wrote:
-> On 9/15/20 5:59 AM, Muchun Song wrote:
-> > Hi all,
-> > 
-> > This patch series will free some vmemmap pages(struct page structures)
-> > associated with each hugetlbpage when preallocated to save memory.
-> ...
-> > The mapping of the first page(index 0) and the second page(index 1) is
-> > unchanged. The remaining 6 pages are all mapped to the same page(index
-> > 1). So we only need 2 pages for vmemmap area and free 6 pages to the
-> > buddy system to save memory. Why we can do this? Because the content
-> > of the remaining 7 pages are usually same except the first page.
-> > 
-> > When a hugetlbpage is freed to the buddy system, we should allocate 6
-> > pages for vmemmap pages and restore the previous mapping relationship.
-> > 
-> > If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
-> > substantial gain. On our server, run some SPDK applications which will
-> > use 300GB hugetlbpage. With this feature enabled, we can save 4797MB
-> > memory.
-> 
-> At a high level this seems like a reasonable optimization for hugetlb
-> pages.  It is possible because hugetlb pages are 'special' and mostly
-> handled differently than pages in normal mm paths.
-> 
-> The majority of the new code is hugetlb specific, so it should not be
-> of too much concern for the general mm code paths.  I'll start looking
-> closer at the series.  However, if someone has high level concerns please
-> let us know.  The only 'potential' conflict I am aware of is discussion
-> about support of double mapping hugetlb pages.
+v5 --> v6:
+1. Add a new property "#reset-cells" and update the example in Patch 15.
+   All other patches are not changed.
 
-Not on x86, but architectures which have dcache coherency issues sometimes
-use PG_arch_1 on the subpages.  I think it would be wise to map pages
-1-7 read-only to catch this, as well as any future change which causes
-subpage bits to get set.
+v4 --> v5:
+1. Drop the descriptions of the common properties, such as "reg".
+2. Add "additionalProperties: false" or "additionalProperties: type: object"
+   for each new yaml file.
+3. Group three Hi6220 domain controller into one yaml file, see Patch 15
+4. Remove the prefix "hisilicon," of each yaml file, all of them are under
+   hisilicon directory, no need to duplicated it.
+5. move four controllers into syscon.yaml, because they have no specific
+   properties, see Patch 1-2.
+6. Add the name of the board which based on sd5203, see Patch 5 and 8.
+7. Add Patch 9, all controller should contain "syscon" compatible string.
+8. Add property "ranges" and update the example, see Patch 16.
+9. Romove the labels in all examples.
+10. other trival fixes are not mentioned.
+
+Please review Patch 1-9 first, other patches are not urgent and each of them
+is independent.
+
+
+v3 --> v4:
+1. remove unexpected "\ No newline at end of file" of each new file.
+2. discard the subdirectory "hi3620" and "hipxx", all files in the two
+   directories are moved to the parent directory.
+3. add two spaces for the below cases:
+   - items:
+     - const: hisilicon,sysctrl.	//add two spaces
+4. only list the compatible of boards in hisilicon.yaml, that is:
+   1) a compatible of one board
+   2) a compatible of one board + a compatible of one SoC
+5. other trival fixes are not mentioned.
+
+
+v2 --> v3:
+1. Convert hisilicon.txt to hisilicon.yaml. Because there are many kinds
+   of Hisilicon controllers in it, so split each of them into a separate
+   file first. Then I convert all of them to DT schema format, and also
+   convert the other files in directory "../bindings/arm/hisilicon/".
+2. Add Patch 1: remove a unused compatible name in hip01-ca9x2.dts
+   This error is detected by hisilicon.yaml.
+
+   The merge window of 5.10 is narrow now, so please review Patch 1-7 first.
+
+
+v1 --> v2:
+1. add binding for SD5203 SoC, Patch 1
+2. select DW_APB_ICTL instead of HISILICON_SD5203_VIC in Patch 2.
+   Meanwhile, change the compatible of interrupt-controller to "snps,dw-apb-ictl" in Patch 4.
+3. Fix the errors detected by dtbs_check. For example: add "reg" for cpu node, use lowercase a-f
+   to describe address, add "baudclk" for "snps,dw-apb-uart".
+
+v1:
+Add SD5203 SoC config option and devicetree file, also enable its debug UART.
+
+Kefeng Wang (3):
+  ARM: hisi: add support for SD5203 SoC
+  ARM: debug: add UART early console support for SD5203
+  ARM: dts: add SD5203 dts
+
+Zhen Lei (14):
+  dt-bindings: mfd: syscon: add some compatible strings for Hisilicon
+  dt-bindings: arm: hisilicon: delete the descriptions of HiP05/HiP06
+    controllers
+  dt-bindings: arm: hisilicon: split the dt-bindings of each controller
+    into a separate file
+  dt-bindings: arm: hisilicon: convert Hisilicon board/soc bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: add binding for SD5203 SoC
+  ARM: dts: hisilicon: fix ststem controller compatible node
+  dt-bindings: arm: hisilicon: convert system controller bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,cpuctrl bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,pctrl bindings to
+    json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hip04-fabric bindings
+    to json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hip04-bootwrapper
+    bindings to json-schema
+  dt-bindings: arm: hisilicon: convert Hi6220 domain controller bindings
+    to json-schema
+  dt-bindings: arm: hisilicon: convert hisilicon,hi3798cv200-perictrl
+    bindings to json-schema
+  dt-bindings: arm: hisilicon: convert LPC controller bindings to
+    json-schema
+
+ .../bindings/arm/hisilicon/controller/cpuctrl.yaml |  29 ++
+ .../hisilicon/controller/hi3798cv200-perictrl.yaml |  64 +++++
+ .../hisilicon/controller/hi6220-domain-ctrl.yaml   |  68 +++++
+ .../hisilicon/controller/hip04-bootwrapper.yaml    |  34 +++
+ .../arm/hisilicon/controller/hip04-fabric.yaml     |  27 ++
+ .../bindings/arm/hisilicon/controller/pctrl.yaml   |  34 +++
+ .../bindings/arm/hisilicon/controller/sysctrl.yaml | 110 +++++++
+ .../bindings/arm/hisilicon/hi3519-sysctrl.txt      |  14 -
+ .../arm/hisilicon/hisilicon-low-pin-count.txt      |  33 ---
+ .../bindings/arm/hisilicon/hisilicon.txt           | 319 ---------------------
+ .../bindings/arm/hisilicon/hisilicon.yaml          |  67 +++++
+ .../bindings/arm/hisilicon/low-pin-count.yaml      |  61 ++++
+ Documentation/devicetree/bindings/mfd/syscon.yaml  |   5 +-
+ arch/arm/Kconfig.debug                             |  11 +-
+ arch/arm/boot/dts/Makefile                         |   2 +
+ arch/arm/boot/dts/hi3620.dtsi                      |   2 +-
+ arch/arm/boot/dts/hip04.dtsi                       |   2 +-
+ arch/arm/boot/dts/sd5203.dts                       |  96 +++++++
+ arch/arm/mach-hisi/Kconfig                         |  16 +-
+ 19 files changed, 622 insertions(+), 372 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/cpuctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi6220-domain-ctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-fabric.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/pctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/sysctrl.yaml
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon-low-pin-count.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/low-pin-count.yaml
+ create mode 100644 arch/arm/boot/dts/sd5203.dts
+
+-- 
+1.8.3
+
+
