@@ -2,151 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A0527F5E5
+	by mail.lfdr.de (Postfix) with ESMTP id 383AF27F5E4
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgI3XVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731255AbgI3XVX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:21:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72865C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id s31so2292616pga.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
-        b=TZcivgXw3I1epH9uT9vdPCWx/4ExuFu3+g4x3a/AhrJ47vzwURw8KdgwcFvZLA4x6R
-         N43c1jc09gyZaUIARtJRdVpNBz8HLiKvE3J/YzFFtLaGuQ5vdTXiZAYuWGd1EBHOC14M
-         xS08nPZAgFW9Y6dbf3e9FfTYtNlPH/Srf7U4I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
-        b=ixG9/WJJE/0FDYsefWxH9RI+SDwJzpkysv1EAw7f8iEr/IB7olO4kUJlWtdFHEYbMF
-         3MxBxMXmCbL9QT8Ga8u2brQKnsaKeB/CVgx3MwDzdnnjvh0P+8TLnJZr25zL6qhJS4E4
-         9/TGLvWaJxoB3ARrDTRvl8QoZE1GNZRPKKj3v/gIpcEHmbyL6A7ixQPBkaTwaJ1o0RfU
-         dHxIk9PxKkCVipD0BgdqLt9hag0uLI7ZXRWr+OEPG0wZVNckU1uJ/8ebw4wjLjHy58on
-         LKDgn+eFHGhHd4uvRpsbhN8vOFwIKqb2EfDGfs33EJ1kZ+UV1OwCM4ad0yUdRkBdpv78
-         Z66g==
-X-Gm-Message-State: AOAM533E/MbpZ7b1q2Vxehy4WprIyf1Oo1A1HwyjuYM0b5+JJMBGDhWQ
-        bdKw1yqTWyq2E8gLvoaOYbS7DA==
-X-Google-Smtp-Source: ABdhPJxuU0x2CWFLEU2A+WDs32aP0TdSrFtCY2CLnbAl54vDjrmQMaeG/VBOLgLEbehuqlqMS0xYoQ==
-X-Received: by 2002:a17:902:7002:b029:d2:950a:d82a with SMTP id y2-20020a1709027002b02900d2950ad82amr4444416plk.72.1601508082978;
-        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 206sm3071721pgh.26.2020.09.30.16.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 16:21:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202009301612.E9DD7361@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
- <202009301554.590642EBE@keescook>
- <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+        id S1732211AbgI3XWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731255AbgI3XVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:21:55 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C79D5206F4;
+        Wed, 30 Sep 2020 23:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601508114;
+        bh=duBLPQvxBptb43fIQLQ12wY3eNwbo2Do/jJyhHozeUM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KoOkjI1GF/pOSo0R++TWIyd9yKaT3KkwoC3FKeRKFADO1qTWyeZxlAPzBWcxnJ1Fq
+         TylWRvJ1endoyEhUtLnOVxCkdPPPcGHp52T+pjJSOBL87CJm1KP/RsDP0ENIP9zF26
+         YKaC/LnmyIFezzIDk55upoudXt72JYe45cZR1Te4=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8F2C7352303F; Wed, 30 Sep 2020 16:21:54 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 16:21:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20200930232154.GA29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
+ <20200930015327.GX29330@paulmck-ThinkPad-P72>
+ <20200930084139.GN2277@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+In-Reply-To: <20200930084139.GN2277@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:08:04AM +0200, Jann Horn wrote:
-> [adding x86 folks to enhance bikeshedding]
-> 
-> On Thu, Oct 1, 2020 at 12:59 AM Kees Cook <keescook@chromium.org> wrote:
-> > On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
-> > > From: YiFei Zhu <yifeifz2@illinois.edu>
-> > >
-> > > Currently the kernel does not provide an infrastructure to translate
-> > > architecture numbers to a human-readable name. Translating syscall
-> > > numbers to syscall names is possible through FTRACE_SYSCALL
-> > > infrastructure but it does not provide support for compat syscalls.
-> > >
-> > > This will create a file for each PID as /proc/pid/seccomp_cache.
-> > > The file will be empty when no seccomp filters are loaded, or be
-> > > in the format of:
-> > > <arch name> <decimal syscall number> <ALLOW | FILTER>
-> > > where ALLOW means the cache is guaranteed to allow the syscall,
-> > > and filter means the cache will pass the syscall to the BPF filter.
-> > >
-> > > For the docker default profile on x86_64 it looks like:
-> > > x86_64 0 ALLOW
-> > > x86_64 1 ALLOW
-> > > x86_64 2 ALLOW
-> > > x86_64 3 ALLOW
+On Wed, Sep 30, 2020 at 10:41:39AM +0200, Michal Hocko wrote:
+> On Tue 29-09-20 18:53:27, Paul E. McKenney wrote:
+> > On Tue, Sep 29, 2020 at 02:07:56PM +0200, Michal Hocko wrote:
+> > > On Mon 28-09-20 16:31:01, paulmck@kernel.org wrote:
 > > > [...]
-> > > x86_64 132 ALLOW
-> > > x86_64 133 ALLOW
-> > > x86_64 134 FILTER
-> > > x86_64 135 FILTER
-> > > x86_64 136 FILTER
-> > > x86_64 137 ALLOW
-> > > x86_64 138 ALLOW
-> > > x86_64 139 FILTER
-> > > x86_64 140 ALLOW
-> > > x86_64 141 ALLOW
+> > 
+> > Apologies for the delay, but today has not been boring.
+> > 
+> > > > This commit therefore uses preemptible() to determine whether allocation
+> > > > is possible at all for double-argument kvfree_rcu().
+> > > 
+> > > This deserves a comment. Because GFP_ATOMIC is possible for many
+> > > !preemptible() contexts. It is the raw_spin_lock, NMIs and likely few
+> > > others that are a problem. You are taking a conservative approach which
+> > > is fine but it would be good to articulate that explicitly.
+> > 
+> > Good point, and so I have added the following as a header comment to
+> > the add_ptr_to_bulk_krc_lock() function:
+> > 
+> > // Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
+> > // state specified by flags.  If can_sleep is true, the caller must
+> > // be schedulable and not be holding any locks or mutexes that might be
+> > // acquired by the memory allocator or anything that it might invoke.
+> > // If !can_sleep, then if !preemptible() no allocation will be undertaken,
+> > // otherwise the allocation will use GFP_ATOMIC to avoid the remainder of
+> > // the aforementioned deadlock possibilities.  Returns true iff ptr was
+> > // successfully recorded, else the caller must use a fallback.
+> 
+> OK, not trivial to follow but at least verbose enough to understand the
+> intention after some mulling. Definitely an improvement, thanks!
+
+Glad it helped!  With some luck, perhaps it will improve with time...
+
 > [...]
-> > > diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-> > > index 7b3a58271656..33ccc074be7a 100644
-> > > --- a/arch/x86/include/asm/seccomp.h
-> > > +++ b/arch/x86/include/asm/seccomp.h
-> > > @@ -19,13 +19,16 @@
-> > >  #ifdef CONFIG_X86_64
-> > >  # define SECCOMP_ARCH_DEFAULT                        AUDIT_ARCH_X86_64
-> > >  # define SECCOMP_ARCH_DEFAULT_NR             NR_syscalls
-> > > +# define SECCOMP_ARCH_DEFAULT_NAME           "x86_64"
-> > >  # ifdef CONFIG_COMPAT
-> > >  #  define SECCOMP_ARCH_COMPAT                        AUDIT_ARCH_I386
-> > >  #  define SECCOMP_ARCH_COMPAT_NR             IA32_NR_syscalls
-> > > +#  define SECCOMP_ARCH_COMPAT_NAME           "x86_32"
-> >
-> > I think this should be "ia32"? Is there a good definitive guide on this
-> > naming convention?
+> > > > -kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+> > > > +add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> > > > +	unsigned long *flags, void *ptr, bool can_sleep)
+> > > >  {
+> > > >  	struct kvfree_rcu_bulk_data *bnode;
+> > > > +	bool can_alloc_page = preemptible();
+> > > > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+> > > 
+> > > This is quite confusing IMHO. At least without a further explanation.
+> > > can_sleep is not as much about sleeping as it is about the reclaim
+> > > recursion AFAIU your changelog, right?
+> > 
+> > No argument on it being confusing, and I hope that the added header
+> > comment helps.  But specifically, can_sleep==true is a promise by the
+> > caller to be schedulable and not to be holding any lock/mutex/whatever
+> > that might possibly be acquired by the memory allocator or by anything
+> > else that the memory allocator might invoke, to your point, including
+> > for but one example the reclaim logic.
+> > 
+> > The only way that can_sleep==true is if this function was invoked due
+> > to a call to single-argument kvfree_rcu(), which must be schedulable
+> > because its fallback is to invoke synchronize_rcu().
 > 
-> "man 2 syscall" calls them "x86-64" and "i386". The syscall table
-> files use ABI names "i386" and "64". The syscall stub prefixes use
-> "x64" and "ia32".
+> OK. I have to say that it is still not clear to me whether this call
+> path can be called from the memory reclaim context. If yes then you need
+> __GFP_NOMEMALLOC as well.
+
+Right now the restriction is that single-argument (AKA can_sleep==true)
+kvfree_rcu() cannot be invoked from memory reclaim context.
+
+But would adding __GFP_NOMEMALLOC to the can_sleep==true GFP_ flags
+allow us to remove this restriction?  If so, I will queue a separate
+patch making this change.  The improved ease of use would be well
+worth it, if I understand correctly (ha!!!).
+
+> [...]
 > 
-> I don't think we have a good consistent naming strategy here. :P
+> > > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
+> > > using the page allocator directly be better?
+> > 
+> > Well, you guys gave me considerable heat about abusing internal allocator
+> > interfaces, and kmalloc() and kfree() seem to be about as non-internal
+> > as you can get and still be invoking the allocator.  ;-)
+> 
+> alloc_pages resp. __get_free_pages is a normal page allocator interface
+> to use for page size granular allocations. kmalloc is for more fine
+> grained allocations.
 
-Agreed. And with "i386" being so hopelessly inaccurate, I prefer
-"ia32" ... *shrug*
+OK, in the short term, both work, but I have queued a separate patch
+making this change and recording the tradeoffs.  This is not yet a
+promise to push this patch, but it is a promise not to lose this part
+of the picture.  Please see below.
 
-I would hope we don't have to be super-pedantic and call them "x86-64" and "IA-32". :P
+You mentioned alloc_pages().  I reverted to __get_free_pages(), but
+alloc_pages() of course looks nicer.  What are the tradeoffs between
+__get_free_pages() and alloc_pages()?
 
--- 
-Kees Cook
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 490b638d7c241ac06cee168ccf8688bb8b872478
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Sep 30 16:16:39 2020 -0700
+
+    kvfree_rcu(): Switch from kmalloc/kfree to __get_free_page/free_page.
+    
+    The advantages of using kmalloc() and kfree() are a possible small speedup
+    on CONFIG_SLAB=y systems, avoiding the allocation-side cast, and use of
+    more-familiar API members.  The advantages of using __get_free_page()
+    and free_page() are a possible reduction in fragmentation and direct
+    access to the buddy allocator.
+    
+    To help settle the question as to which to use, this commit switches
+    from kmalloc() and kfree() to __get_free_page() and free_page().
+    
+    Suggested-by: Michal Hocko <mhocko@suse.com>
+    Suggested-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 2886e81..242f0f0 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3225,7 +3225,8 @@ static void kfree_rcu_work(struct work_struct *work)
+ 				bkvhead[i] = NULL;
+ 			krc_this_cpu_unlock(krcp, flags);
+ 
+-			kfree(bkvhead[i]);
++			if (bkvhead[i])
++				free_page((unsigned long)bkvhead[i]);
+ 
+ 			cond_resched_tasks_rcu_qs();
+ 		}
+@@ -3378,7 +3379,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+ 		bnode = get_cached_bnode(*krcp);
+ 		if (!bnode && can_alloc_page) {
+ 			krc_this_cpu_unlock(*krcp, *flags);
+-			bnode = kmalloc(PAGE_SIZE, gfp);
++			bnode = (struct kvfree_rcu_bulk_data *)__get_free_page(gfp);
+ 			*krcp = krc_this_cpu_lock(flags);
+ 		}
+ 
