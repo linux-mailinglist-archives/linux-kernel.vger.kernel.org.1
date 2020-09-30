@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DDC27F48C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9959727F491
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgI3V4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:56:35 -0400
-Received: from ns.mm-sol.com ([37.157.136.199]:43596 "EHLO extserv.mm-sol.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729996AbgI3V4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:56:35 -0400
-Received: from [192.168.1.7] (unknown [195.24.90.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by extserv.mm-sol.com (Postfix) with ESMTPSA id DC0AAD02C;
-        Thu,  1 Oct 2020 00:56:31 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mm-sol.com; s=201706;
-        t=1601502992; bh=68306tD5YsLAUj9ja2C1ptuKKgPEa+UuaTIaQDbVT2s=;
-        h=Subject:To:Cc:From:Date:From;
-        b=aDkrizEokwM7XC4UymK132wXDpetASonhfo+m6Zr7vuJDWMGap2VG9ZekNCX9+amf
-         2hrFtWUZSO9KghaB7t9rmYCJgGiULzfIx8/DY7RcYMAZdsRCGk8XUeStur6BpWOJ0S
-         z9hgZ8F77eeMA7cAHlLt3mS8q/qADNtQsq5zO0Z2BX2h++dVTZ4SINoKhz6HkPuxVP
-         m2OJ4+Atvw9Z+mXfGDBktDKYKnh2iVShGzL9Si4szaIjRjpsLEUgR+tc25YcFMvVCL
-         yeZINPUhPptQ1hKtcKt/AFLHFHA6Uki1UZsR4VxDvOFmRJtDUAfvawVX/10YKpgGyQ
-         UUCd1L17tDSWA==
-Subject: Re: [PATCH v2 4/5] PCI: qcom: Add SM8250 SoC support
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org
-Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
-        devicetree@vger.kernel.org
-References: <20200930150925.31921-1-manivannan.sadhasivam@linaro.org>
- <20200930150925.31921-5-manivannan.sadhasivam@linaro.org>
-From:   Stanimir Varbanov <svarbanov@mm-sol.com>
-Message-ID: <0a6a765d-1b80-9d1b-f881-b75f13bd5b02@mm-sol.com>
-Date:   Thu, 1 Oct 2020 00:56:28 +0300
+        id S1731197AbgI3V4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729996AbgI3V4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:56:49 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B54CC061755;
+        Wed, 30 Sep 2020 14:56:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so2897310ljg.9;
+        Wed, 30 Sep 2020 14:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l4v1Rqtf8JVCwJCj2DIQWVh+hszuC1ak27UuWq627Tw=;
+        b=TuQ/Jkj6MHCpiYxy2xBdJKJB2aGd4oWNFivqUaMBEVJuCFgOXZOqWY1NmlohAU9OMc
+         ohMZNRJ95teLwYIXdEYfCHlzF4kQ798Qm6Jo+kgeYxGK50F21IkBGdyxAbP2/7/gSoAk
+         dpC+sWK38lsiC6EUZU1GH/q2dBc0V/7OpmsAKG9EOgVHnGbQW4sIiVtaOb8J9/NcgENF
+         wFhJM307doFqLOWoIz9aPDgSgpDKK5lxBYWSSY+2sHn+bPw9iWdAk/4fBNaIEIRGfAfA
+         td/pUQ0Xi4XcbbErpqOdC9Ps3H1dXUBGS/q0cTOUC6RL/hhcqyJ0ZdkzFBUIcwq6cU6H
+         sZrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l4v1Rqtf8JVCwJCj2DIQWVh+hszuC1ak27UuWq627Tw=;
+        b=FPpdT7CcNF3JhEzuDh+CY+ffEK+NzH3+DKT0FrbecYqRGlZZizamgTawZES3KGo3TG
+         TIdnj1W8aSzY6rJsqlAO29Zf2OeGrXkNsLxvRg+wGPfvRqqXNWdIVLjL6RJn7tsQ6DzT
+         8xyPuzWbDH18hAEzk3W7c2rs6Zw2Zpt1XSRrtVnFSf+Ipep/T36MHIIn6LGd/BiuxLCd
+         QOY1lUGYaEDhpJge7uObTLPfnu9HXBzGOOD9LQZyTRdxgg/8UOpktCIhMduKJEt3e2dr
+         8Qn5QUjd4yq99AHginkLgZnBsXYKD2v1msZ02Scb2YMF50cupoD1rUmZhLQlsHQ4/WTG
+         la3Q==
+X-Gm-Message-State: AOAM530oTDi9xZ8EEl8IIHo+LG3fBnIZrAlQ2uJjhLM7vtXJKX+YiqFP
+        /yYt1YlT1zBnn4lHIVQMfx26ImHj784=
+X-Google-Smtp-Source: ABdhPJy71Zq7RRgjGwcTuu/+eYGrfcM5iZCBTgqk/k/1z1F09LrJXac+jA2l2r6FiHiLkyCbegyaNQ==
+X-Received: by 2002:a2e:b4a5:: with SMTP id q5mr1599589ljm.200.1601503007550;
+        Wed, 30 Sep 2020 14:56:47 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id t23sm259746ljc.125.2020.09.30.14.56.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 14:56:47 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo> <20200930203618.GC2110@Asurada-Nvidia>
+ <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+ <20200930213244.GA10573@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+Date:   Thu, 1 Oct 2020 00:56:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200930150925.31921-5-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20200930213244.GA10573@Asurada-Nvidia>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-
-On 9/30/20 6:09 PM, Manivannan Sadhasivam wrote:
-> The PCIe IP on SM8250 SoC is similar to the one used on SDM845. Hence
-> the support is added reusing the members of ops_2_7_0. The key
-> difference between ops_2_7_0 and ops_sm8250 is the config_sid callback,
-> which will be added in successive commit.
+01.10.2020 00:32, Nicolin Chen пишет:
+> On Thu, Oct 01, 2020 at 12:24:25AM +0300, Dmitry Osipenko wrote:
+>> ...
+>>>> It looks to me like the only reason why you need this new global API is
+>>>> because PCI devices may not have a device tree node with a phandle to
+>>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
+>>>> root complex has an iommus property, right? In that case, can't we
+>>>> simply do something like this:
+>>>>
+>>>> 	if (dev_is_pci(dev))
+>>>> 		np = find_host_bridge(dev)->of_node;
+>>>> 	else
+>>>> 		np = dev->of_node;
+>>>>
+>>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+>>>> sure that exists.
+>>>>
+>>>> Once we have that we can still iterate over the iommus property and do
+>>>> not need to rely on this global variable.
+>>>
+>>> I agree that it'd work. But I was hoping to simplify the code
+>>> here if it's possible. Looks like we have an argument on this
+>>> so I will choose to go with your suggestion above for now.
+>>
+>> This patch removed more lines than were added. If this will be opposite
+>> for the Thierry's suggestion, then it's probably not a great suggestion.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 3aac77a295ba..44db91861b47 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1359,6 +1359,16 @@ static const struct qcom_pcie_ops ops_2_7_0 = {
->  	.post_deinit = qcom_pcie_post_deinit_2_7_0,
->  };
->  
-> +/* Qcom IP rev.: 1.9.0 */
-> +static const struct qcom_pcie_ops ops_sm8250 = {
-
-This breaks the policy compatible -> ops_X_Y_Z. Could you introduce new
-method config_sid and check into for compatible qcom,pcie-sm8250 string
-there?
-
-> +	.get_resources = qcom_pcie_get_resources_2_7_0,
-> +	.init = qcom_pcie_init_2_7_0,
-> +	.deinit = qcom_pcie_deinit_2_7_0,
-> +	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
-> +	.post_init = qcom_pcie_post_init_2_7_0,
-> +	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-> +};
-> +
->  static const struct dw_pcie_ops dw_pcie_ops = {
->  	.link_up = qcom_pcie_link_up,
->  };
-> @@ -1476,6 +1486,7 @@ static const struct of_device_id qcom_pcie_match[] = {
->  	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
->  	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
->  	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
-> +	{ .compatible = "qcom,pcie-sm8250", .data = &ops_sm8250 },
->  	{ }
->  };
->  
+> Sorry, I don't quite understand this comments. Would you please
+> elaborate what's this "it" being "not a great suggestion"?
 > 
 
--- 
-regards,
-Stan
+I meant that you should try to implement Thierry's solution, but if the
+end result will be worse than the current patch, then you shouldn't make
+a v4, but get back to this discussion in order to choose the best option
+and make everyone agree on it.
