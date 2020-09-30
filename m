@@ -2,161 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCDC27E287
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F1227E28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbgI3HYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:24:19 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:50410 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725440AbgI3HYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:24:18 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08U7MOEn004047;
-        Wed, 30 Sep 2020 00:24:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=8xQl5u6C0Q5b49OlFyKocbjEji/21SyYn0veIZFCJ+w=;
- b=HM6f4u5h5hfaLZDbK0h+qy++fLchaMamJFmReP+Mnh2UM2CJ6/ZC2fBJB95MO7UDK3LO
- bwgSNIh+Cg2IP3yMM9mYyqUed/7e6U45QLsrEZs9wR4RjiP1AKc8QaGRK1psAT3NMINY
- qQYTBX3RYlFGi/jHf2ee8OyiZaYviQEzSKdrgNuJ559FkglCKyU+w/Fh5VUuJnOgrVFs
- YL1FuealVO83mkuBdtq3kE7k8vu5xHZD/yVtokhZuSarbgmJBGCYYxuXVJwqdjAkzXsO
- c4lR0VC+O+69KSJNZssLgqy2fJJB7662ev11y5QVTAZ9av6NjtdhgQbdI3NEHNOXVCv9 Mw== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 33t26xn83c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 00:24:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ki777CRMWZSawZLqB0QFG2pNDccnJtkT1g0tqlAG9TgOnbabGT1jfpILTMQZhsp7c/MG0TF5AVx57IFCaN9FU/sMTOzilqD75qBp3sVQ7BPk8m5ZVSnw/rceuQrYFG+YfTlOvS2vWBOoCx+yAC6eNIeBIA3eKizpcSxmQ4o/ZcAaHYjfjvN+sEyk0TjeKsKpm9yB7uEpQWmkQGg8UK81vPJkgq65nFqkH4n/ftGeKSj1tbH3jtKlRl/4K/0Ufpu+9SGLACy61KenVGtEmdXDnKmSJvcKxsYJlN/Q9n95IGKrfnDryTdW4xJoHUIZJz0zkQ+LGfwLMOOIQSayfEMgtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8xQl5u6C0Q5b49OlFyKocbjEji/21SyYn0veIZFCJ+w=;
- b=FvZR7kqPcuPT/ApwnI2Y1X2+motETceCPR3E3mz6/PVdYzfSTF+MsblBK2m96R2Bc+t89hd57SO0GkT6EVd6RaguzNqmWk7FxkN5KNMFUPAHH5uw6H7BWcmI4E869+O7BrlUDePZosvnXy8O17JLTMlHleTvZkhwWJM0m69uEd7Y/q+RnQaHbdLR3OIQ599yOd5zAPWlYv/f5fRfhwiS2A66gza2vUoJV8rGgZR9dKpcVZnMZIjh17LQPftV+2sEoGNF7/1Hu16W+2gp8+qaLmQrAkHlDZZ4gwoReOTNAkPJViLgP5O+eeYSlas5xlqFcTxJr3WirvZdOnlZSEuvRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8xQl5u6C0Q5b49OlFyKocbjEji/21SyYn0veIZFCJ+w=;
- b=66kOmm11xPzzSy1wQJWcN8lPezXHsQN1g2a//s/o9m8irIPAciRQHiNdL4yVHisO0hpi9wxr/pldbxXuQQqfLpucgV4SauIOYsPWxzJSw+ktzclEPs6Gp2Q3IYcXoCu/JO6poC/oDK3Et/Ilsyh5jVAOsbYZosJwVJjQZFJHpwU=
-Received: from DM6PR07MB5529.namprd07.prod.outlook.com (2603:10b6:5:7a::30) by
- DM6PR07MB6092.namprd07.prod.outlook.com (2603:10b6:5:18b::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.25; Wed, 30 Sep 2020 07:24:06 +0000
-Received: from DM6PR07MB5529.namprd07.prod.outlook.com
- ([fe80::2087:7f2b:5dc6:a960]) by DM6PR07MB5529.namprd07.prod.outlook.com
- ([fe80::2087:7f2b:5dc6:a960%6]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
- 07:24:06 +0000
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     "balbi@kernel.org" <balbi@kernel.org>
-CC:     "peter.chen@nxp.com" <peter.chen@nxp.com>,
-        "rogerq@ti.com" <rogerq@ti.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>
-Subject: RE: [PATCH] usb: cdns3: platform_get_irq_byname_optional instead
- platform_get_irq_byname
-Thread-Topic: [PATCH] usb: cdns3: platform_get_irq_byname_optional instead
- platform_get_irq_byname
-Thread-Index: AQHWlvch/Roy1G/8IkO8ykqpdGeiF6mAxVwA
-Date:   Wed, 30 Sep 2020 07:24:05 +0000
-Message-ID: <DM6PR07MB55296FF277CC3A79EE820428DD330@DM6PR07MB5529.namprd07.prod.outlook.com>
-References: <20200930065758.23740-1-pawell@cadence.com>
-In-Reply-To: <20200930065758.23740-1-pawell@cadence.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctZTljY2IzNmYtMDJlZC0xMWViLTg3NmItMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XGU5Y2NiMzcxLTAyZWQtMTFlYi04NzZiLTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iMTUxNyIgdD0iMTMyNDU5MjQyNDI4MTQyODY4IiBoPSI0SzRVbSswNWVNUFdqdDR3dm11RjRzaFl1Unc9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
-x-originating-ip: [185.217.253.59]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3c19a24e-607b-4f9b-caf6-08d86511d0bd
-x-ms-traffictypediagnostic: DM6PR07MB6092:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR07MB6092E329A24B84D6CEE7D39FDD330@DM6PR07MB6092.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:369;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SH/nuxUQNV5utmiEnoEQ3NGO8cHyPXIzdje5+4ZdQOyXMGnYtYYIlTR/XoTZRBlGDllnjsf/MPMhptahSeRXumzB9RUeYVmk/PE7Un8bmcx7Sia6/EI1Dz6porV6EZCQrLRUM0BCp4hQDxpyro/F8pIf6/tfKFVBWwuEhKFz50YV7RPP/X6VeF/FNyHLQHWMeWl2UVX8F89FmbE8mHYXHATba783JV1E+9rxQFTGPeUSZEWvxS1chQbnStFaJpCmdu4/hBRlGNrXuHdazzuf+EBzIC4DnoOjhpr3sRqMO9Dyc4X/YsOQ1cFXDrPyAFShwvcLh7ECd6Ci2FAkXba0NiECiBEsy7ElE/DUAXdZmI2k37X5S4yJY/mMVdgokJGflBmvstr81SQoF1uXwCNNdMvvJgt69lvlYNfSM4+wQcw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR07MB5529.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(376002)(346002)(136003)(36092001)(4326008)(5660300002)(66446008)(107886003)(66556008)(66476007)(6506007)(6916009)(26005)(64756008)(8676002)(71200400001)(55016002)(52536014)(2906002)(54906003)(66946007)(7696005)(316002)(76116006)(186003)(478600001)(8936002)(9686003)(83380400001)(86362001)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: WsqxgrbFoiJl/Yu3chTXgUWfeBRBWHy9h4D7eomRov9B/ujVz3TPu/1LQEHkWbFNNd7daqT+Qw3HFYjx1vQw+XHBgl4Is5Dt7j8AiFHE8LfLRGB3u9JEQLDDI2ewXBz5AdfV8xG5069PLkpq78APMCtebrWM7IPspwEt8+nJ2wGLrO+ByFR2kJIIM6zIolu07W3ICTJ0HydD3Nq/9lD8VxzxCGdOpjqXlOAfu5X8qsViS0V0nQYLJc5ihyAnRGHTlEHawbwkq8ETM5Wu6aB0GynFg9ycr2o0fDf8s5zoF+NMwTwFE5E5IQkaI2oMWVBdojOWKBLloW7gfR0myIBUH0QQxG+KfxVjDyQui2ggjf+A7LYR6dO5Z2shRiJPrjfwCYdQZzs4L2YKmGt4J2n31MrvKp5+62c0c2vZZxxnaS/bnPpe3M4m8nJu6InzW+yy+yA5BbvOmSygUZ1j7YsFb4ZMsKRXGDXeKoTKn53oheuPmrwG7GFdZOc/j/agzthGTAlOB/8MWeUXC1FJ2cGtuaEVuPbDKOAse0DB2kEbel5w54pij/ChDZ1SIxnj3qO08Aj3jI6WtL0pLurXliZjq+EPd4M1LqzxC38UFYEG6UBCOd7t2FmC9aHDk5F2T8K6mUQV58TcxZyfPgSXy4iTjw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728099AbgI3H0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:26:25 -0400
+Received: from mga01.intel.com ([192.55.52.88]:12016 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725440AbgI3H0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:26:25 -0400
+IronPort-SDR: eHQb5E+wkBym6MQo1n/1FZ5MwXP1M1ZFlIFBO2yfv7Bh+OAP9mNoooxY05tHrR35Uzq7HkvNQo
+ Grb87LHiMcqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="180539113"
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="180539113"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:26:23 -0700
+IronPort-SDR: gv7aeCEP2U8IHDXCg30udvRgJTs+JWm+5IGsLBUxCrvR5up3NMNDd0kIETVu628S/ixK9WA40E
+ iQ3gluPfMgkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
+   d="scan'208";a="457557859"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2020 00:26:18 -0700
+Subject: Re: [PATCH 1/2] mmc: sdhci-acpi: AMDI0040: Set
+ SDHCI_QUIRK2_PRESET_VALUE_BROKEN
+To:     Raul E Rangel <rrangel@chromium.org>, linux-mmc@vger.kernel.org
+Cc:     Shirish.S@amd.com, Akshu.Agrawal@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, chris.wang@amd.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <5094f730-ab5c-b0e4-677d-e53d3e42b52e@intel.com>
+Date:   Wed, 30 Sep 2020 10:25:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR07MB5529.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c19a24e-607b-4f9b-caf6-08d86511d0bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 07:24:06.3154
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fz9xeRoH9BLqULVroyCVtvv1dS/iuWhrv70pyerABwM4IoPTt8fTGZEZ03zg9fN0rl9s1JtLOTXsgtUEnUKXc2MKTHCZvU9IahdfFA/g5mQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB6092
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_05:2020-09-29,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
- adultscore=0 priorityscore=1501 clxscore=1015 spamscore=0 phishscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 suspectscore=0 mlxlogscore=249
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300057
+In-Reply-To: <20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 29/09/20 12:59 am, Raul E Rangel wrote:
+> This change fixes HS400 tuning for devices with invalid presets.
+> 
+> SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
+> used for DDR52. The HS400 retuning sequence is:
+> 
+>     HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
+> 
+> This means that when HS400 tuning happens, we transition through DDR52
+> for a very brief period. This causes presets to be enabled
+> unintentionally and stay enabled when transitioning back to HS200 or
+> HS400. Some firmware has invalid presets, so we end up with driver
+> strengths that can cause I/O problems.
+> 
+> Fixes: 34597a3f60b1 ("mmc: sdhci-acpi: Add support for ACPI HID of AMD Controller with HS400")
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
 
-My email server complains that delivery to peter.chan@nxp.org has failed.=20
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-This address has generated by  get_maintainer.pl. =20
-I only updated email to correct:  peter.chan@nxp.com.
-
-Regards,
-Pawel
-
->To avoid duplicate error information patch replaces platform_get_irq_bynam=
-e
->into platform_get_irq_byname_optional.
->
->A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
->
->Signed-off-by: Pawel Laszczak <pawell@cadence.com>
->---
-> drivers/usb/cdns3/core.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
->index a0f73d4711ae..a3f6dc44cf3a 100644
->--- a/drivers/usb/cdns3/core.c
->+++ b/drivers/usb/cdns3/core.c
->@@ -465,7 +465,7 @@ static int cdns3_probe(struct platform_device *pdev)
->
-> 	cdns->xhci_res[1] =3D *res;
->
->-	cdns->dev_irq =3D platform_get_irq_byname(pdev, "peripheral");
->+	cdns->dev_irq =3D platform_get_irq_byname_optional(pdev, "peripheral");
-> 	if (cdns->dev_irq =3D=3D -EPROBE_DEFER)
-> 		return cdns->dev_irq;
->
->@@ -477,7 +477,7 @@ static int cdns3_probe(struct platform_device *pdev)
-> 		return PTR_ERR(regs);
-> 	cdns->dev_regs	=3D regs;
->
->-	cdns->otg_irq =3D platform_get_irq_byname(pdev, "otg");
->+	cdns->otg_irq =3D platform_get_irq_byname_optional(pdev, "otg");
-> 	if (cdns->otg_irq =3D=3D -EPROBE_DEFER)
-> 		return cdns->otg_irq;
->
->--
->2.17.1
+> ---
+> I decided to abandon adding the preset_value_support for now. Enabling
+> presets for the AMD controller currently results in using invalid
+> presets for HS400. This is because sdhci_get_preset_value is using a
+> non-standard HS400 register that the AMD controller does not support.
+> 
+> I think preset_value_support also needs more thought. Since HS400
+> re-tuning requires switching to HS, DDR52, and HS200, if one of those
+> timings is not in the list, we would need to disable presets.
+> 
+> I chose this approach to avoid any additional complexity.
+> 
+>  drivers/mmc/host/sdhci-acpi.c | 37 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
+> index 284cba11e2795..d335a34ad05b3 100644
+> --- a/drivers/mmc/host/sdhci-acpi.c
+> +++ b/drivers/mmc/host/sdhci-acpi.c
+> @@ -662,6 +662,43 @@ static int sdhci_acpi_emmc_amd_probe_slot(struct platform_device *pdev,
+>  	    (host->mmc->caps & MMC_CAP_1_8V_DDR))
+>  		host->mmc->caps2 = MMC_CAP2_HS400_1_8V;
+>  
+> +	/*
+> +	 * There are two types of presets out in the wild:
+> +	 * 1) Default/broken presets.
+> +	 *    These presets have two sets of problems:
+> +	 *    a) The clock divisor for SDR12, SDR25, and SDR50 is too small.
+> +	 *       This results in clock frequencies that are 2x higher than
+> +	 *       acceptable. i.e., SDR12 = 25 MHz, SDR25 = 50 MHz, SDR50 =
+> +	 *       100 MHz.x
+> +	 *    b) The HS200 and HS400 driver strengths don't match.
+> +	 *       By default, the SDR104 preset register has a driver strength of
+> +	 *       A, but the (internal) HS400 preset register has a driver
+> +	 *       strength of B. As part of initializing HS400, HS200 tuning
+> +	 *       needs to be performed. Having different driver strengths
+> +	 *       between tuning and operation is wrong. It results in different
+> +	 *       rise/fall times that lead to incorrect sampling.
+> +	 * 2) Firmware with properly initialized presets.
+> +	 *    These presets have proper clock divisors. i.e., SDR12 => 12MHz,
+> +	 *    SDR25 => 25 MHz, SDR50 => 50 MHz. Additionally the HS200 and
+> +	 *    HS400 preset driver strengths match.
+> +	 *
+> +	 *    Enabling presets for HS400 doesn't work for the following reasons:
+> +	 *    1) sdhci_set_ios has a hard coded list of timings that are used
+> +	 *       to determine if presets should be enabled.
+> +	 *    2) sdhci_get_preset_value is using a non-standard register to
+> +	 *       read out HS400 presets. The AMD controller doesn't support this
+> +	 *       non-standard register. In fact, it doesn't expose the HS400
+> +	 *       preset register anywhere in the SDHCI memory map. This results
+> +	 *       in reading a garbage value and using the wrong presets.
+> +	 *
+> +	 *       Since HS400 and HS200 presets must be identical, we could
+> +	 *       instead use the the SDR104 preset register.
+> +	 *
+> +	 *    If the above issues are resolved we could remove this quirk for
+> +	 *    firmware that that has valid presets (i.e., SDR12 <= 12 MHz).
+> +	 */
+> +	host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+> +
+>  	host->mmc_host_ops.select_drive_strength = amd_select_drive_strength;
+>  	host->mmc_host_ops.set_ios = amd_set_ios;
+>  	host->mmc_host_ops.execute_tuning = amd_sdhci_execute_tuning;
+> 
 
