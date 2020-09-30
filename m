@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD37427E057
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DA727E063
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgI3F31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:29:27 -0400
-Received: from mail-eopbgr100120.outbound.protection.outlook.com ([40.107.10.120]:19616
-        "EHLO GBR01-LO2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725306AbgI3F31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:29:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=akQ5W6dkV3OobqAFiJvzWC/Qrb5xanKVy0VZ9KqwwIzbBIsX1BM4zhIGWlQyCqUqxY7Oy4w7A7P2K0qNryGUo1GBhd75msOiq4Zv/MNzL/4Ze8zNKeeaAr3TXVPTcAaJs5O03z7tGWYaBgzs8NEouX9CuhJrBhvBms6XE4Fai5tyTUdHgRLZ5X7EQLKRNNAulw476ToEWisqRKoN1CbzKkEjmHLQcGbWVbCuYRL+jVwPrsClvDBCZCpP3cJR79vm1x8Y2+PI2vjjpQFyaClqfpqx6ooF9jYtbr9Qvl3Ttz9glNjpPpix2i5FGSEHiijMnIflt7Qp5CkC5LjPaf0fow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tutr2RCClZVWeMZE6qG7csybtPUs4H2PHeTKVpflSPc=;
- b=oe60aNRgNBAR69H8HV1i2TCVDRdHR8FUi/j5psr/nDXjTTEUPgl+JLMDKLYUsL/2Zq/uQiKJcIlR8XJbXIYRyXN9kraT0Ocxh33ASpM4YLPrfEkxCFCdCgRXw29wKxAc6tV4KO6XVnsyTkiHIMUuT26qB0IwzZDX3Wc7jL+3uhleO4kRVVgVJ6HWZEv1kUYbnRe6Exj9MQw4QHtIdWDa94N4MwsrxaThJow/xOSiMHFCa7JhpuZcbRecrpsnX7HNIv4wVBkeWtuigRO2WWyRslqTfTMP+pKDZso2jk8JVjHmyUi3/CFpJWpY7UotehRN6ocoYOTP/dPLrL/6PeqlTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=purelifi.com; dmarc=pass action=none header.from=purelifi.com;
- dkim=pass header.d=purelifi.com; arc=none
+        id S1725804AbgI3Fdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgI3Fdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 01:33:37 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEEAC061755;
+        Tue, 29 Sep 2020 22:33:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id l18so237881pjz.1;
+        Tue, 29 Sep 2020 22:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=purevlc.onmicrosoft.com; s=selector2-purevlc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tutr2RCClZVWeMZE6qG7csybtPUs4H2PHeTKVpflSPc=;
- b=jFiXEpoqLqHVN1GKFxd/QcnG/xH+j1CUNXpXkxUNlVo2zzzSurgXSw/LJv7IXAmr/royhKA8hNIkCr+LnTTR7qbpHPoqdC2k0orvztUkNHvJT/jLDjMqU8uzR+22RfYhTThUDhf8Ee3pwa7W3vfPgYWedz6SjxzZkIAyDkelboM=
-Received: from CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:6f::14)
- by CWXP265MB2439.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:4c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Wed, 30 Sep
- 2020 05:29:23 +0000
-Received: from CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM
- ([fe80::e102:fffb:c3b6:780f]) by CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM
- ([fe80::e102:fffb:c3b6:780f%8]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
- 05:29:23 +0000
-From:   Srinivasan Raju <srini.raju@purelifi.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] [v2] wireless: Initial driver submission for pureLiFi
- devices
-Thread-Topic: [PATCH] [v2] wireless: Initial driver submission for pureLiFi
- devices
-Thread-Index: AQHWlYEQBtpUmlBsIE2OcjRvCcmkD6mAppEAgAADTrc=
-Date:   Wed, 30 Sep 2020 05:29:23 +0000
-Message-ID: <CWLP265MB1972EC8E3D4BDE977F11C8F5E0330@CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM>
-References: <20200924151910.21693-1-srini.raju@purelifi.com>
- <20200928102008.32568-1-srini.raju@purelifi.com>,<20200930051602.GJ3094@unreal>
-In-Reply-To: <20200930051602.GJ3094@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=purelifi.com;
-x-originating-ip: [103.104.125.101]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: daf1552e-969b-4e57-31f5-08d86501ca6c
-x-ms-traffictypediagnostic: CWXP265MB2439:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWXP265MB2439195F010B26FAF5A53D7EE0330@CWXP265MB2439.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4kLO4p2DE8Uedpx15ElBnFHJ59gBh/bqtL9F/MkUGEtUcvnTkb9B28+XwitfsEyrpDa/Ems5cHK/SniSZt9d0g6jAky4rMOV/v82D8gxQCilZKhF/r1Dkm56bmRRq/gd8PJs/4m5xFIRg8Rl/DwDn07F3ucEmp2R10B7K1hLVkpnbfxsl8DPThYA5HsbWClv3/RK9kKZH+JfzMo2tt8ut20OLs/J15zbIruvi+ykJMH7vXL0MVedJbHWOdtmldS4ihaY3JpD0q0A1IxILUdqPHsj4edmXb3/bRsvgu5XHOBckKz2k+keYxogL2OLNYb8581uC8P4YpfSEYKOqbqsYp5+NB8lKKQ62Hb7jdVvfOCqMEJSRXVSrNpKLMvEqrwu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(346002)(396003)(136003)(376002)(39830400003)(366004)(9686003)(8936002)(8676002)(2906002)(5660300002)(558084003)(4326008)(6916009)(55016002)(52536014)(6506007)(7696005)(316002)(76116006)(91956017)(54906003)(478600001)(26005)(186003)(33656002)(86362001)(66946007)(71200400001)(66476007)(66556008)(64756008)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: i7+uE7bJmGc+dMWXTtrC+3bzEWI9fyclItmwTb8Zz/cByEpk7e8QnYG7OSWlyYuKhWaEdmKz2alksBDQuhLyl9awc0WJkdf8SQW5NFg3nOUheAutavU/snQnnq6db2QUOrIDotEFe2b6KVqlfz4ulk9y1grLtNeAo02AAG8m1SeDxLu5lW/IvJaFhYKot7A29cMrqyTpgDjao++H3SOst9kxtSITQ/U1WKkLkOZ33YBnR0ITmnmsczyOtPGLK5vYdfpxEVbt9Hpb0vcYWMEKbhhlcrR/P4Gkwz8TTOe1tf7GxvaKMc0TPkUi055OFhKx8xw3QYVKttox5n6hh/lW3LjsLELN43ZRhKYtPmqIz5RmhVELQD07lF+8khYeSWYuvjcY05njYJmYWOAGKMmgzqNMKZgwAvbs3C90FGmpSQrUfiLW8LQN6V+VizRsY2gSVIfQJqYbOXTrW9B6gHjcjpsRlN6CKxrjsx5xeSb1g+WYE9CyCOxUaugdjJvG0Kfed2L0nMwXffjrfAO80OsCUW6t3HVmn8xq20Z52axpvRPUPIV0U1+c7wmyz/5H3FQ41UamHJItAE3rszP1PlDqZ6FqZzCqc6K4Q2il84fw8t8+ApHSA6NNsHw3gokZ0dWWzjZh6ZG7N3SL2wd+AW/ewQ==
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=OmxpJuvijh0m6kJcF1u1drddAJ2BLcjqzo+pucKDFhY=;
+        b=nqp4vmkdnFydbbSm+m0QjFWfBzAsAjfdi8rm2h2f9jz87VU+oto3pBdY71rBrklkGt
+         E63lSJUmcKNwPNVphQNlnwwrM++BWwXMYn0IkCrBOAW74ef/WgDFGjLRonwlofMxesji
+         xajr0wGt+ED8HcxXD9WpGvmx093Vj7nxAtzFSEtmDrZ0x+tmdwbsUMxCTn/97F3KesOn
+         PnPPaNTSXPRs6iqleYiJ6dGgOIVbrKV3uV0rgmO/gWhf7qsaflm8bUZIQqHWZ3naNAxf
+         aFJMSpDAEVGBaEDlA5/u1fK2YYdHOOVfZRsEAu6Lxx6l6iyRuBzHHkQksRuCc2Ka7FaG
+         BiPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=OmxpJuvijh0m6kJcF1u1drddAJ2BLcjqzo+pucKDFhY=;
+        b=SKrDbfSGR7mcoX3Yqw1DLdok48szXAzgOH6tc5ErYk3Hvq9tVeDu4JTy/YWMDBRJ6O
+         jAGIeTngrVK61TwXaFBJ6uTgB053XzidAUUu+oASeZpTDnXb5Z0o51kJg9kifkpWz1n7
+         pzm7VZBKPCONQ8DaAufTiieekwONqmR7inL03SrJBxL+2mwvb/XmDJf4Fh0gm+5oS2ff
+         nfjMqr4UhsJRFkxVNBNWQp0t4enrmgUNTQ7cow5gq9C8eB/3ifPUo1HpKyvxDCNtaFsE
+         py2vBAHRMnO35rBFtl9+0/wwWvLY5FnHrbyjY4ch/96vPY2hS4Dd0Yj6RJ6bebtc+RMJ
+         UjjA==
+X-Gm-Message-State: AOAM532YmQK7JIA6tGW1ywaOdDUxqjexor5RZKryBTEQjh/Pq/Yi4KOW
+        SZ+CCBvBD5w11q2uGaLtrpQ=
+X-Google-Smtp-Source: ABdhPJz8999KVOIETNd5trWMtQBQibv12Knp50lGI0K0vTSJfuEJs2akAi00z6JP0DZT/qRZNRdhAA==
+X-Received: by 2002:a17:90a:8d05:: with SMTP id c5mr994931pjo.222.1601444012558;
+        Tue, 29 Sep 2020 22:33:32 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id c1sm648658pfj.219.2020.09.29.22.33.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 22:33:32 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 22:28:00 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20200930052759.GA31821@Asurada-Nvidia>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-4-nicoleotsuka@gmail.com>
+ <27b155ec-97ab-98f6-7b48-3fded875d5cc@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: purelifi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB1972.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: daf1552e-969b-4e57-31f5-08d86501ca6c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 05:29:23.7111
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5cf4eba2-7b8f-4236-bed4-a2ac41f1a6dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: om+wb3mW1Z2+t8fWJzPDFxMQDD+18f+FTtdzuj32tmCZ1uyLXZ+xmU8tPA/MaZg453Ugch1H5c3/FkUcAV3Vxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2439
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <27b155ec-97ab-98f6-7b48-3fded875d5cc@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=0A=
-> I stopped here.=0A=
->=0A=
-> Thanks=0A=
-=0A=
-Thanks for your comments Leon, I will resubmit after the changes=0A=
-=0A=
-Thanks=0A=
-Srini=
+On Wed, Sep 30, 2020 at 08:10:00AM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 03:30, Nicolin Chen пишет:
+> ...
+> > +#ifdef CONFIG_PCI
+> > +	if (!iommu_present(&pci_bus_type)) {
+> 
+> Could you please explain why this check is needed?
+
+That's referencing what's in the arm-smmu.c file, since it does
+not hurt to have a check.
