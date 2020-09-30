@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6BA27E281
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B8327E26E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgI3HWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        id S1728455AbgI3HRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3HWY (ORCPT
+        with ESMTP id S1725440AbgI3HRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:22:24 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F020C061755;
-        Wed, 30 Sep 2020 00:22:22 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y6so473217plt.9;
-        Wed, 30 Sep 2020 00:22:22 -0700 (PDT)
+        Wed, 30 Sep 2020 03:17:02 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54030C061755;
+        Wed, 30 Sep 2020 00:17:02 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t7so380868pjd.3;
+        Wed, 30 Sep 2020 00:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=yJyPv9TfvoTiNiepUCS1moee1qgA1MUCDqAQ76iLRGw=;
-        b=dIjQ4Kq7OP6C1q55KiX7llzOLRIxLxLiAEZUJPtcvKr22oEfblNhrGHtxeM8XIyCOI
-         /W/jTi0/dVSNlDsYDUxCqyCzw0wIbPPIoOJWVZHcnie4W616Ent7T6zODTqDg4uABts3
-         hi4fibufYdX0d39thb8ihr7pTCHR/Dhpy1nhM0TrWsDYMdy+FTasX9wI62aVQ/AnQYYp
-         pUnD1gPZir2hrCQi/uqU7HKaMUy8FwlN03RAm6Ik1W8MPPt8lyjBlvVE7Od59AX3Y7Lr
-         RuEK7b1wgvRayFlXhpzLopy50CZF5YLeVwJmAs68gQYgRH/Lmg82pi3Vhn9zwF5h3ImP
-         hfNg==
+         :content-disposition:in-reply-to;
+        bh=HvB5WWDeCpx4UxR7469lckPwvo+OJ9mvkcjL6Dnh5Es=;
+        b=cz3y20djppMM1e+O0NQd3T9TUu175fFor7dMRlKW8evtdkP9ij7Mv6pVrnc65HDa5l
+         IiQRZrbfI2PBy4HxXsqRJwldR8nks5NWfJ7JDpt3gOenJzSo+0ku7py9qj1pfGDgDgX9
+         hIZg1E1/NuZhV5AvDsOwcnvQZpQaUcJ7tyc2gAtbz6zH961mwlViPt3GDRUMxyq3F/EU
+         DPIFjE/6lkd37HnMu//PZ7awQl3cpq9S6UKS+SZci6j7avpbUUcsL2mV9dbxTjLHr+0N
+         sddd6G2EBO++3ivQbQQe+CGLjpIAzIdbR4z9UbN9RgsfAt1zFPsWV4bfRI0x37hDid9d
+         /raA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=yJyPv9TfvoTiNiepUCS1moee1qgA1MUCDqAQ76iLRGw=;
-        b=ZYBVykERjxmboW6sG1JmUZRxXkdlq5s9e2OlFO+bI0eWzop2IsEvQUU7g0bVRUKejW
-         gmVSIcJfPg4ZScRn7w62WPWYKoRgd/Gyds//hB6y060Gd8xUdrRTL1KcV9+4ntllsrt3
-         wICoYfZI6kTxJ1LqK5GfLPAUxakfe+Mp6Jgsrpmuc79EjaEFekkHKQTKH1LjXnI9kB58
-         Ru7JS0U8AnhNo1EM2l2Bqkx5tLWLy+Uo3hUjuVjIFRt6rmRPaY+bHef5or5dy5aUiz8j
-         PDcviwl62mhyZeDwraWuKpZdUFv1VPtsSdmIaDWdYt7UGHBzppVTz37cPAuocYDhlweN
-         N6HA==
-X-Gm-Message-State: AOAM531rG09n/foOyK22nx91wTBE3hRYcUn8GTtmtFQ6qhfTA4E5dkjl
-        fCgdDGMUprPt0KuiDzzcFIU=
-X-Google-Smtp-Source: ABdhPJz/rnWA9bYT3PPtMlpoljxk/a7LibergtvDqyjwYz/Z7mihUyup7d6kfRH6Q8SIbLPsHcf17A==
-X-Received: by 2002:a17:90a:c17:: with SMTP id 23mr1347882pjs.127.1601450541995;
-        Wed, 30 Sep 2020 00:22:21 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id v65sm939141pgv.21.2020.09.30.00.22.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 00:22:21 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 00:16:50 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] iommu/tegra-smmu: Add PCI support
-Message-ID: <20200930071650.GB13876@Asurada-Nvidia>
-References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
- <20200930003013.31289-4-nicoleotsuka@gmail.com>
- <f07d4fcc-ee19-874b-c542-0679660c3549@gmail.com>
- <20200930052952.GB31821@Asurada-Nvidia>
- <96e71d38-5888-5b21-f0e1-9e6def50484e@gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=HvB5WWDeCpx4UxR7469lckPwvo+OJ9mvkcjL6Dnh5Es=;
+        b=Lv2Zh5OKtqdtrAOyKW55BENq4OzbIp64/vvwrIbubLIz9UifoiChZ88Xyjn8JSlb+f
+         i43Ipe8/99jJaXqqW2CZ885LaPmN/BTzehszycMUuq3hqs4869Hifb612RFOhAdcZunY
+         6f4fcqNdvL1IUnev+h9ccsbKVUigiP1VIy6z/WDOO4RnhdNrFJmu/Q2L/8T2vNaoAipk
+         YCy4b53V3GI5FX8851kt9sCkP/g4+kvRckELbKcRCkl/8a4ZafhV/pHOQmkZ9WcqctvS
+         K++YVEaNoCtR+SoOgE/P3YocElkiPExcJLtt9ryyE5k2O+xR+QIKLv7Hkc2Oq6V9bHV4
+         +TIw==
+X-Gm-Message-State: AOAM530J5qDrSDZzsOZXD7xx2hgamX6doWuG0k9gAup/9AVEzZSwOL4C
+        jvMTbNzD9N0dKRPojxLc/w==
+X-Google-Smtp-Source: ABdhPJwwhqS/oKgZ2gCgTtB/SwDO9Ox+IW1ZuQUaTukVj7RoNvgQyRu6dyqlZGMOEx3c95YBXvzTtA==
+X-Received: by 2002:a17:90a:9704:: with SMTP id x4mr1361295pjo.20.1601450221896;
+        Wed, 30 Sep 2020 00:17:01 -0700 (PDT)
+Received: from PWN ([161.117.41.183])
+        by smtp.gmail.com with ESMTPSA id l10sm1034278pgp.25.2020.09.30.00.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 00:17:01 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 03:16:52 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200930071652.GA1152625@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
+ <20200925101300.GA890211@PWN>
+ <20200925132551.GF438822@phenom.ffwll.local>
+ <20200929123420.GA1143575@PWN>
+ <7d341242-9612-d0ee-4b79-e93882fad73f@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <96e71d38-5888-5b21-f0e1-9e6def50484e@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <7d341242-9612-d0ee-4b79-e93882fad73f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:58:50AM +0300, Dmitry Osipenko wrote:
-> 30.09.2020 08:29, Nicolin Chen пишет:
-> > Hi Dmitry,
-> > 
-> > On Wed, Sep 30, 2020 at 08:10:07AM +0300, Dmitry Osipenko wrote:
-> >> 30.09.2020 03:30, Nicolin Chen пишет:
-> >>> -	group->group = iommu_group_alloc();
-> >>> +	group->group = pci ? pci_device_group(dev) : iommu_group_alloc();
-> >>
-> >> This will be nicer to write as:
-> >>
-> >> if (dev_is_pci(dev))
-> >>     group->group = pci_device_group(dev);
-> >> else
-> >>     group->group = generic_device_group(dev);
-> > 
-> > Why is that nicer? I don't feel mine is hard to read at all...
-> > 
+On Wed, Sep 30, 2020 at 07:26:52AM +0200, Jiri Slaby wrote:
+> On 29. 09. 20, 14:34, Peilin Ye wrote:
+> > the work in general? I couldn't think of how do we clean up subsystems
+> > one by one, while keeping a `console_font` in `struct vc_data`.
 > 
-> Previously you said that you're going to add USB support, so I assume
-> there will be something about USB.
+> Hi,
+> 
+> feel free to change struct vc_data's content as you need, of course.
+> Only the UAPI _definitions_ have to be preserved (like struct console_font).
 
-I was hoping that it'd work for USB. Yet USB doesn't seem to have
-an different function for device_group().
+Ah, I see. Thank you for the reminder!
 
-> It's also a kinda common style that majority of Tegra drivers use in
-> upstream kernel. But yours variant is good too if there won't be a need
-> to change it later on.
+Peilin Ye
 
-Okay..I'll use yours then.
-
-Thanks
