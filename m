@@ -2,181 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2611D27F583
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3A427F586
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgI3Wvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:51:43 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:51025 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731808AbgI3Wvm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:51:42 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S1731910AbgI3Wv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731808AbgI3Wv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:51:56 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 1E4A022EDE;
-        Thu,  1 Oct 2020 00:51:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601506300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0yBPgimlAnB9qjnYhtR1UnHNO8xcwVbFDrDVCIQ51JU=;
-        b=MAY7Kkf68Sql2fBLQ6/Lvko6HSUWAvwe/B5CgSYoWPkGYLvwVAHJBDBMJXxqRohGAP47l+
-        lPmpi1vWpo9AKiRyDghQImyvmtnm8uepVcNJBnIO0Q7U/QjCKM5/t7u82KxSlm5loB0ywn
-        igk0rUL33G1BHdeicVH8DvZsL6ilroc=
+        by mail.kernel.org (Postfix) with ESMTPSA id C272F20719;
+        Wed, 30 Sep 2020 22:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601506316;
+        bh=KFmouRsvBVZ3Y/PYT9xJnwdLHua2k27n0cu1H9BZ6l8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ErCOiYuE3T/ukx2QVvOYx3P0p85+8zd+cviA6M2gceIzSfDLjPA9npAn6qBYwnZ64
+         D8WZF8dQV6bbmloxOP+jC9nRt+BSSIUUmr/oIZ34jAPvXpKNwOIl5kUOFbSrvWE/mR
+         Z4k8wm4xr98IWOFHxbMljjMiI7xM95LPcjIeY/qk=
+Date:   Wed, 30 Sep 2020 17:51:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        PCI <linux-pci@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Samuel Dionne-Riel <samuel@dionne-riel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] of: address: Work around missing device_type property
+ in pcie nodes
+Message-ID: <20200930225154.GA2631019@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Oct 2020 00:51:39 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
-In-Reply-To: <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
-References: <20200327155939.13153-1-michael@walle.cc>
- <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <fb33aa707744ad6c25a4d332e7d73c58@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_Jsq+xBKbYXWipwmZ=ZidorsMUFDw2NpUyxobx4FCTn+8Hmg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-09-30 12:35, schrieb Vignesh Raghavendra:
-[..]
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->> changes since v2:
->>  - add Kconfig option to be able to retain legacy behaviour
->>  - rebased the patch due to the spi-nor rewrite
->>  - dropped the Fixes: tag, it doens't make sense after the spi-nor 
->> rewrite
->>  - mention commit 3e0930f109e76 which further modified the unlock
->>    behaviour.
->> 
->> changes since v1:
->>  - completely rewrote patch, the first version used a device tree flag
->> 
->>  drivers/mtd/spi-nor/Kconfig | 35 +++++++++++++++++++++++++++++
->>  drivers/mtd/spi-nor/atmel.c | 24 +++++++++++++-------
->>  drivers/mtd/spi-nor/core.c  | 44 
->> ++++++++++++++++++++++++++++---------
->>  drivers/mtd/spi-nor/core.h  |  6 +++++
->>  drivers/mtd/spi-nor/esmt.c  |  6 ++---
->>  drivers/mtd/spi-nor/intel.c |  6 ++---
->>  drivers/mtd/spi-nor/sst.c   | 21 +++++++++---------
->>  include/linux/mtd/spi-nor.h |  6 +++++
->>  8 files changed, 114 insertions(+), 34 deletions(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
->> index 6e816eafb312..647de17c81e2 100644
->> --- a/drivers/mtd/spi-nor/Kconfig
->> +++ b/drivers/mtd/spi-nor/Kconfig
->> @@ -24,6 +24,41 @@ config MTD_SPI_NOR_USE_4K_SECTORS
->>  	  Please note that some tools/drivers/filesystems may not work with
->>  	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
->> 
->> +choice
->> +	prompt "Write protection at boot"
->> +	default MTD_SPI_NOR_WP_DISABLE
+On Wed, Sep 30, 2020 at 03:34:10PM -0500, Rob Herring wrote:
+> On Wed, Sep 30, 2020 at 12:37 PM Niklas Söderlund
+> <niklas.soderlund@ragnatech.se> wrote:
+> >
+> > Hi Marc,
+> >
+> > On 2020-09-30 18:23:21 +0100, Marc Zyngier wrote:
+> > > Hi Niklas,
+> > >
+> > > [+ Samuel]
+> > >
+> > > On 2020-09-30 17:27, Niklas Söderlund wrote:
+> > > > Hi Marc,
+> > > >
+> > > > I'm afraid this commit breaks booting my rk3399 device.
+> > > >
+> > > > I bisected the problem to this patch merged as [1]. I'm testing on a
+> > > > Scarlet device and I'm using the unmodified upstream
+> > > > rk3399-gru-scarlet-inx.dtb for my tests.
+> > > >
+> > > > The problem I'm experience is a black screen after the bootloader and
+> > > > the device is none responsive over the network. I have no serial console
+> > > > to this device so I'm afraid I can't tell you if there is anything
+> > > > useful on to aid debugging there.
+> > > >
+> > > > If I try to test one commit earlier [2] the system boots as expected and
+> > > > everything works as it did for me in v5.8 and earlier. I have worked
+> > > > little with this device and have no clue about what is really on the PCI
+> > > > buss. But running from [2] I have this info about PCI if it's helpful,
+> > > > please ask if somethings missing.
+> > >
+> > > Please see the thread at [1]. The problem was reported a few weeks back
+> > > by Samuel, and I was expecting Rob and Lorenzo to push a fix for this.
+> >
+> > Thanks for providing a solution.
+> >
+> > >
+> > > Rob, Lorenzo, any update on this?
 > 
-> These choice control how BP0-X bits are manipulated on boot. Hence, to
-> be consistent should use Block Protection (BP) terminology throughout.
+> The fix is in Bjorn's tree[1].
 > 
-> This would also be inline with most flash datasheets which also use 
-> term BP
+> Bjorn, going to send this to Linus before v5.9 is out?
 
-Where should I mention the BP bits? In the choice or in the help text.
-I tried to keep the choice prompt as easy to understand as possible, so 
-an
-user who doesn't know anything about how the write protection actually 
-works
-can still make that choice (without first reading a datasheet). Also 
-keep in
-mind, that there is also the per sector locking. Wouldn't this option 
-also
-apply to that?
+Definitely, thanks for the reminder.  I'm assuming the fix in question
+is https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/commit/?h=for-linus&id=e338eecf3fe79054e8a31b8c39a1234b5acfdabe
 
-Therefore, I'd mention in the help text, that (currently) the BP bits 
-are
-affected.
-
->> +
->> +config MTD_SPI_NOR_WP_DISABLE
->> +	bool "Disable WP on any flashes (legacy behaviour)"
->> +	help
->> +	  This option disables the write protection on any SPI flashes at
->> +	  boot-up.
->> +
->> +	  Don't use this if you intent to use the write protection of your
->> +	  SPI flash. This is only to keep backwards compatibility.
->> +
->> +config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
->> +	bool "Disable WP on flashes w/ volatile protection bits"
->> +	help
->> +	  Some SPI flashes have volatile block protection bits, ie. after a
->> +	  power-up or a reset the flash is write protected by default.
->> +
->> +	  This option disables the write protection for these kind of 
->> flashes
->> +	  while keeping it enabled for any other SPI flashes which have
->> +	  non-volatile block protection bits.
->> +
->> +	  If you are unsure, select this option.
->> +
->> +config MTD_SPI_NOR_WP_KEEP
->> +	bool "Keep write protection as is"
->> +	help
->> +	  If you select this option the write protection of any SPI flashes
->> +	  will not be changed. If your flash is write protected or will be
->> +	  automatically write protected after power-up you have to manually
->> +	  unlock it before you are able to write to it.
->> +
->> +endchoice
->> +
->>  source "drivers/mtd/spi-nor/controllers/Kconfig"
->> 
->>  endif # MTD_SPI_NOR
-> 
-> [...]
-> 
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index 6f2f6b27173f..9a33c023717f 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -26,6 +26,7 @@ enum spi_nor_option_flags {
->>  	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
->>  	SNOR_F_HAS_4BIT_BP      = BIT(12),
->>  	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
->> +	SNOR_F_NEED_UNPROTECT	= BIT(14),
->>  };
->> 
->>  struct spi_nor_read_command {
->> @@ -311,6 +312,11 @@ struct flash_info {
->>  					 * BP3 is bit 6 of status register.
->>  					 * Must be used with SPI_NOR_4BIT_BP.
->>  					 */
->> +#define SPI_NOR_UNPROTECT	BIT(19)	/*
->> +					 * Flash is write-protected after
->> +					 * power-up and needs a global
->> +					 * unprotect.
->> +					 */
->> 
-> 
-> It would be better to name the flag to indicate BP bits are volatile or
-> powers up locked instead of SPI_NOR_UNPROTECT. This makes it easier to
-> understand what this flag means wrt flash HW feature. Maybe:
-> 
-> SPI_NOR_LOCKED_ON_POWER_UP or SPI_NOR_BP_IS_VOLATILE
-
-SPI_NOR_BP_IS_VOLATILE sounds good to me.
-
--michael
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git/log/?h=for-linus
