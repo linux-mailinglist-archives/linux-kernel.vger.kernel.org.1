@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE4C27EBA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824C827EBAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730272AbgI3PBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:01:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56974 "EHLO mail.kernel.org"
+        id S1730568AbgI3PBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:01:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34784 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbgI3PBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:01:08 -0400
-Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC5A52076B;
-        Wed, 30 Sep 2020 15:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601478068;
-        bh=aE04Gn+SHVdidjsY0sHGoYsJR2y/ODqMgSn6wdS7TGg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dKL70A8wHqaVQtOnqtIR4clcWzMdcI+3oXKAghV5w578Y+XAHqAzE9JsPPOifAqf/
-         4Mr5Qaw5T1zQGbcvOYAy2dnKqcXQbzmUmHSSSTBRLkeBOGvZ4Q5q1JIFnsm2bYcib8
-         DqTwM91Urf7FcKEC2DbzE2SY6VZ9qvr+NdMgUESg=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kNdbN-001Yhh-81; Wed, 30 Sep 2020 17:01:05 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] media: atomisp: fixes a breakage due to a cleanup patch
-Date:   Wed, 30 Sep 2020 17:01:03 +0200
-Message-Id: <9e5f813977bcc53a65bf719658ad73f933e6270e.1601478042.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1725799AbgI3PBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:01:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601478072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r2mUucJcLi35AIJNXuqLMLoqUTa21lTZCK2EZ0nq498=;
+        b=Mm0hNhxPs3agsAG1cbbRINpyO4Qs9qIwd11DJWGXUiC4VOLIYnffsuwiicfpRn81rhxWLf
+        FMBFFlick53K5umVDr/MKdProI8Ex6HB4xUJSaXSf/c+EdmW7Cg/l2jRT3PvJjaRZcZPB/
+        ullXkX7d/zvEu2A2KPvVJ3jTEOog9vI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7451AB8F;
+        Wed, 30 Sep 2020 15:01:12 +0000 (UTC)
+Date:   Wed, 30 Sep 2020 17:01:09 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org,
+        akpm@linux-foundation.org, Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zqiang <qiang.zhang@windriver.com>
+Subject: Re: [RFC PATCH] kthread: do not modify running work
+Message-ID: <20200930150109.GK29288@alley>
+References: <20200926040426.11936-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926040426.11936-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A temporary var needed for building with ISP2400 was removed
-by accident on a cleanup patch.
+On Sat 2020-09-26 12:04:26, Hillf Danton wrote:
+> 
+> It does not make much sense to rearm timer for the delayed work if
+> it is worker's current work atm because it's good to do work only
+> once.
 
-Fix the breakage.
+Quite typical scenario is to queue delayed work from its own callback.
+It allows to do the work in regular intervals.
 
-Fixes: 852a53a02cf0 ("media: atomisp: get rid of unused vars")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+This patch would break it. Or do I miss anything?
 
-v2: fixed a typo at comment: ISP2401 -> ISP2400
-
- drivers/staging/media/atomisp/pci/sh_css.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-index e8c5caf3dfe6..8e4e82a97098 100644
---- a/drivers/staging/media/atomisp/pci/sh_css.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css.c
-@@ -1365,7 +1365,6 @@ start_binary(struct ia_css_pipe *pipe,
- {
- 	assert(pipe);
- 	/* Acceleration uses firmware, the binary thus can be NULL */
--	/* assert(binary != NULL); */
- 
- 	if (binary)
- 		sh_css_metrics_start_binary(&binary->metrics);
-@@ -1381,7 +1380,7 @@ start_binary(struct ia_css_pipe *pipe,
- #endif
- 
- #if !defined(ISP2401)
--	if (stream->reconfigure_css_rx) {
-+	if (pipe->stream->reconfigure_css_rx) {
- 		ia_css_isys_rx_configure(&pipe->stream->csi_rx_config,
- 					 pipe->stream->config.mode);
- 		stream->reconfigure_css_rx = false;
--- 
-2.26.2
-
-
+Best Regards,
+Petr
