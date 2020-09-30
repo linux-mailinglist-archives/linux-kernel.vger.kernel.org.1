@@ -2,153 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F2C27DE6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C9427DE6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 04:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbgI3CUs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 29 Sep 2020 22:20:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15239 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726689AbgI3CUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:20:48 -0400
-IronPort-SDR: tn6Cz+KcKXajbA4ogzN4SjS3yGTwdX0bCATLCoTfNGpRnrI5KwZUKMTCnFAeD+wBsrJtL9m3ze
- VHclP0NFmE3A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="161562228"
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="161562228"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:20:45 -0700
-IronPort-SDR: viLIUotV/hOeJS/xXnINgmiZLlum3DqZcP2orypLACSqeejtNsq6C5OpNMAVO8hF7OhhpE3yR4
- x4I6t5VP4uWw==
-X-IronPort-AV: E=Sophos;i="5.77,320,1596524400"; 
-   d="scan'208";a="494851100"
-Received: from xinpan-mobl.ger.corp.intel.com (HELO localhost) ([10.249.35.239])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2020 19:20:42 -0700
-Date:   Wed, 30 Sep 2020 05:20:40 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>, tyhicks@linux.microsoft.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-integrity@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [Regression] "tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures" causes null pointer dereference
-Message-ID: <20200930022040.GG808399@linux.intel.com>
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
- <20200928140623.GA69515@linux.intel.com>
- <BB63B86E-CA44-4EB7-A5D1-21B0E9EB2850@canonical.com>
- <846fe4da67d05f57fba33e38c9a6e394e657adc3.camel@linux.ibm.com>
+        id S1729689AbgI3CVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 29 Sep 2020 22:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgI3CVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:21:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C390EC061755;
+        Tue, 29 Sep 2020 19:21:02 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id nw23so530769ejb.4;
+        Tue, 29 Sep 2020 19:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VviVj9bYE7aXVNpstffQ7ePdMsng1BehF9I+7/XekM8=;
+        b=LQjmSSLzZ9xYDHO61ieHODLq/x3LIKoty3Zho6MH+qyAsGtCXqf1zsbpyYdcNjOnlg
+         jDJwEezl9CWPcn4aXXwJdR/S7lVyj6Zr1RP2+KOGNdvW/KXEfM4B3+uO+RCXRzCOLJee
+         9s3hQcE7/Pk6DbfwhWhgtgKP8il+cYIcTFaZcFgp7xSw3L2N0ToUtFPX+ybtQO00RDdN
+         vcs4N11g2A+uEZvNOzyoI3cO7v+bMoKAKRJp8ejjarx45ev2xpZNzi8c/Kp5tobzJSdV
+         9gqfjyjoOKuBG0tNH03aWWXGNnrL8z3eehgI/+dZFwUgdPJliWMrjAe1Qb5BqM7ZrIIV
+         qr1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VviVj9bYE7aXVNpstffQ7ePdMsng1BehF9I+7/XekM8=;
+        b=awLFjnx4XtxBt/HtNZ/zqubD855sZ+T177tlzFYCfQs63OgxlY/3QsYpYtTyT6U74L
+         15vQ633oc1QkueuSSkeqMaN9Fd1gvX6kQsZp8gQSHJIMJb6LDJpv93zBV3Gf1HVTBdqh
+         KtVKgaucR3Lpaxv5v01Cp5OaTIuTtwLIvRu2ey5M6GL7tMbufge/5SKXKQL9GxaqVTqf
+         4sujg9jVqtoX/Ly9y+GmtLoLrLBN0GEb8chfkXdGEZ/Vug9xG3t8ga9kWgT0ywMC6Nns
+         UA8uYE2Q2aw29xG56TPJ6Cx/mmjnY+0oPe+EFQ27u9NXOubBTj3oznAzFZUurjLTfWCb
+         9n7A==
+X-Gm-Message-State: AOAM532f74t3v4BL5pxgyCxbo9n/3vPm3RokHkxD1jiHNGTFtshzuhKj
+        T8TyFsKz1gCPle7LDMgPQ+cjdHk3UXTB0SrgZs0=
+X-Google-Smtp-Source: ABdhPJxrFIv5ybeLKeFyWBmAzsMd72cDCVT2+TMBsOuyb25Ml82cB6Y4bzJUTA6bJniQcZMA+Z29ogsfeRXUEg0cOuA=
+X-Received: by 2002:a17:906:6409:: with SMTP id d9mr580121ejm.344.1601432461534;
+ Tue, 29 Sep 2020 19:21:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <846fe4da67d05f57fba33e38c9a6e394e657adc3.camel@linux.ibm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200927032829.11321-1-haifeng.zhao@intel.com>
+ <20200927032829.11321-3-haifeng.zhao@intel.com> <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
+ <20200929081800.GA15858@wunner.de> <CAKF3qh3UxkVOwCOUB4rNdxLX0k9oZQRzXT_N0BNYKWL_BAHa5w@mail.gmail.com>
+ <20200929100759.GA21885@wunner.de>
+In-Reply-To: <20200929100759.GA21885@wunner.de>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Wed, 30 Sep 2020 10:20:50 +0800
+Message-ID: <CAKF3qh2xVfj0KNGj8MFC_Z+gOqNw7JD1uDbVy=OgLnkZ0t-0+Q@mail.gmail.com>
+Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of DPC
+ before handling DLLSC and PDC
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Sinan Kaya <okaya@kernel.org>, Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jia, Pei P" <pei.p.jia@intel.com>, ashok.raj@linux.intel.com,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:52:04PM -0400, Mimi Zohar wrote:
-> On Mon, 2020-09-28 at 22:16 +0800, Kai-Heng Feng wrote:
-> > Hi Jarkko,
-> > 
-> > > On Sep 28, 2020, at 22:06, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> > > 
-> > > On Mon, Sep 28, 2020 at 08:31:04PM +0800, Kai-Heng Feng wrote:
-> > >> Commit 7f3d176f5f7e "tpm: Require that all digests are present in
-> > >> TCG_PCR_EVENT2 structures" causes a null pointer dereference on all
-> > >> laptops I have:
-> > > 
-> > > ...
-> > > 
-> > >> [   17.868849] BUG: kernel NULL pointer dereference, address: 000000000000002c
-> > >> [   17.868852] #PF: supervisor read access in kernel mode
-> > >> [   17.868854] #PF: error_code(0x0000) - not-present page
-> > >> [   17.868855] PGD 0 P4D 0 
-> > >> [   17.868858] Oops: 0000 [#1] SMP PTI
-> > >> [   17.868860] CPU: 0 PID: 1873 Comm: fwupd Not tainted 5.8.0-rc6+ #25
-> > >> [   17.868861] Hardware name: LENOVO 20LAZ3TXCN/20LAZ3TXCN, BIOS N27ET38W (1.24 ) 11/28/2019
-> > >> [   17.868866] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
-> > >> [   17.868868] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
-> > >> [   17.868869] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
-> > >> [   17.868871] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
-> > >> [   17.868872] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
-> > >> [   17.868873] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
-> > >> [   17.868874] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
-> > >> [   17.868875] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
-> > >> [   17.868876] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
-> > >> [   17.868877] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >> [   17.868878] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
-> > >> [   17.868879] Call Trace:
-> > >> [   17.868884]  seq_read+0x95/0x470
-> > >> [   17.868887]  ? security_file_permission+0x150/0x160
-> > >> [   17.868889]  vfs_read+0xaa/0x190
-> > >> [   17.868891]  ksys_read+0x67/0xe0
-> > >> [   17.868893]  __x64_sys_read+0x1a/0x20
-> > >> [   17.868896]  do_syscall_64+0x52/0xc0
-> > >> [   17.868898]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > >> [   17.868900] RIP: 0033:0x7f9d83be91dc
-> > >> [   17.868901] Code: Bad RIP value.
-> > >> [   17.868902] RSP: 002b:00007fff7f5e0250 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> > >> [   17.868903] RAX: ffffffffffffffda RBX: 00005651d262f420 RCX: 00007f9d83be91dc
-> > >> [   17.868904] RDX: 0000000000001000 RSI: 00007fff7f5e0350 RDI: 0000000000000010
-> > >> [   17.868905] RBP: 00007f9d83cc54a0 R08: 0000000000000000 R09: 00005651d26c1830
-> > >> [   17.868906] R10: 00005651d2582010 R11: 0000000000000246 R12: 0000000000001000
-> > >> [   17.868907] R13: 00007fff7f5e0350 R14: 0000000000000d68 R15: 00007f9d83cc48a0
-> > >> [   17.868909] Modules linked in: rfcomm ccm cmac algif_hash algif_skcipher af_alg snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic bnep joydev mei_hdcp wmi_bmof intel_rapl_msr intel_wmi_thunderbolt x86_pkg_temp_thermal intel_powerclamp coretemp nls_iso8859_1 kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel glue_helper crypto_simd cryptd rapl input_leds intel_cstate snd_hda_intel snd_intel_dspcfg rmi_smbus iwlmvm snd_hda_codec serio_raw snd_hwdep mac80211 rmi_core snd_hda_core libarc4 uvcvideo snd_pcm videobuf2_vmalloc btusb videobuf2_memops iwlwifi videobuf2_v4l2 btrtl btbcm videobuf2_common btintel thunderbolt i915 bluetooth mei_me videodev thinkpad_acpi nvram cfg80211 ledtrig_audio mei mc ecdh_generic ecc i2c_algo_bit processor_thermal_device snd_seq_midi drm_kms_helper snd_seq_midi_event intel_soc_dts_iosf syscopyarea sysfillrect snd_rawmidi intel_pch_thermal sysimgblt intel_rapl_common intel_xhci_usb_role_switch fb_sys_fops u
->  cs
-> >  i_acpi r
-> >  o
-> > > les cec
-> > >> [   17.868935]  typec_ucsi typec nxp_nci_i2c snd_seq nxp_nci wmi nci nfc snd_timer snd_seq_device snd int3403_thermal soundcore int340x_thermal_zone video mac_hid int3400_thermal acpi_pad acpi_thermal_rel sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4 btrfs blake2b_generic libcrc32c xor zstd_compress raid6_pq uas usb_storage psmouse e1000e nvme i2c_i801 i2c_smbus nvme_core intel_lpss_pci intel_lpss idma64 virt_dma pinctrl_sunrisepoint pinctrl_intel
-> > >> [   17.868951] CR2: 000000000000002c
-> > >> [   17.868953] ---[ end trace ee7716fff5dec2fb ]---
-> > >> [   17.868955] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
-> > >> [   17.868957] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
-> > >> [   17.868958] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
-> > >> [   17.868959] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
-> > >> [   17.868960] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
-> > >> [   17.868961] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
-> > >> [   17.868962] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
-> > >> [   17.868963] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
-> > >> [   17.868964] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
-> > >> [   17.868965] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >> [   17.868966] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
-> > > 
-> > > It is possible but initially feels a bit weird:
-> > > 
-> > > -                  sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
-> > > +                  sizeof(TCG_SPECID_SIG)) ||
-> > > +           !efispecid->num_algs || count != efispecid->num_algs) {
-> > > 
-> > > Assuming that check does not pass because of a more strict constraint,
-> > > __calc_tpm2_event_size() returns 0.
-> > > 
-> > > It is wrapped like this in drivers/char/tpm/eventlog/tpm2.c:
-> > > 
-> > > static size_t calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
-> > > 				   struct tcg_pcr_event *event_header)
-> > > {
-> > > 	return __calc_tpm2_event_size(event, event_header, false);
-> > > }
-> > > 
-> > > I.e. TPM_MEMUNMAP will not get executed because "do_mapping == false".
-> > > tpm2_bios_measurements_start() checks for "size == 0" and returns NULL
-> > > whenever this happens.
-> > > 
-> > > Are you 100% sure that it is exactly this commit that triggers the bug?
-> > 
-> > Yes I am 100% sure. The issue happens all the time, and never happens
-> > if I checkout the previous commit.
-> 
-> I'm seeing this too on my test Ubuntu laptop.  Reverting the patch
-> fixes it, but there's no data.
+On Tue, Sep 29, 2020 at 6:08 PM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Tue, Sep 29, 2020 at 05:46:41PM +0800, Ethan Zhao wrote:
+> > On Tue, Sep 29, 2020 at 4:29 PM Lukas Wunner <lukas@wunner.de> wrote:
+> > > On Sun, Sep 27, 2020 at 11:27:46AM -0400, Sinan Kaya wrote:
+> > > > On 9/26/2020 11:28 PM, Ethan Zhao wrote:
+> > > > > --- a/drivers/pci/hotplug/pciehp_hpc.c
+> > > > > +++ b/drivers/pci/hotplug/pciehp_hpc.c
+> > > > > @@ -710,8 +710,10 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
+> > > > >     down_read(&ctrl->reset_lock);
+> > > > >     if (events & DISABLE_SLOT)
+> > > > >             pciehp_handle_disable_request(ctrl);
+> > > > > -   else if (events & (PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_DLLSC))
+> > > > > +   else if (events & (PCI_EXP_SLTSTA_PDC | PCI_EXP_SLTSTA_DLLSC)) {
+> > > > > +           pci_wait_port_outdpc(pdev);
+> > > > >             pciehp_handle_presence_or_link_change(ctrl, events);
+> > > > > +   }
+> > > > >     up_read(&ctrl->reset_lock);
+> > > >
+> > > > This looks like a hack TBH.
+> [...]
+> > > > Why is device lock not protecting this situation?
+> > > > Is there a lock missing in hotplug driver?
+> > >
+> > > According to Ethan's commit message, there are two issues here:
+> > > One, that pciehp may remove a device even though DPC recovered the error,
+> > > and two, that a null pointer deref occurs.
+> > >
+> > > The latter is most certainly not a locking issue but failure of DPC
+> > > to hold a reference on the pci_dev.
+> >
+> > This is what patch 3/5 proposed to fix.
+>
+> Please reorder the series to fix the null pointer deref first,
+> i.e. move patch 3 before patch 2.  If the null pointer deref is
+> fixed by patch 3, do not mention it in patch 2.
 
-I do not have yet any reasonable answer to this and my v5.10 PR is
-running late. Does everyone agree that I should revert the patch?
+Make sense.
 
-> 
-> Mimi
-
-/Jarkko
+Thanks,
+Ethan
+>
+> Thanks,
+>
+> Lukas
