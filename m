@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5F227E401
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DB527E409
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgI3Inq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 04:43:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43014 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgI3Inq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:43:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601455424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QhiptoBURkg4uq4dMDHGe+8biN2SOcQktd4lq8iMzC4=;
-        b=VfV4dAj7zRnkAOtH9oe2lFoD+GI1LiJPXeQl9iW87xGUeS7/HL4Tf4zh4DG4lZqyanotic
-        qxviOA9fNLmmfV8/5czDMQKDRRwCGC00zf4qsG5MwCLidLYExCBcKV5pKVfCRjRESXR7iK
-        CkDeAVlzxX3OD7eMMZSQ3noEWtrfLEE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0DEE1AB0E;
-        Wed, 30 Sep 2020 08:43:44 +0000 (UTC)
-Date:   Wed, 30 Sep 2020 10:43:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm: memcontrol: remove obsolete comment of
- mem_cgroup_unmark_under_oom()
-Message-ID: <20200930084343.GO2277@dhcp22.suse.cz>
-References: <7d1ea112d8a740cab555eaf7be530286@huawei.com>
+        id S1728684AbgI3Iou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728644AbgI3Iou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 04:44:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8EEC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:44:48 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so860400ljg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 01:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e0o0cITbLOXW4+eb4zMVz/hDGXwXK4Yd1WHZKdH8XV8=;
+        b=XQLsJ9sGnzpb2NBy2+CPEZ0bkgFSnVRiz4E2UQfJtSkQSaOFVyDtnJOG2dkjQYDmkE
+         W//dHiLk0xV3Zp23dTeJyBfArI6iw0J4uTHlUCVjk4gDhPd6XU5Kq29dIPFyEGAsOyWG
+         Hx3WYjYpbKvpn+0Nwz1G3RLbiMJOm66hTeXSNXF/SjGXhEJilsfBy4hIJN63EW5zVON8
+         rpTgETkXc6ZqJ4Qs3BDy07LvNjVxbl/F6qEexSWdrRyD5qI47eZVvkqy/Wc7e15Mn6Ls
+         giDpwRrjyoQIQ4GBKyjCcuusS4pBv4jdiVIOSFhJ/gqnkwPf5uVcupRq6uwUJS6XgdkY
+         D56g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e0o0cITbLOXW4+eb4zMVz/hDGXwXK4Yd1WHZKdH8XV8=;
+        b=fV9htHprfwCjg4C8uk+lEINxdl/dsCNgP3bzVRD4UznRnrJFXci5kwi/l4geDI8R1R
+         m6+SE16ifpdABS4PCwTgTppAj+Bf0sWRk9pX3Fthv6FLRTyj0UTQxpckL+wzsbiKLcow
+         bHo2XFaQzNqvb+lYSYyIkmeJy9xqEfQJYiE+wL7xHCrwawQ8J17EjnzgmSwY4498Mbms
+         5VXc9Y9zZU2QTXAuwJwLvcR7pw4rmfR7pYZ3V38sf1mt2KSFDc8Pfe6XrfqVXUKRiL3O
+         Pi/MY2nlqWtvx9d/sYJ9hODxPeZFbPgkiCIIwicLgAPfLu+4Hj37PdU4h6zQmDSudpoJ
+         4TTg==
+X-Gm-Message-State: AOAM532MW0g+pm9oZuDEXKGDIm2AUdG77dDDri0m8Y775r+b5AdRxjVe
+        rlpjuNeZk3MaA2rtD5w4B6Xxp1bBRe+6wYnwUDj7pw==
+X-Google-Smtp-Source: ABdhPJxUMbdtUKth9ohwnhlzbPBIm4QoTd73PXwmY9CkkhyjzIiz7pcNYsPBKeLoiodHA/gG+0Fb9rfHe577eGY30bE=
+X-Received: by 2002:a2e:a177:: with SMTP id u23mr523885ljl.104.1601455486858;
+ Wed, 30 Sep 2020 01:44:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d1ea112d8a740cab555eaf7be530286@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1601164493.git.mirq-linux@rere.qmqm.pl> <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 30 Sep 2020 10:44:36 +0200
+Message-ID: <CACRpkdaMHH35C1LqUROFBte3T00Lz0zApHy3hdZ83Z8EZR04hw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] gpio: tps65910: use regmap accessors
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30-09-20 01:34:25, linmiaohe wrote:
-> Michal Hocko <mhocko@suse.com> wrote:
-> > On Thu 17-09-20 06:59:00, Miaohe Lin wrote:
-> >> Since commit 79dfdaccd1d5 ("memcg: make oom_lock 0 and 1 based rather 
-> >> than counter"), the mem_cgroup_unmark_under_oom() is added and the 
-> >> comment of the mem_cgroup_oom_unlock() is moved here. But this comment 
-> >> make no sense here because mem_cgroup_oom_lock() does not operate on under_oom field.
-> >
-> >OK, so I've looked into this more deeply and I finally remember why we have this comment here. The point is that under_oom shouldn't underflow and that we have to explicitly check for > 0 because a new child memcg could have been added between mem_cgroup_mark_under_oom and mem_cgroup_unmark_under_oom.
-> >
-> >So the comment makes sense although it is not as helpful as it could be.
-> >I think that changing it to the following will be more usefule
-> >
-> >	/*
-> >	 * Be careful about under_oom underflows becase a child memcg
-> >	 * could have neem added after mem_cgroup_mark_under_oom
-> 
-> Should it be s/neem/been/ ?
+On Sun, Sep 27, 2020 at 1:59 AM Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.=
+qmqm.pl> wrote:
 
-yep, fat fingers...
+> Use regmap accessors directly for register manipulation - removing one
+> layer of abstraction.
+>
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
 
-> 
-> >	 */
-> 
-> Many thanks for detailed explanation. Will fix it in v2. Thanks again.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Michal Hocko
-SUSE Labs
+I suppose it is easiest that Lee apply all patches to the MFD tree?
+
+Yours,
+Linus Walleij
