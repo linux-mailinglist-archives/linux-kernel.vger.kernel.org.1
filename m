@@ -2,163 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF4727EC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132A427EC92
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgI3PSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:18:06 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14574 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725799AbgI3PSF (ORCPT
+        id S1728965AbgI3PUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgI3PUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:18:05 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UF3MFk094686;
-        Wed, 30 Sep 2020 11:17:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=gp+WQ9ZEESIZMduD1c/QEJUgwqbbB7WxwcV1dg1RrNA=;
- b=GTNk/CkCAv8Qo5GFZrNEkX9tOKw5DaIu8rRYo+l9dGFjJ2UhDLmAbhff9Viw5MTvKmQS
- HhXE4TScz4/FbOYj0KrSBua1OE0Q4JHcYzQ4eP4qEl7wPgFMhEIzaY5h5/RKFjJVLKpZ
- P+oymzU4uwjVrMxsaCs5urUeI8oCtdeqsPAcudm72WEfn+cnCEo4RgpHYCBC9bEr7Wpt
- YqCO+/lRbY6ky/64BS7J6+KIrKyCLDyXEIYhC8VnsO6FvNz6hUZuuxoaKon+qApQVV2c
- mq/WI6NjDg7OG63/7oboppyBDscb0Myb6e/QbiPtc1ufBfPfgCZMolIVoIjVKMVBS23W Mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vv1q195j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 11:17:25 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08UF3VKV095830;
-        Wed, 30 Sep 2020 11:17:25 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33vv1q194k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 11:17:24 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08UFDA0t032299;
-        Wed, 30 Sep 2020 15:17:22 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 33sw99qx7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 15:17:22 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08UFHLxG41681302
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 15:17:21 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C2B478064;
-        Wed, 30 Sep 2020 15:17:21 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A8C07805F;
-        Wed, 30 Sep 2020 15:17:13 +0000 (GMT)
-Received: from jarvis (unknown [9.85.129.253])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 30 Sep 2020 15:17:12 +0000 (GMT)
-Message-ID: <ba7fbd31b37363c002318f633d7cc47d9ef46822.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Date:   Wed, 30 Sep 2020 08:17:11 -0700
-In-Reply-To: <6568383f-4e43-2fe4-ecf1-8a55e306440b@redhat.com>
-References: <20200924132904.1391-1-rppt@kernel.org>
-         <20200924132904.1391-6-rppt@kernel.org>
-         <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
-         <20200929130529.GE2142832@kernel.org>
-         <20200929141216.GO2628@hirez.programming.kicks-ass.net>
-         <20200929145813.GA3226834@linux.ibm.com>
-         <20200929151552.GS2628@hirez.programming.kicks-ass.net>
-         <20200930102745.GC3226834@linux.ibm.com>
-         <371c27d97067654171e5c1019340b56cffadae7a.camel@linux.ibm.com>
-         <6568383f-4e43-2fe4-ecf1-8a55e306440b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Wed, 30 Sep 2020 11:20:22 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C77CC061755;
+        Wed, 30 Sep 2020 08:20:22 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id u19so2216661ion.3;
+        Wed, 30 Sep 2020 08:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TU8Ttc6YcNiO7LLlkrzixq6+ePuKSqbyRZU1Efv7hOc=;
+        b=q+Q8Xo0ucGL7LQuba2YNLWRRvNSEueYpbQJG6ruqovfjv/37bACkUwOEd8OIA7RHuN
+         jl6XrEXaCqt1TWoSEKZ2pgw9nC7Z5IeXtAeop3o1tgwdyHD1hiGH36nR6YtjWPTrwlcP
+         yQAXZBOPkAlBVxnRp0GKlTVYlQlHDChp4TgfaCV/tVanjXn/zQuFQlPLsBbS7DKdP9yk
+         WQ7noSiWQNuJtL17MyJVHNrlC8ROT3ojvDni9fz7rIE0pfBxyOid2bXIPkbwarjZKeQh
+         rsCN6EGEdOxx3rLV3LhtkECDLSixpNL9QXqIU4doZTp5rIUVe3DSrC4FNTxDHb7YGqxY
+         oUMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TU8Ttc6YcNiO7LLlkrzixq6+ePuKSqbyRZU1Efv7hOc=;
+        b=GEgamwMm6EWuaBKAtcdFJSYzyQpSUpzd4m33BRPw4Sd8JauiDVEWEgYMfq1iYgWdLw
+         xgHGdzJaPFry/KtVeWH1E2RmrC/rWvShRAwQ0YobLfHtPUQy/RJ2xyKkIkdippD8aLPZ
+         WaKRzMSwHky9SI2a54aC5Ahh80cYFbEPQf/T4BZCET1PK8zX5oT8wXzA7Hqj3Syfv6Ja
+         11Q9s5HrZXBJLPcuaEfVfMnH/eE4V+WG6YPsX5PjGwXV/JQiigR+0ydzM61x0O67Xdo4
+         4dnHwGoQr+2hfOocuaoavbyr5nf8pYyTDoq+w4DlAI3FAfe8c96b5pvhvGznmyFmEYZy
+         qGiA==
+X-Gm-Message-State: AOAM533pacw05dyEqupJmCjg1p2x2/0DaSbPpiKtz6KsIDpSSdOqdkpi
+        qunKRJl+vVuxazZRVmDUhAU=
+X-Google-Smtp-Source: ABdhPJyTPa6ocRVcCTowl7c6RnPQG06PXYbQ+q9eXxNtCt3DACKaztzIUud3krf2Gx3ztFo7dWz7Sw==
+X-Received: by 2002:a05:6602:2e89:: with SMTP id m9mr2050255iow.77.1601479221289;
+        Wed, 30 Sep 2020 08:20:21 -0700 (PDT)
+Received: from localhost.localdomain (ip-99-203-15-156.pools.cgn.spcsdns.net. [99.203.15.156])
+        by smtp.gmail.com with ESMTPSA id t10sm770788iog.49.2020.09.30.08.20.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 08:20:20 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     containers@lists.linux-foundation.org
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: [PATCH v3 seccomp 0/5] seccomp: Add bitmap cache of constant allow filter results
+Date:   Wed, 30 Sep 2020 10:19:11 -0500
+Message-Id: <cover.1601478774.git.yifeifz2@illinois.edu>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1600661418.git.yifeifz2@illinois.edu>
+References: <cover.1600661418.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_08:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=838 impostorscore=0 suspectscore=2 clxscore=1015 mlxscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300121
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 16:45 +0200, David Hildenbrand wrote:
-> On 30.09.20 16:39, James Bottomley wrote:
-> > On Wed, 2020-09-30 at 13:27 +0300, Mike Rapoport wrote:
-> > > On Tue, Sep 29, 2020 at 05:15:52PM +0200, Peter Zijlstra wrote:
-> > > > On Tue, Sep 29, 2020 at 05:58:13PM +0300, Mike Rapoport wrote:
-> > > > > On Tue, Sep 29, 2020 at 04:12:16PM +0200, Peter Zijlstra
-> > > > > wrote:
-> > > > > > It will drop them down to 4k pages. Given enough inodes,
-> > > > > > and allocating only a single sekrit page per pmd, we'll
-> > > > > > shatter the directmap into 4k.
-> > > > > 
-> > > > > Why? Secretmem allocates PMD-size page per inode and uses it
-> > > > > as a pool of 4K pages for that inode. This way it ensures
-> > > > > that __kernel_map_pages() is always called on PMD boundaries.
-> > > > 
-> > > > Oh, you unmap the 2m page upfront? I read it like you did the
-> > > > unmap at the sekrit page alloc, not the pool alloc side of
-> > > > things.
-> > > > 
-> > > > Then yes, but then you're wasting gobs of memory. Basically you
-> > > > can pin 2M per inode while only accounting a single page.
-> > > 
-> > > Right, quite like THP :)
-> > > 
-> > > I considered using a global pool of 2M pages for secretmem and
-> > > handing 4K pages to each inode from that global pool. But I've
-> > > decided to waste memory in favor of simplicity.
-> > 
-> > I can also add that the user space consumer of this we wrote does
-> > its user pool allocation at a 2M granularity, so nothing is
-> > actually wasted.
-> 
-> ... for that specific user space consumer. (or am I missing
-> something?)
+From: YiFei Zhu <yifeifz2@illinois.edu>
 
-I'm not sure I understand what you mean?  It's designed to be either
-the standard wrapper or an example of how to do the standard wrapper
-for the syscall.  It uses the same allocator system glibc uses for
-malloc/free ... which pretty much everyone uses instead of calling
-sys_brk directly.  If you look at the granularity glibc uses for
-sys_brk, it's not 4k either.
+Alternative: https://lore.kernel.org/lkml/20200923232923.3142503-1-keescook@chromium.org/T/
 
-James
+Major differences from the linked alternative by Kees:
+* No x32 special-case handling -- not worth the complexity
+* No caching of denylist -- not worth the complexity
+* No seccomp arch pinning -- I think this is an independent feature
+* The bitmaps are part of the filters rather than the task.
+* Architectures supported by default through arch number array,
+  except for MIPS with its sparse syscall numbers.
+* Configurable per-build for future different cache modes.
 
+This series adds a bitmap to cache seccomp filter results if the
+result permits a syscall and is indepenent of syscall arguments.
+This visibly decreases seccomp overhead for most common seccomp
+filters with very little memory footprint.
 
+The overhead of running Seccomp filters has been part of some past
+discussions [1][2][3]. Oftentimes, the filters have a large number
+of instructions that check syscall numbers one by one and jump based
+on that. Some users chain BPF filters which further enlarge the
+overhead. A recent work [6] comprehensively measures the Seccomp
+overhead and shows that the overhead is non-negligible and has a
+non-trivial impact on application performance.
+
+We observed some common filters, such as docker's [4] or
+systemd's [5], will make most decisions based only on the syscall
+numbers, and as past discussions considered, a bitmap where each bit
+represents a syscall makes most sense for these filters.
+
+In order to build this bitmap at filter attach time, each filter is
+emulated for every syscall (under each possible architecture), and
+checked for any accesses of struct seccomp_data that are not the "arch"
+nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+the program returns allow, then we can be sure that the filter must
+return allow independent from syscall arguments.
+
+When it is concluded that an allow must occur for the given
+architecture and syscall pair, seccomp will immediately allow
+the syscall, bypassing further BPF execution.
+
+Ongoing work is to further support arguments with fast hash table
+lookups. We are investigating the performance of doing so [6], and how
+to best integrate with the existing seccomp infrastructure.
+
+Some benchmarks are performed with results in patch 5, copied below:
+  Current BPF sysctl settings:
+  net.core.bpf_jit_enable = 1
+  net.core.bpf_jit_harden = 0
+  Benchmarking 200000000 syscalls...
+  129.359381409 - 0.008724424 = 129350656985 (129.4s)
+  getpid native: 646 ns
+  264.385890006 - 129.360453229 = 135025436777 (135.0s)
+  getpid RET_ALLOW 1 filter (bitmap): 675 ns
+  399.400511893 - 264.387045901 = 135013465992 (135.0s)
+  getpid RET_ALLOW 2 filters (bitmap): 675 ns
+  545.872866260 - 399.401718327 = 146471147933 (146.5s)
+  getpid RET_ALLOW 3 filters (full): 732 ns
+  696.337101319 - 545.874097681 = 150463003638 (150.5s)
+  getpid RET_ALLOW 4 filters (full): 752 ns
+  Estimated total seccomp overhead for 1 bitmapped filter: 29 ns
+  Estimated total seccomp overhead for 2 bitmapped filters: 29 ns
+  Estimated total seccomp overhead for 3 full filters: 86 ns
+  Estimated total seccomp overhead for 4 full filters: 106 ns
+  Estimated seccomp entry overhead: 29 ns
+  Estimated seccomp per-filter overhead (last 2 diff): 20 ns
+  Estimated seccomp per-filter overhead (filters / 4): 19 ns
+  Expectations:
+  	native ≤ 1 bitmap (646 ≤ 675): ✔️
+  	native ≤ 1 filter (646 ≤ 732): ✔️
+  	per-filter (last 2 diff) ≈ per-filter (filters / 4) (20 ≈ 19): ✔️
+  	1 bitmapped ≈ 2 bitmapped (29 ≈ 29): ✔️
+  	entry ≈ 1 bitmapped (29 ≈ 29): ✔️
+  	entry ≈ 2 bitmapped (29 ≈ 29): ✔️
+  	native + entry + (per filter * 4) ≈ 4 filters total (755 ≈ 752): ✔️
+
+v2 -> v3:
+* Added array_index_nospec guards
+* No more syscall_arches[] array and expecting on loop unrolling. Arches
+  are configured with per-arch seccomp.h.
+* Moved filter emulation to attach time (from prepare time).
+* Further simplified emulator, basing on Kees's code.
+* Guard /proc/pid/seccomp_cache with CAP_SYS_ADMIN.
+
+v1 -> v2:
+* Corrected one outdated function documentation.
+
+RFC -> v1:
+* Config made on by default across all arches that could support it.
+* Added arch numbers array and emulate filter for each arch number, and
+  have a per-arch bitmap.
+* Massively simplified the emulator so it would only support the common
+  instructions in Kees's list.
+* Fixed inheriting bitmap across filters (filter->prev is always NULL
+  during prepare).
+* Stole the selftest from Kees.
+* Added a /proc/pid/seccomp_cache by Jann's suggestion.
+
+Patch 1 adds the arch macros for x86.
+
+Patch 2 implements the emulator that finds if a filter must return allow,
+
+Patch 3 implements the test_bit against the bitmaps.
+
+Patch 4 updates the selftest to better show the new semantics.
+
+Patch 5 implements /proc/pid/seccomp_cache.
+
+[1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
+[2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
+[3] https://github.com/seccomp/libseccomp/issues/116
+[4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
+[5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
+[6] Draco: Architectural and Operating System Support for System Call Security
+    https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
+
+Kees Cook (2):
+  x86: Enable seccomp architecture tracking
+  selftests/seccomp: Compare bitmap vs filter overhead
+
+YiFei Zhu (3):
+  seccomp/cache: Add "emulator" to check if filter is constant allow
+  seccomp/cache: Lookup syscall allowlist for fast path
+  seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+
+ arch/Kconfig                                  |  49 ++++
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/include/asm/seccomp.h                |  15 +
+ fs/proc/base.c                                |   3 +
+ include/linux/seccomp.h                       |   5 +
+ kernel/seccomp.c                              | 265 +++++++++++++++++-
+ .../selftests/seccomp/seccomp_benchmark.c     | 151 ++++++++--
+ tools/testing/selftests/seccomp/settings      |   2 +-
+ 8 files changed, 467 insertions(+), 24 deletions(-)
+
+--
+2.28.0
