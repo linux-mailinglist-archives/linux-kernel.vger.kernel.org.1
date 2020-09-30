@@ -2,166 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A7E27E258
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701AF27E25C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728597AbgI3HMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:12:02 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45173 "EHLO mga02.intel.com"
+        id S1728907AbgI3HML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 03:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728425AbgI3HMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:12:02 -0400
-IronPort-SDR: fG39PqSRiAhgCBrP/LwIjq2QA/47IfVb4ywHoBjsIpse+Sg/kUi6IZ3hizwH3bKXjCRCVpcttf
- UI9832P56kuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="150042505"
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="150042505"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:11:56 -0700
-IronPort-SDR: AaB/pZyd2viAHOlLIL31XcqTMB1pUYmsLZQlZfiJrrRVyf00j/sKQiwjkptB7kjg4vyimcKhcD
- nNwrJR8HkCgQ==
-X-IronPort-AV: E=Sophos;i="5.77,321,1596524400"; 
-   d="scan'208";a="294522164"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.32.32])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 00:11:54 -0700
-Date:   Wed, 30 Sep 2020 09:11:51 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, loic.pallardy@st.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] rpmsg: core: Add RPMSG byte conversion operations
-Message-ID: <20200930071151.GF20683@ubuntu>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-9-mathieu.poirier@linaro.org>
+        id S1727657AbgI3HML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 03:12:11 -0400
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 939922076E;
+        Wed, 30 Sep 2020 07:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601449930;
+        bh=VUeL5dJxtNCQIqEJ5JCk1LwvGeF5Hdo5GKlpgMiOp/c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YfrqBuAuonZXtO62eiTaf2qTghzXzsnl98KkC/6QTrSlap5SGGUHVuo3CRPv/VDeL
+         myh43nOmnp+WIIna2e5Pm8uZ9Zcq+KEvuRGVL04dp+ZKTJaZQTyg3fdXhLNGruZMNX
+         FVg0gJjQhIwa2GK1vA6XfDOFbkZnFgu+D4mXs3es=
+Received: by mail-ej1-f50.google.com with SMTP id dd13so1265877ejb.5;
+        Wed, 30 Sep 2020 00:12:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531ae0h/WUtFojb2EUuqS1PTLuOA+Jqi4hbwjLWlW0AmPVxrmInR
+        p7/4tw76Yo3Cg/1D7Ha7r3Ci6NyOVYFm/+cRlbk=
+X-Google-Smtp-Source: ABdhPJyFS0R7Z+kb+bmnJUwvBv7Vreo7IzgUZoxCPLIZ5IXQoBbjinkmIkcvf9yxQF+aiKJlDOcE4VZOgMlOO6j9YxI=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1379084ejd.119.1601449929176;
+ Wed, 30 Sep 2020 00:12:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922001000.899956-9-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200926162811.5335-1-krzk@kernel.org> <20200926162811.5335-12-krzk@kernel.org>
+ <2a329c9b-8bfc-fbd8-62a3-759f608347d6@denx.de> <686af5e6-d16a-7750-e47f-1ced9cb6c34a@denx.de>
+In-Reply-To: <686af5e6-d16a-7750-e47f-1ced9cb6c34a@denx.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 30 Sep 2020 09:11:56 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPe7XOQspzTFDRtb=y79mwXEZSGiYiQP3J58JMjCkVRSCQ@mail.gmail.com>
+Message-ID: <CAJKOXPe7XOQspzTFDRtb=y79mwXEZSGiYiQP3J58JMjCkVRSCQ@mail.gmail.com>
+Subject: Re: [RFC 12/14] dt-bindings: vendor-prefixes: add Aristainetos
+To:     hs@denx.de, Rob Herring <robh+dt@kernel.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:09:58PM -0600, Mathieu Poirier wrote:
-> Add RPMSG device specific byte conversion operations as a first
-> step to separate the RPMSG name space service from the virtIO
-> transport layer.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/rpmsg_core.c     | 51 ++++++++++++++++++++++++++++++++++
->  drivers/rpmsg/rpmsg_internal.h | 12 ++++++++
->  2 files changed, 63 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index 50a835eaf1ba..66ad5b5f1e87 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -20,6 +20,57 @@
->  
->  #include "rpmsg_internal.h"
->  
-> +/**
-> + * rpmsg{16|32}_to_cpu()
-> + * cpu_to_rpmsg[16|32}() - rpmsg device specific byte conversion functions to
-> + *			   perform byte conversion between rpmsg device and the
-> + *			   transport layer it is operating on.
-> + */
-> +
-> +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val)
+On Wed, 30 Sep 2020 at 06:16, Heiko Schocher <hs@denx.de> wrote:
+>
+> Hello Krzysztof,
+>
+> Am 28.09.2020 um 06:04 schrieb Heiko Schocher:
+> > Hello Krzysztof,
+> >
+> > Am 26.09.2020 um 18:28 schrieb Krzysztof Kozlowski:
+> >> Document binding for an unknown entity Aristainetos with few boards
+> >> mainlined.
+> >>
+> >> Cc: Heiko Schocher <hs@denx.de>
+> >> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >>
+> >> ---
+> >>
+> >> I tried to Google but except the patches from Heiko Schocher, I could
+> >> not find any meaningful data.
+> >>
+> >> Heiko, you posted this. Do you know what is it?
+> >
+> > aristainetos is the name of the board, so it is not the vendor name.
+> >
+> > I just asked the customer if we can add a valid vendor name...
+>
+> Ok, it is not easy to get an okay from the customer to publish
+> his name.
+>
+> Is there a dummy or unknown entry for vendor?
 
-All the endianness conversions are great as long as they compile to 
-NOPs where no conversion is needed. Can we come up with a solution 
-to keep it that way?
+We could use "denx" as it was done as part of your work or "linux".
+Rob, any hints here?
 
-Thanks
-Guennadi
-
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return -EINVAL;
-> +	if (!rpdev->ops || !rpdev->ops->transport16_to_cpu)
-> +		return -EPERM;
-> +
-> +	return rpdev->ops->transport16_to_cpu(rpdev, val);
-> +}
-> +EXPORT_SYMBOL(rpmsg16_to_cpu);
-> +
-> +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return -EINVAL;
-> +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport16)
-> +		return -EPERM;
-> +
-> +	return rpdev->ops->cpu_to_transport16(rpdev, val);
-> +}
-> +EXPORT_SYMBOL(cpu_to_rpmsg16);
-> +
-> +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val)
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return -EINVAL;
-> +	if (!rpdev->ops || !rpdev->ops->transport32_to_cpu)
-> +		return -EPERM;
-> +
-> +	return rpdev->ops->transport32_to_cpu(rpdev, val);
-> +}
-> +EXPORT_SYMBOL(rpmsg32_to_cpu);
-> +
-> +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
-> +{
-> +	if (WARN_ON(!rpdev))
-> +		return -EINVAL;
-> +	if (!rpdev->ops || !rpdev->ops->cpu_to_transport32)
-> +		return -EPERM;
-> +
-> +	return rpdev->ops->cpu_to_transport32(rpdev, val);
-> +}
-> +EXPORT_SYMBOL(cpu_to_rpmsg32);
-> +
->  /**
->   * rpmsg_create_channel() - create a new rpmsg channel
->   * using its name and address info.
-> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-> index 2e65386f191e..2f0ad1a52698 100644
-> --- a/drivers/rpmsg/rpmsg_internal.h
-> +++ b/drivers/rpmsg/rpmsg_internal.h
-> @@ -81,6 +81,8 @@ struct virtio_rpmsg_channel {
->  
->  /**
->   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
-> + * @transport{16|32}_to_cpu: byte conversion from rpmsg device to transport layer
-> + * @cpu_to_transport{16|32}: byte conversion from transport layer to rpmsg device
->   * @create_channel:	create backend-specific channel, optional
->   * @release_channel:	release backend-specific channel, optional
->   * @create_ept:		create backend-specific endpoint, required
-> @@ -92,6 +94,10 @@ struct virtio_rpmsg_channel {
->   * advertise new channels implicitly by creating the endpoints.
->   */
->  struct rpmsg_device_ops {
-> +	u16 (*transport16_to_cpu)(struct rpmsg_device *rpdev, u16 val);
-> +	u16 (*cpu_to_transport16)(struct rpmsg_device *rpdev, u16 val);
-> +	u32 (*transport32_to_cpu)(struct rpmsg_device *rpdev, u32 val);
-> +	u32 (*cpu_to_transport32)(struct rpmsg_device *rpdev, u32 val);
->  	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
->  					     struct rpmsg_channel_info *chinfo);
->  	int (*release_channel)(struct rpmsg_device *rpdev,
-> @@ -148,6 +154,12 @@ rpmsg_create_channel(struct rpmsg_device *rpdev,
->  		     struct rpmsg_channel_info *chinfo);
->  int rpmsg_release_channel(struct rpmsg_device *rpdev,
->  			  struct rpmsg_channel_info *chinfo);
-> +
-> +u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, u16 val);
-> +u16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val);
-> +u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, u32 val);
-> +u32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val);
-> +
->  /**
->   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
->   * @rpdev:	prepared rpdev to be used for creating endpoints
-> -- 
-> 2.25.1
-> 
+Best regards,
+Krzysztof
