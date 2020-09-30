@@ -2,147 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4F327E080
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6238527E08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbgI3FjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S1725809AbgI3FpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI3FjQ (ORCPT
+        with ESMTP id S1725306AbgI3FpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:39:16 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B679C061755;
-        Tue, 29 Sep 2020 22:39:16 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id m5so619091lfp.7;
-        Tue, 29 Sep 2020 22:39:16 -0700 (PDT)
+        Wed, 30 Sep 2020 01:45:04 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52648C061755;
+        Tue, 29 Sep 2020 22:45:02 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id q123so426828pfb.0;
+        Tue, 29 Sep 2020 22:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r6/0Ch+k5Ys1E3IXfQI20t3y10+qXJytvRGG7bTZJQo=;
-        b=WQhC5GPzOi63cEdwhuuRS2V/6t6FhbwGZD+icnCQzTX5JiIIeS2NGQA1sY2jYNAYJh
-         6yt5FygqqfQ9MCaaZ7YDJaNskKt/1DI2Soiau+RjF+53iQCdMk0FkvfdKCPcvPnRPoyh
-         ET/PKwPd+kKfAYhF9mUKRS1df0IlHseezAhielfA21q0doB6useN46c6+f8yqpWApWIo
-         v2hBAoHniHySz0W/2OrW6aFY7+jArVx5CWHrniVcc52LmTOBoJr3LF6OAF5HX2tiyar2
-         oTb8XD4vFGDILlPb99DYLKXInkWdUkplvqAR3FLNDclxMc0V80FZgUdVKXGZqWhTpZKz
-         F7Yg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=tRdqtpZuO9VlHAKM9EV6SLp/Vc7sBfzATqlbagqH/RQ=;
+        b=mhrFErRMevyjT/bOEjjKelhWvNvAibIO1NgK0kCrxYY+Mn3CjdF4KMDtEEDICHufYJ
+         Isu/HtYsFFcMc4QN1gBhecO1xetvZjTKys1XgJJlJq3zo4KPCCuGaV8cAd1FNamDl+wY
+         ahthsSaCvfl6NdlCGZdmASnLmzu7u3Nb9Djg3MHIrSLOE71AzHUDEBRmDBr2va3+Es+V
+         wXuE07ZdqzPw74kWYqE5KGH6pB/S88RNm26zGXfF1mW/LW/rrq6dNEoOIPGa0Oy+QkyV
+         5jPMjKSJsGaa+B5QtFtho1CFwb17QELUQUNv7/AdcPzOoqbkP81ffLIzS4P3rnUNfnOR
+         B3DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r6/0Ch+k5Ys1E3IXfQI20t3y10+qXJytvRGG7bTZJQo=;
-        b=CpIkclYo3Wj2pv/6H01BjXgUtJ+p/hRWyeXK1NurK1NM1icIs2h9RusvQbI832K8eI
-         yBDbOMt3mmzenWjMyaBp+pwFt//VYrHXaLkAxmiLiyfXHCcM6S2M1t3U52dpih3gwjH5
-         gXKPd8246Sqyr5fw6ClYWXDV2iQ8bGDcpWxj+x4UHrRw7E+bo2OI2Knh/xNbrVGsX785
-         06fygn9XVbN/StC6nJDE1nOc1lWi0WmOgBxLSpDUTxlfuRnWukWNrpSbCO+cfnAC74un
-         dG8LDFjbm59BzGGNbFRiEDZdoJe4Y0HTOpE97PiY1qR3+1xguNHyIuBswlQYfcitCUZf
-         Ps0g==
-X-Gm-Message-State: AOAM53312svOULShuelW6TbGyN1Xidhi3W8tgo0ahawv/4o2aL6+zFGB
-        eDfxDS8CWiqA7UO8S4Hp8x2Em7axlTR7eR01q6E=
-X-Google-Smtp-Source: ABdhPJy5q781z8R+pbwuVbr7RqRJq1qarIkOTOLHWY9XEx6YTihZ9UoCenRNIihnUD7X29n0nFBAMOwAnFA+6VCktEg=
-X-Received: by 2002:ac2:44d3:: with SMTP id d19mr250407lfm.341.1601444354890;
- Tue, 29 Sep 2020 22:39:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=tRdqtpZuO9VlHAKM9EV6SLp/Vc7sBfzATqlbagqH/RQ=;
+        b=e81wl/Kw/p2fmszxmxykZqvuYkIO0G9KnwkBtoDuGDyYFNa7myZdsL935YDOn8QVef
+         WowVPiXHcIybkAFkWw7naJy0y7swnbq6kD/ZIfDz6BJGY6K6v+XqwqtpVOQ3QfdrqAXT
+         ptFY0Es4QanIC7iUgqiLBJMCWzdyljTJ3gS8hSNd7wNfU8qqAhQU0KVOMIS6IFb1etEe
+         hi5XzM8Xs69e+qGYEmlccgLyRXCuxxItRap90I8MXBmgQdv6Qtpg9jV51N6EBa3wXdhI
+         Y0x9KY1tOQywk5pDPs8UrnW6EgfzRzxZXQQTyJMPsrwOJgrml80BSJf2eh7RSnWipqyL
+         Vc6w==
+X-Gm-Message-State: AOAM531lSXTYuRp0FWe26pbCu1ZmBlGeV3lw951vffEZRdVxraKntvnM
+        Ik7ScyIK5zFKqEIF9QiyK38=
+X-Google-Smtp-Source: ABdhPJxXrv4hwyUUnyZdUCFlV5myhX0PXPJKHvHr4ZoQqkPu2YBnDMM4+FKYJP/Iw+xdaZPedJXj/A==
+X-Received: by 2002:a63:3448:: with SMTP id b69mr902755pga.269.1601444701732;
+        Tue, 29 Sep 2020 22:45:01 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id 123sm650855pgd.83.2020.09.29.22.45.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Sep 2020 22:45:01 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 22:39:31 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20200930053930.GD31821@Asurada-Nvidia>
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-3-nicoleotsuka@gmail.com>
+ <03710107-b6ad-5256-4550-09c610d0fded@gmail.com>
 MIME-Version: 1.0
-References: <alpine.LFD.2.23.451.2009271625160.35554@ja.home.ssi.bg>
- <20200928024938.97121-1-bigclouds@163.com> <alpine.LFD.2.23.451.2009300803110.6056@ja.home.ssi.bg>
-In-Reply-To: <alpine.LFD.2.23.451.2009300803110.6056@ja.home.ssi.bg>
-From:   yue longguang <yuelongguang@gmail.com>
-Date:   Wed, 30 Sep 2020 13:39:04 +0800
-Message-ID: <CAPaK2r_haEH1x2HQVBNqrHe-pRCA-2V-=Lvu1nmMOOW7ZeUqvQ@mail.gmail.com>
-Subject: Re: [PATCH v5] ipvs: adjust the debug info in function set_tcp_state
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     "longguang.yue" <bigclouds@163.com>,
-        Wensong Zhang <wensong@linux-vs.org>,
-        Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:IPVS" <netdev@vger.kernel.org>,
-        "open list:IPVS" <lvs-devel@vger.kernel.org>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <03710107-b6ad-5256-4550-09c610d0fded@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's  done.
+On Wed, Sep 30, 2020 at 08:24:02AM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 03:30, Nicolin Chen пишет:
+> > +	/*
+> > +	 * IOMMU core allows -ENODEV return to carry on. So bypass any call
+> > +	 * from bus_set_iommu() during tegra_smmu_probe(), as a device will
+> > +	 * call in again via of_iommu_configure when fwspec is prepared.
+> > +	 */
+> > +	if (!mc->smmu || !fwspec || fwspec->ops != &tegra_smmu_ops)
+> >  		return ERR_PTR(-ENODEV);
+> 
+> The !mc->smmu can't be true.
 
-
-On Wed, Sep 30, 2020 at 1:08 PM Julian Anastasov <ja@ssi.bg> wrote:
->
->
->         Hello,
->
-> On Mon, 28 Sep 2020, longguang.yue wrote:
->
-> > Outputting client,virtual,dst addresses info when tcp state changes,
-> > which makes the connection debug more clear
-> >
-> > Signed-off-by: longguang.yue <bigclouds@163.com>
->
->         OK, v5 can be used instead of fixing v4.
->
-> Acked-by: Julian Anastasov <ja@ssi.bg>
->
-> > ---
->     Changelogs:
->       v5: fix indentation
->       v4: fix checkpatch
->       v3: fix checkpatch
->       v2: IP_VS_DBG_BUF outputs src,virtual,dst of ip_vs_conn
->       v1: fix the inverse of src and dst address
->
->         longguang.yue, at this place after --- you can add info
-> for changes between versions, eg:
-> v5: fix indentation
->
->         Use this for other patches, so that we know what is
-> changed between versions.
->
-> >  net/netfilter/ipvs/ip_vs_proto_tcp.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/net/netfilter/ipvs/ip_vs_proto_tcp.c b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> > index dc2e7da2742a..7da51390cea6 100644
-> > --- a/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> > +++ b/net/netfilter/ipvs/ip_vs_proto_tcp.c
-> > @@ -539,8 +539,8 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
-> >       if (new_state != cp->state) {
-> >               struct ip_vs_dest *dest = cp->dest;
-> >
-> > -             IP_VS_DBG_BUF(8, "%s %s [%c%c%c%c] %s:%d->"
-> > -                           "%s:%d state: %s->%s conn->refcnt:%d\n",
-> > +             IP_VS_DBG_BUF(8, "%s %s [%c%c%c%c] c:%s:%d v:%s:%d "
-> > +                           "d:%s:%d state: %s->%s conn->refcnt:%d\n",
-> >                             pd->pp->name,
-> >                             ((state_off == TCP_DIR_OUTPUT) ?
-> >                              "output " : "input "),
-> > @@ -548,10 +548,12 @@ set_tcp_state(struct ip_vs_proto_data *pd, struct ip_vs_conn *cp,
-> >                             th->fin ? 'F' : '.',
-> >                             th->ack ? 'A' : '.',
-> >                             th->rst ? 'R' : '.',
-> > -                           IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
-> > -                           ntohs(cp->dport),
-> >                             IP_VS_DBG_ADDR(cp->af, &cp->caddr),
-> >                             ntohs(cp->cport),
-> > +                           IP_VS_DBG_ADDR(cp->af, &cp->vaddr),
-> > +                           ntohs(cp->vport),
-> > +                           IP_VS_DBG_ADDR(cp->daf, &cp->daddr),
-> > +                           ntohs(cp->dport),
-> >                             tcp_state_name(cp->state),
-> >                             tcp_state_name(new_state),
-> >                             refcount_read(&cp->refcnt));
-> > --
-> > 2.20.1 (Apple Git-117)
->
-> Regards
->
-> --
-> Julian Anastasov <ja@ssi.bg>
->
+Are you sure? I have removed the "mc->smmu = smmu" in probe() with
+this change. So the only time "mc->smmu == !NULL" is after probe()
+of SMMU driver is returned. As my comments says, tegra_smmu_probe()
+calls in this function via bus_set_iommu(), so mc->smmu can be NULL
+in this case.
