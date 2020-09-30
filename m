@@ -2,187 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C92D27E325
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 09:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D53A27E32E
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 10:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgI3H6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 03:58:06 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:53832 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgI3H6E (ORCPT
+        id S1728282AbgI3IBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 04:01:37 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:37834 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725535AbgI3IBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:58:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1601452680; x=1604044680;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kvl8BYqZgXTE9BD8VYIRmNhOFj5oxL/eJlT+ZItkZFY=;
-        b=qM/m6ssZtS4JgSNNX0sJzyjIojqnU6R5IR0iHLtUpi3BvqI/BuW1giA1f/LHM/8r
-        5xdLbizzGHCY5qkKXrRpk0gQ3OjzfRSpo4BrYSZxz8VHw1hEyqPbZuZ2uliYE3wp
-        1VLdxaE3fFsArJENJuKPe3zVCnUyn3LQWNBjf9n6PA0=;
-X-AuditID: c39127d2-253ff70000001c25-a4-5f743a884fb7
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8A.18.07205.88A347F5; Wed, 30 Sep 2020 09:58:00 +0200 (CEST)
-Received: from [172.16.23.108] ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2020093009580042-523886 ;
-          Wed, 30 Sep 2020 09:58:00 +0200 
-Subject: Re: [PATCH 4/5] media: mt9p031: Make pixel clock polarity
- configurable by DT
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Hemp <c.hemp@phytec.de>
-References: <20200925075029.32181-1-s.riedmueller@phytec.de>
- <20200925075029.32181-4-s.riedmueller@phytec.de>
- <20200925200741.GW26842@paasikivi.fi.intel.com>
-From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
-Message-ID: <9e4c70ec-a359-bbcd-5650-b68ea5f0b312@phytec.de>
-Date:   Wed, 30 Sep 2020 09:58:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 04:01:35 -0400
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.64])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 2E5B66005E;
+        Wed, 30 Sep 2020 08:01:32 +0000 (UTC)
+Received: from us4-mdac16-12.ut7.mdlocal (unknown [10.7.65.236])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 2A0FD2009B;
+        Wed, 30 Sep 2020 08:01:32 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.199])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 8B197220056;
+        Wed, 30 Sep 2020 08:01:31 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id DE33618005A;
+        Wed, 30 Sep 2020 08:01:29 +0000 (UTC)
+Received: from mh-desktop (10.17.20.62) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
+ 2020 09:01:09 +0100
+Date:   Wed, 30 Sep 2020 09:00:59 +0100
+From:   Martin Habets <mhabets@solarflare.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        "Govindarajulu Varadarajan" <_govind@gmx.com>,
+        Dave Miller <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <linux-doc@vger.kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        "Vishal Kulkarni" <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        <intel-wired-lan@lists.osuosl.org>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        "Jon Mason" <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        <linux-wireless@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        "Hante Meuleman" <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        "Intel Linux Wireless" <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        "Amitkumar Karwar" <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        <libertas-dev@lists.infradead.org>,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Subject: Re: [patch V2 16/36] net: sfc: Use GFP_KERNEL in
+ efx_ef10_try_update_nic_stats()
+Message-ID: <20200930080059.GA759845@mh-desktop>
+Mail-Followup-To: Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Dave Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>, Jon Mason <jdmason@kudzu.us>,
+        Daniel Drake <dsd@gentoo.org>, Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list.pdl@broadcom.com, brcm80211-dev-list@cypress.com,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>, Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        libertas-dev@lists.infradead.org,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+References: <20200929202509.673358734@linutronix.de>
+ <20200929203501.078203643@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200925200741.GW26842@paasikivi.fi.intel.com>
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 30.09.2020 09:58:00,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 30.09.2020 09:58:00,
-        Serialize complete at 30.09.2020 09:58:00
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWyRoCBS7fDqiTeoHWpikXnxCXsFpd3zWGz
-        6NmwldVi2aY/TBaftnxjcmD1mN0xk9Vj06pONo95JwM9Pm+SC2CJ4rJJSc3JLEst0rdL4MpY
-        27iTrWCHXEXjnB72BsbzEl2MnBwSAiYSTa/WMHUxcnEICWxjlPh3v5cVwjnDKDGx+QojSJWw
-        QLjEipfT2LsYOThEBPQlJj0wA6lhFjjEKNHQOZsdomEho8TdfevZQRrYBJwkFp/vYANp4BWw
-        kdiwpBYkzCKgKrFx9jRWkLCoQKTEzh2WIGFeAUGJkzOfsIDYnEDVv4+tYwMZKSHQyCRxo2k7
-        I8SlQhKnF59lBrGZBeQltr+dA2WbSczb/BDKFpe49WQ+0wRGoVlI5s5C0jILScssJC0LGFlW
-        MQrlZiZnpxZlZusVZFSWpCbrpaRuYgRGwuGJ6pd2MPbN8TjEyMTBCPQ0B7OSCK9vTkG8EG9K
-        YmVValF+fFFpTmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkmDk6pBkbePf6CtQJT+2fb
-        91oI/+NL5JU61u8kbhbHEhzFxq9rWisXp1bx/0nU1hknH1lnTnJVvNX99eApSe2zjjZf55Ye
-        rp4t8WgGx/SQldqFR1/ZGj4o62079X+bTHNLSb+P3IytNyyE00+mGFV7SM5Zy8kndPtocZ9G
-        0HYBlmNGjEYVdkkaN4wZlFiKMxINtZiLihMBo+XwTHICAAA=
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200929203501.078203643@linutronix.de>
+X-Originating-IP: [10.17.20.62]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25674.003
+X-TM-AS-Result: No-7.055800-8.000000-10
+X-TMASE-MatchedRID: scwq2vQP8OGB3CLPGH9KvB3Pziq4eLUfcabZ5We+Ltbk1kyQDpEj8OLB
+        DcjMHcx7cY+kGWBLq/yUWq3zEclebye/9tnqvgnhalRqQPhHMT4K+4pGZZRa9Bv2iroWthDcakC
+        rXhKzdtmG9zWd04+U3ToQGsWExzeNQrIARMpKwYGolIr4dI9j7+lUxvXGcRIycBqXYDUNCazpVi
+        VUeZmhdJwA7Oe0sQ7+xGosnG/g3+KtiF+p+9BY6Z4CIKY/Hg3AyJ1gFgOMhOn6APa9i04WGCq2r
+        l3dzGQ12iP5mgvODVRaQUD5lj7we1UZlqkyMlpYV+ioo6EPnD+kB99jpcEJJCvslaXspIjpcQ4u
+        3HX+lyoF+PYj6P4xsM/gbmgoU/LhYlIrxAazCupFc1SMC3FJkqE7ZT4hHyDpDA2Nf1xiN0z8VRK
+        OCHTcrEMMprcbiest
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--7.055800-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25674.003
+X-MDID: 1601452892-6uUHibGneDxa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-
-thanks for your review.
-
-On 25.09.20 22:07, Sakari Ailus wrote:
-> Hi Stefan,
+On Tue, Sep 29, 2020 at 10:25:25PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> Thanks for the patchset.
+> efx_ef10_try_update_nic_stats_vf() is now only invoked from thread context
+> and can sleep after efx::stats_lock is dropped.
 > 
-> On Fri, Sep 25, 2020 at 09:50:28AM +0200, Stefan Riedmueller wrote:
->> From: Christian Hemp <c.hemp@phytec.de>
->>
->> Evaluate the desired pixel clock polarity from the device tree.
->>
->> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
->> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
->> ---
->>   drivers/media/i2c/Kconfig   |  1 +
->>   drivers/media/i2c/mt9p031.c | 19 ++++++++++++++++++-
->>   include/media/i2c/mt9p031.h |  1 +
->>   3 files changed, 20 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
->> index c7ba76fee599..7c026daeacf0 100644
->> --- a/drivers/media/i2c/Kconfig
->> +++ b/drivers/media/i2c/Kconfig
->> @@ -1103,6 +1103,7 @@ config VIDEO_MT9P031
->>   	select MEDIA_CONTROLLER
->>   	select VIDEO_V4L2_SUBDEV_API
->>   	select VIDEO_APTINA_PLL
->> +	select V4L2_FWNODE
->>   	help
->>   	  This is a Video4Linux2 sensor driver for the Aptina
->>   	  (Micron) mt9p031 5 Mpixel camera.
->> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
->> index f5d6a7890c47..8f8ee37a2dd2 100644
->> --- a/drivers/media/i2c/mt9p031.c
->> +++ b/drivers/media/i2c/mt9p031.c
->> @@ -27,6 +27,7 @@
->>   #include <media/v4l2-async.h>
->>   #include <media/v4l2-ctrls.h>
->>   #include <media/v4l2-device.h>
->> +#include <media/v4l2-fwnode.h>
->>   #include <media/v4l2-subdev.h>
->>   
->>   #include "aptina-pll.h"
->> @@ -399,6 +400,14 @@ static int __mt9p031_set_power(struct mt9p031 *mt9p031, bool on)
->>   		return ret;
->>   	}
->>   
->> +	/* Configure the pixel clock polarity */
->> +	if (mt9p031->pdata && mt9p031->pdata->pixclk_pol) {
->> +		ret = mt9p031_write(client, MT9P031_PIXEL_CLOCK_CONTROL,
->> +				MT9P031_PIXEL_CLOCK_INVERT);
->> +		if (ret < 0)
->> +			return ret;
->> +	}
->> +
->>   	return v4l2_ctrl_handler_setup(&mt9p031->ctrls);
->>   }
->>   
->> @@ -1062,7 +1071,8 @@ static const struct v4l2_subdev_internal_ops mt9p031_subdev_internal_ops = {
->>   static struct mt9p031_platform_data *
->>   mt9p031_get_pdata(struct i2c_client *client)
->>   {
->> -	struct mt9p031_platform_data *pdata;
->> +	struct mt9p031_platform_data *pdata = NULL;
->> +	struct v4l2_fwnode_endpoint endpoint;
-> 
-> Could you initialise the bus_type field to a valid value? I suppose this
-> sensor only supports one of them? That way you'll also initialise the rest
-> of the struct fields to zero.
+> Change the allocation mode from GFP_ATOMIC to GFP_KERNEL.
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Yes, I'll do that and send a v2.
+Acked-by: Martin Habets <mhabets@solarflare.com>
 
-Thanks,
-Stefan
-
+> ---
+> V2: Adjust to Edward's stats update split
+> ---
+>  drivers/net/ethernet/sfc/ef10.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->>   	struct device_node *np;
->>   
->>   	if (!IS_ENABLED(CONFIG_OF) || !client->dev.of_node)
->> @@ -1072,6 +1082,10 @@ mt9p031_get_pdata(struct i2c_client *client)
->>   	if (!np)
->>   		return NULL;
->>   
->> +	endpoint.bus_type = V4L2_MBUS_UNKNOWN;
->> +	if (v4l2_fwnode_endpoint_parse(of_fwnode_handle(np), &endpoint) < 0)
->> +		goto done;
->> +
->>   	pdata = devm_kzalloc(&client->dev, sizeof(*pdata), GFP_KERNEL);
->>   	if (!pdata)
->>   		goto done;
->> @@ -1079,6 +1093,9 @@ mt9p031_get_pdata(struct i2c_client *client)
->>   	of_property_read_u32(np, "input-clock-frequency", &pdata->ext_freq);
->>   	of_property_read_u32(np, "pixel-clock-frequency", &pdata->target_freq);
->>   
->> +	pdata->pixclk_pol = !!(endpoint.bus.parallel.flags &
->> +			       V4L2_MBUS_PCLK_SAMPLE_RISING);
->> +
->>   done:
->>   	of_node_put(np);
->>   	return pdata;
->> diff --git a/include/media/i2c/mt9p031.h b/include/media/i2c/mt9p031.h
->> index 7c29c53aa988..f933cd0be8e5 100644
->> --- a/include/media/i2c/mt9p031.h
->> +++ b/include/media/i2c/mt9p031.h
->> @@ -10,6 +10,7 @@ struct v4l2_subdev;
->>    * @target_freq: Pixel clock frequency
->>    */
->>   struct mt9p031_platform_data {
->> +	unsigned int pixclk_pol:1;
->>   	int ext_freq;
->>   	int target_freq;
->>   };
-> 
+> --- a/drivers/net/ethernet/sfc/ef10.c
+> +++ b/drivers/net/ethernet/sfc/ef10.c
+> @@ -1873,7 +1873,7 @@ static int efx_ef10_try_update_nic_stats
+>  
+>  	efx_ef10_get_stat_mask(efx, mask);
+>  
+> -	rc = efx_nic_alloc_buffer(efx, &stats_buf, dma_len, GFP_ATOMIC);
+> +	rc = efx_nic_alloc_buffer(efx, &stats_buf, dma_len, GFP_KERNEL);
+>  	if (rc) {
+>  		spin_lock_bh(&efx->stats_lock);
+>  		return rc;
