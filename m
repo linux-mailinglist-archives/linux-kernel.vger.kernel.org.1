@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EC427F483
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DDC27F48C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731297AbgI3VzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:55:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51115 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731204AbgI3Vy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:54:57 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601502895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nwkOICvOQaXOWcko8kpLlTGev7mN/mGmU8J6lWaTsxY=;
-        b=c5DWjVkJYh/+s8h083jU3Set55xk5h8OCMLiVsdntj2Tw0oo1iAk0XGePFj7tRj2BePalJ
-        Ga3m4zFYRezxeOHPQusnvCEBiepmBVI/hLKEbs5074Ye/9cwRf0zP79Na+chHHHxOqOlUo
-        PmZKzmlTTYuIW3+PrzxbNZbYyn1KZLQ=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-FTfY9ZpnNRyUcmJ8yRQPuw-1; Wed, 30 Sep 2020 17:54:53 -0400
-X-MC-Unique: FTfY9ZpnNRyUcmJ8yRQPuw-1
-Received: by mail-qk1-f197.google.com with SMTP id a2so1814791qkg.19
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:54:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nwkOICvOQaXOWcko8kpLlTGev7mN/mGmU8J6lWaTsxY=;
-        b=p9L7vCvDbk/ozTLagMrQlacD/aAYjrD11nIoqJ78GNczailqrTb3omJCFoWysoTmlT
-         Bd6bIJqgsIx8iAWTcWUCOCqUwoyzCp7ubBXUWERcxvoT1PMqZKab4uQHTUgbFDQbsHlc
-         cZMKDHUtw3ZqGx7oq9xWjcPzpJp0fxzQAlybIk2wyGAfSxqjb+9+XAx6pZShcqJyl+/B
-         YKag8hDt94fbo8UycP+UXn/YaVR07dIE2huUI4sFDXwuA+yryoFSgOR22gUQItnJccjP
-         KcU+1ZLN1xQrRh6tTmqVT9BTEqla4/r0VnmHGx/YAKMnv68prmtFHOpAUP8r8Q0AQwdz
-         UuHg==
-X-Gm-Message-State: AOAM530UcNDt65aFcwN6yMNQzQDQ47LemtcP/nElWaZfb7MVWTopaAJK
-        +L9ylhPt9+u+qg1wGqhItGERoiDOCzrcYqqoAEqX98vFE4iJeHtwU4Ba47qwYn2aOiV9i3zXEUD
-        9vvgGOep+NBoqAJWZ/TVWvgOR
-X-Received: by 2002:a05:6214:1873:: with SMTP id eh19mr4582597qvb.16.1601502893274;
-        Wed, 30 Sep 2020 14:54:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybLwVY6jEpq4x2HA+sDFN0U69X2dz5Fiuq3Ua/MNBMapwHzf9NElvAEdB+0tfsaWQi1xfS1Q==
-X-Received: by 2002:a05:6214:1873:: with SMTP id eh19mr4582577qvb.16.1601502893059;
-        Wed, 30 Sep 2020 14:54:53 -0700 (PDT)
-Received: from xz-x1.redhat.com (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
-        by smtp.gmail.com with ESMTPSA id a11sm3903690qto.2.2020.09.30.14.54.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 14:54:52 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Jones <drjones@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>, peterx@redhat.com
-Subject: [PATCH v12 13/13] KVM: selftests: Add "-c" parameter to dirty log test
-Date:   Wed, 30 Sep 2020 17:54:51 -0400
-Message-Id: <20200930215451.48391-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200930214948.47225-1-peterx@redhat.com>
-References: <20200930214948.47225-1-peterx@redhat.com>
+        id S1731007AbgI3V4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:56:35 -0400
+Received: from ns.mm-sol.com ([37.157.136.199]:43596 "EHLO extserv.mm-sol.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729996AbgI3V4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:56:35 -0400
+Received: from [192.168.1.7] (unknown [195.24.90.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by extserv.mm-sol.com (Postfix) with ESMTPSA id DC0AAD02C;
+        Thu,  1 Oct 2020 00:56:31 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mm-sol.com; s=201706;
+        t=1601502992; bh=68306tD5YsLAUj9ja2C1ptuKKgPEa+UuaTIaQDbVT2s=;
+        h=Subject:To:Cc:From:Date:From;
+        b=aDkrizEokwM7XC4UymK132wXDpetASonhfo+m6Zr7vuJDWMGap2VG9ZekNCX9+amf
+         2hrFtWUZSO9KghaB7t9rmYCJgGiULzfIx8/DY7RcYMAZdsRCGk8XUeStur6BpWOJ0S
+         z9hgZ8F77eeMA7cAHlLt3mS8q/qADNtQsq5zO0Z2BX2h++dVTZ4SINoKhz6HkPuxVP
+         m2OJ4+Atvw9Z+mXfGDBktDKYKnh2iVShGzL9Si4szaIjRjpsLEUgR+tc25YcFMvVCL
+         yeZINPUhPptQ1hKtcKt/AFLHFHA6Uki1UZsR4VxDvOFmRJtDUAfvawVX/10YKpgGyQ
+         UUCd1L17tDSWA==
+Subject: Re: [PATCH v2 4/5] PCI: qcom: Add SM8250 SoC support
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, robh@kernel.org
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        devicetree@vger.kernel.org
+References: <20200930150925.31921-1-manivannan.sadhasivam@linaro.org>
+ <20200930150925.31921-5-manivannan.sadhasivam@linaro.org>
+From:   Stanimir Varbanov <svarbanov@mm-sol.com>
+Message-ID: <0a6a765d-1b80-9d1b-f881-b75f13bd5b02@mm-sol.com>
+Date:   Thu, 1 Oct 2020 00:56:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930150925.31921-5-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's only used to override the existing dirty ring size/count.  If
-with a bigger ring count, we test async of dirty ring.  If with a
-smaller ring count, we test ring full code path.  Async is default.
+Hi Mani,
 
-It has no use for non-dirty-ring tests.
+On 9/30/20 6:09 PM, Manivannan Sadhasivam wrote:
+> The PCIe IP on SM8250 SoC is similar to the one used on SDM845. Hence
+> the support is added reusing the members of ops_2_7_0. The key
+> difference between ops_2_7_0 and ops_sm8250 is the config_sid callback,
+> which will be added in successive commit.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 3aac77a295ba..44db91861b47 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1359,6 +1359,16 @@ static const struct qcom_pcie_ops ops_2_7_0 = {
+>  	.post_deinit = qcom_pcie_post_deinit_2_7_0,
+>  };
+>  
+> +/* Qcom IP rev.: 1.9.0 */
+> +static const struct qcom_pcie_ops ops_sm8250 = {
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/kvm/dirty_log_test.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+This breaks the policy compatible -> ops_X_Y_Z. Could you introduce new
+method config_sid and check into for compatible qcom,pcie-sm8250 string
+there?
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 4b404dfdc2f9..80c42c87265e 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -168,6 +168,7 @@ static enum log_mode_t host_log_mode_option = LOG_MODE_ALL;
- /* Logging mode for current run */
- static enum log_mode_t host_log_mode;
- static pthread_t vcpu_thread;
-+static uint32_t test_dirty_ring_count = TEST_DIRTY_RING_COUNT;
- 
- /* Only way to pass this to the signal handler */
- static struct kvm_vm *current_vm;
-@@ -250,7 +251,7 @@ static void dirty_ring_create_vm_done(struct kvm_vm *vm)
- 	 * Switch to dirty ring mode after VM creation but before any
- 	 * of the vcpu creation.
- 	 */
--	vm_enable_dirty_ring(vm, TEST_DIRTY_RING_COUNT *
-+	vm_enable_dirty_ring(vm, test_dirty_ring_count *
- 			     sizeof(struct kvm_dirty_gfn));
- }
- 
-@@ -272,7 +273,7 @@ static uint32_t dirty_ring_collect_one(struct kvm_dirty_gfn *dirty_gfns,
- 	uint32_t count = 0;
- 
- 	while (true) {
--		cur = &dirty_gfns[*fetch_index % TEST_DIRTY_RING_COUNT];
-+		cur = &dirty_gfns[*fetch_index % test_dirty_ring_count];
- 		if (!dirty_gfn_is_dirtied(cur))
- 			break;
- 		TEST_ASSERT(cur->slot == slot, "Slot number didn't match: "
-@@ -778,6 +779,9 @@ static void help(char *name)
- 	printf("usage: %s [-h] [-i iterations] [-I interval] "
- 	       "[-p offset] [-m mode]\n", name);
- 	puts("");
-+	printf(" -c: specify dirty ring size, in number of entries\n");
-+	printf("     (only useful for dirty-ring test; default: %"PRIu32")\n",
-+	       TEST_DIRTY_RING_COUNT);
- 	printf(" -i: specify iteration counts (default: %"PRIu64")\n",
- 	       TEST_HOST_LOOP_N);
- 	printf(" -I: specify interval in ms (default: %"PRIu64" ms)\n",
-@@ -833,8 +837,11 @@ int main(int argc, char *argv[])
- 	guest_mode_init(VM_MODE_P40V48_4K, true, true);
- #endif
- 
--	while ((opt = getopt(argc, argv, "hi:I:p:m:M:")) != -1) {
-+	while ((opt = getopt(argc, argv, "c:hi:I:p:m:M:")) != -1) {
- 		switch (opt) {
-+		case 'c':
-+			test_dirty_ring_count = strtol(optarg, NULL, 10);
-+			break;
- 		case 'i':
- 			iterations = strtol(optarg, NULL, 10);
- 			break;
+> +	.get_resources = qcom_pcie_get_resources_2_7_0,
+> +	.init = qcom_pcie_init_2_7_0,
+> +	.deinit = qcom_pcie_deinit_2_7_0,
+> +	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+> +	.post_init = qcom_pcie_post_init_2_7_0,
+> +	.post_deinit = qcom_pcie_post_deinit_2_7_0,
+> +};
+> +
+>  static const struct dw_pcie_ops dw_pcie_ops = {
+>  	.link_up = qcom_pcie_link_up,
+>  };
+> @@ -1476,6 +1486,7 @@ static const struct of_device_id qcom_pcie_match[] = {
+>  	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
+>  	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
+>  	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
+> +	{ .compatible = "qcom,pcie-sm8250", .data = &ops_sm8250 },
+>  	{ }
+>  };
+>  
+> 
+
 -- 
-2.26.2
-
+regards,
+Stan
