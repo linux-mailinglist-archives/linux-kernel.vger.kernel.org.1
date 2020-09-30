@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E68827F615
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973F427F619
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731844AbgI3Xj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731302AbgI3Xj6 (ORCPT
+        id S1730453AbgI3XmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:42:20 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:58822 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730544AbgI3XmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:39:58 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49441C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:39:58 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 34so2306630pgo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2SYnU6v3oYukgTaFaNXeSl70n5vT6dh4JdPhOcC+8tg=;
-        b=VcrLyK8wd1YNEoEWQO1ETxp/ZpFdndf0Wn9IS/g8DF0Ee8PrUlTweuExL+J+4UveTt
-         w/fw16Rtl+RQJ2aZZix8mnKbuiNc2DhbHWyKMUF6TR7KSyq1pOWNX40rF0hOESH412SO
-         3stnOYszARI3yHzCOhIuv8Z4vSibAzlmf2acY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2SYnU6v3oYukgTaFaNXeSl70n5vT6dh4JdPhOcC+8tg=;
-        b=O0+dgzpq9+kcx0mr94ddbFNXSLM9wIzWvuhJYVu4k8JdTr3pWezwbP66MofSldtBsR
-         /TuSVyd4FbICUXKV9JmKfohIHAYXAMkQ60Je5M/L16tJzAPeJ4BjBc1LK3BkvlSHNGNl
-         0772Sa/U0PO6PMZ8ny39mxU1hSIRA2wo048mAtegGATFqLHXT8ZAgQu4rgfa6IeTa6Xh
-         rZ4LzOvy0sAlV67SK15F7vJrcxoWGyHMmmdItYe+riRfhhpit+w7VhsO77Nxc5AplaCx
-         16Ezlw9u53bdo4wzsHxpK8O0DJLRHmC7/Gnp5uyMUQu774zhtvtBUjVWiNBFrs172KFi
-         hmng==
-X-Gm-Message-State: AOAM531PvbkokpDhwQNM1nOAWzTkiQm12zpmBJPgXFxY/S94LRd6O8FK
-        OjtMgbW8OnHBneEzhGt1k6VR+g==
-X-Google-Smtp-Source: ABdhPJyFwc3ugp2XFqXW0tVKhPDF858qVZdH+Z14wkvfqCD1QYK4zPVuxZsn9UlnreLBhlFB11X6kg==
-X-Received: by 2002:a17:902:8c8b:b029:d2:6356:8b43 with SMTP id t11-20020a1709028c8bb02900d263568b43mr4617767plo.34.1601509197774;
-        Wed, 30 Sep 2020 16:39:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j9sm3322670pfc.175.2020.09.30.16.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:39:56 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 16:39:55 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <202009301632.9C6A850272@keescook>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+        Wed, 30 Sep 2020 19:42:13 -0400
+Date:   Wed, 30 Sep 2020 19:42:12 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Petr Vorel <petr.vorel@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Michal Kubecek <mkubecek@suse.cz>, musl@lists.openwall.com
+Subject: Re: [musl] [PATCH 1/1] linux/sysinfo.h: Add guarder for struct
+ sysinfo
+Message-ID: <20200930234212.GK17637@brightrain.aerifal.cx>
+References: <20200930214636.186132-1-petr.vorel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+In-Reply-To: <20200930214636.186132-1-petr.vorel@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
-> [...] I did :-)
+On Wed, Sep 30, 2020 at 11:46:36PM +0200, Petr Vorel wrote:
+> for all but glibc libc.
+> 
+> This fixes redefinition on MUSL which also defines struct sysinfo when
+> including <linux/netlink.h> (which includes <linux/sysinfo.h> via
+> <linux/kernel.h>) and <sys/sysinfo.h>.
+> 
+> glibc loads <linux/sysinfo.h> in <sys/sysinfo.h>.
+> 
+> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> ---
+>  include/uapi/linux/sysinfo.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/include/uapi/linux/sysinfo.h b/include/uapi/linux/sysinfo.h
+> index 435d5c23f0c0..c8ab18cd36b2 100644
+> --- a/include/uapi/linux/sysinfo.h
+> +++ b/include/uapi/linux/sysinfo.h
+> @@ -5,6 +5,8 @@
+>  #include <linux/types.h>
+>  
+>  #define SI_LOAD_SHIFT	16
+> +
+> +#if defined(__KERNEL__) || defined(__GLIBC__)
+>  struct sysinfo {
+>  	__kernel_long_t uptime;		/* Seconds since boot */
+>  	__kernel_ulong_t loads[3];	/* 1, 5, and 15 minute load averages */
+> @@ -21,5 +23,6 @@ struct sysinfo {
+>  	__u32 mem_unit;			/* Memory unit size in bytes */
+>  	char _f[20-2*sizeof(__kernel_ulong_t)-sizeof(__u32)];	/* Padding: libc5 uses this.. */
+>  };
+> +#endif
+>  
+>  #endif /* _LINUX_SYSINFO_H */
+> -- 
+> 2.27.0.rc0
 
-Yay! Thank you!
+I don't think this is the right way to do it. It prevents getting
+access to the kernel uapi structure (which may be wanted) if you're
+not using glibc or if you include kernel headers before any libc
+headers. Rather, <linux/kernel.h>, whose only real purpose is
+providing this structure to legacy applications that don't know the
+renamed name for it, should not be implicitly included by other
+headers. There's an existing thread on the topic but I don't have the
+link handy. IIRC I proposed moving the alignment macros or whatever
+other useful stuff is in <linux/kernel.h> to a separate header and
+getting rid of all the indirect inclusions of <linux/kernel.h>.
 
-> [...]
->    Overview
->        In conventional usage of a seccomp filter, the decision about how
->        to  treat  a particular system call is made by the filter itself.
->        The user-space notification mechanism allows the handling of  the
->        system  call  to  instead  be handed off to a user-space process.
->        The advantages of doing this are that, by contrast with the  sec‐
->        comp  filter,  which  is  running on a virtual machine inside the
->        kernel, the user-space process has access to information that  is
->        unavailable to the seccomp filter and it can perform actions that
->        can't be performed from the seccomp filter.
-
-I might clarify a bit with something like (though maybe the
-target/supervisor paragraph needs to be moved to the start):
-
-	This is used for performing syscalls on behalf of the target,
-	rather than having the supervisor make security policy decisions
-	about the syscall, which would be inherently race-prone. The
-	target's syscall should either be handled by the supervisor or
-	allowed to continue normally in the kernel (where standard security
-	policies will be applied).
-
-I'll comment more later, but I've run out of time today and I didn't see
-anyone mention this detail yet in the existing threads... :)
-
--- 
-Kees Cook
+Rich
