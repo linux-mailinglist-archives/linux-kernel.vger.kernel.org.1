@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF5527F60E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173D927F610
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731793AbgI3Xfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
+        id S1731803AbgI3XiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730424AbgI3Xfw (ORCPT
+        with ESMTP id S1730918AbgI3XiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:35:52 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166BBC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:35:51 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z19so4273728lfr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:35:51 -0700 (PDT)
+        Wed, 30 Sep 2020 19:38:20 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93E7C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:38:19 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c2so3432997qkf.10
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rC8CI2ke9jAFUpO6Co2LbsAK2GppzR0D9YtgZMZXg44=;
-        b=diZHKDET5rO8jvr/fdB7nmT7XwckVn/UpajXpihkv/H9QFyJGVYPljBcgJCkMQ/YD3
-         bo72M6bQKvjWyTIpXkG6dePz+G9mAZSVeCud+dbcWLaGRxa+K7awIkm4VRotazC1r0Xf
-         ppyQiii6NVGDeiTrwFy7yM9KMtH6vANz7Yw4pEnD69fHVqntTwc6zK19m9SgOTRtzn0O
-         d4U4fPtk7de+Y9CT4SJatuZXp6LvnCEU+wwaMVymqe+StnAm6z+Otbp5zRyRw5GcbVJt
-         lAZtyO4tjoa6fk+rBeMx/4piZah+aSm8TOa7dyeTziYL4GSjDL9z6dqdfHiQFlOrj/Hq
-         Tr/Q==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AgYc4npDuBt+zck9iEcnIrAixZgVARgELVdpxD0CxxE=;
+        b=UsAx/mi1wBYRPuqV0Fh3D/rV4PpBwZ930p4hGKJRcQ8TXU5Tkd/Ufq5HQMG3H1ujMe
+         EnFiCNsIPdwswJlV/MqBS1snKMpXArg9EC2KYCdicGto5LSxb9OyJSE4dZm2OCy0Pqif
+         7e135aqbtGIiuI/zMWCZGbNZLhl6mPhJ7bmG/J0E2mmdmu10e6Hq2+FUtkdMa/ddLYQB
+         gjNrcSFyQ7+5+/fm2Fiq+bweXMxKLnt6Uv/Z4dAxUKIQR9XqarhmErWs4L5dZVK2DLcN
+         V7BVZdNFejQYkMg6Kmvm+ZKiv73IQsLLVg7scoFKEWGi4V8ELI9LuyMHoyQ7zZvumU7Q
+         gEXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rC8CI2ke9jAFUpO6Co2LbsAK2GppzR0D9YtgZMZXg44=;
-        b=ADo0OFvjBdLMSOmQZRn3GaK3iEp7M0mejnLXrtDadHaCW2thIEhs0i1sZvgC0GM9kJ
-         5xkBWQZCkT+fEeSxRO5U1V+Hv7Vs2U0M4ugs+/ADV2asDbRmxAs+WVy3PnSOwx1y8QNT
-         k4z6zNAwegGsfFbALwdaZSDpig98eK1T986WwVm/8TbR0pz+Ykw1v8NN0oemL0GPmy4Y
-         0Qw9uptt2NszzNIzjktQgzV83dy0/S70/ZOjqRgdqJ8eiCmLfUa3eybJGIL/vEdCmM/w
-         Hq5et9KwwyA/ax0k3Wda5OTw0klrZCIcrxAZXJPapmrtyviyY7y7mGCemDhAFLuGCybK
-         Po0A==
-X-Gm-Message-State: AOAM531+Sjh7rwb6+fowLjTY8Sizp5K7I2GBh95Z27/PHt6PaDA7XpYr
-        4ByrmWFF/AqKw4/+qtHeoan+e5/+P+gaJ/JqScX8aA==
-X-Google-Smtp-Source: ABdhPJz7aaNnBs7Sg579FwOOrYFrkhMrAPLz6RJ3pfRUQKrzLvH0tfQc5JeVzfiwHWrBEP3pU+2BurqrBd/7DkdkbyY=
-X-Received: by 2002:a19:604e:: with SMTP id p14mr1486668lfk.385.1601508949201;
- Wed, 30 Sep 2020 16:35:49 -0700 (PDT)
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=AgYc4npDuBt+zck9iEcnIrAixZgVARgELVdpxD0CxxE=;
+        b=ZW8FSL41z4UgcTFXufzISBRM71RY2EaiGY7Z1rLwMz+NMlNPbtegzHitB3+HfweNsD
+         rG2Kdc89Dpi+mYzagfnsNsLAP//mDUPy21wp6DYEii3Bs4slnMhlApZFSuJQ0PE1N4QX
+         FJJbxXRTKV1RC4JV8AqpH7WE5Wh5EWh29JHvmCPcvYTQ7N8Do918khgqUX1VzluxwNrb
+         xNa/KlcgWk3+Rb83kf8efuRZIY1drp0S++VJIVRK4tyV8q7JQIdNfeFx7ElxGcKZ48vC
+         5Hdzg4qtNDqVFjn+v282AozmJO0KIOezlUTazom6zabSjumgemWN7FSRHeKEiddA0z9L
+         898w==
+X-Gm-Message-State: AOAM530rdKCyvJBxs+XUsDCyZkwqLItgQXt9HDO4VVzaFO4B0Fka6Qph
+        0OKbpFHT79OwkK3j9GZr+lU=
+X-Google-Smtp-Source: ABdhPJx9ho9FVOEkSBe6CnqHuC+zibc0iXyQDkl1pk128hJ2sGByNCHwNvhNTq4HQ4dw/u+JZgX2kA==
+X-Received: by 2002:ae9:f701:: with SMTP id s1mr5279876qkg.446.1601509098111;
+        Wed, 30 Sep 2020 16:38:18 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id z3sm4084723qkj.0.2020.09.30.16.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 16:38:17 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 30 Sep 2020 19:38:15 -0400
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shuo.a.liu@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20200930233815.GA3372783@rani.riverdale.lan>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-5-shuo.a.liu@intel.com>
+ <20200927105152.GG88650@kroah.com>
+ <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
+ <20200930111612.GZ2628@hirez.programming.kicks-ass.net>
+ <20200930161036.GY28786@gate.crashing.org>
+ <20200930171346.GC2628@hirez.programming.kicks-ass.net>
+ <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+ <20200930232559.GC28786@gate.crashing.org>
 MIME-Version: 1.0
-References: <20200929235920.537849-1-guro@fb.com> <20200929235920.537849-4-guro@fb.com>
-In-Reply-To: <20200929235920.537849-4-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 30 Sep 2020 16:35:37 -0700
-Message-ID: <CALvZod5gMu1OaAspWPQnhCXOmT7U9-cbwBvK83efSYreaNWKNw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mm: introduce page memcg flags
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200930232559.GC28786@gate.crashing.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 4:59 PM Roman Gushchin <guro@fb.com> wrote:
->
-> The lowest bit in page->memcg_data is used to distinguish between
-> struct memory_cgroup pointer and a pointer to a objcgs array.
-> All checks and modifications of this bit are open-coded.
->
-> Let's formalize it using page memcg flags, defined in enum
-> page_memcg_data_flags.
->
-> Additional flags might be added later.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On Wed, Sep 30, 2020 at 06:25:59PM -0500, Segher Boessenkool wrote:
+> On Wed, Sep 30, 2020 at 12:14:03PM -0700, Nick Desaulniers wrote:
+> > Do we need register local storage here?
+> 
+> Depends what you want.  It looks like you do:
+> 
+> > static inline long bar(unsigned long hcall_id)
+> > {
+> >   long result;
+> >   asm volatile("movl %1, %%r8d\n\t"
+> >   "vmcall\n\t"
+> >     : "=a" (result)
+> >     : "ir" (hcall_id)
+> >     : );
+> >   return result;
+> > }
+> 
+> "result" as output from the asm is in %rax, and the compiler will
+> shuffle that to wherever it needs it as the function return value.  That
+> part will work fine.
+> 
+> But how you are accessing %r8d is not correct, that needs to be a local
+> register asm (or r8 be made a fixed reg, probably not what you want ;-) )
+> 
 
-One nit below:
+Doesn't it just need an "r8" clobber to allow using r8d?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-
-> ---
->  include/linux/memcontrol.h | 35 ++++++++++++++++++++++++-----------
->  1 file changed, 24 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index d4d15c04bbaf..35f846c6b89b 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -343,6 +343,15 @@ struct mem_cgroup {
->
->  extern struct mem_cgroup *root_mem_cgroup;
->
-> +enum page_memcg_data_flags {
-> +       /* page->memcg_data is a pointer to an objcgs vector */
-> +       MEMCG_DATA_OBJCGS,
-> +       /* the next bit after the last actual flag */
-> +       __NR_MEMCG_DATA_FLAGS,
-> +};
-> +
-> +#define MEMCG_DATA_FLAGS_MASK ((0x1UL << __NR_MEMCG_DATA_FLAGS) - 1)
-> +
-
-Nit:
-
-#define PG_MEMCG_OBJCGS (0x1UL << MEMCG_DATA_OBJCGS)
-
-and use this macro below.
-
->  /*
->   * page_memcg - get the memory cgroup associated with a page
->   * @page: a pointer to the page struct
-> @@ -404,13 +413,7 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
->          */
->         unsigned long memcg_data = READ_ONCE(page->memcg_data);
->
-> -       /*
-> -        * The lowest bit set means that memcg isn't a valid
-> -        * memcg pointer, but a obj_cgroups pointer.
-> -        * In this case the page is shared and doesn't belong
-> -        * to any specific memory cgroup.
-> -        */
-> -       if (memcg_data & 0x1UL)
-> +       if (memcg_data & (0x1UL << MEMCG_DATA_OBJCGS))
->                 return NULL;
->
->         return (struct mem_cgroup *)memcg_data;
-> @@ -459,7 +462,12 @@ static inline void clear_page_memcg(struct page *page)
->   */
->  static inline struct obj_cgroup **page_objcgs(struct page *page)
->  {
-> -       return (struct obj_cgroup **)(READ_ONCE(page->memcg_data) & ~0x1UL);
-> +       unsigned long memcg_data = READ_ONCE(page->memcg_data);
-> +
-> +       VM_BUG_ON_PAGE(memcg_data &&
-> +                      !(memcg_data & (0x1UL << MEMCG_DATA_OBJCGS)), page);
-> +
-> +       return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
->
->  /*
-> @@ -474,8 +482,9 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  {
->         unsigned long memcg_data = READ_ONCE(page->memcg_data);
->
-> -       if (memcg_data && (memcg_data & 0x1UL))
-> -               return (struct obj_cgroup **)(memcg_data & ~0x1UL);
-> +       if (memcg_data && (memcg_data & (0x1UL << MEMCG_DATA_OBJCGS)))
-> +               return (struct obj_cgroup **)
-> +                       (memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->
->         return NULL;
->  }
-> @@ -490,7 +499,11 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  static inline bool set_page_objcgs(struct page *page,
->                                         struct obj_cgroup **objcgs)
->  {
-> -       return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
-> +       unsigned long memcg_data = (unsigned long)objcgs;
-> +
-> +       memcg_data |= (0x1UL << MEMCG_DATA_OBJCGS);
-> +
-> +       return !cmpxchg(&page->memcg_data, 0, memcg_data);
->  }
->
->  /*
-> --
-> 2.26.2
->
+> 
+> Segher
