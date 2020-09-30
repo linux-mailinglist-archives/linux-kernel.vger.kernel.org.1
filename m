@@ -2,105 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBC327EF6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513D427EF68
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 18:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731315AbgI3Qiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 12:38:50 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41926 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731236AbgI3Qin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:38:43 -0400
-Received: from zn.tnic (p200300ec2f092a00869c7b979af15d7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2a00:869c:7b97:9af1:5d7f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CEF5B1EC046E;
-        Wed, 30 Sep 2020 18:38:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601483922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qAutDQ7C4SpF2Xd7IzT0f8niJ7rna8nfCt9PiwTl0gI=;
-        b=Ilk2SJpEVtOdFldPJj0cEec9cU137AP1ZEKp6NPU9ORTQBLGkeCwnovf7BktfO+U/6MfCY
-        +RwSEwUATCpRhutk9lvhzkJX69+TFV5nLV3a2ShkFmDyy0GfNKSLY9TK9Ad6RZu3AB4mQk
-        Do/rR6fBumhX2rgXEIjHLDdXr4EqHvY=
-Date:   Wed, 30 Sep 2020 18:38:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable <stable@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        0day robot <lkp@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v9 0/2] Renovate memcpy_mcsafe with copy_mc_to_{user,
- kernel}
-Message-ID: <20200930163839.GK6810@zn.tnic>
-References: <160087928642.3520.17063139768910633998.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAPcyv4iPuRWSv_do_h8stU0-SiWxtKkQWvzBEU+78fDE6VffmA@mail.gmail.com>
- <20200930050455.GA6810@zn.tnic>
- <CAPcyv4j=eyVMbcnrGDGaPe4AVXy5pJwa6EapH3ePh+JdF6zxnQ@mail.gmail.com>
- <20200930162403.GI6810@zn.tnic>
- <CAHk-=wjmtMDW2oUfGrXTKcESqEHx1vWCqO65o051UNL-cX9AAg@mail.gmail.com>
+        id S1731304AbgI3Qis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 12:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730897AbgI3Qiq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:38:46 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61970C061755;
+        Wed, 30 Sep 2020 09:38:46 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l17so2546357edq.12;
+        Wed, 30 Sep 2020 09:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lK/kHzAgP4lolcSnmUV2y0FUAwU87rxBn1hTaVebsi0=;
+        b=rRfHylciErSD/kdKAs0tNs686ORfPKWBVSRfxb9WoptD35zrcER7xtRiowQrXRE6Rb
+         v/0AVfrRUy26xaGjAVMyEqVv+ATUHZ/IiAGL/C8WybBQBm5Ymk/FyYknU/tTIO9T3OGi
+         eJKP1htjq3XBY/fBLnE9AyqCZkZNrcKKAviusBMkLKJWdiNSEwoX7ZBJVSk4o14iINPf
+         CY2eOavaqUX6XLYE9bo9G4lsvtKS7f0uaIXcOXIK9APLqIBnREarQDEjm38YI9hCoulU
+         HJ0ch1qCUMf6IlpJaoKVfY1tAnRL7dZTPgv9FVzKTWo3IASIBTL4+uhZJkaQ73lrmtJc
+         k6+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lK/kHzAgP4lolcSnmUV2y0FUAwU87rxBn1hTaVebsi0=;
+        b=amUqTKyDbyilC0eElgwpzpfitr9fb7NHjsl/DpgQ8XsoPhjIXC0lsIYcsGrv1GoTgB
+         1k9dMEBTLb6OLK/O7iCdH56Jy8+I4p8TnDMQT1pfyvLD5FV+DVu0rYr2q5f8gN6gm68a
+         wMEDPzUzTBIiVZeRaCxW4v9ekIM6lbQJ/HR4EVHUj4Dx3CG1AeAgUHnXVzxwKGzRmJLk
+         FVHZeEEc1tokVYWti6SBm80q/yq/8GxYPno7itdXdN8MPIBz0+pbkVBmwtAJrxk7ISXz
+         jr+zcKREjoY4PS+tvqNF2+4Xh5FCOGR4Vt6HhoyUrLSr9CzWswTHQNYqP8nfly5Q6KGL
+         dEuQ==
+X-Gm-Message-State: AOAM533ncGt0CSwPNjgtJ9W2q9FhxWhCnHtRLxxMBMhBBXRfN2TXdewo
+        qKvdLQaVNaFBrOAxb6dBDwc=
+X-Google-Smtp-Source: ABdhPJwGsiRpgc59xDLvzK22/4jMNI+uTslhTdq+f9N0m8Bqg5lwYAja8fK1QKXjcoYlQY9LsS5YaQ==
+X-Received: by 2002:aa7:c154:: with SMTP id r20mr3687532edp.337.1601483925053;
+        Wed, 30 Sep 2020 09:38:45 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id m6sm1057236ejl.94.2020.09.30.09.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:38:43 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 18:38:42 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] memory: tegra: Add
+ devm_tegra_get_memory_controller()
+Message-ID: <20200930163842.GA3852280@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-2-nicoleotsuka@gmail.com>
+ <20200930152320.GA3833404@ulmo>
+ <ed7b4375-d06e-2750-e6fa-603ef2b60d36@gmail.com>
+ <20200930160355.GC3833404@ulmo>
+ <839df5d6-513f-3d77-ba5f-a1afe5d0883a@gmail.com>
+ <20200930161503.GF3833404@ulmo>
+ <29a989b3-a8cc-5c1f-ba12-47ed0d667e8e@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="u3/rZRmxL6MmkK24"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjmtMDW2oUfGrXTKcESqEHx1vWCqO65o051UNL-cX9AAg@mail.gmail.com>
+In-Reply-To: <29a989b3-a8cc-5c1f-ba12-47ed0d667e8e@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 09:28:33AM -0700, Linus Torvalds wrote:
-> Oh, it's pretty much 100%.
 
-Oh good.
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I can't imagine what would make me skip an rc8 at this point.
-> Everything looks good right now (but not rc7, we had a stupid bug),
-> but I'd rather wait a week than fins another silly bug the day after
-> release (like happened in rc7)..
+On Wed, Sep 30, 2020 at 07:26:00PM +0300, Dmitry Osipenko wrote:
+> 30.09.2020 19:15, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, Sep 30, 2020 at 07:06:27PM +0300, Dmitry Osipenko wrote:
+> >> 30.09.2020 19:03, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Wed, Sep 30, 2020 at 06:53:06PM +0300, Dmitry Osipenko wrote:
+> >>>> 30.09.2020 18:23, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>>>> On Wed, Sep 30, 2020 at 01:42:56AM -0700, Nicolin Chen wrote:
+> >>>>>> From: Dmitry Osipenko <digetx@gmail.com>
+> >>>>>>
+> >>>>>> Multiple Tegra drivers need to retrieve Memory Controller and henc=
+e there
+> >>>>>> is quite some duplication of the retrieval code among the drivers.=
+ Let's
+> >>>>>> add a new common helper for the retrieval of the MC.
+> >>>>>>
+> >>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>>>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> >>>>>> ---
+> >>>>>>
+> >>>>>> Changelog
+> >>>>>> v2->v3:
+> >>>>>>  * Replaced with Dimtry's devm_tegra_get_memory_controller()
+> >>>>>> v1->v2:
+> >>>>>>  * N/A
+> >>>>>>
+> >>>>>>  drivers/memory/tegra/mc.c | 39 ++++++++++++++++++++++++++++++++++=
++++++
+> >>>>>>  include/soc/tegra/mc.h    | 17 +++++++++++++++++
+> >>>>>>  2 files changed, 56 insertions(+)
+> >>>>>
+> >>>>> Let's not add this helper, please. If a device needs a reference to=
+ the
+> >>>>> memory controller, it should have a phandle to the memory controlle=
+r in
+> >>>>> device tree so that it can be looked up explicitly.
+> >>>>>
+> >>>>> Adding this helper is officially sanctioning that it's okay not to =
+have
+> >>>>> that reference and that's a bad idea.
+> >>>>
+> >>>> And please explain why it's a bad idea, I don't see anything bad her=
+e at
+> >>>> all.
+> >>>
+> >>> Well, you said yourself in a recent comment that we should avoid glob=
+al
+> >>> variables. devm_tegra_get_memory_controller() is nothing but a glorif=
+ied
+> >>> global variable.
+> >>
+> >> This is not a variable, but a common helper function which will remove
+> >> the duplicated code and will help to avoid common mistakes like a miss=
+ed
+> >> put_device().
+> >=20
+> > Yeah, you're right: this is actually much worse than a global variable.
+> > It's a helper function that needs 50+ lines in order to effectively
+> > access a global variable.
+> >=20
+> > You could write this much simpler by doing something like this:
+> >=20
+> > 	static struct tegra_mc *global_mc;
+> >=20
+> > 	int tegra_mc_probe(...)
+> > 	{
+> > 		...
+> >=20
+> > 		global_mc =3D mc;
+> >=20
+> > 		...
+> > 	}
+> >=20
+> > 	struct tegra_mc *tegra_get_memory_controller(void)
+> > 	{
+> > 		return global_mc;
+> > 	}
+> >=20
+> > The result is *exactly* the same, except that this is actually more
+> > honest. Nicolin's patch *pretends* that it isn't using a global variable
+> > by wrapping a lot of complicated code around it.
+> >=20
+> > But that doesn't change the fact that this accesses a singleton object
+> > without actually being able to tie it to the device in the first place.
+>=20
+> I don't think that the MC driver will stay built-in forever, although
+> its modularization is complicated right now. Hence something shall keep
+> the reference to the MC device resources while they are in use and this
+> patch takes care of doing that.
 
-Yeah, -rc8 is clearly the best idea, why *wouldn't* one do it?!
+It looks to me like all the other places where we get a reference to the
+MC also keep a reference to the device. That's obviously not going to be
+enough once the code is turned into a module. At that point we need to
+make sure to also grab a reference to the module. But that's orthogonal
+to this discussion.
 
-:-)))
+> Secondly, the Nicolin's patch doesn't pretend on anything, but rather
 
-> We're talking literal "biblical burning bushes telling me to do a
-> release" kind of events to skip rc8 by now.
+Yes, the patch does pretend to "look up" the memory controller device,
+but in reality it will always return a singleton object, which can just
+as easily be achieved by using a global variable.
 
-If you do, it probably'll look like this:
+> brings the already existing duplicated code to a single common place.
 
-diff --git a/Makefile b/Makefile
-index 992d24467ca0..5e8819b99110 100644
---- a/Makefile
-+++ b/Makefile
-@@ -2,8 +2,8 @@
- VERSION = 5
- PATCHLEVEL = 9
- SUBLEVEL = 0
--EXTRAVERSION = -rc7
--NAME = Kleptomaniac Octopus
-+EXTRAVERSION =
-+NAME = Biblical Burning Bushes
- 
- # *DOCUMENTATION*
- # To see a list of typical targets execute "make help"
+Where exactly is that duplicated code? The only places I see where we
+get a reference to the memory controller are from the EMC drivers and
+they properly look up the MC via the nvidia,memory-controller device
+tree property.
 
--- 
-Regards/Gruss,
-    Boris.
+But that's not what this new helper does. This code will use the OF
+lookup table to find any match and then returns that, completely
+ignoring any links established by the device tree.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thierry
+
+--u3/rZRmxL6MmkK24
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl90tI8ACgkQ3SOs138+
+s6EKNw/+J/VfzEF447KR0hgUG9h0PaTreKUUBO/pGai7NlCCXpgKtzFsW8tXWKJu
+nf/lvvcawYFmFF/JI1aAfe9urmkcxa1/mKOPzzOVtpnwL1b7e2gKaDxCDP2I7vU7
+DqhCKbmAFYV5gA3pKrUmpukn+1CcIUNIgHZIi046Clr4Ipr7gtSh0HmQpdNs6T22
+K+Y35u7evOOk1r+UPaXFNQVm4W+C7sKiCpYTbVnyZwV0Skp6GKBwypBp1Fi3g7TN
+abeo2M+ydxVBDRD53459CDVVje4TLUnn67cW3Aoudk2kvfPJBdM3FQjHD4aVYOxR
+DmL9XnulUrUM066T4HZ9mfz8b5dOuZMbOFEe/WbFoSOmpDTq5BeW687jcdMgMd79
+Ne8Qkd4BTG8KJoDTdxYM3BX4Zl1PqkXh1hrrHDq3VBTFRayJrpi528lcu0crqxda
+tFvuuoHbHSDKuDLxz7LH88RTxjCHFT6T/5cK08FxiUOjFIE2YvohV7ji7uga89Tv
+KyjFddYmtTHM7gkZofuAFxXZhJ31KCO5PpD2ScIFNjZJs8tqF11a6vodxMEVMCH5
+ThjT7sFbOcckn1fQxW/zfi6JV3tFP/OvOcXDtn+JAR//aEGheAxw/78dGAe6SGyZ
+FTA2JxYo3BGby4YBAl/SQVh0nuAJ1pe6Jxzx5W6QZ5vTK6Im5Zw=
+=ngRF
+-----END PGP SIGNATURE-----
+
+--u3/rZRmxL6MmkK24--
