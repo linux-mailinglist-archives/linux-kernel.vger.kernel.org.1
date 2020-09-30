@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756AA27E8AC
+	by mail.lfdr.de (Postfix) with ESMTP id 0520F27E8AB
 	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 14:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbgI3Mgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 08:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgI3Mgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729901AbgI3Mgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 30 Sep 2020 08:36:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D47C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 05:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6tFTYb3Wzz6b6nVEOaTY19MAg+Ujicir9pWVpfj4BXw=; b=uAafF/ovoRVJBuCHGMjnocW1uJ
-        o9ScRK+acOA2IP5Ei8tkYbSZhzXEatgM6hiwLSRffLgVhrpklA51kFiaLT1Str5aocPUOOe74mSUt
-        aSW+79AUAFsfbkzUj7WNyhOtB0CMNXFEF1HDgf3/x5mSN1Yibb1Sj6KIVceCqC4Y4ZmjrX7aAqq9u
-        8sEqCJOvS8nLL34fF6FOcJvatgoF2FKOAnSxok/rCXpbAbWHlagIquRxiyBVZie3aulQnB6V3cvFm
-        Wiw6Xtw0yyqfBtWKgjNwB6wmFADTJ8/SEXrG13LfTcCby0UCAUOft//ENpTiqepH1D1jMztURvIMX
-        0tZ5NY6A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNbLZ-0002y9-3K; Wed, 30 Sep 2020 12:36:37 +0000
-Date:   Wed, 30 Sep 2020 13:36:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] mm/filemap: Return only head pages from
- find_get_entries
-Message-ID: <20200930123637.GP20115@casper.infradead.org>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-13-willy@infradead.org>
- <20200930121512.GT10896@quack2.suse.cz>
+Received: from foss.arm.com ([217.140.110.172]:35376 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728235AbgI3Mgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 08:36:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FFC530E;
+        Wed, 30 Sep 2020 05:36:49 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6EF553F6CF;
+        Wed, 30 Sep 2020 05:36:47 -0700 (PDT)
+Subject: Re: [PATCH v7 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, sumit.garg@linaro.org, maz@kernel.org,
+        swboyd@chromium.org, catalin.marinas@arm.com,
+        Julien Thierry <julien.thierry@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Pouloze <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+References: <20200924110706.254996-1-alexandru.elisei@arm.com>
+ <20200924110706.254996-6-alexandru.elisei@arm.com>
+ <20200928175725.GB11792@willie-the-truck>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <6b1ecdef-3a42-c428-2309-753b1470e3de@arm.com>
+Date:   Wed, 30 Sep 2020 13:37:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930121512.GT10896@quack2.suse.cz>
+In-Reply-To: <20200928175725.GB11792@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 02:15:12PM +0200, Jan Kara wrote:
-> On Mon 14-09-20 14:00:42, Matthew Wilcox (Oracle) wrote:
-> > All callers now expect head (and base) pages, and can handle multiple
-> > head pages in a single batch, so make find_get_entries() behave that way.
-> > Also take the opportunity to make it use the pagevec infrastructure
-> > instead of open-coding how pvecs behave.  This has the side-effect of
-> > being able to append to a pagevec with existing contents, although we
-> > don't make use of that functionality anywhere yet.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> Looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> I'm just curious: What has happened to pagevec_lookup_entries() call in
-> invalidate_inode_pages2_range()? Your series appears to be based on a tree
-> where the call already does not exist...
+Hi Will,
 
-That went away in patch 10 of this series.
+On 9/28/20 6:57 PM, Will Deacon wrote:
+
+> On Thu, Sep 24, 2020 at 12:07:04PM +0100, Alexandru Elisei wrote:
+>> From: Julien Thierry <julien.thierry@arm.com>
+>>
+>> kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
+>> NMI context, defer waking the vcpu to an irq_work queue.
+>>
+>> A vcpu can be freed while it's not running by kvm_destroy_vm(). Prevent
+>> running the irq_work for a non-existent vcpu by calling irq_work_sync() on
+>> the PMU destroy path.
+>>
+>> Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
+>> Cc: Marc Zyngier <marc.zyngier@arm.com>
+>> Cc: Will Deacon <will.deacon@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
+>> Cc: kvm@vger.kernel.org
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Signed-off-by: Julien Thierry <julien.thierry@arm.com>
+>> Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
+>> [Alexandru E.: Added irq_work_sync()]
+>> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> ---
+>> I suggested in v6 that I will add an irq_work_sync() to
+>> kvm_pmu_vcpu_reset(). It turns out it's not necessary: a vcpu reset is done
+>> by the vcpu being reset with interrupts enabled, which means all the work
+>> has had a chance to run before the reset takes place.
+> I don't understand this ^^
+
+Marc had the same comment, I replied in his email. I thought about it and you're
+right, it doesn't make much sense.
+
+>
+> But the patch itself looks good, so I'm going to queue this lot anyway!
+
+Thank you for picking up the series!
+
+Thanks,
+Alex
