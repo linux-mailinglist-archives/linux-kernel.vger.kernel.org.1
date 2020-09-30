@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C46A27EAF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F0B27EAF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgI3Oct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:32:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:42544 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbgI3Ocs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:32:48 -0400
-IronPort-SDR: 2rVbEPdIY2WU7PbKTjr1f1SAE4PS0ea1oLRzC3DWeCsBQfYyza5sb0KLDGgiomBfqkfR8GzPn5
- GK6zK55eoHHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9759"; a="142470184"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="142470184"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 07:32:48 -0700
-IronPort-SDR: GG3YsJgu3sXZdvEOzP8vnRPd99f8P11Eqgd2TR0qwobegZimMUu66WO+U8Ru/iNnWrfz0Y4eiN
- 7W2YTOFE4AhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="515098531"
-Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Sep 2020 07:32:47 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel: Fix n_metric for the canceled group
-Date:   Wed, 30 Sep 2020 07:29:35 -0700
-Message-Id: <20200930142935.13482-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730231AbgI3Ob6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:31:58 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:53835 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728149AbgI3Ob5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:31:57 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200930143155euoutp024487ee5d4e4c8c59704662a5758f465d~5ljljUpYT1939419394euoutp02L
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:31:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200930143155euoutp024487ee5d4e4c8c59704662a5758f465d~5ljljUpYT1939419394euoutp02L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601476315;
+        bh=VdTMVF/5RBjfkqF1GszAZp16h8e/DsklT6np30DQjHE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=TsTdwYTsKr76Y9TzkXSfp1fF8kOnmn0aWFWVQ/UcFVB1IrGSUkcRptcTBVD3chaqy
+         /a1TUD9hrSCIv+y0nobWfYokkg36A1ZqIFLEhWGm3Fm0aqWW/63aGmbv/tjGRacov7
+         XyMmeF46WSYZUZIFfRbBnWkIgvgIvlHKqQ7eX7iE=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200930143155eucas1p288ee6fba10f00cca2d3befec1340b391~5ljlHGye_0260402604eucas1p2-;
+        Wed, 30 Sep 2020 14:31:55 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 23.7B.06456.BD6947F5; Wed, 30
+        Sep 2020 15:31:55 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7~5ljkmymV00258402584eucas1p21;
+        Wed, 30 Sep 2020 14:31:54 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200930143154eusmtrp290f2e874f36d0cc3c9d887ecd66737ab~5ljkmGWKQ2809328093eusmtrp2X;
+        Wed, 30 Sep 2020 14:31:54 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-05-5f7496dbe3a6
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6D.C5.06314.AD6947F5; Wed, 30
+        Sep 2020 15:31:54 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200930143154eusmtip242fb214d20d775c8ad10b93e01927cac~5ljkdL2oi1540515405eusmtip2J;
+        Wed, 30 Sep 2020 14:31:54 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH] ARM: dts: exynos: Add a placeholder for a MAC address
+Date:   Wed, 30 Sep 2020 16:31:51 +0200
+Message-Id: <20200930143151.23961-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOKsWRmVeSWpSXmKPExsWy7djP87q3p5XEG2yeymOxccZ6Vov5R86x
+        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWHvkLrtF694j7A5cHptWdbJ5bF5S
+        79G3ZRWjx+dNcgEsUVw2Kak5mWWpRfp2CVwZbw6tZio4yV7RvPQpUwPjRLYuRk4OCQETifmf
+        XjJ3MXJxCAmsYJR4dGwvE4TzhVHi6a5lLBDOZ0aJB5c2ssK0TJt6kBUisZxRYuGNB1Atzxkl
+        3vX0MYJUsQk4SvQvPQFWJQLSPnPuJCaQBLNAqcTW42+ZQWxhATeJW08WgF3CIqAq0TZtMlgz
+        r4C1RMexmcwQ6+Ql2pdvZ4OIC0qcnPmEBcTmF9CSWNN0nQViprxE89bZYF9ICCxil3j9dAMj
+        RLOLxP+Wy1CvCku8Or6FHcKWkfi/cz7QQRxAdr3E5ElmEL09jBLb5vxggaixlrhz7hcbSA2z
+        gKbE+l36EGFHibM7utghWvkkbrwVhDiBT2LStunMEGFeiY42IYhqFYl1/XugBkpJ9L5awQhR
+        4iHRfZFrAqPiLCR/zULyyyyEtQsYmVcxiqeWFuempxYb5qWW6xUn5haX5qXrJefnbmIEJp/T
+        /45/2sH49VLSIUYBDkYlHt4JeSXxQqyJZcWVuYcYJTiYlUR4nc6ejhPiTUmsrEotyo8vKs1J
+        LT7EKM3BoiTOa7zoZayQQHpiSWp2ampBahFMlomDU6qBcZrFh3tBdbEaW3i+dKhWLk+OPOvd
+        Zs26ZPGXwJPTp3/N2bzfrzTrwl/NL99DP17P3/jSuO+uybFezWqZ3U03cwSmiTcc/3xET/Df
+        DufyL3MSrH8+Wv1phbOjoWPz/H15e+0SlB5LT3fY0BUUdspAeJrEDe/X+6QC9facTpp/7WFz
+        u3lphhzjHiWW4oxEQy3mouJEAJrsPeY6AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsVy+t/xe7q3ppXEG3zdpGmxccZ6Vov5R86x
+        WvQ/fs1scf78BnaLm4dWMFpsenyN1eLyrjlsFjPO72OyWHvkLrtF694j7A5cHptWdbJ5bF5S
+        79G3ZRWjx+dNcgEsUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaWeobG5rFWRqZK+nY2Kak5
+        mWWpRfp2CXoZbw6tZio4yV7RvPQpUwPjRLYuRk4OCQETiWlTD7J2MXJxCAksZZToe/MTyOEA
+        SkhJrJybDlEjLPHnWhdYvZDAU0aJSdfEQWw2AUeJ/qUnWEFsEYGfjBLbzjqCtDILlEu8OBgI
+        EhYWcJO49WQBWCuLgKpE27TJjCA2r4C1RMexmcwQ4+Ul2pdvZ4OIC0qcnPmEBWKMusT6eUIg
+        YX4BLYk1TddZQGxmoPLmrbOZJzAKzELSMQuhYxaSqgWMzKsYRVJLi3PTc4sN9YoTc4tL89L1
+        kvNzNzECo2bbsZ+bdzBe2hh8iFGAg1GJh3dCXkm8EGtiWXFl7iFGCQ5mJRFep7On44R4UxIr
+        q1KL8uOLSnNSiw8xmgK9M5FZSjQ5HxjRQD2GpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNT
+        UwtSi2D6mDg4pRoYZ6zfbFvpLGzz3WDGsvoTe4MfHb553L2KzX7ZsgaOvceZL3HfEThQse/t
+        et5r8XIs3kLbX4Z8flZ979D2a5qOjf2VjYoHtwWLSy1SPVv2yrvw+OnLLAzW+5LfRj/6vOZo
+        iIPeXNFvP55cVmJd22T9uCpC+31P7/wP/3LYrcrtjZrDl02N8uhZqcRSnJFoqMVcVJwIABLd
+        N2WwAgAA
+X-CMS-MailID: 20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7
+References: <CGME20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Add a placeholder for a MAC address. A bootloader may fill it
+to set the MAC address and override EEPROM settings.
 
-When a group that has TopDown members is failed to be scheduled, any
-later TopDown groups will not return valid values.
-
-Here is an example.
-
-A background perf that occupies all the GP counters and the fixed
-counter 1.
- $perf stat -e "{cycles,cycles,cycles,cycles,cycles,cycles,cycles,
-                 cycles,cycles}:D" -a
-
-A user monitors a TopDown group. It works well, because the fixed
-counter 3 and the PERF_METRICS are available.
- $perf stat -x, --topdown -- ./workload
-   retiring,bad speculation,frontend bound,backend bound,
-   18.0,16.1,40.4,25.5,
-
-Then the user tries to monitor a group that has TopDown members.
-Because of the cycles event, the group is failed to be scheduled.
- $perf stat -x, -e '{slots,topdown-retiring,topdown-be-bound,
-                     topdown-fe-bound,topdown-bad-spec,cycles}'
-                     -- ./workload
-    <not counted>,,slots,0,0.00,,
-    <not counted>,,topdown-retiring,0,0.00,,
-    <not counted>,,topdown-be-bound,0,0.00,,
-    <not counted>,,topdown-fe-bound,0,0.00,,
-    <not counted>,,topdown-bad-spec,0,0.00,,
-    <not counted>,,cycles,0,0.00,,
-
-The user tries to monitor a TopDown group again. It doesn't work anymore.
- $perf stat -x, --topdown -- ./workload
-
-    ,,,,,
-
-In a txn, cancel_txn() is to truncate the event_list for a canceled
-group and update the number of events added in this transaction.
-However, the number of TopDown events added in this transaction is not
-updated. The kernel will probably fail to add new Topdown events.
-
-Check if the canceled group has Topdown events. If so, subtract the
-TopDown events from n_metric accordingly.
-
-Fixes: 7b2c05a15d29 ("perf/x86/intel: Generic support for hardware TopDown metrics")
-Reported-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 ---
- arch/x86/events/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 0f3d01562ded..4cb3ccbe2d62 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2017,6 +2017,7 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
- {
- 	unsigned int txn_flags;
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	int i;
- 
- 	WARN_ON_ONCE(!cpuc->txn_flags);	/* no txn in flight */
- 
-@@ -2031,6 +2032,15 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
- 	 */
- 	__this_cpu_sub(cpu_hw_events.n_added, __this_cpu_read(cpu_hw_events.n_txn));
- 	__this_cpu_sub(cpu_hw_events.n_events, __this_cpu_read(cpu_hw_events.n_txn));
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+index db0bc17a667b..9f7f3eacb750 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+@@ -70,3 +70,21 @@ &pwm {
+ &usbdrd_dwc3_1 {
+ 	dr_mode = "peripheral";
+ };
 +
-+	/* Subtract Topdown events in the canceled group from n_metric */
-+	if (x86_pmu.intel_cap.perf_metrics && cpuc->n_metric) {
-+		for (i = 0; i < cpuc->n_txn; i++) {
-+			if (is_metric_event(cpuc->event_list[i + cpuc->n_events]))
-+				__this_cpu_dec(cpu_hw_events.n_metric);
-+		}
-+		WARN_ON_ONCE(__this_cpu_read(cpu_hw_events.n_metric) < 0);
-+	}
- 	perf_pmu_enable(pmu);
- }
- 
++&usbhost2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	hub@1 {
++		compatible = "usb8087,0024";
++		reg = <1>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethernet: usbether@1 {
++			compatible = "usb0c45,6310";
++			reg = <1>;
++			mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
++		};
++	};
++};
 -- 
-2.17.1
+2.26.2
 
