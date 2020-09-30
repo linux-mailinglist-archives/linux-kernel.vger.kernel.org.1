@@ -2,195 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472B527E761
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F31227E75C
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 13:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgI3LF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 07:05:29 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:36929 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgI3LF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 07:05:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601463928; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WPlpDhi/b2IDVMOaA97fK3b8AFsr8llioaaXDGmHhhU=;
- b=Acct5BdFZawS1vHXLnSlAnEF96nxvTOzbvwCkqxRdEQ3drtPk22JMfIE88sLq5XgYuw8Pkru
- q4rKLeT1D4v99+0oi804/PFHqSG9twdySj5tdreqWWva++QJhmcS1nlwxIaciRLalgFbOYCC
- f+4gALpbKFjih7Xc4g5J+B6AuTw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f746635bebf546dbb6173ed (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 30 Sep 2020 11:04:21
- GMT
-Sender: gokulsri=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9779EC433CA; Wed, 30 Sep 2020 11:04:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: gokulsri)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31CCFC433C8;
-        Wed, 30 Sep 2020 11:04:21 +0000 (UTC)
+        id S1729215AbgI3LFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 07:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgI3LFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 07:05:03 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05443C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:05:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d23so820562pll.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 04:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JJYQrBdSm8SVfWUamUu8kolSU+H/tu2hxah3v/KgVJo=;
+        b=XBoZ/FIm18NNdvtVcfhgfXLm9pOCDfLBxx7//afNzP9oETWinPLk8IJPUWzO+Uf2Ta
+         oKosDQjD8FEXd2wGRt+JtoOkVZujUsoXm977DOpS3LZ+cswE4sKLcqRvbVgUleWiS5JV
+         4F6E1vwnk407vLf44QQbLk8eDbFK2ftbCyV7WhuH7/7ZX7MB91cEMAaJWa/4N2PKJDWE
+         f44W+j32kgtdZuTm2kTX5fIwizqpbHHmHMc+TWKTQcuOM9HLtmIEKYWVaaZedLDDehhC
+         K1oi4gGOCtG/8hITmrRpGrXI1UtpkqSSrFaRjDoupyTbCSGrRA0WY4i041k07zE0xMVX
+         CSFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JJYQrBdSm8SVfWUamUu8kolSU+H/tu2hxah3v/KgVJo=;
+        b=ouR9Xg/B6cDszi3J/pVtKzW48oszfe3p7n7aHMV1RtW97TQ++aDzyRtoQ+X+oYZUBh
+         BQRZztw9NeNhSy8oJn28kaOv+wT9LNXkfx2p0Pb9IcUTnyaD/qU0jx9IllObj2bMFQ9Z
+         iEfJwqg60dxrFfFl8DZ39GYmo0h6apltlnQ94fMUXPSdSsNKKEgQ3Xe5jf8RxKgZRGJ7
+         EsjPYdVLZSsPsF1o4lKcqxpLqfQSdjIltMTrLbBZmBVpkQZ6TdPqm0k9z/rXAz/wmhMO
+         uj1F/syeHiIxu6sl5+eewj1ER1vdHQ9od/TrjLLs57KCHvFCQclf77Dj43C2Ul1g/V6Y
+         j0yw==
+X-Gm-Message-State: AOAM531m1GBd+ZlE9+lwd6IwTDxr5CQQK2orc/xalEghEd4Np8oh9wAA
+        vm4CZpY3T1c67fHhEPx9PpGPyw==
+X-Google-Smtp-Source: ABdhPJyBTErywS/BjG9OzprzBZramQ+q+ZvDS9limkkTSM1ut0yZYkjK6smb/SCYZD9lZtmDgkLSQg==
+X-Received: by 2002:a17:90a:2a03:: with SMTP id i3mr2036605pjd.43.1601463902222;
+        Wed, 30 Sep 2020 04:05:02 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id x140sm2069167pfc.211.2020.09.30.04.04.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 04:05:01 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 19:04:53 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Al Grant <Al.Grant@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
+Message-ID: <20200930110453.GB9968@leoy-ThinkPad-X240s>
+References: <20200922101225.183554-1-andre.przywara@arm.com>
+ <20200922101225.183554-6-andre.przywara@arm.com>
+ <20200928132114.GF6642@arm.com>
+ <8efd63eb-5ae7-0f9a-6c37-ef5e68af4e6c@arm.com>
+ <20200928144755.GI6642@arm.com>
+ <20200929021902.GA16749@leoy-ThinkPad-X240s>
+ <20200930103409.GP6642@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 30 Sep 2020 16:34:21 +0530
-From:   gokulsri@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        sboyd@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: Enabled MHI device over PCIe
-In-Reply-To: <20200806102623.GB2406@Mani-XPS-13-9360>
-References: <1596706332-12957-1-git-send-email-gokulsri@codeaurora.org>
- <1596706332-12957-4-git-send-email-gokulsri@codeaurora.org>
- <20200806102623.GB2406@Mani-XPS-13-9360>
-Message-ID: <d3b10e0842192eb7016ebc447e148378@codeaurora.org>
-X-Sender: gokulsri@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930103409.GP6642@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-06 15:56, Manivannan Sadhasivam wrote:
-> On Thu, Aug 06, 2020 at 03:02:12PM +0530, Gokul Sriram Palanisamy 
-> wrote:
->> Enabled MHI device support over PCIe and added memory
->> reservation required for MHI enabled QCN9000 PCIe card.
->> 
-> 
-> There is no DT support exist for MHI as of now, so this is not going to 
-> work.
-> 
-> Thanks,
-> Mani
-> 
-Hi Mani,
-The dt entries are to be used by the ath11k driver. Will remove 
-mhi,max-channels and mhi,timeout
-and post a new revision.
+Hi Dave,
 
-Thanks,
-Gokul
->> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi | 58 
->> ++++++++++++++++++++++++++++++
->>  arch/arm64/boot/dts/qcom/ipq8074.dtsi      |  8 +++++
->>  2 files changed, 66 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi 
->> b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> index 0827055..d201a7b 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
->> @@ -24,6 +24,22 @@
->>  		device_type = "memory";
->>  		reg = <0x0 0x40000000 0x0 0x20000000>;
->>  	};
->> +
->> +	reserved-memory {
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		qcn9000_pcie0: memory@50f00000 {
->> +			no-map;
->> +			reg = <0x0 0x50f00000 0x0 0x03700000>;
->> +		};
->> +
->> +		qcn9000_pcie1: memory@54600000 {
->> +			no-map;
->> +			reg = <0x0 0x54600000 0x0 0x03700000>;
->> +		};
->> +	};
->>  };
->> 
->>  &blsp1_spi1 {
->> @@ -74,3 +90,45 @@
->>  		nand-bus-width = <8>;
->>  	};
->>  };
->> +
->> +&pcie0_rp {
->> +	status = "ok";
->> +
->> +	mhi_0: qcom,mhi@0 {
->> +		reg = <0 0 0 0 0 >;
->> +		qrtr_instance_id = <0x20>;
->> +		#address-cells = <0x2>;
->> +		#size-cells = <0x2>;
->> +
->> +		base-addr = <0x50f00000>;
->> +		qcom,caldb-addr = <0x53E00000>;
->> +		qrtr_node_id = <0x27>;
->> +		mhi,max-channels = <30>;
->> +		mhi,timeout = <10000>;
->> +
->> +		pcie0_mhi: pcie0_mhi {
->> +			status = "ok";
->> +		};
->> +	};
->> +};
->> +
->> +&pcie1_rp {
->> +	status = "ok";
->> +
->> +	mhi_1: qcom,mhi@1 {
->> +		reg = <0 0 0 0 0 >;
->> +		qrtr_instance_id = <0x21>;
->> +		#address-cells = <0x2>;
->> +		#size-cells = <0x2>;
->> +
->> +		base-addr = <0x54600000>;
->> +		qcom,caldb-addr = <0x57500000>;
->> +		qrtr_node_id = <0x28>;
->> +		mhi,max-channels = <30>;
->> +		mhi,timeout = <10000>;
->> +
->> +		pcie1_mhi: pcie1_mhi {
->> +			status = "ok";
->> +		};
->> +	};
->> +};
->> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi 
->> b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> index b651345..eef47c1 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> @@ -709,6 +709,10 @@
->>  				      "ahb",
->>  				      "axi_m_sticky";
->>  			status = "disabled";
->> +
->> +			pcie1_rp: pcie1_rp {
->> +				reg = <0 0 0 0 0>;
->> +			};
->>  		};
->> 
->>  		pcie0: pci@20000000 {
->> @@ -779,6 +783,10 @@
->>  				      "axi_m_sticky",
->>  				      "axi_s_sticky";
->>  			status = "disabled";
->> +
->> +			pcie0_rp: pcie0_rp {
->> +				reg = <0 0 0 0 0>;
->> +			};
->>  		};
->> 
->>  		tcsr_q6: syscon@1945000 {
->> --
->> 2.7.4
->> 
+On Wed, Sep 30, 2020 at 11:34:11AM +0100, Dave Martin wrote:
+
+[...]
+
+> > > > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > >> index a033f34846a6..f0c369259554 100644
+> > > > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> > > > >> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+> > > > >>  	}
+> > > > >>  	case ARM_SPE_OP_TYPE:
+> > > > >>  		switch (idx) {
+> > > > >> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> > > > >> +		case 0: {
+> > > > >> +			size_t blen = buf_len;
+> > > > >> +
+> > > > >> +			if ((payload & 0x89) == 0x08) {
+> > > > >> +				ret = snprintf(buf, buf_len, "SVE");
+> > > > >> +				buf += ret;
+> > > > >> +				blen -= ret;
+> > > > > 
+> > > > > (Nit: can ret be < 0 ?  I've never been 100% clear on this myself for
+> > > > > the s*printf() family -- if this assumption is widespread in perf tool
+> > > > > a lready that I guess just go with the flow.)
+> > > > 
+> > > > Yeah, some parts of the code in here check for -1, actually, but doing
+> > > > this on every call to snprintf would push this current code over the
+> > > > edge - and I cowardly avoided a refactoring ;-)
+> > > > 
+> > > > Please note that his is perf userland, and also we are printing constant
+> > > > strings here.
+> > > > Although admittedly this starts to sounds like an excuse now ...
+> > > > 
+> > > > > I wonder if this snprintf+increment+decrement sequence could be wrapped
+> > > > > up as a helper, rather than having to be repeated all over the place.
+> > > > 
+> > > > Yes, I was hoping nobody would notice ;-)
+> > > 
+> > > It's probably not worth losing sleep over.
+> > > 
+> > > snprintf(3) says, under NOTES:
+> > > 
+> > > 	Until glibc 2.0.6, they would return -1 when the output was
+> > > 	truncated.
+> > > 
+> > > which is probably ancient enough history that we don't care.  C11 does
+> > > say that a negative return value can happen "if an encoding error
+> > > occurred".  _Probably_ not a problem if perf tool never calls
+> > > setlocale(), but ...
+> > 
+> > I have one patch which tried to fix the snprintf+increment sequence
+> > [1], to be honest, the change seems urgly for me.  I agree it's better
+> > to use a helper to wrap up.
+> > 
+> > [1] https://lore.kernel.org/patchwork/patch/1288410/
+> 
+> Sure, putting explicit checks all over the place makes a lot of noise in
+> the code.
+> 
+> I was wondering whether something along the following lines would work:
+> 
+> 	/* ... */
+> 
+> 	if (payload & SVE_EVT_PKT_GEN_EXCEPTION)
+> 		buf_appendf_err(&buf, &buf_len, &ret, " EXCEPTION-GEN");
+> 	if (payload & SVE_EVT_PKT_ARCH_RETIRED)
+> 		buf_appendf_err(&buf, &buf_len, &ret, " RETIRED");
+> 	if (payload & SVE_EVT_PKT_L1D_ACCESS)
+> 		buf_appendf_err(&buf, &buf_len, &ret, " L1D-ACCESS");
+> 
+> 	/* ... */
+> 
+> 	if (ret)
+> 		return ret;
+> 
+> [...]
+
+I have sent out the patch v2 [1] and Cc'ed you; I used a similiar API
+definition with your suggestion:
+
+  static int arm_spe_pkt_snprintf(char **buf_p, size_t *blen,
+ 				  const char *fmt, ...)
+
+Only a difference is when return from arm_spe_pkt_snprintf(), will check
+the return value and directly bail out when detect failure.  Your input
+will be considered for next spin.
+
+> Best to keep such refactoring independent of this series though.
+
+Yeah, the patch set [2] is quite heavy; after get some reviewing,
+maybe need to consider to split into 2 or even 3 small patch sets.
+
+Thanks a lot for your suggestions!
+
+Leo
+
+[1] https://lore.kernel.org/patchwork/patch/1314603/
+[2] https://lore.kernel.org/patchwork/cover/1314599/
