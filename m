@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E538227E5B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C79827E5B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 11:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgI3JzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 05:55:11 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33598 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbgI3JzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 05:55:11 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4E394DBEC0FDEECB944F;
-        Wed, 30 Sep 2020 17:55:09 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 30 Sep 2020
- 17:54:59 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@kernel.org>, <vdavydov.dev@gmail.com>
-CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v3] mm: memcontrol: reword obsolete comment of mem_cgroup_unmark_under_oom()
-Date:   Wed, 30 Sep 2020 05:53:36 -0400
-Message-ID: <20200930095336.21323-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1729077AbgI3Jzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 05:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728695AbgI3Jza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 05:55:30 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A00862075F;
+        Wed, 30 Sep 2020 09:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601459730;
+        bh=rjvpk8NGHsZnXAbXtQ4alzl+Jo4neTXTEg6IzFfFFNY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LoR+pW6VJMYs5pAjcYy5QL4WFi0ngovU1/riIz4CE2WcSlfJyHc2CxBs5mhMVkkVv
+         qffygP/VLDJgEaVvJ3blRaopgY9z2xL+V0dX4SVItKvRi6Tm7Jbt5UTUDdJfTyk2vO
+         +TBsKHaczkabH/KiVhlCzKZRN+bxCYvNDuVWKHu8=
+Date:   Wed, 30 Sep 2020 12:55:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Srinivasan Raju <srini.raju@purelifi.com>,
+        mostafa.afgani@purelifi.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] [v2] wireless: Initial driver submission for pureLiFi
+ devices
+Message-ID: <20200930095526.GM3094@unreal>
+References: <20200924151910.21693-1-srini.raju@purelifi.com>
+ <20200928102008.32568-1-srini.raju@purelifi.com>
+ <20200930051602.GJ3094@unreal>
+ <87d023elrc.fsf@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d023elrc.fsf@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 79dfdaccd1d5 ("memcg: make oom_lock 0 and 1 based rather than
-counter"), the mem_cgroup_unmark_under_oom() is added and the comment of
-the mem_cgroup_oom_unlock() is moved here.  But this comment make no sense
-here because mem_cgroup_oom_lock() does not operate on under_oom field. So
-we reword the comment as this would be helpful.
-[Thanks Michal Hocko for rewording this comment.]
+On Wed, Sep 30, 2020 at 11:01:27AM +0300, Kalle Valo wrote:
+> Leon Romanovsky <leon@kernel.org> writes:
+>
+> >> diff --git a/drivers/net/wireless/purelifi/Kconfig
+> > b/drivers/net/wireless/purelifi/Kconfig
+> >> new file mode 100644
+> >> index 000000000000..ff05eaf0a8d4
+> >> --- /dev/null
+> >> +++ b/drivers/net/wireless/purelifi/Kconfig
+> >> @@ -0,0 +1,38 @@
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +config WLAN_VENDOR_PURELIFI
+> >> +	bool "pureLiFi devices"
+> >> +	default y
+> >
+> > "N" is preferred default.
+>
+> In most cases that's true, but for WLAN_VENDOR_ configs 'default y'
+> should be used. It's the same as with NET_VENDOR_.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
----
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I would like to challenge it, why is that?
+Why do I need to set "N", every time new vendor upstreams its code?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6877c765b8d0..4f0c14cb8690 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1817,8 +1817,8 @@ static void mem_cgroup_unmark_under_oom(struct mem_cgroup *memcg)
- 	struct mem_cgroup *iter;
- 
- 	/*
--	 * When a new child is created while the hierarchy is under oom,
--	 * mem_cgroup_oom_lock() may not be called. Watch for underflow.
-+	 * Be careful about under_oom underflows becase a child memcg
-+	 * could have been added after mem_cgroup_mark_under_oom.
- 	 */
- 	spin_lock(&memcg_oom_lock);
- 	for_each_mem_cgroup_tree(iter, memcg)
--- 
-2.19.1
+Thanks
 
+>
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
