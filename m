@@ -2,209 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9BF27F3E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407FE27F3F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgI3VGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:06:55 -0400
-Received: from mga04.intel.com ([192.55.52.120]:15110 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3VGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:06:52 -0400
-IronPort-SDR: 9DtMoF406mJRy6wXJPinZNtOiOBbi1Rk7GhSzfBMwVqisvvP3qexFsDaO6pk4DpY3OVYXoXswK
- AEX5Y8mlCuTg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="159944198"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="159944198"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 14:06:48 -0700
-IronPort-SDR: vqlTUGcJIlQDfZJATnIzTFORceCOoWqIHJnmiIlW1VlLsP+vG8EQ/PIFot61fRf1X4jgF9Tqme
- zSE5tN9LHs7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="499478729"
-Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 30 Sep 2020 14:06:45 -0700
-Received: from kbuild by de448af6ea1b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kNjJF-0000OQ-9T; Wed, 30 Sep 2020 21:06:45 +0000
-Date:   Thu, 01 Oct 2020 05:06:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:efi/core] BUILD SUCCESS
- 963fabf37f6a94214a823df0a785e653cb8ad6ea
-Message-ID: <5f74f346.s01yMDPeOQXA3bdS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730782AbgI3VIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730090AbgI3VIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:08:30 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C38AC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:08:30 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id cy2so1732286qvb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 14:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z7NVwPN8FRHND4Ps48IR2LCzL7gRCF/0sN8/Bym6zig=;
+        b=ZryS3Vhs/ofsUE6v35rSZRt18BInVxIR7lit/zAiHuB2RI4CW2JpdCHvQDqz5Fj/D0
+         RM9fkXcPqT8+ae4H5/XrqyXF75V7radXS10OrcFfRB8hFY3/Xk1CRkUmrjRaq8HFrVFi
+         e8KzvURuZ+v5uIJR5bm4WHKCaO5QvV3PKcJZFh3GozMdRRnaCu7VLXBQ9rcHEjunF2Me
+         dvLmiB6pHwrIoOz70OGKiK3Nx35dyoSf1+dhiFiamonFDdYcVQdwoax1NRt8hlO0q2ns
+         a/GIW1kMCv6MSFVwzYDd4ewDwYE8RDwK67at1wrTb2KHvzFaRvoNWaUvCRjahg09AOmW
+         72TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z7NVwPN8FRHND4Ps48IR2LCzL7gRCF/0sN8/Bym6zig=;
+        b=JV8XbPzZyipQgzxUf7XsUG+N+dpZeCXruBVtgUKd0qHRlRW3A4sbgX4jruEhsemHiM
+         K+Kvz5O6vTugTW4ZQd/aqrZ/fFD3CbgzF+ue6lELOBfkR6F4zceL1foYGmWnFd1zgbVc
+         RAvHQXUXdR1snexDcz8QgRsD9MW7qunmQtaknRntTPDlEireMhupY87JoLQJMgpsyn8i
+         G8uhstD1RaYWiopsSwsB/ULspbJqC3ZQgPo6hUOq4oGj3q+0xxYS76H5630BE9SkOz/B
+         twXqIDuz3hKK6Mcg/JTQtmke//A8StmbUCGbv9bq2NZc0T15idb8XxbmxhRTqSbIQIYP
+         nG8A==
+X-Gm-Message-State: AOAM533Kci/kdMB0QfShRqpwovXu+O6BLkpTIyLKc/zoGfVrwVNEstiP
+        eiPfDvdJDle6vLyJEP63x1cjjQ==
+X-Google-Smtp-Source: ABdhPJylrxzDw10S8wdwfzc4qRuprS+dQI3GNj3BwxTD2mWlLNUgLp8OAj62OYTcRfIhK+gPi6M/Vg==
+X-Received: by 2002:a0c:8d84:: with SMTP id t4mr4636011qvb.36.1601500109236;
+        Wed, 30 Sep 2020 14:08:29 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4e22])
+        by smtp.gmail.com with ESMTPSA id k5sm3498676qkc.45.2020.09.30.14.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 14:08:28 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 17:06:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 4/4] mm: convert page kmemcg type to a page memcg flag
+Message-ID: <20200930210649.GC469663@cmpxchg.org>
+References: <20200929235920.537849-1-guro@fb.com>
+ <20200929235920.537849-5-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200929235920.537849-5-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  efi/core
-branch HEAD: 963fabf37f6a94214a823df0a785e653cb8ad6ea  efi: efivars: limit availability to X86 builds
+On Tue, Sep 29, 2020 at 04:59:20PM -0700, Roman Gushchin wrote:
+> @@ -449,6 +455,36 @@ static inline void clear_page_memcg(struct page *page)
+>  	page->memcg_data = 0;
+>  }
+>  
+> +/*
+> + * PageMemcgKmem - check if the page has MemcgKmem flag set
+> + * @page: a pointer to the page struct
+> + *
+> + * Checks if the page has MemcgKmem flag set. The caller must ensure that
+> + * the page has an associated memory cgroup. It's not safe to call this function
+> + * against some types of pages, e.g. slab pages.
+> + */
+> +static inline bool PageMemcgKmem(struct page *page)
+> +{
+> +	VM_BUG_ON_PAGE(test_bit(MEMCG_DATA_OBJCGS, &page->memcg_data), page);
+> +	return test_bit(MEMCG_DATA_KMEM, &page->memcg_data);
 
-elapsed time: 724m
+Most other places need the bit mask and have to do ad-hoc shifting,
+which is verbose and causes awkward line wrapping in various places.
 
-configs tested: 145
-configs skipped: 2
+There are no atomic accesses here, so there is no need to use the
+atomic bitop interface here. I feel like I've mentioned this before.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Just make the MEMCG_DATA_ items bitfields directly, and do
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-xtensa                         virt_defconfig
-sparc                            alldefconfig
-powerpc                      pmac32_defconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                           se7722_defconfig
-m68k                       m5475evb_defconfig
-mips                          rm200_defconfig
-arm                          prima2_defconfig
-arm                          iop32x_defconfig
-mips                   sb1250_swarm_defconfig
-nds32                            alldefconfig
-mips                           rs90_defconfig
-mips                      pistachio_defconfig
-riscv                          rv32_defconfig
-arm                          imote2_defconfig
-m68k                             allmodconfig
-powerpc                 canyonlands_defconfig
-mips                          ath79_defconfig
-nios2                         10m50_defconfig
-powerpc                       ebony_defconfig
-arc                           tb10x_defconfig
-mips                       bmips_be_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                      bmips_stb_defconfig
-arm                            hisi_defconfig
-arm                         lpc32xx_defconfig
-arm                           viper_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                     rainier_defconfig
-xtensa                       common_defconfig
-sh                           sh2007_defconfig
-powerpc                  iss476-smp_defconfig
-arc                          axs101_defconfig
-riscv                    nommu_k210_defconfig
-sh                           se7712_defconfig
-powerpc                     sbc8548_defconfig
-arm                         lubbock_defconfig
-m68k                        m5307c3_defconfig
-powerpc                      obs600_defconfig
-mips                           jazz_defconfig
-powerpc                       maple_defconfig
-sh                           se7750_defconfig
-m68k                          sun3x_defconfig
-arm                           tegra_defconfig
-arm                        multi_v5_defconfig
-sh                        dreamcast_defconfig
-powerpc                    sam440ep_defconfig
-sh                          sdk7786_defconfig
-xtensa                          iss_defconfig
-arm                       imx_v4_v5_defconfig
-um                           x86_64_defconfig
-powerpc                    gamecube_defconfig
-arm                       versatile_defconfig
-mips                       lemote2f_defconfig
-arm                        trizeps4_defconfig
-powerpc                      chrp32_defconfig
-arm                           stm32_defconfig
-x86_64                              defconfig
-mips                      loongson3_defconfig
-powerpc                      makalu_defconfig
-arm                       imx_v6_v7_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                        bcm47xx_defconfig
-arm                           efm32_defconfig
-mips                         tb0287_defconfig
-nds32                               defconfig
-mips                           mtx1_defconfig
-arm                            pleb_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                     mpc83xx_defconfig
-microblaze                          defconfig
-powerpc64                        alldefconfig
-parisc                              defconfig
-sh                          rsk7203_defconfig
-sh                   sh7724_generic_defconfig
-sh                             espt_defconfig
-csky                                defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a015-20200930
-x86_64               randconfig-a013-20200930
-x86_64               randconfig-a012-20200930
-x86_64               randconfig-a016-20200930
-x86_64               randconfig-a014-20200930
-x86_64               randconfig-a011-20200930
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+	return page->memcg_data & MEMCG_DATA_KMEM
 
-clang tested configs:
-x86_64               randconfig-a001-20200930
-x86_64               randconfig-a005-20200930
-x86_64               randconfig-a003-20200930
-x86_64               randconfig-a004-20200930
-x86_64               randconfig-a002-20200930
-x86_64               randconfig-a006-20200930
+here.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks
