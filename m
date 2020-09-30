@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BCE27EDE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2568927EDE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 17:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgI3Pwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 11:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        id S1728837AbgI3Pw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 11:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgI3Pwb (ORCPT
+        with ESMTP id S1725860AbgI3Pw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:52:31 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636FFC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:31 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id f11so1134252qvw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:31 -0700 (PDT)
+        Wed, 30 Sep 2020 11:52:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B39C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d23so1283132pll.7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U5B+DFlgjUCfVVr9Dz8Mt+RPlNdJaSsb6hueCXdN2UY=;
-        b=WV//9SwE2q/r9XyXsDlPrOuIcGjLmuR66fo/ASIwZL/CGda9BpAxGw2XIKpOXFnqCe
-         Kfxr0Y/Rsrf9vK5Hk7HiH/Gy180JQ6PJjs1bVknOi2dR/cQ4Dsblwu/EcdHVh+hckTyX
-         iAvq4jAFbQlNbRTFkL+KvY7LQW57Fyhk+o9wI=
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=/xkIWni8SgM73BFi4hmvbWE+41W2IJ3UZaLFsKLGrO0=;
+        b=M7Rpj6HkNrkx/NYoCjDpdd8guTiZAXIj1AzQyO7qCGRK1o1otWJB44tKHxsiBiTlxk
+         Xt1q0quZP6YK9skgCohk66ZUEO50v+aOJV828C7ZjkbTD9Y1gxqmsUjpH7mNINOsXtA1
+         53v+cY61EOY6HKy9dydKEOy/FaWxa5SNmrWAs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U5B+DFlgjUCfVVr9Dz8Mt+RPlNdJaSsb6hueCXdN2UY=;
-        b=ivJ0/bduSHFn1zJEIS/rJQtkAqykaNk1B4PB0zu+Qfo10ZzXbe7nhUy8K+uZjIF1cy
-         CqVd7x1Ls6F+qWgYLUSO1fOgEcFGdgqAODdtwusMVjTMH9O2f5RJqJqInlCP3MRmyUj8
-         DGmcURQZrmu6vUgsIDP04mCP4c3/DwjphCw9uESSYMEbO5386avY8T8YTgOAWtZtuOr4
-         1ByjDISUGUlGH+abbCq/WAGGlwM1W7ygs32JoW2YRdHH7rfRoLdioO3/yd2uprEW7MZh
-         a6W1fOn3np1grOoRNRB9vAlW4BFfzfm8Zuna15fudV09VwnEogJ8ZSnZRKBJCn/JL66+
-         7tug==
-X-Gm-Message-State: AOAM532mjAqpuUNm+AwZa1xACEBpPNtS9V4eAPKd9SzsTGnT3EqIWifH
-        5Ny/BSAEXn84jF3x4kQ8Z9IZgw==
-X-Google-Smtp-Source: ABdhPJxCHYn12FbypuTQ8FDk+s5B8QbO2utbnkuTv/k8oQUR5DMg5bq76vbefymLnwGGqLe6TcQGaA==
-X-Received: by 2002:a0c:eda3:: with SMTP id h3mr2867524qvr.61.1601481150585;
-        Wed, 30 Sep 2020 08:52:30 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id 206sm2591725qkk.27.2020.09.30.08.52.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/xkIWni8SgM73BFi4hmvbWE+41W2IJ3UZaLFsKLGrO0=;
+        b=TRgHXTdM7CmSLi0u88KGgUMOoSgtXH42kkIj5CowCi8S6C0gUjSzAGih56wETclLlg
+         AFiQNTMeGvlf4svkRp624VICqwlR3er/QFs/d9ek5oBFa0F4hpfdYm42Mr5xlfeplXEt
+         FP/2etwQZ6Tzkim35kPbSccfaFQ3Us8Ci27R0Iuc+/gY2/pNSfaiXoX3XOj/QQ7RoNXT
+         bCDOqj+4tgJ07T0mVbiPs2VRTp6k2t8qhhwkqXHeRcnz2sdIZbxiDMXeMudVEGsKDhxg
+         ffY3iy1uknzfjNBhIqbzKdmT1alKBIQ0mUskN7NmBBPNHBFT2uvP99CQTXPS6yoFMDwo
+         9j3Q==
+X-Gm-Message-State: AOAM531E9g/VFDH2tNDjRqq9nAe5cb97tCIcxYacYNxzDp6Vus2HMqZx
+        g89eVzGE++XAy9u7NA4NvBbBrw==
+X-Google-Smtp-Source: ABdhPJxan0UpaLux6JIjM9Vs6ukVwn7rRVFayoREveaALuHTa6YagFd00MEr3S9yFKisVPQ0l1dC5w==
+X-Received: by 2002:a17:902:9047:b029:d2:8d1f:1629 with SMTP id w7-20020a1709029047b02900d28d1f1629mr3229942plz.44.1601481178259;
+        Wed, 30 Sep 2020 08:52:58 -0700 (PDT)
+Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
+        by smtp.googlemail.com with ESMTPSA id z28sm3142765pfq.81.2020.09.30.08.52.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 08:52:29 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 11:52:29 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 0/4] kvfree_rcu() and _LOCK_NESTING/_PREEMPT_RT
-Message-ID: <20200930155229.GA1474760@google.com>
-References: <20200918194817.48921-1-urezki@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918194817.48921-1-urezki@gmail.com>
+        Wed, 30 Sep 2020 08:52:57 -0700 (PDT)
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
+        takafumi@sslab.ics.keio.ac.jp,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
+Date:   Wed, 30 Sep 2020 15:52:38 +0000
+Message-Id: <20200930155244.12114-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 09:48:13PM +0200, Uladzislau Rezki (Sony) wrote:
-> Hello, folk!
-> 
-> This is another iteration of fixing kvfree_rcu() issues related
-> to CONFIG_PROVE_RAW_LOCK_NESTING and CONFIG_PREEMPT_RT configs.
-> 
-> The first discussion is here https://lkml.org/lkml/2020/8/9/195.
-> 
-> - As an outcome of it, there was a proposal from Peter, instead of
-> using a speciall "lock-less" flag it is better to move lock-less
-> access to the pcplist to the separate function.
-> 
-> - To add a special worker thread that does prefetching of pages
-> if a per-cpu page cache is depleted(what is absolutely normal). 
-> 
-> As usual, thank you for paying attention to it and your help!
+When dvb_create_media_graph fails, the debugfs kept inside client should
+be released. However, the current implementation does not release them.
 
-Doesn't making it a lower priority WQ exacerbate the problem Mel described?
+Fix this by adding a new goto label to call smsdvb_debugfs_release.
 
-So like:
-1. pcp cache is depleted by kvfree_rcu without refill or other measures to
-   relieve memory.
-2. now other GFP_ATOMIC users could likely hit the emergency reserves in the
-   buddy allocator as the watermarks are crossed.
-3. kvfree_rcu() notices failure and queues workqueue to do non-preemptible
-   buddy allocations which will refill the pcp cache in the process.
-4. But that happens much later because this patch (4/4) down prioritized the
-   work to do the refill.
+Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+---
+ drivers/media/common/siano/smsdvb-main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I'd suggest keeping it high pri since I don't see how it can make things
-better.
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index 88f90dfd368b..ae17407e477a 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -1169,12 +1169,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	rc = dvb_create_media_graph(&client->adapter, true);
+ 	if (rc < 0) {
+ 		pr_err("dvb_create_media_graph failed %d\n", rc);
+-		goto client_error;
++		goto media_graph_error;
+ 	}
+ 
+ 	pr_info("DVB interface registered.\n");
+ 	return 0;
+ 
++media_graph_error:
++	smsdvb_debugfs_release(client);
++
+ client_error:
+ 	dvb_unregister_frontend(&client->frontend);
+ 
+-- 
+2.17.1
 
-Or another option is:
-Why not just hit the fallback path in the caller on the first attempt, and
-trigger the WQ to do the allocation. If the pool grows too big, we can have
-shrinkers that free memory that is excessive so that will help the phone
-usecases. That way no changes to low-level allocator are needed.
-
-Or did I miss something?
-
-thanks,
-
- - Joel
-
-
-> 
-> Uladzislau Rezki (Sony) (4):
->   rcu/tree: Add a work to allocate pages from regular context
->   mm: Add __rcu_alloc_page_lockless() func.
->   rcu/tree: use __rcu_alloc_page_lockless() func.
->   rcu/tree: Use schedule_delayed_work() instead of WQ_HIGHPRI queue
-> 
->  include/linux/gfp.h |  1 +
->  kernel/rcu/tree.c   | 90 ++++++++++++++++++++++++---------------------
->  mm/page_alloc.c     | 82 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 132 insertions(+), 41 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
