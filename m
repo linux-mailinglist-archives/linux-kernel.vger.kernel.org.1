@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2887E27F41B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF36427F41F
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 23:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725355AbgI3VVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 17:21:48 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36854 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730338AbgI3VVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 17:21:44 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kNjXi-0000Pw-00; Wed, 30 Sep 2020 23:21:42 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BD8EDC103F; Wed, 30 Sep 2020 23:21:31 +0200 (CEST)
-Date:   Wed, 30 Sep 2020 23:21:31 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu
-Subject: Re: [PATCH] MIPS: remove the obsolete RM7000 extended interrupts
- handler
-Message-ID: <20200930212131.GA14275@alpha.franken.de>
-References: <20200912142306.3604968-1-fazilyildiran@gmail.com>
- <20200918135053.GB19202@alpha.franken.de>
- <alpine.LFD.2.21.2009301529080.333514@eddie.linux-mips.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2009301529080.333514@eddie.linux-mips.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1730464AbgI3VXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 17:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgI3VXH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 17:23:07 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736F2C061755;
+        Wed, 30 Sep 2020 14:23:07 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8458913C6ADB7;
+        Wed, 30 Sep 2020 14:06:19 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 14:23:06 -0700 (PDT)
+Message-Id: <20200930.142306.880363049583322752.davem@davemloft.net>
+To:     mchehab+huawei@kernel.org
+Cc:     linux-doc@vger.kernel.org, corbet@lwn.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v4 33/52] docs: net: statistics.rst: remove a
+ duplicated kernel-doc
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <c484b653417a3ba2c0eb7bb70331397577a71980.1601467849.git.mchehab+huawei@kernel.org>
+References: <cover.1601467849.git.mchehab+huawei@kernel.org>
+        <c484b653417a3ba2c0eb7bb70331397577a71980.1601467849.git.mchehab+huawei@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 30 Sep 2020 14:06:19 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 03:34:25PM +0100, Maciej W. Rozycki wrote:
-> On Fri, 18 Sep 2020, Thomas Bogendoerfer wrote:
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date: Wed, 30 Sep 2020 15:24:56 +0200
+
+> include/linux/ethtool.h is included twice with kernel-doc,
+> both to document ethtool_pause_stats(). The first one is
+> at statistics.rst, and the second one at ethtool-netlink.rst.
 > 
-> > > IRQ_CPU_RM7K has been a non-visible config selected nowhere since
-> > > PMC-Sierra Yosemite support has been removed with commit bdf20507da11
-> > > ("MIPS: PMC-Sierra Yosemite: Remove support."). By the same token, the
-> > > handler for RM7000 extended interrupts has been obsolete.
-> > > 
-> > > Remove the obsolete code.
-> > 
-> > not yet;-) I have an RM7000 based system in my basement... I'm also
-> > not sure, if R7k O2s need that.
+> Replace one of the references to use the name of the
+> function. The automarkup.py extension should create the
+> cross-references.
 > 
->  One of the more exotic Malta daughtercards used that too I believe.  I'd 
-> have to check the docs.  Of course getting hands on such a daughtercard is 
-> another matter, but we continue having RM7000 enabled for the Malta.
+> Solves this warning:
+> 
+> 	../Documentation/networking/ethtool-netlink.rst: WARNING: Duplicate C declaration, also defined in 'networking/statistics'.
+> 	Declaration is 'ethtool_pause_stats'.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-I've checked interrupts on P6064 and doesn't use the "extented" interrupts.
-And since O2 uses the same CPU connector for all CPU boards I doubt it
-it either. What about Malta ? 
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Acked-by: David S. Miller <davem@davemloft.net>
