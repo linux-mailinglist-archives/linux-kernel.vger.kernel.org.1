@@ -2,184 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A105427F4DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7240127F4E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 00:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731246AbgI3WJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 18:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730090AbgI3WJU (ORCPT
+        id S1731082AbgI3WMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 18:12:36 -0400
+Received: from smtprelay0074.hostedemail.com ([216.40.44.74]:44260 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728721AbgI3WMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:09:20 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BB8C061755;
-        Wed, 30 Sep 2020 15:09:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1r590qK1z9ryj;
-        Thu,  1 Oct 2020 08:09:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601503757;
-        bh=4wHl+HRtsaGHQY7qxtfNCZSpnvjVxb1tiN090/PdAiw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IgIuuEyQ0y/mtsJoh6BoMsdz1dNUhp/v8Ae5LaAoliKDlWDAc4h0EJhPVE9ELDpTL
-         84feUErO8RIKxs9dMT5Ws9SwHCWsvWE4sNuYg1ZYN2yQvh6Lf5GQGF2KQKhLIDa9CJ
-         718rHDW2XrbIMHjKLkuFl+3LpMnHxfJdw5tDEoeOzZSQoriqergintkYuOUQlJCaUJ
-         mBc+m1DhjWGj+UV/b+FYZmPQg/AirMo/SxFw9MAC3rtvkbXtWOp2px+ud5y4mJBAZM
-         aOeCcphfCshdIP50X0YditYnIe/8oCCARZRuO+tgXsNMn5OJA0OxYOnsW9L3dJZULN
-         QTQC0LqFsUDfA==
-Date:   Thu, 1 Oct 2020 08:09:16 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20201001080916.1f006d72@canb.auug.org.au>
-In-Reply-To: <20200929130446.0c2630d2@canb.auug.org.au>
-References: <20200929130446.0c2630d2@canb.auug.org.au>
+        Wed, 30 Sep 2020 18:12:35 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 92DD9837F253;
+        Wed, 30 Sep 2020 22:12:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:857:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3868:3872:3874:4321:4384:5007:6120:6742:10004:10400:10471:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21451:21627:21773:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: spade98_570bff827196
+X-Filterd-Recvd-Size: 2684
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 30 Sep 2020 22:12:32 +0000 (UTC)
+Message-ID: <a17099ea2a4c673993a8beafd6cf2915006c9074.camel@perches.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Date:   Wed, 30 Sep 2020 15:12:31 -0700
+In-Reply-To: <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+References: <CAKwvOd=s+N4+X94sTams_hKn8uV5Hc6QyCc7OHyOGC-JFesS8A@mail.gmail.com>
+         <20200929192549.501516-1-ndesaulniers@google.com>
+         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bQTd.i_qyImABQN4ENG/kfN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bQTd.i_qyImABQN4ENG/kfN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2020-09-30 at 15:06 -0700, Joe Perches wrote:
+> Perhaps these are also possible files that need exclusions:
+> 
+> ./arch/x86/boot/video.h:#define __videocard struct card_info __section(".videocards") __attribute__((used))
+> ./arch/x86/boot/compressed/pgtable_64.c:unsigned long *trampoline_32bit __section(".data");
+> ./arch/x86/boot/tty.c:static void __section(".inittext") serial_putchar(int ch)
+> ./arch/x86/boot/tty.c:static void __section(".inittext") bios_putchar(int ch)
+> ./arch/x86/boot/tty.c:void __section(".inittext") putchar(int ch)
+> ./arch/x86/boot/tty.c:void __section(".inittext") puts(const char *str)
+> ./arch/s390/boot/startup.c:static struct diag210 _diag210_tmp_dma __section(".dma.data");
+> ./arch/powerpc/boot/main.c:	__section("__builtin_cmdline");
+> ./arch/powerpc/boot/ps3.c:	__section("__builtin_cmdline");
 
-Hi all,
+It looks like all of the arch/x86, and arch/s390 files are fine
+but both of the arch/powerpc/boot files need modification.
 
-On Tue, 29 Sep 2020 13:04:46 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the net-next tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> drivers/net/ethernet/marvell/prestera/prestera_main.c: In function 'prest=
-era_port_dev_lower_find':
-> drivers/net/ethernet/marvell/prestera/prestera_main.c:504:33: error: pass=
-ing argument 2 of 'netdev_walk_all_lower_dev' from incompatible pointer typ=
-e [-Werror=3Dincompatible-pointer-types]
->   504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
->       |                                 ^~~~~~~~~~~~~~~~~~~~~~~
->       |                                 |
->       |                                 int (*)(struct net_device *, void=
- *)
-> In file included from include/linux/etherdevice.h:21,
->                  from drivers/net/ethernet/marvell/prestera/prestera_main=
-.c:4:
-> include/linux/netdevice.h:4571:16: note: expected 'int (*)(struct net_dev=
-ice *, struct netdev_nested_priv *)' but argument is of type 'int (*)(struc=
-t net_device *, void *)'
->  4571 |          int (*fn)(struct net_device *lower_dev,
->       |          ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->  4572 |      struct netdev_nested_priv *priv),
->       |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/marvell/prestera/prestera_main.c:504:58: error: pass=
-ing argument 3 of 'netdev_walk_all_lower_dev' from incompatible pointer typ=
-e [-Werror=3Dincompatible-pointer-types]
->   504 |  netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
->       |                                                          ^~~~~
->       |                                                          |
->       |                                                          struct p=
-restera_port **
-> In file included from include/linux/etherdevice.h:21,
->                  from drivers/net/ethernet/marvell/prestera/prestera_main=
-.c:4:
-> include/linux/netdevice.h:4573:37: note: expected 'struct netdev_nested_p=
-riv *' but argument is of type 'struct prestera_port **'
->  4573 |          struct netdev_nested_priv *priv);
->       |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
-> cc1: some warnings being treated as errors
->=20
-> Caused by commit
->=20
->   eff7423365a6 ("net: core: introduce struct netdev_nested_priv for neste=
-d interface infrastructure")
->=20
-> interacting with commit
->=20
->   e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implementat=
-ion")
->=20
-> also in the net-next tree.
->=20
-> I applied the following fix patch.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 29 Sep 2020 12:57:59 +1000
-> Subject: [PATCH] fix up for "net: core: introduce struct netdev_nested_pr=
-iv for nested interface infrastructure"
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/net/ethernet/marvell/prestera/prestera_main.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_main.c b/driv=
-ers/net/ethernet/marvell/prestera/prestera_main.c
-> index 9bd57b89d1d0..633d8770be35 100644
-> --- a/drivers/net/ethernet/marvell/prestera/prestera_main.c
-> +++ b/drivers/net/ethernet/marvell/prestera/prestera_main.c
-> @@ -482,9 +482,10 @@ bool prestera_netdev_check(const struct net_device *=
-dev)
->  	return dev->netdev_ops =3D=3D &prestera_netdev_ops;
->  }
-> =20
-> -static int prestera_lower_dev_walk(struct net_device *dev, void *data)
-> +static int prestera_lower_dev_walk(struct net_device *dev,
-> +				   struct netdev_nested_priv *priv)
->  {
-> -	struct prestera_port **pport =3D data;
-> +	struct prestera_port **pport =3D (struct prestera_port **)priv->data;
-> =20
->  	if (prestera_netdev_check(dev)) {
->  		*pport =3D netdev_priv(dev);
-> @@ -497,11 +498,13 @@ static int prestera_lower_dev_walk(struct net_devic=
-e *dev, void *data)
->  struct prestera_port *prestera_port_dev_lower_find(struct net_device *de=
-v)
->  {
->  	struct prestera_port *port =3D NULL;
-> +	struct netdev_nested_priv priv;
-> =20
->  	if (prestera_netdev_check(dev))
->  		return netdev_priv(dev);
-> =20
-> -	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &port);
-> +	priv.data =3D (void *)&port;
-> +	netdev_walk_all_lower_dev(dev, prestera_lower_dev_walk, &priv);
-> =20
->  	return port;
->  }
 
-I am still getting this build failure ...
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bQTd.i_qyImABQN4ENG/kfN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91AgwACgkQAVBC80lX
-0GwSQggAlH8/PPJBNYNPQpiSBKOy/Q8a0V9HvLyJ5RF9lfU0tgY2ZGh/CsDA3b8P
-McuKMc4K15VCIEtsk0bgp5MCMayfqPnE7/CCFEM0fSWhvrkuNOpv5cY74N2GtujH
-ftCaXn+IJkxm9aTvr+JGz0WIL/+Yoogu5dRIzwgk/g31FAdHH1+BUqKvSw8nrB7S
-uVB619QfDY7az0jOB+gOQ04v1BoyFU7YO4uWXMUtP0FMOx2o70/lwDGXUhnUlfEi
-P8c9jJJxfe0xgDw6KxgEANabTq0WZ8Obrgs3ZQcqHZyB+tKRzpledhHqdvzvYCaE
-pPV7KOnW9RIWodwxyUWjqoPDTT6kww==
-=SnKV
------END PGP SIGNATURE-----
-
---Sig_/bQTd.i_qyImABQN4ENG/kfN--
