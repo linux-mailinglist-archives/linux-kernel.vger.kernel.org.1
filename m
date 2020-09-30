@@ -2,208 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB55527E1D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA1827E1DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 08:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgI3Gum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 02:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgI3GuV (ORCPT
+        id S1728129AbgI3Gxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 02:53:47 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32852 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3Gxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 02:50:21 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA7C0613D0;
-        Tue, 29 Sep 2020 23:50:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id s14so465006pju.1;
-        Tue, 29 Sep 2020 23:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=s2HCAxyO+XuYMLzto3YJY+q/fwyGyhZhVewL5HVF+qc=;
-        b=Ze2ZLUn/gHd/WK9x9irPvWqHs/NFiPmCa5P6/Dn+oTk3ExciQxUlXn7Vbe07ylFxkY
-         oYGEVI05j3wEE1aWoLEfBGolKTHcWTaKC5yN3ZxVJmln+x3i4mfusxu6g+gOzf0vflXs
-         n505H4ojs/SAeR46GGryB7JaAFICMAiR8DjoJcpp2ELnQnuF1IJJV7FwGFkeeNwz2Uqb
-         1xdzQQlWRm06NRJYRFUpA8o6XDNU8inQELRr9HRY9Mp5FIwZcZ0dOuOD1w8WsNkzgkgS
-         GhudagXYDa71+hD6izNUgWETMwWin6c16O9PIxHFJQIy5p82sxSvUfR7aNs8bORHh/JP
-         Klag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=s2HCAxyO+XuYMLzto3YJY+q/fwyGyhZhVewL5HVF+qc=;
-        b=GBN5LLpMcWj5fwexe29FRnmTcVAx8aaRDvBoGmj4Jr2Mg83jebcIxC1z7Zn72C0PUS
-         IScYgn/7VHa9Lfw9ehIRJkpLIZM2ZrHyP82UpvM/RIAe9nLS6b68Qn+fn58Q+UUIXM/+
-         qgbycG/twqcFXjVrKRxr3m+rYOPJGZL4wkpXByAoqLUMHWuQH7RPcUGo/FoPuddLunJ/
-         X36CvXgt14LsOrz/nmw8CP124AjTPWCUsIryEed2T3Kp9zj4Apmrtyyg3BgV+IRTvI87
-         8aylORpcwgsqgSgfsXVPUHGxXN7yotYJOvavpKF00V112Vbw07wXp17tPJ8iaigmxbcF
-         KkRQ==
-X-Gm-Message-State: AOAM533eiTDGaqc3jtAgMW4XbBcgStPzwj2eg69aDs7g3g5zH0aS5tdS
-        0BT3r1X/VJgWjrff27eOs6Y=
-X-Google-Smtp-Source: ABdhPJxW/k205s0860z7nrp5WJvxzEf5shi5O0SI/xlV4670tL9vX7qZJw9o76EEWxvj2xBzJFYEHg==
-X-Received: by 2002:a17:90a:de81:: with SMTP id n1mr1287027pjv.92.1601448620150;
-        Tue, 29 Sep 2020 23:50:20 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id 190sm1100865pfy.22.2020.09.29.23.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 23:50:19 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v4 9/9] lib: zstd: Remove zstd compatibility wrapper
-Date:   Tue, 29 Sep 2020 23:53:18 -0700
-Message-Id: <20200930065318.3326526-10-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200930065318.3326526-1-nickrterrell@gmail.com>
-References: <20200930065318.3326526-1-nickrterrell@gmail.com>
+        Wed, 30 Sep 2020 02:53:41 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08U6rTN5110868;
+        Wed, 30 Sep 2020 01:53:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601448809;
+        bh=kuqOovhebiQ7NwjpoSxWqBC4z/r9Z+K+9RBLLoXIuqU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=fFTnK5Qr0rOuIGmKdM+ZKUmKMez01uIPlUntsNCx4QD/JhHi4zpATFkXPqcmOWl3w
+         N9MhYnJUSS+7rWac67Fh1rlzfz9/Wno+6jAgNOowgo/sHweogimWebqm/pRKYK3PyY
+         Ur/vboEWTkyux8icLHGzBJh6BRYGGej7YQSmmGgM=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U6rTCP026890;
+        Wed, 30 Sep 2020 01:53:29 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 30
+ Sep 2020 01:53:29 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 30 Sep 2020 01:53:29 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08U6rS0n111859;
+        Wed, 30 Sep 2020 01:53:28 -0500
+Date:   Wed, 30 Sep 2020 12:23:27 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v13 06/15] mtd: spi-nor: sfdp: parse xSPI Profile 1.0
+ table
+Message-ID: <20200930065325.umw6kf3m3vzq4r5z@ti.com>
+References: <20200916124418.833-1-p.yadav@ti.com>
+ <20200916124418.833-7-p.yadav@ti.com>
+ <c4ff4fba-cad5-de10-93e8-97a4e2edecf0@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <c4ff4fba-cad5-de10-93e8-97a4e2edecf0@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
+On 30/09/20 06:44AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/16/20 3:44 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > This table is indication that the flash is xSPI compliant and hence
+> > supports octal DTR mode. Extract information like the fast read opcode,
+> > dummy cycles, the number of dummy cycles needed for a Read Status
+> > Register command, and the number of address bytes needed for a Read
+> > Status Register command.
+> > 
+> > We don't know what speed the controller is running at. Find the fast
+> > read dummy cycles for the fastest frequency the flash can run at to be
+> > sure we are never short of dummy cycles. If nothing is available,
+> > default to 20. Flashes that use a different value should update it in
+> > their fixup hooks.
+> > 
+> > Since we want to set read settings, expose spi_nor_set_read_settings()
+> > in core.h.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c |  2 +-
+> >  drivers/mtd/spi-nor/core.h | 10 +++++
+> >  drivers/mtd/spi-nor/sfdp.c | 91 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 102 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 7445d7122304..cbb1aab27d03 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+...
+> > @@ -1108,6 +1110,91 @@ static int spi_nor_parse_4bait(struct spi_nor 
+> > *nor,
+> >         return ret;
+> >  }
+> > 
+> > +#define PROFILE1_DWORD1_RDSR_ADDR_BYTES                BIT(29)
+> > +#define PROFILE1_DWORD1_RDSR_DUMMY             BIT(28)
+> > +#define PROFILE1_DWORD1_RD_FAST_CMD            GENMASK(15, 8)
+> > +#define PROFILE1_DWORD4_DUMMY_200MHZ           GENMASK(11, 7)
+> > +#define PROFILE1_DWORD5_DUMMY_166MHZ           GENMASK(31, 27)
+> > +#define PROFILE1_DWORD5_DUMMY_133MHZ           GENMASK(21, 17)
+> > +#define PROFILE1_DWORD5_DUMMY_100MHZ           GENMASK(11, 7)
+> > +#define PROFILE1_DUMMY_DEFAULT                 20
+> > +
+> > +/**
+> > + * spi_nor_parse_profile1() - parse the xSPI Profile 1.0 table
+> > + * @nor:               pointer to a 'struct spi_nor'
+> > + * @profile1_header:   pointer to the 'struct sfdp_parameter_header' describing
+> > + *                     the 4-Byte Address Instruction Table length and version.
+> 
+> Profile 1.0 Table
 
-All callers have been transitioned to the new zstd-1.4.6 API. There are
-no more callers of the zstd compatibility wrapper, so delete it.
+Oops! Will fix.
+ 
+> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+...
+> > +       /*
+> > +        * We don't know what speed the controller is running at. Find the
+> > +        * dummy cycles for the fastest frequency the flash can run at to be
+> > +        * sure we are never short of dummy cycles. A value of 0 means the
+> > +        * frequency is not supported.
+> > +        *
+> > +        * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
+> > +        * flashes set the correct value if needed in their fixup hooks.
+> > +        */
+> > +       dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
+> > +       if (!dummy)
+> > +               dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
+> > +       if (!dummy)
+> > +               dummy = PROFILE1_DUMMY_DEFAULT;
+> 
+> just a dev_dbg here, without assuming what default value means
 
-Signed-off-by: Nick Terrell <terrelln@fb.com>
----
- include/linux/zstd_compat.h | 116 ------------------------------------
- 1 file changed, 116 deletions(-)
- delete mode 100644 include/linux/zstd_compat.h
+And we leave dummy to 0, correct?
 
-diff --git a/include/linux/zstd_compat.h b/include/linux/zstd_compat.h
-deleted file mode 100644
-index cda9208bf04a..000000000000
---- a/include/linux/zstd_compat.h
-+++ /dev/null
-@@ -1,116 +0,0 @@
--/*
-- * Copyright (c) 2016-present, Facebook, Inc.
-- * All rights reserved.
-- *
-- * This source code is licensed under the BSD-style license found in the
-- * LICENSE file in the root directory of https://github.com/facebook/zstd.
-- * An additional grant of patent rights can be found in the PATENTS file in the
-- * same directory.
-- *
-- * This program is free software; you can redistribute it and/or modify it under
-- * the terms of the GNU General Public License version 2 as published by the
-- * Free Software Foundation. This program is dual-licensed; you may select
-- * either version 2 of the GNU General Public License ("GPL") or BSD license
-- * ("BSD").
-- */
--
--#ifndef ZSTD_COMPAT_H
--#define ZSTD_COMPAT_H
--
--#include <linux/zstd.h>
--
--#if defined(ZSTD_VERSION_NUMBER) && (ZSTD_VERSION_NUMBER >= 10406)
--/*
-- * This header provides backwards compatibility for the zstd-1.4.6 library
-- * upgrade. This header allows us to upgrade the zstd library version without
-- * modifying any callers. Then we will migrate callers from the compatibility
-- * wrapper one at a time until none remain. At which point we will delete this
-- * header.
-- *
-- * It is temporary and will be deleted once the upgrade is complete.
-- */
--
--#include <linux/zstd_errors.h>
--
--static inline size_t ZSTD_CCtxWorkspaceBound(ZSTD_compressionParameters compression_params)
--{
--    return ZSTD_estimateCCtxSize_usingCParams(compression_params);
--}
--
--static inline size_t ZSTD_CStreamWorkspaceBound(ZSTD_compressionParameters compression_params)
--{
--    return ZSTD_estimateCStreamSize_usingCParams(compression_params);
--}
--
--static inline size_t ZSTD_DCtxWorkspaceBound(void)
--{
--    return ZSTD_estimateDCtxSize();
--}
--
--static inline size_t ZSTD_DStreamWorkspaceBound(unsigned long long window_size)
--{
--    return ZSTD_estimateDStreamSize(window_size);
--}
--
--static inline ZSTD_CCtx* ZSTD_initCCtx(void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    return ZSTD_initStaticCCtx(wksp, wksp_size);
--}
--
--static inline ZSTD_CStream* ZSTD_initCStream_compat(ZSTD_parameters params, uint64_t pledged_src_size, void* wksp, size_t wksp_size)
--{
--    ZSTD_CStream* cstream;
--    size_t ret;
--
--    if (wksp == NULL)
--        return NULL;
--
--    cstream = ZSTD_initStaticCStream(wksp, wksp_size);
--    if (cstream == NULL)
--        return NULL;
--
--    /* 0 means unknown in old API but means 0 in new API */
--    if (pledged_src_size == 0)
--        pledged_src_size = ZSTD_CONTENTSIZE_UNKNOWN;
--
--    ret = ZSTD_initCStream_advanced(cstream, NULL, 0, params, pledged_src_size);
--    if (ZSTD_isError(ret))
--        return NULL;
--
--    return cstream;
--}
--#define ZSTD_initCStream ZSTD_initCStream_compat
--
--static inline ZSTD_DCtx* ZSTD_initDCtx(void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    return ZSTD_initStaticDCtx(wksp, wksp_size);
--}
--
--static inline ZSTD_DStream* ZSTD_initDStream_compat(unsigned long long window_size, void* wksp, size_t wksp_size)
--{
--    if (wksp == NULL)
--        return NULL;
--    (void)window_size;
--    return ZSTD_initStaticDStream(wksp, wksp_size);
--}
--#define ZSTD_initDStream ZSTD_initDStream_compat
--
--typedef ZSTD_frameHeader ZSTD_frameParams;
--
--static inline size_t ZSTD_getFrameParams(ZSTD_frameParams* frame_params, const void* src, size_t src_size)
--{
--    return ZSTD_getFrameHeader(frame_params, src, src_size);
--}
--
--static inline size_t ZSTD_compressCCtx_compat(ZSTD_CCtx* cctx, void* dst, size_t dst_capacity, const void* src, size_t src_size, ZSTD_parameters params)
--{
--    return ZSTD_compress_advanced(cctx, dst, dst_capacity, src, src_size, NULL, 0, params);
--}
--#define ZSTD_compressCCtx ZSTD_compressCCtx_compat
--
--#endif /* ZSTD_VERSION_NUMBER >= 10406 */
--#endif /* ZSTD_COMPAT_H */
 -- 
-2.28.0
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
