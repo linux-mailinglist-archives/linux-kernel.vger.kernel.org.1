@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B478B27E01B
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB97927DFF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 07:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgI3FTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 01:19:37 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:46611 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3FTg (ORCPT
+        id S1725868AbgI3FL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 01:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgI3FLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:19:36 -0400
-X-Greylist: delayed 451 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 01:19:35 EDT
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 08U4qiuH080185;
-        Wed, 30 Sep 2020 12:52:44 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 08U4pwZv080126;
-        Wed, 30 Sep 2020 12:51:58 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
- 2020 13:11:21 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH] ARM: dts: aspeed-g6: Add sgpiom/sgpios node
-Date:   Wed, 30 Sep 2020 13:11:13 +0800
-Message-ID: <20200930051113.32465-1-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 30 Sep 2020 01:11:55 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A2C061755;
+        Tue, 29 Sep 2020 22:11:55 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so452612ljk.8;
+        Tue, 29 Sep 2020 22:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rLwBsch1+w3pmAWJFs5DtFDJyLpowZ0+c2NUgy8bnXs=;
+        b=m5GCeSEprGiDpHfi1VS3q22QiyOE2gFVXY3X32Hm2ec83A0n6RZ00T7c+/qFGIMHwY
+         x+Puym/28gNgogutmTqBX4rkB4UjmJzUVIXE15Sbrn2sqTD+URXqGHKDRpJgF61y2ppg
+         041DnlHDm90GsKWEBv4kYAlbaIHy581CdsGbgx2g1TTA027Ic4WwXaakvEoQsL5Qqian
+         amomBfKWeKKRr5oj84PKUryv3ZTNWo9LnopBpeW596Vfp+7Y6KHApGZ/T9XqT4uh8D69
+         XUtQChvpjIThUM04sA+tJ6HLWfsa844JL2KEeq+GkjD3WtBKNQohQsfbc4aBCjOPrJYy
+         VnCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rLwBsch1+w3pmAWJFs5DtFDJyLpowZ0+c2NUgy8bnXs=;
+        b=FoQRxq9lZrIFG27/8Xy1HV6EVfiishA5GcMIATOWNOBYBIvdWSE6lEyeHRifzMLasA
+         N8wz6i8B2sCgXuHlJmjZ+lAdwOmkmSNp8P6tTz/2evlSLZ1JbQI4Uj6SX5l6CQXpUSr3
+         fuck6Eaj/ymBFdKflVIGmAxvdwfBnE4WMz2Pf7HK2CiYR5J71NGC7kQy40Ndivxk6VNs
+         UW7uhAzhvo8NFKIIlyIL+Te/WMHix/YEjmyDUrKOvR6BbOmcb073exQcamS5VkytMzVn
+         K3C+dlsMep+xAIAe0LI++QRax7G/mZJDxFOeJLVlkGwXsoMxpRrzJHn02/uGcNBRvSgy
+         B1oQ==
+X-Gm-Message-State: AOAM53399LevYnguD/qBhbgPFNMnNQ0vERtn22R3eOPFINi84+q0D3Cc
+        GOOCUY3rk2Sn9EqOECo0rpn1dU0unwM=
+X-Google-Smtp-Source: ABdhPJxWyMn8thmjGkZ8EmMO0wqHrJQj8NxdwNWM0AxXfLfuVFFIm63GXwGeOiyAEd98d86t10qEng==
+X-Received: by 2002:a05:651c:1397:: with SMTP id k23mr341636ljb.263.1601442713758;
+        Tue, 29 Sep 2020 22:11:53 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id u23sm48284ljl.86.2020.09.29.22.11.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Sep 2020 22:11:53 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, krzk@kernel.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930003013.31289-1-nicoleotsuka@gmail.com>
+ <20200930003013.31289-3-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <75514da5-e63a-9e51-8376-abbd12c324d1@gmail.com>
+Date:   Wed, 30 Sep 2020 08:11:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 08U4pwZv080126
+In-Reply-To: <20200930003013.31289-3-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit add two sgpiom and two sgpios node into aspeed-g6.dtsi
-and change the register range of gpio0 to fix the hardware design.
+30.09.2020 03:30, Nicolin Chen пишет:
+> +	/* An invalid mc pointer means mc and smmu drivers are not ready */
+> +	if (IS_ERR_OR_NULL(mc))
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-g6.dtsi | 51 +++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
+tegra_get_memory_controller() doesn't return NULL.
 
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 97ca743363d7..00237daec2a1 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -357,7 +357,7 @@
- 				#gpio-cells = <2>;
- 				gpio-controller;
- 				compatible = "aspeed,ast2600-gpio";
--				reg = <0x1e780000 0x800>;
-+				reg = <0x1e780000 0x500>;
- 				interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
- 				gpio-ranges = <&pinctrl 0 0 208>;
- 				ngpios = <208>;
-@@ -365,6 +365,55 @@
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
- 			};
-+			sgpiom0: sgpiom@1e780500 {
-+				#gpio-cells = <2>;
-+				gpio-controller;
-+				compatible = "aspeed,ast2600-sgpiom";
-+				reg = <0x1e780500 0x100>;
-+				interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
-+				ngpios = <128>;
-+				clocks = <&syscon ASPEED_CLK_APB2>;
-+				interrupt-controller;
-+				bus-frequency = <12000000>;
-+
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&pinctrl_sgpm1_default>;
-+				status = "disabled";
-+			};
-+
-+			sgpiom1: sgpiom@1e780600 {
-+				#gpio-cells = <2>;
-+				gpio-controller;
-+				compatible = "aspeed,ast2600-sgpiom";
-+				reg = <0x1e780600 0x100>;
-+				interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-+				ngpios = <80>;
-+				clocks = <&syscon ASPEED_CLK_APB2>;
-+				interrupt-controller;
-+				bus-frequency = <12000000>;
-+
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&pinctrl_sgpm2_default>;
-+				status = "disabled";
-+			};
-+
-+			sgpios0: sgpios@1e780700 {
-+				#gpio-cells = <2>;
-+				gpio-controller;
-+				compatible = "aspeed,ast2600-sgpios";
-+				reg = <0x1e780700 0x40>;
-+				interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&syscon ASPEED_CLK_APB2>;
-+			};
-+
-+			sgpios1: sgpios@1e780740 {
-+				#gpio-cells = <2>;
-+				gpio-controller;
-+				compatible = "aspeed,ast2600-sgpios";
-+				reg = <0x1e780740 0x40>;
-+				interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&syscon ASPEED_CLK_APB2>;
-+			};
- 
- 			gpio1: gpio@1e780800 {
- 				#gpio-cells = <2>;
--- 
-2.17.1
+> +		return ERR_PTR(-EPROBE_DEFER);
 
