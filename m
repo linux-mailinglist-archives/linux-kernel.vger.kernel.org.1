@@ -2,236 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB9D27F61F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB27E27F621
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 01:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731899AbgI3Xoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 19:44:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731882AbgI3Xoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:44:54 -0400
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E42F2176B
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:44:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601509493;
-        bh=SSqSVJUZq5m2CFytxoaIhalJNHYAEM0gt/cv9d1YWNU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zKh5u/vQ4DHmmkQhSWp+wdV0skJheTi2Ff/1SoaNF1ZoLo3R9XRZgCJDc9uIIZ9qm
-         1PpdnxTGA1gFcjoSNicwPMLd24HvAwjLbqL2J1EeJuCR3zFck9U5kGKKHardh6gyRs
-         4QiSjs2FaHFOuqYC9WQ/xKIKuse5MaZog1dPpeOw=
-Received: by mail-wm1-f48.google.com with SMTP id k18so1145485wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 16:44:53 -0700 (PDT)
-X-Gm-Message-State: AOAM533RmKsW7S6XJBn94gC/EfOEecvY8zgWqwsBNeYRFmrFD8CqJUQi
-        WlJ/uhlgwphbSbBDuq1lvR5JL12eBCVjpCw23f4yrA==
-X-Google-Smtp-Source: ABdhPJyMRLhY+lYah0ZMRcHOsRvGLLMnGNegO49w3/xDIxX2DcDbv8Z7wMY4A1dUcTaUYFV25yfdu9/ydBCNezB8fvU=
-X-Received: by 2002:a1c:f70b:: with SMTP id v11mr4785295wmh.21.1601509491674;
- Wed, 30 Sep 2020 16:44:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
- <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net> <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
- <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
- <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com> <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
- <CALCETrVvob1dbdWSvaB0ZK1kJ19o9ZKy=U3tFifwOR++_xk=zA@mail.gmail.com> <dd4310bd-a76b-cf19-4f12-0b52d7bc483d@intel.com>
-In-Reply-To: <dd4310bd-a76b-cf19-4f12-0b52d7bc483d@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 30 Sep 2020 16:44:40 -0700
-X-Gmail-Original-Message-ID: <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
-Message-ID: <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
- Branch Tracking for vsyscall emulation
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S1731927AbgI3XpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 19:45:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50952 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731882AbgI3XpD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:45:03 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UNisPr006537;
+        Wed, 30 Sep 2020 16:44:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=L09J4ey/cxEK3u5InQkq8/Wued4nLTmqNZX5eCh0Rf0=;
+ b=IwZf8BqUc5m0Hk07T9aK3UumPL/7tdRdPAeGxgFK993Wq3YyTumbppCb+r+aY57K+qEd
+ 3Og4OPnH+p6q5KnnBe5D0yTpEoI+ALAnL68A36fPz/GwZmzug46Lr2pb37kEyL6tw7zK
+ JKn4in6hNwGq+tj7pa6Kd1gR8BHv3qdQOt8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33v6jxh8ep-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Sep 2020 16:44:55 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 30 Sep 2020 16:44:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W9aIB1P/R9xKfhdAHnYCfD7RdIELrstJFBbUt974pfAGF+FEnwuHjWCiNXWGpzfUiHRU9/gn5QGhfpXj8guiF4o+FA3TfHt1Bgnq59npE6DBWjhkbemRJq7sgsOFav6jP7b31k50RWGViZNjx73gCclOuoqvc9BlPf/IqmKBpQPieM7xMPGSUaQAo2qewHOJurr4QDNyLMCwM0TKolUUVbFw4fIv9ZxX/0SubUQijewqDY7UvWLl8v3h517gpgwtoZfBQnMOhjJ1M1JhcRg98/ob2pafKQpZNNSCPaq8MkloKqubaoCM2pwFEnLD//ohZEGayGrM2zfIoBaQX1gYig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L09J4ey/cxEK3u5InQkq8/Wued4nLTmqNZX5eCh0Rf0=;
+ b=HHAVp7NfTys1Tq0LD83IvXpw5EdzFtkOjvx0P724ZYD72mwvrX2jz/shaTJaY6ilHHGQ4gBn4Sd01VmX6hAE4Oq5s11Gb8ksRDwc7CRIptqEQutgKEMHJAQ8HFMMyQ8x7oPBox+HXlA52hQnP1XnUmk8bJWR2uKZRMEkPWtI7QbAzQ2OO0hTbZNJccHiAnnqpGPSfgGVSawxZeqlDF17VKgWrhukGbpJmkfJ/SZyJjJliS3tA7YwwPIKPykstac63MmEw9E11x4mxQrqjdsL1wChffa5nLNDhj5EkTKF/JLbDV8Ab/FZ6d4PAD4vzcWLSMn0i0wRGgfuWxP5jz03FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L09J4ey/cxEK3u5InQkq8/Wued4nLTmqNZX5eCh0Rf0=;
+ b=QKGuPvIUkxZHrk29UHc6QK/er5TsBqnzc8k5IBvgTwN2NYj/21m5XObBl0I0QyYwUPH9Fp0gdND8lfUp4ha2EsrUq5tZuxE6xdC2mq0sVIGglS2XFHh/Glm3YwLwAjvDFHIgT3szfWVJiJ5JjCtU3thB3UR0ljKGUu7bLh0W1e8=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SN6PR1501MB4127.namprd15.prod.outlook.com
+ (2603:10b6:805:63::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Wed, 30 Sep
+ 2020 23:44:49 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3433.032; Wed, 30 Sep 2020
+ 23:44:49 +0000
+Date:   Wed, 30 Sep 2020 16:44:45 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux MM <linux-mm@kvack.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 3/4] mm: introduce page memcg flags
+Message-ID: <20200930234445.GA2700710@carbon.dhcp.thefacebook.com>
+References: <20200929235920.537849-1-guro@fb.com>
+ <20200929235920.537849-4-guro@fb.com>
+ <CALvZod5gMu1OaAspWPQnhCXOmT7U9-cbwBvK83efSYreaNWKNw@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5gMu1OaAspWPQnhCXOmT7U9-cbwBvK83efSYreaNWKNw@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:59ab]
+X-ClientProxiedBy: MWHPR1701CA0013.namprd17.prod.outlook.com
+ (2603:10b6:301:14::23) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:59ab) by MWHPR1701CA0013.namprd17.prod.outlook.com (2603:10b6:301:14::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 30 Sep 2020 23:44:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 99e90ab8-832c-4467-21c1-08d8659ad1f7
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB4127:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB4127B4A8D53458B2366BDC6CBE330@SN6PR1501MB4127.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uNIYP/AhEVq59Kmn0G3vjSqtAWMaiiPu61mpijvTN7c7Dw2CluZcXOb38mqK4hk7fVXlly3okc+gOrqpsLWNQtRigw66NgSY4p0tgmVFDJdbLQkY/hJ1uIZyfVzhFQQCdWZ1jmwkgc/i9vWnVMRuM+ruUQK7n0hQgBzxmhMxBPuV+76Zj0EDr/lPxyNB54AQqOOnTxa8v5RVyU5cYZCogv4xGSJJT25VO77xugqBeMwMDf3iLpmYuhlDpypF49za112JHRqPipTOCsdWjDC+wcaqtjlS9xiOVpy1jZrDZsU4E5yrQUFFrfew0Vb/Ix2Y
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(346002)(136003)(39860400002)(66476007)(66556008)(9686003)(8676002)(66946007)(316002)(478600001)(1076003)(7696005)(52116002)(16526019)(186003)(2906002)(54906003)(4326008)(8936002)(55016002)(83380400001)(86362001)(6506007)(53546011)(33656002)(6666004)(5660300002)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: z8AZXZLl3Gs/l33ZTLA/FLltsNlzfk9dQkkKGszPztYXvyYPqVjdyXZj0RdswXnRQ8nCbsX49C0f6jOSuYYFCNx67+Gcu2edVfIh3fxoXLLbvMuydlGV6HX3Rne16MqfnMw8DK9J8aKe+RdDMRqexhR8f076i07zDwrE9/QE4hhEZKyGnr9vfUV716EkKeTA2PpwiF7C8gp7HNsPjL/UXyWYAwikteEbl4gTFnwIdVe6DbWONy0UCBwANhTDde1s60Bv3P6ZUpTHJUIDtrsr7g1Fqlsrq8+4wsILQS2TjmYUXpY828Wvh/CZG9aZUN0GhwxE9c0/eqoATJE73OW5z2rLwBOWotGw2h5X5tAe8jR1khrig6IP+2DdrItMPFQfGRwnSsgL0KGcF7BCLP5OOQlFrcXSC4iSuJwmB9iJem6WtLEOKkRkIq2pva68DNuLPQ2TReBiDx2n+VuoPL3oK4Js4OcfqbTgi8Odtcsh1+ho77yMOLIaCbwJw9/0s1DyBwhWb32+qfTTGrFYvJufg45Uw1qWrZhT+84N/cKMa+0+iNnxI+ts4IgZAFHILXxVdrb6lrsKi9QLDcjmgEzgLDwXi/S+AEru4EPJQUwyIVZ06HvEWkG9YE6z3TTeswxgCEiGIqIMFt+MmKkR2Qp3xujTuaEr8+RSX15MxMvzloI=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99e90ab8-832c-4467-21c1-08d8659ad1f7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 23:44:49.7017
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wOehMhNyW3K9yd2ZdAFLz4JVF42eN30P28VMPZj7QhcIDrRjeT7d+0dfURcj/Bo5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4127
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
+ suspectscore=1 lowpriorityscore=0 mlxlogscore=767 spamscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300193
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 3:33 PM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->
-> On 9/29/2020 1:00 PM, Andy Lutomirski wrote:
-> > On Tue, Sep 29, 2020 at 12:57 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >>
-> >> On Tue, Sep 29, 2020 at 11:37 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
-> >>>
-> >>> On 9/28/2020 10:37 AM, Andy Lutomirski wrote:
-> >>>> On Mon, Sep 28, 2020 at 9:59 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
-> >>>>>
-> >>>>> On Fri, 2020-09-25 at 09:51 -0700, Andy Lutomirski wrote:
-> >>>>>>> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
-> >>>>> +
-> >>>>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
-> >>>>> +               if (!cet) {
-> >>>>> +                       /*
-> >>>>> +                        * This is an unlikely case where the task is
-> >>>>> +                        * CET-enabled, but CET xstate is in INIT.
-> >>>>> +                        */
-> >>>>> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
-> >>>>
-> >>>> "unlikely" doesn't really cover this.
-> >>>>
-> >>>>> +                       fpregs_unlock();
-> >>>>> +                       goto sigsegv;
-> >>>>> +               }
-> >>>>> +
-> >>>>> +               if (cet->user_ssp && ((cet->user_ssp + 8) < TASK_SIZE_MAX))
-> >>>>> +                       cet->user_ssp += 8;
-> >>>>
-> >>>> This looks buggy.  The condition should be "if SHSTK is on, then add 8
-> >>>> to user_ssp".  If the result is noncanonical, then some appropriate
-> >>>> exception should be generated, probably by the FPU restore code -- see
-> >>>> below.  You should be checking the SHSTK_EN bit, not SSP.
-> >>>
-> >>> Updated.  Is this OK?  I will resend the whole series later.
-> >>>
-> >>> Thanks,
-> >>> Yu-cheng
-> >>>
-> >>> ======
-> >>>
-> >>>   From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
-> >>> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> >>> Date: Thu, 29 Nov 2018 14:15:38 -0800
-> >>> Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
-> >>> Indirect Branch
-> >>>    Tracking for vsyscall emulation
-> >>>
-> >>> Vsyscall entry points are effectively branch targets.  Mark them with
-> >>> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
-> >>> and reset IBT state machine.
-> >>>
-> >>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> >>> ---
-> >>> v13:
-> >>> - Check shadow stack address is canonical.
-> >>> - Change from writing to MSRs to writing to CET xstate.
-> >>>
-> >>>    arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
-> >>>    arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
-> >>>    arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
-> >>>    3 files changed, 44 insertions(+)
-> >>>
-> >>> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
-> >>> b/arch/x86/entry/vsyscall/vsyscall_64.c
-> >>> index 44c33103a955..30b166091d46 100644
-> >>> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
-> >>> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-> >>> @@ -38,6 +38,9 @@
-> >>>    #include <asm/fixmap.h>
-> >>>    #include <asm/traps.h>
-> >>>    #include <asm/paravirt.h>
-> >>> +#include <asm/fpu/xstate.h>
-> >>> +#include <asm/fpu/types.h>
-> >>> +#include <asm/fpu/internal.h>
-> >>>
-> >>>    #define CREATE_TRACE_POINTS
-> >>>    #include "vsyscall_trace.h"
-> >>> @@ -286,6 +289,44 @@ bool emulate_vsyscall(unsigned long error_code,
-> >>>          /* Emulate a ret instruction. */
-> >>>          regs->ip = caller;
-> >>>          regs->sp += 8;
-> >>> +
-> >>> +#ifdef CONFIG_X86_CET
-> >>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
-> >>> +               struct cet_user_state *cet;
-> >>> +               struct fpu *fpu;
-> >>> +
-> >>> +               fpu = &tsk->thread.fpu;
-> >>> +               fpregs_lock();
-> >>> +
-> >>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
-> >>> +                       copy_fpregs_to_fpstate(fpu);
-> >>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
-> >>> +               }
-> >>> +
-> >>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
-> >>> +               if (!cet) {
-> >>> +                       /*
-> >>> +                        * This should not happen.  The task is
-> >>> +                        * CET-enabled, but CET xstate is in INIT.
-> >>> +                        */
-> >>
-> >> Can the comment explain better, please?  I would say something like:
-> >>
-> >> If the kernel thinks this task has CET enabled (because
-> >> tsk->thread.cet has one of the features enabled), then the
-> >> corresponding bits must also be set in the CET XSAVES region.  If the
-> >> CET XSAVES region is in the INIT state, then the kernel's concept of
-> >> the task's CET state is corrupt.
-> >>
-> >>> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
-> >>> +                       fpregs_unlock();
-> >>> +                       goto sigsegv;
-> >>> +               }
-> >>> +
-> >>> +               if (cet->user_cet & CET_SHSTK_EN) {
-> >>> +                       if (cet->user_ssp && (cet->user_ssp + 8 < TASK_SIZE_MAX))
-> >>> +                               cet->user_ssp += 8;
-> >>> +               }
-> >>
-> >> This makes so sense to me.  Also, the vsyscall emulation code is
-> >> intended to be as rigid as possible to minimize the chance that it
-> >> gets used as an exploit gadget.  So we should not silently corrupt
-> >> anything.  Moreover, this code seems quite dangerous -- you've created
-> >> a gadget that does RET without actually verifying the SHSTK token.  If
-> >> SHSTK and some form of strong indirect branch/call CFI is in use, then
-> >> the existance of a CFI-bypassing return primitive at a fixed address
-> >> seems quite problematic.
-> >>
-> >> So I think you need to write a function that reasonably accurately
-> >> emulates a usermode RET.
-> >>
+On Wed, Sep 30, 2020 at 04:35:37PM -0700, Shakeel Butt wrote:
+> On Tue, Sep 29, 2020 at 4:59 PM Roman Gushchin <guro@fb.com> wrote:
 > >
-> > For what it's worth, I think there is an alternative.  If you all
-> > (userspace people, etc) can come up with a credible way for a user
-> > program to statically declare that it doesn't need vsyscalls, then we
-> > could make SHSTK depend on *that*, and we could avoid this mess.  This
-> > breaks orthogonality, but it's probably a decent outcome.
+> > The lowest bit in page->memcg_data is used to distinguish between
+> > struct memory_cgroup pointer and a pointer to a objcgs array.
+> > All checks and modifications of this bit are open-coded.
 > >
->
-> Would an arch_prctl(DISABLE_VSYSCALL) work?  The kernel then sets a
-> thread flag, and in emulate_vsyscall(), checks the flag.
->
-> When CET is enabled, ld-linux will do DISABLE_VSYSCALL.
->
-> How is that?
+> > Let's formalize it using page memcg flags, defined in enum
+> > page_memcg_data_flags.
+> >
+> > Additional flags might be added later.
+> >
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> 
+> One nit below:
+> 
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Backwards, no?  Presumably vsyscall needs to be disabled before or
-concurrently with CET being enabled, not after.
+Thank you!
 
-I think the solution of making vsyscall emulation work correctly with
-CET is going to be better and possibly more straightforward.
+> 
+> > ---
+> >  include/linux/memcontrol.h | 35 ++++++++++++++++++++++++-----------
+> >  1 file changed, 24 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index d4d15c04bbaf..35f846c6b89b 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -343,6 +343,15 @@ struct mem_cgroup {
+> >
+> >  extern struct mem_cgroup *root_mem_cgroup;
+> >
+> > +enum page_memcg_data_flags {
+> > +       /* page->memcg_data is a pointer to an objcgs vector */
+> > +       MEMCG_DATA_OBJCGS,
+> > +       /* the next bit after the last actual flag */
+> > +       __NR_MEMCG_DATA_FLAGS,
+> > +};
+> > +
+> > +#define MEMCG_DATA_FLAGS_MASK ((0x1UL << __NR_MEMCG_DATA_FLAGS) - 1)
+> > +
+> 
+> Nit:
+> 
+> #define PG_MEMCG_OBJCGS (0x1UL << MEMCG_DATA_OBJCGS)
+> 
+> and use this macro below.
 
->
-> Yu-cheng
+Johannes's pushing on defining flags as bit fields, so I'm sending v4 soon.
+
+Thanks!
