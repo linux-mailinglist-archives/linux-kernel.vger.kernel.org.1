@@ -2,89 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ECE27EB37
-	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15ABF27EB33
+	for <lists+linux-kernel@lfdr.de>; Wed, 30 Sep 2020 16:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgI3Oot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 10:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
+        id S1730643AbgI3Oon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 10:44:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbgI3Ooo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 10:44:44 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726680AbgI3Oon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 10:44:43 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63C3C206FC;
-        Wed, 30 Sep 2020 14:44:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5903D207C3;
+        Wed, 30 Sep 2020 14:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601477083;
-        bh=qt7pfXhhMPetwSOE19ksOBdlPYEQgZvgP2oT8Ll9FWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wDnGt683QhtK7gZSqDOgZ5zdJ+MlWU+hNiGXg0fuHDa/C/Te5hWFf5b9kXC1qbay3
-         HzVcB6rR3eUFAW2m9hG8O//OxXOtVP2B7k3E90Tq6w7J/WeCepjlsttp/f8yosuPjS
-         BPbO0/i4rJo/GNqZ/w+aQ6ZHNLUlgrShAlWJzwdk=
-Date:   Wed, 30 Sep 2020 15:43:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/30] spi: dw: Add full Baikal-T1 SPI Controllers support
-Message-ID: <20200930144344.GJ4974@sirena.org.uk>
-References: <20200920112914.26501-1-Sergey.Semin@baikalelectronics.ru>
- <20200929144351.GH4799@sirena.org.uk>
- <20200929224303.65awobe5dzwc2p4f@mobilestation>
- <20200930110403.GD4974@sirena.org.uk>
- <20200930131115.2lizge2ff64jbgpn@mobilestation>
+        s=default; t=1601477082;
+        bh=BOq6LyRCWyDbwgviicHXV9zK30oNwH9I4OjbgV2jSu4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XR0RwAIPyQ/gwoNxiS88Uk+kAVw3+/FLiFaigjZLT4HV5VQy4Ww3O/g1jXuWikQzB
+         axjW1dfGZqeWCCzdNQ6XaP0mZluNmin2ugM6f0bP5BYuoUoxuCvjwCrdqTFSL0yXKl
+         an1D6qvzFpsL6App6vM17CZ0c760qmr7PMCWCUPM=
+Received: by mail-ot1-f43.google.com with SMTP id g96so2032251otb.12;
+        Wed, 30 Sep 2020 07:44:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533d9h10XEX0w2wLxklXpB5bU3PFcMIIcO/1mSFzae9Vn0E4Iijc
+        598+QmRS2B0xeSP/roqmYLxLYJgp/iPXmha6sg==
+X-Google-Smtp-Source: ABdhPJwNZ8YRYNRFl8N0imfJdwtVm0sAg6EbUrKo41F4WMvrHs3g9tMmeVkEIDtGWsvHj9HWx1E7yxbfEqO0Uhna7Hw=
+X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1646798otp.107.1601477081549;
+ Wed, 30 Sep 2020 07:44:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zOcTNEe3AzgCmdo9"
-Content-Disposition: inline
-In-Reply-To: <20200930131115.2lizge2ff64jbgpn@mobilestation>
-X-Cookie: Doing gets it done.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200929201701.GA1080459@bogus> <20200929220912.GF1621304@google.com>
+ <20200930013229.GB194665@rowland.harvard.edu> <20200930124915.GA1826870@google.com>
+In-Reply-To: <20200930124915.GA1826870@google.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 30 Sep 2020 09:44:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+Message-ID: <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
+ USB hubs
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 30, 2020 at 7:49 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> Hi Alan,
+>
+> On Tue, Sep 29, 2020 at 09:32:29PM -0400, Alan Stern wrote:
+> > On Tue, Sep 29, 2020 at 03:09:12PM -0700, Matthias Kaehlcke wrote:
+> > > Hi Rob,
+> > >
+> > > On Tue, Sep 29, 2020 at 03:17:01PM -0500, Rob Herring wrote:
+> > > > As I said in prior version, this separate node and 'hub' phandle is not
+> > > > going to work. You are doing this because you want a platform driver for
+> > > > "realtek,rts5411". That may be convenient for Linux, but doesn't reflect
+> > > > the h/w.
+> > >
+> > > I agree that the hardware representation isn't totally straightforward, however
+> > > the description isn't limited to Linux:
+> > >
+> > > - there is a single IC (like the Realtek RTS5411)
+> > > - the IC may require several resources to be initialized in a certain way
+> > >   - this may require executing hardware specific code by some driver, which
+> > >     isn't a USB device driver
+> > > - the IC can 'contain' multiple USB hub devices, which can be connected to
+> > >   separate USB busses
+> > > - the IC doesn't have a control bus, which somewhat resembles the
+> > >   'simple-audio-amplifier' driver, which also registers a platform device
+> > >   to initialize its resources
+> > >
+> > > - to provide the functionality of powering down the hub conditionally during
+> > >   system suspend the driver (whether it's a platform driver or something else)
+> > >   needs know which USB (hub) devices correspond to it. This is a real world
+> > >   problem, on hardware that might see wide distribution.
+> > >
+> > > There were several attempts to solve this problem in the past, but none of them
+> > > was accepted. So far Alan Stern seems to think the driver (not necessarily the
+> > > binding as is) is a suitable solution, Greg KH also spent time reviewing it,
+> > > without raising conceptual concerns. So it seems we have solution that would
+> > > be generally landable from the USB side.
 
---zOcTNEe3AzgCmdo9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Just as I spend no time reviewing the driver side typically, I don't
+think Alan or Greg spend any time on the DT side.
 
-On Wed, Sep 30, 2020 at 04:11:15PM +0300, Serge Semin wrote:
-> On Wed, Sep 30, 2020 at 12:04:04PM +0100, Mark Brown wrote:
+> > > I understand that your goal is to keep the device tree sane, which I'm sure
+> > > can be challenging. If you really can't be convinced that the binding might
+> > > be acceptable in its current or similiar form then please offer guidance
+> > > on possible alternatives which allow to achieve the same functionality.
+> >
+> > You're really trying to represent this special IC in DT, right?
+>
+> Yes
+>
+> > Maybe  if you don't call it a "hub" but instead something that better reflects
+> > what it actually is and does, the description will be more palatable.
 
-> > Not all of the first 9, IIRC I skipped one I had comments on.
+It's a hub. The name is not the problem.
 
-> Yes, you skipped one and I've already given you my response on your comment
-> about it: [PATCH 02/30] spi: dw: Use ternary op to init set_cs callback
-> So have I responded to your comment on another patch:
-> [PATCH 11/30] spi: dw: Add DWC SSI capability .
+> Thanks for your suggestion.
+>
+> Datasheets from different manufacturers refer to these ICs as "USB hub
+> controller". Calling the node "usb-hub-controller" would indeed help to
+> distinguish it from the USB hub devices and represent existing hardware.
+> And the USB device could have a "hub-controller" property, which also
+> would be clearer than the current "hub" property.
 
-> I will need a response from you about them to go further with this patchset.
+There aren't 2 (or 3) devices here. There's a single USB device (a
+hub) and the DT representation should reflect that.
 
-I'm not sure I saw any concrete questions with those?
+We already have hubs in DT. See [1][2][3][4]. What's new here? Simply,
+vdd-supply needs to be enabled for the hub to be enumerated. That's
+not a unique problem for USB, but common for all "discoverable" buses
+with MDIO being the most recent example I pointed you to. I'm not sure
+what happened with the previous attempt for USB[5]. It didn't look
+like there was a major issue. 'generic' power sequencing can't really
+handle every case, but as long as bindings allow doing something
+device specific I don't care so much. The driver side can evolve. The
+DT bindings can't.
 
---zOcTNEe3AzgCmdo9
-Content-Type: application/pgp-signature; name="signature.asc"
+So what should this look like? There are 2 issues here. First, how do
+we represent a USB3 device if that means multiple ports. I'm not
+really sure other than it needs to be defined and documented. I think
+the choices are: ignore the USB3 part (USB2 is always there and what's
+used for enumeration, right?) or allow multiple ports in reg. Do hubs
+really have 2 ports for each connection?
 
------BEGIN PGP SIGNATURE-----
+The 2nd issue is where do extra properties for a device go. That's
+nothing new nor special to USB. They go with the device node. We
+already went thru that with the last attempt.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl90maAACgkQJNaLcl1U
-h9BkJQf/YxSDENRYeU12odA8T9vIC5Bx+tNv9uayK8uZGOrRDPNOsnb+w0gvuCP4
-s+zg6vQ5GVqZ5er1c4w7fUT7OGvj0EV+ofIEcpc3bBcWMFxxvCb0nXr2269jWYxU
-1ACB6DM/GRz7JUXxTIiIvfWa0JPJSY3ynnhf5Ke2mpDeGZmx3gXTqu8tyKJUy1sC
-H7VpYtc8ZpiQZJ9U0XvtTfj9P/VqQTuzV+7Ha//yf0nGpWcMRWjTsCvxNoXbD4GR
-ecDq7NDfZY2q+iW5ao9YrCAeyGiDStUpBS/a375LeHY796IpiIn1tsi9jvvtfIIa
-U9JXWH2OujGDhptZwqh4uN7nFV/BEw==
-=FgSu
------END PGP SIGNATURE-----
+So for this case, we'd have something like this:
 
---zOcTNEe3AzgCmdo9--
+    usb_controller {
+        dr_mode = "host";
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        hub@1 {
+            compatible = "usbbda,5411";
+            reg = <1>;
+            vdd-supply = <&pp3300_hub>;
+        };
+    };
+
+This is no different than needing a reset line deasserted as the prior
+attempt did.
+
+Rob
+
+[1] arch/arm/boot/dts/omap5-uevm.dts
+[2] arch/arm/boot/dts/omap5-igep0050.dts
+[3] arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+[4] arch/arm/boot/dts/bcm283x-rpi-lan7515.dtsi
+[5] https://lore.kernel.org/lkml/CAPDyKFpOQWTPpdd__OBP1DcW58CbqnygGAOxiEFq5kqqvCm0QA@mail.gmail.com/
