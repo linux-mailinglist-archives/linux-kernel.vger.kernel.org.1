@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A3627F9FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0724C27FA06
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731322AbgJAHPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgJAHPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:15:46 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6535C0613D0;
-        Thu,  1 Oct 2020 00:15:46 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u3so1405789pjr.3;
-        Thu, 01 Oct 2020 00:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=0N5ZbXBtnwntldT0m2lp5CvoYnPX3c9VsysiYC8gncA=;
-        b=Wf/O/eFHld0m4dgAc2lBd4g94nABMzXLttE5nglWfZbSY1Bwn2xPmmDSj+8yBd6R86
-         ctzx37NZ+io9ght7axHtT5wOHUtDJk6HuUiJnWBfkw+Q6XQzCTtjknfkRBp8X4CgLugs
-         jPoBSyH8EUISkGEeGJ33hniI7PO/HCjBSoxN/93azr7ITT32eJ1Y4PZxoSuTtFMxv/Lu
-         zHfGdTaJmSCr8BMtKFPS4NGy6hymKvRiLQXmA9d00pRLdctpi4UyitZGLHaSmQ5mZLKx
-         KS9/HrsYNwc9tylLznrUpeNRwPBsB89r/k2sisjOxU40kLgMClHgta0VuyOqPaq2EXFq
-         Be1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=0N5ZbXBtnwntldT0m2lp5CvoYnPX3c9VsysiYC8gncA=;
-        b=c28M/Vorr0KoxyGSUwxUhONWZjYSGXewSSxnuTlpfMzPem2yPzlMlWpDwwKJ/TaDJx
-         I2oD5ea+nU8BCNFZulmD3qLfgZ7jgulq0r0UO3QNYeN6/Fi9ImAIXp4O1bX38zvLpk/N
-         dOqXjzBjfKWHfm3qy4zaHbkHT6lJVJDQaSsUvhBSha5aELAYkW3ci5s9lo56ARgVUMJy
-         S+9lfQls1P1y6arYFR8gaOJL9o9kQJWYp8JoUB4yj/t5e2ptrJqOuDw8szgVSUAvLom5
-         kg5U3Cg8vpr67c2VZomSL/r4CK0p5LmwRnPwtyDsw71jPdexwIjUECn5ZwD/YwUtWzdZ
-         QvNw==
-X-Gm-Message-State: AOAM530KvU5e+K7EqpC/AtsItWsbjJBoAlsp8En/Etd+pYZPvkbklLFm
-        TbaguS5Tkp5QwjSreyVcm6Mf/508z7JRHTkoPFM=
-X-Google-Smtp-Source: ABdhPJwCYIwkoRDM9VXxsFghIyxXpu3/Ulz3jhy7lk28eW/IrSpPAGt6H0gokLJ0ycahG//eg8jOjg==
-X-Received: by 2002:a17:90a:71cb:: with SMTP id m11mr79030pjs.14.1601536545822;
-        Thu, 01 Oct 2020 00:15:45 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.212.76])
-        by smtp.gmail.com with ESMTPSA id y29sm5372565pfq.207.2020.10.01.00.15.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 00:15:45 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees][PATCH] bluetooth: hci_h5: close serdev
- device and free hu in h5_close
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200929185815.12879-1-anant.thazhemadam@gmail.com>
- <9D145813-A4B8-46AB-A55F-54C4AF82FD19@holtmann.org>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <40cdb070-a170-e979-6564-8abb0113570b@gmail.com>
-Date:   Thu, 1 Oct 2020 12:45:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731043AbgJAHRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:17:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51100 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAHRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:17:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 52AF5B203;
+        Thu,  1 Oct 2020 07:17:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C839D1E10D0; Thu,  1 Oct 2020 09:17:28 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 09:17:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/12] mm/filemap: Return only head pages from
+ find_get_entries
+Message-ID: <20201001071728.GA17860@quack2.suse.cz>
+References: <20200914130042.11442-1-willy@infradead.org>
+ <20200914130042.11442-13-willy@infradead.org>
+ <20200930121512.GT10896@quack2.suse.cz>
+ <20200930123637.GP20115@casper.infradead.org>
+ <20200930170807.GA15977@quack2.suse.cz>
+ <20200930172321.GS20115@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <9D145813-A4B8-46AB-A55F-54C4AF82FD19@holtmann.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930172321.GS20115@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 30-09-20 18:23:21, Matthew Wilcox wrote:
+> On Wed, Sep 30, 2020 at 07:08:07PM +0200, Jan Kara wrote:
+> > On Wed 30-09-20 13:36:37, Matthew Wilcox wrote:
+> > > On Wed, Sep 30, 2020 at 02:15:12PM +0200, Jan Kara wrote:
+> > > > On Mon 14-09-20 14:00:42, Matthew Wilcox (Oracle) wrote:
+> > > > > All callers now expect head (and base) pages, and can handle multiple
+> > > > > head pages in a single batch, so make find_get_entries() behave that way.
+> > > > > Also take the opportunity to make it use the pagevec infrastructure
+> > > > > instead of open-coding how pvecs behave.  This has the side-effect of
+> > > > > being able to append to a pagevec with existing contents, although we
+> > > > > don't make use of that functionality anywhere yet.
+> > > > > 
+> > > > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > > 
+> > > > Looks good to me. You can add:
+> > > > 
+> > > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > > 
+> > > > I'm just curious: What has happened to pagevec_lookup_entries() call in
+> > > > invalidate_inode_pages2_range()? Your series appears to be based on a tree
+> > > > where the call already does not exist...
+> > > 
+> > > That went away in patch 10 of this series.
+> > 
+> > Ah, I see. Thanks. Then I'm somewhat wondering is really
+> > invalidate_inode_pages2_range() safe for THP head pages? At least the:
+> > 
+> > 	unmap_mapping_pages(mapping, index, 1, false);
+> > 
+> > doesn't look adequate for THP head pages... do_launder_page() is also
+> > doubtful but probably currently OK because THPs cannot be dirty at this
+> > moment. But how about THPs that are partialy inside start-end range? So far
+> > the function didn't care because it was operating on page basis so it
+> > didn't care but now it is probably relevant... At least it would warrant a
+> > comment in some changelog if you are convinced everything is safe.
+> 
+> You're right, it's inadequate.  It's safe to apply this series to the
+> mainline as-is because the only filesystem which creates THP today
+> is tmpfs and it won't call invalidate_inode_pages2_range() (afaics).
 
-On 01/10/20 12:38 pm, Marcel Holtmann wrote:
-> Hi Anant,
->
->> When h5_close() gets called, the memory allocated for the hu gets 
->> freed only if hu->serdev doesn't exist. This leads to a memory leak.
->> So when h5_close() is requested, close the serdev device instance and
->> free the memory allocated to the hu entirely instead.
->>
->> Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
->> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->> ---
->> drivers/bluetooth/hci_h5.c | 8 ++++++--
->> 1 file changed, 6 insertions(+), 2 deletions(-)
-> patch has been applied to bluetooth-next tree.
->
-> Regards
->
-> Marcel
+Yeah, correct.
 
-Great! Thanks :)
+> I have a followup patch which isn't part of this series which fixes it:
+> 
+> http://git.infradead.org/users/willy/pagecache.git/commitdiff/364283163847d1c106463223b858308c730592a1
 
-Thanks,
-Anant
+Yeah, that looks good. How about partial THPs? The way you've implemented
+it we will now possibly evict more than strictly required. But OTOH
+evicting exactly may require THP split which is a bit unfortunate. But
+probably still a better option because otherwise we could have pages being
+repeatedly brought in and out of cache just because e.g. workload mixes
+direct and buffered IO and is not aligned to THP boundary (and although I
+find loads mixing buffered and direct IO to the same file badly designed,
+I know for a fact that they do exist and if the file ranges are not
+overlapping, it is not that insane design).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
