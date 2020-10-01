@@ -2,134 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACE7280614
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AA928061A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733021AbgJAR73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732407AbgJAR73 (ORCPT
+        id S1732847AbgJASAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:00:51 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:43442 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730029AbgJASAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:59:29 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB14C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:59:27 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t17so4086590wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:59:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TLkPGKpJtl4arwZwTjWF8S+it5AeziayXNp4OPYQ4v0=;
-        b=L/shRT1pI/QwzoXVUw9bsnM765r2VeYplu8Wz+LYLwBElfLPKZJVaFADv+0FmuGoBe
-         KC2gFqgy0VKtCKReeyzvMp1PYPy4RL3vRvAggOg+cOb81/zFkgM5VGHl/HgaJAn+t4Kh
-         C8GeBwASqw9u4KtGb/4L6OReaEay0i2VgmNW90WpTWQlttYqXQ3OtlXAWq3y3Ftq5eM2
-         L+/b48+fjZqFxvEUjEqSA86pX3bf8DRTvnOToc7eq9RynDTEYIxfrHldw7vzInvPiHqz
-         WJX+WwvWGNe7qGrKRdTgHDPEIRZY0aarmOSR2tedXtqrGev3BIcIPcDAKQGon+BRR/+k
-         sIUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TLkPGKpJtl4arwZwTjWF8S+it5AeziayXNp4OPYQ4v0=;
-        b=XP4ErCzyx5ForPsFk5yAHJ+IXrwk0rsA9QunkOXnbycoRKyDOMRR0YLrBsaMZJDH0i
-         Y+sv0zZKhKpBN51LiDK8yw1Lb46cj80wyDZxU/7v1fQ1xgNr34DpyatmflTKWmFK4H8V
-         FqgfVXBUUQR/KXptu806j13drn4rU2z9Q403aIexGG21tVWLwPQ0MioWVIQd9MhwMMQb
-         tuxi1aohjsNpRpBCDN1OpmFmP3csKVXYElQJy5ZIGsXyugJKkZw1VqYSdfEjuuE4w8ji
-         fSkiW4t4tG2eapEpwDlFcM+MzIeuFMIVOOFMb4igQei0mtwhB9JE5hPB5E5AEbWOhCPU
-         P6AQ==
-X-Gm-Message-State: AOAM530oZHxp3VID0IlUu+j54V5C8g+Ax4mTBVNtXaONAXpAKU1+q+K4
-        mIELDvFUm1frN9QXkMIYGWAlHQ==
-X-Google-Smtp-Source: ABdhPJz5PgD6vTssc8V1Lrw9XSn1QOwDzDEYGKvfMkJVoJ4ADqVAmBh2/G9ztT6GoF615R4L6e5WpQ==
-X-Received: by 2002:a7b:cf30:: with SMTP id m16mr1235811wmg.0.1601575165850;
-        Thu, 01 Oct 2020 10:59:25 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id d23sm965442wmb.6.2020.10.01.10.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 10:59:24 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 19:59:19 +0200
-From:   elver@google.com
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 33/39] kasan, x86, s390: update undef CONFIG_KASAN
-Message-ID: <20201001175919.GT4162920@elver.google.com>
-References: <cover.1600987622.git.andreyknvl@google.com>
- <78ebf3bed0458172fec9e1e32f2d29d7c8c37341.1600987622.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Thu, 1 Oct 2020 14:00:51 -0400
+X-Greylist: delayed 1043 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 14:00:50 EDT
+Received: from pps.filterd (m0134423.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091Hc9Rm030058;
+        Thu, 1 Oct 2020 17:43:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=e7ckkIBcOrgjqpyeS2eBHq7YI5a3szzWNQprkLz6E3E=;
+ b=YwGVOL3ccXssQDMy3bAQFsyujy74pE0+0uVh+pNNMsAXQr2oQ1FbUefqQ1EpiG/Uyrz9
+ sdHYP23UtHJx+oDhZwzZcA4KXXqPijITthmpKgU+hseqwRlSvVtMysxIskq+q2i5RHxO
+ LUoP3Xdd2T8FVqp/Jz4WOPxrlbHS2KxjTl6b2ibK2pTGLiRym5FnP3DlPzb9u5MMBVm8
+ KGsXaTHnTXaMlP3uWAyy+1qfS3a3TdcLe79IwaY7tPedDNMN2va26OwYUe9yW39wjUMm
+ hRnFV4jBgm8Xfii205Y0zTgN8vRNzQC5Akgx8OzKdRBv1G6Z7s3ypr1sB4dZgKt5bBYX gw== 
+Received: from g9t5009.houston.hpe.com (g9t5009.houston.hpe.com [15.241.48.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 33wbdvcktb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Oct 2020 17:43:00 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g9t5009.houston.hpe.com (Postfix) with ESMTP id B84EC7C;
+        Thu,  1 Oct 2020 17:42:58 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.214.129.62])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 27B8948;
+        Thu,  1 Oct 2020 17:42:57 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 12:42:56 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] x86/uv/time: Replace one-element array and save
+ heap space
+Message-ID: <20201001174256.GV739899@swahl-home.5wahls.com>
+References: <20201001145608.GA10204@embeddedor>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <78ebf3bed0458172fec9e1e32f2d29d7c8c37341.1600987622.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.5 (2020-06-23)
+In-Reply-To: <20201001145608.GA10204@embeddedor>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_06:2020-10-01,2020-10-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1011
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
-> With the intoduction of hardware tag-based KASAN some kernel checks of
-> this kind:
-> 
->   ifdef CONFIG_KASAN
-> 
-> will be updated to:
-> 
->   if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-> 
-> x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
-> that isn't linked with KASAN runtime and shouldn't have any KASAN
-> annotations.
-> 
-> Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On Thu, Oct 01, 2020 at 09:56:08AM -0500, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare having
+> a dynamically sized set of trailing elements in a structure. Kernel code
+> should always use “flexible array members”[1] for these cases. The older
+> style of one-element or zero-length arrays should no longer be used[2].
 
-Reviewed-by: Marco Elver <elver@google.com>
+I see this has already gone in, so I'm late.  But for whatever it's
+worth, it's a good change.  Thank you.
 
-> ---
-> Change-Id: I2a622db0cb86a8feb60c30d8cb09190075be2a90
-> ---
->  arch/s390/boot/string.c         | 1 +
->  arch/x86/boot/compressed/misc.h | 1 +
->  2 files changed, 2 insertions(+)
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+
+--> Steve wahl
+
+> struct uv_rtc_timer_head contains a one-element array cpu[1].
 > 
-> diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
-> index b11e8108773a..faccb33b462c 100644
-> --- a/arch/s390/boot/string.c
-> +++ b/arch/s390/boot/string.c
-> @@ -3,6 +3,7 @@
->  #include <linux/kernel.h>
->  #include <linux/errno.h>
->  #undef CONFIG_KASAN
-> +#undef CONFIG_KASAN_GENERIC
->  #include "../lib/string.c"
+> Switch it to a flexible array and use the struct_size() helper to
+> calculate the allocation size. Also, save some heap space in the
+> process[3].
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
+> [3] https://lore.kernel.org/lkml/20200518190114.GA7757@embeddedor/
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Build-tested-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/5f75bc0a.rQcNS6620b2eA74S%25lkp@intel.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> Changes in v2:
+>  - Modify changelog text (Thomas).
+>  - Add Reviewed-by and Build-tested-by tags.
+>  - Add a public link to the build-test results.
+> 
+>  arch/x86/platform/uv/uv_time.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
+> index f82a1337a608..6c348c2d0def 100644
+> --- a/arch/x86/platform/uv/uv_time.c
+> +++ b/arch/x86/platform/uv/uv_time.c
+> @@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
+>  	struct {
+>  		int	lcpu;		/* systemwide logical cpu number */
+>  		u64	expires;	/* next timer expiration for this cpu */
+> -	} cpu[1];
+> +	} cpu[];
+>  };
 >  
->  int strncmp(const char *cs, const char *ct, size_t count)
-> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-> index 726e264410ff..2ac973983a8e 100644
-> --- a/arch/x86/boot/compressed/misc.h
-> +++ b/arch/x86/boot/compressed/misc.h
-> @@ -12,6 +12,7 @@
->  #undef CONFIG_PARAVIRT_XXL
->  #undef CONFIG_PARAVIRT_SPINLOCKS
->  #undef CONFIG_KASAN
-> +#undef CONFIG_KASAN_GENERIC
+>  /*
+> @@ -148,9 +148,8 @@ static __init int uv_rtc_allocate_timers(void)
+>  		struct uv_rtc_timer_head *head = blade_info[bid];
 >  
->  /* cpu_feature_enabled() cannot be used this early */
->  #define USE_EARLY_PGTABLE_L5
+>  		if (!head) {
+> -			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
+> -				(uv_blade_nr_possible_cpus(bid) *
+> -					2 * sizeof(u64)),
+> +			head = kmalloc_node(struct_size(head, cpu,
+> +				uv_blade_nr_possible_cpus(bid)),
+>  				GFP_KERNEL, nid);
+>  			if (!head) {
+>  				uv_rtc_deallocate_timers();
 > -- 
-> 2.28.0.681.g6f77f65b4e-goog
+> 2.27.0
 > 
