@@ -2,839 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D26127F82C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 05:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBF827F839
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 05:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgJADbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 23:31:02 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:36447 "EHLO z5.mailgun.us"
+        id S1730585AbgJADtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 23:49:42 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43343 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgJADbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 23:31:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601523059; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=gkLxmSOtX+UBZSRBxFQsGalXICRTLuNsGqPfDUFI0Tc=; b=eVIuSoFykSHmgfcwZisTQow9FlIRKebnWQMgCudYSOXQnUFWCZLV3HSvzdULvqqCfO7S8DA/
- rTRy7LWNjALCs60VprTOWmOR2g36asLNtRXVD6zLoSBCnvbOS31POpBtEit7N1XnCGOZL7Uh
- ltdlElTrZUV54ULI1cAguCb4u0o=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f754d7380da0872b71c8758 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 03:30:59
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 935BDC433FE; Thu,  1 Oct 2020 03:30:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725800AbgJADtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 23:49:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20473C433C8;
-        Thu,  1 Oct 2020 03:30:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 20473C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v6 4/4] bus: mhi: Add userspace client interface driver
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org
-References: <1600286167-4432-1-git-send-email-hemantk@codeaurora.org>
- <1600286167-4432-5-git-send-email-hemantk@codeaurora.org>
- <CAMZdPi9yQDCWXwHoYtby=LWbK2i3zrgCuW_+7OT8k6kq0qAJWg@mail.gmail.com>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <e8c71bb1-e56d-681f-35cc-8fd967ee68af@codeaurora.org>
-Date:   Wed, 30 Sep 2020 20:30:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1zds39sxz9sTs;
+        Thu,  1 Oct 2020 13:49:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601524178;
+        bh=AGb82oIvilqjQ4RyNnBQ/75lbtR5jPycsZgAXY7Q+34=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UtU8xdkY5NlpcxFYCuarMPxhXkiFfTG9+DXck2lCM3mhnIFGj50aew7QStrbNtITe
+         /uSw3+Xln/gpfKSaQ+kV1VsIVkYsoQNe00buHhySC/wu9FucUzc76QEKKH6KLgco4F
+         NUVgF2ly/ehjsF5+i2IBU0C2zGLpMa0N1HM3gTBnMi73ceaOs5YXwsV/qktlnLmTek
+         pTW1LT3QRvpcSnJfPTSV2HkR1/zFXCanWjrnbzmfwvuqUDr9ZDdyMhJEDIDfzPG/U+
+         AV2bH6R9X1NyYGDpabme5rDCPG6hw4rRPzFAdvQoMpj7CkTWJerjyA6Jao2c+lfsxx
+         FnPioZRQIbw4g==
+Date:   Thu, 1 Oct 2020 13:49:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20201001134936.305b51c6@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAMZdPi9yQDCWXwHoYtby=LWbK2i3zrgCuW_+7OT8k6kq0qAJWg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/HEv+g/4XKNk=U/3cwuW5gKI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Loic,
+--Sig_/HEv+g/4XKNk=U/3cwuW5gKI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 9/22/20 4:10 AM, Loic Poulain wrote:
-> Hi Hemant,
-> 
-> See comments inline, but globally, the locking and ref counting is
-> more complicated than it should be.
-> 
-> On Wed, 16 Sep 2020 at 21:57, Hemant Kumar <hemantk@codeaurora.org> wrote:
->>
->> This MHI client driver allows userspace clients to transfer
->> raw data between MHI device and host using standard file operations.
->> Device file node is created with format
->>
->> /dev/mhi_<controller_name>_<mhi_device_name>
->>
->> Currently it supports LOOPBACK channel.
->>
->> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
->> ---
->>   drivers/bus/mhi/Kconfig  |  13 +
->>   drivers/bus/mhi/Makefile |   4 +
->>   drivers/bus/mhi/uci.c    | 657 +++++++++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 674 insertions(+)
->>   create mode 100644 drivers/bus/mhi/uci.c
->>
->> diff --git a/drivers/bus/mhi/Kconfig b/drivers/bus/mhi/Kconfig
->> index 6a217ff..8aebe8b 100644
->> --- a/drivers/bus/mhi/Kconfig
->> +++ b/drivers/bus/mhi/Kconfig
->> @@ -20,3 +20,16 @@ config MHI_BUS_DEBUG
->>           Enable debugfs support for use with the MHI transport. Allows
->>           reading and/or modifying some values within the MHI controller
->>           for debug and test purposes.
->> +
->> +config MHI_UCI
->> +       tristate "MHI UCI"
->> +       depends on MHI_BUS
->> +       help
->> +        MHI based userspace client interface driver is used for transferring
->> +        raw data between host and device using standard file operations from
->> +        userspace. Open, read, write, and close operations are supported
->> +        by this driver. Please check mhi_uci_match_table for all supported
->> +        channels that are exposed to userspace.
->> +
->> +        To compile this driver as a module, choose M here: the module will be
->> +        called mhi_uci.
->> diff --git a/drivers/bus/mhi/Makefile b/drivers/bus/mhi/Makefile
->> index 19e6443..80feefb 100644
->> --- a/drivers/bus/mhi/Makefile
->> +++ b/drivers/bus/mhi/Makefile
->> @@ -1,2 +1,6 @@
->>   # core layer
->>   obj-y += core/
->> +
->> +# MHI client
->> +mhi_uci-y := uci.o
->> +obj-$(CONFIG_MHI_UCI) += mhi_uci.o
->> diff --git a/drivers/bus/mhi/uci.c b/drivers/bus/mhi/uci.c
->> new file mode 100644
->> index 0000000..d6758f2
->> --- /dev/null
->> +++ b/drivers/bus/mhi/uci.c
->> @@ -0,0 +1,657 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/* Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.*/
->> +
->> +#include <linux/kernel.h>
->> +#include <linux/mhi.h>
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/module.h>
->> +#include <linux/poll.h>
->> +
->> +#define DEVICE_NAME "mhi"
->> +#define MHI_UCI_DRIVER_NAME "mhi_uci"
->> +#define MAX_UCI_MINORS (128)
->> +
->> +static DEFINE_IDR(uci_idr);
->> +static DEFINE_MUTEX(uci_idr_mutex);
->> +static struct class *uci_dev_class;
->> +static int uci_dev_major;
->> +
->> +/**
->> + * struct uci_chan - MHI channel for a uci device
->> + * @wq: wait queue for reader/writer
->> + * @lock: spin lock
->> + * @pending: list of rx buffers userspace is waiting to read
->> + * @cur_buf: current buffer userspace is reading
->> + * @rx_size: size of the current rx buffer userspace is reading
->> + */
->> +struct uci_chan {
->> +       wait_queue_head_t wq;
->> +
->> +       /* protects pending and cur_buf members in bh context */
->> +       spinlock_t lock;
->> +
->> +       struct list_head pending;
->> +       struct uci_buf *cur_buf;
->> +       size_t rx_size;
->> +};
->> +
->> +/**
->> + * struct uci_buf - uci buffer
->> + * @data: data buffer
->> + * @len: length of data buffer
->> + * @node: list node of the uci buffer
->> + */
->> +struct uci_buf {
->> +       void *data;
->> +       size_t len;
->> +       struct list_head node;
->> +};
->> +
->> +/**
->> + * struct uci_dev - MHI uci device
->> + * @minor: uci device node minor number
->> + * @mhi_dev: associated mhi device object
->> + * @chan: MHI channel name
->> + * @lock: mutex lock
->> + * @ul_chan: uplink uci channel object
->> + * @dl_chan: downlink uci channel object
->> + * @mtu: max tx buffer length
->> + * @actual_mtu: maximum size of incoming buffer
->> + * @open: open called for device node
->> + * @enabled: uci device probed
->> + * @ref_count: uci_dev reference count
->> + */
->> +struct uci_dev {
->> +       unsigned int minor;
->> +       struct mhi_device *mhi_dev;
->> +       const char *chan;
->> +
->> +       /* protects uci_dev struct members */
->> +       struct mutex lock;
->> +
->> +       struct uci_chan ul_chan;
->> +       struct uci_chan dl_chan;
->> +       size_t mtu;
->> +       size_t actual_mtu;
->> +       bool enabled;
->> +       struct kref ref_count;
->> +};
->> +
->> +static int mhi_queue_inbound(struct uci_dev *udev)
->> +{
->> +       struct mhi_device *mhi_dev = udev->mhi_dev;
->> +       struct device *dev = &mhi_dev->dev;
->> +       size_t mtu = udev->mtu;
->> +       size_t actual_mtu = udev->actual_mtu;
->> +       int nr_trbs, i, ret = -EIO;
->> +       void *buf;
->> +       struct uci_buf *uci_buf;
->> +
->> +       nr_trbs = mhi_get_no_free_descriptors(mhi_dev, DMA_FROM_DEVICE);
->> +
->> +       for (i = 0; i < nr_trbs; i++) {
->> +               buf = kmalloc(mtu, GFP_KERNEL);
->> +               if (!buf)
->> +                       return -ENOMEM;
->> +
->> +               uci_buf = buf + actual_mtu;
->> +               uci_buf->data = buf;
->> +
->> +               dev_dbg(dev, "Allocated buf %d of %d size %ld\n", i, nr_trbs,
->> +                       actual_mtu);
->> +
->> +               ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE, buf, actual_mtu,
->> +                                   MHI_EOT);
->> +               if (ret) {
->> +                       kfree(buf);
->> +                       dev_err(dev, "Failed to queue buffer %d\n", i);
->> +                       return ret;
->> +               }
->> +       }
->> +
->> +       return ret;
->> +}
->> +
->> +static void mhi_uci_dev_release(struct kref *ref)
->> +{
->> +       struct uci_dev *udev =
->> +               container_of(ref, struct uci_dev, ref_count);
->> +
->> +       mutex_destroy(&udev->lock);
->> +
->> +       dev_set_drvdata(&udev->mhi_dev->dev, NULL);
->> +
->> +       kfree(udev);
->> +}
->> +
->> +static int mhi_uci_release(struct inode *inode, struct file *file)
->> +{
->> +       struct uci_dev *udev = file->private_data;
->> +       struct uci_buf *itr, *tmp;
->> +       struct uci_chan *uchan;
->> +
->> +       if (kref_read(&udev->ref_count) > 2)
->> +               goto exit_uci_release;
->> +
->> +       if (udev->enabled)
->> +               mhi_unprepare_from_transfer(udev->mhi_dev);
->> +
->> +       /* clean inbound channel */
->> +       uchan = &udev->dl_chan;
->> +
->> +       spin_lock_bh(&uchan->lock);
->> +       list_for_each_entry_safe(itr, tmp, &uchan->pending, node) {
->> +               list_del(&itr->node);
->> +               kfree(itr->data);
->> +       }
->> +
->> +       if (uchan->cur_buf)
->> +               kfree(uchan->cur_buf->data);
->> +
->> +       uchan->cur_buf = NULL;
->> +       spin_unlock_bh(&uchan->lock);
->> +
->> +exit_uci_release:
->> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
->> +
->> +       return 0;
->> +}
->> +
->> +static __poll_t mhi_uci_poll(struct file *file, poll_table *wait)
->> +{
->> +       struct uci_dev *udev = file->private_data;
->> +       struct mhi_device *mhi_dev = udev->mhi_dev;
->> +       struct device *dev = &mhi_dev->dev;
->> +       struct uci_chan *uchan;
->> +       __poll_t mask = 0;
->> +
->> +       poll_wait(file, &udev->dl_chan.wq, wait);
->> +       poll_wait(file, &udev->ul_chan.wq, wait);
->> +
->> +       if (!udev->enabled) {
->> +               mask = EPOLLERR;
->> +       } else {
->> +               uchan = &udev->dl_chan;
->> +               spin_lock_bh(&uchan->lock);
->> +               if (!list_empty(&uchan->pending) || uchan->cur_buf) {
->> +                       dev_dbg(dev, "Client can read from node\n");
->> +                       mask |= EPOLLIN | EPOLLRDNORM;
->> +               }
->> +               spin_unlock_bh(&uchan->lock);
->> +       }
->> +
->> +       if (!udev->enabled) {
->> +               mask |= EPOLLERR;
->> +       } else if (mhi_get_no_free_descriptors(mhi_dev, DMA_TO_DEVICE) > 0) {
->> +               dev_dbg(dev, "Client can write to node\n");
->> +               mask |= EPOLLOUT | EPOLLWRNORM;
->> +       }
->> +
->> +       dev_dbg(dev, "Client attempted to poll, returning mask 0x%x\n", mask);
->> +
->> +       return mask;
->> +}
->> +
->> +static ssize_t mhi_uci_write(struct file *file,
->> +                            const char __user *buf,
->> +                            size_t count,
->> +                            loff_t *offp)
->> +{
->> +       struct uci_dev *udev = file->private_data;
->> +       struct mhi_device *mhi_dev = udev->mhi_dev;
->> +       struct device *dev = &mhi_dev->dev;
->> +       struct uci_chan *uchan = &udev->ul_chan;
->> +       size_t bytes_xfered = 0;
->> +       int ret, nr_avail = 0;
->> +
->> +       if (!buf || !count)
->> +               return -EINVAL;
->> +
->> +       /* confirm channel is active */
->> +       mutex_lock(&udev->lock);
->> +       if (!udev->enabled) {
->> +               ret = -ENODEV;
->> +               goto err_mtx_unlock;
->> +       }
->> +
->> +       dev_dbg(dev, "%s: to xfer: %lu bytes\n", __func__, count);
->> +
->> +       while (count) {
->> +               size_t xfer_size;
->> +               void *kbuf;
->> +               enum mhi_flags flags;
->> +
->> +               mutex_unlock(&udev->lock);
->> +               /* wait for free descriptors */
->> +               ret = wait_event_interruptible(uchan->wq,
->> +                                              (!udev->enabled) ||
->> +                               (nr_avail = mhi_get_no_free_descriptors(mhi_dev,
->> +                                              DMA_TO_DEVICE)) > 0);
->> +
->> +               mutex_lock(&udev->lock);
-> 
-> All this locking unlocking is odd:
-> - why do you need locking for testing wait_event return code?
-> - why do you need this udev->enabled?
-udev->enabled used in wait_event_interruptible to unblock in remove. I 
-am going to get rid of udev->enabled check that is added on top of this 
-function and also before calling mhi_queue_buf below.
-> - The MHI core should be thread safe + mhi_queue_buf should simply
-> fail if removing is ongoing.
-> 
->> +               if (ret == -ERESTARTSYS) {
->> +                       dev_dbg(dev, "Exit signal caught for node\n");
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               if (!udev->enabled) {
->> +                       ret = -ENODEV;
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               xfer_size = min_t(size_t, count, udev->mtu);
->> +               kbuf = kmalloc(xfer_size, GFP_KERNEL);
->> +               if (!kbuf) {
->> +                       ret = -ENOMEM;
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               ret = copy_from_user(kbuf, buf, xfer_size);
->> +               if (ret) {
->> +                       kfree(kbuf);
->> +                       ret = -EFAULT;
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               /* if ring is full after this force EOT */
->> +               if (nr_avail > 1 && (count - xfer_size))
->> +                       flags = MHI_CHAIN;
->> +               else
->> +                       flags = MHI_EOT;
->> +
->> +               if (udev->enabled)
->> +                       ret = mhi_queue_buf(mhi_dev, DMA_TO_DEVICE, kbuf,
->> +                                           xfer_size, flags);
->> +               else
->> +                       ret = -ENODEV;
->> +
->> +               if (ret) {
->> +                       kfree(kbuf);
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               bytes_xfered += xfer_size;
->> +               count -= xfer_size;
->> +               buf += xfer_size;
->> +       }
->> +
->> +       mutex_unlock(&udev->lock);
->> +       dev_dbg(dev, "%s: bytes xferred: %lu\n", __func__, bytes_xfered);
->> +
->> +       return bytes_xfered;
->> +
->> +err_mtx_unlock:
->> +       mutex_unlock(&udev->lock);
->> +
->> +       return ret;
->> +}
->> +
->> +static ssize_t mhi_uci_read(struct file *file,
->> +                           char __user *buf,
->> +                           size_t count,
->> +                           loff_t *ppos)
->> +{
->> +       struct uci_dev *udev = file->private_data;
->> +       struct mhi_device *mhi_dev = udev->mhi_dev;
->> +       struct uci_chan *uchan = &udev->dl_chan;
->> +       struct device *dev = &mhi_dev->dev;
->> +       struct uci_buf *ubuf;
->> +       char *ptr;
->> +       size_t to_copy;
->> +       int ret = 0;
->> +
->> +       if (!buf)
->> +               return -EINVAL;
->> +
->> +       mutex_lock(&udev->lock);
->> +       /* confirm channel is active */
->> +       if (!udev->enabled) {
->> +               ret = -ENODEV;
->> +               goto err_mtx_unlock;
->> +       }
->> +
->> +       spin_lock_bh(&uchan->lock);
->> +       /* No data available to read, wait */
->> +       if (!uchan->cur_buf && list_empty(&uchan->pending)) {
->> +               dev_dbg(dev, "No data available to read waiting\n");
->> +
->> +               spin_unlock_bh(&uchan->lock);
->> +               mutex_unlock(&udev->lock);
->> +               ret = wait_event_interruptible(uchan->wq,
->> +                                              (!udev->enabled ||
->> +                                             !list_empty(&uchan->pending)));
->> +
->> +               mutex_lock(&udev->lock);
->> +               if (ret == -ERESTARTSYS) {
->> +                       dev_dbg(dev, "Exit signal caught for node\n");
->> +                       goto err_mtx_unlock;
->> +               }
->> +
->> +               if (!udev->enabled) {
->> +                       ret = -ENODEV;
->> +                       goto err_mtx_unlock;
->> +               }
->> +               spin_lock_bh(&uchan->lock);
->> +       }
->> +
->> +       /* new read, get the next descriptor from the list */
->> +       if (!uchan->cur_buf) {
->> +               ubuf = list_first_entry_or_null(&uchan->pending,
->> +                                               struct uci_buf, node);
->> +               if (!ubuf) {
->> +                       ret = -EIO;
->> +                       goto err_spin_unlock;
->> +               }
->> +
->> +               list_del(&ubuf->node);
->> +               uchan->cur_buf = ubuf;
->> +               uchan->rx_size = ubuf->len;
->> +               dev_dbg(dev, "Got pkt of size: %zu\n", uchan->rx_size);
->> +       }
->> +
->> +       ubuf = uchan->cur_buf;
->> +
->> +       /* Copy the buffer to user space */
->> +       to_copy = min_t(size_t, count, uchan->rx_size);
->> +       ptr = ubuf->data + (ubuf->len - uchan->rx_size);
->> +       spin_unlock_bh(&uchan->lock);
->> +
->> +       ret = copy_to_user(buf, ptr, to_copy);
->> +       if (ret) {
->> +               ret = -EFAULT;
->> +               goto err_mtx_unlock;
->> +       }
->> +
->> +       spin_lock_bh(&uchan->lock);
->> +
->> +       dev_dbg(dev, "Copied %lu of %lu bytes\n", to_copy, uchan->rx_size);
->> +       uchan->rx_size -= to_copy;
->> +
->> +       /* we finished with this buffer, queue it back to hardware */
->> +       if (!uchan->rx_size) {
->> +               uchan->cur_buf = NULL;
->> +
->> +               if (udev->enabled)
->> +                       ret = mhi_queue_buf(mhi_dev, DMA_FROM_DEVICE,
->> +                                           ubuf->data,
->> +                                           udev->actual_mtu, MHI_EOT);
->> +               else
->> +                       ret = -ENODEV;
->> +
->> +               if (ret) {
->> +                       dev_err(dev, "Failed to recycle element: %d\n", ret);
->> +                       kfree(ubuf->data);
->> +                       goto err_spin_unlock;
->> +               }
->> +       }
->> +       spin_unlock_bh(&uchan->lock);
->> +       mutex_unlock(&udev->lock);
->> +
->> +       dev_dbg(dev, "%s: Returning %lu bytes\n", __func__, to_copy);
->> +
->> +       return to_copy;
->> +
->> +err_spin_unlock:
->> +       spin_unlock_bh(&uchan->lock);
->> +err_mtx_unlock:
->> +       mutex_unlock(&udev->lock);
->> +       return ret;
->> +}
->> +
->> +static int mhi_uci_open(struct inode *inode, struct file *filp)
->> +{
->> +       struct uci_dev *udev = NULL;
->> +       unsigned int minor = iminor(inode);
->> +       int ret = -EIO;
->> +       struct uci_buf *buf_itr, *tmp;
->> +       struct uci_chan *dl_chan;
->> +       struct mhi_device *mhi_dev;
->> +       struct device *dev;
->> +
->> +       mutex_lock(&uci_idr_mutex);
->> +       udev = idr_find(&uci_idr, minor);
->> +       mutex_unlock(&uci_idr_mutex);
->> +       if (!udev) {
->> +               pr_err("uci dev: minor %d not found\n", minor);
->> +               ret = -ENODEV;
->> +               goto error_no_dev;
->> +       }
->> +
->> +       kref_get(&udev->ref_count);
->> +
->> +       mhi_dev = udev->mhi_dev;
->> +       dev = &mhi_dev->dev;
->> +
->> +       mutex_lock(&udev->lock);
->> +       if (kref_read(&udev->ref_count) > 2) {
->> +               dev_dbg(dev, "Node already opened\n");
->> +               goto exit_uci_open;
->> +       }
->> +
->> +       if (!udev->enabled) {
->> +               dev_info(dev, "Node exists, but is not in active state!\n");
->> +               goto error_open_chan;
->> +       }
->> +
->> +       dev_dbg(dev, "Starting channel\n");
->> +       ret = mhi_prepare_for_transfer(udev->mhi_dev);
->> +       if (ret) {
->> +               dev_err(dev, "Error starting transfer channels\n");
->> +               goto error_open_chan;
->> +       }
->> +
->> +       ret = mhi_queue_inbound(udev);
->> +       if (ret)
->> +               goto error_rx_queue;
->> +
->> +exit_uci_open:
->> +       filp->private_data = udev;
->> +       mutex_unlock(&udev->lock);
->> +
->> +       return 0;
->> +
->> +error_rx_queue:
->> +       dl_chan = &udev->dl_chan;
->> +       mhi_unprepare_from_transfer(udev->mhi_dev);
->> +       list_for_each_entry_safe(buf_itr, tmp, &dl_chan->pending, node) {
->> +               list_del(&buf_itr->node);
->> +               kfree(buf_itr->data);
->> +       }
->> +error_open_chan:
->> +       mutex_unlock(&udev->lock);
->> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
->> +error_no_dev:
->> +       return ret;
->> +}
->> +
->> +static const struct file_operations mhidev_fops = {
->> +       .owner = THIS_MODULE,
->> +       .open = mhi_uci_open,
->> +       .release = mhi_uci_release,
->> +       .read = mhi_uci_read,
->> +       .write = mhi_uci_write,
->> +       .poll = mhi_uci_poll,
->> +};
->> +
->> +static void mhi_ul_xfer_cb(struct mhi_device *mhi_dev,
->> +                          struct mhi_result *mhi_result)
->> +{
->> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
->> +       struct uci_chan *uchan = &udev->ul_chan;
->> +       struct device *dev = &mhi_dev->dev;
->> +
->> +       dev_dbg(dev, "status: %d xfer_len: %zu\n",
->> +               mhi_result->transaction_status, mhi_result->bytes_xferd);
->> +
->> +       kfree(mhi_result->buf_addr);
->> +
->> +       if (!mhi_result->transaction_status)
->> +               wake_up(&uchan->wq);
->> +}
->> +
->> +static void mhi_dl_xfer_cb(struct mhi_device *mhi_dev,
->> +                          struct mhi_result *mhi_result)
->> +{
->> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
->> +       struct uci_chan *uchan = &udev->dl_chan;
->> +       struct device *dev = &mhi_dev->dev;
->> +       struct uci_buf *buf;
->> +
->> +       dev_dbg(dev, "status: %d receive_len: %zu\n",
->> +               mhi_result->transaction_status, mhi_result->bytes_xferd);
->> +
->> +       if (mhi_result->transaction_status == -ENOTCONN) {
->> +               kfree(mhi_result->buf_addr);
->> +               return;
->> +       }
->> +
->> +       spin_lock_bh(&uchan->lock);
->> +       buf = mhi_result->buf_addr + udev->actual_mtu;
->> +       buf->data = mhi_result->buf_addr;
->> +       buf->len = mhi_result->bytes_xferd;
-> 
-> You don't need to protect buf here, only uchan pending list, right? so
-> move lock here.
-Done.
-> 
->> +       list_add_tail(&buf->node, &uchan->pending);
->> +       spin_unlock_bh(&uchan->lock);
->> +
->> +       wake_up(&uchan->wq);
->> +}
->> +
->> +static int mhi_uci_probe(struct mhi_device *mhi_dev,
->> +                        const struct mhi_device_id *id)
->> +{
->> +       struct uci_dev *udev;
->> +       struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->> +       struct device *dev;
->> +       int index, dir;
->> +
->> +       udev = kzalloc(sizeof(*udev), GFP_KERNEL);
->> +       if (!udev)
->> +               return -ENOMEM;
->> +
->> +       kref_init(&udev->ref_count);
->> +       mutex_init(&udev->lock);
->> +       udev->mhi_dev = mhi_dev;
->> +
->> +       mutex_lock(&udev->lock);
-> 
-> Why locking here? udev has just been created, it cannot be used concurrently.
-Done, will remove it.
-> 
->> +
->> +       mutex_lock(&uci_idr_mutex);
->> +       index = idr_alloc(&uci_idr, udev, 0, MAX_UCI_MINORS, GFP_KERNEL);
->> +       mutex_unlock(&uci_idr_mutex);
->> +       if (index < 0) {
->> +               mutex_unlock(&udev->lock);
->> +               kfree(udev);
->> +               return index;
->> +       }
->> +
->> +       udev->minor = index;
->> +
->> +       /* create device file node /dev/mhi_<cntrl_dev_name>_<mhi_dev_name> */
->> +       dev = device_create(uci_dev_class, &mhi_dev->dev,
->> +                           MKDEV(uci_dev_major, index), udev,
->> +                           DEVICE_NAME "_%s_%s",
->> +                           dev_name(mhi_cntrl->cntrl_dev), mhi_dev->name);
->> +       if (IS_ERR(dev)) {
->> +               mutex_lock(&uci_idr_mutex);
->> +               idr_remove(&uci_idr, udev->minor);
->> +               mutex_unlock(&uci_idr_mutex);
->> +               mutex_unlock(&udev->lock);
->> +               kfree(udev);
->> +               return PTR_ERR(dev);
->> +       }
-> 
-> I would suggest adding the device at the very end of the probe, when
-> everything has been initialized.
-Done, will do that.
-> 
-> Regards,
-> Loic
-> 
-> 
-> 
->> +
->> +       for (dir = 0; dir < 2; dir++) {
->> +               struct uci_chan *uchan = (dir) ?
->> +                       &udev->ul_chan : &udev->dl_chan;
->> +               spin_lock_init(&uchan->lock);
->> +               init_waitqueue_head(&uchan->wq);
->> +               INIT_LIST_HEAD(&uchan->pending);
->> +       }
->> +
->> +       udev->mtu = min_t(size_t, id->driver_data, MHI_MAX_MTU);
->> +       udev->actual_mtu = udev->mtu - sizeof(struct uci_buf);
->> +       dev_set_drvdata(&mhi_dev->dev, udev);
->> +       udev->enabled = true;
->> +
->> +       mutex_unlock(&udev->lock);
->> +
->> +       dev_info(&mhi_dev->dev, "probed uci dev: minor %d\n", index);
->> +
->> +       return 0;
->> +};
->> +
->> +static void mhi_uci_remove(struct mhi_device *mhi_dev)
->> +{
->> +       struct uci_dev *udev = dev_get_drvdata(&mhi_dev->dev);
->> +
->> +       mutex_lock(&udev->lock);
->> +
->> +       /* disable the node */
->> +       udev->enabled = false;
->> +
->> +       wake_up(&udev->dl_chan.wq);
->> +       wake_up(&udev->ul_chan.wq);
->> +
->> +       /* delete the node to prevent new opens */
->> +       device_destroy(uci_dev_class, MKDEV(uci_dev_major, udev->minor));
->> +
->> +       mutex_lock(&uci_idr_mutex);
->> +       idr_remove(&uci_idr, udev->minor);
->> +       mutex_unlock(&uci_idr_mutex);
->> +
->> +       mutex_unlock(&udev->lock);
->> +
->> +       kref_put(&udev->ref_count, mhi_uci_dev_release);
->> +}
->> +
->> +/* .driver_data stores max mtu */
->> +static const struct mhi_device_id mhi_uci_match_table[] = {
->> +       { .chan = "LOOPBACK", .driver_data = 0x1000},
->> +       {},
->> +};
->> +MODULE_DEVICE_TABLE(mhi, mhi_uci_match_table);
->> +
->> +static struct mhi_driver mhi_uci_driver = {
->> +       .id_table = mhi_uci_match_table,
->> +       .remove = mhi_uci_remove,
->> +       .probe = mhi_uci_probe,
->> +       .ul_xfer_cb = mhi_ul_xfer_cb,
->> +       .dl_xfer_cb = mhi_dl_xfer_cb,
->> +       .driver = {
->> +               .name = MHI_UCI_DRIVER_NAME,
->> +       },
->> +};
->> +
->> +static int mhi_uci_init(void)
->> +{
->> +       int ret;
->> +
->> +       ret = register_chrdev(0, MHI_UCI_DRIVER_NAME, &mhidev_fops);
->> +       if (ret < 0)
->> +               return ret;
->> +
->> +       uci_dev_major = ret;
->> +       uci_dev_class = class_create(THIS_MODULE, MHI_UCI_DRIVER_NAME);
->> +       if (IS_ERR(uci_dev_class)) {
->> +               unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
->> +               return -ENODEV;
->> +       }
->> +
->> +       ret = mhi_driver_register(&mhi_uci_driver);
->> +       if (ret) {
->> +               class_destroy(uci_dev_class);
->> +               unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
->> +       }
->> +
->> +       return ret;
->> +}
->> +
->> +static void __exit mhi_uci_exit(void)
->> +{
->> +       mhi_driver_unregister(&mhi_uci_driver);
->> +       class_destroy(uci_dev_class);
->> +       unregister_chrdev(uci_dev_major, MHI_UCI_DRIVER_NAME);
->> +}
->> +
->> +module_init(mhi_uci_init);
->> +module_exit(mhi_uci_exit);
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_DESCRIPTION("MHI UCI Driver");
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
->>
-Thanks for reviewing my change Loic, based on concerns from Greg and 
-Jeff, i am working on pushing another patch set. This patch set also 
-address locking related concern that you mentioned. Basically intent for 
-adding udev ref count is to take care of race between driver remove() 
-and file open(). So i am keeping udev ref count in the next patch set 
-but in order to take care of corner cases i need to guard udev ref 
-counting with global mutex. udev needs to ref count the channel so that 
-mhi channel is started when first open is called and channel is stopped 
-only when the last release is called. So we need some kind of ref 
-counting for channel usage as well. Will remove the current way of doing 
-channel ref counting using udev ref count value.
+Hi all,
 
-Thanks,
-Hemant
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Today's linux-next merge of the net-next tree got a conflict in:
+
+  net/mptcp/protocol.c
+
+between commit:
+
+  917944da3bfc ("mptcp: Consistently use READ_ONCE/WRITE_ONCE with msk->ack=
+_seq")
+
+from the net tree and commit:
+
+  8268ed4c9d19 ("mptcp: introduce and use mptcp_try_coalesce()")
+  ab174ad8ef76 ("mptcp: move ooo skbs into msk out of order queue.")
+
+from the net-next tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/mptcp/protocol.c
+index 5d747c6a610e,34c037731f35..000000000000
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@@ -112,64 -112,205 +112,205 @@@ static int __mptcp_socket_create(struc
+  	return 0;
+  }
+ =20
+- static void __mptcp_move_skb(struct mptcp_sock *msk, struct sock *ssk,
+- 			     struct sk_buff *skb,
+- 			     unsigned int offset, size_t copy_len)
++ static void mptcp_drop(struct sock *sk, struct sk_buff *skb)
++ {
++ 	sk_drops_add(sk, skb);
++ 	__kfree_skb(skb);
++ }
++=20
++ static bool mptcp_try_coalesce(struct sock *sk, struct sk_buff *to,
++ 			       struct sk_buff *from)
++ {
++ 	bool fragstolen;
++ 	int delta;
++=20
++ 	if (MPTCP_SKB_CB(from)->offset ||
++ 	    !skb_try_coalesce(to, from, &fragstolen, &delta))
++ 		return false;
++=20
++ 	pr_debug("colesced seq %llx into %llx new len %d new end seq %llx",
++ 		 MPTCP_SKB_CB(from)->map_seq, MPTCP_SKB_CB(to)->map_seq,
++ 		 to->len, MPTCP_SKB_CB(from)->end_seq);
++ 	MPTCP_SKB_CB(to)->end_seq =3D MPTCP_SKB_CB(from)->end_seq;
++ 	kfree_skb_partial(from, fragstolen);
++ 	atomic_add(delta, &sk->sk_rmem_alloc);
++ 	sk_mem_charge(sk, delta);
++ 	return true;
++ }
++=20
++ static bool mptcp_ooo_try_coalesce(struct mptcp_sock *msk, struct sk_buff=
+ *to,
++ 				   struct sk_buff *from)
++ {
++ 	if (MPTCP_SKB_CB(from)->map_seq !=3D MPTCP_SKB_CB(to)->end_seq)
++ 		return false;
++=20
++ 	return mptcp_try_coalesce((struct sock *)msk, to, from);
++ }
++=20
++ /* "inspired" by tcp_data_queue_ofo(), main differences:
++  * - use mptcp seqs
++  * - don't cope with sacks
++  */
++ static void mptcp_data_queue_ofo(struct mptcp_sock *msk, struct sk_buff *=
+skb)
+  {
+  	struct sock *sk =3D (struct sock *)msk;
+- 	struct sk_buff *tail;
++ 	struct rb_node **p, *parent;
++ 	u64 seq, end_seq, max_seq;
++ 	struct sk_buff *skb1;
++ 	int space;
++=20
++ 	seq =3D MPTCP_SKB_CB(skb)->map_seq;
++ 	end_seq =3D MPTCP_SKB_CB(skb)->end_seq;
++ 	space =3D tcp_space(sk);
++ 	max_seq =3D space > 0 ? space + msk->ack_seq : msk->ack_seq;
++=20
++ 	pr_debug("msk=3D%p seq=3D%llx limit=3D%llx empty=3D%d", msk, seq, max_se=
+q,
++ 		 RB_EMPTY_ROOT(&msk->out_of_order_queue));
++ 	if (after64(seq, max_seq)) {
++ 		/* out of window */
++ 		mptcp_drop(sk, skb);
++ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_NODSSWINDOW);
++ 		return;
++ 	}
+ =20
+- 	__skb_unlink(skb, &ssk->sk_receive_queue);
++ 	p =3D &msk->out_of_order_queue.rb_node;
++ 	MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_OFOQUEUE);
++ 	if (RB_EMPTY_ROOT(&msk->out_of_order_queue)) {
++ 		rb_link_node(&skb->rbnode, NULL, p);
++ 		rb_insert_color(&skb->rbnode, &msk->out_of_order_queue);
++ 		msk->ooo_last_skb =3D skb;
++ 		goto end;
++ 	}
+ =20
+- 	skb_ext_reset(skb);
+- 	skb_orphan(skb);
+- 	WRITE_ONCE(msk->ack_seq, msk->ack_seq + copy_len);
++ 	/* with 2 subflows, adding at end of ooo queue is quite likely
++ 	 * Use of ooo_last_skb avoids the O(Log(N)) rbtree lookup.
++ 	 */
++ 	if (mptcp_ooo_try_coalesce(msk, msk->ooo_last_skb, skb)) {
++ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_OFOMERGE);
++ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_OFOQUEUETAIL);
++ 		return;
++ 	}
+ =20
+- 	tail =3D skb_peek_tail(&sk->sk_receive_queue);
+- 	if (offset =3D=3D 0 && tail) {
+- 		bool fragstolen;
+- 		int delta;
++ 	/* Can avoid an rbtree lookup if we are adding skb after ooo_last_skb */
++ 	if (!before64(seq, MPTCP_SKB_CB(msk->ooo_last_skb)->end_seq)) {
++ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_OFOQUEUETAIL);
++ 		parent =3D &msk->ooo_last_skb->rbnode;
++ 		p =3D &parent->rb_right;
++ 		goto insert;
++ 	}
+ =20
+- 		if (skb_try_coalesce(tail, skb, &fragstolen, &delta)) {
+- 			kfree_skb_partial(skb, fragstolen);
+- 			atomic_add(delta, &sk->sk_rmem_alloc);
+- 			sk_mem_charge(sk, delta);
++ 	/* Find place to insert this segment. Handle overlaps on the way. */
++ 	parent =3D NULL;
++ 	while (*p) {
++ 		parent =3D *p;
++ 		skb1 =3D rb_to_skb(parent);
++ 		if (before64(seq, MPTCP_SKB_CB(skb1)->map_seq)) {
++ 			p =3D &parent->rb_left;
++ 			continue;
++ 		}
++ 		if (before64(seq, MPTCP_SKB_CB(skb1)->end_seq)) {
++ 			if (!after64(end_seq, MPTCP_SKB_CB(skb1)->end_seq)) {
++ 				/* All the bits are present. Drop. */
++ 				mptcp_drop(sk, skb);
++ 				MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_DUPDATA);
++ 				return;
++ 			}
++ 			if (after64(seq, MPTCP_SKB_CB(skb1)->map_seq)) {
++ 				/* partial overlap:
++ 				 *     |     skb      |
++ 				 *  |     skb1    |
++ 				 * continue traversing
++ 				 */
++ 			} else {
++ 				/* skb's seq =3D=3D skb1's seq and skb covers skb1.
++ 				 * Replace skb1 with skb.
++ 				 */
++ 				rb_replace_node(&skb1->rbnode, &skb->rbnode,
++ 						&msk->out_of_order_queue);
++ 				mptcp_drop(sk, skb1);
++ 				MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_DUPDATA);
++ 				goto merge_right;
++ 			}
++ 		} else if (mptcp_ooo_try_coalesce(msk, skb1, skb)) {
++ 			MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_OFOMERGE);
+  			return;
+  		}
++ 		p =3D &parent->rb_right;
+  	}
+ =20
+- 	skb_set_owner_r(skb, sk);
+- 	__skb_queue_tail(&sk->sk_receive_queue, skb);
+- 	MPTCP_SKB_CB(skb)->offset =3D offset;
+- }
++ insert:
++ 	/* Insert segment into RB tree. */
++ 	rb_link_node(&skb->rbnode, parent, p);
++ 	rb_insert_color(&skb->rbnode, &msk->out_of_order_queue);
+ =20
+- static void mptcp_stop_timer(struct sock *sk)
+- {
+- 	struct inet_connection_sock *icsk =3D inet_csk(sk);
++ merge_right:
++ 	/* Remove other segments covered by skb. */
++ 	while ((skb1 =3D skb_rb_next(skb)) !=3D NULL) {
++ 		if (before64(end_seq, MPTCP_SKB_CB(skb1)->end_seq))
++ 			break;
++ 		rb_erase(&skb1->rbnode, &msk->out_of_order_queue);
++ 		mptcp_drop(sk, skb1);
++ 		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_DUPDATA);
++ 	}
++ 	/* If there is no skb after us, we are the last_skb ! */
++ 	if (!skb1)
++ 		msk->ooo_last_skb =3D skb;
+ =20
+- 	sk_stop_timer(sk, &icsk->icsk_retransmit_timer);
+- 	mptcp_sk(sk)->timer_ival =3D 0;
++ end:
++ 	skb_condense(skb);
++ 	skb_set_owner_r(skb, sk);
+  }
+ =20
+- /* both sockets must be locked */
+- static bool mptcp_subflow_dsn_valid(const struct mptcp_sock *msk,
+- 				    struct sock *ssk)
++ static bool __mptcp_move_skb(struct mptcp_sock *msk, struct sock *ssk,
++ 			     struct sk_buff *skb, unsigned int offset,
++ 			     size_t copy_len)
+  {
+  	struct mptcp_subflow_context *subflow =3D mptcp_subflow_ctx(ssk);
+- 	u64 dsn =3D mptcp_subflow_get_mapped_dsn(subflow);
++ 	struct sock *sk =3D (struct sock *)msk;
++ 	struct sk_buff *tail;
+ =20
+- 	/* revalidate data sequence number.
+- 	 *
+- 	 * mptcp_subflow_data_available() is usually called
+- 	 * without msk lock.  Its unlikely (but possible)
+- 	 * that msk->ack_seq has been advanced since the last
+- 	 * call found in-sequence data.
++ 	__skb_unlink(skb, &ssk->sk_receive_queue);
++=20
++ 	skb_ext_reset(skb);
++ 	skb_orphan(skb);
++=20
++ 	/* the skb map_seq accounts for the skb offset:
++ 	 * mptcp_subflow_get_mapped_dsn() is based on the current tp->copied_seq
++ 	 * value
+  	 */
+- 	if (likely(dsn =3D=3D msk->ack_seq))
++ 	MPTCP_SKB_CB(skb)->map_seq =3D mptcp_subflow_get_mapped_dsn(subflow);
++ 	MPTCP_SKB_CB(skb)->end_seq =3D MPTCP_SKB_CB(skb)->map_seq + copy_len;
++ 	MPTCP_SKB_CB(skb)->offset =3D offset;
++=20
++ 	if (MPTCP_SKB_CB(skb)->map_seq =3D=3D msk->ack_seq) {
++ 		/* in sequence */
+ -		msk->ack_seq +=3D copy_len;
+++		WRITE_ONCE(msk->ack_seq, msk->ack_seq + copy_len);
++ 		tail =3D skb_peek_tail(&sk->sk_receive_queue);
++ 		if (tail && mptcp_try_coalesce(sk, tail, skb))
++ 			return true;
++=20
++ 		skb_set_owner_r(skb, sk);
++ 		__skb_queue_tail(&sk->sk_receive_queue, skb);
+  		return true;
++ 	} else if (after64(MPTCP_SKB_CB(skb)->map_seq, msk->ack_seq)) {
++ 		mptcp_data_queue_ofo(msk, skb);
++ 		return false;
++ 	}
+ =20
+- 	subflow->data_avail =3D 0;
+- 	return mptcp_subflow_data_available(ssk);
++ 	/* old data, keep it simple and drop the whole pkt, sender
++ 	 * will retransmit as needed, if needed.
++ 	 */
++ 	MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_DUPDATA);
++ 	mptcp_drop(sk, skb);
++ 	return false;
++ }
++=20
++ static void mptcp_stop_timer(struct sock *sk)
++ {
++ 	struct inet_connection_sock *icsk =3D inet_csk(sk);
++=20
++ 	sk_stop_timer(sk, &icsk->icsk_retransmit_timer);
++ 	mptcp_sk(sk)->timer_ival =3D 0;
+  }
+ =20
+  static void mptcp_check_data_fin_ack(struct sock *sk)
+
+--Sig_/HEv+g/4XKNk=U/3cwuW5gKI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91UdAACgkQAVBC80lX
+0Gz4Bgf+J0QZpbjcwfY6mMQdickY94A7OHkQxgCcR5QtKBubNx3uXmIwei4IFT9T
+ly6Jei3Z1sGVnFumuZDKlsqXnwwJxT8XKA2FZkxyqFuVQuCTN1BLXIscMfo019IA
+En3YR1+ObFVt6NRfeVLmiMKWZZErkRNkzoE9qho3S+rdZbuLU9tngupy8PiB/hrc
+zHU16iDBlO/lZz7E31iGrE4NZWvi2YM3J+TwdAGh7M8qqCAtBUoSMEVjmqTRBy4I
+R/+y2b8L9Ec2b/X93Pty1MYTrvXOp5ynfvUj/Z1AXGE8gKtjEyIJKCTdy5alXRoz
+P8Or9QpwHUuTMCvvCGWWeZXcdslcNg==
+=73X4
+-----END PGP SIGNATURE-----
+
+--Sig_/HEv+g/4XKNk=U/3cwuW5gKI--
