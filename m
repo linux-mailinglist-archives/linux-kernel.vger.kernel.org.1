@@ -2,68 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F0227FF17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BAD27FF2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732359AbgJAMah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:30:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34150 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731987AbgJAMaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:30:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601555434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uCm4uXOnrpWMmMZOVA7wh6ICDudob2h+p29v5JSL4lU=;
-        b=GnrnpGVOycrS6i3U5eUDgMPqc4ZSmxHImP6IM3Q9oRdFfgGHwzWCI5H+2lZar3wd+EJgGv
-        QEiFqFCDYgSp1OTN9AbCtO5mEALDiuKWhR/Pqkq7y6hzSbhehovg/ZXqPG6QVOD7X2crvB
-        fZtYaxIuElKuddlIJBEQ3JPWMaSRAqU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9D2BAAFD7;
-        Thu,  1 Oct 2020 12:30:34 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 14:30:32 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Sebastiaan Meijer <meijersebastiaan@gmail.com>
-Cc:     akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de, riel@surriel.com,
-        willy@infradead.org
-Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
-Message-ID: <20201001123032.GC22560@dhcp22.suse.cz>
-References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
+        id S1732411AbgJAMbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732246AbgJAMbo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:31:44 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BB8C0613D0;
+        Thu,  1 Oct 2020 05:31:43 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id s66so5173878otb.2;
+        Thu, 01 Oct 2020 05:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iSnYykYD16tCr/8hr8KwJg8sdPxWkZZ/u4Cgaj3NyQw=;
+        b=cFlbjAVPdock4Ma9XPAoOKn34TQpGPoIebzxlY/MvwUreKW3XdQ52pqsSENcAJq1hz
+         HIDZVHEWPhRodOPt7QV9Fqj3IEuGXPLO/SXJwoyu0Oxq5yhPcIqnOoxZvTNfttUHi0OT
+         ziD93leGxua8IcvPhcpUz3sd288sEZT4oaEJGyfN+q51qKZYj4NJk06fpNYi/ZWxeYPC
+         NHwzZVxfmtmb8GEjtwBxUQRe3Rt8kFIPoW5rMSyvT3WnEYItP5YgXgbujW6ZXQV8YEld
+         rtnp0pEosYEvTmqv7cF/plSDNCtHSvYCn5lsBQNL9WaKGcu2EmFSVo3ZkR3sXbVIDqYs
+         chMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iSnYykYD16tCr/8hr8KwJg8sdPxWkZZ/u4Cgaj3NyQw=;
+        b=AOIhewjVX7eEhE2Oeq+gIRQY07TAb/HG7qb3d4TDXmVdTiKtmLUsytVw9urSI0Pe8C
+         Fz5gLFvvwE+hQSHaewSOhBi87f94G7k28Lp5XvYPo/fWTN+7wXnzfaIlaZxzSK4GiH4P
+         x7Q8RE4DkGpvmDgvfhDLB6z/4UBFJRurFbw48p+k4QlrMClR7rPFb+YkDDCEb86H6ZaN
+         oOb98W3RXr5kWam/HPRBFQRwOx7MpSx0NYCYIkB5IEH/SF/nQ/SloPXzh0FmqkYtPlbk
+         TDLuuaKthbg7GHhG7IhsEsnNWUFbnyNmdW/3L8HpXo7A5DDYZyrIqwuiPdqYr4BCLIH4
+         6w6w==
+X-Gm-Message-State: AOAM530M3+i8GoGWbCR/yegIEZs2vkQIwlZ7xWKymVBqLsDMxPTW0dY7
+        t7Y3Tk5vuvzYHGfRDh4vfc119FE1nEm9BfrPJ5tGmuK8+A==
+X-Google-Smtp-Source: ABdhPJwGFZEkPJNsn0Sgrp+2WiN7fZ6TT9OgY1UO8GYoEss17p0XXiS+FVpYaoXpl5lyzsRztgLpLfPxZJBBx+9zDRE=
+X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr4802299otp.129.1601555502921;
+ Thu, 01 Oct 2020 05:31:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201001162237.633d6043@canb.auug.org.au> <CAJKOXPdyCYkSE1ie_t5G5X4JStU0zxxuoovLFnUxJP4aQbvM=g@mail.gmail.com>
+In-Reply-To: <CAJKOXPdyCYkSE1ie_t5G5X4JStU0zxxuoovLFnUxJP4aQbvM=g@mail.gmail.com>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Thu, 1 Oct 2020 07:31:31 -0500
+Message-ID: <CAL_JsqKKaStNsDxfJw0UOzU6rTyeeJtVkaE4-nJXKHA5A1pOLg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the devicetree tree with the mfd tree
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
-> > yes it shows the bottleneck but it is quite artificial. Read data is
-> > usually processed and/or written back and that changes the picture a
-> > lot.
-> Apologies for reviving an ancient thread (and apologies in advance for my lack
-> of knowledge on how mailing lists work), but I'd like to offer up another
-> reason why merging this might be a good idea.
-> 
-> From what I understand, zswap runs its compression on the same kswapd thread,
-> limiting it to a single thread for compression. Given enough processing power,
-> zswap can get great throughput using heavier compression algorithms like zstd,
-> but this is currently greatly limited by the lack of threading.
+On Thu, Oct 1, 2020 at 1:26 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Thu, 1 Oct 2020 at 08:22, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > Today's linux-next merge of the devicetree tree got a conflict in:
+> >
+> >   Documentation/devicetree/bindings/mfd/syscon.yaml
+> >
+> > between commit:
+> >
+> >   18394297562a ("dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bindings")
+> >   05027df1b94f ("dt-bindings: mfd: syscon: Document Exynos3 and Exynos5433 compatibles")
+> >
+> > from the mfd tree and commit:
+> >
+> >   35b096dd6353 ("dt-bindings: mfd: syscon: add some compatible strings for Hisilicon")
+> >
+> > from the devicetree tree.
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >
+> > --
+> > Cheers,
+> > Stephen Rothwell
+> >
+> > diff --cc Documentation/devicetree/bindings/mfd/syscon.yaml
+> > index 0f21943dea28,fc2e85004d36..000000000000
+> > --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> > @@@ -40,11 -40,10 +40,14 @@@ properties
+> >                 - allwinner,sun50i-a64-system-controller
+> >                 - microchip,sparx5-cpu-syscon
+> >                 - mstar,msc313-pmsleep
+> >  +              - samsung,exynos3-sysreg
+> >  +              - samsung,exynos4-sysreg
+> >  +              - samsung,exynos5-sysreg
+> >  +              - samsung,exynos5433-sysreg
+> > -
+> > +               - hisilicon,hi6220-sramctrl
+> > +               - hisilicon,pcie-sas-subctrl
+> > +               - hisilicon,peri-subctrl
+> > +               - hisilicon,dsa-subctrl
+>
+> Thanks Stephen, looks good.
+>
+> Zhei,
+> However the Huawei compatibles in the original patch were added not
+> alphabetically which messes the order and increases the possibility of
+> conflicts. It would be better if the entries were kept ordered.
 
-Isn't this a problem of the zswap implementation rather than general
-kswapd reclaim? Why zswap doesn't do the same as normal swap out in a
-context outside of the reclaim?
+I've fixed up the order.
 
-My recollection of the particular patch is dimm but I do remember it
-tried to add more kswapd threads which would just paper over the problem
-you are seein rather than solve it.
-
--- 
-Michal Hocko
-SUSE Labs
+Rob
