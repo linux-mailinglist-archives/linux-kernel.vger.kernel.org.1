@@ -2,116 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CB8280B42
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22056280B4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733215AbgJAXRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733131AbgJAXRH (ORCPT
+        id S1733207AbgJAXVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:21:50 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:57551 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727713AbgJAXT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:17:07 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74E7C0613E3
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 16:17:06 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g4so517640wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lsAtKdbbGwCFSZvYEK9LUdJCmMnTxvc7zkOvFkI0M00=;
-        b=lxdO82HCa9E2YycZTS2qqXAS5Yo7m1LuRhU1iYTtrP5Nj++fBqSsSDiYZ45GPj4Dxt
-         EJA0LQGIC2ufGci443gnZKEPY8iJ1Eu2V14sD3w0nhs2h5INIG5JqEWOsRBAXhxzREtm
-         CvzjX+Zdgar8Rs7Q1ck7I0FflIkRQTw6gEaRhlwvvIONK8FjbSdWaImTCBzUW/C5MtId
-         Cf7xqqyZB8aCT1kqlChy9Md18tOSTvheayZ0HAPXj0pXwLkX4NE3++loguZsouvAa5F8
-         Nasj54K54vpUyNYBPmR88ghkA1PBrbCRZqbrBcCO8k8sxT96Ky1rLxx5op5RP00Rqsnm
-         Qd3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lsAtKdbbGwCFSZvYEK9LUdJCmMnTxvc7zkOvFkI0M00=;
-        b=NwaOqS5XDBx7QsicU+7WUQFY52mwCGfLAFBIdMyrZU4Y98IqQLuDf4t7/LZYadMIsw
-         O7ZRA1YCNtHDarQjo64cfTQalGqp8Z2GowbYGF9TRcPM5rWwf4wV7XZE5r494zn2PGLV
-         PO4ftnCy3XWdrxXFc22MJbsUR0ZjzbOZQv4JiH7a06DXSdKhqA+7tMMKrnrHZCNkcsCY
-         VWerC190A+oInMVLfEb2QoHesTYrSas3CJLK0lSf8p/DLUQ3H+ntXmmuWZB53BV5S0+k
-         46XZZbDL3k4yq+0pr8Kt3paP8/GCP3KmlS0/Pxf/BSPb7lFwZIrOMXZriXqFmOTUl7vx
-         GbkQ==
-X-Gm-Message-State: AOAM53325V8xz7pp2DJHXpCP1eXMemc/rnsh1kKiw9kWfItB56eSDqnP
-        mCcLejUhpx9YnWQWcWfzMDWHnQ==
-X-Google-Smtp-Source: ABdhPJyce3UDx0zfoKvLMrvqG+BBLnRweOGD6TtIsyQPWDZyrmk5GImxMgnDwomAHbx/YW73FO0xzA==
-X-Received: by 2002:adf:de11:: with SMTP id b17mr11356928wrm.82.1601594224596;
-        Thu, 01 Oct 2020 16:17:04 -0700 (PDT)
-Received: from [192.168.1.7] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id v2sm2271598wme.19.2020.10.01.16.17.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 16:17:03 -0700 (PDT)
-Subject: Re: [PATCH v6 0/5] DVFS support for Venus
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-References: <1598970026-7199-1-git-send-email-rnayak@codeaurora.org>
- <34ed34bd-90fd-0e84-6020-c487d612ad2f@codeaurora.org>
- <aec87de2-500d-763c-df01-c0daec56b1e2@linaro.org>
- <CAD=FV=U=OCQpVL6VOVd4B6rW7HFC5S-wGauMAsOdvzwjLzKLuw@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <5c9ce5fe-f903-e1bf-8a6e-3714a023ee4f@linaro.org>
-Date:   Fri, 2 Oct 2020 02:17:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Oct 2020 19:19:59 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id EC59BC3C;
+        Thu,  1 Oct 2020 19:19:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 01 Oct 2020 19:19:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=Tlpv2xmpynLkoXih5aMS72+SXJr
+        nQuj1c9PDv1ck7SY=; b=kAnlT5uGdLP7ZHMd/rvKFoooU2LN0P/lAm1T9lGIii9
+        PlCZZtGPEs9KopNalPJ1js1pctZjbJG4+5VJZLd8xgcuUGD0lB/o+gjOI3PoE73A
+        nSqQ8Q2QI14dzUcuv4Hwp/f4mNOKSvcc9D+iZEFSmXXjz2Ju79+QQTCRoVI59MEK
+        7AyZnYv/jn1FG+eg/72B5jYTQXhk6l1OG6/5PFZQ3LB1lWqU/ngZesv0afOq9ZAF
+        CsTk9T9YJGSpNOkdPBuDpt28Y325ugCfTNwVuV9dqB78wiXr2JqhYumstJ+GmL6c
+        qvl6DNKFjMKNoYCK6El7NsIsEq+/eBUSSNnHpQTCIYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Tlpv2x
+        mpynLkoXih5aMS72+SXJrnQuj1c9PDv1ck7SY=; b=YrtEbGU8zOV9obkWiyW83q
+        2/eRqrLFuyhY7NReqTCUbwQ7+FodkpbVtxmew6Som6zYQUaIomR8EYreLV8eapAm
+        6eqGej3Y2c/lQ3mp+GOtMZaYOZh1dKAE9GAY91Mcpu/ZE3Gbn/trgk/Eg2ckRKQ3
+        u9WKLIwQqFn7UaWcFpr8q1hvzwhv3AdLOOGOJkWexZtKEP/WjJJV658CIVbvgMqr
+        YHVIMeNYI7n+WwIQSuwqsSnZutV3t1bKVzE2kH9biteKEDTnOQMzCTYYlON9leAk
+        kN4jD+zpv0yD+uFQanaCNkUrUsXTe9pf4CMFQrYR4OzXt//2ig8vm0kiE+XhTutQ
+        ==
+X-ME-Sender: <xms:_GN2Xzs6msGZQcTc-fvlIrR2UVr99TDXZStlH0IZnic86NoRJ9NPyA>
+    <xme:_GN2X0fpVR9i1T8XP7djV_kaeiQZhH1h01l6t-qwoijMuqjFD1aCLiPiwHtgtc9jX
+    kcZaodCQWqkpJQDJRc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeehgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghhohcu
+    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
+    htvghrnhepffekueefveeufefhhfelieffheeludeitdelkefhieejleeiffejvdelieeg
+    udeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpmhgrnhejrdhorhhgnecukfhppe
+    duvdekrddutdejrddvgedurdduieejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:_WN2X2x1_h2CgyVYMYJ__5ZQsJVg8mJwYeL-PB1IWWsQgXXX-SgZJw>
+    <xmx:_WN2XyNzSo_4tRUgtRsA5dgdIXms__i3HRiu9OJJXqkRXyJHA5g2zQ>
+    <xmx:_WN2Xz88rKAopdVohxCpJmT0eZAeVp1v0A4t1z4FgpG57OH2ZuwSRg>
+    <xmx:_mN2X3VXO3K-T_QMDwDJynXQdD85L8b36S_Vdf3u9tGGk1FuRsduqJHSVVlBJ2Rp>
+Received: from cisco (unknown [128.107.241.167])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A1E8A3280066;
+        Thu,  1 Oct 2020 19:19:22 -0400 (EDT)
+Date:   Thu, 1 Oct 2020 17:19:15 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+Message-ID: <20201001231915.GA16219@cisco>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=U=OCQpVL6VOVd4B6rW7HFC5S-wGauMAsOdvzwjLzKLuw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 01, 2020 at 02:06:10PM -0700, Sargun Dhillon wrote:
+> On Wed, Sep 30, 2020 at 4:07 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+> >
+> > Hi Tycho, Sargun (and all),
+> >
+> > I knew it would be a big ask, but below is kind of the manual page
+> > I was hoping you might write [1] for the seccomp user-space notification
+> > mechanism. Since you didn't (and because 5.9 adds various new pieces
+> > such as SECCOMP_ADDFD_FLAG_SETFD and SECCOMP_IOCTL_NOTIF_ADDFD
+> > that also will need documenting [2]), I did :-). But of course I may
+> > have made mistakes...
+> >
+> > I've shown the rendered version of the page below, and would love
+> > to receive review comments from you and others, and acks, etc.
+> >
+> > There are a few FIXMEs sprinkled into the page, including one
+> > that relates to what appears to me to be a misdesign (possibly
+> > fixable) in the operation of the SECCOMP_IOCTL_NOTIF_RECV
+> > operation. I would be especially interested in feedback on that
+> > FIXME, and also of course the other FIXMEs.
+> >
+> > The page includes an extensive (albeit slightly contrived)
+> > example program, and I would be happy also to receive comments
+> > on that program.
+> >
+> > The page source currently sits in a branch (along with the text
+> > that you sent me for the seccomp(2) page) at
+> > https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=seccomp_user_notif
+> >
+> > Thanks,
+> >
+> > Michael
+> >
+> > [1] https://lore.kernel.org/linux-man/2cea5fec-e73e-5749-18af-15c35a4bd23c@gmail.com/#t
+> > [2] Sargun, can you prepare something on SECCOMP_ADDFD_FLAG_SETFD
+> >     and SECCOMP_IOCTL_NOTIF_ADDFD to be added to this page?
+> >
+> > ====
+> >
+> > --
+> > Michael Kerrisk
+> > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> > Linux/UNIX System Programming Training: http://man7.org/training/
+> 
+> Should we consider the SECCOMP_GET_NOTIF_SIZES dance to be "deprecated" at
+> this point, given that the extensible ioctl mechanism works? If we add
+> new fields to the
+> seccomp datastructures, we would move them from fixed-size ioctls, to
+> variable sized
+> ioctls that encode the datastructure size / length?
+> 
+> -- This is mostly a question for Kees and Tycho.
 
-On 10/1/20 11:40 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Sep 16, 2020 at 12:26 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->> Hi,
->>
->> On 9/16/20 8:33 AM, Rajendra Nayak wrote:
->>>
->>> On 9/1/2020 7:50 PM, Rajendra Nayak wrote:
->>>> Rob, can you pick PATCH 1 since its already reviewed by you.
->>>> Stan, Patch 2 and 3 will need to be picked by you and they both have
->>>> your ACKs
->>>
->>> Rob/Stan, any plans to get the patches merged for 5.10?
->>
->> 2/5 and 3/5 are queued up for v5.10 through media tree.
-> 
-> Normally I'd expect device tree bindings (patch #1) to go through the
-> same tree as the driver changes.  Does the media tree work
-> differently?  If you're expecting Rob Herring to land the device tree
-> binding change, is he aware?
+It will tell you how big struct seccomp_data in the currently running
+kernel is, so it still seems useful/necessary to me, unless there's
+another way to figure that out.
 
-I sent pull request to Mauro with 1/5 included.
-Thanks for spotting.
+But I agree, I don't think the intent is to add anything else to
+struct seccomp_notif. (I don't know that it ever was.)
 
-> 
-> 
-> -Doug
-> 
-
--- 
-regards,
-Stan
+Tycho
