@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80A2803EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781792803F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732660AbgJAQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:27:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732026AbgJAQ13 (ORCPT
+        id S1732717AbgJAQ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730534AbgJAQ2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:27:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601569648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WpyfW6uB/uLX11MkTOm4JRQtX6e9GzHMT50ADwTIIHk=;
-        b=NYWL3ujdIOROWaip1KgAdRCMNP29E3ylff2ddZF3o7PGcbp9PRS/YRyFfsLb+80TTcz/t0
-        Li/AexIcUWPP6EsmY7gb1cDRModpuEwz99qUK4QBzgdMaYfvigjoFXrnmxkzCOXUOf88V3
-        uU/CS3Y5pRbEBG82+vAUWUfmYO7REV4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-m49T-GglN5m-W8mAaGTrZA-1; Thu, 01 Oct 2020 12:27:24 -0400
-X-MC-Unique: m49T-GglN5m-W8mAaGTrZA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 320951DE0E;
-        Thu,  1 Oct 2020 16:27:23 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.152])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B56BD60BF1;
-        Thu,  1 Oct 2020 16:27:21 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  1 Oct 2020 18:27:22 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 18:27:20 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RFC v2] kernel: decouple TASK_WORK TWA_SIGNAL handling
- from signals
-Message-ID: <20201001162719.GD13633@redhat.com>
-References: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
+        Thu, 1 Oct 2020 12:28:32 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85CEC0613D0;
+        Thu,  1 Oct 2020 09:28:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 1AD3C29D60D
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, weiyi.lu@mediatek.com,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        fparent@baylibre.com, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] arm64: dts: mediatek: Add smi_common node for MT8183
+Date:   Thu,  1 Oct 2020 18:28:23 +0200
+Message-Id: <20201001162823.3592352-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens,
+The SMI (Smart Multimedia Interface) Common is a bridge between the m4u
+(Multimedia Memory Management Unit) and the Multimedia HW. This block is
+needed to support different multimedia features, like display, video
+decode, and camera. Also is needed to control the power domains of such
+HW blocks.
 
-I'll read this version tomorrow, but:
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-On 10/01, Jens Axboe wrote:
->
->  static inline int signal_pending(struct task_struct *p)
->  {
-> -	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
-> +#ifdef TIF_TASKWORK
-> +	/*
-> +	 * TIF_TASKWORK isn't really a signal, but it requires the same
-> +	 * behavior of restarting the system call to force a kernel/user
-> +	 * transition.
-> +	 */
-> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING) ||
-> +			test_tsk_thread_flag(p, TIF_TASKWORK));
-> +#else
-> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
-> +#endif
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-This change alone is already very wrong.
-
-signal_pending(task) == T means that this task will do get_signal() as
-soon as it can, and this basically means you can't "divorce" SIGPENDING
-and TASKWORK.
-
-Simple example. Suppose we have a single-threaded task T.
-
-Someone does task_work_add(T, TWA_SIGNAL). This makes signal_pending()==T
-and this is what we need.
-
-Now suppose that another task sends a signal to T before T calls
-task_work_run() and clears TIF_TASKWORK. In this case SIGPENDING won't
-be set because signal_pending() is already set (see wants_signal), and
-this means that T won't notice this signal.
-
-Oleg.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index c2fd141afcf6..9082bc65e15e 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -916,6 +916,16 @@ mmsys: syscon@14000000 {
+ 			#clock-cells = <1>;
+ 		};
+ 
++		smi_common: smi@14019000 {
++			compatible = "mediatek,mt8183-smi-common", "syscon";
++			reg = <0 0x14019000 0 0x1000>;
++			clocks = <&mmsys CLK_MM_SMI_COMMON>,
++				 <&mmsys CLK_MM_SMI_COMMON>,
++				 <&mmsys CLK_MM_GALS_COMM0>,
++				 <&mmsys CLK_MM_GALS_COMM1>;
++			clock-names = "apb", "smi", "gals0", "gals1";
++		};
++
+ 		imgsys: syscon@15020000 {
+ 			compatible = "mediatek,mt8183-imgsys", "syscon";
+ 			reg = <0 0x15020000 0 0x1000>;
+-- 
+2.28.0
 
