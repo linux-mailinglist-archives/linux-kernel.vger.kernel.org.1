@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16C827F6B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE9727F6BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732032AbgJAA1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:27:43 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36634 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730703AbgJAA1n (ORCPT
+        id S1732219AbgJAA3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732187AbgJAA2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:27:43 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0910RdMO005973
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:27:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=nxkYWmR9uHeb56di1Os7YYMXD4UUaIBrdPMR7dN2WgA=;
- b=AmS+dOR1TpaKANUAoIm4Wc9MwmsJfF5gvMuKdWFB4vCb+85Xp4jkfvIHrPiwD0KdIQqx
- l40ODsxbzKut1oKdcsODB+Olbvg1fdL+Y0QHreifRfW3TqeNqDO4EnWYmNz8mVqo4sU4
- VQCt77fLDqwgcan/YDkNb7NN9qJ3ES9LgBI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 33w05n1hhj-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:27:42 -0700
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 30 Sep 2020 17:27:19 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id BFB48DE9665; Wed, 30 Sep 2020 17:27:17 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH v4 0/4] mm: allow mapping accounted kernel pages to userspace
-Date:   Wed, 30 Sep 2020 17:27:06 -0700
-Message-ID: <20201001002710.748166-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Wed, 30 Sep 2020 20:28:55 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8C7C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:28:54 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c62so3609416qke.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EHwLeNxlSJ3EARNPo85Hd8uD6D75QyiXLjXUxQ3hUGI=;
+        b=h2x0wFzInna9YMHm6P0E45wxhWqOBWVDm/5zBlqYzYT4O+zpDSeC9+usBXBspL62HD
+         Wfv7Ck+wGjMx4j8GuFzu9r3pWufd0nNC8QO9JoPCAXUIGkKOGKngUH46ySm8X9sKqB8a
+         816F5UVIAD0BKewbdsOW0CInM2tocN4lJ47jE0QBX3SYgFPMKuyV1vMWLYj4KvdohZ6r
+         UbfqiADYWHyGsRN8OTHzlsfdwVOdG1jq89HRP6bhewKbDdRqXQqdQpGmCwsLdyghD/gJ
+         OuXfQgly0EIrIvfxvBZytgDWZMavQ3L9n3Pq/itHqczsZpsu0mHS4Zvl2+PrEfZv9GV7
+         Y38A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EHwLeNxlSJ3EARNPo85Hd8uD6D75QyiXLjXUxQ3hUGI=;
+        b=kW1Fvysw47c+Wuo2qMYiVFFQNdxE3jDnZCeozcHMEi3m7kB5OvH3sYpumBpSAkUkCx
+         W/TQyFKZTzBFexSprFcgN39PaC2ZRUUWMaG/dAf9zsFRbhlb0gOjVux+ZjUQgRMB3JyL
+         gk0aHOt3YrE/mC5wvDR9Iim+LOVDAgF8Xf+Y0weN2lyU5smRQnYN6kPWEAuVEvrx3FVY
+         D6CPnYtqzwqmSuR+3OwymLgqycn+N+/bnhoccnGDS+NaH0nWflYibdL6xTqtXYEh/uGN
+         2IUhkm1+MQtiwV0OjbrdgKnoChj7coFDa7aVqqrStMWe8GeMHg2yearsGt/R7PB1MjX7
+         dFgQ==
+X-Gm-Message-State: AOAM531Mh9tm13EiQWadJAAvn+w5gdw8DhZ9TlewMq8kW5RKJGyq3uOK
+        hSHfCsNEkqoe5lHt4CuByRQE0A==
+X-Google-Smtp-Source: ABdhPJzLw800gfk1oonIT2sRo5VEKRKUttkzTSShle7j0kaa4WtY3ECvUdcXfd6YrGcyNPASiRd03Q==
+X-Received: by 2002:a37:952:: with SMTP id 79mr5223335qkj.57.1601512133978;
+        Wed, 30 Sep 2020 17:28:53 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id 205sm3850908qki.118.2020.09.30.17.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 17:28:53 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 3/3] drm/msm: bump up the uapi version
+Date:   Wed, 30 Sep 2020 20:27:06 -0400
+Message-Id: <20201001002709.21361-4-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20201001002709.21361-1-jonathan@marek.ca>
+References: <20201001002709.21361-1-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 mlxlogscore=543 impostorscore=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010010002
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently a non-slab kernel page which has been charged to a memory
-cgroup can't be mapped to userspace. The underlying reason is simple:
-PageKmemcg flag is defined as a page type (like buddy, offline, etc),
-so it takes a bit from a page->mapped counter. Pages with a type set
-can't be mapped to userspace.
+Increase the minor version to indicate the presence of new features.
 
-But in general the kmemcg flag has nothing to do with mapping to
-userspace. It only means that the page has been accounted by the page
-allocator, so it has to be properly uncharged on release.
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/msm_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Some bpf maps are mapping the vmalloc-based memory to userspace, and
-their memory can't be accounted because of this implementation detail.
-
-This patchset removes this limitation by moving the PageKmemcg flag
-into one of the free bits of the page->mem_cgroup pointer. Also it
-formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
-using new helpers, adds several checks and removes a couple of obsolete
-functions. As the result the code became more robust with fewer
-open-coded bits tricks.
-
-v4:
-  - more cosmetic changes, by Johannes
-
-v3:
-  - READ_ONCE() in page_memcg_rcu() and page_objcgs*(), by Johannes
-  - many cosmetic changes and renamings, by Johannes
-
-v2:
-  - fixed a bug in page_obj_cgroups_check()
-  - moved some definitions between patches, by Shakeel
-  - dropped the memcg flags mutual exclusion requirement, by Shakeel
-
-v1:
-  - added and fixed comments, by Shakeel
-  - added some VM_BUG_ON() checks
-  - fixed the debug output format of page->memcg_data
-
-
-Roman Gushchin (4):
-  mm: memcontrol: use helpers to access page's memcg data
-  mm: memcontrol/slab: use helpers to access slab page's memcg_data
-  mm: introduce page memcg flags
-  mm: convert page kmemcg type to a page memcg flag
-
- fs/buffer.c                      |   2 +-
- fs/iomap/buffered-io.c           |   2 +-
- include/linux/memcontrol.h       | 242 +++++++++++++++++++++++++++++--
- include/linux/mm.h               |  22 ---
- include/linux/mm_types.h         |   5 +-
- include/linux/page-flags.h       |  11 +-
- include/trace/events/writeback.h |   2 +-
- kernel/fork.c                    |   7 +-
- mm/debug.c                       |   4 +-
- mm/huge_memory.c                 |   4 +-
- mm/memcontrol.c                  | 139 ++++++++----------
- mm/page_alloc.c                  |   8 +-
- mm/page_io.c                     |   6 +-
- mm/slab.h                        |  38 ++---
- mm/workingset.c                  |   2 +-
- 15 files changed, 327 insertions(+), 167 deletions(-)
-
---=20
-2.26.2
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 305db1db1064..502aafe7d1e6 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -38,9 +38,10 @@
+  *           GEM object's debug name
+  * - 1.5.0 - Add SUBMITQUERY_QUERY ioctl
+  * - 1.6.0 - Syncobj support
++ * - 1.7.0 - MSM_BO_CACHED_COHERENT and DRM_IOCTL_MSM_GEM_SYNC_CACHE
+  */
+ #define MSM_VERSION_MAJOR	1
+-#define MSM_VERSION_MINOR	6
++#define MSM_VERSION_MINOR	7
+ #define MSM_VERSION_PATCHLEVEL	0
+ 
+ static const struct drm_mode_config_funcs mode_config_funcs = {
+-- 
+2.26.1
 
