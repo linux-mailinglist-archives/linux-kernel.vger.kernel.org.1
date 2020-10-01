@@ -2,133 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF1827FD7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE07127FD84
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731950AbgJAKfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:35:22 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:36157 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731884AbgJAKfU (ORCPT
+        id S1731980AbgJAKhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:37:10 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:42590 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731131AbgJAKhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:35:20 -0400
-Received: by mail-io1-f77.google.com with SMTP id h8so3241642ioa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:35:20 -0700 (PDT)
+        Thu, 1 Oct 2020 06:37:10 -0400
+Received: by mail-ej1-f67.google.com with SMTP id q13so7268419ejo.9;
+        Thu, 01 Oct 2020 03:37:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ltkj0N6myqpJ4BgPE+Vow+4qL+lksAMFkq6rWHx57yI=;
-        b=rpQRGVzyoNiXZ4L9h4LDizsqXGOB8RTcgQb1WrfNTl1r9LO+K5clSlp8xvxPojtjIX
-         0OAL1KY+yWr0xTUaEOJ7wVRPZYR6e5VztKoeBFvSbDQJ36C5Ejl1It+arDqx3KVSsMTN
-         5Wq5el9attQTPsA2pgzXHwXug/4DDpAcsp8Y8zkAEQkB5JqEwcvJtVbSK3kZ45oHg+Kr
-         5+E4Q433UlpFWIilIUraJJ7P5eFgflLcIQxFczuTixMh/BkB3Om4ve6R/0+H5CgzF+qj
-         o9EeYFokCQRDrIDkbx08DrwiyH6ZXcZU9jesDNg2f6dfaTXbZ18Bfgs7i0Krsl9K7uHQ
-         IUWA==
-X-Gm-Message-State: AOAM530S09WgsKvBZzBfeGAlsIBg50DmiTAJOAQDDzS+5XwINILs2sMv
-        vbHhkqugg6YxHmL3Jxhs4TyIRXp2SF8aDSUzg3GkZh+f3icP
-X-Google-Smtp-Source: ABdhPJzoQI+3mQ3SACSSbA0Yqw9+g8XDhnBtFtYwH3hh5bO2TSFL4+qMX+6klfgieN1BWaoT0MUNkxWURJ3qlTR4M/14CrnBjxAT
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XeATPLtiujNPtbWy8eOfYkG34Rmci3Rho1NFx2mqnxY=;
+        b=HkMiNzaoqHVA27xblu9Ooe6Z+pjjPl1sq0Dt56f1ohLkDvR+kZ+hpyfv94LLcqVoW3
+         jy/vRnmaYyMYbhpPPS+C94+Z8u6NffZFNma1tY4NPFuJw8uGtosrNc3w7csl25rRUxsL
+         6hr5fnlKe/RXn6xZNXHX3PX14kEFH1QU+1BKE+p8MHdKiiHaJ0HkQ97vBwtBY1ZainYb
+         VNOdUy6avQpacdHOBWGp4rbWgq9NFtJFSRYbV7pl6RvGQa9VSgU9mYA3rrk08hzEnc0A
+         zspRYBIGHQ+ylLGzo1CoAuSv6q7wXxQhX/O8VIgrSQcNfM+EGCHUFTTEqaIy0kzKghEH
+         zmtw==
+X-Gm-Message-State: AOAM532aI54vSv47EyqBhAkG/bOIPZ1u7HJ7ktE7w44QM9IWZYO1ZvT4
+        oSW+WSCWvtZtRULwfaPiNnw=
+X-Google-Smtp-Source: ABdhPJxL9pxjDS00Vg2RUHbokVDD46x2SLH6Tdd8HfjwLtwogfEvXijc454ys1aaalQGGOItX9p+hA==
+X-Received: by 2002:a17:906:b790:: with SMTP id dt16mr7064587ejb.33.1601548628154;
+        Thu, 01 Oct 2020 03:37:08 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id q1sm3985967ejy.37.2020.10.01.03.37.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Oct 2020 03:37:07 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 12:37:04 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 08/12] ARM: dts: imx6dl-pico: fix board compatibles
+Message-ID: <20201001103704.GA26287@kozik-lap>
+References: <20200930190143.27032-1-krzk@kernel.org>
+ <20200930190143.27032-9-krzk@kernel.org>
+ <0a0afea6-8cbb-3e89-5a4f-89660c942ca3@pengutronix.de>
+ <20201001073208.GA5208@kozik-lap>
+ <027fd826-6822-9e92-0c6c-2ebed63f4a07@pengutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a92:1503:: with SMTP id v3mr1859679ilk.56.1601548519812;
- Thu, 01 Oct 2020 03:35:19 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 03:35:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d327505b0999237@google.com>
-Subject: INFO: rcu detected stall in batadv_nc_worker (3)
-From:   syzbot <syzbot+69904c3b4a09e8fa2e1b@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <027fd826-6822-9e92-0c6c-2ebed63f4a07@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Oct 01, 2020 at 12:19:08PM +0200, Ahmad Fatoum wrote:
+> Hi,
+> 
+> On 10/1/20 9:32 AM, Krzysztof Kozlowski wrote:
+> > On Thu, Oct 01, 2020 at 09:22:03AM +0200, Ahmad Fatoum wrote:
+> >>> diff --git a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> >>> index d7403c5c4337..08fedcbcc91b 100644
+> >>> --- a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> >>> +++ b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> >>> @@ -13,5 +13,5 @@
+> >>>  
+> >>>  / {
+> >>>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Hobbit baseboard";
+> >>> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
+> >>> +	compatible = "technexion,imx6dl-pico-hobbit", "fsl,imx6dl";
+> >>>  };
+> > 
+> > The bindings, added in commit 53b61224ca40 ("dt-bindings: arm: fsl: Add
+> > TechNexion boards"), describe that these are the only valid compatibles.
+> > "technexion,imx6dl-pico" is not valid and would require changing the
+> > bindings, thus breaking compatibility which you want to avoid.> 
+> > The bindings, not what is present in DTS, is considered ABI.
+> 
+> The existing binding doesn't cover these boards then and needs to be
+> extended, no? How about following patch?
 
-syzbot found the following issue on:
+What do you mean it doesn't cover? It was added exactly to handle them:
++              - technexion,imx6q-pico-dwarf   # TechNexion i.MX6Q Pico-Dwarf
++              - technexion,imx6q-pico-hobbit  # TechNexion i.MX6Q Pico-Hobbit
++              - technexion,imx6q-pico-nymph   # TechNexion i.MX6Q Pico-Nymph
++              - technexion,imx6q-pico-pi      # TechNexion i.MX6Q Pico-Pi
 
-HEAD commit:    fffe3ae0 Merge tag 'for-linus-hmm' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e03342900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=226c7a97d80bec54
-dashboard link: https://syzkaller.appspot.com/bug?extid=69904c3b4a09e8fa2e1b
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> 
+> [I guess we need to keep the two-compatible list they were originally
+>  in for compatibility even if it's unused among upstream device trees?]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+You want to change both the binding (thus breaking the ABI) and update
+the DTS to reflect new ABI. Then why having a binding at all?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+69904c3b4a09e8fa2e1b@syzkaller.appspotmail.com
+I would assume that either binding is correct or DTS. You propose that
+both are wrong and both need changes... in such case this is clearly
+broken.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	0-...!: (1 GPs behind) idle=22e/1/0x4000000000000000 softirq=85361/85365 fqs=8 
-	(detected by 1, t=10502 jiffies, g=114061, q=1511)
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 194 Comm: kworker/u4:4 Not tainted 5.8.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_nc_worker
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/paravirt.h:765 [inline]
-RIP: 0010:arch_local_irq_save arch/x86/include/asm/paravirt.h:787 [inline]
-RIP: 0010:__raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-RIP: 0010:_raw_spin_lock_irqsave+0x3c/0xc0 kernel/locking/spinlock.c:159
-Code: 03 49 bf 00 00 00 00 00 fc ff df 42 80 3c 38 00 74 0c 48 c7 c7 b0 d5 4b 89 e8 a0 97 92 f9 48 83 3d 38 61 2a 01 00 74 79 9c 58 <0f> 1f 44 00 00 49 89 c6 48 c7 c0 c0 d5 4b 89 48 c1 e8 03 42 80 3c
-RSP: 0018:ffffc90000007d40 EFLAGS: 00000082
-RAX: 0000000000000082 RBX: ffffffff8ba182b8 RCX: 000000000000d6e0
-RDX: 0000000080010001 RSI: ffffffff894eec80 RDI: ffffffff8ba182b8
-RBP: ffffffff894eec80 R08: ffffffff816542f4 R09: fffff52000000fb0
-R10: fffff52000000fb0 R11: 0000000000000000 R12: dffffc0000000000
-R13: 1ffff11015d04ed2 R14: dffffc0000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ddaf0 CR3: 0000000090ca1000 CR4: 00000000001506f0
-DR0: 0000000020000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- <IRQ>
- debug_object_activate+0x62/0x5f0 lib/debugobjects.c:636
- debug_hrtimer_activate kernel/time/hrtimer.c:416 [inline]
- debug_activate kernel/time/hrtimer.c:476 [inline]
- enqueue_hrtimer kernel/time/hrtimer.c:965 [inline]
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x510/0x930 kernel/time/hrtimer.c:1584
- hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1646
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:770 [inline]
-RIP: 0010:lock_release+0x3c4/0x750 kernel/locking/lockdep.c:5026
-Code: 48 c1 e8 03 42 80 3c 28 00 74 0c 48 c7 c7 b8 d5 4b 89 e8 3f 0b 5a 00 48 83 3d df d4 f1 07 00 0f 84 5c 03 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 65 48 8b 04 25 28 00 00 00 48 3b 44 24 50 0f 85 40
-RSP: 0018:ffffc90001037bf8 EFLAGS: 00000282
-RAX: 1ffffffff1297ab7 RBX: 1ffff110151d2949 RCX: ffff8880a8e94180
-RDX: ffff8880a8e94a48 RSI: ffffffff894ea290 RDI: 0000000000000282
-RBP: 9644b5a36c253f0c R08: dffffc0000000000 R09: fffffbfff131b08e
-R10: fffffbfff131b08e R11: 0000000000000000 R12: 0000000000000282
-R13: dffffc0000000000 R14: dffffc0000000000 R15: ffff8880a8e94a4c
- rcu_read_unlock include/linux/rcupdate.h:688 [inline]
- batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:411 [inline]
- batadv_nc_worker+0x261/0x5c0 net/batman-adv/network-coding.c:718
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
- kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-rcu: rcu_preempt kthread starved for 10486 jiffies! g114061 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=1
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-rcu_preempt     I28608    10      2 0x00004000
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0x979/0xce0 kernel/sched/core.c:4527
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+Krzysztof
