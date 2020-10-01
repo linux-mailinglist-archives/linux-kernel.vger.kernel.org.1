@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F57627FAE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCDB27FAEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731465AbgJAH62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgJAH62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:58:28 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C096C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:58:27 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w3so3824169ljo.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I2RxhvY5NgmVXMLybhimHhtN1TXECVn5tQhd+CCxH3U=;
-        b=urcHuUAyChlfg7tAIApcPZY1ihayP5HbBNn8FxBa1EbAIPwKxXi1CpulUJCx0v0fcC
-         A6+zt2FWl1dwju9no8JrahYciPOnxelk9+PK4PZbJw5WxwWzYqYo27uO/IwGmDttgwBr
-         kC9jRWEkmvN5VbSJN09VG+fYBrVAVb+3qW6fcXRZIWG8l2XQZBwEPjpKpnbw9eB7V6wW
-         A2eg5WV6cxo6JaAdZrfF5/4S2/SU76V28aYVZtlLBTTnLu+Gsb0okQwMFIRdZByV7ld4
-         HYhVNA1te63uYSpQzKSmRBFq9QH1ksYnbgE6Oghf4tLgTDElmmpCPxZ0XRT+8EB6hg+Q
-         62Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I2RxhvY5NgmVXMLybhimHhtN1TXECVn5tQhd+CCxH3U=;
-        b=oDeoHx02gZe3hJ1VrUnkvwBTiLG8EScfYpUe7nGfVyhmRwwZ/du01f2PlnmpdMmZw7
-         VVYMiZegHiQV9ZqP2zLQ3976WmWvmFv7BwbF+MYW+UOTx6Hz/9GS0MAOxaxq5FDXTRzp
-         nyMpmqkzKPUgZ66gQScBaFoPHO9iQzD7L9Ukp4WyTnK1QczyPQmRMvE7Z5u38aHvkK+Z
-         /qAEuqucrO2XJCkSeknS7LKN3NRH8wbMYEZmwlaWT4bze2eUumdjkEJz5Lw9TDL8UHfx
-         B22hBuNlQrm7db9hXXPYb29SXDvhwMyXTiyQK57mSgt+yineoDMKkeYq3vJeozuCGZER
-         NR5A==
-X-Gm-Message-State: AOAM532RXMDpIxb1lyIezvXgsC+xSqTvmTGcH/EOxFSsIape4e16cl6a
-        fL3gdHFEGgCjUMa55jkVD/Zhc9nOd0uML73Pg0UwbA==
-X-Google-Smtp-Source: ABdhPJxjRqz2yUHvCNFY6FBrV0pvSdM24cdpdLikgyWwKGbflyn3GYJWUChczn+03SJSBKMtngr1He4kzybB8WtYKfc=
-X-Received: by 2002:a2e:a306:: with SMTP id l6mr2100470lje.286.1601539105709;
- Thu, 01 Oct 2020 00:58:25 -0700 (PDT)
+        id S1731504AbgJAH6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:58:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49486 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbgJAH6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:58:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601539132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cFOZ4vohVI5xfvSkGqOUdfbw08X7CG9XNwmsC0KbS2I=;
+        b=X7dmrdhhiV2cJX4C/yH8sCDHnt/O/eqUFLfBYBW1fA0VKwECHytlfH1nc3hNTPDZbP81WK
+        HA5dejsOG1lL1z3vSh3yhv4IdLaYFaQYFSFoAHvQRMeg0mL8BC6RfJbkrd4PlaIfdYjmOO
+        NWw4x9NKUCXUeMFfTbr0o9qOGoCCapY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B67F3ABC1;
+        Thu,  1 Oct 2020 07:58:52 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 09:58:52 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20201001075852.GD17717@alley>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
+ <20200923151129.GC6442@alley>
+ <aef3626f-56a0-9040-fc0e-224ada032d02@prevas.dk>
+ <2c95c16b-03e7-eadd-d3af-bedc6b0b471e@prevas.dk>
+ <20200925082822.GL29288@alley>
+ <4e36f308-a435-f9c1-2d4f-362e797c764e@prevas.dk>
+ <20200930093552.3684aee1@gandalf.local.home>
+ <de1b6e44-bbd7-6264-d354-4f9d76bd2870@prevas.dk>
 MIME-Version: 1.0
-References: <20200821075452.1543610-1-enric.balletbo@collabora.com>
- <99821f85-9a38-7591-f982-872603b6ce8a@collabora.com> <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
- <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com> <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
-In-Reply-To: <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 1 Oct 2020 09:58:14 +0200
-Message-ID: <CACRpkdYga6XttmMnQ6r--_7wtfebirY5Z58D6xhBkRRDrf98ZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: mediatek: Free eint data on failure
-To:     Sean Wang <sean.wang@kernel.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>, hsinyi@chromium.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <de1b6e44-bbd7-6264-d354-4f9d76bd2870@prevas.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 6:33 PM Sean Wang <sean.wang@kernel.org> wrote:
-> On Wed, Sep 30, 2020 at 1:47 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > On Sun, Sep 27, 2020 at 7:57 PM Sean Wang <sean.wang@kernel.org> wrote:
-> >
-> > > v2 seems the same with v1 or I was missing something.
-> > >
-> > > I just thought we call devm_ioremap_release to explicitly to free
-> > > resource when a certain failure occurs after
-> > > devm_ioremap_resource?
-> >
-> > What is the semantics around mtk_build_eint()?
-> >
->
-> mtk_build_eint is to add external interrupt function to the
-> corresponding bound pins.
-> mtk pinctrl driver still can work (than means probe() successfully) to
-> keep pinctrl functional even with there is an error in mtk_build_eint.
-> So the patch is used to explicitly free those data on failure in
-> mtk_build_eint to let unused data is being free:ed immediately.
+On Thu 2020-10-01 09:15:39, Rasmus Villemoes wrote:
+> On 30/09/2020 15.35, Steven Rostedt wrote:
+> > On Wed, 30 Sep 2020 10:06:24 +0200
+> > Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
+> > 
+> >> True. But remember that printk is called from _everywhere_, with all
+> >> sorts of locks held and/or preemption disabled or whatnot, and every
+> >> cycle spent in printk makes those windows wider. Doubling the cost of
+> >> every single printk by unconditionally doing vsnprintf() twice is a bad
+> >> idea.
+> > 
+> > But the console output is usually magnitudes more expensive than the
+> > vsnprintf(), would doing it twice really make a difference?
+> 
+> AFAIU, not every message gets printed to the console directly - syslog(2):
+> 
+>    /proc/sys/kernel/printk
+>        /proc/sys/kernel/printk is a writable file containing four
+> integer val‐
+>        ues that influence kernel printk() behavior when  printing  or
+> logging
+>        error messages.  The four values are:
+> 
+>        console_loglevel
+>               Only  messages  with  a  log level lower than this value
+> will be
+>               printed to the console.  The default value  for  this
+> field  is
+>               DEFAULT_CONSOLE_LOGLEVEL  (7),  but it is set to 4 if the
+> kernel
+>               command line contains the word "quiet",
+> 
+> So the normal state of things is that you don't pay the cost of printing
+> to the console for all the pr_debug (ok, they may be compiled out or
+> run-time disabled depending on DYNAMIC_DEBUG etc.), nor info, notice,
+> warn. For those messages that are not directly written to the console,
+> the vsnprintf() is a large part of the cost (not exactly half, of
+> course, so doubling is an exaggeration, but whether it's 70% or 100%
+> doesn't really matter).
+> 
+> I'm not at all concerned about pr_err and above becoming more expensive,
+> they are rare. But random drivers are filled with random pr_info in
+> random contexts - just a small selection from dmesg -x shows these
+> really important things:
+> 
+> kern  :info  : [ 4631.338105] ax88179_178a 3-13.2.3.3:1.0 eth0: ax88179
+> - Link status is: 1
+> kern  :info  : [ 4642.218100] ax88179_178a 3-13.2.3.3:1.0 eth0: ax88179
+> - Link status is: 0
+> kern  :info  : [ 4643.882038] ax88179_178a 3-13.2.3.3:1.0 eth0: ax88179
+> - Link status is: 1
+> kern  :info  : [ 4667.562011] ax88179_178a 3-13.2.3.3:1.0 eth0: ax88179
+> - Link status is: 0
+> ...
+> kern  :info  : [ 9149.215456] [drm] ring test on 1 succeeded in 1 usecs
+> kern  :info  : [ 9149.215459] [drm] ring test on 2 succeeded in 1 usecs
+> kern  :info  : [ 9149.215466] [drm] ring test on 3 succeeded in 4 usecs
+> 
+> and if I'm reading the code correctly, the former is even an example of
+> something that happens in irq context.
 
-OK then we need a v3 of this that will call *release
-explicitly, indeed.
+As I already wrote. We might optimize this when it causes real
+life problems. And trace_printk() is a better choice for performance
+sensitive debugging.
 
-Thanks Sean!
-Linus Walleij
+Best Regards,
+Petr
