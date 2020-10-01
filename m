@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82557280211
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0DA28020F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732549AbgJAPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:03:23 -0400
-Received: from mail-eopbgr70122.outbound.protection.outlook.com ([40.107.7.122]:42382
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732096AbgJAPDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:03:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mlqx1RpoFnHWLV/hu2vC0BWGjGBv3jLOmqB7Hz6vn2XJvup283ftd3StIdIbk4SGDmNOU1ZMeIy5G/AFlesV+wRES5YohYCEUMwEv3FsVoCKMdcEQ4qjD3rsSLF9uxUCw0/zoqwib2qy5zcXBq6ZpnTZCO0TT23WLVTYoWH2qcj7fbbCwep3fa6BHaqGSQr2agYJuA9KOtnrlf4D72Iaq+D5JY5Cxsw+pft68pFOb4LgiWcf+icNvDc7FcE9qbchsKPLWajgvlhcXNuz+jUJBvejlBQ/Px4lF0/hlcTHQwPY+XkTqMGaWShF8voITwYVPXYl5QrQ/owQSN4bSVF/IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fgVniPFRvWDCbZgvFmKmId9NROEzdjoGdEL7ClH+5cw=;
- b=oMh8Zp1lEAIiG9SHaadS7vWZwDtDSzNe8eGovgn7I/drhshcCuC4H+ywJgplKhVBBoNnWLXCnnBqjXENgV2u/MK1d6ncYiAHHiDKDbRwdMNob7z/NaNNSm8JryM2keXwdJ96xngtvUguTVsLT1GjCa0pVOK1tFA1tNh0TdoGZYQGcvGgd8ncba4ZKWurKjVpqmI1kaT3uGKSSbN+GE6w/JuKXPLxc7393NSp3j4YD/gDYNd4wXsgxuBKN6mMDlkiQBJUmStiUqk6NaFgYEwgNPDZ94LX7BCGN2YEQs+U2thFG/r56LgJSqDJXU5PpZ0otdzyG8OATFyHmY3iUx621w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fgVniPFRvWDCbZgvFmKmId9NROEzdjoGdEL7ClH+5cw=;
- b=pCT7vQ7Ow7lp2v7YcqVkMUMYS+VSjgpW0nA7ImZo7ladKDDhjR0Iw4PYVO4O3aZaj7XEJjgj21CHYTk6O6LHEb76d4mXkITZRDdLU69LXu5FesTd2v55QmDVXrwpIq6DVeWUHpkRruSAFnarjuA/Myx3seIsVsXPZngvvIA3+lY=
-Authentication-Results: kemnade.info; dkim=none (message not signed)
- header.d=none;kemnade.info; dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM0PR10MB3105.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:129::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34; Thu, 1 Oct
- 2020 15:03:15 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::852:b8d:8b04:d2f5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::852:b8d:8b04:d2f5%6]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 15:03:15 +0000
-From:   Schrempf Frieder <frieder.schrempf@kontron.de>
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Rob Herring <robh@kernel.org>,
+        id S1732483AbgJAPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732299AbgJAPDS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:03:18 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3F3C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:03:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z4so6203378wrr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qeO+HST8Alt8TTHfAd+E1LMm1PbcT+IkG0owx3Xzuxk=;
+        b=l4+iFFCo1+l+g+ES34C57Um09yEXm62T8GVoyj/mbmgZC4sT3AtzcOdB3TG5VDMcwj
+         47ebk2RTFRJ/ELF6NF/Oyoz1m1ar+X0P1zvMEdx6IUqVNP+SzgbNPgw9xzJpIC0NHwXa
+         U+Vfv1l3Itd4k5x9aOQatCFzKDID2eXx7K8J1S3H0IWKlO37wz/hvxbdQihPJHuMq5OH
+         iqWT6ruU8SENR2NZCqf2MEX80Gq+zMcS7rqCY1vrF1WeYXpjZyCyPB2V25flvHGRrMPF
+         o9AKA3zhYSYamY7UmZL2V2O/OIW5IKG3DS+y6mDKbQveaN0HPLC+7C2xeRxlU5uWDoko
+         h+zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qeO+HST8Alt8TTHfAd+E1LMm1PbcT+IkG0owx3Xzuxk=;
+        b=Le8dc8HmL6JR4lpGWE3/iLoaAYJxMw2md3ZLPzqhe5DEeyjeu1MuKGRNSnorzsvWE1
+         6TkZJ+Xy94XLcHDuoj5rUft+Vn3dtv3eXXTb10RbE82ihSDmPxr3YKss8SJ6o7jfpa0o
+         hUITfrgKNLwfE2JLge8a8rBrIZjLcYw8GfRxQ9N5P2yv9+AdHM4ttoAli8Dq1hDiV67b
+         DXw1vFKnDZZQT9C0/iioIuGnX7JyzKjIsIh8HAqmYZZ/Y3cBxA6PzuRPHLUdxocEfhld
+         ZD9tgpe2PXF0KQkv1Mq2OH8XDK4O1BzSJc7X74KGEXO8uvAls7hqZr5QPEeIYt/kpMKc
+         Yk6w==
+X-Gm-Message-State: AOAM533mSaZ2BZ+4zf1qZPxgKxUUky5mEBiN71q2JLp48hZ68TNbmqjQ
+        EfFNa1W5Q0Dk8wZUNTCVspSmCk4aoZzsNg==
+X-Google-Smtp-Source: ABdhPJzJ7WZpM28O8Xbb6cYw/iSZ7lyPFeKcgOzsuymgVAbOd4Ax6EQJV5JEn4gJ4Z4OIE739jTlkw==
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr10141733wrp.390.1601564596429;
+        Thu, 01 Oct 2020 08:03:16 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id d19sm379727wmd.0.2020.10.01.08.03.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 08:03:14 -0700 (PDT)
+Subject: Re: [PATCH v2] soc: mediatek: Check if power domains can be powered
+ on at boot time
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Daniel Kurtz <djkurtz@chromium.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
-        <sebastien.szymanski@armadeus.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] dt-bindings: arm: fsl: Add Kontron i.MX8M Mini SoMs and boards
-Date:   Thu,  1 Oct 2020 17:01:57 +0200
-Message-Id: <20201001150217.31301-2-frieder.schrempf@kontron.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001150217.31301-1-frieder.schrempf@kontron.de>
-References: <20201001150217.31301-1-frieder.schrempf@kontron.de>
-Content-Type: text/plain
-X-Originating-IP: [89.247.42.197]
-X-ClientProxiedBy: AM6P195CA0023.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:209:81::36) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20200928113107.v2.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <fe2f0eeb-ec21-5cf5-7cae-c17855bf0297@gmail.com>
+Date:   Thu, 1 Oct 2020 17:03:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fs-work.localdomain (89.247.42.197) by AM6P195CA0023.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:81::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Thu, 1 Oct 2020 15:03:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 276b08d7-0344-47ed-81b9-08d8661b1f82
-X-MS-TrafficTypeDiagnostic: AM0PR10MB3105:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR10MB31059D49E913BABF06600D9CE9300@AM0PR10MB3105.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pvAVl0cIZWfdAff61dg04BEYqBNjc0d4506PNqI+j/eVKBCiY7pfHlDcW+KOROcduPGdpy+uLfADkpGYpwMUBt6xmKT/yFj9olRertj9XbxqkpGgUFAkQ5cwTUkOlhkLGXVqo9KoD06aHMOGm2vi224qk/PHw7aP0MjXTH30EJbEjSpl8U1K7MNHxane0762LITZcIDCsfaIeo1E2MYVd96sWgfBDuddyBiWDOyKIUr3GeiWW8Rh26zDTY6JxORubeAXW4uu0ltYdvJQ1eGODf5Xh1fGF42YECPNvtU5oyP0H6lzuoWz4Ef2bDQnN7zIBBjORee8hSCgyvVLanfpT8CeJiNIFHl2A6AAOE7+IJTnj68PA7yJDuOoXDLEWpYY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(6029001)(4636009)(136003)(396003)(39850400004)(376002)(346002)(366004)(2906002)(110136005)(8936002)(316002)(186003)(1076003)(26005)(956004)(16526019)(7416002)(6512007)(2616005)(6486002)(52116002)(8676002)(36756003)(4326008)(66946007)(66556008)(66476007)(6506007)(5660300002)(478600001)(6666004)(86362001)(921003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: ykSB2tKBq68i+zCUSO9JaPhsTx3/J77+Lc/kbVyUyd7ndK/jNF4KUVxvGeK+eiTKRqIEYOpMdI3ssqkWJRf4RWOJbBkSMzNVwCOukd+ynz5xow4IewLfB8IHhK7XmOzCF0mxAEFzKK+SgZ3WB+yh2OyfSvJvRTiRqGF9pbYywYQcfeJP3Fo/la2uDX6jTctKM6r88UTC15eOKzPmy+pzH/Ii2XVBGPgJVS2cxrPSBVYMmMlk5HmUuAeo8x4OKKdTshUeDhEsb6iLUQ0O+7FltW5l3ta46gSWBbSqosHADILlZ+qHgaIk5+h8FNHJ+ye4IM0mLaJIm2H1yXTM7SDgvmrdIf9Sgcct9e9aJgTX+oRL5WtWLTxd5IAvTyErNJdCceyAwLP1taoUzWCgKMfT246OIIX0Xd3jU0ETQV4zLtlVLoNkxSpkiCVjAOkIz4QZ7NKzuKzjyuWWVEJil36eWDCeButAVNKfo2728B1IybZAuF6yYSU1LRNqyKYaSDmzOpx74S8uOe+jtZjao5zTJB/ny5DCEQGJ23zOw6xF2S4v8Afmc2NOV25wjxLRIGKksFJdgH6k6QBQFJqd1nDITEfD/Gdjzo5RHbSpdd63ZMj0pCNHkBt8od5xiq9wL4xL5XZ9uxM6pWsY6hrHxT60LA==
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 276b08d7-0344-47ed-81b9-08d8661b1f82
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 15:03:15.4160
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dARiymzHfjUXne7zLTuXMLBZ5JxZmFM4Zz4J6+B/7tRnXrgj2Q/n7bsG2ri40+kjVzuFxebEJdNabRfGNFSxxNRWVonUI8rVOn8y3b5/pUU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3105
+In-Reply-To: <20200928113107.v2.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Add entries for the SoMs and boards based on i.MX8MM from Kontron
-Electronics GmbH.
 
-Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes for v4:
-* Rebase on next-20201001
-* Enhance SoM and board description
+On 28/09/2020 05:31, Nicolas Boichat wrote:
+> In the error case, where a power domain cannot be powered on
+> successfully at boot time (in mtk_register_power_domains),
+> pm_genpd_init would still be called with is_off=false, and the
+> system would later try to disable the power domain again, triggering
+> warnings as disabled clocks are disabled again (and other potential
+> issues).
+> 
+> Also print a warning splat in that case, as this should never
+> happen.
+> 
+> Fixes: c84e358718a66f7 ("soc: Mediatek: Add SCPSYS power domain driver")
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 
-Changes for v3:
-* None
+Applied to v5.10-tmp/soc which will be v5.10-next/soc as soon as v5.10-rc1 gets 
+published.
 
-Changes for v2:
-* Merge the SoMs and baseboards N8010 and N8011 into a single
-  configuration (N801X).
-* Add Rob's R-b tag
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+Nicolas can you please make sure that similar logic will be part of the series 
+Enric is working on?
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 1ca9dfa8ce9a..6daf4c046785 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -405,9 +405,16 @@ properties:
-               - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
-               - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
-               - fsl,imx8mm-evk            # i.MX8MM EVK Board
-+              - kontron,imx8mm-n801x-som  # i.MX8MM Kontron SL (N801X) SOM
-               - variscite,var-som-mx8mm   # i.MX8MM Variscite VAR-SOM-MX8MM module
-           - const: fsl,imx8mm
- 
-+      - description: Kontron BL i.MX8MM (N801X S) Board
-+        items:
-+          - const: kontron,imx8mm-n801x-s
-+          - const: kontron,imx8mm-n801x-som
-+          - const: fsl,imx8mm
-+
-       - description: Variscite VAR-SOM-MX8MM based boards
-         items:
-           - const: variscite,var-som-mx8mm-symphony
--- 
-2.17.1
+Thanks a lot.
+Matthias
 
+> ---
+> 
+> Changes in v2:
+>   - Add WARN_ON if the domain can't be powered on, to make it more
+>     obvious that this should not happen (there is already an error
+>     message).
+> 
+>   drivers/soc/mediatek/mtk-scpsys.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
+> index f669d3754627..ca75b14931ec 100644
+> --- a/drivers/soc/mediatek/mtk-scpsys.c
+> +++ b/drivers/soc/mediatek/mtk-scpsys.c
+> @@ -524,6 +524,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+>   	for (i = 0; i < num; i++) {
+>   		struct scp_domain *scpd = &scp->domains[i];
+>   		struct generic_pm_domain *genpd = &scpd->genpd;
+> +		bool on;
+>   
+>   		/*
+>   		 * Initially turn on all domains to make the domains usable
+> @@ -531,9 +532,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+>   		 * software.  The unused domains will be switched off during
+>   		 * late_init time.
+>   		 */
+> -		genpd->power_on(genpd);
+> +		on = !WARN_ON(genpd->power_on(genpd) < 0);
+>   
+> -		pm_genpd_init(genpd, NULL, false);
+> +		pm_genpd_init(genpd, NULL, !on);
+>   	}
+>   
+>   	/*
+> 
