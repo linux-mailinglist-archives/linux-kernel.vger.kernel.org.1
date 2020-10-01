@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76482804F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE972804F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732882AbgJARRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:17:06 -0400
-Received: from mga01.intel.com ([192.55.52.88]:62435 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgJARRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:17:05 -0400
-IronPort-SDR: 3U9/b3DvuAGqiaQMQMk9u7v+y2W9Og0vQzkAkWCI+erwzE5b6kPkbBqp2njil281XjRfhq5Ddc
- emQyp91yVevA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180940018"
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="180940018"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:17:03 -0700
-IronPort-SDR: Qy9H7dXPMlyX8yx4rYKPmXJHd5qx2SPvXIFOuT2LtXocqtLi77HqI0gWkomHGvMFJhLIJaSdXP
- mu0UKvndlfqw==
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="346154578"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:17:02 -0700
-Date:   Thu, 1 Oct 2020 10:17:01 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 15/24] x86/sgx: Enable provisioning for remote
- attestation
-Message-ID: <20201001171701.GF7474@linux.intel.com>
-References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
- <20200915110522.893152-16-jarkko.sakkinen@linux.intel.com>
+        id S1732835AbgJARRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732274AbgJARRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:17:48 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C27C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:17:47 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so6896496ilt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=26TNgPJnQ28vGxnL6uAXIiw6BivGl+AQcqdGkLAETno=;
+        b=Vn/KaplLHlB4hObRWV9LvekIYidf0QcYnVlNVg165AcT/4WoGDV47plesoLDvcxZju
+         02rPULrU2OoBO7/CrgujuBox0GYnRkjuqIxRA9keN0gckfGnFYwXsQhCbrdr1D99ukwU
+         sdC0uQJnfKK9lnlPuHb9HvYUcoyltaYEUDJa76TAal4RyGmmfbNhabg7mSlh3CqtEfGq
+         n8+j32SS6J3qi2yHxHISZPjnbZfmka7IZVDz7NYzcZAyLsP+jLptwDuNVk5fx6qsQfTr
+         8KqzGBIln2TNqtViWTVzhubd7TGHRyrRq5Gzy8870cSXzuJlFCkvI0iy7IeqR5J7G2Sn
+         QYTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=26TNgPJnQ28vGxnL6uAXIiw6BivGl+AQcqdGkLAETno=;
+        b=FbGWiynqgAaLY/MUD0YiKUbq6Xzz3ermq4AJxp7dFfqLYX+HYqpPwpEIZW4coFd86P
+         p1eXJeDz6OTcXhd0aoJA3zOuhvMJPNbWuDJMsN3zQZkV+vuLa3OQ4q3zPfdck80kYGz1
+         ML1LpCiY+57Nrk7PxfIUfb8KNSqae+/dfmY5gkoIfuIW1Sr4gG9BPKkhKlThTmQeL0Z/
+         93dlyoQY9iyF9u5OPFEybrRtiDw9qWmV5jWOXvcokq2hsrSjPAbMUJbT04O9JWhUoSQJ
+         LAMfrKoRXlqGY/QI61B0YKF4WhI00lad3Iz31ZHsNHd2on31ylm0qHR4LnEY6b6GlCzm
+         ocow==
+X-Gm-Message-State: AOAM530rDSpkuylwxpCZ4tgQogCJX+tdyBtISLWB7yINik3JUQBmeHh/
+        LmG5yxkoh/rOyhvIvMvvQMdvFQ==
+X-Google-Smtp-Source: ABdhPJx/BXfOX4dlbKL95gzD9sJfq8A2/6KT9dlmPRPH4D+xkRP5g1bqBRSViRs06RdSujRYHIIKJg==
+X-Received: by 2002:a05:6e02:1411:: with SMTP id n17mr3303844ilo.211.1601572666281;
+        Thu, 01 Oct 2020 10:17:46 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id d8sm3229266ilu.2.2020.10.01.10.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 10:17:45 -0700 (PDT)
+Subject: Re: [PATCH RFC] kernel: decouple TASK_WORK TWA_SIGNAL handling from
+ signals
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <0b5336a7-c975-a8f8-e988-e983e2340d99@kernel.dk>
+ <875z7uezys.fsf@nanos.tec.linutronix.de>
+ <3eafe8ec-7d31-bd46-8641-2d26aca5420d@kernel.dk>
+ <87362yeyku.fsf@nanos.tec.linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8a98b921-c1c6-c1b7-e0ff-e2179badda55@kernel.dk>
+Date:   Thu, 1 Oct 2020 11:17:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915110522.893152-16-jarkko.sakkinen@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87362yeyku.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:05:13PM +0300, Jarkko Sakkinen wrote:
-> +/**
-> + * sgx_ioc_enclave_set_attribute - handler for %SGX_IOC_ENCLAVE_PROVISION
-> + * @filep:	open file to /dev/sgx
-> + * @arg:	userspace pointer to a struct sgx_enclave_provision instance
-> + *
-> + * Mark the enclave as being allowed to access a restricted attribute bit.
-> + * The requested attribute is specified via the attribute_fd field in the
-> + * provided struct sgx_enclave_provision.  The attribute_fd must be a
-> + * handle to an SGX attribute file, e.g. "/dev/sgx/provision".
-> + *
-> + * Failure to explicitly request access to a restricted attribute will cause
-> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
-> + * is access to the PROVISION_KEY.
-> + *
-> + * Note, access to the EINITTOKEN_KEY is disallowed entirely.
-> + *
-> + * Return: 0 on success, -errno otherwise
-> + */
-> +static long sgx_ioc_enclave_provision(struct sgx_encl *encl,
-> +					  void __user *arg)
-> +{
-> +	struct sgx_enclave_provision params;
-> +	struct file *attribute_file;
-> +	int ret;
-> +
-> +	if (copy_from_user(&params, arg, sizeof(params)))
-> +		return -EFAULT;
-> +
-> +	attribute_file = fget(params.attribute_fd);
-> +	if (!attribute_file)
-> +		return -EINVAL;
-> +
-> +	if (attribute_file->f_op != &sgx_provision_fops) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	encl->attributes |= SGX_ATTR_PROVISIONKEY;
+On 10/1/20 9:49 AM, Thomas Gleixner wrote:
+>>> This is really a hack. TWA_SIGNAL is a misnomer with the new
+>>> functionality and combined with the above
+>>>
+>>>          if (!ret && !notify)
+>>>   		wake_up_process(tsk);
+>>>
+>>> there is not really a big difference between TWA_RESUME and TWA_SIGNAL
+>>> anymore. Just the delivery mode and the syscall restart magic.
+>>
+>> Agree, maybe it'd make more sense to rename TWA_SIGNAL to TWA_RESTART or
+>> something like that. The only user of this is io_uring, so it's not like
+>> it's a lot of churn to do so.
+> 
+> I really hate that extra TIF flag just for this. We have way too many
+> already and there is work in progress already to address that. I told
+> other people already that new TIF flags are not going to happen unless
+> the mess is cleaned up. There is work in progress to do so.
 
-This is wrong, it needs to be
+I'm open to alternatives, but it does seem like the best match for
+something like this...
 
-	encl->attributes_mask |= SGX_ATTR_PROVISION;
+>>> This needs a lot more thoughts.
+>>
+>> Definitely, which is why I'm posting it as an RFC. It fixes a real
+>> performance regression, and there's no reliable way to use TWA_RESUME
+>> that I can tell.
+> 
+> It's not a performance regression simply because the stuff you had in
+> the first place which had more performance was broken. We are not
+> measuring broken vs. correct, really.
+> 
+> You are looking for a way to make stuff perform better and that's
+> something totally different and does not need to be rushed. Especially
+> rushing stuff into sensible areas like the entry code is not going to
+> happen just because you screwed up your initial design.
 
-else sgx_encl_init() will fail this check
+Nobody is rushing anything - I noticed that I messed up the syscall
+restart for task_work && signal, so I fixed it. I'm quite happy taking
+my time getting this done the right way.
 
-	if (encl->attributes & ~encl->attributes_mask)
-		return -EACCES;
+>> What kind of restart behavior do we need? Before this change, everytime
+>> _TIF_SIGPENDING is set and we don't deliver a signal in the loop, we go
+>> through the syscall restart code. After this change, we only do so at
+>> the end. I'm assuming that's your objection?
+> 
+> No. That should work by some definition of work, but doing a restart
+> while delivering a signal cannot work at all.
 
-This obviously needs a selftest...
+Right, this is what v2 fixes, and why I sent it out.
 
-> +	ret = 0;
-> +
-> +out:
-> +	fput(attribute_file);
-> +	return ret;
-> +}
+>> For _TIF_TASKWORK, we'll always want to restat the system call, if we
+>> were currently doing one. For signals, only if we didn't deliver a
+>> signal. So we'll want to retain the restart inside signal delivery?
+> 
+> No. This needs more thoughts about how restart handling is supposed to
+> work in the bigger picture and I'm not going to look at new versions of
+> this which are rushed out every half an hour unless there is a proper
+> analysis of how all this should play together in a way which does not
+> make an utter mess of everything.
+
+Again, this is an RFC, I'm soliciting comments on how we can make this
+work. I'd appreciate any hints and help in that regard of course.
+
+Thanks,
+-- 
+Jens Axboe
+
