@@ -2,249 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4026127FA3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D1D27FA3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731227AbgJAH0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAH0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:26:41 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EAAC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:26:40 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id t16so4539240edw.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ZKtKXKnlI9OQcR2INMab6gGaMD1rqgWs4v7ImAsS28=;
-        b=HMB3bWupFtyFqFrornu8LUPR+eKE69dlVbICTJOY/SqNpN9xiYB9o2yv7Dyv2mTPG7
-         i+x+eA1ISs5n2Kdg19TcVbecjGO9xtOPQ8mB4bKmOs/2TxZHCw+qb5n+nX3i9uAkUOsz
-         wRHKepAKszXXpvWU1Unj958sPuv9hyUurzV+6qvDxRzUqNXezxDbGZbAsuV+fQdmCU9g
-         NEHtqSC0fZ/OwZy9spmtR8K616SlJdzqB8CdnfjFXVF1ovF6AlB1EdmQgOfDfvg9F9PG
-         ZMfTszWQeX9dv7DxB8cwt+4HlnepN6xH9pH8X25lr/koji5cJVuKRKPshDcrZgL/FHBh
-         u0bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ZKtKXKnlI9OQcR2INMab6gGaMD1rqgWs4v7ImAsS28=;
-        b=ljqC/0HaDVe04YGTy8uL965JCCLRLgOysxICjurLpiO5Q+jb2zi34yIilqdibuyHP4
-         Xzr4U+gnR9J+jkAkgZV7b9Uom0atiMkGczsrOwJWBHr4vmEHRikaEffdaIv5kSIg8JAD
-         Tn/HOOUWFLuZmH4sFH1cSlzC+J7P8eNb0rFoalMOr7c4JYX0h8xUo4U5VVlZpSALZ9W2
-         w7+A3Vh+cWjlX855yyQpwmfsdBOQkGoWmwTR4V0gdyIhXJ9LaiaqHf7J0nmWfjeGodFz
-         OcCspBNPbRrRDxX9/v+u85hwH3J9mJSNE0dkXLzDcT0DyWhRtTPTX5//8RdTx3cP06Mh
-         3Saw==
-X-Gm-Message-State: AOAM532MFRFCfLiSHrVBkDYuf4IEjCcGwXsOqvbU7nIbtJxb/1bz6CXl
-        e/wFKdy+bjrPu0hy4r2GqAlL5Q==
-X-Google-Smtp-Source: ABdhPJxyKpDexrlR5gMm/WeckDH1ZOsNlTfR/gExRTc2c1FoTc2vsFAzyR5/OatKyVjOnxHleBRPuw==
-X-Received: by 2002:a50:ee10:: with SMTP id g16mr7114902eds.258.1601537199589;
-        Thu, 01 Oct 2020 00:26:39 -0700 (PDT)
-Received: from gkim-laptop.pb.local ([2001:1438:4010:2558:4cea:8c37:1548:493c])
-        by smtp.googlemail.com with ESMTPSA id jr9sm3436230ejb.87.2020.10.01.00.26.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 00:26:39 -0700 (PDT)
-From:   Gioh Kim <gi-oh.kim@cloud.ionos.com>
-X-Google-Original-From: Gioh Kim <gi-oh.kim@clous.ionos.com>
-To:     danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Subject: [PATCH 1/2] RDMA/rtrs: remove unnecessary argument dir of rtrs_iu_free
-Date:   Thu,  1 Oct 2020 09:26:37 +0200
-Message-Id: <20201001072637.16121-1-gi-oh.kim@clous.ionos.com>
-X-Mailer: git-send-email 2.20.1
+        id S1731523AbgJAH1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:27:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAH1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:27:06 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1774F2158C;
+        Thu,  1 Oct 2020 07:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601537224;
+        bh=dgEaL2JsoF3hcpYTbUL7lBsIxnA10aOJeq1dKme8b5g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TpfLnVXnJ90dfE+xkOfKcgSF55gSGdt2w/yDKYoxU2kd9RIEtJFalKzStbBM4zguw
+         VMa0sqwpL9OBCE9FonmEARTm6FLjB6YaYSQ2gf7uPmmQBfHNJYcbVjKHln14x6Iafm
+         M2qlKf/wUwtwmSKvW1AbjiXYKj+ROjO/D9rOamYA=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kNszV-002VRH-UY; Thu, 01 Oct 2020 09:27:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH 1/4] media: vidtv: reorganize includes
+Date:   Thu,  1 Oct 2020 09:26:57 +0200
+Message-Id: <88bc90c42a8af0921b11190c22181cdffc99dc7c.1601537213.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+- Place the includes on alphabetical order;
+- get rid of asm/byteorder.h;
+- add bug.h at vidtv_s302m.c, as it is needed by
+  inux/fixp-arith.h
 
-The direction of DMA operation is already in the rtrs_iu.
-
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 14 ++++++--------
- drivers/infiniband/ulp/rtrs/rtrs-pri.h |  3 +--
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 14 ++++++--------
- drivers/infiniband/ulp/rtrs/rtrs.c     | 10 +++++-----
- 4 files changed, 18 insertions(+), 23 deletions(-)
+ .../media/test-drivers/vidtv/vidtv_bridge.c   |  8 +++----
+ .../media/test-drivers/vidtv/vidtv_bridge.h   |  2 ++
+ .../media/test-drivers/vidtv/vidtv_channel.c  |  8 +++----
+ .../media/test-drivers/vidtv/vidtv_channel.h  |  3 ++-
+ .../media/test-drivers/vidtv/vidtv_demod.c    |  1 +
+ .../media/test-drivers/vidtv/vidtv_demod.h    |  1 +
+ drivers/media/test-drivers/vidtv/vidtv_mux.c  | 18 ++++++++--------
+ drivers/media/test-drivers/vidtv/vidtv_mux.h  |  3 ++-
+ drivers/media/test-drivers/vidtv/vidtv_pes.c  |  1 -
+ drivers/media/test-drivers/vidtv/vidtv_pes.h  |  1 -
+ drivers/media/test-drivers/vidtv/vidtv_psi.c  | 11 +++++-----
+ drivers/media/test-drivers/vidtv/vidtv_psi.h  |  1 -
+ .../media/test-drivers/vidtv/vidtv_s302m.c    | 21 +++++++++----------
+ .../media/test-drivers/vidtv/vidtv_s302m.h    |  1 -
+ drivers/media/test-drivers/vidtv/vidtv_ts.c   |  5 ++---
+ drivers/media/test-drivers/vidtv/vidtv_ts.h   |  1 -
+ .../media/test-drivers/vidtv/vidtv_tuner.c    |  5 +++--
+ .../media/test-drivers/vidtv/vidtv_tuner.h    |  1 +
+ 18 files changed, 46 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 776e89231c52..7af5f1559451 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1236,8 +1236,7 @@ static void free_sess_reqs(struct rtrs_clt_sess *sess)
- 		if (req->mr)
- 			ib_dereg_mr(req->mr);
- 		kfree(req->sge);
--		rtrs_iu_free(req->iu, DMA_TO_DEVICE,
--			      sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(req->iu, sess->s.dev->ib_dev, 1);
- 	}
- 	kfree(sess->reqs);
- 	sess->reqs = NULL;
-@@ -1605,8 +1604,7 @@ static void destroy_con_cq_qp(struct rtrs_clt_con *con)
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+index 74b054947bbe..fb533c2dd351 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+@@ -9,20 +9,20 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
  
- 	rtrs_cq_qp_destroy(&con->c);
- 	if (con->rsp_ius) {
--		rtrs_iu_free(con->rsp_ius, DMA_FROM_DEVICE,
--			      sess->s.dev->ib_dev, con->queue_size);
-+		rtrs_iu_free(con->rsp_ius, sess->s.dev->ib_dev, con->queue_size);
- 		con->rsp_ius = NULL;
- 		con->queue_size = 0;
- 	}
-@@ -2245,7 +2243,7 @@ static void rtrs_clt_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
- 	struct rtrs_iu *iu;
++#include <linux/dev_printk.h>
+ #include <linux/moduleparam.h>
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+-#include <linux/dev_printk.h>
+ #include <linux/time.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
  
- 	iu = container_of(wc->wr_cqe, struct rtrs_iu, cqe);
--	rtrs_iu_free(iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
-+	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
+ #include "vidtv_bridge.h"
++#include "vidtv_common.h"
+ #include "vidtv_demod.h"
+-#include "vidtv_tuner.h"
+-#include "vidtv_ts.h"
+ #include "vidtv_mux.h"
+-#include "vidtv_common.h"
++#include "vidtv_ts.h"
++#include "vidtv_tuner.h"
  
- 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
- 		rtrs_err(sess->clt, "Sess info request send failed: %s\n",
-@@ -2374,7 +2372,7 @@ static void rtrs_clt_info_rsp_done(struct ib_cq *cq, struct ib_wc *wc)
- 
- out:
- 	rtrs_clt_update_wc_stats(con);
--	rtrs_iu_free(iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
-+	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
- 	rtrs_clt_change_state(sess, state);
- }
- 
-@@ -2436,9 +2434,9 @@ static int rtrs_send_sess_info(struct rtrs_clt_sess *sess)
- 
- out:
- 	if (tx_iu)
--		rtrs_iu_free(tx_iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(tx_iu, sess->s.dev->ib_dev, 1);
- 	if (rx_iu)
--		rtrs_iu_free(rx_iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(rx_iu, sess->s.dev->ib_dev, 1);
- 	if (unlikely(err))
- 		/* If we've never taken async path because of malloc problems */
- 		rtrs_clt_change_state(sess, RTRS_CLT_CONNECTING_ERR);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 0a93c87ef92b..63b128c6eb04 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -288,8 +288,7 @@ struct rtrs_msg_rdma_hdr {
- struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t t,
- 			      struct ib_device *dev, enum dma_data_direction,
- 			      void (*done)(struct ib_cq *cq, struct ib_wc *wc));
--void rtrs_iu_free(struct rtrs_iu *iu, enum dma_data_direction dir,
--		  struct ib_device *dev, u32 queue_size);
-+void rtrs_iu_free(struct rtrs_iu *iu, struct ib_device *dev, u32 queue_size);
- int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu);
- int rtrs_iu_post_send(struct rtrs_con *con, struct rtrs_iu *iu, size_t size,
- 		      struct ib_send_wr *head);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index a219bd1bdbc2..b8763fe9152f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -575,8 +575,7 @@ static void unmap_cont_bufs(struct rtrs_srv_sess *sess)
- 		struct rtrs_srv_mr *srv_mr;
- 
- 		srv_mr = &sess->mrs[i];
--		rtrs_iu_free(srv_mr->iu, DMA_TO_DEVICE,
--			      sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
- 		ib_dereg_mr(srv_mr->mr);
- 		ib_dma_unmap_sg(sess->s.dev->ib_dev, srv_mr->sgt.sgl,
- 				srv_mr->sgt.nents, DMA_BIDIRECTIONAL);
-@@ -680,8 +679,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
- 			sgt = &srv_mr->sgt;
- 			mr = srv_mr->mr;
- free_iu:
--			rtrs_iu_free(srv_mr->iu, DMA_TO_DEVICE,
--				      sess->s.dev->ib_dev, 1);
-+			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
- dereg_mr:
- 			ib_dereg_mr(mr);
- unmap_sg:
-@@ -733,7 +731,7 @@ static void rtrs_srv_info_rsp_done(struct ib_cq *cq, struct ib_wc *wc)
- 	struct rtrs_iu *iu;
- 
- 	iu = container_of(wc->wr_cqe, struct rtrs_iu, cqe);
--	rtrs_iu_free(iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
-+	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
- 
- 	if (unlikely(wc->status != IB_WC_SUCCESS)) {
- 		rtrs_err(s, "Sess info response send failed: %s\n",
-@@ -859,7 +857,7 @@ static int process_info_req(struct rtrs_srv_con *con,
- 	if (unlikely(err)) {
- 		rtrs_err(s, "rtrs_iu_post_send(), err: %d\n", err);
- iu_free:
--		rtrs_iu_free(tx_iu, DMA_TO_DEVICE, sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(tx_iu, sess->s.dev->ib_dev, 1);
- 	}
- rwr_free:
- 	kfree(rwr);
-@@ -904,7 +902,7 @@ static void rtrs_srv_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
- 		goto close;
- 
- out:
--	rtrs_iu_free(iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
-+	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
- 	return;
- close:
- 	close_sess(sess);
-@@ -927,7 +925,7 @@ static int post_recv_info_req(struct rtrs_srv_con *con)
- 	err = rtrs_iu_post_recv(&con->c, rx_iu);
- 	if (unlikely(err)) {
- 		rtrs_err(s, "rtrs_iu_post_recv(), err: %d\n", err);
--		rtrs_iu_free(rx_iu, DMA_FROM_DEVICE, sess->s.dev->ib_dev, 1);
-+		rtrs_iu_free(rx_iu, sess->s.dev->ib_dev, 1);
- 		return err;
- 	}
- 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index ff1093d6e4bc..5163e662f86f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -31,6 +31,8 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
- 		return NULL;
- 	for (i = 0; i < queue_size; i++) {
- 		iu = &ius[i];
-+		iu->direction = dir;
+ //#define MUX_BUF_MAX_SZ
+ //#define MUX_BUF_MIN_SZ
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.h b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
+index 78fe8472fa37..a85068bffd0f 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_bridge.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
+@@ -20,9 +20,11 @@
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ #include <linux/types.h>
 +
- 		iu->buf = kzalloc(size, gfp_mask);
- 		if (!iu->buf)
- 			goto err;
-@@ -41,17 +43,15 @@ struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
+ #include <media/dmxdev.h>
+ #include <media/dvb_demux.h>
+ #include <media/dvb_frontend.h>
++
+ #include "vidtv_mux.h"
  
- 		iu->cqe.done  = done;
- 		iu->size      = size;
--		iu->direction = dir;
- 	}
- 	return ius;
- err:
--	rtrs_iu_free(ius, dir, dma_dev, i);
-+	rtrs_iu_free(ius, dma_dev, i);
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(rtrs_iu_alloc);
+ /**
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_channel.c b/drivers/media/test-drivers/vidtv/vidtv_channel.c
+index f2b97cf08e87..28a675a4f367 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_channel.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_channel.c
+@@ -18,16 +18,16 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
  
--void rtrs_iu_free(struct rtrs_iu *ius, enum dma_data_direction dir,
--		   struct ib_device *ibdev, u32 queue_size)
-+void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_size)
+-#include <linux/types.h>
+-#include <linux/slab.h>
+ #include <linux/dev_printk.h>
+ #include <linux/ratelimit.h>
++#include <linux/slab.h>
++#include <linux/types.h>
+ 
+ #include "vidtv_channel.h"
+-#include "vidtv_psi.h"
++#include "vidtv_common.h"
+ #include "vidtv_encoder.h"
+ #include "vidtv_mux.h"
+-#include "vidtv_common.h"
++#include "vidtv_psi.h"
+ #include "vidtv_s302m.h"
+ 
+ static void vidtv_channel_encoder_destroy(struct vidtv_encoder *e)
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_channel.h b/drivers/media/test-drivers/vidtv/vidtv_channel.h
+index 2c3cba4313b0..93a436a27824 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_channel.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_channel.h
+@@ -22,9 +22,10 @@
+ #define VIDTV_CHANNEL_H
+ 
+ #include <linux/types.h>
+-#include "vidtv_psi.h"
++
+ #include "vidtv_encoder.h"
+ #include "vidtv_mux.h"
++#include "vidtv_psi.h"
+ 
+ /**
+  * struct vidtv_channel - A 'channel' abstraction
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_demod.c b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+index eba7fe1a1b48..63ac55b81f39 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_demod.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/workqueue.h>
++
+ #include <media/dvb_frontend.h>
+ 
+ #include "vidtv_demod.h"
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_demod.h b/drivers/media/test-drivers/vidtv/vidtv_demod.h
+index 87651b0193e6..ab84044f33ba 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_demod.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_demod.h
+@@ -12,6 +12,7 @@
+ #define VIDTV_DEMOD_H
+ 
+ #include <linux/dvb/frontend.h>
++
+ #include <media/dvb_frontend.h>
+ 
+ /**
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+index 082740ae9d44..b7223f3a2c9d 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+@@ -12,23 +12,23 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
+ 
+-#include <linux/types.h>
+-#include <linux/slab.h>
++#include <linux/delay.h>
++#include <linux/dev_printk.h>
+ #include <linux/jiffies.h>
+ #include <linux/kernel.h>
+-#include <linux/dev_printk.h>
++#include <linux/math64.h>
+ #include <linux/ratelimit.h>
+-#include <linux/delay.h>
++#include <linux/slab.h>
++#include <linux/types.h>
+ #include <linux/vmalloc.h>
+-#include <linux/math64.h>
+ 
+-#include "vidtv_mux.h"
+-#include "vidtv_ts.h"
+-#include "vidtv_pes.h"
+-#include "vidtv_encoder.h"
+ #include "vidtv_channel.h"
+ #include "vidtv_common.h"
++#include "vidtv_encoder.h"
++#include "vidtv_mux.h"
++#include "vidtv_pes.h"
+ #include "vidtv_psi.h"
++#include "vidtv_ts.h"
+ 
+ static struct vidtv_mux_pid_ctx
+ *vidtv_mux_get_pid_ctx(struct vidtv_mux *m, u16 pid)
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.h b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+index 2caa60623e97..08138c80398a 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_mux.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+@@ -15,9 +15,10 @@
+ #ifndef VIDTV_MUX_H
+ #define VIDTV_MUX_H
+ 
+-#include <linux/types.h>
+ #include <linux/hashtable.h>
++#include <linux/types.h>
+ #include <linux/workqueue.h>
++
+ #include <media/dvb_frontend.h>
+ 
+ #include "vidtv_psi.h"
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.c b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+index 1c75f88070e9..102352d398ed 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_pes.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+@@ -16,7 +16,6 @@
+ #include <linux/types.h>
+ #include <linux/printk.h>
+ #include <linux/ratelimit.h>
+-#include <asm/byteorder.h>
+ 
+ #include "vidtv_pes.h"
+ #include "vidtv_common.h"
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.h b/drivers/media/test-drivers/vidtv/vidtv_pes.h
+index 0ea9e863024d..a152693233a9 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_pes.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_pes.h
+@@ -14,7 +14,6 @@
+ #ifndef VIDTV_PES_H
+ #define VIDTV_PES_H
+ 
+-#include <asm/byteorder.h>
+ #include <linux/types.h>
+ 
+ #include "vidtv_common.h"
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+index 82cf67dd27c0..0e58cbc79fb2 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
+@@ -15,18 +15,17 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+ 
+-#include <linux/kernel.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+ #include <linux/crc32.h>
+-#include <linux/string.h>
++#include <linux/kernel.h>
+ #include <linux/printk.h>
+ #include <linux/ratelimit.h>
++#include <linux/slab.h>
+ #include <linux/string.h>
+-#include <asm/byteorder.h>
++#include <linux/string.h>
++#include <linux/types.h>
+ 
+-#include "vidtv_psi.h"
+ #include "vidtv_common.h"
++#include "vidtv_psi.h"
+ #include "vidtv_ts.h"
+ 
+ #define CRC_SIZE_IN_BYTES 4
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.h b/drivers/media/test-drivers/vidtv/vidtv_psi.h
+index 3f962cc78278..e31b4885ee6b 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_psi.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_psi.h
+@@ -17,7 +17,6 @@
+ #define VIDTV_PSI_H
+ 
+ #include <linux/types.h>
+-#include <asm/byteorder.h>
+ 
+ /*
+  * all section lengths start immediately after the 'section_length' field
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+index a447ccbd68d5..95c5b7bfd491 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+@@ -17,23 +17,22 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+ 
+-#include <linux/types.h>
+-#include <linux/slab.h>
++#include <linux/bug.h>
+ #include <linux/crc32.h>
+-#include <linux/vmalloc.h>
+-#include <linux/string.h>
+-#include <linux/kernel.h>
++#include <linux/fixp-arith.h>
+ #include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/math64.h>
+ #include <linux/printk.h>
+ #include <linux/ratelimit.h>
+-#include <linux/fixp-arith.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/types.h>
++#include <linux/vmalloc.h>
+ 
+-#include <linux/math64.h>
+-#include <asm/byteorder.h>
+-
+-#include "vidtv_s302m.h"
+-#include "vidtv_encoder.h"
+ #include "vidtv_common.h"
++#include "vidtv_encoder.h"
++#include "vidtv_s302m.h"
+ 
+ #define S302M_SAMPLING_RATE_HZ 48000
+ #define PES_PRIVATE_STREAM_1 0xbd  /* PES: private_stream_1 */
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.h b/drivers/media/test-drivers/vidtv/vidtv_s302m.h
+index eca5e3150ede..eafe457e761d 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_s302m.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.h
+@@ -19,7 +19,6 @@
+ #define VIDTV_S302M_H
+ 
+ #include <linux/types.h>
+-#include <asm/byteorder.h>
+ 
+ #include "vidtv_encoder.h"
+ 
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_ts.c b/drivers/media/test-drivers/vidtv/vidtv_ts.c
+index 190b9e4438dc..ca4bb9c40b78 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_ts.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_ts.c
+@@ -9,14 +9,13 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+ 
++#include <linux/math64.h>
+ #include <linux/printk.h>
+ #include <linux/ratelimit.h>
+ #include <linux/types.h>
+-#include <linux/math64.h>
+-#include <asm/byteorder.h>
+ 
+-#include "vidtv_ts.h"
+ #include "vidtv_common.h"
++#include "vidtv_ts.h"
+ 
+ static u32 vidtv_ts_write_pcr_bits(u8 *to, u32 to_offset, u64 pcr)
  {
- 	struct rtrs_iu *iu;
- 	int i;
-@@ -61,7 +61,7 @@ void rtrs_iu_free(struct rtrs_iu *ius, enum dma_data_direction dir,
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_ts.h b/drivers/media/test-drivers/vidtv/vidtv_ts.h
+index 83dcc9183b45..6b989a2c1433 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_ts.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_ts.h
+@@ -11,7 +11,6 @@
+ #define VIDTV_TS_H
  
- 	for (i = 0; i < queue_size; i++) {
- 		iu = &ius[i];
--		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, dir);
-+		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, iu->direction);
- 		kfree(iu->buf);
- 	}
- 	kfree(ius);
+ #include <linux/types.h>
+-#include <asm/byteorder.h>
+ 
+ #define TS_SYNC_BYTE 0x47
+ #define TS_PACKET_LEN 188
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_tuner.c b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+index 9bc49e099f65..14b6bc902ee1 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_tuner.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+@@ -13,11 +13,12 @@
+ #include <linux/errno.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
++#include <linux/printk.h>
++#include <linux/ratelimit.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
++
+ #include <media/dvb_frontend.h>
+-#include <linux/printk.h>
+-#include <linux/ratelimit.h>
+ 
+ #include "vidtv_tuner.h"
+ 
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_tuner.h b/drivers/media/test-drivers/vidtv/vidtv_tuner.h
+index 8455b2d564b3..fd55346a5c87 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_tuner.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_tuner.h
+@@ -11,6 +11,7 @@
+ #define VIDTV_TUNER_H
+ 
+ #include <linux/types.h>
++
+ #include <media/dvb_frontend.h>
+ 
+ #define NUM_VALID_TUNER_FREQS 8
 -- 
-2.20.1
+2.26.2
 
