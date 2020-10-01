@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E12827FA72
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7850327FA79
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731371AbgJAHoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:44:24 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:50805 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAHoV (ORCPT
+        id S1731440AbgJAHpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAHpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:44:21 -0400
-X-Originating-IP: 86.206.245.199
-Received: from localhost (lfbn-tou-1-420-199.w86-206.abo.wanadoo.fr [86.206.245.199])
-        (Authenticated sender: thomas.petazzoni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0D7FDFF80B;
-        Thu,  1 Oct 2020 07:44:17 +0000 (UTC)
-From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-spi@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2] serial: max310x: rework RX interrupt handling
-Date:   Thu,  1 Oct 2020 09:44:15 +0200
-Message-Id: <20201001074415.349739-1-thomas.petazzoni@bootlin.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 1 Oct 2020 03:45:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95986C0613D0;
+        Thu,  1 Oct 2020 00:45:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so4474283wrv.1;
+        Thu, 01 Oct 2020 00:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
+        b=d/vQ+VVk+keNzkTfJSJxtcXpSwp2e7QCaBNQZVU4obREwDbvYR4ZOkBAIn6nZtjLrb
+         3dRvKN+GZdP1oQFFW/WEgNG9Ppq4gVVv6NzUKiTksJwcvN9PabgGRW31N0rtN+ZwizBZ
+         Ir7qV4dK/89jGgUAjfx/Dt5qCN9CBfJEHDXQ3wXfHiKFfYxmdygBYHRXbft2M6MJDZht
+         8MsO994BspQhR23fIhIiWfa0x2AEEtJL394LV/ThsCeCMiTFdFm/rX53wswTwkK2O5Xj
+         iJx9UD43hnd5M2L/jQHIj83U3txiSLHzEMovktlDwd72Doib8y20ewhC18AZ/A7VLimt
+         CJeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
+        b=r+gr5Iucm6an8QaDd2OH/4KKZ2LlWzlQHNhDfETH5cijOajO6q/8MIGxQXDxwRGSm1
+         oaURRn74f3eiCTQ17zvjTf9HptVGXZIGxleD3mWghbHIGjjPA4hmZeVeZh6hcK3GGWAi
+         X2hCNwanJG+HDPu8t+KNGZn34O5p0RXIEqlD7YxeYz5wxpSlMoartzuUM6tnoxmC9mmt
+         7iShWOwlD1pTZNgTYGWFQzpvo7f61DxRnZxkHetcwSwILsoG38e4Jx9a5y+DbnZgr1HN
+         JsSzSse4RosZ+J6+Ueybge1BiswOWPKLqcxLcfDE23WaXwb9j+0tfrcP5vQr6OLfaolk
+         BbBQ==
+X-Gm-Message-State: AOAM531F2xAqba33+NEvTlXO06LeFhVo3Min8AVHOPVSH98neCb4hzXI
+        MypRk8vzYsuko9DxO55hh0w=
+X-Google-Smtp-Source: ABdhPJxwv6BtYFAqC+AMaDOZb3qgtjlHwEicyt0p82kSHbH75ncrgFUe0TsFiNV7de54QZazE4hATA==
+X-Received: by 2002:adf:dd44:: with SMTP id u4mr6973042wrm.22.1601538322276;
+        Thu, 01 Oct 2020 00:45:22 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
+        by smtp.gmail.com with ESMTPSA id u66sm7145534wmg.44.2020.10.01.00.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 00:45:21 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Tycho Andersen <tycho@tycho.pizza>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com>
+Date:   Thu, 1 Oct 2020 09:45:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200930230327.GA1260245@cisco>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the RX interrupt logic uses the RXEMPTY interrupt, with the
-RXEMPTYINV bit set, which means we get an RX interrupt as soon as the
-RX FIFO is non-empty.
+On 10/1/20 1:03 AM, Tycho Andersen wrote:
+> On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
+>> Hi Tycho,
+>>
+>> Thanks for taking time to look at the page!
+>>
+>> On 9/30/20 5:03 PM, Tycho Andersen wrote:
+>>> On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
 
-However, with the MAX310X having a FIFO of 128 bytes, this makes very
-poor use of the FIFO: we trigger an interrupt as soon as the RX FIFO
-has one byte, which means a lot of interrupts, each only collecting a
-few bytes from the FIFO, causing a significant CPU load.
+[...]
 
-Instead this commit relies on two other RX interrupt events:
+>>>>        ┌─────────────────────────────────────────────────────┐
+>>>>        │FIXME                                                │
+>>>>        ├─────────────────────────────────────────────────────┤
+>>>>        │Interestingly, after the event  had  been  received, │
+>>>>        │the  file descriptor indicates as writable (verified │
+>>>>        │from the source code and by experiment). How is this │
+>>>>        │useful?                                              │
+>>>
+>>> You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
+>>> reasonable.
+>>
+>> No, I'm saying something more fundamental: why is the FD indicating as
+>> writable? Can you write something to it? If yes, what? If not, then
+>> why do these APIs want to say that the FD is writable?
+> 
+> You can't via read(2) or write(2), but conceptually NOTIFY_RECV and
+> NOTIFY_SEND are reading and writing events from the fd. I don't know
+> that much about the poll interface though -- is it possible to
+> indicate "here's a pseudo-read event"? It didn't look like it, so I
+> just (ab-)used POLLIN and POLLOUT, but probably that's wrong.
 
- - MAX310X_IRQ_RXFIFO_BIT, which triggers when the RX FIFO has reached
-   a certain threshold, which we define to be half of the FIFO
-   size. This ensure we get an interrupt before the RX FIFO fills up.
+I think the POLLIN thing is fine.
 
- - MAX310X_LSR_RXTO_BIT, which triggers when the RX FIFO has received
-   some bytes, and then no more bytes are received for a certain
-   time. Arbitrarily, this time is defined to the time is takes to
-   receive 4 characters.
+So, I think maybe I now understand what you intended with setting
+POLLOUT: the notification has been received ("read") and now the
+FD can be used to NOTIFY_SEND ("write") a response. Right?
 
-On a Microchip SAMA5D3 platform that is receiving 20 bytes every 16ms
-over one MAX310X UART, this patch has allowed to reduce the CPU
-consumption of the interrupt handler thread from ~25% to 6-7%.
+If that's correct, I don't have a problem with it. I just wonder:
+is it useful? IOW: are there situations where the process doing the
+NOTIFY_SEND might want to test for POLLOUT because the it doesn't
+know whether a NOTIFY_RECV has occurred? 
 
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
----
-Changes since v1:
-- Fix missing space when closing a comment
----
- drivers/tty/serial/max310x.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+Thanks,
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 8434bd5a8ec7..21130af106bb 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1056,9 +1056,9 @@ static int max310x_startup(struct uart_port *port)
- 	max310x_port_update(port, MAX310X_MODE1_REG,
- 			    MAX310X_MODE1_TRNSCVCTRL_BIT, 0);
- 
--	/* Configure MODE2 register & Reset FIFOs*/
--	val = MAX310X_MODE2_RXEMPTINV_BIT | MAX310X_MODE2_FIFORST_BIT;
--	max310x_port_write(port, MAX310X_MODE2_REG, val);
-+	/* Reset FIFOs */
-+	max310x_port_write(port, MAX310X_MODE2_REG,
-+			   MAX310X_MODE2_FIFORST_BIT);
- 	max310x_port_update(port, MAX310X_MODE2_REG,
- 			    MAX310X_MODE2_FIFORST_BIT, 0);
- 
-@@ -1086,8 +1086,27 @@ static int max310x_startup(struct uart_port *port)
- 	/* Clear IRQ status register */
- 	max310x_port_read(port, MAX310X_IRQSTS_REG);
- 
--	/* Enable RX, TX, CTS change interrupts */
--	val = MAX310X_IRQ_RXEMPTY_BIT | MAX310X_IRQ_TXEMPTY_BIT;
-+	/*
-+	 * Let's ask for an interrupt after a timeout equivalent to
-+	 * the receiving time of 4 characters after the last character
-+	 * has been received.
-+	 */
-+	max310x_port_write(port, MAX310X_RXTO_REG, 4);
-+
-+	/*
-+	 * Make sure we also get RX interrupts when the RX FIFO is
-+	 * filling up quickly, so get an interrupt when half of the RX
-+	 * FIFO has been filled in.
-+	 */
-+	max310x_port_write(port, MAX310X_FIFOTRIGLVL_REG,
-+			   MAX310X_FIFOTRIGLVL_RX(MAX310X_FIFO_SIZE / 2));
-+
-+	/* Enable RX timeout interrupt in LSR */
-+	max310x_port_write(port, MAX310X_LSR_IRQEN_REG,
-+			   MAX310X_LSR_RXTO_BIT);
-+
-+	/* Enable LSR, RX FIFO trigger, CTS change interrupts */
-+	val = MAX310X_IRQ_LSR_BIT  | MAX310X_IRQ_RXFIFO_BIT | MAX310X_IRQ_TXEMPTY_BIT;
- 	max310x_port_write(port, MAX310X_IRQEN_REG, val | MAX310X_IRQ_CTS_BIT);
- 
- 	return 0;
+Michael
+
 -- 
-2.26.2
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
