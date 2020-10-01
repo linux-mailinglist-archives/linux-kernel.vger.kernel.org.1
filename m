@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CB12803EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF80A2803EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732691AbgJAQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgJAQ1z (ORCPT
+        id S1732660AbgJAQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:27:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732026AbgJAQ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:27:55 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57215C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:27:55 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y11so7327027lfl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0r8aBl5mTGl1Jm27+LKfiN2IGzGh3O0PaISk78rFv6k=;
-        b=fp0kVPOJ0/feOwgGLmlkIO63ANEzecXNYInyD9Jr0DYTITv/iXns8CEsaFmNqkjM6X
-         o+oB06moAa1RZND3ZKEyMHaCsuepB79QtGlWVrbxsSmqhB94N+wioNtg35bORV0WkKXn
-         l41qR2diYCU9YMVWLqQwcfCZk/Qx0XQGIYrzg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0r8aBl5mTGl1Jm27+LKfiN2IGzGh3O0PaISk78rFv6k=;
-        b=PfdbdnLvc66oA3sr8UXVaSNlC6/fkyiCfj+JCAjdrkxF9By4R8yLIe1V7/w5tl4SF0
-         KlAfPKDgYrkqPJChSL7oz+IK4QorPdQLvYneTNNxt3ME1JcUTi2H/i1L2zfrPaSySi4U
-         ZMIFlBJoZ0MVXkpTtyzzrT8G9lAvDVXBfT41eoNPPYf2UVF/7Tz5PLPNUup5KeMvP0Lv
-         6iF0Kr3tZ9nBnVCaas9huKgLLJ1uQ2bG+9NaYmId0Z1sJF0MjsaRX80oEe15RegWVgPV
-         XMoMU0C+lu87PC/xi6sebrBZxR2Pknj3KejqIynxkGGAHwac06ndswofnXbY72VlxfVC
-         PBgw==
-X-Gm-Message-State: AOAM5303DZxKfs5KR1tBPLXmVyw41KIKr/KSHA/u2zQdxQlr9T80s4RV
-        9LljKyFHeExLZOFxiTyrByOrdDlReQe49g==
-X-Google-Smtp-Source: ABdhPJy/Y1yizkWy8BGzS5xNSMLftRjQiCX7b43pPDkLlrtKKJ3neSdI3Ol1wFkA9UHz6Ym8EUiBag==
-X-Received: by 2002:a19:103:: with SMTP id 3mr2690911lfb.452.1601569673462;
-        Thu, 01 Oct 2020 09:27:53 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id p27sm608536lfo.272.2020.10.01.09.27.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 09:27:52 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id y2so7311571lfy.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:27:52 -0700 (PDT)
-X-Received: by 2002:a19:7fcb:: with SMTP id a194mr2732860lfd.121.1601569671966;
- Thu, 01 Oct 2020 09:27:51 -0700 (PDT)
+        Thu, 1 Oct 2020 12:27:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601569648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WpyfW6uB/uLX11MkTOm4JRQtX6e9GzHMT50ADwTIIHk=;
+        b=NYWL3ujdIOROWaip1KgAdRCMNP29E3ylff2ddZF3o7PGcbp9PRS/YRyFfsLb+80TTcz/t0
+        Li/AexIcUWPP6EsmY7gb1cDRModpuEwz99qUK4QBzgdMaYfvigjoFXrnmxkzCOXUOf88V3
+        uU/CS3Y5pRbEBG82+vAUWUfmYO7REV4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-m49T-GglN5m-W8mAaGTrZA-1; Thu, 01 Oct 2020 12:27:24 -0400
+X-MC-Unique: m49T-GglN5m-W8mAaGTrZA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 320951DE0E;
+        Thu,  1 Oct 2020 16:27:23 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.152])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B56BD60BF1;
+        Thu,  1 Oct 2020 16:27:21 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  1 Oct 2020 18:27:22 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 18:27:20 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH RFC v2] kernel: decouple TASK_WORK TWA_SIGNAL handling
+ from signals
+Message-ID: <20201001162719.GD13633@redhat.com>
+References: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
 MIME-Version: 1.0
-References: <20200929205807.2360405-1-evgreen@chromium.org>
- <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid> <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
-In-Reply-To: <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Thu, 1 Oct 2020 09:27:15 -0700
-X-Gmail-Original-Message-ID: <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
-Message-ID: <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] nvmem: qfprom: Don't touch certain fuses
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 7:17 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
-> Hi Evan,
->
-> On 29/09/2020 21:58, Evan Green wrote:
-> > Some fuse ranges are protected by the XPU such that the AP cannot
-> > access them. Attempting to do so causes an SError. Use the newly
-> > introduced per-soc compatible string to attach the set of regions
-> > we should not access. Then tiptoe around those regions.
-> >
->
-> This is a generic feature that can be used by any nvmem provider, can
-> you move this logic to nvmem core instead of having it in qfprom!
+Jens,
 
-Sure! I'd prefer to keep this data in the driver for now rather than
-trying to define DT bindings for the keepout zones. So then I'll pass
-in my keepout array via struct nvmem_config at registration time, and
-then the core can handle the keepout logic instead of qfprom.c.
+I'll read this version tomorrow, but:
 
--Evan
+On 10/01, Jens Axboe wrote:
+>
+>  static inline int signal_pending(struct task_struct *p)
+>  {
+> -	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
+> +#ifdef TIF_TASKWORK
+> +	/*
+> +	 * TIF_TASKWORK isn't really a signal, but it requires the same
+> +	 * behavior of restarting the system call to force a kernel/user
+> +	 * transition.
+> +	 */
+> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING) ||
+> +			test_tsk_thread_flag(p, TIF_TASKWORK));
+> +#else
+> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
+> +#endif
+
+This change alone is already very wrong.
+
+signal_pending(task) == T means that this task will do get_signal() as
+soon as it can, and this basically means you can't "divorce" SIGPENDING
+and TASKWORK.
+
+Simple example. Suppose we have a single-threaded task T.
+
+Someone does task_work_add(T, TWA_SIGNAL). This makes signal_pending()==T
+and this is what we need.
+
+Now suppose that another task sends a signal to T before T calls
+task_work_run() and clears TIF_TASKWORK. In this case SIGPENDING won't
+be set because signal_pending() is already set (see wants_signal), and
+this means that T won't notice this signal.
+
+Oleg.
+
