@@ -2,245 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D87280449
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E997280452
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732610AbgJAQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:51:42 -0400
-Received: from mga01.intel.com ([192.55.52.88]:59840 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732016AbgJAQvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:51:41 -0400
-IronPort-SDR: jgp66Icb9SwbB6eEHv6R1yhBmm+K2sToWhrceCkSOhX1EkToiMCa1iRc4pE2mt+K3Sys9OcYJb
- g5FQxk1SXxkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180933792"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="180933792"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 09:51:38 -0700
-IronPort-SDR: MI//hR/qDfigJQ/WhDVCXIhf6/vl8bAvbmWqe3dt+FZvFbfeHbaqAKVc7xnQKoOak2hvZBeZho
- A8V7kczDvZog==
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="346148630"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.213.183.12]) ([10.213.183.12])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 09:51:35 -0700
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
- Branch Tracking for vsyscall emulation
-To:     Andy Lutomirski <luto@kernel.org>, "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
- <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
- <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
- <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
- <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com>
- <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
- <CALCETrVvob1dbdWSvaB0ZK1kJ19o9ZKy=U3tFifwOR++_xk=zA@mail.gmail.com>
- <dd4310bd-a76b-cf19-4f12-0b52d7bc483d@intel.com>
- <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
- <CAMe9rOonjX-b46sJ3AYSJZV84d=oU6-KhScnk5vksVqoLgQ90A@mail.gmail.com>
- <CALCETrWoGXDDEvy10LoYVY6c_tkpMVABhCy+8pse9Rw8L9L=5A@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <79d1e67d-2394-1ce6-3bad-cce24ba792bd@intel.com>
-Date:   Thu, 1 Oct 2020 09:51:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1732690AbgJAQy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732213AbgJAQy1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:54:27 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B10C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:54:27 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gr14so9138026ejb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:54:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PcY5sR068ean6onHI2ckcFdlXy4IjyUiGqqLhTP4BDE=;
+        b=yCNULK1n3abFX9Y+iMGYX4f2JcfN9L0Hdk+mfBgX04LDJVKbxdT7dfYejv1D7tAI3R
+         uTTdqoRLHOFJkFkKGbYpJFa+LJYas5kW5i9V5oKCulOvmz4nCfucExd9yojQoKjCE7kk
+         ysrEGywF0fUCLJX88KeZP/3Xa9nXcJuhJ/649SVuoJwxLIoorTYmdeclxvSVuCMUrQAB
+         kPtf74qHtOfyvTKSR/WP4sD5qYKzQ3fxWg97siVzPuqtrKZ8DT4Csoer5QkA5N0B+Qx2
+         8XFRjdjXRCcLaCDKegdEcrFcYwarEIqvqTFtqaaLuMorbVqivvlfTu2jvqAyU/+4txJI
+         GkRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PcY5sR068ean6onHI2ckcFdlXy4IjyUiGqqLhTP4BDE=;
+        b=FtQyKTwGQMLjJ+TrndEG4d+z+28hdfyaJZS3z0QDzIjZj20G5/MpX5uyMP5pSZeADL
+         ZtIeZQyRjf1w/DUBNU9DmM0suELrtwL64oBAsI6QyGO+aGNwM1M8cAnXwN+bBO+BbZ6T
+         ohMKEoSIzQ03rdLs06xulQ4Je/6B28kjmsrKTPJoT/YnSyLmvM21w3L99sKqqyvlRT74
+         6w0qQM8+uxsVsKFFfNg8hnZnIYj7b8dnRAcSmkA1iXTqSivlLBVcnANbHfh4Qm4+84dG
+         VJAJemy+6v8ZfcBkBTHSm8QKhyqC5eN09oqStjHSiV1EdiqS6c5/L+t1X1JfDGey+HXB
+         LriQ==
+X-Gm-Message-State: AOAM532Uc2ZJyXc1sWbmpqk8HU4WN7KSB1la7dKe0ZWccYyMdmXgS4wE
+        pR1HyRASpbfDrKVOORA0QF/ileC7mHP8vIaw9XX5xQ==
+X-Google-Smtp-Source: ABdhPJxk5/IDh9YndGD6zVOKlgna3zc1IsQMRPKkgMnVoVbcwa8mbzwGedraAr6tDfvEQflyyxrdbiGSJWLAMqa04+0=
+X-Received: by 2002:a17:906:8245:: with SMTP id f5mr8644133ejx.264.1601571265618;
+ Thu, 01 Oct 2020 09:54:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrWoGXDDEvy10LoYVY6c_tkpMVABhCy+8pse9Rw8L9L=5A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160106110513.30709.4303239334850606031.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <e3b7c947-c221-8be7-41ae-aed2f481d640@redhat.com>
+In-Reply-To: <e3b7c947-c221-8be7-41ae-aed2f481d640@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 1 Oct 2020 09:54:13 -0700
+Message-ID: <CAPcyv4io6a7qaX+oa8uL9C0nc9J9UMx0CfC5E1DYdhSPvYVeOw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/17] device-dax: make pgmap optional for instance creation
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/2020 6:10 PM, Andy Lutomirski wrote:
-> On Wed, Sep 30, 2020 at 6:01 PM H.J. Lu <hjl.tools@gmail.com> wrote:
->>
->> On Wed, Sep 30, 2020 at 4:44 PM Andy Lutomirski <luto@kernel.org> wrote:
-
-[...]
-
->>>>>>>    From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
->>>>>>> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
->>>>>>> Date: Thu, 29 Nov 2018 14:15:38 -0800
->>>>>>> Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
->>>>>>> Indirect Branch
->>>>>>>     Tracking for vsyscall emulation
->>>>>>>
->>>>>>> Vsyscall entry points are effectively branch targets.  Mark them with
->>>>>>> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
->>>>>>> and reset IBT state machine.
->>>>>>>
->>>>>>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->>>>>>> ---
->>>>>>> v13:
->>>>>>> - Check shadow stack address is canonical.
->>>>>>> - Change from writing to MSRs to writing to CET xstate.
->>>>>>>
->>>>>>>     arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
->>>>>>>     arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
->>>>>>>     arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
->>>>>>>     3 files changed, 44 insertions(+)
->>>>>>>
->>>>>>> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
->>>>>>> b/arch/x86/entry/vsyscall/vsyscall_64.c
->>>>>>> index 44c33103a955..30b166091d46 100644
->>>>>>> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
->>>>>>> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
->>>>>>> @@ -38,6 +38,9 @@
->>>>>>>     #include <asm/fixmap.h>
->>>>>>>     #include <asm/traps.h>
->>>>>>>     #include <asm/paravirt.h>
->>>>>>> +#include <asm/fpu/xstate.h>
->>>>>>> +#include <asm/fpu/types.h>
->>>>>>> +#include <asm/fpu/internal.h>
->>>>>>>
->>>>>>>     #define CREATE_TRACE_POINTS
->>>>>>>     #include "vsyscall_trace.h"
->>>>>>> @@ -286,6 +289,44 @@ bool emulate_vsyscall(unsigned long error_code,
->>>>>>>           /* Emulate a ret instruction. */
->>>>>>>           regs->ip = caller;
->>>>>>>           regs->sp += 8;
->>>>>>> +
->>>>>>> +#ifdef CONFIG_X86_CET
->>>>>>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
->>>>>>> +               struct cet_user_state *cet;
->>>>>>> +               struct fpu *fpu;
->>>>>>> +
->>>>>>> +               fpu = &tsk->thread.fpu;
->>>>>>> +               fpregs_lock();
->>>>>>> +
->>>>>>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
->>>>>>> +                       copy_fpregs_to_fpstate(fpu);
->>>>>>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
->>>>>>> +               }
->>>>>>> +
->>>>>>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
->>>>>>> +               if (!cet) {
->>>>>>> +                       /*
->>>>>>> +                        * This should not happen.  The task is
->>>>>>> +                        * CET-enabled, but CET xstate is in INIT.
->>>>>>> +                        */
->>>>>>
-[...]
->>>>>>
->>>>>
->>>>> For what it's worth, I think there is an alternative.  If you all
->>>>> (userspace people, etc) can come up with a credible way for a user
->>>>> program to statically declare that it doesn't need vsyscalls, then we
->>>>> could make SHSTK depend on *that*, and we could avoid this mess.  This
->>>>> breaks orthogonality, but it's probably a decent outcome.
->>>>>
->>>>
->>>> Would an arch_prctl(DISABLE_VSYSCALL) work?  The kernel then sets a
->>>> thread flag, and in emulate_vsyscall(), checks the flag.
->>>>
->>>> When CET is enabled, ld-linux will do DISABLE_VSYSCALL.
->>>>
->>>> How is that?
->>>
->>> Backwards, no?  Presumably vsyscall needs to be disabled before or
->>> concurrently with CET being enabled, not after.
->>>
->>> I think the solution of making vsyscall emulation work correctly with
->>> CET is going to be better and possibly more straightforward.
->>>
->>
->> We can do
->>
->> 1. Add ARCH_X86_DISABLE_VSYSCALL to disable the vsyscall page.
->> 2. If CPU supports CET and the program is CET enabled:
->>      a. Disable the vsyscall page.
->>      b. Pass control to user.
->>      c. Enable the vsyscall page when ARCH_X86_CET_DISABLE is called.
->>
->> So when control is passed from kernel to user, the vsyscall page is
->> disabled if the program
->> is CET enabled.
-> 
-> Let me say this one more time:
-> 
-> If we have a per-process vsyscall disable control and a per-process
-> CET control, we are going to keep those settings orthogonal.  I'm
-> willing to entertain an option in which enabling SHSTK without also
-> disabling vsyscalls is disallowed, We are *not* going to have any CET
-> flags magically disable vsyscalls, though, and we are not going to
-> have a situation where disabling vsyscalls on process startup requires
-> enabling SHSTK.
-> 
-> Any possible static vsyscall controls (and CET controls, for that
-> matter) also need to come with some explanation of whether they are
-> properties set on the ELF loader, the ELF program being loaded, or
-> both.  And this explanation needs to cover what happens when old
-> binaries link against new libc versions and vice versa.  A new
-> CET-enabled binary linked against old libc running on a new kernel
-> that is expected to work on a non-CET CPU MUST work on a CET CPU, too.
-> 
-> Right now, literally the only thing preventing vsyscall emulation from
-> coexisting with SHSTK is that the implementation eeds work.
-> 
-> So your proposal is rejected.  Sorry.
+On Thu, Oct 1, 2020 at 1:41 AM David Hildenbrand <david@redhat.com> wrote:
 >
-I think, even with shadow stack/ibt enabled, we can still allow XONLY 
-without too much mess.
+> On 25.09.20 21:11, Dan Williams wrote:
+> > The passed in dev_pagemap is only required in the pmem case as the
+> > libnvdimm core may have reserved a vmem_altmap for dev_memremap_pages() to
+> > place the memmap in pmem directly.  In the hmem case there is no agent
+> > reserving an altmap so it can all be handled by a core internal default.
+> >
+> > Pass the resource range via a new @range property of 'struct
+> > dev_dax_data'.
+> >
+> > Link: https://lkml.kernel.org/r/159643099958.4062302.10379230791041872886.stgit@dwillia2-desk3.amr.corp.intel.com
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Vishal Verma <vishal.l.verma@intel.com>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > Cc: Brice Goglin <Brice.Goglin@inria.fr>
+> > Cc: Dave Jiang <dave.jiang@intel.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Ira Weiny <ira.weiny@intel.com>
+> > Cc: Jia He <justin.he@arm.com>
+> > Cc: Joao Martins <joao.m.martins@oracle.com>
+> > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  drivers/dax/bus.c              |   29 +++++++++++++++--------------
+> >  drivers/dax/bus.h              |    2 ++
+> >  drivers/dax/dax-private.h      |    9 ++++++++-
+> >  drivers/dax/device.c           |   28 +++++++++++++++++++---------
+> >  drivers/dax/hmem/hmem.c        |    8 ++++----
+> >  drivers/dax/kmem.c             |   12 ++++++------
+> >  drivers/dax/pmem/core.c        |    4 ++++
+> >  tools/testing/nvdimm/dax-dev.c |    8 ++++----
+> >  8 files changed, 62 insertions(+), 38 deletions(-)
+> >
+> > diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> > index dffa4655e128..96bd64ba95a5 100644
+> > --- a/drivers/dax/bus.c
+> > +++ b/drivers/dax/bus.c
+> > @@ -271,7 +271,7 @@ static ssize_t size_show(struct device *dev,
+> >               struct device_attribute *attr, char *buf)
+> >  {
+> >       struct dev_dax *dev_dax = to_dev_dax(dev);
+> > -     unsigned long long size = resource_size(&dev_dax->region->res);
+> > +     unsigned long long size = range_len(&dev_dax->range);
+> >
+> >       return sprintf(buf, "%llu\n", size);
+> >  }
+> > @@ -293,19 +293,12 @@ static ssize_t target_node_show(struct device *dev,
+> >  }
+> >  static DEVICE_ATTR_RO(target_node);
+> >
+> > -static unsigned long long dev_dax_resource(struct dev_dax *dev_dax)
+> > -{
+> > -     struct dax_region *dax_region = dev_dax->region;
+> > -
+> > -     return dax_region->res.start;
+> > -}
+> > -
+> >  static ssize_t resource_show(struct device *dev,
+> >               struct device_attribute *attr, char *buf)
+> >  {
+> >       struct dev_dax *dev_dax = to_dev_dax(dev);
+> >
+> > -     return sprintf(buf, "%#llx\n", dev_dax_resource(dev_dax));
+> > +     return sprintf(buf, "%#llx\n", dev_dax->range.start);
+> >  }
+> >  static DEVICE_ATTR(resource, 0400, resource_show, NULL);
+> >
+> > @@ -376,6 +369,7 @@ static void dev_dax_release(struct device *dev)
+> >
+> >       dax_region_put(dax_region);
+> >       put_dax(dax_dev);
+> > +     kfree(dev_dax->pgmap);
+> >       kfree(dev_dax);
+> >  }
+> >
+> > @@ -412,7 +406,12 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+> >       if (!dev_dax)
+> >               return ERR_PTR(-ENOMEM);
+> >
+> > -     memcpy(&dev_dax->pgmap, data->pgmap, sizeof(struct dev_pagemap));
+> > +     if (data->pgmap) {
+> > +             dev_dax->pgmap = kmemdup(data->pgmap,
+> > +                             sizeof(struct dev_pagemap), GFP_KERNEL);
+> > +             if (!dev_dax->pgmap)
+> > +                     goto err_pgmap;
+> > +     }
+> >
+> >       /*
+> >        * No 'host' or dax_operations since there is no access to this
+> > @@ -421,18 +420,19 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+> >       dax_dev = alloc_dax(dev_dax, NULL, NULL, DAXDEV_F_SYNC);
+> >       if (IS_ERR(dax_dev)) {
+> >               rc = PTR_ERR(dax_dev);
+> > -             goto err;
+> > +             goto err_alloc_dax;
+> >       }
+> >
+> >       /* a device_dax instance is dead while the driver is not attached */
+> >       kill_dax(dax_dev);
+> >
+> > -     /* from here on we're committed to teardown via dax_dev_release() */
+> > +     /* from here on we're committed to teardown via dev_dax_release() */
+> >       dev = &dev_dax->dev;
+> >       device_initialize(dev);
+> >
+> >       dev_dax->dax_dev = dax_dev;
+> >       dev_dax->region = dax_region;
+> > +     dev_dax->range = data->range;
+> >       dev_dax->target_node = dax_region->target_node;
+> >       kref_get(&dax_region->kref);
+> >
+> > @@ -458,8 +458,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+> >               return ERR_PTR(rc);
+> >
+> >       return dev_dax;
+> > -
+> > - err:
+> > +err_alloc_dax:
+> > +     kfree(dev_dax->pgmap);
+> > +err_pgmap:
+> >       kfree(dev_dax);
+> >
+> >       return ERR_PTR(rc);
+> > diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+> > index 299c2e7fac09..4aeb36da83a4 100644
+> > --- a/drivers/dax/bus.h
+> > +++ b/drivers/dax/bus.h
+> > @@ -3,6 +3,7 @@
+> >  #ifndef __DAX_BUS_H__
+> >  #define __DAX_BUS_H__
+> >  #include <linux/device.h>
+> > +#include <linux/range.h>
+> >
+> >  struct dev_dax;
+> >  struct resource;
+> > @@ -21,6 +22,7 @@ struct dev_dax_data {
+> >       struct dax_region *dax_region;
+> >       struct dev_pagemap *pgmap;
+> >       enum dev_dax_subsys subsys;
+> > +     struct range range;
+> >       int id;
+> >  };
+> >
+> > diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> > index 8a4c40ccd2ef..6779f683671d 100644
+> > --- a/drivers/dax/dax-private.h
+> > +++ b/drivers/dax/dax-private.h
+> > @@ -41,6 +41,7 @@ struct dax_region {
+> >   * @target_node: effective numa node if dev_dax memory range is onlined
+> >   * @dev - device core
+> >   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+> > + * @range: resource range for the instance
+> >   * @dax_mem_res: physical address range of hotadded DAX memory
+> >   * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
+> >   */
+> > @@ -49,10 +50,16 @@ struct dev_dax {
+> >       struct dax_device *dax_dev;
+> >       int target_node;
+> >       struct device dev;
+> > -     struct dev_pagemap pgmap;
+> > +     struct dev_pagemap *pgmap;
+> > +     struct range range;
+> >       struct resource *dax_kmem_res;
+> >  };
+> >
+> > +static inline u64 range_len(struct range *range)
+> > +{
+> > +     return range->end - range->start + 1;
+> > +}
+>
+> include/linux/range.h seems to have this function - why is this here needed?
 
-What about this?
-
-Thanks,
-Yu-cheng
-
-======
-
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c 
-b/arch/x86/entry/vsyscall/vsyscall_64.c
-index 8b0b32ac7791..d39da0a15521 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -48,16 +48,16 @@
-  static enum { EMULATE, XONLY, NONE } vsyscall_mode __ro_after_init =
-  #ifdef CONFIG_LEGACY_VSYSCALL_NONE
-         NONE;
--#elif defined(CONFIG_LEGACY_VSYSCALL_XONLY)
-+#elif defined(CONFIG_LEGACY_VSYSCALL_XONLY) || defined(CONFIG_X86_CET)
-         XONLY;
--#else
-+#else
-         EMULATE;
-  #endif
-
-  static int __init vsyscall_setup(char *str)
-  {
-         if (str) {
--               if (!strcmp("emulate", str))
-+               if (!strcmp("emulate", str) && !IS_ENABLED(CONFIG_X86_CET))
-                         vsyscall_mode = EMULATE;
-                 else if (!strcmp("xonly", str))
-                         vsyscall_mode = XONLY;
+It's there because I add it later in this series. I waited until
+"mm/memremap_pages: convert to 'struct range'" to make it global as
+that's the first kernel-wide visible usage of it.
