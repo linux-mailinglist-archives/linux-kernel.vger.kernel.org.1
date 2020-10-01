@@ -2,136 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE9927F6E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE14527F6EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732317AbgJAA62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:58:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31412 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731813AbgJAA62 (ORCPT
+        id S1732335AbgJABBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731881AbgJABBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:58:28 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601513907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6/nUF3ElHb92nC9jUNM3d81i3q6Balac69D72MKGCa4=;
-        b=esrxau4dxL8ND7zeLlePLKXO4njP2VAexexrzju/+D1CZraLby2vBsZEpIEUYumVW5WKqo
-        0SA/SzjnCHTy5NiZlFuP7yfxw8Z6bPvIjzH7QQP5+vTCHSiJImvCtE7J8t18pcn6pGK6VO
-        RIsVSgtltW1LhfBxOxPQ9sAL+voVij4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-SwV6iesROOWnE9tmOJEqAw-1; Wed, 30 Sep 2020 20:58:22 -0400
-X-MC-Unique: SwV6iesROOWnE9tmOJEqAw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7797186DD22;
-        Thu,  1 Oct 2020 00:58:21 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-115-71.rdu2.redhat.com [10.10.115.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D09973678;
-        Thu,  1 Oct 2020 00:58:21 +0000 (UTC)
-From:   Qian Cai <cai@redhat.com>
-To:     David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pipe: Fix memory leaks in create_pipe_files()
-Date:   Wed, 30 Sep 2020 20:58:04 -0400
-Message-Id: <20201001005804.25641-1-cai@redhat.com>
+        Wed, 30 Sep 2020 21:01:12 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D8DC061755;
+        Wed, 30 Sep 2020 18:01:12 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id e5so4455307ils.10;
+        Wed, 30 Sep 2020 18:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/wy+w9wsE8zfIhgNkxGIPUTx7i8rbUXDARiFoYjO5kk=;
+        b=TOpTyC3cAHxk1NqlZU68iEl1f2vQ2mbgNKkqgG4rfYHaKynDOMMrMkdzd9mbooHhdr
+         yaJJ50pWyYApXuTHuKDrBRrxB1iBsDNbtIDId49UKFE6VCcm7H1l+aJTRqzt0mzZodo3
+         13BzCRMoTPZ6Cl0XnTjCoFYKBpbfM6GEenoT9dWKUkRcMz9bCN7gjJGXs9GsTKmBGayw
+         OMIRGBfLBF4IeQfW9TnBqeq2LX2Q5t8chL0RMlcydMn9T0CH71WAhGkoWxUFeoVhJwvX
+         Bq3mrMtBWMw5K2BCwDKlvmWuwlhrHbe+UufOdOthYsl/kfrFY6eVoOIibEkQ6ulmTiVH
+         C04w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/wy+w9wsE8zfIhgNkxGIPUTx7i8rbUXDARiFoYjO5kk=;
+        b=s2Pzh0TtxjOdkkKKO5vnivGTgSzys42+ljm7ZmCZH6XqgemOWOeMSZrFHtGPUPMxrB
+         P5mMo+JvsFc2NAp4l9Aswz/k/Eg3fM+nMnSwaWEQ1vH6BOpQzLccijrcqP5JqqRp1cEc
+         YbDd5G4oN7w+d+CtmZCo2Kc3c7UDJG+HOIp1CR4FLEI8wWRmi5lVPI8fPJzscaIyS4of
+         LGz61i9H15vMappIRRH6ItZUUJNjgZTjTH5MmJNATBsPfJHoznhf01d/blaMyZ1ccTs9
+         Adqu/K/pPTUvuE9ZvyQkHO2+qK5Uixgyyz64p/EpDXaSU84TZsiwgUsMT6e9LUeA1lFB
+         6I6w==
+X-Gm-Message-State: AOAM531FDwitxQatVJNhtfBuq5RZJ/xdSrsCGyv8wMRF+ZZicEZVl+8X
+        ic8Lyt0GciZtFojl9G7A7+seIjMaGlrmvWcwVnQ=
+X-Google-Smtp-Source: ABdhPJxQtp09MfbBaGwmP6PyjZLacO/x5GxcZNuzTNBqkDGh76PR6iucCbsitklGHtfJium+D1FY/Uar4GnRR8WIQLU=
+X-Received: by 2002:a92:8705:: with SMTP id m5mr432291ild.213.1601514071470;
+ Wed, 30 Sep 2020 18:01:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
+ <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net> <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
+ <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
+ <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com> <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
+ <CALCETrVvob1dbdWSvaB0ZK1kJ19o9ZKy=U3tFifwOR++_xk=zA@mail.gmail.com>
+ <dd4310bd-a76b-cf19-4f12-0b52d7bc483d@intel.com> <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
+In-Reply-To: <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Wed, 30 Sep 2020 18:00:35 -0700
+Message-ID: <CAMe9rOonjX-b46sJ3AYSJZV84d=oU6-KhScnk5vksVqoLgQ90A@mail.gmail.com>
+Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
+ Branch Tracking for vsyscall emulation
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling pipe2() with O_NOTIFICATION_PIPE could results in memory leaks
-in an error path or CONFIG_WATCH_QUEUE=n. Plug them.
+On Wed, Sep 30, 2020 at 4:44 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Wed, Sep 30, 2020 at 3:33 PM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> >
+> > On 9/29/2020 1:00 PM, Andy Lutomirski wrote:
+> > > On Tue, Sep 29, 2020 at 12:57 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > >>
+> > >> On Tue, Sep 29, 2020 at 11:37 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> > >>>
+> > >>> On 9/28/2020 10:37 AM, Andy Lutomirski wrote:
+> > >>>> On Mon, Sep 28, 2020 at 9:59 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+> > >>>>>
+> > >>>>> On Fri, 2020-09-25 at 09:51 -0700, Andy Lutomirski wrote:
+> > >>>>>>> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+> > >>>>> +
+> > >>>>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> > >>>>> +               if (!cet) {
+> > >>>>> +                       /*
+> > >>>>> +                        * This is an unlikely case where the task is
+> > >>>>> +                        * CET-enabled, but CET xstate is in INIT.
+> > >>>>> +                        */
+> > >>>>> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
+> > >>>>
+> > >>>> "unlikely" doesn't really cover this.
+> > >>>>
+> > >>>>> +                       fpregs_unlock();
+> > >>>>> +                       goto sigsegv;
+> > >>>>> +               }
+> > >>>>> +
+> > >>>>> +               if (cet->user_ssp && ((cet->user_ssp + 8) < TASK_SIZE_MAX))
+> > >>>>> +                       cet->user_ssp += 8;
+> > >>>>
+> > >>>> This looks buggy.  The condition should be "if SHSTK is on, then add 8
+> > >>>> to user_ssp".  If the result is noncanonical, then some appropriate
+> > >>>> exception should be generated, probably by the FPU restore code -- see
+> > >>>> below.  You should be checking the SHSTK_EN bit, not SSP.
+> > >>>
+> > >>> Updated.  Is this OK?  I will resend the whole series later.
+> > >>>
+> > >>> Thanks,
+> > >>> Yu-cheng
+> > >>>
+> > >>> ======
+> > >>>
+> > >>>   From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
+> > >>> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> > >>> Date: Thu, 29 Nov 2018 14:15:38 -0800
+> > >>> Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
+> > >>> Indirect Branch
+> > >>>    Tracking for vsyscall emulation
+> > >>>
+> > >>> Vsyscall entry points are effectively branch targets.  Mark them with
+> > >>> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
+> > >>> and reset IBT state machine.
+> > >>>
+> > >>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> > >>> ---
+> > >>> v13:
+> > >>> - Check shadow stack address is canonical.
+> > >>> - Change from writing to MSRs to writing to CET xstate.
+> > >>>
+> > >>>    arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
+> > >>>    arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
+> > >>>    arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
+> > >>>    3 files changed, 44 insertions(+)
+> > >>>
+> > >>> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
+> > >>> b/arch/x86/entry/vsyscall/vsyscall_64.c
+> > >>> index 44c33103a955..30b166091d46 100644
+> > >>> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+> > >>> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+> > >>> @@ -38,6 +38,9 @@
+> > >>>    #include <asm/fixmap.h>
+> > >>>    #include <asm/traps.h>
+> > >>>    #include <asm/paravirt.h>
+> > >>> +#include <asm/fpu/xstate.h>
+> > >>> +#include <asm/fpu/types.h>
+> > >>> +#include <asm/fpu/internal.h>
+> > >>>
+> > >>>    #define CREATE_TRACE_POINTS
+> > >>>    #include "vsyscall_trace.h"
+> > >>> @@ -286,6 +289,44 @@ bool emulate_vsyscall(unsigned long error_code,
+> > >>>          /* Emulate a ret instruction. */
+> > >>>          regs->ip = caller;
+> > >>>          regs->sp += 8;
+> > >>> +
+> > >>> +#ifdef CONFIG_X86_CET
+> > >>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
+> > >>> +               struct cet_user_state *cet;
+> > >>> +               struct fpu *fpu;
+> > >>> +
+> > >>> +               fpu = &tsk->thread.fpu;
+> > >>> +               fpregs_lock();
+> > >>> +
+> > >>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+> > >>> +                       copy_fpregs_to_fpstate(fpu);
+> > >>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
+> > >>> +               }
+> > >>> +
+> > >>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> > >>> +               if (!cet) {
+> > >>> +                       /*
+> > >>> +                        * This should not happen.  The task is
+> > >>> +                        * CET-enabled, but CET xstate is in INIT.
+> > >>> +                        */
+> > >>
+> > >> Can the comment explain better, please?  I would say something like:
+> > >>
+> > >> If the kernel thinks this task has CET enabled (because
+> > >> tsk->thread.cet has one of the features enabled), then the
+> > >> corresponding bits must also be set in the CET XSAVES region.  If the
+> > >> CET XSAVES region is in the INIT state, then the kernel's concept of
+> > >> the task's CET state is corrupt.
+> > >>
+> > >>> +                       WARN_ONCE(1, "CET is enabled, but no xstates");
+> > >>> +                       fpregs_unlock();
+> > >>> +                       goto sigsegv;
+> > >>> +               }
+> > >>> +
+> > >>> +               if (cet->user_cet & CET_SHSTK_EN) {
+> > >>> +                       if (cet->user_ssp && (cet->user_ssp + 8 < TASK_SIZE_MAX))
+> > >>> +                               cet->user_ssp += 8;
+> > >>> +               }
+> > >>
+> > >> This makes so sense to me.  Also, the vsyscall emulation code is
+> > >> intended to be as rigid as possible to minimize the chance that it
+> > >> gets used as an exploit gadget.  So we should not silently corrupt
+> > >> anything.  Moreover, this code seems quite dangerous -- you've created
+> > >> a gadget that does RET without actually verifying the SHSTK token.  If
+> > >> SHSTK and some form of strong indirect branch/call CFI is in use, then
+> > >> the existance of a CFI-bypassing return primitive at a fixed address
+> > >> seems quite problematic.
+> > >>
+> > >> So I think you need to write a function that reasonably accurately
+> > >> emulates a usermode RET.
+> > >>
+> > >
+> > > For what it's worth, I think there is an alternative.  If you all
+> > > (userspace people, etc) can come up with a credible way for a user
+> > > program to statically declare that it doesn't need vsyscalls, then we
+> > > could make SHSTK depend on *that*, and we could avoid this mess.  This
+> > > breaks orthogonality, but it's probably a decent outcome.
+> > >
+> >
+> > Would an arch_prctl(DISABLE_VSYSCALL) work?  The kernel then sets a
+> > thread flag, and in emulate_vsyscall(), checks the flag.
+> >
+> > When CET is enabled, ld-linux will do DISABLE_VSYSCALL.
+> >
+> > How is that?
+>
+> Backwards, no?  Presumably vsyscall needs to be disabled before or
+> concurrently with CET being enabled, not after.
+>
+> I think the solution of making vsyscall emulation work correctly with
+> CET is going to be better and possibly more straightforward.
+>
 
-unreferenced object 0xc00000141114a0d8 (size 992):
-  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
-  hex dump (first 32 bytes):
-    80 11 00 00 e8 03 00 00 00 00 00 00 00 00 00 00  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000abff13d7>] kmem_cache_alloc+0x1b4/0x470
-    [<000000009502e5d5>] alloc_inode+0xd0/0x130
-    [<00000000ca1c1a21>] new_inode_pseudo+0x1c/0x80
-new_inode_pseudo at fs/inode.c:932
-    [<000000000c01d1d6>] create_pipe_files+0x48/0x2d0
-get_pipe_inode at fs/pipe.c:874
-(inlined by) create_pipe_files at fs/pipe.c:914
-    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
-__do_pipe_flags at fs/pipe.c:965
-    [<0000000003941e42>] do_pipe2+0x3c/0x100
-do_pipe2 at fs/pipe.c:1013
-    [<00000000a006b818>] sys_pipe2+0x1c/0x30
-__se_sys_pipe2 at fs/pipe.c:1028
-    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
-    [<000000001c6b0740>] system_call_common+0xe8/0x218
-unreferenced object 0xc000001f575ce600 (size 512):
-  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 ad 4e ad de  .............N..
-    ff ff ff ff 00 00 00 00 ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000d74d5e3a>] kmem_cache_alloc_trace+0x1c4/0x2d0
-    [<0000000061cbc9cb>] alloc_pipe_info+0x88/0x2c0
-kmalloc at include/linux/slab.h:554
-(inlined by) kzalloc at include/linux/slab.h:666
-(inlined by) alloc_pipe_info at fs/pipe.c:793
-    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
-get_pipe_inode at fs/pipe.c:883
-(inlined by) create_pipe_files at fs/pipe.c:914
-    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
-    [<0000000003941e42>] do_pipe2+0x3c/0x100
-    [<00000000a006b818>] sys_pipe2+0x1c/0x30
-    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
-    [<000000001c6b0740>] system_call_common+0xe8/0x218
-unreferenced object 0xc000000d94f20400 (size 1024):
-  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000e60ee00f>] __kmalloc+0x1e4/0x330
-    [<00000000130e8cc8>] alloc_pipe_info+0x154/0x2c0
-kmalloc_array at include/linux/slab.h:594
-(inlined by) kcalloc at include/linux/slab.h:605
-(inlined by) alloc_pipe_info at fs/pipe.c:810
-    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
-    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
-    [<0000000003941e42>] do_pipe2+0x3c/0x100
-    [<00000000a006b818>] sys_pipe2+0x1c/0x30
-    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
-    [<000000001c6b0740>] system_call_common+0xe8/0x218
+We can do
 
-Fixes: c73be61cede5 ("pipe: Add general notification queue support")
-Signed-off-by: Qian Cai <cai@redhat.com>
----
- fs/pipe.c | 3 +++
- 1 file changed, 3 insertions(+)
+1. Add ARCH_X86_DISABLE_VSYSCALL to disable the vsyscall page.
+2. If CPU supports CET and the program is CET enabled:
+    a. Disable the vsyscall page.
+    b. Pass control to user.
+    c. Enable the vsyscall page when ARCH_X86_CET_DISABLE is called.
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 60dbee457143..5184972cd9c0 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -920,10 +920,13 @@ int create_pipe_files(struct file **res, int flags)
- 	if (flags & O_NOTIFICATION_PIPE) {
- #ifdef CONFIG_WATCH_QUEUE
- 		if (watch_queue_init(inode->i_pipe) < 0) {
-+			free_pipe_info(inode->i_pipe);
- 			iput(inode);
- 			return -ENOMEM;
- 		}
- #else
-+		free_pipe_info(inode->i_pipe);
-+		iput(inode);
- 		return -ENOPKG;
- #endif
- 	}
+So when control is passed from kernel to user, the vsyscall page is
+disabled if the program
+is CET enabled.
+
 -- 
-2.28.0
-
+H.J.
