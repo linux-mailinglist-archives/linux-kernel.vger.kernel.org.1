@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06AB927FBE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7327FBEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731771AbgJAIum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        id S1731812AbgJAIvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgJAIuk (ORCPT
+        with ESMTP id S1731638AbgJAIvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:50:40 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B42AC0613D0;
-        Thu,  1 Oct 2020 01:50:40 -0700 (PDT)
-Received: from ip4d14bc8c.dynamic.kabel-deutschland.de ([77.20.188.140] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1kNuIP-0004XP-Ux; Thu, 01 Oct 2020 10:50:38 +0200
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 26/26] docs: reporting-bugs: add SPDX tag and license hint, remove markers
-Date:   Thu,  1 Oct 2020 10:50:37 +0200
-Message-Id: <a755240762dd07bb48cf3e561b1e6cfa894f9178.1601541165.git.linux@leemhuis.info>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1601541165.git.linux@leemhuis.info>
-References: <cover.1601541165.git.linux@leemhuis.info>
+        Thu, 1 Oct 2020 04:51:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AC8C0613E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 01:51:48 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so4700235wrt.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 01:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q0ZqQW+4vFf+iD9A70s75Xj0tDXrtRGQDZhTqMv0HQA=;
+        b=GwbofYx9CoC9S0ddpDsHPuhwueqzRHZJ5M3qYwTGpY3ghcpSvLbKilOykFTg4hujbF
+         4cDGPHsCdmFztg066nYKNVFnoOQPPtCulSXtYZ/9JB+hmtVuoIXZauMaSu79yZoJVC6T
+         syAYqU+eBGvvW9GhE2Es/xGggziKKjMhpL4Bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Q0ZqQW+4vFf+iD9A70s75Xj0tDXrtRGQDZhTqMv0HQA=;
+        b=hn7QnFDfG8JsvjnPQGonI93DZAG7SFPngJtiMsTKnoFmM9O3QCtFoH+AFxMVFzuhtc
+         5svYo3/SEsVPCQn485wLQUEhUl1zt5ysALfHYFo6p2p1DNNYAanOADRqPJXj9vrCqvAJ
+         HpPKe7lQce83BZtUgzQwVUpSpjBSUVakkh/zQ1QUm73eoEprWj3QftKiWG8WDahT/t84
+         W4fR9j5yfP6sEHbhlcfSSA/Tv286V+4oLQnQIGxoCWOLlZjqwXvz6lgmox9D1UjtCQBU
+         ucKy8rB7a5tjvwuzECz7A34RMzErChTgyLJV3MM98rVgKbMyMfrD0Sf3Ts3Yi0UUgR04
+         NS4A==
+X-Gm-Message-State: AOAM533Rg6Ix9670nRaDINRlqaHlm5p27957jFe+uscZDMNJvQKwgIvi
+        KZFG9UUM2yAbfoJ/0GsiuKzPQA==
+X-Google-Smtp-Source: ABdhPJzKXFLbzshpy+p+8230Vw8GdYl9ooKUmCa2O/O8jqzK2KVTh/nWZ/iQ0i7cPspGYyUBl9SBvg==
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr8110204wrn.175.1601542307324;
+        Thu, 01 Oct 2020 01:51:47 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id n3sm7712106wmn.28.2020.10.01.01.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 01:51:46 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 10:51:44 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH 1/3] drm: Add and export function
+ drm_gem_cma_create_noalloc
+Message-ID: <20201001085144.GD438822@phenom.ffwll.local>
+Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20200930165212.GA8833@lst.de>
+ <20200930171644.299363-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601542240;ce6046ea;
-X-HE-SMSGID: 1kNuIP-0004XP-Ux
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930171644.299363-1-paul@crapouillou.net>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the last leftovers from the old text. Also delete the temporary
-markers added for the rewrite of this document. Add a SPDX tag with the
-new license now that the rewrite is complete. Add a license hint whom to
-attribute when distributing the text under CC-BY 4.0.
+On Wed, Sep 30, 2020 at 07:16:42PM +0200, Paul Cercueil wrote:
+> Add and export the function drm_gem_cma_create_noalloc(), which is just
+> __drm_gem_cma_create() renamed.
+> 
+> This function can be used by drivers that need to create a GEM object
+> without allocating the backing memory.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/drm_gem_cma_helper.c | 11 ++++++-----
+>  include/drm/drm_gem_cma_helper.h     |  3 +++
+>  2 files changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+> index 59b9ca207b42..6abc4b306832 100644
+> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+> @@ -34,7 +34,7 @@
+>   */
+>  
+>  /**
+> - * __drm_gem_cma_create - Create a GEM CMA object without allocating memory
+> + * drm_gem_cma_create_noalloc - Create a GEM CMA object without allocating memory
+>   * @drm: DRM device
+>   * @size: size of the object to allocate
+>   *
+> @@ -45,8 +45,8 @@
+>   * A struct drm_gem_cma_object * on success or an ERR_PTR()-encoded negative
+>   * error code on failure.
+>   */
+> -static struct drm_gem_cma_object *
+> -__drm_gem_cma_create(struct drm_device *drm, size_t size)
+> +struct drm_gem_cma_object *
+> +drm_gem_cma_create_noalloc(struct drm_device *drm, size_t size)
+>  {
+>  	struct drm_gem_cma_object *cma_obj;
+>  	struct drm_gem_object *gem_obj;
+> @@ -76,6 +76,7 @@ __drm_gem_cma_create(struct drm_device *drm, size_t size)
+>  	kfree(cma_obj);
+>  	return ERR_PTR(ret);
+>  }
+> +EXPORT_SYMBOL_GPL(drm_gem_cma_create_noalloc);
 
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
- Documentation/admin-guide/reporting-bugs.rst | 27 ++++++--------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+This feels a bit awkward, since for drivers who want to roll their own we
+can do that already.
 
-diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-index 42f59419263a..bbddea6b1567 100644
---- a/Documentation/admin-guide/reporting-bugs.rst
-+++ b/Documentation/admin-guide/reporting-bugs.rst
-@@ -1,15 +1,10 @@
-+.. SPDX-License-Identifier: (GPL-2.0+ OR CC-BY-4.0)
-+
- .. _reportingbugs:
- 
- Reporting bugs
- ++++++++++++++
- 
--.. ############################################################################
--.. Temporary marker added while this document is rewritten. The sections below
--.. up to a second marker of this kind are new and dual-licensed under GPLv2+
--.. and CC-BY 4.0. Both sections are incomplete as of now and thus might be
--.. inconsistent/not make sense before all patches of the rewrite got applied.
--.. ###########################################################################
--
- 
- The short guide (aka TL;DR)
- ===========================
-@@ -1467,15 +1462,9 @@ document and the implications between the lines illustrate that. But that's how
- it is for now. The main author of this text hopes documenting the state of the
- art will lay some groundwork to improve the situation over time.
- 
--.. ############################################################################
--.. Temporary marker added while this document is rewritten. Sections above
--.. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
--.. Both sections are incomplete as of now and thus sometimes inconsistent.
--.. ###########################################################################
--
--How to report Linux kernel bugs
--===============================
--
--Thank you!
--
--[Some of this is taken from Frohwalt Egerer's original linux-kernel FAQ]
-+*Licensing advice: This document is dual-licensed under GPL-2.0+ and CC-BY 4.0.
-+If you want to distribute it under the terms of the latter, please use 'The
-+Linux kernel developers' for author attribution and either
-+https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html or
-+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/Documentation/admin-guide/reporting-bugs.rst
-+when pointing to the source.*
+I think the better approach is to export a cma function which allocates
+non-coherent dma memory.
+-Daniel
+
+>  
+>  /**
+>   * drm_gem_cma_create - allocate an object with the given size
+> @@ -98,7 +99,7 @@ struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
+>  
+>  	size = round_up(size, PAGE_SIZE);
+>  
+> -	cma_obj = __drm_gem_cma_create(drm, size);
+> +	cma_obj = drm_gem_cma_create_noalloc(drm, size);
+>  	if (IS_ERR(cma_obj))
+>  		return cma_obj;
+>  
+> @@ -476,7 +477,7 @@ drm_gem_cma_prime_import_sg_table(struct drm_device *dev,
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	/* Create a CMA GEM buffer. */
+> -	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size);
+> +	cma_obj = drm_gem_cma_create_noalloc(dev, attach->dmabuf->size);
+>  	if (IS_ERR(cma_obj))
+>  		return ERR_CAST(cma_obj);
+>  
+> diff --git a/include/drm/drm_gem_cma_helper.h b/include/drm/drm_gem_cma_helper.h
+> index 2bfa2502607a..be2b8e3a8ab2 100644
+> --- a/include/drm/drm_gem_cma_helper.h
+> +++ b/include/drm/drm_gem_cma_helper.h
+> @@ -83,6 +83,9 @@ int drm_gem_cma_mmap(struct file *filp, struct vm_area_struct *vma);
+>  struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
+>  					      size_t size);
+>  
+> +struct drm_gem_cma_object *
+> +drm_gem_cma_create_noalloc(struct drm_device *drm, size_t size);
+> +
+>  extern const struct vm_operations_struct drm_gem_cma_vm_ops;
+>  
+>  #ifndef CONFIG_MMU
+> -- 
+> 2.28.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.26.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
