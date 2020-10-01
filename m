@@ -2,134 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F2127F80E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDCC27F80A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgJACyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJACye (ORCPT
+        id S1730320AbgJACx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:53:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725800AbgJACx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:54:34 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D91C061755;
-        Wed, 30 Sep 2020 19:54:33 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 34so2775742pgo.13;
-        Wed, 30 Sep 2020 19:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=KJi4ba1o7OEmQx07SGkY7nXm0TQ/hVgl3GIotn3ANWo=;
-        b=icsVsbr4uO5Wp5/f5LgBnFO4SPOkAf7fycnO2bW7r8Yq6fOScvXwXoFGQhK6aTWktT
-         gUiJt6FFpFygsbyRT73JYR4JZGJHE54C5JT5Vmy1XbgI3Mu8G6T5PTeFYq+uC+IBpDDP
-         JHc0QqmQFjUlNKXKuGrGQf6G0XS/t5aNf+zJGPHWjU7LfHXjtwWXFGn/HWtsM1yhfCl5
-         Bcu/+b5VlxlwW9TWRYVbfQCHpa/uSiMmHYaVkrZFJLquIpR6X2NSnA6z+O4ybR+FGxYJ
-         OsQ251ORTZ4xBKOHPt0PZ3g7oBJi+lFsRDgoGBaptFhB2Zrnw4v515u8Z6yj/YQ07OGy
-         2Y0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=KJi4ba1o7OEmQx07SGkY7nXm0TQ/hVgl3GIotn3ANWo=;
-        b=C8RlIo5LZsB+xeiDgUc8PBxY/06RWGe6mW8n8hA5QwBBQhI234b/yR1QS7J6WARTAU
-         9s21R5DVQy3J1QupE/Qx4JFlLhXXfn0aC+9JT8ptoOc9kUIWo8WfHjplhsjOsd6yLNTX
-         qEeCO1DCvCMiskDhu9CFgsfivdKqiY9GH9OosoHYCKl8xxFtpTpKGnaTmBIHOjal7TWJ
-         SjB6bUgjjDbjx86WcRbNa4Ul51gj/X2zL+5lH4C6C1tpKBi9wKMec+QjihJPCeTzJO3O
-         mv/85d+oosaX72HfrPyH0BN4o2QalMVJqXkwDoJy12s5YorL4MW/BRaICsBifZ1d2bSk
-         PkYA==
-X-Gm-Message-State: AOAM530iz9gm6MdxhyG4iIXmPAGUI8zSY+4QmaoFYvR+5nwR8Xvh7qeZ
-        5akroAI51gvzDOuEmG3gMhg=
-X-Google-Smtp-Source: ABdhPJwnS01CLMBYPUaSVwPd6+pnekEkWjRFV6Kf726LqsVavVn2ZtKWEdaXKRzMbxDeOp7RMzL1KQ==
-X-Received: by 2002:a63:6306:: with SMTP id x6mr4644910pgb.161.1601520872517;
-        Wed, 30 Sep 2020 19:54:32 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id w203sm4412626pff.0.2020.09.30.19.54.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 19:54:32 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 19:48:50 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20201001024850.GA28456@Asurada-Nvidia>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <20200930153131.GB3833404@ulmo>
- <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
- <20200930213244.GA10573@Asurada-Nvidia>
- <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
- <20201001012630.GA28240@Asurada-Nvidia>
- <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
+        Wed, 30 Sep 2020 22:53:27 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601520805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3onzANrKcElOeJRqYfauqyHXTE9OT8+U7H5RZIzMJqY=;
+        b=FhDXKehUF5QlUBpM8IFdqNuDVtzxDZF8iiNSQl042YlemDJLD0epoglIyEknVA5CX/v6tn
+        Dvg+pAPUCKgn86E6JVxPZATktWkPzt85QR3Kmfqmlsns5uViGsjIbyWxZsCc/8hSNYVoyT
+        SZrKsw0NBwxXKfs9yUkwZCjsjsBtUy0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-sPFtqgRcMsiEurG6ebSxsQ-1; Wed, 30 Sep 2020 22:53:23 -0400
+X-MC-Unique: sPFtqgRcMsiEurG6ebSxsQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22BB61868416;
+        Thu,  1 Oct 2020 02:53:21 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-115-71.rdu2.redhat.com [10.10.115.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 811BE5C1CF;
+        Thu,  1 Oct 2020 02:53:19 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] pipe: Fix memory leaks in create_pipe_files()
+Date:   Wed, 30 Sep 2020 22:52:55 -0400
+Message-Id: <20201001025255.29560-1-cai@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 05:06:19AM +0300, Dmitry Osipenko wrote:
-> 01.10.2020 04:26, Nicolin Chen пишет:
-> > On Thu, Oct 01, 2020 at 12:56:46AM +0300, Dmitry Osipenko wrote:
-> >> 01.10.2020 00:32, Nicolin Chen пишет:
-> >>> On Thu, Oct 01, 2020 at 12:24:25AM +0300, Dmitry Osipenko wrote:
-> >>>> ...
-> >>>>>> It looks to me like the only reason why you need this new global API is
-> >>>>>> because PCI devices may not have a device tree node with a phandle to
-> >>>>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
-> >>>>>> root complex has an iommus property, right? In that case, can't we
-> >>>>>> simply do something like this:
-> >>>>>>
-> >>>>>> 	if (dev_is_pci(dev))
-> >>>>>> 		np = find_host_bridge(dev)->of_node;
-> >>>>>> 	else
-> >>>>>> 		np = dev->of_node;
-> >>>>>>
-> >>>>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
-> >>>>>> sure that exists.
-> >>>>>>
-> >>>>>> Once we have that we can still iterate over the iommus property and do
-> >>>>>> not need to rely on this global variable.
-> >>>>>
-> >>>>> I agree that it'd work. But I was hoping to simplify the code
-> >>>>> here if it's possible. Looks like we have an argument on this
-> >>>>> so I will choose to go with your suggestion above for now.
-> >>>>
-> >>>> This patch removed more lines than were added. If this will be opposite
-> >>>> for the Thierry's suggestion, then it's probably not a great suggestion.
-> >>>
-> >>> Sorry, I don't quite understand this comments. Would you please
-> >>> elaborate what's this "it" being "not a great suggestion"?
-> >>>
-> >>
-> >> I meant that you should try to implement Thierry's solution, but if the
-> >> end result will be worse than the current patch, then you shouldn't make
-> >> a v4, but get back to this discussion in order to choose the best option
-> >> and make everyone agree on it.
-> > 
-> > I see. Thanks for the reply. And here is a sample implementation:
-> 
-> That's what I supposed to happen :) The new variant adds code and
-> complexity, while old did the opposite. Hence the old variant is clearly
-> more attractive, IMO.
+Calling pipe2() with O_NOTIFICATION_PIPE could results in memory leaks
+in an error path or CONFIG_WATCH_QUEUE=n. Plug them.
 
-I personally am not a fan of adding a path for PCI device either,
-since PCI/IOMMU cores could have taken care of it while the same
-path can't be used for other buses.
+unreferenced object 0xc00000141114a0d8 (size 992):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    80 11 00 00 e8 03 00 00 00 00 00 00 00 00 00 00  ................
+    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+  backtrace:
+    [<00000000abff13d7>] kmem_cache_alloc+0x1b4/0x470
+    [<000000009502e5d5>] alloc_inode+0xd0/0x130
+    [<00000000ca1c1a21>] new_inode_pseudo+0x1c/0x80
+new_inode_pseudo at fs/inode.c:932
+    [<000000000c01d1d6>] create_pipe_files+0x48/0x2d0
+get_pipe_inode at fs/pipe.c:874
+(inlined by) create_pipe_files at fs/pipe.c:914
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+__do_pipe_flags at fs/pipe.c:965
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+do_pipe2 at fs/pipe.c:1013
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+__se_sys_pipe2 at fs/pipe.c:1028
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
+unreferenced object 0xc000001f575ce600 (size 512):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 ad 4e ad de  .............N..
+    ff ff ff ff 00 00 00 00 ff ff ff ff ff ff ff ff  ................
+  backtrace:
+    [<00000000d74d5e3a>] kmem_cache_alloc_trace+0x1c4/0x2d0
+    [<0000000061cbc9cb>] alloc_pipe_info+0x88/0x2c0
+kmalloc at include/linux/slab.h:554
+(inlined by) kzalloc at include/linux/slab.h:666
+(inlined by) alloc_pipe_info at fs/pipe.c:793
+    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
+get_pipe_inode at fs/pipe.c:883
+(inlined by) create_pipe_files at fs/pipe.c:914
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
+unreferenced object 0xc000000d94f20400 (size 1024):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000e60ee00f>] __kmalloc+0x1e4/0x330
+    [<00000000130e8cc8>] alloc_pipe_info+0x154/0x2c0
+kmalloc_array at include/linux/slab.h:594
+(inlined by) kcalloc at include/linux/slab.h:605
+(inlined by) alloc_pipe_info at fs/pipe.c:810
+    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
 
-If we can't come to an agreement on globalizing mc pointer, would
-it be possible to pass tegra_mc_driver through tegra_smmu_probe()
-so we can continue to use driver_find_device_by_fwnode() as v1?
+Fixes: c73be61cede5 ("pipe: Add general notification queue support")
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ fs/pipe.c                   | 11 +++++------
+ include/linux/watch_queue.h |  4 ++++
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-v1: https://lkml.org/lkml/2020/9/26/68
+diff --git a/fs/pipe.c b/fs/pipe.c
+index 60dbee457143..6fbfbb8f32e1 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -913,19 +913,18 @@ int create_pipe_files(struct file **res, int flags)
+ {
+ 	struct inode *inode = get_pipe_inode();
+ 	struct file *f;
++	int ret;
+ 
+ 	if (!inode)
+ 		return -ENFILE;
+ 
+ 	if (flags & O_NOTIFICATION_PIPE) {
+-#ifdef CONFIG_WATCH_QUEUE
+-		if (watch_queue_init(inode->i_pipe) < 0) {
++		ret = watch_queue_init(inode->i_pipe);
++		if (ret < 0) {
++			free_pipe_info(inode->i_pipe);
+ 			iput(inode);
+-			return -ENOMEM;
++			return ret;
+ 		}
+-#else
+-		return -ENOPKG;
+-#endif
+ 	}
+ 
+ 	f = alloc_file_pseudo(inode, pipe_mnt, "",
+diff --git a/include/linux/watch_queue.h b/include/linux/watch_queue.h
+index 5e08db2adc31..20665fbe0552 100644
+--- a/include/linux/watch_queue.h
++++ b/include/linux/watch_queue.h
+@@ -123,5 +123,9 @@ static inline void remove_watch_list(struct watch_list *wlist, u64 id)
+ #define watch_sizeof(STRUCT) (sizeof(STRUCT) << WATCH_INFO_LENGTH__SHIFT)
+ 
+ #endif
++static inline int watch_queue_init(struct pipe_inode_info *pipe)
++{
++	return -ENOPKG;
++}
+ 
+ #endif /* _LINUX_WATCH_QUEUE_H */
+-- 
+2.28.0
+
