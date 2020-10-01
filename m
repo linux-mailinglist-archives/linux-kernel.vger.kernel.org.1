@@ -2,253 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200D27F739
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D517F27F734
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731000AbgJABWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730841AbgJABWF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:22:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F730C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:22:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id v14so928846pjd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iykkjgQ2zEilsAYb25Oiu9fvwjjl039POyRBKs3+JVs=;
-        b=sRCpZJu0ngw1dkSkZBTu+JNMJFBCS9quxA7f49WCZeKRdthWNBrWQmcK44uYaoVDUm
-         MBJAkE1sLjU3wZ7MO21Lvong9b3wiwGiTRAjCM7Wmzbv0gwNXyLptvZ7BvggioYZFQg9
-         TwfcPqtMy1+7JvSS0193XtJDUcC3XiaAeua9QBJ5iXWa552vP+YfB7uLOAcgMeeebYwI
-         3YDNQrpdn7UgIwWl8IrZKNFukU//OULdNQvK2hceoBohxRKSganWLfoE0CMyltWcDNt5
-         M80ThdTByb5CX8gNLPFNA0G6v9rl0HcFGRI2fcg6/J1Lg1p9iMsV1Uq9wZNML39DXUyk
-         9amw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iykkjgQ2zEilsAYb25Oiu9fvwjjl039POyRBKs3+JVs=;
-        b=f8opUD/vKhX8bLUx9YM/FwHlfmE+bsCswTvrbBflI5FBv2/BxuHrfX4k+pvmuI/C1/
-         wC+8Szz46XvJo5FMWmJ+HTZm+71bWd4FIBatUm0l5RGbqXLQcTCasms7sMP9q4mDUlDP
-         IVm2HJcUNaN6YUYd1Gd4sIzHFqDGVGPXo9Igzp15umJgIfAz1IBB95R7qoeMyHZQsqEn
-         UTNTqMT3qLqKPMIFE8ptidNAjx+iHghC1D+JEJJuzPqfsS0k/qpJVPoUrggSf8Aue7Ug
-         PMxYpiJQQyJ4yqb3QnXJ9BDmQbL9p1XaylcJmtv2ut3FC1Av/p/JZI2s51yCX/0wf0zT
-         7Z+Q==
-X-Gm-Message-State: AOAM530Lx1SuvtrUVKbo6JedBFtHO9DOzERJMPHlRt406iFXZe6Y3cYh
-        Ulv2RGsOhpj+Jip2CSn6fUEXss7rI1tpaA==
-X-Google-Smtp-Source: ABdhPJzQHrrOZJj4XNEhnUWUqQA8nROXHxb9gvlg9wZaBc4JCEFl7Z24Na9GkT1QihA9kpnNMDS9Kw==
-X-Received: by 2002:a17:90b:1050:: with SMTP id gq16mr5152246pjb.234.1601515324285;
-        Wed, 30 Sep 2020 18:22:04 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id s187sm4229372pfc.134.2020.09.30.18.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 18:22:03 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 6/6] dma-buf: heaps: Skip sync if not mapped
-Date:   Thu,  1 Oct 2020 01:21:51 +0000
-Message-Id: <20201001012151.21149-7-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001012151.21149-1-john.stultz@linaro.org>
-References: <20201001012151.21149-1-john.stultz@linaro.org>
+        id S1730977AbgJABWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:22:11 -0400
+Received: from ozlabs.org ([203.11.71.1]:59853 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730881AbgJABWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 21:22:08 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1wMc5Qcsz9sVH;
+        Thu,  1 Oct 2020 11:22:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601515325;
+        bh=lxReYaKMZ4Whv2LEP3oxnspFk35br6e0B7xf7dEz2Hs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ANfcG7RdhJU1XQnVrLkFQGNV7ML0+gzOP0wt19ipwQvTzqfpvosIZJmb/7H4BSXg8
+         FwYA3EcniJxoluxnUgvxMvwul94/Z/jxuKmdU/xRopJOZugV80cs9oiClg8QTppvAr
+         Dn4hP0NbFWzVdDo7Ze9pT6ZRqoEJtBTBEtG1Zzbl/6ag/ZntzA0yyty+obbzS2BX0U
+         rdngucPAK3+IhM+ucc6EUyJBEKpfdjKcAi7qbvCw5AopFEGeBTUmF7EROycUfoBFWK
+         WNah0SHXXAWohfPWGEYSGhBUrlimt/ncFdEX2wQfxoKCTOtrGkCdPFmBXH4ysidSTU
+         aOHvmbTNL9dpw==
+Date:   Thu, 1 Oct 2020 11:22:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the clk tree
+Message-ID: <20201001112202.74a7e72a@canb.auug.org.au>
+In-Reply-To: <160151172628.310579.596467424545504483@swboyd.mtv.corp.google.com>
+References: <20200923214632.079690f6@canb.auug.org.au>
+        <160151172628.310579.596467424545504483@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/epqEPDSI/CmOSX7m.VoxL/8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is basically a port of Ørjan Eide's similar patch for ION
- https://lore.kernel.org/lkml/20200414134629.54567-1-orjan.eide@arm.com/
+--Sig_/epqEPDSI/CmOSX7m.VoxL/8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Only sync the sg-list of dma-buf heap attachment when the attachment
-is actually mapped on the device.
+Hi Stephen,
 
-dma-bufs may be synced at any time. It can be reached from user space
-via DMA_BUF_IOCTL_SYNC, so there are no guarantees from callers on when
-syncs may be attempted, and dma_buf_end_cpu_access() and
-dma_buf_begin_cpu_access() may not be paired.
+On Wed, 30 Sep 2020 17:22:06 -0700 Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Thanks for pointing that out. Is this part of checkpatch? I run
+> checkpatch on most patches and didn't see any complaint.
 
-Since the sg_list's dma_address isn't set up until the buffer is used
-on the device, and dma_map_sg() is called on it, the dma_address will be
-NULL if sync is attempted on the dma-buf before it's mapped on a device.
+This is not part of checkpatch, just some scripts I run after fetching
+each tree each day.
 
-Before v5.0 (commit 55897af63091 ("dma-direct: merge swiotlb_dma_ops
-into the dma_direct code")) this was a problem as the dma-api (at least
-the swiotlb_dma_ops on arm64) would use the potentially invalid
-dma_address. How that failed depended on how the device handled physical
-address 0. If 0 was a valid address to physical ram, that page would get
-flushed a lot, while the actual pages in the buffer would not get synced
-correctly. While if 0 is an invalid physical address it may cause a
-fault and trigger a crash.
+--=20
+Cheers,
+Stephen Rothwell
 
-In v5.0 this was incidentally fixed by commit 55897af63091 ("dma-direct:
-merge swiotlb_dma_ops into the dma_direct code"), as this moved the
-dma-api to use the page pointer in the sg_list, and (for Ion buffers at
-least) this will always be valid if the sg_list exists at all.
+--Sig_/epqEPDSI/CmOSX7m.VoxL/8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-But, this issue is re-introduced in v5.3 with
-commit 449fa54d6815 ("dma-direct: correct the physical addr in
-dma_direct_sync_sg_for_cpu/device") moves the dma-api back to the old
-behaviour and picks the dma_address that may be invalid.
+-----BEGIN PGP SIGNATURE-----
 
-dma-buf core doesn't ensure that the buffer is mapped on the device, and
-thus have a valid sg_list, before calling the exporter's
-begin_cpu_access.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91LzoACgkQAVBC80lX
+0Gx+nQf+N09NcphrAUh/sN1LRxsfksBpBEVB4mQj8b0IiHRSmKyN2Z8tOlogwLai
+jELGwd+EhUzNrlWXoVDEgCLjC7P+4Jo2DWnv0kZyl/iCQJgQC1C9Y6smOqPOomnb
+rQ8UnL9z9rCZF46o+CSq3eOfysml969SCeEBiVAzq5eUvyj4KqNhwgDTZpRbVSBe
+GI59K9DfhPkgi/pCmd2TKPwnsrceU89hSYsPYVRefqxzyjYPKVj2gC7ktXDD4fpj
+V2O4Hfbc3TEdttqo/yyk6Qc3K4dvhswkcv8YiF6A5b5c3RISMWssatGxz12BLfwy
+Qf4zDskYWoOewM7apkFEWhNtcYZkBQ==
+=XxkC
+-----END PGP SIGNATURE-----
 
-Logic and commit message originally by: Ørjan Eide <orjan.eide@arm.com>
-
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/dma-buf/heaps/cma_heap.c    | 10 ++++++++++
- drivers/dma-buf/heaps/system_heap.c | 10 ++++++++++
- 2 files changed, 20 insertions(+)
-
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 4f20f07872e5..e19320f52063 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -44,6 +44,7 @@ struct dma_heap_attachment {
- 	struct device *dev;
- 	struct sg_table table;
- 	struct list_head list;
-+	bool mapped;
- };
- 
- static int cma_heap_attach(struct dma_buf *dmabuf,
-@@ -68,6 +69,7 @@ static int cma_heap_attach(struct dma_buf *dmabuf,
- 
- 	a->dev = attachment->dev;
- 	INIT_LIST_HEAD(&a->list);
-+	a->mapped = false;
- 
- 	attachment->priv = a;
- 
-@@ -101,6 +103,7 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
- 	if (!dma_map_sg(attachment->dev, table->sgl, table->nents,
- 			direction))
- 		table = ERR_PTR(-ENOMEM);
-+	a->mapped = true;
- 	return table;
- }
- 
-@@ -108,6 +111,9 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				   struct sg_table *table,
- 				   enum dma_data_direction direction)
- {
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	a->mapped = false;
- 	dma_unmap_sg(attachment->dev, table->sgl, table->nents, direction);
- }
- 
-@@ -122,6 +128,8 @@ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
- 
- 	mutex_lock(&buffer->lock);
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_cpu(a->dev, a->table.sgl, a->table.nents,
- 				    direction);
- 	}
-@@ -141,6 +149,8 @@ static int cma_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
- 
- 	mutex_lock(&buffer->lock);
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_device(a->dev, a->table.sgl, a->table.nents,
- 				       direction);
- 	}
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index f30904345cce..c0d051203300 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -38,6 +38,7 @@ struct dma_heap_attachment {
- 	struct device *dev;
- 	struct sg_table *table;
- 	struct list_head list;
-+	bool mapped;
- };
- 
- #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-@@ -94,6 +95,7 @@ static int system_heap_attach(struct dma_buf *dmabuf,
- 	a->table = table;
- 	a->dev = attachment->dev;
- 	INIT_LIST_HEAD(&a->list);
-+	a->mapped = false;
- 
- 	attachment->priv = a;
- 
-@@ -128,6 +130,7 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
- 	if (!dma_map_sg(attachment->dev, table->sgl, table->nents, direction))
- 		return ERR_PTR(-ENOMEM);
- 
-+	a->mapped = true;
- 	return table;
- }
- 
-@@ -135,6 +138,9 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				      struct sg_table *table,
- 				      enum dma_data_direction direction)
- {
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	a->mapped = false;
- 	dma_unmap_sg(attachment->dev, table->sgl, table->nents, direction);
- }
- 
-@@ -150,6 +156,8 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
- 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_cpu(a->dev, a->table->sgl, a->table->nents,
- 				    direction);
- 	}
-@@ -170,6 +178,8 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
- 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_device(a->dev, a->table->sgl, a->table->nents,
- 				       direction);
- 	}
--- 
-2.17.1
-
+--Sig_/epqEPDSI/CmOSX7m.VoxL/8--
