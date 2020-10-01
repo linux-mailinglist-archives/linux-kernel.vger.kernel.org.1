@@ -2,216 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4693D280B32
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CEB280B3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387640AbgJAXMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387645AbgJAXMT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:12:19 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0531C0613E9
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 16:12:18 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id a25so43967wmb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6U1yc3gv5wM9kLNMd9jEohPOntXTZSbqzeYsD504LQo=;
-        b=T+Mb0qxijrNcHERP1kb5nxhzi7K1NRLmFT0IQjGAqv1sMX9T9tG0+ql517C9IqKnnG
-         hJrf+4Kln8fh/0Ek7Bf9+anW9GEYqThiAILYF7GeP0D7o6NJf0/RnABPp53JnA4mZPBP
-         sOw1Lq1z8tXbYdlPwtCmzeRQf5gSmfaDkTDLRyizeihjXWc9rmo2S1qW2lcHRDhcyFkP
-         HLmtRtzSAmn0pY2OnX3kBREa5n8DNK+P7sgwZJRziasrcn2ITEkTcDUxv+pMipUnNjug
-         tmtOAXextMiKa2hHb6MAwP3N7hgQ8UaUz1toScA6KHW9q2p1/UwN4pI3H0HUI/DFpe7i
-         LMpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6U1yc3gv5wM9kLNMd9jEohPOntXTZSbqzeYsD504LQo=;
-        b=kNsxAAcRiIlNlZV8VUEKhXkTZyRcTyYG2NEWUcHn7CeFFPPKAPAHRYIuwLlDnjTKuU
-         1UmD+nn/DfcZd2Iv2GZWZmffwLzp33Fclg4uERRl0Yb4PDy/plinKgAr6E/dVzG9KSNO
-         BehatZG2aw4ljT8rymfpP2eowpUFGXGwfy2qyBdQuwVxCEjyFakKTpE69qPAdc68otJL
-         QJeb/wwreqkA06VW5hXmDL30RU6r8lKCkZt9+HpGmx/vNH4d3u/Lk9v2B1pBUKzQnVTv
-         Ij671PirVrO+YqtY6LHvg8x8C42FpGvOzd1lSYeMHCgFKa8yNvjvJtI8nGAPKZiuVq5T
-         HaVw==
-X-Gm-Message-State: AOAM532Qw0eOb2wZZi7s7BGHLIIpG9k1SmFiccTeQ71Z84jxqPQW8G0C
-        5cbjGmwEzw9dM0ZtlkWwN0pvS4YdZo9pSk22
-X-Google-Smtp-Source: ABdhPJxyXy8XfCAgYc05YWeo+ZVTVj7VmA34h+GNoLutKjcAXa8yEi3To8FYp13OfsA4DHbmroHYsbYx9xUj8bav
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:23c9:: with SMTP id
- j192mr2411869wmj.6.1601593937356; Thu, 01 Oct 2020 16:12:17 -0700 (PDT)
-Date:   Fri,  2 Oct 2020 01:10:40 +0200
-In-Reply-To: <cover.1601593784.git.andreyknvl@google.com>
-Message-Id: <356d693f2b332627f0b42c5940c525c96e6efa0c.1601593784.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1601593784.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v4 39/39] kasan: add documentation for hardware tag-based mode
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev@googlegroups.com
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        id S1733224AbgJAXOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:14:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733012AbgJAXOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:14:09 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B787206C1;
+        Thu,  1 Oct 2020 23:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601594048;
+        bh=hqUF91GLb9tSBXVkshwDq8qTQJUTbKw1ylzZoXJCt4k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SgkpPd6kNPIAh6oECPKs6n6av/04S4i5vxsWufqvAloPsjqhNVRifXzcQ8NuoN2+b
+         BlBuBOT8rzbfcikWygYQ9RxxpuyCsFZoN3HXAe2HlnLCsCczFDvxAMD78hRQe5emQq
+         br3m4wY8/eA0M1d96L31u5UIDahb/0zUvNjY+hpc=
+Date:   Thu, 1 Oct 2020 18:14:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+Cc:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
+        rafael.j.wysocki@intel.com, ashok.raj@intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        qiuxu.zhuo@intel.com, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v7 07/13] PCI/AER: Extend AER error handling to RCECs
+Message-ID: <20201001231407.GA2743007@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930215820.1113353-8-seanvk.dev@oregontracks.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for hardware tag-based KASAN mode and also add some
-clarifications for software tag-based mode.
+On Wed, Sep 30, 2020 at 02:58:14PM -0700, Sean V Kelley wrote:
+> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> Currently the kernel does not handle AER errors for Root Complex
+> integrated End Points (RCiEPs)[0]. These devices sit on a root bus within
+> the Root Complex (RC). AER handling is performed by a Root Complex Event
+> Collector (RCEC) [1] which is a effectively a type of RCiEP on the same
+> root bus.
+> 
+> For an RCEC (technically not a Bridge), error messages "received" from
+> associated RCiEPs must be enabled for "transmission" in order to cause a
+> System Error via the Root Control register or (when the Advanced Error
+> Reporting Capability is present) reporting via the Root Error Command
+> register and logging in the Root Error Status register and Error Source
+> Identification register.
+> 
+> In addition to the defined OS level handling of the reset flow for the
+> associated RCiEPs of an RCEC, it is possible to also have non-native
+> handling. In that case there is no need to take any actions on the RCEC
+> because the firmware is responsible for them. This is true where APEI [2]
+> is used to report the AER errors via a GHES[v2] HEST entry [3] and
+> relevant AER CPER record [4] and non-native handling is in use.
+> 
+> We effectively end up with two different types of discovery for
+> purposes of handling AER errors:
+> 
+> 1) Normal bus walk - we pass the downstream port above a bus to which
+> the device is attached and it walks everything below that point.
+> 
+> 2) An RCiEP with no visible association with an RCEC as there is no need
+> to walk devices. In that case, the flow is to just call the callbacks for
+> the actual device, which in turn references its associated RCEC.
+> 
+> A new walk function pci_walk_bridge(), similar to pci_walk_bus(),
+> is provided that takes a pci_dev instead of a bus. If that bridge
+> corresponds to a downstream port it will walk the subordinate bus of
+> that bridge. If the device does not then it will call the function on
+> that device alone.
+> 
+> [0] ACPI PCI Express Base Specification 5.0-1 1.3.2.3 Root Complex
+> Integrated Endpoint Rules.
+> [1] ACPI PCI Express Base Specification 5.0-1 6.2 Error Signalling and
+> Logging
+> [2] ACPI Specification 6.3 Chapter 18 ACPI Platform Error Interface (APEI)
+> [3] ACPI Specification 6.3 18.2.3.7 Generic Hardware Error Source
+> [4] UEFI Specification 2.8, N.2.7 PCI Express Error Section
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> ---
+>  drivers/pci/pcie/err.c | 52 +++++++++++++++++++++++++++++++++---------
+>  1 file changed, 41 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 9e552330155b..c4ceca42a3bf 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -146,44 +146,73 @@ static int report_resume(struct pci_dev *dev, void *data)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * pci_walk_bridge - walk bridges potentially AER affected
+> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
+> + *           an RCiEP associated with an RCEC, or a Port.
+> + * @cb       callback to be called for each device found
+> + * @userdata arbitrary pointer to be passed to callback.
+> + *
+> + * If the device provided is a bridge, walk the subordinate bus,
+> + * including any bridged devices on buses under this bus.
+> + * Call the provided callback on each device found.
+> + *
+> + * If the device provided has no subordinate bus, call the provided
+> + * callback on the device itself.
+> + */
+> +static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct pci_dev *, void *),
+> +			    void *userdata)
+> +{
+> +	if (bridge->subordinate)
+> +		pci_walk_bus(bridge->subordinate, cb, userdata);
+> +	else
+> +		cb(bridge, userdata);
+> +}
+> +
+>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  			pci_channel_state_t state,
+>  			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev))
+>  {
+>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+> -	struct pci_bus *bus;
+>  	struct pci_dev *bridge;
+>  	int type;
+>  
+>  	/*
+>  	 * Error recovery runs on all subordinates of the first downstream
+>  	 * bridge. If the downstream bridge detected the error, it is
+> -	 * cleared at the end.
+> +	 * cleared at the end. For RCiEPs we should reset just the RCiEP itself.
+>  	 */
+>  	type = pci_pcie_type(dev);
+>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> +	    type == PCI_EXP_TYPE_RC_EC ||
+> +	    type == PCI_EXP_TYPE_RC_END)
+>  		bridge = dev;
+>  	else
+>  		bridge = pci_upstream_bridge(dev);
+>  
+> -	bus = bridge->subordinate;
+>  	pci_dbg(dev, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+> -		pci_walk_bus(bus, report_frozen_detected, &status);
+> -		status = reset_subordinate_device(dev);
+> +		pci_walk_bridge(bridge, report_frozen_detected, &status);
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Marco Elver <elver@google.com>
----
-Change-Id: Ib46cb444cfdee44054628940a82f5139e10d0258
----
- Documentation/dev-tools/kasan.rst | 78 ++++++++++++++++++++++---------
- 1 file changed, 57 insertions(+), 21 deletions(-)
+Wonder if it would be worth splitting out the pci_walk_bus() to
+pci_walk_bridge() change -- initially pci_walk_bridge() would do only
+this:
 
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index a3030fc6afe5..d2d47c82a7b9 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -5,12 +5,14 @@ Overview
- --------
- 
- KernelAddressSANitizer (KASAN) is a dynamic memory error detector designed to
--find out-of-bound and use-after-free bugs. KASAN has two modes: generic KASAN
--(similar to userspace ASan) and software tag-based KASAN (similar to userspace
--HWASan).
-+find out-of-bound and use-after-free bugs. KASAN has three modes:
-+1. generic KASAN (similar to userspace ASan),
-+2. software tag-based KASAN (similar to userspace HWASan),
-+3. hardware tag-based KASAN (based on hardware memory tagging).
- 
--KASAN uses compile-time instrumentation to insert validity checks before every
--memory access, and therefore requires a compiler version that supports that.
-+Software KASAN modes (1 and 2) use compile-time instrumentation to insert
-+validity checks before every memory access, and therefore require a compiler
-+version that supports that.
- 
- Generic KASAN is supported in both GCC and Clang. With GCC it requires version
- 8.3.0 or later. With Clang it requires version 7.0.0 or later, but detection of
-@@ -19,7 +21,7 @@ out-of-bounds accesses for global variables is only supported since Clang 11.
- Tag-based KASAN is only supported in Clang and requires version 7.0.0 or later.
- 
- Currently generic KASAN is supported for the x86_64, arm64, xtensa, s390 and
--riscv architectures, and tag-based KASAN is supported only for arm64.
-+riscv architectures, and tag-based KASAN modes are supported only for arm64.
- 
- Usage
- -----
-@@ -28,14 +30,16 @@ To enable KASAN configure kernel with::
- 
- 	  CONFIG_KASAN = y
- 
--and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN) and
--CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN).
-+and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN),
-+CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN), and
-+CONFIG_KASAN_HW_TAGS (to enable hardware tag-based KASAN).
- 
--You also need to choose between CONFIG_KASAN_OUTLINE and CONFIG_KASAN_INLINE.
--Outline and inline are compiler instrumentation types. The former produces
--smaller binary while the latter is 1.1 - 2 times faster.
-+For software modes, you also need to choose between CONFIG_KASAN_OUTLINE and
-+CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
-+The former produces smaller binary while the latter is 1.1 - 2 times faster.
- 
--Both KASAN modes work with both SLUB and SLAB memory allocators.
-+Both software KASAN modes work with both SLUB and SLAB memory allocators,
-+hardware tag-based KASAN currently only support SLUB.
- For better bug detection and nicer reporting, enable CONFIG_STACKTRACE.
- 
- To augment reports with last allocation and freeing stack of the physical page,
-@@ -196,17 +200,24 @@ and the second to last.
- Software tag-based KASAN
- ~~~~~~~~~~~~~~~~~~~~~~~~
- 
--Tag-based KASAN uses the Top Byte Ignore (TBI) feature of modern arm64 CPUs to
--store a pointer tag in the top byte of kernel pointers. Like generic KASAN it
--uses shadow memory to store memory tags associated with each 16-byte memory
-+Software tag-based KASAN requires software memory tagging support in the form
-+of HWASan-like compiler instrumentation (see HWASan documentation for details).
-+
-+Software tag-based KASAN is currently only implemented for arm64 architecture.
-+
-+Software tag-based KASAN uses the Top Byte Ignore (TBI) feature of arm64 CPUs
-+to store a pointer tag in the top byte of kernel pointers. Like generic KASAN
-+it uses shadow memory to store memory tags associated with each 16-byte memory
- cell (therefore it dedicates 1/16th of the kernel memory for shadow memory).
- 
--On each memory allocation tag-based KASAN generates a random tag, tags the
--allocated memory with this tag, and embeds this tag into the returned pointer.
-+On each memory allocation software tag-based KASAN generates a random tag, tags
-+the allocated memory with this tag, and embeds this tag into the returned
-+pointer.
-+
- Software tag-based KASAN uses compile-time instrumentation to insert checks
- before each memory access. These checks make sure that tag of the memory that
- is being accessed is equal to tag of the pointer that is used to access this
--memory. In case of a tag mismatch tag-based KASAN prints a bug report.
-+memory. In case of a tag mismatch software tag-based KASAN prints a bug report.
- 
- Software tag-based KASAN also has two instrumentation modes (outline, that
- emits callbacks to check memory accesses; and inline, that performs the shadow
-@@ -215,9 +226,34 @@ simply printed from the function that performs the access check. With inline
- instrumentation a brk instruction is emitted by the compiler, and a dedicated
- brk handler is used to print bug reports.
- 
--A potential expansion of this mode is a hardware tag-based mode, which would
--use hardware memory tagging support instead of compiler instrumentation and
--manual shadow memory manipulation.
-+Software tag-based KASAN uses 0xFF as a match-all pointer tag (accesses through
-+pointers with 0xFF pointer tag aren't checked). The value 0xFE is currently
-+reserved to tag freed memory regions.
-+
-+Software tag-based KASAN currently only supports tagging of slab memory.
-+
-+Hardware tag-based KASAN
-+~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Hardware tag-based KASAN is similar to the software mode in concept, but uses
-+hardware memory tagging support instead of compiler instrumentation and
-+shadow memory.
-+
-+Hardware tag-based KASAN is currently only implemented for arm64 architecture
-+and based on both arm64 Memory Tagging Extension (MTE) introduced in ARMv8.5
-+Instruction Set Architecture, and Top Byte Ignore (TBI).
-+
-+Special arm64 instructions are used to assign memory tags for each allocation.
-+Same tags are assigned to pointers to those allocations. On every memory
-+access, hardware makes sure that tag of the memory that is being accessed is
-+equal to tag of the pointer that is used to access this memory. In case of a
-+tag mismatch a fault is generated and a report is printed.
-+
-+Hardware tag-based KASAN uses 0xFF as a match-all pointer tag (accesses through
-+pointers with 0xFF pointer tag aren't checked). The value 0xFE is currently
-+reserved to tag freed memory regions.
-+
-+Hardware tag-based KASAN currently only supports tagging of slab memory.
- 
- What memory accesses are sanitised by KASAN?
- --------------------------------------------
--- 
-2.28.0.709.gb0816b6eb0-goog
+  if (bridge->subordinate)
+    pci_walk_bus(bridge->subordinate, cb, userdata);
 
+so basically just rename it and move the bridge->subordinate
+dereference out.
+
+Then the next patch would be a lot smaller and would add the
+!bridge->subordinate case (which I think is only for RC_EC & RC_END?)
+
+> +		if (type == PCI_EXP_TYPE_RC_END) {
+> +			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
+> +			status = PCI_ERS_RESULT_NONE;
+> +			goto failed;
+> +		}
+> +
+> +		status = reset_subordinate_devices(bridge);
+
+I missed the reason for this change:
+
+  -		status = reset_subordinate_device(dev);
+  +		status = reset_subordinate_devices(bridge);
+
+>  		if (status != PCI_ERS_RESULT_RECOVERED) {
+>  			pci_warn(dev, "subordinate device reset failed\n");
+>  			goto failed;
+>  		}
+>  	} else {
+> -		pci_walk_bus(bus, report_normal_detected, &status);
+> +		pci_walk_bridge(bridge, report_normal_detected, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+> -		pci_walk_bus(bus, report_mmio_enabled, &status);
+> +		pci_walk_bridge(bridge, report_mmio_enabled, &status);
+>  	}
+>  
+>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+> @@ -194,17 +223,18 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  		 */
+>  		status = PCI_ERS_RESULT_RECOVERED;
+>  		pci_dbg(dev, "broadcast slot_reset message\n");
+> -		pci_walk_bus(bus, report_slot_reset, &status);
+> +		pci_walk_bridge(bridge, report_slot_reset, &status);
+>  	}
+>  
+>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>  		goto failed;
+>  
+>  	pci_dbg(dev, "broadcast resume message\n");
+> -	pci_walk_bus(bus, report_resume, &status);
+> +	pci_walk_bridge(bridge, report_resume, &status);
+>  
+>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    type == PCI_EXP_TYPE_DOWNSTREAM) {
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+> +	    type == PCI_EXP_TYPE_RC_EC) {
+>  		if (pcie_aer_is_native(bridge))
+>  			pcie_clear_device_status(bridge);
+>  		pci_aer_clear_nonfatal_status(bridge);
+> -- 
+> 2.28.0
+> 
