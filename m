@@ -2,112 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9BF280755
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7402E280757
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732672AbgJATBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
+        id S1732704AbgJATCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729418AbgJATBe (ORCPT
+        with ESMTP id S1729418AbgJATCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:01:34 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECE0C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 12:01:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id j22so2041891qtj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 12:01:32 -0700 (PDT)
+        Thu, 1 Oct 2020 15:02:53 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6CCC0613D0;
+        Thu,  1 Oct 2020 12:02:53 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z13so8034432iom.8;
+        Thu, 01 Oct 2020 12:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FA4b+JjxXDupd9SJaACVBkhyBnQSOUKDxz41oObhr2A=;
-        b=ZC/sVh4MTmTpVP1kvhpWmIrWSWjSSBwEAJG9XlrOOb0NRz6k5LT2SNHthNb89UlcUh
-         QqeXxS/u0piR9OSBGSFFjFcDckshdJTn1RncXI921BqZsUrRoH3s9uZxCjhSKQq2Fv3C
-         jI5soOPJVkA3qey9iJ55SDXHdhq1h8HvBEl59kZ0BiG/YOpJlQ3SCvrHXYmcRJfMBFZv
-         RM7bo9q59YsNKJAwsHY+ls6tI1A0aGzX6yI+eRUyeMG9z91clLoQv9mSVUKcN8f7qWik
-         kK85g8AsYz9XqLOOFXLpeovR7J3qvV5gbo0kQPnXX5xNKEI7eezE4w+IVCgf+5rrDJov
-         LVLg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8z1IpKSF7eJBQNiEBan0G7sHx3B7n42/BWgS7aCb0fs=;
+        b=rwghStm4hD1cA83tsP8r77T2kcoAZHCu0PL8QJ6f1Rn+Tg61Uel63no7CCXO/cqWpj
+         FHffC3YHrNYa6YwlwZwarpYm8Kl+xE6dyQuDyTUteJfbCc+culGos0koDrG2fXeKXdq7
+         m/PQXdwy3SIdr5wgumNg8n7DKHOISTaHOCPNrfZn354ps+SQcKaaDw9A34Zgxkp5O0a0
+         lZV7UiNVNpU6pcrZkhsYx2YMJ2ystLCdmycuZ0SQRMgFCSXvd9O4QLGXJ8UmSXFd58Gn
+         qPQ4JY6MR30SBxP12LgeUO3Qph/EgQCA2w48gxhDcFonT+dn9Qh8dNXKW65L30+J5nsC
+         6Kug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FA4b+JjxXDupd9SJaACVBkhyBnQSOUKDxz41oObhr2A=;
-        b=A+pOFV8HcT9Drc7n1v2SqFp6Zjq0lQVry1+2msrDmorasEJe+Vy3AYjRzJs241KywF
-         iczVVCLECUGXrl7UlcmrN8yH527cAg3NT7FqMUJ2GrZ+hT60X2un7hOwu3i9tvlOlfFN
-         XMZenXL0kOGYVUH3OMKeHO2+CNRW5rQr7S1alsirUOH3N8qZR1aIfMK2B/T4TeiW5AHr
-         9frKZv7CBosGk4zdcHXvccz3cEiweKOVUXtxH1/J9UgWHsnRVLo5aH3G+CHyshRWZLM4
-         u01opYNyfHO+D6XRngjpRuXI5r/SsH32/NJDDUtD9Sc8CvP1ROSusqa+YpOVZvIT/yq8
-         E/Iw==
-X-Gm-Message-State: AOAM531RKx2LlGW9aSItVRTfCqjz4DC2Le18XeCPOfbc8eaZXSLlW7U2
-        insk2oBcepdDqHKxZcWjNQ6aKw==
-X-Google-Smtp-Source: ABdhPJzTEnBVYikmvH85woAsYBoLBjCp854qzeNnPxR3BcmIiM34MKzPsFfbojHoXJFeabAQLwLIMA==
-X-Received: by 2002:ac8:36ca:: with SMTP id b10mr2720461qtc.135.1601578892005;
-        Thu, 01 Oct 2020 12:01:32 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:4e22])
-        by smtp.gmail.com with ESMTPSA id f189sm6932506qkd.20.2020.10.01.12.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 12:01:31 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:59:50 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 1/4] mm: memcontrol: use helpers to access page's
- memcg data
-Message-ID: <20201001185950.GB500308@cmpxchg.org>
-References: <20201001002710.748166-1-guro@fb.com>
- <20201001002710.748166-2-guro@fb.com>
- <20201001134638.GE469663@cmpxchg.org>
- <20201001182739.GA2706729@carbon.DHCP.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8z1IpKSF7eJBQNiEBan0G7sHx3B7n42/BWgS7aCb0fs=;
+        b=imH5XjvTRv0a/IvT2wCbG8Eactb8mOXZ2AfFdC/1eXvkL00RHWvPucyqHOQLxaHcex
+         BtoHXR+yc3VYUP2HI90rplbKEEEHCifZPDfAYGRoEpqSSxf+xkIGr4OylI/7epyoZzhs
+         hv125txzw2bSNgqQrtLvLnuxAfo1AHJhsIlD2AmwT0k8/UQB4s1/X4wkFvlo6JOQsccZ
+         74q97TlFpVRDbTuhXpIQyJ4hBDyFBBP9DdUUdalbDy1jiWtKym6xBpGHCaj/CK2vwK3t
+         KGpwLgkaDGIXZWbIQ2ovNN0iKMK2H8bxzPbC7sflSPs6zgvduNT5hquEWoXNNeYGMPmX
+         eK7A==
+X-Gm-Message-State: AOAM532e440EHva7TuMPcivWJf809EbCH8DQVZGnI2dBbM0eQv6yZobS
+        3Nj4LSA6iYeqK1unCpM8iv66OWqYPH3vatt6UVMVbDkjC2c=
+X-Google-Smtp-Source: ABdhPJwiBYt+YxnJnNPM6Hbh+gA2ZiYXM8566KUW3U4iuFEJ8C42BBzUnWKh4UIk/nqdJ3pNaOgzX08gMi0jNDb/Omw=
+X-Received: by 2002:a02:93a3:: with SMTP id z32mr7482836jah.96.1601578971622;
+ Thu, 01 Oct 2020 12:02:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001182739.GA2706729@carbon.DHCP.thefacebook.com>
+References: <20201001014250.26987-1-david.e.box@linux.intel.com>
+ <20201001014250.26987-4-david.e.box@linux.intel.com> <CAHp75VdkjFvaGvw=a9kMO3ZW0+t0AvPDGySNXW6Nbi=YZkEcXg@mail.gmail.com>
+ <CAKgT0UeNLKa1oshmL42pncFy5QYNOVZK=OJEQ8MNFQLrBPb_Pw@mail.gmail.com> <CAHp75VcmLbXpG6-Z6wrZn3MGWMDN8CGBAe2c3TYYy4MQk3jXNw@mail.gmail.com>
+In-Reply-To: <CAHp75VcmLbXpG6-Z6wrZn3MGWMDN8CGBAe2c3TYYy4MQk3jXNw@mail.gmail.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 1 Oct 2020 12:02:40 -0700
+Message-ID: <CAKgT0UcDvw_RTcWms1nVd+8EnAB-CVppjsA86z3KBO2LSCugAQ@mail.gmail.com>
+Subject: Re: [PATCH V7 3/5] platform/x86: Intel PMT class driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:27:39AM -0700, Roman Gushchin wrote:
-> On Thu, Oct 01, 2020 at 09:46:38AM -0400, Johannes Weiner wrote:
-> > On Wed, Sep 30, 2020 at 05:27:07PM -0700, Roman Gushchin wrote:
-> > > +/*
-> > > + * set_page_memcg - associate a page with a memory cgroup
-> > > + * @page: a pointer to the page struct
-> > > + * @memcg: a pointer to the memory cgroup
-> > > + *
-> > > + * Associates a page with a memory cgroup.
-> > > + */
-> > > +static inline void set_page_memcg(struct page *page, struct mem_cgroup *memcg)
-> > > +{
-> > > +	VM_BUG_ON_PAGE(PageSlab(page), page);
-> > > +
-> > > +	/*
-> > > +	 * Please, refer to page_memcg()'s description for the page and memcg
-> > > +	 * binding stability requirements.
-> > > +	 */
-> > > +	page->memcg_data = (unsigned long)memcg;
-> > > +}
-> > 
-> > Please delete and inline this as per previous feedback, thanks.
-> 
-> Why it's better?
-> It's ok for set_page_memcg(), but obviously worse for set_page_objcgs():
-> it was nice to have all bit magic in one place, in few helper functions.
-> And now it spills into several places. What's the win?
+On Thu, Oct 1, 2020 at 11:06 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Oct 1, 2020 at 8:44 PM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+> > On Thu, Oct 1, 2020 at 9:26 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
+>
+> ...
+>
+> > > > Intel Platform Monitoring Technology is meant to provide a common way to
+> > > > access telemetry and system metrics.
+> > > >
+> > > > Register mappings are not provided by the driver. Instead, a GUID is read
+> > > > from a header for each endpoint. The GUID identifies the device and is to
+> > > > be used with an XML, provided by the vendor, to discover the available set
+> > > > of metrics and their register mapping.  This allows firmware updates to
+> > > > modify the register space without needing to update the driver every time
+> > > > with new mappings. Firmware writes a new GUID in this case to specify the
+> > > > new mapping.  Software tools with access to the associated XML file can
+> > > > then interpret the changes.
+> > >
+> > > Where one may find a database of these reserved GUIDs / XMLs?
+> > > How do you prevent a chaos which happens with other registries?
+> >
+> > The database will be posted on intel.com eventually. Although I don't
+> > believe the URL is public yet.
+>
+> How can we be sure that this won't be forgotten? How can we be sure it
+> will be public at the end? Please, elaborate this in the commit
+> message.
 
-set_page_objcgs() is a worthwhile abstraction because it includes the
-synchronization primitives that make it safe to use wrt
-page_objcgs(). They encapsulate the cmpxchg and the READ_ONCE().
+Okay, I will work with David on that.
 
-set_page_memcg() doesn't do any synchronization and relies fully on
-the contextual locking. The name implies that it includes things to
-make it safe wrt page_memcg(), which isn't true at all. It's a long
-and misleading name for '='.
+> ...
+>
+> > > > +static const struct pci_device_id pmt_telem_early_client_pci_ids[] = {
+> > > > +       { PCI_VDEVICE(INTEL, 0x9a0d) }, /* TGL */
+> > > > +       { }
+> > > > +};
+> > > > +bool intel_pmt_is_early_client_hw(struct device *dev)
+> > > > +{
+> > > > +       struct pci_dev *parent = to_pci_dev(dev->parent);
+> > > > +
+> > > > +       return !!pci_match_id(pmt_telem_early_client_pci_ids, parent);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(intel_pmt_is_early_client_hw);
+> > >
+> > > What is this and why is it in the class driver?
+> >
+> > I chose to use the class driver as a central place to store code
+> > common to all of the instances of the class. In this case we have
+> > quirks that are specific to Tiger Lake and so I chose to store the
+> > function to test for the device here.
+>
+> Can it be done in another file module at least (let's say intel_pmt_quirks.c)?
 
-Btw, I really don't mind having this discussion, but please don't send
-revisions that silently ignore feedback you don't agree with.
+I suppose, but then it is adding a file for essentially 13 lines of
+code. Maybe I will just move this back to intel_pmt_telemetry.c and we
+can revisit where this should go if/when we add the watcher driver.
 
-Thanks
+> ...
+>
+> > > > +       if (off < 0)
+> > > > +               return -EINVAL;
+> > > Is this real or theoretical?
+> >
+> > Not sure. I am not that familiar with the interface. It was something
+> > I copied from read_bmof which is what I based this code on based on an
+> > earlier suggestion.
+>
+> I'm not a fan of cargo cult when there is no understanding why certain
+> code appears in the driver.
+
+Well with something like this I usually question if it provides any
+value. The problem is I don't know enough about binary sysfs
+attributes to say one way or another. If you know that the offset
+provided cannot be negative I can drop it. However I haven't seen
+anything that seems to say one way or another.
+
+> ...
+>
+> > > > +       if (count)
+> > >
+> > > Useless.
+> >
+> > I'm assuming that is because memcpy_fromio is assumed to handle this case?
+>
+> Right.
+>
+> > > > +               memcpy_fromio(buf, entry->base + off, count);
+>
+> ...
+>
+> > > > +       psize = (PFN_UP(entry->base_addr + entry->size) - pfn) * PAGE_SIZE;
+> > >
+> > > PFN_PHYS(PFN_UP(...)) ?
+> >
+> > I'm not sure how that would work. Basically what we are doing here is
+> > determining the size of the mapping based on the number of pages that
+> > will be needed. So we wake the pfn of the start of the region,
+> > subtract that from the pfn for the end of the region and multiply by
+> > the size of a page.
+>
+> PFN_PHYS() is a replacement for multiplication. You may check its
+> implementation.
+
+Ah, okay so you meant PFN_PHYS(PFN_UP(...)-pfn)
+
+> ...
+>
+> > > > +       /* if size is 0 assume no data buffer, so no file needed */
+> > > > +       if (!entry->size)
+> > > > +               return 0;
+> > >
+> > > Hmm... But presence of the file is also an information that might be
+> > > useful for user, no?
+> >
+> > I'm not sure what you mean? If the size of the region is zero it means
+> > there is no data there. There are cases in future devices where we may
+> > have controls for a telemetry function that is actually streaming the
+> > data elsewhere. That will be the use case for the entry size of 0 and
+> > in that case it doesn't make any sense to have a file as there is no
+> > data to present in it.
+>
+> This is not understandable from 'no data buffer' above. Can you
+> elaborate in the comment?
+
+Having a file here implies there is something to read. There are
+devices supported by PMT which are essentially just control only,
+specifically some of the watchers. So the file would have nothing to
+read/mmap. In such a case it wouldn't make sense to provide a binary
+sysfs attribute as there is no data to associate with it.
+
+> ...
+>
+> > > > +       entry->base = devm_ioremap_resource(dev, &res);
+> > > > +       if (IS_ERR(entry->base)) {
+> > > > +               dev_err(dev, "Failed to ioremap device region\n");
+> > > > +               goto fail_ioremap;
+> > > > +       }
+> > >
+> > > > +       iounmap(entry->base);
+> > >
+> > > This is interesting. How do you avoid double unmap with (1)?
+> >
+> > I think I get what you are trying to say. This is redundant since we
+> > used the devm_ioremap_resource it will already be freed when the
+> > driver is detached, correct?
+>
+> Right. Above is the leftover that shows the poor testing of v7.
+
+I will admit I don't think we tested the case where
+sysfs_create_bin_file failed.
+
+> > > > +#include <linux/platform_device.h>
+> > > > +#include <linux/xarray.h>
+> > > > +
+> > > > +/* PMT access types */
+> > > > +#define ACCESS_BARID           2
+> > > > +#define ACCESS_LOCAL           3
+> > > > +
+> > > > +/* PMT discovery base address/offset register layout */
+> > > > +#define GET_BIR(v)             ((v) & GENMASK(2, 0))
+> > > > +#define GET_ADDRESS(v)         ((v) & GENMASK(31, 3))
+> > >
+> > > bits.h
+> >
+> > That is already included from a few different sources.
+>
+> Please, read again what I wrote below. Ditto for other inclusions.
+>
+> > > > +struct intel_pmt_entry {
+>
+> > > > +       struct bin_attribute    pmt_bin_attr;
+> > > > +       struct kobject          *kobj;
+> > > > +       void __iomem            *disc_tabl
+> > > > +       void __iomem            *base;
+> > > > +       unsigned long           base_addr;
+> > > > +       size_t                  size;
+> > >
+> > > > +       u32                     guid;
+> > >
+> > > types.h
+> >
+> > Is included through xarray.h.
+> >
+> > > > +       int                     devid;
+> > > > +};
+> > >
+> > > > +static inline int
+> > > > +intel_pmt_ioremap_discovery_table(struct intel_pmt_entry *entry,
+> > > > +                                 struct platform_device *pdev,  int i)
+> > > > +{
+> > >
+> > > > +       entry->disc_table = devm_platform_ioremap_resource(pdev, i);
+> > >
+> > > io.h ?
+> >
+> > That one I will move from the class.c file.
+> >
+> > > > +
+> > > > +       return PTR_ERR_OR_ZERO(entry->disc_table);
+> > >
+> > > err.h
+> >
+> > That is included as a part of io.h.
+> >
+> > > > +}
+> > >
+> > > The rule of thumb is to include all headers that you have direct users of.
+> > > Then you may optimize by removing those which are guaranteed to be
+> > > included by others, like bits.h always included by bitops.h.
+> >
+> > Yeah, from what I can tell the only one I didn't have was io.h and
+> > part of that is because this was something I had moved to the header
+> > file in order to commonize it since it was being used in the other
+> > drivers.
+>
+> types.h not necessarily be included by above and so on...
+
+Okay, I will just explicitly add those headers then.
