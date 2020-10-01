@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4327FAD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD7927FAE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731751AbgJAHzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
+        id S1731172AbgJAH5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbgJAHzN (ORCPT
+        with ESMTP id S1725938AbgJAH5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:55:13 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A009C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:55:13 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x23so1899952wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:55:13 -0700 (PDT)
+        Thu, 1 Oct 2020 03:57:34 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EB7C0613D0;
+        Thu,  1 Oct 2020 00:57:34 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so1993389wmi.0;
+        Thu, 01 Oct 2020 00:57:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nxchK35WzNClqTZsaQg5x4PMi7z26OOqbOLc2gLFY54=;
-        b=Y9kN6bzXfYnJtEnmJ0d9W1y9qoNRVuLyd0pJrpScGVCWKc2H6HTgNEGiNziQjnFGi4
-         W6NJJpy/mIbqaLAnEkm/Oh5qxZg+fCStul0PeHoiMOZWh5OVvuhadZcDOoXyrDBPmb2Z
-         qf2HSt3QcUUbFNsYWxwIh8xQdjmPrksQjHMnyX/dKe3mDUJTE9dHJt8OBQ/TUagUy93E
-         2LES+b6jYvAbHAtkJrQ64wsr1icfil/zacXERe2n+vbhH27Qx7VB+fbER5+GN0xId2+Y
-         I2Gxn0rijwePJaOkvi6Wv0saJknw6yYZJQF+fXZIOYu37qns3Pz8KBM6NQjOXS8etG1V
-         yxtg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fO/xwDjrhenhlWFGk3DdZkVFlX+/hkokIVqB85yj9q8=;
+        b=Bwqx3uHyCyScf2SC7J0dP6b8TluUSYa3R57F+xWoWEDaEK+o7QRMP+bCtb+0kvaBD9
+         h+22TRDB+CqJMxYCVuW2YKGT90lchFukm71dkB8lFRdI6sJS5o9TOUmP3ttxhokvDe6O
+         8yOqJesCuSSmpxXc7pEcvlQyy0mLiWDb8S6r8DCQ3VcsjdaClp6f70GjcpPnKvCHZlbw
+         62VskwilqJr+7miBCi794mo/B/UKfzfI9CitGwoG+hV1xoD3IP1l+iYKkH44mEVIkZzq
+         OCO8TGmoef9l55dzoRUX/liwp2LoIk5QKo9rTIJPY/p/uR+MHRqZuNcQWmaHuwjJo1TM
+         vykQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nxchK35WzNClqTZsaQg5x4PMi7z26OOqbOLc2gLFY54=;
-        b=BqGP8dPr1bF06Y3afHOAn+R595QnvhwHkPpTDezraDZWyTMORjBXJkDwPOtfZ6E5oF
-         r3gfKhMSf6zOLrg/B3EqCjT9C2v9j4BpJ+8gsKHVC/G0jruYqAFl2EpDKr3SkvjQtnjP
-         4uRbbo5pjGRoNOvgaCI2acy9eQh6jtdjQdxBSBdGwGXZFNq2KNsqgZYAgzjEPKs4E3jK
-         tlVOOwpnYpLoMMvEpC7XM8QyUkJJ3DuJJ8bg2qsoyzSwrTK0UcwNYmdjlApDdi9/6hM1
-         Gg0ZSOfgWpzgajByT5mOvuWejJtwync+Bpm+yAwtuUtbYY8FW2rrB86bNn2Gf+1JVURT
-         TJIw==
-X-Gm-Message-State: AOAM531nUt0U2vqDzWxiSVJMQECqkuLwKdjYwg85h8XsepfKPtcMnJBi
-        fE6++R2Uzrfvmf8Dv5dNMRde8lSGpuBf0A==
-X-Google-Smtp-Source: ABdhPJwaKf0kHIDcNB6uw/SrtqtjTjJBwBxCYFT1dCOJ5o7Fhad9e52Ro92vjcnUxd3g4SlDKWr3GQ==
-X-Received: by 2002:a1c:f208:: with SMTP id s8mr7319753wmc.85.1601538911977;
-        Thu, 01 Oct 2020 00:55:11 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id t17sm7411493wrx.82.2020.10.01.00.55.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fO/xwDjrhenhlWFGk3DdZkVFlX+/hkokIVqB85yj9q8=;
+        b=FzVkv5LGEOYLg/j/LfX0unmSv+mUOVdp97tY2AZGXK4rbexZO8twm0VW2TfGnOCgDY
+         By9b7c/10gYRUMJeY1lvWCYGThlCTQXgpGbbyC5e5RFw746lqp5jDm0CDRk1t31V+ZOJ
+         DprQ/pIklYzCpN6Fv8pAeyFQsj80SjLJwNzIzrtZVtBoJMFGg9gwvXJV2B3XBD0WELDF
+         FwP9B8kHajqvsM7fahDmSnsRYQPXO1sdZNwElyp5mgK17Gr/nuYQfjVbTYpQ26gcS/kJ
+         PB5opwf0dVbfXmDt9/OzvwLQqOwLlQmGRpSbE9Ho1gScQP5QPKaJoFgy5J6OXQxj4rlk
+         MB9Q==
+X-Gm-Message-State: AOAM532KhO12coUSEhyW6n/u2ReIdqI6TeVDf1W5mjU0HDK4NeeRSTU0
+        txDQ3d5fuoh+MQCLD4nuZFk=
+X-Google-Smtp-Source: ABdhPJzqmTeSoVSj3eZWfMKoqv/hpLTEtUApfBAwXbTtQp2UVy5XutKX6uMVXd+nsjlytHcsbI/NNw==
+X-Received: by 2002:a1c:4054:: with SMTP id n81mr6819205wma.81.1601539053027;
+        Thu, 01 Oct 2020 00:57:33 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d4d:ba00:2c39:a8cb:1b2a:4845])
+        by smtp.gmail.com with ESMTPSA id b64sm7500948wmh.13.2020.10.01.00.57.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 00:55:11 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 08:55:07 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     hdegoede@redhat.com, andriy.shevchenko@linux.intel.com,
-        dvhart@infradead.org, andy@infradead.org,
-        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
-Message-ID: <20201001075507.GK6148@dell>
-References: <20200911194549.12780-1-david.e.box@linux.intel.com>
- <20200911194549.12780-2-david.e.box@linux.intel.com>
- <20200929095106.GG6148@dell>
- <e23b255493c78d80558b9226920b3c7d54d7c84f.camel@linux.intel.com>
- <20200930071250.GI6148@dell>
- <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
+        Thu, 01 Oct 2020 00:57:32 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] kbuild: doc: describe proper script invocation
+Date:   Thu,  1 Oct 2020 09:57:23 +0200
+Message-Id: <20201001075723.24246-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020, David E. Box wrote:
+During an investigation to fix up the execute bits of scripts in the kernel
+repository, Andrew Morton and Kees Cook pointed out that the execute bit
+should not matter, and that build scripts cannot rely on that. Kees could
+not point to any documentation, though.
 
-> On Wed, 2020-09-30 at 08:12 +0100, Lee Jones wrote:
-> > On Tue, 29 Sep 2020, David E. Box wrote:
-> > 
-> > > On Tue, 2020-09-29 at 10:51 +0100, Lee Jones wrote:
-> > > > On Fri, 11 Sep 2020, David E. Box wrote:
-> > > > 
-> > > > > Add Out of Band Management Services Module device ID to Intel
-> > > > > PMT
-> > > > > driver.
-> > > > > 
-> > > > > Signed-off-by: Alexander Duyck <
-> > > > > alexander.h.duyck@linux.intel.com>
-> > > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > > > ---
-> > > > >  drivers/mfd/intel_pmt.c | 4 ++++
-> > > > >  1 file changed, 4 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
-> > > > > index 0e572b105101..8f9970ab3026 100644
-> > > > > --- a/drivers/mfd/intel_pmt.c
-> > > > > +++ b/drivers/mfd/intel_pmt.c
-> > > > > @@ -55,6 +55,8 @@ struct pmt_platform_info {
-> > > > >  	unsigned long quirks;
-> > > > >  };
-> > > > >  
-> > > > > +static const struct pmt_platform_info pmt_info;
-> > > > > +
-> > > > >  static const struct pmt_platform_info tgl_info = {
-> > > > >  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG
-> > > > > |
-> > > > >  		  PMT_QUIRK_TABLE_SHIFT,
-> > > > > @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev
-> > > > > *pdev)
-> > > > >  	pm_runtime_get_sync(&pdev->dev);
-> > > > >  }
-> > > > >  
-> > > > > +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
-> > > > >  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
-> > > > >  static const struct pci_device_id pmt_pci_ids[] = {
-> > > > > +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
-> > > > 
-> > > > Why are you supplying an empty struct?
-> > > 
-> > > Because the OOBMSM device doesn't need code provided driver data,
-> > > but
-> > > info is dereferenced in several areas. We also use kmemdup to copy
-> > > driver_data under the assumption that it was provided. We could
-> > > allow
-> > > for NULL if driver_data is referenced directly.
-> > 
-> > Just check for NULL.  No need to create and send bogus data.
-> 
-> Sure. If you haven't already, please note that this patch was pulled
-> into the V6 series in the link below. You accepted V5 but Hans
-> suggested some late changes after reviewing the new crashlog driver in
-> this patchset. So rather than have separate patchsets with a
-> dependency, we bundled them all into the original. We'll make these
-> changes in V7 now.
-> 
-> https://lore.kernel.org/patchwork/patch/1313166/
+Masahiro Yamada explained the convention of setting execute bits to make it
+easier for manual script invocation.
 
-Sounds reasonable. 
+Provide some basic documentation how the build shall invoke scripts, such
+that the execute bits do not matter, and acknowledge that execute bits
+are useful nonetheless.
 
+This serves as reference for further clean-up patches in the future.
+
+Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
+Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+Link: https://lore.kernel.org/linux-kbuild/CAK7LNAQdrvMkDA6ApDJCGr+5db8SiPo=G+p8EiOvnnGvEN80gA@mail.gmail.com/
+
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+RFC v1 -> RFC v2:
+explain why execute bits are still convenient.
+
+Kees, Andrew, please ack.
+
+Masahiro-san, I have taken your feedback into account. Please pick this small
+documentation update into your kbuild tree.
+
+Ujjwal Kumar, a potential future mentee, will follow up with further fixes to
+the build scripts.
+
+ Documentation/kbuild/makefiles.rst | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+index 58d513a0fa95..bd3e1baf58be 100644
+--- a/Documentation/kbuild/makefiles.rst
++++ b/Documentation/kbuild/makefiles.rst
+@@ -21,6 +21,7 @@ This document describes the Linux kernel Makefiles.
+ 	   --- 3.10 Special Rules
+ 	   --- 3.11 $(CC) support functions
+ 	   --- 3.12 $(LD) support functions
++	   --- 3.13 Script Invocation
+ 
+ 	=== 4 Host Program support
+ 	   --- 4.1 Simple Host Program
+@@ -605,6 +606,25 @@ more details, with real examples.
+ 		#Makefile
+ 		LDFLAGS_vmlinux += $(call ld-option, -X)
+ 
++3.13 Script invocation
++----------------------
++
++	Make rules may invoke scripts to build the kernel. The rules shall
++	always provide the appropriate interpreter to execute the script. They
++	shall not rely on the execute bits being set, and shall not invoke the
++	script directly. For the convenience of manual script invocation, such
++	as invoking ./scripts/checkpatch.pl, it is recommended to set execute
++	bits on the scripts nonetheless.
++
++	Kbuild provides variables $(CONFIG_SHELL), $(AWK), $(PERL),
++	$(PYTHON) and $(PYTHON3) to refer to interpreters for the respective
++	scripts.
++
++	Example::
++
++		#Makefile
++		cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
++			     $(KERNELRELEASE)
+ 
+ 4 Host Program support
+ ======================
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.17.1
+
