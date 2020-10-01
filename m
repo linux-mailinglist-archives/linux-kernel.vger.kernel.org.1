@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CD9280A6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C1B280A6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733235AbgJAWrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51748 "EHLO mail.kernel.org"
+        id S1733256AbgJAWra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgJAWrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:47:25 -0400
+        id S1726741AbgJAWra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:47:30 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2759F206C1;
-        Thu,  1 Oct 2020 22:47:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D7A020739;
+        Thu,  1 Oct 2020 22:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601592444;
-        bh=/Fld3Oecs3tTGcAezlLAYMe1AutM5l0b5mJQaJErGTU=;
+        s=default; t=1601592449;
+        bh=5wbAsBc6F+A6i8ZNRWp9o2yFaL1jRl0UihqKMbzcWy4=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=0bUa94SfCCvLz4Cx6SJyWA9g719YoiuLRBD3C9Mrt9i1dDV7F29eNY0EzJci19icl
-         OqzMujp7oz8LnCOLk8MM6b1kOmmDc/Rqn5Ys2GQmFDklWl7YUCFU00E+uvLdkxjP0I
-         bqP27E5gAo0n+FLBUSfpj16dgx6e4e4w9cHxrabg=
-Date:   Thu, 01 Oct 2020 23:46:25 +0100
+        b=Sy0mxeYXKJQmlmjVKauRjRW0Frq9VJL077lN1dq6t6kA3PeDiA4+mqxcuKFAP2QUx
+         bIqBtV6MJfSHWI/fjBsgp/LuQVx7uP4FARetcUH89a0ch1r7X/g6onxZQJbDebUWKp
+         P9gVLiyVpYd+n4VlRg6OI7rVeY1eSm9mO/xlQv9E=
+Date:   Thu, 01 Oct 2020 23:46:30 +0100
 From:   Mark Brown <broonie@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
         Takashi Iwai <tiwai@suse.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20200929112932.46926-1-miaoqinglang@huawei.com>
-References: <20200929112932.46926-1-miaoqinglang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: fsl: mx27vis-aic32x4: use
+        Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20200929112936.47441-1-miaoqinglang@huawei.com>
+References: <20200929112936.47441-1-miaoqinglang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: tegra: tegra_rt5640: use
  devm_snd_soc_register_card()
-Message-Id: <160159237543.44588.2335297978854378427.b4-ty@kernel.org>
+Message-Id: <160159237544.44588.2378133228066985986.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -42,7 +45,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 19:29:32 +0800, Qinglang Miao wrote:
+On Tue, 29 Sep 2020 19:29:36 +0800, Qinglang Miao wrote:
 > Using devm_snd_soc_register_card() can make the code
 > shorter and cleaner.
 
@@ -52,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: mx27vis-aic32x4: use devm_snd_soc_register_card()
-      commit: 1047bcac2169a05575476774bfd4a88f0a9c787d
+[1/1] ASoC: tegra: tegra_rt5640: use devm_snd_soc_register_card()
+      commit: c859926abc8ebc0562a16a12b4993eab690c2281
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
