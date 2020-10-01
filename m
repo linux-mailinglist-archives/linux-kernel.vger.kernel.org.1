@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD42E27FEAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7649227FEB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732034AbgJALyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:54:07 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35197 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731767AbgJALyE (ORCPT
+        id S1731893AbgJAL42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:56:28 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54684 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731670AbgJAL42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:54:04 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e16so5363908wrm.2;
-        Thu, 01 Oct 2020 04:54:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QjEMtQV4+mKov3RyEvL2p8vci/KPjj4gyXV5HFr4bPc=;
-        b=b4h+AThi7lMNfqipaCF70dryQ7rghrc3kGH1kfJ6QRJ6sbselZbvESFc7c2r9ARXrS
-         hvd/f09+8mFbKTppTX0Gp8WpI0fOqZ+AtHIfqe+qZzbYwWgZmsai1K1qpJMwgu4zokES
-         7WWHvJ1GCbsFsJsI9v/qyfS9IsdtIF6u87ltsj7BbNHfBPeDnyknNcdvmHXi4Vg4j33I
-         gNrdWb6PU6pLFZeIgu5hFxFvq3qc9s3T/vKiL5QEIh4tlU3wcOO4CvPSsg5Qkj2JTjKb
-         51qvgS3DyXSkPYqP+HJKGMx+X4d3CmNv4ZCd74dTFfnQaeNRq00ilKV8cTM+Rnmgkl68
-         /TMQ==
-X-Gm-Message-State: AOAM530PBmLvpo1qCWXc+J4RhnhKQpRLRldKN2dJooS6H6olKBy89CKY
-        L7NVomr+j6zXnFs21cWRpIw=
-X-Google-Smtp-Source: ABdhPJzfEPCoC4dSc6yo8yiwrjfjgNGFM6Ov812hYIpeuIQMHakZq8GmSq7lhhZTC7m73NSlbg0kRA==
-X-Received: by 2002:a5d:6404:: with SMTP id z4mr8995115wru.423.1601553241933;
-        Thu, 01 Oct 2020 04:54:01 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s19sm5286587wmc.0.2020.10.01.04.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 04:54:01 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:53:59 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org
-Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in
- hyperv_flush_tlb_others()
-Message-ID: <20201001115359.6jhhrybemnhizgok@liuwe-devbox-debian-v2>
-References: <20201001013814.2435935-1-sashal@kernel.org>
- <87o8lm9te3.fsf@vitty.brq.redhat.com>
+        Thu, 1 Oct 2020 07:56:28 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091BuGJv084959;
+        Thu, 1 Oct 2020 06:56:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601553376;
+        bh=CVKY5T/YKKZG90aaeqafF0OA/PsmDSYnTFMbTSYWs44=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=K0v0C7RdqkYGQvWpbcxjqQDYwj/G38eHeRaDouqxWWlg7BEmCfnSRjZ2SKWs/iU2k
+         bN3u2FNjWgS+enMz1uuDV8znWSNY6SBkc3EPQYjpukeyTTgz/4qZWS78ky0lnPC9oe
+         ud24s1Yo7vLCFpbPiN/IOa0nlg8nr32/AHJnzjGE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091BuG7v002616
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Oct 2020 06:56:16 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 06:56:16 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 06:56:15 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091BuFIC046820;
+        Thu, 1 Oct 2020 06:56:15 -0500
+Date:   Thu, 1 Oct 2020 17:26:14 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v14 10/15] mtd: spi-nor: Parse SFDP SCCR Map
+Message-ID: <20201001115612.7i4d2wmeinv2kyz5@ti.com>
+References: <20200930185732.6201-1-p.yadav@ti.com>
+ <20200930185732.6201-11-p.yadav@ti.com>
+ <81fa2331-d808-fed6-232f-f8b67e7e9dac@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <87o8lm9te3.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <81fa2331-d808-fed6-232f-f8b67e7e9dac@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:40:04AM +0200, Vitaly Kuznetsov wrote:
-> Sasha Levin <sashal@kernel.org> writes:
-> 
-> > cpumask can change underneath us, which is generally safe except when we
-> > call into hv_cpu_number_to_vp_number(): if cpumask ends up empty we pass
-> > num_cpu_possible() into hv_cpu_number_to_vp_number(), causing it to read
-> > garbage. As reported by KASAN:
-> >
-> > [   83.504763] BUG: KASAN: slab-out-of-bounds in hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
-> > [   83.908636] Read of size 4 at addr ffff888267c01370 by task kworker/u8:2/106
-> > [   84.196669] CPU: 0 PID: 106 Comm: kworker/u8:2 Tainted: G        W         5.4.60 #1
-> > [   84.196669] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
-> > [   84.196669] Workqueue: writeback wb_workfn (flush-8:0)
-> > [   84.196669] Call Trace:
-> > [   84.196669] dump_stack (lib/dump_stack.c:120)
-> > [   84.196669] print_address_description.constprop.0 (mm/kasan/report.c:375)
-> > [   84.196669] __kasan_report.cold (mm/kasan/report.c:507)
-> > [   84.196669] kasan_report (arch/x86/include/asm/smap.h:71 mm/kasan/common.c:635)
-> > [   84.196669] hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
-> > [   84.196669] flush_tlb_mm_range (arch/x86/include/asm/paravirt.h:68 arch/x86/mm/tlb.c:798)
-> > [   84.196669] ptep_clear_flush (arch/x86/include/asm/tlbflush.h:586 mm/pgtable-generic.c:88)
-> >
-> > Fixes: 0e4c88f37693 ("x86/hyper-v: Use cheaper HVCALL_FLUSH_VIRTUAL_ADDRESS_{LIST,SPACE} hypercalls when possible")
-> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > Cc: stable@kernel.org
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+On 01/10/20 08:20AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/30/20 9:57 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > 
+> > Parse just the 22nd dword and look for the 'DTR Octal Mode Enable
+> > Volatile bit'.
+> > 
+> > SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes
+> > that don't define the optional SFDP SCCR Map. For the others,
+> > let the SFDP do its job and fill the SNOR_F_IO_MODE_EN_VOLATILE
+> > flag. We avoid this way polluting the flash flags when declaring
+> > one.
+> > 
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > > ---
-> >  arch/x86/hyperv/mmu.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
-> > index 5208ba49c89a9..b1d6afc5fc4a3 100644
-> > --- a/arch/x86/hyperv/mmu.c
-> > +++ b/arch/x86/hyperv/mmu.c
-> > @@ -109,7 +109,9 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
-> >  		 * must. We will also check all VP numbers when walking the
-> >  		 * supplied CPU set to remain correct in all cases.
-> >  		 */
-> > -		if (hv_cpu_number_to_vp_number(cpumask_last(cpus)) >= 64)
-> > +		int last = cpumask_last(cpus);
+> >  drivers/mtd/spi-nor/sfdp.c | 52 ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> > index ebc1188f7533..0b5b9ea44cfc 100644
+> > --- a/drivers/mtd/spi-nor/sfdp.c
+> > +++ b/drivers/mtd/spi-nor/sfdp.c
+> >         return ret;
+> >  }
+> > 
+> > +#define SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE             BIT(31)
 > > +
-> > +		if (last < num_possible_cpus() && hv_cpu_number_to_vp_number(last) >= 64)
-> >  			goto do_ex_hypercall;
+> > +/**
+> > + * spi_nor_parse_sccr() - Parse the Status, Control and Configuration Register
+> > + *                        Map.
+> > + * @nor:               pointer to a 'struct spi_nor'
+> > + * @sccr_header:       pointer to the 'struct sfdp_parameter_header' describing
+> > + *                     the SCCR Map table length and version.
+> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_parse_sccr(struct spi_nor *nor,
+> > +                             const struct sfdp_parameter_header *sccr_header,
+> > +                             struct spi_nor_flash_parameter *params)
+> > +{
+> > +       u32 *dwords, addr;
+> > +       size_t len;
+> > +       int ret;
+> > +       u8 io_mode_en_volatile;
 > 
-> In case 'cpus' can end up being empty (I'm genuinely suprised it can)
-> the check is mandatory indeed. I would, however, just return directly in
-> this case:
-> 
-> if (last < num_possible_cpus())
-> 	return;
+> would a bool work here?
 
-I think you want 
+It should. I'll change it.
+ 
+> > +
+> > +       len = sccr_header->length * sizeof(*dwords);
+> > +       dwords = kmalloc(len, GFP_KERNEL);
+> > +       if (!dwords)
+> > +               return -ENOMEM;
+> > +
+> > +       addr = SFDP_PARAM_HEADER_PTP(sccr_header);
+> > +       ret = spi_nor_read_sfdp(nor, addr, len, dwords);
+> > +       if (ret)
+> > +               goto out;
+> > +
+> > +       le32_to_cpu_array(dwords, sccr_header->length);
+> > +
+> > +       io_mode_en_volatile = FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
+> > +                                       dwords[22]);
+> > +
+> > +       if (io_mode_en_volatile)
+> > +               nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
+> > +
+> > +out:
+> > +       kfree(dwords);
+> > +       return ret;
+> > +}
+> > +
+> >  /**
+> 
 
-   last >= num_possible_cpus()
-
-here?
-
-A more important question is, if the mask can change willy-nilly, what
-is stopping it from changing between these checks? I.e. is there still a
-windows that hv_cpu_number_to_vp_number(last) can return garbage?
-
-Wei.
-
-> 
-> if (hv_cpu_number_to_vp_number(last) >= 64)
-> 	goto do_ex_hypercall;
-> 
-> as there's nothing to flush, no need to call into
-> hyperv_flush_tlb_others_ex().
-> 
-> Anyway, the fix seems to be correct, so
-> 
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> 
-> >  
-> >  		for_each_cpu(cpu, cpus) {
-> 
-> -- 
-> Vitaly
-> 
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
