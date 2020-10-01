@@ -2,155 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E616E280169
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEF028016C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732434AbgJAOiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:38:16 -0400
-Received: from smtprelay0124.hostedemail.com ([216.40.44.124]:56228 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726412AbgJAOiQ (ORCPT
+        id S1732459AbgJAOii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:38:38 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:41146 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732360AbgJAOih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:38:16 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id A3387100E7B4E;
-        Thu,  1 Oct 2020 14:38:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2693:2828:2901:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4184:4321:4605:5007:6119:7903:9010:9149:10004:10848:10946:11026:11232:11233:11473:11657:11658:11914:12043:12295:12297:12438:12663:12740:12760:12895:13095:13141:13230:13439:14180:14181:14659:14721:21060:21080:21433:21451:21627:21740:21939:21990:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: trick94_48130ec2719c
-X-Filterd-Recvd-Size: 5426
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  1 Oct 2020 14:38:13 +0000 (UTC)
-Message-ID: <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com>
-Subject: Re: [PATCH RFC] checkpatch: fix multi-statement macro checks
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 01 Oct 2020 07:38:12 -0700
-In-Reply-To: <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
-References: <20201001103314.136645-1-dwaipayanray1@gmail.com>
-         <8e110121c89414ab1601071868dbcf410195a209.camel@perches.com>
-         <CABJPP5CFE3KXzMzuvVxtJt5tOg8Ye6y1V7-mqT5pqazHjVWvJw@mail.gmail.com>
-         <f3dadda8af7eef6613d7a4105170058f2759507d.camel@perches.com>
-         <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 1 Oct 2020 10:38:37 -0400
+Received: by mail-oi1-f175.google.com with SMTP id x69so5802379oia.8;
+        Thu, 01 Oct 2020 07:38:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=05WM9O11nXEnB8MaY5uRJWUk6wfX4i1dcR/R2xP+z94=;
+        b=JPiXV3ByjLy1FEQxIu5kd2NbPNYBUAJa+2HfxivBU0aIYT6sZu0UMVqrRbYY9GPSpx
+         JRMLdwrt9Fxcch12C7TbJ9Cm1CH/hF99GZRtEC4G5VCswcGhFVolSJUuHu2DEGo+Tyuy
+         IPOo7AzZGC6Bb8kznV1rmGV1p5twti3xAeNupwzccfWDZQ2ixufO5Nm29YRu4PHBxUhN
+         PwncDXKLcbp0GP4cLk5XGnU8zieeZKWjaonkAriY5werNpe+eOMRRZpBEUf5dclB4l5l
+         338qfLTVzjBb26ZlgbhDDpYm/EZSeYER8/5a++CeP+ia+/CWr35/CDPnWzycBngzHN+W
+         ZHOw==
+X-Gm-Message-State: AOAM533MCwnY+/jSBrcszX6jZ8jYe7mxSds3zFo0eXqt0SKLO+1cti/m
+        8dhpmY1LLQf3WjcC/3/ul+Vqf9SknnfZ
+X-Google-Smtp-Source: ABdhPJyuohX6ohqzLB9qD1xifWRMkw+CWKN7NONCu57jyZ9ed/4xYQv5FTKVzba0L2YxiOkT75uEfw==
+X-Received: by 2002:aca:f203:: with SMTP id q3mr180483oih.148.1601563116805;
+        Thu, 01 Oct 2020 07:38:36 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i5sm1238668otj.19.2020.10.01.07.38.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 07:38:36 -0700 (PDT)
+Received: (nullmailer pid 703354 invoked by uid 1000);
+        Thu, 01 Oct 2020 14:38:35 -0000
+Date:   Thu, 1 Oct 2020 09:38:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [PATCH -next] PCI: mobiveil: simplify the return expression of
+ mobiveil_pcie_init_irq_domain
+Message-ID: <20201001143835.GA703320@bogus>
+References: <20200921082447.2591877-1-liushixin2@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921082447.2591877-1-liushixin2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-01 at 19:44 +0530, Dwaipayan Ray wrote:
-> On Thu, Oct 1, 2020 at 7:12 PM Joe Perches <joe@perches.com> wrote:
-> > On Thu, 2020-10-01 at 18:57 +0530, Dwaipayan Ray wrote:
-> > > On Thu, Oct 1, 2020 at 6:47 PM Joe Perches <joe@perches.com> wrote:
-> > > > On Thu, 2020-10-01 at 16:03 +0530, Dwaipayan Ray wrote:
-> > > > > Checkpatch.pl doesn't have a check for excluding while (...) {...}
-> > > > > blocks from MULTISTATEMENT_MACRO_USE_DO_WHILE error.
-> > > > > 
-> > > > > For example, running checkpatch.pl on the file mm/access.c in the
-> > > > > kernel generates the following error:
-> > > > > 
-> > > > > ERROR: Macros with complex values should be enclosed in parentheses
-> > > > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)        \
-> > > > > +     while (len >= sizeof(type)) {                                   \
-> > > > > +             __get_kernel_nofault(dst, src, type, err_label);        \
-> > > > > +             dst += sizeof(type);                                    \
-> > > > > +             src += sizeof(type);                                    \
-> > > > > +             len -= sizeof(type);                                    \
-> > > > > +     }
-> > > > > 
-> > > > > The error is misleading for this case. Enclosing it in parantheses
-> > > > > doesn't make any sense.
-> > > > 
-> > > > OK
-> > > > 
-> > > > > Checkpatch already has an exception list for such common macro types.
-> > > > > Added a new exception for while (...) {...} style blocks to the same.
-> > > > > This effectively fixed the wrong error message.
-> > > > []
-> > > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > > []
-> > > > > @@ -5342,6 +5342,7 @@ sub process {
-> > > > >                           $dstat !~ /^\.$Ident\s*=/ &&                                # .foo =
-> > > > >                           $dstat !~ /^(?:\#\s*$Ident|\#\s*$Constant)\s*$/ &&          # stringification #foo
-> > > > >                           $dstat !~ /^do\s*$Constant\s*while\s*$Constant;?$/ &&       # do {...} while (...); // do {...} while (...)
-> > > > > +                         $dstat !~ /^while\s*$Constant\s*$Constant\s*$/ &&           # while (...) {...}
-> > 
-> > Note the \s*
-> >                                                               ^
-> > 
-> > > > Did you try to output $dstat for some matching cases?
-> > > > What was the $dstat value for the cases you tried?
-> > > > 
-> > > > 
-> > > Hi,
-> > > I did check $dstat values.
-> > > 
-> > > For example on file mm/maccess.c, there were two such macros:
-> > > 
-> > > Case 1:
-> > > 
-> > > $ctx:
-> > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label) \
-> > > + while (len >= sizeof(type)) { \
-> > > + __get_kernel_nofault(dst, src, type, err_label); \
-> > > + dst += sizeof(type); \
-> > > + src += sizeof(type); \
-> > > + len -= sizeof(type); \
-> > > + }
-> > > 
-> > > $dstat:
-> > > while 1 1
-> > 
-> > And perhaps this test should use \s+ instead.
-> > What is $dstat with a #define like:
-> > 
-> > #define foo(bar,baz)while(bar){bar--;baz++;}
-> > 
-> > (no spaces anywhere bot the required one after define
-> > 
+On Mon, 21 Sep 2020 16:24:47 +0800, Liu Shixin wrote:
+> Simplify the return expression.
 > 
-> In this case, $dstat is: while11
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> ---
+>  drivers/pci/controller/mobiveil/pcie-mobiveil-host.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
 > 
-> So, if \s+ is used, it won't match with this. I ran checkpatch
-> on it and some other condition seems to match, so it is
-> excluded from the error.
-> 
-> However, if the macro is like:
-> 
-> #define foo(bar,baz)while(bar) {bar--;baz++;}
-> (one space after condition)
-> 
-> $dstat is: while1 1
-> (space after first 1)
-> and the same error is again emitted.
-> 
-> So I think \s* works better since there can be
-> 0 or more whitespaces between them.
 
-All I'm trying to point out to you is that $Constant\s*$Constant
-isn't a proper test as the first $Constant will pull the test
-entire sequence of digits and the second $Constant will not be
-met.
-
-It may take some conversion of the collapsing of the dstat
-block to work appropriately
-
-
-			# Flatten any parentheses and braces
-			while ($dstat =~ s/\([^\(\)]*\)/1/ ||
-			       $dstat =~ s/\{[^\{\}]*\}/1/ ||
-			       $dstat =~ s/.\[[^\[\]]*\]/1/)
-			{
-			}
-
-Maybe the /1/ should be / 1 / but I didn't look to see what
-happens to the exclusion tests below that.
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
