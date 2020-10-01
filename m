@@ -2,105 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CE827F809
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143EB27F812
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730201AbgJACxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:53:16 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50467 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbgJACxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:53:16 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C1yNn1FWMz9sTR;
-        Thu,  1 Oct 2020 12:53:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601520793;
-        bh=bzhHsD9F+82Rc9As0BJmM3vlChyB3KuF3Wox7Cz256I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rzVGibBSE2DYf7WsIiGWFZRzK5zDAHNnfGcRsZQfi2JZ3fPa1amaHnr+VwDjj48qI
-         yN4+7gz27j1Xfrg08oPr99U25v5HaaglSjka/nC4BJSZe54PEENQtHd1thiHBBLBUw
-         s5Gew47NLNj39xjMI0dMVrg3ef5Iz1qjmOiPMFWuOI3UCz6pcQI95iQX8Wr7whJwZs
-         f+R7hVDXFdVkFoH8AsuO1Oog8ol6GjP9aNozCM0KD9lD8S1f1jPzbRcjNNDjbH64Da
-         757cngT1PYGxKYtqEHDXAdX1VmriUKV7W3fJGzCu+WYTafsdXStlMmA4+DxZmICf6o
-         6rCZ+r/VEFO6w==
-Date:   Thu, 1 Oct 2020 12:53:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Vadim Pasternak <vadimp@nvidia.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the hwmon-staging tree
-Message-ID: <20201001125310.3399978a@canb.auug.org.au>
+        id S1730238AbgJAC6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJAC6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 22:58:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32594C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:58:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so3049601pfd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mwzDXzGzheFaLtfSgxu27esE2z5Zeui3HFQefTnFb8g=;
+        b=zgOeDmpJuU6J+m/pXdHtw3CZdp3/+XRjOtE4QzOo5btYMi5CLEyMdYXP4kSuNLz0eJ
+         TFwUKsIYwfUQUmtI+2qMLoVZYgC7w7vkFssPY0ClvBK10qm7/mmR+KOvvl74hI+k/bB/
+         1Fn6MN/yuQdtO3KDGy+7pAlMNut7JupiZLTCM25c9gbmkHd3h5qXV1x4slS9nd7QdC72
+         Dse4DbSqwOSlALxNQ+/L/J27u5yzgeCl4uE/08Z0Z8ByPYub7ETutOqST4m2+qsy60+j
+         uD8cO44bxV1JAX4MTkAqxwFpazo/MUwoaL01/QQ/iBZy7NVW7x5qhZin16ywUexEwRsu
+         CdTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mwzDXzGzheFaLtfSgxu27esE2z5Zeui3HFQefTnFb8g=;
+        b=lKaD73Ngq4LI4CdYeMuWnexl36ENIyij/FcJbhR5zpuf/buDMuaiCreEnDgrzAI/26
+         NeSBLdb52Dk72dqtm4vp6YthwWt7J8S1TBhsR4SBE80i+MeSEOMhqkcdPlr8hJ84qvpL
+         uhIEMAeiTGbI+5Lz2ykXkR3YijuAjSHz41KkzsDUSVhHKiL1d4bBy0xEE9jSnktpE1H3
+         odl/8nQ2/hrjZe9Nvrgs06hKr0MXxMDYXMM6RoauKe3p3QqpTr5/E9bWUvpBdNzdW7D6
+         lDQrgkPLEOYnoibACjq1rmVatnXKp8ntNMqTOLbKA+3WXsOaUBMIkpw3tsHQ7aAetoBi
+         gSIg==
+X-Gm-Message-State: AOAM530BESuIYRgbWOp9cNQp7cVXEK3PCd8MBrIAyMOr5nTj1mJZ1y7Z
+        2izbWZbpHo6LLZs/gOPcIa41SZX2P5q2bXnSlPEv/Q==
+X-Google-Smtp-Source: ABdhPJw54fMhnUTblVABuAoszldUwSDkq8h8waLyxfnj4UMJiylKdptjrq1mXx8p4IpIh0PDd6kd4W1ynwcS/DGmTZU=
+X-Received: by 2002:aa7:8287:0:b029:142:2501:39ec with SMTP id
+ s7-20020aa782870000b0290142250139ecmr4965310pfm.59.1601521094544; Wed, 30 Sep
+ 2020 19:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ot49Y=10vJ5ouB+B0c3J7Q.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200915125947.26204-1-songmuchun@bytedance.com>
+ <20200915125947.26204-6-songmuchun@bytedance.com> <b2811679-cd90-4685-2284-64490e7dfb7e@oracle.com>
+In-Reply-To: <b2811679-cd90-4685-2284-64490e7dfb7e@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 1 Oct 2020 10:57:38 +0800
+Message-ID: <CAMZfGtV99X7TbkortsFaUYQC-Zvq53ggwB_PBzqUBFyQ2Hkvpg@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH 05/24] mm/hugetlb: Introduce
+ nr_free_vmemmap_pages in the struct hstate
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ot49Y=10vJ5ouB+B0c3J7Q.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Oct 1, 2020 at 6:41 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 9/15/20 5:59 AM, Muchun Song wrote:
+> > If the size of hugetlb page is 2MB, we need 512 struct page structures
+> > (8 pages) to be associated with it. As far as I know, we only use the
+> > first 3 struct page structures and only read the compound_dtor members
+>
+> Actually, the first 4 pages can be used if CONFIG_CGROUP_HUGETLB.
 
-Hi all,
+Right, thanks.
 
-After merging the hwmon-staging tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> /*
+>  * Minimum page order trackable by hugetlb cgroup.
+>  * At least 4 pages are necessary for all the tracking information.
+>  * The second tail page (hpage[2]) is the fault usage cgroup.
+>  * The third tail page (hpage[3]) is the reservation usage cgroup.
+>  */
+> #define HUGETLB_CGROUP_MIN_ORDER        2
+>
+> However, this still easily fits within the first page of struct page
+> structures.
+>
+> > of the remaining struct page structures. For tail page, the value of
+> > compound_dtor is the same. So we can reuse first tail page. We map the
+> > virtual addresses of the remaining 6 tail pages to the first tail page,
+> > and then free these 6 pages. Therefore, we need to reserve at least 2
+> > pages as vmemmap areas.
+>
+> I got confused the first time I read the above sentences.  Perhaps it
+> should be more explicit with something like:
+>
+> For tail pages, the value of compound_dtor is the same. So we can reuse
+> first page of tail page structs. We map the virtual addresses of the
+> remaining 6 pages of tail page structs to the first tail page struct,
+> and then free these 6 pages. Therefore, we need to reserve at least 2
+> pages as vmemmap areas.
 
-drivers/hwmon/pmbus/mp2975.c: In function 'mp2975_probe':
-drivers/hwmon/pmbus/mp2975.c:740:32: error: passing argument 2 of 'pmbus_do=
-_probe' from incompatible pointer type [-Werror=3Dincompatible-pointer-type=
-s]
-  740 |  return pmbus_do_probe(client, id, info);
-      |                                ^~
-      |                                |
-      |                                const struct i2c_device_id *
-In file included from drivers/hwmon/pmbus/mp2975.c:13:
-drivers/hwmon/pmbus/pmbus.h:492:73: note: expected 'struct pmbus_driver_inf=
-o *' but argument is of type 'const struct i2c_device_id *'
-  492 | int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_i=
-nfo *info);
-      |                                               ~~~~~~~~~~~~~~~~~~~~~=
-~~~~~^~~~
-drivers/hwmon/pmbus/mp2975.c:740:9: error: too many arguments to function '=
-pmbus_do_probe'
-  740 |  return pmbus_do_probe(client, id, info);
-      |         ^~~~~~~~~~~~~~
-In file included from drivers/hwmon/pmbus/mp2975.c:13:
-drivers/hwmon/pmbus/pmbus.h:492:5: note: declared here
-  492 | int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_i=
-nfo *info);
-      |     ^~~~~~~~~~~~~~
+Sorry for my poor English. Thanks for your suggestions. I can apply this.
 
-Caused by commit
+>
+> It still does not sound great, but hopefully avoids some confusion.
+> --
+> Mike Kravetz
+>
+> > So we introduce a new nr_free_vmemmap_pages field in the hstate to
+> > indicate how many vmemmap pages associated with a hugetlb page that we
+> > can free to buddy system.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/hugetlb.h |  3 +++
+> >  mm/hugetlb.c            | 35 +++++++++++++++++++++++++++++++++++
+> >  2 files changed, 38 insertions(+)
+> >
+> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > index d5cc5f802dd4..eed3dd3bd626 100644
+> > --- a/include/linux/hugetlb.h
+> > +++ b/include/linux/hugetlb.h
+> > @@ -492,6 +492,9 @@ struct hstate {
+> >       unsigned int nr_huge_pages_node[MAX_NUMNODES];
+> >       unsigned int free_huge_pages_node[MAX_NUMNODES];
+> >       unsigned int surplus_huge_pages_node[MAX_NUMNODES];
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +     unsigned int nr_free_vmemmap_pages;
+> > +#endif
+> >  #ifdef CONFIG_CGROUP_HUGETLB
+> >       /* cgroup control files */
+> >       struct cftype cgroup_files_dfl[7];
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 81a41aa080a5..f1b2b733b49b 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1292,6 +1292,39 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+> >                                               unsigned int order) { }
+> >  #endif
+> >
+> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > +#define RESERVE_VMEMMAP_NR   2U
+> > +
+> > +static inline unsigned int nr_free_vmemmap(struct hstate *h)
+> > +{
+> > +     return h->nr_free_vmemmap_pages;
+> > +}
+> > +
+> > +static void __init hugetlb_vmemmap_init(struct hstate *h)
+> > +{
+> > +     unsigned int order = huge_page_order(h);
+> > +     unsigned int vmemmap_pages;
+> > +
+> > +     vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
+> > +     /*
+> > +      * The head page and the first tail page not free to buddy system,
+> > +      * the others page will map to the first tail page. So there are
+> > +      * (@vmemmap_pages - RESERVE_VMEMMAP_NR) pages can be freed.
+> > +      */
+> > +     if (vmemmap_pages > RESERVE_VMEMMAP_NR)
+> > +             h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
+> > +     else
+> > +             h->nr_free_vmemmap_pages = 0;
+> > +
+> > +     pr_info("HugeTLB: can free %d vmemmap pages for %s\n",
+> > +             h->nr_free_vmemmap_pages, h->name);
+> > +}
+> > +#else
+> > +static inline void hugetlb_vmemmap_init(struct hstate *h)
+> > +{
+> > +}
+> > +#endif
+> > +
+> >  static void update_and_free_page(struct hstate *h, struct page *page)
+> >  {
+> >       int i;
+> > @@ -3285,6 +3318,8 @@ void __init hugetlb_add_hstate(unsigned int order)
+> >       snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+> >                                       huge_page_size(h)/1024);
+> >
+> > +     hugetlb_vmemmap_init(h);
+> > +
+> >       parsed_hstate = h;
+> >  }
+> >
+> >
 
-  dd38ac315b23 ("hwmon: (pmbus) Add support for MPS Multi-phase mp2975 cont=
-roller")
 
-I have used the hwmon-staging tree from next-20200930 for today.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Ot49Y=10vJ5ouB+B0c3J7Q.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91RJYACgkQAVBC80lX
-0GwS9Qf/SbbejcpJ4T0s0C+j5NsyN3sWxjmmUQj19l/8jN039K0fGAEHg0pAPw6a
-xBtZSlqZjYH7VR9Yu8c1xFzMfE4YuqllnX97wZ9CyktOHf3JhuuLbh9/oXm4bIRg
-2PhTf5QuZsTuVmjz6vQSTN6Bd3/11bY/RWOj53pHXB1tgTNkKH7n7tFWu6KZ3R6w
-Tc/TFYyJ6Gmmwq7cez4sqKc0GvMhRdx35rdaDuipjj6ZMGrptW97U7KP2McoUeUb
-Lv+Xf0gsOjLpKAg17l2C2JSEZ1FKFf+oM+ZXkjuz9cG9aRY6czsr57B4uDkVOKrQ
-McchV/BrCXfZU0+BaSPFau8EBZTylA==
-=9aBv
------END PGP SIGNATURE-----
-
---Sig_/Ot49Y=10vJ5ouB+B0c3J7Q.--
+-- 
+Yours,
+Muchun
