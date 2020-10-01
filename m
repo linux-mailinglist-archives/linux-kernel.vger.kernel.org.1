@@ -2,117 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857C12805A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82252805A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732928AbgJARk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:40:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:13978 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgJARk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:40:57 -0400
-IronPort-SDR: /5bs0QYRhWBf2O+4m16ItWErilKLoaLqQBiiYB0m203ziEKOWAiTSaEPRE5Cnkg3kSQz1pAgf6
- n5Iz2LgIK3tw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="163650045"
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="163650045"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:40:56 -0700
-IronPort-SDR: MCXDRqQZOepaqaV9bmXjhsE4cmN81J+zNy1QBx7+SBPTHHRgjL+yK4UxtywV436mpunpxcbP00
- NOF/rTiMO38g==
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="339633448"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:40:53 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kO2ZS-003H5E-LL; Thu, 01 Oct 2020 20:40:46 +0300
-Date:   Thu, 1 Oct 2020 20:40:46 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Avi Fishman <avifishman70@gmail.com>
-Cc:     Tali Perry <tali.perry1@gmail.com>, Wolfram Sang <wsa@kernel.org>,
-        Alex Qiu <xqiu@google.com>, Kun Yi <kunyi@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using
- debugfs.
-Message-ID: <20201001174046.GK3956970@smile.fi.intel.com>
-References: <20200930071342.98691-1-tali.perry1@gmail.com>
- <20200930093117.GY3956970@smile.fi.intel.com>
- <CAHb3i=sWxiVLCC0hfY+6-_x92ZEMY7Ctyyuz9CbMYxrH_BqAZQ@mail.gmail.com>
- <CAHp75Vc3Bw-dTpEmpeUpB4n5-8-xGPx+jm_HkB5Pj6Qr8U=CAw@mail.gmail.com>
- <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
+        id S1732943AbgJARlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732096AbgJARlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:41:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CECBC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:41:10 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 13so280785wmf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JNSzrX1KLD1Jr1oOxkhpqopu9WU4zuQEXx0vLg9N7lY=;
+        b=MdZ/sCH3xh0w9UUKmanUc9Xe+mqlnro58R6Uo+Lv+kn2vFbKxkxif97MOYmm9t331r
+         4n9gD00qL/ZoRi80xA1WmiKAGy36oUwLFQE3N9mqypR1zWs0t6r/E65uiatCFniZ3dKW
+         fvFn2XQl8bQYUVctr6+9vQ5FNnuLDo5B4maYIcMYWJ39Eoxx7ljE5zn5kEYDJzU47H+Y
+         +BJQ5Oig+VCJgPEYSTrKmfmigomEBFWOiZjHuK+z6oJJxaVlnXGOY8K2TCo+jt2TEIMd
+         UZ7YDtYsNZSdfEkFHbE33Ye5FCu42ttNg7XSfzAQgFjoTCisu/ewbcI+oxHxcNgZ1SiU
+         lm/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JNSzrX1KLD1Jr1oOxkhpqopu9WU4zuQEXx0vLg9N7lY=;
+        b=uFlQltdFp34MSXBwiV3y3ekrcOZ//Av8G50TNqIB0ml8i03QUR4X5qbiuaTquVzQcG
+         gW/gT56Ar9LvNI5zGOSDlzCra/a9Ba7fZk/FIt4t+cNX3XSeRnqWW3XjqAhqzAbtxHJE
+         ubKseq6/5aafoOSe03W4ejw+pHiNj6WRvDVPXuH7IFTgkBOFFHhAoc5RB2xnLj+x3PHy
+         MB6DTUIs8wODjmbI4GHDakZEI4JlOS8sRYDwjTeV7i30iXb5hOlHtK5GYcxHlyvnFVyn
+         yDs34adYDW74H/libBeqrNx0rEMm1etTUV1LiWO5kFsH5ERu2kk5jqJniT21ELmGVIqu
+         QQAg==
+X-Gm-Message-State: AOAM531BXhT4OxQCwaTBMEBbf/KTovnbggxWj49nrRArT1EC20Hhrh8I
+        TX2YsBqL4wOLKCyGPK2F01DsyQ==
+X-Google-Smtp-Source: ABdhPJzwnwzJnMgKsKalkMf3OQd8SSpXBYLSSSq9+hwnSkHAuKWm0BA+npu3vPeoPmiM2mwBja5JEw==
+X-Received: by 2002:a1c:5685:: with SMTP id k127mr1161718wmb.135.1601574068516;
+        Thu, 01 Oct 2020 10:41:08 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id o194sm1074973wme.24.2020.10.01.10.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:41:07 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:41:02 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/39] kasan: hide invalid free check implementation
+Message-ID: <20201001174102.GJ4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <c1cef2ae4f4c5640afc8aac4339d77d140d45304.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <c1cef2ae4f4c5640afc8aac4339d77d140d45304.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 08:13:49PM +0300, Avi Fishman wrote:
-> Hi Andy,
+On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
 > 
-> Customers using BMC with complex i2c topology asked us to support
-> changing bus frequency at run time, for example same device will
-> communicate with one slave at 100Kbp/s and another with 400kbp/s and
-> maybe also with smae device at different speed (for example an i2c
-> mux).
-> This is not only for debug.
+> For software KASAN modes the check is based on the value in the shadow
+> memory. Hardware tag-based KASAN won't be using shadow, so hide the
+> implementation of the check in check_invalid_free().
+> 
+> Also simplify the code for software tag-based mode.
+> 
+> No functional changes for software modes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-The above design is fragile to start with. If you have connected peripheral
-devices with different speed limitations and you try to access faster one the
-slower ones may block and break the bus which will need recovery.
+Reviewed-by: Marco Elver <elver@google.com>
 
-> Can DT overlay support that?
-
-Probably. DT overlay describes the update in the device topology, including
-certain device properties.
-
-P.S. Please do not top post.
-
-> On Thu, Oct 1, 2020 at 6:40 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Thu, Oct 1, 2020 at 8:34 AM Tali Perry <tali.perry1@gmail.com> wrote:
-> > > On Wed, Sep 30, 2020 at 12:31 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > >
-> > > > On Wed, Sep 30, 2020 at 10:13:42AM +0300, Tali Perry wrote:
-> > > > > Systems that can dinamically add and remove slave devices
-> > > >
-> > > > dynamically
-> > > >
-> > > > > often need to change the bus speed in runtime.
-> > > >
-> > > > > This patch exposes the bus frequency to the user.
-> > > >
-> > > > Expose the bus frequency to the user.
-> > > >
-> > > > > This feature can also be used for test automation.
-> > > >
-> > > > In general I think that DT overlays or so should be user rather than this.
-> > > > If we allow to change bus speed settings for debugging purposes it might make
-> > > > sense to do this on framework level for all drivers which support that (via
-> > > > additional callback or so).
-> > >
-> > > Do you mean adding something like this:
-> >
-> > Nope. I meant to use DT description for that. I²C core should cope
-> > with DT already.
-> > I do not understand why you need special nodes for that rather than DT
-> > overlay which will change the speed for you.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+> Change-Id: I5fae9531c9fc948eb4d4e0c589744032fc5a0789
+> ---
+>  mm/kasan/common.c  | 19 +------------------
+>  mm/kasan/generic.c |  7 +++++++
+>  mm/kasan/kasan.h   |  2 ++
+>  mm/kasan/sw_tags.c |  9 +++++++++
+>  4 files changed, 19 insertions(+), 18 deletions(-)
+> 
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 123abfb760d4..543e6bf2168f 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -272,25 +272,9 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+>  	return (void *)object;
+>  }
+>  
+> -static inline bool shadow_invalid(u8 tag, s8 shadow_byte)
+> -{
+> -	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> -		return shadow_byte < 0 ||
+> -			shadow_byte >= KASAN_GRANULE_SIZE;
+> -
+> -	/* else CONFIG_KASAN_SW_TAGS: */
+> -	if ((u8)shadow_byte == KASAN_TAG_INVALID)
+> -		return true;
+> -	if ((tag != KASAN_TAG_KERNEL) && (tag != (u8)shadow_byte))
+> -		return true;
+> -
+> -	return false;
+> -}
+> -
+>  static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>  			      unsigned long ip, bool quarantine)
+>  {
+> -	s8 shadow_byte;
+>  	u8 tag;
+>  	void *tagged_object;
+>  	unsigned long rounded_up_size;
+> @@ -309,8 +293,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>  	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+>  		return false;
+>  
+> -	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
+> -	if (shadow_invalid(tag, shadow_byte)) {
+> +	if (check_invalid_free(tagged_object)) {
+>  		kasan_report_invalid_free(tagged_object, ip);
+>  		return true;
+>  	}
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index ec4417156943..e1af3b6c53b8 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -187,6 +187,13 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
+>  	return check_memory_region_inline(addr, size, write, ret_ip);
+>  }
+>  
+> +bool check_invalid_free(void *addr)
+> +{
+> +	s8 shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(addr));
+> +
+> +	return shadow_byte < 0 || shadow_byte >= KASAN_GRANULE_SIZE;
+> +}
+> +
+>  void kasan_cache_shrink(struct kmem_cache *cache)
+>  {
+>  	quarantine_remove_cache(cache);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 1865bb92d47a..3eff57e71ff5 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -164,6 +164,8 @@ void kasan_poison_memory(const void *address, size_t size, u8 value);
+>  bool check_memory_region(unsigned long addr, size_t size, bool write,
+>  				unsigned long ret_ip);
+>  
+> +bool check_invalid_free(void *addr);
+> +
+>  void *find_first_bad_addr(void *addr, size_t size);
+>  const char *get_bug_type(struct kasan_access_info *info);
+>  
+> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+> index 4bdd7dbd6647..b2638c2cd58a 100644
+> --- a/mm/kasan/sw_tags.c
+> +++ b/mm/kasan/sw_tags.c
+> @@ -121,6 +121,15 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
+>  	return true;
+>  }
+>  
+> +bool check_invalid_free(void *addr)
+> +{
+> +	u8 tag = get_tag(addr);
+> +	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(reset_tag(addr)));
+> +
+> +	return (shadow_byte == KASAN_TAG_INVALID) ||
+> +		(tag != KASAN_TAG_KERNEL && tag != shadow_byte);
+> +}
+> +
+>  #define DEFINE_HWASAN_LOAD_STORE(size)					\
+>  	void __hwasan_load##size##_noabort(unsigned long addr)		\
+>  	{								\
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
