@@ -2,134 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3A5280147
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094F8280157
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732388AbgJAOb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:31:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24597 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732099AbgJAOb6 (ORCPT
+        id S1732484AbgJAOdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732020AbgJAOdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:31:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601562716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=loi6TnVq2iqiwh8MBD4G5+J+KVJqokAmn1fh30h4Auw=;
-        b=g6rzg3HZlNWLdVXGRMBumG6TiYhodyPMwSV1CT49UMttJKLcOV8FqNcWJDvEMClPK4f3Ak
-        8I00LBLhOIjGLVfDt4HB/IumbS+iJOvHdHNk3zc4PxgFgO7zjObhoQlAV0MQQzyT5ireta
-        hVZkvQ2j/Z0y9UL1uj6y+5ACdAVihmM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-8BfL64bsOv6s2wo25JFLwQ-1; Thu, 01 Oct 2020 10:31:54 -0400
-X-MC-Unique: 8BfL64bsOv6s2wo25JFLwQ-1
-Received: by mail-wm1-f69.google.com with SMTP id y18so968182wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:31:54 -0700 (PDT)
+        Thu, 1 Oct 2020 10:33:33 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF59C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 07:33:32 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id g72so5490890qke.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jO3BB8sVqiM7vkvwS1XKzZc6N0X8KTzVoqftN8TqfgY=;
+        b=pFDbQq9H6572Zep0T0kiBK6O7gvcomiDy/QnxFgocFInKglLtah5+pLzvUOj3o9TPH
+         +3da9GlUc4tqby6bzqiaELI5lmPN4OaxP9JadjXiNAl5peWgjvHsOEIxXZA8itf2TpYA
+         JNviktKQyP0nsSSMAAW0MxjfMd7rEyANGzxySxkDh3bWE6xluydotD90yrNYtye8EqJ3
+         BvGaoNvS9pYwjfzCTbatP3d1ysGa5OH4ZqBeiLCC1vB107nF4lHhgKPjdxaGOrd5gfbM
+         k2XnQf/MNMGoG7ONN84busjIoH2e/uYBL+MszKJcAeZxGFSM/C2lshGLybQO/xFPCg06
+         QReg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=loi6TnVq2iqiwh8MBD4G5+J+KVJqokAmn1fh30h4Auw=;
-        b=ejct3/DSKzGMrVSrSMQ7AevyzjzcJAWZX049EUjozJXISSQl2OMeFUfDUSk6NMIkLX
-         SnaYp7V1NOobRVaBqfoUHEwiJ21Ow3oSBsKZWHGJ32r7mBVwqRDceMV3IfzZ5vKzFTkb
-         sBK774lUFMS6pGa23CcSRT3yZvyp9jcXufTHgkoFn2nPuhYC+3VrA06kNho+47WoSldi
-         Thq1hG0GRWN/hP3MT+vJZWqXRVwEyhFeEWaEicgMCO/0Qw1tyn4CzjWnmO02dtPEIyhW
-         0g6URCxKyxHpNpTRM9Q89cRvgya+8JNtwhFcATWp/dmDyUAW0GMOF+rgBOQfPNzes3IB
-         1rbg==
-X-Gm-Message-State: AOAM532XWtCv+8Kp8aMCWiypO1UbuV6t0767bSo9ckDKagC4ksSszWYs
-        aSRS9qoriYhNFEuQ0m427sartyxybbjw7gzHdogeA/G58mDfWRX7bBUWpxJstwTqxnmmBkpA6kJ
-        /SiTrePrTBiUpQwaQTqDFLiMh
-X-Received: by 2002:a1c:9695:: with SMTP id y143mr292036wmd.146.1601562712497;
-        Thu, 01 Oct 2020 07:31:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyoLdganKjFMw1ADcJVdaIapHPhCRIoSZxtg7lHWrBVEUBEWVZe+IFQD0W2fpSl58KzCxdiWQ==
-X-Received: by 2002:a1c:9695:: with SMTP id y143mr292011wmd.146.1601562712175;
-        Thu, 01 Oct 2020 07:31:52 -0700 (PDT)
-Received: from steredhat (host-79-27-201-176.retail.telecomitalia.it. [79.27.201.176])
-        by smtp.gmail.com with ESMTPSA id h1sm9488603wrx.33.2020.10.01.07.31.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jO3BB8sVqiM7vkvwS1XKzZc6N0X8KTzVoqftN8TqfgY=;
+        b=hYefJpFL83NjOosoG3AKYPASObbPpzzAaCB3bZ7Xah30xw4fv38i3Qj97OUwragdPM
+         J2vOdwwnm0qpSgiB/oDDzFAjixkvC9oZ06t64Am4JVEnOON7A0gywxSdLjpZttMRVctK
+         4XNsS8YdvQQgPYaXRpZaYvTxxVmeTmD2OCwwMd4gw1ZZT46mPLxMNUP5q7AlS4xq0z9x
+         2eMtA3IuZSmfgt3nxI4adTndBgI4xIadbvlxxykOa6q25K0G6V/1EuOWsICCaqtlY7HW
+         Ksbo59NEu+tO4Y03Z5JGaDP48fPkWsptgNXnYkmOdsIqTvOyzxrOOg0jMwhJzvlT4HBV
+         n60Q==
+X-Gm-Message-State: AOAM5334oFR5UFMvIXl528yHNe1ckp4iuKNG3i5p/zvwD25MbFVKcWh2
+        YDYGtjjPZYP8j4KIvFxx+XMC8A==
+X-Google-Smtp-Source: ABdhPJxL3ROIE5EEr8xfyH9JXGHvkoQMCRX5NFXfsVuxPCSEzPGogJNQe2fKUfXyH7bAIptu5sJr8g==
+X-Received: by 2002:a37:4f90:: with SMTP id d138mr7888531qkb.451.1601562811437;
+        Thu, 01 Oct 2020 07:33:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4e22])
+        by smtp.gmail.com with ESMTPSA id m3sm6483356qkh.10.2020.10.01.07.33.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 07:31:51 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 16:31:48 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, qemu-devel@nongnu.org
-Subject: scripts/gdb: issues when loading modules after lx-symbols
-Message-ID: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
+        Thu, 01 Oct 2020 07:33:29 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 10:31:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20201001143149.GA493631@cmpxchg.org>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200928210216.GA378894@cmpxchg.org>
+ <20200929150444.GG2277@dhcp22.suse.cz>
+ <20200929215341.GA408059@cmpxchg.org>
+ <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
+On Wed, Sep 30, 2020 at 08:45:17AM -0700, Shakeel Butt wrote:
+> On Tue, Sep 29, 2020 at 2:55 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Tue, Sep 29, 2020 at 05:04:44PM +0200, Michal Hocko wrote:
+> > > On Mon 28-09-20 17:02:16, Johannes Weiner wrote:
+> > > [...]
+> > > > My take is that a proactive reclaim feature, whose goal is never to
+> > > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
+> > > > would ideally have:
+> > > >
+> > > > - a pressure or size target specified by userspace but with
+> > > >   enforcement driven inside the kernel from the allocation path
+> > > >
+> > > > - the enforcement work NOT be done synchronously by the workload
+> > > >   (something I'd argue we want for *all* memory limits)
+> > > >
+> > > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
+> > > >   cgroup's memory allocations causing the work (again something I'd
+> > > >   argue we want in general)
+> > > >
+> > > > - a delegatable knob that is independent of setting the maximum size
+> > > >   of a container, as that expresses a different type of policy
+> > > >
+> > > > - if size target, self-limiting (ha) enforcement on a pressure
+> > > >   threshold or stop enforcement when the userspace component dies
+> > > >
+> > > > Thoughts?
+> > >
+> > > Agreed with above points. What do you think about
+> > > http://lkml.kernel.org/r/20200922190859.GH12990@dhcp22.suse.cz.
+> >
+> > I definitely agree with what you wrote in this email for background
+> > reclaim. Indeed, your description sounds like what I proposed in
+> > https://lore.kernel.org/linux-mm/20200219181219.54356-1-hannes@cmpxchg.org/
+> > - what's missing from that patch is proper work attribution.
+> >
+> > > I assume that you do not want to override memory.high to implement
+> > > this because that tends to be tricky from the configuration POV as
+> > > you mentioned above. But a new limit (memory.middle for a lack of a
+> > > better name) to define the background reclaim sounds like a good fit
+> > > with above points.
+> >
+> > I can see that with a new memory.middle you could kind of sort of do
+> > both - background reclaim and proactive reclaim.
+> >
+> > That said, I do see advantages in keeping them separate:
+> >
+> > 1. Background reclaim is essentially an allocation optimization that
+> >    we may want to provide per default, just like kswapd.
+> >
+> >    Kswapd is tweakable of course, but I think actually few users do,
+> >    and it works pretty well out of the box. It would be nice to
+> >    provide the same thing on a per-cgroup basis per default and not
+> >    ask users to make decisions that we are generally better at making.
+> >
+> > 2. Proactive reclaim may actually be better configured through a
+> >    pressure threshold rather than a size target.
+> >
+> >    As per above, the goal is not to be punitive or containing. The
+> >    goal is to keep the LRUs warm and move the colder pages to disk.
+> >
+> >    But how aggressively do you run reclaim for this purpose? What
+> >    target value should a user write to such a memory.middle file?
+> >
+> >    For one, it depends on the job. A batch job, or a less important
+> >    background job, may tolerate higher paging overhead than an
+> >    interactive job. That means more of its pages could be trimmed from
+> >    RAM and reloaded on-demand from disk.
+> >
+> >    But also, it depends on the storage device. If you move a workload
+> >    from a machine with a slow disk to a machine with a fast disk, you
+> >    can page more data in the same amount of time. That means while
+> >    your workload tolerances stays the same, the faster the disk, the
+> >    more aggressively you can do reclaim and offload memory.
+> >
+> >    So again, what should a user write to such a control file?
+> >
+> >    Of course, you can approximate an optimal target size for the
+> >    workload. You can run a manual workingset analysis with page_idle,
+> >    damon, or similar, determine a hot/cold cutoff based on what you
+> >    know about the storage characteristics, then echo a number of pages
+> >    or a size target into a cgroup file and let kernel do the reclaim
+> >    accordingly. The drawbacks are that the kernel LRU may do a
+> >    different hot/cold classification than you did and evict the wrong
+> >    pages, the storage device latencies may vary based on overall IO
+> >    pattern, and two equally warm pages may have very different paging
+> >    overhead depending on whether readahead can avert a major fault or
+> >    not. So it's easy to overshoot the tolerance target and disrupt the
+> >    workload, or undershoot and have stale LRU data, waste memory etc.
+> >
+> >    You can also do a feedback loop, where you guess an optimal size,
+> >    then adjust based on how much paging overhead the workload is
+> >    experiencing, i.e. memory pressure. The drawbacks are that you have
+> >    to monitor pressure closely and react quickly when the workload is
+> >    expanding, as it can be potentially sensitive to latencies in the
+> >    usec range. This can be tricky to do from userspace.
+> >
+> 
+> This is actually what we do in our production i.e. feedback loop to
+> adjust the next iteration of proactive reclaim.
 
-If the modules are already loaded, and I do 'lx-symbols', all work fine.
-But, if I load a kernel module after 'lx-symbols', I had this issue:
+That's what we do also right now. It works reasonably well, the only
+two pain points are/have been the reaction time under quick workload
+expansion and inadvertently forcing the workload into direct reclaim.
 
-[ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
-[ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
-[ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-[ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
-[ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
-[ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
-[ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
-[ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
-[ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
-[ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
-[ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
-[ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-[ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
-[ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 5093.439689] Call Trace:
-[ 5093.440954]  ? load_module+0x24b6/0x27d0
-[ 5093.443212]  ? __kernel_read+0xd6/0x150
-[ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
-[ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
-[ 5093.449098]  do_syscall_64+0x38/0x50
-[ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 5093.456153] RIP: 0033:0x7f018f75c43d
-[ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
-[ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
-[ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
-[ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-[ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-[ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
-[ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
-[ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
+> We eliminated the IO or slow disk issues you mentioned by only
+> focusing on anon memory and doing zswap.
 
-Guest kernel: Linux 5.9-rc7
-gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
-I tried with QEMU 4.2.1 and the latest master branch: same issue.
+Interesting, may I ask how the file cache is managed in this setup?
 
+> >    So instead of asking users for a target size whose suitability
+> >    heavily depends on the kernel's LRU implementation, the readahead
+> >    code, the IO device's capability and general load, why not directly
+> >    ask the user for a pressure level that the workload is comfortable
+> >    with and which captures all of the above factors implicitly? Then
+> >    let the kernel do this feedback loop from a per-cgroup worker.
+> 
+> I am assuming here by pressure level you are referring to the PSI like
+> interface e.g. allowing the users to tell about their jobs that X
+> amount of stalls in a fixed time window is tolerable.
 
-I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
-avoid the issue, but of course I don't have the symbols loaded:
-
-    diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-    index 1be9763cf8bb..eadfaa4d4907 100644
-    --- a/scripts/gdb/linux/symbols.py
-    +++ b/scripts/gdb/linux/symbols.py
-    @@ -129,7 +129,7 @@ lx-symbols command."""
-                     filename=module_file,
-                     addr=module_addr,
-                     sections=self._section_arguments(module))
-    -            gdb.execute(cmdline, to_string=True)
-    +            #gdb.execute(cmdline, to_string=True)
-                 if module_name not in self.loaded_modules:
-                     self.loaded_modules.append(module_name)
-             else:
-
-I tried several modules and this happens every time after '(gdb) lx-symbols'.
-
-Do you have any hints?
-
-
-Thanks,
-Stefano
-
+Right, essentially the same parameters that psi poll() would take.
