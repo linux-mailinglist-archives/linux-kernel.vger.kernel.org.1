@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9F1280044
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61126280040
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732309AbgJANhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:37:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36736 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732147AbgJANhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:37:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22E8DAC54;
-        Thu,  1 Oct 2020 13:37:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DBE3ADA781; Thu,  1 Oct 2020 15:35:46 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 15:35:46 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     dsterba@suse.cz,
-        syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: use-after-free Read in btrfs_scan_one_device
-Message-ID: <20201001133546.GV6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <0000000000001fe79005afbf52ea@google.com>
- <20200930165756.GQ6756@twin.jikos.cz>
- <20200930180522.GR6756@twin.jikos.cz>
- <CACT4Y+b6ctH447Hy9JuP1hF5MSV368WAB2tXz8xfi-5ZM-=tOg@mail.gmail.com>
- <CACT4Y+bQdT_eOcE-jOJQQFR_xi14YwBQUosuUTNq1t-k5JSFJQ@mail.gmail.com>
+        id S1732200AbgJANgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731993AbgJANgo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:36:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64148C0613D0;
+        Thu,  1 Oct 2020 06:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fKHBx2l1x20GN0S3b+jTfen0uwxhiVfe2eiMSbpdaJc=; b=rkoYrYmb5/6jzedCCWXFLJn1Js
+        Su3dhZ5KWDv1MASUxHWIyi0HHPm/ePgWAlqmlPl7vX0YAy66AJdPY+/xm0WAUYoRmEBX+mO+6T8+V
+        Icj9pc59qTGH/yoN90T+98J5m6GdmDo4o+YQ6Qcwfvu5StJC1CMj+dZsOTyf/c9HP8WlPBGOb+o0Q
+        6D9yVgyZ+6MFyhrDwUasgeNYH4HtwuVAWOPmdotfUbYA/8kLlXOVNla6GYLXq1AzitcCts/t+cL5h
+        IEg2Eshs26M+j10DrIY85wx56KguUB9k4rNB/xtXHnDIekBqXSRpUNU87NEPTQuVilHGV1nifj4NB
+        bclif4ew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kNyko-0004ix-3E; Thu, 01 Oct 2020 13:36:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 436ED300446;
+        Thu,  1 Oct 2020 15:36:12 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30D1F203DC1C6; Thu,  1 Oct 2020 15:36:12 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 15:36:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, jthierry@redhat.com, jpoimboe@redhat.com
+Subject: Re: [PATCH v4 04/29] objtool: Add a pass for generating __mcount_loc
+Message-ID: <20201001133612.GQ2628@hirez.programming.kicks-ass.net>
+References: <20200929214631.3516445-1-samitolvanen@google.com>
+ <20200929214631.3516445-5-samitolvanen@google.com>
+ <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACT4Y+bQdT_eOcE-jOJQQFR_xi14YwBQUosuUTNq1t-k5JSFJQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 03:08:34PM +0200, Dmitry Vyukov wrote:
-> On Thu, Oct 1, 2020 at 3:05 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 8:06 PM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Wed, Sep 30, 2020 at 06:57:56PM +0200, David Sterba wrote:
-> > > > On Sun, Sep 20, 2020 at 07:12:14AM -0700, syzbot wrote:
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10a0a8bb900000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
-> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
-> > > >
-> > > > #syz fix: btrfs: fix overflow when copying corrupt csums for a message
-> > >
-> > > Johannes spotted that this is not the right fix for this report, I don't
-> > > know how to tell syzbot to revert the 'fix:' command, there isn't
-> > > 'unfix' (like there's 'undup').
-> >
-> > Hi David,
-> >
-> > I've added "unfix" command:
-> > https://github.com/google/syzkaller/pull/2156
-> >
-> > Let's give it a try:
-> > #syz unfix
-> >
-> > Thanks
-> 
-> Voilà! Unfixed:
-> https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
+On Thu, Oct 01, 2020 at 03:17:07PM +0200, Miroslav Benes wrote:
 
-Thanks!
+> I also wonder about making 'mcount' command separate from 'check'. Similar 
+> to what is 'orc' now. But that could be done later.
+
+I'm not convinced more commands make sense. That only begets us the
+problem of having to run multiple commands.
