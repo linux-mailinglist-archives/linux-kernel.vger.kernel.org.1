@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65793280852
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D39D280851
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733071AbgJAUTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:19:00 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:47551 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732274AbgJAUTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:19:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601583539; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=kKlL6PjnSxk6XlUoo8Eg8eVNPi8neS87b7QX+PZnGaw=; b=DgKlsciqlNJt7Bf0X+KTHQbGB5CKwsxSctleaAhmQydEmHEIcvyYL10wg7S2MmcIh5aWt6fh
- lrDexxlO2gMmdx5tLZ08JVKWw5h0LKyEYhk4v2/5YUZmibKiPwPmUIFJbdXd2Kxuy2rQiyD4
- /wXjxasSP0tPFoxak43zIqHfUMo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f7639560ae65af4a25e2008 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 20:17:26
- GMT
-Sender: sudaraja=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0C0BC433CB; Thu,  1 Oct 2020 20:17:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sudaraja)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3556CC433C8;
-        Thu,  1 Oct 2020 20:17:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3556CC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
-From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH v3] arm64/mm: add fallback option to allocate virtually contiguous memory
-Date:   Thu,  1 Oct 2020 13:16:46 -0700
-Message-Id: <9e6178d2828e9c36275487263c5842c688e5b731.1601582954.git.sudaraja@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1601582954.git.sudaraja@codeaurora.org>
-References: <cover.1601582954.git.sudaraja@codeaurora.org>
-In-Reply-To: <cover.1601582954.git.sudaraja@codeaurora.org>
-References: <cover.1601582954.git.sudaraja@codeaurora.org>
+        id S1733057AbgJAUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:18:30 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:47671 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726671AbgJAUS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:18:27 -0400
+Received: by mail-il1-f207.google.com with SMTP id s18so2243864ili.14
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 13:18:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OXIZsSnUOlc4gw4iyjdMyg6484OMYqcylRmSwR+4wSw=;
+        b=Y8rJSGfuTSmkmbS+VJTHBuQuOLbCPNb8uW0ncjJCsTZKkzxQA2pn37q/3y0Io7OwM2
+         k7xRsDEzNPiol5ztOju7dGM6jCvBNujdmZ08lnDe6GJM2BjD7Ivplw9ixJ+NcRG9awqA
+         qfYgrnlnOPNe4yQN1Qex6UhBxvQgjS4Q0vHQc8TNccTS63QbWZW2D6oXedIJj+HbU1Lg
+         TN+/MwcZGGK/fcatC8yzJ9tWaBYn53bnLKVJ3MHUfTM6EmbLG6HWEuFt8gRO3feOs4WT
+         0yqHjcN1KA2HzjdriL+CHAJsPUXGFV3almZEjvXvTK8wtGFWe52LbQV+0x0PBnM0scrp
+         Eyhg==
+X-Gm-Message-State: AOAM533ApRlfYWLQnuGm38BoK0dDV44xuhZNODOwf3uFhg+lprYbJkF5
+        xR10EKe5B9+6Yibpq+6tmxyzkVRw4AD/5vUX7JANbRw6vyaQ
+X-Google-Smtp-Source: ABdhPJwT/dpYIRCW3/PoHCOUt9O1bS/nQ9SMyEkaCehe2TanjqOnWqQbBKb5eZrQlzsed5b2jOZsjZDiHJWLKEX47Ksdg2cuvdi/
+MIME-Version: 1.0
+X-Received: by 2002:a5e:820d:: with SMTP id l13mr6866782iom.3.1601583504502;
+ Thu, 01 Oct 2020 13:18:24 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 13:18:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dd392b05b0a1b7ac@google.com>
+Subject: WARNING in handle_exception_nmi
+From:   syzbot <syzbot+4e78ae6b12b00b9d1042@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When section mappings are enabled, we allocate vmemmap pages from physically
-continuous memory of size PMD_SIZE using vmemmap_alloc_block_buf(). Section
-mappings are good to reduce TLB pressure. But when system is highly fragmented
-and memory blocks are being hot-added at runtime, its possible that such
-physically continuous memory allocations can fail. Rather than failing the
-memory hot-add procedure, add a fallback option to allocate vmemmap pages from
-discontinuous pages using vmemmap_populate_basepages().
+Hello,
 
-Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Logan Gunthorpe <logang@deltatee.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Steven Price <steven.price@arm.com>
+syzbot found the following issue on:
+
+HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a7329d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=adebb40048274f92
+dashboard link: https://syzkaller.appspot.com/bug?extid=4e78ae6b12b00b9d1042
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173937ad900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1041373d900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4e78ae6b12b00b9d1042@syzkaller.appspotmail.com
+
+L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6854 at arch/x86/kvm/vmx/vmx.c:4809 handle_exception_nmi+0x1051/0x12a0 arch/x86/kvm/vmx/vmx.c:4809
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6854 Comm: syz-executor665 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x2c0/0x800 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:handle_exception_nmi+0x1051/0x12a0 arch/x86/kvm/vmx/vmx.c:4809
+Code: fd 98 00 e9 17 f1 ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c da f0 ff ff 48 89 df e8 a9 fd 98 00 e9 cd f0 ff ff e8 1f 19 59 00 <0f> 0b e9 e0 f6 ff ff 89 d1 80 e1 07 80 c1 03 38 c1 0f 8c f4 f1 ff
+RSP: 0018:ffffc90000e979b0 EFLAGS: 00010293
+RAX: ffffffff811be461 RBX: fffffffffffffff8 RCX: ffff888091f42200
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 0000000000000000 R08: ffffffff811bdb3a R09: ffffed1014faf071
+R10: ffffed1014faf071 R11: 0000000000000000 R12: ffff8880a7d78380
+R13: 1ffff11014faf026 R14: ffff8880a7d78040 R15: 0000000000000002
+ vcpu_enter_guest+0x6725/0x8a50 arch/x86/kvm/x86.c:8655
+ vcpu_run+0x332/0xc00 arch/x86/kvm/x86.c:8720
+ kvm_arch_vcpu_ioctl_run+0x451/0x8f0 arch/x86/kvm/x86.c:8937
+ kvm_vcpu_ioctl+0x64f/0xa50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3230
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443bb9
+Code: e8 dc a3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 00 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff4f9aff08 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000443bb9
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
+RBP: 00000000006ce018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000012 R11: 0000000000000246 R12: 0000000000404120
+R13: 00000000004041b0 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
- arch/arm64/mm/mmu.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 75df62f..11f8639 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1121,8 +1121,15 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 			void *p = NULL;
- 
- 			p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
--			if (!p)
--				return -ENOMEM;
-+			if (!p) {
-+				/*
-+				 * fallback allocating with virtually
-+				 * contiguous memory for this section
-+				 */
-+				if (vmemmap_populate_basepages(addr, next, node, NULL))
-+					return -ENOMEM;
-+				continue;
-+			}
- 
- 			pmd_set_huge(pmdp, __pa(p), __pgprot(PROT_SECT_NORMAL));
- 		} else
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
