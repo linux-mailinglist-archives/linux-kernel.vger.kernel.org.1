@@ -2,101 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F8A280B64
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01201280B65
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733204AbgJAXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbgJAXl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:41:29 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E79C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 16:41:29 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id cr8so379278qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9YGiMYLEFWMxP44IQznAdvlL7pES8GSYhxSh3+6yo0Y=;
-        b=ANMv3FLowaO67DZBUhWtSpkpLjpR46ykbDH8/Vkq814cnccALRmrxF89cHd7jprMaa
-         1q8oMjn7iuJJs139gXQHy1YgmCy1dLk8ZuNeP5nQ03RaWgVCuY7tMRTHAO7u5fEfyGzf
-         lI4i5S9/+ft4RN4yYrNW5TLDz60axbCncGU3MerthTO3bnV5QdW0p0lm8a7eOlxK3J3U
-         jjqJHwrJxR9J21APERDCxitSvqeAwYgu0TphzK1puwpoaq3ozgsF+X/QjTOZv0XwjLHi
-         r8XhOqCiZPyBcISPZ63mmMYCU8h+5UjhF1QPBWftZ+amVGEsNzlMMyXgp3MKTGv/bQlA
-         Ch8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9YGiMYLEFWMxP44IQznAdvlL7pES8GSYhxSh3+6yo0Y=;
-        b=EeAEt5Ir61/FlrFuMpc7bnuoQw/oP2Afi859oLfOi3Yno588vH/oI7lN2YDk/NjiNW
-         MQgPG9lfSDCW5VXkTPOWHaNAzZlwHPaH/7hVgF+OqsgMmsItyHhOWhKL4Y3/s6H2sZwe
-         X6fIiYyZpzYweQHNJCsxyluBLy/FDXGKCG7sZY1tsTWOd4W7lYjJf/zfRVpfUdHTtloE
-         pTPjTYMWv1xqpIVgYDFQ+Ca4qfPfE8cLWOrDQthw4sw0zEx3JNpzJJeGYrdlNRXDgKrw
-         nNahC7mWnYG69stV2C9kGeO97H/51sifua6gEkazcNmnOlW1zJi5Weny7Yh46+EvVFCv
-         3Z+Q==
-X-Gm-Message-State: AOAM533WKOz8pA+++oi3H5bj4aqYJWtyHsW1Y3P/LkiDZ4PBQvdZa1lf
-        57j0H+BiplIDs5m3S/Wx2mJgnw==
-X-Google-Smtp-Source: ABdhPJxd2AyZtByeV7o2/IShOr8SdCiXS1oQbmwMZZV5I2AhHQOl2gIId8kORue5lUAX6bRGB26+Lg==
-X-Received: by 2002:a0c:f48e:: with SMTP id i14mr10156591qvm.5.1601595688900;
-        Thu, 01 Oct 2020 16:41:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id r17sm437460qtm.66.2020.10.01.16.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 16:41:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kO8CV-0052fJ-8d; Thu, 01 Oct 2020 20:41:27 -0300
-Date:   Thu, 1 Oct 2020 20:41:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH 3/4] mmap locking API: Don't check locking if the mm
- isn't live yet
-Message-ID: <20201001234127.GG9916@ziepe.ca>
-References: <20200930011944.19869-1-jannh@google.com>
- <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
- <20200930123000.GC9916@ziepe.ca>
- <CAG48ez2z1R8MLS0_pjhBSGnJC8RwaHMpiGdv8GhJUCrwtsLOPg@mail.gmail.com>
- <CAG48ez0fhY0twgriBDv9RU1YG8mBxg_KoK_YsLPWYo4feAQ=Sg@mail.gmail.com>
- <20200930232655.GE9916@ziepe.ca>
- <CAG48ez0i2++2Jg1Z-RyCKn-uZ-gcszVknAaCyXbJyptuMxbCsg@mail.gmail.com>
- <20201001191512.GF9916@ziepe.ca>
- <CAG48ez3GW9sRfZWwx+YpKdouAVT+o9zQR73-itJMbLCXTiUxBw@mail.gmail.com>
+        id S1733222AbgJAXmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:42:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727713AbgJAXmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:42:01 -0400
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 843D92075F
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601595720;
+        bh=1G4bCgqGLCXb4ju+bQWFF0z6CCt2MlkQllCKDVS80jE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sVxfjefedJCwWRDjVFkiuwtCH70eKQ37jAsxZRfCNrkNQIISxl5VfQfxN63GA3/A1
+         b0wNYEV47wDqk4UxFWY1VjzNQEtw6RE222zluJalQ+8xrKlcmHH1Y5gAWMDB/HBm4z
+         m3zv1MfugpnYTrbYNW6Rbaet3/tdi3E7mLAYMeKc=
+Received: by mail-wr1-f42.google.com with SMTP id e16so576633wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:42:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530p7UUljW36SwnaYY3jROJnzyS7APIify0rYJFprr37WgFxUVCs
+        GKjFTzUnroFlb6jSlaPLndT5TdkOZqIXM/HcCEDXwQ==
+X-Google-Smtp-Source: ABdhPJw9P1JlgLSOjiD4lZbkRNbt3m6RHtpuLTYac1loz7Bcb4RQ4U0MPYpGkFeL158jw59kT81juIcRiwvCjdSxqcc=
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr11378320wrb.70.1601595719017;
+ Thu, 01 Oct 2020 16:41:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez3GW9sRfZWwx+YpKdouAVT+o9zQR73-itJMbLCXTiUxBw@mail.gmail.com>
+References: <20201001203913.9125-1-chang.seok.bae@intel.com> <20201001203913.9125-8-chang.seok.bae@intel.com>
+In-Reply-To: <20201001203913.9125-8-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 1 Oct 2020 16:41:47 -0700
+X-Gmail-Original-Message-ID: <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
+Message-ID: <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 07/22] x86/fpu/xstate: Introduce helpers to manage an
+ xstate area dynamically
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:16:35PM +0200, Jann Horn wrote:
+On Thu, Oct 1, 2020 at 1:42 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> task->fpu has a buffer to keep the extended register states, but it is not
+> expandable at runtime. Introduce runtime methods and new fpu struct fields
+> to support the expansion.
+>
+> fpu->state_mask indicates the saved states per task and fpu->state_ptr
+> points the dynamically allocated area.
+>
+> alloc_xstate_area() uses vmalloc() for its scalability. However, set a
+> threshold (64KB) to watch out a potential need for an alternative
+> mechanism.
+>
+> Also, introduce a new helper -- get_xstate_size() to calculate the area
+> size.
+>
+> No functional change until the kernel supports dynamic user states.
+>
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/x86/include/asm/fpu/types.h  |  29 +++++--
+>  arch/x86/include/asm/fpu/xstate.h |   3 +
+>  arch/x86/kernel/fpu/core.c        |   3 +
+>  arch/x86/kernel/fpu/xstate.c      | 124 ++++++++++++++++++++++++++++++
+>  4 files changed, 154 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
+> index c87364ea6446..4b7756644824 100644
+> --- a/arch/x86/include/asm/fpu/types.h
+> +++ b/arch/x86/include/asm/fpu/types.h
+> @@ -327,14 +327,33 @@ struct fpu {
+>          */
+>         unsigned long                   avx512_timestamp;
+>
+> +       /*
+> +        * @state_mask:
+> +        *
+> +        * The state component bitmap. It indicates the saved xstate in
+> +        * either @state or @state_ptr. The map value starts to be aligned
+> +        * with @state and then with @state_ptr once it is in use.
+> +        */
+> +       u64                             state_mask;
+> +
+> +       /*
+> +        * @state_ptr:
+> +        *
+> +        * Copy of all extended register states, in a dynamically-allocated
+> +        * area, we save and restore over context switches. When a task is
+> +        * using extended features, the register state is always the most
+> +        * current. This state copy is more recent than @state. If the task
+> +        * context-switches away, they get saved here, representing the xstate.
+> +        */
+> +       union fpregs_state              *state_ptr;
+> +
+>         /*
+>          * @state:
+>          *
+> -        * In-memory copy of all FPU registers that we save/restore
+> -        * over context switches. If the task is using the FPU then
+> -        * the registers in the FPU are more recent than this state
+> -        * copy. If the task context-switches away then they get
+> -        * saved here and represent the FPU state.
+> +        * Copy of some extended register state that we save and restore
+> +        * over context switches. If a task uses a dynamically-allocated
+> +        * area, @state_ptr, then it has a more recent state copy than this.
+> +        * This copy follows the same attributes as described for @state_ptr.
+>          */
+>         union fpregs_state              state;
+>         /*
+> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+> index 9aad91c0725b..37728bfcb71e 100644
+> --- a/arch/x86/include/asm/fpu/xstate.h
+> +++ b/arch/x86/include/asm/fpu/xstate.h
+> @@ -103,6 +103,9 @@ extern void __init update_regset_xstate_info(unsigned int size,
+>                                              u64 xstate_mask);
+>
+>  void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
+> +int alloc_xstate_area(struct fpu *fpu, u64 mask, unsigned int *alloc_size);
+> +void free_xstate_area(struct fpu *fpu);
+> +
+>  const void *get_xsave_field_ptr(int xfeature_nr);
+>  int using_compacted_format(void);
+>  int xfeature_size(int xfeature_nr);
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index 875620fdfe61..e25f7866800e 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -235,6 +235,9 @@ int fpu__copy(struct task_struct *dst, struct task_struct *src)
+>          */
+>         memset(&dst_fpu->state.xsave, 0, fpu_kernel_xstate_default_size);
+>
+> +       dst_fpu->state_mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
+> +       dst_fpu->state_ptr = NULL;
+> +
+>         /*
+>          * If the FPU registers are not current just memcpy() the state.
+>          * Otherwise save current FPU registers directly into the child's FPU
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index 6e0d8a9699ed..af60332aafef 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/pkeys.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/proc_fs.h>
+> +#include <linux/vmalloc.h>
+>
+>  #include <asm/fpu/api.h>
+>  #include <asm/fpu/internal.h>
+> @@ -69,6 +70,7 @@ static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] =
+>  static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
+>  static unsigned int xstate_comp_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
+>  static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
+> +static bool xstate_aligns[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = false};
+>
+>  /*
+>   * The XSAVE area of kernel can be in standard or compacted format;
+> @@ -128,6 +130,48 @@ static bool xfeature_is_supervisor(int xfeature_nr)
+>         return ecx & 1;
+>  }
+>
+> +/*
+> + * Available once those arrays for the offset, size, and alignment info are set up,
+> + * by setup_xstate_features().
+> + */
+> +static unsigned int get_xstate_size(u64 mask)
+> +{
+> +       unsigned int size;
+> +       u64 xmask;
+> +       int i, nr;
+> +
+> +       if (!mask)
+> +               return 0;
+> +       else if (mask == (xfeatures_mask_all & ~xfeatures_mask_user_dynamic))
+> +               return fpu_kernel_xstate_default_size;
+> +       else if (mask == xfeatures_mask_all)
+> +               return fpu_kernel_xstate_max_size;
+> +
+> +       nr = fls64(mask) - 1;
+> +
+> +       if (!using_compacted_format())
+> +               return xstate_offsets[nr] + xstate_sizes[nr];
+> +
+> +       xmask = BIT_ULL(nr + 1) - 1;
+> +
+> +       if (mask == (xmask & xfeatures_mask_all))
+> +               return xstate_comp_offsets[nr] + xstate_sizes[nr];
+> +
+> +       /*
+> +        * Calculate the size by summing up each state together, since no known
+> +        * size found with the xstate area format out of the given mask.
+> +        */
+> +       for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
+> +               if (!(mask & BIT_ULL(i)))
+> +                       continue;
+> +
+> +               if (xstate_aligns[i])
+> +                       size = ALIGN(size, 64);
+> +               size += xstate_sizes[i];
+> +       }
+> +       return size;
+> +}
+> +
+>  /*
+>   * When executing XSAVEOPT (or other optimized XSAVE instructions), if
+>   * a processor implementation detects that an FPU state component is still
+> @@ -268,10 +312,12 @@ static void __init setup_xstate_features(void)
+>         xstate_offsets[XFEATURE_FP]     = 0;
+>         xstate_sizes[XFEATURE_FP]       = offsetof(struct fxregs_state,
+>                                                    xmm_space);
+> +       xstate_aligns[XFEATURE_FP]      = true;
+>
+>         xstate_offsets[XFEATURE_SSE]    = xstate_sizes[XFEATURE_FP];
+>         xstate_sizes[XFEATURE_SSE]      = sizeof_field(struct fxregs_state,
+>                                                        xmm_space);
+> +       xstate_aligns[XFEATURE_SSE]     = true;
+>
+>         for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
+>                 if (!xfeature_enabled(i))
+> @@ -289,6 +335,7 @@ static void __init setup_xstate_features(void)
+>                         continue;
+>
+>                 xstate_offsets[i] = ebx;
+> +               xstate_aligns[i] = (ecx & 2) ? true : false;
+>
+>                 /*
+>                  * In our xstate size checks, we assume that the highest-numbered
+> @@ -753,6 +800,9 @@ static bool is_supported_xstate_size(unsigned int test_xstate_size)
+>         return false;
+>  }
+>
+> +/* The watched threshold size of dynamically allocated xstate area */
+> +#define XSTATE_AREA_MAX_BYTES          (64 * 1024)
+> +
+>  static int __init init_xstate_size(void)
+>  {
+>         /* Recompute the context size for enabled features: */
+> @@ -777,6 +827,14 @@ static int __init init_xstate_size(void)
+>         if (!is_supported_xstate_size(fpu_kernel_xstate_default_size))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * When observing the allocation goes beyond the threshold, it is better to consider
+> +        * switching a better scalable mechanism than the current.
+> +        */
+> +       if (fpu_kernel_xstate_max_size > XSTATE_AREA_MAX_BYTES)
+> +               pr_warn("x86/fpu: xstate buffer too large (%u > %u)\n",
+> +                       fpu_kernel_xstate_max_size, XSTATE_AREA_MAX_BYTES);
+> +
+>         /*
+>          * User space is always in standard format.
+>          */
+> @@ -867,6 +925,12 @@ void __init fpu__init_system_xstate(void)
+>         if (err)
+>                 goto out_disable;
+>
+> +       /*
+> +        * At this point, it passed the size sanity check. Have the init_task take
+> +        * the feature mask.
+> +        */
+> +       current->thread.fpu.state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
+> +
+>         /*
+>          * Update info used for ptrace frames; use standard-format size and no
+>          * supervisor xstates:
+> @@ -1086,6 +1150,66 @@ static inline bool xfeatures_mxcsr_quirk(u64 xfeatures)
+>         return true;
+>  }
+>
+> +void free_xstate_area(struct fpu *fpu)
+> +{
+> +       vfree(fpu->state_ptr);
+> +}
+> +
+> +/*
+> + * Allocate a new xstate area with a calculated size, based on the given bit value.
+> + *
+> + * No mechanism implemented yet to shrink or reclaim the xstate area on the fly,
+> + * the need of which is subject to the real usage.
+> + */
+> +int alloc_xstate_area(struct fpu *fpu, u64 mask, unsigned int *alloc_size)
+> +{
+> +       union fpregs_state *state_ptr;
+> +       unsigned int oldsz, newsz;
+> +       u64 state_mask;
+> +
+> +       state_mask = fpu->state_mask | mask;
+> +
+> +       oldsz = get_xstate_size(fpu->state_mask);
+> +       newsz = get_xstate_size(state_mask);
+> +
+> +       if (oldsz >= newsz)
+> +               return 0;
+> +
+> +       if (newsz > fpu_kernel_xstate_max_size) {
+> +               pr_warn_once("x86/fpu: state buffer too large (%u > %u bytes)\n",
+> +                            newsz, fpu_kernel_xstate_max_size);
+> +               XSTATE_WARN_ON(1);
+> +               return 0;
+> +       }
+> +
+> +       /*
+> +        * The caller may be under interrupt disabled condition. Ensure interrupt
+> +        * allowance before the memory allocation, which may involve with page faults.
+> +        */
+> +       local_irq_enable();
+> +       /* We need 64B aligned pointer, but vmalloc() returns a page-aligned address */
+> +       state_ptr = vmalloc(newsz);
 
-> > A subclass isn't right, it has to be a _nested annotation.
-> >
-> > nested locking is a pretty good reason to not be able to do this, this
-> > is something lockdep does struggle to model.
-> 
-> Did I get the terminology wrong? I thought they were the same. The
-> down_*_nested() APIs take an argument "subclass", with the default
-> subclass for the functions without "_nested" being 0.
+I'm speechless.
 
-AFAIK a subclass at init time sticks with the lock forever, the
-_nested ones are temporary overrides.
+First, you can't just enable IRQs here.  If IRQs are off, they're off
+for a reason.  Secondly, if they're *on*, you just forgot that fact.
 
-I think what you kind of want is to start out with
-lockdep_set_novalidate_class() then switch to a real class once things
-are finished. Not sure exactly how :)
-
-Jason
+And allocating this state from vmalloc() seems questionable.  Why are
+you doing this?
