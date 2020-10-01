@@ -2,252 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EACA2809D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF872809DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733078AbgJAWCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgJAWCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:02:42 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E108C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:02:42 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id n16so1047153ilm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7L7K8C/1mZIVHV/yJEj8lKlJqviWDQigWaxJX7/IdHc=;
-        b=r37dZxzJZDMlxnOGWQ0REeugaWE+DNvx1t/53cR5oKf5wiit+zmGKwz9MHRMnSeMyb
-         QByHvKKhmIAGF67naFtzmx0LTOB4BB6UI0xerTngQw7Sq6Ctegj+pvcjneDRLq4Xwfyi
-         w5H5UGpFcnggm/C7BJpE2W0ynaK9YDn7RIwcs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7L7K8C/1mZIVHV/yJEj8lKlJqviWDQigWaxJX7/IdHc=;
-        b=ERWb/OTiT5EVrAr5eSmWqybgzk4PnKcKDNb4gZD6q9Lp4f/hIwZpjMk4RwT6b8JW5A
-         cEgkesUSqwG3CpnH2aitBiDo0MbnA5AJYxTsd0Z+elRTJ4mKSnx+XZTVWQWqYl/31vPS
-         zrEtEPJOPiRTZdNK20I2Fu4tf2u4QXsyNW5ogww6Rwwm3AHPTkmlIfkB+Gf68TY+SVMZ
-         b/zfp+RB6Xlyw1fkUWsMDuN6Q7wOZF79Yji0GFTSv4dqe/mkv2YpGEZLrvrgVuquH6UO
-         +tAo/5jYfGrDZqg3HArPsdtaYsOrlkUxtP3asb8VuzSNX8sifC8ps0g8wzXYcobuvYJ4
-         DdRg==
-X-Gm-Message-State: AOAM531GuHxrmq5XfWfSbY/QA0a/+GbKJyv+58/14Yb73oM/IjhYHOVd
-        VDoMfO7kXhTTQ3zaQU7tsJAtFgTgFrxjtUzO9kgJ
-X-Google-Smtp-Source: ABdhPJy+h7aS2d6ce7vQoMadNRVQ5lCvPyOl9bI6y3UkxMXpJ0ZfXX8vRMMSY43BXQ1oBWzcQfG7mFy2xUCI5cY56HA=
-X-Received: by 2002:a92:ad11:: with SMTP id w17mr4445282ilh.77.1601589761726;
- Thu, 01 Oct 2020 15:02:41 -0700 (PDT)
+        id S1733006AbgJAWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726731AbgJAWFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:05:02 -0400
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34D4820706
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 22:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601589901;
+        bh=ySbyvraJuX0jwwsNK/d/UFl6VDicg/JYUCXb5bYZY/Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UPOqhg7mZpw3PfyZ0oa+Pip+ZIlIaOuCfgjfX+OffXkGVJ2u+epsd4QNwBF5w/r4E
+         hm35CrKR7SKm9plRf8sDMhAt54l9xfvsPJdjMwpFA+Qmlziq7HY1p7Uox9MjFrf1bZ
+         B19VDY3XBzOLephTf7rkT5bMZ2CDi/L9VYRJsWTc=
+Received: by mail-wm1-f45.google.com with SMTP id s13so204071wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:05:01 -0700 (PDT)
+X-Gm-Message-State: AOAM530EnAD5YNU/ekClz+vNINwWxCfqLSokVxCQesmjLUG/ODNJl0iX
+        VaWm1jL+xRL6Mw1rSEN7Kgjf5lR8g1bcb0CMpkPuBw==
+X-Google-Smtp-Source: ABdhPJwRUpEY1OCAHViAHUMa42To814U5ed+pd2Z8VzNXR/n91+63TY7xm1w7bECsSLBxpRVNTTY7bluo9IocmC3Zrs=
+X-Received: by 2002:a1c:238e:: with SMTP id j136mr2069411wmj.176.1601589899748;
+ Thu, 01 Oct 2020 15:04:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200921164947.000048e1@Huawei.com>
- <CAOnJCU+mg13P609kut2cK9igmyepOvDc4kU-EzXsdjde7D_RpQ@mail.gmail.com>
- <20200922122912.00004bcb@Huawei.com> <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
-In-Reply-To: <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 1 Oct 2020 15:02:30 -0700
-Message-ID: <CAOnJCUKkJrqAfnmeSKXiVKMZUucydEQ63mpFRpuBQHX7-joJkg@mail.gmail.com>
-Subject: Re: [RFT PATCH v3 0/5] Unify NUMA implementation between ARM64 & RISC-V
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        Anup Patel <anup@brainfault.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
+References: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
+ <71682bce-a925-d3bd-18ef-d2e4eb8ebc8e@intel.com> <20201001205857.GH7474@linux.intel.com>
+ <f1835c1f-31bc-16a9-ffa5-896b1aeb895a@intel.com>
+In-Reply-To: <f1835c1f-31bc-16a9-ffa5-896b1aeb895a@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 1 Oct 2020 15:04:48 -0700
+X-Gmail-Original-Message-ID: <CALCETrWswWdgXO2J6nRjXW_4JRsK1TzzVZ62EDsF+d_79O+6Sw@mail.gmail.com>
+Message-ID: <CALCETrWswWdgXO2J6nRjXW_4JRsK1TzzVZ62EDsF+d_79O+6Sw@mail.gmail.com>
+Subject: Re: How should we handle illegal task FPU state?
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 2:04 PM Atish Patra <atishp@atishpatra.org> wrote:
+On Thu, Oct 1, 2020 at 2:50 PM Dave Hansen <dave.hansen@intel.com> wrote:
 >
-> On Tue, Sep 22, 2020 at 4:30 AM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Mon, 21 Sep 2020 17:08:32 -0700
-> > Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > > On Mon, Sep 21, 2020 at 8:51 AM Jonathan Cameron
-> > > <Jonathan.Cameron@huawei.com> wrote:
-> > > >
-> > > > On Fri, 18 Sep 2020 13:11:35 -0700
-> > > > Atish Patra <atish.patra@wdc.com> wrote:
-> > > >
-> > > > > This series attempts to move the ARM64 numa implementation to common
-> > > > > code so that RISC-V can leverage that as well instead of reimplementing
-> > > > > it again.
-> > > > >
-> > > > > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
-> > > > > modified to reuse the common implementation to avoid duplication.
-> > > > >
-> > > > > [1] https://lkml.org/lkml/2020/1/10/233
-> > > > >
-> > > > > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
-> > > > > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
-> > > > > This patch series doesn't modify the maintainers list for the common code (arch_numa)
-> > > > > as I am not sure if somebody from ARM64 community or Greg should take up the
-> > > > > maintainership. Ganapatrao was the original author of the arm64 version.
-> > > > > I would be happy to update that in the next revision once it is decided.
-> > > >
-> > >
-> > > Any thoughts on the maintenanership of this code ?
-> >
-> > Currently it is a trivial enough bit of code, I'd not be too worried
-> > as long as it doesn't fall through the cracks.  Changes that directory are going
-> > to need a GregKH Ack so unlikely anything will get missed.
-> >
+> On 10/1/20 1:58 PM, Sean Christopherson wrote:
+> > One thought for a lowish effort approach to pave the way for CET would be to
+> > try XRSTORS multiple times in switch_fpu_return().  If the first try fails,
+> > then WARN, init non-supervisor state and try a second time, and if _that_ fails
+> > then kill the task.  I.e. do the minimum effort to play nice with bad FPU
+> > state, but don't let anything "accidentally" turn off CET.
 >
-> Yeah. I am fine with the current structure. I just wanted to confirm that
-> everybody is on board with that.
+> I'm not sure we should ever keep running userspace after an XRSTOR*
+> failure.  For MPX, this might have provided a nice, additional vector
+> for an attacker to turn off MPX.  Same for pkeys if we didn't correctly
+> differentiate between the hardware init state versus the "software init"
+> state that we keep in init_task.
 >
-> > If you feel a specific entry is needed in MAINTAINERS go for it.
-> > Feel free to stick me down as a reviewer and I'll keep an eye on
-> > it from ARM64 side of things.
-> >
->
-> I will not add any specific entry in MAINTAINERS unless somebody
-> complains about it.
->
->
-> > Thanks,
-> >
-> > Jonathan
-> >
-> >
-> > >
-> > > > Was fairly sure this set was a noop on arm64 ACPI systems, but ran a quick
-> > > > sanity check on a 2 socket kunpeng920 and everything came up as normal
-> > > > (4 nodes, around 250G a node)
-> > > >
-> > > > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > For patches 1 and 2.  Doesn't seem relevant to the rest :)
-> > > >
-> > >
-> > > Thanks a lot!
-> > >
-> > > > >
-> > > > > # numactl --hardware
-> > > > > available: 2 nodes (0-1)
-> > > > > node 0 cpus: 0 1 2 3
-> > > > > node 0 size: 486 MB
-> > > > > node 0 free: 470 MB
-> > > > > node 1 cpus: 4 5 6 7
-> > > > > node 1 size: 424 MB
-> > > > > node 1 free: 408 MB
-> > > > > node distances:
-> > > > > node   0   1
-> > > > >   0:  10  20
-> > > > >   1:  20  10
-> > > > > # numactl -show
-> > > > > policy: default
-> > > > > preferred node: current
-> > > > > physcpubind: 0 1 2 3 4 5 6 7
-> > > > > cpubind: 0 1
-> > > > > nodebind: 0 1
-> > > > > membind: 0 1
-> > > > >
-> > > > > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
-> > > > > to test the patches in Qemu and 2 socket OmniXtend FPGA.
-> > > > >
-> > > > > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
-> > > > >
-> > > > > The patches are also available at
-> > > > >
-> > > > > https://github.com/atishp04/linux/tree/5.10_numa_unified_v3
-> > > > >
-> > > > > There may be some minor conflicts with Mike's cleanup series [2] depending on the
-> > > > > order in which these two series are being accepted. I can rebase on top his series
-> > > > > if required.
-> > > > >
-> > > > > [2] https://lkml.org/lkml/2020/8/18/754
-> > > > >
-> > > > > Changes from v2->v3:
-> > > > > 1. Added Acked-by/Reviewed-by tags.
-> > > > > 2. Replaced asm/acpi.h with linux/acpi.h
-> > > > > 3. Defined arch_acpi_numa_init as static.
-> > > > >
-> > > > > Changes from v1->v2:
-> > > > > 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
-> > > > > 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
-> > > > > 3. Fixed few typos.
-> > > > >
-> > > > > Atish Patra (4):
-> > > > > numa: Move numa implementation to common code
-> > > > > arm64, numa: Change the numa init functions name to be generic
-> > > > > riscv: Separate memory init from paging init
-> > > > > riscv: Add numa support for riscv64 platform
-> > > > >
-> > > > > Greentime Hu (1):
-> > > > > riscv: Add support pte_protnone and pmd_protnone if
-> > > > > CONFIG_NUMA_BALANCING
-> > > > >
-> > > > > arch/arm64/Kconfig                            |  1 +
-> > > > > arch/arm64/include/asm/numa.h                 | 45 +----------------
-> > > > > arch/arm64/kernel/acpi_numa.c                 | 13 -----
-> > > > > arch/arm64/mm/Makefile                        |  1 -
-> > > > > arch/arm64/mm/init.c                          |  4 +-
-> > > > > arch/riscv/Kconfig                            | 31 +++++++++++-
-> > > > > arch/riscv/include/asm/mmzone.h               | 13 +++++
-> > > > > arch/riscv/include/asm/numa.h                 |  8 +++
-> > > > > arch/riscv/include/asm/pci.h                  | 14 ++++++
-> > > > > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
-> > > > > arch/riscv/kernel/setup.c                     | 11 ++++-
-> > > > > arch/riscv/kernel/smpboot.c                   | 12 ++++-
-> > > > > arch/riscv/mm/init.c                          | 10 +++-
-> > > > > drivers/base/Kconfig                          |  6 +++
-> > > > > drivers/base/Makefile                         |  1 +
-> > > > > .../mm/numa.c => drivers/base/arch_numa.c     | 31 ++++++++++--
-> > > > > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
-> > > > > 17 files changed, 201 insertions(+), 70 deletions(-)
-> > > > > create mode 100644 arch/riscv/include/asm/mmzone.h
-> > > > > create mode 100644 arch/riscv/include/asm/numa.h
-> > > > > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
-> > > > > create mode 100644 include/asm-generic/numa.h
-> > > > >
-> > > > > --
-> > > > > 2.25.1
-> > > > >
-> > > >
-> > > >
-> > > >
-> > > > _______________________________________________
-> > > > linux-riscv mailing list
-> > > > linux-riscv@lists.infradead.org
-> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> > >
-> > >
-> > >
-> >
-> >
->
->
-> --
-> Regards,
-> Atish
+> What's the advantage of letting userspace keep running after we init its
+> state?  That it _might_ be able to recover?
 
-I am planning to send a v4 with a small fix Jonathan pointed out.
-Any more comments/concerns that I can address before that?
-Otherwise, can we get it queued for the next merge window?
-
--- 
-Regards,
-Atish
+I suppose we can kill userspace and change that behavior only if
+someone complains.  I still think it would be polite to try to dump
+core, but that could be tricky with the current code structure.  I'll
+try to whip up a patch.  Maybe I'll add a debugfs file to trash MXCSR
+for testing.
