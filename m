@@ -2,133 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD6D280148
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E372D280152
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732420AbgJAOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:32:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38129 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732299AbgJAOcY (ORCPT
+        id S1732467AbgJAOdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:33:32 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:41740 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732020AbgJAOdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:32:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601562742;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MT7eYQmEncoWFfXb3v2i0oegKhgFDremUCLyTZsLhEU=;
-        b=M3RGHKIk2q/7JK8/ECFX6Vc1wDjCRGgM/NxUUIwXCtEL/YzLnQ67P8xScGK5j6rAKL1ocL
-        g9KLFT10D10inbVckukeHRO1+Z40AGN7gVHLgM6qw/RIG8A0oj3DkKsrkfII8Ye09mf61C
-        jxE5+Jzt0/58MzdinLHaB3Ao7bdQ0P8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-3ey2_6RHMpaPr7bYlc1JGA-1; Thu, 01 Oct 2020 10:32:21 -0400
-X-MC-Unique: 3ey2_6RHMpaPr7bYlc1JGA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8806DA3F5F;
-        Thu,  1 Oct 2020 14:32:01 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 389FE19C59;
-        Thu,  1 Oct 2020 14:31:59 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 10:31:57 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
- dereference
-Message-ID: <20201001143157.GA1530324@optiplex-lnx>
-References: <20200923043459.GL795820@optiplex-lnx>
- <87sgb9oz1u.fsf@yhuang-dev.intel.com>
- <20200923130138.GM795820@optiplex-lnx>
- <87blhwng5f.fsf@yhuang-dev.intel.com>
- <20200924020928.GC1023012@optiplex-lnx>
- <877dsjessq.fsf@yhuang-dev.intel.com>
- <20200924063038.GD1023012@optiplex-lnx>
- <87tuvnd3db.fsf@yhuang-dev.intel.com>
- <20200924150833.GE1023012@optiplex-lnx>
- <87r1qqbkx5.fsf@yhuang-dev.intel.com>
+        Thu, 1 Oct 2020 10:33:31 -0400
+Received: by mail-oo1-f68.google.com with SMTP id t3so1519427ook.8;
+        Thu, 01 Oct 2020 07:33:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NklUCDIMExUICy4FN/gh63Vm3SmGzKI/5Dwr1ozJ1xo=;
+        b=Uye2+7mYqgX89ErfbrN19Ywi5H8ep5QlB475QIIkeLx+4MtiZnluCT8Ayj5oMDuah/
+         X3VI3p/1xoRqc90ue14+uRGHnU5T+CSbBpMNCSFUONviMRdPluG6VhyZ6t0ziOVpQWf5
+         5qCqbSFAajrV5sYt0fdIrqEMgWlg4/MjNQmuL64DscaMXWLG3LY+K0QN2ALwTqxXrvqy
+         GCoRbjPuzRTBi4AYoed1PjP6LlxxLSB+ML80CitU301Z2aeickSJi3B6oQf6v4euVWP5
+         SkhFJMXhoRNuSlZ5MdR9ZBkO768iwigMNOj0Vh1UBc+6Auk0tdurJFS9V1RyzA7gvUNm
+         BP5Q==
+X-Gm-Message-State: AOAM533Hwl06GCV8x1+z+TBM6dt/UsBDrObdk66WFuJF8qPyGRaf2r67
+        A05UQ3DCgg1cCo29Sksj4ewRms3+EF2z
+X-Google-Smtp-Source: ABdhPJwtom5klA/Ap8NrMcL34dnJEga9NT+pmkNy471CG5ehIqBT2YW5RiioY1ZL73r4Gt8Hdb3wCQ==
+X-Received: by 2002:a4a:95f1:: with SMTP id p46mr5633028ooi.93.1601562808922;
+        Thu, 01 Oct 2020 07:33:28 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g7sm1204483otk.56.2020.10.01.07.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 07:33:28 -0700 (PDT)
+Received: (nullmailer pid 695955 invoked by uid 1000);
+        Thu, 01 Oct 2020 14:33:22 -0000
+Date:   Thu, 1 Oct 2020 09:33:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Stephen Hemminger <sthemmin@microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        virtualization@lists.linux-foundation.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Nuno Das Neves <nudasnev@microsoft.com>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>
+Subject: Re: [PATCH RFC v1 12/18] asm-generic/hyperv: update
+ hv_interrupt_entry
+Message-ID: <20201001143322.GA695896@bogus>
+References: <20200914112802.80611-1-wei.liu@kernel.org>
+ <20200914115928.83184-4-wei.liu@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1qqbkx5.fsf@yhuang-dev.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20200914115928.83184-4-wei.liu@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
-> Rafael Aquini <aquini@redhat.com> writes:
-> >> Or, can you help to run the test with a debug kernel based on upstream
-> >> kernel.  I can provide some debug patch.
-> >> 
-> >
-> > Sure, I can set your patches to run with the test cases we have that tend to 
-> > reproduce the issue with some degree of success.
+On Mon, 14 Sep 2020 11:59:21 +0000, Wei Liu wrote:
+> We will soon use the same structure to handle IO-APIC interrupts as
+> well. Introduce an enum to identify the source and a data structure for
+> IO-APIC RTE.
 > 
-> Thanks!
+> While at it, update pci-hyperv.c to use the enum.
 > 
-> I found a race condition.  During THP splitting, "head" may be unlocked
-> before calling split_swap_cluster(), because head != page during
-> deferred splitting.  So we should call split_swap_cluster() before
-> unlocking.  The debug patch to do that is as below.  Can you help to
-> test it?
+> No functional change.
 > 
-> Best Regards,
-> Huang, Ying
-> 
-> ------------------------8<----------------------------
-> From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
-> From: Huang Ying <ying.huang@intel.com>
-> Date: Fri, 25 Sep 2020 11:10:56 +0800
-> Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
->  split THP
-> 
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
 > ---
->  mm/huge_memory.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index faadc449cca5..8d79e5e6b46e 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->  
->  	remap_page(head);
->  
-> +	if (PageSwapCache(head)) {
-> +		swp_entry_t entry = { .val = page_private(head) };
-> +
-> +		split_swap_cluster(entry);
-> +	}
-> +
->  	for (i = 0; i < HPAGE_PMD_NR; i++) {
->  		struct page *subpage = head + i;
->  		if (subpage == page)
-> @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  		}
->  
->  		__split_huge_page(page, list, end, flags);
-> -		if (PageSwapCache(head)) {
-> -			swp_entry_t entry = { .val = page_private(head) };
-> -
-> -			ret = split_swap_cluster(entry);
-> -		} else
-> -			ret = 0;
-> +		ret = 0;
->  	} else {
->  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
->  			pr_alert("total_mapcount: %u, page_count(): %u\n",
-> -- 
-> 2.28.0
+>  drivers/pci/controller/pci-hyperv.c |  2 +-
+>  include/asm-generic/hyperv-tlfs.h   | 36 +++++++++++++++++++++++++++--
+>  2 files changed, 35 insertions(+), 3 deletions(-)
 > 
 
-I left it running for several days, on several systems that had seen the
-crash hitting before, and no crashes were observed for either the upstream
-kernel nor the distro build 4.18-based kernel.
-
-I guess we can comfortably go with your patch. Thanks!
-
+Acked-by: Rob Herring <robh@kernel.org>
