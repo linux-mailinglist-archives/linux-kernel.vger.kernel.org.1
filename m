@@ -2,172 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CDB27FF48
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3345B27FF44
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732091AbgJAMgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731888AbgJAMgK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:36:10 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64D0C0613D0;
-        Thu,  1 Oct 2020 05:36:09 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o20so4331134pfp.11;
-        Thu, 01 Oct 2020 05:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HeCnOn1AQe3noYdugT04ghfsqOvbH2UWxnYiZwAM8pA=;
-        b=rt4knFN4h3KcmnWb2GEvtruXlgj4A3ABG4c+p+lZgq8d0S7BPuavcOqsp+hpCWYnXa
-         GBhlDx9GAoZl/WT4QarzotnCcoaOig5MEEZM2w7ayQ4/6mExeprO3yX59LvJ/ZKTEope
-         eCX6NsiVakdbaUT2AWNV5OPVcv7hk0hAWqbuJHMBGmPftGR5rliKLLWIw+ArUCGw++Hi
-         BYqj8x3qN3xTOFBPD6eXwGnf4PgImhLpbfDnF0PK/pXDXiRpnaYXcY1KmpO7fMelw5Yk
-         +URRcsC8D8J3ceuBDE98YcASVGn0qhELhALvmdAFyYF2MGzybK0bSSKgrZbfeP/7jLkw
-         zMdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HeCnOn1AQe3noYdugT04ghfsqOvbH2UWxnYiZwAM8pA=;
-        b=SpnpKF03RatQTUSSR4/BHbKazm8PlqDFHV7M8Bt8MqCLji+9Ax3dsM6qbmxx6hmFBq
-         iTszxyds25jL9wplgbVgztHkAKwPjQrtlK2mleGzU+dclZ+nZ8i4FJFBDULz9NEFQnmV
-         SDjuejwbvLCeP0pDaK/sZGG2NeucL6QttgEcU0cxxabn4PB3jRxAi9T6p3zB/k7TaoSl
-         /32g40qx2OCK8gAlBUXc7yut4c6iinn0I5YbDISn8wFI8VPgMZFQWdOx1xjj7jJ+ufcB
-         DRoFmDOTSpRDCPLyjfPdruiusev9fOeZWQ59CG4QnZ6OZddmmyG4yy6UC5LsACWHgiI6
-         KeZQ==
-X-Gm-Message-State: AOAM530QNZCSeBr0+z4KXR1RqWjXsn9ms3UyhMzyP2qyN/Qn5tswEfzd
-        +4sJiKwfdRbeCW0FhJdx+Zs=
-X-Google-Smtp-Source: ABdhPJzxdm0M5/Xa1AF4jzUYvFX502HO3gy4L4RNmkZ3YO7ybIdtABi+PhN71CQD6sxdwWBSwF+ZHQ==
-X-Received: by 2002:a17:902:ff07:b029:d1:e5fa:aa1d with SMTP id f7-20020a170902ff07b02900d1e5faaa1dmr7173912plj.84.1601555769436;
-        Thu, 01 Oct 2020 05:36:09 -0700 (PDT)
-Received: from gmail.com ([171.61.143.130])
-        by smtp.gmail.com with ESMTPSA id n3sm3590631pjv.29.2020.10.01.05.36.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 05:36:08 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 18:03:58 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: Re: [PATCH v3 00/28] scsi: use generic power management
-Message-ID: <20201001123358.GA1075511@gmail.com>
-References: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
+        id S1732085AbgJAMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:35:16 -0400
+Received: from mail-eopbgr150120.outbound.protection.outlook.com ([40.107.15.120]:62366
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732026AbgJAMfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:35:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i2DfCL/fIRoXMQeoUm6q8tKqjjWK+K9FQcDUDYxCKfIWG7303Wuv83Oq6QWdQU8U5RPVpci1vdPnrcF9ugikjTvYQnM4H1trY1IGENDWMrhHfWjKw4vARL4YIq/F5VjeI/Ayb2UV9/jwIm/2tvY2sG/VIf+GTjf/+bSL5+fRVHXLsTXATcK53H1eUcqE3cYlmPjsmcv9ZH3ZvqsRvdscnAVWpjzSKco9LegM4FieSLFYLtaxXvKk6lHHIs20d8cQ1aVxStBxtmPXWK/1CDFzeD0W9YzkfYeSAhSorkS+pGDs1hsEeULvkg/VSpJvcnWg62oGprvSGgG4WNRYBL4QzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z+y5ChoAOR2C4HfBoMc5WIJOfWlVfHUYy34gOsImJU4=;
+ b=j0qWxocZrS6vKQ8R6VoezUbDR0RAShzNVe9N5oYAhwAkoEw4L66o8xiHf3Swm3vd+NNPhqcHu1ZTm5+mt7VPRH6175SSZbB72CXogtTI/rjwggWPqJZxgt1wwl23tRyydhJVSTUS99CoAoWZOeyz0edoPvVKlf43jw2eNnUv2hzBzUUG9lv+cdrOdFAxF/Fz59I8tRPBXf7ys6gFhaCr31PP8zDHzuBqxZtrUFrxIu/nvtyNB4+G5Z42K2oeoQTphBgU/yW/rgSoK6Q9BslXLAIrnRLohoEQMQj4r6m7QWo9arDv/0AtmAj4uT6jesHlA3bENu8cYYleZRvMGZ3nBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z+y5ChoAOR2C4HfBoMc5WIJOfWlVfHUYy34gOsImJU4=;
+ b=n7knwmD7U+sUYOiNA5vKtth8QYASOvyx5J9ugDtyOBJfmfTc9TBUBTMVXif8uJFjPZOURROaNDc2m3ilD1uCDiWsqx88VGPdpVAk2dkqzdccJMCk51jVlPSKHVLhWpFbkQw3uF7GguiN5NZY+ZZvwDEa9yF+8/WpVQATZpRC3QY=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB3252.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Thu, 1 Oct
+ 2020 12:35:13 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5%6]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 12:35:13 +0000
+From:   Schrempf Frieder <frieder.schrempf@kontron.de>
+To:     Robin Gong <yibin.gong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] regulator: pca9450: Add SD_VSEL GPIO for LDO5
+Date:   Thu,  1 Oct 2020 14:34:31 +0200
+Message-Id: <20201001123447.1610-1-frieder.schrempf@kontron.de>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [89.247.42.197]
+X-ClientProxiedBy: AM5P194CA0018.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:203:8f::28) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fs-work.localdomain (89.247.42.197) by AM5P194CA0018.EURP194.PROD.OUTLOOK.COM (2603:10a6:203:8f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Thu, 1 Oct 2020 12:35:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 19f4b365-3c22-48d0-c9cb-08d86606713d
+X-MS-TrafficTypeDiagnostic: AM0PR10MB3252:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB3252B2283F47A4DC63E8ED02E9300@AM0PR10MB3252.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IqKOQH8kIiCdNNzUVR2wORUCF8ekArVKc2TFRkdJ3Ievx2BWnZluj8icwBn37rJozT2nLuV/MA4qY8lzAIhRwEvH1ySptq4eOdQTrbtXJ5NK5QdNk9GatFs7nqHVZItAFFRgsZnKHmUoB6zpmpTLfk+CAMJOMNHc1hKHUtN72q2T2lIenXKLyfwD+3GU8K4Ce5hsF0SbgVVmD6Uh6YJKuLLcu6Crqti1b9otu8PFFb2liY9UvSxHHZRoUX2O8wvBt/B+O6XhdcHLMYKFWEgJXjway+oW+V5TWVKiphSCkwzynjIgC46dG1D140Nwy10HQPMbi+XYTYQV2AvD5N9zew==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(366004)(396003)(346002)(136003)(66476007)(66556008)(6512007)(8676002)(186003)(110136005)(16526019)(478600001)(52116002)(1076003)(4326008)(86362001)(316002)(2906002)(8936002)(36756003)(956004)(6506007)(2616005)(7416002)(6666004)(5660300002)(6486002)(26005)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: QPK2FMe8+GoQsZ/UAl9owNF/vrxmHWujmE/wdKPs6XIZolhDnsyxx58m5f1q/HUOtjwKztovs4nLRcb4GEdRieOePI9usm84VndHQNVRgXDXsIvCKt1NautDlocchRKJPsu0E8HtZyZeXAzF5CtqaIL7Xwzq/W7jxspayrp/eEfvAjpaFY983DGJ/VXt4a2VsuL7a/wo13dcWVJhF93Pf/kWPd1NtC+Z1wE+cet7j8tL91L/lhUP2t64TmrjSPMbkIFJW1hZ+Vtg7Iu6mVCxZL8aC4g3wmJlnRuYs7JhwzS9Cvfxk6tGM1K2Nz/1yfbScFPKStYGJSiAXF8bPzMU+8ITKre+hjau07UdJWT1jfhAlr+pEIf2TFUZF5bz7Gw82UJCTqau6sWQb+KD3ZC2YA3K49RVDHwlHXC4Qz73vOhb/4qz5Q0YisSzljDM0Q4cnRB8jCK1jDMtS91UvEM3/TFaIsn0PColoZf7yiVN2LIsu0Id/gRK574IErl+aZ0nKY+rEGirSjQ8W+xvlsIBMW+i1u+1Rv+jN9PGI+mHmWXFmz0ljn5cLoEQ+930GXsYm4swTAYoIcJG5lawe3yQZE0pEKm8moKfUVCm5aJnUexHc5QsNE8o25pj8cKlQa/X01atiE8iU3uKV3uljtuQSQ==
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19f4b365-3c22-48d0-c9cb-08d86606713d
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 12:35:13.0385
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wKBj/jaQD++fL0Yi90+yu6BHEXNAEj6N0zsxiO/ogoxZ/7LNXy9cUdayZGAgF5rO/hX62IWWuEV4ablJUTmIFetWk19Ayf+KRmniN/N0BvE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 05:54:43PM +0530, Vaibhav Gupta wrote:
-Linux Kernel Mentee: Remove Legacy Power Management.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-The purpose of this patch series is to upgrade power management in SCSI
-drivers. This has been done by upgrading .suspend() and .resume() callbacks.
+LDO5 has two separate control registers. LDO5CTRL_L is used if the
+input signal SD_VSEL is low and LDO5CTRL_H if it is high.
+The current driver implementation only uses LDO5CTRL_H. To make this
+work on boards that have SD_VSEL connected to a GPIO, we add support
+for specifying an optional GPIO and setting it to high at probe time.
 
-The upgrade makes sure that the involvement of PCI Core does not change the
-order of operations executed in a driver. Thus, does not change its behavior.
+In the future we might also want to add support for boards that have
+SD_VSEL set to a fixed low level. In this case we need to change the
+driver to be able to use the LDO5CTRL_L register.
 
-In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
-helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
-pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
-their job.
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+ drivers/regulator/pca9450-regulator.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-The conversion requires the removal of those function calls, change the
-callbacks' definition accordingly and make use of dev_pm_ops structure.
-
-All patches are compile-tested only.
-
-v3: break down the patches to drop PCI wakeup calls.
-
-Test tools:
-    - Compiler: gcc (GCC) 10.2.0
-    - allmodconfig build: make -j$(nproc) W=1 all
-
-Vaibhav Gupta (28):
-  scsi: megaraid_sas: Drop PCI wakeup calls from .resume
-  scsi: megaraid_sas: use generic power management
-  scsi: megaraid_sas: update function description
-  scsi: aacraid: Drop pci_enable_wake() from .resume
-  scsi: aacraid: use generic power management
-  scsi: aic7xxx: use generic power management
-  scsi: aic79xx: use generic power management
-  scsi: arcmsr: Drop PCI wakeup calls from .resume
-  scsi: arcmsr: use generic power management
-  scsi: esas2r: Drop PCI Wakeup calls from .resume
-  scsi: esas2r: use generic power management
-  scsi: hisi_sas_v3_hw: Drop PCI Wakeup calls from .resume
-  scsi: hisi_sas_v3_hw: use generic power management
-  scsi: mpt3sas_scsih: Drop PCI Wakeup calls from .resume
-  scsi: mpt3sas_scsih: use generic power management
-  scsi: lpfc: use generic power management
-  scsi: pm_8001:  Drop PCI Wakeup calls from .resume
-  scsi: pm_8001: use generic power management
-  scsi: hpsa: use generic power management
-  scsi: 3w-9xxx: Drop PCI Wakeup calls from .resume
-  scsi: 3w-9xxx: use generic power management
-  scsi: 3w-sas: Drop PCI Wakeup calls from .resume
-  scsi: 3w-sas: use generic power management
-  scsi: mvumi: Drop PCI Wakeup calls from .resume
-  scsi: mvumi: use generic power management
-  scsi: mvumi: update function description
-  scsi: pmcraid: Drop PCI Wakeup calls from .resume
-  scsi: pmcraid: use generic power management
-
- drivers/scsi/3w-9xxx.c                    |  30 ++-----
- drivers/scsi/3w-sas.c                     |  32 ++-----
- drivers/scsi/aacraid/linit.c              |  34 ++------
- drivers/scsi/aic7xxx/aic79xx.h            |  12 +--
- drivers/scsi/aic7xxx/aic79xx_core.c       |   8 +-
- drivers/scsi/aic7xxx/aic79xx_osm_pci.c    |  43 +++-------
- drivers/scsi/aic7xxx/aic79xx_pci.c        |   6 +-
- drivers/scsi/aic7xxx/aic7xxx.h            |  10 +--
- drivers/scsi/aic7xxx/aic7xxx_core.c       |   6 +-
- drivers/scsi/aic7xxx/aic7xxx_osm_pci.c    |  46 +++-------
- drivers/scsi/aic7xxx/aic7xxx_pci.c        |   4 +-
- drivers/scsi/arcmsr/arcmsr_hba.c          |  33 +++----
- drivers/scsi/esas2r/esas2r.h              |   5 +-
- drivers/scsi/esas2r/esas2r_init.c         |  48 +++--------
- drivers/scsi/esas2r/esas2r_main.c         |   3 +-
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c    |  31 +++----
- drivers/scsi/hpsa.c                       |  12 +--
- drivers/scsi/lpfc/lpfc_init.c             | 100 +++++++---------------
- drivers/scsi/megaraid/megaraid_sas_base.c |  54 +++---------
- drivers/scsi/mpt3sas/mpt3sas_scsih.c      |  35 +++-----
- drivers/scsi/mvumi.c                      |  49 +++--------
- drivers/scsi/pm8001/pm8001_init.c         |  46 ++++------
- drivers/scsi/pmcraid.c                    |  44 +++-------
- 23 files changed, 198 insertions(+), 493 deletions(-)
-
+diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
+index eb5822bf53e0..fec7acc606f4 100644
+--- a/drivers/regulator/pca9450-regulator.c
++++ b/drivers/regulator/pca9450-regulator.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <linux/err.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+@@ -32,6 +33,7 @@ struct pca9450_regulator_desc {
+ struct pca9450 {
+ 	struct device *dev;
+ 	struct regmap *regmap;
++	struct gpio_desc *sd_vsel_gpio;
+ 	enum pca9450_chip_type type;
+ 	unsigned int rcnt;
+ 	int irq;
+@@ -795,6 +797,18 @@ static int pca9450_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 
++	/*
++	 * The driver uses the LDO5CTRL_H register to control the LDO5 regulator.
++	 * This is only valid if the SD_VSEL input of the PMIC is high. Let's
++	 * check if the pin is available as GPIO and set it to high.
++	 */
++	pca9450->sd_vsel_gpio = gpiod_get_optional(pca9450->dev, "sd-vsel", GPIOD_OUT_HIGH);
++
++	if (IS_ERR(pca9450->sd_vsel_gpio)) {
++		dev_err(&i2c->dev, "Failed to get SD_VSEL GPIO\n");
++		return ret;
++	}
++
+ 	dev_info(&i2c->dev, "%s probed.\n",
+ 		type == PCA9450_TYPE_PCA9450A ? "pca9450a" : "pca9450bc");
+ 
 -- 
-2.28.0
+2.17.1
 
