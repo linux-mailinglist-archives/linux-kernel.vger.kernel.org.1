@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C3927F6D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F1227F6D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732171AbgJAAmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:42:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731339AbgJAAmV (ORCPT
+        id S1732225AbgJAAmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:42:54 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:37323 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731339AbgJAAmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:42:21 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601512940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1dZAHWtiKSMf8mYBi0q5UFXISwoH04KbR1oFeQ0MPNQ=;
-        b=AA28nO6pNpydMLSZBYQBBnEDkzRVvxfuYEtCceEDkQdL3XmkV+DBn7nrp7zIZENUUspiyp
-        UxPUoLIeBVX24JDV6SSys2iXStajMMyrhNW2sWgNxh+rZaBeelsZOKbrEoHaEueWlXQY6S
-        knBkbiijs8Duc6lkHrQmrK06zPxprGA=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-bP_o5P85PDO7x8eYEhtl-Q-1; Wed, 30 Sep 2020 20:42:18 -0400
-X-MC-Unique: bP_o5P85PDO7x8eYEhtl-Q-1
-Received: by mail-qv1-f71.google.com with SMTP id a13so2065334qvl.6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:42:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1dZAHWtiKSMf8mYBi0q5UFXISwoH04KbR1oFeQ0MPNQ=;
-        b=YvYCpTqIDjSBrlf/OFVYVvNiMgTs2QflFbUBmUqEIClS4ABGdCyzPrmUqqUEWqAMhc
-         CYgi0I8v++3Ppnd0c1Y0qJFX1VY2B7zuH3vNkBRD9B3NP1xuJkcf0qVWEqjjwFQ9HoqD
-         CpyYyW5XbS/gxISs+pwadYbqWa0B4yDKmU7QisEzDQnCqKDLoa4LX/JeN/v/fcWa+kmE
-         JLnZrcA53XxVbjGxk4t8MzhFAE50KhKPGvCghWmMSa21+h4MhL6nl+U1NV2gRuyeFzbZ
-         JoL0pLR//lzir1J6u2ugkqsx8q4AuWwmwDG9MpCtePl2yg8H4E55jwZRd7cQYLaMhUKh
-         Euyw==
-X-Gm-Message-State: AOAM531DQDVLTuXC7rrC2QdGTKsynPtsSKSTwIeEL5aIKsRC9GQU24el
-        GK/K8TGQHqqGRyef2gf5uRx01V4JeakXZYjegJhQ6QzMRR2Ut4eVpijZh+B8zk2B2JcrvMlxUr2
-        LvoMxUhOvdpJ/cY11ehos6v2o
-X-Received: by 2002:a05:620a:b18:: with SMTP id t24mr5452568qkg.401.1601512937987;
-        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIDSvnLGUwNL+2BLIEvn9OGWviDasq6qOhSb244j0gvhx6q/5RSZ+zbvBvAe8dG2VfZreS1Q==
-X-Received: by 2002:a05:620a:b18:: with SMTP id t24mr5452548qkg.401.1601512937723;
-        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
-        by smtp.gmail.com with ESMTPSA id y46sm4602375qtc.30.2020.09.30.17.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 20:42:18 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v12 00/13] KVM: Dirty ring interface
-Message-ID: <20201001004218.GA6063@xz-x1>
-References: <20200930214948.47225-1-peterx@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200930214948.47225-1-peterx@redhat.com>
+        Wed, 30 Sep 2020 20:42:54 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 29CFF5800FB;
+        Wed, 30 Sep 2020 20:42:53 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Wed, 30 Sep 2020 20:42:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm3; bh=EAxp7TOknCizBkBbVqypDZ9urDOLrts
+        qdGCCWqFKxMA=; b=mLcvBBsyfUNEdQKt6/kQngIHD8LwfD4zYZpm5VL8L3L1Iiq
+        JPVt33Nk+QPj7ZM43nl/DKHDid5vSZYhraWFsS+BJpdf4z2dV98GZwOjW37JM2aC
+        OUr9IlZgaztLyz5AtUPNuv6qJB1Rc8g3KqGsAWmLFLBBEF8iilbDAwzx/k7lPE+I
+        Eg76fa49VEV40lNjoVeYtGKXnm8MJDl0U2Zikew1rizsXewQzC7K1ZOOjgnQe95n
+        hsYCtk2pzMI3iRGCRvQsKDMaqoepWrqVeYcReTof+ilFV1Yg/Qy6m30v7TlqIXaG
+        FuB+IQqW13nLwzKVb9oHj51GgSvcnpNysgHC+VA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=EAxp7T
+        OknCizBkBbVqypDZ9urDOLrtsqdGCCWqFKxMA=; b=ZDfBzDoEbEUuoiPnm7hBs9
+        KGPnwcGR/M8s0FcLCv/WKDOJIIdNBXFFMSe2V1dC/xyq10q+D1cRQWWlwJB/2wSg
+        kWuMcBHPcieG0uPma+lw/nOiG+kSOePHcyeZFpENYN3M3jY9oYWpY/LUaTamCuA2
+        5pYbhif8SoAriqFxYa3nDtm31MbpK50+unXd+b6a2PMi49ljUz/HnCXDrmMxBs3x
+        1GyIOz2t1RQRLcNiLrPxU58o8zB+c3gXAML7SSb9mouYfCb6MB3D8zQq0jhSPO2P
+        8CPc4NUQ/shZzsvPMAbaitSEfqwTycN/FH/CWn8etY8jaapvjbA32WClAk2/Ey8g
+        ==
+X-ME-Sender: <xms:CyZ1X-x6oNm9na-EyRNLO6h_WwH0PTrSQGgZ5NQcaN7A-Ho0RdBFxg>
+    <xme:CyZ1X6R6Shkq3t7CorpIsonnhN0Vew45nroSVwFmoi5rq8pnN5-fapJkXCSCDzctM
+    BFNG_f79yT1XIMNfw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdeflecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
+    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:CyZ1XwXode2iKrrxnWGE0M3n_DxBzfn2RWwpYaSUvDCgIL8zMOp4GA>
+    <xmx:CyZ1X0i0J4nE8C7FJwaCMeC0gLUsIiQF3DKqpX-x8RXyEs6o75pmkw>
+    <xmx:CyZ1XwA3hPBavTpqqG-hVGona3FdbYAgEGsnOAEK8UjXOGTTR6wbBA>
+    <xmx:DSZ1X06JZpbiquTh9jjC-u9w3A8tu9AyzufgNL6xCUi2rPR2Z_Dbig>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E221BE0181; Wed, 30 Sep 2020 20:42:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
+Mime-Version: 1.0
+Message-Id: <3755eb41-e939-41b4-93ff-7bfcbdbc9f5b@www.fastmail.com>
+In-Reply-To: <CACRpkdbn9294JnddMsmGooCe7KCxMiGbuAZ+OAuLwPkZUYD10A@mail.gmail.com>
+References: <20200911034631.8473-1-chiawei_wang@aspeedtech.com>
+ <20200911034631.8473-5-chiawei_wang@aspeedtech.com>
+ <CACRpkdbn9294JnddMsmGooCe7KCxMiGbuAZ+OAuLwPkZUYD10A@mail.gmail.com>
+Date:   Thu, 01 Oct 2020 10:12:30 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+Cc:     "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Corey Minyard" <minyard@acm.org>,
+        "Haiyue Wang" <haiyue.wang@linux.intel.com>,
+        "Cyril Bur" <cyrilbur@gmail.com>,
+        "Robert Lippert" <rlippert@google.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>
+Subject: Re: [PATCH 4/4] pinctrl: aspeed-g5: Fix LPC register offsets
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 05:49:35PM -0400, Peter Xu wrote:
-> - rebase
 
-I made the same mistake again on rebasing to 5.9-rc7 rather than kvm/queue.
-Doing it again.  Sorry for the noise.
 
--- 
-Peter Xu
+On Tue, 29 Sep 2020, at 22:12, Linus Walleij wrote:
+> On Fri, Sep 11, 2020 at 5:47 AM Chia-Wei, Wang
+> <chiawei_wang@aspeedtech.com> wrote:
+> 
+> > The LPC register offsets are fixed to adapt to the LPC DTS change,
+> > where the LPC partitioning is removed.
+> >
+> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> 
+> I can apply this one patch if I get a review from one of the
+> Aspeed pinctrl maintainer.
+> 
+> Andrew?
 
+There needs to be a v2 of the series that fixes the binding documentation, 
+which will drive some discussion about backwards compatibility. So lets not 
+apply this patch just yet.
+
+Thanks for touching base!
+
+Andrew
