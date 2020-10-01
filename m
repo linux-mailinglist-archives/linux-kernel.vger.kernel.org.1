@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4380627F982
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7284827F984
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730498AbgJAGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:34:40 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43834 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGej (ORCPT
+        id S1730949AbgJAGey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAGey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:34:39 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0916YNch013296;
-        Thu, 1 Oct 2020 01:34:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601534063;
-        bh=XVFQ5GLbFfp9MKYTIQfqxjcku0NgzU2HqmWayPSwDzc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=lLf3FYUNgFwfQ2v3ZS0isMYAfQ85gUFR5SPPDXvbjK0kCjz0fAW4rztXPIIG6G6Fh
-         bmyEBM5L9KegNVyOpZLD2j7Fu8ftIe2aQivul+QUsCreCyEqRHoo9HmYGAaW55/3qF
-         qpv2N41djolqq9m96TOX9ZW6c+TfD15hzvJ2ej7A=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0916YNtF045955
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Oct 2020 01:34:23 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 01:34:22 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 01:34:22 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916YMnH127527;
-        Thu, 1 Oct 2020 01:34:22 -0500
-Date:   Thu, 1 Oct 2020 12:04:21 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Bert Vermeulen <bert@biot.com>
-CC:     <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
-Message-ID: <20201001063421.qcjdikj2tje3jn6k@ti.com>
-References: <20200930235611.6355-1-bert@biot.com>
+        Thu, 1 Oct 2020 02:34:54 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8C4C0613D0;
+        Wed, 30 Sep 2020 23:34:53 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C23JP0F9Pz9sVH;
+        Thu,  1 Oct 2020 16:34:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601534091;
+        bh=8SVK23LN1XV22rfFMMDF+52/+6mmf2HKqJIAD2e6HXc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gJKhPs6rc32DplJ3rgjnY5fKaHOpJ3/ZV09lfne/h40Pcn7u4Ugxs0jTktaSPVkWz
+         URUSxWJBT+yaAtV82mrP1umohM7blQCI8RCFMRsRLFWpAZY2sH4HB8yI7DYx3Ic7lK
+         gNC8aP+cWWQz/usosO0zQ/yyMe05+1X5XXVXBPgTUHwlA1Omc33PGN/W1g6SVYC7J7
+         p8MAu+y3+cUd/K+1XgW3ydhgs/3G9tqi98+BIp/QYQ8f5vMxD1mBiDkNp7JMVFBOK4
+         4M3bkrmoVoaIlNxPhxMaQ4g9aWcML3jyckDURorBkevlgDkz8IF2UGgFIu5O/B5uMe
+         Tp/THkhiNeiAw==
+Date:   Thu, 1 Oct 2020 16:34:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: linux-next: manual merge of the tip tree with the vfs tree
+Message-ID: <20201001163443.0176e807@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200930235611.6355-1-bert@biot.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/o6VICmVLeBu4iUL1hbj.=03";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/o6VICmVLeBu4iUL1hbj.=03
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 01/10/20 01:56AM, Bert Vermeulen wrote:
-> Flash chips that announce BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 capability
-> get an addr_width of 3. This breaks when the flash chip is actually
-> larger than 16MB, since that requires a 4-byte address. The MX25L25635F
-> does exactly this, breaking anything over 16MB.
-> 
-> spi-nor only enables 4-byte opcodes or 4-byte address mode if addr_width
-> is 4, so no 4-byte mode is ever enabled. The > 16MB check in
-> spi_nor_set_addr_width() only works if addr_width wasn't already set
-> by the SFDP, which it was.
-> 
-> It could be fixed in a post_bfpt fixup for the MX25L25635F, but setting
-> addr_width to 4 when BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 is found fixes the
-> problem for all such cases.
+Hi all,
 
-JESD216D.01 says: "01b: 3- or 4-Byte addressing (e.g., defaults to 
-3-Byte mode; enters 4-Byte mode on command)"
+Today's linux-next merge of the tip tree got conflicts in:
 
-So using an address width of 4 here is not necessarily the right thing 
-to do. This change would break SMPT parsing for all flashes that use 
-3-byte addressing by default because SMPT parsing can involve register 
-reads/writes. One such device is the Cypress S28HS flash. In fact, this 
-was what prompted me to write the patch [0].
+  arch/ia64/Kconfig
+  arch/s390/Kconfig
 
-Before that patch, how did MX25L25635F decide to use 4-byte addressing? 
-Coming out of BFPT parsing addr_width would still be 0. My guess is that 
-it would go into spi_nor_set_addr_width() with addr_width still 0 and 
-then the check for (nor->mtd.size > 0x1000000) would set it to 4. Do I 
-guess correctly?
+between commit:
 
-In that case maybe we can do a better job of deciding what gets priority 
-in the if-else chain. For example, giving addr_width from nor->info 
-precedence over the one configured by SFDP can solve this problem. Then 
-all you have to do is set the addr_width in the info struct, which is 
-certainly easier than adding a fixup hook. There may be a more elegant 
-solution to this but I haven't given it much thought.
+  5e6e9852d6f7 ("uaccess: add infrastructure for kernel builds with set_fs(=
+)")
 
-So from my side, NACK!
+from the vfs tree and commit:
 
-> 
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> ---
->  drivers/mtd/spi-nor/sfdp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index e2a43d39eb5f..6fedc425bcf7 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -456,10 +456,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->  	/* Number of address bytes. */
->  	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
->  	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
-> -	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
->  		nor->addr_width = 3;
->  		break;
->  
-> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
->  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
->  		nor->addr_width = 4;
->  		break;
+  077ee78e3928 ("PCI/MSI: Make arch_.*_msi_irq[s] fallbacks selectable")
+  981aa1d366bf ("PCI: MSI: Fix Kconfig dependencies for PCI_MSI_ARCH_FALLBA=
+CKS")
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9acd7fa80be6ee14aecdc54429f2a48e56224e8
+from the tip tree.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/ia64/Kconfig
+index 3414e67229b3,9d0f1e13c918..000000000000
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@@ -55,7 -56,7 +55,8 @@@ config IA6
+  	select NEED_DMA_MAP_STATE
+  	select NEED_SG_DMA_LENGTH
+  	select NUMA if !FLATMEM
++ 	select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
+ +	select SET_FS
+  	default y
+  	help
+  	  The Itanium Processor Family is Intel's 64-bit successor to
+diff --cc arch/s390/Kconfig
+index dde501bc6304,0a3899386a51..000000000000
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@@ -190,7 -185,7 +190,8 @@@ config S39
+  	select OLD_SIGSUSPEND3
+  	select PCI_DOMAINS		if PCI
+  	select PCI_MSI			if PCI
++ 	select PCI_MSI_ARCH_FALLBACKS	if PCI_MSI
+ +	select SET_FS
+  	select SPARSE_IRQ
+  	select SYSCTL_EXCEPTION_TRACE
+  	select THREAD_INFO_IN_TASK
+
+--Sig_/o6VICmVLeBu4iUL1hbj.=03
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91eIMACgkQAVBC80lX
+0GxOvgf/SSvRTkrGYn/qQXFfACffvFAtOpnQFMJjDMYxt1qxdcR+51oh1Zxb5gsR
+b33tk5CulyPByFbVHG7sdJripzoAfSn8k9cDNxEbhjHTIL13Nk5q4WZ6U4riDO+d
+LWq+ZCFwmSO01RlVT0XGtTxRGX/eVC3FCByECvg+xTneea3cRXGV8XAVCb81+dpC
+7LZ76+DbB6G3xCnRGqtei1yAhRjSy6f96U486mKfw1kB5Kqi1vf3A+GecS18PUbY
+PXoWzx4dJ3WKF1cxtcftS4qL2HEkTIpgoJGpHB3yM9hFbCfKdIoxyxJvaoLCCurx
+ranoh53SnRDHaP28+wdv6jLMKS6Keg==
+=sFWZ
+-----END PGP SIGNATURE-----
+
+--Sig_/o6VICmVLeBu4iUL1hbj.=03--
