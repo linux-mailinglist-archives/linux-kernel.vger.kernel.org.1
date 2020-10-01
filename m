@@ -2,143 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE972804F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E282804FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732835AbgJARRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        id S1732784AbgJARSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732274AbgJARRs (ORCPT
+        with ESMTP id S1732096AbgJARSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:17:48 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C27C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:17:47 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id l16so6896496ilt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:17:47 -0700 (PDT)
+        Thu, 1 Oct 2020 13:18:46 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79ABC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:18:45 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id t17so3959585wmi.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=26TNgPJnQ28vGxnL6uAXIiw6BivGl+AQcqdGkLAETno=;
-        b=Vn/KaplLHlB4hObRWV9LvekIYidf0QcYnVlNVg165AcT/4WoGDV47plesoLDvcxZju
-         02rPULrU2OoBO7/CrgujuBox0GYnRkjuqIxRA9keN0gckfGnFYwXsQhCbrdr1D99ukwU
-         sdC0uQJnfKK9lnlPuHb9HvYUcoyltaYEUDJa76TAal4RyGmmfbNhabg7mSlh3CqtEfGq
-         n8+j32SS6J3qi2yHxHISZPjnbZfmka7IZVDz7NYzcZAyLsP+jLptwDuNVk5fx6qsQfTr
-         8KqzGBIln2TNqtViWTVzhubd7TGHRyrRq5Gzy8870cSXzuJlFCkvI0iy7IeqR5J7G2Sn
-         QYTQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AMM+i1pr6nkLHNqAVkSTj1TPYNn/WMfQYxPOkfPrgTg=;
+        b=EJ6ylxnq7uuKTHBre72m1k8m5q+Wvs0aF3mB7xzpCyDDFmfElkUuE08xbVmo19l90g
+         mq7EnALRp3Hpq867ahM8+emMvpPl4vmjzvsRXff6s/RN+Av4+CaRnBrTjb1mQLIRu8JW
+         +TLtR119dKVOJwXs2Y1Q+ojskn1QHEC/14B1aPJtOPQ9XMe7ieOdrYxW/kWOTXU5pDST
+         8D7Fx0epswtgP7y/AbAtUmpDkXLRX/bRooLRkbpvnBWTutj6KbFC5eIZwJ14LfYoYTuT
+         Yq2p04AkTbFyPHzjJoR6TM30RxHjezjMN/wln/JVBWayI2QTUgqN0l698qgF3SVEmuzP
+         KFjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=26TNgPJnQ28vGxnL6uAXIiw6BivGl+AQcqdGkLAETno=;
-        b=FbGWiynqgAaLY/MUD0YiKUbq6Xzz3ermq4AJxp7dFfqLYX+HYqpPwpEIZW4coFd86P
-         p1eXJeDz6OTcXhd0aoJA3zOuhvMJPNbWuDJMsN3zQZkV+vuLa3OQ4q3zPfdck80kYGz1
-         ML1LpCiY+57Nrk7PxfIUfb8KNSqae+/dfmY5gkoIfuIW1Sr4gG9BPKkhKlThTmQeL0Z/
-         93dlyoQY9iyF9u5OPFEybrRtiDw9qWmV5jWOXvcokq2hsrSjPAbMUJbT04O9JWhUoSQJ
-         LAMfrKoRXlqGY/QI61B0YKF4WhI00lad3Iz31ZHsNHd2on31ylm0qHR4LnEY6b6GlCzm
-         ocow==
-X-Gm-Message-State: AOAM530rDSpkuylwxpCZ4tgQogCJX+tdyBtISLWB7yINik3JUQBmeHh/
-        LmG5yxkoh/rOyhvIvMvvQMdvFQ==
-X-Google-Smtp-Source: ABdhPJx/BXfOX4dlbKL95gzD9sJfq8A2/6KT9dlmPRPH4D+xkRP5g1bqBRSViRs06RdSujRYHIIKJg==
-X-Received: by 2002:a05:6e02:1411:: with SMTP id n17mr3303844ilo.211.1601572666281;
-        Thu, 01 Oct 2020 10:17:46 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d8sm3229266ilu.2.2020.10.01.10.17.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 10:17:45 -0700 (PDT)
-Subject: Re: [PATCH RFC] kernel: decouple TASK_WORK TWA_SIGNAL handling from
- signals
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <0b5336a7-c975-a8f8-e988-e983e2340d99@kernel.dk>
- <875z7uezys.fsf@nanos.tec.linutronix.de>
- <3eafe8ec-7d31-bd46-8641-2d26aca5420d@kernel.dk>
- <87362yeyku.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8a98b921-c1c6-c1b7-e0ff-e2179badda55@kernel.dk>
-Date:   Thu, 1 Oct 2020 11:17:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AMM+i1pr6nkLHNqAVkSTj1TPYNn/WMfQYxPOkfPrgTg=;
+        b=YBeyrbJ1ZNxp+9Ians9HOIJfaiq9QFMTC0A2+osvXXC5i6tMUFBHuZA2QHBsOOWL4f
+         tsTJhHpDcM52YIapkHdcIn5av/POdnyPBO5pcgqtRVLTijj2lDGDIuIzoPEnI9RODEoS
+         mEqII9vwPlLZgdKa5ek0QK6q1OL/UqpF543uaZhEQT7MqSc/GdvkzHA8cDv8oW/iWn0S
+         4a7HZzJ+xySqt/IIzA90GlylMPKnWEGOnjztkgIAjxJYwaWnt6+Q76JmFUulWpiZmGoL
+         uQhJChrD66ixFSe0Po7GhuT2v3RL4AyyeIhFmy4sEzggUNGX3it70EHNJPKBZbVgkzBi
+         oFXg==
+X-Gm-Message-State: AOAM532HFCQiDHUWqqm6ze+9fpOyLyIbFJ2R+VKgwZdqlqcMyrcOk6N3
+        Fz5Zr+Jd5SMooZFwW/2Gbaks2g==
+X-Google-Smtp-Source: ABdhPJy0jR9bw4XhpbxddirNhhWvtaqG1IfvuGxxf+VbG28DC3MfehN2u54brbv5Pq1JA3Vs0tUKuQ==
+X-Received: by 2002:a1c:e48b:: with SMTP id b133mr1068332wmh.0.1601572724362;
+        Thu, 01 Oct 2020 10:18:44 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id x2sm10076139wrl.13.2020.10.01.10.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:18:43 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:18:36 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/39] kasan: drop unnecessary GPL text from comment
+ headers
+Message-ID: <20201001171836.GA4156371@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <56eae03b7b8112b5456632f0c00bd42e7337966c.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <87362yeyku.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56eae03b7b8112b5456632f0c00bd42e7337966c.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 9:49 AM, Thomas Gleixner wrote:
->>> This is really a hack. TWA_SIGNAL is a misnomer with the new
->>> functionality and combined with the above
->>>
->>>          if (!ret && !notify)
->>>   		wake_up_process(tsk);
->>>
->>> there is not really a big difference between TWA_RESUME and TWA_SIGNAL
->>> anymore. Just the delivery mode and the syscall restart magic.
->>
->> Agree, maybe it'd make more sense to rename TWA_SIGNAL to TWA_RESTART or
->> something like that. The only user of this is io_uring, so it's not like
->> it's a lot of churn to do so.
+On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
+> Don't mention "GNU General Public License version 2" text explicitly,
+> as it's already covered by the SPDX-License-Identifier.
 > 
-> I really hate that extra TIF flag just for this. We have way too many
-> already and there is work in progress already to address that. I told
-> other people already that new TIF flags are not going to happen unless
-> the mess is cleaned up. There is work in progress to do so.
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-I'm open to alternatives, but it does seem like the best match for
-something like this...
+Reviewed-by: Marco Elver <elver@google.com>
 
->>> This needs a lot more thoughts.
->>
->> Definitely, which is why I'm posting it as an RFC. It fixes a real
->> performance regression, and there's no reliable way to use TWA_RESUME
->> that I can tell.
+> ---
+> Change-Id: If0a2690042a2aa0fca70cea601ae9aabe72fa233
+> ---
+>  mm/kasan/common.c         |  5 -----
+>  mm/kasan/generic.c        |  5 -----
+>  mm/kasan/generic_report.c |  5 -----
+>  mm/kasan/init.c           |  5 -----
+>  mm/kasan/quarantine.c     | 10 ----------
+>  mm/kasan/report.c         |  5 -----
+>  mm/kasan/tags.c           |  5 -----
+>  mm/kasan/tags_report.c    |  5 -----
+>  8 files changed, 45 deletions(-)
 > 
-> It's not a performance regression simply because the stuff you had in
-> the first place which had more performance was broken. We are not
-> measuring broken vs. correct, really.
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 950fd372a07e..33d863f55db1 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -7,11 +7,6 @@
+>   *
+>   * Some code borrowed from https://github.com/xairy/kasan-prototype by
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #include <linux/export.h>
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 248264b9cb76..37ccfadd3263 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -7,11 +7,6 @@
+>   *
+>   * Some code borrowed from https://github.com/xairy/kasan-prototype by
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> diff --git a/mm/kasan/generic_report.c b/mm/kasan/generic_report.c
+> index a38c7a9e192a..6bb3f66992df 100644
+> --- a/mm/kasan/generic_report.c
+> +++ b/mm/kasan/generic_report.c
+> @@ -7,11 +7,6 @@
+>   *
+>   * Some code borrowed from https://github.com/xairy/kasan-prototype by
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #include <linux/bitops.h>
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index fe6be0be1f76..9ce8cc5b8621 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -4,11 +4,6 @@
+>   *
+>   * Copyright (c) 2015 Samsung Electronics Co., Ltd.
+>   * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #include <linux/memblock.h>
+> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> index 4c5375810449..580ff5610fc1 100644
+> --- a/mm/kasan/quarantine.c
+> +++ b/mm/kasan/quarantine.c
+> @@ -6,16 +6,6 @@
+>   * Copyright (C) 2016 Google, Inc.
+>   *
+>   * Based on code by Dmitry Chernenkov.
+> - *
+> - * This program is free software; you can redistribute it and/or
+> - * modify it under the terms of the GNU General Public License
+> - * version 2 as published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope that it will be useful, but
+> - * WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> - * General Public License for more details.
+> - *
+>   */
+>  
+>  #include <linux/gfp.h>
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 4f49fa6cd1aa..c3031b4b4591 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -7,11 +7,6 @@
+>   *
+>   * Some code borrowed from https://github.com/xairy/kasan-prototype by
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #include <linux/bitops.h>
+> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+> index e02a36a51f42..5c8b08a25715 100644
+> --- a/mm/kasan/tags.c
+> +++ b/mm/kasan/tags.c
+> @@ -4,11 +4,6 @@
+>   *
+>   * Copyright (c) 2018 Google, Inc.
+>   * Author: Andrey Konovalov <andreyknvl@google.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> diff --git a/mm/kasan/tags_report.c b/mm/kasan/tags_report.c
+> index bee43717d6f0..5f183501b871 100644
+> --- a/mm/kasan/tags_report.c
+> +++ b/mm/kasan/tags_report.c
+> @@ -7,11 +7,6 @@
+>   *
+>   * Some code borrowed from https://github.com/xairy/kasan-prototype by
+>   *        Andrey Konovalov <andreyknvl@gmail.com>
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+>   */
+>  
+>  #include <linux/bitops.h>
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
 > 
-> You are looking for a way to make stuff perform better and that's
-> something totally different and does not need to be rushed. Especially
-> rushing stuff into sensible areas like the entry code is not going to
-> happen just because you screwed up your initial design.
-
-Nobody is rushing anything - I noticed that I messed up the syscall
-restart for task_work && signal, so I fixed it. I'm quite happy taking
-my time getting this done the right way.
-
->> What kind of restart behavior do we need? Before this change, everytime
->> _TIF_SIGPENDING is set and we don't deliver a signal in the loop, we go
->> through the syscall restart code. After this change, we only do so at
->> the end. I'm assuming that's your objection?
-> 
-> No. That should work by some definition of work, but doing a restart
-> while delivering a signal cannot work at all.
-
-Right, this is what v2 fixes, and why I sent it out.
-
->> For _TIF_TASKWORK, we'll always want to restat the system call, if we
->> were currently doing one. For signals, only if we didn't deliver a
->> signal. So we'll want to retain the restart inside signal delivery?
-> 
-> No. This needs more thoughts about how restart handling is supposed to
-> work in the bigger picture and I'm not going to look at new versions of
-> this which are rushed out every half an hour unless there is a proper
-> analysis of how all this should play together in a way which does not
-> make an utter mess of everything.
-
-Again, this is an RFC, I'm soliciting comments on how we can make this
-work. I'd appreciate any hints and help in that regard of course.
-
-Thanks,
--- 
-Jens Axboe
-
