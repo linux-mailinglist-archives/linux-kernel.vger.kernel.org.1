@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496CE28026B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B70828026D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732602AbgJAPTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:19:09 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:33484 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732104AbgJAPTJ (ORCPT
+        id S1732626AbgJAPTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:19:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36450 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732516AbgJAPTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:19:09 -0400
-Received: by mail-ej1-f65.google.com with SMTP id j11so8714306ejk.0;
-        Thu, 01 Oct 2020 08:19:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ON2gB82ELmsBG6VggmUOlBmaT2J26CMtUjnZB7DZRdM=;
-        b=rzAQh+JkCd2LKvQ0EIvBjLOO3n/gdL0ylglCNWxdSiHaQ4In9pdmNvnpTHNu2Wa1TX
-         TVjsfiX6vyUlYaRjN1JcZWhM0xEjWZ7rG08u64ZXh/ClxgrFMcsxEzgyByi0AZPrbGM0
-         7of6kFoDIohoYIYvfj8eYAxzqIcHwb7m4Q1MDU9NAvXObzZNKf8hv0PIkfWHxA3D3gzk
-         JP9alcdNyI8LtkrV8z+Pb0kiwUu5Jd8xnQHuFY1RHPZulsln5KX5S742FBKOF2+7ZV7D
-         TDZUHedo9otIhaEVtKf+URELnVVts3xBZMJy5xg0sDgbRy+LzMwGfJ3kW1Rdee87X1qs
-         k3QQ==
-X-Gm-Message-State: AOAM533K5yj4BczMSDAg1RBmpmL7fXu4z77gkhKCmye47HHbjUjUhx+l
-        7Ii1G+eQ5rcE6wBke8n3ObU=
-X-Google-Smtp-Source: ABdhPJyyFu0bL7OIwwDMyKrJ8+Qwi7ZGEdwdemPGRD5gziNd1/C14veHmbZxUtPcTGEOTqwOEjecDA==
-X-Received: by 2002:a17:906:2818:: with SMTP id r24mr9020600ejc.100.1601565546454;
-        Thu, 01 Oct 2020 08:19:06 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id i17sm4393418ejy.79.2020.10.01.08.19.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Oct 2020 08:19:05 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 17:19:01 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Schrempf Frieder <frieder.schrempf@kontron.de>
-Cc:     Andreas Kemnade <andreas@kemnade.info>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rabeeh Khoury <rabeeh@solid-run.com>,
-        Robert Jones <rjones@gateworks.com>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        =?utf-8?Q?S=C3=A9bastien?= Szymanski 
-        <sebastien.szymanski@armadeus.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Stoica Cosmin-Stefan <cosmin.stoica@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Subject: Re: [PATCH v5 1/2] arm64: dts: Add the Kontron i.MX8M Mini SoMs and
- baseboards
-Message-ID: <20201001151901.GB14276@kozik-lap>
-References: <20201001151422.16028-1-frieder.schrempf@kontron.de>
+        Thu, 1 Oct 2020 11:19:10 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601565548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iNt6q1891XBXfQOj3GXswUcY8586ILcqIeO3Tk9oMiM=;
+        b=TcY/Pm8jHms3Gq1bYsUKLCPFPvsVTde4O9k5mIGaS0Kx/HG026MLk160BFDQ81SX1l3DSB
+        +Ts2w7ekmVyYbn3pyFMXLJX5w7nULdAmjbVTMIFYHANlPci1MRTF81sbhSuXOGE6r1+bMG
+        4Z+KIJN9dY7Cc5WdigxhjTb3t7hJ7F73uDioLCsyWRmZ90ZkIRpS6PrTIdkqtKcc6ccUJ+
+        Rlg7yIw0/H0H3403IGH6blxkk8GTo/mVCvaUcjhUZ8bx0gFOkJsImA33IBjydykIMnVK2t
+        SimXhzrArxrTECU6VsOkFHErDvlxVMOGgEbS4YsJETnOFeeIvPjb5ok8PeqZkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601565548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iNt6q1891XBXfQOj3GXswUcY8586ILcqIeO3Tk9oMiM=;
+        b=FDeW1iUzZvgdZkqqm6lkraty36zdgv6mNx6+APNE+9MEnIigZHH+5qeOMvTZNqMW487x+c
+        x74gclvMgOlW/VBw==
+To:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH RFC] kernel: decouple TASK_WORK TWA_SIGNAL handling from signals
+In-Reply-To: <0b5336a7-c975-a8f8-e988-e983e2340d99@kernel.dk>
+References: <0b5336a7-c975-a8f8-e988-e983e2340d99@kernel.dk>
+Date:   Thu, 01 Oct 2020 17:19:07 +0200
+Message-ID: <875z7uezys.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201001151422.16028-1-frieder.schrempf@kontron.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 05:13:37PM +0200, Schrempf Frieder wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> Kontron Electronics GmbH offers small and powerful SoMs based on the
-> i.MX8M Mini SoC including PMIC, LPDDR4-RAM, eMMC and SPI NOR.
-> 
-> The matching baseboards have the same form factor and similar interfaces
-> as the other boards from the Kontron "Board-Line" family, including
-> SD card, 1G Ethernet, 100M Ethernet, USB Host/OTG, digital IOs, RS232,
-> RS485, CAN, LVDS or HDMI, RTC and much more.
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
-> Changes for v5:
-> * Add Makefile entry to build dtb
-> 
-> Changes for v4:
-> * Remove one more needless status property
-> * Use local-mac-address instead of mac-address
-> * Add missing pinctrl-names in PMIC node
-> * Fix interrupt flags in PMIC node
-> * Use lowercase regulator names
-> * Enable pullup for PMIC IRQ line
-> * Fix pinctrl grp names to match schema
-> 
-> Changes for v3:
-> * Remove needless status properties
-> * Remove needless regulator properties for reg_vdd_5v
-> * Use proper PHY reset properties in PHY node
-> * Use phy-connection-type instead of phy-mode
-> * Adjust PMIC node name and label
-> * Add over-current-active-low to usbotg1 node
-> * Remove redundant bus-width property from usdhc2 node
-> * Remove needless regulator-compatible from reg_vdd_snvs
-> * Set minimum voltage to 85mV for reg_vdd_snvs
-> 
-> Changes for v2:
-> * Make the licensing less strict (GPL-2.0+ OR MIT)
-> * Merge the SoM and baseboard DTs for N8010 and N8011 into one as
->   they only differ in DDR and eMMC size.
-> * Change compatibles and model strings to "n810x" and "N8010X".
-> * Only use a common memory node that will be updated by the
->   bootloader reflecting the detected DDR size.
-> * Improve naming for 16MHz CAN fixed oscillator and set
->   "clock-output-names".
-> * Consistently use "reg_" prefix for regulators.
-> * Remove "userspi" node.
-> * Slightly improve commit message.
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/imx8mm-kontron-n801x-s.dts  | 322 ++++++++++++++++++
->  .../freescale/imx8mm-kontron-n801x-som.dtsi   | 294 ++++++++++++++++
->  3 files changed, 617 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+On Thu, Oct 01 2020 at 08:29, Jens Axboe wrote:
+> This adds TIF_TASKWORK for x86, which if set, will return true on
+> checking for pending signals. That in turn causes tasks to restart the
+> system call, which will run the added task_work.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Huch? The syscall restart does not cause the task work to run.
 
-Best regards,
-Krzysztof
+> If TIF_TASKWORK is available, we'll use that for notification when
+> TWA_SIGNAL is specified.  If it isn't available, the existing
+> TIF_SIGPENDING path is used.
+
+Bah. Yet another TIF flag just because.
+
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -1767,7 +1767,7 @@ static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb,
+>  		notify = TWA_SIGNAL;
+>  
+>  	ret = task_work_add(tsk, cb, notify);
+> -	if (!ret)
+> +	if (!ret && !notify)
+
+!notify assumes that TWA_RESUME == 0. Fun to debug if that ever changes.
+
+>  		wake_up_process(tsk);
+> --- a/kernel/task_work.c
+> +++ b/kernel/task_work.c
+> @@ -28,7 +28,6 @@ int
+>  task_work_add(struct task_struct *task, struct callback_head *work, int notify)
+>  {
+>  	struct callback_head *head;
+> -	unsigned long flags;
+>  
+>  	do {
+>  		head = READ_ONCE(task->task_works);
+> @@ -41,7 +40,10 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
+>  	case TWA_RESUME:
+>  		set_notify_resume(task);
+>  		break;
+> -	case TWA_SIGNAL:
+> +	case TWA_SIGNAL: {
+> +#ifndef TIF_TASKWORK
+> +		unsigned long flags;
+> +
+>  		/*
+>  		 * Only grab the sighand lock if we don't already have some
+>  		 * task_work pending. This pairs with the smp_store_mb()
+> @@ -53,7 +55,12 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
+>  			signal_wake_up(task, 0);
+>  			unlock_task_sighand(task, &flags);
+>  		}
+> +#else
+> +		set_tsk_thread_flag(task, TIF_TASKWORK);
+> +		wake_up_process(task);
+> +#endif
+
+This is really a hack. TWA_SIGNAL is a misnomer with the new
+functionality and combined with the above
+
+         if (!ret && !notify)
+  		wake_up_process(tsk);
+
+there is not really a big difference between TWA_RESUME and TWA_SIGNAL
+anymore. Just the delivery mode and the syscall restart magic.
+
+>  static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+>  					    unsigned long ti_work)
+>  {
+> +	bool restart_sys = false;
+> +
+>  	/*
+>  	 * Before returning to user space ensure that all pending work
+>  	 * items have been completed.
+> @@ -157,8 +159,13 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+>  		if (ti_work & _TIF_PATCH_PENDING)
+>  			klp_update_patch_state(current);
+>  
+> +		if (ti_work & _TIF_TASKWORK) {
+> +			task_work_run();
+> +			restart_sys = true;
+> +		}
+> +
+>  		if (ti_work & _TIF_SIGPENDING)
+> -			arch_do_signal(regs);
+> +			restart_sys |= !arch_do_signal(regs);
+>  
+>  		if (ti_work & _TIF_NOTIFY_RESUME) {
+>  			clear_thread_flag(TIF_NOTIFY_RESUME);
+> @@ -178,6 +185,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+>  		ti_work = READ_ONCE(current_thread_info()->flags);
+>  	}
+>  
+> +	if (restart_sys)
+> +		arch_restart_syscall(regs);
+> +
+
+How is that supposed to work?
+
+Assume that both TIF_TASKWORK and TIF_SIGPENDING are set, i.e. after
+running task work and requesting syscall restart there is an actual
+signal to be delivered.
+
+This needs a lot more thoughts.
+
+Thanks,
+
+        tglx
+
+
