@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929862804EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76482804F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732848AbgJARQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:16:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:40646 "EHLO foss.arm.com"
+        id S1732882AbgJARRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:17:06 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62435 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732213AbgJARQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:16:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A118B1063;
-        Thu,  1 Oct 2020 10:16:10 -0700 (PDT)
-Received: from [172.16.1.113] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DAA23F6CF;
-        Thu,  1 Oct 2020 10:16:09 -0700 (PDT)
-Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
- an erroneous CPU core
-To:     Borislav Petkov <bp@alien8.de>, Shiju Jose <shiju.jose@huawei.com>
-Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
-References: <20200901140140.1772-1-shiju.jose@huawei.com>
- <20200901143539.GC8392@zn.tnic> <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
- <20200909120203.GB12237@zn.tnic>
- <50714e083d55491a8ccf5ad847682d1e@huawei.com>
- <20200917084038.GE31960@zn.tnic>
-From:   James Morse <james.morse@arm.com>
-Message-ID: <91e71fe9-b002-0f1f-3237-62cea49e083a@arm.com>
-Date:   Thu, 1 Oct 2020 18:16:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1732096AbgJARRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:17:05 -0400
+IronPort-SDR: 3U9/b3DvuAGqiaQMQMk9u7v+y2W9Og0vQzkAkWCI+erwzE5b6kPkbBqp2njil281XjRfhq5Ddc
+ emQyp91yVevA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180940018"
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="180940018"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:17:03 -0700
+IronPort-SDR: Qy9H7dXPMlyX8yx4rYKPmXJHd5qx2SPvXIFOuT2LtXocqtLi77HqI0gWkomHGvMFJhLIJaSdXP
+ mu0UKvndlfqw==
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="346154578"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:17:02 -0700
+Date:   Thu, 1 Oct 2020 10:17:01 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 15/24] x86/sgx: Enable provisioning for remote
+ attestation
+Message-ID: <20201001171701.GF7474@linux.intel.com>
+References: <20200915110522.893152-1-jarkko.sakkinen@linux.intel.com>
+ <20200915110522.893152-16-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200917084038.GE31960@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915110522.893152-16-jarkko.sakkinen@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
+On Tue, Sep 15, 2020 at 02:05:13PM +0300, Jarkko Sakkinen wrote:
+> +/**
+> + * sgx_ioc_enclave_set_attribute - handler for %SGX_IOC_ENCLAVE_PROVISION
+> + * @filep:	open file to /dev/sgx
+> + * @arg:	userspace pointer to a struct sgx_enclave_provision instance
+> + *
+> + * Mark the enclave as being allowed to access a restricted attribute bit.
+> + * The requested attribute is specified via the attribute_fd field in the
+> + * provided struct sgx_enclave_provision.  The attribute_fd must be a
+> + * handle to an SGX attribute file, e.g. "/dev/sgx/provision".
+> + *
+> + * Failure to explicitly request access to a restricted attribute will cause
+> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
+> + * is access to the PROVISION_KEY.
+> + *
+> + * Note, access to the EINITTOKEN_KEY is disallowed entirely.
+> + *
+> + * Return: 0 on success, -errno otherwise
+> + */
+> +static long sgx_ioc_enclave_provision(struct sgx_encl *encl,
+> +					  void __user *arg)
+> +{
+> +	struct sgx_enclave_provision params;
+> +	struct file *attribute_file;
+> +	int ret;
+> +
+> +	if (copy_from_user(&params, arg, sizeof(params)))
+> +		return -EFAULT;
+> +
+> +	attribute_file = fget(params.attribute_fd);
+> +	if (!attribute_file)
+> +		return -EINVAL;
+> +
+> +	if (attribute_file->f_op != &sgx_provision_fops) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	encl->attributes |= SGX_ATTR_PROVISIONKEY;
 
-On 17/09/2020 09:40, Borislav Petkov wrote:
-> On Thu, Sep 10, 2020 at 03:29:56PM +0000, Shiju Jose wrote:
+This is wrong, it needs to be
 
-> You can't know what exactly you wanna do if you don't have a use case
-> you're trying to address.
-> 
->> According to the ARM Processor CPER definition the error types
->> reported are Cache Error, TLB Error, Bus Error and micro-architectural
->> Error.
-> 
-> Bus error sounds like not even originating in the CPU but the CPU only
-> reporting it. Imagine if that really were the case, and you go disable
-> the CPU but the error source is still there. You've just disabled the
-> reporting of the error only and now you don't even know anymore that
-> you're getting errors.
-> 
->> Few thoughts on this,
->> 1. Not sure will a CPU core would work/perform as normal after disabling
->> a functional unit?
-> 
-> You can disable parts of caches, etc, so that you can have a somewhat
-> functioning CPU until the replacement maintenance can take place.
+	encl->attributes_mask |= SGX_ATTR_PROVISION;
 
-This is implementation-specific stuff that only firmware can do...
+else sgx_encl_init() will fail this check
 
+	if (encl->attributes & ~encl->attributes_mask)
+		return -EACCES;
 
->> 2. Support in the HW to disable a function unit alone may not available.
-> 
-> Yes.
-> 
->> 3. If it is require to store and retrieve the error count based on
->> functional unit, then CEC will become more complex?
-> 
-> Depends on how it is designed. That's why we're first talking about what
-> needs to be done exactly before going off and doing something.
-> 
->> This requirement is the part of the early fault prediction by taking
->> action when large number of corrected errors reported on a CPU core
->> before it causing serious faults.
-> 
-> And do you know of actual real-life examples where this is really the
-> case? Do you have any users who report a large error count on ARM CPUs,
-> originating from the caches and that something like that would really
-> help?
-> 
-> Because from my x86 CPUs limited experience, the cache arrays are mostly
-> fine and errors reported there are not something that happens very
-> frequently so we don't even need to collect and count those.
-> 
-> So is this something which you need to have in order to check a box
-> somewhere that there is some functionality or is there an actual
-> real-life use case behind it which a customer has requested?
+This obviously needs a selftest...
 
-If the corrected-count is available somewhere, can't this policy be made in user-space?
-
-
-Thanks,
-
-James
+> +	ret = 0;
+> +
+> +out:
+> +	fput(attribute_file);
+> +	return ret;
+> +}
