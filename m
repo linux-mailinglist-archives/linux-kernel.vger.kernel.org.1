@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6094427F8F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8C727F8FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgJAFOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S1725933AbgJAFQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgJAFOJ (ORCPT
+        with ESMTP id S1725878AbgJAFQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:14:09 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972CBC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:14:07 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id 4so1132809ooh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:14:07 -0700 (PDT)
+        Thu, 1 Oct 2020 01:16:41 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D99DC0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:16:40 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e7so3371360qtj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vhERQZh6diFhV3SJ8DG5mSXhB50dMWp+CwSZp5o02Lo=;
-        b=kymtirw2PgNXq8PIVui+ydpCSZaECut8qe5YGYcdMDANnh6OKLtQ4kHQb0Rz2ZMkhP
-         F/F6w5rqN265K1y600K9iBTU+MxH/JOyM6msApRrqwtC5aXL1mnqyOurmrK1OUjv5Gm3
-         nu6TFABC51h/P4XTo/ey+NgN+n94ASYgjMf16JrNlR8xrBmCnh0kMJU0k+jKbcJFBwJL
-         hnf/dikruR3VKsuBKjw2pUuuK/daIsYkHpH4u8ZLAA8tIki1rl2MvoeNAjUMwrTHyzKm
-         V2IukplsHjTQHc5wwHE7W7k5Uey2YWVmudwp2AcjTBz4U8QmvgdHYOwr2BxrTgRMKthe
-         TPnw==
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aMyvN3gVuzQBj94keSmCrKk4OuJZbSTTfVDU0BztZ4o=;
+        b=AVGBn0+Y6owZXBJwfgazLUzFbjbqhVCnIW+1imTfPSnAc4qi7Pe58QXALxxfEHH7NW
+         Vmy+eT2KQGF2AIMXrNIMHPa8N03xNcPDw1BysPzyTAUnBrmDwNyfA8Z7LXmyUYQd1/o8
+         RydFp/NoH40fXqP4HLKbi4+nTGK9g3eJjstINt2w+IXfYYh/n6Gm9O/c2LARTFTxC59L
+         GmDP40ZpueoCjSn8apq2cXt07EwlpZAZGW7F+u1qOCjoBxwIEqelJpxSQL9IZ5Yl2Uzc
+         PyR3L4tECMB7sGhVLpgOoE5R8eq3RouzGk215efLgIqDOVkjiJNv2shFlT1s4Vagg/xo
+         8xMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vhERQZh6diFhV3SJ8DG5mSXhB50dMWp+CwSZp5o02Lo=;
-        b=Dn8cS6YF6iz12tjRLZyP5DsSc6IPF2ue6IGiWN5ZcXtO6JaUtqClLtNSCzo9eTT54t
-         sGIzCbgt/XfqOpTW7heg5neR8tGufWfJUbx8eo7euPdM0oLqI0c7h9hPJ90fZldbJ8fQ
-         kOXdwFX+VqysqaKi5oKb+0UgWWKqN39n3MoMLoWcbEmPcB4SDsD5Zz3NJqjadh/Xn8Lz
-         wLWC5vHBi9arQHl5KAMnOgU8Q+8WcjuiAM85zTLFSynrzlbUwp3PGQASjxS9YMQeFy0w
-         LczyPt+7/sfzoNJDEeDWQJ51kUx+UprbplVXMTnTu8+CccreUH7mEJTqwzOXP+q/+eIi
-         SNwg==
-X-Gm-Message-State: AOAM5328QH8XfS3+ga35J1cxaXW7m53xLnjUrGHwAGMh2h2VCMUhB6y4
-        FNxERlKshmFOu4XXQmozhEfBOiVs+nLNxXoj6AvIMQ==
-X-Google-Smtp-Source: ABdhPJx+IDn3sYkvcPvZmlD9Kp9hsWRRiJTst2phVq+L2CAy9g+5kmxW+ag+gf6CjMUZzwpSxRpC2sec1qhZnbs777M=
-X-Received: by 2002:a4a:5d84:: with SMTP id w126mr4389788ooa.1.1601529246600;
- Wed, 30 Sep 2020 22:14:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=aMyvN3gVuzQBj94keSmCrKk4OuJZbSTTfVDU0BztZ4o=;
+        b=FU52hdF3HhdNmx9VeJlcKwv0mjqVfZPA2gG9XlLYIGg/JC6g7tCi7jG2Y4xFRBa/xG
+         PCzDyiOB9j1Edvnn82oHdT7fMxBE0S6mVZt1s8VPQqjLF5+02yudC5Y8CFpzA4x5PQsS
+         Q8bzZ6Ff8fb3/SN6m+POfkOXbgSFucjRzf1fOOzG7maHctYV8n2l5QYF+GHBTKJIEUPZ
+         VM0s/e0B9eoAnc0cSzolMVMjVdlzye3qGxceQGWFmuHM00vx0IDJ2u7XrpbMYdi9R4rP
+         8E0u+uP7gzUPyoeQIBd1YI31PsSi88GgLbZKnHLaMyaOKdobhD7U/gYg8jMg1kdPzqNx
+         hShQ==
+X-Gm-Message-State: AOAM530ZaTespcYXDvB2uR6yrQZxGmPj8ueN6ijGBkhm5SrM92vdOrtt
+        lwxFV1eDg7fNC7OdRhKuHV/K1A==
+X-Google-Smtp-Source: ABdhPJycizkFTjy7tefZlHhV/5gxSPPlo5/jlzPCRbOXkxTOJNHO7ZWBwNjJw8GrRDEREZvf+fBRfw==
+X-Received: by 2002:ac8:4442:: with SMTP id m2mr5933638qtn.73.1601529399269;
+        Wed, 30 Sep 2020 22:16:39 -0700 (PDT)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id 16sm4944270qks.102.2020.09.30.22.16.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 22:16:38 -0700 (PDT)
+Subject: Re: dma-coherent property for PCIe Root
+To:     Valmiki <valmikibow@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, robh@kernel.org
+References: <1512d7b5-54c6-3b87-0090-5e370955223e@gmail.com>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <269995f2-d57b-d218-8730-fe729cc9dec2@jonmasters.org>
+Date:   Thu, 1 Oct 2020 01:16:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200928202650.2530280-1-keescook@chromium.org> <20200928202650.2530280-4-keescook@chromium.org>
-In-Reply-To: <20200928202650.2530280-4-keescook@chromium.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 1 Oct 2020 10:43:55 +0530
-Message-ID: <CA+G9fYumUQ5Dr2Sbv=cAB0=cpvi4QA-=pDvLnt5t2Df4KYwMJw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] doc: dev-tools: kselftest.rst: Update examples and paths
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Hangbin Liu <liuhangbin@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Tim.Bird@sony.com, lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1512d7b5-54c6-3b87-0090-5e370955223e@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 at 01:56, Kees Cook <keescook@chromium.org> wrote:
->
-> Update the installation commands and path details, detail the new
-> options available in the run_kselftests.sh script.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On 9/14/20 1:23 AM, Valmiki wrote:
+> Hi All,
+> 
+> How does "dma-coherent" property will work for PCIe as RC on an
+> ARM SOC ?
+> Because the end point device drivers are the one which will request dma 
+> buffers and Root port driver doesn't involve in data path of end point
+> except for handling interrupts.
+> 
+> How does EP DMA buffers will be hardware coherent if RC driver exposes
+> dma-coherent property ?
 
-Reviewed-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+This simply means that the RC supports maintaining coherency, it doesn't 
+mean that the RC driver does anything. It's a property of the hardware.
 
-> ---
->  Documentation/dev-tools/kselftest.rst | 35 +++++++++++++++++----------
->  1 file changed, 22 insertions(+), 13 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
-> index 469d115a95f1..a901def730d9 100644
-> --- a/Documentation/dev-tools/kselftest.rst
-> +++ b/Documentation/dev-tools/kselftest.rst
-> @@ -125,32 +125,41 @@ Note that some tests will require root privileges.
->  Install selftests
->  =================
->
-> -You can use the kselftest_install.sh tool to install selftests in the
-> -default location, which is tools/testing/selftests/kselftest, or in a
-> -user specified location.
-> +You can use the "install" target of "make" (which calls the `kselftest_install.sh`
-> +tool) to install selftests in the default location (`tools/testing/selftests/kselftest_install`),
-> +or in a user specified location via the `INSTALL_PATH` "make" variable.
->
->  To install selftests in default location::
->
-> -   $ cd tools/testing/selftests
-> -   $ ./kselftest_install.sh
-> +   $ make -C tools/testing/selftests install
->
->  To install selftests in a user specified location::
->
-> -   $ cd tools/testing/selftests
-> -   $ ./kselftest_install.sh install_dir
-> +   $ make -C tools/testing/selftests install INSTALL_PATH=/some/other/path
->
->  Running installed selftests
->  ===========================
->
-> -Kselftest install as well as the Kselftest tarball provide a script
-> -named "run_kselftest.sh" to run the tests.
-> +Found in the install directory, as well as in the Kselftest tarball,
-> +is a script named `run_kselftest.sh` to run the tests.
->
->  You can simply do the following to run the installed Kselftests. Please
->  note some tests will require root privileges::
->
-> -   $ cd kselftest
-> +   $ cd kselftest_install
->     $ ./run_kselftest.sh
->
-> +To see the list of available tests, the `-l` option can be used::
-> +
-> +   $ ./run_kselftest.sh -l
-> +
-> +The `-c` option can be used to run all the tests from a test collection, or
-> +the `-t` option for specific single tests. Either can be used multiple times::
-> +
-> +   $ ./run_kselftest.sh -c bpf -c seccomp -t timers:posix_timers -t timer:nanosleep
-> +
-> +For other features see the script usage output, seen with the `-h` option.
-> +
->  Packaging selftests
->  ===================
->
-> @@ -160,9 +169,9 @@ different system. To package selftests, run::
->     $ make -C tools/testing/selftests gen_tar
->
->  This generates a tarball in the `INSTALL_PATH/kselftest-packages` directory. By
-> -default, `.gz` format is used. The tar format can be overridden by specifying
-> -a `FORMAT` make variable. Any value recognized by `tar's auto-compress`_ option
-> -is supported, such as::
-> +default, `.gz` format is used. The tar compression format can be overridden by
-> +specifying a `FORMAT` make variable. Any value recognized by `tar's auto-compress`_
-> +option is supported, such as::
->
->      $ make -C tools/testing/selftests gen_tar FORMAT=.xz
->
-> --
-> 2.25.1
->
+Jon.
 
-- Naresh
+-- 
+Computer Architect
