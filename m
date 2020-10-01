@@ -2,204 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7AA280653
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8928D28065F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732795AbgJASNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730070AbgJASNE (ORCPT
+        id S1732026AbgJASRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:17:33 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5749 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730045AbgJASRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:13:04 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8320EC0613D0;
-        Thu,  1 Oct 2020 11:13:04 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u126so6549737oif.13;
-        Thu, 01 Oct 2020 11:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SzTn2rI/Abg1eZ9zAHO1/DWnogFkdoJUTHuSooKPL2E=;
-        b=Qzcadvf6BDIWj2kiq5IHHTykWrHh+PTE1qfxqV53SovX41d7yTx5E9ITGILZrZsFCa
-         L0YiDagi6hzWUqlhI7J8n78eMglZdjfK3r2mEX93N6SMOpj2qBe/YE6OWxPdDdUKuzZ4
-         GJZ+EmdjbhG8ft28WBwygyX4jDRbICCkXoOaOj2cB9DwmLhzySW5pnHHVyIcCazvc0Y6
-         kwLqPHGDUSjB/UOopqarbdPjQQLnH9Y+VLDMMrOZ8jEpk5XYQzKL/0f5MY7fSYOv6+04
-         DpMwQ4nVSRLb+TIEic+l8zu6FzSK4fxz+ubJcVj0jSLjNKZICwe/6lwvIk9EAw19wND+
-         McDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SzTn2rI/Abg1eZ9zAHO1/DWnogFkdoJUTHuSooKPL2E=;
-        b=FOEIYz0s9+8IJmlRI1ZEtb0xwF/8ej2E47d9tLpyFF0nSMDKVG2oyBMZuQQDIyom+4
-         RNrKyygEdRSKsJacnZo9Nbn9Y0lFsTFdkqPuWiXNuQMxCIuNCAedCkPAIZ/jS1cZsCWn
-         e6Q0kTDmCwKSE5SZ6zl9quJ7qqvmyjSDBvB/ydes45H/MxR0cKWTAdSIyINrvq96Z4gP
-         kyP0AKHbCZv003PfEdoStlhrKunjL7ZXH/0dXNTJYBncZ4xOrutssjDeHnXIVqZiNYxx
-         J9QqzhDCidJTfysFPzDf1DuqkDeyn+cbLg01YKU4mgrkbqmZpfZDmPcoG/MKO9DXMc/L
-         GMIQ==
-X-Gm-Message-State: AOAM530EBLfWMuyfy+0IQePNW7It8MdXE9jGuoWxCIDC6enTcBgntZgj
-        Rfg+xJUxnXuWqmWbPKVd9chHFoBenXA=
-X-Google-Smtp-Source: ABdhPJyxJsZP6Xw8K3zvINh8skVbgJ/emHDMHzj6V8A+FA6UlqbmaepJPNtBu3vDPFDKANe8CC379w==
-X-Received: by 2002:aca:4a4d:: with SMTP id x74mr757686oia.6.1601575983764;
-        Thu, 01 Oct 2020 11:13:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q81sm1190747oia.46.2020.10.01.11.13.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 11:13:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 3/3] hwmon: (lm75) Add regulator support
-To:     Alban Bedel <alban.bedel@aerq.com>, linux-hwmon@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201001145738.17326-1-alban.bedel@aerq.com>
- <20201001145738.17326-4-alban.bedel@aerq.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <8bfad666-10e7-e5d7-c4d8-3877c3f7b449@roeck-us.net>
-Date:   Thu, 1 Oct 2020 11:13:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Oct 2020 14:17:32 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f761d2f0003>; Thu, 01 Oct 2020 11:17:19 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
+ 2020 18:17:29 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Thu, 1 Oct 2020 18:17:29 +0000
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Bharata B Rao" <bharata@linux.ibm.com>, Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page refcount
+Date:   Thu, 1 Oct 2020 11:17:13 -0700
+Message-ID: <20201001181715.17416-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201001145738.17326-4-alban.bedel@aerq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601576239; bh=i0qUDZQiDgjdg2NQQq4taWQVT+/yq1DDbtLpj8BY1+U=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=aYellwqK2P3dWBrhCxRGJ8OXRs6Jr0de+ldluE7qBkEQejd6H6l/p/7xQ0x6CKfrz
+         aVnh57TO+QEAXq1CRPAb9cR6Bf8qH+BWLIkXWTzBiYF/JNRZMGpRhj1hG8Oj7TSTdz
+         btaqfQcLRhbUMZiQFTFkrphTnw7JrOuEgO95LUgnt5c9YBumUXVBIFh/8z4kShLmKx
+         gjss5LyadHCdc9LSwiY+YUYTHO+NIoiSK3uJcGvYWpiso1pOTeGJJi95rbkqMhlsdw
+         MxpIyFzWLvYqQlCFVw0+A8wsksau+ZM3P2uvngN7cpD/q6+TdpjbsWVdjRkvs6tLCU
+         MkMpcmuscGiuA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 7:57 AM, Alban Bedel wrote:
-> Add regulator support for boards where the sensor first need to be
-> powered up before it can be used.
-> 
-> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-> ---
-> v2: Rely on dummy regulators instead of explicitly handling missing
->     regulator
-> v3: Use a devm action to handle disabling the regulator
-> ---
+This is still an RFC because after looking at the pmem/dax code some
+more, I realized that the ZONE_DEVICE struct pages are being inserted
+into the process' page tables with vmf_insert_mixed() and a zero
+refcount on the ZONE_DEVICE struct page. This is sort of OK because
+insert_pfn() increments the reference count on the pgmap which is what
+prevents memunmap_pages() from freeing the struct pages and it doesn't
+check for a non-zero struct page reference count.
+But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
+checks for a reference count =3D=3D 0.
 
-Second '---' is not needed.
+// mmap() an ext4 file that is mounted -o dax.
+ext4_dax_fault()
+  ext4_dax_huge_fault()
+    dax_iomap_fault(&ext4_iomap_ops)
+      dax_iomap_pte_fault()
+        ops->iomap_begin() // ext4_iomap_begin()
+          ext4_map_blocks()
+          ext4_set_iomap()
+        dax_iomap_pfn()
+        dax_insert_entry()
+        vmf_insert_mixed(pfn)
+          __vm_insert_mixed()
+            if (!IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) &&
+                !pfn_t_devmap(pfn) && pfn_t_valid(pfn))
+              insert_page()
+                get_page(page) // XXX would trigger VM_BUG_ON_PAGE()
+                page_add_file_rmap()
+                set_pte_at()
+            else
+              insert_pfn()
+                pte_mkdevmap()
+                set_pte_at()
 
-I can not apply patches 1 and 2 of the series since I don't have an
-Ack from a DT maintainer, but this one looks good. Applied.
+Should pmem set the page reference count to one before inserting the
+pfn into the page tables (and decrement when removing devmap PTEs)?
+What about MEMORY_DEVICE_GENERIC and MEMORY_DEVICE_PCI_P2PDMA use cases?
+Where should they icrement/decrement the page reference count?
+I don't know enough about how these are used to really know what to
+do at this point. If people want me to continue to work on this series,
+I will need some guidance.
 
-Guenter
+---
 
+Matthew Wilcox, Ira Weiny, and others have complained that ZONE_DEVICE
+struct page reference counting is ugly because they are "free" when the
+reference count is one instead of zero. This leads to explicit checks
+for ZONE_DEVICE pages in places like put_page(), GUP, THP splitting, and
+page migration which have to adjust the expected reference count when
+determining if the page is isolated or idle. This is my attempt to make
+ZONE_DEVICE pages be free when the reference count is zero and removing
+the special cases.
 
->  drivers/hwmon/lm75.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
-> index ba0be48aeadd..e9c1f55b2706 100644
-> --- a/drivers/hwmon/lm75.c
-> +++ b/drivers/hwmon/lm75.c
-> @@ -17,6 +17,7 @@
->  #include <linux/of.h>
->  #include <linux/regmap.h>
->  #include <linux/util_macros.h>
-> +#include <linux/regulator/consumer.h>
->  #include "lm75.h"
->  
->  /*
-> @@ -101,6 +102,7 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
->  struct lm75_data {
->  	struct i2c_client		*client;
->  	struct regmap			*regmap;
-> +	struct regulator		*vs;
->  	u8				orig_conf;
->  	u8				current_conf;
->  	u8				resolution;	/* In bits, 9 to 16 */
-> @@ -534,6 +536,13 @@ static const struct regmap_config lm75_regmap_config = {
->  	.use_single_write = true,
->  };
->  
-> +static void lm75_disable_regulator(void *data)
-> +{
-> +	struct lm75_data *lm75 = data;
-> +
-> +	regulator_disable(lm75->vs);
-> +}
-> +
->  static void lm75_remove(void *data)
->  {
->  	struct lm75_data *lm75 = data;
-> @@ -567,6 +576,10 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
->  	data->client = client;
->  	data->kind = kind;
->  
-> +	data->vs = devm_regulator_get(dev, "vs");
-> +	if (IS_ERR(data->vs))
-> +		return PTR_ERR(data->vs);
-> +
->  	data->regmap = devm_regmap_init_i2c(client, &lm75_regmap_config);
->  	if (IS_ERR(data->regmap))
->  		return PTR_ERR(data->regmap);
-> @@ -581,6 +594,17 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
->  	data->sample_time = data->params->default_sample_time;
->  	data->resolution = data->params->default_resolution;
->  
-> +	/* Enable the power */
-> +	err = regulator_enable(data->vs);
-> +	if (err) {
-> +		dev_err(dev, "failed to enable regulator: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	err = devm_add_action_or_reset(dev, lm75_disable_regulator, data);
-> +	if (err)
-> +		return err;
-> +
->  	/* Cache original configuration */
->  	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
->  	if (status < 0) {
-> 
+I'm only sending this out as a RFC since I'm not that familiar with the
+DAX, PMEM, XEN, and other uses of ZONE_DEVICE struct pages allocated
+with devm_memremap_pages() or memremap_pages() but my best reading of
+the code looks like it might be OK. I could use help testing these
+configurations.
+I have been able to successfully run xfstests on ext4 with the memmap
+kernel boot option to simulate pmem.
+
+Changes in v3:
+Rebase to linux-mm 5.9.0-rc7-mm1.
+Added a check for page_free() as suggested by Christoph Hellwig.
+Added a helper for dax_wait_page() as suggested by Christoph Hellwig.
+
+Changes in v2:
+One of the big changes in v2 is that devm_memremap_pages() and
+memremap_pages() now return the struct pages' reference count set to
+zero instead of one. Normally, get_page() will VM_BUG_ON_PAGE() if
+page->_refcount is zero. I didn't see any such warnings running the
+xfstests with dax/pmem but I'm not clear how the zero to one reference
+count is handled.
+
+Other changes in v2:
+Rebased to Linux-5.9.0-rc6 to include pmem fixes.
+I added patch 1 to introduce a page refcount helper for ext4 and xfs as
+suggested by Christoph Hellwig.
+I also applied Christoph Hellwig's other suggested changes for removing
+the devmap_managed_key, etc.
+
+Ralph Campbell (2):
+  ext4/xfs: add page refcount helper
+  mm: remove extra ZONE_DEVICE struct page refcount
+
+ arch/powerpc/kvm/book3s_hv_uvmem.c     |  2 +-
+ drivers/gpu/drm/nouveau/nouveau_dmem.c |  2 +-
+ fs/dax.c                               |  8 +--
+ fs/ext4/inode.c                        |  5 +-
+ fs/xfs/xfs_file.c                      |  4 +-
+ include/linux/dax.h                    | 10 +++
+ include/linux/memremap.h               |  7 ++-
+ include/linux/mm.h                     | 44 --------------
+ lib/test_hmm.c                         |  2 +-
+ mm/gup.c                               | 44 --------------
+ mm/internal.h                          |  8 +++
+ mm/memremap.c                          | 84 +++++++-------------------
+ mm/migrate.c                           |  5 --
+ mm/page_alloc.c                        |  3 +
+ mm/swap.c                              | 44 ++------------
+ 15 files changed, 63 insertions(+), 209 deletions(-)
+
+--=20
+2.20.1
 
