@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7850327FA79
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB1C27FA76
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731440AbgJAHpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S1731498AbgJAHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAHpY (ORCPT
+        with ESMTP id S1725878AbgJAHpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:45:24 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95986C0613D0;
-        Thu,  1 Oct 2020 00:45:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t10so4474283wrv.1;
-        Thu, 01 Oct 2020 00:45:23 -0700 (PDT)
+        Thu, 1 Oct 2020 03:45:50 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB53C0613D0;
+        Thu,  1 Oct 2020 00:45:49 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w7so3725652pfi.4;
+        Thu, 01 Oct 2020 00:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
-        b=d/vQ+VVk+keNzkTfJSJxtcXpSwp2e7QCaBNQZVU4obREwDbvYR4ZOkBAIn6nZtjLrb
-         3dRvKN+GZdP1oQFFW/WEgNG9Ppq4gVVv6NzUKiTksJwcvN9PabgGRW31N0rtN+ZwizBZ
-         Ir7qV4dK/89jGgUAjfx/Dt5qCN9CBfJEHDXQ3wXfHiKFfYxmdygBYHRXbft2M6MJDZht
-         8MsO994BspQhR23fIhIiWfa0x2AEEtJL394LV/ThsCeCMiTFdFm/rX53wswTwkK2O5Xj
-         iJx9UD43hnd5M2L/jQHIj83U3txiSLHzEMovktlDwd72Doib8y20ewhC18AZ/A7VLimt
-         CJeg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VN3W20DodgO3Zj44IKBt6WsTun4/50u7wi6510gCoWM=;
+        b=R0fB6fw60vBL+fvSnqvbYPeevGTqltgDvi5HpaeO9dZQ6jb10RvzDOw8A1hAWHCRdd
+         ORftCMUJGrC1b8H/CtmUYxsKPbX7FCdvcLxjz0O36Z9bM7qK4vDkSCMBW7CvMs/LHT7V
+         R//EW1hv2DTpnwM01hyFdl/v/PLFDi0MIk08374InPERQ4f6cpDfCjSZOJTE1xFhT1nn
+         jHY7HGAjCN9BaSlAhV5+aIu/w3FfmYoXinaXp1CNTosESjXkEkXfSA9f+LponD86GRiH
+         kq/IHdWzxj/3/iaj47zN9R5U/5X27pabKhsWGcIPL9nj9o9gHofrDSOX2AbsvV4qX+W7
+         /NgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
-        b=r+gr5Iucm6an8QaDd2OH/4KKZ2LlWzlQHNhDfETH5cijOajO6q/8MIGxQXDxwRGSm1
-         oaURRn74f3eiCTQ17zvjTf9HptVGXZIGxleD3mWghbHIGjjPA4hmZeVeZh6hcK3GGWAi
-         X2hCNwanJG+HDPu8t+KNGZn34O5p0RXIEqlD7YxeYz5wxpSlMoartzuUM6tnoxmC9mmt
-         7iShWOwlD1pTZNgTYGWFQzpvo7f61DxRnZxkHetcwSwILsoG38e4Jx9a5y+DbnZgr1HN
-         JsSzSse4RosZ+J6+Ueybge1BiswOWPKLqcxLcfDE23WaXwb9j+0tfrcP5vQr6OLfaolk
-         BbBQ==
-X-Gm-Message-State: AOAM531F2xAqba33+NEvTlXO06LeFhVo3Min8AVHOPVSH98neCb4hzXI
-        MypRk8vzYsuko9DxO55hh0w=
-X-Google-Smtp-Source: ABdhPJxwv6BtYFAqC+AMaDOZb3qgtjlHwEicyt0p82kSHbH75ncrgFUe0TsFiNV7de54QZazE4hATA==
-X-Received: by 2002:adf:dd44:: with SMTP id u4mr6973042wrm.22.1601538322276;
-        Thu, 01 Oct 2020 00:45:22 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id u66sm7145534wmg.44.2020.10.01.00.45.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 00:45:21 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco>
- <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com>
-Date:   Thu, 1 Oct 2020 09:45:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VN3W20DodgO3Zj44IKBt6WsTun4/50u7wi6510gCoWM=;
+        b=jx85/E5o86sAJB0km+RMbeADiygP6En0liJhZL2m9QS8+KZJj65i4s1jnif4DCIBur
+         YgN8Vm2iVX0aN1qJC3DUKjQE2xnS4P03cPQkk4gR19cXuUCXTE3mxll6vnAW8gmNUZAN
+         g23vELeS7lA7/fL3zQntuZhq+BeBd6x7QIWjqCmTbg7PzNB8FSZYaureyHi7R/xk5xmR
+         R4gXsXwMc19h9uUjVtBrQac/Dx2IEgmYuvN0nCxmTd0bs5lIvn8vbcMelJMj90ftAn+v
+         mFi2fpAFluGoYyCxa36xyPMCT1AzKlftf4zJ2inmxAwb1fex/U62KbXwnLc49HY5VNdC
+         i/fg==
+X-Gm-Message-State: AOAM530BM6Y0Cc8pN8y6qj+Sa5YpqIBBmhMhbtL5GHTr9cRgvjmT0T4t
+        CaOPOFgdSm6THggldSqwnEDDP2DeInuNfQg/
+X-Google-Smtp-Source: ABdhPJyp/ch4/L9rwgW9lIvX03PzXqb7gcqp6y3SXn7GGpNuBIWkLZ6lziCkf2XU3gQNQmVI3e+esw==
+X-Received: by 2002:a17:902:760b:b029:d1:9be4:856b with SMTP id k11-20020a170902760bb02900d19be4856bmr5766836pll.1.1601538348617;
+        Thu, 01 Oct 2020 00:45:48 -0700 (PDT)
+Received: from Thinkpad ([45.118.167.207])
+        by smtp.gmail.com with ESMTPSA id t24sm5316742pfq.37.2020.10.01.00.45.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 00:45:47 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 13:15:40 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        open list <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net: bluetooth: Fix null pointer dereference in
+ hci_event_packet()
+Message-ID: <20201001074540.GA428447@Thinkpad>
+References: <20200929173231.396261-1-anmol.karan123@gmail.com>
+ <20200930141813.410209-1-anmol.karan123@gmail.com>
+ <6F6EF48D-561E-4628-A4F1-F1AF28743CAF@holtmann.org>
 MIME-Version: 1.0
-In-Reply-To: <20200930230327.GA1260245@cisco>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6F6EF48D-561E-4628-A4F1-F1AF28743CAF@holtmann.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 1:03 AM, Tycho Andersen wrote:
-> On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
->> Hi Tycho,
->>
->> Thanks for taking time to look at the page!
->>
->> On 9/30/20 5:03 PM, Tycho Andersen wrote:
->>> On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
-
-[...]
-
->>>>        ┌─────────────────────────────────────────────────────┐
->>>>        │FIXME                                                │
->>>>        ├─────────────────────────────────────────────────────┤
->>>>        │Interestingly, after the event  had  been  received, │
->>>>        │the  file descriptor indicates as writable (verified │
->>>>        │from the source code and by experiment). How is this │
->>>>        │useful?                                              │
->>>
->>> You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
->>> reasonable.
->>
->> No, I'm saying something more fundamental: why is the FD indicating as
->> writable? Can you write something to it? If yes, what? If not, then
->> why do these APIs want to say that the FD is writable?
+On Thu, Oct 01, 2020 at 09:06:42AM +0200, Marcel Holtmann wrote:
+> Hi Anmol,
 > 
-> You can't via read(2) or write(2), but conceptually NOTIFY_RECV and
-> NOTIFY_SEND are reading and writing events from the fd. I don't know
-> that much about the poll interface though -- is it possible to
-> indicate "here's a pseudo-read event"? It didn't look like it, so I
-> just (ab-)used POLLIN and POLLOUT, but probably that's wrong.
+> > AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called from hci_event_packet() and there is a possibility, that hcon->amp_mgr may not be found when accessing after initialization of hcon.
+> > 
+> > - net/bluetooth/hci_event.c:4945
+> > The bug seems to get triggered in this line:
+> > 
+> > bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
+> > 
+> > Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
+> > 
+> > Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
+> > Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com 
+> > Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f 
+> > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > ---
+> > Change in v3:
+> >  - changed return o; to return; (Reported-by: kernel test robot <lkp@intel.com>
+> > )
+> > 
+> > net/bluetooth/hci_event.c | 5 +++++
+> > 1 file changed, 5 insertions(+)
+> 
+> patch has been applied to bluetooth-next tree.
+> 
+> Regards
+> 
+> Marcel
+> 
 
-I think the POLLIN thing is fine.
+Thank you :)
 
-So, I think maybe I now understand what you intended with setting
-POLLOUT: the notification has been received ("read") and now the
-FD can be used to NOTIFY_SEND ("write") a response. Right?
-
-If that's correct, I don't have a problem with it. I just wonder:
-is it useful? IOW: are there situations where the process doing the
-NOTIFY_SEND might want to test for POLLOUT because the it doesn't
-know whether a NOTIFY_RECV has occurred? 
-
-Thanks,
-
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Best,
+Anmol
