@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5052805B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DF92805C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732960AbgJARoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        id S1732993AbgJARpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732096AbgJARoj (ORCPT
+        with ESMTP id S1732096AbgJARpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:44:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DC5C0613D0;
-        Thu,  1 Oct 2020 10:44:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 144so382443pfb.4;
-        Thu, 01 Oct 2020 10:44:39 -0700 (PDT)
+        Thu, 1 Oct 2020 13:45:17 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A340C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:45:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id e16so6809989wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xwkaw38cgwHkNtoVtJK2JhdTeVpjV+AYAxG0kMKtMnI=;
-        b=BV7v1qkfQ2xRfiu8NpANEPoUbG97BoDOHD2KhaTguGsC2qxZ7V+Gg+u52jc8XTx5dH
-         NgRPDWBJbjMK+uxRg9Weux7CPLdIo8EZZRkmpvDHsPB9D8gtkAHWDUoV7Z7CawXtGkBg
-         ct35he9NGxcYsaI6NuvvwSSrQQYDbawVCsItv/2uEsLuMRLZnugHUfB9LnbO0PD3LuFG
-         nPm7QTqrJ9LG6ADc81EHDwn/y8cglED7qHsr0wMcmOkbnL+Z7IK5kg51hb6AR96Jt1Xa
-         AxUXwqanWOKoNIwMDUZO8JVjmPaMRsGk4K8CeXAdq+Bj6JukVzAbDLYwO2n3Y60mCAp0
-         2oNw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=SdTU4gQ/GSNzMeDvk9Yhuq+mmVJCx1AqWYuvXYSPp6E=;
+        b=HIqQhj0r1gGYdw02V45ahQXi4QGLOB4PIPtcQRi7iRuA7fmkkN9svVGzTK1Y/rlcjA
+         SPIdxpDNZQuuL+0BJjIgAMejpVODY6Fx47ubXD+cidu8YMiaR+omZqX6YldhiwKGbxob
+         mUGHU6oINAGWbbhYD+l/Cz9z8q1AGWDxsX84tyYAIO3wg8Ta3LJRUVIDkLWRBvfeAjv9
+         pa0y/97UbN4botFE7fHjk/2zLdDTWd2IXAHCRUJRCjcWFwoMZ4ZysMnbM8bHX3nXQe71
+         cHpil8dlEuf+yZHPo+9tkopf+DMn/w3sVWswIXj5N+QXOjgK+wRQLErcpeMBMfU1Jq2N
+         UPLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xwkaw38cgwHkNtoVtJK2JhdTeVpjV+AYAxG0kMKtMnI=;
-        b=L+qJb+l5pHFVLHkp8QFB/uwCtO6n/TZ0PrPdkaeEOfvnKn77l1adqtf0FXUPIzR0+4
-         mqjd+D7keAoZVSrBf5L1UgL7wOkhF4VvW6FBvuXKaAziGz0/CCd19oP2HJTma2dhx3jh
-         Jb1Il517X4BE03jWtEYbr84soOatWmTF2YPI8Z3bxS7GF5xFznUW4BDyVLvJHdx+7V3q
-         2iUVjYe3k6mJSmxsxMFzTwZVsAEqVS6sJZ3rTtGc9WXtP5v0FqJ4czGYo4CKk4OQm5E2
-         LnGuPcciS3GsBbyZEJ9Rp2FyEsCWRFwgx3mZun368cDm3HbHlI+nmrVNc68p5SrPo2zh
-         UiUg==
-X-Gm-Message-State: AOAM531NKRbaqeDysFzRuQwmTVKB+VZ2pIdGulbNwaCUpa7u2zLACn9h
-        a+96OtHTWVDQHHJqNIzHY6w=
-X-Google-Smtp-Source: ABdhPJzlg9wioDaDQeFELxBiW6SWSo+AK0dG8aWp4yY632RVWNfS7tpzlqLDRpZ9Vd9fusarLXSf5Q==
-X-Received: by 2002:a62:19c4:0:b029:13e:d13d:a081 with SMTP id 187-20020a6219c40000b029013ed13da081mr3804867pfz.24.1601574278745;
-        Thu, 01 Oct 2020 10:44:38 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id o4sm7001277pfh.39.2020.10.01.10.44.37
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SdTU4gQ/GSNzMeDvk9Yhuq+mmVJCx1AqWYuvXYSPp6E=;
+        b=t0xbWyFnDDnUi/+VX5Ozd55PlENoJvzecwp6AJNz0F8d8p8DP9V3NufcIf+Dm36JqT
+         q0T6pmOpOPx/ekh5urtUWIhKhs4UgehfNYLBteTJ9FuTi6fkpu7NNpDQvwcH5XTZQQJc
+         HEfayCUU9jH3+yYNchBJvDkyrLV2pHxv9AEAsbrzBToG3D2F+8yEW/l+8KEBQm09YAGr
+         Qsh2xAeZ+EIqaj1qsg2gUc5UXlpy5C6P6gAGBzUrquSzVCSvJjJOA8oDAHZIrVNrtlLK
+         ssF9vMtEFQvIsBtEWD3tPM34TkVAWno68+gs4oa6qUs2rkbLnJ/1ra0HZFGto9X9BuOy
+         zbXQ==
+X-Gm-Message-State: AOAM530WpMJhL4iaYXPSAozVBH2kTCte+irz18c3SoeKAN7r7mk25+sz
+        AplspKjvC+bxnyxUfiNUy0Y3tQ==
+X-Google-Smtp-Source: ABdhPJzJmTheU5+EobBQTbg33EPACuLKFxTHdCBuGuc/t70VfL3q1/rNXGQEbgHtlTe5XcWvcpQN+g==
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr10971682wrp.217.1601574315975;
+        Thu, 01 Oct 2020 10:45:15 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id w7sm9695314wrm.92.2020.10.01.10.45.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 10:44:38 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 10:44:36 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        ardb@kernel.org, jmorris@namei.org, serge@hallyn.com,
-        keescook@chromium.org, zohar@linux.ibm.com, bp@alien8.de,
-        pjones@redhat.com, dhowells@redhat.com, prarit@redhat.com
-Subject: Re: [PATCH V2 1/3] efi: Support for MOK variable config table
-Message-ID: <20201001174436.GA2622286@ubuntu-m3-large-x86>
-References: <20200905013107.10457-1-lszubowi@redhat.com>
- <20200905013107.10457-2-lszubowi@redhat.com>
+        Thu, 01 Oct 2020 10:45:15 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:45:09 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 16/39] kasan: rename addr_has_shadow to
+ addr_has_metadata
+Message-ID: <20201001174509.GL4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <fd0103571c825317241bfdc43ef19766fd370e4f.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200905013107.10457-2-lszubowi@redhat.com>
+In-Reply-To: <fd0103571c825317241bfdc43ef19766fd370e4f.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 09:31:05PM -0400, Lenny Szubowicz wrote:
-> Because of system-specific EFI firmware limitations, EFI volatile
-> variables may not be capable of holding the required contents of
-> the Machine Owner Key (MOK) certificate store when the certificate
-> list grows above some size. Therefore, an EFI boot loader may pass
-> the MOK certs via a EFI configuration table created specifically for
-> this purpose to avoid this firmware limitation.
+On Fri, Sep 25, 2020 at 12:50AM +0200, 'Andrey Konovalov' via kasan-dev wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
 > 
-> An EFI configuration table is a much more primitive mechanism
-> compared to EFI variables and is well suited for one-way passage
-> of static information from a pre-OS environment to the kernel.
+> Hardware tag-based KASAN won't be using shadow memory, but will reuse
+> this function. Rename "shadow" to implementation-neutral "metadata".
 > 
-> This patch adds initial kernel support to recognize, parse,
-> and validate the EFI MOK configuration table, where named
-> entries contain the same data that would otherwise be provided
-> in similarly named EFI variables.
+> No functional changes.
 > 
-> Additionally, this patch creates a sysfs binary file for each
-> EFI MOK configuration table entry found. These files are read-only
-> to root and are provided for use by user space utilities such as
-> mokutil.
-> 
-> A subsequent patch will load MOK certs into the trusted platform
-> key ring using this infrastructure.
-> 
-> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-I have not seen this reported yet but this breaks arm allyesconfig and
-allmodconfig when CPU_LITTLE_ENDIAN is force selected (because CONFIG_EFI
-will actually be enabled):
+Reviewed-by: Marco Elver <elver@google.com>
 
-$ cat le.config
-CONFIG_CPU_BIG_ENDIAN=n
-
-$ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- KCONFIG_ALLCONFIG=le.config allyesconfig drivers/firmware/efi/mokvar-table.o
-drivers/firmware/efi/mokvar-table.c: In function 'efi_mokvar_table_init':
-drivers/firmware/efi/mokvar-table.c:139:5: error: implicit declaration of function 'early_memunmap' [-Werror=implicit-function-declaration]
-  139 |     early_memunmap(va, map_size);
-      |     ^~~~~~~~~~~~~~
-drivers/firmware/efi/mokvar-table.c:148:9: error: implicit declaration of function 'early_memremap' [-Werror=implicit-function-declaration]
-  148 |    va = early_memremap(efi.mokvar_table, map_size);
-      |         ^~~~~~~~~~~~~~
-drivers/firmware/efi/mokvar-table.c:148:7: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-  148 |    va = early_memremap(efi.mokvar_table, map_size);
-      |       ^
-cc1: some warnings being treated as errors
-make[4]: *** [scripts/Makefile.build:283: drivers/firmware/efi/mokvar-table.o] Error 1
-
-Cheers,
-Nathan
+> ---
+> Change-Id: I03706fe34b38da7860c39aa0968e00001a7d1873
+> ---
+>  mm/kasan/kasan.h          | 2 +-
+>  mm/kasan/report.c         | 6 +++---
+>  mm/kasan/report_generic.c | 2 +-
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8dfacc0f73ea..0bf669fad345 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -146,7 +146,7 @@ static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
+>  		<< KASAN_SHADOW_SCALE_SHIFT);
+>  }
+>  
+> -static inline bool addr_has_shadow(const void *addr)
+> +static inline bool addr_has_metadata(const void *addr)
+>  {
+>  	return (addr >= kasan_shadow_to_mem((void *)KASAN_SHADOW_START));
+>  }
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 91b869673148..145b966f8f4d 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -329,7 +329,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>  	untagged_addr = reset_tag(tagged_addr);
+>  
+>  	info.access_addr = tagged_addr;
+> -	if (addr_has_shadow(untagged_addr))
+> +	if (addr_has_metadata(untagged_addr))
+>  		info.first_bad_addr = find_first_bad_addr(tagged_addr, size);
+>  	else
+>  		info.first_bad_addr = untagged_addr;
+> @@ -340,11 +340,11 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>  	start_report(&flags);
+>  
+>  	print_error_description(&info);
+> -	if (addr_has_shadow(untagged_addr))
+> +	if (addr_has_metadata(untagged_addr))
+>  		print_tags(get_tag(tagged_addr), info.first_bad_addr);
+>  	pr_err("\n");
+>  
+> -	if (addr_has_shadow(untagged_addr)) {
+> +	if (addr_has_metadata(untagged_addr)) {
+>  		print_address_description(untagged_addr, get_tag(tagged_addr));
+>  		pr_err("\n");
+>  		print_shadow_for_address(info.first_bad_addr);
+> diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+> index 42b2b5791733..ff067071cd28 100644
+> --- a/mm/kasan/report_generic.c
+> +++ b/mm/kasan/report_generic.c
+> @@ -117,7 +117,7 @@ const char *get_bug_type(struct kasan_access_info *info)
+>  	if (info->access_addr + info->access_size < info->access_addr)
+>  		return "out-of-bounds";
+>  
+> -	if (addr_has_shadow(info->access_addr))
+> +	if (addr_has_metadata(info->access_addr))
+>  		return get_shadow_bug_type(info);
+>  	return get_wild_bug_type(info);
+>  }
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/fd0103571c825317241bfdc43ef19766fd370e4f.1600987622.git.andreyknvl%40google.com.
