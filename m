@@ -2,139 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E50027FC67
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6838C27FC6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgJAJ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:26:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56655 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731670AbgJAJ0p (ORCPT
+        id S1731794AbgJAJ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgJAJ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:26:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601544404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pq6Om9kKeW8tF3UBSbP0FuEgAGbZTYAFy9OO6raLYsg=;
-        b=UHWyO9/Pgs59Sc498JRjWwhQpjAbb1l/+Vn7sxwWWiPBpsz+IrABpiAwcja3LR3bCHzoUk
-        qxqt4x1FvNgFf5Cap3MZyDLoOsG54dwsPSXqhU2ZjwgMzM362tmfdMl0YtltGi24DfMfvx
-        spziOPM1zq2s3PzZ0HfTleLCy7jLYZI=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-Duv0xX-VPNKkAdLTysgyNA-1; Thu, 01 Oct 2020 05:26:39 -0400
-X-MC-Unique: Duv0xX-VPNKkAdLTysgyNA-1
-Received: by mail-ed1-f72.google.com with SMTP id q10so1961883edn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 02:26:39 -0700 (PDT)
+        Thu, 1 Oct 2020 05:27:33 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BBCC0613D0;
+        Thu,  1 Oct 2020 02:27:33 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id e5so5417611ilr.8;
+        Thu, 01 Oct 2020 02:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qUia3HgPOs5osTmAsLb1Vjj65TsZDjcpJemkNk78TI4=;
+        b=JarCYdPrqxm+TFo/whyh8Xy7DlG5ExMrNDp5yNFJuFFR18qPfnv3SHhGcswvEizkmm
+         yrqF0JsvDk04/RDpbvPOsMRZFTj8mqCeedjPB0l1Sbjklflvo+nSgsjCk2H59y0nIf8g
+         HhGL6xjfe9dnkyuIhesRNPfMMlHLfghRYnweApamNFp8uVLvuV7vX9vzKR5vKzEac6hw
+         fePGIpgAiLa1zGEarMiHC4NdRzN63ekxFDZt3kM+BRByrMhNSOBnousKb8U+gdLUscS1
+         wGsgAswIWqr1VwhiLTAldr4h8M6xnZG2ZWBvYRiNmyobCk2NBFp8yxzy92tlM9myS3co
+         BhWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Pq6Om9kKeW8tF3UBSbP0FuEgAGbZTYAFy9OO6raLYsg=;
-        b=nqfXXx812aZYuO99uQZ542s5JuaPwcYYkSBqEurnCjatLMQbEf8rnYvRXGiE04ZNon
-         wDQt0PM+x6z9DEApOw92uV2vBtjNJe7/dp75Gql/bykwrJCfhGV60c1EsIUCXAzH4zCN
-         0U2W/6i0O0a0ZlJXYFJV12NUbAFaxMvotjtiESX2cAe9e9XFXf/kNl9FJMEXvbpIoTPI
-         rjud06/xVf7y06gJMwQAMQX00N6rPlDR6/XmO8/Yg4Thzh4rrTOHbOLyYYVVZE1lelAi
-         zCOvg+Y1RAktm5Om9o5M7hDUv46SbHlV/1/auvLY6k8VFnN+WC2ohhpxPuq48myFYujd
-         872w==
-X-Gm-Message-State: AOAM531hoMrMs6hEFpApaf2MmVwo4KnLWpMfQlesKPIx2zEO/j8d3hsx
-        dylOrtK3UDKRoXBDA62mZFRQ9kOq3REoHSCh5aJfDf1ZKd2ylpMtnxA5ZxpADhvE7+BgmzasCth
-        kFsn3qOu2fMp/z9s70cst8keJ
-X-Received: by 2002:a05:6402:1bc2:: with SMTP id ch2mr7017746edb.60.1601544398468;
-        Thu, 01 Oct 2020 02:26:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyj4+xzrGe6BVztHE0oNVJ7K2CIjY46tbLNlUQfS1nCUvsDzagXYuzoM7P4leaeKSGwBKKLUw==
-X-Received: by 2002:a05:6402:1bc2:: with SMTP id ch2mr7017733edb.60.1601544398214;
-        Thu, 01 Oct 2020 02:26:38 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id r20sm2104227edw.51.2020.10.01.02.26.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 02:26:37 -0700 (PDT)
-Subject: Re: [PATCH v5] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        Divya Bharathi <divya27392@gmail.com>
-Cc:     "dvhart@infradead.org" <dvhart@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-References: <20200929025521.59573-1-divya.bharathi@dell.com>
- <20200930002319.GI19084@mtg-dev.jf.intel.com>
- <DM6PR19MB2636FB3D94EBA95B7CE0DE54FA330@DM6PR19MB2636.namprd19.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <42f8e710-38f7-6f80-9f4a-af68cd376538@redhat.com>
-Date:   Thu, 1 Oct 2020 11:26:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qUia3HgPOs5osTmAsLb1Vjj65TsZDjcpJemkNk78TI4=;
+        b=Hiqhwom35a58MtsxIaXwuQWZ7KH1Bu6AnFlpYnauPPuV8DDVuGWkERrEF71OFJcco+
+         ccS9LvP7KGfuN/Z3XSsO36yrza8i2+lJEVEzNS3Fr2vWa0VyH0WGFBv1wWB707tK8Xrd
+         B9wmNND9nqSbjNORKvo6zWkKt6C4GMwE+CHOWy2BtIWE5teNSHCDRx8Ov8SxY6rqlxgj
+         mORdCgh6shNh89DIurLGPWj1fzHZb5+uAH1YUUgVwGiqrqnTdqhgfpkgp1deCWhDIaqt
+         g++yKp6x3Mm/d4QyOA+nIeTQufTadLVRYYRn7wcg/Nb2oqGhgtIhIzqbV+03UZy9Zb5Y
+         kBtg==
+X-Gm-Message-State: AOAM530fubN1XIDCP3sNxs3/2hCBiJWY4BG9+VT6iostBl7vO/4zRlUP
+        ZzTMc9DIZdlac5iUGEPMrHqJR2Kf/JCjhT0cDZU=
+X-Google-Smtp-Source: ABdhPJzQYydYHuL/8miRQc2QEYeHPaCHZx0iwcPD4xPSGr/YYmKlgcmWeAPgSiuboZD2dRyt3UqfW2rJzZGskF8ybrM=
+X-Received: by 2002:a92:9a55:: with SMTP id t82mr1630056ili.24.1601544451890;
+ Thu, 01 Oct 2020 02:27:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB2636FB3D94EBA95B7CE0DE54FA330@DM6PR19MB2636.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201001071824.24995-1-colyli@suse.de> <CAAMcf8Ao8Go7GdB2XFXAHsWrcxb0VqtDRpHReOGTsjegq2XP0Q@mail.gmail.com>
+ <ebd42dfe-d39c-5c13-bbd9-1c6463d73ff0@intel.com>
+In-Reply-To: <ebd42dfe-d39c-5c13-bbd9-1c6463d73ff0@intel.com>
+From:   Vicente Bergas <vicencb@gmail.com>
+Date:   Thu, 1 Oct 2020 11:27:20 +0200
+Message-ID: <CAAMcf8AXUx8UwJvGyBaSvuMaN8u0i1CTbz=WvC+snvLBe=mtLQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: core: don't set limits.discard_granularity as 0
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Coly Li <colyli@suse.de>, linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 1, 2020 at 11:07 AM Adrian Hunter <adrian.hunter@intel.com> wro=
+te:
+>
+> On 1/10/20 11:38 am, Vicente Bergas wrote:
+> > On Thu, Oct 1, 2020 at 9:18 AM Coly Li <colyli@suse.de> wrote:
+> >>
+> >> In mmc_queue_setup_discard() the mmc driver queue's discard_granularit=
+y
+> >> might be set as 0 (when card->pref_erase > max_discard) while the mmc
+> >> device still declares to support discard operation. This is buggy and
+> >> triggered the following kernel warning message,
+> >>
+> >> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+> >> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+> >> Hardware name: Google Kevin (DT)
+> >> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=3D--)
+> >> pc : __blkdev_issue_discard+0x200/0x294
+> >> lr : __blkdev_issue_discard+0x54/0x294
+> >> sp : ffff800011dd3b10
+> >> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26:=
+ ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000=
+f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 =
+x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000=
+000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000=
+000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : =
+ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f=
+1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x=
+2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace=
+:
+> >> __blkdev_issue_discard+0x200/0x294
+> >> __submit_discard_cmd+0x128/0x374
+> >> __issue_discard_cmd_orderly+0x188/0x244
+> >> __issue_discard_cmd+0x2e8/0x33c
+> >> issue_discard_thread+0xe8/0x2f0
+> >> kthread+0x11c/0x120
+> >> ret_from_fork+0x10/0x1c
+> >> ---[ end trace e4c8023d33dfe77a ]---
+> >>
+> >> This patch fixes the issue by setting discard_granularity as SECTOR_SI=
+ZE
+> >> instead of 0 when (card->pref_erase > max_discard) is true. Now no mor=
+e
+> >> complain from __blkdev_issue_discard() for the improper value of disca=
+rd
+> >> granularity.
+> >>
+> >> This issue is exposed after commit b35fd7422c2f ("block: check queue's
+> >> limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" t=
+ag
+> >> is also added for the commit to make sure people won't miss this patch
+> >> after applying the change of __blkdev_issue_discard().
+> >>
+> >> Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum=
+ discard timeout")
+> >> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity =
+in __blkdev_issue_discard()").
+> >> Reported-by: Vicente Bergas <vicencb@gmail.com>
+> >
+> > Hi Coly, Adrian,
+> > would you like me to reply with a tested-by?
+> > before testing it: what are the chances of losing data?
+>
+> Very low I would hope, but that is no reason not to have backups :-)
 
-On 9/30/20 11:02 PM, Limonciello, Mario wrote:
->>> +		possible_values:	A file that can be read to obtain the possible
->>> +					values of the <attr>. Values are separated using
->>> +					semi-colon (``;``).
->> why not use set notation from math classes assuming intergers?  i.e.
->> (a, b)  all integers beween a and b but not including a or b (open set)
->> or
->> [a, b] all integerger betwen a and b including and b?  (closed set)
->>
->> Anyway its ambiguous if the the extremes are included in the set of possible
->> values as written.
->>
-> 
-> Enumeration attributes mean that there are fixed values, specifically not integers.
-> Integers are in the "integer" type and explained below.
-> 
-> An example value that would be seen here is possible_values:
-> 
-> Enabled;Disabled;
+I do have backup, it is for the hassle of reinstalling the OS and
+restoring the backup.
+I'll test it later, maybe today.
 
-That might not be the best example, because in that case arguably we
-could export it as a boolean type (except that the WMI interface does
-not give us boolean as an explicit / separate type).
+> > Regards,
+> >   Vicente.
+> >
+> >> Signed-off-by: Coly Li <colyli@suse.de>
+> >> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> >> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> >> ---
+> >> Changelog,
+> >> v3, add Fixes tag for both commits.
+> >> v2, change commit id of the Fixes tag.
+> >> v1, initial version.
+> >>
+> >>  drivers/mmc/core/queue.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> >> index 6c022ef0f84d..350d0cc4ee62 100644
+> >> --- a/drivers/mmc/core/queue.c
+> >> +++ b/drivers/mmc/core/queue.c
+> >> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request=
+_queue *q,
+> >>         q->limits.discard_granularity =3D card->pref_erase << 9;
+> >>         /* granularity must not be greater than max. discard */
 
-Mark these enum attributes are really like enums in C, so we
-have a fixed set of possible values which are described by
-strings, since using integers for it makes no sense from a human
-interaction pov. E.g. on the Lenovo X1C8 I have some attributes
-have the following possible value sets:
+Just out of curiosity, wouldn't it be more performant something like:
+q->limits.discard_granularity =3D minimum(card->pref_erase, max_discard) <<=
+ 9;
+or is just that SECTOR_SIZE is a number guaranteed to work?
 
-                 Package (0x03)
-                 {
-                     "High",
-                     "Normal",
-                     "Silent"
-                 },
-
-                 Package (0x02)
-                 {
-                     "LCD",
-                     "ExternalDisplay"
-                 },
-
-                 Package (0x02)
-                 {
-                     "Independent",
-                     "Synchronized"
-                 },
-
-I hope this helps clarify things.
-
-Regards,
-
-Hans
-
+> >>         if (card->pref_erase > max_discard)
+> >> -               q->limits.discard_granularity =3D 0;
+> >> +               q->limits.discard_granularity =3D SECTOR_SIZE;
+> >>         if (mmc_can_secure_erase_trim(card))
+> >>                 blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+> >>  }
+> >> --
+> >> 2.26.2
+> >>
+>
