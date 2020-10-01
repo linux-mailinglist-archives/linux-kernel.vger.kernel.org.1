@@ -2,370 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08E228096A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30DA28096D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730070AbgJAVav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726626AbgJAVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:30:50 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E48E620796;
-        Thu,  1 Oct 2020 21:30:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601587848;
-        bh=f4Nb2NYx6X2yxypHJc/DaT7ek5uyvHKo6KzogQYi/n8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TFanxDMEj5c96O6NFTE7Iag++hH8PCxLhwrqT82F1jXrIRL+ry6dZ6bVFZINTeTXA
-         GOUq7Mml4bIXKNW/GVhPYPc0OfcSmLZutGxxaLUw5NwK/2NZEAxYAP+hkidJYSismT
-         Iy6IPLqCxQR8SFuunHxM0Kl7wXSXBApSqDH1nHrw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AB1153522B33; Thu,  1 Oct 2020 14:30:48 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:30:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201001213048.GF29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
+        id S1730147AbgJAVcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:32:17 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:33219 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgJAVcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:32:16 -0400
+Received: by mail-io1-f71.google.com with SMTP id m10so34902ioq.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:32:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ZmmhCPSV2yuVdiNMfX2E/gWsiasW2ZIKGSc1ceHT8IA=;
+        b=MYUvclhcJ+C21orvKPkjd2MJ21iGXMIt7mldkTt0N7/VK5ebgVUrO9Eb3hQ31hdW0d
+         tMSYDpPDqarr/enfTd9/fT670NyEzKMfYcgmL7dCR/UIXS9eQRHj9mPTWg9MbHp6B0yx
+         zDQRBRodnx9qRqht4vBouzKaWR/D9QazErCn2iJ+EUAQcmh0b08P/Ufm+Zfuex1jy8rw
+         y5RpAs+l0SszRKEk/Mn5oqN8vyOzNt5ZAQWGXFa9DsPP2sMHMFqF5ssP2lHmjol2a/6L
+         /+EofuF0lzyPhCSNEEtAe3X+2gj5hqcEai4HWlA9DdlZeTucbyb2fDvm17vtvUPZlSKK
+         xK8A==
+X-Gm-Message-State: AOAM532H8vLTcw3isDTLiWavBFnSeio3alGJmKmi65pEClKhbVSwGmPi
+        vXTs5M+foHqPdcvijmzkKWm2MzC+a6jSgVa9yhqtswMPli5q
+X-Google-Smtp-Source: ABdhPJy/AYl890p55pbZI0m5U9ns3Irtm4NtzihUovqDGpGYM6HicnCoHbnVTOXfYcZeSyBjsb8Mik29hIVzL6YD8wv+svCNCsNJ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001161529.GA251468@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a92:849a:: with SMTP id y26mr502397ilk.38.1601587935781;
+ Thu, 01 Oct 2020 14:32:15 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 14:32:15 -0700
+In-Reply-To: <0000000000007b357405b099798f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fd29d205b0a2bf28@google.com>
+Subject: Re: WARNING in cfg80211_connect
+From:   syzbot <syzbot+5f9392825de654244975@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:15:29PM -0400, Alan Stern wrote:
-> On Wed, Sep 30, 2020 at 09:51:16PM -0700, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > Al Viro posted the following query:
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > <viro> fun question regarding barriers, if you have time for that
-> > <viro>         V->A = V->B = 1;
-> > <viro>
-> > <viro> CPU1:
-> > <viro>         to_free = NULL
-> > <viro>         spin_lock(&LOCK)
-> > <viro>         if (!smp_load_acquire(&V->B))
-> > <viro>                 to_free = V
-> > <viro>         V->A = 0
-> > <viro>         spin_unlock(&LOCK)
-> > <viro>         kfree(to_free)
-> > <viro>
-> > <viro> CPU2:
-> > <viro>         to_free = V;
-> > <viro>         if (READ_ONCE(V->A)) {
-> > <viro>                 spin_lock(&LOCK)
-> > <viro>                 if (V->A)
-> > <viro>                         to_free = NULL
-> > <viro>                 smp_store_release(&V->B, 0);
-> > <viro>                 spin_unlock(&LOCK)
-> > <viro>         }
-> > <viro>         kfree(to_free);
-> > <viro> 1) is it guaranteed that V will be freed exactly once and that
-> > 	  no accesses to *V will happen after freeing it?
-> > <viro> 2) do we need smp_store_release() there?  I.e. will anything
-> > 	  break if it's replaced with plain V->B = 0?
-> 
-> Here are my answers to Al's questions:
-> 
-> 1) It is guaranteed that V will be freed exactly once.  It is not 
-> guaranteed that no accesses to *V will occur after it is freed, because 
-> the test contains a data race.  CPU1's plain "V->A = 0" write races with 
-> CPU2's READ_ONCE; if the plain write were replaced with 
-> "WRITE_ONCE(V->A, 0)" then the guarantee would hold.  Equally well, 
-> CPU1's smp_load_acquire could be replaced with a plain read while the 
-> plain write is replaced with smp_store_release.
-> 
-> 2) The smp_store_release in CPU2 is not needed.  Replacing it with a 
-> plain V->B = 0 will not break anything.
-> 
-> Analysis: Apart from the kfree calls themselves, the only access to a 
-> shared variable outside of a critical section is CPU2's READ_ONCE of 
-> V->A.  So let's consider two possibilities:
-> 
-> 1: The READ_ONCE returns 0.  Then CPU2 doesn't execute its critical 
-> section and does kfree(V).  However, the fact that the READ_ONCE got 0 
-> means that CPU1 has already entered its critical section, has already 
-> written to V->A (but with a plain write!) and therefore has already seen 
-> V->B = 1 (because of the smp_load_acquire), and therefore will not free 
-> V.  This case shows that the ordering we require is for CPU1 to read 
-> V->B before it writes V->A.  The ordering can be enforced by using 
-> either a load-acquire (as in the litmus test) or a store-release.
-> 
-> 2: The READ_ONCE returns 1.  Then CPU2 does execute its critical 
-> section, and we can simply treat this case the same as if the critical 
-> section was executed unconditionally.  Whichever CPU runs its critical 
-> section second will free V, and the other CPU won't try to access V 
-> after leaving its own critical section (and thus won't access V after it 
-> has been freed).
-> 
-> > ------------------------------------------------------------------------
-> > 
-> > Of course herd7 supports neither structures nor arrays, but I was
-> > crazy enough to try individual variables with made-up address and data
-> > dependencies.  This litmus test must also detect use-after-free bugs,
-> > but a simple variable should be able to do that.  So here is a
-> > prototype:
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > C C-viro-2020.09.29a
-> > 
-> > {
-> > 	int a = 1;
-> > 	int b = 1;
-> > 	int v = 1;
-> > }
-> 
-> Not the way I would have done it, but okay.  I would have modeled the 
-> kfree by setting a and b both to some sentinel value.
+syzbot has found a reproducer for the following issue on:
 
-Might be well worth pursuing!  But how would you model the address
-dependencies in that approach?
+HEAD commit:    87d5034d Merge tag 'mlx5-updates-2020-09-30' of git://git...
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=121d2313900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7b5cc8ec2218e99d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f9392825de654244975
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1100d333900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1414c997900000
 
-> > P0(int *a, int *b, int *v, spinlock_t *l)
-> > {
-> > 	int r0;
-> > 	int r1;
-> > 	int r2 = 2;
-> > 	int r8;
-> > 	int r9a = 2;
-> > 	int r9b = 2;
-> > 
-> > 	r0 = 0;
-> > 	spin_lock(l);
-> > 	r9a = READ_ONCE(*v); // Use after free?
-> > 	r8 = r9a - r9a; // Restore address dependency
-> > 	r8 = b + r8;
-> > 	r1 = smp_load_acquire(r8);
-> > 	if (r1 == 0)
-> > 		r0 = 1;
-> > 	r9b = READ_ONCE(*v); // Use after free?
-> > 	WRITE_ONCE(*a, r9b - r9b); // Use data dependency
-> > 	spin_unlock(l);
-> > 	if (r0) {
-> > 		r2 = READ_ONCE(*v);
-> > 		WRITE_ONCE(*v, 0); /* kfree(). */
-> > 	}
-> > }
-> > 
-> > P1(int *a, int *b, int *v, spinlock_t *l)
-> > {
-> > 	int r0;
-> > 	int r1;
-> > 	int r1a;
-> > 	int r2 = 2;
-> > 	int r8;
-> > 	int r9a = 2;
-> > 	int r9b = 2;
-> > 	int r9c = 2;
-> > 
-> > 	r0 = READ_ONCE(*v);
-> > 	r9a = r0; // Use after free?
-> 
-> Wrong.  This should be:
-> 
-> 	r0 = 1;
-> 	r9a = READ_ONCE(*v);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
 
-Thank you!  I was definitely suffering from a severe case of Programmer's
-Blindness.  Fixed!
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6914 at net/wireless/sme.c:533 cfg80211_sme_connect net/wireless/sme.c:533 [inline]
+WARNING: CPU: 0 PID: 6914 at net/wireless/sme.c:533 cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6914 Comm: syz-executor935 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:cfg80211_sme_connect net/wireless/sme.c:533 [inline]
+RIP: 0010:cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
+Code: 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 80 3c 02 00 0f 85 a2 0a 00 00 49 83 bd 48 01 00 00 00 0f 84 b6 f7 ff ff e8 7e 1e b5 f9 <0f> 0b e8 77 1e b5 f9 48 8b 54 24 18 48 b8 00 00 00 00 00 fc ff df
+RSP: 0018:ffffc90005667360 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888093bdc380 RSI: ffffffff87c166d2 RDI: ffffffff896172c0
+RBP: ffff888088cf8d30 R08: 0000000000000001 R09: ffff888088cf8d35
+R10: ffffed101119f1a6 R11: 0000000000000000 R12: ffffc90005667500
+R13: ffff888088cf8c10 R14: ffff888088cf8d58 R15: ffffffff89617180
+ nl80211_connect+0x1646/0x2220 net/wireless/nl80211.c:10615
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x442139
+Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff18327468 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000442139
+RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000002000000000 R09: 0000002000000000
+R10: 0000002000000000 R11: 0000000000000246 R12: 000000000000f7cb
+R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-> > 	r8 = r9a - r9a; // Restore address dependency
-> > 	r8 = a + r8;
-> > 	r1 = READ_ONCE(*r8);
-> > 	if (r1) {
-> > 		spin_lock(l);
-> > 		r9b = READ_ONCE(*v); // Use after free?
-> > 		r8 = r9b - r9b; // Restore address dependency
-> > 		r8 = a + r8;
-> > 		r1a = READ_ONCE(*r8);
-> > 		if (r1a)
-> > 			r0 = 0;
-> > 		r9c = READ_ONCE(*v); // Use after free?
-> > 		smp_store_release(b, r9c - rc9); // Use data dependency
-> > 		spin_unlock(l);
-> > 	}
-> > 	if (r0) {
-> > 		r2 = READ_ONCE(*v);
-> > 		WRITE_ONCE(*v, 0); /* kfree(). */
-> > 	}
-> > }
-> > 
-> > locations [a;b;v;0:r1;0:r8;1:r1;1:r8]
-> > exists (0:r0=1:r0 \/ (* Both or neither did kfree(). *)
-> > 	v=1 \/ (* Neither did kfree, redundant check. *)
-> > 	0:r2=0 \/ 1:r2=0 \/  (* Both did kfree, redundant check. *)
-> > 	0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ (* CPU1 use after free. *)
-> > 	1:r9b=0 \/ 1:r9c=0) (* CPU2 use after free. *)
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > This "exists" clause is satisfied:
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > $ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/C-viro-2020.09.29a.litmus
-> > Test C-viro-2020.09.29a Allowed
-> > States 5
-> > 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=0; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> > 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> > 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=0; 1:r1=1; 1:r2=2; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=1;
-> 
-> The values for this case don't make sense.  I haven't checked the other 
-> four cases.  Printing a graph of the relations for this case (the only 
-> state with v=1 at the end) might help.
-> 
-> > 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> > 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=1; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=0;
-> > Ok
-> > Witnesses
-> > Positive: 3 Negative: 2
-> > Condition exists (0:r0=1:r0 \/ v=1 \/ 0:r2=0 \/ 1:r2=0 \/ 0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ 1:r9b=0 \/ 1:r9c=0)
-> > Observation C-viro-2020.09.29a Sometimes 3 2
-> > Time C-viro-2020.09.29a 14.33
-> > Hash=89f74abff4de682ee0bea8ee6dd53134
-> 
-> Why didn't this flag the data race?
-
-Because I turned Al's simple assignments into *_ONCE() or better.
-In doing this, I was following the default KCSAN settings which
-(for better or worse) forgive the stores from data races.
-
-> > ------------------------------------------------------------------------
-> > 
-> > So did we end up with herd7 not respecting "fake" dependencies like
-> > those shown above, or have I just messed up the translation from Al's
-> > example to the litmus test?  (Given one thing and another over the past
-> > couple of days, my guess would be that I just messed up the translation,
-> > especially given that I don't see a reference to fake dependencies in
-> > the documentation, but I figured that I should ask.)
-> 
-> What do you get if you fix up the litmus test?
-
-With your suggested change and using simple assignments where Al
-indicated them:
-
-------------------------------------------------------------------------
-
-$ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/C-viro-2020.09.29a.litmus
-Test C-viro-2020.09.29a Allowed
-States 5
-0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=0; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=0; 1:r1=1; 1:r2=2; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=1;
-0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=1; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=0;
-Ok
-Witnesses
-Positive: 3 Negative: 2
-Flag data-race
-Condition exists (0:r0=1:r0 \/ v=1 \/ 0:r2=0 \/ 1:r2=0 \/ 0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ 1:r9b=0 \/ 1:r9c=0)
-Observation C-viro-2020.09.29a Sometimes 3 2
-Time C-viro-2020.09.29a 17.95
-Hash=14ded51102b668bc38b790e8c3692227
-
-------------------------------------------------------------------------
-
-So still "Sometimes", but the "Flag data-race" you expected is there.
-
-I posted the updated litmus test below.  Additional or other thoughts?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-C C-viro-2020.09.29a
-
-{
-	int a = 1;
-	int b = 1;
-	int v = 1;
-}
-
-
-P0(int *a, int *b, int *v, spinlock_t *l)
-{
-	int r0;
-	int r1;
-	int r2 = 2;
-	int r8;
-	int r9a = 2;
-	int r9b = 2;
-
-	r0 = 0;
-	spin_lock(l);
-	r9a = READ_ONCE(*v); // Use after free?
-	r8 = r9a - r9a; // Restore address dependency
-	r8 = b + r8;
-	r1 = smp_load_acquire(r8);
-	if (r1 == 0)
-		r0 = 1;
-	r9b = READ_ONCE(*v); // Use after free?
-	// WRITE_ONCE(*a, r9b - r9b); // Use data dependency
-	*a = r9b - r9b; // Use data dependency
-	spin_unlock(l);
-	if (r0) {
-		r2 = READ_ONCE(*v);
-		WRITE_ONCE(*v, 0); /* kfree(). */
-	}
-}
-
-P1(int *a, int *b, int *v, spinlock_t *l)
-{
-	int r0;
-	int r1;
-	int r1a;
-	int r2 = 2;
-	int r8;
-	int r9a = 2;
-	int r9b = 2;
-	int r9c = 2;
-
-	r0 = 1;
-	r9a = READ_ONCE(*v); // Use after free?
-	r8 = r9a - r9a; // Restore address dependency
-	r8 = a + r8;
-	r1 = READ_ONCE(*r8);
-	if (r1) {
-		spin_lock(l);
-		r9b = READ_ONCE(*v); // Use after free?
-		r8 = r9b - r9b; // Restore address dependency
-		r8 = a + r8;
-		// r1a = READ_ONCE(*r8);
-		r1a = *r8;
-		if (r1a)
-			r0 = 0;
-		r9c = READ_ONCE(*v); // Use after free?
-		smp_store_release(b, r9c - rc9); // Use data dependency
-		spin_unlock(l);
-	}
-	if (r0) {
-		r2 = READ_ONCE(*v);
-		WRITE_ONCE(*v, 0); /* kfree(). */
-	}
-}
-
-locations [a;b;v;0:r1;0:r8;1:r1;1:r8]
-exists (0:r0=1:r0 \/ (* Both or neither did kfree(). *)
-	v=1 \/ (* Neither did kfree, redundant check. *)
-	0:r2=0 \/ 1:r2=0 \/  (* Both did kfree, redundant check. *)
-	0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ (* CPU1 use after free. *)
-	1:r9b=0 \/ 1:r9c=0) (* CPU2 use after free. *)
