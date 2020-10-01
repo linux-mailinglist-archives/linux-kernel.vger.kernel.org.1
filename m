@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3662803EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CB12803EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732391AbgJAQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:27:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732026AbgJAQ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:27:10 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 492C420759;
-        Thu,  1 Oct 2020 16:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601569629;
-        bh=5SJFWLlLE1Q0D2xnUTa3b82DRC5ltsPQ+3mNHhmvPXo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XC9hZYxz1wGNkVbiMeeCEftD0moeRa7hVFXvFLAo2/rknRkFYt/9AHWGquNgoTV8g
-         I4qZZVoqCtRh9Z5gWuepkGMpSHHxPw9I/+mc/TrDfBOSfj1rZ4sUAoLgS5K+C3jYfR
-         A5hY93FackZd7M80Zn0OUUvDtwc8FjrkGd+5jTRA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0E1AB3522B33; Thu,  1 Oct 2020 09:27:09 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:27:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20201001162709.GD29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
- <20200930084139.GN2277@dhcp22.suse.cz>
- <20200930232154.GA29330@paulmck-ThinkPad-P72>
- <20201001090220.GA22560@dhcp22.suse.cz>
+        id S1732691AbgJAQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730534AbgJAQ1z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:27:55 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57215C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:27:55 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id y11so7327027lfl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0r8aBl5mTGl1Jm27+LKfiN2IGzGh3O0PaISk78rFv6k=;
+        b=fp0kVPOJ0/feOwgGLmlkIO63ANEzecXNYInyD9Jr0DYTITv/iXns8CEsaFmNqkjM6X
+         o+oB06moAa1RZND3ZKEyMHaCsuepB79QtGlWVrbxsSmqhB94N+wioNtg35bORV0WkKXn
+         l41qR2diYCU9YMVWLqQwcfCZk/Qx0XQGIYrzg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0r8aBl5mTGl1Jm27+LKfiN2IGzGh3O0PaISk78rFv6k=;
+        b=PfdbdnLvc66oA3sr8UXVaSNlC6/fkyiCfj+JCAjdrkxF9By4R8yLIe1V7/w5tl4SF0
+         KlAfPKDgYrkqPJChSL7oz+IK4QorPdQLvYneTNNxt3ME1JcUTi2H/i1L2zfrPaSySi4U
+         ZMIFlBJoZ0MVXkpTtyzzrT8G9lAvDVXBfT41eoNPPYf2UVF/7Tz5PLPNUup5KeMvP0Lv
+         6iF0Kr3tZ9nBnVCaas9huKgLLJ1uQ2bG+9NaYmId0Z1sJF0MjsaRX80oEe15RegWVgPV
+         XMoMU0C+lu87PC/xi6sebrBZxR2Pknj3KejqIynxkGGAHwac06ndswofnXbY72VlxfVC
+         PBgw==
+X-Gm-Message-State: AOAM5303DZxKfs5KR1tBPLXmVyw41KIKr/KSHA/u2zQdxQlr9T80s4RV
+        9LljKyFHeExLZOFxiTyrByOrdDlReQe49g==
+X-Google-Smtp-Source: ABdhPJy/Y1yizkWy8BGzS5xNSMLftRjQiCX7b43pPDkLlrtKKJ3neSdI3Ol1wFkA9UHz6Ym8EUiBag==
+X-Received: by 2002:a19:103:: with SMTP id 3mr2690911lfb.452.1601569673462;
+        Thu, 01 Oct 2020 09:27:53 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id p27sm608536lfo.272.2020.10.01.09.27.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 09:27:52 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id y2so7311571lfy.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:27:52 -0700 (PDT)
+X-Received: by 2002:a19:7fcb:: with SMTP id a194mr2732860lfd.121.1601569671966;
+ Thu, 01 Oct 2020 09:27:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001090220.GA22560@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200929205807.2360405-1-evgreen@chromium.org>
+ <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid> <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
+In-Reply-To: <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Thu, 1 Oct 2020 09:27:15 -0700
+X-Gmail-Original-Message-ID: <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
+Message-ID: <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] nvmem: qfprom: Don't touch certain fuses
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:02:20AM +0200, Michal Hocko wrote:
-> On Wed 30-09-20 16:21:54, Paul E. McKenney wrote:
-> > On Wed, Sep 30, 2020 at 10:41:39AM +0200, Michal Hocko wrote:
-> > > On Tue 29-09-20 18:53:27, Paul E. McKenney wrote:
-> [...]
-> > > > No argument on it being confusing, and I hope that the added header
-> > > > comment helps.  But specifically, can_sleep==true is a promise by the
-> > > > caller to be schedulable and not to be holding any lock/mutex/whatever
-> > > > that might possibly be acquired by the memory allocator or by anything
-> > > > else that the memory allocator might invoke, to your point, including
-> > > > for but one example the reclaim logic.
-> > > > 
-> > > > The only way that can_sleep==true is if this function was invoked due
-> > > > to a call to single-argument kvfree_rcu(), which must be schedulable
-> > > > because its fallback is to invoke synchronize_rcu().
-> > > 
-> > > OK. I have to say that it is still not clear to me whether this call
-> > > path can be called from the memory reclaim context. If yes then you need
-> > > __GFP_NOMEMALLOC as well.
-> > 
-> > Right now the restriction is that single-argument (AKA can_sleep==true)
-> > kvfree_rcu() cannot be invoked from memory reclaim context.
-> > 
-> > But would adding __GFP_NOMEMALLOC to the can_sleep==true GFP_ flags
-> > allow us to remove this restriction?  If so, I will queue a separate
-> > patch making this change.  The improved ease of use would be well
-> > worth it, if I understand correctly (ha!!!).
-> 
-> It would be quite daring to claim it will be ok but it will certainly be
-> less problematic. Adding the flag will not hurt in any case. As this is
-> a shared called that might be called from many contexts I think it will
-> be safer to have it there. The justification is that it will prevent
-> consumption of memory reserves from MEMALLOC contexts.
+On Thu, Oct 1, 2020 at 7:17 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Hi Evan,
+>
+> On 29/09/2020 21:58, Evan Green wrote:
+> > Some fuse ranges are protected by the XPU such that the AP cannot
+> > access them. Attempting to do so causes an SError. Use the newly
+> > introduced per-soc compatible string to attach the set of regions
+> > we should not access. Then tiptoe around those regions.
+> >
+>
+> This is a generic feature that can be used by any nvmem provider, can
+> you move this logic to nvmem core instead of having it in qfprom!
 
-Ah, so a different goal (and yes, I finally went over and read the
-relevant documentation).  Agreed, the can_sleep path does not really
-need to be dipping into the emergency reserves.  And it looks like the
-not-from-reclaim restriction is still at least partially in effect,
-but one step at a time.
+Sure! I'd prefer to keep this data in the driver for now rather than
+trying to define DT bindings for the keepout zones. So then I'll pass
+in my keepout array via struct nvmem_config at registration time, and
+then the core can handle the keepout logic instead of qfprom.c.
 
-The patch is shown below, which I have queued for a later release.
-
-> > > [...]
-> > > 
-> > > > > What is the point of calling kmalloc  for a PAGE_SIZE object? Wouldn't
-> > > > > using the page allocator directly be better?
-> > > > 
-> > > > Well, you guys gave me considerable heat about abusing internal allocator
-> > > > interfaces, and kmalloc() and kfree() seem to be about as non-internal
-> > > > as you can get and still be invoking the allocator.  ;-)
-> > > 
-> > > alloc_pages resp. __get_free_pages is a normal page allocator interface
-> > > to use for page size granular allocations. kmalloc is for more fine
-> > > grained allocations.
-> > 
-> > OK, in the short term, both work, but I have queued a separate patch
-> > making this change and recording the tradeoffs.  This is not yet a
-> > promise to push this patch, but it is a promise not to lose this part
-> > of the picture.  Please see below.
-> 
-> It doesn't matter all that much. Both allocators will work. It is just a
-> matter of using optimal tool for the specific purose.
-> 
-> > You mentioned alloc_pages().  I reverted to __get_free_pages(), but
-> > alloc_pages() of course looks nicer.  What are the tradeoffs between
-> > __get_free_pages() and alloc_pages()?
-> 
-> alloc_pages will return struct page but you need a kernel pointer. That
-> is what __get_free_pages will give you (or you can call page_address
-> directly).
-
-Thank you, looks like __get_free_pages() is the tool for this job.
-
-Please see below for the aforementioned patch.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit ea5c19d21233b5e8d3d06c0d4ecd6be9f2829dc3
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu Oct 1 09:24:40 2020 -0700
-
-    kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-    
-    This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-    carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-    this can-sleep code path from dipping into the emergency reserves.
-    
-    Suggested-by: Michal Hocko <mhocko@suse.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 242f0f0..6132452 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3364,7 +3364,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
- {
- 	struct kvfree_rcu_bulk_data *bnode;
- 	bool can_alloc_page = preemptible();
--	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
-+	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC
-+			       : GFP_ATOMIC) | __GFP_NOWARN;
- 	int idx;
- 
- 	*krcp = krc_this_cpu_lock(flags);
+-Evan
