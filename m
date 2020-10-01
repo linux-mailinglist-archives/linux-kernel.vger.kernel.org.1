@@ -2,93 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8B627FC76
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEF527FC80
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731882AbgJAJ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:28:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJAJ2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:28:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8FC8DAC35;
-        Thu,  1 Oct 2020 09:28:41 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 37EE91E12EF; Thu,  1 Oct 2020 11:28:41 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 11:28:41 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     jack@suse.cz, jeffm@suse.com, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com,
-        syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com
-Subject: Re: [Linux-kernel-mentees] [PATCH] fs: reiserfs: xattr: Fix null
- pointer derefernce in open_xa_root()
-Message-ID: <20201001092841.GC17860@quack2.suse.cz>
-References: <20201001090547.431840-1-anmol.karan123@gmail.com>
+        id S1731635AbgJAJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:33:18 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35977 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725921AbgJAJdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:33:18 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3587E58023D;
+        Thu,  1 Oct 2020 05:33:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 01 Oct 2020 05:33:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=X/hpZ4Y0ZMB/Qo1FM7dGX0+GqSj
+        9NQP7x2y+aZc2fP4=; b=YhzrqexPITb9eIHNrD4+gScUkQE9DitYdPele8TYbn/
+        aAEWxee68iNJfcXwf9lNRQSY8RoQAyTn7/r7Uc8AtgLd6Pix9os033nWhSLUZgSR
+        hdZw+Hjp+KKXdDeeAfKXK6B4Qth+OzQWVoelivsZgkSWjnSatYxRsWAvI0j4XgyB
+        TU45E9jc02aUSycslDFnu24K3+j44oni+YL0sDCyoPaI4eBUbi5m9MRBy+dcGRyv
+        mbnwScdG1ShDDjv//5IbsN6lDDvQMPoo27xCgdQaHVn18o7jToZUKW4abBKVmIla
+        yrre8y2tAE/tD4y3nDL7xY9dMyc0p4SChRrDKYHBRDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=X/hpZ4
+        Y0ZMB/Qo1FM7dGX0+GqSj9NQP7x2y+aZc2fP4=; b=XMMnA9n6/Q1D1lx/9DuaNH
+        gT8QDwdHnccc4+I9Pkc6SN6HnGAG1M2zPEwxGaYtUrud7fnaQLXn/xfzyCC2lcd0
+        dvF0ckIdH30WsGn08f1wd3Osug2xXk9bzH12usPsIq3j+5yhqPrbUNSMkBOzDezy
+        llTf9gDt5ko4UCd0oU4YdoCdz0skrbRg1OurSFFXw3O5MKaN6DHc/sWP8pCHhW8D
+        3Dy46DrrdesxYxFdNHvDduQWYvlCvd20HPIVpIwUpoUaVPiH84P6LcL5sB44hs/x
+        0Gm4iMFoSj3Trzz81PLPpVr04/AOC/tK/vDmF+ixbDLKVn71bmBH1XnL88mPhfVQ
+        ==
+X-ME-Sender: <xms:W6J1X5xgspymeynKSWFNkJt0la7rRLxavWxLaHN5PPdszCJEwfjFPQ>
+    <xme:W6J1X5RmhZoxK5w-jflDomXGhjV0DVjF3ykDJRJ841Fg_MWiPTHdcCdNp8lEDR2FX
+    _tIDYIf_tamWZCOOLA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeeggddukecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:W6J1XzX9xYSzmVlJYcS5KAhqLdXSW1MbT87XxVcLbXJK87ZZt2s4Fg>
+    <xmx:W6J1X7jZiRFibQhHDNXUxc4kcKFjVPwLKejm18BbWL3KinnCXVBW9w>
+    <xmx:W6J1X7DHMNN6Pyy-GCiRrEAI46asTN6baF7HD_F38O7nItl5X7-sFw>
+    <xmx:XaJ1X4LpRjezgGo5YhLqO_3i6ieTHU-tf-SxyF1S9lNHXuVJEIczgg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A2B92328005D;
+        Thu,  1 Oct 2020 05:33:15 -0400 (EDT)
+Date:   Thu, 1 Oct 2020 11:33:14 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Eric Anholt <eric@anholt.net>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+Message-ID: <20201001093314.lhph4ykvtjs4bo3i@gilmour.lan>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+ <20200929221526.GA1370981@ubuntu-m3-large-x86>
+ <20200930140758.gummt3umouva3wyu@gilmour.lan>
+ <20200930163823.GA237050@ubuntu-m3-large-x86>
+ <eb0c0edaf22404fd69440a85bb78397a14d49ddc.camel@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="w2hnz5ekr63d3x66"
 Content-Disposition: inline
-In-Reply-To: <20201001090547.431840-1-anmol.karan123@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <eb0c0edaf22404fd69440a85bb78397a14d49ddc.camel@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 01-10-20 14:35:47, Anmol Karn wrote:
-> d_really_is_negative() checks for the dentry->d_inode whether it's NULL
-> or not, but in open_xa_root(), when it checks 'privroot->d_inode', it
-> doesn't check whether privroot is NULL or not, this leads to a null
-> pointer dereference while calling it from open_xa_dir() while
-> initializing xaroot.
-> 
-> - fs/reiserfs/xattr.c
-> The bug seems to get triggered at this line:
-> 	
-> if (d_really_is_negative(privroot))
-> 		return ERR_PTR(-EOPNOTSUPP);
-> 
-> Fix it by adding a NULL check for privroot. 
-> 
-> Reported-and-tested-by: syzbot+9b33c9b118d77ff59b6f@syzkaller.appspotmail.com 
-> Link: https://syzkaller.appspot.com/bug?extid=9b33c9b118d77ff59b6f 
-> Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
 
-Thanks for the patch! I've already fixed the problem myself (slightly
-differently) but I'll comment about your patch below for educational
-purposes :). See
-https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git/commit/?h=for_next&id=c2bb80b8bdd04dfe32364b78b61b6a47f717af52
+--w2hnz5ekr63d3x66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/fs/reiserfs/xattr.c b/fs/reiserfs/xattr.c
-> index 28b241cd6987..a75480d0ee7e 100644
-> --- a/fs/reiserfs/xattr.c
-> +++ b/fs/reiserfs/xattr.c
-> @@ -121,8 +121,9 @@ static struct dentry *open_xa_root(struct super_block *sb, int flags)
->  	struct dentry *privroot = REISERFS_SB(sb)->priv_root;
->  	struct dentry *xaroot;
->  
-> -	if (d_really_is_negative(privroot))
-> +	if (!privroot || d_really_is_negative(privroot)) {
->  		return ERR_PTR(-EOPNOTSUPP);
+On Thu, Oct 01, 2020 at 11:22:03AM +0200, Nicolas Saenz Julienne wrote:
+> On Wed, 2020-09-30 at 09:38 -0700, Nathan Chancellor wrote:
+> > On Wed, Sep 30, 2020 at 04:07:58PM +0200, Maxime Ripard wrote:
+> > > Hi Nathan,
+> > >=20
+> > > On Tue, Sep 29, 2020 at 03:15:26PM -0700, Nathan Chancellor wrote:
+> > > > On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
+> > > > > Now that all the drivers have been adjusted for it, let's bring i=
+n the
+> > > > > necessary device tree changes.
+> > > > >=20
+> > > > > The VEC and PV3 are left out for now, since it will require a mor=
+e specific
+> > > > > clock setup.
+> > > > >=20
+> > > > > Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> > > > > Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > > > > Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> > > > > Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+> > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > >=20
+> > > > Apologies if this has already been reported or have a solution but =
+this
+> > > > patch (and presumably series) breaks output to the serial console a=
+fter
+> > > > a certain point during init. On Raspbian, I see systemd startup mes=
+sages
+> > > > then the output just turns into complete garbage. It looks like this
+> > > > patch is merged first in linux-next, which is why my bisect fell on=
+ the
+> > > > DRM merge. I am happy to provide whatever information could be help=
+ful
+> > > > for debugging this. I am on the latest version of the firmware
+> > > > (currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
+> > >=20
+> > > Unfortunately, the miniUART is in the same clock tree than the core
+> > > clock and will thus have those kind of issues when the core clock is
+> > > changed (which is also something that one should expect when using the
+> > > DRM or other drivers).
+> > >=20
+> > > The only real workaround there would be to switch to one of the PL011
+> > > UARTs. I guess we can also somehow make the UART react to the core cl=
+ock
+> > > frequency changes, but that's going to require some effort
+> > >=20
+> > > Maxime
+> >=20
+> > Ack, thank you for the reply! There does not really seem to be a whole
+> > ton of documentation around using one of the other PL011 UARTs so for
+> > now, I will just revert this commit locally.
+>=20
+> Nathan, a less intrusive solution would be to add 'core_freq_min=3D500' i=
+nto your
+> config.txt.
+>=20
+> Funnily enough core_freq=3D500 doesn't seem to work in that regard. It mi=
+ght be
+> related with what Maxime is commenting.
 
-I don't think EOPNOTSUPP is correct return code for !privroot case. AFAICS
-it would propagate out of reiserfs xattr code and would result in denying
-access to lookup_one_len() so xattr dir could never be initialized for such
-filesystem. So we need to return 0 (success, no xattrs present) in this
-case and because this is just a special case when we are initializing xattr
-dir and recurse back into xattr code, I've decided to perform this check
-directly in reiserfs_xattr_get().
+Yeah, it fixes it here too
 
-> +	}
+Maxime
 
-There's no need for additional braces in this 'if'.
->  
->  	inode_lock_nested(d_inode(privroot), I_MUTEX_XATTR);
+--w2hnz5ekr63d3x66
+Content-Type: application/pgp-signature; name="signature.asc"
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3WiWgAKCRDj7w1vZxhR
+xWyxAQCtT5n06PgaXjEzDsoo3iXgImo6rhnYHyBeb1jzJfG1XwEAimejVcajmPWZ
+7Drs6MnyiOSSnqXdn9aEsubATlxJags=
+=6Z6g
+-----END PGP SIGNATURE-----
+
+--w2hnz5ekr63d3x66--
