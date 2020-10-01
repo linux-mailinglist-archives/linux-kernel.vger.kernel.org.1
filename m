@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3DB27FA1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8C27FA1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731154AbgJAHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgJAHWJ (ORCPT
+        id S1731250AbgJAHWl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Oct 2020 03:22:41 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40551 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgJAHWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:22:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1439BC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:22:09 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kNsuk-0000iy-E1; Thu, 01 Oct 2020 09:22:06 +0200
-Subject: Re: [PATCH v2 08/12] ARM: dts: imx6dl-pico: fix board compatibles
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200930190143.27032-1-krzk@kernel.org>
- <20200930190143.27032-9-krzk@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <0a0afea6-8cbb-3e89-5a4f-89660c942ca3@pengutronix.de>
-Date:   Thu, 1 Oct 2020 09:22:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 03:22:41 -0400
+Received: by mail-ed1-f67.google.com with SMTP id t16so4528769edw.7;
+        Thu, 01 Oct 2020 00:22:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=fwr1GeVaFEp1uM5sVnPT1yQbyvQmB6fV3m98V7FTLsE=;
+        b=HlqT77hLOhdW7BqyeFS7+kf6Nm/XJ7DIwzXYMT/FP7ZXosS4WrUF3cjc5RImcQfeq6
+         ukgQ41cklCvn7SsvrGLuLnIuZnk+/TEfDGNBgjA2UaLoLDZebRcxRc7jXIMFZB7a/EeV
+         9gHsQc7hhI5dC8aYBAkJFpboOvV/pTwRYUzGYjtE8yTC5hQDx+0VWr5S44gJaOfaRQa9
+         g2Xh1OJ5R8yRYXh0j5pkV+lYhm+jOqtPmJARIFc708a+oRNxaJVXUfr0naLo0Pn7sZUH
+         kL7uJhRErWPffAKA3QUIEYjLArpa5hRI+UlhjquBCdZ0McfTsGNqkZlZb3S6Btu5GhnL
+         8waA==
+X-Gm-Message-State: AOAM5321M2qcwc+NuWAo0VCWX5deNi0uzt81Oa/kvWuQ/dX0lmTKk/px
+        65aYfOZP4Co5yrMifwhaL7cTm+wdRKo=
+X-Google-Smtp-Source: ABdhPJyursdQ3jc4/q0hvBhAH8cOPenfHB/GW7XJSvMFDQANFlI7O7t0Exapy9HiBOqu25ycbqhjvw==
+X-Received: by 2002:aa7:ce15:: with SMTP id d21mr6744623edv.284.1601536959051;
+        Thu, 01 Oct 2020 00:22:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id v25sm3367079edr.29.2020.10.01.00.22.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Oct 2020 00:22:38 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 09:22:36 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com
+Subject: Re: [PATCH] ARM: dts: exynos: Add a placeholder for a MAC address
+Message-ID: <20201001072236.GA4815@kozik-lap>
+References: <CGME20200930143154eucas1p22c1560c485f5d8b8be729c76028c89c7@eucas1p2.samsung.com>
+ <20200930143151.23961-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930190143.27032-9-krzk@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200930143151.23961-1-l.stelmach@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
-
-On 9/30/20 9:01 PM, Krzysztof Kozlowski wrote:
-> There are four flavors of TechNexion PICO-IMX6 boards.  They have their
-> own DTSes, even though in Dwarf, Nymph and Pi are exactly the same.
-> They also have their own bindings so adjust the compatibles to match the
-> bindings.
+On Wed, Sep 30, 2020 at 04:31:51PM +0200, Łukasz Stelmach wrote:
+> Add a placeholder for a MAC address. A bootloader may fill it
+> to set the MAC address and override EEPROM settings.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 > ---
+>  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> Changes since v1:
-> 1. None
-> ---
->  arch/arm/boot/dts/imx6dl-pico-dwarf.dts  | 2 +-
->  arch/arm/boot/dts/imx6dl-pico-hobbit.dts | 2 +-
->  arch/arm/boot/dts/imx6dl-pico-nymph.dts  | 2 +-
->  arch/arm/boot/dts/imx6dl-pico-pi.dts     | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx6dl-pico-dwarf.dts b/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
-> index 659a8e8714ea..d85b15a8c127 100644
-> --- a/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
-> +++ b/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
-> @@ -13,5 +13,5 @@
->  
->  / {
->  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Dwarf baseboard";
-> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
-> +	compatible = "technexion,imx6dl-pico-dwarf", "fsl,imx6dl";
+> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> index db0bc17a667b..9f7f3eacb750 100644
+> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> @@ -70,3 +70,21 @@ &pwm {
+>  &usbdrd_dwc3_1 {
+>  	dr_mode = "peripheral";
+>  };
+> +
+> +&usbhost2 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	hub@1 {
+> +		compatible = "usb8087,0024";
+> +		reg = <1>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ethernet: usbether@1 {
+> +			compatible = "usb0c45,6310";
+> +			reg = <1>;
+> +			mac-address = [00 00 00 00 00 00]; /* Filled in by a bootloader */
 
-Could you change this to have all three compatibles ("technexion,imx6dl-pico-dwarf", "technexion,imx6dl-pico",
-"fsl,imx6dl") and likewise for the other files? 
-That way other firmware that reuses the Linux device tree files and match against the SoM compatible
-continues to work after update.
+Why do you need a placeholder? U-Boot can just append the
+address/property.
 
->  };
-> diff --git a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
-> index d7403c5c4337..08fedcbcc91b 100644
-> --- a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
-> +++ b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
-> @@ -13,5 +13,5 @@
->  
->  / {
->  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Hobbit baseboard";
-> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
-> +	compatible = "technexion,imx6dl-pico-hobbit", "fsl,imx6dl";
->  };
-> diff --git a/arch/arm/boot/dts/imx6dl-pico-nymph.dts b/arch/arm/boot/dts/imx6dl-pico-nymph.dts
-> index b282dbf953aa..32ccfc5d41ce 100644
-> --- a/arch/arm/boot/dts/imx6dl-pico-nymph.dts
-> +++ b/arch/arm/boot/dts/imx6dl-pico-nymph.dts
-> @@ -13,5 +13,5 @@
->  
->  / {
->  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Nymph baseboard";
-> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
-> +	compatible = "technexion,imx6dl-pico-nymph", "fsl,imx6dl";
->  };
-> diff --git a/arch/arm/boot/dts/imx6dl-pico-pi.dts b/arch/arm/boot/dts/imx6dl-pico-pi.dts
-> index b7b1c07f96f3..4590e8ad9a91 100644
-> --- a/arch/arm/boot/dts/imx6dl-pico-pi.dts
-> +++ b/arch/arm/boot/dts/imx6dl-pico-pi.dts
-> @@ -13,5 +13,5 @@
->  
->  / {
->  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and PI baseboard";
-> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
-> +	compatible = "technexion,imx6dl-pico-pi", "fsl,imx6dl";
->  };
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards,
+Krzysztof
