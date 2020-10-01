@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB21280253
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F2428025C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732560AbgJAPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732361AbgJAPQm (ORCPT
+        id S1732495AbgJAPRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:17:22 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:34533 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732342AbgJAPRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:16:42 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7050C0613D0;
-        Thu,  1 Oct 2020 08:16:41 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id i17so5930811oig.10;
-        Thu, 01 Oct 2020 08:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Xfo+wi8t+ry7BWDgiqCTQIEDykykW+Wdj6olsxhBuHM=;
-        b=DUkMQOvwX9tEFpayXGRxRPn++TYJ9jiz9fwz/633eCw9tR3sQKE4FKsR/jzjr+s/YX
-         g0o1fbnY3WutEp3eHUWQo3YPoGazs1ktGnBmH2R4qIgqJEKQbgESECy7F88ZPX/4+DL1
-         HAIa9j9AL0e6zNXnGhymwc5s4KQ+OfvYt5S8pDmX4yzTNd24aFHBi3ny3Gq/o9rQ2Xcw
-         0d6/ITBVFV8pcaKkFqbH8KOZK1oXOTn7A/nevTUZKb5RpvHnVOlWK0rFUCq5kIb/Sa8P
-         IJQkDT1fRXEwv1M1FPnuBWqGh6bLKfPDwM5tLUvFALeJLdYy6yDhuf251DtZ0lWrptXL
-         qC+g==
+        Thu, 1 Oct 2020 11:17:22 -0400
+Received: by mail-ed1-f66.google.com with SMTP id k14so6054215edo.1;
+        Thu, 01 Oct 2020 08:17:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Xfo+wi8t+ry7BWDgiqCTQIEDykykW+Wdj6olsxhBuHM=;
-        b=CzSh+cKJIhx+xHtas89Qos4+CakZd0r7WiKWRvQt+ajWxpHOsFddu3F6Mug7pZV8Ks
-         QpXnjCaqk93YHsvnUuKwHF/Okk3AXjhJoWbu7U3SXCZZAAvjn225a1cTINeRt9zKV8T+
-         dBiGBaFw96sjY+ssUnckpt23Sh344erD853WZv+Td5CaRUTGg5A3txmFJLuOuKKFk5zG
-         7AfSNLhMKXdWl46Z76Qqf0+fUXZMCE2lMTOwKZUEOp1BDl30lQtyQ8+yjpxU5NGIjTm3
-         y3Q4SvrumorP7jF+5Rziv0AXfUkTGJzckF4zqxcu2RuSCsg8z80k/bpWznko8xvttuk7
-         1Qtg==
-X-Gm-Message-State: AOAM531MDsLIju0nkLqWS9erjNhgFGopEkEknzj6j7fy0hUdLZW7E8Cl
-        OdjeMu1E1HwjN5mqBoLAXLA=
-X-Google-Smtp-Source: ABdhPJzNY7ZqiaCZjpk22anICOz/42ohUgqmMs/7vgXX1GSTHq9VQpTOE4Uio9zydoJgs6seiTebtw==
-X-Received: by 2002:aca:4142:: with SMTP id o63mr257451oia.167.1601565401239;
-        Thu, 01 Oct 2020 08:16:41 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 34sm1250405otg.23.2020.10.01.08.16.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SfROAKrPOCPvSx9FFy640qRrgbl3764HXo09vvIU9Jk=;
+        b=FnqStRGWFTaPoRWlmt2AVCwV80k6HNA2x9tqRxld/cBIm4CJpHYjlEGkJjNdZD+ipC
+         iENKhK11NfYjRy1qqL+9RRUSunGQw7avdtcOOrxZOJFoGndVguvS7TPPf/ABbKYk7b+N
+         dvrb52GvTnzDbKy1Z6IrQEeUWjhxYL46e4216yoJwGwGR+hElR7YgbsFA2lQzWpv52bg
+         GWfzCvD9za/RBbkZxt6H9NDLk4n+a7biPc66KwiNCKyQayDg6QNbJXHwOy5aGCwik/Kf
+         haFvCG0ZLe2R/kr11/CcHzffxWFRuOc3gWNhL/EhjJ8H1J+SQuMR/lac/Cpzcv64JYuQ
+         J+lA==
+X-Gm-Message-State: AOAM530HBmaAayIyL4oLNVHbtyS2yQXZxe9yGwQ2fPTJOdiSMzouwwyb
+        v+xPBPtFPKuP9UOXearBL1o=
+X-Google-Smtp-Source: ABdhPJzKqq27FvaeGd8ZWQno57OjAUnHP5YzHlIUwBMucUmpUpNKAnrSDCCwfFKC2VQhX/DWc5Fi1w==
+X-Received: by 2002:aa7:d488:: with SMTP id b8mr2404330edr.21.1601565439592;
+        Thu, 01 Oct 2020 08:17:19 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id u15sm4251040edq.96.2020.10.01.08.17.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Oct 2020 08:16:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 1 Oct 2020 08:16:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Crystal Guo <crystal.guo@mediatek.com>, robh+dt@kernel.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: Re: [v5,0/4] watchdog: mt8192: add wdt support
-Message-ID: <20201001151639.GC64648@roeck-us.net>
-References: <20200929032005.15169-1-crystal.guo@mediatek.com>
- <71e21cfd-fd44-2cf9-cf8a-f83dc1b0cc89@gmail.com>
+        Thu, 01 Oct 2020 08:17:18 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 17:17:15 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Michael Walle <michael@walle.cc>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rabeeh Khoury <rabeeh@solid-run.com>,
+        Robert Jones <rjones@gateworks.com>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        =?utf-8?Q?S=C3=A9bastien?= Szymanski 
+        <sebastien.szymanski@armadeus.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Stoica Cosmin-Stefan <cosmin.stoica@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] dt-bindings: arm: fsl: Add Kontron i.MX8M Mini
+ SoMs and boards
+Message-ID: <20201001151715.GA14276@kozik-lap>
+References: <20201001151422.16028-1-frieder.schrempf@kontron.de>
+ <20201001151422.16028-2-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <71e21cfd-fd44-2cf9-cf8a-f83dc1b0cc89@gmail.com>
+In-Reply-To: <20201001151422.16028-2-frieder.schrempf@kontron.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 04:23:02PM +0200, Matthias Brugger wrote:
-> Hi Crystal,
+On Thu, Oct 01, 2020 at 05:13:38PM +0200, Schrempf Frieder wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
-> It seems you forgot to send the email to one of the maintainers, Wim.
-> Please make sure you add all the maintainers from get_maintainers.pl when
-> you send a series.
+> Add entries for the SoMs and boards based on i.MX8MM from Kontron
+> Electronics GmbH.
 > 
-> Regards,
-> Matthias
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> Changes for v5:
+> * None
 > 
-> On 29/09/2020 05:20, Crystal Guo wrote:
-> > v5 changes:
-> > fix typos on:
-> > https://patchwork.kernel.org/patch/11697493/
-> > 
-> > v4 changes:
-> > revise commit messages.
-> > 
-> > v3 changes:
-> > https://patchwork.kernel.org/patch/11692731/
-> > https://patchwork.kernel.org/patch/11692767/
-> > https://patchwork.kernel.org/patch/11692729/
-> > https://patchwork.kernel.org/patch/11692771/
-> > https://patchwork.kernel.org/patch/11692733/
+> Changes for v4:
+> * Rebase on next-20201001
+> * Enhance SoM and board description
+> 
+> Changes for v3:
+> * None
+> 
+> Changes for v2:
+> * Merge the SoMs and baseboards N8010 and N8011 into a single
+>   configuration (N801X).
+> * Add Rob's R-b tag
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
 
-This is less than helpful. It doesn't tell me anything. It expects me to 
-go back to the earlier versions, download them, and run a diff, to figure
-out what changed. That means the patch or patch series ends at the bottom
-of my pile of patches to review. Which, as it happens, is quite deep.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-I will review this and similar patches without change log after (and only
-after) I have reviewed all other patches in my queue.
-
-Guenter
-
-> > 
-> > Crystal Guo (4):
-> >    dt-binding: mediatek: watchdog: fix the description of compatible
-> >    dt-binding: mediatek: mt8192: update mtk-wdt document
-> >    dt-binding: mt8192: add toprgu reset-controller head file
-> >    watchdog: mt8192: add wdt support
-> > 
-> >   .../devicetree/bindings/watchdog/mtk-wdt.txt       |  5 ++--
-> >   drivers/watchdog/mtk_wdt.c                         |  6 +++++
-> >   .../dt-bindings/reset-controller/mt8192-resets.h   | 30 ++++++++++++++++++++++
-> >   3 files changed, 39 insertions(+), 2 deletions(-)
-> >   create mode 100644 include/dt-bindings/reset-controller/mt8192-resets.h
-> > 
+Best regards,
+Krzysztof
