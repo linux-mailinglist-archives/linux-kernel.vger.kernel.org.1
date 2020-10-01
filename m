@@ -2,86 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF192809BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE942809C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733159AbgJAVzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:55:49 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:47816 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727017AbgJAVzs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:55:48 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id BCEF3803016F;
-        Thu,  1 Oct 2020 21:55:40 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2OTFGBUMBGex; Fri,  2 Oct 2020 00:55:40 +0300 (MSK)
-Date:   Fri, 2 Oct 2020 00:55:32 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 02/21] spi: dw: Add DWC SSI capability
-Message-ID: <20201001215532.uxyc77nqehnwsfk5@mobilestation>
-References: <20200930185545.29959-1-Sergey.Semin@baikalelectronics.ru>
- <20200930185545.29959-3-Sergey.Semin@baikalelectronics.ru>
- <20201001215105.GA6618@sirena.org.uk>
+        id S1733176AbgJAV4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:56:09 -0400
+Received: from elvis.franken.de ([193.175.24.41]:39086 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726855AbgJAV4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:56:09 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kO6YQ-0005Yq-00; Thu, 01 Oct 2020 23:55:58 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 7C95DC1051; Thu,  1 Oct 2020 23:55:48 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 23:55:48 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Kernel 5.9-rc regression.
+Message-ID: <20201001215548.GA21328@alpha.franken.de>
+References: <25b6a64b-b5ac-c85a-abde-909fb2d768f9@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001215105.GA6618@sirena.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <25b6a64b-b5ac-c85a-abde-909fb2d768f9@wanyeetech.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:51:05PM +0100, Mark Brown wrote:
-> On Wed, Sep 30, 2020 at 09:55:26PM +0300, Serge Semin wrote:
-> > Currently DWC SSI core is supported by means of setting up the
-> > core-specific update_cr0() callback. It isn't suitable for multiple
-> > reasons. First of all having exported several methods doing the same thing
-> > but for different chips makes the code harder to maintain. Secondly the
-> > spi-dw-core driver exports the methods, then the spi-dw-mmio driver sets
+On Fri, Oct 02, 2020 at 04:15:43AM +0800, Zhou Yanjie wrote:
+> Hi Thomas and list,
 > 
+> There is a strange phenomenon in kernel 5.9-rc: when using kernel 5.9-rc
+> with debian 10 and running htop, the memory footprint will be displayed as
+> 3.99T. When the actual memory footprint increases, the displayed value will
+> be reduced to 3.98T, 3.97T etc. These phenomena have been confirmed in
+> X1000, X1830, and JZ4780 (disable SMP), this phenomenon does not seem to
+> affect the SMP processor. When the JZ4780 turn on SMP, the memory footprint
+> will be displayed normally.
 
-> This doesn't build with current code in an x86 defconfig, please check
-> and resend (looks like you forgot to update dw-pci):
-> 
-> mnt/kernel/drivers/spi/spi-dw-pci.c: In function 'spi_mid_init':
-> /mnt/kernel/drivers/spi/spi-dw-pci.c:52:5: error: 'struct dw_spi' has no member named 'update_cr0'
->   dws->update_cr0 = dw_spi_update_cr0;
->      ^~
-> /mnt/kernel/drivers/spi/spi-dw-pci.c:52:20: error: 'dw_spi_update_cr0' undeclared (first use in this function); did you mean 'dw_spi_set_cs'?
->   dws->update_cr0 = dw_spi_update_cr0;
->                     ^~~~~~~~~~~~~~~~~
->                     dw_spi_set_cs
-> /mnt/kernel/drivers/spi/spi-dw-pci.c:52:20: note: each undeclared identifier is reported only once for each function it appears in
-> /mnt/kernel/drivers/spi/spi-dw-pci.c: In function 'spi_generic_init':
-> /mnt/kernel/drivers/spi/spi-dw-pci.c:62:5: error: 'struct dw_spi' has no member named 'update_cr0'
->   dws->update_cr0 = dw_spi_update_cr0;
->      ^~
-> /mnt/kernel/drivers/spi/spi-dw-pci.c:62:20: error: 'dw_spi_update_cr0' undeclared (first use in this function); did you mean 'dw_spi_set_cs'?
->   dws->update_cr0 = dw_spi_update_cr0;
->                     ^~~~~~~~~~~~~~~~~
->                     dw_spi_set_cs
-> make[3]: *** [/mnt/kernel/scripts/Makefile.build:283: drivers/spi/spi-dw-pci.o] Error 1
-> make[2]: *** [/mnt/kernel/scripts/Makefile.build:500: drivers/spi] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [/mnt/kernel/Makefile:1788: drivers] Error 2
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:185: __sub-make] Error 2
+try this fix
 
-Oh, thanks for noticing this. I'll fix it straight away and resend. Sorry for
-the inconvenience.
+https://lore.kernel.org/lkml/20201001203931.GD2706729@carbon.DHCP.thefacebook.com/
 
--Sergey
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
