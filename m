@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AF128007C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202D4280077
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732343AbgJANuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732018AbgJANug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:50:36 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE0BC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 06:50:36 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id y11so4378347qtn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 06:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PsNYo0YsNs8xrb+jwsnFkfkNY3CsLyZk0ScKGuwNA3c=;
-        b=pnDuYOYGfglcjkvGnl7jBFrbKJ8RpZKHHuZehYd/d35rMyV9CwmUJWHRuWbyU5bo44
-         PW/dQ+z2x5uoVco+04B/wK5/Tfnf/GeE1GHF7Jbsj0uLqRVvuhRXJNC3t/rMVUNWYPWm
-         p9OYf2feu43w8k3tnBDaHEqhXosUccAWq2leUfKTF7XTxcS0hH5G+9w7JFP/glG0jtbO
-         gYlo9l8V1dTLSYPurIIiI7zsUbxRA5DBj6PHSjcegPjhEzkNcWMe5MZ+FS6Odw+BiueG
-         sbcfp5ji2YSqaoH0UJcp3s0hbwqdJp8uNmV2dQFZ+eIIXMxfXvHpEJL/92fq4UFDPlig
-         NG0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PsNYo0YsNs8xrb+jwsnFkfkNY3CsLyZk0ScKGuwNA3c=;
-        b=VeoQDSEf7ODcECdJG3B3tAA9fqEWHDnRD6gEAH9YoBK97y0Z1+wtkXU/he4ST5goG0
-         gbjXDZB2s1KjhCkybQkqqUGYG+Su8u2pwULgJ9fkY+r/SAIX8i3PcM8mtbROj4aWddDK
-         gL34GtZyujf4A7cNnW6iv6Zmm7sOUNFYsONNsooHnQX8o4d539iMkeCFvDqGMEien5ye
-         ufy47mwfjG7qybV9viA2fZrTywJa+YxdKECOLk1H9U55w8hpOj2Gej1F41dQIisKMoZv
-         /lpkgVgEkwABgK2/VI5/NXt53lCGwb/dneJvZXdgPIUt47nRYaUt8F2q8Xr3u3P7Zhrp
-         CW6g==
-X-Gm-Message-State: AOAM530XtEsQecDbE7yS9YYchByjjKV1erQKsT3yqCYzpJrU4jBLyCkD
-        N1XtxdJxAuy9Re+fB7ynNTtvqg==
-X-Google-Smtp-Source: ABdhPJzTHRWzaoPywHudcIiE2qJDlBJY4ZDJ4ju/8kJUZOsHC+U8poTe0NHFWKD/gP0U9d++HafolQ==
-X-Received: by 2002:aed:2308:: with SMTP id h8mr7659240qtc.65.1601560235500;
-        Thu, 01 Oct 2020 06:50:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:4e22])
-        by smtp.gmail.com with ESMTPSA id p205sm5801638qke.2.2020.10.01.06.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 06:50:34 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:48:54 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 4/4] mm: convert page kmemcg type to a page memcg flag
-Message-ID: <20201001134854.GF469663@cmpxchg.org>
-References: <20201001002710.748166-1-guro@fb.com>
- <20201001002710.748166-5-guro@fb.com>
+        id S1732324AbgJANtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:49:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1763 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732018AbgJANtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:49:39 -0400
+IronPort-SDR: 5vScuE3lUqeaCHFX5hUWNXc/73e5dGkDspZ89lHBnqKV1x08bYZiXZlDvpe0yHWoWc3+9X1xBc
+ MiovI57x2M9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161966644"
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="161966644"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 06:49:38 -0700
+IronPort-SDR: cHB0WEBqqp5eBTGgPzubMfNdMfAt8k2/QNp6m4asfXZQ/yz5fES3NImI90HEj2fmDGwbgOc1a8
+ 6QUXhkkc1M8g==
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="308636996"
+Received: from kignaci-mobl1.amr.corp.intel.com (HELO [10.251.133.95]) ([10.251.133.95])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 06:49:36 -0700
+Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        kirill.shutemov@linux.intel.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
+References: <20200921152653.3924-1-kan.liang@linux.intel.com>
+ <20200921152653.3924-2-kan.liang@linux.intel.com>
+ <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
+ <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com>
+ <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
+ <20200930173042.GD2628@hirez.programming.kicks-ass.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <641fa138-23b7-8fdd-27f9-87e2fdd9fa91@intel.com>
+Date:   Thu, 1 Oct 2020 06:49:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001002710.748166-5-guro@fb.com>
+In-Reply-To: <20200930173042.GD2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 05:27:10PM -0700, Roman Gushchin wrote:
-> PageKmemcg flag is currently defined as a page type (like buddy,
-> offline, table and guard). Semantically it means that the page
-> was accounted as a kernel memory by the page allocator and has
-> to be uncharged on the release.
+On 9/30/20 10:30 AM, Peter Zijlstra wrote:
+> In general though; I think using ->active_mm is a mistake though. That
+> code should be doing something like:
 > 
-> As a side effect of defining the flag as a page type, the accounted
-> page can't be mapped to userspace (look at page_has_type() and
-> comments above). In particular, this blocks the accounting of
-> vmalloc-backed memory used by some bpf maps, because these maps
-> do map the memory to userspace.
 > 
-> One option is to fix it by complicating the access to page->mapcount,
-> which provides some free bits for page->page_type.
+> 	mm = current->mm;
+> 	if (!mm)
+> 		mm = &init_mm;
 > 
-> But it's way better to move this flag into page->memcg_data flags.
-> Indeed, the flag makes no sense without enabled memory cgroups
-> and memory cgroup pointer set in particular.
-> 
-> This commit replaces PageKmemcg() and __SetPageKmemcg() with
-> PageMemcgKmem() and an open-coded OR operation setting the memcg
-> pointer with the MEMCG_DATA_KMEM bit. __ClearPageKmemcg() can be
-> simple deleted, as the whole memcg_data is zeroed at once.
-> 
-> As a bonus, on !CONFIG_MEMCG build the PageMemcgKmem() check will
-> be compiled out.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+I was hoping that using ->active_mm would give us the *actual* copy of
+the page tables that's loaded in CR3 for kernel thraeds.  But, there are
+few if any practical advantages of doing that at the moment.
+
+Using that ^ is fine with me.
