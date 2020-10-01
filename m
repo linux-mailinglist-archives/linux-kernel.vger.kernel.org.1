@@ -2,282 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A49A27F6DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3F927F6E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732250AbgJAAs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:48:57 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:37859 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730155AbgJAAs5 (ORCPT
+        id S1732291AbgJAAyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:54:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730155AbgJAAyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:48:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601513336; x=1633049336;
-  h=subject:from:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=mK+4P3J38WGKTB1UiRU+yIEHfiYFZslujOQHMvGJct4=;
-  b=hiVSB17sYMb2iwRDI7E2RM4CpNDrsOzdzwlqZ1Yvi5Z/RJMpzwodixun
-   w9czOd94RQy/Krh2ksg2vrCMM+/hORMlts0iuN0BP/nKvBDgO+yS548WU
-   4YRhtxedYKT9HxFByuNhTWZ0SOMJ954GUHat0ddkxhwQ7gfL9gPPmZL7F
-   I=;
-X-IronPort-AV: E=Sophos;i="5.77,322,1596499200"; 
-   d="scan'208";a="57312749"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 01 Oct 2020 00:48:54 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id 21725A0835;
-        Thu,  1 Oct 2020 00:48:52 +0000 (UTC)
-Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 1 Oct 2020 00:48:51 +0000
-Received: from f8ffc2228008.ant.amazon.com (10.43.161.71) by
- EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 1 Oct 2020 00:48:47 +0000
-Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars
- in enable_l1d_flush_for_task()
-From:   "Singh, Balbir" <sblbir@amazon.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-safety@lists.elisa.tech" <linux-safety@lists.elisa.tech>
-References: <20200928124457.27289-1-lukas.bulwahn@gmail.com>
- <20200929071211.GJ2628@hirez.programming.kicks-ass.net>
- <20200929083709.GC2651@hirez.programming.kicks-ass.net>
- <87eemji887.fsf@nanos.tec.linutronix.de>
- <20200930170316.GB2628@hirez.programming.kicks-ass.net>
- <87blhni1pg.fsf@nanos.tec.linutronix.de>
- <20200930183552.GG2628@hirez.programming.kicks-ass.net>
- <87k0wbgd2s.fsf@nanos.tec.linutronix.de>
- <19f57cbe-ba33-17d5-440c-2765e670782f@amazon.com>
-Message-ID: <044e9835-f4fe-6670-90df-15fe376ecadd@amazon.com>
-Date:   Thu, 1 Oct 2020 10:48:44 +1000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.1.1
+        Wed, 30 Sep 2020 20:54:02 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601513640;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XFZ4y9PW18tIpaRq1GakM+ear76FmQioomwiibA1G8E=;
+        b=OmgHNSnu6sF8YEdy33NVijBNV6/GZdTppJAdWWffECLjQWzENFibKtzpjvassRg9FjqtvG
+        1ztomfpYy10tXDqM7/pt8sW34WpoFGwg+WaUDA5NEsQB8ID9IlY2xTKkZgtt+cSA+Xxio9
+        CIUS3ibbx3Mwfth1wpUwqmqqKm7e4fg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-nsUy6JLWNIqFVcYcAYcAtw-1; Wed, 30 Sep 2020 20:53:56 -0400
+X-MC-Unique: nsUy6JLWNIqFVcYcAYcAtw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06EAE1891E8A;
+        Thu,  1 Oct 2020 00:53:55 +0000 (UTC)
+Received: from [10.64.54.133] (vpn2-54-133.bne.redhat.com [10.64.54.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A0765578A;
+        Thu,  1 Oct 2020 00:53:52 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH V4 3/3] arm64/mm/hotplug: Ensure early memory sections are
+ all online
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <1601387687-6077-1-git-send-email-anshuman.khandual@arm.com>
+ <1601387687-6077-4-git-send-email-anshuman.khandual@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <471fed64-0f61-9c16-3943-2bb8f77ee810@redhat.com>
+Date:   Thu, 1 Oct 2020 10:53:50 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <19f57cbe-ba33-17d5-440c-2765e670782f@amazon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
+In-Reply-To: <1601387687-6077-4-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D48UWA001.ant.amazon.com (10.43.163.52) To
- EX13d01UWB002.ant.amazon.com (10.43.161.136)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/20 9:49 am, Singh, Balbir wrote:
-> On 1/10/20 7:38 am, Thomas Gleixner wrote:
+Hi Anshuman,
+
+On 9/29/20 11:54 PM, Anshuman Khandual wrote:
+> This adds a validation function that scans the entire boot memory and makes
+> sure that all early memory sections are online. This check is essential for
+> the memory notifier to work properly, as it cannot prevent any boot memory
+> from offlining, if all sections are not online to begin with. The notifier
+> registration is skipped, if this validation does not go through. Although
+> the boot section scanning is selectively enabled with DEBUG_VM.
 > 
->>
->>
->>
->> On Wed, Sep 30 2020 at 20:35, Peter Zijlstra wrote:
->>> On Wed, Sep 30, 2020 at 08:00:59PM +0200, Thomas Gleixner wrote:
->>>> On Wed, Sep 30 2020 at 19:03, Peter Zijlstra wrote:
->>>>> On Wed, Sep 30, 2020 at 05:40:08PM +0200, Thomas Gleixner wrote:
->>>>> Also, that preempt_disable() in there doesn't actually do anything.
->>>>> Worse, preempt_disable(); for_each_cpu(); is an anti-pattern. It mixes
->>>>> static_cpu_has() and boot_cpu_has() in the same bloody condition and has
->>>>> a pointless ret variable.
->>>
->>> Also, I forgot to add, it accesses ->cpus_mask without the proper
->>> locking, so it could be reading intermediate state from whatever cpumask
->>> operation that's in progress.
->>
->> Yes. I saw that after hitting send. :(
->>
->>>> I absolutely agree and I really missed it when looking at it before
->>>> merging. cpus_read_lock()/unlock() is the right thing to do if at all.
->>>>
->>>>> It's shoddy code, that only works if you align the planets right. We
->>>>> really shouldn't provide interfaces that are this bad.
->>>>>
->>>>> It's correct operation is only by accident.
->>>>
->>>> True :(
->>>>
->>>> I understand Balbirs problem and it makes some sense to provide a
->>>> solution. We can:
->>>>
->>>>     1) reject set_affinity() if the task has that flush muck enabled
->>>>        and user space tries to move it to a SMT enabled core
->>>>
->>>>     2) disable the muck if if detects that it is runs on a SMT enabled
->>>>        core suddenly (hotplug says hello)
->>>>
->>>>        This one is nasty because there is no feedback to user space
->>>>        about the wreckage.
->>>
->>> That's and, right, not or. because 1) deals with sched_setffinity()
->>> and 2) deals wit hotplug.
->>
->> It was meant as AND of course.
->>
->>> Now 1) requires an arch hook in sched_setaffinity(), something I'm not
->>> keen on providing, once we provide it, who knows what strange and
->>> wonderful things archs will dream up.
->>
->> I don't think so. We can have that magic in core:
->>
->> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
->> static bool paranoid_l1d_valid(struct task_struct *tsk,
->>                                const struct cpumask *msk)
->> {
->>         if (!test_tsk_thread_flag(tsk, TIF_SPEC_L1D_FLUSH))
->>                 return true;
->>         /* Do magic stuff */
->>         return res;
->> }
->> #else
->> static bool paranoid_l1d_valid(struct task_struct *tsk,
->>                                const struct cpumask *msk)
->> {
->>         return true;
->> }
->> #endif
->>
->> It's a pretty well defined problem and having the magic in core code
->> prevents an arch hook which allows abuse of all sorts.
->>
->> And the same applies to enable_l1d_flush_for_task(). The only
->> architecture specific nonsense are the checks whether the CPU bug is
->> there and whether the hardware supports L1D flushing.
->>
->> So we can have:
->>
->> #ifdef CONFIG_HAS_PARANOID_L1D_FLUSH
->> int paranoid_l1d_enable(struct task_struct *tsk)
->> {
->>         /* Do the SMT validation under the proper locks */
->>         if (!res)
->>                 set_task_thread_flag(tsk, TIF_SPEC_L1D_FLUSH);
->>         return res;
->> }
->> #endif
->>
->>> And 2) also happens on hot-un-plug, when the task's affinity gets
->>> forced because it became empty. No user feedback there either, and
->>> information is lost.
->>
->> Of course. It's both that suddenly SMT gets enabled on a core which was
->> isolated and when the last isolated core in the tasks CPU mask goes
->> offline.
->>
->>> I suppose we can do 2) but send a signal. That would cover all cases and
->>> keep it in arch code. But yes, that's pretty terrible too.
->>
->> Bah. I just looked at the condition to flush:
->>
->>         if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
->>                 (prev_mm & LAST_USER_MM_L1D_FLUSH))
->>                 l1d_flush_hw();
->>
->> That fails to flush when SMT is disabled globally. Balbir?
->>
->> Of course this should be:
->>
->>         if (!this_cpu_read(cpu_info.smt_active) && (prev_mm & LAST_USER_MM_L1D_FLUSH))
->>                 l1d_flush_hw();
->>
->> Now we can make this:
->>
->>         if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
->>                 if (!this_cpu_read(cpu_info.smt_active))
->>                         l1d_flush_hw();
->>                 else
->>                         task_work_add(...);
->>
->> And that task work clears the flag and sends a signal. We're not going
->> to send a signal from switch_mm() ....
->>
->> Thanks,
->>
-> 
-> 
-> So this is the change I am playing with, I don't like the idea of killing the task, but it's better than silently not flushing, I guess system administrators will learn with time not to correctly the affinity of tasks flushing
-> L1D. For the affinity bits, not being able to change the affinity is better, but not being able to provide feedback on as to why is a bit weird as well, but I wonder if there are other cases where we might want to lock the affinity of a task for it's lifetime.
-> 
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 6b0f4c88b07c..6b0d0a9cd447 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -320,26 +320,15 @@ int enable_l1d_flush_for_task(struct task_struct *tsk)
->  
->  	/*
->  	 * Do not enable L1D_FLUSH_OUT if
-> -	 * b. The CPU is not affected by the L1TF bug
-> -	 * c. The CPU does not have L1D FLUSH feature support
-> -	 * c. The task's affinity is on cores with SMT on.
-> +	 * a. The CPU is not affected by the L1TF bug
-> +	 * b. The CPU does not have L1D FLUSH feature support
->  	 */
->  
->  	if (!boot_cpu_has_bug(X86_BUG_L1TF) ||
-> -			!static_cpu_has(X86_FEATURE_FLUSH_L1D))
-> +		!boot_cpu_has(X86_FEATURE_FLUSH_L1D))
->  		return -EINVAL;
->  
-> -	cpu = get_cpu();
-> -
-> -	for_each_cpu(i, &tsk->cpus_mask) {
-> -		if (cpu_data(i).smt_active == true) {
-> -			put_cpu();
-> -			return -EINVAL;
-> -		}
-> -	}
-> -
->  	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_L1D_FLUSH);
-> -	put_cpu();
->  	return ret;
->  }
->  
-> @@ -349,6 +338,12 @@ int disable_l1d_flush_for_task(struct task_struct *tsk)
->  	return 0;
->  }
->  
-> +static void l1d_flush_kill(struct callback_head *ch)
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Steve Capper <steve.capper@arm.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/arm64/mm/mmu.c | 59 +++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 59 insertions(+)
+
+I don't understand why this is necessary. The core already ensure the
+corresponding section is online when trying to offline it. It's guranteed
+that section is online when the notifier is triggered. I'm not sure if
+there is anything I missed?
+  
+
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 90a30f5ebfc0..b67a657ea1ad 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1522,6 +1522,62 @@ static struct notifier_block prevent_bootmem_remove_nb = {
+>   	.notifier_call = prevent_bootmem_remove_notifier,
+>   };
+>   
+> +/*
+> + * This ensures that boot memory sections on the plaltform are online
+                                                     ^^^^^^^^^
+> + * during early boot. They could not be prevented from being offlined
+> + * if for some reason they are not brought online to begin with. This
+> + * help validate the basic assumption on which the above memory event
+> + * notifier works to prevent boot memory offlining and it's possible
+> + * removal.
+> + */
+> +static bool validate_bootmem_online(void)
 > +{
-> +	clear_ti_thread_flag(&current->thread_info, TIF_SPEC_L1D_FLUSH);
-> +	force_signal(SIGBUS);
+> +	struct memblock_region *mblk;
+> +	struct mem_section *ms;
+> +	unsigned long pfn, end_pfn, start, end;
+> +	bool all_online = true;
+> +
+> +	/*
+> +	 * Scanning across all memblock might be expensive
+> +	 * on some big memory systems. Hence enable this
+> +	 * validation only with DEBUG_VM.
+> +	 */
+> +	if (!IS_ENABLED(CONFIG_DEBUG_VM))
+> +		return all_online;
+> +
+> +	for_each_memblock(memory, mblk) {
+> +		pfn = PHYS_PFN(mblk->base);
+> +		end_pfn = PHYS_PFN(mblk->base + mblk->size);
+> +
+
+It's not a good idea to access @mblk->{base, size}. There are two
+accessors: memblock_region_memory_{base, end}_pfn().
+
+> +		for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
+> +			ms = __pfn_to_section(pfn);
+> +
+> +			/*
+> +			 * All memory ranges in the system at this point
+> +			 * should have been marked early sections.
+> +			 */
+> +			WARN_ON(!early_section(ms));
+> +
+> +			/*
+> +			 * Memory notifier mechanism here to prevent boot
+> +			 * memory offlining depends on the fact that each
+> +			 * early section memory on the system is intially
+> +			 * online. Otherwise a given memory section which
+> +			 * is already offline will be overlooked and can
+> +			 * be removed completely. Call out such sections.
+> +			 */
+
+s/intially/initially
+
+> +			if (!online_section(ms)) {
+> +				start = PFN_PHYS(pfn);
+> +				end = start + (1UL << PA_SECTION_SHIFT);
+> +				pr_err("Memory range [%lx %lx] is offline\n", start, end);
+> +				pr_err("Memory range [%lx %lx] can be removed\n", start, end);
+> +				all_online = false;
+
+These two error messages can be combined:
+
+     pr_err("Memory range [%lx %lx] not online, can't be offlined\n",
+            start, end);
+
+I think you need to return @all_online immediately, without
+checking if the subsequent sections are online or not? :)
+
+> +			}
+> +		}
+> +	}
+> +	return all_online;
 > +}
 > +
->  void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->  	       struct task_struct *tsk)
->  {
-> @@ -443,12 +438,14 @@ static void cond_mitigation(struct task_struct *next)
->  	}
->  
->  	/*
-> -	 * Flush only if SMT is disabled as per the contract, which is checked
-> -	 * when the feature is enabled.
-> +	 * Flush only if SMT is disabled, if flushing is enabled
-> +	 * and we are on an SMT enabled core, kill the task
->  	 */
-> -	if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
-> -		(prev_mm & LAST_USER_MM_L1D_FLUSH))
-> -		l1d_flush_hw();
-> +	if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
-> +		if (!this_cpu_read(cpu_info.smt_active))
-> +			l1d_flush_hw();
-> +		else
-> +			task_work_add(prev, l1d_flush_kill, true);
+>   static int __init prevent_bootmem_remove_init(void)
+>   {
+>   	int ret = 0;
+> @@ -1529,6 +1585,9 @@ static int __init prevent_bootmem_remove_init(void)
+>   	if (!IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+>   		return ret;
+>   
+> +	if (!validate_bootmem_online())
+> +		return -EINVAL;
+> +
+>   	ret = register_memory_notifier(&prevent_bootmem_remove_nb);
+>   	if (ret)
+>   		pr_err("%s: Notifier registration failed %d\n", __func__, ret);
+> 
 
-We have no access the to the previous task and mm->owner depends on MEMCG :)
-We can do the magic in mm_mangle_tif_spec_bits(), I suppose
-
-Balbir
-
+Cheers,
+Gavin
 
