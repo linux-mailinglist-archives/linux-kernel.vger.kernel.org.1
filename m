@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1186028092B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDFB28092A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733059AbgJAVHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        id S1733161AbgJAVHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727017AbgJAVGt (ORCPT
+        with ESMTP id S1727017AbgJAVHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:06:49 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E95EC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:06:49 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qp15so9214934ejb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:06:48 -0700 (PDT)
+        Thu, 1 Oct 2020 17:07:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1B4C0613D0;
+        Thu,  1 Oct 2020 14:07:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 5so5024307pgf.5;
+        Thu, 01 Oct 2020 14:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GJfQdlSGvnYX8WTWiSSvgRRMTzNs36g2ODPiTwjRAs8=;
-        b=tkrBQe3EU3XlxTk9RswYWhAU4d1iEgcKP+mNKsyk7QnifbEkLUVCT/Bz9HiE4WZDH9
-         kPwoGKUUr+ktBtCxlwk704U4nOoVOcFG4gZqxD8/WNDpZpcxtCXcBKHmqjgCOI2sZjKz
-         RIHBYbLW3UYEy3kwlVU6CHuZOl2ouk0fj2blw=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ItqIz6gXnh77/Vt2ZHDHcdf0vLA3J3R86d0HFs2hxss=;
+        b=ebxxJDPj/tvbS24ml8ZXMKFMOcecgfeBF7qk10srMX+oBQ38MoQGwEfoDCkk1XFDTf
+         sMHwM1gF3VedZTaQE1scSLDcdNnRASo/Qt/OsAe4qHLX2g69R+pxwgO9+V3Kv801Bqry
+         7bUqgK80b8dIuamzcqtslLPYxPEc3ilBAcVtjXgJYuP81z2HLFRwmb+haB7o/FZxj/Jv
+         HSX8ZZuuYhaz8V90/qARmSrZVVqzhqej01C+AzsjRm9uypUkbK25JTjySehoXo8OFJNS
+         zgkoUG0+xc9TaUar/mt8YRhTN/LTGiEmSBB3yHTDB5hukDtq1vapCLXKgbTBLoWD2Yeg
+         p8/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GJfQdlSGvnYX8WTWiSSvgRRMTzNs36g2ODPiTwjRAs8=;
-        b=eOFXDmS79lQgEjfINjCcjo2plPs/C4RiqWYo125jZ4EgvKuvHjxAdj7omppqdg/CXN
-         hA3h1iWUXv5kkMqMkcvlXDjNR5r8kmNiFmoEa7yvUMQc98lGPILycMaPzw4qD/ynceAo
-         NUtG2bnwDFwYr4dZUTIL/oMNffNz07aW12d2bqUKFHeKcXFCiA+UtxrKAdfUVB90eboy
-         giIzparBgmXu5cI2DEUVUf0X5RqE/b9/6c0rby4bODmAIU3FuNGZA58Y3ZZqe2bz2kmm
-         ZV6fc571rmv1jypPPF1NZ+oHFRLoSiBIvFbyfCbbiZUWp685SXeFACMWDbihKlGsg4RB
-         TCEw==
-X-Gm-Message-State: AOAM530eHOU3eiSqWxAKg/WEnVndjVyEUxVpDszKEKzolbD7llWO5y8c
-        eFd7uL2gkQQYJNDV4XoAJvR49MSVpos4pDZId4k1Dg==
-X-Google-Smtp-Source: ABdhPJwvS6nNR0DvYHDBM04oUTIB+MUropRM/aV9HBVmK+CT5YH4iBVjeeDR8WdQ3dsdp+vdjAc8sF9ARo7WZujAD1Q=
-X-Received: by 2002:a17:906:3e0c:: with SMTP id k12mr10020262eji.189.1601586407475;
- Thu, 01 Oct 2020 14:06:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
-In-Reply-To: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Thu, 1 Oct 2020 14:06:10 -0700
-Message-ID: <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ItqIz6gXnh77/Vt2ZHDHcdf0vLA3J3R86d0HFs2hxss=;
+        b=UGYxKwuhnxkgP5K9s6Mcj7R9Xr5vHOBY+Nl6u7AqeZ/3mPbXjjeWcZprc1LtpEeCHn
+         GbTrizuJ8RRbTDff9UfLzQ9j++iEPVqXsWAjvYAKU7Pths6SDYmZGMClOGYKnRg+k+vc
+         pn4hBfvJpNuEcbjTPq0L2sYOeRIAMymq/PNJkDKhgDLp1kZcmU4OUTUirORKyZOUCnhR
+         yfGSaoI5qNZoMoCLNWFRozBPQeH10jaf0B9H7iwK5QUcERZyXyvB9onDG0SDe4+TRuT4
+         sABwHWxS82nH/RMF9MZqPwICUG/phQze8ZQiwzxgVC+KAvbOZG4tDqM6QgX9lDlgmAXR
+         QFqA==
+X-Gm-Message-State: AOAM532BAftBXgggC6M8we8vIccB6RCxpF7+7dDl1MWS3iZxeZ3LLOOD
+        XWZfSp/bmseiIrVT26k8q/KWJyyvGmwM5Q==
+X-Google-Smtp-Source: ABdhPJwtlJGYi3KdBqkN8QjF/BYyhY0405HXOyyT6gd5JOL9IIz8WwMUAMTSQlA+2TSKM7IlF2+0Kg==
+X-Received: by 2002:a63:161e:: with SMTP id w30mr7496776pgl.255.1601586438657;
+        Thu, 01 Oct 2020 14:07:18 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id 14sm724389pjn.48.2020.10.01.14.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 14:07:17 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 14:07:16 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
         Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+Subject: Re: [PATCH V2 1/3] efi: Support for MOK variable config table
+Message-ID: <20201001210716.GA3767489@ubuntu-m3-large-x86>
+References: <20200905013107.10457-1-lszubowi@redhat.com>
+ <20200905013107.10457-2-lszubowi@redhat.com>
+ <20201001174436.GA2622286@ubuntu-m3-large-x86>
+ <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 4:07 AM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hi Tycho, Sargun (and all),
->
-> I knew it would be a big ask, but below is kind of the manual page
-> I was hoping you might write [1] for the seccomp user-space notification
-> mechanism. Since you didn't (and because 5.9 adds various new pieces
-> such as SECCOMP_ADDFD_FLAG_SETFD and SECCOMP_IOCTL_NOTIF_ADDFD
-> that also will need documenting [2]), I did :-). But of course I may
-> have made mistakes...
->
-> I've shown the rendered version of the page below, and would love
-> to receive review comments from you and others, and acks, etc.
->
-> There are a few FIXMEs sprinkled into the page, including one
-> that relates to what appears to me to be a misdesign (possibly
-> fixable) in the operation of the SECCOMP_IOCTL_NOTIF_RECV
-> operation. I would be especially interested in feedback on that
-> FIXME, and also of course the other FIXMEs.
->
-> The page includes an extensive (albeit slightly contrived)
-> example program, and I would be happy also to receive comments
-> on that program.
->
-> The page source currently sits in a branch (along with the text
-> that you sent me for the seccomp(2) page) at
-> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=seccomp_user_notif
->
-> Thanks,
->
-> Michael
->
-> [1] https://lore.kernel.org/linux-man/2cea5fec-e73e-5749-18af-15c35a4bd23c@gmail.com/#t
-> [2] Sargun, can you prepare something on SECCOMP_ADDFD_FLAG_SETFD
->     and SECCOMP_IOCTL_NOTIF_ADDFD to be added to this page?
->
-> ====
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+On Thu, Oct 01, 2020 at 10:57:07PM +0200, Ard Biesheuvel wrote:
+> On Thu, 1 Oct 2020 at 19:44, Nathan Chancellor <natechancellor@gmail.com> wrote:
+> >
+> > On Fri, Sep 04, 2020 at 09:31:05PM -0400, Lenny Szubowicz wrote:
+> > > Because of system-specific EFI firmware limitations, EFI volatile
+> > > variables may not be capable of holding the required contents of
+> > > the Machine Owner Key (MOK) certificate store when the certificate
+> > > list grows above some size. Therefore, an EFI boot loader may pass
+> > > the MOK certs via a EFI configuration table created specifically for
+> > > this purpose to avoid this firmware limitation.
+> > >
+> > > An EFI configuration table is a much more primitive mechanism
+> > > compared to EFI variables and is well suited for one-way passage
+> > > of static information from a pre-OS environment to the kernel.
+> > >
+> > > This patch adds initial kernel support to recognize, parse,
+> > > and validate the EFI MOK configuration table, where named
+> > > entries contain the same data that would otherwise be provided
+> > > in similarly named EFI variables.
+> > >
+> > > Additionally, this patch creates a sysfs binary file for each
+> > > EFI MOK configuration table entry found. These files are read-only
+> > > to root and are provided for use by user space utilities such as
+> > > mokutil.
+> > >
+> > > A subsequent patch will load MOK certs into the trusted platform
+> > > key ring using this infrastructure.
+> > >
+> > > Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+> >
+> > I have not seen this reported yet but this breaks arm allyesconfig and
+> > allmodconfig when CPU_LITTLE_ENDIAN is force selected (because CONFIG_EFI
+> > will actually be enabled):
+> >
+> > $ cat le.config
+> > CONFIG_CPU_BIG_ENDIAN=n
+> >
+> > $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- KCONFIG_ALLCONFIG=le.config allyesconfig drivers/firmware/efi/mokvar-table.o
+> > drivers/firmware/efi/mokvar-table.c: In function 'efi_mokvar_table_init':
+> > drivers/firmware/efi/mokvar-table.c:139:5: error: implicit declaration of function 'early_memunmap' [-Werror=implicit-function-declaration]
+> >   139 |     early_memunmap(va, map_size);
+> >       |     ^~~~~~~~~~~~~~
+> > drivers/firmware/efi/mokvar-table.c:148:9: error: implicit declaration of function 'early_memremap' [-Werror=implicit-function-declaration]
+> >   148 |    va = early_memremap(efi.mokvar_table, map_size);
+> >       |         ^~~~~~~~~~~~~~
+> > drivers/firmware/efi/mokvar-table.c:148:7: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+> >   148 |    va = early_memremap(efi.mokvar_table, map_size);
+> >       |       ^
+> > cc1: some warnings being treated as errors
+> > make[4]: *** [scripts/Makefile.build:283: drivers/firmware/efi/mokvar-table.o] Error 1
+> >
+> > Cheers,
+> > Nathan
+> 
+> Hi Nathan,
+> 
+> Does adding
+> 
+> #include <asm/early_ioremap.h>
+> 
+> to drivers/firmware/efi/mokvar-table.c fix the issue?
 
-Should we consider the SECCOMP_GET_NOTIF_SIZES dance to be "deprecated" at
-this point, given that the extensible ioctl mechanism works? If we add
-new fields to the
-seccomp datastructures, we would move them from fixed-size ioctls, to
-variable sized
-ioctls that encode the datastructure size / length?
+Indeed, that was much simpler than I thought it would be... If you send
+or apply a patch, feel free to add:
 
--- This is mostly a question for Kees and Tycho.
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+
+Cheers,
+Nathan
