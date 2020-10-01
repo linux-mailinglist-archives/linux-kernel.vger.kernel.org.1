@@ -2,216 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31389280919
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C509280921
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732829AbgJAVFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgJAVFP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:05:15 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395DCC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:05:15 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so5792569pfa.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:05:15 -0700 (PDT)
+        id S2387432AbgJAVGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:06:14 -0400
+Received: from mail-eopbgr770058.outbound.protection.outlook.com ([40.107.77.58]:27204
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727124AbgJAVGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:06:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=czI9bmnQ3c8ZJCwqURIB4P2bsqBWavoZ/mY4cfzfPdMacf5clNVsN0HbmUkrOElDgdv5RuBQWoHO9htajMw9gqHTLJzmT0wQciMZyIWr7+aae6gkQB09Qvo2MgQagSk5EERSMFoCAnpW81Sfo6y16IHcy8oGyJv1iTZQYxS4C8Wr2AfhYIkB7WIqFhu92mfq06BkcHKZHulOIN1KwGGHZ2zA+fzNaYcstJppp5TqH/sU1xmperGXsb2DBxTq5+2IW3h15r6XAM809odypG+MsNdi6HTq9v0Y3zeiR+AAyChbWHk898E8SbIKcU8/CP7ttvUKZP4OgYr9/TASnR4wnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OMTFdXofYigsgSy6bCeE+VEjaAnsEuOcDN8krMm78+w=;
+ b=doarDTBsc8jenz7O6q6HkACeBnVQpg1LqV4LWZsi/gc/8xQTK1u09f7FLkABe9nYJywPONlo7MFpS+rqjvTOy9D52gijt9gWxhdplAI4AFFQBsdXqfvkOD0uA4/6+jfGI8RCFLJrhr1f2cgd3Pm3jvr8y2a6lJ5+kNKJN2fI/bygMXYGF2WKb/sHmOQJ2BeZGwsU2DLoQD9UbcSHBebiCmfgExIqLs6CcBzrF4Yc3EcH5lq9IM7pMwVGqlIj9IUOuDT2gss6aQLCY/C9IE5CS4j2Gd4LkW3a4lFkAzFtUx5/DCE/EFOikmxXjx9JZfRLlToXaIg0sc2u9mKQc4oJGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 149.199.60.83) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=none action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
-        b=P/3XD2CcnLPmFvxK4ImVaO3KbIoepUZ+wnlZ+BJrjfWejmWXo3+ahVkBVF20sY057F
-         Fd1Kw/TeSXQS1959lE8zRVGSGWl3cP2+jx0rn8Llzgc8rkxibWB/lNL4iSya5ndBfmVF
-         zeb4jKfYxb7rziVYZ0e2NmWo678nIlOdBX9pE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
-        b=Qbs62P3V+XEHe37UVMVhshVV48qFJBKoBbm7GDwwDS0lkGDwVbbpgLB5jh0enedUtG
-         ou6EWHVGdoMLZ8/89IYtIdj80bIRDSsfJYIUXgGm/2XcmHQYoLttVFHjvRJUBiA76zGN
-         9XPqZ7HXdmI/DRBF96PQaQyj2x/hV/+ExuGtSqmMZGHWannM8ZxCDD+FA51+tgI2v1YO
-         h02FPom1RM12+HxDwdO/IVqwhKDjDMQTITo9kPsI615VVmNYuC6BebLicLq3KACCSpF6
-         6vl8hzPTFPjBdwnpOS+x8pZReFbvTg7N8Lw9LLWSV6gGI9k0zwF0UY9W3yPPYv6IoYLO
-         4LHw==
-X-Gm-Message-State: AOAM533qyN9fdtCr9bX2kLu/J2tQBmV6qXHtFyvdLTe9Bfq39TbcnyoU
-        8tnGPCwxzLWZhDqZdbcdOA0twg==
-X-Google-Smtp-Source: ABdhPJwZmuICO3eBgdFhAAtcI8VblpCzInUbkz0BCWOnju3Q9j3Bj5uX/6qFoIfg5eFpaOsfoEkjUQ==
-X-Received: by 2002:aa7:9ac7:0:b029:152:ebb:cb42 with SMTP id x7-20020aa79ac70000b02901520ebbcb42mr4323742pfp.30.1601586314632;
-        Thu, 01 Oct 2020 14:05:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h31sm6125512pgh.71.2020.10.01.14.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 14:05:13 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:05:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-Message-ID: <202010011314.503D67209@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
- <202009301432.C862BBC4B@keescook>
- <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OMTFdXofYigsgSy6bCeE+VEjaAnsEuOcDN8krMm78+w=;
+ b=WgO6TdZfl0P0WtL9rvEKwDP3+/8Rbt2lg8MKKzyqGMw6IexFu9JrknJguUZt2Q3mI2D5U3/Wpl9TCXR0vI2oE3kpk2nKwPhHBFm1iq4Nnoe15FgxqZVJi56HgHd9gqYRm3Pc6vTfEA5Dtne44LdLLKbE9JFQ65+jKvAdLOHCpdc=
+Received: from DM6PR12CA0004.namprd12.prod.outlook.com (2603:10b6:5:1c0::17)
+ by DM6PR02MB4699.namprd02.prod.outlook.com (2603:10b6:5:fa::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Thu, 1 Oct
+ 2020 21:05:55 +0000
+Received: from CY1NAM02FT019.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:1c0:cafe::6) by DM6PR12CA0004.outlook.office365.com
+ (2603:10b6:5:1c0::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend
+ Transport; Thu, 1 Oct 2020 21:05:55 +0000
+X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
+ 149.199.60.83) smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none
+ (message not signed) header.d=none;lists.infradead.org; dmarc=none
+ action=none header.from=xilinx.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of xilinx.com: DNS Timeout)
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT019.mail.protection.outlook.com (10.152.75.177) with Microsoft SMTP
+ Server id 15.20.3412.21 via Frontend Transport; Thu, 1 Oct 2020 21:05:54
+ +0000
+Received: from [149.199.38.66] (port=60915 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kO5lW-0005ZC-DQ; Thu, 01 Oct 2020 14:05:26 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kO5ly-0000KR-6D; Thu, 01 Oct 2020 14:05:54 -0700
+Received: from xsj-pvapsmtp01 (smtp.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 091L5fXq030066;
+        Thu, 1 Oct 2020 14:05:41 -0700
+Received: from [172.19.2.206] (helo=xsjblevinsk50.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kO5ll-0000Id-5s; Thu, 01 Oct 2020 14:05:41 -0700
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     sunnyliangjy@gmail.com, punit1.agrawal@toshiba.co.jp,
+        stefanos@xilinx.com, michals@xilinx.com, michael.auchter@ni.com
+Cc:     devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v17 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Thu,  1 Oct 2020 14:05:36 -0700
+Message-Id: <20201001210541.32042-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 790a0608-8fb2-4558-d9fc-08d8664dc915
+X-MS-TrafficTypeDiagnostic: DM6PR02MB4699:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB46994C7604B0B4782206C1C9B5300@DM6PR02MB4699.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dYoxJ1qNxDHYpm1fCRsIvGVJ7Uy4Q8SsJakoJpfO+qHIZ1buBxe28l8O4b8tXQ0A/iC00K0xXvmTvsN0N288+WNF+ssOSaO/kidIGr6KIXbrepfhdFSHk0V36zxSsu4/WrqsXvC9T1pFWMTxqyJlvQ8haTs5Vm9I0rKOZ9ht/pW8mnIRQ4koDDiQWSDVe6h7BLWfCke4+0cBQWsU1xul6ixk+XGH3pwQVcNQgeelH2g8SE4X/fEr39QPVFncohZGu9oJbLUfX6f4OgW/vInM7sXl3wcvK9CsIMLE0uc8o935+ObTyp8fQ0qY2py+0L+m5x0Ga5ZJ1O1OSNPmMjiZ+qBe5kKhnvLfKHKJph54g4f21dVT2U+MJ8LRpH7MCDKlGvojkZU0HMwG0sopTha5dA==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(136003)(396003)(39860400002)(346002)(376002)(46966005)(44832011)(5660300002)(70206006)(70586007)(82740400003)(47076004)(4326008)(336012)(83380400001)(6666004)(186003)(9786002)(8676002)(2616005)(26005)(1076003)(356005)(478600001)(8936002)(36756003)(7696005)(82310400003)(2906002)(426003)(63350400001)(81166007)(316002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 21:05:54.4932
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 790a0608-8fb2-4558-d9fc-08d8664dc915
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT019.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4699
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 06:52:50AM -0500, YiFei Zhu wrote:
-> On Wed, Sep 30, 2020 at 5:40 PM Kees Cook <keescook@chromium.org> wrote:
-> > The guiding principle with seccomp's designs is to always make things
-> > _more_ restrictive, never less. While we can never escape the
-> > consequences of having seccomp_is_const_allow() report the wrong
-> > answer, we can at least follow the basic principles, hopefully
-> > minimizing the impact.
-> >
-> > When the bitmap starts with "always allowed" and we only flip it towards
-> > "run full filters", we're only ever making things more restrictive. If
-> > we instead go from "run full filters" towards "always allowed", we run
-> > the risk of making things less restrictive. For example: a process that
-> > maliciously adds a filter that the emulator mistakenly evaluates to
-> > "always allow" doesn't suddenly cause all the prior filters to stop running.
-> > (i.e. this isolates the flaw outcome, and doesn't depend on the early
-> > "do not emulate if we already know we have to run filters" case before
-> > the emulation call: there is no code path that allows the cache to
-> > weaken: it can only maintain it being wrong).
-> >
-> > Without any seccomp filter installed, all syscalls are "always allowed"
-> > (from the perspective of the seccomp boundary), so the default of the
-> > cache needs to be "always allowed".
-> 
-> I cannot follow this. If a 'process that maliciously adds a filter
-> that the emulator mistakenly evaluates to "always allow" doesn't
-> suddenly cause all the prior filters to stop running', hence, you
-> want, by default, the cache to be as transparent as possible. You
-> would lift the restriction if and only if you are absolutely sure it
-> does not cause an impact.
+The driver was tested on Xilinx ZynqMP QEMU
 
-Yes, right now, the v3 code pattern is entirely safe.
+For sake of ease of review, only support ZynqMP. Once accepted, then
+add support for Versal platform and R5 loading onto OCM.
 
-> 
-> In this patch, if there are prior filters, it goes through this logic:
-> 
->         if (bitmap_prev && !test_bit(nr, bitmap_prev))
->             continue;
-> 
-> Hence, if the malicious filter were to happen, and prior filters were
-> supposed to run, then seccomp_is_const_allow is simply not invoked --
-> what it returns cannot be used maliciously by an adversary.
+v2:
+- remove domain struct
+v3:
+- add xilinx-related platform mgmt fn's instead of wrapping around
+  function pointer in xilinx eemi ops struct
+- update zynqmp_r5 yaml parsing to not raise warnings for extra
+  information in children of R5 node. The warning "node has a unit
+  name, but no reg or ranges property" will still be raised though 
+  as this particular node is needed to describe the
+  '#address-cells' and '#size-cells' information.
+v4:
+- add default values for enums
+- fix formatting as per checkpatch.pl --strict. Note that 1 warning and
+  1 check are still raised as each is due to fixing the warning
+  results in that particular line going over 80 characters.
+- remove warning '/example-0/rpu@ff9a0000/r5@0: 
+  node has a unit name, but no reg or ranges property'
+  by adding reg to r5 node.
+v5:
+- update device tree sample and yaml parsing to not raise any warnings
+- description for memory-region in yaml parsing
+- compatible string in yaml parsing for TCM
+- parse_fw change from use of rproc_of_resm_mem_entry_init to
+  rproc_mem_entry_init and use of alloc/release
+- var's of type zynqmp_r5_pdata all have same local variable name
+- use dev_dbg instead of dev_info
+v6:
+- adding memory carveouts is handled much more similarly.
+  All mem carveouts are now described in reserved memory as needed.
+  That is, TCM nodes are not coupled to remoteproc anymore.
+  This is reflected in the remoteproc R5 driver and the device tree
+  binding.
+- remove mailbox from device tree binding as it is not necessary for elf
+  loading 
+v7:
+- remove unused headers
+- zynqmp_r5_remoteproc_probe:lockstep_mode from u32* to u32
+- device-tree binding "lockstep-mode"  to "xlnx,cluster-mode"
+- remove zynqmp_r5_mem_probe and loop to Probe R5 memory devices at
+  probe()
+- remove is_r5_mode_set from  zynqmp rpu remote processor private data
+- do not error out if no mailbox is provided since mailboxes are optional
+- remove zynqmp_r5_remoteproc_probe call of platform_set_drvdata as pdata
+  is handled in zynqmp_r5_remoteproc_remove
+v8:
+- remove old acks, reviewed-by's in commit message
+v9:
+- if zynqmp_r5_remoteproc.c pdata->tx_mc_skbs not initialized, then do not
+  call skb_queue_empty
+- update arguments and documentation for zynqmp_pm_set_rpu_mode
+- in fn zynqmp_pm_force_powerdown, change arg 'target' to 'node'
+- zynqmp_pm_request_wakeup update code style
+- edit 3/5 patch commit message
+- document zynqmp_pm_set_tcm_config and zynqmp_pm_get_rpu_mode
+  documentation to include expected return val
+- remove unused fn zynqmp_pm_get_node_status
+- update 5/5 patch commit message to document supported configurations
+  and how they are booted by the driver.
+- remove copyrights other than SPDX from zynqmp_r5_remoteproc.c
+- compilation warnings no longer raised
+- remove unused includes from zynqmp_r5_remoteproc.c
+- remove unused  var autoboot from zynqmp_r5_remoteproc.c
+- reorder zynqmp_r5_pdata fpr small mem savings due to alignment
+- zynqmp_pm_set_tcm_config and zynqmp_pm_set_rpu_mode uses second arg
+- zynqmp_r5_remoteproc.c use of zynqmp_pm_set_tcm_config now does not
+  have output arg
+- in tcm handling, unconditionally use &= 0x000fffff mask since all nodes
+  in this fn are for tcm
+- update comments for translating dma field in tcm handling to device
+  address
+- update calls to rproc_mem_entry_init in parse_mem_regions so that there
+  are only 2 cases for types of carveouts instead of 3
+- in parse_mem_regions, check if device tree node is null before using it
+- add example device tree nodes used in parse_mem_regions and tcm parsing
+- add comment for vring id node length
+- add check for string length so that vring id is at least min length
+- move tcm nodes from reserved mem to instead own device tree nodes
+   and only use them if enabled in device tree
+- add comment for explaining handling of rproc_elf_load_rsc_table
+- remove obsolete check for "if (vqid < 0)" in zynqmp_r5_rproc_kick
+- remove unused field mems in struct zynqmp_r5_pdata
+- remove call to zynqmp_r5_mem_probe and the fn itself as tcm handling
+  is done by zyqmp_r5_pm_request_tcm
+- remove obsolete setting of dma_ops and parent device dma_mask
+- remove obsolete use of of_dma_configure
+- add comment for call to r5_set_mode fn
+- make mbox usage optional and gracefully inform user via dev_dbg if not
+  present
+- change lockstep_mode from u32* to u32
+- update zynqmp_pm_set_rpu_mode and zynqmp_pm_set_rpu_mode documentation
+  and remove unused args
+v10:
+- add include types.h to xlnx-zynqmp.h for compilation
+v11:
+- update usage of zynqmp_pm_get_rpu_mode to return rpu mode in enum
+- update zynqmp_pm_set_tcm_config and zynqmp_pm_set_rpu_mode arguments to
+  remove unused args
+- use enums instead of u32 where possible in zynqmp_r5_remoteproc
+- zynqmp_r5_remoteproc: update prints to not use carriage return, just
+  newline
+- zynqmp_r5_remoteproc: look up tcm banks via property instead of string
+  name
+- print device tree nodes with %pOF instead of %s with node name field
+- update tcm release to unmap VA
+- handle r5-1 use case
+- device tree binding r5 node to have link to TCMs via
+  meta-memory-regions property
+- fix device tree binding so no warnings from 'make dt_binding_check'
+v12:
+- update signed off by so that latest developer name is last
+- in drivers/firmware/zynqmp.c, update zynqmp_pm_set_rpu_mode so rpu_mode
+  is only set if no error
+- update args for zynqmp_pm_set_rpu_mode, zynqmp_pm_set_tcm_config fn
+  arg's to reflect what is expected in the function and the usage in
+  zynqmp_r5_remoteproc accordingly
+v13:
+- zynqmp_pm_get_rpu_mode argument zynqmp_pm_get_rpu_mode is
+  only set if no error
+v14:
+- rebase off v5.9-rc3 kernel
+- concerns were raised about the new property meta-memory-regions.
+  There is no clear direction so for the moment I kept it in the series
+- in device tree binding, place IPC nodes in RAM in the reserved memory section
+- change zynqmp_r5_remoteproc::rpus and rpu_mode to static
+- fix typo
+- zynqmp_r5_remoteproc::r5_set_mode set rpu mode from
+  property specified in device tree
+- use u32 instead of u32* to store in remoteproc memory entry private data
+  for pnode_id information
+- always call r5_set_mode on probe
+- remove alloc of zynqmp_r5_pdata in
+  zynqmp_r5_remoteproc::zynqmp_r5_remoteproc_probe as there is static
+  allocation already
+- error at probe time if lockstep-mode property not present in device tree
+- update commit message as per review
+- remove dependency on MAILBOX in makefile as ZYNQMP_IPI_MBOX is present
+- remove unused macros
+- update comment ordering of zynqmp_r5_pdata to match struct definition
+- zynqmp_r5_remoteproc::tcm_mem_release error if pnode id is invalid
+- remove obsolete TODOs
+- only call zynqmp_r5_remoteproc::zynqmp_r5_probe if the index is valid
+- remove uneven dev_dbg/dev_err fn calls
+v15:
+- change lockstep mode device tree property from acting as
+  boolean, to instead being used as, if it is present, then r5 is in lockstep mode. otherwise in split.
+- add safeguard for if 2 rpu remoteproc instances are provided then err out
+v16:
+- replace of_get_property(dev->of_node, "lockstep-mode" with
+  of_property_read_bool
+- propagate rpu mode specified in device tree through functions instead
+  of holding a global, static var
+- check child remoteproc nodes via of_get_available_child_count before
+  looping through children
+- replace check of "pdata->pnode_id == 0" instead by checking rpu's
+  zynqmp_r5_pdata* if NULL
+- remove old, obsolete checks for dma_pools in zynqmp_r5_remoteproc_remove
+- change rpus from zynqmp_r5_pdata[] to zynqmp_r5_pdata*[] so that
+  check for pdata->pnode_id == 0 is not needed
+v17:
+- remove compatible string from tcm bank nodes
+- fix style for bindings
+- add boolean type to lockstep mode in binding
+- add/update descriptions memory-region, meta-memory-regions,
+  pnode-id, mbox* properties
+- update driver as per kernel-test-robot
 
-Right, but we depend on that test always doing the correct thing (and
-continuing to do so into the future). I'm looking at this from the
-perspective of future changes, maintenance, etc. I want the actions to
-match the design principles as closely as possible so that future
-evolutions of the code have lower risk to bugs causing security
-failures. Right now, the code is simple. I want to design this so that
-when it is complex, it will still fail toward safety in the face of
-bugs.
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
 
-> >         if (bitmap_prev) {
-> >                 /* The new filter must be as restrictive as the last. */
-> >                 bitmap_copy(bitmap, bitmap_prev, bitmap_size);
-> >         } else {
-> >                 /* Before any filters, all syscalls are always allowed. */
-> >                 bitmap_fill(bitmap, bitmap_size);
-> >         }
-> >
-> >         for (nr = 0; nr < bitmap_size; nr++) {
-> >                 /* No bitmap change: not a cacheable action. */
-> >                 if (!test_bit(nr, bitmap_prev) ||
-> >                         continue;
-> >
-> >                 /* No bitmap change: continue to always allow. */
-> >                 if (seccomp_is_const_allow(fprog, &sd))
-> >                         continue;
-> >
-> >                 /* Not a cacheable action: always run filters. */
-> >                 clear_bit(nr, bitmap);
-> 
-> I'm not strongly against this logic. I just feel unconvinced that this
-> is any different with a slightly increased complexity.
-
-I'd prefer this way because for the loop, the tests, and the results only
-make the bitmap more restrictive. The worst thing a bug in here can do is
-leave the bitmap unchanged (which is certainly bad), but it can't _undo_
-an earlier restriction.
-
-The proposed loop's leading test_bit() becomes only an optimization,
-rather than being required for policy enforcement.
-
-In other words, I prefer:
-
-	inherit all prior prior bitmap restrictions
-	for all syscalls
-		if this filter not restricted
-			continue
-		set bitmap restricted
-
-	within this loop (where the bulk of future logic may get added),
-	the worse-case future bug-induced failure mode for the syscall
-	bitmap is "skip *this* filter".
-
-
-Instead of:
-
-	set bitmap all restricted
-	for all syscalls
-		if previous bitmap not restricted and
-		   filter not restricted
-			set bitmap unrestricted
-
-	within this loop the worst-case future bug-induced failure mode
-	for the syscall bitmap is "skip *all* filters".
-
-
-
-
-Or, to reword again, this:
-
-	retain restrictions from previous caching decisions
-	for all syscalls
-		[evaluate this filter, maybe continue]
-		set restricted
-
-instead of:
-
-	set new cache to all restricted
-	for all syscalls
-		[evaluate prior cache and this filter, maybe continue]
-		set unrestricted
-
-I expect the future code changes for caching to be in the "evaluate"
-step, so I'd like the code designed to make things MORE restrictive not
-less from the start, and remove any prior cache state tests from the
-loop.
-
-At the end of the day I believe changing the design like this now lays
-the groundwork to the caching mechanism being more robust against having
-future bugs introduce security flaws.
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 142 ++++
+ drivers/firmware/xilinx/zynqmp.c              |  96 +++
+ drivers/remoteproc/Kconfig                    |   8 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 778 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  60 ++
+ 6 files changed, 1085 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
 
 -- 
-Kees Cook
+2.17.1
+
