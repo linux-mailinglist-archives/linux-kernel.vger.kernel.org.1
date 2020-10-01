@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BDA2803F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEFC2803FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732783AbgJAQ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730534AbgJAQ2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:28:36 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC16620759;
-        Thu,  1 Oct 2020 16:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601569715;
-        bh=06LQkY9IlXJfgXC7Wh55LnpusDxLGBsMuKUUmE57yVs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bFiZqfthdzJPwxRJ/8lWpAEhyiI9OHzQre5d0GNAvkSaw3gnif2i6tyB6dRkUJCfu
-         mLk/+M6OpQHO/xqk/+N631yxHroEfDsrEDdwNeIKxIzkIKFAfiQyVdPmrlJdSZt0NC
-         SGc8lNPCxxAgGKriqJkw5z6DzqYnN3prL2Ta1XKU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6E92D3522B33; Thu,  1 Oct 2020 09:28:35 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:28:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20201001162835.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
- <20200930084139.GN2277@dhcp22.suse.cz>
- <20200930232154.GA29330@paulmck-ThinkPad-P72>
- <20201001090220.GA22560@dhcp22.suse.cz>
+        id S1732529AbgJAQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732046AbgJAQae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:30:34 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A486C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:30:34 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so6548624wrr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XtlmhI5MMBvdoOpCkyeGrgEGBRU6BMxnStn3nwkWSfU=;
+        b=x0HM+xDewksbxdUYxycAr0jhOm9NOUt2M4ft+mq4eP+W+iqnRhoFrV/sAt2P+2GpJM
+         wsTwE5/ua1YX7ixEvZ3VJ9l0uKOWkSL07fU0VBBovoBDZUsKWm/NJAxRRRweyfZ//eAk
+         56D68CX+Pcsxw4VByQYCY9AHDdq7UfPPhx1SoluEFHnH8H0svKTp0CzboBvvZXR0rh2O
+         pSK1zpaH1zywaLESSuDLjlcDWHLqgfVruhoaROn+MtV5AoR24LliPi0PG6x3l6mhYF4V
+         MwLFSBlTenVUuW1kfn0ZaHQ7rnUCCthVUkm7/El7MjtrhKhZAqSg6267FzIXhmWHtGRH
+         ZOMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XtlmhI5MMBvdoOpCkyeGrgEGBRU6BMxnStn3nwkWSfU=;
+        b=L5rE+z7F6EKSUyFAW0U4Pe7OeGxSe6xqs7BE0WdJyr7WNWXxzK2qIgShQaZ+eqvFBE
+         uCimGXmR97xtVIcDdmgJMcoWixqdSGQxAXJINPMyvZMPpCA2lNiZvvs4vd8F2rIjMgjF
+         emTVxqTrnd7njGyIZOEvnce+EPbMOlzQ2etNTjRHPnKVShSp/EH9gIfOcNQZ5GpbYbiI
+         11PfnhoT0nGPSojaiOkGRkVDB4hwpVbnkuuvuk8NA0pU9XHpyTYx0GWv3L12BLCY5JiB
+         t1iskUPbxa7LGdhdmpCN+5g0xuNvYkWm0J7wTDBulNomaKp14tE0sNAzT11d/tra8Oax
+         RlrA==
+X-Gm-Message-State: AOAM533u3cH2mWEuP7DKcw4sQoXikE38wCqmp103uMnIJtQ2aF4kpUoF
+        O5BOTL6ufE5dWNSXTOtgGiTev2n+jqs33g==
+X-Google-Smtp-Source: ABdhPJy8c6TkyP+pEsSziABm6brie5sLeN5zs4qUe6cnqbweAmadV3RQBhHxQbaO9LlCB841cM7R4g==
+X-Received: by 2002:adf:9e05:: with SMTP id u5mr9898255wre.78.1601569832095;
+        Thu, 01 Oct 2020 09:30:32 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id a5sm9899410wrp.37.2020.10.01.09.30.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Oct 2020 09:30:31 -0700 (PDT)
+Subject: Re: [PATCH 3/3] nvmem: qfprom: Don't touch certain fuses
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200929205807.2360405-1-evgreen@chromium.org>
+ <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid>
+ <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
+ <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <d79de840-25cc-0e8e-15e6-3cc2fda2e38b@linaro.org>
+Date:   Thu, 1 Oct 2020 17:30:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001090220.GA22560@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAE=gft5FoWpscS_9CfuCNSZxsq_CUu_AShQ=tLiW=NGL8YG5tQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:02:20AM +0200, Michal Hocko wrote:
-> On Wed 30-09-20 16:21:54, Paul E. McKenney wrote:
 
-[ . . . ]
 
-Hit "send" too soon, apologies...
-
-> > ------------------------------------------------------------------------
-> > 
-> > commit 490b638d7c241ac06cee168ccf8688bb8b872478
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Wed Sep 30 16:16:39 2020 -0700
-> > 
-> >     kvfree_rcu(): Switch from kmalloc/kfree to __get_free_page/free_page.
-> >     
-> >     The advantages of using kmalloc() and kfree() are a possible small speedup
-> >     on CONFIG_SLAB=y systems, avoiding the allocation-side cast, and use of
-> >     more-familiar API members.  The advantages of using __get_free_page()
-> >     and free_page() are a possible reduction in fragmentation and direct
-> >     access to the buddy allocator.
-> >     
-> >     To help settle the question as to which to use, this commit switches
-> >     from kmalloc() and kfree() to __get_free_page() and free_page().
-> >     
-> >     Suggested-by: Michal Hocko <mhocko@suse.com>
-> >     Suggested-by: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On 01/10/2020 17:27, Evan Green wrote:
+> On Thu, Oct 1, 2020 at 7:17 AM Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org> wrote:
+>>
+>> Hi Evan,
+>>
+>> On 29/09/2020 21:58, Evan Green wrote:
+>>> Some fuse ranges are protected by the XPU such that the AP cannot
+>>> access them. Attempting to do so causes an SError. Use the newly
+>>> introduced per-soc compatible string to attach the set of regions
+>>> we should not access. Then tiptoe around those regions.
+>>>
+>>
+>> This is a generic feature that can be used by any nvmem provider, can
+>> you move this logic to nvmem core instead of having it in qfprom!
 > 
-> Yes, looks good to me. I am not entirely sure about the fragmentation
-> argument. It really depends on the SL.B allocator internals. The same
-> applies for the potential speed up. I would be even surprised if the
-> SLAB was faster in average considering it has to use the page allocator
-> as well. So to me the primary motivation would be "use the right tool
-> for the purpose".
+> Sure! I'd prefer to keep this data in the driver for now rather than
+Ofcourse these can come from driver directly based on compatible!
 
-Very well, I will update the commit message, and thank you!
-
-							Thanx, Paul
-
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 2886e81..242f0f0 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3225,7 +3225,8 @@ static void kfree_rcu_work(struct work_struct *work)
-> >  				bkvhead[i] = NULL;
-> >  			krc_this_cpu_unlock(krcp, flags);
-> >  
-> > -			kfree(bkvhead[i]);
-> > +			if (bkvhead[i])
-> > +				free_page((unsigned long)bkvhead[i]);
-> >  
-> >  			cond_resched_tasks_rcu_qs();
-> >  		}
-> > @@ -3378,7 +3379,7 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> >  		bnode = get_cached_bnode(*krcp);
-> >  		if (!bnode && can_alloc_page) {
-> >  			krc_this_cpu_unlock(*krcp, *flags);
-> > -			bnode = kmalloc(PAGE_SIZE, gfp);
-> > +			bnode = (struct kvfree_rcu_bulk_data *)__get_free_page(gfp);
-> >  			*krcp = krc_this_cpu_lock(flags);
-> >  		}
-> >  
+> trying to define DT bindings for the keepout zones. So then I'll pass
+> in my keepout array via struct nvmem_config at registration time, and
+> then the core can handle the keepout logic instead of qfprom.c.
 > 
-> -- 
-> Michal Hocko
-> SUSE Labs
+
+Yes, that is inline with what am thinking of as well!
+
+
+00srini
+> -Evan
+> 
