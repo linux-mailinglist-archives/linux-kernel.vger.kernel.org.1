@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91E227FC2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B8E27FC2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731694AbgJAJEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:04:49 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2936 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725894AbgJAJEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:04:48 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id A1A4C8585A12267FE48A;
-        Thu,  1 Oct 2020 10:04:47 +0100 (IST)
-Received: from localhost (10.52.127.250) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
- 10:04:47 +0100
-Date:   Thu, 1 Oct 2020 10:03:04 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <seanvk.dev@oregontracks.org>
-CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
-        <ashok.raj@intel.com>, <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <helgaas@google.com>
-Subject: Re: [PATCH v7 04/13] PCI/ERR: Rename reset_link() to
- reset_subordinate_device()
-Message-ID: <20201001090304.00003ab7@Huawei.com>
-In-Reply-To: <20200930215820.1113353-5-seanvk.dev@oregontracks.org>
-References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
-        <20200930215820.1113353-5-seanvk.dev@oregontracks.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1731708AbgJAJFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgJAJFm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:05:42 -0400
+Received: from smtp3.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D62C0613D0;
+        Thu,  1 Oct 2020 02:05:41 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp3.goneo.de (Postfix) with ESMTP id F395E23F0F3;
+        Thu,  1 Oct 2020 11:05:38 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.958
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.958 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.058, BAYES_00=-1.9] autolearn=ham
+Received: from smtp3.goneo.de ([127.0.0.1])
+        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jn13Cqk_puzT; Thu,  1 Oct 2020 11:05:37 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp3.goneo.de (Postfix) with ESMTPSA id 1EEF22402AE;
+        Thu,  1 Oct 2020 11:05:37 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 11:05:31 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.127.250]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 14:58:11 -0700
-Sean V Kelley <seanvk.dev@oregontracks.org> wrote:
-
-> From: Sean V Kelley <sean.v.kelley@intel.com>
+On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> Hello,
 > 
-> reset_link() appears to be misnamed. The point is to really
-> reset any devices below a given bridge. So rename it to
-> reset_subordinate_devices() to make it clear that we are
-> passing a bridge with the intent to reset the devices below it.
+> I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> Cc:.
 > 
-> Suggested-by: Bjorn Helgaas <helgaas@google.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
-
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/pci/pci.h      | 2 +-
->  drivers/pci/pcie/err.c | 6 +++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > thank you for your review!
+> > 
+> > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > 
+> > > > This adds a class to exported pwm devices.
+> > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > 
+> > > I wonder what is your use-case here. This for sure also has a place to
+> > > be mentioned in the commit log. I suspect there is a better way to
+> > > accomplish you way.
+> > 
+> > Use-case is to be able to use a pwm from a non-root userspace process.
+> > I use udev rules to adjust permissions.
 > 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 88e27a98def5..efea170805fa 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -574,7 +574,7 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
->  /* PCI error reporting and recovery */
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  			pci_channel_state_t state,
-> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev));
->  
->  bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
->  #ifdef CONFIG_PCIEASPM
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index c543f419d8f9..950612342f1c 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -148,7 +148,7 @@ static int report_resume(struct pci_dev *dev, void *data)
->  
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  			pci_channel_state_t state,
-> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
-> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev *pdev))
->  {
->  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->  	struct pci_bus *bus;
-> @@ -165,9 +165,9 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	pci_dbg(dev, "broadcast error_detected message\n");
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_bus(bus, report_frozen_detected, &status);
-> -		status = reset_link(dev);
-> +		status = reset_subordinate_device(dev);
->  		if (status != PCI_ERS_RESULT_RECOVERED) {
-> -			pci_warn(dev, "link reset failed\n");
-> +			pci_warn(dev, "subordinate device reset failed\n");
->  			goto failed;
->  		}
->  	} else {
+> Hmm, how do you trigger the export? Without being aware of all the
+> details in the sysfs code I would expect that the exported stuff is
+> available instantly once the write used to export the PWM is completed.
+> So changing the permissions can be done directly after triggering the
+> export in the same process.
 
+The export is triggered through the userspace process itself. Why can it
+do this ? Because there is another udev rule, that changes permissions
+when a pwmchip appears.
+Then I'd like to have the second udev rule, that changes permissions on
+the freshly exported pwm. The userspace process can't do this.
+You are right I could propably do everything from within udev: If a
+pwmchip appears, export certain pwms and right away change their
+permissions. It does not also not feel right. It'd require knowledge
+from the userspace application to be mapped to udev.
 
+> Out of interest: What do you use the pwm for? Isn't there a suitable
+> kernel driver that can do the required stuff? Compared to the kernel-API
+> the sysfs interface isn't atomic. Is this an annoyance?
+
+Use-case is generating a voltage from the pwm. This voltage is used to
+signal different states and does not change very often. This is
+absolutely not annoying that this is not atomic. We just change the duty
+cycle on the fly. Everything else is configured one time at startup.
+I'd call what I need pwm-dac. I could not find a ready to use driver.
+Maybe I could misuse some kernel driver for this. Maybe I could use
+pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+there is even a userspace facing part for this, but this is not
+devicetree ready.
+...and the worst, please don't blame me: The application is java, so
+ioctl is a problem.
+So, sysfs was quite a good choice for me.
+
+Regards,
+Lars
