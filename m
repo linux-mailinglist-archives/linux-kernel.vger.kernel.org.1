@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26778280382
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51600280388
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732624AbgJAQD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:03:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732242AbgJAQDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:03:55 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0124620872;
-        Thu,  1 Oct 2020 16:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601568235;
-        bh=tPAbUsIyJx/7A7VHjxZeeEsElWnfl/HBPtl67O4vTvc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HvzwcNriJ1FpPxUkkMHDDjM8CjnqGRzMzcIOPJ00vQgPr1sbggefQpPQRzKfXGQkC
-         NS69q07UzhQsb1c/SWQoajUgnWuHFPtlWhrsmznKxJfoz0gb2FAG/5A4V22q9/yv/F
-         Vi1dJ9FEFq0fDdvPTWhlUWhTXMHtBYgMHn5q6gc8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id BC88D3522B33; Thu,  1 Oct 2020 09:03:54 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:03:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, mhocko@kernel.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH tip/core/rcu 11/15] drm/i915: Cleanup PREEMPT_COUNT
- leftovers
-Message-ID: <20201001160354.GC29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-11-paulmck@kernel.org>
- <160153665673.4398.6268028176406103680@jlahtine-mobl.ger.corp.intel.com>
- <871riigxp9.fsf@nanos.tec.linutronix.de>
+        id S1732655AbgJAQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732380AbgJAQF2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:05:28 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E459C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:05:28 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id md26so3208976ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IMB73dDKkouoCGF4bPiVkzHfDrWjLelK7eqM7hnqOfQ=;
+        b=v0zUtKZZ9u7C+SlsQ2sjJJXn5TQDdDxiCusGcV7Bneg7l6BBK2FRvU6tKaf6cwbkZr
+         Bxr4HqFic8ETbL+6s6FkrDBJ6RrJRdxI5e6jH9HqzuAdekZiVBeBfcE+BsIOQYPibWjH
+         5wDBH5QUEc3dmwkTqAvAlue2C4c55WjFjAt60tuobqpclbLDVXzW3t/vv/ks3GMmLmS3
+         6Ce5Q9qnrrxYVWmqMxqGZedF4dz75mbs5iMjV4WMHNXLA/xqRf88EKEmLm0XEz+E9Fl7
+         PyFGoySwCEvboCSlpTknQ/0twIK7Hhr3NtN64G/bzOO0hO0Q5LjfZQ38IYFXieNRFg9b
+         ZFXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IMB73dDKkouoCGF4bPiVkzHfDrWjLelK7eqM7hnqOfQ=;
+        b=TH/PlvhsqKVE7P8ocNyHvt67vcmGy0uf79Yelqey6rrHoNSBT70GuYtvLftGJJU7xr
+         Kpb/qGn4RBDQHd2mqg/8RG3mW4a47pjZ2HGHeS1j1KKVpB9fkQkaEp91jIIpDFcq3LgV
+         zrV3lzu0/QV163iKC4O8CTkZKJQvp/QGKzdIYqCPWz/SvxOi5M+++eWac0wAw8CCkNQz
+         rQAp0X9OmmQ8nvjszJBIySJWFq9ccsko6k74as2rGQNwIRVonP/GardVmE4IQPmzg8va
+         qvO0QkKuCfsAD4e0Ws96F+1Un0Mmr6NpaUy/HglirQWhfzfr85W6bM8QLyFyiGOWpq5r
+         qf/w==
+X-Gm-Message-State: AOAM533s9voWicjzHIBEi2vu1+HJViPkl6t6qBHzk+TYnkNYykDqsCaE
+        0DVZ3Lx3lObIdOf7+Lzk0dCZFmzQxPDhE8l++UCRkQ==
+X-Google-Smtp-Source: ABdhPJxKtttAvVo28q3xfu3pZ2Zdcn3tId/kcpgfnRwxqrJNDHKqiBhxtoN0zCN6pGxjHl75UiIS9gSFsZdo/e98VLw=
+X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr4247020eja.233.1601568326659;
+ Thu, 01 Oct 2020 09:05:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871riigxp9.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com> <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com>
+In-Reply-To: <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 18:05:00 +0200
+Message-ID: <CAG48ez3nqG_O3OYLLffVOcFf+ONgFwU9mc+HZ1GixBPbHZLyvw@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:25:06AM +0200, Thomas Gleixner wrote:
-> On Thu, Oct 01 2020 at 10:17, Joonas Lahtinen wrote:
-> > Quoting paulmck@kernel.org (2020-09-29 02:30:58)
-> >> CONFIG_PREEMPT_COUNT is now unconditionally enabled and will be
-> >> removed. Cleanup the leftovers before doing so.
+On Thu, Oct 1, 2020 at 2:06 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Wed, Sep 30, 2020 at 5:01 PM Jann Horn <jannh@google.com> wrote:
+> > Hmm, this won't work, because the task could be exiting, and seccomp
+> > filters are detached in release_task() (using
+> > seccomp_filter_release()). And at the moment, seccomp_filter_release()
+> > just locklessly NULLs out the tsk->seccomp.filter pointer and drops
+> > the reference.
 > >
-> > Change looks fine:
+> > The locking here is kind of gross, but basically I think you can
+> > change this code to use lock_task_sighand() / unlock_task_sighand()
+> > (see the other examples in fs/proc/base.c), and bail out if
+> > lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
+> > something like this:
 > >
-> > Reviewed-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> > /* We are effectively holding the siglock by not having any sighand. */
+> > WARN_ON(tsk->sighand != NULL);
+>
+> Ah thanks. I was thinking about how tasks exit and get freed and that
+> sort of stuff, and how this would race against them. The last time I
+> worked with procfs there was some magic going on that I could not
+> figure out, so I was thinking if some magic will stop the task_struct
+> from being released, considering it's an argument here.
+>
+> I just looked at release_task and related functions; looks like it
+> will, at the end, decrease the reference count of the task_struct.
+> Does procfs increase the refcount while calling the procfs functions?
+> Hence, in procfs functions one can rely on the task_struct still being
+> a task_struct, but any direct effects of release_task may happen while
+> the procfs functions are running?
 
-Applied, thank you!
+Yeah.
 
-> > Are you looking for us to merge or merge through another tree?
-> >
-> > If us, did the base patch always enabling PREEMPT_COUNT go into 5.9 or is
-> > it heading to 5.10? We can queue this earliest for 5.11 as drm-next closed
-> > for 5.10 at week of -rc5.
-> 
-> If at all it goes through rcu/tip because it depends on the earlier patches.
+The ONE() entry you're adding to tgid_base_stuff is used to help
+instantiate a "struct inode" when someone looks up the path
+"/proc/$tgid/seccomp_cache"; then when that path is opened, a "struct
+file" is created that holds a reference to the inode; and while that
+file exists, your proc_pid_seccomp_cache() can be invoked.
 
-I was figuring on sending a pull request later today, Pacific Time.
+proc_pid_seccomp_cache() is invoked from proc_single_show()
+("PROC_I(inode)->op.proc_show" is proc_pid_seccomp_cache), and
+proc_single_show() obtains a temporary reference to the task_struct
+using get_pid_task() on a "struct pid" and drops that reference
+afterwards with put_task_struct(). The "struct pid" is obtained from
+the "struct proc_inode", which is essentially a subclass of "struct
+inode". The "struct pid" is kept refererenced until the inode goes
+away, via proc_pid_evict_inode(), called by proc_evict_inode().
 
-							Thanx, Paul
+By looking at put_task_struct() and its callees, you can figure out
+which parts of the "struct task" are kept alive by the reference to
+it.
+
+By the way, maybe it'd make sense to add this to tid_base_stuff as
+well? That should just be one extra line of code. Seccomp filters are
+technically per-thread, so it would make sense to have them visible in
+the per-thread subdirectories /proc/$pid/task/$tid/.
