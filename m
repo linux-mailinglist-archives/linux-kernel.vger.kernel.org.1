@@ -2,175 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE582800ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD5A2800DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732400AbgJAOJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:09:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:35318 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732147AbgJAOJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:09:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22681D6E;
-        Thu,  1 Oct 2020 07:09:42 -0700 (PDT)
-Received: from [10.57.50.177] (unknown [10.57.50.177])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB99A3F6CF;
-        Thu,  1 Oct 2020 07:09:39 -0700 (PDT)
-Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
- in Energy Model
-To:     Doug Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20200929121610.16060-1-lukasz.luba@arm.com>
- <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
- <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
- <62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org>
- <1f713ff6-32f6-4ea6-b7f7-4c61f097cf2a@arm.com>
- <b74a5907-47dc-6c3c-3da8-94959af07ea8@codeaurora.org>
- <CAD=FV=V84RmTpKN50Rz-BJqccSme3T3yw=hT5KvYerx=X7aEsA@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e878bfe8-7224-5395-4632-4bb985fb306b@arm.com>
-Date:   Thu, 1 Oct 2020 15:09:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1732383AbgJAOFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:05:40 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:61770 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726412AbgJAOFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:05:39 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091DvjX1009749;
+        Thu, 1 Oct 2020 10:05:38 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4u32m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Oct 2020 10:05:38 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 091E5bgb047106
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 1 Oct 2020 10:05:37 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 1 Oct 2020
+ 10:05:27 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 1 Oct 2020 10:05:27 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 091E5YpL029022;
+        Thu, 1 Oct 2020 10:05:34 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: dac: ad7303: remove platform data header
+Date:   Thu, 1 Oct 2020 17:10:04 +0300
+Message-ID: <20201001141004.53846-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=V84RmTpKN50Rz-BJqccSme3T3yw=hT5KvYerx=X7aEsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_04:2020-10-01,2020-10-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=948 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas
+The information in the ad7303 platform_data header is unused, so it's dead
+code.
+This change removes it and it's inclusion from the driver.
 
-On 9/30/20 6:24 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Sep 30, 2020 at 8:48 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->>
->> On 9/30/2020 7:34 PM, Lukasz Luba wrote:
->>>
->>>
->>> On 9/30/20 11:55 AM, Rajendra Nayak wrote:
->>>>
->>>> On 9/30/2020 1:55 PM, Lukasz Luba wrote:
->>>>> Hi Douglas,
->>>>>
->>>>> On 9/30/20 12:53 AM, Doug Anderson wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>>>>
->>>>>>> The Energy Model (EM) can store power values in milli-Watts or in abstract
->>>>>>> scale. This might cause issues in the subsystems which use the EM for
->>>>>>> estimating the device power, such as:
->>>>>>> - mixing of different scales in a subsystem which uses multiple
->>>>>>>     (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
->>>>>>> - assuming that energy [milli-Joules] can be derived from the EM power
->>>>>>>     values which might not be possible since the power scale doesn't have to
->>>>>>>     be in milli-Watts
->>>>>>>
->>>>>>> To avoid misconfiguration add the needed documentation to the EM and
->>>>>>> related subsystems: EAS and IPA.
->>>>>>>
->>>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>>>>> ---
->>>>>>>    .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
->>>>>>>    Documentation/power/energy-model.rst                | 13 +++++++++++++
->>>>>>>    Documentation/scheduler/sched-energy.rst            |  5 +++++
->>>>>>>    3 files changed, 26 insertions(+)
->>>>>>
->>>>>> I haven't read through these files in massive detail, but the quick
->>>>>> skim makes me believe that your additions seem sane.  In general, I'm
->>>>>> happy with documenting reality, thus:
->>>>>>
->>>>>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
->>>>>
->>>>> Thank you for the review.
->>>>>
->>>>>>
->>>>>> I will note: you haven't actually updated the device tree bindings.
->>>>>> Thus, presumably, anyone who is specifying these numbers in the device
->>>>>> tree is still supposed to specify them in a way that mW can be
->>>>>> recovered, right?  Said another way: nothing about your patches makes
->>>>>> it OK to specify numbers in device trees using an "abstract scale",
->>>>>> right?
->>>>>
->>>>> For completeness, we are talking here about the binding from:
->>>>> Documentation/devicetree/bindings/arm/cpus.yaml
->>>>> which is 'dynamic-power-coefficient'. Yes, it stays untouched, also the
->>>>> unit (uW/MHz/V^2) which then allows to have mW in the power
->>>>> values in the EM.
->>>>
->>>> So for platforms where 'dynamic-power-coefficient' is specified in device tree,
->>>> its always expected to be derived from 'real' power numbers on these platforms in
->>>> 'real' mW?
->>>
->>> Yes, the purpose and the name of that binding was only for 'real'
->>> power in mW.
->>>
->>>>
->>>> Atleast on Qualcomm platforms we have these numbers scaled, so in essence it
->>>> can't be used to derive 'real' mW values. That said we also do not have any of
->>>> the 'platform might face potential issue of mixing devices in one thermal zone
->>>> of two scales' problem.
->>>
->>> If you have these numbers scaled, then it's probably documented
->>> somewhere in your docs for your OEMs, because they might assume it's in
->>> uW/MHz/V^2 (according to the bindings doc). If not, they probably
->>> realized it during the measurements and comparison (that the power in
->>> EM is not what they see on the power meter).
->>> This binding actually helps those developers who take the experiments
->>> and based on measured power values, store derived coefficient.
->>> Everyone can just measure in local setup and compare the results
->>> easily, speaking the same language (proposing maybe a patch adjusting
->>> the value in DT).
->>>
->>>>
->>>> So the question is, can such platforms still use 'dynamic-power-coefficient'
->>>> in device tree and create an abstract scale? The other way of doing this would
->>>> be to *not* specify this value in device tree and have these values stored in the
->>>> cpufreq driver and register a custom callback to do the math.
->>>
->>> But then we would also have to change the name of that binding.
->>>
->>> I'd recommend you the second way that you've described. It will avoid
->>> your OEMs confusion. In your cpufreq driver you can simply register
->>> to EM using the em_dev_register_perf_domain(). In your local
->>> callback you can do whatever you need (read driver array, firmware,
->>> DT, scale or not, etc).
->>> The helper code in dev_pm_opp_of_register_em() is probably not suited
->>> for your use case (when you don't want to share the real power of the
->>> SoC).
->>
->> Got it, thanks for the clarification. I will get the cpufreq driver updated
->> to use em_dev_register_perf_domain() with a custom callback and get rid of these
->> values from device tree.
-> 
-> This sounds good.  ...except...
-> 
-> How exactly are boards supposed to provide their "sustainable-power"
-> number in this model?  As far as I'm aware, there's no place to
-> specify this board-specific file other than in device tree, and the
-> bindings [1] say that this value has to be in mW.  Lukasz: how do you
-> envision boards can provide "sustainable-power" in cases where the
-> energy model is in "abstract scale"?
-> 
-> [1] Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> 
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/dac/ad7303.c             |  2 --
+ include/linux/platform_data/ad7303.h | 20 --------------------
+ 2 files changed, 22 deletions(-)
+ delete mode 100644 include/linux/platform_data/ad7303.h
 
+diff --git a/drivers/iio/dac/ad7303.c b/drivers/iio/dac/ad7303.c
+index 2e46def9d8ee..dbb4645ab6b1 100644
+--- a/drivers/iio/dac/ad7303.c
++++ b/drivers/iio/dac/ad7303.c
+@@ -17,8 +17,6 @@
+ #include <linux/iio/iio.h>
+ #include <linux/iio/sysfs.h>
+ 
+-#include <linux/platform_data/ad7303.h>
+-
+ #define AD7303_CFG_EXTERNAL_VREF BIT(15)
+ #define AD7303_CFG_POWER_DOWN(ch) BIT(11 + (ch))
+ #define AD7303_CFG_ADDR_OFFSET	10
+diff --git a/include/linux/platform_data/ad7303.h b/include/linux/platform_data/ad7303.h
+deleted file mode 100644
+index c2bd0a13bea1..000000000000
+--- a/include/linux/platform_data/ad7303.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Analog Devices AD7303 DAC driver
+- *
+- * Copyright 2013 Analog Devices Inc.
+- */
+-
+-#ifndef __IIO_ADC_AD7303_H__
+-#define __IIO_ADC_AD7303_H__
+-
+-/**
+- * struct ad7303_platform_data - AD7303 platform data
+- * @use_external_ref: If set to true use an external voltage reference connected
+- * to the REF pin, otherwise use the internal reference derived from Vdd.
+- */
+-struct ad7303_platform_data {
+-	bool use_external_ref;
+-};
+-
+-#endif
+-- 
+2.17.1
 
-I am currently investigating this issue. I will keep you in CC list
-when I send some patches.
-
-Regards,
-Lukasz
