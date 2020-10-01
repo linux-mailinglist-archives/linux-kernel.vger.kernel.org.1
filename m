@@ -2,627 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD922801CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D742801E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732646AbgJAO5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:57:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47260 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732620AbgJAO5k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:57:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601564256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+0YS5QwAJcHWBSFmzGr/WZMtkwEhQFQQYI+uWG7i8w=;
-        b=hasXnJFXfVsyfaa0p/PgqH1QqQkmEj4VpByIsyQed4kGieh5j1FsE0yqaNgDU4416KIX53
-        cFkwzeEJ/12zMmAvs9gLsHxQ/ZBBg8/km3vcmYViygv0BrylsOcPNKo3BIVZz0zDKsWp7H
-        A4saRlLpiZz3SKAzQjPmyS8FkoynbK4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-GaVPbEyRP_SONcoyo5Bwxg-1; Thu, 01 Oct 2020 10:57:34 -0400
-X-MC-Unique: GaVPbEyRP_SONcoyo5Bwxg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C9FEAE82A;
-        Thu,  1 Oct 2020 14:57:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 44F1D10013BD;
-        Thu,  1 Oct 2020 14:57:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net-next 07/23] rxrpc: Fix accept on a connection that need
- securing
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 01 Oct 2020 15:57:31 +0100
-Message-ID: <160156425143.1728886.6000195161084999281.stgit@warthog.procyon.org.uk>
-In-Reply-To: <160156420377.1728886.5309670328610130816.stgit@warthog.procyon.org.uk>
-References: <160156420377.1728886.5309670328610130816.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S1732748AbgJAO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:58:09 -0400
+Received: from mail-eopbgr130122.outbound.protection.outlook.com ([40.107.13.122]:47645
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732620AbgJAO54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=l2task.onmicrosoft.com; s=selector1-l2task-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XPz7tgoijVFB4KqXP5M4sM//rBR6HhH3hyDevQtaNqA=;
+ b=SzTyvcDLM+8A4g+Eu+0LCfoi0IGOJijHkdGnGFKGvVZO7GAiz9RfUXvwozUHyfRkrEVhQeuqexUah2ldNd7OJfyl9u0/mzfOQIvin5jIXEapac3CMVMxXn0/7lKB2MFQekkUTn+R95v58/8qehO9vscysd0YRIDoCZJbo5wQJKU=
+Received: from AM6P193CA0081.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:88::22)
+ by AM0PR10MB3012.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15f::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Thu, 1 Oct
+ 2020 14:57:51 +0000
+Received: from AM5EUR03FT064.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:209:88:cafe::d7) by AM6P193CA0081.outlook.office365.com
+ (2603:10a6:209:88::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend
+ Transport; Thu, 1 Oct 2020 14:57:51 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 52.169.0.179)
+ smtp.mailfrom=aerq.com; vger.kernel.org; dkim=fail (body hash did not verify)
+ header.d=l2task.onmicrosoft.com;vger.kernel.org; dmarc=none action=none
+ header.from=aerq.com;
+Received-SPF: Fail (protection.outlook.com: domain of aerq.com does not
+ designate 52.169.0.179 as permitted sender) receiver=protection.outlook.com;
+ client-ip=52.169.0.179; helo=eu2.smtp.exclaimer.net;
+Received: from eu2.smtp.exclaimer.net (52.169.0.179) by
+ AM5EUR03FT064.mail.protection.outlook.com (10.152.17.53) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3433.34 via Frontend Transport; Thu, 1 Oct 2020 14:57:49 +0000
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (104.47.1.54) by
+         eu2.smtp.exclaimer.net (52.169.0.179) with Exclaimer Signature Manager
+         ESMTP Proxy eu2.smtp.exclaimer.net (tlsversion=TLS12,
+         tlscipher=TLS_ECDHE_WITH_AES256_SHA384); Thu, 1 Oct 2020 14:57:50 +0000
+X-ExclaimerHostedSignatures-MessageProcessed: true
+X-ExclaimerProxyLatency: 15390854
+X-ExclaimerImprintLatency: 908080
+X-ExclaimerImprintAction: 5966083044c64435ab591bedbfe11f85
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gyjudMRjsJ8xXqhvpaMg8aYOfxvdy+7ONIpIO6Oa9jNnVMdX+8oyyLiE6hjVQIibye1FpA4+nQp8gMergKIfXAb4v5TGl9heNXH3vROXcwO/f9kwAbRKK/CLIJSRioXfIMGrDeiTSUQ8kvqyOnU+e8F6iw9fbhpUELATUgBiaJwsSb41FiPmQQxjotyHpigf5S+PzAgc2QPk1Mw2F7S06N+9AMaqb2v8EdZtfk0Gr05MqIA2vBdzLrP16AihaXOG+FlFknqiSltck+GXvXn8zg3OATnQF9dVWbtANXg+hHkBnEODQWKNuyRIdOHBMMIm9R1E11pRl6aXff5aoDS9ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HUnAJCTvZKBJYUbbr7y5fEwWpmOayshQpGCtBQd6ekc=;
+ b=Uw2jBHl946KcbYNnzQGkvGxW6XsvQm3phDRJ3aK0X/AbRq3RQzeXtNH2FOgfc3/prm6bQ9N0lEliUHjT64RraUWxZxko5WdMMB0LB+d4/+PprIZcbBCW13G7GZtQGXVsKOR26+Y1O3Dn/uAIEjFGHQAlWi3t5r7C6rjQ8KTojtaFJrf5xV34Q04KsFqk1bqa92+kCihy2HuScAdUWBX6KSPUJCu5Yfhq/6zi/wmVx/W4ucq8cnDldYMEgv1BPyXmNvfFG8jz87dHARStbptg2tao2/MqGuBMAil2IE4yZR/QiQSr6piUbGe4vuZX5Yzz40CVtp1z1nxo4zm1pBszyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aerq.com; dmarc=pass action=none header.from=aerq.com;
+ dkim=pass header.d=aerq.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=l2task.onmicrosoft.com; s=selector1-l2task-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HUnAJCTvZKBJYUbbr7y5fEwWpmOayshQpGCtBQd6ekc=;
+ b=BKrQqrRWl8KgH6N7FzkuAlrr7ojguYfn0fb8MZbhbKxuf6p89tusRqh13FqHt/zv6bo77VQYA1a9/cSMugZz2Hq3bYNJ+Uv0H++1dA2+17cd38sgimwSW80vMIGjqpBoiw6E4YiX3itt43fehstNFG/dXqD1nBSYRdEAA7bjueQ=
+Authentication-Results-Original: vger.kernel.org; dkim=none (message not
+ signed) header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=aerq.com;
+Received: from AM0PR10MB3428.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:161::27)
+ by AM0PR10MB2417.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:d5::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37; Thu, 1 Oct
+ 2020 14:57:47 +0000
+Received: from AM0PR10MB3428.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::4c24:8830:7ae8:87a4]) by AM0PR10MB3428.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::4c24:8830:7ae8:87a4%7]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 14:57:47 +0000
+From:   Alban Bedel <alban.bedel@aerq.com>
+To:     linux-hwmon@vger.kernel.org
+CC:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alban Bedel <alban.bedel@aerq.com>
+Subject: [PATCH v4 0/3] hwmon: (lm75) Add regulator support
+Date:   Thu,  1 Oct 2020 16:57:35 +0200
+Message-ID: <20201001145738.17326-1-alban.bedel@aerq.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [87.123.201.111]
+X-ClientProxiedBy: AM0PR06CA0121.eurprd06.prod.outlook.com
+ (2603:10a6:208:ab::26) To AM0PR10MB3428.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:161::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from aerq-nb-1030.dotsec.gv (87.123.201.111) by AM0PR06CA0121.eurprd06.prod.outlook.com (2603:10a6:208:ab::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Thu, 1 Oct 2020 14:57:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 51c32c98-e978-4c68-f114-08d8661a5e41
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2417:|AM0PR10MB3012:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB30126BECD6CDC136E66447F396300@AM0PR10MB3012.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: 7QXyRFuvJvTJ8Pfg9SY0IDP1hI/mnqsR9k8Gseyfqv+9GbmNoO3aNslnyNJI2+d2hiKMWQs3xzKffi6zH6E5YCc2Rjrgykh3PBMCjXd2mlYbvUR55NURzZi0s/a2JBQhxWTAARjAKVJgSjtjH6aKcY3p9l/8jTBy3utm5ysmJd7Z87wVj4EwYeO7UM320eVWuQiLU7+V3gX4cMRq/UYsfDZpfmLmP1nK+w/UawoF8uY2+NwWp2TfHfy/d8VbERaT2GqEx8R3gEN5sE0WzWFIYam3N48huFHhsZmwE6iEpG25h7r6Sk+fe5owzeFIOznY4ma5rzD0AMtJxQ+lgWRz1w==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB3428.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39840400004)(366004)(136003)(346002)(376002)(8936002)(26005)(4326008)(36756003)(5660300002)(54906003)(8676002)(2616005)(86362001)(186003)(478600001)(16526019)(6486002)(52116002)(6506007)(44832011)(83380400001)(66946007)(2906002)(6666004)(6916009)(316002)(956004)(6512007)(1076003)(66556008)(66476007)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 7nNuEwVe017E5Srjc3Udw4UqZNBTAhOuMZheUq4ryH3SMGZgTT6O2M6IHhsn9nAOTc7SuD+wAWImh3oc73KYW4F00ED4zKsjDvha13e0yGn2usQRL/jIh6ll+/zT0O+XJmCTDoJyGI4cHOIzrLAgMIe51+rArFqM+d65wWebuwxP7CkyXiIOTjDy3nINV+wZTqGXBUzhrAImwj8673RkLIxMnYRfoDuGPuW3ggcoP+TNbM06VlNF/rUOP2Tcq81yrkjQdjh32LFHP+pbFrQ6rWmJ6bqPPtJ+MFk23Sh/9nZdk5plts9pEZCPj8Qgadti1ddGzG5xgeb3Arw+66GuUWPa8dXG3cyKwuAZyAK201x+ukbgkxPeeqoIbOYNQ+yisIqSP950yTTnlXUQc0rpPgqN20313nJ4/7tcu/CdaU+AEL8Cb7WlCP02BpVND0krCvCREjUAfQiZhNuZ59409mBR9FWh5KKEM+bScXDlNOOZPeYeNGWu+uQvGb8W/kr0oOp533Rm7XN8Jgtw8tmDHMVpG0EJUlaYNgC79jf1dFWFwiaolXjJMAmIBxseraRSKEqDQptdBZ79NwmcKYE7T6gjNb3oeM4DJv9m9rm1X8wb7wGBCBO/XbH9XNJB8Wi/UzRY9nWg43jnCCmh6TziIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2417
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT064.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: a65f07b7-585c-47e2-4068-08d8661a5c20
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ishGFLotlbXoVUl310KD36rfR7SljO3Y5qBYFUnbRzCceowL6qQpGYOexqcZsRFJ1gCuBMSdRA/zzupniXXrjx+hd4g99urcsRBlpyTnYPnxoiWuln04ZwUvKvVrm1FJqZEhv75mhcBHxjvkPvD+6ZbmH0uB8b6mz7Paa2WZxlMCo7fZHbfC8ex52Q2ZWVUgqLyJabZD+NhkTZ2EUR7ioUwMZ3iIhjopn/mtKVA2WwL97Y26D3R37LYQM5cVkE+DqBtZuSbVz7YEtrefSR/zpTlAlQGzndRiQ8cOQfcAreCZPfDwB2fKEmv2AeKW0o6Pxj+wgwt2JlFS+glSFGlcIEmNhVpeeGSTiy5usZgJWBIxIL6wPJGiTK0oP/p7nreCABRFVtPn5T+vJ/aDTGfkS2ewvbVBixuPtFfVVop3SX+y1jBZ53IRY0o++4kc5mon
+X-Forefront-Antispam-Report: CIP:52.169.0.179;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:eu2.smtp.exclaimer.net;PTR:eu2.smtp.exclaimer.net;CAT:NONE;SFS:(396003)(376002)(346002)(39840400004)(136003)(46966005)(316002)(6486002)(1076003)(356005)(7636003)(7596003)(8676002)(33310700002)(8936002)(956004)(6666004)(2616005)(6916009)(70206006)(70586007)(26005)(44832011)(6506007)(5660300002)(186003)(47076004)(2906002)(478600001)(336012)(16526019)(36756003)(6512007)(4326008)(82310400003)(86362001)(107886003)(54906003)(83380400001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: aerq.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 14:57:49.7743
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51c32c98-e978-4c68-f114-08d8661a5e41
+X-MS-Exchange-CrossTenant-Id: bf24ff3e-ad0a-4c79-a44a-df7092489e22
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bf24ff3e-ad0a-4c79-a44a-df7092489e22;Ip=[52.169.0.179];Helo=[eu2.smtp.exclaimer.net]
+X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT064.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a new incoming call arrives at an userspace rxrpc socket on a new
-connection that has a security class set, the code currently pushes it onto
-the accept queue to hold a ref on it for the socket.  This doesn't work,
-however, as recvmsg() pops it off, notices that it's in the SERVER_SECURING
-state and discards the ref.  This means that the call runs out of refs too
-early and the kernel oopses.
+Hi everybody,
 
-By contrast, a kernel rxrpc socket manually pre-charges the incoming call
-pool with calls that already have user call IDs assigned, so they are ref'd
-by the call tree on the socket.
+this small series add regulator support to the lm75 driver for boards
+that don't always power such a sensor. While at it also convert the
+DT bindings to yaml.
 
-Change the mode of operation for userspace rxrpc server sockets to work
-like this too.  Although this is a UAPI change, server sockets aren't
-currently functional.
+v2: - Fixed the DT example while converting to YAML
+    - Removed the unneeded maxItems from the binding documentation
+    - Use dummy regulator insted of explicitly handling missing regulator
 
-Fixes: 248f219cb8bc ("rxrpc: Rewrite the data and ack handling code")
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+v3: - Use a devm action to handle disabling the regulator
 
- include/uapi/linux/rxrpc.h |    2 
- net/rxrpc/ar-internal.h    |    7 -
- net/rxrpc/call_accept.c    |  263 ++++++--------------------------------------
- net/rxrpc/call_object.c    |    5 -
- net/rxrpc/conn_event.c     |    2 
- net/rxrpc/recvmsg.c        |   36 ------
- net/rxrpc/sendmsg.c        |   15 +--
- 7 files changed, 49 insertions(+), 281 deletions(-)
+v4: - Added the missing `additionalProperties: false` when converting
+      the binding documentation to yaml
 
-diff --git a/include/uapi/linux/rxrpc.h b/include/uapi/linux/rxrpc.h
-index 4accfa7e266d..8f8dc7a937a4 100644
---- a/include/uapi/linux/rxrpc.h
-+++ b/include/uapi/linux/rxrpc.h
-@@ -51,11 +51,11 @@ enum rxrpc_cmsg_type {
- 	RXRPC_BUSY		= 6,	/* -r: server busy received [terminal] */
- 	RXRPC_LOCAL_ERROR	= 7,	/* -r: local error generated [terminal] */
- 	RXRPC_NEW_CALL		= 8,	/* -r: [Service] new incoming call notification */
--	RXRPC_ACCEPT		= 9,	/* s-: [Service] accept request */
- 	RXRPC_EXCLUSIVE_CALL	= 10,	/* s-: Call should be on exclusive connection */
- 	RXRPC_UPGRADE_SERVICE	= 11,	/* s-: Request service upgrade for client call */
- 	RXRPC_TX_LENGTH		= 12,	/* s-: Total length of Tx data */
- 	RXRPC_SET_CALL_TIMEOUT	= 13,	/* s-: Set one or more call timeouts */
-+	RXRPC_CHARGE_ACCEPT	= 14,	/* s-: Charge the accept pool with a user call ID */
- 	RXRPC__SUPPORTED
- };
- 
-diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
-index 0b4233fdd740..dce48162f6c2 100644
---- a/net/rxrpc/ar-internal.h
-+++ b/net/rxrpc/ar-internal.h
-@@ -514,7 +514,6 @@ enum rxrpc_call_state {
- 	RXRPC_CALL_CLIENT_RECV_REPLY,	/* - client receiving reply phase */
- 	RXRPC_CALL_SERVER_PREALLOC,	/* - service preallocation */
- 	RXRPC_CALL_SERVER_SECURING,	/* - server securing request connection */
--	RXRPC_CALL_SERVER_ACCEPTING,	/* - server accepting request */
- 	RXRPC_CALL_SERVER_RECV_REQUEST,	/* - server receiving request */
- 	RXRPC_CALL_SERVER_ACK_REQUEST,	/* - server pending ACK of request */
- 	RXRPC_CALL_SERVER_SEND_REPLY,	/* - server sending reply */
-@@ -710,8 +709,8 @@ struct rxrpc_ack_summary {
- enum rxrpc_command {
- 	RXRPC_CMD_SEND_DATA,		/* send data message */
- 	RXRPC_CMD_SEND_ABORT,		/* request abort generation */
--	RXRPC_CMD_ACCEPT,		/* [server] accept incoming call */
- 	RXRPC_CMD_REJECT_BUSY,		/* [server] reject a call as busy */
-+	RXRPC_CMD_CHARGE_ACCEPT,	/* [server] charge accept preallocation */
- };
- 
- struct rxrpc_call_params {
-@@ -752,9 +751,7 @@ struct rxrpc_call *rxrpc_new_incoming_call(struct rxrpc_local *,
- 					   struct rxrpc_sock *,
- 					   struct sk_buff *);
- void rxrpc_accept_incoming_calls(struct rxrpc_local *);
--struct rxrpc_call *rxrpc_accept_call(struct rxrpc_sock *, unsigned long,
--				     rxrpc_notify_rx_t);
--int rxrpc_reject_call(struct rxrpc_sock *);
-+int rxrpc_user_charge_accept(struct rxrpc_sock *, unsigned long);
- 
- /*
-  * call_event.c
-diff --git a/net/rxrpc/call_accept.c b/net/rxrpc/call_accept.c
-index ef160566aa9a..8df1964db333 100644
---- a/net/rxrpc/call_accept.c
-+++ b/net/rxrpc/call_accept.c
-@@ -39,8 +39,9 @@ static int rxrpc_service_prealloc_one(struct rxrpc_sock *rx,
- 				      unsigned int debug_id)
- {
- 	const void *here = __builtin_return_address(0);
--	struct rxrpc_call *call;
-+	struct rxrpc_call *call, *xcall;
- 	struct rxrpc_net *rxnet = rxrpc_net(sock_net(&rx->sk));
-+	struct rb_node *parent, **pp;
- 	int max, tmp;
- 	unsigned int size = RXRPC_BACKLOG_MAX;
- 	unsigned int head, tail, call_head, call_tail;
-@@ -94,7 +95,7 @@ static int rxrpc_service_prealloc_one(struct rxrpc_sock *rx,
- 	}
- 
- 	/* Now it gets complicated, because calls get registered with the
--	 * socket here, particularly if a user ID is preassigned by the user.
-+	 * socket here, with a user ID preassigned by the user.
- 	 */
- 	call = rxrpc_alloc_call(rx, gfp, debug_id);
- 	if (!call)
-@@ -107,34 +108,33 @@ static int rxrpc_service_prealloc_one(struct rxrpc_sock *rx,
- 			 here, (const void *)user_call_ID);
- 
- 	write_lock(&rx->call_lock);
--	if (user_attach_call) {
--		struct rxrpc_call *xcall;
--		struct rb_node *parent, **pp;
--
--		/* Check the user ID isn't already in use */
--		pp = &rx->calls.rb_node;
--		parent = NULL;
--		while (*pp) {
--			parent = *pp;
--			xcall = rb_entry(parent, struct rxrpc_call, sock_node);
--			if (user_call_ID < xcall->user_call_ID)
--				pp = &(*pp)->rb_left;
--			else if (user_call_ID > xcall->user_call_ID)
--				pp = &(*pp)->rb_right;
--			else
--				goto id_in_use;
--		}
- 
--		call->user_call_ID = user_call_ID;
--		call->notify_rx = notify_rx;
-+	/* Check the user ID isn't already in use */
-+	pp = &rx->calls.rb_node;
-+	parent = NULL;
-+	while (*pp) {
-+		parent = *pp;
-+		xcall = rb_entry(parent, struct rxrpc_call, sock_node);
-+		if (user_call_ID < xcall->user_call_ID)
-+			pp = &(*pp)->rb_left;
-+		else if (user_call_ID > xcall->user_call_ID)
-+			pp = &(*pp)->rb_right;
-+		else
-+			goto id_in_use;
-+	}
-+
-+	call->user_call_ID = user_call_ID;
-+	call->notify_rx = notify_rx;
-+	if (user_attach_call) {
- 		rxrpc_get_call(call, rxrpc_call_got_kernel);
- 		user_attach_call(call, user_call_ID);
--		rxrpc_get_call(call, rxrpc_call_got_userid);
--		rb_link_node(&call->sock_node, parent, pp);
--		rb_insert_color(&call->sock_node, &rx->calls);
--		set_bit(RXRPC_CALL_HAS_USERID, &call->flags);
- 	}
- 
-+	rxrpc_get_call(call, rxrpc_call_got_userid);
-+	rb_link_node(&call->sock_node, parent, pp);
-+	rb_insert_color(&call->sock_node, &rx->calls);
-+	set_bit(RXRPC_CALL_HAS_USERID, &call->flags);
-+
- 	list_add(&call->sock_link, &rx->sock_calls);
- 
- 	write_unlock(&rx->call_lock);
-@@ -157,11 +157,8 @@ static int rxrpc_service_prealloc_one(struct rxrpc_sock *rx,
- }
- 
- /*
-- * Preallocate sufficient service connections, calls and peers to cover the
-- * entire backlog of a socket.  When a new call comes in, if we don't have
-- * sufficient of each available, the call gets rejected as busy or ignored.
-- *
-- * The backlog is replenished when a connection is accepted or rejected.
-+ * Allocate the preallocation buffers for incoming service calls.  These must
-+ * be charged manually.
-  */
- int rxrpc_service_prealloc(struct rxrpc_sock *rx, gfp_t gfp)
- {
-@@ -174,13 +171,6 @@ int rxrpc_service_prealloc(struct rxrpc_sock *rx, gfp_t gfp)
- 		rx->backlog = b;
- 	}
- 
--	if (rx->discard_new_call)
--		return 0;
--
--	while (rxrpc_service_prealloc_one(rx, b, NULL, NULL, 0, gfp,
--					  atomic_inc_return(&rxrpc_debug_id)) == 0)
--		;
--
- 	return 0;
- }
- 
-@@ -333,6 +323,7 @@ static struct rxrpc_call *rxrpc_alloc_incoming_call(struct rxrpc_sock *rx,
- 	rxrpc_see_call(call);
- 	call->conn = conn;
- 	call->security = conn->security;
-+	call->security_ix = conn->security_ix;
- 	call->peer = rxrpc_get_peer(conn->params.peer);
- 	call->cong_cwnd = call->peer->cong_cwnd;
- 	return call;
-@@ -402,8 +393,6 @@ struct rxrpc_call *rxrpc_new_incoming_call(struct rxrpc_local *local,
- 
- 	if (rx->notify_new_call)
- 		rx->notify_new_call(&rx->sk, call, call->user_call_ID);
--	else
--		sk_acceptq_added(&rx->sk);
- 
- 	spin_lock(&conn->state_lock);
- 	switch (conn->state) {
-@@ -415,12 +404,8 @@ struct rxrpc_call *rxrpc_new_incoming_call(struct rxrpc_local *local,
- 
- 	case RXRPC_CONN_SERVICE:
- 		write_lock(&call->state_lock);
--		if (call->state < RXRPC_CALL_COMPLETE) {
--			if (rx->discard_new_call)
--				call->state = RXRPC_CALL_SERVER_RECV_REQUEST;
--			else
--				call->state = RXRPC_CALL_SERVER_ACCEPTING;
--		}
-+		if (call->state < RXRPC_CALL_COMPLETE)
-+			call->state = RXRPC_CALL_SERVER_RECV_REQUEST;
- 		write_unlock(&call->state_lock);
- 		break;
- 
-@@ -440,9 +425,6 @@ struct rxrpc_call *rxrpc_new_incoming_call(struct rxrpc_local *local,
- 
- 	rxrpc_send_ping(call, skb);
- 
--	if (call->state == RXRPC_CALL_SERVER_ACCEPTING)
--		rxrpc_notify_socket(call);
--
- 	/* We have to discard the prealloc queue's ref here and rely on a
- 	 * combination of the RCU read lock and refs held either by the socket
- 	 * (recvmsg queue, to-be-accepted queue or user ID tree) or the kernel
-@@ -460,187 +442,18 @@ struct rxrpc_call *rxrpc_new_incoming_call(struct rxrpc_local *local,
- }
- 
- /*
-- * handle acceptance of a call by userspace
-- * - assign the user call ID to the call at the front of the queue
-- * - called with the socket locked.
-+ * Charge up socket with preallocated calls, attaching user call IDs.
-  */
--struct rxrpc_call *rxrpc_accept_call(struct rxrpc_sock *rx,
--				     unsigned long user_call_ID,
--				     rxrpc_notify_rx_t notify_rx)
--	__releases(&rx->sk.sk_lock.slock)
--	__acquires(call->user_mutex)
-+int rxrpc_user_charge_accept(struct rxrpc_sock *rx, unsigned long user_call_ID)
- {
--	struct rxrpc_call *call;
--	struct rb_node *parent, **pp;
--	int ret;
--
--	_enter(",%lx", user_call_ID);
--
--	ASSERT(!irqs_disabled());
--
--	write_lock(&rx->call_lock);
--
--	if (list_empty(&rx->to_be_accepted)) {
--		write_unlock(&rx->call_lock);
--		release_sock(&rx->sk);
--		kleave(" = -ENODATA [empty]");
--		return ERR_PTR(-ENODATA);
--	}
--
--	/* check the user ID isn't already in use */
--	pp = &rx->calls.rb_node;
--	parent = NULL;
--	while (*pp) {
--		parent = *pp;
--		call = rb_entry(parent, struct rxrpc_call, sock_node);
--
--		if (user_call_ID < call->user_call_ID)
--			pp = &(*pp)->rb_left;
--		else if (user_call_ID > call->user_call_ID)
--			pp = &(*pp)->rb_right;
--		else
--			goto id_in_use;
--	}
--
--	/* Dequeue the first call and check it's still valid.  We gain
--	 * responsibility for the queue's reference.
--	 */
--	call = list_entry(rx->to_be_accepted.next,
--			  struct rxrpc_call, accept_link);
--	write_unlock(&rx->call_lock);
--
--	/* We need to gain the mutex from the interrupt handler without
--	 * upsetting lockdep, so we have to release it there and take it here.
--	 * We are, however, still holding the socket lock, so other accepts
--	 * must wait for us and no one can add the user ID behind our backs.
--	 */
--	if (mutex_lock_interruptible(&call->user_mutex) < 0) {
--		release_sock(&rx->sk);
--		kleave(" = -ERESTARTSYS");
--		return ERR_PTR(-ERESTARTSYS);
--	}
--
--	write_lock(&rx->call_lock);
--	list_del_init(&call->accept_link);
--	sk_acceptq_removed(&rx->sk);
--	rxrpc_see_call(call);
--
--	/* Find the user ID insertion point. */
--	pp = &rx->calls.rb_node;
--	parent = NULL;
--	while (*pp) {
--		parent = *pp;
--		call = rb_entry(parent, struct rxrpc_call, sock_node);
--
--		if (user_call_ID < call->user_call_ID)
--			pp = &(*pp)->rb_left;
--		else if (user_call_ID > call->user_call_ID)
--			pp = &(*pp)->rb_right;
--		else
--			BUG();
--	}
--
--	write_lock_bh(&call->state_lock);
--	switch (call->state) {
--	case RXRPC_CALL_SERVER_ACCEPTING:
--		call->state = RXRPC_CALL_SERVER_RECV_REQUEST;
--		break;
--	case RXRPC_CALL_COMPLETE:
--		ret = call->error;
--		goto out_release;
--	default:
--		BUG();
--	}
--
--	/* formalise the acceptance */
--	call->notify_rx = notify_rx;
--	call->user_call_ID = user_call_ID;
--	rxrpc_get_call(call, rxrpc_call_got_userid);
--	rb_link_node(&call->sock_node, parent, pp);
--	rb_insert_color(&call->sock_node, &rx->calls);
--	if (test_and_set_bit(RXRPC_CALL_HAS_USERID, &call->flags))
--		BUG();
--
--	write_unlock_bh(&call->state_lock);
--	write_unlock(&rx->call_lock);
--	rxrpc_notify_socket(call);
--	rxrpc_service_prealloc(rx, GFP_KERNEL);
--	release_sock(&rx->sk);
--	_leave(" = %p{%d}", call, call->debug_id);
--	return call;
--
--out_release:
--	_debug("release %p", call);
--	write_unlock_bh(&call->state_lock);
--	write_unlock(&rx->call_lock);
--	rxrpc_release_call(rx, call);
--	rxrpc_put_call(call, rxrpc_call_put);
--	goto out;
--
--id_in_use:
--	ret = -EBADSLT;
--	write_unlock(&rx->call_lock);
--out:
--	rxrpc_service_prealloc(rx, GFP_KERNEL);
--	release_sock(&rx->sk);
--	_leave(" = %d", ret);
--	return ERR_PTR(ret);
--}
--
--/*
-- * Handle rejection of a call by userspace
-- * - reject the call at the front of the queue
-- */
--int rxrpc_reject_call(struct rxrpc_sock *rx)
--{
--	struct rxrpc_call *call;
--	bool abort = false;
--	int ret;
--
--	_enter("");
--
--	ASSERT(!irqs_disabled());
--
--	write_lock(&rx->call_lock);
--
--	if (list_empty(&rx->to_be_accepted)) {
--		write_unlock(&rx->call_lock);
--		return -ENODATA;
--	}
--
--	/* Dequeue the first call and check it's still valid.  We gain
--	 * responsibility for the queue's reference.
--	 */
--	call = list_entry(rx->to_be_accepted.next,
--			  struct rxrpc_call, accept_link);
--	list_del_init(&call->accept_link);
--	sk_acceptq_removed(&rx->sk);
--	rxrpc_see_call(call);
-+	struct rxrpc_backlog *b = rx->backlog;
- 
--	write_lock_bh(&call->state_lock);
--	switch (call->state) {
--	case RXRPC_CALL_SERVER_ACCEPTING:
--		__rxrpc_abort_call("REJ", call, 1, RX_USER_ABORT, -ECONNABORTED);
--		abort = true;
--		fallthrough;
--	case RXRPC_CALL_COMPLETE:
--		ret = call->error;
--		goto out_discard;
--	default:
--		BUG();
--	}
-+	if (rx->sk.sk_state == RXRPC_CLOSE)
-+		return -ESHUTDOWN;
- 
--out_discard:
--	write_unlock_bh(&call->state_lock);
--	write_unlock(&rx->call_lock);
--	if (abort) {
--		rxrpc_send_abort_packet(call);
--		rxrpc_release_call(rx, call);
--		rxrpc_put_call(call, rxrpc_call_put);
--	}
--	rxrpc_service_prealloc(rx, GFP_KERNEL);
--	_leave(" = %d", ret);
--	return ret;
-+	return rxrpc_service_prealloc_one(rx, b, NULL, NULL, user_call_ID,
-+					  GFP_KERNEL,
-+					  atomic_inc_return(&rxrpc_debug_id));
- }
- 
- /*
-diff --git a/net/rxrpc/call_object.c b/net/rxrpc/call_object.c
-index c8015c76a81c..c845594b663f 100644
---- a/net/rxrpc/call_object.c
-+++ b/net/rxrpc/call_object.c
-@@ -23,7 +23,6 @@ const char *const rxrpc_call_states[NR__RXRPC_CALL_STATES] = {
- 	[RXRPC_CALL_CLIENT_RECV_REPLY]		= "ClRcvRpl",
- 	[RXRPC_CALL_SERVER_PREALLOC]		= "SvPrealc",
- 	[RXRPC_CALL_SERVER_SECURING]		= "SvSecure",
--	[RXRPC_CALL_SERVER_ACCEPTING]		= "SvAccept",
- 	[RXRPC_CALL_SERVER_RECV_REQUEST]	= "SvRcvReq",
- 	[RXRPC_CALL_SERVER_ACK_REQUEST]		= "SvAckReq",
- 	[RXRPC_CALL_SERVER_SEND_REPLY]		= "SvSndRpl",
-@@ -393,9 +392,7 @@ void rxrpc_incoming_call(struct rxrpc_sock *rx,
- 	call->call_id		= sp->hdr.callNumber;
- 	call->service_id	= sp->hdr.serviceId;
- 	call->cid		= sp->hdr.cid;
--	call->state		= RXRPC_CALL_SERVER_ACCEPTING;
--	if (sp->hdr.securityIndex > 0)
--		call->state	= RXRPC_CALL_SERVER_SECURING;
-+	call->state		= RXRPC_CALL_SERVER_SECURING;
- 	call->cong_tstamp	= skb->tstamp;
- 
- 	/* Set the channel for this call.  We don't get channel_lock as we're
-diff --git a/net/rxrpc/conn_event.c b/net/rxrpc/conn_event.c
-index c1b64e1dfc4e..aff184145ffa 100644
---- a/net/rxrpc/conn_event.c
-+++ b/net/rxrpc/conn_event.c
-@@ -270,7 +270,7 @@ static void rxrpc_call_is_secure(struct rxrpc_call *call)
- 	if (call) {
- 		write_lock_bh(&call->state_lock);
- 		if (call->state == RXRPC_CALL_SERVER_SECURING) {
--			call->state = RXRPC_CALL_SERVER_ACCEPTING;
-+			call->state = RXRPC_CALL_SERVER_RECV_REQUEST;
- 			rxrpc_notify_socket(call);
- 		}
- 		write_unlock_bh(&call->state_lock);
-diff --git a/net/rxrpc/recvmsg.c b/net/rxrpc/recvmsg.c
-index c4684dde1f16..2c842851d72e 100644
---- a/net/rxrpc/recvmsg.c
-+++ b/net/rxrpc/recvmsg.c
-@@ -178,37 +178,6 @@ static int rxrpc_recvmsg_term(struct rxrpc_call *call, struct msghdr *msg)
- 	return ret;
- }
- 
--/*
-- * Pass back notification of a new call.  The call is added to the
-- * to-be-accepted list.  This means that the next call to be accepted might not
-- * be the last call seen awaiting acceptance, but unless we leave this on the
-- * front of the queue and block all other messages until someone gives us a
-- * user_ID for it, there's not a lot we can do.
-- */
--static int rxrpc_recvmsg_new_call(struct rxrpc_sock *rx,
--				  struct rxrpc_call *call,
--				  struct msghdr *msg, int flags)
--{
--	int tmp = 0, ret;
--
--	ret = put_cmsg(msg, SOL_RXRPC, RXRPC_NEW_CALL, 0, &tmp);
--
--	if (ret == 0 && !(flags & MSG_PEEK)) {
--		_debug("to be accepted");
--		write_lock_bh(&rx->recvmsg_lock);
--		list_del_init(&call->recvmsg_link);
--		write_unlock_bh(&rx->recvmsg_lock);
--
--		rxrpc_get_call(call, rxrpc_call_got);
--		write_lock(&rx->call_lock);
--		list_add_tail(&call->accept_link, &rx->to_be_accepted);
--		write_unlock(&rx->call_lock);
--	}
--
--	trace_rxrpc_recvmsg(call, rxrpc_recvmsg_to_be_accepted, 1, 0, 0, ret);
--	return ret;
--}
--
- /*
-  * End the packet reception phase.
-  */
-@@ -630,9 +599,6 @@ int rxrpc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 	}
- 
- 	switch (READ_ONCE(call->state)) {
--	case RXRPC_CALL_SERVER_ACCEPTING:
--		ret = rxrpc_recvmsg_new_call(rx, call, msg, flags);
--		break;
- 	case RXRPC_CALL_CLIENT_RECV_REPLY:
- 	case RXRPC_CALL_SERVER_RECV_REQUEST:
- 	case RXRPC_CALL_SERVER_ACK_REQUEST:
-@@ -728,7 +694,7 @@ int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
- 	       call->debug_id, rxrpc_call_states[call->state],
- 	       iov_iter_count(iter), want_more);
- 
--	ASSERTCMP(call->state, !=, RXRPC_CALL_SERVER_ACCEPTING);
-+	ASSERTCMP(call->state, !=, RXRPC_CALL_SERVER_SECURING);
- 
- 	mutex_lock(&call->user_mutex);
- 
-diff --git a/net/rxrpc/sendmsg.c b/net/rxrpc/sendmsg.c
-index 0824e103d037..d27140c836cc 100644
---- a/net/rxrpc/sendmsg.c
-+++ b/net/rxrpc/sendmsg.c
-@@ -530,10 +530,10 @@ static int rxrpc_sendmsg_cmsg(struct msghdr *msg, struct rxrpc_send_params *p)
- 				return -EINVAL;
- 			break;
- 
--		case RXRPC_ACCEPT:
-+		case RXRPC_CHARGE_ACCEPT:
- 			if (p->command != RXRPC_CMD_SEND_DATA)
- 				return -EINVAL;
--			p->command = RXRPC_CMD_ACCEPT;
-+			p->command = RXRPC_CMD_CHARGE_ACCEPT;
- 			if (len != 0)
- 				return -EINVAL;
- 			break;
-@@ -659,16 +659,12 @@ int rxrpc_do_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg, size_t len)
- 	if (ret < 0)
- 		goto error_release_sock;
- 
--	if (p.command == RXRPC_CMD_ACCEPT) {
-+	if (p.command == RXRPC_CMD_CHARGE_ACCEPT) {
- 		ret = -EINVAL;
- 		if (rx->sk.sk_state != RXRPC_SERVER_LISTENING)
- 			goto error_release_sock;
--		call = rxrpc_accept_call(rx, p.call.user_call_ID, NULL);
--		/* The socket is now unlocked. */
--		if (IS_ERR(call))
--			return PTR_ERR(call);
--		ret = 0;
--		goto out_put_unlock;
-+		ret = rxrpc_user_charge_accept(rx, p.call.user_call_ID);
-+		goto error_release_sock;
- 	}
- 
- 	call = rxrpc_find_call_by_user_ID(rx, p.call.user_call_ID);
-@@ -690,7 +686,6 @@ int rxrpc_do_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg, size_t len)
- 		case RXRPC_CALL_CLIENT_AWAIT_CONN:
- 		case RXRPC_CALL_SERVER_PREALLOC:
- 		case RXRPC_CALL_SERVER_SECURING:
--		case RXRPC_CALL_SERVER_ACCEPTING:
- 			rxrpc_put_call(call, rxrpc_call_put);
- 			ret = -EBUSY;
- 			goto error_release_sock;
+Alban Bedel (3):
+  dt-bindings: hwmon: Convert lm75 bindings to yaml
+  dt-bindings: hwmon: Add the +vs supply to the lm75 bindings
+  hwmon: (lm75) Add regulator support
 
+ .../devicetree/bindings/hwmon/lm75.txt        | 39 -----------
+ .../devicetree/bindings/hwmon/lm75.yaml       | 66 +++++++++++++++++++
+ drivers/hwmon/lm75.c                          | 24 +++++++
+ 3 files changed, 90 insertions(+), 39 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/lm75.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lm75.yaml
+
+--=20
+2.25.1
 
