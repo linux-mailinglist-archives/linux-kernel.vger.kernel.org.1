@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFAE27FBFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C4B27FC1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731638AbgJAIzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:55:42 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:7854 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725921AbgJAIzm (ORCPT
+        id S1731560AbgJAJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgJAJBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:55:42 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0918s3Yb021078;
-        Thu, 1 Oct 2020 04:55:29 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4t9hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Oct 2020 04:55:29 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0918tSWu050730
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 1 Oct 2020 04:55:28 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 1 Oct 2020
- 04:55:19 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 1 Oct 2020 04:55:19 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0918tM1o016001;
-        Thu, 1 Oct 2020 04:55:24 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <sboyd@kernel.org>, <mturquette@baylibre.com>,
-        <mdf@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH 2/2] clk: axi-clkgen: Set power bits for fractional mode
-Date:   Thu, 1 Oct 2020 11:59:48 +0300
-Message-ID: <20201001085948.21412-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001085948.21412-1-alexandru.ardelean@analog.com>
-References: <20201001085948.21412-1-alexandru.ardelean@analog.com>
+        Thu, 1 Oct 2020 05:01:09 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1937C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 02:01:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so2089050wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 02:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LCvd+9oMPV1TUiWupBH/r0LupF+7kFOX6DhC7Gcrx0g=;
+        b=YR4MIEhAGcvomD/uxMVbUiIe763pjYh55U/6WKdK4ANeEYvJpvBHgTir3soHKMF71P
+         AYTqH6nrgBCmxI/LBlS3IhuTQ0XywPfkfloSXMhcqazuIEAwJgweqhvCUPLMGjwFUpzw
+         U5t0MUPEclTgs1+05Kiz/OCkn/tBgcluzBtttN1p3Pe/P6aOGSy3RsJujNT5101KictT
+         SqZ13V6DEIWcCRn9UvJdvjNLKE1oOGTVJZPtKipBlEi6zRhnlwEBoynnMRi6DFWzLbEF
+         Sy2Wto4i8ft6p3F+AiH9+jZHlEQdqs1e+48zEqL1W+DjJk9mSeTsdSjisq02VhbdBNp5
+         boKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LCvd+9oMPV1TUiWupBH/r0LupF+7kFOX6DhC7Gcrx0g=;
+        b=MURpx+MnUbmc2Z4rB2YHOnJx/BsXNZFg4DiOuB23nInQJX4pUCqGMX7Xrmq7i+oI5t
+         deWL584tlFq2e8EYLV8Y30SVaSmMFJ/iF3pRMu0ugeGopbBH1CPs9Es6dtpOGY/5bFlQ
+         aBjhub3AxUYt3R57EV4/pwnuR0ri03GyAk0WPZ6Np6c26qHjs8/G8Y7hYMX7kkwnte8r
+         dk9Nv6yerNqtA/H4XQermSPqxLvNdpieI1UcnSxm0zcsBLb5/KXrM6X80dp99kRmYvOm
+         Z3Q6UbBCl2ga3GRwaGYa+FX3LExBrTIR4k8DyjWcjnLnhgtVvBZgK3NUnveLGtiA/iEi
+         L+Kg==
+X-Gm-Message-State: AOAM532tc6/A9k6hDYt9pr1AZOXK0mZJo/dWCfic8dJSzkQVzZDtIYFf
+        UT2tXbBXXFlA9ltGwnm9WWLGyA==
+X-Google-Smtp-Source: ABdhPJwTZ1RYKtWIyoBk+8fpiZQFsYIgVtzcvQYqDG+wI52Vzemq2cBusw6V5zUhwT6eqp7ki3sNsA==
+X-Received: by 2002:a7b:c1d3:: with SMTP id a19mr7125986wmj.19.1601542867376;
+        Thu, 01 Oct 2020 02:01:07 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id i16sm7968008wrq.73.2020.10.01.02.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 02:01:06 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 10:01:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH 1/5] gpio: tps65910: use regmap accessors
+Message-ID: <20201001090104.GM6148@dell>
+References: <cover.1601164493.git.mirq-linux@rere.qmqm.pl>
+ <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
+ <CACRpkdaMHH35C1LqUROFBte3T00Lz0zApHy3hdZ83Z8EZR04hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-01_02:2020-10-01,2020-10-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010010078
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaMHH35C1LqUROFBte3T00Lz0zApHy3hdZ83Z8EZR04hw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+On Wed, 30 Sep 2020, Linus Walleij wrote:
 
-Using the fractional dividers requires some additional power bits to be
-set.
+> On Sun, Sep 27, 2020 at 1:59 AM Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
+> 
+> > Use regmap accessors directly for register manipulation - removing one
+> > layer of abstraction.
+> >
+> > Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> I suppose it is easiest that Lee apply all patches to the MFD tree?
 
-The fractional power bits are not documented and the current heuristic
-for setting them seems be insufficient for some cases. Just always set all
-the fractional power bits when in fractional mode.
+Yes, that's fine.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/clk/clk-axi-clkgen.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+It won't be for this release though, as we're already at -rc7.
 
-diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-index 1df03cc6d089..14d803e6af62 100644
---- a/drivers/clk/clk-axi-clkgen.c
-+++ b/drivers/clk/clk-axi-clkgen.c
-@@ -37,6 +37,7 @@
- #define MMCM_REG_LOCK1		0x18
- #define MMCM_REG_LOCK2		0x19
- #define MMCM_REG_LOCK3		0x1a
-+#define MMCM_REG_POWER		0x28
- #define MMCM_REG_FILTER1	0x4e
- #define MMCM_REG_FILTER2	0x4f
- 
-@@ -320,6 +321,7 @@ static int axi_clkgen_set_rate(struct clk_hw *clk_hw,
- 	struct axi_clkgen *axi_clkgen = clk_hw_to_axi_clkgen(clk_hw);
- 	unsigned int d, m, dout;
- 	struct axi_clkgen_div_params params;
-+	uint32_t power = 0;
- 	uint32_t filter;
- 	uint32_t lock;
- 
-@@ -331,6 +333,11 @@ static int axi_clkgen_set_rate(struct clk_hw *clk_hw,
- 	if (d == 0 || dout == 0 || m == 0)
- 		return -EINVAL;
- 
-+	if ((dout & 0x7) != 0 || (m & 0x7) != 0)
-+		power |= 0x9800;
-+
-+	axi_clkgen_mmcm_write(axi_clkgen, MMCM_REG_POWER, power, 0x9800);
-+
- 	filter = axi_clkgen_lookup_filter(m - 1);
- 	lock = axi_clkgen_lookup_lock(m - 1);
- 
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
