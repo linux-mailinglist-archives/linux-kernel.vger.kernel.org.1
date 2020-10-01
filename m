@@ -2,82 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F8C27FC25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DFB27FC28
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731678AbgJAJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJAJBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:01:48 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B38420B1F;
-        Thu,  1 Oct 2020 09:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601542908;
-        bh=kt+4CylB+BZPiTZXLju78o9i/t8YIwtWvmLyQi9Y4AU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yp2wmWYN6Qsr5guNc5v9xvC9lJgzO3b4wS6w1ihGIXqePHE3TjvSj8EjbpEP0HX4v
-         hP3ggO2/ovS1XGNrzFjJibdQAV/v4FrZnYrHK9M4KA8l9/nvEGFZsYz+IVEYe9U7nB
-         FmJ8EuU2XDHZFJ8YJxX0CeMgQdHTYKKW3QFiID+g=
-Date:   Thu, 1 Oct 2020 11:01:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.9 000/121] 4.9.238-rc1 review
-Message-ID: <20201001090149.GA1892419@kroah.com>
-References: <20200929105930.172747117@linuxfoundation.org>
- <20200929204835.GB152716@roeck-us.net>
+        id S1731365AbgJAJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:03:55 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2935 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725921AbgJAJDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:03:55 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 62C62FBD81C4CC8D4B19;
+        Thu,  1 Oct 2020 10:03:53 +0100 (IST)
+Received: from localhost (10.52.127.250) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
+ 10:03:52 +0100
+Date:   Thu, 1 Oct 2020 10:02:10 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
+        <ashok.raj@intel.com>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v7 03/13] PCI/RCEC: Cache RCEC capabilities in
+ pci_init_capabilities()
+Message-ID: <20201001090210.00004ed6@Huawei.com>
+In-Reply-To: <20200930215820.1113353-4-seanvk.dev@oregontracks.org>
+References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+        <20200930215820.1113353-4-seanvk.dev@oregontracks.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929204835.GB152716@roeck-us.net>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.250]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:48:35PM -0700, Guenter Roeck wrote:
-> On Tue, Sep 29, 2020 at 12:59:04PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.9.238 release.
-> > There are 121 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 171 pass: 171 fail: 0
-> Qemu test results:
-> 	total: 386 pass: 377 fail: 9
-> Failed tests:
-> 	arm:xilinx-zynq-a9:multi_v7_defconfig:mem128:zynq-zc702:initrd
-> 	arm:xilinx-zynq-a9:multi_v7_defconfig:sd:mem128:zynq-zc702:rootfs
-> 	arm:xilinx-zynq-a9:multi_v7_defconfig:sd:mem128:zynq-zc706:rootfs
-> 	arm64:xlnx-zcu102:defconfig:smp:mem2G:initrd:xilinx/zynqmp-ep108
-> 	arm64:xlnx-zcu102:defconfig:smp:mem2G:sata:rootfs:xilinx/zynqmp-ep108
-> 	arm64:xlnx-zcu102:defconfig:nosmp:mem2G:initrd:xilinx/zynqmp-ep108
-> 	arm64be:xlnx-zcu102:defconfig:smp:mem2G:initrd:xilinx/zynqmp-ep108
-> 	arm64be:xlnx-zcu102:defconfig:smp:mem2G:sata:rootfs:xilinx/zynqmp-ep108
-> 	arm64be:xlnx-zcu102:defconfig:nosmp:mem2G:initrd:xilinx/zynqmp-ep108
-> 
-> The Xilinx problems appears to be due to the following two commits.
-> 
-> 1156dd2483fd serial: uartps: Wait for tx_empty in console setup
-> 9a13572bf02b serial: uartps: Add a timeout to the tx empty wait
-> 
-> I didn't try all tests, but reverting those two patches fixes the problem
-> at least for arm64:xlnx-zcu102.
-> 
-> I don't see this problem in any other stable releases.
+On Wed, 30 Sep 2020 14:58:10 -0700
+Sean V Kelley <seanvk.dev@oregontracks.org> wrote:
 
-Thanks for the report, I'll drop these two and push out a -rc2, thanks.
+> From: Sean V Kelley <sean.v.kelley@intel.com>
+> 
+> Extend support for Root Complex Event Collectors by decoding and
+> caching the RCEC Endpoint Association Extended Capabilities when
+> enumerating. Use that cached information for later error source
+> reporting. See PCI Express Base Specification, version 5.0-1,
+> section 7.9.10.
+> 
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
 
-greg k-h
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/pci/pci.h         | 17 +++++++++++
+>  drivers/pci/pcie/Makefile |  2 +-
+>  drivers/pci/pcie/rcec.c   | 59 +++++++++++++++++++++++++++++++++++++++
+>  drivers/pci/probe.c       |  2 ++
+>  include/linux/pci.h       |  4 +++
+>  5 files changed, 83 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/pci/pcie/rcec.c
+> 
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index fa12f7cbc1a0..88e27a98def5 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -449,6 +449,15 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info);
+>  void aer_print_error(struct pci_dev *dev, struct aer_err_info *info);
+>  #endif	/* CONFIG_PCIEAER */
+>  
+> +#ifdef CONFIG_PCIEPORTBUS
+> +/* Cached RCEC Endpoint Association */
+> +struct rcec_ea {
+> +	u8		nextbusn;
+> +	u8		lastbusn;
+> +	u32		bitmap;
+> +};
+> +#endif
+> +
+>  #ifdef CONFIG_PCIE_DPC
+>  void pci_save_dpc_state(struct pci_dev *dev);
+>  void pci_restore_dpc_state(struct pci_dev *dev);
+> @@ -461,6 +470,14 @@ static inline void pci_restore_dpc_state(struct pci_dev *dev) {}
+>  static inline void pci_dpc_init(struct pci_dev *pdev) {}
+>  #endif
+>  
+> +#ifdef CONFIG_PCIEPORTBUS
+> +int pci_rcec_init(struct pci_dev *dev);
+> +void pci_rcec_exit(struct pci_dev *dev);
+> +#else
+> +static inline int pci_rcec_init(struct pci_dev *dev) {return 0;}
+> +static inline void pci_rcec_exit(struct pci_dev *dev) {}
+> +#endif
+> +
+>  #ifdef CONFIG_PCI_ATS
+>  /* Address Translation Service */
+>  void pci_ats_init(struct pci_dev *dev);
+> diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
+> index 68da9280ff11..d9697892fa3e 100644
+> --- a/drivers/pci/pcie/Makefile
+> +++ b/drivers/pci/pcie/Makefile
+> @@ -2,7 +2,7 @@
+>  #
+>  # Makefile for PCI Express features and port driver
+>  
+> -pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o
+> +pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o rcec.o
+>  
+>  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
+>  
+> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+> new file mode 100644
+> index 000000000000..da02b0af442d
+> --- /dev/null
+> +++ b/drivers/pci/pcie/rcec.c
+> @@ -0,0 +1,59 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Root Complex Event Collector Support
+> + *
+> + * Authors:
+> + *  Sean V Kelley <sean.v.kelley@intel.com>
+> + *  Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> + *
+> + * Copyright (C) 2020 Intel Corp.
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/pci.h>
+> +#include <linux/pci_regs.h>
+> +
+> +#include "../pci.h"
+> +
+> +int pci_rcec_init(struct pci_dev *dev)
+> +{
+> +	struct rcec_ea *rcec_ea;
+> +	u32 rcec, hdr, busn;
+> +	u8 ver;
+> +
+> +	/* Only for Root Complex Event Collectors */
+> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)
+> +		return 0;
+> +
+> +	rcec = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC);
+> +	if (!rcec)
+> +		return 0;
+> +
+> +	rcec_ea = kzalloc(sizeof(*rcec_ea), GFP_KERNEL);
+> +	if (!rcec_ea)
+> +		return -ENOMEM;
+> +	dev->rcec_ea = rcec_ea;
+> +
+> +	pci_read_config_dword(dev, rcec + PCI_RCEC_RCIEP_BITMAP, &rcec_ea->bitmap);
+> +
+> +	/* Check whether RCEC BUSN register is present */
+> +	pci_read_config_dword(dev, rcec, &hdr);
+> +	ver = PCI_EXT_CAP_VER(hdr);
+> +	if (ver < PCI_RCEC_BUSN_REG_VER) {
+> +		/* Avoid later ver check by setting nextbusn */
+> +		rcec_ea->nextbusn = 0xff;
+> +		return 0;
+> +	}
+> +
+> +	pci_read_config_dword(dev, rcec + PCI_RCEC_BUSN, &busn);
+> +	rcec_ea->nextbusn = PCI_RCEC_BUSN_NEXT(busn);
+> +	rcec_ea->lastbusn = PCI_RCEC_BUSN_LAST(busn);
+> +
+> +	return 0;
+> +}
+> +
+> +void pci_rcec_exit(struct pci_dev *dev)
+> +{
+> +	kfree(dev->rcec_ea);
+> +	dev->rcec_ea = NULL;
+> +}
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 03d37128a24f..25f01f841f2d 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2201,6 +2201,7 @@ static void pci_configure_device(struct pci_dev *dev)
+>  static void pci_release_capabilities(struct pci_dev *dev)
+>  {
+>  	pci_aer_exit(dev);
+> +	pci_rcec_exit(dev);
+>  	pci_vpd_release(dev);
+>  	pci_iov_release(dev);
+>  	pci_free_cap_save_buffers(dev);
+> @@ -2400,6 +2401,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
+>  	pci_ptm_init(dev);		/* Precision Time Measurement */
+>  	pci_aer_init(dev);		/* Advanced Error Reporting */
+>  	pci_dpc_init(dev);		/* Downstream Port Containment */
+> +	pci_rcec_init(dev);		/* Root Complex Event Collector */
+>  
+>  	pcie_report_downtraining(dev);
+>  
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 835530605c0d..2290439e8bc0 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -304,6 +304,7 @@ struct pcie_link_state;
+>  struct pci_vpd;
+>  struct pci_sriov;
+>  struct pci_p2pdma;
+> +struct rcec_ea;
+>  
+>  /* The pci_dev structure describes PCI devices */
+>  struct pci_dev {
+> @@ -326,6 +327,9 @@ struct pci_dev {
+>  #ifdef CONFIG_PCIEAER
+>  	u16		aer_cap;	/* AER capability offset */
+>  	struct aer_stats *aer_stats;	/* AER stats for this device */
+> +#endif
+> +#ifdef CONFIG_PCIEPORTBUS
+> +	struct rcec_ea	*rcec_ea;	/* RCEC cached endpoint association */
+>  #endif
+>  	u8		pcie_cap;	/* PCIe capability offset */
+>  	u8		msi_cap;	/* MSI capability offset */
+
+
