@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4F327FC96
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0814327FC98
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731714AbgJAJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:43:45 -0400
-Received: from ozlabs.org ([203.11.71.1]:50541 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJAJnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:43:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C27VP09d9z9sTs;
-        Thu,  1 Oct 2020 19:43:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601545421;
-        bh=J4X96+CdZJrxFVmnrvuTEdZgARQMFxDjr3Wg7nv6vME=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dcSwWLO7nvRjFCjH7jjzIW4PzmXRPFoFnKyIqs9MIKcrJTT6bSvtRapRgAnEVMF6S
-         ZPGqqBWmSyHxkFFp0uOsCQOMmvo4j7QaWOWTfnUmeibQ7Sgk5oO4pHaHV/ek/1qeaH
-         gNpxo6cNc+SFkN962SR7L8sTXkfYX9nPCQAVHqb3KUAjSXDGQoqtV2g6hfMTUbp+rz
-         bx1gPzLOfP/qRdpfeSIVGoFEtkoa34SmtIl6qb4bDF94nEf7wOnRT2E9pU4SSEDPAz
-         uKqXmhTo8p1E3OxuhycKc8dW8Pi9V0D367MaN4x5qY5mYSEXICrLxX0KxhEDjIvv0s
-         YJ8pAdrw93sHQ==
-Date:   Thu, 1 Oct 2020 19:43:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the pm tree
-Message-ID: <20201001194337.35f881af@canb.auug.org.au>
-In-Reply-To: <20200922181126.3cae159a@canb.auug.org.au>
-References: <20200922181126.3cae159a@canb.auug.org.au>
+        id S1731663AbgJAJpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgJAJpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:45:34 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24055C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 02:45:34 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so7054069ejo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 02:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZDdA2zY8D0de7pamktpQczyQ0hFmRGKGBWlU1/8ZIU=;
+        b=GzaYPDdcHi7fM0Xb/kj1vWF/5NtJ3RfOuBsBs0TYwYGWmC2hF27bO/JVp+QoXI07Nv
+         3wUVGBNHIMoAwly774K6sTazqDNKSOe22PcM4ilkykogaT4RRTvcpEnayrF6CHCMtOlE
+         ixBTSnRZpIkfgQS5zzKXFjnO6aHUJdE9e86esmBNZ7RMajhTDNBwPBpUne+mOLfVdbzN
+         zzMv5Cmjvnu/WqdWPmqzF9XQUmaG5ekpi3z4LS+3xUsVKJv8+VsigpU/dQ9uL1b6hsES
+         XimI3RHnPb02uwh0EnTayw2n7b9mxWlyFywK7UEtV2GeYssOCJ6sxf3Rv6K1e3A82LYo
+         q8mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZDdA2zY8D0de7pamktpQczyQ0hFmRGKGBWlU1/8ZIU=;
+        b=bj96ZToPJ/5HLp28VKqdcXaE63e+1IRzeuI5J9MOwjGoOf3yhQMuGWaTti/prVUhru
+         RHsNqdOVan8MNLF1FvJCfBwixOPAMU4RpzEAn9Xor/GXKx0Vx9T/l5DnXwZ0D45gjtVK
+         v9qJbg+d0BOKK4PUPbPt1ULlNFDxa9X+3qsS0iD4qYhHQ8B2g/s8wR7SHEL0LhthjtAH
+         XIcU+K9So0dNFj0LcnAI8RDmTP+ttLSQMtgfyF22FhveoOii8YtaiM0BriAXnUvvOjvr
+         dPB4KVQXTS2jlP6zydgHEDO0sAbXg7jTNvd4BoyNk5UE6acPdpt4hH3dUzjbLJBepl5t
+         1isQ==
+X-Gm-Message-State: AOAM531ss5aH9aDolcS56NWc77G+PTi/axaCHYPCqlc9Qh2mS85T5Bhh
+        XRKG4OzWqcPSfS9sIwkCxgMgEr8jFvJnwEfuUdJHog==
+X-Google-Smtp-Source: ABdhPJxzHjAb6ADjhe+rmmZGGPZFt3ViF0VwPxP2wF4EZ7eISGKdHfVNhtMH0g9LAbWAQhBJuAnvWjTdotqtXVaiQN4=
+X-Received: by 2002:a17:906:9588:: with SMTP id r8mr6986248ejx.389.1601545532768;
+ Thu, 01 Oct 2020 02:45:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LiHM.SdF5oFucLpdTGGyPhd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201001072703.16256-1-gi-oh.kim@clous.ionos.com>
+In-Reply-To: <20201001072703.16256-1-gi-oh.kim@clous.ionos.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 1 Oct 2020 11:45:21 +0200
+Message-ID: <CAMGffE=EuoiGGmddFawWL1qm9kfqBDB+ttiQuC-sAze0_A+H2Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] RDMA/rtrs: check before free
+To:     Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LiHM.SdF5oFucLpdTGGyPhd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 22 Sep 2020 18:11:26 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Thu, Oct 1, 2020 at 9:27 AM Gioh Kim <gi-oh.kim@cloud.ionos.com> wrote:
 >
-> After merging the pm tree, today's linux-next build (i386 defconfig)
-> produced this warning:
->=20
-> In file included from include/acpi/acpi.h:24,
->                  from drivers/acpi/acpica/hwgpe.c:10:
-> drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
-> include/acpi/actypes.h:501:48: warning: cast to pointer from integer of d=
-ifferent size [-Wint-to-pointer-cast]
->   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (=
-p))
->       |                                                ^
-> drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'ACPI_C=
-AST_PTR'
->    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
->       |                                         ^~~~~~~~~~~~~
-> drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 'ACPI_C=
-AST8'
->    22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
->       |                                           ^~~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_GET8'
->    50 |   *value =3D (u64)ACPI_GET8(reg->address);
->       |                 ^~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
-> include/acpi/actypes.h:501:48: warning: cast to pointer from integer of d=
-ifferent size [-Wint-to-pointer-cast]
->   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_t) (=
-p))
->       |                                                ^
-> drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'ACPI_C=
-AST_PTR'
->    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (ptr))
->       |                                         ^~~~~~~~~~~~~
-> drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 'ACPI_C=
-AST8'
->    26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) =3D (u=
-8) (val))
->       |                                           ^~~~~~~~~~
-> drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_SET8'
->    85 |   ACPI_SET8(reg->address, value);
->       |   ^~~~~~~~~
->=20
-> Introduced by commit
->=20
->   7a8379eb41a4 ("ACPICA: Add support for using logical addresses of GPE b=
-locks")
-
-I am still getting these warnings ...
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LiHM.SdF5oFucLpdTGGyPhd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91pMkACgkQAVBC80lX
-0GwdCgf/RNgZyS5m2LkshdnMmBp+8tesk3stxfbNHOZn+mQIt7Xphxx+9B5UDjcm
-K8QrpJi/DgaqwBAOTE1KCOxnPdhefMxfX7+jILbiWT5Vk5gIiJ0zHNkcAxRIzzQS
-1qXlzeROOYdmzP+Xa5DtTCSe0teopDT/U6XjF2b70aixLD7ZjZtKQUgLvyfowQuT
-yM+JXEAfqDALgDDxHDMgMPWK5RHUBmbZqdIUWLoOokxkHnvAEHrVmDy72F2ASbDU
-ZpZhpTH7W+vo57ZWr7Ugy+x0+uChuJ+A8EC5qzbqt0p+IML0hQT0J9To5Pr9A61k
-WoWW4ksoSGmym9SkiXEBPykU7ZZFPA==
-=aIYk
------END PGP SIGNATURE-----
-
---Sig_/LiHM.SdF5oFucLpdTGGyPhd--
+> From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+>
+> If rtrs_iu_alloc failed to allocate buffer or map dma,
+> there are some allocated addresses and some NULL addresses
+> in the array. rtrs_iu_free should check data before free.
+>
+> Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+> index 5163e662f86f..ca2d2d3e4192 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> @@ -61,8 +61,12 @@ void rtrs_iu_free(struct rtrs_iu *ius, struct ib_device *ibdev, u32 queue_size)
+>
+>         for (i = 0; i < queue_size; i++) {
+>                 iu = &ius[i];
+> -               ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, iu->direction);
+> -               kfree(iu->buf);
+> +               if (iu->dma_addr) {
+> +                       ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, iu->direction);
+> +               }
+No need for bracket
+> +               if (iu->buf) {
+> +                       kfree(iu->buf);
+> +               }
+kfree checks NULL already.
+>         }
+>         kfree(ius);
+>  }
+> --
+> 2.20.1
+>
