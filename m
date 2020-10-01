@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070AA280B11
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F23F280B0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387563AbgJAXLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S2387514AbgJAXL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733304AbgJAXLN (ORCPT
+        with ESMTP id S2387465AbgJAXLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:11:13 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D74C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 16:11:12 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id w7so131839wrp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:11:12 -0700 (PDT)
+        Thu, 1 Oct 2020 19:11:15 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D242C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 16:11:15 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id a7so27802wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=BiBwOA300QhxWc80ZJY9u1KximGsgeGOJ7BXhwr4DYI=;
-        b=KR9aH6cOj3xj0Tv7uVW4YbkD4gucBvMwbquiUSEetcOOULzOMPPj+0LBbeLDsEn6xN
-         1IVpHX0M955Dcl5bbqOwSk8ZsH4m87349TFQuHNiGz6/uqPgW+8byz6CR9aCAnpeFaq6
-         ol6M1LyyslHIGMszPWtvhbBB9QJP2ZOG+zOLC2JfsEZK8dIZ0HD/YqsOUTQGx+y6SKmd
-         qMSjZZA0Fgur17drDbLzTIHf44z1SKSLASvKJbOy7fZVlPQF/BXxciP3QB8tXZZvDqP/
-         fsvuD8DpMocaqLjwZURWPHAsntya9U3ZUK08lu5sFSXjFsoDD+cdF840Y4rxGpC2l+At
-         6aWw==
+        bh=zWR1cCG1rjrYp9C+AfwbmJjQNsNISZ2LulzQ9QrW8Jg=;
+        b=iBnDmdG2QbdUIupU7R1qlwwRTnbzmuTRM56AV3CCPdzO9KkAuMONkhaFBDqyPrOJWg
+         QzEJBsw4FnfGOHuP+Et4EGUZrmeNSa4pcPG9+1lwmSz3XMkNGtVVs8rLAW5ZJl1seLRe
+         z+2uO8floyo3IK6JL4fzTX78As7uG1iVVEbdjkk/RlA5peWOkC5KH3T9lXKKab69sDHW
+         CGCKq73WZUPZmO5t8AJT1nm3uSf8GnZXwqxokAv5hUKrx15Pg5UdXcwQzENPRYlS8GzV
+         z19L0UCk5DoIoGE+Lk05V7x1wKRaONFW2sw7X7Fwmd1FrjSUn93OmwRd5i/7K/uN/ltt
+         9S3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=BiBwOA300QhxWc80ZJY9u1KximGsgeGOJ7BXhwr4DYI=;
-        b=nceKwodB7QCMH3UQkEAZGYaXpeN6OBuRBtegE/hCBk0gdVkmiPJ0hN5YNtltCS3bLA
-         q/IWsnFSICWRXrP2zuf4fd73lDNaxVeBsbW5ev1TWr/kCj7+eYNQcopJ8iSVP2qpQbju
-         PyAMvmL/Ec6MCMEbbQ+4ZAgfYcTpSGfYkJxohlpUAcwSReB/dTET6wOWe3mzAZMOSaGS
-         6irGvyUMzeiVwqVEH1O5yMhkzhrfW4PXV1fxswX0rquDvMuWL9xt20Ro8q1+xX2vYS3K
-         njEziuk4hQO0tHFpz6rdpJHYd38yCfYONrNmWuiD8ss3ygB5/thedmavrh1E7JbTiRHT
-         NePw==
-X-Gm-Message-State: AOAM532vO5LbMJ2xgBUBtyKkIcFyfj+G3456Mc/5Y72EzqPpLitVGIx6
-        w56tC1c6gsJI0z85Tl/vljwbtJcrMTSyW0w1
-X-Google-Smtp-Source: ABdhPJyx5TxeKaVViHN1/tArVa8dGVdnr3CQ2RpreFIjzyF6P4ggefYuncYDX4SkYOmoY2mXzWlV0CAAa8/+Aj+Z
+        bh=zWR1cCG1rjrYp9C+AfwbmJjQNsNISZ2LulzQ9QrW8Jg=;
+        b=mKeWGutFmC1SIPZdqiG/KzPbQ5K4Yw+qhYsbuQVDsFhw7Eu+sLY/ackCOA3o/p3fMo
+         sGEi2YV23n/kHOy7ACQ75swjDazU6OuqyPTIyoGZmO5ZLp7/pPoVhUOTsY18JzNkBsLl
+         opBtr35T9FN8iN0ruiPtQbGK+swm97wxCgbELKhBp9ODSqmdxcXa7Ms2r8cmF3CgE5s+
+         xcaTS/YyTykNoVcFZ1QemIEgoEDsIxG0KBv/gZTtZ1kQZwrY/b/Yj4KYbCGanw3rwyrv
+         c6WtgKgs4oCF3yV404KA6UrWV6f65GNy0hEekPSPMZKUN7QLV8nysU9FSBLsRGOBXT6/
+         114g==
+X-Gm-Message-State: AOAM532+e767QK1GvKASJzXQEgwUpfaitaE3a9aY0u76kr0GBrArNeKS
+        H264eAvZ/eHLA/ZlyWHbnttYLRyBEKub5KJk
+X-Google-Smtp-Source: ABdhPJwFi7pGwWBRvfmOOqbt0bkP9duYro0bQQmfXIFE7EXdfIcKU7Xa3jFJ6861phNI+ttX8TEIl/dVtN9O8U3J
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:f009:: with SMTP id
- a9mr2285015wmb.158.1601593870620; Thu, 01 Oct 2020 16:11:10 -0700 (PDT)
-Date:   Fri,  2 Oct 2020 01:10:12 +0200
+ (user=andreyknvl job=sendgmr) by 2002:adf:f802:: with SMTP id
+ s2mr10978766wrp.328.1601593873339; Thu, 01 Oct 2020 16:11:13 -0700 (PDT)
+Date:   Fri,  2 Oct 2020 01:10:13 +0200
 In-Reply-To: <cover.1601593784.git.andreyknvl@google.com>
-Message-Id: <9bc9adc49d90831aad292b1927cac60570380d2a.1601593784.git.andreyknvl@google.com>
+Message-Id: <823cf1ad36d0a93ed0ecdd81fab8c5b77437c418.1601593784.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1601593784.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v4 11/39] kasan: don't duplicate config dependencies
+Subject: [PATCH v4 12/39] kasan: hide invalid free check implementation
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -75,53 +75,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both KASAN_GENERIC and KASAN_SW_TAGS have common dependencies, move
-those to KASAN.
+This is a preparatory commit for the upcoming addition of a new hardware
+tag-based (MTE-based) KASAN mode.
+
+For software KASAN modes the check is based on the value in the shadow
+memory. Hardware tag-based KASAN won't be using shadow, so hide the
+implementation of the check in check_invalid_free().
+
+Also simplify the code for software tag-based mode.
+
+No functional changes for software modes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I77e475802e8f1750b9154fe4a6e6da4456054fcd
+Change-Id: I5fae9531c9fc948eb4d4e0c589744032fc5a0789
 ---
- lib/Kconfig.kasan | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ mm/kasan/common.c  | 19 +------------------
+ mm/kasan/generic.c |  7 +++++++
+ mm/kasan/kasan.h   |  2 ++
+ mm/kasan/sw_tags.c |  9 +++++++++
+ 4 files changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index e1d55331b618..f73d5979575a 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -24,6 +24,8 @@ menuconfig KASAN
- 		   (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
- 	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
- 	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
-+	select CONSTRUCTORS
-+	select STACKDEPOT
- 	help
- 	  Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
- 	  designed to find out-of-bounds accesses and use-after-free bugs.
-@@ -46,10 +48,7 @@ choice
- config KASAN_GENERIC
- 	bool "Generic mode"
- 	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
--	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
- 	select SLUB_DEBUG if SLUB
--	select CONSTRUCTORS
--	select STACKDEPOT
- 	help
- 	  Enables generic KASAN mode.
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 123abfb760d4..543e6bf2168f 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -272,25 +272,9 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
+ 	return (void *)object;
+ }
  
-@@ -70,10 +69,7 @@ config KASAN_GENERIC
- config KASAN_SW_TAGS
- 	bool "Software tag-based mode"
- 	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
--	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
- 	select SLUB_DEBUG if SLUB
--	select CONSTRUCTORS
--	select STACKDEPOT
- 	help
- 	  Enables software tag-based KASAN mode.
+-static inline bool shadow_invalid(u8 tag, s8 shadow_byte)
+-{
+-	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+-		return shadow_byte < 0 ||
+-			shadow_byte >= KASAN_GRANULE_SIZE;
+-
+-	/* else CONFIG_KASAN_SW_TAGS: */
+-	if ((u8)shadow_byte == KASAN_TAG_INVALID)
+-		return true;
+-	if ((tag != KASAN_TAG_KERNEL) && (tag != (u8)shadow_byte))
+-		return true;
+-
+-	return false;
+-}
+-
+ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+ 			      unsigned long ip, bool quarantine)
+ {
+-	s8 shadow_byte;
+ 	u8 tag;
+ 	void *tagged_object;
+ 	unsigned long rounded_up_size;
+@@ -309,8 +293,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+ 	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
+ 		return false;
  
+-	shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(object));
+-	if (shadow_invalid(tag, shadow_byte)) {
++	if (check_invalid_free(tagged_object)) {
+ 		kasan_report_invalid_free(tagged_object, ip);
+ 		return true;
+ 	}
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index ec4417156943..e1af3b6c53b8 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -187,6 +187,13 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
+ 	return check_memory_region_inline(addr, size, write, ret_ip);
+ }
+ 
++bool check_invalid_free(void *addr)
++{
++	s8 shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(addr));
++
++	return shadow_byte < 0 || shadow_byte >= KASAN_GRANULE_SIZE;
++}
++
+ void kasan_cache_shrink(struct kmem_cache *cache)
+ {
+ 	quarantine_remove_cache(cache);
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 1865bb92d47a..3eff57e71ff5 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -164,6 +164,8 @@ void kasan_poison_memory(const void *address, size_t size, u8 value);
+ bool check_memory_region(unsigned long addr, size_t size, bool write,
+ 				unsigned long ret_ip);
+ 
++bool check_invalid_free(void *addr);
++
+ void *find_first_bad_addr(void *addr, size_t size);
+ const char *get_bug_type(struct kasan_access_info *info);
+ 
+diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+index 4bdd7dbd6647..b2638c2cd58a 100644
+--- a/mm/kasan/sw_tags.c
++++ b/mm/kasan/sw_tags.c
+@@ -121,6 +121,15 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
+ 	return true;
+ }
+ 
++bool check_invalid_free(void *addr)
++{
++	u8 tag = get_tag(addr);
++	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(reset_tag(addr)));
++
++	return (shadow_byte == KASAN_TAG_INVALID) ||
++		(tag != KASAN_TAG_KERNEL && tag != shadow_byte);
++}
++
+ #define DEFINE_HWASAN_LOAD_STORE(size)					\
+ 	void __hwasan_load##size##_noabort(unsigned long addr)		\
+ 	{								\
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
