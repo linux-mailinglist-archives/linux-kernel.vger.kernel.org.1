@@ -2,91 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB87A2807C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3ED2807C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732679AbgJATa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:30:29 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:18068 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729993AbgJATa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:30:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601580628; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=nBJ75yP41UnXYdgyDPSxmOLYDANcHjhJRBqTGpKi2qk=;
- b=Sz5n41rM4kPnN/MRcTTm2K0SqEt18AWh/HLEjOXZNTVD49KBgSyWrNe5puiiDXHSfRLCOwkj
- 3GuHWZ9VOxHsv10O2zkxMdUi5c3g8pqN7RZlX+X+pW/1w+YNJ5MCGPDeVk6kun8BptcAsqc9
- 035GkkWJ3g5cGRsleWK45zSOq7k=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f762e53e89f7b4c78450056 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 19:30:27
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0F73EC433CB; Thu,  1 Oct 2020 19:30:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C924BC433CA;
-        Thu,  1 Oct 2020 19:30:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C924BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1732751AbgJATcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729990AbgJATcV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:32:21 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96B6C0613D0;
+        Thu,  1 Oct 2020 12:32:20 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x69so36855lff.3;
+        Thu, 01 Oct 2020 12:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YnQw5I7E0IE6Jm9/sjhCU27Hvf+BvkH1b7yFmJGMXJk=;
+        b=IQ0Q7HihNmj2N5gtPNicajIxU3n0fnaxqryKbRbt6ce7eRM0pbTr8HZLRz3+spOa1N
+         fppFiOHxIf8sg0OuN4Wqru3+khhlkn4eYqy8tt97TfZ2WY3Nu5Pd1vPeRHMAg4ZZrfiW
+         Wjy3MyK2RYM3c/znLxcqU2omMUhRpo7eO0nagsFktLt6/HgzZVxamu88gEWRC/fKHPp/
+         v80LAcDmsu4iAELmIXZtTDLS9nnndOJIs0i/DLuH9B7E6W+1kKJb456TZv8SOxT/tna4
+         lh+KzSDq/RXhwvH5yZvxoqLEkRifzyaEDOxmomenDOWqhK0OXarCMmsAWDLYpCthz5z2
+         7ujQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YnQw5I7E0IE6Jm9/sjhCU27Hvf+BvkH1b7yFmJGMXJk=;
+        b=T9vJlr4rHku6MkXEP4HJoTNg6Rdw/SmgdQSua2dRRZrHOO/5EDacM8PcTRCDeketdy
+         V41cgHuoByExkeNXcoie/jfP+8bGEC2EZAPbE0YrZKKKj/fCrUnEHWWKbwCjZF5XWxRk
+         zqdlVXNYnK00UdRb0AyaZIZS+ZMzEvcIVmaWUorFgoHesgptR9kqIhFVwppmgjxO3FUB
+         zJUZSWghz5ESNf7GtNVGMH02Ijlgran8WIVxKeiBRjRg00CqlwcOQIqWrYzv5dGuMTJ+
+         kEB/OjeLMxM4N3DRn3rgTgyrCkX8SuKk/b1DBVm/NEHAyGrHW4eYGzkCrjJ+saRnXjyb
+         vjPA==
+X-Gm-Message-State: AOAM532wBv+fS/yD1eMmidju0Sj+APT3XRtGEXRCOOuiK5ygbJvqaU3O
+        sLzm6j33kC+6w5hDszdX64fQy+p+jcJftwMJ
+X-Google-Smtp-Source: ABdhPJwK1VkXLr9O8cmPF9oZr1DmAe5rL061I7HgPBONZTvCYAgvdKSgfytjnPxT/UHZUjVt/taz0A==
+X-Received: by 2002:a05:6512:403:: with SMTP id u3mr3015161lfk.10.1601580739284;
+        Thu, 01 Oct 2020 12:32:19 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id 10sm669191lfo.197.2020.10.01.12.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 12:32:18 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 1 Oct 2020 21:32:16 +0200
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201001193216.GB29606@pc636>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <20200930103557.GQ2277@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: Correctly check errors for calls to
- debugfs_create_dir()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200927132451.585473-1-alex.dewar90@gmail.com>
-References: <20200927132451.585473-1-alex.dewar90@gmail.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     unlisted-recipients:; (no To-header on input)
-        Alex Dewar <alex.dewar90@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)Alex Dewar <alex.dewar90@gmail.com>
-                                                                     ^-missing end of address
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201001193027.0F73EC433CB@smtp.codeaurora.org>
-Date:   Thu,  1 Oct 2020 19:30:27 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930103557.GQ2277@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Dewar <alex.dewar90@gmail.com> wrote:
-
-> debugfs_create_dir() returns an ERR_PTR in case of error, but never a
-> null pointer. There are a number of places where error-checking code can
-> accordingly be simplified.
+On Wed, Sep 30, 2020 at 12:35:57PM +0200, Michal Hocko wrote:
+> On Wed 30-09-20 00:07:42, Uladzislau Rezki wrote:
+> [...]
+> > <snip>
+> > bool is_pcp_cache_empty(gfp_t gfp)
+> > {
+> >     struct per_cpu_pages *pcp;
+> >     struct zoneref *ref;
+> >     unsigned long flags;
+> >     bool empty;
+> > 
+> >     ref = first_zones_zonelist(node_zonelist(
+> >             numa_node_id(), gfp), gfp_zone(gfp), NULL);
+> >     if (!ref->zone)
+> >             return true;
+> > 
+> >     local_irq_save(flags);
+> >     pcp = &this_cpu_ptr(ref->zone->pageset)->pcp;
+> >     empty = list_empty(&pcp->lists[gfp_migratetype(gfp)]);
+> >     local_irq_restore(flags);
+> > 
+> >     return empty;
+> > }
+> > 
+> > disable_irq();
+> > if (!is_pcp_cache_empty(GFP_NOWAIT))
+> >     __get_free_page(GFP_NOWAIT);
+> > enable_irq();
+> > <snip>
+> > 
+> > Do you mean to have something like above? I mean some extra API
+> > function that returns true or false if fast-fast allocation can
+> > either occur or not. Above code works just fine and never touches
+> > main zone->lock.
 > 
-> Addresses-Coverity: CID 1497150: Memory - illegal accesses (USE_AFTER_FREE)
-> Addresses-Coverity: CID 1497158: Memory - illegal accesses (USE_AFTER_FREE)
-> Addresses-Coverity: CID 1497160: Memory - illegal accesses (USE_AFTER_FREE)
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> The above code works with the _current_ implementation and it restricts
+> its implementation to some degree. Future changes might get harder to
+> implement with a pattern like this. I do not think we want users to be
+> aware of internal implementation details like pcp caches, migrate types
+> or others. While pcp caches are here for years and unlikely to change in
+> a foreseeable future many details are changing on regular basis.
+>
+I see your view. That was en example for better understanding.
 
-Patch applied to ath-next branch of ath.git, thanks.
+Thanks.
 
-476c1d3c2e61 ath11k: Correctly check errors for calls to debugfs_create_dir()
-
--- 
-https://patchwork.kernel.org/patch/11802131/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+--
+Vlad Rezki
