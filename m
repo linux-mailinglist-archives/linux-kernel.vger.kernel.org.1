@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BE927F944
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403B427F946
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgJAGBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S1730198AbgJAGBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGBK (ORCPT
+        with ESMTP id S1725878AbgJAGBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:01:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA678C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:01:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so3492524pfi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:01:10 -0700 (PDT)
+        Thu, 1 Oct 2020 02:01:14 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9ACC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:01:14 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so3453820pfg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=m2XRbUXGxlnpgAWt10mFNigNaLVJtQNlnjN5EQndllY=;
-        b=cWhUa+RaI689GXObmhWqafFRrgZ11ib6WHNAK+St0ybTMKuhqb6DxlhjLohjh05DuS
-         tzGkbesy5BeQyY4wYvSGKoyIzxaOSTCWvo958aVxgtgIcDlP3snCJUtstmiQxNSrSXja
-         UmdJ2WRuMjXD/0dpIEHjDn0yow2DBgz4uDmWA=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=9CKrOUbh52rbHzL+8oZN6c9K+nzYBY+gtLlzDv8SMxE=;
+        b=g06+ukW2bS0/8LwfovdMZLej/nuB3oisdGUIGPjtRoKpb9XbHFb8SyLaMeg6TQNgPW
+         oqDE5eqC2Pv9eofXKx84OXaN2PmeVDuceHKO2ay+w3br7V48TcKJbuaMQ0ONmOS+9wfW
+         +RK0fOm9Yp6b7BjRkwU09P33HGMT9c93onitw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=m2XRbUXGxlnpgAWt10mFNigNaLVJtQNlnjN5EQndllY=;
-        b=erAaRQdm0RU6jibMDt3cVDsQ0JSBHDA+If32xgmJlHqKKUhXHtpQvXoU3lzD7DBpen
-         Cw8ANIJD6cMvYL6Zlw1ysKHYGNf5JQK+Dw7o/ylm4dmywRsPgCv7ZX3Hdwko6IGYMBaE
-         SwVw8pUvyKU60DjwRF8VUxXiPf4VcKlEmoKx/tF81Y8FYu0Rfxv7QOnQpcSsBzscBYmy
-         T8tAMxZwBPmnHglsqcURzlRcO/29pqOuYbITvtQkLjacStdGEkdr9NrsKUM3j/lY8aeh
-         rDgVboZ8UEjRi/gj8QM92doXSF/7d1NJ1DSbKuBbcqHsda3OhLUsqG64rPb5g5arZc8Y
-         MmyA==
-X-Gm-Message-State: AOAM5302Sa1Qsp4H4ePbNNR/XWNEp+2iweG3XqZRTU+5c3G6dK23aoaX
-        6RxtsRPuAnW394EPTcGA1sVEgg==
-X-Google-Smtp-Source: ABdhPJwmcbGffPjlP6r485rkbOLTJr00urfc/ImOUlJ/uZqXYwfduo2dJPm7nMBidK2mrNuZV6GudQ==
-X-Received: by 2002:a62:6287:0:b029:142:2501:3982 with SMTP id w129-20020a6262870000b029014225013982mr5717876pfb.71.1601532070061;
-        Wed, 30 Sep 2020 23:01:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=9CKrOUbh52rbHzL+8oZN6c9K+nzYBY+gtLlzDv8SMxE=;
+        b=jz6lPMHL6yD/iZ0ceMfdTXBc66ivHzX+Qy8ns3v63Sr4gWNRL4HfVLNvdnfyThLOfP
+         PK/hfVWSAGuLbr7lh+QQuMcORo60eBsKbCA7XKO13FsaehoO9hYajXjtzKfRY/lJ3lbC
+         T+xG7vQ7brsfbbBFHL5P0eEJKVH79rUdAJz6fpclaaRm+fYWnr/fyftuKGWWLsjKSbNZ
+         4nesKsMum1Cvrv7AlKB60ugRmE8tnKcpk4MGKNg5IMjXeBMmwk2YNkKnhRXLS3KUSLR7
+         9JluQ5ZMZCMtZXR/b5WOuVoS0dxeAZR/P1lkoLpeEFUWqWlDYmp085UxbY1jM0WAV18Q
+         OYbg==
+X-Gm-Message-State: AOAM533dP9hMio1u2DBitDSeOqrp9BB4Und2io16o3Pj3Qd1evzvc199
+        +gXTJreEoR2yQQFyUFxsRRI3kg==
+X-Google-Smtp-Source: ABdhPJwMOxEq67OVw9EpZDWFCHL+80TRYJXCJ4LW3yfGXNtJPqy9Altdc4qlVorZ1gdeJ4G7Ati9fg==
+X-Received: by 2002:a63:8c6:: with SMTP id 189mr4976473pgi.207.1601532073802;
+        Wed, 30 Sep 2020 23:01:13 -0700 (PDT)
 Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id l2sm4032112pjy.3.2020.09.30.23.01.06
+        by smtp.gmail.com with ESMTPSA id l2sm4032112pjy.3.2020.09.30.23.01.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 23:01:09 -0700 (PDT)
+        Wed, 30 Sep 2020 23:01:13 -0700 (PDT)
 From:   Srinath Mannam <srinath.mannam@broadcom.com>
 To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Ray Jui <rjui@broadcom.com>
 Cc:     bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Srinath Mannam <srinath.mannam@broadcom.com>
-Subject: [PATCH v3 0/3] PCI: iproc: Add fixes to pcie iproc 
-Date:   Thu,  1 Oct 2020 11:30:51 +0530
-Message-Id: <20201001060054.6616-1-srinath.mannam@broadcom.com>
+        Bharat Gooty <bharat.gooty@broadcom.com>
+Subject: [PATCH v3 1/3] PCI: iproc: Fix out-of-bound array accesses
+Date:   Thu,  1 Oct 2020 11:30:52 +0530
+Message-Id: <20201001060054.6616-2-srinath.mannam@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201001060054.6616-1-srinath.mannam@broadcom.com>
+References: <20201001060054.6616-1-srinath.mannam@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000290c2b05b095be20"
+        boundary="00000000000060b41c05b095becc"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000290c2b05b095be20
+--00000000000060b41c05b095becc
 
-This patch series contains fixes and improvements to pcie iproc driver.
+From: Bharat Gooty <bharat.gooty@broadcom.com>
 
-This patch set is based on Linux-5.9.0-rc2.
+Declare the full size array for all revisions of PAX register sets
+to avoid potentially out of bound access of the register array
+when they are being initialized in iproc_pcie_rev_init().
 
-Changes from v2:
-  - Addressed Bjorn's review comments
-     - Corrected subject line and commit message of Patches 1 and 2.
-     
-Changes from v1:
-  - Addressed Bjorn's review comments
-     - pcie_print_link_status is used to print Link information.
-     - Added IARR1/IMAP1 window map definition.
+Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
+Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+---
+ drivers/pci/controller/pcie-iproc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Bharat Gooty (1):
-  PCI: iproc: Fix out-of-bound array accesses
-
-Roman Bacik (1):
-  PCI: iproc: Invalidate correct PAXB inbound windows
-
-Srinath Mannam (1):
-  PCI: iproc: Display PCIe Link information
-
- drivers/pci/controller/pcie-iproc.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index 905e93808243..d901b9d392b8 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
+ };
+ 
+ /* iProc PCIe PAXB BCMA registers */
+-static const u16 iproc_pcie_reg_paxb_bcma[] = {
++static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
+ };
+ 
+ /* iProc PCIe PAXB registers */
+-static const u16 iproc_pcie_reg_paxb[] = {
++static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
+ };
+ 
+ /* iProc PCIe PAXB v2 registers */
+-static const u16 iproc_pcie_reg_paxb_v2[] = {
++static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
+ };
+ 
+ /* iProc PCIe PAXC v1 registers */
+-static const u16 iproc_pcie_reg_paxc[] = {
++static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
+@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
+ };
+ 
+ /* iProc PCIe PAXC v2 registers */
+-static const u16 iproc_pcie_reg_paxc_v2[] = {
++static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
+ 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
+ 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
 -- 
 2.17.1
 
 
---000000000000290c2b05b095be20
+--00000000000060b41c05b095becc
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -161,14 +200,14 @@ fdegvyqihabnO/m+F5oMaBPUmzE+iQDKHmK2R3btmrFkZ8mIPEPM97mUf2J8LUrrThang9TN6edm
 +X3T4mIB0kCJfTYzyaZ2zhYx2kDVdOfMO4HbkqHQc2fRuFTuVKgUf8xa5BK6Q8QV5sD1YxLGb+XL
 TIRpMXJNiJf6eEMxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
 aWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2
-IC0gRzMCDDa88tbcUKwlq6jscjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg4N/N
-iKoUZ1O33JW+rx/fdsgFFV2APX8fzjEB7ZkGEjUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMjAxMDAxMDYwMTEwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQB
+IC0gRzMCDDa88tbcUKwlq6jscjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg02nz
+yYBEqPUh1mP2rsrjSN0THmKflAI2w18Ju1V0L40wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
+BgkqhkiG9w0BCQUxDxcNMjAxMDAxMDYwMTE0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQB
 KjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkq
-hkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAAnfrhJyiIiRF8EKEAaKFF5E
-4DgYNRJEbkOGAGc2DYjfIWiRK3E2MQmLB6ResS0KEvSvyi3JOugobgY+N+8LV8sfOkn8YhneBUxz
-l8VId43d0Xq79UHpcSewX6KCWr/fY1s23pFxPgYEdLBuh5EVvBKmq07LejSNVhKwNdBTdNGc+j30
-fv7h2l4IF6R9T6OFgTHFdR85dm2qxFAX9VNvsIY1Ks/kcF64/l+5gmlUhyxnE33bAedlswCChFYU
-Nv6oeNhNZ8WlJmi001kgaD17oz/l2pCtaSw9Xil17vR+9vhFgO+whCLx3dpRiR1mQ/TvdS2nQxS1
-62voFQDssg3d/K0=
---000000000000290c2b05b095be20--
+hkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBALn1z45+L1euB8Iwb2ohtClg
+92gRBFY/qAYAF5kRznuzLiWwBeBTCKBh06QJo1Wngn6ZjoONFs/K+bDU3r6SPjXJ4CsTaJRcakPM
+YH/daKbz/YbbznBektTZZQaENPr1MNuagwwu2E9eoIQcsbt4L0mC80OgDnm2SdJSmTy6CaMKbTZR
+BxEUx+RtAsDZJfUe/+qUnf2S0ERLjGnTDfMY3DDxbtJE6gdaG7b0+jkfsIC+jOKaFR1WsU8qxGAb
+a5FcuY/C1kZaTzk6jXtNxbUufAsKtmBUsZV4hvfdSFW/6DRHGq3mPJDpWrxshf9SEwBp8IHfvTPV
+i6Xht5XIRyyGzSg=
+--00000000000060b41c05b095becc--
