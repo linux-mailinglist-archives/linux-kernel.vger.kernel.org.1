@@ -2,132 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B011280791
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDD9280794
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgJATPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S1732684AbgJATP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729990AbgJATPO (ORCPT
+        with ESMTP id S1729990AbgJATP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:15:14 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3BAC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 12:15:14 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id q10so3661253qvs.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 12:15:14 -0700 (PDT)
+        Thu, 1 Oct 2020 15:15:57 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA11C0613D0;
+        Thu,  1 Oct 2020 12:15:57 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id f15so7368604ilj.2;
+        Thu, 01 Oct 2020 12:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uGMkAxhuDj5FfbPsEDifWNGaWo692405WXUEZbsRCxM=;
-        b=C075waHWdFnvMYTjG2o2S/1v9Ieo4CgRqHCOGyFXaWG9ko3GVbvVpXH4GOPqSz23HI
-         fdc546AqCcRdZFfjsbRlpB73EL+0myi94C6xKRWd9uG3Qi2XwCQBjCJLXrH1IEZ/TqPg
-         lvhSrK7UQul624Zt5Hp8oDrFUuoSF3ZgkMLjPpUIb7oKjszadpthUhsyRyfcWsD28j9/
-         bkxHP4nxyCFr07cpLkaj42rYJeEjqoFqdtBmnsbssegHP43VGzPrwihFT0MLmj0e5YWD
-         naUR8y+qtXvrlJGdjYSozYInRX6pdnKfVXXPmhLr250+G7LGVioE80ArnGyW0olfmzdN
-         ibkQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ykx0VFwBpOSHBUrfe0BcuppqQUC+bsqRCJaeyH9ESFI=;
+        b=lJDTNAVtfXW4dpX/glZXNoudEQ2UjlPhI+J4RBsIyB+yTfGCIJUYuxthMM/gXkFeqs
+         8Jobetyt/iwoDTmLhqn140BKV/0rqjsR72m6fX9X7QgbDz5xiyoESVj6gzvMWIoFFEX4
+         klRq4m6MdlsB/APoX2+PA8eH+/04k5GNSoO9DPrQiqAXTBQOO16+NH/mgmXp5G7Y+Y71
+         iKxCP3yrG0+8BCNTRxio46C297qeW0GbZUuL7VEywpRXJBRkw38x9bynG4OAN+A5PEm3
+         oOLoB4RQt5EXNFfWLK0ev7JsMJ2pai3M4Vgi5epjSJfYPDsVqNLUccwi00Jvnmet0bGI
+         jLfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uGMkAxhuDj5FfbPsEDifWNGaWo692405WXUEZbsRCxM=;
-        b=Eyct0ChVMbmyA0ujdiOTHEKZt55PTxTngC316bf/sQZ++2g+n5p6Brb3TdkBFYgmKi
-         3fBtcQZPNDTcapKCQkUl+H1WeOe7D0efwZrw0Tr3+qGeihDdgWL8nqeY6juPty2MJ+U4
-         uSeR8hHKzhH5g0slIkfSErukRtnPPd6SYVXpMvqjz7/jl40573lUUyk7PyQ7cBh4ZM9B
-         ao2TqlgvSVAFX77VCFgSvl0noJ1/W7FbmzxEGJWfxkGenKV29a5X1F+2nrdpWVfoLRe2
-         vkFbnXWooDVtsyG8dJHnv44V4U6wL7a1a5DbR5erImxvcpqR7cswGCtpOQsTZ9srZhkS
-         GAGA==
-X-Gm-Message-State: AOAM532QVUk0Xan9wBwmtdRR49wwLf8P1gcGSvcH56taaN7u8ZMOu2fg
-        wNBYiAP+dZPa4sTcWXTpj/tppQ==
-X-Google-Smtp-Source: ABdhPJwwcqAc4N1pLQ+ReR/iq1+k/8ZjmtVO90TFUjWFep363ro6Y0YtgjDBEKGQXpeNTqoOUP0kIQ==
-X-Received: by 2002:ad4:4e8f:: with SMTP id dy15mr8752477qvb.45.1601579713399;
-        Thu, 01 Oct 2020 12:15:13 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id h199sm7089007qke.112.2020.10.01.12.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 12:15:12 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kO42q-004rcz-1L; Thu, 01 Oct 2020 16:15:12 -0300
-Date:   Thu, 1 Oct 2020 16:15:12 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH 3/4] mmap locking API: Don't check locking if the mm
- isn't live yet
-Message-ID: <20201001191512.GF9916@ziepe.ca>
-References: <20200930011944.19869-1-jannh@google.com>
- <CAG48ez03YJG9JU_6tGiMcaVjuTyRE_o4LEQ7901b5ZoCnNAjcg@mail.gmail.com>
- <20200930123000.GC9916@ziepe.ca>
- <CAG48ez2z1R8MLS0_pjhBSGnJC8RwaHMpiGdv8GhJUCrwtsLOPg@mail.gmail.com>
- <CAG48ez0fhY0twgriBDv9RU1YG8mBxg_KoK_YsLPWYo4feAQ=Sg@mail.gmail.com>
- <20200930232655.GE9916@ziepe.ca>
- <CAG48ez0i2++2Jg1Z-RyCKn-uZ-gcszVknAaCyXbJyptuMxbCsg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ykx0VFwBpOSHBUrfe0BcuppqQUC+bsqRCJaeyH9ESFI=;
+        b=XRnNM7O2qg+iOptg9Zn6Xe5UnBA6fADAbPRroRqll+rQhgahZ+3K+WF85an5zxF3it
+         LE71mymf4loYeWn/wv6sP340gPbrwKCgEKZCiTcN7ZwvWAx6wykt5B3oPsSaJUI2q9Gu
+         6i3SX1iR6lv96QnTbjM5oKcF1Z6z9NsE/1PjQxdT/CnOQVPzgp6+zUBsagyjSRPfrOEO
+         Csb0xT9eMh+b+u/+N+Z6pWYo/zxYCTD50I9UTZLIpDkakAPIIemSEE7WNKMXeYo44LA1
+         xpEAp0KQq0WNE5nib51KDepwsgaE0rg8WvsT6/QVKmC0LHFh48BtAMF2rt8BsZASxDfy
+         n6SA==
+X-Gm-Message-State: AOAM530+l+BzUQK5OjleBW2yZb/uqpdSYvvraJ9hI8K255+KhiUU8Q9P
+        eQa+w038+IhnqzO0DMdC69RWGon/3Qb56/UGRtc=
+X-Google-Smtp-Source: ABdhPJxFJi5WSCLD+Qt6CIeP5jNGPGVedcVJlffgzPTE0dhx/wokQd56dVKG7pixc+H4Zw9OZKeVHwsqKyI6YKdfhwU=
+X-Received: by 2002:a92:950d:: with SMTP id y13mr3778828ilh.42.1601579756833;
+ Thu, 01 Oct 2020 12:15:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0i2++2Jg1Z-RyCKn-uZ-gcszVknAaCyXbJyptuMxbCsg@mail.gmail.com>
+References: <20201001014250.26987-1-david.e.box@linux.intel.com>
+ <20201001014250.26987-6-david.e.box@linux.intel.com> <CAHp75VcP58Ub=gmbRVy0TPJtntKvnQZoi3tOakxE0qsEqzGPVA@mail.gmail.com>
+ <CAKgT0Udk4ZdtAisB=edcUfnBqwNFtY8K54CF+9yEF6MZL1Th6Q@mail.gmail.com> <CAHp75VcfdHWCxMcHvEoO4yTGXooX=mbc-m2kOOuBmFn-FZ70DQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcfdHWCxMcHvEoO4yTGXooX=mbc-m2kOOuBmFn-FZ70DQ@mail.gmail.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 1 Oct 2020 12:15:45 -0700
+Message-ID: <CAKgT0UdaYzOqtSi4+8GW1Y1pRWiOud1vRPhdMjpDZTS9goxe0g@mail.gmail.com>
+Subject: Re: [PATCH V7 5/5] platform/x86: Intel PMT Crashlog capability driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:51:33AM +0200, Jann Horn wrote:
-> On Thu, Oct 1, 2020 at 1:26 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > On Wed, Sep 30, 2020 at 10:14:57PM +0200, Jann Horn wrote:
-> > > On Wed, Sep 30, 2020 at 2:50 PM Jann Horn <jannh@google.com> wrote:
-> > > > On Wed, Sep 30, 2020 at 2:30 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > > On Tue, Sep 29, 2020 at 06:20:00PM -0700, Jann Horn wrote:
-> > > > > > In preparation for adding a mmap_assert_locked() check in
-> > > > > > __get_user_pages(), teach the mmap_assert_*locked() helpers that it's fine
-> > > > > > to operate on an mm without locking in the middle of execve() as long as
-> > > > > > it hasn't been installed on a process yet.
-> > > > >
-> > > > > I'm happy to see lockdep being added here, but can you elaborate on
-> > > > > why add this mmap_locked_required instead of obtaining the lock in the
-> > > > > execv path?
-> > > >
-> > > > My thinking was: At that point, we're logically still in the
-> > > > single-owner initialization phase of the mm_struct. Almost any object
-> > > > has initialization and teardown steps that occur in a context where
-> > > > the object only has a single owner, and therefore no locking is
-> > > > required. It seems to me that adding locking in places like
-> > > > get_arg_page() would be confusing because it would suggest the
-> > > > existence of concurrency where there is no actual concurrency, and it
-> > > > might be annoying in terms of lockdep if someone tries to use
-> > > > something like get_arg_page() while holding the mmap_sem of the
-> > > > calling process. It would also mean that we'd be doing extra locking
-> > > > in normal kernel builds that isn't actually logically required.
-> > > >
-> > > > Hmm, on the other hand, dup_mmap() already locks the child mm (with
-> > > > mmap_write_lock_nested()), so I guess it wouldn't be too bad to also
-> > > > do it in get_arg_page() and tomoyo_dump_page(), with comments that
-> > > > note that we're doing this for lockdep consistency... I guess I can go
-> > > > change this in v2.
-> > >
-> > > Actually, I'm taking that back. There's an extra problem:
-> > > get_arg_page() accesses bprm->vma, which is set all the way back in
-> > > __bprm_mm_init(). We really shouldn't be pretending that we're
-> > > properly taking the mmap_sem when actually, we keep reusing a
-> > > vm_area_struct pointer.
+On Thu, Oct 1, 2020 at 11:47 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Oct 1, 2020 at 9:33 PM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+> > On Thu, Oct 1, 2020 at 9:37 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
+>
+> ...
+>
+> > Arguably not much. I'll drop the comment.
 > >
-> > Any chance the mmap lock can just be held from mm_struct allocation
-> > till exec inserts it into the process?
-> 
-> Hm... it should work if we define a lockdep subclass for this so that
-> lockdep is happy when we call get_user() on the old mm_struct while
-> holding that mmap lock.
+> > > > +       control &= ~(CRASHLOG_FLAG_MASK | CRASHLOG_FLAG_DISABLE);
+> > >
+> > > How does the second constant play any role here?
+> >
+> > The "control" flags are bits 28-31, while the disable flag is bit 27
+> > if I recall.
+>
+> Okay, then it adds more confusion to the same comment here and there.
+> Good you are about to drop the comment.
+>
+> > Specifically bit 31 is read only, bit 28 will clear bit 31, bit 29
+> > will cause the crashlog to be generated and set bit 31, and bit 30 is
+> > just reserved 0.
+>
+> Can this be added as a comment somewhere in the code?
 
-A subclass isn't right, it has to be a _nested annotation.
+I'll do that with the definitions themselves.
 
-nested locking is a pretty good reason to not be able to do this, this
-is something lockdep does struggle to model.
+> ...
+>
+> > > > +       ret = intel_pmt_dev_create(entry, &pmt_crashlog_ns, parent);
+> > > > +       if (!ret)
+> > > > +               return 0;
+>
+> (2)
+>
+> > > > +
+> > > > +       dev_err(parent, "Failed to add crashlog controls\n");
+> > > > +       intel_pmt_dev_destroy(entry, &pmt_crashlog_ns);
+> > > > +
+> > > > +       return ret;
+> > >
+> > > Can we use traditional patterns?
+> > > if (ret) {
+> > >   ...
+> > > }
+> > > return ret;
+> >
+> > I can switch it if that is preferred.
+>
+> Yes, please. The (2) is really hard to parse (easy to miss ! part and
+> be confused by return 0 one).
+>
+> ...
+>
+> > > Are you going to duplicate this in each driver? Consider to refactor
+> > > to avoid duplication of a lot of code.
+> >
+> > So the issue lies in the complexity of pmt_telem_add_entry versus
+> > pmt_crashlog_add_entry. Specifically I end up needing disc_res and the
+> > discovery table when I go to create the controls for the crashlog
+> > device. Similarly we have a third device that we plan to add called a
+> > watcher which will require us to keep things split up like this so we
+> > thought it best to split it up this way.
+>
+> Could you revisit and think how this can be deduplicated. I see at
+> least one variant with a hooks (callbacks) which you supply depending
+> on the driver, but the for-loop is kept in one place.
 
-Jason
+I'll see what I can do.
+
+> ...
+>
+> > > > +               .name   = DRV_NAME,
+> > >
+> > > > +MODULE_ALIAS("platform:" DRV_NAME);
+> > >
+> > > I'm not sure I have interpreted this:
+> > >         - Use 'raw' string instead of defines for device names
+> > > correctly. Can you elaborate?
+> >
+> > Again I am not sure what this is in reference to. If you can point me
+> > to some documentation somewhere I can take a look.
+>
+> Reference to your own changelog of this series!
+
+So the issue is we have two authors so it is a matter of keeping track
+of who is working on what.
+
+So apparently that was in reference to the MFD driver which was
+instantiating the devices using defines and there was only one spot
+where they were being used. The reason why I was confused is because
+the commit message had nothing to do with this patch and it I haven't
+really done any work on the MFD driver myself. The link to the 'raw'
+discussion can be found here:
+https://lore.kernel.org/lkml/20200728075859.GH1850026@dell/
