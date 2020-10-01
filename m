@@ -2,239 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183FB27FA32
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3B327FA35
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730756AbgJAHY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:24:56 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2002 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgJAHYz (ORCPT
+        id S1731081AbgJAHZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgJAHZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:24:55 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7584380000>; Thu, 01 Oct 2020 00:24:40 -0700
-Received: from [10.2.56.62] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 07:24:36 +0000
-Subject: Re: [PATCH 1/5] kselftests: vm: Add mremap tests
-To:     Kalesh Singh <kaleshsingh@google.com>
-CC:     <surenb@google.com>, <minchan@google.com>, <joelaf@google.com>,
-        <lokeshgidra@google.com>, <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Krzysztof Kozlowski" <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Dave Martin <Dave.Martin@arm.com>, Jia He <justin.he@arm.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Zi Yan <ziy@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        "Sandipan Das" <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Ralph Campbell" <rcampbell@nvidia.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "SeongJae Park" <sjpark@amazon.de>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
- <20200930222130.4175584-2-kaleshsingh@google.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <0dc41856-e406-7f00-1eb9-5e97e476afa4@nvidia.com>
-Date:   Thu, 1 Oct 2020 00:24:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 03:25:41 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50381C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:25:40 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id s66so4463465otb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zfGZF4MV9LWG1+NodJbiuxHC3TceIWUFb6Ap4wdqNIA=;
+        b=TeI3sAnlerg81mosNDi1OU1FCraSaz39/P0KX8M369xRjqBBQkO+GqE2gaeovGyU5N
+         SbXwsl1688O6wtDdN6VHp62NfTmHkeBC1jiNQ35ZVLOsXBUby+JsGUj4lx3gCLV/odyn
+         gV7DGZGClSGws3CNeOiHg/3Ob+oMbLzNx+/Jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zfGZF4MV9LWG1+NodJbiuxHC3TceIWUFb6Ap4wdqNIA=;
+        b=pPcQba03RAF29wFzIjorT6nyYz0N9GvBzhle2o4jYesord3iwEZ3KwS1mLjMTjyfg3
+         KXRFY7GDJJps3J73l62OXOGwK4p7/7/l2OJ98JfD68Ic/o1laB9kIqaDzfXiU0MKV0If
+         Lzn9UEyzKRq2G/8psnMtui/lfQMrTyCSripYnVlJC6WxdicLK0oFsz0U4eONBRRfTa4j
+         iU+yPw3FaGoY3At+w53/X45g08HPug1BLBJiHT7skvEsDrvsP8A7IFwb9tUniTI3FVGP
+         8/sbCKl8I8ZhlIBk5qVKQaQ6cL7p1r46muRsLNn/2esp79pCYisWOumhXAVF36Oc0CFm
+         Zjxw==
+X-Gm-Message-State: AOAM530HgYUF6Dm6yzAAXkL3yHdUl4LwwAHOlmuH5zmSpEmEXwTH/K0T
+        1hJlfetLO7HP26yi+lYEmKQ/6T3+tuYiLDx+gMlF+A==
+X-Google-Smtp-Source: ABdhPJxYphOpZt0pFo5YwUFzXc9UFWkrH6ESb9yDDzrn4yIDZ604inDZBF2z+vgTw/HQBxJ8xJ7E9csTDfXJDlrJHIE=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr4211927otq.188.1601537139212;
+ Thu, 01 Oct 2020 00:25:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200930222130.4175584-2-kaleshsingh@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601537080; bh=KU02b+raxLWH6/MBrWXmT5SF+yrCs8jtMm2nneTyTus=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=ZQYl2hvc1xggUUarMSzvNAMisjtkrQul85SKbqE14jzfevglgYJqSqBhLTVB9oTPT
-         Aj2vdHQ+BxNdvmAy4xx2U9IJ0fqLBvX0hq1DUM0yC+fcx6yPXkBfjLVbJOhxsrFZIe
-         5MC2Dt9sUrUYbmFijaqmf2VGjjYS6JNsnLozoDR6v9Q5Q12oLEktQg5s6ztKOctZyg
-         vudZv6UsekVAgSuFXKw1N2CjTq4STXZLFGJE/QVSogcgDzJQ86qiTtySyMDcT2oRK3
-         okYanC/KR5KovVc4qSFJmkQKUgtBT3rgNK3eFBcX7x0vo48ocElcfFkjnZ4aNvNq2v
-         G2BAxJTS8jlQw==
+References: <20200930211723.3028059-1-robdclark@gmail.com>
+In-Reply-To: <20200930211723.3028059-1-robdclark@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 1 Oct 2020 09:25:28 +0200
+Message-ID: <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 3:21 PM, Kalesh Singh wrote:
-> Test mremap on regions of various sizes and alignments and validate
-> data after remapping. Also provide total time for remapping
-> the region which is useful for performance comparison of the mremap
-> optimizations that move pages at the PMD/PUD levels if HAVE_MOVE_PMD
-> and/or HAVE_MOVE_PUD are enabled.
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
->   tools/testing/selftests/vm/.gitignore    |   1 +
->   tools/testing/selftests/vm/Makefile      |   1 +
->   tools/testing/selftests/vm/mremap_test.c | 243 +++++++++++++++++++++++
->   tools/testing/selftests/vm/run_vmtests   |  11 +
->   4 files changed, 256 insertions(+)
->   create mode 100644 tools/testing/selftests/vm/mremap_test.c
-> 
+On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> The android userspace treats the display pipeline as a realtime problem.
+> And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> that I found.)
+>
+> But this presents a problem with using workqueues for non-blocking
+> atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> preempt the worker.  Which is not really the outcome you want.. once
+> the required fences are scheduled, you want to push the atomic commit
+> down to hw ASAP.
+>
+> But the decision of whether commit_work should be RT or not really
+> depends on what userspace is doing.  For a pure CFS userspace display
+> pipeline, commit_work() should remain SCHED_NORMAL.
+>
+> To handle this, convert non-blocking commit_work() to use per-CRTC
+> kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+> used to avoid serializing commits when userspace is using a per-CRTC
+> update loop.  And the last patch exposes the task id to userspace as
+> a CRTC property, so that userspace can adjust the priority and sched
+> policy to fit it's needs.
+>
+>
+> v2: Drop client cap and in-kernel setting of priority/policy in
+>     favor of exposing the kworker tid to userspace so that user-
+>     space can set priority/policy.
 
-Hi,
+Yeah I think this looks more reasonable. Still a bit irky interface,
+so I'd like to get some kworker/rt ack on this. Other opens:
+- needs userspace, the usual drill
+- we need this also for vblank workers, otherwise this wont work for
+drivers needing those because of another priority inversion.
+- we probably want some indication of whether this actually does
+something useful, not all drivers use atomic commit helpers. Not sure
+how to do that.
+- not sure whether the vfunc is an awesome idea, I'd frankly just
+open-code this inline. We have similar special cases already for e.g.
+dpms (and in multiple places), this isn't the worst.
+- still feeling we could at least change the default to highpriority niceness.
+- there's still the problem that commit works can overlap, and a
+single worker can't do that anymore. So rolling that out for everyone
+as-is feels a bit risky.
 
-This takes 100x longer to run than it should: 1:46 min of running time on
-my x86_64 test machine. The entire selftests/vm test suite takes 45 sec on a
-bad day, where a bad day is defined as up until about tomorrow, when I will
-post a compaction_test.c patch that will cut that time down to about half, or
-24 sec total run time...for 22 tests!
+Cheers, Daniel
 
-In other words, most tests here should take about 1 or 2 seconds, unless they
-are exceptionally special snowflakes.
-
-At the very least, the invocation within run_vmtests could pass in a parameter
-to tell it to run a shorter test. But there's also opportunities to speed it
-up, too.
-
-...
-> +
-> +#define MAKE_TEST(source_align, destination_align, size,	\
-> +		  overlaps, should_fail, test_name)		\
-> +{								\
-> +	.name = test_name,					\
-> +	.config = {						\
-> +		.src_alignment = source_align,			\
-> +		.dest_alignment = destination_align,		\
-> +		.region_size = size,				\
-> +		.overlapping = overlaps,			\
-> +	},							\
-> +	.expect_failure = should_fail				\
-> +}
-> +
-
-OK...
-
-> +#define MAKE_SIMPLE_TEST(source_align, destination_align, size)	\
-> +	MAKE_TEST(source_align, destination_align, size, 0, 0,	\
-> +		  #size " mremap - Source " #source_align	\
-> +		  " aligned, Destination " #destination_align	\
-> +		  " aligned")
-> +
-
-...and not OK. :)  Because this is just obscuring things. Both the
-code and the output are harder to read. For these tiny test programs,
-clarity is what we want, not necessarily compactness on the screen.
-Because people want to get in, understand what they seen in the code
-and match it up with what is printed to stdout--without spending much
-time. (And that includes run time, as hinted at above.)
-
-...
-> +
-> +/* Returns the time taken for the remap on success else returns -1. */
-> +static long long remap_region(struct config c)
-> +{
-> +	void *addr, *src_addr, *dest_addr;
-> +	int i, j;
-> +	struct timespec t_start = {0, 0}, t_end = {0, 0};
-> +	long long  start_ns, end_ns, align_mask, ret, offset;
-> +	char pattern[] = {0xa8, 0xcd, 0xfe};
-
-I'd recommend using rand() to help choose the pattern, and using different
-patterns for different runs. When testing memory, it's a pitfall to have
-the same test pattern.
-
-Normally, you'd also want to report the random seed or the test pattern(s)
-or both to stdout, and provide a way to run with the same pattern, but
-here I don't *think* you care: all patterns should have the same performance.
-
-> +	int pattern_size = ARRAY_SIZE(pattern);
-> +
-> +	src_addr = get_source_mapping(c);
-> +	if (!src_addr) {
-> +		ret = -1;
-> +		goto out;
-> +	}
-> +
-> +	/* Set byte pattern */
-> +	for (i = 0; i < c.region_size; i++) {
-> +		for (j = 0; i+j < c.region_size && j < pattern_size; j++)
-> +			memset((char *) src_addr + i+j, pattern[j], 1);
-> +		i += pattern_size-1;
-> +	}
-> +
-> +	align_mask = ~(c.dest_alignment - 1);
-> +	offset = (c.overlapping) ? -c.dest_alignment : c.dest_alignment;
-
-A comment for what the above two lines are doing would be a nice touch.
-
-...
-> +	start_ns = t_start.tv_sec * 1000000000ULL + t_start.tv_nsec;
-> +	end_ns = t_end.tv_sec * 1000000000ULL + t_end.tv_nsec;
-
-A const or #defined for all those 0000's would help.
-
-...
-> +int main(int argc, char *argv[])
-> +{
-> +	int failures = 0;
-> +	int i;
-> +
-> +	struct test test_cases[] = {
-> +		/* Expected mremap failures */
-> +		MAKE_TEST(_4KB, _4KB, _4KB, 1 /* overlaps */, 1 /* fails */,
-
-Named flags instead of 1's and 0's would avoid the need for messy comments.
-
-> +			  "mremap - Source and Destination Regions Overlapping"),
-> +		MAKE_TEST(_4KB, _1KB, _4KB, 0 /* overlaps */, 1 /* fails */,
-> +			  "mremap - Destination Address Misaligned (1KB-aligned)"),
-> +		MAKE_TEST(_1KB, _4KB, _4KB, 0 /* overlaps */, 1 /* fails */,
-> +			  "mremap - Source Address Misaligned (1KB-aligned)"),
-> +
-> +		/* Src addr PTE aligned */
-> +		MAKE_SIMPLE_TEST(PTE, PTE, _8KB),
-> +
-> +		/* Src addr 1MB aligned */
-> +		MAKE_SIMPLE_TEST(_1MB, PTE, _2MB),
-> +		MAKE_SIMPLE_TEST(_1MB, _1MB, _2MB),
-> +
-> +		/* Src addr PMD aligned */
-> +		MAKE_SIMPLE_TEST(PMD, PTE, _4MB),
-> +		MAKE_SIMPLE_TEST(PMD, _1MB, _4MB),
-> +		MAKE_SIMPLE_TEST(PMD, PMD, _4MB),
-> +
-> +		/* Src addr PUD aligned */
-> +		MAKE_SIMPLE_TEST(PUD, PTE, _2GB),
-> +		MAKE_SIMPLE_TEST(PUD, _1MB, _2GB),
-> +		MAKE_SIMPLE_TEST(PUD, PMD, _2GB),
-> +		MAKE_SIMPLE_TEST(PUD, PUD, _2GB),
+>
+> Rob Clark (3):
+>   drm/crtc: Introduce per-crtc kworker
+>   drm/atomic: Use kthread worker for nonblocking commits
+>   drm: Expose CRTC's kworker task id
+>
+>  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++++----
+>  drivers/gpu/drm/drm_crtc.c          | 14 +++++++++++++
+>  drivers/gpu/drm/drm_mode_config.c   | 14 +++++++++++++
+>  drivers/gpu/drm/drm_mode_object.c   |  4 ++++
+>  include/drm/drm_atomic.h            | 31 +++++++++++++++++++++++++++++
+>  include/drm/drm_crtc.h              |  8 ++++++++
+>  include/drm/drm_mode_config.h       |  9 +++++++++
+>  include/drm/drm_property.h          |  9 +++++++++
+>  8 files changed, 98 insertions(+), 4 deletions(-)
+>
+> --
+> 2.26.2
+>
 
 
-Too concise. Not fun lining these up with the stdout report.
-
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
