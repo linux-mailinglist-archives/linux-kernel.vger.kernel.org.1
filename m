@@ -2,156 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE47427F907
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0615027F908
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730296AbgJAF0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAF0D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:26:03 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4585C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:26:01 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so1582582wmj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HmHXTE4F4jHgiV3b6mUSLNF1ue58qvwcw3gNuO6qY4I=;
-        b=BwZawTwssCSHJIY8ZKQ6Lg66wC0Ejy+zgkgNYQxLt6KTAzXZPnNrCsR625R+QwrZMs
-         xbGjtEmW5jSNklim03smW9OxDEuuC+q+9XEShCgD+PCTqRflokfivpMRCpRcqXrQF+l1
-         FAc9TIQL1ypuiOrhBBdndVzrQM/AkkxBTTXc4kJkwPw5nVOGxZhhwZEaYS0kx0eXTv8b
-         bn570RO4o2xQRpj2ZRhXi2wIRwQkeQDjaX8xBjc8YHq5jyZi5ZbrNkzfrluKQB88Az5S
-         RuNNy28rQ+YGKfm2lB/x/f6CuEi5r1+fFE/uJaF5cF1vd5GtAg7WFK44r7adtouj9/vI
-         jvdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HmHXTE4F4jHgiV3b6mUSLNF1ue58qvwcw3gNuO6qY4I=;
-        b=DhXgCmeuXdvYdfUgL43m/Z0PR1YqRAiEH17Wek8rfxP49O38vdTwSWNOa8/4+cYK4V
-         hpTJXt/XmE6zVN+6N7MqLAV/udMdUhUCvgHwbvrgNTex3x1I2SjFZym2SpVYKap3wcRL
-         P5hB3Cp+jMiGZvhEr6qbSJD5I+hdJHzGHHKAWevRzH8Z7dqfCgHBdROrL4j2j0kF1Q8P
-         ZT2lube7hxvI3RUJPeo7ZRz/eY+4wpAdyHg3YO1qcAK98DH7cs0Nl/KDvPxUjXAI6ClG
-         bppRqlnLijFpdiOg+YA1wgnQ6SHI/6kFa5FaRRLcssNOzqHy+sKoMQgxWC2/7G51AgGl
-         WWug==
-X-Gm-Message-State: AOAM531YCYnddZikrGl7v/qxjD4Iu/ZxhmQfmY9fAgML9I1oWxA5oVra
-        G6QtNKeOLILh8yFaXunOS5Z6of/m/ujsagWxWzWL3Q==
-X-Google-Smtp-Source: ABdhPJyb42+Wu0aSWknv7IDpH5TfGfCzkXWQYUfXuL9BSTx60VGW3TbHec1zPwR8CgrhuJRrXwYV2H7NcSHmTCVB0Ys=
-X-Received: by 2002:a05:600c:220f:: with SMTP id z15mr6231303wml.87.1601529960166;
- Wed, 30 Sep 2020 22:26:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-8-jolsa@kernel.org>
-In-Reply-To: <20200930171512.3986425-8-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 30 Sep 2020 22:25:48 -0700
-Message-ID: <CAP-5=fWOmLDdHwHhTY0cL3hnML0VuEbfzFvsNF7kZV0mtYGW5g@mail.gmail.com>
-Subject: Re: [PATCH 7/9] perf tools: Pass build_id object to dso__build_id_equal
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725943AbgJAF12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:27:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAF11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 01:27:27 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA27221D7D;
+        Thu,  1 Oct 2020 05:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601530047;
+        bh=oPDglaBtk+EDIXoigZrFeZ0iVAhmabSrKziAaX9kN+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZrTFoG2EQdCKU6+jOkCdQaQ9Ix3Hu4vk4xkp+tuKgN0lQmuVwvEmHHqujFz1d6w9O
+         bwzcR85aQc0EQLvrGl4oxZD0MFkYpyX4tVBhuwABkjKedJBxhpzbBhcuQ5Waz9rmEa
+         x/6TYyDJ3YAn/uKtR8NegJ2yyc/4kqSCqVyWiGQw=
+Date:   Thu, 1 Oct 2020 14:27:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] tracing: Fix parse_synth_field() error handling
+Message-Id: <20201001142723.66b8f3d7d6f7df803044c567@kernel.org>
+In-Reply-To: <15b1808e1466f378fcf206e61b57c802423f8319.1601490263.git.zanussi@kernel.org>
+References: <cover.1601490263.git.zanussi@kernel.org>
+        <15b1808e1466f378fcf206e61b57c802423f8319.1601490263.git.zanussi@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Passing build_id object to dso__build_id_equal, so we can
-> properly check build id with different size than sha1.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Hi Tom,
 
-Acked-by: Ian Rogers <irogers@google.com>
+On Wed, 30 Sep 2020 13:40:51 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-Thanks,
-Ian
+> synth_field_size() returns either a positive size or an error (zero or
+> a negative value). However, the existing code assumes the only error
+> value is 0. It doesn't handle negative error codes, as it assigns
+> directly to field->size (a size_t; unsigned), thereby interpreting the
+> error code as a valid size instead.
+> 
+> Do the test before assignment to field->size.
 
+This looks good to me. And I guess it is a kind of bugfix which should be backported?
+(doesn't this need a Fixes tag?)
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> [ axelrasmussen@google.com: changelog addition, first paragraph above ]
+> 
+> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 > ---
->  tools/perf/util/dso.c        | 5 +++--
->  tools/perf/util/dso.h        | 2 +-
->  tools/perf/util/symbol-elf.c | 8 ++++++--
->  tools/perf/util/symbol.c     | 2 +-
->  4 files changed, 11 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> index 4415ce83150b..ca965845b35e 100644
-> --- a/tools/perf/util/dso.c
-> +++ b/tools/perf/util/dso.c
-> @@ -1332,9 +1332,10 @@ void dso__set_build_id(struct dso *dso, struct build_id *bid)
->         dso->has_build_id = 1;
->  }
->
-> -bool dso__build_id_equal(const struct dso *dso, u8 *build_id)
-> +bool dso__build_id_equal(const struct dso *dso, struct build_id *bid)
->  {
-> -       return memcmp(dso->bid.data, build_id, sizeof(dso->bid.data)) == 0;
-> +       return dso->bid.size == bid->size &&
-> +              memcmp(dso->bid.data, bid->data, dso->bid.size) == 0;
->  }
->
->  void dso__read_running_kernel_build_id(struct dso *dso, struct machine *machine)
-> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-> index 5a5678dbdaa5..f926c96bf230 100644
-> --- a/tools/perf/util/dso.h
-> +++ b/tools/perf/util/dso.h
-> @@ -261,7 +261,7 @@ void dso__set_sorted_by_name(struct dso *dso);
->  void dso__sort_by_name(struct dso *dso);
->
->  void dso__set_build_id(struct dso *dso, struct build_id *bid);
-> -bool dso__build_id_equal(const struct dso *dso, u8 *build_id);
-> +bool dso__build_id_equal(const struct dso *dso, struct build_id *bid);
->  void dso__read_running_kernel_build_id(struct dso *dso,
->                                        struct machine *machine);
->  int dso__kernel_module_get_build_id(struct dso *dso, const char *root_dir);
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index 97a55f162ea5..44dd86a4f25f 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -834,13 +834,17 @@ int symsrc__init(struct symsrc *ss, struct dso *dso, const char *name,
->         /* Always reject images with a mismatched build-id: */
->         if (dso->has_build_id && !symbol_conf.ignore_vmlinux_buildid) {
->                 u8 build_id[BUILD_ID_SIZE];
-> +               struct build_id bid;
-> +               int size;
->
-> -               if (elf_read_build_id(elf, build_id, BUILD_ID_SIZE) < 0) {
-> +               size = elf_read_build_id(elf, build_id, BUILD_ID_SIZE);
-> +               if (size <= 0) {
->                         dso->load_errno = DSO_LOAD_ERRNO__CANNOT_READ_BUILDID;
->                         goto out_elf_end;
->                 }
->
-> -               if (!dso__build_id_equal(dso, build_id)) {
-> +               build_id__init(&bid, build_id, size);
-> +               if (!dso__build_id_equal(dso, &bid)) {
->                         pr_debug("%s: build id mismatch for %s.\n", __func__, name);
->                         dso->load_errno = DSO_LOAD_ERRNO__MISMATCHING_BUILDID;
->                         goto out_elf_end;
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 976632d0baa0..6138866665df 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -2136,7 +2136,7 @@ static char *dso__find_kallsyms(struct dso *dso, struct map *map)
->         }
->
->         if (sysfs__read_build_id("/sys/kernel/notes", &bid) == 0)
-> -               is_host = dso__build_id_equal(dso, bid.data);
-> +               is_host = dso__build_id_equal(dso, &bid);
->
->         /* Try a fast path for /proc/kallsyms if possible */
->         if (is_host) {
-> --
-> 2.26.2
->
+>  kernel/trace/trace_events_synth.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index a9cd7793f7ea..fa8a99828f41 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -465,6 +465,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+>  	struct synth_field *field;
+>  	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
+>  	int len, ret = 0;
+> +	ssize_t size;
+>  
+>  	if (field_type[0] == ';')
+>  		field_type++;
+> @@ -520,11 +521,12 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
+>  			field->type[len - 1] = '\0';
+>  	}
+>  
+> -	field->size = synth_field_size(field->type);
+> -	if (!field->size) {
+> +	size = synth_field_size(field->type);
+> +	if (size <= 0) {
+>  		ret = -EINVAL;
+>  		goto free;
+>  	}
+> +	field->size = size;
+>  
+>  	if (synth_field_is_string(field->type))
+>  		field->is_string = true;
+> -- 
+> 2.17.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
