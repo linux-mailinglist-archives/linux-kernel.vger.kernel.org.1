@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1142F27F911
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3777227F919
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbgJAFe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S1730841AbgJAFfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAFe4 (ORCPT
+        with ESMTP id S1726992AbgJAFfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:34:56 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497F8C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:34:56 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id l126so3426761pfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:34:56 -0700 (PDT)
+        Thu, 1 Oct 2020 01:35:15 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0004C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:35:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w2so1604915wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:35:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/Hxu1/8uWO5dT1F+Fj0QUW+S+tLozKOVBkM9Qf0CzG0=;
-        b=Qk0MKWhZubOTHngyLAHEmyn0bRX9FgKY//QSGPBVllkeVLleuWunQWbXaVnf3JxDKo
-         9XcjWSbanfELjs/kKov26ou7uBaFbt8Cdgq9y/WPuAK+k15dMo7PYFX/hVHt1egpyn+i
-         tdbn+GqRChZwCatocZz6ifyo0gYe9xR2ECmrPuDlSbqH7+/sozLzdlXGtSz5ulo0C4wx
-         5CM1as2avZjwE/9MofMM48cjTM/YDNROaAaxUGcsGpZC9VRT1ISEKBMZLgfytRAoPNYo
-         qVRJ+7Pj7HT1/FoPgqYZ+l/ev03GyEnZ1PmJqY9m8PcS7yhAiSBRXS4FAE1OYQB3sRpU
-         2nXQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WQEcLnglV2nTwBheM5HtxkVuYhbwp8sHenM1j3wNKFU=;
+        b=I9tN5epr/tYWktZWD/mMK3gecI69FwuNydgbMcLyK8byL2NjC8Esgr6WRAeXXktzDs
+         saV5/l0WW+m7W6aGR4FjTMX/b2peJ3JfAWzv+KTT6vg4dfZykxLsaQdVSdkHCw6aS4ik
+         jZB602gh3Up1zXgtvbp6rhAuVarw1Q7xNpNyxCEhxhn9kiH8NbVlIgW7rsdQKqPGxPKG
+         4jTV/k4uH026hQSkr3us7FUCn/X/cNVUq6VyNy8zvclMELUzezpUhdAlbCEJOauKfqv+
+         iSedOlZYrW2R6SnsatSnW4vkuJmrhG4HUPBQ3OpVwwqyieMbTj52Ce0eDT4cFfQdKxu2
+         +xiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/Hxu1/8uWO5dT1F+Fj0QUW+S+tLozKOVBkM9Qf0CzG0=;
-        b=lJnSN1XGb9PhH3nFHgB1Dvzp3ObLCVwYPUO+IuvKgRl4s/0jhIorDwTAEIY6bOWIHM
-         lC0wssM48+ZV5CilED0uwiuQXonSk6IdGXdCQMx+hNUUMZvLZVvwYTu02xdE+WzTIBRD
-         mPX+VULrUfWcXshp7ZpxmmB8joHZKCTsGQ4DG8hYQVJHq4HVRzpuR4cy44JUAMikTKfx
-         93JWPLI99hJHuJ4at/56SRIlnTqcKbv2gUMKqVzEpumKP+a45Nhd7ULAGofnXQkW2RTy
-         2o84LXDpwk0MG7RQeuNab3uBdZWstWpzQC2CclA43D/wKO9Pd/lMg8hTpkIXU0P1jlgd
-         Oy5A==
-X-Gm-Message-State: AOAM530QiJWE78rIO+5X8jdjfIPb09pkHnE923IT8UcEek0Mi1xy/B0+
-        T+srUchRW76d7sHRR8P4wt/d
-X-Google-Smtp-Source: ABdhPJx17lXdgyF42SQih/6QFby4y82FoFd8iyDG5u1l8Msh8Qyw81A49PngqtFcsmqZX/S2+ncgFg==
-X-Received: by 2002:a63:464f:: with SMTP id v15mr4751281pgk.330.1601530495671;
-        Wed, 30 Sep 2020 22:34:55 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:188:5adb:1423:88c1:4321:a364])
-        by smtp.gmail.com with ESMTPSA id x3sm4641456pfq.49.2020.09.30.22.34.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 22:34:54 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:04:45 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        vkoul@kernel.org, robh@kernel.org, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mgautam@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] PCI: qcom: Add SM8250 SoC support
-Message-ID: <20201001053444.GA3203@Mani-XPS-13-9360>
-References: <20200930150925.31921-1-manivannan.sadhasivam@linaro.org>
- <20200930150925.31921-5-manivannan.sadhasivam@linaro.org>
- <0a6a765d-1b80-9d1b-f881-b75f13bd5b02@mm-sol.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WQEcLnglV2nTwBheM5HtxkVuYhbwp8sHenM1j3wNKFU=;
+        b=YfhX+I8ce3JrwXUy020gKSlTl5W+XTNXs8pJoDUEflSpX6KG3kptZtH2PKO6caTVql
+         tjZ5WQe9vOkHKudH0G3fqRgIejvSCUqI6Uh2mgO83t7udXFb7PWnipT526AK03aKPMU1
+         QQQOJlcz6gy616efCoPIK0hrXc761PjvzI4DZi5zpG2FUgeWBXh2NghR+FjLWv9QW3zB
+         NdtWpKTjK5mM8lYZBwOIg+39EgT7jONExADD4hpnboj4PQ1QoJMIjO9t0/o+tDmyzXWg
+         BW/Vhy4L4CIDiW1AZhEXljcBEmJnQEd1aLPZ/vNRdSV5TIBYo5RR/9MCS3BN9Qw+azQJ
+         qo3A==
+X-Gm-Message-State: AOAM5304++LfmVZQo+9eqYg2luMvSG0KImhjKJ+4BLsqDUsVDrT0Cs6T
+        HpTcia+17jISFav6UeHnjhnhX0rDjZtQCbyEH7oDHQ==
+X-Google-Smtp-Source: ABdhPJzQRQSagSOzeXc0C/R6OvKKnNg828QR4gSjfXfz6/pdTvhTsA7wrFM3DEeL8+ZAcBQ5opQvK6QbxCBTHnVKYTk=
+X-Received: by 2002:a1c:7514:: with SMTP id o20mr6279695wmc.76.1601530513302;
+ Wed, 30 Sep 2020 22:35:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a6a765d-1b80-9d1b-f881-b75f13bd5b02@mm-sol.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-10-jolsa@kernel.org>
+In-Reply-To: <20200930171512.3986425-10-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 30 Sep 2020 22:35:01 -0700
+Message-ID: <CAP-5=fVPE2OT4ts3oFoBfjPMMA6bQ1QW4P_-Gy==EdywGfcsBQ@mail.gmail.com>
+Subject: Re: [PATCH 9/9] perf tools: Align buildid list output for short build ids
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> With shorter md5 build ids we need to align their
+> paths properly with other build ids:
+>
+>   $ perf buildid-list
+>   17f4e448cc746582ea1881528deb549f7fdb3fd5 [kernel.kallsyms]
+>   a50e350e97c43b4708d09bcd85ebfff7         .../tools/perf/buildid-ex-md5
+>   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-On Thu, Oct 01, 2020 at 12:56:28AM +0300, Stanimir Varbanov wrote:
-> Hi Mani,
-> 
-> On 9/30/20 6:09 PM, Manivannan Sadhasivam wrote:
-> > The PCIe IP on SM8250 SoC is similar to the one used on SDM845. Hence
-> > the support is added reusing the members of ops_2_7_0. The key
-> > difference between ops_2_7_0 and ops_sm8250 is the config_sid callback,
-> > which will be added in successive commit.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 3aac77a295ba..44db91861b47 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -1359,6 +1359,16 @@ static const struct qcom_pcie_ops ops_2_7_0 = {
-> >  	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-> >  };
-> >  
-> > +/* Qcom IP rev.: 1.9.0 */
-> > +static const struct qcom_pcie_ops ops_sm8250 = {
-> 
-> This breaks the policy compatible -> ops_X_Y_Z. Could you introduce new
-> method config_sid and check into for compatible qcom,pcie-sm8250 string
-> there?
-> 
-
-I thought about it but during previous submission review Bjorn mentioned that
-this config_sid got introduced in SM8150 and there might be chances that future
-SoCs could also use it. That's why I was inclined to introduce a new ops instead
-of checking for the compatible.
-
-And the reason to use "sm8250" instead of IP revision is that I can't find the
-Synopsys IP revision for this. But if you strongly prefer IP revision then I can
-just use "ops_1_9_0"!
+Acked-by: Ian Rogers <irogers@google.com>
 
 Thanks,
-Mani
+Ian
 
-> > +	.get_resources = qcom_pcie_get_resources_2_7_0,
-> > +	.init = qcom_pcie_init_2_7_0,
-> > +	.deinit = qcom_pcie_deinit_2_7_0,
-> > +	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
-> > +	.post_init = qcom_pcie_post_init_2_7_0,
-> > +	.post_deinit = qcom_pcie_post_deinit_2_7_0,
-> > +};
-> > +
-> >  static const struct dw_pcie_ops dw_pcie_ops = {
-> >  	.link_up = qcom_pcie_link_up,
-> >  };
-> > @@ -1476,6 +1486,7 @@ static const struct of_device_id qcom_pcie_match[] = {
-> >  	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
-> >  	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
-> >  	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
-> > +	{ .compatible = "qcom,pcie-sm8250", .data = &ops_sm8250 },
-> >  	{ }
-> >  };
-> >  
-> > 
-> 
-> -- 
-> regards,
-> Stan
+> ---
+>  tools/perf/util/dso.c  | 2 +-
+>  tools/perf/util/dso.h  | 1 -
+>  tools/perf/util/dsos.c | 6 ++++--
+>  3 files changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+> index ca965845b35e..55c11e854fe4 100644
+> --- a/tools/perf/util/dso.c
+> +++ b/tools/perf/util/dso.c
+> @@ -1369,7 +1369,7 @@ int dso__kernel_module_get_build_id(struct dso *dso,
+>         return 0;
+>  }
+>
+> -size_t dso__fprintf_buildid(struct dso *dso, FILE *fp)
+> +static size_t dso__fprintf_buildid(struct dso *dso, FILE *fp)
+>  {
+>         char sbuild_id[SBUILD_ID_SIZE];
+>
+> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
+> index f926c96bf230..d8cb4f5680a4 100644
+> --- a/tools/perf/util/dso.h
+> +++ b/tools/perf/util/dso.h
+> @@ -362,7 +362,6 @@ struct dso *machine__findnew_kernel(struct machine *machine, const char *name,
+>
+>  void dso__reset_find_symbol_cache(struct dso *dso);
+>
+> -size_t dso__fprintf_buildid(struct dso *dso, FILE *fp);
+>  size_t dso__fprintf_symbols_by_name(struct dso *dso, FILE *fp);
+>  size_t dso__fprintf(struct dso *dso, FILE *fp);
+>
+> diff --git a/tools/perf/util/dsos.c b/tools/perf/util/dsos.c
+> index 87161e431830..183a81d5b2f9 100644
+> --- a/tools/perf/util/dsos.c
+> +++ b/tools/perf/util/dsos.c
+> @@ -287,10 +287,12 @@ size_t __dsos__fprintf_buildid(struct list_head *head, FILE *fp,
+>         size_t ret = 0;
+>
+>         list_for_each_entry(pos, head, node) {
+> +               char sbuild_id[SBUILD_ID_SIZE];
+> +
+>                 if (skip && skip(pos, parm))
+>                         continue;
+> -               ret += dso__fprintf_buildid(pos, fp);
+> -               ret += fprintf(fp, " %s\n", pos->long_name);
+> +               build_id__sprintf(&pos->bid, sbuild_id);
+> +               ret += fprintf(fp, "%-40s %s\n", sbuild_id, pos->long_name);
+>         }
+>         return ret;
+>  }
+> --
+> 2.26.2
+>
