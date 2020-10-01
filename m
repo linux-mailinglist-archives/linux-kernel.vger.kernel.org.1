@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56D8280801
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE081280804
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732842AbgJATp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729990AbgJATp7 (ORCPT
+        id S1730093AbgJATsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:48:12 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55178 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729990AbgJATsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:45:59 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD58DC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 12:45:58 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id v23so5686115ljd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 12:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c2gfbOiiR0so3N0eX6gQPc6WKY7PeKJeRfa9G0R50hA=;
-        b=L8wFd+HleRUy2It+KmWJB1fwyoQVZjtyVGCA52KJRhRXbSNUGkkwN3/7mIaxQepJR7
-         iuog+JhLqKQBpndNTN35oHdPDn2rnXahO3Xx7vmOsxZXqDUs1JrtwY5UwiWm423plAQj
-         lo4HD9GZCPKZ25/bwDhXwjYcudcL/Zg3xzqRhLqf4r9rXjw1u5njkPwGOnFinErUgbBz
-         YCDMiwdlkMrqWJj2GxZ5QqLrv8qMsrR+Iqj0LfK5k4TPlCzy3PughEAPTlwiNRXlpGVR
-         XFx8eCdsk0HIUFNeGUhrVgk3rWB5BrHFd9Ow8NqbjOPmaYbuAs3sCg2YWbchqAuzJNzK
-         2vUA==
+        Thu, 1 Oct 2020 15:48:11 -0400
+Received: by mail-wm1-f65.google.com with SMTP id s13so4100243wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 12:48:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c2gfbOiiR0so3N0eX6gQPc6WKY7PeKJeRfa9G0R50hA=;
-        b=OY6v7wefa4eYo7/PdK2HSolMDXbIe6OiR0u/rzK/Lwsx1F5IIK2Mis6b7ZUsKPY58O
-         1n9p76FATzuEwf7jWdRs/0qalvBDKsL5t8J/0vvyjTE9ufO/VF8EbFzUvJvWtk4wrYKb
-         Ac4PiIb4Ii1acyY7VZI02vWPW7ZNX+0+EaSPcnTmhgQ4tvRAoQNNZxfDvMs9xQA7dpxz
-         YjI0wrJPlkyc6auhBcU4Ww+3/uIcxuBgei5QaSzUDJtyajn2IjbHtrjNGMH1oQGEtsVY
-         IDqQuqpoTnT8m/+Em1cOJBMLf5tx83WsDTI1VK8trsj+eUUG/67PEyBD9K0bB/JJ4un0
-         udQw==
-X-Gm-Message-State: AOAM530yJMvj3ECECL2KJtubpY1v9jGCjiGq8j6AZZO68LFAn3yp4yTo
-        J3aMrmqwXXBXxVk0OZd/fOT80heKGsIvoqGZUT3Apw==
-X-Google-Smtp-Source: ABdhPJzhr62N6D/DY0NMD6Re7tm+lJuTbYgAQTgrVa6ZpBk/+rg4S7xE0mJMNKGk9FcSYDYEXfBWz/WFBYcaS/gYx8o=
-X-Received: by 2002:a2e:804f:: with SMTP id p15mr2979567ljg.199.1601581557161;
- Thu, 01 Oct 2020 12:45:57 -0700 (PDT)
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=MyMIarbO3O8wfhAK1LaZuGf5QXnGx7zNw8blfiATqfQ=;
+        b=rNVg8db9KDQx7d0miSqLhuBCftVeBTp2F3icqoxECtPXFlG7AUN0iy+SwiqeKvuDRh
+         YGrmTlziVk9E/iIx/BDdISyO5vrLVBcuP0hP2zBV9fCpSD9FgBg7516vlLmp9Dl7GRQm
+         u3qeYKIpWT5nXNd4p4K3WuHH+tvV+vtTA6PySmE8eN4P+x7aMfisDs4qdLt9NKX5n3Oo
+         gd/RE+AlLFFIP7aZwTqTjJks+k5gH4FFwQmGbgjxhBgUIRL9S0blAefUUc0ULTwwYCW4
+         L9PTtnk2qfIRus78jyG+9r1fTXS5IVSIcbwoj8E3qi68kHS9VUuXS/QizYLj1aSqBUOx
+         ECAw==
+X-Gm-Message-State: AOAM532RGMPw4jY5uyckZKf3gEvIL3/boWLYeTtLoV0lkFWTZWeml9Xx
+        PlkWm4nxMZyWqeT119mpeh8ZkvoQAEgyIbu1
+X-Google-Smtp-Source: ABdhPJwhR/LuP/9JoPj0W66CChGuGPsikEG1SBwaaWZ6qqGcXhyVJNIefPcFfQYR2OgsYON5PZrq6w==
+X-Received: by 2002:a1c:5988:: with SMTP id n130mr1677086wmb.95.1601581689018;
+        Thu, 01 Oct 2020 12:48:09 -0700 (PDT)
+Received: from [10.9.0.22] ([185.248.161.177])
+        by smtp.gmail.com with ESMTPSA id j10sm10435948wrn.2.2020.10.01.12.48.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 12:48:07 -0700 (PDT)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH RFC v2 2/6] mm/slab: Perform init_on_free earlier
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        David Howells <dhowells@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Machek <pavel@denx.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        LKML <linux-kernel@vger.kernel.org>, notify@kernel.org
+References: <20200929183513.380760-1-alex.popov@linux.com>
+ <20200929183513.380760-3-alex.popov@linux.com>
+ <CAG_fn=WY9OFKuy6utMHOgyr+1DYNsuzVruGCGHMDnEnaLY6s9g@mail.gmail.com>
+From:   Alexander Popov <alex.popov@linux.com>
+Autocrypt: addr=alex.popov@linux.com; prefer-encrypt=mutual; keydata=
+ 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
+ j3lCqPk=
+Message-ID: <e4b78739-1cec-b9a2-7371-7407cfbb4904@linux.com>
+Date:   Thu, 1 Oct 2020 22:48:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
- <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
- <20200929221526.GA1370981@ubuntu-m3-large-x86> <20200930140758.gummt3umouva3wyu@gilmour.lan>
- <20200930163823.GA237050@ubuntu-m3-large-x86> <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
- <20201001064843.dlewcu3b7dvqanyy@gilmour.lan> <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
- <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com> <8bc3f2b0d1b5ae59996bc9316a401a68c92ebac7.camel@suse.de>
-In-Reply-To: <8bc3f2b0d1b5ae59996bc9316a401a68c92ebac7.camel@suse.de>
-From:   Tim Gover <tim.gover@raspberrypi.com>
-Date:   Thu, 1 Oct 2020 20:45:45 +0100
-Message-ID: <CAAvKZ65qyKDrmzHR=HELJmrRdchJ8MEXJZJGcj1oyNXg-BamZA@mail.gmail.com>
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG_fn=WY9OFKuy6utMHOgyr+1DYNsuzVruGCGHMDnEnaLY6s9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, my previous statement was misleading.
+On 30.09.2020 15:50, Alexander Potapenko wrote:
+> On Tue, Sep 29, 2020 at 8:35 PM Alexander Popov <alex.popov@linux.com> wrote:
+>>
+>> Currently in CONFIG_SLAB init_on_free happens too late, and heap
+>> objects go to the heap quarantine being dirty. Lets move memory
+>> clearing before calling kasan_slab_free() to fix that.
+>>
+>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
 
-enable_uart will select the mini_uart for gpio14,15 unless the
-disable-bt device tree overlay is loaded. As well as disabling
-bluetooth disable-bt swaps the uart0 pin configs to point the regular
-UART to gpio 14,15. After resolving the DT overlays the firmware does
-the initial UART setup according to which controller is pointed at
-pins 14,15.
+Thanks for the review, Alexander!
 
-I'll have to speak to others about exactly when the fixing of the core
-clock takes effect. There have been a few changes related to the
-initial turbo frequency configuration and how this is reported via the
-mbox APIs
+Do you have any idea how this patch series relates to Memory Tagging support
+that is currently developed?
 
-On Thu, 1 Oct 2020 at 17:47, Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Hi Tim, thanks for the info!
->
-> On Thu, 2020-10-01 at 11:15 +0100, Tim Gover wrote:
-> > hdmi_enable_4k60=1 causes the firmware to select 3.3 GHz for the PLLC
-> > VCO to support a core-frequency of 550 MHz which is the minimum
-> > frequency required by the HVS at 4Kp60. The side effect is that if the
-> > display clock requirements are lower than 4Kp60 then you will see
-> > different core frequencies selected by DVFS.
-> >
-> > If enable_uart=1 and the mini-uart is selected (default unless
->
-> What is the actual test made to check if mini-uart is selected? I can't get
-> firmware to trigger this behaviour with 64-bit upstream kernel/dts. Note that I
-> see the core clk setup at 200MHz just before having VC4 set it to 500MHz.
->
-> The only thing I've got on my config.txt is:
->
-> enable_uart=1
-> arm_64bit=1
->
-> Maybe we're missing some kind of DT alias upstream?
->
-> Regards,
-> Nicolas
->
-> > bluetooth is disabled) then the firmware will pin the core-frequency
-> > to either core_freq max (500 or 550). Although, I think there is a way
-> > of pinning it to a lower fixed frequency.
-> >
-> > The table in overclocking.md defines options for setting the maximum
-> > core frequency but unless core_freq_min is specified DVFS will
-> > automatically pick the lowest idle frequency required by the display
-> > resolution.
->
+Best regards,
+Alexander
