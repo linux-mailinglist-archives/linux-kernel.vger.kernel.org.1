@@ -2,198 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094F8280157
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD6D280148
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732484AbgJAOdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732020AbgJAOdd (ORCPT
+        id S1732420AbgJAOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:32:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732299AbgJAOcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:33:33 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF59C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 07:33:32 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g72so5490890qke.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jO3BB8sVqiM7vkvwS1XKzZc6N0X8KTzVoqftN8TqfgY=;
-        b=pFDbQq9H6572Zep0T0kiBK6O7gvcomiDy/QnxFgocFInKglLtah5+pLzvUOj3o9TPH
-         +3da9GlUc4tqby6bzqiaELI5lmPN4OaxP9JadjXiNAl5peWgjvHsOEIxXZA8itf2TpYA
-         JNviktKQyP0nsSSMAAW0MxjfMd7rEyANGzxySxkDh3bWE6xluydotD90yrNYtye8EqJ3
-         BvGaoNvS9pYwjfzCTbatP3d1ysGa5OH4ZqBeiLCC1vB107nF4lHhgKPjdxaGOrd5gfbM
-         k2XnQf/MNMGoG7ONN84busjIoH2e/uYBL+MszKJcAeZxGFSM/C2lshGLybQO/xFPCg06
-         QReg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jO3BB8sVqiM7vkvwS1XKzZc6N0X8KTzVoqftN8TqfgY=;
-        b=hYefJpFL83NjOosoG3AKYPASObbPpzzAaCB3bZ7Xah30xw4fv38i3Qj97OUwragdPM
-         J2vOdwwnm0qpSgiB/oDDzFAjixkvC9oZ06t64Am4JVEnOON7A0gywxSdLjpZttMRVctK
-         4XNsS8YdvQQgPYaXRpZaYvTxxVmeTmD2OCwwMd4gw1ZZT46mPLxMNUP5q7AlS4xq0z9x
-         2eMtA3IuZSmfgt3nxI4adTndBgI4xIadbvlxxykOa6q25K0G6V/1EuOWsICCaqtlY7HW
-         Ksbo59NEu+tO4Y03Z5JGaDP48fPkWsptgNXnYkmOdsIqTvOyzxrOOg0jMwhJzvlT4HBV
-         n60Q==
-X-Gm-Message-State: AOAM5334oFR5UFMvIXl528yHNe1ckp4iuKNG3i5p/zvwD25MbFVKcWh2
-        YDYGtjjPZYP8j4KIvFxx+XMC8A==
-X-Google-Smtp-Source: ABdhPJxL3ROIE5EEr8xfyH9JXGHvkoQMCRX5NFXfsVuxPCSEzPGogJNQe2fKUfXyH7bAIptu5sJr8g==
-X-Received: by 2002:a37:4f90:: with SMTP id d138mr7888531qkb.451.1601562811437;
-        Thu, 01 Oct 2020 07:33:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:4e22])
-        by smtp.gmail.com with ESMTPSA id m3sm6483356qkh.10.2020.10.01.07.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 07:33:29 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 10:31:49 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-Message-ID: <20201001143149.GA493631@cmpxchg.org>
-References: <20200909215752.1725525-1-shakeelb@google.com>
- <20200928210216.GA378894@cmpxchg.org>
- <20200929150444.GG2277@dhcp22.suse.cz>
- <20200929215341.GA408059@cmpxchg.org>
- <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
+        Thu, 1 Oct 2020 10:32:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601562742;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MT7eYQmEncoWFfXb3v2i0oegKhgFDremUCLyTZsLhEU=;
+        b=M3RGHKIk2q/7JK8/ECFX6Vc1wDjCRGgM/NxUUIwXCtEL/YzLnQ67P8xScGK5j6rAKL1ocL
+        g9KLFT10D10inbVckukeHRO1+Z40AGN7gVHLgM6qw/RIG8A0oj3DkKsrkfII8Ye09mf61C
+        jxE5+Jzt0/58MzdinLHaB3Ao7bdQ0P8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-3ey2_6RHMpaPr7bYlc1JGA-1; Thu, 01 Oct 2020 10:32:21 -0400
+X-MC-Unique: 3ey2_6RHMpaPr7bYlc1JGA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8806DA3F5F;
+        Thu,  1 Oct 2020 14:32:01 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 389FE19C59;
+        Thu,  1 Oct 2020 14:31:59 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 10:31:57 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-ID: <20201001143157.GA1530324@optiplex-lnx>
+References: <20200923043459.GL795820@optiplex-lnx>
+ <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+ <20200923130138.GM795820@optiplex-lnx>
+ <87blhwng5f.fsf@yhuang-dev.intel.com>
+ <20200924020928.GC1023012@optiplex-lnx>
+ <877dsjessq.fsf@yhuang-dev.intel.com>
+ <20200924063038.GD1023012@optiplex-lnx>
+ <87tuvnd3db.fsf@yhuang-dev.intel.com>
+ <20200924150833.GE1023012@optiplex-lnx>
+ <87r1qqbkx5.fsf@yhuang-dev.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
+In-Reply-To: <87r1qqbkx5.fsf@yhuang-dev.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:45:17AM -0700, Shakeel Butt wrote:
-> On Tue, Sep 29, 2020 at 2:55 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
+> Rafael Aquini <aquini@redhat.com> writes:
+> >> Or, can you help to run the test with a debug kernel based on upstream
+> >> kernel.  I can provide some debug patch.
+> >> 
 > >
-> > On Tue, Sep 29, 2020 at 05:04:44PM +0200, Michal Hocko wrote:
-> > > On Mon 28-09-20 17:02:16, Johannes Weiner wrote:
-> > > [...]
-> > > > My take is that a proactive reclaim feature, whose goal is never to
-> > > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
-> > > > would ideally have:
-> > > >
-> > > > - a pressure or size target specified by userspace but with
-> > > >   enforcement driven inside the kernel from the allocation path
-> > > >
-> > > > - the enforcement work NOT be done synchronously by the workload
-> > > >   (something I'd argue we want for *all* memory limits)
-> > > >
-> > > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
-> > > >   cgroup's memory allocations causing the work (again something I'd
-> > > >   argue we want in general)
-> > > >
-> > > > - a delegatable knob that is independent of setting the maximum size
-> > > >   of a container, as that expresses a different type of policy
-> > > >
-> > > > - if size target, self-limiting (ha) enforcement on a pressure
-> > > >   threshold or stop enforcement when the userspace component dies
-> > > >
-> > > > Thoughts?
-> > >
-> > > Agreed with above points. What do you think about
-> > > http://lkml.kernel.org/r/20200922190859.GH12990@dhcp22.suse.cz.
-> >
-> > I definitely agree with what you wrote in this email for background
-> > reclaim. Indeed, your description sounds like what I proposed in
-> > https://lore.kernel.org/linux-mm/20200219181219.54356-1-hannes@cmpxchg.org/
-> > - what's missing from that patch is proper work attribution.
-> >
-> > > I assume that you do not want to override memory.high to implement
-> > > this because that tends to be tricky from the configuration POV as
-> > > you mentioned above. But a new limit (memory.middle for a lack of a
-> > > better name) to define the background reclaim sounds like a good fit
-> > > with above points.
-> >
-> > I can see that with a new memory.middle you could kind of sort of do
-> > both - background reclaim and proactive reclaim.
-> >
-> > That said, I do see advantages in keeping them separate:
-> >
-> > 1. Background reclaim is essentially an allocation optimization that
-> >    we may want to provide per default, just like kswapd.
-> >
-> >    Kswapd is tweakable of course, but I think actually few users do,
-> >    and it works pretty well out of the box. It would be nice to
-> >    provide the same thing on a per-cgroup basis per default and not
-> >    ask users to make decisions that we are generally better at making.
-> >
-> > 2. Proactive reclaim may actually be better configured through a
-> >    pressure threshold rather than a size target.
-> >
-> >    As per above, the goal is not to be punitive or containing. The
-> >    goal is to keep the LRUs warm and move the colder pages to disk.
-> >
-> >    But how aggressively do you run reclaim for this purpose? What
-> >    target value should a user write to such a memory.middle file?
-> >
-> >    For one, it depends on the job. A batch job, or a less important
-> >    background job, may tolerate higher paging overhead than an
-> >    interactive job. That means more of its pages could be trimmed from
-> >    RAM and reloaded on-demand from disk.
-> >
-> >    But also, it depends on the storage device. If you move a workload
-> >    from a machine with a slow disk to a machine with a fast disk, you
-> >    can page more data in the same amount of time. That means while
-> >    your workload tolerances stays the same, the faster the disk, the
-> >    more aggressively you can do reclaim and offload memory.
-> >
-> >    So again, what should a user write to such a control file?
-> >
-> >    Of course, you can approximate an optimal target size for the
-> >    workload. You can run a manual workingset analysis with page_idle,
-> >    damon, or similar, determine a hot/cold cutoff based on what you
-> >    know about the storage characteristics, then echo a number of pages
-> >    or a size target into a cgroup file and let kernel do the reclaim
-> >    accordingly. The drawbacks are that the kernel LRU may do a
-> >    different hot/cold classification than you did and evict the wrong
-> >    pages, the storage device latencies may vary based on overall IO
-> >    pattern, and two equally warm pages may have very different paging
-> >    overhead depending on whether readahead can avert a major fault or
-> >    not. So it's easy to overshoot the tolerance target and disrupt the
-> >    workload, or undershoot and have stale LRU data, waste memory etc.
-> >
-> >    You can also do a feedback loop, where you guess an optimal size,
-> >    then adjust based on how much paging overhead the workload is
-> >    experiencing, i.e. memory pressure. The drawbacks are that you have
-> >    to monitor pressure closely and react quickly when the workload is
-> >    expanding, as it can be potentially sensitive to latencies in the
-> >    usec range. This can be tricky to do from userspace.
-> >
+> > Sure, I can set your patches to run with the test cases we have that tend to 
+> > reproduce the issue with some degree of success.
 > 
-> This is actually what we do in our production i.e. feedback loop to
-> adjust the next iteration of proactive reclaim.
-
-That's what we do also right now. It works reasonably well, the only
-two pain points are/have been the reaction time under quick workload
-expansion and inadvertently forcing the workload into direct reclaim.
-
-> We eliminated the IO or slow disk issues you mentioned by only
-> focusing on anon memory and doing zswap.
-
-Interesting, may I ask how the file cache is managed in this setup?
-
-> >    So instead of asking users for a target size whose suitability
-> >    heavily depends on the kernel's LRU implementation, the readahead
-> >    code, the IO device's capability and general load, why not directly
-> >    ask the user for a pressure level that the workload is comfortable
-> >    with and which captures all of the above factors implicitly? Then
-> >    let the kernel do this feedback loop from a per-cgroup worker.
+> Thanks!
 > 
-> I am assuming here by pressure level you are referring to the PSI like
-> interface e.g. allowing the users to tell about their jobs that X
-> amount of stalls in a fixed time window is tolerable.
+> I found a race condition.  During THP splitting, "head" may be unlocked
+> before calling split_swap_cluster(), because head != page during
+> deferred splitting.  So we should call split_swap_cluster() before
+> unlocking.  The debug patch to do that is as below.  Can you help to
+> test it?
+> 
+> Best Regards,
+> Huang, Ying
+> 
+> ------------------------8<----------------------------
+> From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
+> From: Huang Ying <ying.huang@intel.com>
+> Date: Fri, 25 Sep 2020 11:10:56 +0800
+> Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
+>  split THP
+> 
+> ---
+>  mm/huge_memory.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index faadc449cca5..8d79e5e6b46e 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  
+>  	remap_page(head);
+>  
+> +	if (PageSwapCache(head)) {
+> +		swp_entry_t entry = { .val = page_private(head) };
+> +
+> +		split_swap_cluster(entry);
+> +	}
+> +
+>  	for (i = 0; i < HPAGE_PMD_NR; i++) {
+>  		struct page *subpage = head + i;
+>  		if (subpage == page)
+> @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  		}
+>  
+>  		__split_huge_page(page, list, end, flags);
+> -		if (PageSwapCache(head)) {
+> -			swp_entry_t entry = { .val = page_private(head) };
+> -
+> -			ret = split_swap_cluster(entry);
+> -		} else
+> -			ret = 0;
+> +		ret = 0;
+>  	} else {
+>  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+>  			pr_alert("total_mapcount: %u, page_count(): %u\n",
+> -- 
+> 2.28.0
+> 
 
-Right, essentially the same parameters that psi poll() would take.
+I left it running for several days, on several systems that had seen the
+crash hitting before, and no crashes were observed for either the upstream
+kernel nor the distro build 4.18-based kernel.
+
+I guess we can comfortably go with your patch. Thanks!
+
