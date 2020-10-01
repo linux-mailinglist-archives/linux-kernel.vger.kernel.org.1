@@ -2,142 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78380280A31
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D76280AB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387529AbgJAWaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387479AbgJAW3q (ORCPT
+        id S2387462AbgJAXAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:00:10 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:35864 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733166AbgJAW7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:29:46 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50271C0613D0;
-        Thu,  1 Oct 2020 15:29:46 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id k10so426161wru.6;
-        Thu, 01 Oct 2020 15:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=AAKj3dJf1aYEpRZkFDQ7jwadjHV40sERxEArpZqpOcg=;
-        b=CN24H7pOdz3Q3mQvWNa4iqQadizzygHHrOkrWrsGEUSO9Nfm2a40Gwb3KHXKxfjrYT
-         pxkdia8xJpT2OLOnE8n4p9TV9E7FmljmpA4PnRITHQDlE52+6WUnozf9piRtQMrjQb/k
-         Ry9kJmG1nD6qBh5LCmelYbcWW5kpKbXwPDJ8R39pgL8Bb8oRKh5iDkZmRlgsLoF1C9VX
-         b6cuxQbIUMvrrY7Gv1nf15AMurYEtJOlCZuLXZdOtOvUwXLL45BHEcUsamzEcOJc3gxy
-         Z4rsU43AYoRQh11E6gqQ+otWprMYvxM/HC5nS6ExGdHGZGg/LNwGLV8essAKPZJpVTGP
-         PP8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=AAKj3dJf1aYEpRZkFDQ7jwadjHV40sERxEArpZqpOcg=;
-        b=kbKE3WxpwvbBh2ysb5ppF1C3FHE96WWMkjnHO4z7u8Gc0bzYqG/oCPbSKx4dhX1YW9
-         gquJAEOhnwvI/uMXwxbvOlQM32jiLZu8oY2rRR9rTHpRbqrzDGKfYm9DiS6nAzjLBXzA
-         vB9roKNg2+eO7xCM14kPrqucrBt/B6DumGduUbl8EpE5BuJEVh+i98Qk5iY6rp6MKbOQ
-         QBSRgzv2cQ8nIHs6jldLDHdAxvqMPMcV60lKpjv4UnScS2CfNGOpYD6+ffY/sr4u1HiR
-         CiuP2DuA2LjfBe5abulj9NFjKF3OkpNVhmR5XBkC2YNu1o2Js7LIW7cxv7bkLJ2vk959
-         DU1w==
-X-Gm-Message-State: AOAM530ADh9HxPrNYhYIs6GdDolbaKxzdT97VjY1CRR6TPjBdNMYJwjZ
-        CKD5qoYiLWz4t9JGhmBEYVVUn8r0nR4WxA==
-X-Google-Smtp-Source: ABdhPJyIexnUrKpzze/MmHSmfkLrDe5RCjgIxFaT1WXqPQAIckz3fnKCiU/u9V7v7xK3OsedNy/1tA==
-X-Received: by 2002:a5d:4104:: with SMTP id l4mr11370102wrp.396.1601591384928;
-        Thu, 01 Oct 2020 15:29:44 -0700 (PDT)
-Received: from dell5510 ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id t203sm1883249wmg.43.2020.10.01.15.29.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 15:29:44 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 00:29:42 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Rich Felker <dalias@aerifal.cx>
-Cc:     linux-kernel@vger.kernel.org, musl@lists.openwall.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [musl] [PATCH 1/1] uapi: Don't include <linux/sysinfo.h> in
- <linux/kernel.h>
-Message-ID: <20201001222942.GE24195@dell5510>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20201001195231.17226-1-petr.vorel@gmail.com>
- <20201001201108.GR17637@brightrain.aerifal.cx>
- <20201001202703.GD24195@dell5510>
- <20201001215212.GS17637@brightrain.aerifal.cx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001215212.GS17637@brightrain.aerifal.cx>
+        Thu, 1 Oct 2020 18:59:44 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 091MrsHD167363;
+        Thu, 1 Oct 2020 22:59:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=vEPBYhSXye04MgPYucd/wpb879n10z8HePSUZrjurvY=;
+ b=XvRhjiEgp7f5W9VWS2xE59DqK2gVrTMeNXW76UWDlAOx0lXm61oqzgDAbIutSRd/UVVP
+ D8iKId1byiB6P9JGKCVLDgcJst5nowyHqoJSB2CWU+bLQswovCDLAodPUBSwOTfZ8XXl
+ 27ny9FAoD/nxKbD4P1XOmR0hxWcuXxyAjmqm31LS7unXiu0fuh8xaVxWQL5y2hTC9Ijc
+ jgoFid1AWtSlNCNOzaDU4FpwX5yPr8s97ScslFHutzNf9zPg79D6ecn4tPlFM4UYd1Ys
+ 2rNrubUd3g+JO2sXTMfQOf4Q5lnhEY9KVH3Tw7JQPm212aAQEDbEKB1+73SQ8nlJEzmJ Hg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33su5b8v2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 01 Oct 2020 22:59:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 091MuXwE061026;
+        Thu, 1 Oct 2020 22:59:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33tfj28wxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 01 Oct 2020 22:59:36 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 091MxaW3018534;
+        Thu, 1 Oct 2020 22:59:36 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 01 Oct 2020 15:59:35 -0700
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH v2] vhost-vdpa: fix page pinning leakage in error path
+Date:   Thu,  1 Oct 2020 18:18:35 -0400
+Message-Id: <1601590715-17303-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9761 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=2 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010010184
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9761 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ lowpriorityscore=0 spamscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010010184
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Pinned pages are not properly accounted particularly when
+mapping error occurs on IOTLB update. Clean up dangling
+pinned pages for the error path. As the inflight pinned
+pages, specifically for memory region that strides across
+multiple chunks, would need more than one free page for
+book keeping and accounting. For simplicity, pin pages
+for all memory in the IOVA range in one go rather than
+have multiple pin_user_pages calls to make up the entire
+region. This way it's easier to track and account the
+pages already mapped, particularly for clean-up in the
+error path.
 
-> On Thu, Oct 01, 2020 at 10:27:03PM +0200, Petr Vorel wrote:
-> > Hi Rich,
+Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
+Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+---
+Changes in v2:
+- Fix incorrect target SHA1 referenced
 
-> > > On Thu, Oct 01, 2020 at 09:52:31PM +0200, Petr Vorel wrote:
-> > > > + update code where needed (include <linux/sysinfo.h> in code which
-> > > > included <linux/kernel.h> only to get struct sysinfo or SI_LOAD_SHIFT).
+ drivers/vhost/vdpa.c | 121 +++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 73 insertions(+), 48 deletions(-)
 
-> > > > The reason is to avoid indirect <linux/sysinfo.h> include when using
-> > > > some network headers: <linux/netlink.h> or others [1] ->
-> > > > <linux/kernel.h> -> <linux/sysinfo.h>.
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 796fe97..abc4aa2 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -565,6 +565,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+ 			      perm_to_iommu_flags(perm));
+ 	}
+ 
++	if (r)
++		vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
+ 	return r;
+ }
+ 
+@@ -592,21 +594,19 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 	struct vhost_dev *dev = &v->vdev;
+ 	struct vhost_iotlb *iotlb = dev->iotlb;
+ 	struct page **page_list;
+-	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
++	struct vm_area_struct **vmas;
+ 	unsigned int gup_flags = FOLL_LONGTERM;
+-	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+-	unsigned long locked, lock_limit, pinned, i;
++	unsigned long map_pfn, last_pfn = 0;
++	unsigned long npages, lock_limit;
++	unsigned long i, nmap = 0;
+ 	u64 iova = msg->iova;
++	long pinned;
+ 	int ret = 0;
+ 
+ 	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+ 				    msg->iova + msg->size - 1))
+ 		return -EEXIST;
+ 
+-	page_list = (struct page **) __get_free_page(GFP_KERNEL);
+-	if (!page_list)
+-		return -ENOMEM;
+-
+ 	if (msg->perm & VHOST_ACCESS_WO)
+ 		gup_flags |= FOLL_WRITE;
+ 
+@@ -614,61 +614,86 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+ 	if (!npages)
+ 		return -EINVAL;
+ 
++	page_list = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
++	vmas = kvmalloc_array(npages, sizeof(struct vm_area_struct *),
++			      GFP_KERNEL);
++	if (!page_list || !vmas) {
++		ret = -ENOMEM;
++		goto free;
++	}
++
+ 	mmap_read_lock(dev->mm);
+ 
+-	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+ 	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+-
+-	if (locked > lock_limit) {
++	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto unlock;
+ 	}
+ 
+-	cur_base = msg->uaddr & PAGE_MASK;
+-	iova &= PAGE_MASK;
++	pinned = pin_user_pages(msg->uaddr & PAGE_MASK, npages, gup_flags,
++				page_list, vmas);
++	if (npages != pinned) {
++		if (pinned < 0) {
++			ret = pinned;
++		} else {
++			unpin_user_pages(page_list, pinned);
++			ret = -ENOMEM;
++		}
++		goto unlock;
++	}
+ 
+-	while (npages) {
+-		pinned = min_t(unsigned long, npages, list_size);
+-		ret = pin_user_pages(cur_base, pinned,
+-				     gup_flags, page_list, NULL);
+-		if (ret != pinned)
+-			goto out;
+-
+-		if (!last_pfn)
+-			map_pfn = page_to_pfn(page_list[0]);
+-
+-		for (i = 0; i < ret; i++) {
+-			unsigned long this_pfn = page_to_pfn(page_list[i]);
+-			u64 csize;
+-
+-			if (last_pfn && (this_pfn != last_pfn + 1)) {
+-				/* Pin a contiguous chunk of memory */
+-				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
+-				if (vhost_vdpa_map(v, iova, csize,
+-						   map_pfn << PAGE_SHIFT,
+-						   msg->perm))
+-					goto out;
+-				map_pfn = this_pfn;
+-				iova += csize;
++	iova &= PAGE_MASK;
++	map_pfn = page_to_pfn(page_list[0]);
++
++	/* One more iteration to avoid extra vdpa_map() call out of loop. */
++	for (i = 0; i <= npages; i++) {
++		unsigned long this_pfn;
++		u64 csize;
++
++		/* The last chunk may have no valid PFN next to it */
++		this_pfn = i < npages ? page_to_pfn(page_list[i]) : -1UL;
++
++		if (last_pfn && (this_pfn == -1UL ||
++				 this_pfn != last_pfn + 1)) {
++			/* Pin a contiguous chunk of memory */
++			csize = last_pfn - map_pfn + 1;
++			ret = vhost_vdpa_map(v, iova, csize << PAGE_SHIFT,
++					     map_pfn << PAGE_SHIFT,
++					     msg->perm);
++			if (ret) {
++				/*
++				 * Unpin the rest chunks of memory on the
++				 * flight with no corresponding vdpa_map()
++				 * calls having been made yet. On the other
++				 * hand, vdpa_unmap() in the failure path
++				 * is in charge of accounting the number of
++				 * pinned pages for its own.
++				 * This asymmetrical pattern of accounting
++				 * is for efficiency to pin all pages at
++				 * once, while there is no other callsite
++				 * of vdpa_map() than here above.
++				 */
++				unpin_user_pages(&page_list[nmap],
++						 npages - nmap);
++				goto out;
+ 			}
+-
+-			last_pfn = this_pfn;
++			atomic64_add(csize, &dev->mm->pinned_vm);
++			nmap += csize;
++			iova += csize << PAGE_SHIFT;
++			map_pfn = this_pfn;
+ 		}
+-
+-		cur_base += ret << PAGE_SHIFT;
+-		npages -= ret;
++		last_pfn = this_pfn;
+ 	}
+ 
+-	/* Pin the rest chunk */
+-	ret = vhost_vdpa_map(v, iova, (last_pfn - map_pfn + 1) << PAGE_SHIFT,
+-			     map_pfn << PAGE_SHIFT, msg->perm);
++	WARN_ON(nmap != npages);
+ out:
+-	if (ret) {
++	if (ret)
+ 		vhost_vdpa_unmap(v, msg->iova, msg->size);
+-		atomic64_sub(npages, &dev->mm->pinned_vm);
+-	}
++unlock:
+ 	mmap_read_unlock(dev->mm);
+-	free_page((unsigned long)page_list);
++free:
++	kvfree(vmas);
++	kvfree(page_list);
+ 	return ret;
+ }
+ 
+-- 
+1.8.3.1
 
-> > > > This indirect include causes redefinition of struct sysinfo when
-> > > > included both <sys/sysinfo.h> and some of network headers:
-
-> > > > In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
-> > > >                  from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
-> > > >                  from ../include/tst_netlink.h:14,
-> > > >                  from tst_crypto.c:13:
-> > > > x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ‘struct sysinfo’
-> > > >  struct sysinfo {
-> > > >         ^~~~~~~
-> > > > In file included from ../include/tst_safe_macros.h:15,
-> > > >                  from ../include/tst_test.h:93,
-> > > >                  from tst_crypto.c:11:
-> > > > x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
-
-> > > > [1] or <linux/sysctl.h>, <linux/ethtool.h>, <linux/mroute6.h>, <linux/ethtool.h>
-
-> > > > Suggested-by: Rich Felker <dalias@aerifal.cx>
-> > > > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > > > ---
-> > > > Hi,
-
-> > > > this looks to be long standing problem: python-psutil [2], iproute2 [3],
-> > > > even for glibc in the past [4] and it tried to be solved before [5].
-
-> > > > This will require glibc fix after:
-
-> > > You can't do this; it breaks the existing contract with glibc. New
-> > > kernel headers can't force a glibc upgrade.
-> > Right, got that.
-
-> > > You just have to get rid
-> > > of use of <linux/kernel.h> elsewhere in the uapi headers. It was a
-> > > mistake that <linux/sysinfo.h> was ever separated out of
-> > > <linux/kernel.h> since it didn't (and couldn't) fix the contract that
-> > > <linux/kernel.h> exposes struct sysinfo (and that it's misnamed). But
-> > > it's no big deal. This can all be fixed without any breakage anywhere
-> > > just by not using it.
-> > Back to your original suggestion to move the alignment macros to a separate
-> > header. I was trying to avoid it not sure if introducing new header is
-> > acceptable, but we'll see.
-
-> Isn't there already another similar header with that type of macro
-> that they belong in?
-The only one I've found is const.h. Not sure it'd be better to move things
-there.
-
-Kind regards,
-Petr
-
-> Rich
