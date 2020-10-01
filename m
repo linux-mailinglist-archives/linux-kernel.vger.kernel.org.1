@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F6B2802F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F411D2802FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732753AbgJAPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732104AbgJAPgr (ORCPT
+        id S1732478AbgJAPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:38:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732279AbgJAPi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:36:47 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F8EC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:36:46 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id z26so5993608oih.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KTRcLiitCGxtErYo95DQsuhS+3OUv5XK3IV763QSggk=;
-        b=eAIryjrGkerzMGunb1ZsmgjTEM6lxDD9ynZkPH6JSZRoOCVtbiBQ9lnOdtK1vRhDda
-         iV2Uwnxf7YD4ZzGTXuc1D91QRjfrGEmJlykSRyYduyZ7LvfCLRWNayoLerQVmPpV7XLI
-         ZhNj8NBOmSJPfd89OtYYnxCdzkKyxsoILt0Y1ZCcujnXmQqqBB/zRbTszNS4gGeGsRI7
-         LsmSikTfFgOXC+HBrTsOkmJbCwFguMFRbV8oeWtcQ59XmYERg9oTjo3HiXXgJ5IOhJH1
-         YPN2NYuAaSh0JvTQmMBXmD0q1YndiHnf62j0WZYkOXUI2n/3JxMf57CMFilRWJKLj8oB
-         DbFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KTRcLiitCGxtErYo95DQsuhS+3OUv5XK3IV763QSggk=;
-        b=IF6Ct0Fa0Fzpescdu8mBUl8HHa+k1Cbd4MUarTeCMTDx89GFIV92NK+vZHwU4huetk
-         oiMkzB0X2RdxPGI6GIDrTkvgJcdGsSDaHJmhOSeZ6D8cIPz6MVDvbl2Fpe38sMzlXH9a
-         TOo0OgX3jQLGtb5Z2hkjH3r2/+XLeuWhD5d8KbkIjIIr119opjc8SmdF88nmv+t/mgmR
-         1NiI8WyB0tIg7GeOFvFMRSETRnRduCwehNifwzYv3Rmg821cVaeIaZLAQ2z4ap0zksid
-         JJVXOcv6rsWi+E0YJbT+VaQZ1TpJh5xYePgGNelI868LaPWEY6u4cD6p0UKm7B2BVx1g
-         t9aA==
-X-Gm-Message-State: AOAM533jAYdmVeYGo5EPg9jsqLu/TYwQLGgPsB1IePuxpa1y6p+ortGR
-        KoVuKXGmZQCTdYsGtnj2h7lmI0u9ADB+3yQ6VRcNPbQ0A4OJkQ==
-X-Google-Smtp-Source: ABdhPJxpPLsfUZNUyhh5FlvHaLwRFS9ey7i+2W4qyQeVK5y8yLqt8zz98x9DwIGkY+BvHmS93cOgBJdKSmLm0uUu3cU=
-X-Received: by 2002:a05:6808:6:: with SMTP id u6mr347726oic.74.1601566605366;
- Thu, 01 Oct 2020 08:36:45 -0700 (PDT)
+        Thu, 1 Oct 2020 11:38:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601566707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgrEZ8j9/nFRaKvjMm0r5U5f27doNCfVkl4QLjZxDI4=;
+        b=MNb0TCAvryeES+5s+u00uJWDR3/GA4/03M6HQUcxc251ons1gsFAPLnqGsuQFYPpg7ZDeV
+        mkxkUtqp8A+9EDj1T8vASArhDmMnlAXhooy2p6aOx7YSeg9Os1FRwh8wAkXSZiYfXn9AN+
+        PTHwle0bkJ6kIdalVlHQ6zVcECBGuxI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-ZMUhCtafNMmLsDo3SeWcpw-1; Thu, 01 Oct 2020 11:38:24 -0400
+X-MC-Unique: ZMUhCtafNMmLsDo3SeWcpw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C504B803654;
+        Thu,  1 Oct 2020 15:38:17 +0000 (UTC)
+Received: from T590 (ovpn-12-47.pek2.redhat.com [10.72.12.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB4E178807;
+        Thu,  1 Oct 2020 15:38:10 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 23:38:06 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH V6 1/2] percpu_ref: reduce memory footprint of percpu_ref
+ in fast path
+Message-ID: <20201001153806.GA23222@T590>
+References: <20200930082657.3305143-1-ming.lei@redhat.com>
+ <20200930082657.3305143-2-ming.lei@redhat.com>
+ <20200930160015.GC4441@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20201001103314.136645-1-dwaipayanray1@gmail.com>
- <8e110121c89414ab1601071868dbcf410195a209.camel@perches.com>
- <CABJPP5CFE3KXzMzuvVxtJt5tOg8Ye6y1V7-mqT5pqazHjVWvJw@mail.gmail.com>
- <f3dadda8af7eef6613d7a4105170058f2759507d.camel@perches.com>
- <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
- <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com> <dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com>
-In-Reply-To: <dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 1 Oct 2020 21:06:22 +0530
-Message-ID: <CABJPP5AvdWDJP1mkpdk_y-OVQnJb7utC3qCqOn=vP93DC7QwGg@mail.gmail.com>
-Subject: Re: [PATCH RFC] checkpatch: fix multi-statement macro checks
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930160015.GC4441@mtj.duckdns.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > All I'm trying to point out to you is that $Constant\s*$Constant
-> > isn't a proper test as the first $Constant will pull the test
-> > entire sequence of digits and the second $Constant will not be
-> > met.
-> >
-> > It may take some conversion of the collapsing of the dstat
-> > block to work appropriately
-> >
-> >
-> >                       # Flatten any parentheses and braces
-> >                       while ($dstat =~ s/\([^\(\)]*\)/1/ ||
-> >                              $dstat =~ s/\{[^\{\}]*\}/1/ ||
-> >                              $dstat =~ s/.\[[^\[\]]*\]/1/)
-> >                       {
-> >                       }
-> >
-> > Maybe the /1/ should be / 1 / but I didn't look to see what
-> > happens to the exclusion tests below that.
->
-> I think your patch would work well enough if the /1/ bits
-> here were simply changed to /1u/.
->
-> 1 is a $Constant as it's just a number.
-> 11 though is also a $Constant.
-> 1u is also a $Constant but it stops the acquisition of
-> digits that 11 would not and the sequence of
-> "while1u1u" should match your newly introduced test
-> of $Constant\s*$Constant as "while11" would not match.
->
->
+On Wed, Sep 30, 2020 at 12:00:15PM -0400, Tejun Heo wrote:
+> On Wed, Sep 30, 2020 at 04:26:56PM +0800, Ming Lei wrote:
+> > diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+> > index 87d8a38bdea1..1d6ed9ca23dd 100644
+> > --- a/include/linux/percpu-refcount.h
+> > +++ b/include/linux/percpu-refcount.h
+> > @@ -92,18 +92,23 @@ enum {
+> >  	PERCPU_REF_ALLOW_REINIT	= 1 << 2,
+> >  };
+> >  
+> > -struct percpu_ref {
+> > +struct percpu_ref_data {
+> >  	atomic_long_t		count;
+> > -	/*
+> > -	 * The low bit of the pointer indicates whether the ref is in percpu
+> > -	 * mode; if set, then get/put will manipulate the atomic_t.
+> > -	 */
+> > -	unsigned long		percpu_count_ptr;
+> >  	percpu_ref_func_t	*release;
+> >  	percpu_ref_func_t	*confirm_switch;
+> >  	bool			force_atomic:1;
+> >  	bool			allow_reinit:1;
+> >  	struct rcu_head		rcu;
+> > +	struct percpu_ref	*ref;
+> > +};
+> > +
+> > +struct percpu_ref {
+> > +	/*
+> > +	 * The low bit of the pointer indicates whether the ref is in percpu
+> > +	 * mode; if set, then get/put will manipulate the atomic_t.
+> > +	 */
+> > +	unsigned long		percpu_count_ptr;
+> > +	struct percpu_ref_data  *data;
+> >  };
+> 
+> Can you please add a comment explaining why the two structs are split?
 
-Hi,
-That's an amazing idea! I tried it and this time it seems to
-detect it properly. Also this fixes the similar case in
-for(...) {...}.
-
-It should not have any side effects also for other checks.
-Pretty amazing.
-
-I will rewrite the patch with your suggestion and send it
-back.
+Sure, will do that in next version.
 
 Thanks,
-Dwaipayan.
+Ming
+
