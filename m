@@ -2,145 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A2F27FE4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4031327FE47
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731964AbgJALZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731134AbgJALZD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:25:03 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2721FC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 04:25:02 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t10so5258393wrv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 04:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rIrqsNB2CCkv+5Up492E6RUjeUyfI0426YjKqnUmMhw=;
-        b=QCZTFGmpea3i9RVr/67JK8ZN36dSLFeJjSgI6yS88Ca8rxeTc7ji8wthxQWMpuy6L5
-         u38dUNAPrZ77ARjpb1ujurLSC6fur8w2OAkwLL02Za5S8+J4n9uwpZdfMlMOgj5kIS/x
-         YH8nDHFCe4v3IU0+qrJygKqAgr+frNx0suL3E6RPhxO+uEp8EGRu3tKOOHOJAVwvjSnJ
-         1khf7ghrPbRMUyZOLWNxZ8J2oV4KE7oaZDCSSE5t6aEdfcrbfOkDVUWOjiVSKQnB0cay
-         kTucVLYQhI+hSkAC7BzKpjTg8tSYzuviz1LuY68gXQYPam7gwzl/XpH8Ue9QmTxNm6jZ
-         BV9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rIrqsNB2CCkv+5Up492E6RUjeUyfI0426YjKqnUmMhw=;
-        b=uY1gXoTSJYvCHXm4KRQLIoR0usoBa+GW8/D2SioZJ9e5a73/ZegnDFxsUEUDKv4f3b
-         EFPafajxaEaA5fjJi6NdLeSuWRIX39T54W2dgBS9QVLtOD0mXpKLb6iY066hablAk2Gr
-         mpChrK9RqUblH+Ar31lcrDAEEfP7TbtLIxhCHBi2++4mMgQgAp3UvSS1Ej8hBgOm2qwA
-         vxN8KeL0S2CNMsx7gpaRBWZpU7T4PUvH+wvyXVcMToVo8dwKlBijt0T6XfymQutOMIJT
-         O6cnjC7DSk7ZCJn6TpAPeIHNh7rLLsESjc8d//38zuvkpYmn3hpXQcmI7TLW5SzTvLji
-         Lc2Q==
-X-Gm-Message-State: AOAM533N3CEfetvq7Ln+igin9adg/TM9S6nqqBEdJnZvDeOYB46dolQ/
-        iljBVqrz8647Erb6qcO630Tz0qQ+e8rLit/rz4PWbQ==
-X-Google-Smtp-Source: ABdhPJzGuN41NKZ9z4kTko7jROyZG/OJ7AHb1nE6sC1xk6wR5ZdnjF4TzEwMBHuBpFfZC3poYstIgrbkwtRyeClLy/A=
-X-Received: by 2002:adf:f101:: with SMTP id r1mr8370892wro.314.1601551500540;
- Thu, 01 Oct 2020 04:25:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
- <20200921143059.GO2139@willie-the-truck> <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
- <20200929140226.GB53442@C02TD0UTHF1T.local>
-In-Reply-To: <20200929140226.GB53442@C02TD0UTHF1T.local>
-From:   Alexander Potapenko <glider@google.com>
+        id S1731929AbgJALYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:24:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731134AbgJALYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:24:48 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E45C208B6;
+        Thu,  1 Oct 2020 11:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601551487;
+        bh=Q3x7a6lHzBlcoYn6GBFd4Kk0KT2obvgUxwPSGiJJ7ns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e5v8nJS8mJbMpkr0ttQNaYukbIRsLux5xR0Q0LxZeXLqo5AMJ0fpvukBex1b8GtFv
+         SkJiWY+8kHRSTmyIOWfDINNjqIsZxROTXOsonYuAoSOxsFS/kKa5VHSk6JWKSazubp
+         KGrUQHYkGjhkufOV2qqgFrQ7ZDT4zReVXG1HwU4o=
 Date:   Thu, 1 Oct 2020 13:24:49 +0200
-Message-ID: <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201001112449.GA2364834@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark,
+On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > Hello,
+> > 
+> > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > Cc:.
+> > 
+> > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > thank you for your review!
+> > > 
+> > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > 
+> > > > > This adds a class to exported pwm devices.
+> > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > 
+> > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > accomplish you way.
+> > > 
+> > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > I use udev rules to adjust permissions.
+> > 
+> > Hmm, how do you trigger the export? Without being aware of all the
+> > details in the sysfs code I would expect that the exported stuff is
+> > available instantly once the write used to export the PWM is completed.
+> > So changing the permissions can be done directly after triggering the
+> > export in the same process.
+> 
+> The export is triggered through the userspace process itself. Why can it
+> do this ? Because there is another udev rule, that changes permissions
+> when a pwmchip appears.
+> Then I'd like to have the second udev rule, that changes permissions on
+> the freshly exported pwm. The userspace process can't do this.
+> You are right I could propably do everything from within udev: If a
+> pwmchip appears, export certain pwms and right away change their
+> permissions. It does not also not feel right. It'd require knowledge
+> from the userspace application to be mapped to udev.
 
-> If you need virt_to_page() to work, the address has to be part of the
-> linear/direct map.
->
-> If you need to find the struct page for something that's part of the
-> kernel image you can use virt_to_page(lm_alias(x)).
->
-> > Looks like filling page table entries (similarly to what's being done
-> > in arch/arm64/mm/kasan_init.c) is not enough.
-> > I thought maybe vmemmap_populate() would do the job, but it didn't
-> > (virt_to_pfn() still returns invalid PFNs).
->
-> As above, I think lm_alias() will solve the problem here. Please see
-> that and CONFIG_DEBUG_VIRTUAL.
+The way the kernel code is now, yes, you will not have any way to
+trigger it by userspace as the kernel is creating a "raw" struct device
+that isn't assigned to anything.  That is what needs to be fixed here.
 
-The approach you suggest works to some extent, but there are some caveats.
+> > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > kernel driver that can do the required stuff? Compared to the kernel-API
+> > the sysfs interface isn't atomic. Is this an annoyance?
+> 
+> Use-case is generating a voltage from the pwm. This voltage is used to
+> signal different states and does not change very often. This is
+> absolutely not annoying that this is not atomic. We just change the duty
+> cycle on the fly. Everything else is configured one time at startup.
+> I'd call what I need pwm-dac. I could not find a ready to use driver.
+> Maybe I could misuse some kernel driver for this. Maybe I could use
+> pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> there is even a userspace facing part for this, but this is not
+> devicetree ready.
+> ...and the worst, please don't blame me: The application is java, so
+> ioctl is a problem.
 
-To reiterate, we are trying to allocate the pool (2Mb by default, but
-users may want a bigger one, up to, say, 64 Mb) in a way that:
-(1) The underlying page tables support 4K granularity.
-(2) is_kfence_address() (checks that __kfence_pool <= addr <=
-__kfence_pool + KFENCE_POOL_SIZE) does not reference memory
-(3) For addresses belonging to that pool virt_addr_valid() is true
-(SLAB/SLUB rely on that)
+I thought java could do ioctls, otherwise how would it ever be able to
+talk to serial ports?
 
-On x86 we achieve (2) by making our pool a .bss array, so that its
-address is known statically. Aligning that array on 4K and calling
-set_memory_4k() ensures that (1) is also fulfilled. (3) seems to just
-happen automagically without any address translations.
+Anyway, this needs to be fixed in the kernel...
 
-Now, what we are seeing on arm64 is different.
-My understanding (please correct me if I'm wrong) is that on arm64
-only the memory range at 0xffff000000000000 has valid struct pages,
-and the size of that range depends on the amount of memory on the
-system.
-This probably means we cannot just pick a fixed address for our pool
-in that range, unless it is very close to 0xffff000000000000.
+thanks,
 
-If we allocate the pool statically in the way x86 does (assuming we
-somehow resolve (1)), we can apply lm_alias() to addresses returned by
-the KFENCE allocator, making kmalloc() always return addresses from
-the linear map and satisfying (3).
-But in that case is_kfence_address() will also need to be updated to
-compare the addresses to lm_alias(__kfence_pool), and this becomes
-more heavyweight than just reading the address from memory.
-
-So looks like it's still more preferable to allocate the pool
-dynamically on ARM64, unless there's a clever trick to allocate a
-fixed address in the linear map (DTS maybe?)
-
-Thanks,
-Alex
+greg k-h
