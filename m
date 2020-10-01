@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D5228094D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F8F280951
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgJAVRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:17:21 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:56506 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgJAVRV (ORCPT
+        id S1733022AbgJAVRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbgJAVRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:17:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hefvlh0ArBsIJRrdxVb8ZMvmEzM/8dfDueDLa3SqvBE=; b=II+kAhiqMFp53BkZhEKEIAZOGX
-        Hf5R/UxJcuMpM1xKOtQiVLnXgHKpY3ATzLuzklegYpm8Lzd1IU8qbxICyHmjkg0Qz2qpCS1bBEP8S
-        HH28gugNZV5UTgyncQIejXImuXayo+8VmT10XfdhXQI5u8R5f9WbfEl5R5I0IT8rf6srCIXu4FuU4
-        LkJGSFOsfVVrzpphiDb6nyv0gbGpMmiFMBmRQXZ8/pSNuY7NINGyaZXcwsZgqVEvlUOKzVawggh7A
-        tut4634lIqWIr54WPvoIxDjlbPT9ChDuA/3NfJEUjDRYWNClm+jYg8mM1rvruUCkLWbKSnLBSv76k
-        bKlc7H2w==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kO5wx-0005DJ-Nq; Thu, 01 Oct 2020 15:17:20 -0600
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <b620cd26-91cc-b564-dbb7-9c7381263f46@deltatee.com>
-Date:   Thu, 1 Oct 2020 15:17:12 -0600
+        Thu, 1 Oct 2020 17:17:40 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9398FC0613D0;
+        Thu,  1 Oct 2020 14:17:38 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id q8so348147lfb.6;
+        Thu, 01 Oct 2020 14:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zPU8K8mX10SuX1nIiSrp3KwYZ3RHW0pkIeqC3Pyqkok=;
+        b=IZ/a9RN3TdKPmV25cFyxFKwqh+FVNslFuOMHaU39uIw4UJYs3Y2xz8RDkwtM723F50
+         oZLLO98XxJt/vn5u1Kh/6ymcVJRXS3Th1JacSRA1rMgZWSr6z3jpVEuOQjO1gzx6umws
+         UOsszk4i8tRTCalqmk8dYpxuCcdW3ukj1tEbe/Q5A81qZXLUu3Xlblw+yEdwFgT0aJk5
+         zCLSCpfoMppasEc4Ja2m1dTCQe2MBR2TLz6DYS0/7Tnn/0Xe4DGFnG6iPjI2T/HuZq5P
+         8xgFQV88Cs036VP7FGq0+9eXwxa9QJ8W/9rJz5TE/NeK3ly8t+rxxOunoDMASQr+Ibaf
+         pEWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zPU8K8mX10SuX1nIiSrp3KwYZ3RHW0pkIeqC3Pyqkok=;
+        b=ehciPDjsUU2muDQ9jrdqvhI/TBYGlsGkTUVJAX+rFJgmN3dwQExsy1l8i9fSDojkYI
+         KIskhQ4GBo/1sGC+XIkIUEWcX91Q98IyHfLA68ct0kIaU8fNRtktp5Nw+cYBAr2kEYfD
+         6X9I+ZJSX2QScKBoC1c7ZvDhl0MCs4Rl1fBuiQmM+c6tWJK/AxEbOEWyZi+bq3+vX6N0
+         ce6okKdTZII9hy3w0LCN3dxTvjfM0ZZnTQk/Pnd+kraehAI7zsNp1R29KSfoF+pTfcKD
+         tGJt1YYg9s9IxQRhyaq5Emi0WlnLj5JzQDpeo9ufjC0hnZ73rKx+o7NqKg3LZlFB9XsO
+         i6QQ==
+X-Gm-Message-State: AOAM533jOlaep9sfo1gGSQd2brYALJy5Gh4JGHX7AED3YUMnTyHpNfss
+        zbpFaWmo9hG9r40HLfhCZcoyv7OtRV0=
+X-Google-Smtp-Source: ABdhPJykYzz6fn4GvWqYoqONjU2/EsYPbVcVjtaYD4deC7pTzwp00Au4rvNcgXE1Hf8N5cBckCNL9g==
+X-Received: by 2002:a19:771d:: with SMTP id s29mr3066742lfc.521.1601587056869;
+        Thu, 01 Oct 2020 14:17:36 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id f12sm712855lfp.69.2020.10.01.14.17.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 14:17:36 -0700 (PDT)
+Subject: Re: [PATCH v7 0/4] input: elants: Support Asus TF300T and Nexus 7
+ touchscreen
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        James Chen <james.chen@emc.com.tw>,
+        Johnny Chuang <johnny.chuang@emc.com.tw>,
+        Scott Liu <scott.liu@emc.com.tw>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Harry Cutts <hcutts@chromium.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1600551334.git.mirq-linux@rere.qmqm.pl>
+ <20200930172841.GB12964@qmqm.qmqm.pl>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b4144b19-9a53-1810-5092-acf932be9762@gmail.com>
+Date:   Fri, 2 Oct 2020 00:17:35 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20200930172841.GB12964@qmqm.qmqm.pl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, Intel-gfx@lists.freedesktop.org, ashok.raj@intel.com, tvrtko.ursulin@linux.intel.com, hch@infradead.org, dwmw2@infradead.org, murphyt7@tcd.ie, joro@8bytes.org, baolu.lu@linux.intel.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
- api
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu,
+30.09.2020 20:28, Michał Mirosław пишет:
+> On Sat, Sep 19, 2020 at 11:41:19PM +0200, Michał Mirosław wrote:
+>> This series cleans up the driver a bit and implements changes needed to
+>> support EKTF3624-based touchscreen used in Asus TF300T, Google Nexus 7
+>> and similar Tegra3-based tablets.
+> [...]
+> 
+> Ping? Should I resend? This got only cosmetic fixups and rebases through
+> last couple of iterations.
 
-On 2020-09-27 12:34 a.m., Lu Baolu wrote:
-> Hi,
-> 
-> The previous post of this series could be found here.
-> 
-> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/
-> 
-> This version introduce a new patch [4/7] to fix an issue reported here.
-> 
-> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/
-> 
-> There aren't any other changes.
-> 
-> Please help to test and review.
++1 We want to get a working touchscreen on our ASUS devices :)
 
-I've tested this patchset on my Sandy Bridge machine and found no issues (while including a 
-patch to ioat I've sent to that maintainer).
-
-Tested-By: Logan Gunthorpe <logang@deltatee.com>
-
-Thanks,
-
-Logan
+Please consider merging this series. The upstream Nexus 7 DT is already
+preapared, now just need the two-line driver change to get the TS working.
