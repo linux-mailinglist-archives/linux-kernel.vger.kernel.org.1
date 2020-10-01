@@ -2,123 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BAD27FF2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CDB27FF48
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732411AbgJAMbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S1732091AbgJAMgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732246AbgJAMbo (ORCPT
+        with ESMTP id S1731888AbgJAMgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:31:44 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BB8C0613D0;
-        Thu,  1 Oct 2020 05:31:43 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id s66so5173878otb.2;
-        Thu, 01 Oct 2020 05:31:43 -0700 (PDT)
+        Thu, 1 Oct 2020 08:36:10 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64D0C0613D0;
+        Thu,  1 Oct 2020 05:36:09 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id o20so4331134pfp.11;
+        Thu, 01 Oct 2020 05:36:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iSnYykYD16tCr/8hr8KwJg8sdPxWkZZ/u4Cgaj3NyQw=;
-        b=cFlbjAVPdock4Ma9XPAoOKn34TQpGPoIebzxlY/MvwUreKW3XdQ52pqsSENcAJq1hz
-         HIDZVHEWPhRodOPt7QV9Fqj3IEuGXPLO/SXJwoyu0Oxq5yhPcIqnOoxZvTNfttUHi0OT
-         ziD93leGxua8IcvPhcpUz3sd288sEZT4oaEJGyfN+q51qKZYj4NJk06fpNYi/ZWxeYPC
-         NHwzZVxfmtmb8GEjtwBxUQRe3Rt8kFIPoW5rMSyvT3WnEYItP5YgXgbujW6ZXQV8YEld
-         rtnp0pEosYEvTmqv7cF/plSDNCtHSvYCn5lsBQNL9WaKGcu2EmFSVo3ZkR3sXbVIDqYs
-         chMw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HeCnOn1AQe3noYdugT04ghfsqOvbH2UWxnYiZwAM8pA=;
+        b=rt4knFN4h3KcmnWb2GEvtruXlgj4A3ABG4c+p+lZgq8d0S7BPuavcOqsp+hpCWYnXa
+         GBhlDx9GAoZl/WT4QarzotnCcoaOig5MEEZM2w7ayQ4/6mExeprO3yX59LvJ/ZKTEope
+         eCX6NsiVakdbaUT2AWNV5OPVcv7hk0hAWqbuJHMBGmPftGR5rliKLLWIw+ArUCGw++Hi
+         BYqj8x3qN3xTOFBPD6eXwGnf4PgImhLpbfDnF0PK/pXDXiRpnaYXcY1KmpO7fMelw5Yk
+         +URRcsC8D8J3ceuBDE98YcASVGn0qhELhALvmdAFyYF2MGzybK0bSSKgrZbfeP/7jLkw
+         zMdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iSnYykYD16tCr/8hr8KwJg8sdPxWkZZ/u4Cgaj3NyQw=;
-        b=AOIhewjVX7eEhE2Oeq+gIRQY07TAb/HG7qb3d4TDXmVdTiKtmLUsytVw9urSI0Pe8C
-         Fz5gLFvvwE+hQSHaewSOhBi87f94G7k28Lp5XvYPo/fWTN+7wXnzfaIlaZxzSK4GiH4P
-         x7Q8RE4DkGpvmDgvfhDLB6z/4UBFJRurFbw48p+k4QlrMClR7rPFb+YkDDCEb86H6ZaN
-         oOb98W3RXr5kWam/HPRBFQRwOx7MpSx0NYCYIkB5IEH/SF/nQ/SloPXzh0FmqkYtPlbk
-         TDLuuaKthbg7GHhG7IhsEsnNWUFbnyNmdW/3L8HpXo7A5DDYZyrIqwuiPdqYr4BCLIH4
-         6w6w==
-X-Gm-Message-State: AOAM530M3+i8GoGWbCR/yegIEZs2vkQIwlZ7xWKymVBqLsDMxPTW0dY7
-        t7Y3Tk5vuvzYHGfRDh4vfc119FE1nEm9BfrPJ5tGmuK8+A==
-X-Google-Smtp-Source: ABdhPJwGFZEkPJNsn0Sgrp+2WiN7fZ6TT9OgY1UO8GYoEss17p0XXiS+FVpYaoXpl5lyzsRztgLpLfPxZJBBx+9zDRE=
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr4802299otp.129.1601555502921;
- Thu, 01 Oct 2020 05:31:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HeCnOn1AQe3noYdugT04ghfsqOvbH2UWxnYiZwAM8pA=;
+        b=SpnpKF03RatQTUSSR4/BHbKazm8PlqDFHV7M8Bt8MqCLji+9Ax3dsM6qbmxx6hmFBq
+         iTszxyds25jL9wplgbVgztHkAKwPjQrtlK2mleGzU+dclZ+nZ8i4FJFBDULz9NEFQnmV
+         SDjuejwbvLCeP0pDaK/sZGG2NeucL6QttgEcU0cxxabn4PB3jRxAi9T6p3zB/k7TaoSl
+         /32g40qx2OCK8gAlBUXc7yut4c6iinn0I5YbDISn8wFI8VPgMZFQWdOx1xjj7jJ+ufcB
+         DRoFmDOTSpRDCPLyjfPdruiusev9fOeZWQ59CG4QnZ6OZddmmyG4yy6UC5LsACWHgiI6
+         KeZQ==
+X-Gm-Message-State: AOAM530QNZCSeBr0+z4KXR1RqWjXsn9ms3UyhMzyP2qyN/Qn5tswEfzd
+        +4sJiKwfdRbeCW0FhJdx+Zs=
+X-Google-Smtp-Source: ABdhPJzxdm0M5/Xa1AF4jzUYvFX502HO3gy4L4RNmkZ3YO7ybIdtABi+PhN71CQD6sxdwWBSwF+ZHQ==
+X-Received: by 2002:a17:902:ff07:b029:d1:e5fa:aa1d with SMTP id f7-20020a170902ff07b02900d1e5faaa1dmr7173912plj.84.1601555769436;
+        Thu, 01 Oct 2020 05:36:09 -0700 (PDT)
+Received: from gmail.com ([171.61.143.130])
+        by smtp.gmail.com with ESMTPSA id n3sm3590631pjv.29.2020.10.01.05.36.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 05:36:08 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 18:03:58 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        John Garry <john.garry@huawei.com>,
+        Don Brace <don.brace@microsemi.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
+Subject: Re: [PATCH v3 00/28] scsi: use generic power management
+Message-ID: <20201001123358.GA1075511@gmail.com>
+References: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-References: <20201001162237.633d6043@canb.auug.org.au> <CAJKOXPdyCYkSE1ie_t5G5X4JStU0zxxuoovLFnUxJP4aQbvM=g@mail.gmail.com>
-In-Reply-To: <CAJKOXPdyCYkSE1ie_t5G5X4JStU0zxxuoovLFnUxJP4aQbvM=g@mail.gmail.com>
-From:   Rob Herring <robherring2@gmail.com>
-Date:   Thu, 1 Oct 2020 07:31:31 -0500
-Message-ID: <CAL_JsqKKaStNsDxfJw0UOzU6rTyeeJtVkaE4-nJXKHA5A1pOLg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the devicetree tree with the mfd tree
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:26 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Thu, 1 Oct 2020 at 08:22, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> >
-> > Today's linux-next merge of the devicetree tree got a conflict in:
-> >
-> >   Documentation/devicetree/bindings/mfd/syscon.yaml
-> >
-> > between commit:
-> >
-> >   18394297562a ("dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bindings")
-> >   05027df1b94f ("dt-bindings: mfd: syscon: Document Exynos3 and Exynos5433 compatibles")
-> >
-> > from the mfd tree and commit:
-> >
-> >   35b096dd6353 ("dt-bindings: mfd: syscon: add some compatible strings for Hisilicon")
-> >
-> > from the devicetree tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >
-> > --
-> > Cheers,
-> > Stephen Rothwell
-> >
-> > diff --cc Documentation/devicetree/bindings/mfd/syscon.yaml
-> > index 0f21943dea28,fc2e85004d36..000000000000
-> > --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-> > @@@ -40,11 -40,10 +40,14 @@@ properties
-> >                 - allwinner,sun50i-a64-system-controller
-> >                 - microchip,sparx5-cpu-syscon
-> >                 - mstar,msc313-pmsleep
-> >  +              - samsung,exynos3-sysreg
-> >  +              - samsung,exynos4-sysreg
-> >  +              - samsung,exynos5-sysreg
-> >  +              - samsung,exynos5433-sysreg
-> > -
-> > +               - hisilicon,hi6220-sramctrl
-> > +               - hisilicon,pcie-sas-subctrl
-> > +               - hisilicon,peri-subctrl
-> > +               - hisilicon,dsa-subctrl
->
-> Thanks Stephen, looks good.
->
-> Zhei,
-> However the Huawei compatibles in the original patch were added not
-> alphabetically which messes the order and increases the possibility of
-> conflicts. It would be better if the entries were kept ordered.
+On Thu, Oct 01, 2020 at 05:54:43PM +0530, Vaibhav Gupta wrote:
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-I've fixed up the order.
+The purpose of this patch series is to upgrade power management in SCSI
+drivers. This has been done by upgrading .suspend() and .resume() callbacks.
 
-Rob
+The upgrade makes sure that the involvement of PCI Core does not change the
+order of operations executed in a driver. Thus, does not change its behavior.
+
+In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
+pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+their job.
+
+The conversion requires the removal of those function calls, change the
+callbacks' definition accordingly and make use of dev_pm_ops structure.
+
+All patches are compile-tested only.
+
+v3: break down the patches to drop PCI wakeup calls.
+
+Test tools:
+    - Compiler: gcc (GCC) 10.2.0
+    - allmodconfig build: make -j$(nproc) W=1 all
+
+Vaibhav Gupta (28):
+  scsi: megaraid_sas: Drop PCI wakeup calls from .resume
+  scsi: megaraid_sas: use generic power management
+  scsi: megaraid_sas: update function description
+  scsi: aacraid: Drop pci_enable_wake() from .resume
+  scsi: aacraid: use generic power management
+  scsi: aic7xxx: use generic power management
+  scsi: aic79xx: use generic power management
+  scsi: arcmsr: Drop PCI wakeup calls from .resume
+  scsi: arcmsr: use generic power management
+  scsi: esas2r: Drop PCI Wakeup calls from .resume
+  scsi: esas2r: use generic power management
+  scsi: hisi_sas_v3_hw: Drop PCI Wakeup calls from .resume
+  scsi: hisi_sas_v3_hw: use generic power management
+  scsi: mpt3sas_scsih: Drop PCI Wakeup calls from .resume
+  scsi: mpt3sas_scsih: use generic power management
+  scsi: lpfc: use generic power management
+  scsi: pm_8001:  Drop PCI Wakeup calls from .resume
+  scsi: pm_8001: use generic power management
+  scsi: hpsa: use generic power management
+  scsi: 3w-9xxx: Drop PCI Wakeup calls from .resume
+  scsi: 3w-9xxx: use generic power management
+  scsi: 3w-sas: Drop PCI Wakeup calls from .resume
+  scsi: 3w-sas: use generic power management
+  scsi: mvumi: Drop PCI Wakeup calls from .resume
+  scsi: mvumi: use generic power management
+  scsi: mvumi: update function description
+  scsi: pmcraid: Drop PCI Wakeup calls from .resume
+  scsi: pmcraid: use generic power management
+
+ drivers/scsi/3w-9xxx.c                    |  30 ++-----
+ drivers/scsi/3w-sas.c                     |  32 ++-----
+ drivers/scsi/aacraid/linit.c              |  34 ++------
+ drivers/scsi/aic7xxx/aic79xx.h            |  12 +--
+ drivers/scsi/aic7xxx/aic79xx_core.c       |   8 +-
+ drivers/scsi/aic7xxx/aic79xx_osm_pci.c    |  43 +++-------
+ drivers/scsi/aic7xxx/aic79xx_pci.c        |   6 +-
+ drivers/scsi/aic7xxx/aic7xxx.h            |  10 +--
+ drivers/scsi/aic7xxx/aic7xxx_core.c       |   6 +-
+ drivers/scsi/aic7xxx/aic7xxx_osm_pci.c    |  46 +++-------
+ drivers/scsi/aic7xxx/aic7xxx_pci.c        |   4 +-
+ drivers/scsi/arcmsr/arcmsr_hba.c          |  33 +++----
+ drivers/scsi/esas2r/esas2r.h              |   5 +-
+ drivers/scsi/esas2r/esas2r_init.c         |  48 +++--------
+ drivers/scsi/esas2r/esas2r_main.c         |   3 +-
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c    |  31 +++----
+ drivers/scsi/hpsa.c                       |  12 +--
+ drivers/scsi/lpfc/lpfc_init.c             | 100 +++++++---------------
+ drivers/scsi/megaraid/megaraid_sas_base.c |  54 +++---------
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c      |  35 +++-----
+ drivers/scsi/mvumi.c                      |  49 +++--------
+ drivers/scsi/pm8001/pm8001_init.c         |  46 ++++------
+ drivers/scsi/pmcraid.c                    |  44 +++-------
+ 23 files changed, 198 insertions(+), 493 deletions(-)
+
+-- 
+2.28.0
+
