@@ -2,97 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F872809DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF74E2809DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733108AbgJAWF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:05:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38558 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgJAWF4 (ORCPT
+        id S1733112AbgJAWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbgJAWHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:05:56 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601589954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJcSELVC6RVckkFldDPnK0A/9qc4egUUwNfx1N3iMQ0=;
-        b=hYSZvjIlCvJp6mhe7Ze4zibnAoIQOm2HevzvHSTiOeN8BpodcJvTPOuz31EbixqHdWELLE
-        h/fxpyGgqeiGzyq75iyf4VmXZBeVYzcjwG1nHRj1+VtXvK2VGBMj02Mlj7Mn8k0ss0epVx
-        mARL5Iq0k52AKNQyYoXhbz/Puy1xebrCQU5EQGIt2k0BK1pAfP2AUs4oo3JDbXprtab5wx
-        qx+4ik/A/lOLcxErJ0EWWvYlZ1C5kBB5NVCpRl3ShcdYPjqYhzgiGCbVqljHw+JvTpapkb
-        7DOa+taRH5pokl0L63jsE5oEtySdzZxOasa33MR4NDKLHB5xLUlHSN8D9ZHEIw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601589954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJcSELVC6RVckkFldDPnK0A/9qc4egUUwNfx1N3iMQ0=;
-        b=f/HNZgTj8Ox4bFry60y8Ijfmnnofa+tIHeeS7NaMjPdbIkdsotWtlwm6bSwY+Yw9N1asTm
-        QnMhcuUBaEDU3HAg==
-To:     Erez Geva <erez.geva.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Simon Sudler <simon.sudler@siemens.com>,
-        Andreas Meisinger <andreas.meisinger@siemens.com>,
-        Andreas Bucher <andreas.bucher@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andreas Zirkler <andreas.zirkler@siemens.com>,
-        Ermin Sakic <ermin.sakic@siemens.com>,
-        An Ninh Nguyen <anninh.nguyen@siemens.com>,
-        Michael Saenger <michael.saenger@siemens.com>,
-        Bernd Maehringer <bernd.maehringer@siemens.com>,
-        Gisela Greinert <gisela.greinert@siemens.com>,
-        Erez Geva <erez.geva.ext@siemens.com>,
-        Erez Geva <ErezGeva2@gmail.com>
-Subject: Re: [PATCH 2/7] Function to retrieve main clock state
-In-Reply-To: <20201001205141.8885-3-erez.geva.ext@siemens.com>
-References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <20201001205141.8885-3-erez.geva.ext@siemens.com>
-Date:   Fri, 02 Oct 2020 00:05:53 +0200
-Message-ID: <87wo09eh4u.fsf@nanos.tec.linutronix.de>
+        Thu, 1 Oct 2020 18:07:55 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBBFC0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:07:54 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id 26so24467ois.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DTsNkTRKBFGiT3RnxqZet+e/40+acfLy05o3xQ2l+Jk=;
+        b=aIR4I+0sBlNa3HSvx1eZnX3VRUlq2nZJCCPjELSWgEO/0HvnarH6GN/9/l4L8lCTVY
+         Nu8RN/zvEY8WYHB7mMSiRF5p56z7dklm5ZfpjGbjrRdte7TTPgaD62XFFUmjgkgP8rVZ
+         dVyFISlOu2Q22Kot4krNb4RRdEyX3QqoJBane5oI0QT5JT9MSp5kqfjKo3e5tnmESdby
+         DtDDccIGRn76SbXAKheT0SFV1hn7BfQ9MqKX7JoEN1b8UrJlCqET+UkVsLrVSkO+6x81
+         vErLl4xayHwrPjhYKw/1dA2rAb2lq4sNE5h/4OMvayGCqtS+/b8XRUBcTxOJjcbtshfv
+         BfQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DTsNkTRKBFGiT3RnxqZet+e/40+acfLy05o3xQ2l+Jk=;
+        b=VZeDGT7m5rwXKUABDYinXYtn9dv++d4SEblMkOCr93DnEI0/JW8b3Xt7ndMFwivv5q
+         h/pD5eMAvZBNbJvLB+9OjRJzQ/Ur1qNLaL3dwcm0ch+4ZOeIgNNt2kDFSp9Hog1wMlR+
+         QmB7iIXwY8tkG325JZtX+l+NqWoaKzJ9RsuyaIXbJc6tVUnDzxvPQx6MsgqOj2ptXnTY
+         1xR/3xbASmOzOK9szIrkgL4c+q5xmFk4YEGv1YHXS7ixMhCKyF4rIzN6RwuXjHAAiUnB
+         M1+WB8pv/oNvY9MTXvvbhBPNR6amzUMZVfm+qTiidIW0tE1cE8ENV8r4BttNz2VRaJSQ
+         pPWA==
+X-Gm-Message-State: AOAM531ovQ9zwegTiKKaF2oL47el6lKYc9yZhTon+zf0UH93C4NPaSw7
+        PlbsbFDPM14fh5l7s4bFd34jjgMFweFhEDGIDQjHZw==
+X-Google-Smtp-Source: ABdhPJytLfO0smIK/xEv6VzJQe4myTsLm8ipjd0O6CWHheM/Dyq/BY10cueJ7Vwo1iCD6z7vzAM7/RY4nBV8/6B0afg=
+X-Received: by 2002:a54:4d88:: with SMTP id y8mr1380233oix.97.1601590074016;
+ Thu, 01 Oct 2020 15:07:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200926042453.67517-1-john.stultz@linaro.org>
+ <20200926042453.67517-6-john.stultz@linaro.org> <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
+In-Reply-To: <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 1 Oct 2020 15:07:42 -0700
+Message-ID: <CALAqxLWv+Uz_mPUtx8TzfEvKHk7kp0XS5XLX6qyW6tqacGZU5g@mail.gmail.com>
+Subject: Re: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to
+ system heap
+To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Erez,
+On Tue, Sep 29, 2020 at 9:46 PM Chris Goldsworthy
+<cgoldswo@codeaurora.org> wrote:
+>
+> On 2020-09-25 21:24, John Stultz wrote:
+> > Reuse/abuse the pagepool code from the network code to speed
+> > up allocation performance.
+> >
+> > This is similar to the ION pagepool usage, but tries to
+> > utilize generic code instead of a custom implementation.
+> >
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Liam Mark <lmark@codeaurora.org>
+> > Cc: Laura Abbott <labbott@kernel.org>
+> > Cc: Brian Starkey <Brian.Starkey@arm.com>
+> > Cc: Hridya Valsaraju <hridya@google.com>
+> > Cc: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Sandeep Patil <sspatil@google.com>
+> > Cc: =C3=98rjan Eide <orjan.eide@arm.com>
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> > Cc: Simon Ser <contact@emersion.fr>
+> > Cc: James Jones <jajones@nvidia.com>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+> > ---
+> >  drivers/dma-buf/heaps/Kconfig       |  1 +
+> >  drivers/dma-buf/heaps/system_heap.c | 32 +++++++++++++++++++++++++----
+> >  2 files changed, 29 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/dma-buf/heaps/Kconfig
+> > b/drivers/dma-buf/heaps/Kconfig
+> > index a5eef06c4226..f13cde4321b1 100644
+> > --- a/drivers/dma-buf/heaps/Kconfig
+> > +++ b/drivers/dma-buf/heaps/Kconfig
+> > @@ -1,6 +1,7 @@
+> >  config DMABUF_HEAPS_SYSTEM
+> >       bool "DMA-BUF System Heap"
+> >       depends on DMABUF_HEAPS
+> > +     select PAGE_POOL
+> >       help
+> >         Choose this option to enable the system dmabuf heap. The system
+> > heap
+> >         is backed by pages from the buddy allocator. If in doubt, say Y=
+.
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c
+> > b/drivers/dma-buf/heaps/system_heap.c
+> > index 882a632e9bb7..9f57b4c8ae69 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/scatterlist.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/vmalloc.h>
+> > +#include <net/page_pool.h>
+> >
+> >  struct dma_heap *sys_heap;
+> >
+> > @@ -46,6 +47,7 @@ struct dma_heap_attachment {
+> >  static gfp_t order_flags[] =3D {HIGH_ORDER_GFP, LOW_ORDER_GFP,
+> > LOW_ORDER_GFP};
+> >  static const unsigned int orders[] =3D {8, 4, 0};
+> >  #define NUM_ORDERS ARRAY_SIZE(orders)
+> > +struct page_pool *pools[NUM_ORDERS];
+> >
+> >  static struct sg_table *dup_sg_table(struct sg_table *table)
+> >  {
+> > @@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct
+> > dma_buf *dmabuf)
+> >       struct system_heap_buffer *buffer =3D dmabuf->priv;
+> >       struct sg_table *table;
+> >       struct scatterlist *sg;
+> > -     int i;
+> > +     int i, j;
+> >
+> >       table =3D &buffer->sg_table;
+> >       for_each_sg(table->sgl, sg, table->nents, i) {
+> >               struct page *page =3D sg_page(sg);
+> >
+> > -             __free_pages(page, compound_order(page));
+> > +             for (j =3D 0; j < NUM_ORDERS; j++) {
+> > +                     if (compound_order(page) =3D=3D orders[j])
+> > +                             break;
+> > +             }
+> > +             page_pool_put_full_page(pools[j], page, false);
+> >       }
+> >       sg_free_table(table);
+> >       kfree(buffer);
+> > @@ -300,8 +306,7 @@ static struct page
+> > *alloc_largest_available(unsigned long size,
+> >                       continue;
+> >               if (max_order < orders[i])
+> >                       continue;
+> > -
+> > -             page =3D alloc_pages(order_flags[i], orders[i]);
+> > +             page =3D page_pool_alloc_pages(pools[i], order_flags[i]);
+> >               if (!page)
+> >                       continue;
+> >               return page;
+> > @@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops =
+=3D
+> > {
+> >  static int system_heap_create(void)
+> >  {
+> >       struct dma_heap_export_info exp_info;
+> > +     int i;
+> > +
+> > +     for (i =3D 0; i < NUM_ORDERS; i++) {
+> > +             struct page_pool_params pp;
+> > +
+> > +             memset(&pp, 0, sizeof(pp));
+> > +             pp.order =3D orders[i];
+> > +             pp.dma_dir =3D DMA_BIDIRECTIONAL;
+> > +             pools[i] =3D page_pool_create(&pp);
+> > +
+> > +             if (IS_ERR(pools[i])) {
+> > +                     int j;
+> > +
+> > +                     pr_err("%s: page pool creation failed!\n", __func=
+__);
+> > +                     for (j =3D 0; j < i; j++)
+> > +                             page_pool_destroy(pools[j]);
+> > +                     return PTR_ERR(pools[i]);
+> > +             }
+> > +     }
+> >
+> >       exp_info.name =3D "system";
+> >       exp_info.ops =3D &system_heap_ops;
+>
+> This is cool, I didn't know about this pooling code under /net/core.
+> Nice and compact.
 
-On Thu, Oct 01 2020 at 22:51, Erez Geva wrote:
+Oh, bummer. I just realized when allocating w/ __GFP_ZERO from the
+page-pool, the logic doesn't actually clear pages when pulling from
+the cache.
+So unfortunately this is what accounts for much of the performance
+benefit I was seeing with this approach, so I'll have to retract my
+claim on the performance gain with this. :(
 
-same comments as for patch 1 apply.
+I've got a first pass at zeroing the pages we put into the pool, but
+the numbers are not so great just yet so I've got some further work to
+do.
 
-> Add kernel function to retrieve main clock oscillator state.
-
-The function you are adding is named adjtimex(). adjtimex(2) is a well
-known user space interface and naming a read only kernel interface the
-same way is misleading.
-
-Thanks,
-
-        tglx
-
-
+thanks
+-john
