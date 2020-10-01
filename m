@@ -2,191 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D6D27FE3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B2027FE41
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731791AbgJALXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:23:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42352 "EHLO mga09.intel.com"
+        id S1731913AbgJALXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731134AbgJALXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:23:10 -0400
-IronPort-SDR: peFxh9gI1p58o75arTUGMHvfK9B3QsfuOA7VA03vmQ/4Fg0+t4kyUtxBeIlu45d5XT+BVxA6BR
- UyMXFuy+neeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="163554532"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="163554532"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 04:23:08 -0700
-IronPort-SDR: 2NIJl7tqDGULw8uSRZKVgPnYK3fcSG7Y7UJ+5T0puHQNhPggpTM/qeh9GUTt8M/OLRKHgQFVqN
- xCOxkS81Q8OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="339514892"
-Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Oct 2020 04:23:07 -0700
-Received: from kbuild by de448af6ea1b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kNwfy-0000b6-FM; Thu, 01 Oct 2020 11:23:06 +0000
-Date:   Thu, 01 Oct 2020 19:22:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/uv_time] BUILD SUCCESS
- e23a80908fa9b23aedbf38b1116b69be6539d287
-Message-ID: <5f75bc0a.rQcNS6620b2eA74S%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731134AbgJALXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:23:12 -0400
+Received: from localhost (unknown [122.167.37.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3332208B6;
+        Thu,  1 Oct 2020 11:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601551392;
+        bh=bUHEd1e9zOHwRPVq02x/79Y7+fidiGQpvPe4mV0kfTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1n8NslubAAO20XWnkYQbenY2slljF1Rf26iLMA9V/lrhfSmrpnPIWCVARWNm0Kpdg
+         07OpUmM3bik9PVYwCu2L7XeEMkqBBs8ZOZsdvOUfNpHCdH+GVZKd7V2dhT32v/SEsS
+         CYbzEexUe9pQPk4C4gayFBYjdZ0fAvmvDJ3lae00=
+Date:   Thu, 1 Oct 2020 16:53:07 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
+Message-ID: <20201001112307.GX2968@vkoul-mobl>
+References: <20200923063410.3431917-1-vkoul@kernel.org>
+ <20200923063410.3431917-3-vkoul@kernel.org>
+ <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/uv_time
-branch HEAD: e23a80908fa9b23aedbf38b1116b69be6539d287  x86/uv/time: Replace one-element array and save heap space
+Hi Peter,
 
-elapsed time: 722m
+On 29-09-20, 11:06, Peter Ujfalusi wrote:
 
-configs tested: 127
-configs skipped: 65
+> > + * @spi: peripheral config for spi
+> > + * @i2c: peripheral config for i2c
+> > + */
+> > +struct dmaengine_peripheral_config {
+> > +	enum dmaengine_peripheral peripheral;
+> > +	u8 set_config;
+> > +	u32 rx_len;
+> > +	struct dmaengine_spi_config spi;
+> > +	struct dmaengine_i2c_config i2c;
+> 
+> I know that you want this to be as generic as much as it is possible,
+> but do we really want to?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+That is really a good question ;-)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-h8300                            allyesconfig
-arm                         shannon_defconfig
-arm                  colibri_pxa300_defconfig
-mips                          ath25_defconfig
-sh                        edosk7705_defconfig
-c6x                        evmc6457_defconfig
-powerpc                     asp8347_defconfig
-arm                         mv78xx0_defconfig
-arm                           tegra_defconfig
-sh                           se7619_defconfig
-mips                        bcm63xx_defconfig
-arm                          pcm027_defconfig
-sh                              ul2_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                   motionpro_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc837x_mds_defconfig
-xtensa                           alldefconfig
-arm                         nhk8815_defconfig
-arm                         bcm2835_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                  storcenter_defconfig
-microblaze                      mmu_defconfig
-powerpc                    mvme5100_defconfig
-arc                            hsdk_defconfig
-sh                           sh2007_defconfig
-m68k                           sun3_defconfig
-arm                          pxa910_defconfig
-sh                     magicpanelr2_defconfig
-sh                           se7750_defconfig
-m68k                            q40_defconfig
-arm                        multi_v5_defconfig
-arm                          lpd270_defconfig
-arm                        trizeps4_defconfig
-arm                       imx_v6_v7_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                        bcm47xx_defconfig
-arm                             pxa_defconfig
-mips                           ip28_defconfig
-arm                         hackkit_defconfig
-sh                          rsk7269_defconfig
-powerpc                      chrp32_defconfig
-mips                        jmr3927_defconfig
-powerpc                      katmai_defconfig
-powerpc                           allnoconfig
-sh                          rsk7203_defconfig
-sh                   sh7724_generic_defconfig
-sh                             espt_defconfig
-csky                                defconfig
-arm                          iop32x_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7724_defconfig
-arc                        nsim_700_defconfig
-arm                         palmz72_defconfig
-c6x                        evmc6474_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a015-20200930
-x86_64               randconfig-a013-20200930
-x86_64               randconfig-a012-20200930
-x86_64               randconfig-a016-20200930
-x86_64               randconfig-a014-20200930
-x86_64               randconfig-a011-20200930
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> GPIv2 will also handle I2S peripheral, other vendor's similar solution
 
-clang tested configs:
-x86_64               randconfig-a001-20200930
-x86_64               randconfig-a005-20200930
-x86_64               randconfig-a003-20200930
-x86_64               randconfig-a004-20200930
-x86_64               randconfig-a002-20200930
-x86_64               randconfig-a006-20200930
+Not I2S, but yes but additional peripherals is always a question
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> would require different sets of parameters unique to their IPs?
+> 
+> How we are going to handle similar setups for DMA which is used for
+> networking, SPI/I2C/I2S/NAND/display/capture, etc?
+> 
+> Imho these settings are really part of the peripheral's domain and not
+> the DMA. It is just a small detail that instead of direct register
+> writes, your setup is using the DMA descriptors to write.
+> It is similar to what I use as metadata (part of the descriptor belongs
+> and owned by the client driver).
+> 
+> I think it would be better to have:
+> 
+> enum dmaengine_peripheral {
+> 	DMAENGINE_PERIPHERAL_GPI_SPI = 1,
+> 	DMAENGINE_PERIPHERAL_GPI_UART,
+> 	DMAENGINE_PERIPHERAL_GPI_I2C,
+> 	DMAENGINE_PERIPHERAL_XYZ_SPI,
+> 	DMAENGINE_PERIPHERAL_XYZ_AASRC,
+> 	DMAENGINE_PERIPHERAL_ABC_CAM,
+> 	...
+> 	DMAENGINE_PERIPHERAL_LAST,
+> };
+> 
+> enum dmaengine_peripheral peripheral_type;
+> void *peripheral_config;
+> 
+> 
+> and that's it. The set_config is specific to GPI.
+> It can be debated where the structs should be defined, in the generic
+> dmaengine.h or in include/linux/dma/ as controller specific
+> (gpi_peripheral.h) or a generic one, like dmaengine_peripheral.h
+> 
+> The SPI/I2C/UART client of yours would pass the GPI specific struct as
+> in any case it has to know what is the DMA it is serviced by.
+
+If we want to take that approach, I can actually move the whole logic of
+creating the specific TREs from DMA to clients and they pass on TRE
+values and driver adds to ring after appending DMA TREs
+
+Question is how should this interface look like? reuse metadata or add a
+new API which sets the txn specific data (void pointer and size) to the
+txn.. 
+
+-- 
+~Vinod
