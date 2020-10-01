@@ -2,164 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6F02802D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FFB2802D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732475AbgJAPeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:34:16 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:24116 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731917AbgJAPeQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:34:16 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 091FLNLe002767;
-        Thu, 1 Oct 2020 10:34:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=PODMain02222019;
- bh=tkOxnWofODio6Kcr6lj76jfpDRx7wOPbDz2wDTpm7Rc=;
- b=U6njCcc8ykFnRrUP+es3Thi3Q+LvLUzOh+5HOS+GDu6hh7mqPCkiGqfrrvSQ3WwHaOsu
- VByQkVCZm0ZVpVMY7OetdoWtrT6zFlbB2+Sk4AYCM8CRxtMv+KeGr697mpUs37ufJluN
- cmj0SGxWHt5SkhM0eYQlQmSbwv1EToi5wG4/GaiB4o5CfxB19CzC4eKaI1OU1F5bcJU5
- zIzJ97CSk57D6qzhYPUkmRkG8xKTdfLmHhu597OhINx/VJ+N+Ws9Yd4qDxuf8R8PhJ0Q
- kvFgZaBe3fjObGKEUfY8N3+vMEFdzsZiIE/qfC8W56AhO+RBRipI85NP6U70pMM5+WYT Cg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 33t22p7c7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 01 Oct 2020 10:34:14 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
- 16:34:13 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 1 Oct 2020 16:34:13 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 520692C4;
-        Thu,  1 Oct 2020 15:34:13 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: [PATCH 2/2] mfd: madera: Add special errata reset handling for cs47l15
-Date:   Thu, 1 Oct 2020 16:34:13 +0100
-Message-ID: <20201001153413.22948-2-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201001153413.22948-1-ckeepax@opensource.cirrus.com>
-References: <20201001153413.22948-1-ckeepax@opensource.cirrus.com>
+        id S1732579AbgJAPfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:35:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:37880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731885AbgJAPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:35:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B187D6E;
+        Thu,  1 Oct 2020 08:35:31 -0700 (PDT)
+Received: from bogus (unknown [10.57.52.244])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B14B3F70D;
+        Thu,  1 Oct 2020 08:35:29 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 16:35:26 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     muhammad.husaini.zulkifli@intel.com
+Cc:     adrian.hunter@intel.com, michal.simek@xilinx.com,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lakshmi.bai.raja.subramanian@intel.com, arnd@arndb.de,
+        wan.ahmad.zainie.wan.mohamad@intel.com,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
+ Firmware Service call
+Message-ID: <20201001153526.GD906@bogus>
+References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
+ <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
- clxscore=1015 adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
- impostorscore=0 suspectscore=1 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010010132
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An errata exists for cs47l15 where the reset must be handled
-differently and removed before DCVDD is applied. A soft reset is used
-for situations where a reset is required to reset state. This does
-however, make this part unsuitable for DCVDD supplies with a rise time
-greater than 2mS.
+On Thu, Oct 01, 2020 at 10:21:48PM +0800, muhammad.husaini.zulkifli@intel.com wrote:
+> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> 
+> Add generic firmware driver for Keem Bay SOC to support
+> Arm Trusted Firmware Services call.
+> 
+> Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+> ---
+>  drivers/firmware/Kconfig                   |   1 +
+>  drivers/firmware/Makefile                  |   1 +
+>  drivers/firmware/intel/Kconfig             |  14 +++
+>  drivers/firmware/intel/Makefile            |   4 +
+>  drivers/firmware/intel/keembay_smc.c       | 119 +++++++++++++++++++++
+>  include/linux/firmware/intel/keembay_smc.h |  27 +++++
+>  6 files changed, 166 insertions(+)
+>  create mode 100644 drivers/firmware/intel/Kconfig
+>  create mode 100644 drivers/firmware/intel/Makefile
+>  create mode 100644 drivers/firmware/intel/keembay_smc.c
+>  create mode 100644 include/linux/firmware/intel/keembay_smc.h
+> 
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index fbd785dd0513..41de77d2720e 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -305,5 +305,6 @@ source "drivers/firmware/psci/Kconfig"
+>  source "drivers/firmware/smccc/Kconfig"
+>  source "drivers/firmware/tegra/Kconfig"
+>  source "drivers/firmware/xilinx/Kconfig"
+> +source "drivers/firmware/intel/Kconfig"
+>  
+>  endmenu
+> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+> index 99510be9f5ed..00f295ab9860 100644
+> --- a/drivers/firmware/Makefile
+> +++ b/drivers/firmware/Makefile
+> @@ -33,3 +33,4 @@ obj-y				+= psci/
+>  obj-y				+= smccc/
+>  obj-y				+= tegra/
+>  obj-y				+= xilinx/
+> +obj-y				+= intel/
+> diff --git a/drivers/firmware/intel/Kconfig b/drivers/firmware/intel/Kconfig
+> new file mode 100644
+> index 000000000000..b2b7a4e5410b
+> --- /dev/null
+> +++ b/drivers/firmware/intel/Kconfig
+> @@ -0,0 +1,14 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +menu "Intel Firmware Drivers"
+> +
+> +config KEEMBAY_FIRMWARE
+> +	bool "Enable Keem Bay firmware interface support"
+> +	depends on HAVE_ARM_SMCCC
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/mfd/madera-core.c       | 25 ++++++++++++++++++++-----
- include/linux/mfd/madera/core.h |  1 +
- 2 files changed, 21 insertions(+), 5 deletions(-)
+What is the version of SMCCC implemented ?
+If SMCCC v1.1+, use HAVE_ARM_SMCCC_DISCOVERY
 
-diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
-index a9c6f0833f327..a2abc0094def7 100644
---- a/drivers/mfd/madera-core.c
-+++ b/drivers/mfd/madera-core.c
-@@ -38,6 +38,9 @@
- #define MADERA_RESET_MIN_US	2000
- #define MADERA_RESET_MAX_US	3000
- 
-+#define ERRATA_DCVDD_MIN_US	10000
-+#define ERRATA_DCVDD_MAX_US	15000
-+
- static const char * const madera_core_supplies[] = {
- 	"AVDD",
- 	"DBVDD1",
-@@ -291,7 +294,8 @@ static int __maybe_unused madera_runtime_resume(struct device *dev)
- 
- 	dev_dbg(dev, "Leaving sleep mode\n");
- 
--	madera_enable_hard_reset(madera);
-+	if (!madera->reset_errata)
-+		madera_enable_hard_reset(madera);
- 
- 	ret = regulator_enable(madera->dcvdd);
- 	if (ret) {
-@@ -302,9 +306,12 @@ static int __maybe_unused madera_runtime_resume(struct device *dev)
- 	regcache_cache_only(madera->regmap, false);
- 	regcache_cache_only(madera->regmap_32bit, false);
- 
--	madera_disable_hard_reset(madera);
-+	if (madera->reset_errata)
-+		usleep_range(ERRATA_DCVDD_MIN_US, ERRATA_DCVDD_MAX_US);
-+	else
-+		madera_disable_hard_reset(madera);
- 
--	if (!madera->pdata.reset) {
-+	if (!madera->pdata.reset || madera->reset_errata) {
- 		ret = madera_wait_for_boot(madera);
- 		if (ret)
- 			goto err;
-@@ -503,6 +510,8 @@ int madera_dev_init(struct madera *madera)
- 	 */
- 	switch (madera->type) {
- 	case CS47L15:
-+		madera->reset_errata = true;
-+		break;
- 	case CS47L35:
- 	case CS47L90:
- 	case CS47L91:
-@@ -553,13 +562,19 @@ int madera_dev_init(struct madera *madera)
- 		goto err_dcvdd;
- 	}
- 
-+	if (madera->reset_errata)
-+		madera_disable_hard_reset(madera);
-+
- 	ret = regulator_enable(madera->dcvdd);
- 	if (ret) {
- 		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
- 		goto err_enable;
- 	}
- 
--	madera_disable_hard_reset(madera);
-+	if (madera->reset_errata)
-+		usleep_range(ERRATA_DCVDD_MIN_US, ERRATA_DCVDD_MAX_US);
-+	else
-+		madera_disable_hard_reset(madera);
- 
- 	regcache_cache_only(madera->regmap, false);
- 	regcache_cache_only(madera->regmap_32bit, false);
-@@ -667,7 +682,7 @@ int madera_dev_init(struct madera *madera)
- 	 * It looks like a device we support. If we don't have a hard reset
- 	 * we can now attempt a soft reset.
- 	 */
--	if (!madera->pdata.reset) {
-+	if (!madera->pdata.reset || madera->reset_errata) {
- 		ret = madera_soft_reset(madera);
- 		if (ret)
- 			goto err_reset;
-diff --git a/include/linux/mfd/madera/core.h b/include/linux/mfd/madera/core.h
-index ad2c138105d4b..03a8a788424a2 100644
---- a/include/linux/mfd/madera/core.h
-+++ b/include/linux/mfd/madera/core.h
-@@ -186,6 +186,7 @@ struct madera {
- 	struct regulator_bulk_data core_supplies[MADERA_MAX_CORE_SUPPLIES];
- 	struct regulator *dcvdd;
- 	bool internal_dcvdd;
-+	bool reset_errata;
- 
- 	struct madera_pdata pdata;
- 
+> +	default n
+> +	help
+> +	  Firmware interface driver is used by device drivers
+> +	  to communicate with the arm-trusted-firmware
+> +	  for platform management services.
+> +	  If in doubt, say "N".
+> +
+> +endmenu
+> diff --git a/drivers/firmware/intel/Makefile b/drivers/firmware/intel/Makefile
+> new file mode 100644
+> index 000000000000..e6d2e1ea69a7
+> --- /dev/null
+> +++ b/drivers/firmware/intel/Makefile
+> @@ -0,0 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Makefile for Intel firmwares
+> +
+> +obj-$(CONFIG_KEEMBAY_FIRMWARE) = keembay_smc.o
+> diff --git a/drivers/firmware/intel/keembay_smc.c b/drivers/firmware/intel/keembay_smc.c
+> new file mode 100644
+> index 000000000000..24013cd1f5da
+> --- /dev/null
+> +++ b/drivers/firmware/intel/keembay_smc.c
+> @@ -0,0 +1,119 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *  Copyright (C) 2020-2021, Intel Corporation
+> + */
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/of_platform.h>
+> +
+> +#include <linux/firmware/intel/keembay_smc.h>
+> +
+> +static noinline int do_fw_call_fail(u64 arg0, u64 arg1)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +/**
+> + * Simple wrapper functions to be able to use a function pointer
+> + * Invoke do_fw_call_smc or others in future, depending on the configuration
+> + */
+> +static int (*do_fw_call)(u64, u64) = do_fw_call_fail;
+> +
+> +/**
+> + * do_fw_call_smc() - Call system-level platform management layer (SMC)
+> + * @arg0:		Argument 0 to SMC call
+> + * @arg1:		Argument 1 to SMC call
+> + *
+> + * Invoke platform management function via SMC call.
+> + *
+> + * Return: Returns status, either success or error
+> + */
+> +static noinline int do_fw_call_smc(u64 arg0, u64 arg1)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_smc(arg0, arg1, 0, 0, 0, 0, 0, 0, &res);
+> +
+> +	return res.a0;
+> +}
+> +
+> +/**
+> + * keembay_sd_voltage_selection() - Set the IO Pad voltage
+> + * @volt: voltage selection either 1.8V or 3.3V
+> + *
+> + * This function is used to set the IO Line Voltage
+> + *
+> + * Return: 0 for success, Invalid for failure
+> + */
+> +int keembay_sd_voltage_selection(int volt)
+> +{
+> +	return do_fw_call(KEEMBAY_SIP_FUNC_ID, volt);
+
+
+What are the other uses of this KEEMBAY_SIP_* ?
+For now I tend to move this to the driver making use of it using
+arm_smccc_1_1_invoke directly if possible. I don't see the need for this
+to be separate driver. But do let us know the features implemented in the
+firmware. If it is not v1.1+, reasons for not upgrading as you need v1.1
+for some CPU errata implementation.
+
 -- 
-2.11.0
-
+Regards,
+Sudeep
