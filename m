@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E7D280A62
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3F2280A60
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733180AbgJAWo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:44:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60877 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbgJAWo0 (ORCPT
+        id S1733129AbgJAWoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:44:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38796 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726741AbgJAWoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:44:26 -0400
-Received: from mail-qv1-f70.google.com ([209.85.219.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mfo@canonical.com>)
-        id 1kO7JJ-0000ba-Ab
-        for linux-kernel@vger.kernel.org; Thu, 01 Oct 2020 22:44:25 +0000
-Received: by mail-qv1-f70.google.com with SMTP id t7so213180qvz.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:44:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4UmiMa5+65rn92Pb5tiRXFetQx5vUZvC8lpatLKDrIg=;
-        b=VFdTnBjXpKp315trczN9FP+RIGFZno5mzzhAeWSnUFEf78sfrfAynvv3JhzTh8eAqz
-         AAonLTBxA+3T1P5HjkUj3U4y+r7p6VI8ZZFH6g2kgdVkC+EJLYcvxbePcmT8uXypMRbg
-         5APgxLGAfbKSQbmEeoshtBAGZM1JD1R96hHxkgWZITcJqUlvButC+6SAHnZlJaL7CVzV
-         cbc88msWPq/Q6dyrlpu8UTG/CGYGx94Bd+0WKUmqOwBqPlIMKtl3j6uZezkMT1B52phW
-         5kWr6ONK/oOA1gKXXLSSlpJzqwjF6QJS9aIKAVolf+C3dvK5B8Vue4Qh28PI+Ca43Az4
-         ypbg==
-X-Gm-Message-State: AOAM530P4ozNrL4FFsiEbJFca5AMDy4IMCg1yybh83WTRdhuplQHs2lM
-        9k1Sx0A/0FtApwBz402sbkcDQj6UpRadFLcbI26cTOSS6PkqloenAD93LMfwQWvksZ4C2p6xtA7
-        9C8SR8COzciDhnWE6YYTLv1UNxihe2tI4jyzWpbyYOw==
-X-Received: by 2002:ac8:44a7:: with SMTP id a7mr10192755qto.173.1601592263821;
-        Thu, 01 Oct 2020 15:44:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwC5f+HxiHqOCRtJqISp6pgF6pi/0P+v1X8FavaTUYtsSJjyki1dqe8i/Jy0juhDtLqtvyfOQ==
-X-Received: by 2002:ac8:44a7:: with SMTP id a7mr10192737qto.173.1601592263554;
-        Thu, 01 Oct 2020 15:44:23 -0700 (PDT)
-Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id f24sm7321148qkk.136.2020.10.01.15.44.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 15:44:22 -0700 (PDT)
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-To:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com
-Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: [PATCH] ocfs2: ratelimit the 'max lookup times reached' notice
-Date:   Thu,  1 Oct 2020 19:44:17 -0300
-Message-Id: <20201001224417.478263-1-mfo@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 1 Oct 2020 18:44:23 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601592260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f5pavRIPBXFgoArTS09EMAvE+9XTGOcnORwLcRx4kkA=;
+        b=U84f6VB+uoY56yY0AbL7m5zFgUQvOqpAnDuLzL3VgEIUJxo3VWnvTmp2r3XUK47/T9+W3/
+        GuaMG375NPiap38Xpq+NieKRecG+teH4PClBFb01m+pyIuxlw3K18VA8kZlmYDCUzLZxrO
+        BxAstiqQYGKe8B7quD/kZ4Ki/Z+w5tMLV4r7VzGOq/UgRGRzZ7qhgfdXay4ECCvbqNv8Dg
+        70F6RFVZFQr0+QI0ovAYfxGYELQYMWbnPi9353lf4a2yTGRFO9YIs87/wg7svnN3lGVQ30
+        3Fw7obB0uR90Z/Oo6ny8VWlc0UPhETzmecph2ts+Mx0h4F5sPk6dcnRupfYkNA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601592260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f5pavRIPBXFgoArTS09EMAvE+9XTGOcnORwLcRx4kkA=;
+        b=Xsq66SYfx5Fu5ZSQwlHHuBW51rXywOjw4mGFPmrJrIvzjPkx1LtZ+fV4PzJgwhwk89w2qi
+        jrpBapKbZaJSMlAQ==
+To:     Erez Geva <erez.geva.ext@siemens.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        Simon Sudler <simon.sudler@siemens.com>,
+        Andreas Meisinger <andreas.meisinger@siemens.com>,
+        Andreas Bucher <andreas.bucher@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andreas Zirkler <andreas.zirkler@siemens.com>,
+        Ermin Sakic <ermin.sakic@siemens.com>,
+        An Ninh Nguyen <anninh.nguyen@siemens.com>,
+        Michael Saenger <michael.saenger@siemens.com>,
+        Bernd Maehringer <bernd.maehringer@siemens.com>,
+        Gisela Greinert <gisela.greinert@siemens.com>,
+        Erez Geva <erez.geva.ext@siemens.com>,
+        Erez Geva <ErezGeva2@gmail.com>
+Subject: Re: [PATCH 4/7] Fix qdisc_watchdog_schedule_range_ns range check
+In-Reply-To: <20201001205141.8885-5-erez.geva.ext@siemens.com>
+References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <20201001205141.8885-5-erez.geva.ext@siemens.com>
+Date:   Fri, 02 Oct 2020 00:44:19 +0200
+Message-ID: <87pn61efcs.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running stress-ng on ocfs2 completely fills the kernel log with
-'max lookup times reached, filesystem may have nested directories.'
+On Thu, Oct 01 2020 at 22:51, Erez Geva wrote:
 
-Let's ratelimit this message as done with others in the code.
+Fixes should be at the beginning of a patch series and not be hidden
+somewhere in the middle.
 
-Test-case:
+>    - As all parameters are unsigned.
 
-  # mkfs.ocfs2 --mount local $DEV
-  # mount $DEV $MNT
-  # cd $MNT
+This is not a sentence and this list style does not make that changelog
+more readable.
 
-  # dmesg -C
-  # stress-ng --dirdeep 1 --dirdeep-ops 1000
-  # dmesg | grep -c 'max lookup times reached'
+>    - If 'expires' is bigger than 'last_expires' then the left expression
+>      overflows.
 
-Before:
+This would be the most important information and should be clearly
+spelled out as problem description at the very beginning of the change
+log.
 
-  # dmesg -C
-  # stress-ng --dirdeep 1 --dirdeep-ops 1000
-  ...
-  stress-ng: info:  [11116] successful run completed in 3.03s
+>    - It is better to use addition and check both ends of the range.
 
-  # dmesg | grep -c 'max lookup times reached'
-  967
+Is better? Either your change is correcting the problem or not. Just
+better but incorrect does not cut it.
 
-After:
+But let's look at the problem itself. The check is about:
 
-  # dmesg -C
-  # stress-ng --dirdeep 1 --dirdeep-ops 1000
-  ...
-  stress-ng: info:  [739] successful run completed in 0.96s
+    B <= A <= B + C
 
-  # dmesg | grep -c 'max lookup times reached'
-  10
+A, B, C are all unsigned. So if B > A then the result is false.
 
-  # dmesg
-  [  259.086086] ocfs2_check_if_ancestor: 1990 callbacks suppressed
-  [  259.086092] (stress-ng-dirde,740,1):ocfs2_check_if_ancestor:1091 max lookup times reached, filesystem may have nested directories, src inode: 18007, dest inode: 17940.
-  ...
+Now lets look at the implementation:
 
-Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
----
- fs/ocfs2/namei.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+    if (A - B <= C)
+    	return;
 
-diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
-index 3c908e9416af..0043eddabdb8 100644
---- a/fs/ocfs2/namei.c
-+++ b/fs/ocfs2/namei.c
-@@ -1095,8 +1095,8 @@ static int ocfs2_check_if_ancestor(struct ocfs2_super *osb,
- 		child_inode_no = parent_inode_no;
- 
- 		if (++i >= MAX_LOOKUP_TIMES) {
--			mlog(ML_NOTICE, "max lookup times reached, filesystem "
--					"may have nested directories, "
-+			mlog_ratelimited(ML_NOTICE, "max lookup times reached, "
-+					"filesystem may have nested directories, "
- 					"src inode: %llu, dest inode: %llu.\n",
- 					(unsigned long long)src_inode_no,
- 					(unsigned long long)dest_inode_no);
--- 
-2.17.1
+which works correctly due the wonders of unsigned math.
+
+For B <= A the check is obviously correct.
+
+If B > A then the result of the unsigned subtraction A - B is a very
+large positive number which is pretty much guaranteed to be larger than
+C, i.e. the result is false.
+
+So while not immediately obvious, it's still correct.
+
+Thanks,
+
+        tglx
+
+
 
