@@ -2,73 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A642804E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929862804EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732887AbgJARPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46596 "EHLO mail.kernel.org"
+        id S1732848AbgJARQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:16:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:40646 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732274AbgJARPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:15:05 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C84420872;
-        Thu,  1 Oct 2020 17:15:03 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 18:15:01 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     robh+dt@kernel.org, hch@lst.de, robin.murphy@arm.com,
-        devicetree@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-mm@kvack.org, Frank Rowand <frowand.list@gmail.com>,
-        will@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
-Message-ID: <20201001171500.GN21544@gaia>
-References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
- <20201001161740.29064-2-nsaenzjulienne@suse.de>
+        id S1732213AbgJARQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:16:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A118B1063;
+        Thu,  1 Oct 2020 10:16:10 -0700 (PDT)
+Received: from [172.16.1.113] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4DAA23F6CF;
+        Thu,  1 Oct 2020 10:16:09 -0700 (PDT)
+Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
+ an erroneous CPU core
+To:     Borislav Petkov <bp@alien8.de>, Shiju Jose <shiju.jose@huawei.com>
+Cc:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+References: <20200901140140.1772-1-shiju.jose@huawei.com>
+ <20200901143539.GC8392@zn.tnic> <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
+ <20200909120203.GB12237@zn.tnic>
+ <50714e083d55491a8ccf5ad847682d1e@huawei.com>
+ <20200917084038.GE31960@zn.tnic>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <91e71fe9-b002-0f1f-3237-62cea49e083a@arm.com>
+Date:   Thu, 1 Oct 2020 18:16:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001161740.29064-2-nsaenzjulienne@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200917084038.GE31960@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Hi guys,
 
-Thanks for putting this together.
+On 17/09/2020 09:40, Borislav Petkov wrote:
+> On Thu, Sep 10, 2020 at 03:29:56PM +0000, Shiju Jose wrote:
 
-On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wrote:
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 4602e467ca8b..cd0d115ef329 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -25,6 +25,7 @@
->  #include <linux/serial_core.h>
->  #include <linux/sysfs.h>
->  #include <linux/random.h>
-> +#include <linux/dma-direct.h>	/* for zone_dma_bits */
->  
->  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
->  #include <asm/page.h>
-> @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
->  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
->  }
->  
-> +void __init early_init_dt_update_zone_dma_bits(void)
-> +{
-> +	unsigned long dt_root = of_get_flat_dt_root();
-> +
-> +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
-> +		zone_dma_bits = 30;
-> +}
+> You can't know what exactly you wanna do if you don't have a use case
+> you're trying to address.
+> 
+>> According to the ARM Processor CPER definition the error types
+>> reported are Cache Error, TLB Error, Bus Error and micro-architectural
+>> Error.
+> 
+> Bus error sounds like not even originating in the CPU but the CPU only
+> reporting it. Imagine if that really were the case, and you go disable
+> the CPU but the error source is still there. You've just disabled the
+> reporting of the error only and now you don't even know anymore that
+> you're getting errors.
+> 
+>> Few thoughts on this,
+>> 1. Not sure will a CPU core would work/perform as normal after disabling
+>> a functional unit?
+> 
+> You can disable parts of caches, etc, so that you can have a somewhat
+> functioning CPU until the replacement maintenance can take place.
 
-I think we could keep this entirely in the arm64 setup_machine_fdt() and
-not pollute the core code with RPi4-specific code.
+This is implementation-specific stuff that only firmware can do...
 
--- 
-Catalin
+
+>> 2. Support in the HW to disable a function unit alone may not available.
+> 
+> Yes.
+> 
+>> 3. If it is require to store and retrieve the error count based on
+>> functional unit, then CEC will become more complex?
+> 
+> Depends on how it is designed. That's why we're first talking about what
+> needs to be done exactly before going off and doing something.
+> 
+>> This requirement is the part of the early fault prediction by taking
+>> action when large number of corrected errors reported on a CPU core
+>> before it causing serious faults.
+> 
+> And do you know of actual real-life examples where this is really the
+> case? Do you have any users who report a large error count on ARM CPUs,
+> originating from the caches and that something like that would really
+> help?
+> 
+> Because from my x86 CPUs limited experience, the cache arrays are mostly
+> fine and errors reported there are not something that happens very
+> frequently so we don't even need to collect and count those.
+> 
+> So is this something which you need to have in order to check a box
+> somewhere that there is some functionality or is there an actual
+> real-life use case behind it which a customer has requested?
+
+If the corrected-count is available somewhere, can't this policy be made in user-space?
+
+
+Thanks,
+
+James
