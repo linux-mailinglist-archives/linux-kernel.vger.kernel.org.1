@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202D4280077
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76F428007A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732324AbgJANtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:49:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1763 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732018AbgJANtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:49:39 -0400
-IronPort-SDR: 5vScuE3lUqeaCHFX5hUWNXc/73e5dGkDspZ89lHBnqKV1x08bYZiXZlDvpe0yHWoWc3+9X1xBc
- MiovI57x2M9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161966644"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="161966644"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 06:49:38 -0700
-IronPort-SDR: cHB0WEBqqp5eBTGgPzubMfNdMfAt8k2/QNp6m4asfXZQ/yz5fES3NImI90HEj2fmDGwbgOc1a8
- 6QUXhkkc1M8g==
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="308636996"
-Received: from kignaci-mobl1.amr.corp.intel.com (HELO [10.251.133.95]) ([10.251.133.95])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 06:49:36 -0700
-Subject: Re: [PATCH V8 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        kirill.shutemov@linux.intel.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        benh@kernel.crashing.org, Paul Mackerras <paulus@samba.org>
-References: <20200921152653.3924-1-kan.liang@linux.intel.com>
- <20200921152653.3924-2-kan.liang@linux.intel.com>
- <CABPqkBRYzXH-76BZ3DdxYp7bdyPcr3_WxuxOsJw=1YPE9EwZaw@mail.gmail.com>
- <4e974520-6d0f-68af-7eb8-fa52d95ba77b@linux.intel.com>
- <35e875ba-2c04-8452-5105-ccacf72840d8@intel.com>
- <20200930173042.GD2628@hirez.programming.kicks-ass.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <641fa138-23b7-8fdd-27f9-87e2fdd9fa91@intel.com>
-Date:   Thu, 1 Oct 2020 06:49:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732292AbgJANuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732018AbgJANuT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:50:19 -0400
+Received: from smtp1.goneo.de (smtp1.goneo.de [IPv6:2001:1640:5::8:30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B02BC0613D0;
+        Thu,  1 Oct 2020 06:50:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp1.goneo.de (Postfix) with ESMTP id 79C1F23EE85;
+        Thu,  1 Oct 2020 15:50:15 +0200 (CEST)
+X-Virus-Scanned: by goneo
+X-Spam-Flag: NO
+X-Spam-Score: -2.988
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.988 tagged_above=-999 tests=[ALL_TRUSTED=-1,
+        AWL=-0.088, BAYES_00=-1.9] autolearn=ham
+Received: from smtp1.goneo.de ([127.0.0.1])
+        by localhost (smtp1.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KlurzYLBPhyk; Thu,  1 Oct 2020 15:50:14 +0200 (CEST)
+Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
+        by smtp1.goneo.de (Postfix) with ESMTPSA id 0C42D23F38B;
+        Thu,  1 Oct 2020 15:50:13 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 15:50:09 +0200
+From:   Lars Poeschel <poeschel@lemonage.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201001135009.2dpgojasd3fm5phh@lem-wkst-02.lemonage>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20200930173042.GD2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001112449.GA2364834@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/20 10:30 AM, Peter Zijlstra wrote:
-> In general though; I think using ->active_mm is a mistake though. That
-> code should be doing something like:
+On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > Hello,
+> > > 
+> > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > Cc:.
+> > > 
+> > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > thank you for your review!
+> > > > 
+> > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > 
+> > > > > > This adds a class to exported pwm devices.
+> > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > 
+> > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > accomplish you way.
+> > > > 
+> > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > I use udev rules to adjust permissions.
+> > > 
+> > > Hmm, how do you trigger the export? Without being aware of all the
+> > > details in the sysfs code I would expect that the exported stuff is
+> > > available instantly once the write used to export the PWM is completed.
+> > > So changing the permissions can be done directly after triggering the
+> > > export in the same process.
+> > 
+> > The export is triggered through the userspace process itself. Why can it
+> > do this ? Because there is another udev rule, that changes permissions
+> > when a pwmchip appears.
+> > Then I'd like to have the second udev rule, that changes permissions on
+> > the freshly exported pwm. The userspace process can't do this.
+> > You are right I could propably do everything from within udev: If a
+> > pwmchip appears, export certain pwms and right away change their
+> > permissions. It does not also not feel right. It'd require knowledge
+> > from the userspace application to be mapped to udev.
 > 
-> 
-> 	mm = current->mm;
-> 	if (!mm)
-> 		mm = &init_mm;
-> 
+> The way the kernel code is now, yes, you will not have any way to
+> trigger it by userspace as the kernel is creating a "raw" struct device
+> that isn't assigned to anything.  That is what needs to be fixed here.
 
-I was hoping that using ->active_mm would give us the *actual* copy of
-the page tables that's loaded in CR3 for kernel thraeds.  But, there are
-few if any practical advantages of doing that at the moment.
+I did a first try with our approach.
+I set the class of the child to its parent class. This does work and
+create the directories right under /sys/pwm but because the child now
+also inherits the dev_groups from the parent its directory also contain
+export, unexport and npwm files, that don't apply for pwm's as soon a I
+register the device to driver core.
 
-Using that ^ is fine with me.
+Did we miss something or is there a way to avoid that ? I had a look at
+device_add and saw that as soon as a class it set it's dev_groups get
+exported through device_add_attrs.
+
+> > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > kernel driver that can do the required stuff? Compared to the kernel-API
+> > > the sysfs interface isn't atomic. Is this an annoyance?
+> > 
+> > Use-case is generating a voltage from the pwm. This voltage is used to
+> > signal different states and does not change very often. This is
+> > absolutely not annoying that this is not atomic. We just change the duty
+> > cycle on the fly. Everything else is configured one time at startup.
+> > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > there is even a userspace facing part for this, but this is not
+> > devicetree ready.
+> > ...and the worst, please don't blame me: The application is java, so
+> > ioctl is a problem.
+> 
+> I thought java could do ioctls, otherwise how would it ever be able to
+> talk to serial ports?
+
+It is not impossible but it is horrible. java itself can access the
+ports through normal file I/O, but it can not set control lines or
+baudrate or anything. You need some C-code for this, that is not part of
+the java vm itself and has to be called through something called JNI -
+java native interface.
+
+Regards,
+Lars
