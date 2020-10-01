@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69C1280366
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96F028036C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732665AbgJAQBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732287AbgJAQBT (ORCPT
+        id S1732700AbgJAQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:02:04 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38536 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732213AbgJAQCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:01:19 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C451EC0613D0;
-        Thu,  1 Oct 2020 09:01:17 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 197so4358607pge.8;
-        Thu, 01 Oct 2020 09:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BT+mSaBhy+x60yncvZYPTuqegplR6LX7kQt6UIW6QY=;
-        b=uiz+6SVYOhHTocEk07NmkueAfxTx+uEgUcmr/tRlOPSy99Z4WVtmomMXinJOOVzJlw
-         U6yjFflYzGXiTAM7X7f4fwsK0/l5PLQA9q7p66i3OcSGGGrfwY7eE5gope/ZKRa7aiYb
-         ciaq9GdC9NcxGwdlAEMd2BUa7J4KhmM+Qe2c9AJl24N1I+GNw8Ifgl47ap64Y24TvxT2
-         uQsXbpUxCMF2dWEJ5QYNHWiyiEYtLWz82gOP2Ou2XMwfl/vr2qR+TrMNIVjOovHOmC8I
-         I6AdpJUBIqk1UfhjZUL8ywpxjDeFLf6HbOPwwaWDexo4JwQdKoOsQCzxtKrBVlG0k0nu
-         qFXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BT+mSaBhy+x60yncvZYPTuqegplR6LX7kQt6UIW6QY=;
-        b=FFX7+ucfnZn04MtyTAIyPF/8vJITM6sfTKMXWZM0Gwi9o6jCAxEDpUjBC3wxilV2N5
-         PfGDmoyDInbDl3aqGwTsJeCjgK968ZS9ETerQHSnsmx5yMZ46B/3uGi9ZC5Eynz+a8Se
-         oLS8X2QEH31aV6Be+1TH4MU2XNwNnoezyhMQAqFh8q//x2cQQyT13Je56SdWShUT68KL
-         7YVU0oiojLkSpMhhNDZbjpaU8NRXaUsSoHlfpQNANI9UN/RkHd+b/CuLC9+olR6cG3Us
-         NAIf7x7SrlyIbLc4/jYBatv/cFPn0q6Oy/QG8O0J4sEbl6O+rcEguweD1i+ubUuevKUl
-         +ihA==
-X-Gm-Message-State: AOAM531U2VA9fvN6QimlpPdhdl7yJ1KcKoQHRLFi4064QPzmT4x1UNcl
-        V9mN0arRnmMdGvYkThK1czq5ep+S/Hq/uouGMxM=
-X-Google-Smtp-Source: ABdhPJzVMReb2G/hBmJ5iwEAzORaIOh+ApRwc+ssYpSff8yc93mXT/iCELWHcknEK9zsoAQZyDxwLEaDPGVoAVyZ3hE=
-X-Received: by 2002:a63:4c1d:: with SMTP id z29mr6847757pga.203.1601568077262;
- Thu, 01 Oct 2020 09:01:17 -0700 (PDT)
+        Thu, 1 Oct 2020 12:02:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 910D529D755
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        weiyi.lu@mediatek.com, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 00/12] soc: mediatek: pm-domains: Add new driver for SCPSYS power domains controller
+Date:   Thu,  1 Oct 2020 18:01:42 +0200
+Message-Id: <20201001160154.3587848-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201001014250.26987-1-david.e.box@linux.intel.com> <20201001014250.26987-5-david.e.box@linux.intel.com>
-In-Reply-To: <20201001014250.26987-5-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 1 Oct 2020 19:00:58 +0300
-Message-ID: <CAHp75VfcXbedZbbF3KATWYMR1SPXusuaU+vrkvM1zsRpYzDFiA@mail.gmail.com>
-Subject: Re: [PATCH V7 4/5] platform/x86: Intel PMT Telemetry capability driver
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alexey.budankov@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
->
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->
-> PMT Telemetry is a capability of the Intel Platform Monitoring Technology.
-> The Telemetry capability provides access to device telemetry metrics that
-> provide hardware performance data to users from read-only register spaces.
->
-> With this driver present the intel_pmt directory can be populated with
-> telem<x> devices. These devices will contain the standard intel_pmt sysfs
-> data and a "telem" binary sysfs attribute which can be used to access the
-> telemetry data.
+Dear all,
 
-...
+This is a new driver with the aim to deprecate the mtk-scpsys driver.
+The problem with that driver is that, in order to support more Mediatek
+SoCs you need to add some logic to handle properly the power-up
+sequence of newer Mediatek SoCs, doesn't handle parent-child power
+domains and need to hardcode all the clocks in the driver itself. The
+result is that the driver is getting bigger and bigger every time a
+new SoC needs to be supported.
 
-> +static DEFINE_XARRAY_ALLOC(telem_array);
-> +static struct intel_pmt_namespace pmt_telem_ns = {
-> +       .name = "telem",
-> +       .xa = &telem_array
+All this information can be getted from a properly defined binding, so
+can be cleaner and smaller, hence, we implemented a new driver. For
+now, only MT8173 and MT8183 is supported but should be fairly easy to
+add support for new SoCs.
 
-Leave comma at the end.
+Note that the MT8183 support is not ready to land yet because has some
+dependencies, i.e. mmsys support is still missing. So, only patches from
+1 to 9 are ready, the others are provided for reference and test.
 
-> +};
-> +
-> +/*
-> + * driver initialization
-> + */
+Best regards,
+  Enric
 
-This is a useless comment.
+Enric Balletbo i Serra (4):
+  dt-bindings: power: Add bindings for the Mediatek SCPSYS power domains
+    controller
+  soc: mediatek: Add MediaTek SCPSYS power domains
+  arm64: dts: mediatek: Add mt8173 power domain controller
+  dt-bindings: power: Add MT8183 power domains
 
-> +       size = offsetof(struct pmt_telem_priv, entry[pdev->num_resources]);
-> +       priv = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
+Matthias Brugger (8):
+  soc: mediatek: pm-domains: Add bus protection protocol
+  soc: mediatek: pm_domains: Make bus protection generic
+  soc: mediatek: pm-domains: Add SMI block as bus protection block
+  soc: mediatek: pm-domains: Add extra sram control
+  soc: mediatek: pm-domains: Add subsystem clocks
+  soc: mediatek: pm-domains: Allow bus protection to ignore clear ack
+  soc: mediatek: pm-domains: Add support for mt8183
+  arm64: dts: mediatek: Add mt8183 power domains controller
 
-Please, use struct_size() from overflow.h instead of custom approach.
+ .../power/mediatek,power-controller.yaml      |  184 +++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  164 ++-
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  162 +++
+ drivers/soc/mediatek/Kconfig                  |   13 +
+ drivers/soc/mediatek/Makefile                 |    1 +
+ drivers/soc/mediatek/mtk-infracfg.c           |    5 -
+ drivers/soc/mediatek/mtk-mmsys.c              |    4 -
+ drivers/soc/mediatek/mtk-pm-domains.c         | 1019 +++++++++++++++++
+ include/dt-bindings/power/mt8183-power.h      |   26 +
+ include/linux/soc/mediatek/infracfg.h         |   57 +
+ 10 files changed, 1577 insertions(+), 58 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+ create mode 100644 drivers/soc/mediatek/mtk-pm-domains.c
+ create mode 100644 include/dt-bindings/power/mt8183-power.h
 
-...
+-- 
+2.28.0
 
-> +static struct platform_driver pmt_telem_driver = {
-> +       .driver = {
-> +               .name   = TELEM_DEV_NAME,
-
-I'm not sure I have interpreted this:
-        - Use 'raw' string instead of defines for device names
-correctly. Can you elaborate?
-
-> +       },
-> +       .remove = pmt_telem_remove,
-> +       .probe  = pmt_telem_probe,
-> +};
-
-...
-
-> +MODULE_ALIAS("platform:" TELEM_DEV_NAME);
-
-Ditto.
-
---
-With Best Regards,
-Andy Shevchenko
