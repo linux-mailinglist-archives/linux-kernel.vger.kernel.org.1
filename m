@@ -2,212 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F6727FF38
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F0227FF17
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732453AbgJAMcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731936AbgJAMck (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:32:40 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F06AC0613D0;
-        Thu,  1 Oct 2020 05:32:40 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o20so4322558pfp.11;
-        Thu, 01 Oct 2020 05:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ah9td3sQ1fIG5lGgCqIwhgoKZucLujwVmdH4oNX5u+s=;
-        b=sawYFsfHVBmfVwr+8fNWhC16ZKZ6OBox2c8ppWrTzorUUdPDBeJBdRRly59vUZbXbK
-         kLjuXCWBnMg0M8PnQAmCBDTqNBd1d6GLYOFnXbcrzcc3J2674k0q8PTBEIR5gNHahrqK
-         aBIcrsF0Ibdpa9wRCMLQmGcXPs/TO3tgx4nGT5qklHD+Mu0akXCdnJAblTDIUncJThJZ
-         6yEK/heNpQA2ViatN8s/jZqNijZB2tov3kIqiCZgjzyRQMa2KHbNdb0/nL3IK9tjVnbJ
-         4RRredMZ/kPZMqfxVugAMebdjTJSQuuBkvF1xyID+YfLuackkR3X2utwQ15gnFTW2VlA
-         N9og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ah9td3sQ1fIG5lGgCqIwhgoKZucLujwVmdH4oNX5u+s=;
-        b=tgFfF7DZccoJQWMY2yJfri5AoIP6niRgmTcycJPE80fiObVKzU8rWB2j+sHE63kaAj
-         N5rQ2a2O4zUkncVTlGkuf7/rvz3Cp6KqQcmxEbPbqVyZ3bd6m+n6bbUfiMV1Km3bLGcw
-         xS4lFJl7pq7TXGCopdjTRl/yu7v45p9tAOU8UPrccPZzgtthZUnLOaI1DM3vpBAftSm6
-         LYcrS3qJFh0FhWYriqjLi1XQqL8Zt2UKEpirJQMnsk5vxmFOHg6ReJh5vmOB/8Qg+MhO
-         HgqqdJMKRlSYjRE9UhEmTKruVEKigqbDyKFRM07qsgDfZL4bn+A/jpIRkTX/N8t/089j
-         kt4g==
-X-Gm-Message-State: AOAM532F9Sv05Y64onxITDM4yedtWGJtXf2bm39gbwXeiz8qMLxJ3oDZ
-        PG+xuB7XCsowU7Ay4uroq6I=
-X-Google-Smtp-Source: ABdhPJzyjl54g6Q+QzgIlbEPt15+tLx1HeyZRUimL2hMqFHVnu7+yHGefhiyhB9n9iU+7NHCnLsMPA==
-X-Received: by 2002:a17:902:b688:b029:d2:43a9:ef1f with SMTP id c8-20020a170902b688b02900d243a9ef1fmr7169860pls.9.1601555559931;
-        Thu, 01 Oct 2020 05:32:39 -0700 (PDT)
-Received: from varodek.localdomain ([171.61.143.130])
-        by smtp.gmail.com with ESMTPSA id m13sm5695199pjl.45.2020.10.01.05.32.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 05:32:39 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: [PATCH v3 28/28] scsi: pmcraid: use generic power management
-Date:   Thu,  1 Oct 2020 17:55:11 +0530
-Message-Id: <20201001122511.1075420-29-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
-References: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
+        id S1732359AbgJAMah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:30:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34150 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731987AbgJAMaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:30:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601555434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uCm4uXOnrpWMmMZOVA7wh6ICDudob2h+p29v5JSL4lU=;
+        b=GnrnpGVOycrS6i3U5eUDgMPqc4ZSmxHImP6IM3Q9oRdFfgGHwzWCI5H+2lZar3wd+EJgGv
+        QEiFqFCDYgSp1OTN9AbCtO5mEALDiuKWhR/Pqkq7y6hzSbhehovg/ZXqPG6QVOD7X2crvB
+        fZtYaxIuElKuddlIJBEQ3JPWMaSRAqU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9D2BAAFD7;
+        Thu,  1 Oct 2020 12:30:34 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 14:30:32 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Sebastiaan Meijer <meijersebastiaan@gmail.com>
+Cc:     akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@suse.de, riel@surriel.com,
+        willy@infradead.org
+Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
+Message-ID: <20201001123032.GC22560@dhcp22.suse.cz>
+References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers should do only device-specific jobs. But in general, drivers using
-legacy PCI PM framework for .suspend()/.resume() have to manage many PCI
-PM-related tasks themselves which can be done by PCI Core itself. This
-brings extra load on the driver and it directly calls PCI helper functions
-to handle them.
+On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
+> > yes it shows the bottleneck but it is quite artificial. Read data is
+> > usually processed and/or written back and that changes the picture a
+> > lot.
+> Apologies for reviving an ancient thread (and apologies in advance for my lack
+> of knowledge on how mailing lists work), but I'd like to offer up another
+> reason why merging this might be a good idea.
+> 
+> From what I understand, zswap runs its compression on the same kswapd thread,
+> limiting it to a single thread for compression. Given enough processing power,
+> zswap can get great throughput using heavier compression algorithms like zstd,
+> but this is currently greatly limited by the lack of threading.
 
-Switch to the new generic framework by updating function signatures and
-define a "struct dev_pm_ops" variable to bind PM callbacks. Also, remove
-unnecessary calls to the PCI Helper functions along with the legacy
-.suspend & .resume bindings.
+Isn't this a problem of the zswap implementation rather than general
+kswapd reclaim? Why zswap doesn't do the same as normal swap out in a
+context outside of the reclaim?
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/scsi/pmcraid.c | 43 ++++++++++--------------------------------
- 1 file changed, 10 insertions(+), 33 deletions(-)
+My recollection of the particular patch is dimm but I do remember it
+tried to add more kswapd threads which would just paper over the problem
+you are seein rather than solve it.
 
-diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
-index 7674b8481f35..bbf7fc8d5a2c 100644
---- a/drivers/scsi/pmcraid.c
-+++ b/drivers/scsi/pmcraid.c
-@@ -5237,53 +5237,37 @@ static void pmcraid_remove(struct pci_dev *pdev)
- 	return;
- }
- 
--#ifdef CONFIG_PM
- /**
-  * pmcraid_suspend - driver suspend entry point for power management
-- * @pdev:   PCI device structure
-- * @state:  PCI power state to suspend routine
-+ * @dev:   Device structure
-  *
-  * Return Value - 0 always
-  */
--static int pmcraid_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused pmcraid_suspend(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
- 
- 	pmcraid_shutdown(pdev);
- 	pmcraid_disable_interrupts(pinstance, ~0);
- 	pmcraid_kill_tasklets(pinstance);
--	pci_set_drvdata(pinstance->pdev, pinstance);
- 	pmcraid_unregister_interrupt_handler(pinstance);
--	pci_save_state(pdev);
--	pci_disable_device(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
- 
- 	return 0;
- }
- 
- /**
-  * pmcraid_resume - driver resume entry point PCI power management
-- * @pdev: PCI device structure
-+ * @dev: Device structure
-  *
-  * Return Value - 0 in case of success. Error code in case of any failure
-  */
--static int pmcraid_resume(struct pci_dev *pdev)
-+static int __maybe_unused pmcraid_resume(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct pmcraid_instance *pinstance = pci_get_drvdata(pdev);
- 	struct Scsi_Host *host = pinstance->host;
--	int rc;
--
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--
--	rc = pci_enable_device(pdev);
--
--	if (rc) {
--		dev_err(&pdev->dev, "resume: Enable device failed\n");
--		return rc;
--	}
--
--	pci_set_master(pdev);
-+	int rc = 0;
- 
- 	if (sizeof(dma_addr_t) == 4 ||
- 	    dma_set_mask(&pdev->dev, DMA_BIT_MASK(64)))
-@@ -5336,18 +5320,10 @@ static int pmcraid_resume(struct pci_dev *pdev)
- 	scsi_host_put(host);
- 
- disable_device:
--	pci_disable_device(pdev);
- 
- 	return rc;
- }
- 
--#else
--
--#define pmcraid_suspend NULL
--#define pmcraid_resume  NULL
--
--#endif /* CONFIG_PM */
--
- /**
-  * pmcraid_complete_ioa_reset - Called by either timer or tasklet during
-  *				completion of the ioa reset
-@@ -5835,6 +5811,8 @@ static int pmcraid_probe(struct pci_dev *pdev,
- 	return -ENODEV;
- }
- 
-+static SIMPLE_DEV_PM_OPS(pmcraid_pm_ops, pmcraid_suspend, pmcraid_resume);
-+
- /*
-  * PCI driver structure of pmcraid driver
-  */
-@@ -5843,8 +5821,7 @@ static struct pci_driver pmcraid_driver = {
- 	.id_table = pmcraid_pci_table,
- 	.probe = pmcraid_probe,
- 	.remove = pmcraid_remove,
--	.suspend = pmcraid_suspend,
--	.resume = pmcraid_resume,
-+	.driver.pm = &pmcraid_pm_ops,
- 	.shutdown = pmcraid_shutdown
- };
- 
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
