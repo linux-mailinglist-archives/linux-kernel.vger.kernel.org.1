@@ -2,135 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CCE28092E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25217280938
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733183AbgJAVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:08:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727053AbgJAVHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:07:51 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13CC9206FA;
-        Thu,  1 Oct 2020 21:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601586471;
-        bh=BZONBnd/4ese8mXDBV53ByIXM4qMsw4C54W8+/dcXH0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=xqV0FycbtARRwDtBt1l3lUD6yTL32SvX0BvWqonRPf2/5S3tphE0WOmDwQytl1TzQ
-         xoGGlcbZJIMpm+D0jVTz7AOg/07Wx3UeCKj6qZezCi7TvbEkKReZiYpX81p0ARemKk
-         qt8totCMc7WtzVjiZfp8FhWNtGGXFWydJF8SxLYM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D88873522B33; Thu,  1 Oct 2020 14:07:50 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:07:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, urezki@gmail.com,
-        lkp@intel.com, julia.lawall@inria.fr, mhocko@kernel.org,
-        mgorman@techsingularity.net, vbabka@suse.cz, peterz@infradead.org,
-        torvalds@linux-foundation.org
-Subject: [GIT PULL tip/core/rcu+preempt] Fix RT raw/non-raw lock ordering
-Message-ID: <20201001210750.GA25287@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1733109AbgJAVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733022AbgJAVIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:08:34 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30960C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:08:34 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p9so10093152ejf.6
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9xdqL6cUOxwNImAGbPqaJhmve2+c4zuAd6VkudhDv6E=;
+        b=phZLfcc15Ka79PK3Ed6XBrK4N+ZNchA2bFO86TvVtOc950Psuk0y9/kQKkWgIvDSeN
+         YjyuXO1K1p828Tf5OE/n0pHfpEA5q7Ti5DgUsCXz/b+lrDR3AIwZAZ5aFFmCwZxDQexR
+         yiLOLcKi2SsRwqqdkcZX/NSe/StY1Vj+XY8mTic9gwB2uPErgZO4Or8u5UDVhhrxIPgl
+         kUME/C0aR0S9tpgl96xnwhvLswQrUQ7hxN3ARq1prxVE/GoF1dmHi+a8V7BzMCHVB6Gt
+         1c4gbLgTOkQ/FDI7bEwUfnqk/2GMkmm+DoOLn4VtQnptPaX5XUxk2PTcyV1juD/vL0VF
+         uCIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xdqL6cUOxwNImAGbPqaJhmve2+c4zuAd6VkudhDv6E=;
+        b=PbqOOZxUkG5ASnEt4DnPw3iANSdHvQ/4KCwa/KJo0yvQJX5wnpzMbhR8wlX5scpjFz
+         pINwVaAUYanhWtQXTt1Pq7Agnqfw22VRPcpWCHLcN0vh4i4hnVc1z+P3dpY7fjA671eo
+         KhLNDHHRj0zUzTfR/cZWOoRoDNwalMIwOad+FP13+cY3ZLwD6ppQ7ElkhrqKoatUAs7J
+         vy6YlVXGarXuQZ88n911kuDw1wBzB9Aj75O8gXDIJ7ORKF45SeRZdePKAvWX0zSeBF0O
+         3qlT/43l40MxNtt+8juZ3W40q3u+PE4ZNS4HmWyJJk4YhkbONctd16OmvM98ux5hSjY9
+         4CIA==
+X-Gm-Message-State: AOAM531bIeD6yEt9lKblt54lUBvTsWVWqabs8PxdnVMUJnakh3w+r6nG
+        Guxb5aeL4sqt3TJdRnNnHD2/i7FhZwZVssQqInyy5A==
+X-Google-Smtp-Source: ABdhPJzGyqh4BsNemw68IZ7SVTAL/f1eGkoGoEq0lnwW+GNAxVmMi5sF8Ujp23KKrSIiuA0CtJc5Iz8q63h4ADYqoDo=
+X-Received: by 2002:a17:906:980f:: with SMTP id lm15mr10444403ejb.184.1601586512571;
+ Thu, 01 Oct 2020 14:08:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com> <CABqSeASwCXaP_vNe1=E3EeWAApFYiB1S5xEb9BdH10b0rn0Q6A@mail.gmail.com>
+In-Reply-To: <CABqSeASwCXaP_vNe1=E3EeWAApFYiB1S5xEb9BdH10b0rn0Q6A@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 23:08:06 +0200
+Message-ID: <CAG48ez2HSYocuJhR1uo4Ei8x8jPtUkYRYVWPuiJscEJdbckONw@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Thu, Oct 1, 2020 at 1:28 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Wed, Sep 30, 2020 at 5:24 PM Jann Horn <jannh@google.com> wrote:
+> > If you did the architecture enablement for X86 later in the series,
+> > you could move this part over into that patch, that'd be cleaner.
+>
+> As in, patch 1: bitmap check logic. patch 2: emulator. patch 3: enable for x86?
 
-This pull request contains Thomas Gleixner's "Make preempt count
-unconditional" series [1], but with the addition of a kvfree_rcu() bug-fix
-commit making use of this PREEMPT_COUNT addition.  This series reduces
-the size of the kernel by almost 100 lines of code and is intended for
-the upcoming v5.10 merge window.
-
-Please note that these commits must go in via the -tip tree [2].
-
-The additional bug-fix commit addresses a bug reported by Sebastian
-Andrzej Siewior [3].  Please note that with the advent of the new
-lockdep Kconfig option CONFIG_PROVE_RAW_LOCK_NESTING, this is now also
-a mainline bug.  In happy contrast to the surprisingly large number of
-earlier versions of this fix, this version uses only pre-existing kernel
-interfaces, and furthermore uses them in conventional ways.
-
-This series has been posted to LKML:
-
-https://lore.kernel.org/lkml/20200928233041.GA23230@paulmck-ThinkPad-P72
-
-It has also been exposed to the kernel test robot and to -next testing.
-
-Changes since the LKML posting are limited to the addition of a comment
-block and commit-log changes, the latter including the addition of
-a Reviewed-by.  Additional discussion led to an additional two commits
-containing small updates, but these two additional commits are deferred
-to a later pull request, almost certainly for a later merge window.
-
-							Thanx, Paul
-
-[1]	https://lore.kernel.org/linux-mm/20200914204209.256266093@linutronix.de/
-[2]	https://lore.kernel.org/lkml/871riigxp9.fsf@nanos.tec.linutronix.de/
-[3]	https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
-
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
-
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/fix-rt
-
-for you to fetch changes up to 849b9c5446ccb0c98c7b11c69f169d22777ab31b:
-
-  kvfree_rcu(): Fix ifnullfree.cocci warnings (2020-10-01 09:07:24 -0700)
-
-----------------------------------------------------------------
-Thomas Gleixner (13):
-      lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
-      preempt: Make preempt count unconditional
-      preempt: Cleanup PREEMPT_COUNT leftovers
-      lockdep: Cleanup PREEMPT_COUNT leftovers
-      mm/pagemap: Cleanup PREEMPT_COUNT leftovers
-      locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
-      uaccess: Cleanup PREEMPT_COUNT leftovers
-      sched: Cleanup PREEMPT_COUNT leftovers
-      ARM: Cleanup PREEMPT_COUNT leftovers
-      xtensa: Cleanup PREEMPT_COUNT leftovers
-      drm/i915: Cleanup PREEMPT_COUNT leftovers
-      rcutorture: Cleanup PREEMPT_COUNT leftovers
-      preempt: Remove PREEMPT_COUNT from Kconfig
-
-Uladzislau Rezki (Sony) (1):
-      rcu/tree: Allocate a page when caller is preemptible
-
-kernel test robot (1):
-      kvfree_rcu(): Fix ifnullfree.cocci warnings
-
- arch/arm/include/asm/assembler.h                   | 11 ---
- arch/arm/kernel/iwmmxt.S                           |  2 -
- arch/arm/mach-ep93xx/crunch-bits.S                 |  2 -
- arch/xtensa/kernel/entry.S                         |  2 +-
- drivers/gpu/drm/i915/Kconfig.debug                 |  1 -
- drivers/gpu/drm/i915/i915_utils.h                  |  3 +-
- include/linux/bit_spinlock.h                       |  4 +-
- include/linux/lockdep.h                            |  6 +-
- include/linux/pagemap.h                            |  4 +-
- include/linux/preempt.h                            | 37 ++--------
- include/linux/uaccess.h                            |  6 +-
- kernel/Kconfig.preempt                             |  4 --
- kernel/rcu/tree.c                                  | 79 ++++++++--------------
- kernel/sched/core.c                                |  6 +-
- lib/Kconfig.debug                                  |  3 -
- .../selftests/rcutorture/configs/rcu/SRCU-t        |  1 -
- .../selftests/rcutorture/configs/rcu/SRCU-u        |  1 -
- .../selftests/rcutorture/configs/rcu/TINY01        |  1 -
- .../testing/selftests/rcutorture/doc/TINY_RCU.txt  |  5 +-
- .../selftests/rcutorture/doc/TREE_RCU-kconfig.txt  |  1 -
- .../rcutorture/formal/srcu-cbmc/src/config.h       |  1 -
- 21 files changed, 44 insertions(+), 136 deletions(-)
+Yeah.
