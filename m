@@ -2,211 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD3C27FA60
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8A27FA5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgJAHjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:39:16 -0400
-Received: from mga05.intel.com ([192.55.52.43]:10244 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731106AbgJAHjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:39:16 -0400
-IronPort-SDR: caDYtx9mpB/te/Z3+z5mt4jHnOOXg4mo4U2tmDbTdTpvNRMfoeusKM5J0y8rGHwNgWagPsBqAs
- SA7fBXcD9N5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="247378750"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="247378750"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 00:39:14 -0700
-IronPort-SDR: D0iekQOnIR3XuA3UdNPto00rHmqlpfCrxseHZ/HQwUbATlBglpWPtzk+dFKm6IAzhgGg6klm2o
- zEYVOZN/Q/ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="458020993"
-Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 01 Oct 2020 00:39:12 -0700
-Received: from kbuild by de448af6ea1b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kNtBH-0000Yd-Mo; Thu, 01 Oct 2020 07:39:11 +0000
-Date:   Thu, 01 Oct 2020 15:38:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/stackdepot] BUILD SUCCESS
- 75cf7f288660efb0b85e4b699cc9e55ae8c42360
-Message-ID: <5f75876b.x9zdN10esiC0qLHV%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730884AbgJAHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:38:33 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:33419 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAHid (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:38:33 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DD4FB22FAD;
+        Thu,  1 Oct 2020 09:38:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1601537910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGiNXcRQBc+sNSbaF8m1s0WNFrWOF68BnQu0iDZn9pk=;
+        b=cmw/hv4c9znNY6TbviqoEmAKKfgSZC1jz21XE9H7Jm97NmK1ktjRaomZ8+snhETVlkuZAY
+        /NWWQVwtqgeodoSx7Re86i99NxqJyoPySYvBttm2DB6twt8oBf/GAnMNUKFpreI/cn1OaT
+        8+fEbNjNNPpqt6xmClnXqWZ75CtdsDY=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 01 Oct 2020 09:38:29 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vigneshr@ti.com, richard@nod.at, boris.brezillon@collabora.com,
+        miquel.raynal@bootlin.com
+Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
+In-Reply-To: <bec5b899-fbd2-1c29-611c-654f17e63dbf@microchip.com>
+References: <20200327155939.13153-1-michael@walle.cc>
+ <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+ <a82d1ce203383af149ed77c5fd6c8985@walle.cc>
+ <bec5b899-fbd2-1c29-611c-654f17e63dbf@microchip.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <8cbaef6c7565deed1109fe958291d9e0@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/stackdepot
-branch HEAD: 75cf7f288660efb0b85e4b699cc9e55ae8c42360  lib/stackdepot.c: Replace one-element array with flexible-array member
+Hi Tudor,
 
-elapsed time: 721m
+Am 2020-10-01 09:07, schrieb Tudor.Ambarus@microchip.com:
+>>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>>> index cc68ea84318e..fd1c36d70a13 100644
+>>>> --- a/drivers/mtd/spi-nor/core.c
+>>>> +++ b/drivers/mtd/spi-nor/core.c
+>>>> @@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct 
+>>>> spi_nor
+>>>> *nor)
+>>>>  }
+>>>> 
+>>>>  /**
+>>>> - * spi_nor_unlock_all() - Unlocks the entire flash memory array.
+>>>> + * spi_nor_global_unprotect() - Perform a global unprotect of the
+>>>> memory area.
+>>>>   * @nor:    pointer to a 'struct spi_nor'.
+>>>>   *
+>>>>   * Some SPI NOR flashes are write protected by default after a
+>>>> power-on reset
+>>>>   * cycle, in order to avoid inadvertent writes during power-up.
+>>>> Backward
+>>>>   * compatibility imposes to unlock the entire flash memory array at
+>>>> power-up
+>>>> - * by default.
+>>>> + * by default. Do it only for flashes where the block protection 
+>>>> bits
+>>>> + * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
+>>>> + *
+>>>> + * We cannot use spi_nor_unlock(nor->params.size) here because 
+>>>> there
+>>>> are
+>>>> + * legacy devices (eg. AT25DF041A) which need a "global unprotect"
+>>>> command.
+>>>> + * This is done by writing 0b0x0000xx to the status register. This
+>>>> will also
+>>>> + * work for all other flashes which have these bits mapped to BP0 
+>>>> to
+>>>> BP3.
+>>>> + * The top most bit is ususally some kind of lock bit for the block
+>>>> + * protection bits.
+>>>>   */
+>>>> -static int spi_nor_unlock_all(struct spi_nor *nor)
+>>>> +static int spi_nor_global_unprotect(struct spi_nor *nor)
+>>>>  {
+>>>> -    if (nor->flags & SNOR_F_HAS_LOCK)
+>>>> -            return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
+>>>> +    int ret;
+>>>> 
+>>>> -    return 0;
+>>>> +    dev_dbg(nor->dev, "unprotecting entire flash\n");
+>>>> +    ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>>>> +    if (ret)
+>>>> +            return ret;
+>>>> +
+>>>> +    nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
+>>>> +
+>>>> +    /*
+>>>> +     * Don't use spi_nor_write_sr1_and_check() because writing the
+>>>> status
+>>>> +     * register might fail if the flash is hardware write 
+>>>> protected.
+>>>> +     */
+>>>> +    return spi_nor_write_sr(nor, nor->bouncebuf, 1);
+>>>>  }
+>>> 
+>>> This won't work for all the flashes. You use a GENMASK(5, 2) to clear
+>>> the Status Register even for BP0-2 flashes and you end up clearing
+>>> BIT(5)
+>>> which can lead to side effects.
+>>> 
+>>> We should instead introduce a 
+>>> nor->params->locking_ops->global_unlock()
+>>> hook
+>>> for the flashes that have special opcodes that unlock all the flash
+>>> blocks,
+>>> or for the flashes that deviate from the "clear just your BP bits"
+>>> rule.
+>> 
+>> Wouldn't it make more sense to just set params->locking_ops for these
+>> flashes
+>> to different functions? or even provide a spi_nor_global_unprotect_ops
+>> in
+>> core.c and these flashes will just set them. there is no individual
+>> sector
+>> range lock for these chips. just a lock all or nothing.
+> 
+> I like the idea of having all locking related functions placed in a 
+> single
+> place, thus the global_unlock() should be inside locking_ops struct.
 
-configs tested: 147
-configs skipped: 3
+My point was that this global unlock shouldn't be a special case for the
+current spi_nor_unlock() but just another "how to unlock the flash" 
+function
+and thus should replace the original unlock op. For example, it is also 
+likely
+that you need a special global lock (i.e. write all 1's).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+static int spi_nor_global_unlock()
+{
+   write_sr(0); /* actually it will be a read-modify write */
+}
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-h8300                            allyesconfig
-arm                         shannon_defconfig
-arm                  colibri_pxa300_defconfig
-mips                          ath25_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                 linkstation_defconfig
-c6x                         dsk6455_defconfig
-powerpc64                        alldefconfig
-m68k                             allmodconfig
-alpha                               defconfig
-powerpc                 canyonlands_defconfig
-mips                          ath79_defconfig
-nds32                            alldefconfig
-nios2                         10m50_defconfig
-powerpc                     rainier_defconfig
-xtensa                       common_defconfig
-sh                           sh2007_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                          simpad_defconfig
-microblaze                    nommu_defconfig
-sparc                            allyesconfig
-arm                          pcm027_defconfig
-sh                              ul2_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                   motionpro_defconfig
-arm                          gemini_defconfig
-powerpc                 mpc837x_mds_defconfig
-xtensa                           alldefconfig
-arm                         nhk8815_defconfig
-arm                         bcm2835_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                  storcenter_defconfig
-microblaze                      mmu_defconfig
-m68k                             allyesconfig
-powerpc                    mvme5100_defconfig
-arc                            hsdk_defconfig
-m68k                           sun3_defconfig
-arm                          pxa910_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                    sam440ep_defconfig
-sh                          sdk7786_defconfig
-xtensa                          iss_defconfig
-powerpc                      ppc44x_defconfig
-sh                           se7750_defconfig
-m68k                            q40_defconfig
-arm                        multi_v5_defconfig
-arm                          lpd270_defconfig
-arm                        trizeps4_defconfig
-powerpc                      chrp32_defconfig
-arm                           stm32_defconfig
-mips                      loongson3_defconfig
-powerpc                      makalu_defconfig
-x86_64                              defconfig
-arm                       imx_v6_v7_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                        bcm47xx_defconfig
-arm                             pxa_defconfig
-mips                           ip28_defconfig
-arm                         hackkit_defconfig
-sh                          rsk7269_defconfig
-m68k                         apollo_defconfig
-arm                              zx_defconfig
-sh                           se7343_defconfig
-arm                            dove_defconfig
-mips                        nlm_xlr_defconfig
-mips                        jmr3927_defconfig
-powerpc                      katmai_defconfig
-powerpc                           allnoconfig
-sh                          rsk7203_defconfig
-sh                   sh7724_generic_defconfig
-sh                             espt_defconfig
-csky                                defconfig
-arm                          iop32x_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7724_defconfig
-arc                        nsim_700_defconfig
-arm                         palmz72_defconfig
-c6x                        evmc6474_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a015-20200930
-x86_64               randconfig-a013-20200930
-x86_64               randconfig-a012-20200930
-x86_64               randconfig-a016-20200930
-x86_64               randconfig-a014-20200930
-x86_64               randconfig-a011-20200930
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
+static int spi_nor_global_lock()
+{
+   write_sr(0x1c);
+}
 
-clang tested configs:
-x86_64               randconfig-a001-20200930
-x86_64               randconfig-a005-20200930
-x86_64               randconfig-a003-20200930
-x86_64               randconfig-a004-20200930
-x86_64               randconfig-a002-20200930
-x86_64               randconfig-a006-20200930
+static int spi_nor_is_global_locked()
+{
+   return read_sr() & 0x1c;
+}
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+         .lock = spi_nor_global_unlock,
+         .unlock = spi_nor_global_lock,
+         .is_locked = spi_nor_is_global_locked,
+};
+
+Having the spi_nor_unlock decide what op to choose introduces just
+another indirection. Esp. if you think about having support for
+individual sector protection which also needs new ops. Btw. to me
+it seems that "global (un)lock" is almost always used for the
+individual sector protection scheme, i.e. like a shortcut to allow all
+sectors be unlocked at once.
+
+> You can update params->locking_ops. If we have vendor specific 
+> locking_ops
+> we can set them via:
+> 	nor->manufacturer->fixups->default_init(nor);
+> or if they are flash specific, with a smaller granularity, via:
+> 	nor->info->fixups->default_init(nor);
+
+ok.
+
+>> If it is more common and not just one vendor it might also make sense 
+>> to
+>> add
+>> a seperate flag which will then set the locking ops to
+>> spi_nor_global_unprotect_ops, also it seems that there have to be two
+> 
+> I don't like that we have so many flags, so I try to avoid introducing 
+> new
+> ones as best as I can. Checking for null pointer should suffice.
+
+Yeah, I already guessed that this would be the answer ;)
+
+-michael
