@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F68D280779
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C628077B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733066AbgJATGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:06:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55802 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733025AbgJATGV (ORCPT
+        id S1733076AbgJATG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:06:29 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48526 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733025AbgJATG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:06:21 -0400
+        Thu, 1 Oct 2020 15:06:26 -0400
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091J6EF0130925;
-        Thu, 1 Oct 2020 14:06:14 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091J6Ja2034346;
+        Thu, 1 Oct 2020 14:06:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601579174;
-        bh=4hsgccja69xkA6Nqz2du8sVQOfenw3Ib088cYiElafE=;
+        s=ti-com-17Q1; t=1601579179;
+        bh=7TSxtbrB8Ulz1iEBfQ+PWme41z8+AlBI45mjLZ5+iHE=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=PJO6T9OvxkIDlghz6IYhBBwahnmPlvX7wXAsBfeRg2d2YJfRoYi9TyJe5kHkSqhDf
-         IwKVFwW9fAL8xXaseYJTsM9HWjh/cBKjbFbUTyVkNFXUg/4ttN3Nq4HU9veDX7GHoG
-         o08eUgMIm4zIh6XdUuY4wxVRsLlxSXYo5HFbF+10=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091J6ERZ043132
+        b=cBJsTFmtGXZAD+FvTthvCIAeuXC9GT22Q1eGnRZUrRFH2DkOY1mJAldwRXiA/habZ
+         etFBRLq04yRaJvstBuiZ1nw09aclzF91QX0q2mQ6ovuSmj08qpxArzgGiIp2qXBQdK
+         BkCD8FBiXf8SpwPfHYJh6DCgkJJURZsvahfqA5oo=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091J6J7J043230
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Oct 2020 14:06:14 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 1 Oct 2020 14:06:19 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 14:06:14 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 14:06:19 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 14:06:14 -0500
+ Frontend Transport; Thu, 1 Oct 2020 14:06:19 -0500
 Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091J5gYq070134;
-        Thu, 1 Oct 2020 14:06:10 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091J5gYr070134;
+        Thu, 1 Oct 2020 14:06:15 -0500
 From:   Faiz Abbas <faiz_abbas@ti.com>
 To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     <will@kernel.org>, <robh+dt@kernel.org>, <nm@ti.com>,
         <t-kristo@ti.com>, <faiz_abbas@ti.com>
-Subject: [PATCH 5/8] arm64: dts: ti: k3-j721e-common-proc-board: Add support SD card UHS modes
-Date:   Fri, 2 Oct 2020 00:35:38 +0530
-Message-ID: <20201001190541.6364-6-faiz_abbas@ti.com>
+Subject: [PATCH 6/8] arm64: dts: ti: k3-j7200-common-proc-board: Add support SD card UHS modes
+Date:   Fri, 2 Oct 2020 00:35:39 +0530
+Message-ID: <20201001190541.6364-7-faiz_abbas@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201001190541.6364-1-faiz_abbas@ti.com>
 References: <20201001190541.6364-1-faiz_abbas@ti.com>
@@ -61,18 +61,26 @@ SD card and removing the no-1-8-v property.
 
 Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
- .../dts/ti/k3-j721e-common-proc-board.dts     | 35 ++++++++++++++++++-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  2 --
- 2 files changed, 34 insertions(+), 3 deletions(-)
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 32 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     |  1 -
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 52e121155563..0df9e6117b7c 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -67,6 +67,31 @@
- 		regulator-boot-on;
- 	};
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+index 50d330245a42..02112c2a63e9 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+@@ -7,12 +7,36 @@
  
+ #include "k3-j7200-som-p0.dtsi"
+ #include <dt-bindings/net/ti-dp83867.h>
++#include <dt-bindings/gpio/gpio.h>
+ 
+ / {
+ 	chosen {
+ 		stdout-path = "serial2:115200n8";
+ 		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
+ 	};
++
 +	vdd_mmc1: fixedregulator-sd {
 +		compatible = "regulator-fixed";
 +		regulator-name = "vdd_mmc1";
@@ -80,71 +88,58 @@ index 52e121155563..0df9e6117b7c 100644
 +		regulator-max-microvolt = <3300000>;
 +		regulator-boot-on;
 +		enable-active-high;
-+		vin-supply = <&vsys_3v3>;
-+		gpio = <&exp2 2 GPIO_ACTIVE_HIGH>;
++		gpios = <&exp2 2 GPIO_ACTIVE_HIGH>;
 +	};
 +
-+	vdd_sd_dv_alt: gpio-regulator-TLV71033 {
++	vdd_sd_dv: gpio-regulator-vdd-sd-dv {
 +		compatible = "regulator-gpio";
++		regulator-name = "vdd_sd_dv";
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&vdd_sd_dv_alt_pins_default>;
-+		regulator-name = "tlv71033";
++		pinctrl-0 = <&vdd_sd_dv_pins_default>;
 +		regulator-min-microvolt = <1800000>;
 +		regulator-max-microvolt = <3300000>;
 +		regulator-boot-on;
-+		vin-supply = <&vsys_5v0>;
-+		gpios = <&main_gpio0 117 GPIO_ACTIVE_HIGH>;
++		gpios = <&main_gpio0 55 GPIO_ACTIVE_HIGH>;
 +		states = <1800000 0x0
 +			  3300000 0x1>;
 +	};
-+
- 	sound0: sound@0 {
- 		compatible = "ti,j721e-cpb-audio";
- 		model = "j721e-cpb";
-@@ -106,7 +131,13 @@
+ };
+ 
+ &wkup_pmx0 {
+@@ -68,6 +92,12 @@
+ 			J721E_IOPAD(0xe4, PIN_INPUT, 8) /* (V1) TIMER_IO0.MMC1_SDCD */
  		>;
  	};
- 
--	main_usbss0_pins_default: main-usbss0-pins-default {
-+	vdd_sd_dv_alt_pins_default: vdd_sd_dv_alt_pins_default {
++
++	vdd_sd_dv_pins_default: vdd_sd_dv_pins_default {
 +		pinctrl-single,pins = <
-+			J721E_IOPAD(0x1d8, PIN_INPUT, 7) /* (W4) SPI1_CS1.GPIO0_117 */
++			J721E_IOPAD(0xd0, PIN_INPUT, 7) /* (T5) SPI0_D1.GPIO0_55 */
 +		>;
 +	};
-+
-+	main_usbss0_pins_default: main_usbss0_pins_default {
- 		pinctrl-single,pins = <
- 			J721E_IOPAD(0x290, PIN_OUTPUT, 0) /* (U6) USB0_DRVVBUS */
- 			J721E_IOPAD(0x210, PIN_INPUT, 7) /* (W3) MCAN1_RX.GPIO1_3 */
-@@ -295,6 +326,8 @@
+ };
+ 
+ &wkup_uart0 {
+@@ -196,6 +226,8 @@
  
  &main_sdhci1 {
- 	/* SD/MMC */
+ 	/* SD card */
 +	vmmc-supply = <&vdd_mmc1>;
-+	vqmmc-supply = <&vdd_sd_dv_alt>;
- 	pinctrl-names = "default";
++	vqmmc-supply = <&vdd_sd_dv>;
  	pinctrl-0 = <&main_mmc1_pins_default>;
+ 	pinctrl-names = "default";
  	ti,driver-strength-ohm = <50>;
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index 630b195cbc8a..a38d772b8356 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -1109,7 +1109,6 @@
- 		ti,trm-icp = <0x8>;
- 		ti,clkbuf-sel = <0x7>;
- 		dma-coherent;
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index f21f22237e0f..7307a94f7f3e 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -392,7 +392,6 @@
+ 		ti,otap-del-sel-sdr50 = <0xc>;
+ 		ti,otap-del-sel-sdr104 = <0x5>;
+ 		ti,otap-del-sel-ddr50 = <0xc>;
 -		no-1-8-v;
+ 		dma-coherent;
  	};
  
- 	main_sdhci2: sdhci@4f98000 {
-@@ -1130,7 +1129,6 @@
- 		ti,trm-icp = <0x8>;
- 		ti,clkbuf-sel = <0x7>;
- 		dma-coherent;
--		no-1-8-v;
- 	};
- 
- 	usbss0: cdns-usb@4104000 {
 -- 
 2.17.1
 
