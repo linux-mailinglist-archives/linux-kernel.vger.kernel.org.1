@@ -2,75 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D984280189
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008F628018C
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732440AbgJAOov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60636 "EHLO mail.kernel.org"
+        id S1732485AbgJAOo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732020AbgJAOov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:44:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1732020AbgJAOo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:44:57 -0400
+Received: from localhost (fla63-h02-176-172-189-251.dsl.sta.abo.bbox.fr [176.172.189.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E878420780;
-        Thu,  1 Oct 2020 14:44:49 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 10:44:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/ftrace: check for do_sys_openat2 in
- user-memory test
-Message-ID: <20201001104448.427a0eaa@gandalf.local.home>
-In-Reply-To: <20201001085641.51130-1-colin.king@canonical.com>
-References: <20201001085641.51130-1-colin.king@canonical.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CE5E207FB;
+        Thu,  1 Oct 2020 14:44:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601563497;
+        bh=dDC26q515F+Adnjw4FlkjfdULIOBLB9BDdSe3RhWuDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F3NVYP8tZU/Bi6llA5AaYGUeVhjR70aMs4gOeqYxm3k+PAJeYZ02dTbkx0lAK0kW+
+         G4oJv2DEjiAPRuxOp5vVP8gFXBP061GqDAJpK9vy08WczDaCm5fp77iUrSaZkwEqVv
+         b6CtDaGlsU+Y48auonfo+Dsndbl96Q/J+bNpG4CY=
+Date:   Thu, 1 Oct 2020 16:44:54 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Alex Belits <abelits@marvell.com>
+Cc:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 10/13] task_isolation: don't interrupt CPUs with
+ tick_nohz_full_kick_cpu()
+Message-ID: <20201001144454.GB6595@lothringen>
+References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
+ <5acf7502c071c0d1365ba5e5940e003a7da6521f.camel@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5acf7502c071c0d1365ba5e5940e003a7da6521f.camel@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 09:56:41 +0100
-Colin King <colin.king@canonical.com> wrote:
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Wed, Jul 22, 2020 at 02:57:33PM +0000, Alex Belits wrote:
+> From: Yuri Norov <ynorov@marvell.com>
 > 
-> More recent libc implementations are now using openat/openat2 system
-> calls so also add do_sys_openat2 to the tracing so that the test
-> passes on these systems because do_sys_open may not be called.
+> For nohz_full CPUs the desirable behavior is to receive interrupts
+> generated by tick_nohz_full_kick_cpu(). But for hard isolation it's
+> obviously not desirable because it breaks isolation.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> This patch adds check for it.
+> 
+> Signed-off-by: Yuri Norov <ynorov@marvell.com>
+> [abelits@marvell.com: updated, only exclude CPUs running isolated tasks]
+> Signed-off-by: Alex Belits <abelits@marvell.com>
 > ---
->  .../testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc  | 2 ++
->  1 file changed, 2 insertions(+)
+>  kernel/time/tick-sched.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
-> index a30a9c07290d..cf1b4c3e9e6b 100644
-> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
-> @@ -9,6 +9,8 @@ grep -A10 "fetcharg:" README | grep -q '\[u\]<offset>' || exit_unsupported
->  :;: "user-memory access syntax and ustring working on user memory";:
->  echo 'p:myevent do_sys_open path=+0($arg2):ustring path2=+u0($arg2):string' \
->  	> kprobe_events  
-> +echo 'p:myevent2 do_sys_openat2 path=+0($arg2):ustring path2=+u0($arg2):string' \
-> +	> kprobe_events
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 6e4cd8459f05..2f82a6daf8fc 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/sched/clock.h>
+>  #include <linux/sched/stat.h>
+>  #include <linux/sched/nohz.h>
+> +#include <linux/isolation.h>
+>  #include <linux/module.h>
+>  #include <linux/irq_work.h>
+>  #include <linux/posix-timers.h>
+> @@ -268,7 +269,8 @@ static void tick_nohz_full_kick(void)
+>   */
+>  void tick_nohz_full_kick_cpu(int cpu)
+>  {
+> -	if (!tick_nohz_full_cpu(cpu))
+> +	smp_rmb();
+
+What is it ordering?
+
+> +	if (!tick_nohz_full_cpu(cpu) || task_isolation_on_cpu(cpu))
+>  		return;
+
+You can't simply ignore an IPI. There is always a reason for a nohz_full CPU
+to be kicked. Something triggered a tick dependency. It can be posix cpu timers
+for example, or anything.
+
+
+>  
+>  	irq_work_queue_on(&per_cpu(nohz_full_kick_work, cpu), cpu);
+> -- 
+> 2.26.2
 > 
-
-This still wont work, because the rest of the code only enables the myevent
-event, and not the one you just added.
-
-Did you see this broken before, and this patch fixes it?
-
--- Steve
-
- 
->  grep myevent kprobe_events | \
->  	grep -q 'path=+0($arg2):ustring path2=+u0($arg2):string'
-
