@@ -2,94 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CC927FC00
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F1B27FC01
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731724AbgJAIzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:55:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:56276 "EHLO foss.arm.com"
+        id S1731699AbgJAIzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:55:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726647AbgJAIzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:55:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35BF8D6E;
-        Thu,  1 Oct 2020 01:55:45 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B29D3F70D;
-        Thu,  1 Oct 2020 01:55:44 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 09:55:38 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-        baolin.wang7@gmail.com, linux-arm-kernel@lists.infradead.org,
+        id S1731560AbgJAIzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 04:55:45 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8575320B1F;
+        Thu,  1 Oct 2020 08:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601542545;
+        bh=Lmndb/S6MK+pcARG47+loeLrbW8fJTcFCcXY6A/D8MI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PT5kCBVmlTTfqQjGqwWISToPHs5XIxehYOqt9yCdVdkg2vSTWZn9zrnbQkkeeoH/i
+         hUg05924olZPl+P1ENWbTWFWDJYm1ad1HIwnTu9l0oU4dceQ5G5Kl7n0lKjxRzFFeT
+         zg5Hga2Yyx5Fzo2o4mH8S4X7jJ6NJ1Arhuj1GxN0=
+Date:   Thu, 1 Oct 2020 10:55:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Matthew Hanzelik <mrhanzelik@gmail.com>
+Cc:     marvin24@gmx.de, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: PCI: Validate the node before setting node id for
- root bus
-Message-ID: <20201001085538.GA5142@e121166-lin.cambridge.arm.com>
-References: <1600770804-116365-1-git-send-email-baolin.wang@linux.alibaba.com>
- <20200928140054.GA11500@willie-the-truck>
- <20200928144957.GA90366@VM20190228-100.tbsite.net>
- <20200928152326.GA15640@e121166-lin.cambridge.arm.com>
- <26284ca5-ea05-0496-629d-9951f49dda8f@linux.alibaba.com>
+Subject: Re: [PATCH v2] Staging: nvec: Remove duplicate word in comment.
+Message-ID: <20201001085546.GA1824150@kroah.com>
+References: <CAF4OWHKYrcZzZp_YVf+mnGgjHUi7AKPA22s5q7vVfu371_8HTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <26284ca5-ea05-0496-629d-9951f49dda8f@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAF4OWHKYrcZzZp_YVf+mnGgjHUi7AKPA22s5q7vVfu371_8HTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:41:29PM +0800, Baolin Wang wrote:
-> Hi,
+On Tue, Sep 29, 2020 at 11:39:53PM -0400, Matthew Hanzelik wrote:
+> Remove a duplicate word in a comment within nvec.c.
 > 
-> 锟斤拷 2020/9/28 23:23, Lorenzo Pieralisi 写锟斤拷:
-> > On Mon, Sep 28, 2020 at 10:49:57PM +0800, Baolin Wang wrote:
-> > > On Mon, Sep 28, 2020 at 03:00:55PM +0100, Will Deacon wrote:
-> > > > [+ Lorenzo]
-> > > > 
-> > > > On Tue, Sep 22, 2020 at 06:33:24PM +0800, Baolin Wang wrote:
-> > > > > If the BIOS disabled the NUMA configuration, but did not change the
-> > > > > proximity domain description in the SRAT table, so the PCI root bus
-> > > > > device may get a incorrect node id by acpi_get_node().
-> > > > 
-> > > > How "incorrect" are we talking here? What actually goes wrong? At some
-> > > > point, we have to trust what the firmware is telling us.
-> > > 
-> > > What I mean is, if we disable the NUMA from BIOS
-> > 
-> > Please define what this means ie are you removing SRAT from ACPI static
-> > tables ?
+> Signed-off-by: Matthew Hanzelik <mrhanzelik@gmail.com>
+> ---
+> Changes in v2:
+>  - Fix spelling mistake in commit.
+> ---
+>  drivers/staging/nvec/nvec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Yes.
-> 
-> > 
-> > > but we did not change the PXM for the PCI devices,
-> > 
-> > If a _PXM maps to a proximity domain that is not described in the SRAT
-> > your firmware is buggy.
-> 
-> Sorry for confusing, that's not what I mean. When the BIOS disable the NUMA
-> (remove the SRAT table), but the PCI devices' _PXM description is still
-> available, which means we can still get the pxm from acpi_evaluate_integer()
-> in this case.
+> diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
+> index 360ec0407740..a80996b2f5ce 100644
+> --- a/drivers/staging/nvec/nvec.c
+> +++ b/drivers/staging/nvec/nvec.c
+> @@ -289,7 +289,7 @@ EXPORT_SYMBOL(nvec_write_async);
+>   * interrupt handlers.
+>   *
+>   * Returns: 0 on success, a negative error code on failure.
+> - * The response message is returned in @msg. Shall be freed with
+> + * The response message is returned in @msg. Shall be freed
+>   * with nvec_msg_free() once no longer used.
+>   *
+>   */
 
-There should not be a _PXM object if the SRAT is not available, that's
-a firmware bug.
-
-> So we can get below inconsistent log on ARM platform:
-> "No NUMA configuration found
-> PCI_bus 0000:00 on NUMA node 0
-> ...
-> PCI_bus 0000:e3 on NUMA node 1"
-> 
-> On X86, the pci_acpi_root_get_node() will validate the node before setting
-> the node id for root bus. So I think we can add this validation for ARM
-> platform. Or anything else I missed?
-
-We are not adding checks because x86 does it, it is certainly to paper
-over a firmware bug that you hopefully still have a chance to fix,
-let's do that instead of adding code that is not necessary.
-
-Lorenzo
+Someone else sent this patch right before you did, sorry:
+	https://lore.kernel.org/r/20200927172855.9813-1-ryanpkosta@gmail.com
