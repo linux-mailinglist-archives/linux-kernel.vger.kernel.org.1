@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83154280854
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF5B280874
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733077AbgJAUTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:19:23 -0400
-Received: from smtprelay0169.hostedemail.com ([216.40.44.169]:60940 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726581AbgJAUTX (ORCPT
+        id S2387401AbgJAU1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:27:40 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:44033 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726855AbgJAU1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:19:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 283CD180A7FF8;
-        Thu,  1 Oct 2020 20:19:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:4321:5007:6120:6742:9040:9108:10004:10400:10471:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14180:14659:14721:21060:21080:21433:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: mice75_5c06f2d2719e
-X-Filterd-Recvd-Size: 2850
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  1 Oct 2020 20:19:19 +0000 (UTC)
-Message-ID: <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
-Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
- __section(foo) to __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 01 Oct 2020 13:19:18 -0700
-In-Reply-To: <20201001193937.GM28786@gate.crashing.org>
-References: <20200929192549.501516-1-ndesaulniers@google.com>
-         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
-         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
-         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
-         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
-         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
-         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
-         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
-         <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
-         <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
-         <20201001193937.GM28786@gate.crashing.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 1 Oct 2020 16:27:40 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 16:27:39 EDT
+Received: from cust-43cce789 ([IPv6:fc0c:c1a4:736c:9c1a:15d2:fd0f:664c:4844])
+        by smtp-cloud7.xs4all.net with ESMTPSA
+        id O540kayi6v4gEO541kJ5Bj; Thu, 01 Oct 2020 22:20:32 +0200
+From:   Paul Bolle <pebolle@tiscali.nl>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] locking/atomics: Check atomic-arch-fallback.h too
+Date:   Thu,  1 Oct 2020 22:20:28 +0200
+Message-Id: <20201001202028.1048418-1-pebolle@tiscali.nl>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfL1KVqYyXbaX7zO+ws9qUDccFqqq77NrLS9AfUC/2WCehb0rvzjAfe57HphD0vBSfJAFMLRpZn9lbCIGhYiypkKlTrrHVee4BwVsRPeL67pJS33IigwY
+ wlQ7t9kmH+i7tzhnF3EHxB4hnNp8rPyQmEA/X5oisyVl6UL8OOCrHt9S3Wo/z9jBVss2nQd+BpKkTY3dY1IxD7jjZm19brT+rJVOfkKJNiDjZuswlU/Vuy0a
+ aIHI0DHj5S8gBrgpdLyUXKEbidZGDl5r4yo1eeF/rWFhHi0R5TBrb3SHb4ET//vuqQjAUfMCrBvPTGas+ded1VMJ+qRDP9gHxhZQ8Si4DuRODfYeIVjvAsX4
+ 9fAoMPMJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-01 at 14:39 -0500, Segher Boessenkool wrch/ote:
-> Hi!
-> 
-> On Thu, Oct 01, 2020 at 12:15:39PM +0200, Miguel Ojeda wrote:
-> > > So it looks like the best option is to exclude these
-> > > 2 files from conversion.
-> > 
-> > Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
-> > compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
-> > reviewers and ML).
-> 
-> You need to #include compiler_types.h to get this #define?
+The sha1sum of include/linux/atomic-arch-fallback.h isn't checked by
+check-atomics.sh. It's not clear why it's skipped so let's check it too.
 
-Actually no, you need to add
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+It seems it never has been checked. So this does cast some doubt about
+the usefulness of these tests. But I'm clueless about this atomic stuff
+so what do I know?
 
-#include <linux/compiler_attributes.h>
+ scripts/atomic/check-atomics.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-to both files and then it builds properly.
-
-Ideally though nothing should include this file directly.
-
-> (The twice-defined thing is a warning, not an error.  It should be fixed
-> of course, but it is less important; although it may be pointing to a
-> deeper problem.)
-> 
-> 
-> Segher
+diff --git a/scripts/atomic/check-atomics.sh b/scripts/atomic/check-atomics.sh
+index 8378c63a1e09..82748d42ecc5 100755
+--- a/scripts/atomic/check-atomics.sh
++++ b/scripts/atomic/check-atomics.sh
+@@ -16,6 +16,7 @@ fi
+ cat <<EOF |
+ asm-generic/atomic-instrumented.h
+ asm-generic/atomic-long.h
++linux/atomic-arch-fallback.h
+ linux/atomic-fallback.h
+ EOF
+ while read header; do
+-- 
+2.26.2
 
