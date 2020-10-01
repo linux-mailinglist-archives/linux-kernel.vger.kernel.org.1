@@ -2,58 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7130F28083D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857E9280870
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732888AbgJAUKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726606AbgJAUKH (ORCPT
+        id S1732952AbgJAU01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:26:27 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:59106 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgJAU0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:10:07 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF34C0613D0;
-        Thu,  1 Oct 2020 13:10:07 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id C3252148489AD;
-        Thu,  1 Oct 2020 12:53:18 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 13:10:05 -0700 (PDT)
-Message-Id: <20201001.131005.812058315852168053.davem@davemloft.net>
-To:     vladimir.oltean@nxp.com
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, mpe@ellerman.id.au,
-        devicetree@vger.kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        madalin.bucur@oss.nxp.com, radu-andrei.bulie@nxp.com,
-        fido_max@inbox.ru, andrew@lunn.ch
-Subject: Re: [PATCH v3 devicetree 0/2] Add Seville Ethernet switch to
- T1040RDB
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201001132013.1866299-1-vladimir.oltean@nxp.com>
-References: <20201001132013.1866299-1-vladimir.oltean@nxp.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 01 Oct 2020 12:53:19 -0700 (PDT)
+        Thu, 1 Oct 2020 16:26:21 -0400
+X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 16:26:21 EDT
+Date:   Thu, 1 Oct 2020 16:11:08 -0400
+From:   Rich Felker <dalias@aerifal.cx>
+To:     Petr Vorel <petr.vorel@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, musl@lists.openwall.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        Peter Korsgaard <peter@korsgaard.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        "David S . Miller" <davem@davemloft.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Subject: Re: [musl] [PATCH 1/1] uapi: Don't include <linux/sysinfo.h> in
+ <linux/kernel.h>
+Message-ID: <20201001201108.GR17637@brightrain.aerifal.cx>
+References: <20201001195231.17226-1-petr.vorel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001195231.17226-1-petr.vorel@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-Date: Thu,  1 Oct 2020 16:20:11 +0300
-
-> Seville is a DSA switch that is embedded inside the T1040 SoC, and
-> supported by the mscc_seville DSA driver inside drivers/net/dsa/ocelot.
+On Thu, Oct 01, 2020 at 09:52:31PM +0200, Petr Vorel wrote:
+> + update code where needed (include <linux/sysinfo.h> in code which
+> included <linux/kernel.h> only to get struct sysinfo or SI_LOAD_SHIFT).
 > 
-> This series adds this switch to the SoC's dtsi files and to the T1040RDB
-> board file.
+> The reason is to avoid indirect <linux/sysinfo.h> include when using
+> some network headers: <linux/netlink.h> or others [1] ->
+> <linux/kernel.h> -> <linux/sysinfo.h>.
+> 
+> This indirect include causes redefinition of struct sysinfo when
+> included both <sys/sysinfo.h> and some of network headers:
+> 
+> In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
+>                  from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
+>                  from ../include/tst_netlink.h:14,
+>                  from tst_crypto.c:13:
+> x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ‘struct sysinfo’
+>  struct sysinfo {
+>         ^~~~~~~
+> In file included from ../include/tst_safe_macros.h:15,
+>                  from ../include/tst_test.h:93,
+>                  from tst_crypto.c:11:
+> x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
+> 
+> [1] or <linux/sysctl.h>, <linux/ethtool.h>, <linux/mroute6.h>, <linux/ethtool.h>
+> 
+> Suggested-by: Rich Felker <dalias@aerifal.cx>
+> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+> ---
+> Hi,
+> 
+> this looks to be long standing problem: python-psutil [2], iproute2 [3],
+> even for glibc in the past [4] and it tried to be solved before [5].
+> 
+> This will require glibc fix after:
 
-I am assuming the devicetree folks will pick this series up.
+You can't do this; it breaks the existing contract with glibc. New
+kernel headers can't force a glibc upgrade. You just have to get rid
+of use of <linux/kernel.h> elsewhere in the uapi headers. It was a
+mistake that <linux/sysinfo.h> was ever separated out of
+<linux/kernel.h> since it didn't (and couldn't) fix the contract that
+<linux/kernel.h> exposes struct sysinfo (and that it's misnamed). But
+it's no big deal. This can all be fixed without any breakage anywhere
+just by not using it.
 
-Thanks.
-
+Rich
