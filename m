@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3857C27FE39
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DED327FE3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731947AbgJALRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:17:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:59532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731243AbgJALRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:17:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DEC130E;
-        Thu,  1 Oct 2020 04:17:36 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B2A53F70D;
-        Thu,  1 Oct 2020 04:17:35 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 12:17:30 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH 1/2] PCI: dwc: armada-8k driver needs OF support
-Message-ID: <20201001111729.GA6420@e121166-lin.cambridge.arm.com>
-References: <20201001074244.349443-1-thomas.petazzoni@bootlin.com>
+        id S1731895AbgJALU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:20:27 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:55235 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731134AbgJALU0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:20:26 -0400
+Received: by mail-wm1-f68.google.com with SMTP id s13so2486034wmh.4;
+        Thu, 01 Oct 2020 04:20:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZt2zy/Lwar12EpzsAU+4I+PUix2uePSQ1boZKXlZbM=;
+        b=B+hp5AXvO+qvWEMhpHX10f+zMcOxZDHJvY+z8gF+vQLDc3H2wHIXZwC9jEDbZtvMtO
+         WUyDG9eUlKGijywFeNxxJrs/iK0KyTSn3pF7KNjTxlHvBFafmA/zm6Qqyb/fClEmNtqe
+         5HOtDO9mDFg3cPLt11QL5uFMNb/Si8H9pwrByx0WQ646hPJFsfetIwYd3ew8caGv1cCw
+         IXAz5xMTKo4whPm4w0nM+Z+S7Y/m2aufogjGvwxiS6ef1S905/O7KUyg+6FE+Wh7YAwJ
+         0n+uEw5s4v4c6g0IxilMpc5c1/MXCzJ64xUtpfq+u6Logkwbj2KF7qSZx88cC/JKg5lV
+         rrrA==
+X-Gm-Message-State: AOAM530V96R8dytvswaNBtmnMfvpbIG7vFrdLnHrAh6CmQuVxStZ3Qyz
+        UbJqDmEWJP451oSMigD77xmCaks6Ppw=
+X-Google-Smtp-Source: ABdhPJxkB1EfFW+sdX3dph2xmIMIlse6uAZJ5j9V/jkkxdGL2OujglwQsUXsdaNBzRAi0Zsl1b3rfA==
+X-Received: by 2002:a7b:c958:: with SMTP id i24mr8349585wml.50.1601551221189;
+        Thu, 01 Oct 2020 04:20:21 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-95-179-222.cust.vodafonedsl.it. [5.95.179.222])
+        by smtp.gmail.com with ESMTPSA id r14sm8406689wrn.56.2020.10.01.04.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 04:20:20 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH] x86/kvm: hide KVM options from menuconfig when KVM is not compiled
+Date:   Thu,  1 Oct 2020 13:20:14 +0200
+Message-Id: <20201001112014.9561-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001074244.349443-1-thomas.petazzoni@bootlin.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:42:43AM +0200, Thomas Petazzoni wrote:
-> Fixes the following build warning when CONFIG_OF is disabled:
-> 
-> drivers/pci/controller/dwc/pcie-armada8k.c:344:34: warning: ‘armada8k_pcie_of_match’ defined but not used [-Wunused-const-variable=]
->   344 | static const struct of_device_id armada8k_pcie_of_match[] = {
->       |                                  ^~~~~~~~~~~~~~~~~~~~~~
-> 
-> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> ---
->  drivers/pci/controller/dwc/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+From: Matteo Croce <mcroce@microsoft.com>
 
-Merged both patches into pci/dwc, thanks.
+Let KVM_WERROR depend on KVM, so it doesn't show in menuconfig alone.
 
-Lorenzo
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+---
+ arch/x86/kvm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-> index 044a3761c44f..96994b715f26 100644
-> --- a/drivers/pci/controller/dwc/Kconfig
-> +++ b/drivers/pci/controller/dwc/Kconfig
-> @@ -176,7 +176,7 @@ config PCIE_QCOM
->  
->  config PCIE_ARMADA_8K
->  	bool "Marvell Armada-8K PCIe controller"
-> -	depends on ARCH_MVEBU || COMPILE_TEST
-> +	depends on OF && (ARCH_MVEBU || COMPILE_TEST)
->  	depends on PCI_MSI_IRQ_DOMAIN
->  	select PCIE_DW_HOST
->  	help
-> -- 
-> 2.26.2
-> 
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index fbd5bd7a945a..f92dfd8ef10d 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -66,6 +66,7 @@ config KVM_WERROR
+ 	default y if X86_64 && !KASAN
+ 	# We use the dependency on !COMPILE_TEST to not be enabled
+ 	# blindly in allmodconfig or allyesconfig configurations
++	depends on KVM
+ 	depends on (X86_64 && !KASAN) || !COMPILE_TEST
+ 	depends on EXPERT
+ 	help
+-- 
+2.26.2
+
