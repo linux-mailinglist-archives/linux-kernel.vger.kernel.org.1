@@ -2,447 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FFA280581
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB34280555
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733089AbgJARfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:35:47 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18343 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732096AbgJARfq (ORCPT
+        id S1732926AbgJARdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732876AbgJARdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:35:46 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7613650003>; Thu, 01 Oct 2020 10:35:33 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 17:35:44 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 1 Oct 2020 17:35:39 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v3 13/13] arm64: tegra: Audio graph sound card for Jetson Nano and TX1
-Date:   Thu, 1 Oct 2020 23:03:07 +0530
-Message-ID: <1601573587-15288-14-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+        Thu, 1 Oct 2020 13:33:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273A5C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:33:35 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so6758422wrx.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RyvBCHeBiWREspyplqvYLjTu6txMmCKxwBHGAY8/C40=;
+        b=ISKMXrHzPpXTl6YH2OnZSzENPkot5q/TU0fdM+lM7cEzORvY2csaeJv0USOcQ18qxg
+         4gHudrdypoKEcHzgjxCMdPx0OjtnA/mwWlWA9odpTjHKy8i9KvkBQCnMa2p3niq83pgV
+         tLdphnAJdBcirwAUcmQObo+rP2ol79CVlm4AbVX3awXXvk16lEMQfEbXfs2Xtrggo3Tr
+         6QA/N8S2wM/RoWIbOcjQ0q2biItuGoSHmqJ+qy9R7elOfPvBh/FMilibsC5bAWC/g7DL
+         CEG1smLGq//pYv5uPxKJmfP/yrp8eFMbgPY8mes0LDIyZsMpTtK12DtZlsq6gHxFQimU
+         MVtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RyvBCHeBiWREspyplqvYLjTu6txMmCKxwBHGAY8/C40=;
+        b=uTMs6FZlPW54Pubev21my1rInGn+QYgrPHRWkZmj4VfLZFal7far33aKNbC3k+TZm7
+         Iqma+outDz9YOEpJZmmSDmBNF1WWS3l4DIQEw7kBMSmbonCYsYQ6M1rO7+NQJLQEQ73n
+         cqWd8gT38Pg+WW3yH7iL+53vT3QGavFfMplDP3zWDi88E8N1RF00CMe2LdPtFxfmZ5qC
+         r3SLo+Yg1ZomIuJRL/u3AVPop7azrL4DnU3KS27QkDSNNI1aZ1JsbMbaiQfj0h9bqlFP
+         /h94PldNnFjDGhIgVNv3YV5vcMggE4D5eB9MnIoLsFh6F025gjaCNUUDdfZO+dP+tv7h
+         p1Lw==
+X-Gm-Message-State: AOAM532D++vnmzmzcYDz7LLxpSJxPMzSquK8XIMfRw5UnYkRteIT8AJm
+        1V/p1Ijl7biBY8MZXnB3r0gVwA==
+X-Google-Smtp-Source: ABdhPJyKBp6vSfk3WnfQaYYcClLpeCrmO8iYzQVF1oz9m7sTbW8cz5XqdtrqY4Lz27dwRrvMvQDMZQ==
+X-Received: by 2002:adf:9504:: with SMTP id 4mr10606938wrs.27.1601573613686;
+        Thu, 01 Oct 2020 10:33:33 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id k4sm10446478wrx.51.2020.10.01.10.33.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:33:32 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:33:26 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/39] kasan: define KASAN_GRANULE_PAGE
+Message-ID: <20201001173326.GG4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <92a351d2bc4b1235a772f343db06bedf69a3cec9.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601573733; bh=FVCTJ/LjockOVXWhbR6LZEgg4awLPuvPGT0FAOMXvyE=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=KDVNuZDLJjpNyYXwTVztiqbm6E7/84pyostQnk2+Dc/PixpdG0N1MVZpnY7EusF6j
-         +Wf2mkO6w8nXInPbcL6bAIaAMPBGJuudWhG//8nMA0/dyxyMc91TegPDOorGY3ykPu
-         18VSrgmrjth4IAzPCJJzQQSX1Kr7tDu06G/h8nlT935XmOP49nP6xmKI3NPewOwJiA
-         Y/fNyOjJliyewJ5GMaYdsk6xheCL8tVNFAsw/3vtK05B2suq4xmqfpmkPDg0ioeCX6
-         33hnBMaDulbp+T1XXkrMx5QD+1DzbHRiVZG/9pAdTfzdywGFdKeKb0fIHDuN9Al2Zy
-         Ht27tL339olUw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92a351d2bc4b1235a772f343db06bedf69a3cec9.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for audio-graph based sound card on Jetson-Nano and
-Jetson-TX1. Depending on the platform, required I/O interfaces are
-enabled.
+On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
+> Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
+> the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN code
+> to simplify it.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
- * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
- * Jetson-TX1: Enable all I2S and DMIC interfaces.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 219 +++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 124 ++++++++++++
- 2 files changed, 343 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 4c9c2a0..1233d67 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -3,6 +3,7 @@
- 
- #include "tegra210-p2180.dtsi"
- #include "tegra210-p2597.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson TX1 Developer Kit";
-@@ -127,4 +128,222 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s1_port>, <&xbar_i2s2_port>, <&xbar_i2s3_port>,
-+		       <&xbar_i2s4_port>, <&xbar_i2s5_port>, <&xbar_dmic1_port>,
-+		       <&xbar_dmic2_port>, <&xbar_dmic3_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>,
-+		       <&i2s5_port>, <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
-+
-+		label = "jetson-tx1-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s1_port: port@a {
-+			reg = <0xa>;
-+			xbar_i2s1_ep: endpoint {
-+				remote-endpoint = <&i2s1_cif_ep>;
-+			};
-+		};
-+		xbar_i2s2_port: port@b {
-+			reg = <0xb>;
-+			xbar_i2s2_ep: endpoint {
-+				remote-endpoint = <&i2s2_cif_ep>;
-+			};
-+		};
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_i2s5_port: port@e {
-+			reg = <0xe>;
-+			xbar_i2s5_ep: endpoint {
-+				remote-endpoint = <&i2s5_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+		xbar_dmic3_port: port@11 {
-+			reg = <0x11>;
-+			xbar_dmic3_ep: endpoint {
-+				remote-endpoint = <&dmic3_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s1 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s1_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s1_ep>;
-+		};
-+	};
-+
-+	i2s1_port: port@1 {
-+		i2s1_dap: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s2 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s2_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s2_ep>;
-+		};
-+	};
-+
-+	i2s2_port: port@1 {
-+		i2s2_dap: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s3_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s3_ep>;
-+		};
-+	};
-+
-+	i2s3_port: port@1 {
-+		i2s3_dap_ep: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s4_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s4_ep>;
-+		};
-+	};
-+
-+	i2s4_port: port@1 {
-+		i2s4_dap: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s5 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s5_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s5_ep>;
-+		};
-+	};
-+
-+	i2s5_port: port@1 {
-+		i2s5_dap: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic1_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_dmic1_ep>;
-+		};
-+	};
-+
-+	dmic1_port: port@1 {
-+		dmic1_dap: endpoint {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic2_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_dmic2_ep>;
-+		};
-+	};
-+
-+	dmic2_port: port@1 {
-+		dmic2_dap: endpoint {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic3 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic3_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_dmic3_ep>;
-+		};
-+	};
-+
-+	dmic3_port: port@1 {
-+		dmic3_dap: endpoint {
-+			/* Placeholder for external Codec */
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 859241d..fcce8eed 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -6,6 +6,7 @@
- #include <dt-bindings/mfd/max77620.h>
- 
- #include "tegra210.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson Nano Developer Kit";
-@@ -870,4 +871,127 @@
- 
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s3_port>, <&xbar_i2s4_port>,
-+		       <&xbar_dmic1_port>, <&xbar_dmic2_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s3_port>, <&i2s4_port>,
-+		       <&dmic1_port>, <&dmic2_port>;
-+
-+		label = "jetson-nano-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s3_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s3_ep>;
-+		};
-+	};
-+
-+	i2s3_port: port@1 {
-+		i2s3_dap_ep: endpoint {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	port@0 {
-+		i2s4_cif_ep: endpoint {
-+			remote-endpoint = <&xbar_i2s4_ep>;
-+		};
-+	};
-+
-+	i2s4_port: port@1 {
-+		i2s4_dap: endpoint@0 {
-+			dai-format = "i2s";
-+
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic1_cif_ep: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic1_ep>;
-+		};
-+	};
-+
-+	dmic1_port: port@1 {
-+		dmic1_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	port@0 {
-+		dmic2_cif_ep: endpoint@0 {
-+			remote-endpoint = <&xbar_dmic2_ep>;
-+		};
-+	};
-+
-+	dmic2_port: port@1 {
-+		dmic2_dap: endpoint@0 {
-+			/* Placeholder for external Codec */
-+		};
-+	};
- };
--- 
-2.7.4
-
+> ---
+> Change-Id: I0b627b24187d06c8b9bb2f1d04d94b3d06945e73
+> ---
+>  mm/kasan/init.c   | 10 ++++------
+>  mm/kasan/kasan.h  |  1 +
+>  mm/kasan/shadow.c | 16 +++++++---------
+>  3 files changed, 12 insertions(+), 15 deletions(-)
+> 
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index 1a71eaa8c5f9..26b2663b3a42 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -441,9 +441,8 @@ void kasan_remove_zero_shadow(void *start, unsigned long size)
+>  	addr = (unsigned long)kasan_mem_to_shadow(start);
+>  	end = addr + (size >> KASAN_SHADOW_SCALE_SHIFT);
+>  
+> -	if (WARN_ON((unsigned long)start %
+> -			(KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
+> -	    WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
+> +	if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
+> +	    WARN_ON(size % KASAN_GRANULE_PAGE))
+>  		return;
+>  
+>  	for (; addr < end; addr = next) {
+> @@ -476,9 +475,8 @@ int kasan_add_zero_shadow(void *start, unsigned long size)
+>  	shadow_start = kasan_mem_to_shadow(start);
+>  	shadow_end = shadow_start + (size >> KASAN_SHADOW_SCALE_SHIFT);
+>  
+> -	if (WARN_ON((unsigned long)start %
+> -			(KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
+> -	    WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
+> +	if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
+> +	    WARN_ON(size % KASAN_GRANULE_PAGE))
+>  		return -EINVAL;
+>  
+>  	ret = kasan_populate_early_shadow(shadow_start, shadow_end);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index c31e2c739301..1865bb92d47a 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -7,6 +7,7 @@
+>  
+>  #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
+>  #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
+> +#define KASAN_GRANULE_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
+>  
+>  #define KASAN_TAG_KERNEL	0xFF /* native kernel pointers tag */
+>  #define KASAN_TAG_INVALID	0xFE /* inaccessible memory tag */
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index ca0cc4c31454..1fadd4930d54 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -161,7 +161,7 @@ static int __meminit kasan_mem_notifier(struct notifier_block *nb,
+>  	shadow_end = shadow_start + shadow_size;
+>  
+>  	if (WARN_ON(mem_data->nr_pages % KASAN_GRANULE_SIZE) ||
+> -		WARN_ON(start_kaddr % (KASAN_GRANULE_SIZE << PAGE_SHIFT)))
+> +		WARN_ON(start_kaddr % KASAN_GRANULE_PAGE))
+>  		return NOTIFY_BAD;
+>  
+>  	switch (action) {
+> @@ -432,22 +432,20 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
+>  	unsigned long region_start, region_end;
+>  	unsigned long size;
+>  
+> -	region_start = ALIGN(start, PAGE_SIZE * KASAN_GRANULE_SIZE);
+> -	region_end = ALIGN_DOWN(end, PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +	region_start = ALIGN(start, KASAN_GRANULE_PAGE);
+> +	region_end = ALIGN_DOWN(end, KASAN_GRANULE_PAGE);
+>  
+> -	free_region_start = ALIGN(free_region_start,
+> -				  PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +	free_region_start = ALIGN(free_region_start, KASAN_GRANULE_PAGE);
+>  
+>  	if (start != region_start &&
+>  	    free_region_start < region_start)
+> -		region_start -= PAGE_SIZE * KASAN_GRANULE_SIZE;
+> +		region_start -= KASAN_GRANULE_PAGE;
+>  
+> -	free_region_end = ALIGN_DOWN(free_region_end,
+> -				     PAGE_SIZE * KASAN_GRANULE_SIZE);
+> +	free_region_end = ALIGN_DOWN(free_region_end, KASAN_GRANULE_PAGE);
+>  
+>  	if (end != region_end &&
+>  	    free_region_end > region_end)
+> -		region_end += PAGE_SIZE * KASAN_GRANULE_SIZE;
+> +		region_end += KASAN_GRANULE_PAGE;
+>  
+>  	shadow_start = kasan_mem_to_shadow((void *)region_start);
+>  	shadow_end = kasan_mem_to_shadow((void *)region_end);
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
