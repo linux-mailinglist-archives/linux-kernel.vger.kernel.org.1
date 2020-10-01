@@ -2,179 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C442280A93
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F053D280AB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733117AbgJAWxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgJAWx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:53:28 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465C8C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:53:27 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id f15so100100uaq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KGd9h/uTrr1lS+rBn8mk/6DxPwxgJ3tFvU+26ir+cPY=;
-        b=oITKcHNPNJCFU4MQL4YvJ1KZUIJUUkPsQk4Y9ZE7JujtgnXO6B6L9MXdjZOmNi67PA
-         9Pd2tZf7EaGrHDoxB8dLqlb0dO4DJxalr5jOhkEVmmTDDfWKL8ILCCp5H8OfF3o4UZEs
-         ENr8vY8wKh2oRTvCEoQ2VGnfxQQXT8lHxD00A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KGd9h/uTrr1lS+rBn8mk/6DxPwxgJ3tFvU+26ir+cPY=;
-        b=uOcVgiUyVliJEGb2INVPJAxtpBJXDlR6SMdqVJMHiuyRspIDV9eIOP/gU6g+3DuVuS
-         hmkKb/R1J1W7bg+SXIIOlDxFdEjk/MEwIaB59WHtHvYskQYqXhL7lKXJiK3WhEjF0/cN
-         r/bQvsbBgYopCuRC7dZx4birFqoqQ1ttmWvylPwQMM/dKdUEFqBcu8rg51kxueFNfXja
-         OpSV4/ODvU5iPvEUglBFcI3MGMSvq+vq0ZvPuNdVyS2q8oUnYZI434l43tu9EvXtrbFl
-         J5A09+wkf70zFoxfKn5F7I9TNVrYag+5oAP2T7Gsrxbj/U/khauM+H7MszDx+qNhli8r
-         5jqg==
-X-Gm-Message-State: AOAM532JK9oJtWgxPnVJ1UhEqc6Ic7XATBb9brL0LVnAIfNafK3W1qdp
-        1+9SVCp6EZ5T69RT/LUP/JwFeXsWko8gNA==
-X-Google-Smtp-Source: ABdhPJx1cAfEeh2vwcKbecEilpF/2MdWzDhsSwvHfAGQSxCe8jkZh71hXKVK6EuaFJtV18LoBMwDEw==
-X-Received: by 2002:ab0:1e3:: with SMTP id 90mr3114949ual.58.1601592805742;
-        Thu, 01 Oct 2020 15:53:25 -0700 (PDT)
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
-        by smtp.gmail.com with ESMTPSA id d83sm436995vsc.21.2020.10.01.15.53.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 15:53:24 -0700 (PDT)
-Received: by mail-vk1-f175.google.com with SMTP id q124so89349vkb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:53:24 -0700 (PDT)
-X-Received: by 2002:a1f:d986:: with SMTP id q128mr6981367vkg.7.1601592804151;
- Thu, 01 Oct 2020 15:53:24 -0700 (PDT)
+        id S1733309AbgJAW77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:59:59 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38207 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733120AbgJAW7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:59:51 -0400
+IronPort-SDR: 34ZgJ1/y6fnww//6M5oiKgLkrN/0qJHQunzM4V/9KD558XF+U1f1e9IgCKHFdhREULWkzGT0iT
+ cfetxGo2is4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="163714844"
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="163714844"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 15:59:46 -0700
+IronPort-SDR: eUvBViyftsQa/0xJxQj4EJlPKRJ8DGtAozX87INObox97mcHiMdB5toNI8i7m6kwTzfAvf3cjF
+ 4PIZBk7XJKMA==
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="514951687"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.209.13.228]) ([10.209.13.228])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 15:59:44 -0700
+Subject: Re: [PATCH v3 01/18] irqchip: Add IMS (Interrupt Message Storage)
+ driver
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        maz@kernel.org, bhelgaas@google.com, alex.williamson@redhat.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, jgg@mellanox.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        dan.j.williams@intel.com, kwankhede@nvidia.com,
+        eric.auger@redhat.com, parav@mellanox.com, rafael@kernel.org,
+        netanelg@mellanox.com, shahafs@mellanox.com,
+        yan.y.zhao@linux.intel.com, pbonzini@redhat.com,
+        samuel.ortiz@intel.com, mona.hossain@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
+ <160021246221.67751.16280230469654363209.stgit@djiang5-desk3.ch.intel.com>
+ <87362zi0nr.fsf@nanos.tec.linutronix.de>
+From:   "Dey, Megha" <megha.dey@intel.com>
+Message-ID: <dd1c34c5-e2c0-25fc-b668-a5bbb7869397@intel.com>
+Date:   Thu, 1 Oct 2020 15:59:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200926165625.11660-1-manivannan.sadhasivam@linaro.org> <20200928.155603.134441435973191115.davem@davemloft.net>
-In-Reply-To: <20200928.155603.134441435973191115.davem@davemloft.net>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 1 Oct 2020 15:53:12 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VZ8QEP7MU8M9G5odLs+A0RAHfKR5bUJh2n6my7JRtaVg@mail.gmail.com>
-Message-ID: <CAD=FV=VZ8QEP7MU8M9G5odLs+A0RAHfKR5bUJh2n6my7JRtaVg@mail.gmail.com>
-Subject: Re: [PATCH] net: qrtr: ns: Protect radix_tree_deref_slot() using rcu
- read locks
-To:     David Miller <davem@davemloft.net>
-Cc:     manivannan.sadhasivam@linaro.org, Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87362zi0nr.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Thomas,
 
-On Mon, Sep 28, 2020 at 4:15 PM David Miller <davem@davemloft.net> wrote:
+On 9/30/2020 11:23 AM, Thomas Gleixner wrote:
+> On Tue, Sep 15 2020 at 16:27, Dave Jiang wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> +config IMS_MSI_ARRAY
+>> +	bool "IMS Interrupt Message Storm MSI controller for device memory storage arrays"
+> Hehe, you missed a Message Storm :)
+i will change this in the next version
+>> +	depends on PCI
+>> +	select IMS_MSI
+>> +	select GENERIC_MSI_IRQ_DOMAIN
+>> +	help
+>> +	  Support for IMS Interrupt Message Storm MSI controller
+> and another one.
+ok :)
 >
-> From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Date: Sat, 26 Sep 2020 22:26:25 +0530
+>> +	  with IMS slot storage in a slot array in device memory
+>> +
+>> +static void ims_array_mask_irq(struct irq_data *data)
+>> +{
+>> +	struct msi_desc *desc = irq_data_get_msi_desc(data);
+>> +	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
+>> +	u32 __iomem *ctrl = &slot->ctrl;
+>> +
+>> +	iowrite32(ioread32(ctrl) | IMS_VECTOR_CTRL_MASK, ctrl);
+>> +	ioread32(ctrl); /* Flush write to device */
+> Bah, I fundamentaly hate tail comments. They are a distraction and
+> disturb the reading flow. Put it above the ioread32() please.
+Will do.
 >
-> > The rcu read locks are needed to avoid potential race condition while
-> > dereferencing radix tree from multiple threads. The issue was identified
-> > by syzbot. Below is the crash report:
->  ...
-> > Fixes: 0c2204a4ad71 ("net: qrtr: Migrate nameservice to kernel from userspace")
-> > Reported-and-tested-by: syzbot+0f84f6eed90503da72fc@syzkaller.appspotmail.com
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>> +static void ims_array_unmask_irq(struct irq_data *data)
+>> +{
+>> +	struct msi_desc *desc = irq_data_get_msi_desc(data);
+>> +	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
+>> +	u32 __iomem *ctrl = &slot->ctrl;
+>> +
+>> +	iowrite32(ioread32(ctrl) & ~IMS_VECTOR_CTRL_MASK, ctrl);
+> Why is this one not flushed?
+I will add it.
 >
-> Applied and queued up for -stable, thank you.
+>> +}
+>> +
+>> +static void ims_array_write_msi_msg(struct irq_data *data, struct msi_msg *msg)
+>> +{
+>> +	struct msi_desc *desc = irq_data_get_msi_desc(data);
+>> +	struct ims_slot __iomem *slot = desc->device_msi.priv_iomem;
+>> +
+>> +	iowrite32(msg->address_lo, &slot->address_lo);
+>> +	iowrite32(msg->address_hi, &slot->address_hi);
+>> +	iowrite32(msg->data, &slot->data);
+>> +	ioread32(slot);
+> Yuck? slot points to the struct and just because ioread32() accepts a
+> void pointer does not make it any more readable.
+hmm ok , will change this.
+>
+>> +static void ims_array_reset_slot(struct ims_slot __iomem *slot)
+>> +{
+>> +	iowrite32(0, &slot->address_lo);
+>> +	iowrite32(0, &slot->address_hi);
+>> +	iowrite32(0, &slot->data);
+>> +	iowrite32(0, &slot->ctrl);
+> Flush?
 
-The cure is worse than the disease.  I tested by picking back to a
-5.4-based kernel and got this crash.  I expect the crash would also be
-present on mainline:
+ok!
 
- BUG: sleeping function called from invalid context at net/core/sock.c:3000
- in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 7, name: kworker/u16:0
- 3 locks held by kworker/u16:0/7:
-  #0: ffffff81b65a7b28 ((wq_completion)qrtr_ns_handler){+.+.}, at:
-process_one_work+0x1bc/0x614
-  #1: ffffff81b6edfd58 ((work_completion)(&qrtr_ns.work)){+.+.}, at:
-process_one_work+0x1e4/0x614
-  #2: ffffffd01144c328 (rcu_read_lock){....}, at: rcu_lock_acquire+0x8/0x38
- CPU: 6 PID: 7 Comm: kworker/u16:0 Not tainted 5.4.68 #33
- Hardware name: Google Lazor (rev0) with LTE (DT)
- Workqueue: qrtr_ns_handler qrtr_ns_worker
- Call trace:
-  dump_backtrace+0x0/0x158
-  show_stack+0x20/0x2c
-  dump_stack+0xdc/0x180
-  ___might_sleep+0x1c0/0x1d0
-  __might_sleep+0x50/0x88
-  lock_sock_nested+0x34/0x94
-  qrtr_sendmsg+0x7c/0x260
-  sock_sendmsg+0x44/0x5c
-  kernel_sendmsg+0x50/0x64
-  lookup_notify+0xa8/0x118
-  qrtr_ns_worker+0x8d8/0x1050
-  process_one_work+0x338/0x614
-  worker_thread+0x29c/0x46c
-  kthread+0x150/0x160
-  ret_from_fork+0x10/0x18
+-Megha
 
-I'll give the stack crawl from kgdb too since inlining makes things
-less obvious with the above...
-
-(gdb) bt
-#0  arch_kgdb_breakpoint ()
-    at .../arch/arm64/include/asm/kgdb.h:21
-#1  kgdb_breakpoint ()
-    at .../kernel/debug/debug_core.c:1183
-#2  0xffffffd010131058 in ___might_sleep (
-    file=file@entry=0xffffffd010efec42 "net/core/sock.c",
-    line=line@entry=3000, preempt_offset=preempt_offset@entry=0)
-    at .../kernel/sched/core.c:7994
-#3  0xffffffd010130ee0 in __might_sleep (
-    file=0xffffffd010efec42 "net/core/sock.c", line=3000,
-    preempt_offset=0)
-    at .../kernel/sched/core.c:7965
-#4  0xffffffd01094d1c8 in lock_sock_nested (
-    sk=sk@entry=0xffffff8147e457c0, subclass=0)
-    at .../net/core/sock.c:3000
-#5  0xffffffd010b26028 in lock_sock (sk=0xffffff8147e457c0)
-    at .../include/net/sock.h:1536
-#6  qrtr_sendmsg (sock=0xffffff8148c4b240, msg=0xffffff81422afab8,
-    len=20)
-    at .../net/qrtr/qrtr.c:891
-#7  0xffffffd01093f8f4 in sock_sendmsg_nosec (
-    sock=0xffffff8148c4b240, msg=0xffffff81422afab8)
-    at .../net/socket.c:638
-#8  sock_sendmsg (sock=sock@entry=0xffffff8148c4b240,
-    msg=msg@entry=0xffffff81422afab8)
-    at .../net/socket.c:658
-#9  0xffffffd01093f95c in kernel_sendmsg (sock=0x1,
-    msg=msg@entry=0xffffff81422afab8, vec=<optimized out>,
-    vec@entry=0xffffff81422afaa8, num=<optimized out>, num@entry=1,
-    size=<optimized out>, size@entry=20)
-    at .../net/socket.c:678
-#10 0xffffffd010b28be0 in service_announce_new (
-    dest=dest@entry=0xffffff81422afc20,
-    srv=srv@entry=0xffffff81370f6380)
-    at .../net/qrtr/ns.c:127
-#11 0xffffffd010b279f4 in announce_servers (sq=0xffffff81422afc20)
-    at .../net/qrtr/ns.c:207
-#12 ctrl_cmd_hello (sq=0xffffff81422afc20)
-    at .../net/qrtr/ns.c:328
-#13 qrtr_ns_worker (work=<optimized out>)
-    at .../net/qrtr/ns.c:661
-#14 0xffffffd010119a94 in process_one_work (
-    worker=worker@entry=0xffffff8142267900,
-    work=0xffffffd0128ddaf8 <qrtr_ns+48>)
-    at .../kernel/workqueue.c:2272
-#15 0xffffffd01011a16c in worker_thread (
-    __worker=__worker@entry=0xffffff8142267900)
-    at .../kernel/workqueue.c:2418
-#16 0xffffffd01011fb78 in kthread (_create=0xffffff8142269200)
-    at .../kernel/kthread.c:268
-#17 0xffffffd01008645c in ret_from_fork ()
-    at .../arch/arm64/kernel/entry.S:1169
-
-
--Doug
+>
+> Thanks,
+>
+>          tglx
