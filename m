@@ -2,182 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB7427F90D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D9D27F90F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725934AbgJAFcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAFcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:32:00 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14157C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:32:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l15so1411021wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eXLNt1HM/rpSQJlqYVshAKj+ovYp4BRi6qSvoua5+XU=;
-        b=CQz2x6FdUV3I2nS3AU1vSN4zyF/eEjw2A6KvOYIidHB3dKZJ/9DN/oglyI0aL8TkS+
-         fSsYh0SgJD9kK2xlEzIMW7CTbVnxEsan54EWAXU7v52j2go9ikr7xuDEjHrK+188VIUZ
-         sX2KF5W7iiCs7JGrtFE8lJsNDbMGvweF6mrHlD2nI+DNSqY6ZEjMp413vGcsTLGY2Ho0
-         Med7Rer7awVE8tLpmChm4yFD+pW8F86tl5lN9+yjDWulwOSOmqLC2ZLrXKDlo01cliIl
-         hmTe9N+lAloqDOnfCzEen4EKQS0jc3l6rqLGiFkaH9ZlPba6O+Wv52h0+m8Yshj6MR8g
-         8yOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eXLNt1HM/rpSQJlqYVshAKj+ovYp4BRi6qSvoua5+XU=;
-        b=f35YS90OobFqLtD8JcjhuBeYcktzHUH6iZ6Tyfdqf8wpcxWkQ2Ac1m06qLaUSjmJRy
-         fh4/i9Q78GZqaswEMV2B0lxRPs/qiUCjAExPeL73VPVjX4LcqSGkqwsYWzYJGplVrktx
-         T9KoUZ38hjTQAwdTdPOwv9DzKA83iggUOew2Hkr3XB3mRWfa8HRvV1VygLRWBoGjrV19
-         yYZjmdh1komzyq2/ZmAqmUvVmD3Rqu9/LRPuHa6FLFVsBMLo7aBHVUpKLUQqwuvXt+AC
-         i3rnxHGcoq4n9nFPVrVomf6Md/ZNG9SFVHWhF5ugclt/U15lAswfDWh9rVav62jnYD5k
-         cGFQ==
-X-Gm-Message-State: AOAM531HresSzwjuV6PpiCk8vr9D6+yiAin7XEAkZaTkcWCfcyguGkvk
-        cJMKGHVjK5OuVJdqIXTmnBHV8xTnke8ueqEeDumtjQ==
-X-Google-Smtp-Source: ABdhPJz+54sywrWA6JpnPPhYnZmqjOvWpP1fufZassx2CvFe9sPlwXXB1I6BNRIh3ojYOez/I6jaWWWCofxGmJV1Wqw=
-X-Received: by 2002:a7b:cd08:: with SMTP id f8mr6385669wmj.124.1601530318496;
- Wed, 30 Sep 2020 22:31:58 -0700 (PDT)
+        id S1729645AbgJAFcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:32:45 -0400
+Received: from verein.lst.de ([213.95.11.211]:47469 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAFcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 01:32:45 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7EEE668B02; Thu,  1 Oct 2020 07:32:42 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 07:32:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] drm/ingenic: Update code to mmap GEM buffers cached
+Message-ID: <20201001053242.GA19914@lst.de>
+References: <20200930165212.GA8833@lst.de> <20200930171644.299363-2-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-9-jolsa@kernel.org>
-In-Reply-To: <20200930171512.3986425-9-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 30 Sep 2020 22:31:47 -0700
-Message-ID: <CAP-5=fV77-=o4GkX4eGo83TMKjAWQskvLukfgksyjRyey3d9ag@mail.gmail.com>
-Subject: Re: [PATCH 8/9] perf tools: Add size to struct perf_record_header_build_id
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930171644.299363-2-paul@crapouillou.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> We do not store size with build ids in perf data,
-> but there's enough space to do it. Adding misc bit
-> PERF_RECORD_MISC_BUILD_ID_SIZE to mark build id event
-> with size.
->
-> With this fix the dso with md5 build id will have correct
-> build id data and will be usable for debuginfod processing
-> if needed (coming in following patches).
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-
-Acked-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-Ian
-
+On Wed, Sep 30, 2020 at 07:16:43PM +0200, Paul Cercueil wrote:
+> The DMA API changed at the same time commit 37054fc81443 ("gpu/drm:
+> ingenic: Add option to mmap GEM buffers cached") was added. Rework the
+> code to work with the new DMA API.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  tools/lib/perf/include/perf/event.h | 12 +++++++++++-
->  tools/perf/util/build-id.c          |  8 +++++---
->  tools/perf/util/header.c            | 10 +++++++---
->  3 files changed, 23 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-> index a6dbba6b9073..988c539bedb6 100644
-> --- a/tools/lib/perf/include/perf/event.h
-> +++ b/tools/lib/perf/include/perf/event.h
-> @@ -201,10 +201,20 @@ struct perf_record_header_tracing_data {
->         __u32                    size;
->  };
->
-> +#define PERF_RECORD_MISC_BUILD_ID_SIZE (1 << 15)
-> +
->  struct perf_record_header_build_id {
->         struct perf_event_header header;
->         pid_t                    pid;
-> -       __u8                     build_id[24];
-> +       union {
-> +               __u8             build_id[24];
-> +               struct {
-> +                       __u8     data[20];
-> +                       __u8     size;
-> +                       __u8     reserved1__;
-> +                       __u16    reserved2__;
-> +               };
-> +       };
->         char                     filename[];
->  };
->
-> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> index b5648735f01f..8763772f1095 100644
-> --- a/tools/perf/util/build-id.c
-> +++ b/tools/perf/util/build-id.c
-> @@ -296,7 +296,7 @@ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
->                         continue;               \
->                 else
->
-> -static int write_buildid(const char *name, size_t name_len, u8 *build_id,
-> +static int write_buildid(const char *name, size_t name_len, struct build_id *bid,
->                          pid_t pid, u16 misc, struct feat_fd *fd)
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 24 +++++++----------------
+>  1 file changed, 7 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 0225dc1f5eb8..07a1da7266e4 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -526,12 +526,10 @@ void ingenic_drm_sync_data(struct device *dev,
+>  			   struct drm_plane_state *state)
 >  {
->         int err;
-> @@ -307,7 +307,9 @@ static int write_buildid(const char *name, size_t name_len, u8 *build_id,
->         len = PERF_ALIGN(len, NAME_ALIGN);
->
->         memset(&b, 0, sizeof(b));
-> -       memcpy(&b.build_id, build_id, BUILD_ID_SIZE);
-> +       memcpy(&b.data, bid->data, bid->size);
-> +       b.size = (u8) bid->size;
-> +       misc |= PERF_RECORD_MISC_BUILD_ID_SIZE;
->         b.pid = pid;
->         b.header.misc = misc;
->         b.header.size = sizeof(b) + len;
-> @@ -354,7 +356,7 @@ static int machine__write_buildid_table(struct machine *machine,
->                 in_kernel = pos->kernel ||
->                                 is_kernel_module(name,
->                                         PERF_RECORD_MISC_CPUMODE_UNKNOWN);
-> -               err = write_buildid(name, name_len, pos->bid.data, machine->pid,
-> +               err = write_buildid(name, name_len, &pos->bid, machine->pid,
->                                     in_kernel ? kmisc : umisc, fd);
->                 if (err)
->                         break;
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 21243adbb9fd..8da3886f10a8 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -2083,8 +2083,12 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
->         if (dso != NULL) {
->                 char sbuild_id[SBUILD_ID_SIZE];
->                 struct build_id bid;
-> +               size_t size = BUILD_ID_SIZE;
->
-> -               build_id__init(&bid, bev->build_id, BUILD_ID_SIZE);
-> +               if (bev->header.misc & PERF_RECORD_MISC_BUILD_ID_SIZE)
-> +                       size = bev->size;
-> +
-> +               build_id__init(&bid, bev->data, size);
->                 dso__set_build_id(dso, &bid);
->
->                 if (dso_space != DSO_SPACE__USER) {
-> @@ -2098,8 +2102,8 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
->                 }
->
->                 build_id__sprintf(&dso->bid, sbuild_id);
-> -               pr_debug("build id event received for %s: %s\n",
-> -                        dso->long_name, sbuild_id);
-> +               pr_debug("build id event received for %s: %s [%lu]\n",
-> +                        dso->long_name, sbuild_id, size);
->                 dso__put(dso);
->         }
->
-> --
-> 2.26.2
->
+>  	const struct drm_format_info *finfo = state->fb->format;
+> -	struct ingenic_drm *priv = dev_get_drvdata(dev);
+>  	struct drm_atomic_helper_damage_iter iter;
+>  	unsigned int offset, i;
+>  	struct drm_rect clip;
+>  	dma_addr_t paddr;
+> -	void *addr;
+>  
+>  	if (!ingenic_drm_cached_gem_buf)
+>  		return;
+> @@ -541,12 +539,11 @@ void ingenic_drm_sync_data(struct device *dev,
+>  	drm_atomic_for_each_plane_damage(&iter, &clip) {
+>  		for (i = 0; i < finfo->num_planes; i++) {
+>  			paddr = drm_fb_cma_get_gem_addr(state->fb, state, i);
+> -			addr = phys_to_virt(paddr);
+
+No on the old code: drm_fb_cma_get_gem_addr returns a dma_addr_t, so
+this was already pretty broken..
+
+> @@ -766,14 +763,6 @@ static int ingenic_drm_gem_mmap(struct drm_gem_object *obj,
+>  				struct vm_area_struct *vma)
+>  {
+>  	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(obj);
+>  
+>  	/*
+>  	 * Clear the VM_PFNMAP flag that was set by drm_gem_mmap(), and set the
+> @@ -784,12 +773,13 @@ static int ingenic_drm_gem_mmap(struct drm_gem_object *obj,
+>  	vma->vm_pgoff = 0;
+>  	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>  
+> +	if (!ingenic_drm_cached_gem_buf)
+> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+>  
+> +	return remap_pfn_range(vma, vma->vm_start,
+> +			       cma_obj->paddr >> PAGE_SHIFT,
+> +			       vma->vm_end - vma->vm_start,
+> +			       vma->vm_page_prot);
+
+both ->vaddr and ->paddr come from dma_alloc_wc as far as I can tell,
+and despite the confusing name ->paddr is a dma_addr_t.  So this can't
+work at all.  If you allocate memory using dma_alloc_wc you need to
+map it using dma_alloc_wc.
