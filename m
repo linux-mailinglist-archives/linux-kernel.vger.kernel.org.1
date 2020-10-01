@@ -2,274 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F9627FBE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5BA27FBD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731740AbgJAIuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:50:39 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:61528 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgJAIuj (ORCPT
+        id S1731685AbgJAIq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:46:29 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:65514 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725894AbgJAIq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:50:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601542237; x=1633078237;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=nHvLqxWV1lW1hlcibBNr2ybo5+O9dD0f5EBspMTPnWQ=;
-  b=ExO2jdqa9qVaK5rlz1lXTKWOMtFnPNbnF71AguF2cBCeyOcvb9Msxd7k
-   cbT+FTFmqa0g/N0Z8GaxMJJ4tkbbxiqnOZm44G5HcJ8cdqqqS4b3n26LQ
-   OUOqn6MKm+nq3QK7XPxLezdlCDzD2OqFKE+NiFDCcLXE9MAUFD63ku9nd
-   Vto2zkxatX65JnlUQCDU8f425y3jipDNePtbWnmsx3m5qsn99XBR+M0dI
-   GMt+pmscnUBu24DYK+ZKkc5pguHdNABMNnczZKBJenqBCAYSijUWi0wvY
-   5pr0lGYnF37Vmyai8UlDAe8UFJJh3TczQo91GJU2enN5We+rHxGT9aodL
-   Q==;
-IronPort-SDR: Pukc1AfvsCie9oAWSVJr2KBYoFbcl2ofSk6moRimfwoc8ArH/4sKDbeYDJPwgYve9T54Zi2wDW
- VU5OOi31ovfr1EdkgRUDjkQOsXq1MHvdacApZ3zy4zFsoSOHnQ2KiTr68HnsRvB2fDRw2cApF/
- O4CdjY7FpQQaaKNPWkntAsZNDAROslJ0CkRf35jIgvvQTEdw2HumEDr4++uJi/0UTl1c6Z0hUM
- cjhFSE3QBZLiOvvxIn9OPN7HiV5/qXUZtAt6/qtwC6dl+u+EYdq4194Wg+RlA5YXA9M/egweA7
- fWA=
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="91057960"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Oct 2020 01:50:36 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+        Thu, 1 Oct 2020 04:46:29 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0918dUZJ028754;
+        Thu, 1 Oct 2020 04:46:15 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33syg6ad4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Oct 2020 04:46:15 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0918kDwA049569
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 1 Oct 2020 04:46:14 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 1 Oct 2020 01:50:36 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Thu, 1 Oct 2020 01:50:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qf+34J4vyYUWv1vQt7cAwn4XTQXCphEc/UHqMZiIvX6RKe7Fl20pUpN8rk87NNzDGQkpewclKYIOlsUIy09AizApZMr/vE6z00HFENB3l4M0kg5iagcoVrPbTns80/aZZmlV/K0ltAdT4q/vWPHEiKi/9bJhOEOHV3LshbmOw5Df8ec2DAvckQbBVKq780dFQeavogLrs2Phn9gkaQd6GKGvLDbwknjFbLez64+edN5jWWH2HJD7U1BGsnrJC7rKnwBwICnbOp/CgVJqb/thWT8AngAHHnx9dDFR8U+t0+jFJN1647k6wLoRTHAl5bWpgjXt0pgwlp9hwC6WCaEzIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nHvLqxWV1lW1hlcibBNr2ybo5+O9dD0f5EBspMTPnWQ=;
- b=dgzoHLtAkzPmt6K/Tufx6KIrHQpYzw+p/iwlJJwwN53HqyVRJrfdD8nWJpba87vAMF9g+pWUu/GKuYdIybvKfLh6sV/9RYzRHCTYEfYAD/6tBCVnX37bTkTbhLf9rTpEB1V0HwF7VSMSFlHmHBhItRKpFbYwNm75hx8etpeNDhVM3bshsfevkNSZDuVCobcRsSRD4VLtsTOq1Px9vWUe8M+47TPYlgPDLEzZG2GKjeLx0kvQ6XPhTLCwwbi+zeWBXJVtG0QXdOVDELfA0iqtUw1QX/shv1ERYrvUXyjab9pO6hP6cT1RomFJuRB4eq0YV4pQPX61PBq3Lij4Bh/rdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nHvLqxWV1lW1hlcibBNr2ybo5+O9dD0f5EBspMTPnWQ=;
- b=ADCmuwjm2NXY4RGnpiqaY6wmHHOQUB5sT1PBS5pDwIcBN1+KTcc2sGeHymx9kpE3jzSeDEnhV2XbPGh0VXqDrfn77pd9XiqPxiY79OU2gx2soxiflewZZNnYDC9PJcQOIVDttWxLZeHQAYBR+MKFKqRkQ4EpsRK/hG48lgeThfg=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
- by DM6PR11MB2667.namprd11.prod.outlook.com (2603:10b6:5:c1::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Thu, 1 Oct
- 2020 08:50:33 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 08:50:33 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <p.yadav@ti.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v14 14/15] mtd: spi-nor: spansion: add support for Cypress
- Semper flash
-Thread-Topic: [PATCH v14 14/15] mtd: spi-nor: spansion: add support for
- Cypress Semper flash
-Thread-Index: AQHWl83DTXjWYxo3bEmDQEKhOT98Hg==
-Date:   Thu, 1 Oct 2020 08:50:33 +0000
-Message-ID: <1dd3b793-f159-2454-aafa-a0f5706cc581@microchip.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-15-p.yadav@ti.com>
- <b5663e72-b67c-cb2c-e46c-62262a65cd44@microchip.com>
- <20201001084012.wumsndtwe4qeuklt@ti.com>
-In-Reply-To: <20201001084012.wumsndtwe4qeuklt@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.51.157]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f9fbad0f-9c26-44cc-336a-08d865e70f0f
-x-ms-traffictypediagnostic: DM6PR11MB2667:
-x-microsoft-antispam-prvs: <DM6PR11MB2667CAD5AB91739A5F5ABD4CF0300@DM6PR11MB2667.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +k74a6YPAOwhsgNeSaUdFL1M7hGEeZeZHsX/gQKZlP5UHaB9AI+F6neargHyaBJeHF5pVpwy9M2b1HLdEAytLfohzkaMRknqdaXjO+QytJaK4ZyDLZUEXwntnNpNkfZ9QKBfSIPkwSniefgq2o/fIla8rcK3p0ogV3rRjXTRGireF/VWZ1Va3PUJsP5vUU+6LinP1Fdd7J51aqKHXQtjHbbmVOIFBCXIPgFbGWSmtxPNfD+0zrUsJOIZGWIo42I2xBWIhst0p/YJoBTSmL8R4AZAQstP3c0iyFFbK6zOAO7O6sYEM4IdrxNWBNJtz51O2OJyVQ4on67sw8psubHzE3AcA9Kf3nYLbZDFC24LDTFIUa1iUj2n8AsYq/v/++Dt/su/oc+dxAsV9Qt0PLfZeYAnvQJJuyhmhtQSK58K5Ba3g/hGrRR428mYgiRpf9cJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(366004)(39860400002)(31686004)(36756003)(4326008)(5660300002)(8676002)(8936002)(53546011)(186003)(64756008)(26005)(83380400001)(6512007)(6506007)(2616005)(6916009)(316002)(54906003)(31696002)(66556008)(6486002)(478600001)(76116006)(66946007)(71200400001)(86362001)(91956017)(2906002)(66446008)(66476007)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: Zo2/nxvCArWKYeDIBb9NiTftlQsyDHqUBbrblnfqaN4Kg9JFsik8sqwDthvN4sBqCpfOOlIrYiXPRt9L4Obh47tSRqWZG04xd1ZImadvT/vMGPqlCOOWdXlBFrq8CIOy+12LzU6yIDRMfCcRN3nFIdrlR+fuw52LusDMsQHXSiv3d7u4CsQIeGHG/lAC+l0c+1iektT7zJrNNQ0mhS0RPOkMRo0iJIgpA5oxf2pTHEJawQA72LuOoNKxcG7cj/jnN1Veip36S1XerTHQkLJCt463AFPlxCXZXyBv+us9gfqGKOIiXdbksWKNTINwxBGmbzlUAV2RRz3dgqjmhm/ZcaNN6Sp0KJQOKV78T/26AvV/1CPBEvr/ceVltIKzSnA+63ZlVEkNbxwJeNAtYetZTH7hRc0UGX9mWAyw7tb+nrxVBSc/x1xyxxJ0Sbuf+ch0LyOuBNA32x8wJMHbcO0HstJ5lz5iauzX7Ln0CGlZefmiCC+yISXKUJuqkkuwGCvuPIiC0X9AtkrBxe2CGHmwdYU1Ech0Bbtpx7Km8awc2M/g7zWlmnsK83iKtyhGw6/mLIfwipLPtCIW9n2Tuy+RwhBw0r5q+lOxeQoA15Ym9bi+gx0EWpSoDgPpqhgz04ZolBfFiQwGboia0KTDskz4lg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <38ED89CA87691544BE8BE2E49AA64D0E@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ 15.1.1779.2; Thu, 1 Oct 2020 01:46:04 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 1 Oct 2020 01:46:04 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0918k9Nv015441;
+        Thu, 1 Oct 2020 04:46:09 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <michael.hennerich@analog.com>, <lars@metafoo.de>,
+        <robh+dt@kernel.org>, <sboyd@kernel.org>,
+        <mturquette@baylibre.com>, <mdf@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] dt-bindings: clock: adi,axi-clkgen: convert old binding to yaml format
+Date:   Thu, 1 Oct 2020 11:50:35 +0300
+Message-ID: <20201001085035.82938-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f9fbad0f-9c26-44cc-336a-08d865e70f0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 08:50:33.6021
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MoVkh9mAAqSGVHDZ5G8McgFfkKx0doOTbzzzjG+5o2jlDyEnEBOo+yyhs5HoIrqU8vFDN2934mUYGLYh+QWxSG3mRG8XH/Rj56N/d/5+8YM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2667
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_02:2020-10-01,2020-10-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ spamscore=0 bulkscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTAvMS8yMCAxMTo0MCBBTSwgUHJhdHl1c2ggWWFkYXYgd3JvdGU6DQo+IEVYVEVSTkFMIEVN
-QUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtu
-b3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gMDEvMTAvMjAgMDg6MzVBTSwgVHVkb3Iu
-QW1iYXJ1c0BtaWNyb2NoaXAuY29tIHdyb3RlOg0KPj4gT24gOS8zMC8yMCA5OjU3IFBNLCBQcmF0
-eXVzaCBZYWRhdiB3cm90ZToNCj4+PiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtz
-IG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUN
-Cj4+Pg0KPj4+IFRoZSBDeXByZXNzIFNlbXBlciBmbGFzaCBpcyBhbiB4U1BJIGNvbXBsaWFudCBv
-Y3RhbCBEVFIgZmxhc2guIEFkZA0KPj4+IHN1cHBvcnQgZm9yIHVzaW5nIGl0IGluIG9jdGFsIERU
-UiBtb2RlLg0KPj4+DQo+Pj4gVGhlIGZsYXNoIGJ5IGRlZmF1bHQgYm9vdHMgaW4gYSBoeWJyaWQg
-c2VjdG9yIG1vZGUuIEJ1dCB0aGUgc2VjdG9yIG1hcA0KPj4+IHRhYmxlIG9uIHRoZSBwYXJ0IEkg
-aGFkIHdhcyBwcm9ncmFtbWVkIGluY29ycmVjdGx5IGFuZCB0aGUgU01QVCB2YWx1ZXMNCj4+PiBv
-biB0aGUgZmxhc2ggZG9uJ3QgbWF0Y2ggdGhlIHB1YmxpYyBkYXRhc2hlZXQuIFNwZWNpZmljYWxs
-eSwgaW4gc29tZQ0KPj4+IHBsYWNlcyBlcmFzZSB0eXBlIDMgd2FzIHVzZWQgaW5zdGVhZCBvZiA0
-LiBJbiBhZGRpdGlvbiwgdGhlIHJlZ2lvbiBzaXplcw0KPj4+IHdlcmUgaW5jb3JyZWN0IGluIHNv
-bWUgcGxhY2VzLiBTbywgZm9yIHRlc3RpbmcgSSBzZXQgQ0ZSM05bM10gdG8gZW5hYmxlDQo+Pj4g
-dW5pZm9ybSBzZWN0b3Igc2l6ZXMuIFNpbmNlIHRoZSB1bmlmb3JtIHNlY3RvciBtb2RlIGJpdCBp
-cyBhDQo+Pj4gbm9uLXZvbGF0aWxlIGJpdCwgdGhpcyBzZXJpZXMgZG9lcyBub3QgY2hhbmdlIGl0
-IHRvIGF2b2lkIG1ha2luZyBhbnkNCj4+PiBwZXJtYW5lbnQgY2hhbmdlcyB0byB0aGUgZmxhc2gg
-Y29uZmlndXJhdGlvbi4gVGhlIGNvcnJlY3QgZGF0YSB0bw0KPj4+IGltcGxlbWVudCBhIGZpeHVw
-IGlzIG5vdCBhdmFpbGFibGUgcmlnaHQgbm93IGFuZCB3aWxsIGJlIGRvbmUgaW4gYQ0KPj4+IGZv
-bGxvdy11cCBwYXRjaCBpZiBuZWVkZWQuDQo+Pj4NCj4+PiBTaWduZWQtb2ZmLWJ5OiBQcmF0eXVz
-aCBZYWRhdiA8cC55YWRhdkB0aS5jb20+DQo+Pj4gLS0tDQo+Pj4gIGRyaXZlcnMvbXRkL3NwaS1u
-b3Ivc3BhbnNpb24uYyB8IDE2MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4+
-PiAgMSBmaWxlIGNoYW5nZWQsIDE2MCBpbnNlcnRpb25zKCspDQo+Pj4NCj4+PiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9z
-cGFuc2lvbi5jDQo+Pj4gaW5kZXggODQyOWI0YWY5OTlhLi5kYzZiMTRhYmE0MDUgMTAwNjQ0DQo+
-Pj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jDQo+Pj4gKysrIGIvZHJpdmVy
-cy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jDQo+Pj4gQEAgLTgsNiArOCwxNjEgQEANCj4+Pg0KPj4+
-ICAjaW5jbHVkZSAiY29yZS5oIg0KPj4+DQo+Pj4gKyNkZWZpbmUgU1BJTk9SX09QX1JEX0FOWV9S
-RUcgICAgICAgICAgICAgICAgICAgMHg2NSAgICAvKiBSZWFkIGFueSByZWdpc3RlciAqLw0KPj4+
-ICsjZGVmaW5lIFNQSU5PUl9PUF9XUl9BTllfUkVHICAgICAgICAgICAgICAgICAgIDB4NzEgICAg
-LyogV3JpdGUgYW55IHJlZ2lzdGVyICovDQo+Pj4gKyNkZWZpbmUgU1BJTk9SX1JFR19DWVBSRVNT
-X0NGUjJWICAgICAgICAgICAgICAgMHgwMDgwMDAwMw0KPj4+ICsjZGVmaW5lIFNQSU5PUl9SRUdf
-Q1lQUkVTU19DRlIyVl9NRU1MQVRfMTFfMjQgIDB4Yg0KPj4+ICsjZGVmaW5lIFNQSU5PUl9SRUdf
-Q1lQUkVTU19DRlIzViAgICAgICAgICAgICAgIDB4MDA4MDAwMDQNCj4+PiArI2RlZmluZSBTUElO
-T1JfUkVHX0NZUFJFU1NfQ0ZSM1ZfUEdTWiAgICAgICAgICBCSVQoNCkgLyogUGFnZSBzaXplLiAq
-Lw0KPj4+ICsjZGVmaW5lIFNQSU5PUl9SRUdfQ1lQUkVTU19DRlI1ViAgICAgICAgICAgICAgIDB4
-MDA4MDAwMDYNCj4+PiArI2RlZmluZSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNVZfT0NUX0RUUl9F
-TiAgICAweDMNCj4+PiArI2RlZmluZSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNVZfT0NUX0RUUl9E
-UyAgICAwDQo+Pj4gKyNkZWZpbmUgU1BJTk9SX09QX0NZUFJFU1NfUkRfRkFTVCAgICAgICAgICAg
-ICAgMHhlZQ0KPj4+ICsNCj4+PiArLyoqDQo+Pj4gKyAqIHNwaV9ub3JfY3lwcmVzc19vY3RhbF9k
-dHJfZW5hYmxlKCkgLSBFbmFibGUgb2N0YWwgRFRSIG9uIEN5cHJlc3MgZmxhc2hlcy4NCj4+PiAr
-ICogQG5vcjogICAgICAgICAgICAgICBwb2ludGVyIHRvIGEgJ3N0cnVjdCBzcGlfbm9yJw0KPj4+
-ICsgKiBAZW5hYmxlOiAgICAgICAgICAgICAgd2hldGhlciB0byBlbmFibGUgb3IgZGlzYWJsZSBP
-Y3RhbCBEVFINCj4+PiArICoNCj4+PiArICogVGhpcyBhbHNvIHNldHMgdGhlIG1lbW9yeSBhY2Nl
-c3MgbGF0ZW5jeSBjeWNsZXMgdG8gMjQgdG8gYWxsb3cgdGhlIGZsYXNoIHRvDQo+Pj4gKyAqIHJ1
-biBhdCB1cCB0byAyMDBNSHouDQo+Pj4gKyAqDQo+Pj4gKyAqIFJldHVybjogMCBvbiBzdWNjZXNz
-LCAtZXJybm8gb3RoZXJ3aXNlLg0KPj4+ICsgKi8NCj4+PiArc3RhdGljIGludCBzcGlfbm9yX2N5
-cHJlc3Nfb2N0YWxfZHRyX2VuYWJsZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkN
-Cj4+PiArew0KPj4+ICsgICAgICAgc3RydWN0IHNwaV9tZW1fb3Agb3A7DQo+Pj4gKyAgICAgICB1
-OCAqYnVmID0gbm9yLT5ib3VuY2VidWY7DQo+Pj4gKyAgICAgICBpbnQgcmV0Ow0KPj4+ICsNCj4+
-PiArICAgICAgIGlmIChlbmFibGUpIHsNCj4+PiArICAgICAgICAgICAgICAgLyogVXNlIDI0IGR1
-bW15IGN5Y2xlcyBmb3IgbWVtb3J5IGFycmF5IHJlYWRzLiAqLw0KPj4+ICsgICAgICAgICAgICAg
-ICByZXQgPSBzcGlfbm9yX3dyaXRlX2VuYWJsZShub3IpOw0KPj4+ICsgICAgICAgICAgICAgICBp
-ZiAocmV0KQ0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+Pj4gKw0K
-Pj4+ICsgICAgICAgICAgICAgICAqYnVmID0gU1BJTk9SX1JFR19DWVBSRVNTX0NGUjJWX01FTUxB
-VF8xMV8yNDsNCj4+PiArICAgICAgICAgICAgICAgb3AgPSAoc3RydWN0IHNwaV9tZW1fb3ApDQo+
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgU1BJX01FTV9PUChTUElfTUVNX09QX0NNRChTUElO
-T1JfT1BfV1JfQU5ZX1JFRywgMSksDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBTUElfTUVNX09QX0FERFIoMywgU1BJTk9SX1JFR19DWVBSRVNTX0NGUjJWLA0KPj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEpLA0KPj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU1BJX01FTV9PUF9OT19EVU1NWSwN
-Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNQSV9NRU1fT1BfREFUQV9P
-VVQoMSwgYnVmLCAxKSk7DQo+Pj4gKw0KPj4+ICsgICAgICAgICAgICAgICByZXQgPSBzcGlfbWVt
-X2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+Pj4gKyAgICAgICAgICAgICAgIGlmIChyZXQp
-IHsNCj4+PiArICAgICAgICAgICAgICAgICAgICAgICBkZXZfZGJnKG5vci0+ZGV2LA0KPj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImZhaWxlZCB0byBzZXQgZGVmYXVsdCBtZW1v
-cnkgbGF0ZW5jeSB2YWx1ZTogJWRcbiIsDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcmV0KTsNCj4+DQo+PiBXaHkgZG8geW91IGNvbnNpZGVyIHRoZSBtZXNzYWdlIGltcG9y
-dGFudD8gSSdtIGFza2luZyBmb3IgY29uc2lzdGVuY3kNCj4+IHJlYXNvbnMsIGJlbG93IG9uIHRo
-ZSBuZXh0IGV4ZWNfb3AgY2FsbCB0aGVyZSdzIG5vIGRldl9kYmcgbWVzc2FnZS4NCj4+IEkgd291
-bGQgZ2V0IHJpZCBvZiB0aGUgZGV2X2RiZyBlbnRpcmVseSwgdGhlIGVycm9yIGNvZGUgc2hvdWxk
-IGJlIGVub3VnaCwNCj4+IGJ1dCBJIGFncmVlIHRoYXQgdGhpcyBtaWdodCBiZSBqdXN0IGEgcGVy
-c29uYWwgcHJlZmVyZW5jZS4gU28sIGRvIGFzIHlvdQ0KPj4gcHJlZmVyLCBidXQgdHJ5IHRvIGJl
-IGNvbnNpc3RlbnQgYWNyb3NzIHRoZSBjb2RlLg0KPiANCj4gWWVzIGl0IGlzIG1vc3RseSBwZXJz
-b25hbCBwcmVmZXJlbmNlLCBidXQgSSBkb24ndCBtaW5kIGVpdGhlciB3YXkuIEknbGwNCj4gZHJv
-cCB0aGUgZGV2X2RiZygpLg0KPiANCj4+PiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4g
-cmV0Ow0KPj4+ICsgICAgICAgICAgICAgICB9DQo+Pj4gKw0KPj4+ICsgICAgICAgICAgICAgICBy
-ZXQgPSBzcGlfbm9yX3dhaXRfdGlsbF9yZWFkeShub3IpOw0KPj4+ICsgICAgICAgICAgICAgICBp
-ZiAocmV0KQ0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+Pj4gKw0K
-Pj4+ICsgICAgICAgICAgICAgICBub3ItPnJlYWRfZHVtbXkgPSAyNDsNCj4+PiArICAgICAgIH0N
-Cj4+PiArDQo+Pj4gKyAgICAgICAvKiBTZXQvdW5zZXQgdGhlIG9jdGFsIGFuZCBEVFIgZW5hYmxl
-IGJpdHMuICovDQo+Pj4gKyAgICAgICByZXQgPSBzcGlfbm9yX3dyaXRlX2VuYWJsZShub3IpOw0K
-Pj4+ICsgICAgICAgaWYgKHJldCkNCj4+PiArICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4+
-PiArDQo+Pj4gKyAgICAgICBpZiAoZW5hYmxlKQ0KPj4+ICsgICAgICAgICAgICAgICAqYnVmID0g
-U1BJTk9SX1JFR19DWVBSRVNTX0NGUjVWX09DVF9EVFJfRU47DQo+Pj4gKyAgICAgICBlbHNlDQo+
-Pj4gKyAgICAgICAgICAgICAgICpidWYgPSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNVZfT0NUX0RU
-Ul9EUzsNCj4+PiArDQo+Pj4gKyAgICAgICBvcCA9IChzdHJ1Y3Qgc3BpX21lbV9vcCkNCj4+PiAr
-ICAgICAgICAgICAgICAgU1BJX01FTV9PUChTUElfTUVNX09QX0NNRChTUElOT1JfT1BfV1JfQU5Z
-X1JFRywgMSksDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgU1BJX01FTV9PUF9BRERS
-KGVuYWJsZSA/IDMgOiA0LA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNVYsDQo+Pj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIDEpLA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFNQSV9NRU1fT1BfTk9fRFVNTVksDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-U1BJX01FTV9PUF9EQVRBX09VVCgxLCBidWYsIDEpKTsNCj4+PiArDQo+Pj4gKyAgICAgICBpZiAo
-IWVuYWJsZSkNCj4+PiArICAgICAgICAgICAgICAgc3BpX25vcl9zcGltZW1fc2V0dXBfb3Aobm9y
-LCAmb3AsIFNOT1JfUFJPVE9fOF84XzhfRFRSKTsNCj4+PiArDQo+Pj4gKyAgICAgICByZXQgPSBz
-cGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+Pj4gKyAgICAgICBpZiAocmV0KQ0K
-Pj4+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPj4+ICsNCj4+PiArICAgICAgIC8qIEdp
-dmUgc29tZSB0aW1lIGZvciB0aGUgbW9kZSBjaGFuZ2UgdG8gdGFrZSBwbGFjZS4gKi8NCj4+PiAr
-ICAgICAgIHVzbGVlcF9yYW5nZSg0MDAsIDYwMCk7DQo+Pj4gKw0KPj4+ICsgICAgICAgcmV0dXJu
-IDA7DQo+Pj4gK30NCj4+PiArDQo+Pj4gK3N0YXRpYyB2b2lkIHMyOGhzNTEydF9kZWZhdWx0X2lu
-aXQoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4+PiArew0KPj4+ICsgICAgICAgbm9yLT5wYXJhbXMt
-Pm9jdGFsX2R0cl9lbmFibGUgPSBzcGlfbm9yX2N5cHJlc3Nfb2N0YWxfZHRyX2VuYWJsZTsNCj4+
-PiArfQ0KPj4+ICsNCj4+PiArc3RhdGljIHZvaWQgczI4aHM1MTJ0X3Bvc3Rfc2ZkcF9maXh1cChz
-dHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPj4+ICt7DQo+Pj4gKyAgICAgICAvKg0KPj4+ICsgICAgICAg
-ICogT24gb2xkZXIgdmVyc2lvbnMgb2YgdGhlIGZsYXNoIHRoZSB4U1BJIFByb2ZpbGUgMS4wIHRh
-YmxlIGhhcyB0aGUNCj4+PiArICAgICAgICAqIDhELThELThEIEZhc3QgUmVhZCBvcGNvZGUgYXMg
-MHgwMC4gQnV0IGl0IGFjdHVhbGx5IHNob3VsZCBiZSAweEVFLg0KPj4+ICsgICAgICAgICovDQo+
-Pj4gKyAgICAgICBpZiAobm9yLT5wYXJhbXMtPnJlYWRzW1NOT1JfQ01EX1JFQURfOF84XzhfRFRS
-XS5vcGNvZGUgPT0gMCkNCj4+PiArICAgICAgICAgICAgICAgbm9yLT5wYXJhbXMtPnJlYWRzW1NO
-T1JfQ01EX1JFQURfOF84XzhfRFRSXS5vcGNvZGUgPQ0KPj4+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIFNQSU5PUl9PUF9DWVBSRVNTX1JEX0ZBU1Q7DQo+Pj4gKw0KPj4+ICsgICAgICAgLyogVGhp
-cyBmbGFzaCBpcyBhbHNvIG1pc3NpbmcgdGhlIDQtYnl0ZSBQYWdlIFByb2dyYW0gb3Bjb2RlIGJp
-dC4gKi8NCj4+PiArICAgICAgIHNwaV9ub3Jfc2V0X3BwX3NldHRpbmdzKCZub3ItPnBhcmFtcy0+
-cGFnZV9wcm9ncmFtc1tTTk9SX0NNRF9QUF0sDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBTUElOT1JfT1BfUFBfNEIsIFNOT1JfUFJPVE9fMV8xXzEpOw0KPj4+ICsgICAgICAg
-LyoNCj4+PiArICAgICAgICAqIFNpbmNlIHhTUEkgUGFnZSBQcm9ncmFtIG9wY29kZSBpcyBiYWNr
-d2FyZCBjb21wYXRpYmxlIHdpdGgNCj4+PiArICAgICAgICAqIExlZ2FjeSBTUEksIHVzZSBMZWdh
-Y3kgU1BJIG9wY29kZSB0aGVyZSBhcyB3ZWxsLg0KPj4+ICsgICAgICAgICovDQo+Pj4gKyAgICAg
-ICBzcGlfbm9yX3NldF9wcF9zZXR0aW5ncygmbm9yLT5wYXJhbXMtPnBhZ2VfcHJvZ3JhbXNbU05P
-Ul9DTURfUFBfOF84XzhfRFRSXSwNCj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFNQSU5PUl9PUF9QUF80QiwgU05PUl9QUk9UT184XzhfOF9EVFIpOw0KPj4+ICsNCj4+PiArICAg
-ICAgIC8qDQo+Pj4gKyAgICAgICAgKiBUaGUgeFNQSSBQcm9maWxlIDEuMCB0YWJsZSBhZHZlcnRp
-c2VzIHRoZSBudW1iZXIgb2YgYWRkaXRpb25hbA0KPj4+ICsgICAgICAgICogYWRkcmVzcyBieXRl
-cyBuZWVkZWQgZm9yIFJlYWQgU3RhdHVzIFJlZ2lzdGVyIGNvbW1hbmQgYXMgMCBidXQgdGhlDQo+
-Pj4gKyAgICAgICAgKiBhY3R1YWwgdmFsdWUgZm9yIHRoYXQgaXMgNC4NCj4+PiArICAgICAgICAq
-Lw0KPj4+ICsgICAgICAgbm9yLT5wYXJhbXMtPnJkc3JfYWRkcl9uYnl0ZXMgPSA0Ow0KPj4+ICt9
-DQo+Pj4gKw0KPj4+ICtzdGF0aWMgaW50IHMyOGhzNTEydF9wb3N0X2JmcHRfZml4dXAoc3RydWN0
-IHNwaV9ub3IgKm5vciwNCj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Y29uc3Qgc3RydWN0IHNmZHBfcGFyYW1ldGVyX2hlYWRlciAqYmZwdF9oZWFkZXIsDQo+Pj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBzZmRwX2JmcHQg
-KmJmcHQsDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBz
-cGlfbm9yX2ZsYXNoX3BhcmFtZXRlciAqcGFyYW1zKQ0KPj4+ICt7DQo+Pj4gKyAgICAgICAvKg0K
-Pj4+ICsgICAgICAgICogVGhlIEJGUFQgdGFibGUgYWR2ZXJ0aXNlcyBhIDUxMkIgcGFnZSBzaXpl
-IGJ1dCB0aGUgcGFnZSBzaXplIGlzDQo+Pj4gKyAgICAgICAgKiBhY3R1YWxseSBjb25maWd1cmFi
-bGUgKHdpdGggdGhlIGRlZmF1bHQgYmVpbmcgMjU2QikuIFJlYWQgZnJvbQ0KPj4+ICsgICAgICAg
-ICogQ0ZSM1ZbNF0gYW5kIHNldCB0aGUgY29ycmVjdCBzaXplLg0KPj4+ICsgICAgICAgICovDQo+
-Pj4gKyAgICAgICBzdHJ1Y3Qgc3BpX21lbV9vcCBvcCA9DQo+Pj4gKyAgICAgICAgICAgICAgIFNQ
-SV9NRU1fT1AoU1BJX01FTV9PUF9DTUQoU1BJTk9SX09QX1JEX0FOWV9SRUcsIDEpLA0KPj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgIFNQSV9NRU1fT1BfQUREUigzLCBTUElOT1JfUkVHX0NZ
-UFJFU1NfQ0ZSM1YsIDEpLA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIFNQSV9NRU1f
-T1BfTk9fRFVNTVksDQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgU1BJX01FTV9PUF9E
-QVRBX0lOKDEsIG5vci0+Ym91bmNlYnVmLCAxKSk7DQo+Pj4gKyAgICAgICBpbnQgcmV0Ow0KPj4+
-ICsNCj4+PiArICAgICAgIHJldCA9IHNwaV9tZW1fZXhlY19vcChub3ItPnNwaW1lbSwgJm9wKTsN
-Cj4+PiArICAgICAgIGlmIChyZXQpDQo+Pj4gKyAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+
-Pg0KPj4gbm8gbmVlZCB0byB3YWl0IGFmdGVyIENGUjNWPw0KPiANCj4gSXQgaXMgYSByZWFkIG9w
-ZXJhdGlvbi4gV2UgZG9uJ3QgbmVlZCB0byB3YWl0IGFmdGVyIHJlYWRzLg0KPiANCg0Kb2gsIHll
-cy4NCg==
+This change converts the old binding for the AXI clkgen driver to a yaml
+format.
+
+As maintainers, added:
+ - Lars-Peter Clausen <lars@metafoo.de> - as original author of driver &
+   binding
+ - Michael Hennerich <michael.hennerich@analog.com> - as supporter of
+   Analog Devices drivers
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ .../bindings/clock/adi,axi-clkgen.yaml        | 52 +++++++++++++++++++
+ .../devicetree/bindings/clock/axi-clkgen.txt  | 25 ---------
+ 2 files changed, 52 insertions(+), 25 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/axi-clkgen.txt
+
+diff --git a/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
+new file mode 100644
+index 000000000000..45497f370cb3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/adi,axi-clkgen.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/adi,axi-clkgen.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binding for Analog Devices AXI clkgen pcore clock generator
++
++maintainers:
++  - Lars-Peter Clausen <lars@metafoo.de>
++  - Michael Hennerich <michael.hennerich@analog.com>
++
++description: |
++  The axi_clkgen IP core is a software programmable clock generator,
++  that can be synthesized on various FPGA platforms.
++
++  Link: https://wiki.analog.com/resources/fpga/docs/axi_clkgen
++
++properties:
++  compatible:
++    enum:
++      - adi,axi-clkgen-2.00.a
++
++  clocks:
++    description:
++      Phandle and clock specifier for the parent clock(s). This must either
++      reference one clock if only the first clock input is connected or two
++      if both clock inputs are connected. For the later case the clock
++      connected to the first input must be specified first.
++    minItems: 1
++    maxItems: 2
++
++  '#clock-cells':
++    const: 0
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#clock-cells'
++
++examples:
++  - |
++    clock@ff000000 {
++      compatible = "adi,axi-clkgen-2.00.a";
++      #clock-cells = <0>;
++      reg = <0xff000000 0x1000>;
++      clocks = <&osc 1>;
++    };
+diff --git a/Documentation/devicetree/bindings/clock/axi-clkgen.txt b/Documentation/devicetree/bindings/clock/axi-clkgen.txt
+deleted file mode 100644
+index aca94fe9416f..000000000000
+--- a/Documentation/devicetree/bindings/clock/axi-clkgen.txt
++++ /dev/null
+@@ -1,25 +0,0 @@
+-Binding for the axi-clkgen clock generator
+-
+-This binding uses the common clock binding[1].
+-
+-[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
+-
+-Required properties:
+-- compatible : shall be "adi,axi-clkgen-1.00.a" or "adi,axi-clkgen-2.00.a".
+-- #clock-cells : from common clock binding; Should always be set to 0.
+-- reg : Address and length of the axi-clkgen register set.
+-- clocks : Phandle and clock specifier for the parent clock(s). This must
+-	either reference one clock if only the first clock input is connected or two
+-	if both clock inputs are connected. For the later case the clock connected
+-	to the first input must be specified first.
+-
+-Optional properties:
+-- clock-output-names : From common clock binding.
+-
+-Example:
+-	clock@ff000000 {
+-		compatible = "adi,axi-clkgen";
+-		#clock-cells = <0>;
+-		reg = <0xff000000 0x1000>;
+-		clocks = <&osc 1>;
+-	};
+-- 
+2.17.1
+
