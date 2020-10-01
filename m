@@ -2,168 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF202800B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1125D2800B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732668AbgJAOBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:01:33 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:36683 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732471AbgJAOAa (ORCPT
+        id S1732595AbgJAOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:01:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55600 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732581AbgJAOA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:00:30 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 1 Oct 2020 17:00:27 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (dev-l-vrt-136.mtl.labs.mlnx [10.234.136.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 091E0RxA002378;
-        Thu, 1 Oct 2020 17:00:27 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 091E0QHB011192;
-        Thu, 1 Oct 2020 17:00:26 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 091E0QPk011191;
-        Thu, 1 Oct 2020 17:00:26 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net-next 16/16] devlink: Add Documentation/networking/devlink/devlink-reload.rst
-Date:   Thu,  1 Oct 2020 16:59:19 +0300
-Message-Id: <1601560759-11030-17-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
-References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+        Thu, 1 Oct 2020 10:00:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601560857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6S44Cl1SWHyUe4fYYQfKjzqsq0aN4+O/1HZKr3HYiiY=;
+        b=VJfDgA+UJtMGfaZJxNU0C84WHXfoWbnzx5EUdkFB3Xt5EskMjSd8juvpB2ekdF0j8Xm2mJ
+        1bL9cI4ZV/Ts0dvOZ5OiggV//oi5UOuSDy7Jgb8dFVks7cju56hO2G2TeDHcSn0BoziVkl
+        MXENW51oenXb5GlR+Nw5IilYSSUo6w4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-nwcjV7cOPuuMOoQ9FzDQgw-1; Thu, 01 Oct 2020 10:00:55 -0400
+X-MC-Unique: nwcjV7cOPuuMOoQ9FzDQgw-1
+Received: by mail-wr1-f70.google.com with SMTP id a10so2057611wrw.22
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:00:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=6S44Cl1SWHyUe4fYYQfKjzqsq0aN4+O/1HZKr3HYiiY=;
+        b=ZIwrcwKGRVDQudSipGGqxP3cKjKguQTs3c46CwkjJTMMGt1zvvD97dPiYXgzb7Zl+T
+         1PZjdoNK7zkhOGrhWdsfp/sLCfe+w4rI8SHwt8GsXWr5dYNXJYSXqDOHh9gimLKHnCEs
+         OJFFdN363XIQyTxSw7ogihZgEoraBAanRx9b30xhArPgowhSdW4d+rj1SqvHJb8nPm+E
+         W9hQCVpYCPuOA8IpvC2ncEwwW3OoF9HsvFhypFSrD/60qPGu9JR+QAMhBWsQ8DFgKqsR
+         sr4LYhYUDKM88Xuu3q/lwTAL34bGgcH9fdLwqs5N2gYK/cVuBiXb42W2MllEUPSNbdCX
+         vZTQ==
+X-Gm-Message-State: AOAM532/zlflW9cozp5613p5uOOJKeUgP5/yIf4fMYq9XaJgq1NgsR3h
+        OgGEEITJiZ0bqMGaFBVDxzAfwWceHFLNhbXEsynOKkken09MZfd6JChpHMl1wFeLNSzZStJT2Tu
+        abJ+uqkVOBinR5SrPRa2OuoQu
+X-Received: by 2002:adf:dd44:: with SMTP id u4mr8819554wrm.22.1601560854079;
+        Thu, 01 Oct 2020 07:00:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYj/8ORDVYdNbRPeku5Fpyq8wvSyE05tvQI2eThYq+MXR17DDK2stsqrdhIqYW+td6JTxv3A==
+X-Received: by 2002:adf:dd44:: with SMTP id u4mr8819515wrm.22.1601560853797;
+        Thu, 01 Oct 2020 07:00:53 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u2sm10439301wre.7.2020.10.01.07.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 07:00:53 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH] x86/kvm: hide KVM options from menuconfig when KVM is not compiled
+In-Reply-To: <20201001112014.9561-1-mcroce@linux.microsoft.com>
+References: <20201001112014.9561-1-mcroce@linux.microsoft.com>
+Date:   Thu, 01 Oct 2020 16:00:52 +0200
+Message-ID: <87a6x69hbf.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devlink reload rst documentation file.
-Update index file to include it.
+Matteo Croce <mcroce@linux.microsoft.com> writes:
 
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
----
-RFCv5 -> v1:
-- Rename reload_action_limit_level to reload_limit
-RFCv4 -> RFCv5:
-- Rephrase namespace chnage section
-- Rephrase note on actions performed
-RFCv3 -> RFCv4:
-- Remove reload action fw_activate_no_reset
-- Add reload actions limit levels and document the no_reset limit level
-  constrains
-RFCv2 -> RFCv3:
-- Devlink reload returns the actions done
-- Replace fw_live_patch action by fw_activate_no_reset
-- Explain fw_activate meaning
-RFCv1 -> RFCv2:
-- Instead of reload levels driver,fw_reset,fw_live_patch have reload
-  actions driver_reinit,fw_activate,fw_live_patch
----
- .../networking/devlink/devlink-reload.rst     | 81 +++++++++++++++++++
- Documentation/networking/devlink/index.rst    |  1 +
- 2 files changed, 82 insertions(+)
- create mode 100644 Documentation/networking/devlink/devlink-reload.rst
+> From: Matteo Croce <mcroce@microsoft.com>
+>
+> Let KVM_WERROR depend on KVM, so it doesn't show in menuconfig alone.
+>
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 
-diff --git a/Documentation/networking/devlink/devlink-reload.rst b/Documentation/networking/devlink/devlink-reload.rst
-new file mode 100644
-index 000000000000..5abc5c2c75fd
---- /dev/null
-+++ b/Documentation/networking/devlink/devlink-reload.rst
-@@ -0,0 +1,81 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============
-+Devlink Reload
-+==============
-+
-+``devlink-reload`` provides mechanism to either reinit driver entities,
-+applying ``devlink-params`` and ``devlink-resources`` new values or firmware
-+activation depends on reload action selected.
-+
-+Reload actions
-+==============
-+
-+User may select a reload action.
-+By default ``driver_reinit`` action is selected.
-+
-+.. list-table:: Possible reload actions
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``driver-reinit``
-+     - Devlink driver entities re-initialization, including applying
-+       new values to devlink entities which are used during driver
-+       load such as ``devlink-params`` in configuration mode
-+       ``driverinit`` or ``devlink-resources``
-+   * - ``fw_activate``
-+     - Firmware activate. Activates new firmware if such image is stored and
-+       pending activation. If no limitation specified this action may involve
-+       firmware reset. If no new image pending this action will reload current
-+       firmware image.
-+
-+Note that even though user asks for a specific action, the driver
-+implementation might require to perform another action alongside with
-+it. For example, some driver do not support driver reinitialization
-+being performed without fw activation. Therefore, the devlink reload
-+command returns the list of actions which were actrually performed.
-+
-+Reload limits
-+=============
-+
-+By default reload actions are not limited and driver implementation may
-+include reset or downtime as needed to perform the actions.
-+
-+However, some drivers support action limits, which limit the action
-+implementation to specific constrains.
-+
-+.. list-table:: Possible reload limits
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``no_reset``
-+     - No reset allowed, no down time allowed, no link flap and no
-+       configuration is lost.
-+
-+Change namespace
-+================
-+
-+The netns option allow user to be able to move devlink instances into
-+namespaces during devlink reload operation.
-+By default all devlink instances are created in init_net and stay there.
-+
-+example usage
-+-------------
-+
-+.. code:: shell
-+
-+    $ devlink dev reload help
-+    $ devlink dev reload DEV [ netns { PID | NAME | ID } ] [ action { driver_reinit | fw_activate } ] [ limit no_reset ]
-+
-+    # Run reload command for devlink driver entities re-initialization:
-+    $ devlink dev reload pci/0000:82:00.0 action driver_reinit
-+    reload_actions_performed:
-+      driver_reinit
-+
-+    # Run reload command to activate firmware:
-+    # Note that mlx5 driver reloads the driver while activating firmware
-+    $ devlink dev reload pci/0000:82:00.0 action fw_activate
-+    reload_actions_performed:
-+      driver_reinit fw_activate
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index 7684ae5c4a4a..d82874760ae2 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -20,6 +20,7 @@ general.
-    devlink-params
-    devlink-region
-    devlink-resource
-+   devlink-reload
-    devlink-trap
- 
- Driver-specific documentation
+I'd even say
+
+Fixes: 4f337faf1c55e ("KVM: allow disabling -Werror")
+
+> ---
+>  arch/x86/kvm/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index fbd5bd7a945a..f92dfd8ef10d 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -66,6 +66,7 @@ config KVM_WERROR
+>  	default y if X86_64 && !KASAN
+>  	# We use the dependency on !COMPILE_TEST to not be enabled
+>  	# blindly in allmodconfig or allyesconfig configurations
+> +	depends on KVM
+>  	depends on (X86_64 && !KASAN) || !COMPILE_TEST
+>  	depends on EXPERT
+>  	help
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
 -- 
-2.18.2
+Vitaly
 
