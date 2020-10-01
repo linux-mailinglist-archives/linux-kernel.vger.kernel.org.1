@@ -2,351 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB7F280460
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDD1280466
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732796AbgJAQ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:57:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732622AbgJAQ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:57:12 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B38AF20897;
-        Thu,  1 Oct 2020 16:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601571431;
-        bh=Hf8SKH/mhCHSQXjDIXdh7bnEag8LgBD+yG95nBrWCSA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRq/PxV5Oc0vAmZGwxuh5exfKDRrruSn0O7vXkZ54ef6Ekcqx9OfhFgEV6+lNfhWW
-         wPxyLyOvRlv8bTNco6dNiC/gnBhgNvkP5efB3aTMr/fprW/66sf7ncpl8OmEbecVeS
-         /kN2YS0eg64K6Ee066xXhBdwjj8Z4zwtbSxBwe0w=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH 2/2] clk: samsung: exynos-clkout: convert to module driver
-Date:   Thu,  1 Oct 2020 18:56:46 +0200
-Message-Id: <20201001165646.32279-3-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001165646.32279-1-krzk@kernel.org>
-References: <20201001165646.32279-1-krzk@kernel.org>
+        id S1732778AbgJAQ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732096AbgJAQ6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:58:37 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E21C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:58:36 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so3920186wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=04b8qKJemsp+OZHSsPknzFEwjnTI950R60M+0aR7dvI=;
+        b=gxe/UpQivnd0eSGnbQnycHIu+NI+9Xwnbm6zBWBhDwJAmY4/d7G+GrUwll7XVMbQPi
+         73xK/fZlGO55LMKY0m+BiV1lvGClhJ+rAuLTRw6YRdCcwJtDldDinQXbJg899/zLJDXj
+         JVAZU27otkoZsege+R+NZ6KZhhFTrlTiHShR8UGqzxVYGq/SCLoxkx07nb2wAGabEqjd
+         vfgJbN07vOuKgxjd7L5o3GpJak1qqdRrgJz4ym/9XH3M7zzb88JsRStF/+ZoLSDMPyJN
+         Y0RXyfZOFDqt7zBBdVtPoZXuQNQqt/Yoh28So5b1jebRIXox7+oI27N9HJbuBvs7tHBG
+         n0Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=04b8qKJemsp+OZHSsPknzFEwjnTI950R60M+0aR7dvI=;
+        b=umHfLQwkE3xywUNrjJQgxdOE1zreimwvL6KGS1p8BJKUL426AMb32iRJKC0gJ8AyBD
+         aNmF1s3TILCgTIdbGgd19CA2S+7kM9Jc5tQ8eYTjtdy6ccpaYNyeudzRTGBjMQlrn5U5
+         Et63Yedu/hYYC+zoyAEMDdF4/wqWJW/v6Y+OopPx2AiLgTBOMyp5VdtQ4DOAGLbxPO1B
+         kBb9ScHDNfwRP/Y5I6rwuf+qhdKj4h7VH1yla/s2zbwmjvwcp9uWpC3VA4/RPOYJcfiG
+         Dxaa7Y5UVTw9mK75Ba3yOX4UYUrvt1ji3a5xQ5sELvRtcparKPcm/0ilEaiZGU4NZCiB
+         vqCA==
+X-Gm-Message-State: AOAM533Nzpz8YSF9Dr+ZoayKLKVJPryQSvXwO9HOiuRuqkzNXMYwmwAX
+        Os5RLC9IwmQgUMFFaSYjGKo9YLga7bQHK8mCcyG8HQ==
+X-Google-Smtp-Source: ABdhPJzxbevu6ZlieL7qehMSzf89h975PGC4VD9uTIYuaBkbM7/w0UqCLz97ekXcEjiDe81wLW4CiVTrhgAqcYdREhg=
+X-Received: by 2002:a7b:cf21:: with SMTP id m1mr971181wmg.124.1601571515134;
+ Thu, 01 Oct 2020 09:58:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-2-jolsa@kernel.org>
+ <CAP-5=fVwe5wowm9Z6RgMAKA-nRd01U6DL0LGuUJSnPc_H=w17w@mail.gmail.com>
+ <20201001092530.GB3999500@krava> <20201001102517.GC3999500@krava>
+In-Reply-To: <20201001102517.GC3999500@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 1 Oct 2020 09:58:23 -0700
+Message-ID: <CAP-5=fW17Ju5w9PWvdaHvwGSL5iYoaWP4OeyQk+eSDgNYhLVVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/9] perf tools: Add build id shell test
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Exynos clkout driver depends on board input clock (typically XXTI or
-XUSBXTI), however on Exynos4 boards these clocks were modeled as part of
-SoC clocks (Exynos4 clocks driver).  Obviously this is not proper, but
-correcting it would break DT backward compatibility.
+On Thu, Oct 1, 2020 at 3:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Oct 01, 2020 at 11:25:34AM +0200, Jiri Olsa wrote:
+> > On Wed, Sep 30, 2020 at 07:00:05PM -0700, Ian Rogers wrote:
+> > > On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > >
+> > > > Adding test for build id cache that adds binary
+> > > > with sha1 and md5 build ids and verifies it's
+> > > > added properly.
+> > > >
+> > > > The test updates build id cache with perf record
+> > > > and perf buildid-cache -a.
+> > > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > >
+> > > Acked-by: Ian Rogers <irogers@google.com>
+> > >
+> > > This is great! If I build perf and test from the build directory the
+> > > test gets run. If I build using O=/tmp/perf and run from that
+> > > directory then ./tests/shell isn't found and the test doesn't run.
+> > > Similarly the install directory doesn't contain the executables and so
+> > > the test is skipped. Is there any way to get the test running in these
+> > > other scenarios?
+> >
+> > ok, if there's already some way to get the build path I did not see that
+> > I'll check and add something if it's missing
+>
+> would the patch below work for you?
 
-Both drivers - clkout and Exynos4 clocks - register the clock providers
-with CLK_OF_DECLARE/OF_DECLARE_1 so their order is fragile (in the
-Makefile clkout is behind Exynos4 clock).  It will work only if the
-Exynos4 clock driver comes up before clkout.
+Thanks! I'm ok with the patch as is, this addition also looks good. I
+think the ideal we should aim for is perf test passing from the
+installed location. I appreciate this change is setting up groundwork
+that other tests could build upon. I'd particularly like a shell test
+to run the libperf tests, it should be little more than just running
+the executables. The build/install set up and the paths are the
+difficult part.
 
-A change in DTS adding input clock reference to Exynos4 clocks input
-PLL, see reverted commit eaf2d2f6895d ("ARM: dts: exynos: add input
-clock to CMU in Exynos4412 Odroid"), caused probe reorder: the clkout
-appeared before Exynos4 clock provider.  Since clkout depends on Exynos4
-clocks and does not support deferred probe, this did not work and caused
-later failure of usb3503 USB hub probe which needs clkout:
+Thanks,
+Ian
 
-    [    5.007442] usb3503 0-0008: unable to request refclk (-517)
-
-The Exynos clkout driver is not a critical/core clock so there is
-actually no problem in instantiating it later, as a regular module.
-This removes specific probe ordering and adds support for probe
-deferral.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/samsung/clk-exynos-clkout.c | 198 +++++++++++++++++-------
- 1 file changed, 141 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
-index 34ccb1d23bc3..68af082d4716 100644
---- a/drivers/clk/samsung/clk-exynos-clkout.c
-+++ b/drivers/clk/samsung/clk-exynos-clkout.c
-@@ -9,10 +9,13 @@
- #include <linux/slab.h>
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
-+#include <linux/module.h>
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/syscore_ops.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
- 
- #define EXYNOS_CLKOUT_NR_CLKS		1
- #define EXYNOS_CLKOUT_PARENTS		32
-@@ -28,41 +31,103 @@ struct exynos_clkout {
- 	struct clk_mux mux;
- 	spinlock_t slock;
- 	void __iomem *reg;
-+	struct device_node *np;
- 	u32 pmu_debug_save;
- 	struct clk_hw_onecell_data data;
- };
- 
--static struct exynos_clkout *clkout;
-+struct exynos_clkout_variant {
-+	u32 mux_mask;
-+};
- 
--static int exynos_clkout_suspend(void)
--{
--	clkout->pmu_debug_save = readl(clkout->reg + EXYNOS_PMU_DEBUG_REG);
-+static const struct exynos_clkout_variant exynos_clkout_exynos4 = {
-+	.mux_mask	= EXYNOS4_CLKOUT_MUX_MASK,
-+};
- 
--	return 0;
--}
-+static const struct exynos_clkout_variant exynos_clkout_exynos5 = {
-+	.mux_mask	= EXYNOS5_CLKOUT_MUX_MASK,
-+};
- 
--static void exynos_clkout_resume(void)
-+static const struct of_device_id exynos_clkout_ids[] = {
-+	{
-+		.compatible = "samsung,exynos3250-pmu",
-+		.data = &exynos_clkout_exynos4,
-+	}, {
-+		.compatible = "samsung,exynos4210-pmu",
-+		.data = &exynos_clkout_exynos4,
-+	}, {
-+		.compatible = "samsung,exynos4412-pmu",
-+		.data = &exynos_clkout_exynos4,
-+	}, {
-+		.compatible = "samsung,exynos5250-pmu",
-+		.data = &exynos_clkout_exynos5,
-+	}, {
-+		.compatible = "samsung,exynos5410-pmu",
-+		.data = &exynos_clkout_exynos5,
-+	}, {
-+		.compatible = "samsung,exynos5420-pmu",
-+		.data = &exynos_clkout_exynos5,
-+	}, {
-+		.compatible = "samsung,exynos5433-pmu",
-+		.data = &exynos_clkout_exynos5,
-+	}, { }
-+};
-+
-+/*
-+ * Device will be instantiated as child of PMU device without its own
-+ * device node.  Therefore match compatibles against parent.
-+ */
-+static int exynos_clkout_match_parent_dev(struct device *dev, u32 *mux_mask)
- {
--	writel(clkout->pmu_debug_save, clkout->reg + EXYNOS_PMU_DEBUG_REG);
--}
-+	const struct exynos_clkout_variant *variant;
-+	const struct of_device_id *match;
- 
--static struct syscore_ops exynos_clkout_syscore_ops = {
--	.suspend = exynos_clkout_suspend,
--	.resume = exynos_clkout_resume,
--};
-+	if (!dev->parent) {
-+		dev_err(dev, "not instantiated from MFD\n");
-+		return -EINVAL;
-+	}
-+
-+	match = of_match_device(exynos_clkout_ids, dev->parent);
-+	if (!match) {
-+		dev_err(dev, "cannot match parent device\n");
-+		return -EINVAL;
-+	}
-+	variant = match->data;
-+
-+	*mux_mask = variant->mux_mask;
-+	dev_err(dev, "MATCH: %x\n", variant->mux_mask);
-+
-+	return 0;
-+}
- 
--static void __init exynos_clkout_init(struct device_node *node, u32 mux_mask)
-+static int exynos_clkout_probe(struct platform_device *pdev)
- {
- 	const char *parent_names[EXYNOS_CLKOUT_PARENTS];
- 	struct clk *parents[EXYNOS_CLKOUT_PARENTS];
--	int parent_count;
--	int ret;
--	int i;
-+	struct exynos_clkout *clkout;
-+	int parent_count, ret, i;
-+	u32 mux_mask;
- 
--	clkout = kzalloc(struct_size(clkout, data.hws, EXYNOS_CLKOUT_NR_CLKS),
--			 GFP_KERNEL);
-+	clkout = devm_kzalloc(&pdev->dev,
-+			      struct_size(clkout, data.hws, EXYNOS_CLKOUT_NR_CLKS),
-+			      GFP_KERNEL);
- 	if (!clkout)
--		return;
-+		return -ENOMEM;
-+
-+	ret = exynos_clkout_match_parent_dev(&pdev->dev, &mux_mask);
-+	if (ret)
-+		return ret;
-+
-+	clkout->np = pdev->dev.of_node;
-+	if (!clkout->np) {
-+		/*
-+		 * pdev->dev.parent was checked by exynos_clkout_match_parent_dev()
-+		 * so it is not NULL.
-+		 */
-+		clkout->np = pdev->dev.parent->of_node;
-+	}
-+
-+	platform_set_drvdata(pdev, clkout);
- 
- 	spin_lock_init(&clkout->slock);
- 
-@@ -71,7 +136,7 @@ static void __init exynos_clkout_init(struct device_node *node, u32 mux_mask)
- 		char name[] = "clkoutXX";
- 
- 		snprintf(name, sizeof(name), "clkout%d", i);
--		parents[i] = of_clk_get_by_name(node, name);
-+		parents[i] = of_clk_get_by_name(clkout->np, name);
- 		if (IS_ERR(parents[i])) {
- 			parent_names[i] = "none";
- 			continue;
-@@ -82,11 +147,13 @@ static void __init exynos_clkout_init(struct device_node *node, u32 mux_mask)
- 	}
- 
- 	if (!parent_count)
--		goto free_clkout;
-+		return -EINVAL;
- 
--	clkout->reg = of_iomap(node, 0);
--	if (!clkout->reg)
-+	clkout->reg = of_iomap(clkout->np, 0);
-+	if (!clkout->reg) {
-+		ret = -ENODEV;
- 		goto clks_put;
-+	}
- 
- 	clkout->gate.reg = clkout->reg + EXYNOS_PMU_DEBUG_REG;
- 	clkout->gate.bit_idx = EXYNOS_CLKOUT_DISABLE_SHIFT;
-@@ -103,17 +170,17 @@ static void __init exynos_clkout_init(struct device_node *node, u32 mux_mask)
- 				&clk_mux_ops, NULL, NULL, &clkout->gate.hw,
- 				&clk_gate_ops, CLK_SET_RATE_PARENT
- 				| CLK_SET_RATE_NO_REPARENT);
--	if (IS_ERR(clkout->data.hws[0]))
-+	if (IS_ERR(clkout->data.hws[0])) {
-+		ret = PTR_ERR(clkout->data.hws[0]);
- 		goto err_unmap;
-+	}
- 
- 	clkout->data.num = EXYNOS_CLKOUT_NR_CLKS;
--	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, &clkout->data);
-+	ret = of_clk_add_hw_provider(clkout->np, of_clk_hw_onecell_get, &clkout->data);
- 	if (ret)
- 		goto err_clk_unreg;
- 
--	register_syscore_ops(&exynos_clkout_syscore_ops);
--
--	return;
-+	return 0;
- 
- err_clk_unreg:
- 	clk_hw_unregister(clkout->data.hws[0]);
-@@ -123,38 +190,55 @@ static void __init exynos_clkout_init(struct device_node *node, u32 mux_mask)
- 	for (i = 0; i < EXYNOS_CLKOUT_PARENTS; ++i)
- 		if (!IS_ERR(parents[i]))
- 			clk_put(parents[i]);
--free_clkout:
--	kfree(clkout);
- 
--	pr_err("%s: failed to register clkout clock\n", __func__);
-+	dev_err(&pdev->dev, "failed to register clkout clock\n");
-+
-+	return ret;
- }
- 
--/*
-- * We use CLK_OF_DECLARE_DRIVER initialization method to avoid setting
-- * the OF_POPULATED flag on the pmu device tree node, so later the
-- * Exynos PMU platform device can be properly probed with PMU driver.
-- */
-+static int exynos_clkout_remove(struct platform_device *pdev)
-+{
-+	struct exynos_clkout *clkout = platform_get_drvdata(pdev);
-+
-+	of_clk_del_provider(clkout->np);
-+	clk_hw_unregister(clkout->data.hws[0]);
-+	iounmap(clkout->reg);
- 
--static void __init exynos4_clkout_init(struct device_node *node)
-+	return 0;
-+}
-+static int exynos_clkout_suspend(struct device *dev)
- {
--	exynos_clkout_init(node, EXYNOS4_CLKOUT_MUX_MASK);
-+	struct exynos_clkout *clkout = dev_get_drvdata(dev);
-+
-+	clkout->pmu_debug_save = readl(clkout->reg + EXYNOS_PMU_DEBUG_REG);
-+
-+	return 0;
- }
--CLK_OF_DECLARE_DRIVER(exynos4210_clkout, "samsung,exynos4210-pmu",
--		exynos4_clkout_init);
--CLK_OF_DECLARE_DRIVER(exynos4412_clkout, "samsung,exynos4412-pmu",
--		exynos4_clkout_init);
--CLK_OF_DECLARE_DRIVER(exynos3250_clkout, "samsung,exynos3250-pmu",
--		exynos4_clkout_init);
--
--static void __init exynos5_clkout_init(struct device_node *node)
-+
-+static int exynos_clkout_resume(struct device *dev)
- {
--	exynos_clkout_init(node, EXYNOS5_CLKOUT_MUX_MASK);
-+	struct exynos_clkout *clkout = dev_get_drvdata(dev);
-+
-+	writel(clkout->pmu_debug_save, clkout->reg + EXYNOS_PMU_DEBUG_REG);
-+
-+	return 0;
- }
--CLK_OF_DECLARE_DRIVER(exynos5250_clkout, "samsung,exynos5250-pmu",
--		exynos5_clkout_init);
--CLK_OF_DECLARE_DRIVER(exynos5410_clkout, "samsung,exynos5410-pmu",
--		exynos5_clkout_init);
--CLK_OF_DECLARE_DRIVER(exynos5420_clkout, "samsung,exynos5420-pmu",
--		exynos5_clkout_init);
--CLK_OF_DECLARE_DRIVER(exynos5433_clkout, "samsung,exynos5433-pmu",
--		exynos5_clkout_init);
-+
-+static SIMPLE_DEV_PM_OPS(exynos_clkout_pm_ops, exynos_clkout_suspend,
-+			 exynos_clkout_resume);
-+
-+static struct platform_driver exynos_clkout_driver = {
-+	.driver = {
-+		.name = "exynos-clkout",
-+		.of_match_table = exynos_clkout_ids,
-+		.pm = &exynos_clkout_pm_ops,
-+	},
-+	.probe = exynos_clkout_probe,
-+	.remove = exynos_clkout_remove,
-+};
-+module_platform_driver(exynos_clkout_driver);
-+
-+MODULE_AUTHOR("Krzysztof Kozlowski <krzk@kernel.org>");
-+MODULE_AUTHOR("Tomasz Figa <tomasz.figa@gmail.com>");
-+MODULE_DESCRIPTION("Samsung Exynos clock output driver");
-+MODULE_LICENSE("GPL");
--- 
-2.17.1
-
+> thanks,
+> jirka
+>
+>
+> ---
+> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> index 57fcd28bc4bd..dd9f9c306c34 100755
+> --- a/tools/perf/tests/shell/buildid.sh
+> +++ b/tools/perf/tests/shell/buildid.sh
+> @@ -2,12 +2,23 @@
+>  # build id cache operations
+>  # SPDX-License-Identifier: GPL-2.0
+>
+> +ex_md5=buildid-ex-md5
+> +ex_sha1=buildid-ex-sha1
+> +
+>  # skip if there are no test binaries
+>  if [ ! -x buildid-ex-sha1 -a ! -x buildid-ex-md5 ]; then
+> -       echo "failed: no test binaries"
+> -       exit 2
+> +       ex_dir=$(dirname `which perf`)
+> +       ex_md5=${ex_dir}/buildid-ex-md5
+> +       ex_sha1=${ex_dir}/buildid-ex-sha1
+> +
+> +       if [ ! -x ${ex_sha1} -a ! -x ${ex_md5} ]; then
+> +               echo "failed: no test binaries"
+> +               exit 2
+> +       fi
+>  fi
+>
+> +echo "test binaries: ${ex_sha1} ${ex_md5}"
+> +
+>  # skip if there's no readelf
+>  if [ ! -x `which readelf` ]; then
+>         echo "failed: no readelf, install binutils"
+> @@ -80,11 +91,11 @@ test_record()
+>  }
+>
+>  # add binaries manual via perf buildid-cache -a
+> -test_add buildid-ex-sha1
+> -test_add buildid-ex-md5
+> +test_add ${ex_sha1}
+> +test_add ${ex_md5}
+>
+>  # add binaries via perf record post processing
+> -test_record buildid-ex-sha1
+> -test_record buildid-ex-md5
+> +test_record ${ex_sha1}
+> +test_record ${ex_md5}
+>
+>  exit ${err}
+>
