@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9A927F68B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A430727F691
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgJAANA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:13:00 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:46881 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730577AbgJAANA (ORCPT
+        id S1731735AbgJAARC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729980AbgJAARC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:13:00 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id C074A5C00CA;
-        Wed, 30 Sep 2020 20:12:58 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Wed, 30 Sep 2020 20:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=mmqRcUlvPdUwSQM/x6F+Lvk29MhRVNZ
-        Y0OId6LTaioA=; b=oO0WfMhqd7/SXXOpkm4pvo+CUM/mfVa0S/9LQpznEWngn7L
-        pp0BMwLnlNeQX6AK1AaeMTvSe6uHdzjHNpNrfbQINBoDediIUxMfyrIEOjXkf9kW
-        6Q8g7HSHoGwgHMXYV1mT40L0nOdaRCJJi1P8cQHW80tO8+20x0rFVrpGvg+tnbER
-        MLAgDnRO4Dr0rsg4Ysc/DKiekVD0z+zFyxLFPPvgA0B8tqZ9TPX2IJ1gUGQvcn3/
-        veGMQcF3n8oPVTZ4FTpQVGQtWSzQu1pR/KT/lcVbHsoLoxIhZfdljJVR7OOduSKV
-        vXG887JOfL0Qjl1NaNKMrUfjQePncm9YfjYP/ng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mmqRcU
-        lvPdUwSQM/x6F+Lvk29MhRVNZY0OId6LTaioA=; b=Hq9VBLO5rOGiQyygLKdC4D
-        npI2wsldxkFbJmNyZsGsDducaQYSd7YWUSFbtq/CYo+LKBZvsP/3lImpwAnoN+2t
-        120kjqML3EHNEQAMmiR+m+s1ySUcosEztiLq3CdTJzGo1sKur+7i8DXXAA2yCuC9
-        kjhllFwMETxWRB1ckvbIfOQSvSCV5j2JwoVyby8tKPakQyfbYMl6z8k8p19f2KKS
-        EU/jbcz9vyjj/o79Za9og95bKpD8t2eaDB3lZkWxiU6wdMP0QxGP6uZakgFrKMKk
-        6rkuFUg8WaGc+waZROyoIOA6+kRNvgSEESNydOf58BdOBZaXMpRwkr82mrLGWS6g
-        ==
-X-ME-Sender: <xms:Bx91X7su7hjam-0xm23UCihQ1Gcd_cqki62_nBAphXy9EG5h1LkNRg>
-    <xme:Bx91X8cDwCFJueCMpSjErWxi7-55X0gP_8C6fl2qHJdzBSi2nn_beQR0oA0q26gp0
-    CN9pE4-2fMMwb6kDQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdeffecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:Bx91X-y9-ua34XWjr1AP1838iiPZeGiC4yoAokyMCla9rmMsIXb-mQ>
-    <xmx:Bx91X6NR2KEiVwWJ6sEWfXUt9PFHP9NfS6-AR793GxKdHLfXcnlUsw>
-    <xmx:Bx91X7_4-hq0dL2JfE7tG1mbOBy85BGnA-4pTIcDhQSxVPzPyEN1YA>
-    <xmx:Ch91X2mB-zkFx8juQfFmrRsdGF2ESBYnEvSlwDJpZ_JWtz9gRuqZqA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id BF278E0181; Wed, 30 Sep 2020 20:12:54 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
-Mime-Version: 1.0
-Message-Id: <b7bcc925-b0da-446f-84a7-1a564a1f4f83@www.fastmail.com>
-In-Reply-To: <20200930090603.19891-1-billy_tsai@aspeedtech.com>
-References: <20200930051113.32465-1-billy_tsai@aspeedtech.com>
- <20200930090603.19891-1-billy_tsai@aspeedtech.com>
-Date:   Thu, 01 Oct 2020 09:42:34 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Billy Tsai" <billy_tsai@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     BMC-SW@aspeedtech.com
-Subject: Re: [RESEND PATCH] ARM: dts: aspeed-g6: Fix gpio memory region
-Content-Type: text/plain
+        Wed, 30 Sep 2020 20:17:02 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4F5C0613D0;
+        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id u24so2427845pgi.1;
+        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WqcMmMBNNOIzGt7x1JA06HdtMKTkJlzsGJR/X1W+/9A=;
+        b=qkr/7oaI1LyoLrsxZnebU4g615j4NsvO+jwltcKIUFvNknV8nhhrwqu3kyTq6T0D1T
+         BKBhfX3DY526jjZsKjQPZa4MtzsFDZ7pv32AvzPs375CDFm19DNSiw7+ez3afCK23OS+
+         zIkOxn4kF1TCKFO3eyeWv6w5239jNLG4yrdstgVY+R/C6CZISRpi8grXb0ntwPQMWhO6
+         3yCKu3afIB90kK9LI0+JoFTYlAGRBNSooB2YM/TgHeWThTKygDbMB4hJEZB9vgUkxEmP
+         WlGktQ2iU8jRTeZUWv5tJG4f7SkIWoHhXu29DMH4WzjRj5X53TswTIphzhFt58Z2t0Zi
+         5u0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WqcMmMBNNOIzGt7x1JA06HdtMKTkJlzsGJR/X1W+/9A=;
+        b=eJ+tr+u/ZAxNsgSJTK0VEUibSMdJ02SzUfPi1a1+aPBjq8lzaPfKxGGKyouOG9r08p
+         gpvqcOFDLz/gY+wXUKN4qaLovjnAYM3xtw7KWeYwJKyMxxAmubeSfFGpCovp0uNW8M/W
+         9nfkTterdqz7B1EA9KEPS/17aLiZNJl428qrnX+eNvNSwEWonF3TRonA/VS0V+r4i7J4
+         a7rJaLZ1J+mX0cq94C6GVCdFH2NDDSOJCQd3imA4cjS8y0Umu4S0U2IEOpuny3JQ+PR/
+         e5LzfcL2JkOqVBWHhrBl8L0l0kYPxb6ws3d+mnvXgJs/XojACdSfqyDeWdXNy8C6Wxq5
+         3dSg==
+X-Gm-Message-State: AOAM53157qjnqvV+pp2fV9C7pAtlpksqO6Q0iwGJBfUzdJhq2erpq4cO
+        a2fC2nKkWGbta/q0H7B/LJGWRwqfT0qVIw==
+X-Google-Smtp-Source: ABdhPJwX1+0gsnkqUhoqdO6SrJH9Lb9QfpxuuBi40yDN94OHgYw2Ab0XXHLflVFPUaPhqcN0f9Hc0w==
+X-Received: by 2002:a17:902:9f8f:b029:d3:8e2a:192e with SMTP id g15-20020a1709029f8fb02900d38e2a192emr296926plq.20.1601511421026;
+        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
+Received: from [10.230.29.112] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s19sm4171253pfc.69.2020.09.30.17.16.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 17:17:00 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: dsa: Support bridge 802.1Q while untagging
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200930203103.225677-1-f.fainelli@gmail.com>
+ <20200930204358.574xxijrrciiwh6h@skbuf>
+ <89404248-f8ea-b5f5-12c5-a19392397222@gmail.com>
+Message-ID: <30265d9b-fb50-16a7-fb08-1199762a14b3@gmail.com>
+Date:   Wed, 30 Sep 2020 17:16:56 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <89404248-f8ea-b5f5-12c5-a19392397222@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
 
-On Wed, 30 Sep 2020, at 18:36, Billy Tsai wrote:
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-g6.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+
+On 9/30/2020 4:29 PM, Florian Fainelli wrote:
 > 
-> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> index 97ca743363d7..b9ec8b579f73 100644
-> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> @@ -357,7 +357,7 @@
->  				#gpio-cells = <2>;
->  				gpio-controller;
->  				compatible = "aspeed,ast2600-gpio";
-> -				reg = <0x1e780000 0x800>;
-> +				reg = <0x1e780000 0x500>;
+> 
+> On 9/30/2020 1:43 PM, Vladimir Oltean wrote:
+>> On Wed, Sep 30, 2020 at 01:31:03PM -0700, Florian Fainelli wrote:
+>>> While we are it, call __vlan_find_dev_deep_rcu() which makes use the
+>>> VLAN group array which is faster.
+>>
+>> Not just "while at it", but I do wonder whether it isn't, in fact,
+>> called "deep" for a reason:
+>>
+>>         /*
+>>          * Lower devices of master uppers (bonding, team) do not have
+>>          * grp assigned to themselves. Grp is assigned to upper device
+>>          * instead.
+>>          */
+>>
+>> I haven't tested this, but I wonder if you could actually call
+>> __vlan_find_dev_deep_rcu() on the switch port interface and it would
+>> cover both this and the bridge having an 8021q upper automatically?
+> 
+> Let me give this a try.
 
-We took the 0x800 value from the memory space layout table in the datasheet for 
-the 2600. Should that be updated too? Or are you just limiting the region to 
-the registers currently described rather than the allocated address space?
+We hit the if (vlan_info) branch and we do not recurse through the 
+upper_dev because of that.
 
-Cheers,
-
-Andrew
+I still need to send a v2 to remove the now unused 'iter' variable and 
+fix up the bridge iproute2 command (there is no vlan_filtering=0 it is 
+vlan_filtering 0).
+-- 
+Florian
