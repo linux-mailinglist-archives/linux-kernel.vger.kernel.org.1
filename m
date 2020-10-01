@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CA22803AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EFF2803C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732699AbgJAQRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S1732705AbgJAQTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732026AbgJAQRm (ORCPT
+        with ESMTP id S1732048AbgJAQTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:17:42 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C89FC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:17:42 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id n2so6186750oij.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:17:42 -0700 (PDT)
+        Thu, 1 Oct 2020 12:19:11 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EFEC0613D0;
+        Thu,  1 Oct 2020 09:19:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k13so5015178pfg.1;
+        Thu, 01 Oct 2020 09:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7z4RZb4xHZvdkDhdzGHiqdJ9avmcc+//+6dEVs9Wkhw=;
-        b=HLHjU0Kuon8b0GM8tARWJSMK6NABhtf8WNgW2nf3koqCK8mBGpp7rhE3gcWkAglCu9
-         bnX/O3P/ylSYBd75VPD/0dUnVOYb2HqhCykICayY8EGFOtx7K5+7U/ZnCVz/83cBh9F/
-         TVEsiMrDJpRi9FPKphd4dJLOUVQ1E9+ukFgleTkcpnYCOLf0FBtanbLfZnXoF4Xn0nGZ
-         1zVRxK6H6Ja1UjuZBXU1t/vAxI/KZSS/fSZxprO/FgCIdj5Gnh7kWhQF76a5oF0GWdjf
-         F5XOSpT/oPmpSi9pfWF9zGXccvZ3HxCNUCgqFHUtDDIkVeqeIYlPYWv7BvfhEg/2NZYp
-         tsVQ==
+        bh=MJEN6/5FxUZ7OvX1MfoZIJYkf9njQgwG4hA1l6IMw0I=;
+        b=kKCa/HMcidopfQYMgG1MnaV4E7MWeG0ZNU2ueVB6Ep4OYWvKYggKjzJkKTPBYAwfmU
+         gDmiCAvNG6U+UyrWHMC4lpV7wI+FQ0u/iuWVHEVsOvXRxPjp1V7PkDYtTs4wIJpOrMVY
+         F/3NMyqKUlnHboeHra8Rz17oKGWWKqsgaVoSUVOG4Zp89vGQNUvWDuGQjdA9/qD2wZSl
+         ERDpbN98d5N105oqojlolCytrAGPVuFQ7PRqf7i7o2t6B0UxU5SFS2kokt4F4x/GxFLm
+         VoBTG8G+9voKvVPNpHrJo425NMhCQOl3OlYzCiG/TGFTFIkIxGMpvQ85PMuSX5eq4u0C
+         nArg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7z4RZb4xHZvdkDhdzGHiqdJ9avmcc+//+6dEVs9Wkhw=;
-        b=M3ygIGvGnpcCR33BLDc5haRKYeFU2Ed68NLUk5jFCRV+KaqnfNHwjO440arjgmI6FI
-         4aj3WGgpudwhciAkZEXNl5SESqUT6V1N1jfNefJiRvqrgyro1ABERJwu1zgBrrgVvbl0
-         GeoBSdB8GyPJemIqFCDJ0cLgeoa/27zx2Fq1q95PPyVOExTSrItfyqYDoCZQ6SAd0Mue
-         rk9+2HRz6c/o4DwnOpCL2630bhivdwlfp/oVIIAmwBcfKEtC8/JbTITZcnzlxAmn49q6
-         ah4BmhvpDddR+aSds5Bd8P+CFtvv2SYGWhvpQzB0U7Upw1Vdz7RI2opASIN85fk6r8Rr
-         fBFg==
-X-Gm-Message-State: AOAM532sVkPXb63ewPt9esds6i6CoqI2B+lU1pFECtljRFIPWRepm4GW
-        hezN9NGqBOiJ2YgSzGrffJOyVMrycWRDl1IO9EU=
-X-Google-Smtp-Source: ABdhPJzKVlVxbmrcE9M01GASsemfNIdCM4TOFqmm835CPdI7Vc0+hYTPTEnqy9IjIyR2jcBm4Wf9GBvDjq07pW69+80=
-X-Received: by 2002:aca:4142:: with SMTP id o63mr420130oia.167.1601569061882;
- Thu, 01 Oct 2020 09:17:41 -0700 (PDT)
+        bh=MJEN6/5FxUZ7OvX1MfoZIJYkf9njQgwG4hA1l6IMw0I=;
+        b=UVAXriNg5ky77JftuTaZ/G/FyIWFFpCD8hkYT2HFmxB4cdIXiAUkQE0+94v238Wv0M
+         E0fqxqLmT555wOGzl1G65DSR1j1EkrN2xnwahfiLoBj0sQ5BQqIPJPZS+Qk6xycgG8mY
+         IZxN8CW7D3+I0zNtFHhmnyC6/3neKQYR73d+bTy08kxE5dip7MhHLk4JauRARd10fMTI
+         asFdOs0xTyV2uLU3xApry7iEuowkr94BcxhDv8e0gI5XFsYzFAIlfOQApNBiTshLM25+
+         /5UJh+7+1dRfI4JZ8C1Wz891Cr/ZMWKYnuTni+RCJEmoZACg99O/XoppW0LvVP+lcBkD
+         QSSw==
+X-Gm-Message-State: AOAM5305OXWqfOz6z9ex6ayf+uqzgZMoV+NznFXN2EbtF4KcUgXotmTh
+        UL41DEj7k2DCrqx11wmByKp05PfBdjtttH4PiEU=
+X-Google-Smtp-Source: ABdhPJyjU9K2yAHHlgJFP8jH9bKHRFNEu8FPzsXId8yBn7IKSN8taOEKNIEPNUGKxDexWM2C51Vpy6MLxd3XFzl9Z4c=
+X-Received: by 2002:a63:5043:: with SMTP id q3mr6682178pgl.293.1601569150444;
+ Thu, 01 Oct 2020 09:19:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
- <20201001123032.GC22560@dhcp22.suse.cz>
-In-Reply-To: <20201001123032.GC22560@dhcp22.suse.cz>
-From:   Sebastiaan Meijer <meijersebastiaan@gmail.com>
-Date:   Thu, 1 Oct 2020 18:18:10 +0200
-Message-ID: <CANuy=CK-s=tEb57Kw+N8O2OGx1MXyUB=o-RDH-S=kYerb65dOw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de, riel@surriel.com,
-        willy@infradead.org
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+ <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com> <CAG48ez3nqG_O3OYLLffVOcFf+ONgFwU9mc+HZ1GixBPbHZLyvw@mail.gmail.com>
+In-Reply-To: <CAG48ez3nqG_O3OYLLffVOcFf+ONgFwU9mc+HZ1GixBPbHZLyvw@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 1 Oct 2020 11:18:59 -0500
+Message-ID: <CABqSeATH+n5EdxboQWz84oFYkAnkbAgnjU4irBDqJPTLdExTHA@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Apologies for messing up the mailing list thread, Gmail had fooled me into
-believing that it properly picked up the thread)
-
-On Thu, 1 Oct 2020 at 14:30, Michal Hocko <mhocko@suse.com> wrote:
+On Thu, Oct 1, 2020 at 11:05 AM Jann Horn <jannh@google.com> wrote:
+> Yeah.
 >
-> On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
-> > > yes it shows the bottleneck but it is quite artificial. Read data is
-> > > usually processed and/or written back and that changes the picture a
-> > > lot.
-> > Apologies for reviving an ancient thread (and apologies in advance for my lack
-> > of knowledge on how mailing lists work), but I'd like to offer up another
-> > reason why merging this might be a good idea.
-> >
-> > From what I understand, zswap runs its compression on the same kswapd thread,
-> > limiting it to a single thread for compression. Given enough processing power,
-> > zswap can get great throughput using heavier compression algorithms like zstd,
-> > but this is currently greatly limited by the lack of threading.
+> The ONE() entry you're adding to tgid_base_stuff is used to help
+> instantiate a "struct inode" when someone looks up the path
+> "/proc/$tgid/seccomp_cache"; then when that path is opened, a "struct
+> file" is created that holds a reference to the inode; and while that
+> file exists, your proc_pid_seccomp_cache() can be invoked.
 >
-> Isn't this a problem of the zswap implementation rather than general
-> kswapd reclaim? Why zswap doesn't do the same as normal swap out in a
-> context outside of the reclaim?
+> proc_pid_seccomp_cache() is invoked from proc_single_show()
+> ("PROC_I(inode)->op.proc_show" is proc_pid_seccomp_cache), and
+> proc_single_show() obtains a temporary reference to the task_struct
+> using get_pid_task() on a "struct pid" and drops that reference
+> afterwards with put_task_struct(). The "struct pid" is obtained from
+> the "struct proc_inode", which is essentially a subclass of "struct
+> inode". The "struct pid" is kept refererenced until the inode goes
+> away, via proc_pid_evict_inode(), called by proc_evict_inode().
+>
+> By looking at put_task_struct() and its callees, you can figure out
+> which parts of the "struct task" are kept alive by the reference to
+> it.
 
-I wouldn't be able to tell you, the documentation on zswap is fairly limited
-from what I've found.
+Ah I see. Thanks for the explanation.
 
-> My recollection of the particular patch is dimm but I do remember it
-> tried to add more kswapd threads which would just paper over the problem
-> you are seein rather than solve it.
+> By the way, maybe it'd make sense to add this to tid_base_stuff as
+> well? That should just be one extra line of code. Seccomp filters are
+> technically per-thread, so it would make sense to have them visible in
+> the per-thread subdirectories /proc/$pid/task/$tid/.
 
-Yeah, that's exactly what it does, just adding more kswap threads.
-I've tried updating the patch to the latest mainline kernel to test its
-viability for our use case, but the kswap code changed too much over the
-past 2 years, updating it is beyond my ability right now it seems.
+Right. Will do.
 
-For the time being I've switched over to zram, which better suits our use
-case either way, and is threaded, but lacks zswap's memory deduplication.
-
-Even with zram I'm still seeing kswap frequently max out a core though,
-so there's definitely still a case for further optimization of kswap.
-In our case it's not a single big application taking up our memory, rather we
-are running 2000 high-memory applications. They store a lot of data in swap,
-but rarely ever access said data, so the actual swap i/o isn't even that high.
-
---
-Sebastiaan Meijer
+YiFei Zhu
