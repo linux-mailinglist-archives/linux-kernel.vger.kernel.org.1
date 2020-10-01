@@ -2,287 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D5827FBBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC53027FBBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731763AbgJAIld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:41:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24492 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731626AbgJAIlY (ORCPT
+        id S1731626AbgJAImW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:42:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47560 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730902AbgJAImW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:41:24 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601541681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Vv5CEkkTlSYputHEql/RgJBda51Hxz9ogvuSCFmZEdQ=;
-        b=REA3W0X0GjPnHAZJIE7t1kPaCvg94CJLz5izBAXU/y5JlaFqNEMBQPEEZpC3irXXjzPRnh
-        3w9HkGZwuN1xluNQQXbrGCdlm0wsbwf2z+sYWwAS3OrlDBWVO1IdSw16mQTxPGXo8ub57o
-        pZiheh4k/4HXQs4oR/uT6T+pR8YFVcg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-zIO-qmr0ONqlCgKZzLIScg-1; Thu, 01 Oct 2020 04:41:19 -0400
-X-MC-Unique: zIO-qmr0ONqlCgKZzLIScg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CECF186840F;
-        Thu,  1 Oct 2020 08:41:16 +0000 (UTC)
-Received: from [10.36.114.102] (ovpn-114-102.ams2.redhat.com [10.36.114.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 26AF719931;
-        Thu,  1 Oct 2020 08:41:11 +0000 (UTC)
-Subject: Re: [PATCH v5 01/17] device-dax: make pgmap optional for instance
- creation
-To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160106110513.30709.4303239334850606031.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <e3b7c947-c221-8be7-41ae-aed2f481d640@redhat.com>
-Date:   Thu, 1 Oct 2020 10:41:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 1 Oct 2020 04:42:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0918gAlJ021630;
+        Thu, 1 Oct 2020 03:42:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601541730;
+        bh=l9E4iTEIYD2L6+jDXJU9JrWEdUYoAxixqNC6l8k2lmI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=WmMhcXxCmTEMe5l5Y5vbnXG91qSCEZoHf/sYK4N5bZ/GFvj1uGosuUGy2ELeZInqu
+         I0ARLMn5TsLf7yuZLCYxFUqahPy/mu2t6nQLydA/cmTJqe03N8e3t3Xc3G5TVjkx03
+         N4b+mDMUqLALzHZYN75IKuf7di29Bci6x74Z8nT0=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0918gALN005822
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Oct 2020 03:42:10 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 03:42:10 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 03:42:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0918g9sl030651;
+        Thu, 1 Oct 2020 03:42:09 -0500
+Date:   Thu, 1 Oct 2020 14:12:08 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     <Tudor.Ambarus@microchip.com>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v14 08/15] mtd: spi-nor: core: enable octal DTR mode when
+ possible
+Message-ID: <20201001084206.ma4beblucowmtwgq@ti.com>
+References: <20200930185732.6201-1-p.yadav@ti.com>
+ <20200930185732.6201-9-p.yadav@ti.com>
+ <3e162719-80c7-03dc-dc2a-29a46bc4cb2c@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <160106110513.30709.4303239334850606031.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3e162719-80c7-03dc-dc2a-29a46bc4cb2c@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.20 21:11, Dan Williams wrote:
-> The passed in dev_pagemap is only required in the pmem case as the
-> libnvdimm core may have reserved a vmem_altmap for dev_memremap_pages() to
-> place the memmap in pmem directly.  In the hmem case there is no agent
-> reserving an altmap so it can all be handled by a core internal default.
+On 01/10/20 08:09AM, Tudor.Ambarus@microchip.com wrote:
+> On 9/30/20 9:57 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Allow flashes to specify a hook to enable octal DTR mode. Use this hook
+> > whenever possible to get optimal transfer speeds.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 35 +++++++++++++++++++++++++++++++++++
+> >  drivers/mtd/spi-nor/core.h |  2 ++
+> >  2 files changed, 37 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 73a26e7e32c2..6b54a923002a 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -3068,6 +3068,35 @@ static int spi_nor_init_params(struct spi_nor *nor)
+> >         return 0;
+> >  }
+> > 
+> > +/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
+> > + * @nor:                 pointer to a 'struct spi_nor'
+> > + * @enable:              whether to enable or disable Octal DTR
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (!nor->params->octal_dtr_enable)
+> > +               return 0;
+> > +
+> > +       if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+> > +             nor->write_proto == SNOR_PROTO_8_8_8_DTR))
+> > +               return 0;
+> > +
+> > +       ret = nor->params->octal_dtr_enable(nor, enable);
 > 
-> Pass the resource range via a new @range property of 'struct
-> dev_dax_data'.
-> 
-> Link: https://lkml.kernel.org/r/159643099958.4062302.10379230791041872886.stgit@dwillia2-desk3.amr.corp.intel.com
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Vishal Verma <vishal.l.verma@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: Brice Goglin <Brice.Goglin@inria.fr>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jia He <justin.he@arm.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/dax/bus.c              |   29 +++++++++++++++--------------
->  drivers/dax/bus.h              |    2 ++
->  drivers/dax/dax-private.h      |    9 ++++++++-
->  drivers/dax/device.c           |   28 +++++++++++++++++++---------
->  drivers/dax/hmem/hmem.c        |    8 ++++----
->  drivers/dax/kmem.c             |   12 ++++++------
->  drivers/dax/pmem/core.c        |    4 ++++
->  tools/testing/nvdimm/dax-dev.c |    8 ++++----
->  8 files changed, 62 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index dffa4655e128..96bd64ba95a5 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -271,7 +271,7 @@ static ssize_t size_show(struct device *dev,
->  		struct device_attribute *attr, char *buf)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
-> -	unsigned long long size = resource_size(&dev_dax->region->res);
-> +	unsigned long long size = range_len(&dev_dax->range);
->  
->  	return sprintf(buf, "%llu\n", size);
->  }
-> @@ -293,19 +293,12 @@ static ssize_t target_node_show(struct device *dev,
->  }
->  static DEVICE_ATTR_RO(target_node);
->  
-> -static unsigned long long dev_dax_resource(struct dev_dax *dev_dax)
-> -{
-> -	struct dax_region *dax_region = dev_dax->region;
-> -
-> -	return dax_region->res.start;
-> -}
-> -
->  static ssize_t resource_show(struct device *dev,
->  		struct device_attribute *attr, char *buf)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
->  
-> -	return sprintf(buf, "%#llx\n", dev_dax_resource(dev_dax));
-> +	return sprintf(buf, "%#llx\n", dev_dax->range.start);
->  }
->  static DEVICE_ATTR(resource, 0400, resource_show, NULL);
->  
-> @@ -376,6 +369,7 @@ static void dev_dax_release(struct device *dev)
->  
->  	dax_region_put(dax_region);
->  	put_dax(dax_dev);
-> +	kfree(dev_dax->pgmap);
->  	kfree(dev_dax);
->  }
->  
-> @@ -412,7 +406,12 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  	if (!dev_dax)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	memcpy(&dev_dax->pgmap, data->pgmap, sizeof(struct dev_pagemap));
-> +	if (data->pgmap) {
-> +		dev_dax->pgmap = kmemdup(data->pgmap,
-> +				sizeof(struct dev_pagemap), GFP_KERNEL);
-> +		if (!dev_dax->pgmap)
-> +			goto err_pgmap;
-> +	}
->  
->  	/*
->  	 * No 'host' or dax_operations since there is no access to this
-> @@ -421,18 +420,19 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  	dax_dev = alloc_dax(dev_dax, NULL, NULL, DAXDEV_F_SYNC);
->  	if (IS_ERR(dax_dev)) {
->  		rc = PTR_ERR(dax_dev);
-> -		goto err;
-> +		goto err_alloc_dax;
->  	}
->  
->  	/* a device_dax instance is dead while the driver is not attached */
->  	kill_dax(dax_dev);
->  
-> -	/* from here on we're committed to teardown via dax_dev_release() */
-> +	/* from here on we're committed to teardown via dev_dax_release() */
->  	dev = &dev_dax->dev;
->  	device_initialize(dev);
->  
->  	dev_dax->dax_dev = dax_dev;
->  	dev_dax->region = dax_region;
-> +	dev_dax->range = data->range;
->  	dev_dax->target_node = dax_region->target_node;
->  	kref_get(&dax_region->kref);
->  
-> @@ -458,8 +458,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
->  		return ERR_PTR(rc);
->  
->  	return dev_dax;
-> -
-> - err:
-> +err_alloc_dax:
-> +	kfree(dev_dax->pgmap);
-> +err_pgmap:
->  	kfree(dev_dax);
->  
->  	return ERR_PTR(rc);
-> diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-> index 299c2e7fac09..4aeb36da83a4 100644
-> --- a/drivers/dax/bus.h
-> +++ b/drivers/dax/bus.h
-> @@ -3,6 +3,7 @@
->  #ifndef __DAX_BUS_H__
->  #define __DAX_BUS_H__
->  #include <linux/device.h>
-> +#include <linux/range.h>
->  
->  struct dev_dax;
->  struct resource;
-> @@ -21,6 +22,7 @@ struct dev_dax_data {
->  	struct dax_region *dax_region;
->  	struct dev_pagemap *pgmap;
->  	enum dev_dax_subsys subsys;
-> +	struct range range;
->  	int id;
->  };
->  
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 8a4c40ccd2ef..6779f683671d 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -41,6 +41,7 @@ struct dax_region {
->   * @target_node: effective numa node if dev_dax memory range is onlined
->   * @dev - device core
->   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
-> + * @range: resource range for the instance
->   * @dax_mem_res: physical address range of hotadded DAX memory
->   * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
->   */
-> @@ -49,10 +50,16 @@ struct dev_dax {
->  	struct dax_device *dax_dev;
->  	int target_node;
->  	struct device dev;
-> -	struct dev_pagemap pgmap;
-> +	struct dev_pagemap *pgmap;
-> +	struct range range;
->  	struct resource *dax_kmem_res;
->  };
->  
-> +static inline u64 range_len(struct range *range)
-> +{
-> +	return range->end - range->start + 1;
-> +}
+> Ideally patch 9/15 and 10/15 should have been before 8/15. We should deny
+> the access to octal dtr enable for NV flashes since moment 0.
 
-include/linux/range.h seems to have this function - why is this here needed?
+Ok. I'll re-order them.
+ 
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       if (enable)
+> > +               nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
+> > +       else
+> > +               nor->reg_proto = SNOR_PROTO_1_1_1;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  /**
+> >   * spi_nor_quad_enable() - enable Quad I/O if needed.
+> >   * @nor:                pointer to a 'struct spi_nor'
+> > @@ -3107,6 +3136,12 @@ static int spi_nor_init(struct spi_nor *nor)
+> >  {
+> >         int err;
+> > 
+> > +       err = spi_nor_octal_dtr_enable(nor, true);
+> > +       if (err) {
+> > +               dev_dbg(nor->dev, "octal mode not supported\n");
+> > +               return err;
+> > +       }
+> > +
+> >         err = spi_nor_quad_enable(nor);
+> >         if (err) {
+> >                 dev_dbg(nor->dev, "quad mode not supported\n");
+> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> > index 9a33c8d07335..5cfe2db9ee13 100644
+> > --- a/drivers/mtd/spi-nor/core.h
+> > +++ b/drivers/mtd/spi-nor/core.h
+> > @@ -203,6 +203,7 @@ struct spi_nor_locking_ops {
+> >   *                      higher index in the array, the higher priority.
+> >   * @erase_map:         the erase map parsed from the SFDP Sector Map Parameter
+> >   *                      Table.
+> > + * @octal_dtr_enable:  enables SPI NOR octal DTR mode.
+> >   * @quad_enable:       enables SPI NOR quad mode.
+> >   * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+> >   * @convert_addr:      converts an absolute address into something the flash
+> > @@ -226,6 +227,7 @@ struct spi_nor_flash_parameter {
+> > 
+> >         struct spi_nor_erase_map        erase_map;
+> > 
+> > +       int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
+> >         int (*quad_enable)(struct spi_nor *nor);
+> >         int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+> >         u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+> > --
+> > 2.28.0
+> > 
+> 
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Pratyush Yadav
+Texas Instruments India
