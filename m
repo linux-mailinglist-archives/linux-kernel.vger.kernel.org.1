@@ -2,628 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA9F28058E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269BF280597
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732918AbgJARiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:38:06 -0400
-Received: from mga01.intel.com ([192.55.52.88]:64227 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgJARiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:38:04 -0400
-IronPort-SDR: 3aEzl187tYHCwCSt8LP+voKWDGSUiAKdsh529Ce4wq+c7XJEKLXrRiSmgOHQv89ruC5S+6Pxne
- UFDa9hVRgA+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180943461"
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="180943461"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:37:55 -0700
-IronPort-SDR: KKCd9i6UVqM2SJuZsWgW1xlUx+Bdyiz09TnjnO7X6E1Fsskd4YDs/1gKeh9PI+tcCE2XFhjY0v
- v9mIKz+gtyFw==
-X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
-   d="scan'208";a="351226220"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:37:51 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kO2WX-003H3Z-LI; Thu, 01 Oct 2020 20:37:45 +0300
-Date:   Thu, 1 Oct 2020 20:37:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        davem@davemloft.net, robh@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        kieran.bingham@ideasonboard.com, dan.carpenter@oracle.com
-Subject: Re: [RFC PATCH v2] Add functionality to ipu3-cio2 driver allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201001173745.GJ3956970@smile.fi.intel.com>
-References: <20201001093326.6208-1-djrscally@gmail.com>
+        id S1732900AbgJARjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:39:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732213AbgJARjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:39:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601573955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=/fE4bcgoRJRCqRJV7mnA37woMBLu7I57/ETY59wpw8Q=;
+        b=Inn8DOrOD1PugsoUJ7KcNZapESSla2dl0iIvQndhiU305Pu6FqssjFJeiOoMQgP8l6CA0r
+        KRZJ0hw8XRQRCfxUtullHEwShdRKajEtnMtnRgKUYpczqApvXFeEEHNZ8TODdFCbhXFXPT
+        65583YnIg/jBCQtAQ9ZfJQ2PzdlEfv4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-nAyuPJTjN5el23gpbBmS9w-1; Thu, 01 Oct 2020 13:39:10 -0400
+X-MC-Unique: nAyuPJTjN5el23gpbBmS9w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B5651074660;
+        Thu,  1 Oct 2020 17:39:08 +0000 (UTC)
+Received: from [10.36.112.77] (ovpn-112-77.ams2.redhat.com [10.36.112.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8188810013BD;
+        Thu,  1 Oct 2020 17:39:04 +0000 (UTC)
+Subject: Re: [PATCH v5 01/17] device-dax: make pgmap optional for instance
+ creation
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160106110513.30709.4303239334850606031.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <e3b7c947-c221-8be7-41ae-aed2f481d640@redhat.com>
+ <CAPcyv4io6a7qaX+oa8uL9C0nc9J9UMx0CfC5E1DYdhSPvYVeOw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <8012a7c2-750f-38e1-0df0-200b56109fd6@redhat.com>
+Date:   Thu, 1 Oct 2020 19:39:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001093326.6208-1-djrscally@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAPcyv4io6a7qaX+oa8uL9C0nc9J9UMx0CfC5E1DYdhSPvYVeOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:33:26AM +0100, Daniel Scally wrote:
-
-Awesome work!
-My, almost minor, comments below.
-
-> Currently on platforms designed for Windows, connections between CIO2 and
-> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
-> driver to compensate by building software_node connections, parsing the
-> connection properties from the sensor's SSDB buffer. 
-
-Drop trailing space here and in other places if any.
-
-> Suggested-by: Jordan Hand <jorhand@linux.microsoft.com>
+On 01.10.20 18:54, Dan Williams wrote:
+> On Thu, Oct 1, 2020 at 1:41 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 25.09.20 21:11, Dan Williams wrote:
+>>> The passed in dev_pagemap is only required in the pmem case as the
+>>> libnvdimm core may have reserved a vmem_altmap for dev_memremap_pages() to
+>>> place the memmap in pmem directly.  In the hmem case there is no agent
+>>> reserving an altmap so it can all be handled by a core internal default.
+>>>
+>>> Pass the resource range via a new @range property of 'struct
+>>> dev_dax_data'.
+>>>
+>>> Link: https://lkml.kernel.org/r/159643099958.4062302.10379230791041872886.stgit@dwillia2-desk3.amr.corp.intel.com
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: Vishal Verma <vishal.l.verma@intel.com>
+>>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>>> Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+>>> Cc: Brice Goglin <Brice.Goglin@inria.fr>
+>>> Cc: Dave Jiang <dave.jiang@intel.com>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: Ira Weiny <ira.weiny@intel.com>
+>>> Cc: Jia He <justin.he@arm.com>
+>>> Cc: Joao Martins <joao.m.martins@oracle.com>
+>>> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>>> ---
+>>>  drivers/dax/bus.c              |   29 +++++++++++++++--------------
+>>>  drivers/dax/bus.h              |    2 ++
+>>>  drivers/dax/dax-private.h      |    9 ++++++++-
+>>>  drivers/dax/device.c           |   28 +++++++++++++++++++---------
+>>>  drivers/dax/hmem/hmem.c        |    8 ++++----
+>>>  drivers/dax/kmem.c             |   12 ++++++------
+>>>  drivers/dax/pmem/core.c        |    4 ++++
+>>>  tools/testing/nvdimm/dax-dev.c |    8 ++++----
+>>>  8 files changed, 62 insertions(+), 38 deletions(-)
+>>>
+>>> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+>>> index dffa4655e128..96bd64ba95a5 100644
+>>> --- a/drivers/dax/bus.c
+>>> +++ b/drivers/dax/bus.c
+>>> @@ -271,7 +271,7 @@ static ssize_t size_show(struct device *dev,
+>>>               struct device_attribute *attr, char *buf)
+>>>  {
+>>>       struct dev_dax *dev_dax = to_dev_dax(dev);
+>>> -     unsigned long long size = resource_size(&dev_dax->region->res);
+>>> +     unsigned long long size = range_len(&dev_dax->range);
+>>>
+>>>       return sprintf(buf, "%llu\n", size);
+>>>  }
+>>> @@ -293,19 +293,12 @@ static ssize_t target_node_show(struct device *dev,
+>>>  }
+>>>  static DEVICE_ATTR_RO(target_node);
+>>>
+>>> -static unsigned long long dev_dax_resource(struct dev_dax *dev_dax)
+>>> -{
+>>> -     struct dax_region *dax_region = dev_dax->region;
+>>> -
+>>> -     return dax_region->res.start;
+>>> -}
+>>> -
+>>>  static ssize_t resource_show(struct device *dev,
+>>>               struct device_attribute *attr, char *buf)
+>>>  {
+>>>       struct dev_dax *dev_dax = to_dev_dax(dev);
+>>>
+>>> -     return sprintf(buf, "%#llx\n", dev_dax_resource(dev_dax));
+>>> +     return sprintf(buf, "%#llx\n", dev_dax->range.start);
+>>>  }
+>>>  static DEVICE_ATTR(resource, 0400, resource_show, NULL);
+>>>
+>>> @@ -376,6 +369,7 @@ static void dev_dax_release(struct device *dev)
+>>>
+>>>       dax_region_put(dax_region);
+>>>       put_dax(dax_dev);
+>>> +     kfree(dev_dax->pgmap);
+>>>       kfree(dev_dax);
+>>>  }
+>>>
+>>> @@ -412,7 +406,12 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>>>       if (!dev_dax)
+>>>               return ERR_PTR(-ENOMEM);
+>>>
+>>> -     memcpy(&dev_dax->pgmap, data->pgmap, sizeof(struct dev_pagemap));
+>>> +     if (data->pgmap) {
+>>> +             dev_dax->pgmap = kmemdup(data->pgmap,
+>>> +                             sizeof(struct dev_pagemap), GFP_KERNEL);
+>>> +             if (!dev_dax->pgmap)
+>>> +                     goto err_pgmap;
+>>> +     }
+>>>
+>>>       /*
+>>>        * No 'host' or dax_operations since there is no access to this
+>>> @@ -421,18 +420,19 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>>>       dax_dev = alloc_dax(dev_dax, NULL, NULL, DAXDEV_F_SYNC);
+>>>       if (IS_ERR(dax_dev)) {
+>>>               rc = PTR_ERR(dax_dev);
+>>> -             goto err;
+>>> +             goto err_alloc_dax;
+>>>       }
+>>>
+>>>       /* a device_dax instance is dead while the driver is not attached */
+>>>       kill_dax(dax_dev);
+>>>
+>>> -     /* from here on we're committed to teardown via dax_dev_release() */
+>>> +     /* from here on we're committed to teardown via dev_dax_release() */
+>>>       dev = &dev_dax->dev;
+>>>       device_initialize(dev);
+>>>
+>>>       dev_dax->dax_dev = dax_dev;
+>>>       dev_dax->region = dax_region;
+>>> +     dev_dax->range = data->range;
+>>>       dev_dax->target_node = dax_region->target_node;
+>>>       kref_get(&dax_region->kref);
+>>>
+>>> @@ -458,8 +458,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>>>               return ERR_PTR(rc);
+>>>
+>>>       return dev_dax;
+>>> -
+>>> - err:
+>>> +err_alloc_dax:
+>>> +     kfree(dev_dax->pgmap);
+>>> +err_pgmap:
+>>>       kfree(dev_dax);
+>>>
+>>>       return ERR_PTR(rc);
+>>> diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+>>> index 299c2e7fac09..4aeb36da83a4 100644
+>>> --- a/drivers/dax/bus.h
+>>> +++ b/drivers/dax/bus.h
+>>> @@ -3,6 +3,7 @@
+>>>  #ifndef __DAX_BUS_H__
+>>>  #define __DAX_BUS_H__
+>>>  #include <linux/device.h>
+>>> +#include <linux/range.h>
+>>>
+>>>  struct dev_dax;
+>>>  struct resource;
+>>> @@ -21,6 +22,7 @@ struct dev_dax_data {
+>>>       struct dax_region *dax_region;
+>>>       struct dev_pagemap *pgmap;
+>>>       enum dev_dax_subsys subsys;
+>>> +     struct range range;
+>>>       int id;
+>>>  };
+>>>
+>>> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+>>> index 8a4c40ccd2ef..6779f683671d 100644
+>>> --- a/drivers/dax/dax-private.h
+>>> +++ b/drivers/dax/dax-private.h
+>>> @@ -41,6 +41,7 @@ struct dax_region {
+>>>   * @target_node: effective numa node if dev_dax memory range is onlined
+>>>   * @dev - device core
+>>>   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+>>> + * @range: resource range for the instance
+>>>   * @dax_mem_res: physical address range of hotadded DAX memory
+>>>   * @dax_mem_name: name for hotadded DAX memory via add_memory_driver_managed()
+>>>   */
+>>> @@ -49,10 +50,16 @@ struct dev_dax {
+>>>       struct dax_device *dax_dev;
+>>>       int target_node;
+>>>       struct device dev;
+>>> -     struct dev_pagemap pgmap;
+>>> +     struct dev_pagemap *pgmap;
+>>> +     struct range range;
+>>>       struct resource *dax_kmem_res;
+>>>  };
+>>>
+>>> +static inline u64 range_len(struct range *range)
+>>> +{
+>>> +     return range->end - range->start + 1;
+>>> +}
+>>
+>> include/linux/range.h seems to have this function - why is this here needed?
 > 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-
-In the tag block should not be blank lines.
-
-...
-
-> * Built against media_tree instead of linus's tree - there's no T: entry in
-> maintainers for the ipu3-cio2 driver but I see there're recent changes in 
-> media_tree so thought this was the better option.
-
-Make sense to include T: entry as well (maybe as a separate patch).
-
-...
-
-> +config CIO2_BRIDGE
-> +	bool "IPU3 CIO2 Sensors Bridge"
-> +	depends on VIDEO_IPU3_CIO2
-> +	help
-> +	  This extension provides an API for the ipu3-cio2 driver to create
-> +	  connections to cameras that are hidden in SSDB buffer in ACPI. It
-> +	  can be used to enable support for cameras in detachable / hybrid
-> +	  devices that ship with Windows.
-> +
-> +	  Say y here if your device is a detachable / hybrid laptop that comes
-
-y -> Y
-
-> +	  with Windows installed by the OEM, for example the Microsoft Surface
-> +	  line, Lenovo Miix line or Dell 7285.
-
-Reads better in a form of an enumeration, like
-
-		- Microsoft Surface (all existing)
-		- Lenovo Miix (all existing)
-		- Dell 7285
-
-> +	  If in doubt, say n here.
-
-n -> N
-
-...
-
-> -obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
-> +obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2-driver.o
-> +
-> +ipu3-cio2-driver-objs += ipu3-cio2.o
-> +
-> +ifeq ($(CONFIG_CIO2_BRIDGE), y)
-> +ipu3-cio2-driver-objs += cio2-bridge.o
-> +endif
-
-objs is for userspace tools, here use
-
-ipu3-cio2-driver-y += ipu3-cio2.o
-ipu3-cio2-driver-$(CONFIG_CIO2_BRIDGE) = cio2-bridge.o
-
-And actually would be nice to keep the name, so means rename ipu3-cio2.c to
-something like cio2-main.c. In such case you will have:
-
-obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
-
-ipu3-cio2-y += cio2-main.o
-ipu3-cio2-$(CONFIG_CIO2_BRIDGE) = cio2-bridge.o
-
-...
-
-> +// SPDX-License-Identifier: GPL-2.0
-
-Author line perhaps?
-
-...
-
-> +/*
-> + * Extend this array with ACPI Hardware ID's of devices known to be
-> + * working
-> + */
-
-> +
-
-Redundant blank like.
-
-> +static const struct ipu3_sensor supported_devices[] = {
-> +	IPU3_SENSOR("INT33BE", "INT33BE:00"),
-> +	IPU3_SENSOR("OVTI2680", "OVTI2680:00"),
-> +	IPU3_SENSOR("OVTI5648", "OVTI5648:00")
-
-In such cases please leave comma at the last item as well. Easier to extend w/o
-an additional churn.
-
-On top of that, please avoid putting *instance* names, i.e. the second
-parameters in your macro call. What code should do is to take _HID (first
-parameter) and call acpi_dev_match_first_dev() or so.
-
-> +};
-
-> +static struct software_node cio2_hid_node = { CIO2_HID, };
-
-Here, nevertheless, comma can be removed, since update will need to change
-entire line anyway.
-
-> +static const char * const port_names[] = {
-> +	"port0", "port1", "port2", "port3"
-> +};
-
-+ Comma (can be prolonged in the next / previous lines).
-
-...
-
-> +static int read_acpi_block(struct device *dev, char *id, void *data, u32 size)
-> +{
-> +	union acpi_object *obj;
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	struct acpi_handle *handle = ACPI_HANDLE(dev);
-> +	acpi_status status;
-> +	int ret;
-> +
-> +	status = acpi_evaluate_object(handle, id, NULL, &buffer);
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = buffer.pointer;
-> +	if (!obj || obj->type != ACPI_TYPE_BUFFER) {
-
-!obj case doesn't require freeing and I would say the error message can be
-amended in such case.
-
-> +		dev_err(dev, "Could't read acpi buffer\n");
-> +		ret = -ENODEV;
-> +		goto err_free_buff;
-> +	}
-> +
-> +	if (obj->buffer.length > size) {
-> +		dev_err(dev, "Given buffer is too small\n");
-> +		ret = -ENODEV;
-> +		goto err_free_buff;
-> +	}
-> +
-> +	memcpy(data, obj->buffer.pointer, obj->buffer.length);
-
-> +	kfree(buffer.pointer);
-> +
-> +	return obj->buffer.length;
-> +err_free_buff:
-> +	kfree(buffer.pointer);
-> +	return ret;
-
-This may be deduplicated by adding ret = obj->buffer.length; in the success
-branch. In such case the label would be named out_free_buf.
-
-> +}
-
-...
-
-> +static int create_fwnode_properties(struct sensor *sensor,
-> +				    struct sensor_bios_data *ssdb)
-> +{
-> +	struct property_entry *ep_props;
-> +	struct property_entry *cio2_props;
-> +	struct property_entry *dev_props;
-> +	u32 *data_lanes;
-> +	int i;
-
-> +	/* device fwnode properties */
-> +	dev_props = kcalloc(3, sizeof(*dev_props), GFP_KERNEL);
-> +	if (!dev_props)
-> +		return -ENOMEM;
-> +
-> +	dev_props[0] = PROPERTY_ENTRY_U32("clock-frequency", ssdb->mclkspeed);
-> +	dev_props[1] = PROPERTY_ENTRY_U8("rotation", ssdb->degree);
-> +
-> +	memcpy(sensor->dev_props, dev_props, sizeof(*dev_props) * 3);
-> +	kfree(dev_props);
-
-Why you can't do it on stack?
-
-> +	/* endpoint fwnode properties */
-
-> +
-
-Redundant blank like
-
-> +	data_lanes = devm_kmalloc_array(sensor->dev, ssdb->lanes, sizeof(u32),
-> +					GFP_KERNEL);
-> +
-> +	if (!data_lanes)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < ssdb->lanes; i++)
-> +		data_lanes[i] = i + 1;
-
-> +	ep_props = kcalloc(4, sizeof(*ep_props), GFP_KERNEL);
-> +	if (!ep_props)
-> +		return -ENOMEM;
-> +
-> +	ep_props[0] = PROPERTY_ENTRY_U32("bus-type", 5);
-> +	ep_props[1] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
-> +						   data_lanes,
-> +						   ssdb->lanes);
-> +	ep_props[2] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_SENSOR];
-> +
-> +	memcpy(sensor->ep_props, ep_props, sizeof(*ep_props) * 4);
-> +	kfree(ep_props);
-
-Why can't be done on stack?
-
-> +
-> +	/* cio2 endpoint props */
-> +
-> +	cio2_props = kcalloc(3, sizeof(*cio2_props), GFP_KERNEL);
-> +	if (!cio2_props)
-> +		return -ENOMEM;
-> +
-> +	cio2_props[0] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
-> +						     data_lanes,
-> +						     ssdb->lanes);
-> +	cio2_props[1] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_CIO2];
-> +
-> +	memcpy(sensor->cio2_props, cio2_props, sizeof(*cio2_props) * 3);
-> +	kfree(cio2_props);
-
-Ditto.
-
-Something like
-	union {
-		...
-		cio2_properties[3];
-	} properties;
-
-	memset(properties, 0, sizeof(properties));
-
-(and please spell properties instead of props)
-
-> +	return 0;
-> +}
-> +
-> +static int create_connection_swnodes(struct sensor *sensor,
-> +				     struct sensor_bios_data *ssdb)
-> +{
-> +	struct software_node *nodes;
-> +
-> +	nodes = kcalloc(6, sizeof(*nodes), GFP_KERNEL);
-> +	if (!nodes)
-> +		return -ENOMEM;
-> +
-> +	nodes[SWNODE_SENSOR_HID] = NODE_SENSOR(sensor->name,
-> +					       sensor->dev_props);
-> +	nodes[SWNODE_SENSOR_PORT] = NODE_PORT("port0",
-> +					      &sensor->swnodes[SWNODE_SENSOR_HID]);
-> +	nodes[SWNODE_SENSOR_ENDPOINT] = NODE_ENDPOINT("endpoint0",
-> +						      &sensor->swnodes[SWNODE_SENSOR_PORT],
-> +						      sensor->ep_props);
-> +	nodes[SWNODE_CIO2_PORT] = NODE_PORT(port_names[ssdb->link],
-> +					    &cio2_hid_node);
-> +	nodes[SWNODE_CIO2_ENDPOINT] = NODE_ENDPOINT("endpoint0",
-> +						    &sensor->swnodes[SWNODE_CIO2_PORT],
-> +						    sensor->cio2_props);
-> +
-> +	memcpy(sensor->swnodes, nodes, sizeof(*nodes) * 6);
-> +	kfree(nodes);
-
-Also, why not on stack?
-
-> +	return 0;
-> +}
-
-...
-
-> +		for (j = 4; j >= 0; j--)
-> +			software_node_unregister(&sensor->swnodes[j]);
-
-Seems we may need a simple helper for this (test_printf.c has similar case),
-so, what about do it here for now and probably then move to somewhere like
-swnode.h or whatever holds it.
-
-static inline software_node_unregister_nodes_reverse(const struct software_node *nodes)
-{
-	unsigned int i = 0;
-
-	while (nodes[i].name)
-		i++;
-	while (i--)
-		software_node_unregister(&nodes[i]);
-}
-
-...
-
-> +	client = container_of(sensor->dev, struct i2c_client, dev);
-
-Shouldn't be rather i2c_verify_client() ?
-
-...
-
-> +	sensor->old_drv = container_of(sensor->dev->driver, struct i2c_driver,
-> +				       driver);
-
-to_i2c_driver() ?
-
-...
-
-> +	ret = 0;
-> +
-
-No need to have a blank line here (check other similar places in the code).
-
-> +	for (i = 0; i < ARRAY_SIZE(supported_devices); i++) {
-
-> +		adev = acpi_dev_get_first_match_dev(supported_devices[i].hid,
-> +						    NULL, -1);
-
-Keep it one line, easy to read.
-
-> +		if (!adev)
-> +			continue;
-> +
-> +		dev = bus_find_device_by_acpi_dev(&i2c_bus_type, adev);
-> +		if (!dev) {
-> +			ret = -EPROBE_DEFER;
-> +			goto err_rollback;
-> +		}
-> +
-> +		/*
-> +		 * We need to clone the driver of any sensors that we connect,
-> +		 * so if they're probing we need to wait until they're finished
-> +		 */
-> +
-> +		if (dev->links.status == DL_DEV_PROBING) {
-> +			ret = -EPROBE_DEFER;
-> +			goto err_free_dev;
-> +		}
-> +
-> +		/*
-> +		 * If a sensor has no driver, we want to continue to try and
-> +		 * link others
-> +		 */
-> +		sd = dev_get_drvdata(dev);
-> +		if (!sd)
-> +			goto cont_free_dev;
-> +
-> +		sensor = &bridge.sensors[bridge.n_sensors];
-> +		sensor->dev = dev;
-> +
-> +		snprintf(sensor->name, 20, "%s", supported_devices[i].hid);
-
-include/linux/mod_devicetable.h:454:#define I2C_NAME_SIZE       20
-
-> +		sensor->fwnode = fwnode_handle_get(dev->fwnode);
-> +		if (!sensor->fwnode)
-> +			goto err_free_dev;
-> +
-> +		ret = get_acpi_ssdb_sensor_data(dev, &ssdb);
-> +		if (ret)
-> +			goto err_free_fwnode;
-> +
-> +		ret = create_fwnode_properties(sensor, &ssdb);
-> +		if (ret)
-> +			goto err_free_fwnode;
-> +
-> +		ret = create_connection_swnodes(sensor, &ssdb);
-> +		if (ret)
-> +			goto err_free_fwnode;
-> +
-> +		ret = software_node_register_nodes(sensor->swnodes);
-> +		if (ret)
-> +			goto err_free_fwnode;
-> +
-> +		fwnode = software_node_fwnode(&sensor->swnodes[SWNODE_SENSOR_HID]);
-> +		if (!fwnode) {
-> +			ret = -ENODEV;
-> +			goto err_free_swnodes;
-> +		}
-> +
-> +		fwnode->secondary = ERR_PTR(-ENODEV);
-> +		dev->fwnode = fwnode;
-> +
-> +		ret = cio2_bridge_reprobe_sensor(sensor, i);
-> +		if (ret)
-> +			goto err_free_swnodes;
-
-> +		pr_info("cio2-bridge: Found supported device %s\n",
-> +			supported_devices[i].hid);
-
-Use dev_*() [dev_info()] instead of pr_*() ones.
-
-> +		bridge.n_sensors++;
-> +		continue;
-> +cont_free_dev:
-> +		put_device(dev);
-> +		continue;
-
-> +err_free_swnodes:
-> +		for (j = 4; j >= 0; j--)
-> +			software_node_unregister(&sensor->swnodes[j]);
-
-See above.
-
-> +err_free_fwnode:
-> +		fwnode_handle_put(sensor->fwnode);
-> +err_free_dev:
-> +		put_device(dev);
-> +err_rollback:
-> +		/*
-> +		 * If an iteration of this loop results in -EPROBE_DEFER then
-> +		 * we need to roll back any sensors that were successfully
-> +		 * registered. Any other error and we'll skip that step, as
-> +		 * it seems better to have one successfully connected sensor.
-> +		 */
-> +
-> +		if (ret == -EPROBE_DEFER)
-> +			cio2_bridge_unregister_sensors();
-> +
-> +		break;
-
-This is (all err_* labels) invariant to the loop (you break it), so, move out
-of the loop...
-
-> +	}
-> +
-> +	return ret;
-
-...somewhere here.
-
-
-...
-
-> +	ret = software_node_register(&cio2_hid_node);
-> +	if (ret < 0) {
-
-> +		pr_err("cio2-bridge: Failed to register the CIO2 HID node\n");
-
-dev_err() and so on.
-
-> +		goto err_put_cio2;
-> +	}
-
-...
-
-> +#define __NO_VERSION__
-
-What is this for?
-
-...
-
-> +#define NODE_SENSOR(_HID, _PROPS)		\
-> +	((const struct software_node) {		\
-> +		.name = _HID,			\
-> +		.properties = _PROPS		\
-
-Leave comma.
-
-> +	})
-
-...
-
-> +#define IPU3_SENSOR(_HID, _CLIENT)		\
-> +	{					\
-> +		.hid = _HID,			\
-> +		.i2c_id = {			\
-> +			{_CLIENT, 0},		\
-
-> +			{ },			\
-
-No comma for terminator type of entries.
-
-> +		}				\
-
-Leave comma.
-
-> +	}
-
-...
-
-> +struct ipu3_sensor {
-> +	const char hid[20];
-
-Shouldn't be rather 9?
-
-#define ACPI_ID_LEN     9
-
-> +	const struct i2c_device_id i2c_id[2];
-> +};
-
-...
-
-> +struct sensor {
-> +	char name[20];
-
-I guess it's predefined by I²C ID.
-
-> +	struct device *dev;
-> +	struct software_node swnodes[6];
-> +	struct property_entry dev_props[3];
-> +	struct property_entry ep_props[4];
-> +	struct property_entry cio2_props[3];
-
-I'm now wondering why you can't simply put properties directly to here and do
-that kcalloc / memcpy() in few functions? I mean to drop those calls and assign
-properties directly. You even won't need to memset() and stack for them!
-
-> +	struct fwnode_handle *fwnode;
-> +	struct i2c_driver *old_drv;
-> +	struct i2c_driver new_drv;
-> +};
-
-...
-
-> +} __attribute__((__packed__));
-
-__packed is enough (it's in compiler.h IIRC).
-
-...
-
->  	struct cio2_device *cio2;
-> +	struct fwnode_handle *endpoint;
->  	int r;
-
-Reverse xmas tree order.
-
-...
-
-> +	endpoint = fwnode_graph_get_next_endpoint(pci_dev->dev.fwnode, NULL);
-
-dev_fwnode()
-
-> +	if (!endpoint) {
-> +		r = cio2_bridge_build(pci_dev);
-> +		if (r)
-> +			return r;
-> +	}
-
-...
-
-> +#ifdef CONFIG_CIO2_BRIDGE
-
-IS_ENABLED()
-
-> +
-> +int cio2_bridge_build(struct pci_dev *cio2);
-> +void cio2_bridge_burn(struct pci_dev *cio2);
-> +
-> +#else
-> +
-> +int cio2_bridge_build(struct pci_dev *cio2)
-> +{
-> +	return 0;
-> +}
-
-One line.
-
-> +void cio2_bridge_burn(struct pci_dev *cio2)
-> +{
-> +}
-
-One line.
-
-> +#endif
+> It's there because I add it later in this series. I waited until
+> "mm/memremap_pages: convert to 'struct range'" to make it global as
+> that's the first kernel-wide visible usage of it.
+
+Ah okay - I'd just place it right at the final destination, instead of
+moving fresh code around within a single series.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
 
+David / dhildenb
 
