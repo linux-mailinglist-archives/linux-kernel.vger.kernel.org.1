@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735E027FE2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D943827FE32
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731869AbgJALOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:14:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42332 "EHLO mail.kernel.org"
+        id S1731920AbgJALPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJALOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:14:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726992AbgJALPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:15:00 -0400
+Received: from localhost (unknown [122.167.37.56])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCC3C2087D;
-        Thu,  1 Oct 2020 11:14:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DCD72087D;
+        Thu,  1 Oct 2020 11:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601550868;
-        bh=+zAamjDJEUYPRPOKYscxJUXE5BZcELpzSwzCeDB+URQ=;
+        s=default; t=1601550899;
+        bh=cxQnqQEDntZ0aFpinDWrTCtr5C68zBwmYfLs04V0NQ0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YjhxEt9VlwaR/By+SfYp6RBZ3TdNw+qlAvC5fRUgV/JRWVJny4snm4NkRAeN3Z9hA
-         SoOBUG9tZmqDOas33XqoJ8tpdbR3XqVxBu6x5G1z/ghv6rHxRdGK1P/nfPquVfuPHx
-         pCfhBI4HuahIe9foWGjfKI3pNAjIth5EppYvgUTA=
-Date:   Thu, 1 Oct 2020 13:14:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/245] 4.19.149-rc1 review
-Message-ID: <20201001111429.GA1999687@kroah.com>
-References: <20200929105946.978650816@linuxfoundation.org>
- <20200929122627.GB29097@duo.ucw.cz>
+        b=1QmK0tqBrnzWdIfBjfeBwjFFwSWLDU31/OzJYfN/8MDFjcSmf7CNJHaHtYVmggGNx
+         FRL+PrW8PPZrD3WrYbEKebFarwzn/o+IvnnYvo913WWC5FrQEXa4Giq2FDs6IHANr2
+         tj1lirpAhlfroTcv6n5pGac9O3a7fUl0Ze0ifJcE=
+Date:   Thu, 1 Oct 2020 16:44:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     dmaengine@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: dmaengine: Document qcom,gpi dma
+ binding
+Message-ID: <20201001111454.GW2968@vkoul-mobl>
+References: <20200923063410.3431917-1-vkoul@kernel.org>
+ <20200923063410.3431917-2-vkoul@kernel.org>
+ <20200929184424.GA935309@bogus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929122627.GB29097@duo.ucw.cz>
+In-Reply-To: <20200929184424.GA935309@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:26:27PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 4.19.149 release.
-> > There are 245 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 01 Oct 2020 10:59:03 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.149-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> 
-> No problems detected by CIP testing:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/195833156
-> 
-> The failures are caused by boards being offline; they are not caused
-> by kernel problems.
+Hi Rob,
 
-Thanks for testing two of these and letting me know.
+On 29-09-20, 13:44, Rob Herring wrote:
 
-greg k-h
+> > +description: |
+> > +  QCOM GPI DMA controller provides DMA capabilities for
+> > +  peripheral buses such as I2C, UART, and SPI.
+> > +
+> > +allOf:
+> > +  - $ref: "dma-controller.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - qcom,gpi-dma
+> 
+> Should be SoC specific.
+
+Okay, will add
+
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    description:
+> > +      Interrupt lines for each GPII instance
+> 
+> GPII or GPI?
+
+Hw uses GPII as "GPI Instance" :) so will update this
+
+> > +    maxItems: 13
+> > +
+> > +  "#dma-cells":
+> > +    const: 3
+> > +    description: >
+> > +      DMA clients must use the format described in dma.txt, giving a phandle
+> > +      to the DMA controller plus the following 3 integer cells:
+> > +      - channel: if set to 0xffffffff, any available channel will be allocated
+> > +        for the client. Otherwise, the exact channel specified will be used.
+> > +      - seid: serial id of the client as defined in the SoC documentation.
+> > +      - client: type of the client as defined in dt-bindings/dma/qcom-gpi.h
+> > +
+> > +  iommus:
+> > +    maxItems: 1
+> > +
+> > +  dma-channels:
+> > +    maxItems: 1
+> 
+> Not an array. Is there a maximum number of channels or 2^32 is valid?
+
+I have not seen any max limit put, but we can be assured that it will
+not go to 2^32, we can put a reasonable limit ..
+
+Will add maximum :)
+
+> > +
+> > +  dma-channel-mask:
+> > +    maxItems: 1
+> 
+> So up to 32 channels?
+
+yep!
+
+-- 
+~Vinod
