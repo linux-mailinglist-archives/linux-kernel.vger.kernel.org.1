@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6701D280513
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70466280518
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732721AbgJARZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:25:08 -0400
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:42024 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732096AbgJARZI (ORCPT
+        id S1732805AbgJAR0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732096AbgJAR0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:25:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B6BF3180A7FE4;
-        Thu,  1 Oct 2020 17:25:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2525:2560:2563:2682:2685:2828:2859:2902:2903:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:4605:5007:6119:7514:7903:7974:9010:9025:10004:10400:10848:11026:11232:11233:11473:11657:11658:11914:12043:12297:12438:12555:12740:12760:12895:12986:13439:14181:14659:14721:21080:21325:21451:21627:21811:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fruit04_06039822719d
-X-Filterd-Recvd-Size: 3799
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  1 Oct 2020 17:25:05 +0000 (UTC)
-Message-ID: <c5e3b0067f32bc16f90390c51162b47f257935ac.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix multi-statement macro checks for while
- blocks.
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, Andy Whitcroft <apw@canonical.com>
-Date:   Thu, 01 Oct 2020 10:25:04 -0700
-In-Reply-To: <20201001171903.312021-1-dwaipayanray1@gmail.com>
-References: <20201001171903.312021-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 1 Oct 2020 13:26:22 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4CCC0613D0;
+        Thu,  1 Oct 2020 10:26:20 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s205so5336355lja.7;
+        Thu, 01 Oct 2020 10:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i2eUGU+6UJ2iNJKOqgJiZZvCYDFJo4EPNmr8omyQDAM=;
+        b=suL0SQnHO5+XcwiJH/4SWM63Idj/mI1NdY8opxw07lARA3Qbl4iQBnMkj7466Hn6xE
+         zqwSNVgsDeCkqrZ6Xa+bGXyXdre6kw+1UArbMFRlfEaqwiJI0aSGHEPO9XDNp8A8utmb
+         xVA54FWEcI+3tJUw05dCapTJVcR1uLwgi6hhZy06NdL/E5ZYbBnU7SoUqJFG8eI6mLZ+
+         xkNCKKOowLL6+PTEOYwyE4TXk4Zs6nOlRHpTbrwGDGVHJFC9vUH+njUHBIABJ1p2xAi3
+         zZ6wWnU287BKzKGBajhY+IpxAnrfRga4gsfskTOpAq09BpPwHRHVuZMSemBKm1mNoXTW
+         h9qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i2eUGU+6UJ2iNJKOqgJiZZvCYDFJo4EPNmr8omyQDAM=;
+        b=CrjAlJWZic5kq4ah+6W5XBJLZg0g8Pbv32JBD4Jl2eP3Gy1Q0vARvbL66I2mlzXvu4
+         cs3G/q8Jb5geLcrfBOVo7Jq0couC63fw4D8q9Ih+/f3pQSYV104aKnxM6FC4wdPiXTqk
+         sk59GzA0vY7jhOO35zrqUcsQVXqViOxVZxlL6hplAk57RXBWhIwXqzL36HrxWeCnDQFr
+         w/qKiF47+U5nqfrhpnAarOCm6HeD7pHxLFRYneRJ6dZJIEORCB7WxAG9pIXZCZQQqxmZ
+         W83C30wf1ZmTWwDo2fZ+128SqNNXyvrt3f8avIod2LHsT6hsuoHJko9+RuawzIJbEsOw
+         wCnA==
+X-Gm-Message-State: AOAM5312CzA8TaHSMC3juKhiA68d3O6b0s9OMUyj/AMyB7zLLVKBfIBm
+        ASoe5zqaxpHgi43gzNXXVKCtgjg7nrKTLi71C4nZyTkz
+X-Google-Smtp-Source: ABdhPJzOHdcyd5WenZTs16njk0NN+gwihYQYr9swObb9UqSRviEA7Hnufv3hNP54Vz8sqG/oX6J8Bcbb47ZHpkIb62w=
+X-Received: by 2002:a2e:9dcb:: with SMTP id x11mr2826408ljj.450.1601573179021;
+ Thu, 01 Oct 2020 10:26:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <87sgayfgwz.fsf@nanos.tec.linutronix.de> <87mu16f4ze.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87mu16f4ze.fsf@nanos.tec.linutronix.de>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 1 Oct 2020 10:26:07 -0700
+Message-ID: <CAADnVQLejbNccFttVZY=dzQ7Qqyjjtg4-PuBt36Ms+_DQAQZwQ@mail.gmail.com>
+Subject: Re: mb2q experience and couple issues
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-01 at 22:49 +0530, Dwaipayan Ray wrote:
-> Checkpatch.pl doesn't have a check for excluding while (...) {...}
-> blocks from MULTISTATEMENT_MACRO_USE_DO_WHILE error.
-> 
-> For example, running checkpatch.pl on the file mm/maccess.c in the
-> kernel generates the following error:
-> 
-> ERROR: Macros with complex values should be enclosed in parentheses
-> +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)  \
-> +       while (len >= sizeof(type)) {                                   \
-> +               __get_kernel_nofault(dst, src, type, err_label);        \
-> +               dst += sizeof(type);                                    \
-> +               src += sizeof(type);                                    \
-> +               len -= sizeof(type);                                    \
-> +       }
-> 
-> The error is misleading for this case. Enclosing it in parentheses
-> doesn't make any sense.
-> 
-> Checkpatch already has an exception list for such common macro types.
-> Added a new exception for while (...) {...} style blocks to the same.
-> 
-> In addition, the brace flatten logic was modified by changing the
-> substitution characters from "1" to "1u". This was done to ensure that
-> macros in the form "#define foo(bar) while(bar){bar--;}" were also
-> correctly procecssed.
-> 
-> Link: https://lore.kernel.org/linux-kernel-mentees/dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com/
-> 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+On Thu, Oct 1, 2020 at 6:30 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Thu, Oct 01 2020 at 11:13, Thomas Gleixner wrote:
+> > Yes, it's ugly and I haven't figured out a proper way to deal with
+> > that. There are quite some mbox formats out there and they all are
+> > incompatible with each other and all of them have different horrors.
+> >
+> > Let me think about it.
+>
+> I've pushed out an update to
+>
+>      git://git.kernel.org/pub/scm/linux/kernel/git/tglx/quilttools.git
 
-Thanks.  Andrew, can you pick this up please?
-
-> ---
->  scripts/checkpatch.pl | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 9e65d21456f1..31624bbb342e 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5299,9 +5299,9 @@ sub process {
->  			$dstat =~ s/\s*$//s;
->  
->  			# Flatten any parentheses and braces
-> -			while ($dstat =~ s/\([^\(\)]*\)/1/ ||
-> -			       $dstat =~ s/\{[^\{\}]*\}/1/ ||
-> -			       $dstat =~ s/.\[[^\[\]]*\]/1/)
-> +			while ($dstat =~ s/\([^\(\)]*\)/1u/ ||
-> +			       $dstat =~ s/\{[^\{\}]*\}/1u/ ||
-> +			       $dstat =~ s/.\[[^\[\]]*\]/1u/)
->  			{
->  			}
->  
-> @@ -5342,6 +5342,7 @@ sub process {
->  			    $dstat !~ /^\.$Ident\s*=/ &&				# .foo =
->  			    $dstat !~ /^(?:\#\s*$Ident|\#\s*$Constant)\s*$/ &&		# stringification #foo
->  			    $dstat !~ /^do\s*$Constant\s*while\s*$Constant;?$/ &&	# do {...} while (...); // do {...} while (...)
-> +			    $dstat !~ /^while\s*$Constant\s*$Constant\s*$/ &&		# while (...) {...}
->  			    $dstat !~ /^for\s*$Constant$/ &&				# for (...)
->  			    $dstat !~ /^for\s*$Constant\s+(?:$Ident|-?$Constant)$/ &&	# for (...) bar()
->  			    $dstat !~ /^do\s*{/ &&					# do {...
-
+Awesome. Pulled and tested. Everything looks great now.
+Thanks for the quick fixes!
