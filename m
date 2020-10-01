@@ -2,144 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E8E280671
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FF128067A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732319AbgJASXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:23:19 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:46404 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729927AbgJASXT (ORCPT
+        id S1732299AbgJASYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729993AbgJASYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:23:19 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201001182316euoutp022bc6b9a5a1716608d79e76f8c1d581e9~58W3h5cgx2396323963euoutp02_;
-        Thu,  1 Oct 2020 18:23:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201001182316euoutp022bc6b9a5a1716608d79e76f8c1d581e9~58W3h5cgx2396323963euoutp02_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601576596;
-        bh=agbhxuw6V2iMsWEiSEmua9UjtBeA6JAhN4Tp6t+MChA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BapdlcwSf4MrGCwKvc7rKT3M/zqz0JcViAjIBMyjz23L2RU2QBj3Qx0EAItPCOdFY
-         cruqAmqV012yhulZRjX/FvKA055dDEd8tpatnYHJcDTIIQe+dZZ0RdAEdAQc324Mkr
-         bWNv5TctwfHfAX46+TuOztYm/fPjPMdUg5Npk31g=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201001182315eucas1p117e8d9636e4aa4aa1079ac673b99e9b6~58W2fGrPn0087100871eucas1p17;
-        Thu,  1 Oct 2020 18:23:15 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 8C.2C.06456.39E167F5; Thu,  1
-        Oct 2020 19:23:15 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5~58W2LxfTb0069600696eucas1p1u;
-        Thu,  1 Oct 2020 18:23:15 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201001182315eusmtrp1b9731213820d3d3e4aec686dce0a7132~58W2LIgh83121531215eusmtrp1b;
-        Thu,  1 Oct 2020 18:23:15 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-6f-5f761e93c8ad
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 60.C0.06017.39E167F5; Thu,  1
-        Oct 2020 19:23:15 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201001182315eusmtip12a38f823341e15551773e9700cf608e9~58W2BYzVc2513525135eusmtip1B;
-        Thu,  1 Oct 2020 18:23:15 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
-        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
-Subject: Re: [PATCH v2 RESEND 0/9] Some fixes for spi-s3c64xx
-Date:   Thu, 01 Oct 2020 20:23:00 +0200
-In-Reply-To: <20201001161340.GM6715@sirena.org.uk> (Mark Brown's message of
-        "Thu, 1 Oct 2020 17:13:40 +0100")
-Message-ID: <dleftjft6xg60r.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 1 Oct 2020 14:24:49 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7B8C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:24:49 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id q21so6426195ota.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=7Y8kwT+ROkgjZr0Bqbw1zBd8u6aeCCa5OOj6AKhB4fk=;
+        b=gkhPgFzGjJMsz5ghjHdA/sGZd3J6aQAA1JuFyZ56AEuvCbzt0o0nitxaL/bfbc4vyb
+         ZaUzMfiw6JALKv72W4NgHU6eMZZYNm/amG6bgFdl0qESiLHu4C2/0jss9hk3QUWp/fRW
+         semtDI5Ok4/0lxLZ/iJ2Tta0XrbQTUdm2aOVLQGdsPKURboWfBctCOzWU1dQsjDcgCGn
+         7eTUclWwVgasO8gZiu/MN/1hL9IooZboMmN9fJm32vISG0YOOeMoE0qRyqLn50jexm9n
+         c1pS5v2RNj2hcWNysJvZANmqk3EtH55Q8PnHfDIxLH6h+CazIRnNTstf6RYgXEgVxVUx
+         KAbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=7Y8kwT+ROkgjZr0Bqbw1zBd8u6aeCCa5OOj6AKhB4fk=;
+        b=ldXhUcy7/Pp+nK4iJ5lXJnUBoywUOEQU1PAl7DH+aBlbt1oRkGcYYoicMOZ/xU+FfG
+         LiP0KWGk1sOEP15msqWOEKniWQztFESkCVfmADvRg20XVg4ppE1WL41dgwVAlqPX0SEk
+         oki1Hg3tNZggChmJCR+eil0qi6em9GGExJHCrP4ruFi31wLWkb5pI/vdGH6Nq+URTHwq
+         cy2UArEdS7kxORvhEgtAsHg7x/c0lFWlWzt6QdfbdtsdCG1+KF8wjm+p0Q2vmgwc4VQd
+         Rx+sx5hBaJkgyJZ57fiL7nEdLk0fbF8Ss98ZuADi2pXrNFIdrGKN3lcTrKsrjd1Ft1ei
+         KoAg==
+X-Gm-Message-State: AOAM530x7UV4YZFKEI/W3YXhR80B33dcnYv3eNQ1FypR5JZW9aguqtGv
+        Rm5aGdUbp+6j5SqFDqZ0ekMx9cxuXmWO842TBw7EHw==
+X-Google-Smtp-Source: ABdhPJxWy/dpIvIDE/9/cGX1GNZNxseEYh6cB+HFNMCEeGK1IxO6vBuNub9gh4y7ASbo3xoJaIH/2w5QgNadoQojr3U=
+X-Received: by 2002:a05:6830:2104:: with SMTP id i4mr6082572otc.266.1601576688890;
+ Thu, 01 Oct 2020 11:24:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUwTYRTM193uLsWSpWB4QSWmgSgYQKPBVcGoEFn++RNNOApsgEhb7AqK
-        R4CoXEE5igoNoGIDpVqOihQRIVQjUY4aDN7EAyLIEZBD0BiUsjXx37x58+ab2SyFyd6JPalk
-        1UlOo1KkyAkJ3vr0p81f65Ues/1GiQ9ze3lMxDSXN4qZq59HCaZoZBJjbLYmkjGPvBIzL9sr
-        Cabc1ilisr+/JRnTk2GSMbb/Rgec2df6OYx9oBsmWbMxn2Dv6TPZKy1GxM6bvY4QxyTBCVxK
-        cjqnCdwfK0mqHusXpeY5n+7ptuFZqM+pAFEU0LtgWRdVgCSUjDYg+FM0jQnDAgL9UhkpDPOr
-        w7UhvAA5rV1cyDUgYVGH4El9peNkDMHFql6x3ZegA8BkirQfuNMnYG78IW7XYHS2CKqN9WL7
-        wo0OAfN8m8iOcdoHrg3nk3bsRKvhQufcmkZK74YPesMav57eAy3jH0mBd4VnFaNriTBaCRW2
-        KSSkWyTh0ahCwGHQpZ8QCdgNJnpaSAFvhF5tIS70zwRtaZA9G9CFCForlx0t98GHgV+EgA/C
-        VNUMJuhd4M20q/CsC5S2XnfQUsjLkQlqb2go6nC4eMLlCYMjGQvGHyWOT3UJweJ9M1GMNuv+
-        a6P7r41u1RajfaGxPVCgt0HtrUlMwCHQ0DCD30RiI/Lg0nhlIsfvUHGnAniFkk9TJQbEq5Vm
-        tPqX9a70zLWhxcE4K6IpJF8nTbKmxcjEinQ+Q2lF3qtOX5ruvECeuEqt4uTu0kP9vdEyaYIi
-        4wynUcdo0lI43oo2ULjcQ7qz5luUjE5UnOSOc1wqp/m3FVFOnlkoSLM0rtpikY9495UPJbxf
-        6YhxDo200BG+5cYRw+Nay9Gpc4O7EnYvRX+1xOPjqZsYajm47NNVl+6BeVIbfrHSNBvl7//8
-        aZfX6UU/bVVKRJ+lo+auX3OshCXO5uTmhm/fWx/HJ+szRkPPrxy21n0sJiSz4rCtbnH+NfyV
-        BTZKjvNJih1+mIZX/AU/u8FybQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMIsWRmVeSWpSXmKPExsVy+t/xu7qT5criDZqO8Vss/vGcyWLjjPWs
-        FlMfPmGz6H/8mtni/PkN7BabHl9jtbi8aw6bxYzz+5gsGj/eZLdYe+Quu8WqXX8YHbg9ri/5
-        xOyxc9Zddo9NqzrZPDYvqffo27KK0ePzJrkAtig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMT
-        Sz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jHnPzzIVdHBXHD94nqWB8QxnFyMnh4SAiURz+wrG
-        LkYuDiGBpYwSD7deYO9i5ABKSEmsnJsOUSMs8edaFxtEzVNGiTtt9xlBatgE9CTWro0AqRER
-        KJT49GI3C0gNs8AfRokjG5azgySEBWwlNn3ewQRiCwkYSvx+u5wVxGYRUJWYdrcTrIZTIF+i
-        ed8nsDivgLnEnSUrwOKiApYSW17cZ4eIC0qcnPmEBcRmFsiW+Lr6OfMERoFZSFKzkKRmAZ3H
-        LKApsX6XPkRYW2LZwtfMELatxLp171kWMLKuYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIzE
-        bcd+btnB2PUu+BCjAAejEg+vwIHSeCHWxLLiytxDjCpAYx5tWH2BUYolLz8vVUmE1+ns6Tgh
-        3pTEyqrUovz4otKc1OJDjKZAf05klhJNzgcmj7ySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLp
-        iSWp2ampBalFMH1MHJxSDYxHfq379J1ZcSbPNY5JzFuTy2OajpR5y5hadXCub/Ze2n191uy9
-        oqfXpVkpM5/0bpfxONC32U2bY99P10tz1vuUHqvM5n78MrI8UjBLbKJ/+sHzbSt0pm10WnBl
-        XhDna0/LRaJLj8duabt0Z9bTwIXptz1Lbv93zlqQGMO+StCFOcrXU64+PFOJpTgj0VCLuag4
-        EQDx0yHK5gIAAA==
-X-CMS-MailID: 20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5
-X-Msg-Generator: CA
-X-RootMTR: 20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5
-References: <20201001161340.GM6715@sirena.org.uk>
-        <CGME20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5@eucas1p1.samsung.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 1 Oct 2020 23:54:37 +0530
+Message-ID: <CA+G9fYvPXVRO0NV7yL=FxCmFEMYkCwdz7R=9W+_votpT824YJA@mail.gmail.com>
+Subject: BUG: kernel NULL pointer dereference, address: 00000024 - ftrace
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+While running kselftest on i386 on Linux next 20201001 kernel this bug
+was noticed.
+BUG: kernel NULL pointer dereference, address: 00000024
 
-It was <2020-10-01 czw 17:13>, when Mark Brown wrote:
-> On Thu, Oct 01, 2020 at 05:21:39PM +0200, =C5=81ukasz Stelmach wrote:
->> This is a series of fixes created during porting a device driver (these
->> patches will be released soon too) for an SPI device to the current kern=
-el.
->
-> There appeared to be a number of outstanding review comments (misleading
-> commit message on patch 7, some concerns about the non-CMU case), please
-> address those.
 
-We discussed with Tomasz Figa and Krzysztof Koz=C5=82owski off the list that
-this is practically unused. Tomasz, Krzysztof, would you be so kind to
-share the details?
+steps to reproduce:
+# cd  /opt/kselftests/ftrace
+# ./ftracetest
 
-Kind regards,
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: d39294091fee6b89d9c4a683bb19441b25098330
+  git describe: next-20201001ftracetest
+  make_kernelversion: 5.9.0-rc7
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-core2-32/lkft/linux-next/872/config
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+# selftests: ftrace: ftracetest
+# === Ftrace unit tests ===
+# [1] Basic trace file check [PASS]
+# [2] Basic test for tracers [PASS]
+# [3] Basic trace clock test [PASS]
+# [4] Basic event tracing check [PASS]
+# [5] Change the ringbuffer size [PASS]
+# [6] Snapshot and tracing setting [PASS]
+# [7] trace_pipe and trace_marker [PASS]
+# [8] Test ftrace direct functions against tracers [UNRESOLVED]
+# [9] Test ftrace direct functions against kprobes [UNRESOLVED]
+# [10] Generic dynamic event - add/remove kprobe events [PASS]
+# [11] Generic dynamic event - add/remove synthetic events [PASS]
+# [12] Generic dynamic event - selective clear (compatibility) [PASS]
+# [13] Generic dynamic event - generic clear event [PASS]
+# [14] event tracing - enable/disable with event level files
+[  207.481763] BUG: kernel NULL pointer dereference, address: 00000024
+[  207.488050] #PF: supervisor read access in kernel mode
+[  207.493205] #PF: error_code(0x0000) - not-present page
+[  207.498355] *pde = 00000000
+[  207.501258] Oops: 0000 [#1] SMP
+[  207.504421] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G        W
+  5.9.0-rc7-next-20201001 #1
+[  207.513205] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.0b 07/27/2017
+[  207.520680] EIP: trace_event_raw_event_sched_switch+0x10/0x180
+[  207.526510] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 27
+1d de 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
+8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
+f6 c7
+[  207.545253] EAX: f55aa480 EBX: f55aa480 ECX: f55adb40 EDX: 00000000
+[  207.551510] ESI: 00000000 EDI: f55adb40 EBP: f55bbf20 ESP: f55bbeec
+[  207.557769] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
+[  207.564554] CR0: 80050033 CR2: 00000024 CR3: 10830000 CR4: 003506d0
+[  207.570811] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[  207.577069] DR6: fffe0ff0 DR7: 00000400
+[  207.580898] Call Trace:
+[  207.583344]  ? pick_next_task_fair+0x165/0x3b0
+[  207.587794]  __schedule+0x4dc/0xa90
+[  207.591283]  schedule_idle+0x1c/0x40
+[  207.594863]  do_idle+0x185/0x2a0
+[  207.598097]  cpu_startup_entry+0x25/0x30
+[  207.602021]  start_secondary+0x106/0x140
+[  207.605946]  startup_32_smp+0x164/0x168
+[  207.609778] Modules linked in: sch_fq sch_ingress veth algif_hash
+x86_pkg_temp_thermal fuse [last unloaded: test_bpf]
+[  207.620385] CR2: 0000000000000024
+[  207.623697] ---[ end trace 6ad815a56bdaaf71 ]---
+[  207.628342] EIP: trace_event_raw_event_sched_switch+0x10/0x180
+[  207.634173] Code: 08 5b 5e 5f 5d c3 8d 74 26 00 31 c0 eb e4 e8 27
+1d de 00 8d b4 26 00 00 00 00 55 89 e5 57 56 53 89 c6 89 cf 83 ec 28
+8b 45 08 <8b> 5e 24 89 55 cc 89 45 d0 65 a1 14 00 00 00 89 45 f0 31 c0
+f6 c7
+[  207.652918] EAX: f55aa480 EBX: f55aa480 ECX: f55adb40 EDX: 00000000
+[  207.659175] ESI: 00000000 EDI: f55adb40 EBP: f55bbf20 ESP: f55bbeec
+[  207.665433] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210092
+[  207.672211] CR0: 80050033 CR2: 00000024 CR3: 10830000 CR4: 003506d0
+[  207.678466] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000
+[  207.684740] DR6: fffe0ff0 DR7: 00000400
+[  207.688597] Kernel panic - not syncing: Attempted to kill the idle task!
+[  207.695329] Kernel Offset: disabled
+[  207.698828] ---[ end Kernel panic - not syncing: Attempted to kill
+the idle task! ]---
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl92HoUACgkQsK4enJil
-gBC1Hwf+LNI+RLc3LRnqAtWaZioQJLaVvjc9hCUrh/JeDj+oTZdQqWU35u7vUynF
-bfjiDVSYjtTYlijnkzMN2uGDJ4gO0pnIsADyb90VNYWb4dIVjS7pZenxdFeZMlmb
-JfkU3xdGmdYasYEWzMHP1uz0RRnX5KpivsM5D08/o30SMjvwXz1fzJdmLZqlm8jc
-HmoSDEOPZPx6oI7rFq8wHrKHXpFsp0PWzmQR8LGSAQdZHJt2BXbhxIkHupwmlMBo
-ovwUhX0vFtr7BD0vt1GdarrB7JEL7yV9gbQvkMPiNlANxVLz+LDxQbFIu9wLx6DB
-MdAVhpKjFQ4NjluhP81P6ccdiOBDmQ==
-=yDPM
------END PGP SIGNATURE-----
---=-=-=--
+full test log,
+https://lkft.validation.linaro.org/scheduler/job/1809544#L6012
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
