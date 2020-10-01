@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D1527F67C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D6427F68F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731928AbgJAAID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:08:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:60234 "EHLO mga07.intel.com"
+        id S1731690AbgJAAQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:16:04 -0400
+Received: from gate.crashing.org ([63.228.1.57]:48298 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727210AbgJAAID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:08:03 -0400
-IronPort-SDR: QOrSecTYfy1wNKpIgdRhPk/jXOqYdpaxwx/VhQnzsYMVjdkoRZq4fc0juNcSAy9qgu2ADjYlyC
- 9zx6nZZEQc9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="226709898"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="226709898"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:07:54 -0700
-IronPort-SDR: 1UJ+S4sgmJXexOZ5NPN/D3AT2O/fyuck9i4WqjCgWy/HEdJYwpfSfAqOPkDrBS0lCVlHuCz25h
- HJYdcPBr3few==
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="341382868"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:07:54 -0700
-Date:   Wed, 30 Sep 2020 17:07:52 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Eric van Tassell <evantass@amd.com>,
-        Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH 02/22] kvm: mmu: Introduce tdp_iter
-Message-ID: <20201001000752.GB2988@linux.intel.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-3-bgardon@google.com>
- <4a74aafe-9613-4bf2-47a1-cad0aad34323@amd.com>
- <2d43d29f-d29c-3dd7-1709-4414f34d27da@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        id S1729980AbgJAAQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 20:16:03 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09108Yfg011750;
+        Wed, 30 Sep 2020 19:08:34 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09108XYC011749;
+        Wed, 30 Sep 2020 19:08:33 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 30 Sep 2020 19:08:32 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shuo.a.liu@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201001000832.GE28786@gate.crashing.org>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com> <20200922114311.38804-5-shuo.a.liu@intel.com> <20200927105152.GG88650@kroah.com> <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com> <20200930111612.GZ2628@hirez.programming.kicks-ass.net> <20200930161036.GY28786@gate.crashing.org> <20200930171346.GC2628@hirez.programming.kicks-ass.net> <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com> <20200930195915.GA3180913@rani.riverdale.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2d43d29f-d29c-3dd7-1709-4414f34d27da@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200930195915.GA3180913@rani.riverdale.lan>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:34:53AM +0200, Paolo Bonzini wrote:
-> On 01/10/20 01:20, Eric van Tassell wrote:
-> >>
-> >> +int is_shadow_present_pte(u64 pte)
-> >>   {
-> >>       return (pte != 0) && !is_mmio_spte(pte);
-> > From <Figure 28-1: Formats of EPTP and EPT Paging-Structure Entries" of
-> > the manual I don't have at my fingertips right now, I believe you should
-> > only check the low 3 bits(mask = 0x7). Since the upper bits are ignored,
-> > might that not mean they're not guaranteed to be 0?
+On Wed, Sep 30, 2020 at 03:59:15PM -0400, Arvind Sankar wrote:
+> On Wed, Sep 30, 2020 at 12:14:03PM -0700, Nick Desaulniers wrote:
+> > On Wed, Sep 30, 2020 at 10:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Wed, Sep 30, 2020 at 11:10:36AM -0500, Segher Boessenkool wrote:
+> > >
+> > > > Since this variable is a local register asm, on entry to the asm the
+> > > > compiler guarantees that the value lives in the assigned register (the
+> > > > "r8" hardware register in this case).  This all works completely fine.
+> > > > This is the only guaranteed behaviour for local register asm (well,
+> > > > together with analogous behaviour for outputs).
 > 
-> No, this a property of the KVM MMU (and how it builds its PTEs) rather
-> than the hardware present check.
+> How strict is the guarantee? This is an inline function -- could the
+> compiler decide to reorder some other code in between the r8 assignment
+> and the asm statement when it gets inlined?
 
-Ya, I found out the hard way that "present" in is_shadow_present_pte() really
-means "valid", or "may be present".  The most notable case is EPT without A/D
-bits (I think this is the only case where a valid SPTE can be fully not-present
-in hardware).  Accessed tracking will clear all RWX bits to make the EPT entry
-not-present, but from KVM's perspective it's treated as valid/present because
-it can be made present in hardware without taking the MMU lock.
+Nope.  It will be in r8 on entry to the asm.  A guarantee is a
+guarantee; it is not a "yeah maybe, we'll see".
+
+> > Do we need register local storage here?
+> > 
+> > static inline long bar(unsigned long hcall_id)
+> > {
+> >   long result;
+> >   asm volatile("movl %1, %%r8d\n\t"
+> >   "vmcall\n\t"
+> >     : "=a" (result)
+> >     : "ir" (hcall_id)
+> >     : );
+> >   return result;
+> > }
+> 
+> This seems more robust, though you probably need an r8 clobber in there?
+
+Oh, x86 has the operand order inverted, so this should work in fact.
+
+
+Segher
