@@ -2,201 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A563280A50
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1DB280A52
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733189AbgJAWef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728090AbgJAWef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:34:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB4FC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:34:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w21so452691pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=t1z2YcBLtrrYJdv6Xjv83rGz2AAb0KB7HcEsoMluSYA=;
-        b=WsYVCKy/Ixm5cyKnHnwOIMnathVD6CGJmu5SHPgvAy9PDreyMody66TjFk6tYiqIHT
-         JVzEjg5w75QJxZqk/byAmF0OeSjDbjVMiOpPukwNouHneHQzGM+w3OJgeeh0HISo33lS
-         ZjmKpRuSNB4n2vzLn1Os/u+T1jkN3Ff1zy1gQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=t1z2YcBLtrrYJdv6Xjv83rGz2AAb0KB7HcEsoMluSYA=;
-        b=glye4ooOCTfFpMUaD6vFSCAmxHLAW0XgvPRnkbY/iV1WG3yEkB5i6hVDkUcw0xM5N9
-         zavvZXiVHJ2l2VM/i0OaBErNU3NCcpdNo7jfBeA/MMUfSujBhJdzT8o/V2il/o9zJQyV
-         1MM4ooibzhAJn/z3yUM0jf9kKtU54SYFA5WRtOdvttxq6Kw4+ppTS1xNCwcpoImEK5Hf
-         2uw5M08iLaE4dWY4YVXyyYDwtgkFlhFmsFmAlN/dFcM7pHXFWV8H75zBn2EvLV0xqoe8
-         f8fhzb4GTeqalrGvgqb1MUcBFkNV6THMB3PWSorWx8j9UoBSzIQP7PpYp11uGT1eaWyr
-         N0gw==
-X-Gm-Message-State: AOAM531HvDSDrSMRQw23fsd4YTs65wsgePvHVU+GyWrIMxl22gDXYJjB
-        zNkHxBCyZ11PoOONFhxKu0gkU+QaCWQi5+9T
-X-Google-Smtp-Source: ABdhPJzqwUklK/b9/b5Ub5rRkWjKV8+87/N1CnXF9cm9NHRQu2e1I6PTiFRC3i9NRvN4UmaYJyeqMQ==
-X-Received: by 2002:a63:4a19:: with SMTP id x25mr7727305pga.56.1601591674585;
-        Thu, 01 Oct 2020 15:34:34 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id a185sm6638967pgc.46.2020.10.01.15.34.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 15:34:34 -0700 (PDT)
-Subject: Re: [PATCH v5 00/15] Add Broadcom VK driver
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-References: <20201001012810.4172-1-scott.branden@broadcom.com>
- <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <c555ec04-f8fd-4024-142b-123cdbb51e52@broadcom.com>
-Date:   Thu, 1 Oct 2020 15:34:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1733053AbgJAWiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:38:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725924AbgJAWiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:38:54 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E03020719;
+        Thu,  1 Oct 2020 22:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601591933;
+        bh=dgse0uKa9q4y1xba5nTOCZw8RfdMgAh2siEKq6FEbw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uRuY1p+tObvxgjKQUQAF6agnUD66dxoDsbXY8z+yb9idAVI5vvinrorOkLYZAv/F7
+         DPYSFXNEXwAGkMDceSMSd5SAnuu8zJt2dObGFRPH4WevNG+L9cVNrZpWvla8kZuQnd
+         Xe1EwPVM8XPZbYMgJUTknon6uxvaqhf+cnjKVCq0=
+Date:   Thu, 1 Oct 2020 15:38:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 05/14] fs: don't allow kernel reads and writes without
+ iter ops
+Message-ID: <20201001223852.GA855@sol.localdomain>
+References: <20200903142242.925828-1-hch@lst.de>
+ <20200903142242.925828-6-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dd90e505b0a39ef0"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903142242.925828-6-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dd90e505b0a39ef0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+Christoph, Al, and Linus:
 
+On Thu, Sep 03, 2020 at 04:22:33PM +0200, Christoph Hellwig wrote:
+> @@ -510,28 +524,31 @@ static ssize_t new_sync_write(struct file *filp, const char __user *buf, size_t
+>  /* caller is responsible for file_start_write/file_end_write */
+>  ssize_t __kernel_write(struct file *file, const void *buf, size_t count, loff_t *pos)
+>  {
+> -	mm_segment_t old_fs;
+> -	const char __user *p;
+> +	struct kvec iov = {
+> +		.iov_base	= (void *)buf,
+> +		.iov_len	= min_t(size_t, count, MAX_RW_COUNT),
+> +	};
+> +	struct kiocb kiocb;
+> +	struct iov_iter iter;
+>  	ssize_t ret;
+>  
+>  	if (WARN_ON_ONCE(!(file->f_mode & FMODE_WRITE)))
+>  		return -EBADF;
+>  	if (!(file->f_mode & FMODE_CAN_WRITE))
+>  		return -EINVAL;
+> +	/*
+> +	 * Also fail if ->write_iter and ->write are both wired up as that
+> +	 * implies very convoluted semantics.
+> +	 */
+> +	if (unlikely(!file->f_op->write_iter || file->f_op->write))
+> +		return warn_unsupported(file, "write");
+>  
+> -	old_fs = get_fs();
+> -	set_fs(KERNEL_DS);
+> -	p = (__force const char __user *)buf;
+> -	if (count > MAX_RW_COUNT)
+> -		count =  MAX_RW_COUNT;
+> -	if (file->f_op->write)
+> -		ret = file->f_op->write(file, p, count, pos);
+> -	else if (file->f_op->write_iter)
+> -		ret = new_sync_write(file, p, count, pos);
+> -	else
+> -		ret = -EINVAL;
+> -	set_fs(old_fs);
+> +	init_sync_kiocb(&kiocb, file);
+> +	kiocb.ki_pos = *pos;
+> +	iov_iter_kvec(&iter, WRITE, &iov, 1, iov.iov_len);
+> +	ret = file->f_op->write_iter(&kiocb, &iter);
 
+next-20201001 crashes on boot for me because there is a bad interaction between
+this commit in vfs/for-next:
 
-On 2020-09-30 7:38 p.m., Florian Fainelli wrote:
->
->
-> On 9/30/2020 6:27 PM, Scott Branden wrote:
->> This patch series drops previous patches in [1]
->> that were incorporated by Kees Cook into patch series
->> "Introduce partial kernel_read_file() support" [2].
->>
->> Remaining patches are contained in this series to add Broadcom VK driver.
->> (which depends on request_firmware_into_buf API addition in
->> other patch series [2] being applied first).
->>
->> Please note this patch series will not compile without [2].
->>
->> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
->> [2] https://lore.kernel.org/lkml/20200729175845.1745471-1-keescook@chromium.org/
->
-> Disclaimer: I am well aware that it is the complete wild west right now as far as accelerators go and that every vendor (that I happen to work for, just not in the same group as Scott) is just seeking to get their drivers included upstream and hopefully for good reasons.
->
-> From a cursory look however, it sounds like there could be a little better re-utilization of standards, standard framework and interfaces:
->
-> - about 2/3 of your sysfs attributes should incline you to implement a HWMON device, not a complicated one, but anything that indicates current, power, temperature, alerts etc. should be considered
-yes, commented in the patch.  we'll look at it.
->
-> - cannot the firmware loading be supported over remoteproc somehow?
-It doesn't follow remoteproc usage, Olof commented.
->
-> - could not the TTY interface be using virtio or an existing UART?
-commented in the patch.  I don't see how that would work with existing solutions but open to a simple solution if such exists.
->
-> - what is the format of the message over BAR2 that you expose in patch 13?
-proprietary log messages retrieve via user space app and run through post processing
->
-> Is there a reference user-space implementation that you can link to this patch submission in case people are curious?
-Published and commented to Greg K-H about this yesterday.
+	commit 4d03e3cc59828c82ee89ea6e27a2f3cdf95aaadf
+	Author: Christoph Hellwig <hch@lst.de>
+	Date:   Thu Sep 3 16:22:33 2020 +0200
 
-Here is the vk interface library, vkil, and associated unittest and card utilities.
+	    fs: don't allow kernel reads and writes without iter ops
 
-https://github.com/Broadcom/vkil/
+... and Linus's mainline commit:
 
+	commit 90fb702791bf99b959006972e8ee7bb4609f441b
+	Author: Linus Torvalds <torvalds@linux-foundation.org>
+	Date:   Tue Sep 29 17:18:34 2020 -0700
 
->
-> Thanks
+	    autofs: use __kernel_write() for the autofs pipe writing
 
+Linus's commit made autofs start passing pos=NULL to __kernel_write().
+But, Christoph's commit made __kernel_write() no longer accept a NULL pos.
 
---000000000000dd90e505b0a39ef0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+The following fixes it:
 
-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
-I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
-AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
-MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
-YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
-ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
-FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
-MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
-qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
-uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
-pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
-aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
-H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
-0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
-RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgUv4x1SxL
-KS44jQmOqAFK/hQ4RAHJtytvKa00c1P7cXEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMjAxMDAxMjIzNDM1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
-BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFj/Cq30pejQB6HIUf+U2kzMcqf+
-t1IroQyFkyQCH6QYVFmh6rMrz6j2fjfb2gZ1DU8J1cSrxPyN4M0KydpBfubtAGSDX3XPDUhy+6Gn
-RQy8+bcB2rnTEG3raTmFdGN5pWsVWdf7qg0AsiOFiMVqZdy3mJvv1cPrEYHBOo91+Rmt66TreYrT
-qEk63scLmeMhk+Rvhkw7ifeO5BXAfFQxM9paYLwenRyciG2unWHh9Xv8amRebW2T4Pr2UoXzEjLE
-PPn55uM99e3hsdTVcFFJam7Tf0zbKQsgeSgcEmdIpdHKhxCwdBbpE4mXc/tqljf43PZY6hHXLzXU
-dlhncNhI6nA=
---000000000000dd90e505b0a39ef0--
+diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+index 5ced859dac53..b04c528b19d3 100644
+--- a/fs/autofs/waitq.c
++++ b/fs/autofs/waitq.c
+@@ -53,7 +53,7 @@ static int autofs_write(struct autofs_sb_info *sbi,
+ 
+ 	mutex_lock(&sbi->pipe_mutex);
+ 	while (bytes) {
+-		wr = __kernel_write(file, data, bytes, NULL);
++		wr = __kernel_write(file, data, bytes, &file->f_pos);
+ 		if (wr <= 0)
+ 			break;
+ 		data += wr;
+
+I'm not sure what was intended, though.
+
+Full stack trace below.
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 0 P4D 0 
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 12 PID: 383 Comm: systemd-binfmt Tainted: G                T 5.9.0-rc7-next-20201001 #2
+Hardware name: Gigabyte Technology Co., Ltd. X399 AORUS Gaming 7/X399 AORUS Gaming 7, BIOS F2 08/31/2017
+RIP: 0010:init_sync_kiocb include/linux/fs.h:2050 [inline]
+RIP: 0010:__kernel_write+0x16c/0x2b0 fs/read_write.c:546
+Code: 24 4a b9 01 00 00 00 0f 45 c7 be 01 00 00 00 48 8d 7c 24 10 48 c7 44 24 40 00 00 00 00 48 c7 44 24 58 00 00 00 00 89 44 24 4c <48> 8b 03 48 c7 44 24 60 00 00 00 00 48 89 44 24 50 4c 89 64 24 38
+RSP: 0018:ffffa2fc0102f8b0 EFLAGS: 00010246
+RAX: 0000000000020000 RBX: 0000000000000000 RCX: 0000000000000001
+RDX: ffffa2fc0102f8b0 RSI: 0000000000000001 RDI: ffffa2fc0102f8c0
+RBP: ffff8ad2927e2940 R08: 0000000000000130 R09: ffff8ad29a201800
+R10: 000000000000000f R11: ffff8ad292547510 R12: ffff8ad2927e2940
+R13: ffffa2fc0102f8e8 R14: ffff8ad29a951768 R15: 0000000000000130
+FS:  00007f11023b9000(0000) GS:ffff8ad29ed00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000857b62000 CR4: 00000000003506e0
+Call Trace:
+ autofs_write fs/autofs/waitq.c:56 [inline]
+ autofs_notify_daemon.constprop.0+0x115/0x260 fs/autofs/waitq.c:163
+ autofs_wait+0x5b1/0x750 fs/autofs/waitq.c:465
+ autofs_mount_wait+0x2d/0x60 fs/autofs/root.c:250
+ autofs_d_automount+0xc4/0x1a0 fs/autofs/root.c:379
+ follow_automount fs/namei.c:1198 [inline]
+ __traverse_mounts+0x8d/0x230 fs/namei.c:1243
+ traverse_mounts fs/namei.c:1272 [inline]
+ handle_mounts fs/namei.c:1381 [inline]
+ step_into+0x44e/0x730 fs/namei.c:1691
+ walk_component+0x7e/0x1b0 fs/namei.c:1867
+ link_path_walk+0x270/0x3b0 fs/namei.c:2184
+ path_openat+0x90/0xe40 fs/namei.c:3365
+ do_filp_open+0x98/0x140 fs/namei.c:3396
+ do_sys_openat2+0xac/0x170 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_openat fs/open.c:1200 [inline]
+ __se_sys_openat fs/open.c:1195 [inline]
+ __x64_sys_openat+0x51/0x90 fs/open.c:1195
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f11031d3c1b
+Code: 25 00 00 41 00 3d 00 00 41 00 74 4b 64 8b 04 25 18 00 00 00 85 c0 75 67 44 89 e2 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 91 00 00 00 48 8b 4c 24 28 64 48 2b 0c 25
+RSP: 002b:00007ffda6c0a1c0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000020 RCX: 00007f11031d3c1b
+RDX: 0000000000080101 RSI: 000055f65e114278 RDI: 00000000ffffff9c
+random: lvm: uninitialized urandom read (4 bytes read)
+RBP: 000055f65e114278 R08: 00000000ffffffff R09: 000055f65ef055d8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080101
+R13: 000055f65e11434a R14: 0000000000000000 R15: 0000000000000000
+CR2: 0000000000000000
+---[ end trace 166ad5429f22801b ]---
