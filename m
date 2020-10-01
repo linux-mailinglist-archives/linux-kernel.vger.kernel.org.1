@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501312807D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DB52807CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732522AbgJATfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:35:48 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:52127 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729990AbgJATdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:33:54 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1118D5801AD;
-        Thu,  1 Oct 2020 15:33:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 01 Oct 2020 15:33:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=T
-        avF71lBlL6nBdjv5tFqv1tjUk2DGNXMCqE9op0VZ2Q=; b=H7sl1jHjD7RJU5Xfy
-        R7+BWtx6TORRox+x/EBMJICRYKvR6xgTrQ+djSOjK1xEUENmSxmfDaReKKu1sVSX
-        oVoZ0W/NrADNHFEg7vOIurQmHwFwU2RQXEUcIZuzNLyH6/a3h67/QgAu2Otkpt4J
-        ZVGx4VlJz4B/HG2XT+irPPs5LkC/d52PPyv5mi816tRUzPK72rAlsTRRVelu4yTu
-        FmpBXbepqilYZY+Z1bSxXXETyMEeJ8Rq+Tm2GVFoRJ57PiTuyXiFTKMK2vNltzNO
-        tSh43UpIhFUvYWTNrZK0hS9nILr26nXi9Z2cQzBl3jWBRe5RN9CBFTz8AdZN7PDt
-        GNyqg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=TavF71lBlL6nBdjv5tFqv1tjUk2DGNXMCqE9op0VZ
-        2Q=; b=hAH2AVTa9yCO7FGUQGrojKp/3r6j0dYp8ieilCpUAuZP7vcDYF9spGl7/
-        ZCF0cwDyATtI9QvAm2bXy8iC5s2FQx/kusgT89ax1PTgED1hwFS2XuB+qcWcJ5do
-        DIYigOh6swsrd6ekJBSMf0v8ZvfvTnALIWSsD9zL+ddF90LcSAK86olirh7ULGXI
-        P9I6h++5tyIlIvI1R40pI4BO/Ac0TG7Z2b9nSOFH5ANXktE6bz/YSd9XUMXRC2PG
-        Ml4nHJU1W1aKT+C/4BS1ZfisY3A2uaOcef6bvY+DFgjDLdmyGliiEB98Zsvqoesz
-        +FXH6Y5wyIrugIY1sITtfUZ5gBhIA==
-X-ME-Sender: <xms:_S52X187-qJxUt7IQ-jYKh0FfXBFw3u32M0ThHucgNiJhDkiItUJyQ>
-    <xme:_S52X5u9bJvf-deIsQ_khz8fGcdpuZy-bgparwGQyQ9obhtV_UWfcFs0pksZ4Ll9K
-    -E-X31M1Bhj5ReYDSU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeeggddugedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnheplefgudefleejhefhvedufeegudffgfelgeevgfejfeffieeufefgffet
-    udeljeefnecukfhppeduvdekrddutdejrddvgedurddujeeinecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhi
-    iiiirg
-X-ME-Proxy: <xmx:_S52XzBV6gtZHK1akrygkJU1hQhCNNEC-GqUotHiOC8Qt9ROd43xcw>
-    <xmx:_S52X5fRcgiySVAueUx9Dzr_6NNywkMDxpsPseB0L0XPQaHnvjiwGg>
-    <xmx:_S52X6OrqCaEHBqw9O47JJfc5eBWrFPnYdlxjp5XgJquckmunk4uEw>
-    <xmx:Ay92XzMHukmtAlVW3f0yw7L0osJxhu2Evb0JtOoYWHOQTQ8AXQ5EGyGGevY>
-Received: from cisco (unknown [128.107.241.176])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 50394306467E;
-        Thu,  1 Oct 2020 15:33:08 -0400 (EDT)
-Date:   Thu, 1 Oct 2020 13:33:06 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morris <jmorris@namei.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-Subject: Re: [PATCH v11 2/3] arch: Wire up trusted_for(2)
-Message-ID: <20201001193306.GE1260245@cisco>
-References: <20201001170232.522331-1-mic@digikod.net>
- <20201001170232.522331-3-mic@digikod.net>
+        id S1732792AbgJATeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:34:23 -0400
+Received: from mga01.intel.com ([192.55.52.88]:9885 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729993AbgJATeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:34:23 -0400
+IronPort-SDR: KLrPimqFu8V6XM6tpuixUFrcco+/nXpZsr0b7lYAexU83/cP9IEV4sTH8CyH+4lecdwO9Dz+ht
+ mTNVJFo4TD/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180969962"
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="180969962"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 12:34:21 -0700
+IronPort-SDR: 6fxbX/vp4tfPSW725Un360VuAcraUtk4SfFHtCNMfLpIIz1R27PHe3hU10n8F0cla1VKXGiGWP
+ y5Ds7yzXg8rQ==
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="308767771"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 12:34:18 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 12A562068C; Thu,  1 Oct 2020 22:34:14 +0300 (EEST)
+Date:   Thu, 1 Oct 2020 22:34:14 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v6 1/3] media: i2c: ov772x: Parse endpoint properties
+Message-ID: <20201001193413.GR26842@paasikivi.fi.intel.com>
+References: <20200917174224.11430-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200917174224.11430-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200930114529.GM26842@paasikivi.fi.intel.com>
+ <CA+V-a8t5piG4a0C2BKgsZii6EB7te=GUeRCmfcPhdm+hAuV7Ng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001170232.522331-3-mic@digikod.net>
+In-Reply-To: <CA+V-a8t5piG4a0C2BKgsZii6EB7te=GUeRCmfcPhdm+hAuV7Ng@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 07:02:31PM +0200, Mickaël Salaün wrote:
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -859,9 +859,11 @@ __SYSCALL(__NR_openat2, sys_openat2)
->  __SYSCALL(__NR_pidfd_getfd, sys_pidfd_getfd)
->  #define __NR_faccessat2 439
->  __SYSCALL(__NR_faccessat2, sys_faccessat2)
-> +#define __NR_trusted_for 443
-> +__SYSCALL(__NR_trusted_for, sys_trusted_for)
->  
->  #undef __NR_syscalls
-> -#define __NR_syscalls 440
-> +#define __NR_syscalls 444
+On Wed, Sep 30, 2020 at 01:19:40PM +0100, Lad, Prabhakar wrote:
+> HI Sakari,
+> 
+> Thank you for the review.
+> 
+> On Wed, Sep 30, 2020 at 12:45 PM Sakari Ailus
+> <sakari.ailus@linux.intel.com> wrote:
+> >
+> > Hi Prabhakar,
+> >
+> > On Thu, Sep 17, 2020 at 06:42:22PM +0100, Lad Prabhakar wrote:
+> > > Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> > > to determine the bus type and store it in the driver structure.
+> > >
+> > > Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > ---
+> > >  drivers/media/i2c/ov772x.c | 34 ++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 34 insertions(+)
+> > >
+> > > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > > index 2cc6a678069a..f61a3f09ad64 100644
+> > > --- a/drivers/media/i2c/ov772x.c
+> > > +++ b/drivers/media/i2c/ov772x.c
+> > > @@ -31,6 +31,7 @@
+> > >  #include <media/v4l2-ctrls.h>
+> > >  #include <media/v4l2-device.h>
+> > >  #include <media/v4l2-event.h>
+> > > +#include <media/v4l2-fwnode.h>
+> > >  #include <media/v4l2-image-sizes.h>
+> > >  #include <media/v4l2-subdev.h>
+> > >
+> > > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> > >  #ifdef CONFIG_MEDIA_CONTROLLER
+> > >       struct media_pad pad;
+> > >  #endif
+> > > +     enum v4l2_mbus_type               bus_type;
+> > >  };
+> > >
+> > >  /*
+> > > @@ -1348,6 +1350,34 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> > >       .pad    = &ov772x_subdev_pad_ops,
+> > >  };
+> > >
+> > > +static int ov772x_parse_dt(struct i2c_client *client,
+> > > +                        struct ov772x_priv *priv)
+> > > +{
+> > > +     struct v4l2_fwnode_endpoint bus_cfg;
+> > > +     struct fwnode_handle *ep;
+> > > +     int ret;
+> > > +
+> > > +     ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > > +                                         NULL);
+> > > +     if (!ep) {
+> > > +             dev_err(&client->dev, "Endpoint node not found\n");
+> > > +             return -EINVAL;
+> > > +     }
+> > > +
+> > > +     bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+> >
+> > Please zero the entire struct, i.e. do this assignment in the declaration.
+> >
+> Agreed, but instead at the declaration I would prefer here as below,
+> since patch 2/3 has a comment related to backward compatibility with
+> the bindings. Is this OK with you ?
+>     bus_cfg = (struct v4l2_fwnode_endpoint)
+>           { .bus_type = V4L2_MBUS_PARALLEL };
 
-Looks like a rebase problem here?
+Why not in variable declaration?
 
-Tycho
+-- 
+Sakari Ailus
