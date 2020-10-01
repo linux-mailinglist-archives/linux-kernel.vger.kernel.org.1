@@ -2,168 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A6D2802F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F6B2802F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732730AbgJAPgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S1732753AbgJAPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732417AbgJAPgZ (ORCPT
+        with ESMTP id S1732104AbgJAPgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:36:25 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC08C0613D0;
-        Thu,  1 Oct 2020 08:36:25 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d6so4847171pfn.9;
-        Thu, 01 Oct 2020 08:36:25 -0700 (PDT)
+        Thu, 1 Oct 2020 11:36:47 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F8EC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:36:46 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id z26so5993608oih.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cg3wbDR04xmJHB+TGPRHBG7JiU528nISGUy/wwYR0YA=;
-        b=T2sIPs+pWd7e9fuAwLNDnWSPDZ6NS1gAGLWZ13W5+J9jcgYuD8w0XVIL+tqDm3r6fi
-         HXytKiICTlyDUrvgFtgXREM/fAUvMkkcKMLxOrZHhD+4sBL74LEuw1k8K3gaVxBsjC1z
-         LFLV+gbwHfU3OdOw8rW/Bvyt0zIyM0NfXMiqLy8aIJ4ZELGfVLOZk1ht9AQLKwxwugKi
-         P927bAHPcG9/f9McY+3gNLck261EN1PBOyhuGPlngi2Cimp1vocgT+300xLteG3t37vu
-         pKytFTgsijEdAm+6usLDTbV9k2UOrPkqY699buhiNKkTQBGpnWhBfylkEOj+PEOpLpaA
-         ABKQ==
+        bh=KTRcLiitCGxtErYo95DQsuhS+3OUv5XK3IV763QSggk=;
+        b=eAIryjrGkerzMGunb1ZsmgjTEM6lxDD9ynZkPH6JSZRoOCVtbiBQ9lnOdtK1vRhDda
+         iV2Uwnxf7YD4ZzGTXuc1D91QRjfrGEmJlykSRyYduyZ7LvfCLRWNayoLerQVmPpV7XLI
+         ZhNj8NBOmSJPfd89OtYYnxCdzkKyxsoILt0Y1ZCcujnXmQqqBB/zRbTszNS4gGeGsRI7
+         LsmSikTfFgOXC+HBrTsOkmJbCwFguMFRbV8oeWtcQ59XmYERg9oTjo3HiXXgJ5IOhJH1
+         YPN2NYuAaSh0JvTQmMBXmD0q1YndiHnf62j0WZYkOXUI2n/3JxMf57CMFilRWJKLj8oB
+         DbFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cg3wbDR04xmJHB+TGPRHBG7JiU528nISGUy/wwYR0YA=;
-        b=r8n2f2buyadO1kTj9+LgUWAoazLbe8cwmSw9iakwELjnC3mWNbA5f+IRdPGjvyCu/Y
-         MHws1rrcUjHWWuEe5gF4UGCLPIf1zTjGLcy19aLWQg4ON4rwnkGCD6t3oOghA/vtQ3Cv
-         1LVry/l7u5PVm1sNndeIpRhv7lNJsKPgK+nubKRZCXwRIvm4VMXzupRZkJfKXQnOeDlq
-         zrUBADKG6RQ9Boaod7FZbEbGBUParftk983IU0hzmXo4m4rehiyTyOJurRIiPkvr1sZQ
-         PK4VZKUgp3mqwPj2yC98xxByAgrYgBT6EB5AF5HTWNs5UFJrK/gzBDVbpu+OcaQYU1ny
-         LcQA==
-X-Gm-Message-State: AOAM530aXnpYpvkfow4KOql/u3CXm+3GkWFaAE6waMyrgaTlgdUuNfRe
-        Z/H9pQF8sYpCvBclAn0HEzt/5Q9npJ3W2j1MB8x0VnU+2sbftdM7
-X-Google-Smtp-Source: ABdhPJx0ePV8ZxlgX4p+7m1myWdbYT0oUPnD4lXQDiT5O8wj8IfteO0VHbTZaTVt+PJDD8vNRzrLi/bjRud7qqknnM4=
-X-Received: by 2002:a62:7f0e:0:b029:152:197b:e2bd with SMTP id
- a14-20020a627f0e0000b0290152197be2bdmr1721683pfd.7.1601566584648; Thu, 01 Oct
- 2020 08:36:24 -0700 (PDT)
+        bh=KTRcLiitCGxtErYo95DQsuhS+3OUv5XK3IV763QSggk=;
+        b=IF6Ct0Fa0Fzpescdu8mBUl8HHa+k1Cbd4MUarTeCMTDx89GFIV92NK+vZHwU4huetk
+         oiMkzB0X2RdxPGI6GIDrTkvgJcdGsSDaHJmhOSeZ6D8cIPz6MVDvbl2Fpe38sMzlXH9a
+         TOo0OgX3jQLGtb5Z2hkjH3r2/+XLeuWhD5d8KbkIjIIr119opjc8SmdF88nmv+t/mgmR
+         1NiI8WyB0tIg7GeOFvFMRSETRnRduCwehNifwzYv3Rmg821cVaeIaZLAQ2z4ap0zksid
+         JJVXOcv6rsWi+E0YJbT+VaQZ1TpJh5xYePgGNelI868LaPWEY6u4cD6p0UKm7B2BVx1g
+         t9aA==
+X-Gm-Message-State: AOAM533jAYdmVeYGo5EPg9jsqLu/TYwQLGgPsB1IePuxpa1y6p+ortGR
+        KoVuKXGmZQCTdYsGtnj2h7lmI0u9ADB+3yQ6VRcNPbQ0A4OJkQ==
+X-Google-Smtp-Source: ABdhPJxpPLsfUZNUyhh5FlvHaLwRFS9ey7i+2W4qyQeVK5y8yLqt8zz98x9DwIGkY+BvHmS93cOgBJdKSmLm0uUu3cU=
+X-Received: by 2002:a05:6808:6:: with SMTP id u6mr347726oic.74.1601566605366;
+ Thu, 01 Oct 2020 08:36:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com> <20200930160430.7908-7-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20200930160430.7908-7-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 1 Oct 2020 18:36:06 +0300
-Message-ID: <CAHp75Vfu_-=+CNYoRd141md902N2uR+K0xvHryfH9YCQi9Hp4w@mail.gmail.com>
-Subject: Re: [net-next PATCH v1 6/7] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
+References: <20201001103314.136645-1-dwaipayanray1@gmail.com>
+ <8e110121c89414ab1601071868dbcf410195a209.camel@perches.com>
+ <CABJPP5CFE3KXzMzuvVxtJt5tOg8Ye6y1V7-mqT5pqazHjVWvJw@mail.gmail.com>
+ <f3dadda8af7eef6613d7a4105170058f2759507d.camel@perches.com>
+ <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
+ <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com> <dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com>
+In-Reply-To: <dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 1 Oct 2020 21:06:22 +0530
+Message-ID: <CABJPP5AvdWDJP1mkpdk_y-OVQnJb7utC3qCqOn=vP93DC7QwGg@mail.gmail.com>
+Subject: Re: [PATCH RFC] checkpatch: fix multi-statement macro checks
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 7:06 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
+> > All I'm trying to point out to you is that $Constant\s*$Constant
+> > isn't a proper test as the first $Constant will pull the test
+> > entire sequence of digits and the second $Constant will not be
+> > met.
+> >
+> > It may take some conversion of the collapsing of the dstat
+> > block to work appropriately
+> >
+> >
+> >                       # Flatten any parentheses and braces
+> >                       while ($dstat =~ s/\([^\(\)]*\)/1/ ||
+> >                              $dstat =~ s/\{[^\{\}]*\}/1/ ||
+> >                              $dstat =~ s/.\[[^\[\]]*\]/1/)
+> >                       {
+> >                       }
+> >
+> > Maybe the /1/ should be / 1 / but I didn't look to see what
+> > happens to the exclusion tests below that.
 >
-> Modify dpaa2_mac_connect() to support ACPI along with DT.
-> Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
-> DT or ACPI.
+> I think your patch would work well enough if the /1/ bits
+> here were simply changed to /1u/.
 >
-> Replace of_get_phy_mode with fwnode_get_phy_mode to get
-> phy-mode for a dpmac_node.
+> 1 is a $Constant as it's just a number.
+> 11 though is also a $Constant.
+> 1u is also a $Constant but it stops the acquisition of
+> digits that 11 would not and the sequence of
+> "while1u1u" should match your newly introduced test
+> of $Constant\s*$Constant as "while11" would not match.
 >
-> Use helper function phylink_fwnode_phy_connect() to find phy_dev and
-> connect to mac->phylink.
-
-...
-
->  #include "dpaa2-eth.h"
->  #include "dpaa2-mac.h"
-
-> +#include <linux/acpi.h>
-
-Please, put generic headers first.
-
-> +       struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +       struct fwnode_handle *dpmacs, *dpmac = NULL;
-> +       unsigned long long adr;
-> +       acpi_status status;
->         int err;
-> +       u32 id;
 >
-> -       dpmacs = of_find_node_by_name(NULL, "dpmacs");
-> -       if (!dpmacs)
-> -               return NULL;
-> +       if (is_of_node(dev->parent->fwnode)) {
-> +               dpmacs = device_get_named_child_node(dev->parent, "dpmacs");
-> +               if (!dpmacs)
-> +                       return NULL;
-> +
-> +               while ((dpmac = fwnode_get_next_child_node(dpmacs, dpmac))) {
-> +                       err = fwnode_property_read_u32(dpmac, "reg", &id);
-> +                       if (err)
-> +                               continue;
-> +                       if (id == dpmac_id)
-> +                               return dpmac;
-> +               }
->
-> +       } else if (is_acpi_node(dev->parent->fwnode)) {
-> +               device_for_each_child_node(dev->parent, dpmac) {
-> +                       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(dpmac),
-> +                                                      "_ADR", NULL, &adr);
-> +                       if (ACPI_FAILURE(status)) {
-> +                               pr_debug("_ADR returned %d on %s\n",
-> +                                        status, (char *)buffer.pointer);
-> +                               continue;
-> +                       } else {
-> +                               id = (u32)adr;
-> +                               if (id == dpmac_id)
-> +                                       return dpmac;
-> +                       }
-> +               }
 
-Can you rather implement generic one which will be
+Hi,
+That's an amazing idea! I tried it and this time it seems to
+detect it properly. Also this fixes the similar case in
+for(...) {...}.
 
-int fwnode_get_child_id(struct fwnode_handle *fwnode, u64 *id);
+It should not have any side effects also for other checks.
+Pretty amazing.
 
-and put the logic of retrieving 'reg' or _ADR? Also, for the latter we
-have a special macro
-METHOD_NAME__ADR.
+I will rewrite the patch with your suggestion and send it
+back.
 
-See [1] as well. Same idea I have shared already.
-
-[1]: https://lore.kernel.org/linux-iio/20200824054347.3805-1-william.sung@advantech.com.tw/T/#m5f61921fa67a5b40522b7f7b17216e0d204647be
-
-...
-
-> -       of_node_put(dpmac_node);
-> +       if (is_of_node(dpmac_node))
-> +               of_node_put(to_of_node(dpmac_node));
-
-I'm not sure why you can't use fwnode_handle_put()?
-
-> +       if (is_of_node(dpmac_node))
-> +               of_node_put(to_of_node(dpmac_node));
-
-Ditto.
-
---
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Dwaipayan.
