@@ -2,79 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D064527FAEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923F027FAF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731506AbgJAH7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:59:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33056 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgJAH7n (ORCPT
+        id S1731579AbgJAIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731539AbgJAIAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:59:43 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 7B4B129D23B
-Subject: Re: [PATCH v2] pinctrl: mediatek: Free eint data on failure
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Sean Wang <sean.wang@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>, hsinyi@chromium.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20200821075452.1543610-1-enric.balletbo@collabora.com>
- <99821f85-9a38-7591-f982-872603b6ce8a@collabora.com>
- <CAGp9Lzq-15xjvSVaEJ=2o18o-8ESGWsHf-LNAXXwKfxu4V-0NQ@mail.gmail.com>
- <CACRpkdYPoZX1+rfJb925_+H6YXiwO26cKLpZae=_j=RQKGA0Wg@mail.gmail.com>
- <CAGp9LzqGwvxGF_bhuyGXu1R2516x=twv1j5e0Wx0EQ7GZ4b-yQ@mail.gmail.com>
- <CACRpkdYga6XttmMnQ6r--_7wtfebirY5Z58D6xhBkRRDrf98ZQ@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <6a04c7b7-dd70-10c2-fc69-08b6b6c33d03@collabora.com>
-Date:   Thu, 1 Oct 2020 09:59:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 04:00:03 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4182C0613D0;
+        Thu,  1 Oct 2020 01:00:02 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id c8so4633413edv.5;
+        Thu, 01 Oct 2020 01:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kJDll8669MgwGkGlatIF8vY03H/D/9DxkpS4HR8psz0=;
+        b=mEWWAXxyBizecMRZilDRasV4hyuAjJCc3TEa7CNG5P+0EUX0/qpkD0U0sDer0i/frK
+         58ijdsTThYNUFvgAhSJnI4I8I92FrBQodvuOHLJGtDna6DrLRp0089kJSXTGVEJ5+ob4
+         yyaTlpOXHNvU5+dQEhWbjdjhdO5zE/3AeJjEouHsL91WqdFDxb0tDBKGw3qGNVVblWri
+         6aytBAy065XQfrdtAteH1cDyx9Et2wbSl2MAMGZJKD/6RR4ELMO/5k512H1Zmd/4S2Xf
+         WUIR3uhFwfSEFWmNMSVauf0uNqvXgwKx0CzSsB3vaqAwaFNaYKfJqJB063cCba23kZnK
+         7dig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kJDll8669MgwGkGlatIF8vY03H/D/9DxkpS4HR8psz0=;
+        b=lBcuo5pi8x1YMZw4XJncP2PzceC48YENzz60WCBnROTo/uZi/lgEBfnlcxDrrLZgB1
+         k9BnlKyX21RIFoQkvblNcaS8CGzpdUYvKz5H1G7vCnLa1sQYmHk0CmIsUEQ6k0gcaf7p
+         9yHC/X+T3HEoucI4NS4FIdqVCB4E2ESm9UAmSl6g4FaYkW8jXsSeGFXXGzJrWAyUObuJ
+         G7qIdx/dcmGhzwuzgdLWP1gNUFVn/PLRWZsNRIivDuZ730Gm9E8OCvz9XGF8xsx1j1Rg
+         jtL1S17BvzzAwSC5RML3HdDFebQ8vZVFreZEFzrhqpJEeT6upEtbB51zk/SsYRPcKoNa
+         dxww==
+X-Gm-Message-State: AOAM531VFAfbECIwTQs8vMEEdWfLnSC5iCSbE8Jzt9PsuL12N5HMt+QH
+        Jjh3rAH9wAWdD+jDI+rdFAM=
+X-Google-Smtp-Source: ABdhPJzhr4TJ1Eipm/gKkHKCZgtc6Id22KJDdtB+FTrQfwP5iA5E8tm55OszIG11/sEletKyVEZS7w==
+X-Received: by 2002:aa7:c1c3:: with SMTP id d3mr6962876edp.228.1601539201381;
+        Thu, 01 Oct 2020 01:00:01 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id t18sm1230119ejg.76.2020.10.01.00.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 01:00:00 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 09:59:58 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20201001075958.GB3919720@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+ <20200930161033.GE3833404@ulmo>
+ <36946786-38c5-54d4-07f5-2407c39aa01c@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYga6XttmMnQ6r--_7wtfebirY5Z58D6xhBkRRDrf98ZQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Y7xTucakfITjPcLV"
+Content-Disposition: inline
+In-Reply-To: <36946786-38c5-54d4-07f5-2407c39aa01c@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 1/10/20 9:58, Linus Walleij wrote:
-> On Wed, Sep 30, 2020 at 6:33 PM Sean Wang <sean.wang@kernel.org> wrote:
->> On Wed, Sep 30, 2020 at 1:47 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->>> On Sun, Sep 27, 2020 at 7:57 PM Sean Wang <sean.wang@kernel.org> wrote:
->>>
->>>> v2 seems the same with v1 or I was missing something.
->>>>
->>>> I just thought we call devm_ioremap_release to explicitly to free
->>>> resource when a certain failure occurs after
->>>> devm_ioremap_resource?
->>>
->>> What is the semantics around mtk_build_eint()?
->>>
->>
->> mtk_build_eint is to add external interrupt function to the
->> corresponding bound pins.
->> mtk pinctrl driver still can work (than means probe() successfully) to
->> keep pinctrl functional even with there is an error in mtk_build_eint.
->> So the patch is used to explicitly free those data on failure in
->> mtk_build_eint to let unused data is being free:ed immediately.
-> 
-> OK then we need a v3 of this that will call *release
-> explicitly, indeed.
-> 
+--Y7xTucakfITjPcLV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, don't really know what happened with v2. I'll send a v3 ASAP.
+On Wed, Sep 30, 2020 at 07:29:12PM +0300, Dmitry Osipenko wrote:
+> ...
+> >> Secondly, I'm already about to use the new tegra_get_memory_controller=
+()
+> >> API for all the T20/30/124/210 EMC and devfreq drivers.
+> >=20
+> > Also, this really proves the point I was trying to make about how this
+> > is going to proliferate...
+>=20
+> Sorry, I'm probably totally missing yours point.. "what" exactly will
+> proliferate?
 
-> Thanks Sean!
-> Linus Walleij
-> 
+Making use of this lookup-by-compatible mechanism. If you provide a
+function to make that easy, then people are going to use it, without
+even thinking about whether or not it is a good idea.
+
+Thierry
+
+--Y7xTucakfITjPcLV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl91jH4ACgkQ3SOs138+
+s6HvIQ/+JbyTifAB7AT15uE5vSsP5C4aDS4Zf+b3yMzEClBY7F2gR7gZNz0tKeJ5
+3j2SNVw4pxFJiyxSIHP+YCwCmVEOoEBOuDhARo76U1nWKNSMlIxXFyi/xOso1OaG
+HNhILPmvmk4Y41LQ96VzKpHtf4NvafW4oQ244t1E15ZlT2nR5+OQzFKN6xDYhujR
+LkXGrv5EdRYL9QkAoZ/cTxfb1hsqmviebkVXWJTBPS2cErsg+HtVRXChFLAlZgNL
+RXVMivkZ7FdCHqMSpaypAaUDGKLWI16DjPu1woUeXjHh9CjbL+YRa5eC78YgLye9
+B5uXXzLBCE8SrxR7xjTSnDd+ZBAKQ2Z7N+cz1EzbxBI79bZ9lFqwONt1Cjr3+3pW
+Im1mGMr0hjveQK4JPdgT4bGyLKXKf7Jfau5bTLTI+UxZyHXCUfqsuP+yU0aHNRiP
+dp9X8+rMuapK+jG9NKEXj0a/qgLvr3DXV5pN2cCjFHBM7MRHO+oPsAE22rd8gkaP
+EsNbJ9o5Fpxn2nqyKX5GOzzpyPmhaPM+xLoKVl+YYJdaueMvAw5wGq+sZsdbrT5n
+KqLTZicexxYUhofOLI0hZJJikHWY4y0UB9IbJDOuhrit61cD57UqGtvPmfIcT4gP
+2rO0fNqtBsHuXrWhjk4fqQL9PATsQLENdxB0TMX+0zIVyfJTuTA=
+=wRou
+-----END PGP SIGNATURE-----
+
+--Y7xTucakfITjPcLV--
