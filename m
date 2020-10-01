@@ -2,199 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F8A27FA5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A9D27FA61
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730884AbgJAHid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:38:33 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:33419 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAHid (ORCPT
+        id S1731349AbgJAHjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:39:35 -0400
+Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:46424 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731131AbgJAHjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:38:33 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DD4FB22FAD;
-        Thu,  1 Oct 2020 09:38:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601537910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uGiNXcRQBc+sNSbaF8m1s0WNFrWOF68BnQu0iDZn9pk=;
-        b=cmw/hv4c9znNY6TbviqoEmAKKfgSZC1jz21XE9H7Jm97NmK1ktjRaomZ8+snhETVlkuZAY
-        /NWWQVwtqgeodoSx7Re86i99NxqJyoPySYvBttm2DB6twt8oBf/GAnMNUKFpreI/cn1OaT
-        8+fEbNjNNPpqt6xmClnXqWZ75CtdsDY=
+        Thu, 1 Oct 2020 03:39:35 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 67409180A68AD;
+        Thu,  1 Oct 2020 07:39:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:2899:2907:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:7903:8603:10004:10400:10848:11026:11232:11473:11658:11914:12297:12663:12740:12760:12895:13069:13095:13138:13161:13229:13231:13311:13357:13439:14096:14097:14659:14721:14819:21063:21080:21324:21433:21627:21740:21809:21939:21990:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: boats10_320b5cc27199
+X-Filterd-Recvd-Size: 3019
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 07:39:32 +0000 (UTC)
+Message-ID: <873100a17ac1a9fc1c435ff7957b63d2540ce7fc.camel@perches.com>
+Subject: Re: [PATCH next v2 1/2] printk: avoid and/or handle record
+ truncation
+From:   Joe Perches <joe@perches.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 01 Oct 2020 00:39:31 -0700
+In-Reply-To: <20201001072659.GB17717@alley>
+References: <20200930090134.8723-1-john.ogness@linutronix.de>
+         <20200930090134.8723-2-john.ogness@linutronix.de>
+         <b4c2ea7ec34aaf05d53264b19a6c40245ed361c0.camel@perches.com>
+         <20201001072659.GB17717@alley>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 01 Oct 2020 09:38:29 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vigneshr@ti.com, richard@nod.at, boris.brezillon@collabora.com,
-        miquel.raynal@bootlin.com
-Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
-In-Reply-To: <bec5b899-fbd2-1c29-611c-654f17e63dbf@microchip.com>
-References: <20200327155939.13153-1-michael@walle.cc>
- <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
- <a82d1ce203383af149ed77c5fd6c8985@walle.cc>
- <bec5b899-fbd2-1c29-611c-654f17e63dbf@microchip.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <8cbaef6c7565deed1109fe958291d9e0@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tudor,
-
-Am 2020-10-01 09:07, schrieb Tudor.Ambarus@microchip.com:
->>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->>>> index cc68ea84318e..fd1c36d70a13 100644
->>>> --- a/drivers/mtd/spi-nor/core.c
->>>> +++ b/drivers/mtd/spi-nor/core.c
->>>> @@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct 
->>>> spi_nor
->>>> *nor)
->>>>  }
->>>> 
->>>>  /**
->>>> - * spi_nor_unlock_all() - Unlocks the entire flash memory array.
->>>> + * spi_nor_global_unprotect() - Perform a global unprotect of the
->>>> memory area.
->>>>   * @nor:    pointer to a 'struct spi_nor'.
->>>>   *
->>>>   * Some SPI NOR flashes are write protected by default after a
->>>> power-on reset
->>>>   * cycle, in order to avoid inadvertent writes during power-up.
->>>> Backward
->>>>   * compatibility imposes to unlock the entire flash memory array at
->>>> power-up
->>>> - * by default.
->>>> + * by default. Do it only for flashes where the block protection 
->>>> bits
->>>> + * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
->>>> + *
->>>> + * We cannot use spi_nor_unlock(nor->params.size) here because 
->>>> there
->>>> are
->>>> + * legacy devices (eg. AT25DF041A) which need a "global unprotect"
->>>> command.
->>>> + * This is done by writing 0b0x0000xx to the status register. This
->>>> will also
->>>> + * work for all other flashes which have these bits mapped to BP0 
->>>> to
->>>> BP3.
->>>> + * The top most bit is ususally some kind of lock bit for the block
->>>> + * protection bits.
->>>>   */
->>>> -static int spi_nor_unlock_all(struct spi_nor *nor)
->>>> +static int spi_nor_global_unprotect(struct spi_nor *nor)
->>>>  {
->>>> -    if (nor->flags & SNOR_F_HAS_LOCK)
->>>> -            return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
->>>> +    int ret;
->>>> 
->>>> -    return 0;
->>>> +    dev_dbg(nor->dev, "unprotecting entire flash\n");
->>>> +    ret = spi_nor_read_sr(nor, nor->bouncebuf);
->>>> +    if (ret)
->>>> +            return ret;
->>>> +
->>>> +    nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
->>>> +
->>>> +    /*
->>>> +     * Don't use spi_nor_write_sr1_and_check() because writing the
->>>> status
->>>> +     * register might fail if the flash is hardware write 
->>>> protected.
->>>> +     */
->>>> +    return spi_nor_write_sr(nor, nor->bouncebuf, 1);
->>>>  }
->>> 
->>> This won't work for all the flashes. You use a GENMASK(5, 2) to clear
->>> the Status Register even for BP0-2 flashes and you end up clearing
->>> BIT(5)
->>> which can lead to side effects.
->>> 
->>> We should instead introduce a 
->>> nor->params->locking_ops->global_unlock()
->>> hook
->>> for the flashes that have special opcodes that unlock all the flash
->>> blocks,
->>> or for the flashes that deviate from the "clear just your BP bits"
->>> rule.
->> 
->> Wouldn't it make more sense to just set params->locking_ops for these
->> flashes
->> to different functions? or even provide a spi_nor_global_unprotect_ops
->> in
->> core.c and these flashes will just set them. there is no individual
->> sector
->> range lock for these chips. just a lock all or nothing.
+On Thu, 2020-10-01 at 09:26 +0200, Petr Mladek wrote:
+> On Wed 2020-09-30 08:25:24, Joe Perches wrote:
+> > On Wed, 2020-09-30 at 11:07 +0206, John Ogness wrote:
+> > > If a reader provides a buffer that is smaller than the message text,
+> > > the @text_len field of @info will have a value larger than the buffer
+> > > size. If readers blindly read @text_len bytes of data without
+> > > checking the size, they will read beyond their buffer.
+> > > 
+> > > Add this check to record_print_text() to properly recognize when such
+> > > truncation has occurred.
+> > > 
+> > > Add a maximum size argument to the ringbuffer function to extend
+> > > records so that records can not be created that are larger than the
+> > > buffer size of readers.
+> > > 
+> > > When extending records (LOG_CONT), do not extend records beyond
+> > > LOG_LINE_MAX since that is the maximum size available in the buffers
+> > > used by consoles and syslog.
+> > 
+> > I still think it better to support backspace by rewinding
+> > the buffer rather than truncation of the output.
 > 
-> I like the idea of having all locking related functions placed in a 
-> single
-> place, thus the global_unlock() should be inside locking_ops struct.
-
-My point was that this global unlock shouldn't be a special case for the
-current spi_nor_unlock() but just another "how to unlock the flash" 
-function
-and thus should replace the original unlock op. For example, it is also 
-likely
-that you need a special global lock (i.e. write all 1's).
-
-static int spi_nor_global_unlock()
-{
-   write_sr(0); /* actually it will be a read-modify write */
-}
-
-static int spi_nor_global_lock()
-{
-   write_sr(0x1c);
-}
-
-static int spi_nor_is_global_locked()
-{
-   return read_sr() & 0x1c;
-}
-
-const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
-         .lock = spi_nor_global_unlock,
-         .unlock = spi_nor_global_lock,
-         .is_locked = spi_nor_is_global_locked,
-};
-
-Having the spi_nor_unlock decide what op to choose introduces just
-another indirection. Esp. if you think about having support for
-individual sector protection which also needs new ops. Btw. to me
-it seems that "global (un)lock" is almost always used for the
-individual sector protection scheme, i.e. like a shortcut to allow all
-sectors be unlocked at once.
-
-> You can update params->locking_ops. If we have vendor specific 
-> locking_ops
-> we can set them via:
-> 	nor->manufacturer->fixups->default_init(nor);
-> or if they are flash specific, with a smaller granularity, via:
-> 	nor->info->fixups->default_init(nor);
-
-ok.
-
->> If it is more common and not just one vendor it might also make sense 
->> to
->> add
->> a seperate flag which will then set the locking ops to
->> spi_nor_global_unprotect_ops, also it seems that there have to be two
+> IMHO, backspace support is not worth the complexity. It might do
+> some fancy animation on console but it does not bring any advantage
+> in static logs (dmesg, journalctl).
 > 
-> I don't like that we have so many flags, so I try to avoid introducing 
-> new
-> ones as best as I can. Checking for null pointer should suffice.
+> It is possible that it worked in the past when the log buffer was
+> just an array of characters that were pushed to the console when
+> they appeared.
+> 
+> But I am pretty sure that it has stopped working many years agl
+> variable-length record buffer").
 
-Yeah, I already guessed that this would be the answer ;)
+It's more that spinner or timer dots could fill the
+buffer and any message after the spinner/dots like
+success or failure is lost via truncation.
 
--michael
+There aren't many spinners/dots, perhaps it's better
+to find and delete them.
+
+
