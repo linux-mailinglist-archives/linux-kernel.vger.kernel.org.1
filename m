@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA88280715
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E34F28071E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733116AbgJASkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
+        id S1732207AbgJASm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbgJASkU (ORCPT
+        with ESMTP id S1729047AbgJASm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:40:20 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6505AC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:40:20 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so4696268pgl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:40:20 -0700 (PDT)
+        Thu, 1 Oct 2020 14:42:28 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC10C0613D0;
+        Thu,  1 Oct 2020 11:42:28 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id g7so7928403iov.13;
+        Thu, 01 Oct 2020 11:42:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bT1J6Z9CLIzHImMMrPae25NAqAg4qvT7z5q5kWJnZFg=;
-        b=RQLTms+f/csSVRNAGdl1BpdQVCaCa/kppkRSMYQT9AUbjLsK3VBNvDVhE7GqrFfspm
-         jB2y+GF/oueCRqPF8wv7qo0c1zt0aCl1fsIgFNkzm3YdLjNUi2SBGBgiowSGb5K6L175
-         tQ/M0je70wLZtwmOnmE6jhGHtI+sUX23sG9qyWgqqyV0GRYy7u9d+lUrQNrEbGhXxsDZ
-         Shqt3mdj9xZ+D2GXuFh2LZj3HH0qEQa/PUtvN5Hmf6/1X9s9a45mgP47eNygCM6qIL8l
-         J9FSwoJjOXtuPBqZfqGdKTbtAjT9V3TXlhJ6yA7qcL+stSs/KZwYnEAL+j2hbXwmXdzF
-         T3Hg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JOQ6ZKgQ8ZCXCMKJDHTtraLaapopKYShD2phDj3Rteg=;
+        b=oG0yYmS+e1T5uXRSj4TvUhNbpg2z17+BZYqeAXU1PFr0ezd/TLdNtVLR0gFCDEInD2
+         kRykQ3f7aLVCcNU6G8qJB5gFVWWHBfXrTTaILxNuOzrcqIQClCj4VCveokS9QxtAw+5I
+         J08dl4ZZploa2drM34LOYu6R/sxCMu21yauzWxl0pUiHFXeb5jqow9X5sOdJpk0bfWck
+         s93RicVZwUPIh2q2029jiU3amvfxFsrtMgKUvAGlYNuGif/p9hFplh42EfeaaubsDrkk
+         n/IBdGFtUDbJ5rqO61N/RvZEeBUILm70SKbHVXqMnxygzpA7zZPQjQh1xe6Wl4lMqhGl
+         Dclg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bT1J6Z9CLIzHImMMrPae25NAqAg4qvT7z5q5kWJnZFg=;
-        b=B9wxIXoqYnRIDGi06BEny38EHEEkBajT7yNSpRXQwHQSx5PW29yOezLLbgHR3vhfqQ
-         6MtAMSQuzL1NrfI/vA6PpzpVhBKpKXDd2Q7ej3pwm9NeV2ApBhw8tD79okTH5lT93vGw
-         /y0vRo603Zx9ROvxzDdr+kJMI4dlarqpsRtojQCx123WWgIluamYqNgSAvslWwaJiX4O
-         CUrO2HXxEE2BX+CLu1bLlGJwm2khXw14ofR9xEuk99Def17imcqwW7HvJmCPBQeRjAKD
-         SbsTMqnwAlvpY3zSH4WQpjBI0TxBrURG4k+M4Q9QyrkZdv3SdWhreMP2DIAqcquw2MgT
-         K3JQ==
-X-Gm-Message-State: AOAM532i4ARfJml4KUz4S8LRF56RbgvrgpA6F2gv+AzIrbfCtjZKLrC2
-        gmb2hi1y9Wexzf45Kd/QSEU=
-X-Google-Smtp-Source: ABdhPJzddNNmu1r8MnkavWgAH5ix6tOHgYoHpJizB/QDiZbbhIqRnAkgaAbIyzscnoyKf1eQNPQrVw==
-X-Received: by 2002:a17:902:7798:b029:d2:80bc:7429 with SMTP id o24-20020a1709027798b02900d280bc7429mr8809310pll.80.1601577619815;
-        Thu, 01 Oct 2020 11:40:19 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id r14sm6216966pgm.7.2020.10.01.11.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 11:40:19 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:40:17 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [tip:master] BUILD SUCCESS WITH WARNING
- 99b8adf3cd30dbcb441cdd7282f0c6f7ef1615f3
-Message-ID: <20201001184017.GA539221@ubuntu-m3-large-x86>
-References: <5f761f6c.3JikdZmQTQD4YT0X%lkp@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JOQ6ZKgQ8ZCXCMKJDHTtraLaapopKYShD2phDj3Rteg=;
+        b=iyIU5KzTS16LrjxqHv2u0kqIn0vWwE04PgcNaqUEQRxTSK/gciKeBScqwl5HI0R6ex
+         7ph6nw82ijT6O7k8gcfsqRIVekt25sv9KcEErQSRkpfFZMB78p5JzTxwdlloEY7nXWPQ
+         EVo6Nphu9ZU+qSbr9/o6RSMp7h4JDwXD+9Ckv59PJI6ZkWH94Gf+TrpqEe/38HclP3/3
+         n0DBK0TpIkrC+xD8Q7zAP/bM4fssbuwHtJM9kIHh6VtMzihqaZY/yVkMKvMWBW4lJdVu
+         WQw9HHcbRytF3WcLopvouVhOo3/9wmH9GM4qbf6R7lkphj8AlBkqXepTzh+kHt1/rEuS
+         i9cQ==
+X-Gm-Message-State: AOAM530RswZwLLpZkwjbl7KImnX1bWXLZP++TsvDH/R8MjhLpI90JbLB
+        qPcJkrLp9iEmHzNfftRmImPPzP311RWE1wsCQu8xzKH3+w==
+X-Google-Smtp-Source: ABdhPJxwqAxk7naTnZQAbkGhosOtV695WO4v90thLhMqAJnm0go5ZPJjouBs3FLPJ/yIj6kYXag6KZe3fZRf/+L4nes=
+X-Received: by 2002:a05:6638:1316:: with SMTP id r22mr7331645jad.129.1601577747632;
+ Thu, 01 Oct 2020 11:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f761f6c.3JikdZmQTQD4YT0X%lkp@intel.com>
+References: <20200930071342.98691-1-tali.perry1@gmail.com> <20200930093117.GY3956970@smile.fi.intel.com>
+ <CAHb3i=sWxiVLCC0hfY+6-_x92ZEMY7Ctyyuz9CbMYxrH_BqAZQ@mail.gmail.com>
+ <CAHp75Vc3Bw-dTpEmpeUpB4n5-8-xGPx+jm_HkB5Pj6Qr8U=CAw@mail.gmail.com>
+ <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
+ <20201001174046.GK3956970@smile.fi.intel.com> <CAA_a9xL+qP3zOy=oKHjCuR+CvsXeoU5EX9WgEhUH0Fza2Vs5DA@mail.gmail.com>
+In-Reply-To: <CAA_a9xL+qP3zOy=oKHjCuR+CvsXeoU5EX9WgEhUH0Fza2Vs5DA@mail.gmail.com>
+From:   Avi Fishman <avifishman70@gmail.com>
+Date:   Thu, 1 Oct 2020 21:41:16 +0300
+Message-ID: <CAKKbWA62G+B7p-bc7TRoa22iJNGdTUaopQVj3S3_FHh43ntasA@mail.gmail.com>
+Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using debugfs.
+To:     Alex Qiu <xqiu@google.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Kun Yi <kunyi@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ clang-built-linux, full original message here:
-https://lore.kernel.org/lkml/5f761f6c.3JikdZmQTQD4YT0X%25lkp@intel.com/
+Tali indeed pointed our major customers (Alex represent one of them :)
+that this feature must be handled carefully since it may break the
+communication and they are aware of that. Nevertheless they still want
+this feature, they already reviewed this and accepted it (in internal
+mails)
 
-On Fri, Oct 02, 2020 at 02:26:52AM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-> branch HEAD: 99b8adf3cd30dbcb441cdd7282f0c6f7ef1615f3  Merge branch 'linus'
-> 
-> Warning in current branch:
+So we will appreciate if this will be accepted.
 
-We have outstanding patches for all of these I believe, just waiting on
-review and acceptance.
+On Thu, Oct 1, 2020 at 9:27 PM Alex Qiu <xqiu@google.com> wrote:
+>
+> On Thu, Oct 1, 2020 at 10:41 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Thu, Oct 01, 2020 at 08:13:49PM +0300, Avi Fishman wrote:
+> > > Hi Andy,
+> > >
+> > > Customers using BMC with complex i2c topology asked us to support
+> > > changing bus frequency at run time, for example same device will
+> > > communicate with one slave at 100Kbp/s and another with 400kbp/s and
+> > > maybe also with smae device at different speed (for example an i2c
+> > > mux).
+> > > This is not only for debug.
+> >
+> > The above design is fragile to start with. If you have connected peripheral
+> > devices with different speed limitations and you try to access faster one the
+> > slower ones may block and break the bus which will need recovery.
+> >
+>
+> Hi Andy,
+>
+> To clarify, we are using a single read-only image to support multiple
+> configurations, so the supported bus rate of the devices are not known
+> at compile time, but at runtime. We start with 100 kHz, and go 400 kHz
+> if applicable. FYI, we are using 5.1 kernel, however I don't know much
+> about DT overlay.
+>
+> Thx.
+>
+> -Alex Qiu
 
-> ld.lld: warning: arch/arm/built-in.a(crypto/aes-cipher-glue.o):(.ARM.extab) is being placed in '.ARM.extab'
 
-https://lore.kernel.org/lkml/20200928224854.3224862-1-natechancellor@gmail.com/
 
-> ld.lld: warning: arch/arm/built-in.a(mm/init.o):(".discard.ksym") is being placed in '".discard.ksym"'
-
-https://lore.kernel.org/lkml/20200929190701.398762-1-ndesaulniers@google.com/
-
-Cheers,
-Nathan
+-- 
+Regards,
+Avi
