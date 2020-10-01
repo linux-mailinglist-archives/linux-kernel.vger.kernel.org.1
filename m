@@ -2,162 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3176F280786
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6044128078B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgJATIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:08:55 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:54661 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729418AbgJATIz (ORCPT
+        id S1730144AbgJATML convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Oct 2020 15:12:11 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:37338 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729927AbgJATML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:08:55 -0400
-Received: by mail-pj1-f67.google.com with SMTP id j19so2521096pjl.4;
-        Thu, 01 Oct 2020 12:08:54 -0700 (PDT)
+        Thu, 1 Oct 2020 15:12:11 -0400
+Received: by mail-ej1-f65.google.com with SMTP id nw23so9702795ejb.4;
+        Thu, 01 Oct 2020 12:12:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/ZLkWSujX7jWnugEZQTqIhwyIUES1ySLBrdFnfFWe2Y=;
-        b=RHr9uc/IUQKIQP6csQQ+b1rv/cTACiLcO8waNroP6RjIBfFkgE+IjxFCwVXCCFm5HR
-         31C3MWpMMVhKYYH9myldwpOnk2cHyscGxWk5Dj/kDR5Wq0xsj9td/5Lw0W65H5z9GbSZ
-         jVy3X6MUObjB6vehnQMMkDrQ0DSseIj7a6YFxUvQ1lNC+bOfnCB/YYYNoFsf0NVgbr0a
-         ZACK5Al3bcmfXnGwkn31v/aEhfAnWsxy2xB0pCmarp2TeGAypKBa1c3afd4RMylt8Dxz
-         gGmBN1bLqu9paubcGaKiO/+yyYh6rAor0DK03t+pC1eLU5K4OOM7PqwnKadMjKV2VrUa
-         6jvg==
-X-Gm-Message-State: AOAM530CUprg6wPcTa3dGfRuYYZGuDCd2D2EIt81djITgMX8k8Oq6I2h
-        qZjkeVnzTKED7q6csGqUhpU=
-X-Google-Smtp-Source: ABdhPJxzY2rHqgv6i+7QwwFXStNiGA11JiUI+CplH1qGeVnrhKi67tLaYkDY6T4NY9EIk0ce4/SyWA==
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr1362413pjj.101.1601579334156;
-        Thu, 01 Oct 2020 12:08:54 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id i36sm6084425pgm.43.2020.10.01.12.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 12:08:53 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 12:08:52 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mathias Tausen <mta@gomspace.com>
-Subject: Re: [PATCH v4 5/7] clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency
- limits
-Message-ID: <20201001190852.GE121420@archbook>
-References: <20200929144417.89816-1-alexandru.ardelean@analog.com>
- <20200929144417.89816-14-alexandru.ardelean@analog.com>
- <20200929153040.GA114067@archbook>
- <CA+U=DspZ8cZzDDJWdbS=RkLifJRr7sjwQ9-ytMWkCqpfoCX6=w@mail.gmail.com>
- <20200930171607.GA121420@archbook>
- <CA+U=DsruOC=uyDVDLz0HCO06_7AGfQEpD=YoYddf3S-3Gs3QiA@mail.gmail.com>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6v7eOGX7vaObSzK5Xt420tK2IOxcStrJuaNw6Dc3XQU=;
+        b=M/Qylx5Uts7qZyl4P3dz+PprvVc9aww7ORoGQV6brsEc0Ocku2hw863l0MqExfxJUu
+         T2FkNH96EKkalEodnBxpcZ8wJSJ5dZxBHmyvFqkAPUCgd0hqMB9d03KqBve2NCcVL7h6
+         HtwaEsRv1HIhWJYhMWSkRmvNkLVdZOI5j7V/R4pEqn6O+PvXFrMj3llhLZJ8a8Pv63vd
+         qewAiik4dJvvwowcEUQflh0mpWpDsJQ+EdwDXfnpb3O508/RnXcw3Ma4uwcLE1VnQbmI
+         vT/e258d4wXtmaZbkvf0ekWpOOIAAu8k8i3243fapn7KoW5t4VTNyY7I8NG8nXQvKwTd
+         5Ukg==
+X-Gm-Message-State: AOAM53082kLrijvrAIKGO17n4GL67EPrhJ5oBgxIueuMjHW+0t9v7pqe
+        YR4FJ2F5jQz+q8PQf4lkE4Y=
+X-Google-Smtp-Source: ABdhPJxPNlJX1V1ToP7OmScTlJgP9YpQwGnshebQXKQqLpTNBDjedJ9RWr/odhjHthdJRHaOJPff6Q==
+X-Received: by 2002:a17:906:f897:: with SMTP id lg23mr10241605ejb.89.1601579528960;
+        Thu, 01 Oct 2020 12:12:08 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id ao17sm985977ejc.18.2020.10.01.12.12.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Oct 2020 12:12:07 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 21:12:04 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Kukjin Kim <kgene@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
+Subject: Re: [PATCH v2 RESEND 7/9] spi: spi-s3c64xx: Ensure cur_speed holds
+ actual clock value
+Message-ID: <20201001191204.GC11048@kozik-lap>
+References: <20200821161401.11307-1-l.stelmach@samsung.com>
+ <20201001152148.29747-1-l.stelmach@samsung.com>
+ <CGME20201001152248eucas1p132a63f588f62d902879322ebadd67173@eucas1p1.samsung.com>
+ <20201001152148.29747-8-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+U=DsruOC=uyDVDLz0HCO06_7AGfQEpD=YoYddf3S-3Gs3QiA@mail.gmail.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201001152148.29747-8-l.stelmach@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 08:18:59AM +0300, Alexandru Ardelean wrote:
-> On Wed, Sep 30, 2020 at 8:16 PM Moritz Fischer <mdf@kernel.org> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 08:22:23AM +0300, Alexandru Ardelean wrote:
-> > > On Tue, Sep 29, 2020 at 6:30 PM Moritz Fischer <mdf@kernel.org> wrote:
-> > > >
-> > > > Hi Alexandru,
-> > > >
-> > > > On Tue, Sep 29, 2020 at 05:44:15PM +0300, Alexandru Ardelean wrote:
-> > > > > From: Mathias Tausen <mta@gomspace.com>
-> > > > >
-> > > > > Since axi-clkgen is now supported on ZYNQMP, make sure the max/min
-> > > > > frequencies of the PFD and VCO are respected.
-> > > > >
-> > > > > Signed-off-by: Mathias Tausen <mta@gomspace.com>
-> > > > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > > >
-> > > > This patch still does not cover the PCIe Zynq plugged into ZynqMP linux
-> > > > machine case.
-> > > >
-> > > > > ---
-> > > > >  drivers/clk/clk-axi-clkgen.c | 9 +++++++++
-> > > > >  1 file changed, 9 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-> > > > > index 4342b7735590..2319bb1c5c08 100644
-> > > > > --- a/drivers/clk/clk-axi-clkgen.c
-> > > > > +++ b/drivers/clk/clk-axi-clkgen.c
-> > > > > @@ -108,12 +108,21 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
-> > > > >       return 0x1f1f00fa;
-> > > > >  }
-> > > > >
-> > > > > +#ifdef ARCH_ZYNQMP
-> > > > > +static const struct axi_clkgen_limits axi_clkgen_default_limits = {
-> > > > > +     .fpfd_min = 10000,
-> > > > > +     .fpfd_max = 450000,
-> > > > > +     .fvco_min = 800000,
-> > > > > +     .fvco_max = 1600000,
-> > > > > +};
-> > > > > +#else
-> > > > >  static const struct axi_clkgen_limits axi_clkgen_default_limits = {
-> > > > >       .fpfd_min = 10000,
-> > > > >       .fpfd_max = 300000,
-> > > > >       .fvco_min = 600000,
-> > > > >       .fvco_max = 1200000,
-> > > > >  };
-> > > > > +#endif
-> > > >
-> > > > I still don't understand this. You have a way to determine which fabric
-> > > > you are looking at with the FPGA info. Why not:
-> > > >
-> > > > [..] axi_clkgen_zynqmp_default_limits = {
-> > > > };
-> > > >
-> > > > [..] axi_clkgen_default_limits = {
-> > > > };
-> > > >
-> > > > Set them based on what you read back, i.e. determine which fabric you
-> > > > are looking at *per clock gen* and use that info, rather than making a
-> > > > compile time decision to support only one of them.
-> > > >
-> > > > Generally speaking #ifdef $ARCH should be a last resort solution.
-> > >
-> > > The support for reading back the fabric parameters is implemented in
-> > > the AXI CLKGEN PCORE version starting with 5.0.a
-> > > Links:
-> > > https://github.com/analogdevicesinc/hdl/commits/master/library/common/up_clkgen.v
-> > > https://github.com/analogdevicesinc/hdl/commit/66823682b63c1037abdc3fc1dd4d4e63d3cfbc1a
-> > > https://github.com/analogdevicesinc/hdl/commit/7dcb2050c7946fab5ea5a273eda7c53ea7b969a6
-> > >
-> > > Before that version, these details aren't there, so the best you can
-> > > do is assume compile-time ARCH defaults.
-> >
-> > This is a property of the instance and not of the driver. If you can't
-> > query the hardware to figure out what you're looking at, but have
-> > different behaviours, please use different compatible strings and make
-> > the default limits platform data.
-> >
-> > Something like this:
-> >
-> > static const struct of_device_id axi_clkgen_ids[] = {
-> >         {
-> >                 .compatible = "foo-zynqmp",
-> >                 .data = &zynqmp_default_limits,
-> >         },
-> >         {
-> >                 .compatible = "bar-zynq",
-> >                 .data = &zynq_default_limits,
-> >         },
-> >
-> >         { },
-> > };
-> >
+On Thu, Oct 01, 2020 at 05:21:46PM +0200, Łukasz Stelmach wrote:
+> Make sure the cur_speed value used in s3c64xx_enable_datapath()
+> to configure DMA channel and in s3c64xx_wait_for_*() to calculate the
+> transfer timeout is set to the actual value of (half) the clock speed.
 > 
-> oh, apologies for not thinking about this;
-> i'll spin this up
+> Suggested-by: Tomasz Figa <tomasz.figa@gmail.com>
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  drivers/spi/spi-s3c64xx.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-No worries :) 
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Moritz
+Best regards,
+Krzysztof
