@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CFB28053B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F083C28053E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732992AbgJARa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:30:56 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47166 "EHLO mail.skyhub.de"
+        id S1732951AbgJARbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:31:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55638 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732407AbgJARaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:30:55 -0400
-Received: from zn.tnic (p200300ec2f089d001daab592cfa658ec.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:9d00:1daa:b592:cfa6:58ec])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3469E1EC034B;
-        Thu,  1 Oct 2020 19:30:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601573454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mINMhjqMRFURlWw8yOtlyf5CfMc+3HwvDNVyjD1JQm0=;
-        b=PjEzcScajMIEVuegXTD6MlGND71UTp5GUt+FoH/ID7lsr3lcsNFGrOKfgnOQpHmD4X/+HR
-        riVHQB4olz3vG1ZH3ZseaLv+tOjh7FIGv1nRaGEllt/+5K+kMzCiqUKpXIP6//ZFxWzqrQ
-        W7AKhyPFgQjLUZVCxshFeu/R1vlkJVU=
-Date:   Thu, 1 Oct 2020 19:30:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     James Morse <james.morse@arm.com>
-Cc:     Shiju Jose <shiju.jose@huawei.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
- an erroneous CPU core
-Message-ID: <20201001173052.GH17683@zn.tnic>
-References: <20200901140140.1772-1-shiju.jose@huawei.com>
- <20200901143539.GC8392@zn.tnic>
- <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
- <20200909120203.GB12237@zn.tnic>
- <50714e083d55491a8ccf5ad847682d1e@huawei.com>
- <20200917084038.GE31960@zn.tnic>
- <91e71fe9-b002-0f1f-3237-62cea49e083a@arm.com>
+        id S1732407AbgJARbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:31:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 548E3B224;
+        Thu,  1 Oct 2020 17:31:22 +0000 (UTC)
+Message-ID: <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
+Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, will@kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org, robh+dt@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
+        hch@lst.de, linux-arm-kernel@lists.infradead.org
+Date:   Thu, 01 Oct 2020 19:31:19 +0200
+In-Reply-To: <20201001172320.GQ21544@gaia>
+References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
+         <20201001161740.29064-2-nsaenzjulienne@suse.de>
+         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-seD6uijt62oXdXYvdJ0h"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <91e71fe9-b002-0f1f-3237-62cea49e083a@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 06:16:03PM +0100, James Morse wrote:
-> If the corrected-count is available somewhere, can't this policy be
-> made in user-space?
 
-You mean rasdaemon goes and offlines CPUs when certain thresholds are
-reached? Sure. It would be much more flexible too.
+--=-seD6uijt62oXdXYvdJ0h
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards/Gruss,
-    Boris.
+On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
+> On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
+> > Hi Nicolas,
+> >=20
+> > Thanks for putting this together.
+> >=20
+> > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wrote:
+> > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > index 4602e467ca8b..cd0d115ef329 100644
+> > > --- a/drivers/of/fdt.c
+> > > +++ b/drivers/of/fdt.c
+> > > @@ -25,6 +25,7 @@
+> > >  #include <linux/serial_core.h>
+> > >  #include <linux/sysfs.h>
+> > >  #include <linux/random.h>
+> > > +#include <linux/dma-direct.h>	/* for zone_dma_bits */
+> > > =20
+> > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > >  #include <asm/page.h>
+> > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
+> > >  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
+> > >  }
+> > > =20
+> > > +void __init early_init_dt_update_zone_dma_bits(void)
+> > > +{
+> > > +	unsigned long dt_root =3D of_get_flat_dt_root();
+> > > +
+> > > +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
+> > > +		zone_dma_bits =3D 30;
+> > > +}
+> >=20
+> > I think we could keep this entirely in the arm64 setup_machine_fdt() an=
+d
+> > not pollute the core code with RPi4-specific code.
+>=20
+> Actually, even better, could we not move the check to
+> arm64_memblock_init() when we initialise zone_dma_bits?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I did it this way as I vaguely remembered Rob saying he wanted to centralis=
+e
+all early boot fdt code in one place. But I'll be happy to move it there.
+
+Regards,
+Nicolas
+
+
+--=-seD6uijt62oXdXYvdJ0h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl92EmcACgkQlfZmHno8
+x/650wf7BuG9OAXrpcJx+slOiIpUn27A9VP5PUiZhylbJPYElYlFJCs1q9tLFNHw
+2xXUtjY3QDdSH9GtDY1utSkQ2VeyqLRsDeVMkiwV721Gtn3y9veD2tNiJb4WXtet
+C9us1mhEFgpu691D6JilmlxSxjfCOHZYGmZXGpTOPOSu12/YQlHCYc33cRKkDbfn
+G5H0tNc4gXkWwJh5OSZixd08Ek7+d4HzG8hpZB5ifDWYLY7ZTDWC27mF1xYWGwAE
+d7WUXSQ11UaAQBl5maIqrL3X19tg/GsdidU3yrsjIBtBEFaulKmVtggI33JTfgoo
+v517kqitPiAV14ZYWJoifJK6ZppdiQ==
+=E6vz
+-----END PGP SIGNATURE-----
+
+--=-seD6uijt62oXdXYvdJ0h--
+
