@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D943827FE32
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5389427FE35
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731920AbgJALPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43252 "EHLO mail.kernel.org"
+        id S1731944AbgJALRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:17:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbgJALPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:15:00 -0400
-Received: from localhost (unknown [122.167.37.56])
+        id S1731243AbgJALRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:17:18 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DCD72087D;
-        Thu,  1 Oct 2020 11:14:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D2D0208B6;
+        Thu,  1 Oct 2020 11:17:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601550899;
-        bh=cxQnqQEDntZ0aFpinDWrTCtr5C68zBwmYfLs04V0NQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1QmK0tqBrnzWdIfBjfeBwjFFwSWLDU31/OzJYfN/8MDFjcSmf7CNJHaHtYVmggGNx
-         FRL+PrW8PPZrD3WrYbEKebFarwzn/o+IvnnYvo913WWC5FrQEXa4Giq2FDs6IHANr2
-         tj1lirpAhlfroTcv6n5pGac9O3a7fUl0Ze0ifJcE=
-Date:   Thu, 1 Oct 2020 16:44:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     dmaengine@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: dmaengine: Document qcom,gpi dma
- binding
-Message-ID: <20201001111454.GW2968@vkoul-mobl>
-References: <20200923063410.3431917-1-vkoul@kernel.org>
- <20200923063410.3431917-2-vkoul@kernel.org>
- <20200929184424.GA935309@bogus>
+        s=default; t=1601551037;
+        bh=o3EbE74hz2T8t1GJ/NdLtSBGVB6g4WdhQQVmKWNfpZY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V5xs9xV77aOCb/iYqYip/P17aEWk/SN/EmNWCdAQiLD7aon559p1jIPlWNgA/SNnn
+         0nhQzzDe7A0ogPn269L8XSWlu+TrhNV7pjN9TUhhPTpTKpxaI9VYmE1F0wpl41YDqv
+         1ZNXk/07+hz86huloLxUApOKjogj6AWbZcYp730A=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kNwaI-006Odu-9I; Thu, 01 Oct 2020 13:17:14 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v3] media: atomisp: fixes build breakage for ISP2400 due to a cleanup
+Date:   Thu,  1 Oct 2020 13:17:13 +0200
+Message-Id: <490e5002c3fea266524c31e1a94853dca9c3286c.1601551027.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929184424.GA935309@bogus>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+A temporary var needed for building with ISP2400 was removed
+by accident on a cleanup patch.
 
-On 29-09-20, 13:44, Rob Herring wrote:
+Fix the breakage.
 
-> > +description: |
-> > +  QCOM GPI DMA controller provides DMA capabilities for
-> > +  peripheral buses such as I2C, UART, and SPI.
-> > +
-> > +allOf:
-> > +  - $ref: "dma-controller.yaml#"
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - qcom,gpi-dma
-> 
-> Should be SoC specific.
+Fixes: 852a53a02cf0 ("media: atomisp: get rid of unused vars")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/atomisp/pci/sh_css.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-Okay, will add
-
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    description:
-> > +      Interrupt lines for each GPII instance
-> 
-> GPII or GPI?
-
-Hw uses GPII as "GPI Instance" :) so will update this
-
-> > +    maxItems: 13
-> > +
-> > +  "#dma-cells":
-> > +    const: 3
-> > +    description: >
-> > +      DMA clients must use the format described in dma.txt, giving a phandle
-> > +      to the DMA controller plus the following 3 integer cells:
-> > +      - channel: if set to 0xffffffff, any available channel will be allocated
-> > +        for the client. Otherwise, the exact channel specified will be used.
-> > +      - seid: serial id of the client as defined in the SoC documentation.
-> > +      - client: type of the client as defined in dt-bindings/dma/qcom-gpi.h
-> > +
-> > +  iommus:
-> > +    maxItems: 1
-> > +
-> > +  dma-channels:
-> > +    maxItems: 1
-> 
-> Not an array. Is there a maximum number of channels or 2^32 is valid?
-
-I have not seen any max limit put, but we can be assured that it will
-not go to 2^32, we can put a reasonable limit ..
-
-Will add maximum :)
-
-> > +
-> > +  dma-channel-mask:
-> > +    maxItems: 1
-> 
-> So up to 32 channels?
-
-yep!
-
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index e8c5caf3dfe6..ddee04c8248d 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -1365,7 +1365,6 @@ start_binary(struct ia_css_pipe *pipe,
+ {
+ 	assert(pipe);
+ 	/* Acceleration uses firmware, the binary thus can be NULL */
+-	/* assert(binary != NULL); */
+ 
+ 	if (binary)
+ 		sh_css_metrics_start_binary(&binary->metrics);
+@@ -1381,10 +1380,10 @@ start_binary(struct ia_css_pipe *pipe,
+ #endif
+ 
+ #if !defined(ISP2401)
+-	if (stream->reconfigure_css_rx) {
++	if (pipe->stream->reconfigure_css_rx) {
+ 		ia_css_isys_rx_configure(&pipe->stream->csi_rx_config,
+ 					 pipe->stream->config.mode);
+-		stream->reconfigure_css_rx = false;
++		pipe->stream->reconfigure_css_rx = false;
+ 	}
+ #endif
+ }
+@@ -2820,6 +2819,8 @@ load_preview_binaries(struct ia_css_pipe *pipe) {
+ 	bool need_isp_copy_binary = false;
+ #ifdef ISP2401
+ 	bool sensor = false;
++#else
++	bool continuous;
+ #endif
+ 	/* preview only have 1 output pin now */
+ 	struct ia_css_frame_info *pipe_out_info = &pipe->output_info[0];
+@@ -2833,6 +2834,8 @@ load_preview_binaries(struct ia_css_pipe *pipe) {
+ 	online = pipe->stream->config.online;
+ #ifdef ISP2401
+ 	sensor = pipe->stream->config.mode == IA_CSS_INPUT_MODE_SENSOR;
++#else
++	continuous = pipe->stream->config.continuous;
+ #endif
+ 
+ 	if (mycs->preview_binary.info)
+@@ -5987,6 +5990,8 @@ static int load_primary_binaries(
+ 	bool need_ldc = false;
+ #ifdef ISP2401
+ 	bool sensor = false;
++#else
++	bool memory, continuous;
+ #endif
+ 	struct ia_css_frame_info prim_in_info,
+ 		       prim_out_info,
+@@ -6009,6 +6014,9 @@ static int load_primary_binaries(
+ 	online = pipe->stream->config.online;
+ #ifdef ISP2401
+ 	sensor = (pipe->stream->config.mode == IA_CSS_INPUT_MODE_SENSOR);
++#else
++	memory = pipe->stream->config.mode == IA_CSS_INPUT_MODE_MEMORY;
++	continuous = pipe->stream->config.continuous;
+ #endif
+ 
+ 	mycs = &pipe->pipe_settings.capture;
 -- 
-~Vinod
+2.26.2
+
