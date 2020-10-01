@@ -2,100 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9807E280B5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8C3280B62
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733233AbgJAXgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:36:33 -0400
-Received: from mail-eopbgr60049.outbound.protection.outlook.com ([40.107.6.49]:8609
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726855AbgJAXgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:36:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C0Jx3oX8A7u9b2qBRg/TCtPo4R5pfSQFvPr8YmcCJSfubRBh4d98TeLASDvDV2EDXqydYRTXgxU8DYRrZ2tDbDCLf9ICHHgjMm6tZh5L7dIR373eTqdlDQ1xpHC//LexJ77rEMLOOYfOuOnlSk+dui4hng1446CxHlezFIm2iUccLAMnSYV5NrDVoNrNM0RWvI8W7RAw74Qs1sJr7jgFobh9LcfoRKGkfNq/1LFIzrgGNceG7TzjjkBZA0pGRamUP6QkWO/wN0yUAU1evFnuxGYqV5+d8hnY7AuOvof+KnArFg6Esx8Tr8KnVTL9U8cqjr3gXjabUNHK4z/xlRr0Jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A7PcnNaZfexejOJ/CsBt9JlVrT80F94rT03OYSXoGoA=;
- b=RPxsTnVF+HAOwnuSkzTSDEhLhdssaE/ZNtr1A16ojuS5DDgWcGzhuHIXt8kP6l9L+rNOlB4phUupA7c7p5OYGcajoRbm2P/wWaZQoIJ4l9VsPKw/2x5553g1kPLRLkXUF6uhX/HgAKoDQs6N3IS4bo0+/xDlc2cPkgR2/YeIMuM4YWQAteFYwqBYtlJgduDzKjE3kzEMrm9c338c0y0CeHrNdiWsY86fmqH0sW1jIkb+FCwodAA55bthYCqVmqeuFWNIq6b5LaFtfxyB/O3eubSyUuM35owqrmar5Uc+PQQPPFqa0MEoWmQHqKK1y5VR/C0E3ODNEgOJzbEwVliQig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A7PcnNaZfexejOJ/CsBt9JlVrT80F94rT03OYSXoGoA=;
- b=eanWqw9LHEqVkiATiRdm4WAPgAqWSkdXJgNlXXL9WIOccSQND/GnuKbNCFgQOKS8Rtkd9QD1Dq6a8CLeqSY7ZW8FpZYnPiH6wT9yEe+bu/83rxwKvJpwr3eN1yuRq1DVdxPM0F5oqshR5gflYhy3wCBshNEac8C+LhBH8aJZJi0=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB6639.eurprd04.prod.outlook.com (2603:10a6:803:129::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Thu, 1 Oct
- 2020 23:36:28 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 23:36:28 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] net: dsa: Support bridge 802.1Q while
- untagging
-Thread-Topic: [PATCH net-next v2] net: dsa: Support bridge 802.1Q while
- untagging
-Thread-Index: AQHWl5/dhVmGK5kbOEm6gGxCRTuWC6mDZKQAgAADegA=
-Date:   Thu, 1 Oct 2020 23:36:28 +0000
-Message-ID: <20201001233628.amqctjli7wblq2rk@skbuf>
-References: <20201001030623.343535-1-f.fainelli@gmail.com>
- <20201001232402.77gglnqqfsq6l4fj@skbuf>
-In-Reply-To: <20201001232402.77gglnqqfsq6l4fj@skbuf>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.229.171]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3c7220b5-9474-4d3a-0f76-08d86662d1f6
-x-ms-traffictypediagnostic: VE1PR04MB6639:
-x-microsoft-antispam-prvs: <VE1PR04MB6639D5FCEA4F369B88D489DAE0300@VE1PR04MB6639.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Rg930F2omVdOyOOjBrvnzFOvAdGCkvFgKVLXq6cwQYe2JkO2J+Ldloe1lzkI4Hwa2lLQCNyuJCPmk6TwUTarsiD9ybYM1MFtA1T1nAlOo+txkBlAXs8lA01sk6wJem2Hk51OurvDVLdJdOOHaNjDFaeDhzmPrPykpsW6YSLBPVI4hwUZ6gYniDHTKKV3mJOIQwtuo6E8M6E0IFFFWWSqcJPCEnTBY1QbCuDo26gzfmrmbcR1M80CWnM6x6YMekltJ2atzs4wlU5MrxJXMHSb9yn6A84hDUijKGID+ULTvzoebRamHo0UIW/Gy7AR4ahjSrzfcDFfSkG9F36Vd2B/3Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(346002)(136003)(366004)(396003)(39850400004)(2906002)(66476007)(66556008)(64756008)(66446008)(66946007)(91956017)(76116006)(4326008)(6486002)(6506007)(86362001)(6916009)(478600001)(44832011)(316002)(54906003)(5660300002)(186003)(8676002)(1076003)(71200400001)(4744005)(8936002)(9686003)(26005)(6512007)(33716001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pwSgBoBEoKNhN0cybsZ1J8LBD96UZBFeKzHeCD5EZ0B0hH/Ii9CAEgoeAk2bAI5byWJtdg8nPtiY8prqsHTpFRzSFE/kiHufvb9Mlq9IeL9EABPttX95R1s+JXYztIiGhsSGv1ukluNg+4x9G8RW9GzzgWBbiL5gkIyS0RCUIYzzCmoDZzaXs2OyKWBPTwWa+TNB7HLLnjbzaPCxJHd8uBIdS9jhYfEh98V5o7vBcfKst1uy0AwJ/qYyziOY3MKfzHNFoXO9RcyVKZGJwjWRCI0YYgNJq2nEsihi6CdJrHwnz3eD+D10re7u2h5YxZeCJ4qjf+Z5Gyp4TtNLUdUDDR9eZhSYX/V4oUyoL3cN83FHaxTZGLk4gDa/WqA4ub53YgQI9wn4FUfHSvxqrcsuT4kHiq1phSVe4VDiLzxIrRGIfVPL0+eeT1ko9eRfL36ceK1oH9WctTBMpeDwe+rdwOfkLAdpbVnXsJ3zLYpHYL+LZxV7p1xYKGjQkNZA/DSDnOd/5O/k9cXKlufT5vmJ0NUwsdw6H36MeRTSbFPYQljSDQ6yhxmRsdWh9QIyIUJqdUnaWYtzwhnODihPT4Ub+4PPPH0xd/tx/VlBVWZm4bMrRd4L3oobRnSu5wZyPsqvEniGb1EEhWxl+qLRXfFaGw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A25A2DA063D99542A8B3402462A5830C@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1733247AbgJAXjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733002AbgJAXjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:39:19 -0400
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22CA520872
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601595558;
+        bh=0NkZxOEHqQ/8Pfct8MU/KVq8PnpwI8tseENHdRfophk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uLA24LBnYX7CaVPIXB0dGV5PuPALeuQJvv8UyeSGRAxp10j4Z8vb2riA8eyKvkUH5
+         ZLZrvgNp2Y9ouVqFHa2ZsCNyCv3slKxFDhRv2qqZ5Qw7c6F2i3a7FdtvLVIOaUurEe
+         nEf3ygU5JQsCRwYAIlrJa+jfyPe5GIVlv+afQNjI=
+Received: by mail-wr1-f50.google.com with SMTP id e16so572334wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:39:18 -0700 (PDT)
+X-Gm-Message-State: AOAM531ur+kQSQLV606wXqJ/FrHCY4QU+MQN0lm1XnYHcmx/yQT+Ei/j
+        hH7cmdQWIzozF9qm7c4x4ZNW226rKHX4Hr1D2nCjkw==
+X-Google-Smtp-Source: ABdhPJyB/Z2FKa+/ilJUi48zTiAbZNNdzzX0GCqSXkDtKnR9YkbNkxY/H3j/rid5Fwl028pTNHkVKAZqscp7CmZr9VI=
+X-Received: by 2002:a5d:5281:: with SMTP id c1mr11473215wrv.184.1601595556659;
+ Thu, 01 Oct 2020 16:39:16 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c7220b5-9474-4d3a-0f76-08d86662d1f6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 23:36:28.7217
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t7Ba87WBYP9ivBR27wPQm1tQFlUQ/2YEZYpgiUtYMDQVRAE4cs7sNnp7QZ7RgXoHu3gMtwOnhDULI15SXYt8yQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6639
+References: <20201001203913.9125-1-chang.seok.bae@intel.com> <20201001203913.9125-14-chang.seok.bae@intel.com>
+In-Reply-To: <20201001203913.9125-14-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 1 Oct 2020 16:39:05 -0700
+X-Gmail-Original-Message-ID: <CALCETrWKMYcuyohpctb1SoDueU1-nwAtrirJbdJTp4tZwCMXZA@mail.gmail.com>
+Message-ID: <CALCETrWKMYcuyohpctb1SoDueU1-nwAtrirJbdJTp4tZwCMXZA@mail.gmail.com>
+Subject: Re: [RFC PATCH 13/22] x86/fpu/xstate: Expand dynamic user state area
+ on first use
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:24:02AM +0300, Vladimir Oltean wrote:
-> The explanation is super confusing, although I think the placement of
-> the "skb->vlan_proto =3D vlan_dev_vlan_proto(upper_dev)" is correct.
+On Thu, Oct 1, 2020 at 1:43 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> Intel's Extended Feature Disable (XFD) feature is an extension of the XSAVE
+> architecture. XFD allows the kernel to enable a feature state in XCR0 and
+> to receive a #NM trap when a task uses instructions accessing that state.
+> In this way, Linux can allocate the large task->fpu buffer only for tasks
+> that use it.
+>
+> XFD introduces two MSRs: IA32_XFD to enable/disable the feature and
+> IA32_XFD_ERR to assist the #NM trap handler. Both use the same
+> state-component bitmap format, used by XCR0.
+>
+> Use this hardware capability to find the right time to expand xstate area.
+> Introduce two sets of helper functions for that:
+>
+> 1. The first set is primarily for interacting with the XFD hardware
+>    feature. Helpers for configuring disablement, e.g. in context switching,
+>    are:
+>         xdisable_setbits()
+>         xdisable_getbits()
+>         xdisable_switch()
+>
+> 2. The second set is for managing the first-use status and handling #NM
+>    trap:
+>         xfirstuse_enabled()
+>         xfirstuse_not_detected()
+>         xfirstuse_event_handler()
+>
+> The #NM handler induces the xstate area expansion to save the first-used
+> states.
+>
+> No functional change until the kernel enables dynamic user states and XFD.
+>
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/x86/include/asm/cpufeatures.h  |  1 +
+>  arch/x86/include/asm/fpu/internal.h | 53 ++++++++++++++++++++++++++++-
+>  arch/x86/include/asm/msr-index.h    |  2 ++
+>  arch/x86/kernel/fpu/core.c          | 37 ++++++++++++++++++++
+>  arch/x86/kernel/fpu/xstate.c        | 34 ++++++++++++++++--
+>  arch/x86/kernel/process.c           |  5 +++
+>  arch/x86/kernel/process_32.c        |  2 +-
+>  arch/x86/kernel/process_64.c        |  2 +-
+>  arch/x86/kernel/traps.c             |  3 ++
+>  9 files changed, 133 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 2901d5df4366..7d7fe1d82966 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -274,6 +274,7 @@
+>  #define X86_FEATURE_XSAVEC             (10*32+ 1) /* XSAVEC instruction */
+>  #define X86_FEATURE_XGETBV1            (10*32+ 2) /* XGETBV with ECX = 1 instruction */
+>  #define X86_FEATURE_XSAVES             (10*32+ 3) /* XSAVES/XRSTORS instructions */
+> +#define X86_FEATURE_XFD                        (10*32+ 4) /* eXtended Feature Disabling */
+>
+>  /*
+>   * Extended auxiliary flags: Linux defined - for features scattered in various
+> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+> index 3b03ead87a46..f5dbbaa060fb 100644
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -572,11 +572,60 @@ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
+>   * Misc helper functions:
+>   */
+>
+> +/* The first-use detection helpers: */
+> +
+> +static inline void xdisable_setbits(u64 value)
+> +{
+> +       wrmsrl_safe(MSR_IA32_XFD, value);
+> +}
+> +
+> +static inline u64 xdisable_getbits(void)
+> +{
+> +       u64 value;
+> +
+> +       rdmsrl_safe(MSR_IA32_XFD, &value);
+> +       return value;
+> +}
+> +
+> +static inline u64 xfirstuse_enabled(void)
+> +{
+> +       /* All the dynamic user components are first-use enabled. */
+> +       return xfeatures_mask_user_dynamic;
+> +}
+> +
+> +/*
+> + * Convert fpu->firstuse_bv to xdisable configuration in MSR IA32_XFD.
+> + * xdisable_setbits() only uses this.
+> + */
+> +static inline u64 xfirstuse_not_detected(struct fpu *fpu)
+> +{
+> +       u64 firstuse_bv = (fpu->state_mask & xfirstuse_enabled());
+> +
+> +       /*
+> +        * If first-use is not detected, set the bit. If the detection is
+> +        * not enabled, the bit is always zero in firstuse_bv. So, make
+> +        * following conversion:
+> +        */
+> +       return  (xfirstuse_enabled() ^ firstuse_bv);
+> +}
+> +
+> +/* Update MSR IA32_XFD based on fpu->firstuse_bv */
+> +static inline void xdisable_switch(struct fpu *prev, struct fpu *next)
+> +{
+> +       if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
+> +               return;
+> +
+> +       if (unlikely(prev->state_mask != next->state_mask))
+> +               xdisable_setbits(xfirstuse_not_detected(next));
+> +}
+> +
+> +bool xfirstuse_event_handler(struct fpu *fpu);
+> +
+>  /*
+>   * Load PKRU from the FPU context if available. Delay loading of the
+>   * complete FPU state until the return to userland.
+>   */
+> -static inline void switch_fpu_finish(struct fpu *new_fpu)
+> +static inline void switch_fpu_finish(struct fpu *old_fpu, struct fpu *new_fpu)
+>  {
+>         u32 pkru_val = init_pkru_value;
+>         struct pkru_state *pk;
+> @@ -586,6 +635,8 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
+>
+>         set_thread_flag(TIF_NEED_FPU_LOAD);
+>
+> +       xdisable_switch(old_fpu, new_fpu);
+> +
+>         if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+>                 return;
+>
+> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+> index 2859ee4f39a8..0ccbe8cc99ad 100644
+> --- a/arch/x86/include/asm/msr-index.h
+> +++ b/arch/x86/include/asm/msr-index.h
+> @@ -610,6 +610,8 @@
+>  #define MSR_IA32_BNDCFGS_RSVD          0x00000ffc
+>
+>  #define MSR_IA32_XSS                   0x00000da0
+> +#define MSR_IA32_XFD                   0x000001c4
+> +#define MSR_IA32_XFD_ERR               0x000001c5
+>
+>  #define MSR_IA32_APICBASE              0x0000001b
+>  #define MSR_IA32_APICBASE_BSP          (1<<8)
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index ece6428ba85b..2e07bfcd54b3 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -518,3 +518,40 @@ int fpu__exception_code(struct fpu *fpu, int trap_nr)
+>          */
+>         return 0;
+>  }
+> +
+> +bool xfirstuse_event_handler(struct fpu *fpu)
+> +{
+> +       bool handled = false;
+> +       u64 event_mask;
+> +
+> +       /* Check whether the first-use detection is running. */
+> +       if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
+> +               return handled;
+> +
+> +       rdmsrl_safe(MSR_IA32_XFD_ERR, &event_mask);
 
-No, I think it _is_ wrong, after all, I think you're repairing
-skb->vlan_proto only for that particular 8021q upper, but not for the
-rest. I think the correct approach would be to say "skb->protocol =3D
-hdr->h_vlan_proto" right before calling skb_vlan_untag().=
+NAK.
+
+MSR_IA32_XFD_ERR needs to be wired up in the exception handler, not in
+some helper called farther down the stack
+
+But this raises an interesting point -- what happens if allocation
+fails?  I think that, from kernel code, we simply cannot support this
+exception mechanism.  If kernel code wants to use AMX (and that would
+be very strange indeed), it should call x86_i_am_crazy_amx_begin() and
+handle errors, not rely on exceptions.  From user code, I assume we
+send a signal if allocation fails.
