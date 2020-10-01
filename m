@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7284827F984
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E6627F987
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgJAGey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGey (ORCPT
+        id S1731056AbgJAGfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:35:24 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:32773 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAGfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:34:54 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8C4C0613D0;
-        Wed, 30 Sep 2020 23:34:53 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C23JP0F9Pz9sVH;
-        Thu,  1 Oct 2020 16:34:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601534091;
-        bh=8SVK23LN1XV22rfFMMDF+52/+6mmf2HKqJIAD2e6HXc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gJKhPs6rc32DplJ3rgjnY5fKaHOpJ3/ZV09lfne/h40Pcn7u4Ugxs0jTktaSPVkWz
-         URUSxWJBT+yaAtV82mrP1umohM7blQCI8RCFMRsRLFWpAZY2sH4HB8yI7DYx3Ic7lK
-         gNC8aP+cWWQz/usosO0zQ/yyMe05+1X5XXVXBPgTUHwlA1Omc33PGN/W1g6SVYC7J7
-         p8MAu+y3+cUd/K+1XgW3ydhgs/3G9tqi98+BIp/QYQ8f5vMxD1mBiDkNp7JMVFBOK4
-         4M3bkrmoVoaIlNxPhxMaQ4g9aWcML3jyckDURorBkevlgDkz8IF2UGgFIu5O/B5uMe
-         Tp/THkhiNeiAw==
-Date:   Thu, 1 Oct 2020 16:34:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: linux-next: manual merge of the tip tree with the vfs tree
-Message-ID: <20201001163443.0176e807@canb.auug.org.au>
+        Thu, 1 Oct 2020 02:35:23 -0400
+Received: by mail-ej1-f67.google.com with SMTP id j11so6398769ejk.0;
+        Wed, 30 Sep 2020 23:35:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LXuSgrjhDPSmJ5UAPkcchoivbEqdncR+oeY8bDsU/Q0=;
+        b=eZTf/IgJWRUwhsq7TbQOilgsNXssj2J1ADn4JjBceF/Uq80q3J5JF7hRlrLZGbEp77
+         9qLaD9ikjwvHw4OrXiYj1NI6uU/w5cj4SBFGh+wEvFN9ljOBiZO9ddWuBPYGOLVxJJj2
+         /NagmIjU/+1vlUxvPXPA5+9cg8KDa+8eUeQKUXJ1wC58didNm7qC0ceAqFcpZnvsqVyw
+         k/jdCl26yBSj1qSKCVT3yixaRjadgkKLCh1tkYW1abkzXhzfXGlQjAloktLqY58cDJGY
+         5o0cV76hqTeylLp5H6/+xRwWxu0hxcp7OO9Uy4OaqeLSF0I/FZEsLP8qmnIxZVlz3tyT
+         n3XQ==
+X-Gm-Message-State: AOAM530ezWgM5N7xcMYkzm85+tOTyNEnft8TpurN8tcR994J9k0KExh7
+        5Lspsd+TmyvNFP3c7EvTP5CNl+nBLh8=
+X-Google-Smtp-Source: ABdhPJz6kjWms5IH3vUaqD9eMV/onHLYjcqLMirzoTyiGOh+MXPa3Z3gXMIrhsdnvIydW2y9zgZ3oA==
+X-Received: by 2002:a17:907:40c1:: with SMTP id nv1mr6799441ejb.318.1601534121122;
+        Wed, 30 Sep 2020 23:35:21 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id v25sm3278265edr.29.2020.09.30.23.35.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 23:35:19 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 08:35:17 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v6 16/17] dt-bindings: arm: hisilicon: convert
+ hisilicon,hi3798cv200-perictrl bindings to json-schema
+Message-ID: <20201001063517.GC3018@kozik-lap>
+References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+ <20200930031712.2365-17-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o6VICmVLeBu4iUL1hbj.=03";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200930031712.2365-17-thunder.leizhen@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/o6VICmVLeBu4iUL1hbj.=03
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 30, 2020 at 11:17:11AM +0800, Zhen Lei wrote:
+> Convert the Hisilicon Hi3798CV200 Peripheral Controller binding to DT
+> schema format using json-schema.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../hisilicon/controller/hi3798cv200-perictrl.yaml | 64 ++++++++++++++++++++++
+>  .../controller/hisilicon,hi3798cv200-perictrl.txt  | 21 -------
+>  2 files changed, 64 insertions(+), 21 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+> new file mode 100644
+> index 000000000000000..cba1937aad9a8d3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/hisilicon/controller/hi3798cv200-perictrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hisilicon Hi3798CV200 Peripheral Controller
+> +
+> +maintainers:
+> +  - Wei Xu <xuwei5@hisilicon.com>
+> +
+> +description: |
+> +  The Hi3798CV200 Peripheral Controller controls peripherals, queries
+> +  their status, and configures some functions of peripherals.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: hisilicon,hi3798cv200-perictrl
+> +      - const: syscon
+> +      - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 1
+> +
+> +  ranges: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - ranges
+> +
+> +additionalProperties:
+> +  type: object
 
-Hi all,
+You need to describe all additional properties or objects.
 
-Today's linux-next merge of the tip tree got conflicts in:
-
-  arch/ia64/Kconfig
-  arch/s390/Kconfig
-
-between commit:
-
-  5e6e9852d6f7 ("uaccess: add infrastructure for kernel builds with set_fs(=
-)")
-
-from the vfs tree and commit:
-
-  077ee78e3928 ("PCI/MSI: Make arch_.*_msi_irq[s] fallbacks selectable")
-  981aa1d366bf ("PCI: MSI: Fix Kconfig dependencies for PCI_MSI_ARCH_FALLBA=
-CKS")
-
-from the tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/ia64/Kconfig
-index 3414e67229b3,9d0f1e13c918..000000000000
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@@ -55,7 -56,7 +55,8 @@@ config IA6
-  	select NEED_DMA_MAP_STATE
-  	select NEED_SG_DMA_LENGTH
-  	select NUMA if !FLATMEM
-+ 	select PCI_MSI_ARCH_FALLBACKS if PCI_MSI
- +	select SET_FS
-  	default y
-  	help
-  	  The Itanium Processor Family is Intel's 64-bit successor to
-diff --cc arch/s390/Kconfig
-index dde501bc6304,0a3899386a51..000000000000
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@@ -190,7 -185,7 +190,8 @@@ config S39
-  	select OLD_SIGSUSPEND3
-  	select PCI_DOMAINS		if PCI
-  	select PCI_MSI			if PCI
-+ 	select PCI_MSI_ARCH_FALLBACKS	if PCI_MSI
- +	select SET_FS
-  	select SPARSE_IRQ
-  	select SYSCTL_EXCEPTION_TRACE
-  	select THREAD_INFO_IN_TASK
-
---Sig_/o6VICmVLeBu4iUL1hbj.=03
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91eIMACgkQAVBC80lX
-0GxOvgf/SSvRTkrGYn/qQXFfACffvFAtOpnQFMJjDMYxt1qxdcR+51oh1Zxb5gsR
-b33tk5CulyPByFbVHG7sdJripzoAfSn8k9cDNxEbhjHTIL13Nk5q4WZ6U4riDO+d
-LWq+ZCFwmSO01RlVT0XGtTxRGX/eVC3FCByECvg+xTneea3cRXGV8XAVCb81+dpC
-7LZ76+DbB6G3xCnRGqtei1yAhRjSy6f96U486mKfw1kB5Kqi1vf3A+GecS18PUbY
-PXoWzx4dJ3WKF1cxtcftS4qL2HEkTIpgoJGpHB3yM9hFbCfKdIoxyxJvaoLCCurx
-ranoh53SnRDHaP28+wdv6jLMKS6Keg==
-=sFWZ
------END PGP SIGNATURE-----
-
---Sig_/o6VICmVLeBu4iUL1hbj.=03--
+Best regards,
+Krzysztof
