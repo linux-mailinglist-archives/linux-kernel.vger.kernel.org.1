@@ -2,332 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AC227FFF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B531C27FFF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732376AbgJANVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:21:44 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8510 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731993AbgJANVj (ORCPT
+        id S1732352AbgJANVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:21:36 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:48204 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731993AbgJANVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:21:39 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f75d77b0000>; Thu, 01 Oct 2020 06:19:55 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 13:21:27 +0000
-Date:   Thu, 1 Oct 2020 16:21:24 +0300
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <lulu@redhat.com>, <kvm@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rob.miller@broadcom.com>, <lingshan.zhu@intel.com>,
-        <eperezma@redhat.com>, <hanand@xilinx.com>,
-        <mhabets@solarflare.com>, <elic@nvidia.com>, <amorenoz@redhat.com>,
-        <maxime.coquelin@redhat.com>, <stefanha@redhat.com>,
-        <sgarzare@redhat.com>
-Subject: Re: [RFC PATCH 09/24] vdpa: multiple address spaces support
-Message-ID: <20201001132124.GA32363@mtl-vdi-166.wap.labs.mlnx>
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-10-jasowang@redhat.com>
+        Thu, 1 Oct 2020 09:21:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601558493; x=1633094493;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=FYHHSBn8heQUx5/79FLaPU5U/gHWri+t6Tre4kerS3w=;
+  b=W9vcmDeY/mbGU80GS/0MZZiM29eVrpTq6jSUF74oB/9DBa/s9EfRDp6s
+   jyk9KFjalLQ3ICiEMecrZV+l8yMPB5xjhczyTX24T3dVyCCfJaJmEBfKB
+   JQXe27lxP750tUJtqEO5XFSQRlA+kSqFl+XodvdSrhBPHDT/GK0T2gwX+
+   2PtukOokTocQnIaOglSoWY96A0XE8upn3B8EQKGhVDnepjyury29BJNye
+   /iu0i793C615B2UqDeaVpTTK3UwbObO8dn0VjLhNS6zTpcfHy+M65k54E
+   /UJABrDt/L0/yArRApFT1AqNxZZm1+IyTztNlfID4sXZDCXyRqRTTVJHz
+   Q==;
+IronPort-SDR: 0XHgO32+4RZno7SOhxifpkGrodL+sbGG8smdpfhgvzjEkHk4m/fPcAxOTij7gBAD5Kyo1Q8okK
+ MIlvsLJEHT0zo+fP9rH6zmEyLRD2ABgYr50C5TtdGyw5Mf75LkatwiLk14SJsKKbjFNtw/Iw8T
+ f4yy2xSV2ysgOS/kQU6hLUS1uXyvLLwX/jWPKaMsMDlLKq0yUygElRGIRq2l08yjrJiV+J4alo
+ 60QKN3taTapc3amQqLRQkWdwVjvrh7WKnsp+AFshpcPNpaRFU6WVhSeh3RliXm9YsR+4yI7R4P
+ Agk=
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="91088525"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Oct 2020 06:21:33 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 1 Oct 2020 06:21:07 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Thu, 1 Oct 2020 06:21:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BWikvx/OpYOL+ZaEa9BQ+xwo6SSV8HCIEF01EZ1F958neSfcUkNN5xDgz2YSPOi+dCa9PPeBY6C/UctiqNrhzsERKA/C4YoRqnSeIHAfCR9g4Ar9dL4ccvb+mZI6ljeDbAjjEAU+qrG723W8teU2Te1EbFSQ+jm98+iRuNH9F3nt9IZd/gdebuzdGlwW8Li9GpKGble5V3EyR2PWru0sUVQBnyx9X3mPZbdUrkurmmJMECvMFFoDTTgfqDILv0Su/ANIBXm1RCMFRSyq+/gGxrAqAAUubpuRtiFz/6AM772833zkATuhRXZ5NoFUCBdbuqyrR+BHQEELH7ShME6FTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYHHSBn8heQUx5/79FLaPU5U/gHWri+t6Tre4kerS3w=;
+ b=BJgVcGhymWk/ts20PzQEXE1Iyfo8C4VCy4//d3ZyrJjiiFSFQbnfOyoM35suVM8fDZ+rlb2lgDORNxfFktiG53/cU4WPBeYopKMrz2MR09NRmJN46+gFlK/pDKwVL0yQXi+YNJLzOM955B9mZD5zMgonrh9SiOxorRMzY2ffUFd1qLOtiS/0akG0zN+7zo+c/EsPmkrCyAkN/W0R9uQKB3gm8TN6jn14wMKhVyoeThHg+ViEk9aPjaZNpUyjtUfvBDqy07bq5F+ANsJoF94elbxNrVTvQftqRcExMjQZ8RrNGzjoTFjAoPhcAGMBHCl/Oz5gnwutgHo2nBSkglSnKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FYHHSBn8heQUx5/79FLaPU5U/gHWri+t6Tre4kerS3w=;
+ b=K/vcFotl2KSyum4t7VnG1U5yh39bhL9LQpOdGCGidwWkl8Ha6DRYRKnFsIKGDQKz+BuiHCzb2rtyDKP2DYz4o9aOMjN/LbT16ZcT1mfvHCt/IEB+DUG14vDeN4b5jmFaqzj67Cl45ajwmILKEbed/LDT8fcMt4f00pnvMhrBLl0=
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
+ by DM5PR11MB1467.namprd11.prod.outlook.com (2603:10b6:4:a::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.35; Thu, 1 Oct 2020 13:21:30 +0000
+Received: from DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
+ ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 13:21:30 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+Subject: Re: [RFC PATCH 1/2] mtd: spi-nor: atmel: remove global
+ SNOR_F_HAS_LOCK
+Thread-Topic: [RFC PATCH 1/2] mtd: spi-nor: atmel: remove global
+ SNOR_F_HAS_LOCK
+Thread-Index: AQHWl/XGolQmpEhmZUmGKx8TlQY45g==
+Date:   Thu, 1 Oct 2020 13:21:30 +0000
+Message-ID: <915f2c88-1832-3c15-09ee-b0959e0ae70c@microchip.com>
+References: <20201001122828.23186-1-michael@walle.cc>
+In-Reply-To: <20201001122828.23186-1-michael@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: walle.cc; dkim=none (message not signed)
+ header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [5.13.51.157]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: eedbf0e2-de6b-40f8-c0ab-08d8660ce8ef
+x-ms-traffictypediagnostic: DM5PR11MB1467:
+x-microsoft-antispam-prvs: <DM5PR11MB1467D3FE3F9D40FD142609FEF0300@DM5PR11MB1467.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +zB0hGQky0FNyPk+znpS3rI3LQcSGxwpycOfM+uRp4O6CmVGQtEc7NU3iAtebWAHGfdg/LPaKo90Tmp+SEYeCqdXOddKOWElBxL91Oe7+KPyGN3l+P4W0lTEfDKQSxuf5dxls09xWuJ+Q8jCnY9fWD80tv7LkiYJqjXAyrQkBJeDWYca95UHpEhjmwzv8vUNke675mllFLb380aqZ0GWCePxru4ZmjVJsTptCk8KuiwuvTHbPEXl8x6WZlGuGnq3Ijd1CEdvDisBv9ilyx56nlcRmqwLuGG5r7iWtkLdTYf9I3WNwgz6SRLnmPIHGb4oMcmE4mk6gSh7Tji41Ag06UiowYt39SQypMdu4USp3ZJBb7bVURsVn4cv0CVITc82
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(376002)(39860400002)(136003)(66446008)(6506007)(8676002)(53546011)(26005)(31686004)(5660300002)(186003)(36756003)(110136005)(66946007)(76116006)(316002)(91956017)(54906003)(478600001)(2616005)(8936002)(71200400001)(6486002)(64756008)(83380400001)(6512007)(86362001)(2906002)(31696002)(4326008)(66476007)(66556008)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: tzT+ca2ze6OXKpVGeEBRG+8A7ZFYraXzctkCpDLFR5LTM5gG7N0vrPkxOHOqk/gwrcKCPEh7qwnmGsGW+UtSA/z/PAP1lIC/0vp3PZTQ3ZfH5EtUWuZssFESdncoH4tlmnuFMz0vg7T06rbtET9N18k0uq+ZPjP130sx9YmIBeLUm0QaPNzEQHKxFzqSSwJKjG+/X5kUA8IZttKTcdbgNiXdvxGFXGDy/s5kUJW6ycaBoH8t5rrE8GPSUZlTm0IGy6Lf+RhlyBBQRNzVLrDH5WyTWt3UD6K5CEJTOcpgQ8BpEvTm4vG/jtJjZo1FOLgaYqPsDCrWbv8c4tGYmJTPMRIf3TOB+cJnHQzO620IHMo3efPvW69UzZFnlfarMsbI90MJsudz5l6cwaA+TgI7xoj678mmVEbwbo02ECq1uodmGgu5kMMt273JHB2uBgn3q4CBycHfl8Uc7ItmCnUTind71OarB8QZ2dZZBTEi2llcfh1pMWCLgzBTve0e+ESKL8DGFshb9eCctj2bM0dJEeha1q4eaIf6I9jCdqbz9LFsKTFJ4x5ym6bCBQr3XzBssgeQJ4t4qNTALAg9ac6ZROrqrLi8t90+DPpUoxKZDJGa9wRS97c4o+33bz+mViO31MjYG6oGdYu3/e5H6VJszw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4305E60F56515846A3215E59ABEF803F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200924032125.18619-10-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601558395; bh=JVGGQlso0zbstvS5VRI/Znfgr/hkwvr0Uer+8mHFvcs=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=f4nKLsrWsZcO8XTxjVzU5+a6oPX+qAKeuZEdYlv5LJbywED2+I/ubG3Xs+0ODBOms
-         C1o0l/272nL9NAQbsQYd9rX11XIfpSjBalHjLsNtwxc9G7LaJ96QzHfM7fCUTGh/47
-         TaWh86mIsaRSxL7/I/TGUGB2uhqUrb0OuZzgM9LA1uYq1OJj4zzfVpDixDYmcpKzZ9
-         GBcvAFtQQjMlG8AWTSriQf5svKX5xl6pruKRTNWT8khDzXl8Kx6stfHtoIzdsqMZEA
-         6+FSq2mOVmFNlkX+ts/YfC1Q5CB98ght5cHcB/Kfm4Y0LpvUpvhqo5sY0AlZPRj2Jl
-         4IZymXooKZJpw==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eedbf0e2-de6b-40f8-c0ab-08d8660ce8ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 13:21:30.5063
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wofotMS2whTh/MLgiNdmBoLCWz00lXYmrHtYrCwn07N92OFCCXnE5SMqWJiU7q/u+4Mqe1EBvvQMnvoAU+2foqAZoanNKBSM41xd1fWRQ8k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1467
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:21:10AM +0800, Jason Wang wrote:
-> This patches introduces the multiple address spaces support for vDPA
-> device. This idea is to identify a specific address space via an
-> dedicated identifier - ASID.
-> 
-> During vDPA device allocation, vDPA device driver needs to report the
-> number of address spaces supported by the device then the DMA mapping
-> ops of the vDPA device needs to be extended to support ASID.
-> 
-> This helps to isolate the DMA among the virtqueues. E.g in the case of
-> virtio-net, the control virtqueue will not be assigned directly to
-> guest.
-> 
-> This RFC patch only converts for the device that wants its own
-> IOMMU/DMA translation logic. So it will rejects the device with more
-> that 1 address space that depends on platform IOMMU. The plan to
-
-This is not apparent from the code. Instead you enforce number of groups
-to 1.
-
-> moving all the DMA mapping logic to the vDPA device driver instead of
-> doing it in vhost-vDPA (otherwise it could result a very complicated
-> APIs and actually vhost-vDPA doesn't care about how the actual
-> composition/emulation were done in the device driver).
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vdpa/ifcvf/ifcvf_main.c   |  2 +-
->  drivers/vdpa/mlx5/net/mlx5_vnet.c |  5 +++--
->  drivers/vdpa/vdpa.c               |  4 +++-
->  drivers/vdpa/vdpa_sim/vdpa_sim.c  | 10 ++++++----
->  drivers/vhost/vdpa.c              | 14 +++++++++-----
->  include/linux/vdpa.h              | 23 ++++++++++++++++-------
->  6 files changed, 38 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index e6a0be374e51..86cdf5f8bcae 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -440,7 +440,7 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  
->  	adapter = vdpa_alloc_device(struct ifcvf_adapter, vdpa,
->  				    dev, &ifc_vdpa_ops,
-> -				    IFCVF_MAX_QUEUE_PAIRS * 2, 1);
-> +				    IFCVF_MAX_QUEUE_PAIRS * 2, 1, 1);
->  
->  	if (adapter == NULL) {
->  		IFCVF_ERR(pdev, "Failed to allocate vDPA structure");
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 4e480f4f754e..db7404e121bf 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1788,7 +1788,8 @@ static u32 mlx5_vdpa_get_generation(struct vdpa_device *vdev)
->  	return mvdev->generation;
->  }
->  
-> -static int mlx5_vdpa_set_map(struct vdpa_device *vdev, struct vhost_iotlb *iotlb)
-> +static int mlx5_vdpa_set_map(struct vdpa_device *vdev, unsigned int asid,
-> +			     struct vhost_iotlb *iotlb)
->  {
->  	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
->  	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> @@ -1931,7 +1932,7 @@ void *mlx5_vdpa_add_dev(struct mlx5_core_dev *mdev)
->  	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
->  
->  	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
-> -				 2 * mlx5_vdpa_max_qps(max_vqs), 1);
-> +				 2 * mlx5_vdpa_max_qps(max_vqs), 1, 1);
->  	if (IS_ERR(ndev))
->  		return ndev;
->  
-> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> index 46399746ec7c..05195fa7865d 100644
-> --- a/drivers/vdpa/vdpa.c
-> +++ b/drivers/vdpa/vdpa.c
-> @@ -63,6 +63,7 @@ static void vdpa_release_dev(struct device *d)
->   * @config: the bus operations that is supported by this device
->   * @nvqs: number of virtqueues supported by this device
->   * @ngroups: number of groups supported by this device
-> + * @nas: number of address spaces supported by this device
->   * @size: size of the parent structure that contains private data
->   *
->   * Driver should use vdpa_alloc_device() wrapper macro instead of
-> @@ -74,7 +75,7 @@ static void vdpa_release_dev(struct device *d)
->  struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->  					const struct vdpa_config_ops *config,
->  					int nvqs, unsigned int ngroups,
-> -					size_t size)
-> +					unsigned int nas, size_t size)
->  {
->  	struct vdpa_device *vdev;
->  	int err = -EINVAL;
-> @@ -102,6 +103,7 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->  	vdev->features_valid = false;
->  	vdev->nvqs = nvqs;
->  	vdev->ngroups = ngroups;
-> +	vdev->nas = nas;
->  
->  	err = dev_set_name(&vdev->dev, "vdpa%u", vdev->index);
->  	if (err)
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 6669c561bc6e..5dc04ec271bb 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -354,7 +354,7 @@ static struct vdpasim *vdpasim_create(void)
->  		ops = &vdpasim_net_config_ops;
->  
->  	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL, ops,
-> -				    VDPASIM_VQ_NUM, 1);
-> +				    VDPASIM_VQ_NUM, 1, 1);
->  	if (!vdpasim)
->  		goto err_alloc;
->  
-> @@ -581,7 +581,7 @@ static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
->  	return vdpasim->generation;
->  }
->  
-> -static int vdpasim_set_map(struct vdpa_device *vdpa,
-> +static int vdpasim_set_map(struct vdpa_device *vdpa, unsigned int asid,
->  			   struct vhost_iotlb *iotlb)
->  {
->  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> @@ -608,7 +608,8 @@ static int vdpasim_set_map(struct vdpa_device *vdpa,
->  	return ret;
->  }
->  
-> -static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
-> +static int vdpasim_dma_map(struct vdpa_device *vdpa, unsigned int asid,
-> +			   u64 iova, u64 size,
->  			   u64 pa, u32 perm)
->  {
->  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> @@ -622,7 +623,8 @@ static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
->  	return ret;
->  }
->  
-> -static int vdpasim_dma_unmap(struct vdpa_device *vdpa, u64 iova, u64 size)
-> +static int vdpasim_dma_unmap(struct vdpa_device *vdpa, unsigned int asid,
-> +			     u64 iova, u64 size)
->  {
->  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->  
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index ec3c94f706c1..eeefcd971e3f 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -557,10 +557,10 @@ static int vhost_vdpa_map(struct vhost_vdpa *v, struct vhost_iotlb *iotlb,
->  		return r;
->  
->  	if (ops->dma_map) {
-> -		r = ops->dma_map(vdpa, iova, size, pa, perm);
-> +		r = ops->dma_map(vdpa, 0, iova, size, pa, perm);
->  	} else if (ops->set_map) {
->  		if (!v->in_batch)
-> -			r = ops->set_map(vdpa, iotlb);
-> +			r = ops->set_map(vdpa, 0, iotlb);
->  	} else {
->  		r = iommu_map(v->domain, iova, pa, size,
->  			      perm_to_iommu_flags(perm));
-> @@ -579,10 +579,10 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v,
->  	vhost_vdpa_iotlb_unmap(v, iotlb, iova, iova + size - 1);
->  
->  	if (ops->dma_map) {
-> -		ops->dma_unmap(vdpa, iova, size);
-> +		ops->dma_unmap(vdpa, 0, iova, size);
->  	} else if (ops->set_map) {
->  		if (!v->in_batch)
-> -			ops->set_map(vdpa, iotlb);
-> +			ops->set_map(vdpa, 0, iotlb);
->  	} else {
->  		iommu_unmap(v->domain, iova, size);
->  	}
-> @@ -700,7 +700,7 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
->  		break;
->  	case VHOST_IOTLB_BATCH_END:
->  		if (v->in_batch && ops->set_map)
-> -			ops->set_map(vdpa, iotlb);
-> +			ops->set_map(vdpa, 0, iotlb);
->  		v->in_batch = false;
->  		break;
->  	default:
-> @@ -949,6 +949,10 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
->  	int minor;
->  	int r;
->  
-> +	/* Only support 1 address space */
-> +	if (vdpa->ngroups != 1)
-> +		return -ENOTSUPP;
-> +
-
-Did you mean to check agains vdpa->nas?
-
->  	/* Currently, we only accept the network devices. */
->  	if (ops->get_device_id(vdpa) != VIRTIO_ID_NET)
->  		return -ENOTSUPP;
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index d829512efd27..1e1163daa352 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -43,6 +43,8 @@ struct vdpa_vq_state {
->   * @index: device index
->   * @features_valid: were features initialized? for legacy guests
->   * @nvqs: the number of virtqueues
-> + * @ngroups: the number of virtqueue groups
-> + * @nas: the number of address spaces
->   */
->  struct vdpa_device {
->  	struct device dev;
-> @@ -52,6 +54,7 @@ struct vdpa_device {
->  	bool features_valid;
->  	int nvqs;
->  	unsigned int ngroups;
-> +	unsigned int nas;
->  };
->  
->  /**
-> @@ -161,6 +164,7 @@ struct vdpa_device {
->   *				Needed for device that using device
->   *				specific DMA translation (on-chip IOMMU)
->   *				@vdev: vdpa device
-> + *				@asid: address space identifier
->   *				@iotlb: vhost memory mapping to be
->   *				used by the vDPA
->   *				Returns integer: success (0) or error (< 0)
-> @@ -169,6 +173,7 @@ struct vdpa_device {
->   *				specific DMA translation (on-chip IOMMU)
->   *				and preferring incremental map.
->   *				@vdev: vdpa device
-> + *				@asid: address space identifier
->   *				@iova: iova to be mapped
->   *				@size: size of the area
->   *				@pa: physical address for the map
-> @@ -180,6 +185,7 @@ struct vdpa_device {
->   *				specific DMA translation (on-chip IOMMU)
->   *				and preferring incremental unmap.
->   *				@vdev: vdpa device
-> + *				@asid: address space identifier
->   *				@iova: iova to be unmapped
->   *				@size: size of the area
->   *				Returns integer: success (0) or error (< 0)
-> @@ -225,10 +231,12 @@ struct vdpa_config_ops {
->  	u32 (*get_generation)(struct vdpa_device *vdev);
->  
->  	/* DMA ops */
-> -	int (*set_map)(struct vdpa_device *vdev, struct vhost_iotlb *iotlb);
-> -	int (*dma_map)(struct vdpa_device *vdev, u64 iova, u64 size,
-> -		       u64 pa, u32 perm);
-> -	int (*dma_unmap)(struct vdpa_device *vdev, u64 iova, u64 size);
-> +	int (*set_map)(struct vdpa_device *vdev, unsigned int asid,
-> +		       struct vhost_iotlb *iotlb);
-> +	int (*dma_map)(struct vdpa_device *vdev, unsigned int asid,
-> +		       u64 iova, u64 size, u64 pa, u32 perm);
-> +	int (*dma_unmap)(struct vdpa_device *vdev, unsigned int asid,
-> +			 u64 iova, u64 size);
->  
->  	/* Free device resources */
->  	void (*free)(struct vdpa_device *vdev);
-> @@ -237,11 +245,12 @@ struct vdpa_config_ops {
->  struct vdpa_device *__vdpa_alloc_device(struct device *parent,
->  					const struct vdpa_config_ops *config,
->  					int nvqs, unsigned int ngroups,
-> -					size_t size);
-> +					unsigned int nas, size_t size);
->  
-> -#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs, ngroups) \
-> +#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs, \
-> +			  ngroups, nas)				    \
->  			  container_of(__vdpa_alloc_device( \
-> -				       parent, config, nvqs, ngroups, \
-> +				       parent, config, nvqs, ngroups, nas,  \
->  				       sizeof(dev_struct) + \
->  				       BUILD_BUG_ON_ZERO(offsetof( \
->  				       dev_struct, member))), \
-> -- 
-> 2.20.1
-> 
+T24gMTAvMS8yMCAzOjI4IFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJ
+TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
+IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IFRoaXMgaXMgY29uc2lkZXJlZCBiYWQgZm9yIHRo
+ZSBmb2xsb3dpbmcgcmVhc29uczoNCj4gICgxKSBXZSBvbmx5IHN1cHBvcnQgdGhlIGJsb2NrIHBy
+b3RlY3Rpb24gd2l0aCBCUG4gYml0cyBmb3Igd3JpdGUNCj4gICAgICBwcm90ZWN0aW9uLiBOb3Qg
+YWxsIEF0bWVsIHBhcnRzIHN1cHBvcnQgdGhpcy4NCj4gICgyKSBOZXdseSBhZGRlZCBmbGFzaCBj
+aGlwIHdpbGwgYXV0b21hdGljYWxseSBpbmhlcml0IHRoZSAiaGFzDQo+ICAgICAgbG9ja2luZyIg
+c3VwcG9ydCBhbmQgdGh1cyBuZWVkcyB0byBleHBsaWNpdGx5IHRlc3RlZC4gQmV0dGVyDQo+ICAg
+ICAgYmUgb3B0LWluIGluc3RlYWQgb2Ygb3B0LW91dC4NCj4gICgzKSBUaGVyZSBhcmUgYWxyZWFk
+eSBzdXBwb3J0ZWQgZmxhc2hlcyB3aGljaCBkb24ndCBzdXBwb3J0IHRoZSBsb2NraW5nDQo+ICAg
+ICAgICAgIHNjaGVtZS4gU28gSSBhc3N1bWUgdGhpcyB3YXNuJ3QgcHJvcGVybHkgdGVzdGVkIGJl
+Zm9yZSBhZGRpbmcgdGhhdA0KPiAgICAgICAgICBjaGlwOyB3aGljaCBlbmZvcmNlcyBteSBwcmV2
+aW91cyBhcmd1bWVudCB0aGF0IGxvY2tpbmcgc3VwcG9ydCBzaG91bGQNCj4gICAgICAgICAgYmUg
+YW4gb3B0LWluLg0KPiANCj4gUmVtb3ZlIHRoZSBnbG9iYWwgZmxhZyBhbmQgYWRkIGluZGl2aWR1
+YWwgZmxhZ3MgdG8gYWxsIGZsYXNoZXMNCj4gd2hpY2ggc3VwcG9ydHMgQlAgbG9ja2luZy4gSW4g
+cGFydGljdWxhciB0aGUgZm9sbG93aW5nIGZsYXNoZXMNCj4gZG9uJ3Qgc3VwcG9ydCB0aGUgQlAg
+c2NoZW1lOg0KPiAgLSBBVDI2RjAwNA0KPiAgLSBBVDI1U0wzMjENCj4gIC0gQVQ0NURCMDgxRA0K
+PiANCg0KSSBsaWtlIHRoZSBpZGVhLiBUaGFua3MgZm9yIHRoZSBlZmZvcnQuIFdpbGwgY2hlY2sg
+YWxsIHRob3NlIGRhdGFzaGVldHMNCmFuZCBnZXQgYmFjayB0byB5b3UuDQoNCj4gU2lnbmVkLW9m
+Zi1ieTogTWljaGFlbCBXYWxsZSA8bWljaGFlbEB3YWxsZS5jYz4NCj4gLS0tDQo+ICBkcml2ZXJz
+L210ZC9zcGktbm9yL2F0bWVsLmMgfCAyOCArKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tDQo+
+ICAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkNCj4gDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2F0bWVsLmMgYi9kcml2ZXJzL210ZC9z
+cGktbm9yL2F0bWVsLmMNCj4gaW5kZXggM2Y1ZjIxYTQ3M2E2Li40OWQzOTJjNmM4YmMgMTAwNjQ0
+DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvYXRtZWwuYw0KPiArKysgYi9kcml2ZXJzL210
+ZC9zcGktbm9yL2F0bWVsLmMNCj4gQEAgLTEwLDM3ICsxMCwyNyBAQA0KPiANCj4gIHN0YXRpYyBj
+b25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBhdG1lbF9wYXJ0c1tdID0gew0KPiAgICAgICAgIC8qIEF0
+bWVsIC0tIHNvbWUgYXJlIChjb25mdXNpbmdseSkgbWFya2V0ZWQgYXMgIkRhdGFGbGFzaCIgKi8N
+Cj4gLSAgICAgICB7ICJhdDI1ZnMwMTAiLCAgSU5GTygweDFmNjYwMSwgMCwgMzIgKiAxMDI0LCAg
+IDQsIFNFQ1RfNEspIH0sDQo+IC0gICAgICAgeyAiYXQyNWZzMDQwIiwgIElORk8oMHgxZjY2MDQs
+IDAsIDY0ICogMTAyNCwgICA4LCBTRUNUXzRLKSB9LA0KPiArICAgICAgIHsgImF0MjVmczAxMCIs
+ICBJTkZPKDB4MWY2NjAxLCAwLCAzMiAqIDEwMjQsICAgNCwgU0VDVF80SyB8IFNQSV9OT1JfSEFT
+X0xPQ0spIH0sDQo+ICsgICAgICAgeyAiYXQyNWZzMDQwIiwgIElORk8oMHgxZjY2MDQsIDAsIDY0
+ICogMTAyNCwgICA4LCBTRUNUXzRLIHwgU1BJX05PUl9IQVNfTE9DSykgfSwNCj4gDQo+IC0gICAg
+ICAgeyAiYXQyNWRmMDQxYSIsIElORk8oMHgxZjQ0MDEsIDAsIDY0ICogMTAyNCwgICA4LCBTRUNU
+XzRLKSB9LA0KPiAtICAgICAgIHsgImF0MjVkZjMyMSIsICBJTkZPKDB4MWY0NzAwLCAwLCA2NCAq
+IDEwMjQsICA2NCwgU0VDVF80SykgfSwNCj4gLSAgICAgICB7ICJhdDI1ZGYzMjFhIiwgSU5GTygw
+eDFmNDcwMSwgMCwgNjQgKiAxMDI0LCAgNjQsIFNFQ1RfNEspIH0sDQo+IC0gICAgICAgeyAiYXQy
+NWRmNjQxIiwgIElORk8oMHgxZjQ4MDAsIDAsIDY0ICogMTAyNCwgMTI4LCBTRUNUXzRLKSB9LA0K
+PiArICAgICAgIHsgImF0MjVkZjA0MWEiLCBJTkZPKDB4MWY0NDAxLCAwLCA2NCAqIDEwMjQsICAg
+OCwgU0VDVF80SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0sDQo+ICsgICAgICAgeyAiYXQyNWRmMzIx
+IiwgIElORk8oMHgxZjQ3MDAsIDAsIDY0ICogMTAyNCwgIDY0LCBTRUNUXzRLIHwgU1BJX05PUl9I
+QVNfTE9DSykgfSwNCj4gKyAgICAgICB7ICJhdDI1ZGYzMjFhIiwgSU5GTygweDFmNDcwMSwgMCwg
+NjQgKiAxMDI0LCAgNjQsIFNFQ1RfNEsgfCBTUElfTk9SX0hBU19MT0NLKSB9LA0KPiArICAgICAg
+IHsgImF0MjVkZjY0MSIsICBJTkZPKDB4MWY0ODAwLCAwLCA2NCAqIDEwMjQsIDEyOCwgU0VDVF80
+SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0sDQo+IA0KPiAgICAgICAgIHsgImF0MjVzbDMyMSIsICBJ
+TkZPKDB4MWY0MjE2LCAwLCA2NCAqIDEwMjQsIDY0LA0KPiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1JfUVVBRF9SRUFEKSB9
+LA0KPiANCj4gICAgICAgICB7ICJhdDI2ZjAwNCIsICAgSU5GTygweDFmMDQwMCwgMCwgNjQgKiAx
+MDI0LCAgOCwgU0VDVF80SykgfSwNCj4gLSAgICAgICB7ICJhdDI2ZGYwODFhIiwgSU5GTygweDFm
+NDUwMSwgMCwgNjQgKiAxMDI0LCAxNiwgU0VDVF80SykgfSwNCj4gLSAgICAgICB7ICJhdDI2ZGYx
+NjFhIiwgSU5GTygweDFmNDYwMSwgMCwgNjQgKiAxMDI0LCAzMiwgU0VDVF80SykgfSwNCj4gLSAg
+ICAgICB7ICJhdDI2ZGYzMjEiLCAgSU5GTygweDFmNDcwMCwgMCwgNjQgKiAxMDI0LCA2NCwgU0VD
+VF80SykgfSwNCj4gKyAgICAgICB7ICJhdDI2ZGYwODFhIiwgSU5GTygweDFmNDUwMSwgMCwgNjQg
+KiAxMDI0LCAxNiwgU0VDVF80SyB8IFNQSV9OT1JfSEFTX0xPQ0spIH0sDQo+ICsgICAgICAgeyAi
+YXQyNmRmMTYxYSIsIElORk8oMHgxZjQ2MDEsIDAsIDY0ICogMTAyNCwgMzIsIFNFQ1RfNEsgfCBT
+UElfTk9SX0hBU19MT0NLKSB9LA0KPiArICAgICAgIHsgImF0MjZkZjMyMSIsICBJTkZPKDB4MWY0
+NzAwLCAwLCA2NCAqIDEwMjQsIDY0LCBTRUNUXzRLIHwgU1BJX05PUl9IQVNfTE9DSykgfSwNCj4g
+DQo+ICAgICAgICAgeyAiYXQ0NWRiMDgxZCIsIElORk8oMHgxZjI1MDAsIDAsIDY0ICogMTAyNCwg
+MTYsIFNFQ1RfNEspIH0sDQo+ICB9Ow0KPiANCj4gLXN0YXRpYyB2b2lkIGF0bWVsX2RlZmF1bHRf
+aW5pdChzdHJ1Y3Qgc3BpX25vciAqbm9yKQ0KPiAtew0KPiAtICAgICAgIG5vci0+ZmxhZ3MgfD0g
+U05PUl9GX0hBU19MT0NLOw0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgY29uc3Qgc3RydWN0IHNwaV9u
+b3JfZml4dXBzIGF0bWVsX2ZpeHVwcyA9IHsNCj4gLSAgICAgICAuZGVmYXVsdF9pbml0ID0gYXRt
+ZWxfZGVmYXVsdF9pbml0LA0KPiAtfTsNCj4gLQ0KPiAgY29uc3Qgc3RydWN0IHNwaV9ub3JfbWFu
+dWZhY3R1cmVyIHNwaV9ub3JfYXRtZWwgPSB7DQo+ICAgICAgICAgLm5hbWUgPSAiYXRtZWwiLA0K
+PiAgICAgICAgIC5wYXJ0cyA9IGF0bWVsX3BhcnRzLA0KPiAgICAgICAgIC5ucGFydHMgPSBBUlJB
+WV9TSVpFKGF0bWVsX3BhcnRzKSwNCj4gLSAgICAgICAuZml4dXBzID0gJmF0bWVsX2ZpeHVwcywN
+Cj4gIH07DQo+IC0tDQo+IDIuMjAuMQ0KPiANCg0K
