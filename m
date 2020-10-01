@@ -2,292 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6285F2803A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3730C2803A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732426AbgJAQO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:14:57 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:42124 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730534AbgJAQO5 (ORCPT
+        id S1732667AbgJAQPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:15:31 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:43009 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1732026AbgJAQPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:14:57 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091GD1x4004237;
-        Thu, 1 Oct 2020 18:14:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=gnZRMgovLNyZarhwmANpBM90CFjwCVSsIi+p1+jKpwE=;
- b=XzW3ok3BCVoGdAHVZW5bUFrLhX7uMCmqyazjstkgjQ6JSMGnQsTz4khi1d8MpQRU8ESe
- 8LHMN70n5e8Ee3TX4WOseblxw5kzUEyKGLXzuzxWxdJQNWk87S5M0TDuXgO27AObg4C4
- ogc+Qx7ICbasY2/6B1M6NU26RMYPYNb0CCMsF4LfmJKyhHvPUgZ5d9b2RwtcISx3cQ2s
- aZlvtMHac2T1P7eVVhgQc4kCwdgeAbQWbooJHbPiKK75kPT08Ms5zJcTPUAePoRoMPGL
- 3mxF6FgCjPQVFxnvigXt3r/eQi7hpCJFlGxIK6NlmdfcmBktMWbTOmt3ODgPAl6MvAiG UA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33svhexed7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Oct 2020 18:14:50 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9F48710002A;
-        Thu,  1 Oct 2020 18:14:49 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 90BE62B4D0D;
-        Thu,  1 Oct 2020 18:14:49 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 18:14:20 +0200
-Subject: Re: [PATCH 06/10] rpmsg: Turn name service into a stand alone driver
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        Loic PALLARDY <loic.pallardy@st.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922001000.899956-7-mathieu.poirier@linaro.org>
- <20200930070912.GE20683@ubuntu>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <4d6c79d5-b98e-52ab-4114-d7441e83ed76@st.com>
-Date:   Thu, 1 Oct 2020 18:14:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Oct 2020 12:15:30 -0400
+Received: (qmail 254425 invoked by uid 1000); 1 Oct 2020 12:15:29 -0400
+Date:   Thu, 1 Oct 2020 12:15:29 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201001161529.GA251468@rowland.harvard.edu>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20200930070912.GE20683@ubuntu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG5NODE2.st.com (10.75.127.14) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-01_05:2020-10-01,2020-10-01 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/30/20 9:09 AM, Guennadi Liakhovetski wrote:
-> On Mon, Sep 21, 2020 at 06:09:56PM -0600, Mathieu Poirier wrote:
->> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->>
->> Make the RPMSG name service announcement a stand alone driver so that it
->> can be reused by other subsystems.  It is also the first step in making the
->> functionatlity transport independent, i.e that is not tied to virtIO.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> ---
->>  drivers/rpmsg/Kconfig          |   8 +++
->>  drivers/rpmsg/Makefile         |   1 +
->>  drivers/rpmsg/rpmsg_internal.h |  18 ++++++
->>  drivers/rpmsg/rpmsg_ns.c       | 110 +++++++++++++++++++++++++++++++++
->>  4 files changed, 137 insertions(+)
->>  create mode 100644 drivers/rpmsg/rpmsg_ns.c
->>
->> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
->> index f96716893c2a..c3fc75e6514b 100644
->> --- a/drivers/rpmsg/Kconfig
->> +++ b/drivers/rpmsg/Kconfig
->> @@ -15,6 +15,14 @@ config RPMSG_CHAR
->>  	  in /dev. They make it possible for user-space programs to send and
->>  	  receive rpmsg packets.
->>  
->> +config RPMSG_NS
->> +	tristate "RPMSG name service announcement"
->> +	depends on RPMSG
->> +	help
->> +	  Say Y here to enable the support of the name service announcement
->> +	  channel that probes the associated RPMsg device on remote endpoint
->> +	  service announcement.
->> +
->>  config RPMSG_MTK_SCP
->>  	tristate "MediaTek SCP"
->>  	depends on MTK_SCP
->> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
->> index ffe932ef6050..8d452656f0ee 100644
->> --- a/drivers/rpmsg/Makefile
->> +++ b/drivers/rpmsg/Makefile
->> @@ -1,6 +1,7 @@
->>  # SPDX-License-Identifier: GPL-2.0
->>  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
->>  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
->> +obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
->>  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
->>  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
->>  obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
->> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
->> index 3ea9cec26fc0..04e6cb287e18 100644
->> --- a/drivers/rpmsg/rpmsg_internal.h
->> +++ b/drivers/rpmsg/rpmsg_internal.h
->> @@ -15,6 +15,7 @@
->>  #include <linux/idr.h>
->>  #include <linux/mutex.h>
->>  #include <linux/rpmsg.h>
->> +#include <linux/rpmsg_ns.h>
->>  #include <linux/types.h>
->>  #include <linux/virtio.h>
->>  #include <linux/wait.h>
->> @@ -164,4 +165,21 @@ static inline int rpmsg_chrdev_register_device(struct rpmsg_device *rpdev)
->>  	return rpmsg_register_device(rpdev);
->>  }
->>  
->> +/**
->> + * rpmsg_ns_register_device() - register name service device based on rpdev
->> + * @rpdev: prepared rpdev to be used for creating endpoints
->> + *
->> + * This function wraps rpmsg_register_device() preparing the rpdev for use as
->> + * basis for the rpmsg name service device.
->> + */
->> +static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
->> +{
->> +	strcpy(rpdev->id.name, "rpmsg_ns");
->> +	rpdev->driver_override = "rpmsg_ns";
->> +	rpdev->src = RPMSG_NS_ADDR;
->> +	rpdev->dst = RPMSG_NS_ADDR;
->> +
->> +	return rpmsg_register_device(rpdev);
->> +}
->> +
->>  #endif
->> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
->> new file mode 100644
->> index 000000000000..b3318bf84433
->> --- /dev/null
->> +++ b/drivers/rpmsg/rpmsg_ns.c
->> @@ -0,0 +1,110 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
->> + */
->> +#include <linux/device.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/slab.h>
->> +#include <linux/rpmsg.h>
->> +#include <linux/rpmsg_ns.h>
->> +#include <linux/virtio_config.h>
->> +#include "rpmsg_internal.h"
->> +
->> +/* Invoked when a name service announcement arrives */
->> +static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
->> +		       void *priv, u32 src)
->> +{
->> +	struct rpmsg_ns_msg *msg = data;
->> +	struct rpmsg_device *newch;
->> +	struct rpmsg_channel_info chinfo;
->> +	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
+On Wed, Sep 30, 2020 at 09:51:16PM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> Let's not do this, non-VirtIO RPMsg drivers shouldn't need this struct.
+> Al Viro posted the following query:
+> 
+> ------------------------------------------------------------------------
+> 
+> <viro> fun question regarding barriers, if you have time for that
+> <viro>         V->A = V->B = 1;
+> <viro>
+> <viro> CPU1:
+> <viro>         to_free = NULL
+> <viro>         spin_lock(&LOCK)
+> <viro>         if (!smp_load_acquire(&V->B))
+> <viro>                 to_free = V
+> <viro>         V->A = 0
+> <viro>         spin_unlock(&LOCK)
+> <viro>         kfree(to_free)
+> <viro>
+> <viro> CPU2:
+> <viro>         to_free = V;
+> <viro>         if (READ_ONCE(V->A)) {
+> <viro>                 spin_lock(&LOCK)
+> <viro>                 if (V->A)
+> <viro>                         to_free = NULL
+> <viro>                 smp_store_release(&V->B, 0);
+> <viro>                 spin_unlock(&LOCK)
+> <viro>         }
+> <viro>         kfree(to_free);
+> <viro> 1) is it guaranteed that V will be freed exactly once and that
+> 	  no accesses to *V will happen after freeing it?
+> <viro> 2) do we need smp_store_release() there?  I.e. will anything
+> 	  break if it's replaced with plain V->B = 0?
 
-Is this patch could be merged with the patch 10/10 to avoid this
-temporay implementation?
+Here are my answers to Al's questions:
 
-Regards,
-Arnaud
+1) It is guaranteed that V will be freed exactly once.  It is not 
+guaranteed that no accesses to *V will occur after it is freed, because 
+the test contains a data race.  CPU1's plain "V->A = 0" write races with 
+CPU2's READ_ONCE; if the plain write were replaced with 
+"WRITE_ONCE(V->A, 0)" then the guarantee would hold.  Equally well, 
+CPU1's smp_load_acquire could be replaced with a plain read while the 
+plain write is replaced with smp_store_release.
 
+2) The smp_store_release in CPU2 is not needed.  Replacing it with a 
+plain V->B = 0 will not break anything.
+
+Analysis: Apart from the kfree calls themselves, the only access to a 
+shared variable outside of a critical section is CPU2's READ_ONCE of 
+V->A.  So let's consider two possibilities:
+
+1: The READ_ONCE returns 0.  Then CPU2 doesn't execute its critical 
+section and does kfree(V).  However, the fact that the READ_ONCE got 0 
+means that CPU1 has already entered its critical section, has already 
+written to V->A (but with a plain write!) and therefore has already seen 
+V->B = 1 (because of the smp_load_acquire), and therefore will not free 
+V.  This case shows that the ordering we require is for CPU1 to read 
+V->B before it writes V->A.  The ordering can be enforced by using 
+either a load-acquire (as in the litmus test) or a store-release.
+
+2: The READ_ONCE returns 1.  Then CPU2 does execute its critical 
+section, and we can simply treat this case the same as if the critical 
+section was executed unconditionally.  Whichever CPU runs its critical 
+section second will free V, and the other CPU won't try to access V 
+after leaving its own critical section (and thus won't access V after it 
+has been freed).
+
+> ------------------------------------------------------------------------
 > 
->> +	struct virtproc_info *vrp = vch->vrp;
->> +	struct device *dev = &vrp->vdev->dev;
->> +	int ret;
->> +
->> +#if defined(CONFIG_DYNAMIC_DEBUG)
->> +	dynamic_hex_dump("NS announcement: ", DUMP_PREFIX_NONE, 16, 1,
->> +			 data, len, true);
->> +#endif
->> +
->> +	if (len != sizeof(*msg)) {
->> +		dev_err(dev, "malformed ns msg (%d)\n", len);
->> +		return -EINVAL;
->> +	}
->> +
->> +	/* Don't trust the remote processor for null terminating the name */
->> +	msg->name[RPMSG_NAME_SIZE - 1] = '\0';
->> +
->> +	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
->> +	chinfo.src = RPMSG_ADDR_ANY;
->> +	chinfo.dst = virtio32_to_cpu(vrp->vdev, msg->addr);
->> +
->> +	dev_info(dev, "%sing channel %s addr 0x%x\n",
->> +		 virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY ?
->> +		 "destroy" : "creat", msg->name, chinfo.dst);
->> +
->> +	if (virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY) {
->> +		ret = rpmsg_release_channel(rpdev, &chinfo);
->> +		if (ret)
->> +			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
->> +	} else {
->> +		newch = rpmsg_create_channel(rpdev, &chinfo);
->> +		if (!newch)
->> +			dev_err(dev, "rpmsg_create_channel failed\n");
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
->> +{
->> +	struct rpmsg_channel_info ns_chinfo;
+> Of course herd7 supports neither structures nor arrays, but I was
+> crazy enough to try individual variables with made-up address and data
+> dependencies.  This litmus test must also detect use-after-free bugs,
+> but a simple variable should be able to do that.  So here is a
+> prototype:
 > 
-> +	struct rpmsg_channel_info ns_chinfo = {
-> +		.src = RPMSG_NS_ADDR,
-> +		.dst = RPMSG_NS_ADDR,
-> +		.name = "name_service",
-> +	};
+> ------------------------------------------------------------------------
 > 
-> Thanks
-> Guennadi
+> C C-viro-2020.09.29a
 > 
->> +	struct rpmsg_endpoint *ns_ept;
->> +
->> +	ns_chinfo.src = RPMSG_NS_ADDR;
->> +	ns_chinfo.dst = RPMSG_NS_ADDR;
->> +	strcpy(ns_chinfo.name, "name_service");
->> +
->> +	/*
->> +	 * Create the NS announcement service endpoint associated to the RPMsg
->> +	 * device. The endpoint will be automatically destroyed when the RPMsg
->> +	 * device will be deleted.
->> +	 */
->> +	ns_ept = rpmsg_create_ept(rpdev, rpmsg_ns_cb, NULL, ns_chinfo);
->> +	if (!ns_ept) {
->> +		dev_err(&rpdev->dev, "failed to create the ns ept\n");
->> +		return -ENOMEM;
->> +	}
->> +	rpdev->ept = ns_ept;
->> +
->> +	return 0;
->> +}
->> +
->> +static struct rpmsg_driver rpmsg_ns_driver = {
->> +	.drv.name = "rpmsg_ns",
->> +	.probe = rpmsg_ns_probe,
->> +};
->> +
->> +static int rpmsg_ns_init(void)
->> +{
->> +	int ret;
->> +
->> +	ret = register_rpmsg_driver(&rpmsg_ns_driver);
->> +	if (ret < 0)
->> +		pr_err("%s: Failed to register rpmsg driver\n", __func__);
->> +
->> +	return ret;
->> +}
->> +postcore_initcall(rpmsg_ns_init);
->> +
->> +static void rpmsg_ns_exit(void)
->> +{
->> +	unregister_rpmsg_driver(&rpmsg_ns_driver);
->> +}
->> +module_exit(rpmsg_ns_exit);
->> +
->> +MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
->> +MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
->> +MODULE_ALIAS("rpmsg_ns");
->> +MODULE_LICENSE("GPL v2");
->> -- 
->> 2.25.1
->>
+> {
+> 	int a = 1;
+> 	int b = 1;
+> 	int v = 1;
+> }
+
+Not the way I would have done it, but okay.  I would have modeled the 
+kfree by setting a and b both to some sentinel value.
+
+> P0(int *a, int *b, int *v, spinlock_t *l)
+> {
+> 	int r0;
+> 	int r1;
+> 	int r2 = 2;
+> 	int r8;
+> 	int r9a = 2;
+> 	int r9b = 2;
+> 
+> 	r0 = 0;
+> 	spin_lock(l);
+> 	r9a = READ_ONCE(*v); // Use after free?
+> 	r8 = r9a - r9a; // Restore address dependency
+> 	r8 = b + r8;
+> 	r1 = smp_load_acquire(r8);
+> 	if (r1 == 0)
+> 		r0 = 1;
+> 	r9b = READ_ONCE(*v); // Use after free?
+> 	WRITE_ONCE(*a, r9b - r9b); // Use data dependency
+> 	spin_unlock(l);
+> 	if (r0) {
+> 		r2 = READ_ONCE(*v);
+> 		WRITE_ONCE(*v, 0); /* kfree(). */
+> 	}
+> }
+> 
+> P1(int *a, int *b, int *v, spinlock_t *l)
+> {
+> 	int r0;
+> 	int r1;
+> 	int r1a;
+> 	int r2 = 2;
+> 	int r8;
+> 	int r9a = 2;
+> 	int r9b = 2;
+> 	int r9c = 2;
+> 
+> 	r0 = READ_ONCE(*v);
+> 	r9a = r0; // Use after free?
+
+Wrong.  This should be:
+
+	r0 = 1;
+	r9a = READ_ONCE(*v);
+
+> 	r8 = r9a - r9a; // Restore address dependency
+> 	r8 = a + r8;
+> 	r1 = READ_ONCE(*r8);
+> 	if (r1) {
+> 		spin_lock(l);
+> 		r9b = READ_ONCE(*v); // Use after free?
+> 		r8 = r9b - r9b; // Restore address dependency
+> 		r8 = a + r8;
+> 		r1a = READ_ONCE(*r8);
+> 		if (r1a)
+> 			r0 = 0;
+> 		r9c = READ_ONCE(*v); // Use after free?
+> 		smp_store_release(b, r9c - rc9); // Use data dependency
+> 		spin_unlock(l);
+> 	}
+> 	if (r0) {
+> 		r2 = READ_ONCE(*v);
+> 		WRITE_ONCE(*v, 0); /* kfree(). */
+> 	}
+> }
+> 
+> locations [a;b;v;0:r1;0:r8;1:r1;1:r8]
+> exists (0:r0=1:r0 \/ (* Both or neither did kfree(). *)
+> 	v=1 \/ (* Neither did kfree, redundant check. *)
+> 	0:r2=0 \/ 1:r2=0 \/  (* Both did kfree, redundant check. *)
+> 	0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ (* CPU1 use after free. *)
+> 	1:r9b=0 \/ 1:r9c=0) (* CPU2 use after free. *)
+> 
+> ------------------------------------------------------------------------
+> 
+> This "exists" clause is satisfied:
+> 
+> ------------------------------------------------------------------------
+> 
+> $ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/C-viro-2020.09.29a.litmus
+> Test C-viro-2020.09.29a Allowed
+> States 5
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=0; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=0; 1:r1=1; 1:r2=2; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=1;
+
+The values for this case don't make sense.  I haven't checked the other 
+four cases.  Printing a graph of the relations for this case (the only 
+state with v=1 at the end) might help.
+
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=1; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=0;
+> Ok
+> Witnesses
+> Positive: 3 Negative: 2
+> Condition exists (0:r0=1:r0 \/ v=1 \/ 0:r2=0 \/ 1:r2=0 \/ 0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ 1:r9b=0 \/ 1:r9c=0)
+> Observation C-viro-2020.09.29a Sometimes 3 2
+> Time C-viro-2020.09.29a 14.33
+> Hash=89f74abff4de682ee0bea8ee6dd53134
+
+Why didn't this flag the data race?
+
+> ------------------------------------------------------------------------
+> 
+> So did we end up with herd7 not respecting "fake" dependencies like
+> those shown above, or have I just messed up the translation from Al's
+> example to the litmus test?  (Given one thing and another over the past
+> couple of days, my guess would be that I just messed up the translation,
+> especially given that I don't see a reference to fake dependencies in
+> the documentation, but I figured that I should ask.)
+
+What do you get if you fix up the litmus test?
+
+Alan
