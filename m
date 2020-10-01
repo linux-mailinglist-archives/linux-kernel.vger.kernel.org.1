@@ -2,124 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799532804E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2024C2804DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732862AbgJARPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S1732853AbgJAROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732407AbgJARPB (ORCPT
+        with ESMTP id S1732274AbgJAROG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:15:01 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AFFC0613D0;
-        Thu,  1 Oct 2020 10:15:00 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g7so7525634iov.13;
-        Thu, 01 Oct 2020 10:15:00 -0700 (PDT)
+        Thu, 1 Oct 2020 13:14:06 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A3C0613D0;
+        Thu,  1 Oct 2020 10:14:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f18so5149078pfa.10;
+        Thu, 01 Oct 2020 10:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z+7Lt80oBeAGmb9TBQ2+JaFU8H0QfKMoZ05cXeDXD9U=;
-        b=PhU9qdrPsdyEV4/IkasacTEJJ/IceRDChfTyR2GjTJOu+JE8YVw41h4EnNCIXyHx5K
-         VxmwBQOp/VoPC6lRilRIeSw7sMZGwUJP65HpUyF2TrpIRJl+/9FIMyFS4rfDArgzjAD3
-         9wnWYcn+4/8yfn7hbYcPmUCmoziaZDj5a5jwGBQFsY5NoDdFGWqGoq/vDemy7KGur45v
-         zm1FX0djCPnwkbkCXSOaTfMMr+9jce90wF6JMv8v/IBGyuFz8MHRNLwswd3fiO4g+NHq
-         oofiBj1Itz5FRRpIPuGr6PodDzBe7vGZD9jfuIea6hO5/Kxx3GR1NgIlRiDlU+kp/2Gb
-         EsGg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1IL0AlnNAwGIIncld+2WCsR98xyZUOV2L4BT6NyJFlo=;
+        b=UnA2RxDMwGdpuHGBs9xZ6N9lZPMKouQbQWQWEmqRudCGC3GywogNs9vDoTis3SeIdy
+         XOboGDqiQguXKf4+1aXHFqwVdtLgNegkfZDSoDcJXineVTWJIZ20GkDNwrnH8ohGHffj
+         8wdwGpTZaKKOVUufboWjEkOZPbuHB9ZhfW/f8jhk9EhWOH+f75Cgrs69nVr/xrMErvcF
+         +ZWPV4zC/brFUpbe+Q62GGZ/fNpGkoroYuwvqdKFPvUmk5GQ92sVTW+ayjZwk1kl5iDl
+         4tj3eW61CkqomEsTbWvikjt/y69kprTqAnfXO3jUEAtyqwFWRm83hYUzXDtHv6/fYi4L
+         D/FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z+7Lt80oBeAGmb9TBQ2+JaFU8H0QfKMoZ05cXeDXD9U=;
-        b=A3b/Rx6rZhAwIPy/KUs6n8pm7SVBamJXCCJtVk/LtDj51EeoEt5DsUDm1rmr91U9Vx
-         Uj/5cuZ7cB7MC1BveD/8vxxdD2e2qxMHrtDXg85bXQ/UhO2OJPuHc6rMHP1+VkGLAnef
-         /c5fCxF+i+supUgrMcZEfFp4yaLmOv/AJmwtqIxUESWwNk5ysQSXh1HKErhQAaVV9AdM
-         ngQr4y1I0yE89iy4KCuEl+u2iJ24jCYp17PWn7+P9smisrT1ooHPNkQZmAcffWDRVZE3
-         PKQjtuwk/HiCk/EPE4LaQZA3dEyHrWb/pc34p4fqL6mZBJB+KAL4OU/Ztod3pEpLM5r0
-         aDKQ==
-X-Gm-Message-State: AOAM532pMVLfb39unvpKTbH57f+w6D/zVicfbbWOYLKTMhC0ioA8jOiG
-        rdpkSZ8WJmB6Ye1bSOeS/TRwTCFdRv7vFJTNtA==
-X-Google-Smtp-Source: ABdhPJy8DcqWDEWw9DLV6GesYGG7ZYbppxk0xqAtTGsejro8nMut9O+LwsIpL8jZd0UL1L6908xTBbJaDiAXgQZhBLU=
-X-Received: by 2002:a02:ccdb:: with SMTP id k27mr6786779jaq.103.1601572500365;
- Thu, 01 Oct 2020 10:15:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1IL0AlnNAwGIIncld+2WCsR98xyZUOV2L4BT6NyJFlo=;
+        b=rBPzQhErLiE5BcW3BEXYojqUTXYjd0VfEecDNtmOvo/akbL7PHlyiyaTTkmvWwzAID
+         kKaCf3rqs9vtzDJuN9THLymYxDsilbkjUimDVup8u6FAVjcwwmxQQhWGFEvAqiMrO8S+
+         Z4gGJBzsmbR8BQbaOfRQYRsthYz5HtLdIYg6xCGTI9maqCND0ria62vfqBiVyHGXqFw8
+         8imZXa9PMeMf0vnwYbHPRmDo4qV0GD0CFfFeRazU4jxcp++Oc/64xmrptkHEr+X/Pym0
+         l25G073ypxpo/YbsUj9IeDnCS3YoJw0IDv69OuFLAyVhUk1PO3bQOAyb3LoUFjbJXMhx
+         Fm4g==
+X-Gm-Message-State: AOAM5317XyFkl/L4r/oNKJQ6FNGuflq4/eJtMkSL0LH9vKEnAwKOPLs3
+        qK3wwpr0pMfKWTgXBsUip+kR5h7spOU=
+X-Google-Smtp-Source: ABdhPJxQf72yYe8SCEVQXghCl9gHO7Qygl8oZQhfy/Le4B0N8byPU7NQPd40PXOL9gwoTDj1nJPhPw==
+X-Received: by 2002:a63:e:: with SMTP id 14mr2510335pga.426.1601572446100;
+        Thu, 01 Oct 2020 10:14:06 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id k28sm7187761pfh.196.2020.10.01.10.14.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:14:05 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 10:14:04 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the pm
+ tree
+Message-ID: <20201001171404.GB2468854@ubuntu-m3-large-x86>
+References: <20201001195353.7e3551f7@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200930071342.98691-1-tali.perry1@gmail.com> <20200930093117.GY3956970@smile.fi.intel.com>
- <CAHb3i=sWxiVLCC0hfY+6-_x92ZEMY7Ctyyuz9CbMYxrH_BqAZQ@mail.gmail.com> <CAHp75Vc3Bw-dTpEmpeUpB4n5-8-xGPx+jm_HkB5Pj6Qr8U=CAw@mail.gmail.com>
-In-Reply-To: <CAHp75Vc3Bw-dTpEmpeUpB4n5-8-xGPx+jm_HkB5Pj6Qr8U=CAw@mail.gmail.com>
-From:   Avi Fishman <avifishman70@gmail.com>
-Date:   Thu, 1 Oct 2020 20:13:49 +0300
-Message-ID: <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
-Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using debugfs.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tali Perry <tali.perry1@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Alex Qiu <xqiu@google.com>,
-        Kun Yi <kunyi@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001195353.7e3551f7@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Thu, Oct 01, 2020 at 07:53:53PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+> 
+>   include/acpi/acpi_numa.h
+> 
+> between commit:
+> 
+>   4849bc777049 ("ACPI / NUMA: Add stub function for pxm_to_node()")
+> 
+> from the pm tree and commit:
+> 
+>   623347c1b949 ("x86/numa: cleanup configuration dependent command-line options")
+> 
+> from the akpm-current tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc include/acpi/acpi_numa.h
+> index 09eb3bc20ff5,0e9302285f14..000000000000
+> --- a/include/acpi/acpi_numa.h
+> +++ b/include/acpi/acpi_numa.h
+> @@@ -23,9 -23,16 +23,20 @@@ extern void bad_srat(void)
+>   extern int srat_disabled(void);
+>   
+>   #else				/* CONFIG_ACPI_NUMA */
+>  +static inline int pxm_to_node(int pxm)
+>  +{
+>  +	return 0;
+>  +}
+> + static inline void disable_srat(void)
+> + {
+> + }
+>   #endif				/* CONFIG_ACPI_NUMA */
+> + 
+> + #ifdef CONFIG_ACPI_HMAT
+> + extern void disable_hmat(void);
+> + #else				/* CONFIG_ACPI_HMAT */
+> + static inline void disable_hmat(void)
+> + {
+> + }
+> + #endif				/* CONFIG_ACPI_HMAT */
+>   #endif				/* __ACP_NUMA_H */
 
-Customers using BMC with complex i2c topology asked us to support
-changing bus frequency at run time, for example same device will
-communicate with one slave at 100Kbp/s and another with 400kbp/s and
-maybe also with smae device at different speed (for example an i2c
-mux).
-This is not only for debug.
-Can DT overlay support that?
+Thanks Stephen, this was expected. The resolution looks good to me and
+is what I had locally.
 
-On Thu, Oct 1, 2020 at 6:40 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Oct 1, 2020 at 8:34 AM Tali Perry <tali.perry1@gmail.com> wrote:
-> > On Wed, Sep 30, 2020 at 12:31 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Wed, Sep 30, 2020 at 10:13:42AM +0300, Tali Perry wrote:
-> > > > Systems that can dinamically add and remove slave devices
-> > >
-> > > dynamically
-> > >
-> > > > often need to change the bus speed in runtime.
-> > >
-> > > > This patch exposes the bus frequency to the user.
-> > >
-> > > Expose the bus frequency to the user.
-> > >
-> > > > This feature can also be used for test automation.
-> > >
-> > > In general I think that DT overlays or so should be user rather than =
-this.
-> > > If we allow to change bus speed settings for debugging purposes it mi=
-ght make
-> > > sense to do this on framework level for all drivers which support tha=
-t (via
-> > > additional callback or so).
-> >
-> > Do you mean adding something like this:
->
-> Nope. I meant to use DT description for that. I=C2=B2C core should cope
-> with DT already.
-> I do not understand why you need special nodes for that rather than DT
-> overlay which will change the speed for you.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
-
-
-
---=20
-Regards,
-Avi
+Cheers,
+Nathan
