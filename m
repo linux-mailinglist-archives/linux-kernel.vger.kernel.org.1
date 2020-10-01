@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE87E28059A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857C12805A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732920AbgJARjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732096AbgJARjy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:39:54 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3A5C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:39:54 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so6791950wrm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7216dcRRE3Wn/EM/apMUAUVbD6PsUdlPnAr0Igr7XOw=;
-        b=ptyqzr5KlaqwXGCWxthcuEXOqWrP87iiVAPL53D3y6ROp4TSs/wZ78d9mRg7iQLTJx
-         6UeLl1ARtrStVJglbLLkIMWz/LNq+uHsiqrgXo0L80r6jfucTEmW5ib6fGkNVF4DTG6w
-         hXv+8awczmTdAvLTgmWg7wIMkdOI3vPiyF8C1kzIddtqx/n0yp/gHjrTDjweG05vpfol
-         ddjCbjuniqlDqPv3Sm92UqyGncDUAIT2+Qe6rfG9DByFQCnodOC22MMqTfJ60CXQgh+r
-         JQ98cfavwZAELBnvwIbaQN2Xj/EOzXLAz7hazRs4KHapIezwYD7g/MJTof55xYdJTGz0
-         P6xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7216dcRRE3Wn/EM/apMUAUVbD6PsUdlPnAr0Igr7XOw=;
-        b=GvQ7GqQEq2nv6Vr0a7nSVZIk5zdG5WG/oKqnzLcFrrlq6GBQRaFD/N1/cFZdCWAqTh
-         VthLX2xOsZj39fZYzkgKvyUn4S1VdpKHocjcS3TlE9kYebqjXTARKAaF9f25qFD5GZou
-         t83ApNUssnhDeh97+jSl9YPMb86ItS/FVXobOy9frUTcYCwtZ6G/bhdLr78gjAXrw15W
-         N+Roz4mgUR3CokzBeRKIPyjeNK1y80lWi6JV1OIrmWqeR/SbN86DG416atoEk0UsWqt9
-         Wuf/CnR3fiOmsPkPBHYCk71UyfGetTPsbOj2NqBmgGx395t+Mpd+6HK7zyG1xz9h9oo1
-         ygRw==
-X-Gm-Message-State: AOAM5326T+32ynj17DFC9Ao39XdzEseoGIOGOhfF9OrhXb/ekUlU4JNq
-        6nn4+mXkg+uzCavxe+uHSjXZkg==
-X-Google-Smtp-Source: ABdhPJzJbvJMOEyc/fQ30bJrPNU6qkZ+WL5VMh3wle0oInfm6VZiuVKwbb5VAADZcWx+eKbi219y+w==
-X-Received: by 2002:a5d:4151:: with SMTP id c17mr11009569wrq.302.1601573992713;
-        Thu, 01 Oct 2020 10:39:52 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id y14sm854478wma.48.2020.10.01.10.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 10:39:51 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 19:39:45 +0200
-From:   elver@google.com
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 11/39] kasan: don't duplicate config dependencies
-Message-ID: <20201001173945.GI4162920@elver.google.com>
-References: <cover.1600987622.git.andreyknvl@google.com>
- <728981bdedbca9dc1e4cca853699b6a6e8f244e0.1600987622.git.andreyknvl@google.com>
+        id S1732928AbgJARk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:40:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13978 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732096AbgJARk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:40:57 -0400
+IronPort-SDR: /5bs0QYRhWBf2O+4m16ItWErilKLoaLqQBiiYB0m203ziEKOWAiTSaEPRE5Cnkg3kSQz1pAgf6
+ n5Iz2LgIK3tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="163650045"
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="163650045"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:40:56 -0700
+IronPort-SDR: MCXDRqQZOepaqaV9bmXjhsE4cmN81J+zNy1QBx7+SBPTHHRgjL+yK4UxtywV436mpunpxcbP00
+ NOF/rTiMO38g==
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="339633448"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 10:40:53 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kO2ZS-003H5E-LL; Thu, 01 Oct 2020 20:40:46 +0300
+Date:   Thu, 1 Oct 2020 20:40:46 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Avi Fishman <avifishman70@gmail.com>
+Cc:     Tali Perry <tali.perry1@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+        Alex Qiu <xqiu@google.com>, Kun Yi <kunyi@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using
+ debugfs.
+Message-ID: <20201001174046.GK3956970@smile.fi.intel.com>
+References: <20200930071342.98691-1-tali.perry1@gmail.com>
+ <20200930093117.GY3956970@smile.fi.intel.com>
+ <CAHb3i=sWxiVLCC0hfY+6-_x92ZEMY7Ctyyuz9CbMYxrH_BqAZQ@mail.gmail.com>
+ <CAHp75Vc3Bw-dTpEmpeUpB4n5-8-xGPx+jm_HkB5Pj6Qr8U=CAw@mail.gmail.com>
+ <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <728981bdedbca9dc1e4cca853699b6a6e8f244e0.1600987622.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.5 (2020-06-23)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKKbWA4gHobXFGi5CiPnawWoMOi0GFrCbzanuOFZ+Aky6=9Mpg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
-> Both KASAN_GENERIC and KASAN_SW_TAGS have common dependencies, move
-> those to KASAN.
+On Thu, Oct 01, 2020 at 08:13:49PM +0300, Avi Fishman wrote:
+> Hi Andy,
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Customers using BMC with complex i2c topology asked us to support
+> changing bus frequency at run time, for example same device will
+> communicate with one slave at 100Kbp/s and another with 400kbp/s and
+> maybe also with smae device at different speed (for example an i2c
+> mux).
+> This is not only for debug.
 
-Reviewed-by: Marco Elver <elver@google.com>
+The above design is fragile to start with. If you have connected peripheral
+devices with different speed limitations and you try to access faster one the
+slower ones may block and break the bus which will need recovery.
 
-But see comment below:
+> Can DT overlay support that?
 
-> ---
-> Change-Id: I77e475802e8f1750b9154fe4a6e6da4456054fcd
-> ---
->  lib/Kconfig.kasan | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index e1d55331b618..b4cf6c519d71 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -24,6 +24,9 @@ menuconfig KASAN
->  		   (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
->  	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
->  	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
-> +	select SLUB_DEBUG if SLUB
-> +	select CONSTRUCTORS
-> +	select STACKDEPOT
+Probably. DT overlay describes the update in the device topology, including
+certain device properties.
 
-In the later patch your move 'select SLUB_DEBUG' back to where they were
-here it seems. The end result is the same, so I leave it to you if you
-want to change it.
+P.S. Please do not top post.
 
->  	help
->  	  Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
->  	  designed to find out-of-bounds accesses and use-after-free bugs.
-> @@ -46,10 +49,6 @@ choice
->  config KASAN_GENERIC
->  	bool "Generic mode"
->  	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
-> -	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
-> -	select SLUB_DEBUG if SLUB
-> -	select CONSTRUCTORS
-> -	select STACKDEPOT
->  	help
->  	  Enables generic KASAN mode.
->  
-> @@ -70,10 +69,6 @@ config KASAN_GENERIC
->  config KASAN_SW_TAGS
->  	bool "Software tag-based mode"
->  	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
-> -	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
-> -	select SLUB_DEBUG if SLUB
-> -	select CONSTRUCTORS
-> -	select STACKDEPOT
->  	help
->  	  Enables software tag-based KASAN mode.
->  
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
-> 
+> On Thu, Oct 1, 2020 at 6:40 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Thu, Oct 1, 2020 at 8:34 AM Tali Perry <tali.perry1@gmail.com> wrote:
+> > > On Wed, Sep 30, 2020 at 12:31 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > On Wed, Sep 30, 2020 at 10:13:42AM +0300, Tali Perry wrote:
+> > > > > Systems that can dinamically add and remove slave devices
+> > > >
+> > > > dynamically
+> > > >
+> > > > > often need to change the bus speed in runtime.
+> > > >
+> > > > > This patch exposes the bus frequency to the user.
+> > > >
+> > > > Expose the bus frequency to the user.
+> > > >
+> > > > > This feature can also be used for test automation.
+> > > >
+> > > > In general I think that DT overlays or so should be user rather than this.
+> > > > If we allow to change bus speed settings for debugging purposes it might make
+> > > > sense to do this on framework level for all drivers which support that (via
+> > > > additional callback or so).
+> > >
+> > > Do you mean adding something like this:
+> >
+> > Nope. I meant to use DT description for that. I²C core should cope
+> > with DT already.
+> > I do not understand why you need special nodes for that rather than DT
+> > overlay which will change the speed for you.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
