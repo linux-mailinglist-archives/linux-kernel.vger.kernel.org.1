@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4FA27FECC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1672E27FEC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731931AbgJAMMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:12:48 -0400
-Received: from mx.kolabnow.com ([95.128.36.41]:49088 "EHLO mx.kolabnow.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731670AbgJAMMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:12:47 -0400
-X-Greylist: delayed 470 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 08:12:46 EDT
-Received: from localhost (unknown [127.0.0.1])
-        by ext-mx-out002.mykolab.com (Postfix) with ESMTP id 7EAB8655;
-        Thu,  1 Oct 2020 14:05:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
-        message-id:references:in-reply-to:subject:subject:from:from:date
-        :date:content-transfer-encoding:content-type:content-type
-        :mime-version:received:received:received; s=dkim20160331; t=
-        1601553909; x=1603368310; bh=jzNnZ0a0tZpvXi+43FH2M7TC5gR1DXRl1b9
-        fSc6m8v8=; b=SUPvYGYljq0H3iv3GJiMZyUNbQOfa616B8b1JRyX3NfNKcYrrIS
-        kQiNF3/m8eUJDSG8cCrNLGdWCBChcm3Fwf/J1R8wahH8gZ8UWJJ/Sao6cZxZu7qQ
-        cn9+FBZ0oi2XuNRsNlCvC/JB3nkMJNosSZ6qP7mcTjIiNwIhocwbVO3paWr9Q7P4
-        O+RrJUGA58TPGi1cHOfACiiZ5GObR6V55mGBY5QxbT7pCjnvG6H4M+f1pIhaxWGo
-        ehzBd/zZmtHaU5l9fzDkFvBM68Q41WJxblY2dBgIE5Ia13JrIPLFNMVaSWSSlsWQ
-        T+gzotVPGOyvuClm7HgCSzHvu0hfTfw5eqYewI3+1IF0v283h1BinVMsTWDdipfr
-        ahLTZwE+RZ+2/bdPMGo14/ngpWBxnOIsUrRsIf6jd8HKQ4wDjbO50hX6bO3J8MsL
-        M7QmAVL9Q0ACh7GThu0YWqFwiZEBF601dKDzCkgU/rW//OiahnKkMgRPADTP+LyJ
-        jn00UWxmeScCIwYS3x3BIC8Ikeb2XClNKelW366yOHxbg6mD0YkHGMVybk19eBYc
-        TBBTvuixRo9R2DrgLDVoQgpfo/OR+vQ0Ku0jM0rPEyfPAEu0KLOGOn8+e0vKFxQc
-        F7fKghsdakLzwWuypZ34yvFK2N435tAy7Yl1LJOOR9j+DMJHjfpBA94s=
-X-Virus-Scanned: amavisd-new at mykolab.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 tagged_above=-10 required=5
-        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
-Received: from mx.kolabnow.com ([127.0.0.1])
-        by localhost (ext-mx-out002.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id E0XL5by57ziI; Thu,  1 Oct 2020 14:05:09 +0200 (CEST)
-Received: from int-mx001.mykolab.com (unknown [10.9.13.1])
-        by ext-mx-out002.mykolab.com (Postfix) with ESMTPS id A2ACB49A;
-        Thu,  1 Oct 2020 14:05:09 +0200 (CEST)
-Received: from int-subm002.mykolab.com (unknown [10.9.37.2])
-        by int-mx001.mykolab.com (Postfix) with ESMTPS id 10BC815E;
-        Thu,  1 Oct 2020 14:05:09 +0200 (CEST)
+        id S1731921AbgJAMGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731670AbgJAMGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:06:44 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340EC0613D0;
+        Thu,  1 Oct 2020 05:06:44 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q4so1854151pjh.5;
+        Thu, 01 Oct 2020 05:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sV74BIakUvCRx9xcShItHkPBiKSDkVPNapmNdKhM3Fw=;
+        b=E/mNGlILRl6AHiL3qGtevUrxp3GXKf9RRaYnjJ56vO+Bw7X/VenWRMl/YHLAQLyXp2
+         5tu9fs7q81Pfl9SncMeOSscxQc2DVUSotpGa3RhCZ/APh/Z1aqlZrJaHDitCIK4GO2xr
+         VFaPnKjF7s0DG+BR8TRCEuXyfhI76FEq8wzJmCtZkn0Md70rhlLWsK/u1DokcOm/oq96
+         sEzmpGaxL5WWn6nMkpgholDXMNy2Gg28eyWrAgnMBHgl0qJne3jpLWDW/QnjxJYGWo/z
+         BH3gFJfEntDFHgkwPt50iHZRIwXG/rH0drVrWD2R4ua3ish3KYeERc+D1c+eSoYdvOfc
+         yWXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sV74BIakUvCRx9xcShItHkPBiKSDkVPNapmNdKhM3Fw=;
+        b=CLlvW9yroauY/YZTMrp+ac4mbSj/+424x3v5yTjntOhm4mdtEDFQnCwbU8Ns10qNu2
+         PwgetaNO0SdOxJLxBrbBz9wBCxfnv02NPYml5MzpF3K9H3+34Wu9uHtdtkl9gEpTNniH
+         isNwlVWlJrYgEYonMvhwLNn8qOaJwWGitTZ9kkYGrszwErhYtmsl6XtaGg6bNOZs/VB7
+         2CSlUGCcrGxR6pCzbwv1I4/Gfuw+Mq8h1Iphp4aUPgCkVWpiBaO/HCR3wrcE3yxkBm8Y
+         jrxqqNunWWTmjy269YFe9mvVx+AVcnT1G9WeN0qLb29v6Ft/eJBLQJnPWAJbMZRbcedD
+         0I+g==
+X-Gm-Message-State: AOAM531c81CBoK3Fqs1AEEs95qt3vhWfuG5OLJ3nOLTZnzD8A3LLUijk
+        2Sk9tK/wm/JIa65Fiytt1FEl0I0gUwvO98XqybM=
+X-Google-Smtp-Source: ABdhPJxFIrcPL34IzL0lczgzrednTeL9WUedF7XaOVI+sCHu376fT8D6xN93NHnFrJalk3Lnw2G5vzRnU6419m15U8w=
+X-Received: by 2002:a17:90a:d495:: with SMTP id s21mr6547846pju.1.1601554003886;
+ Thu, 01 Oct 2020 05:06:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Oct 2020 14:05:07 +0200
-From:   Federico Vaga <federico.vaga@vaga.pv.it>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 46/52] docs: it_IT: hacking.rst: fix a typo on a markup
-In-Reply-To: <741db941bc9e9818c26ba84a8cf119036bc3c4b0.1601467849.git.mchehab+huawei@kernel.org>
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <741db941bc9e9818c26ba84a8cf119036bc3c4b0.1601467849.git.mchehab+huawei@kernel.org>
-Message-ID: <dd9081bc0dfb5ed29545fa09e7500f66@vaga.pv.it>
-X-Sender: federico.vaga@vaga.pv.it
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+In-Reply-To: <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 1 Oct 2020 07:06:32 -0500
+Message-ID: <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-30 15:25, Mauro Carvalho Chehab wrote:
-> There's a missing "`", causing this warning:
-> 	./Documentation/translations/it_IT/kernel-hacking/hacking.rst:404:
-> WARNING: Unparseable C cross-reference: 'cpu_to_be32p(), che prende un
-> puntatore\nad un tipo, e ritorna il valore convertito. L\'altra
-> variante per\nla famiglia di conversioni "in-situ", come
-> :c:func:`cpu_to_be32s'
-> 	Invalid C declaration: Expected end of definition. [error at 14]
-> 	  cpu_to_be32p(), che prende un puntatore
-> 	ad un tipo, e ritorna il valore convertito. L'altra variante per
-> 	la famiglia di conversioni "in-situ", come :c:func:`cpu_to_be32s
-> 	  --------------^
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Wed, Sep 30, 2020 at 5:01 PM Jann Horn <jannh@google.com> wrote:
+> Hmm, this won't work, because the task could be exiting, and seccomp
+> filters are detached in release_task() (using
+> seccomp_filter_release()). And at the moment, seccomp_filter_release()
+> just locklessly NULLs out the tsk->seccomp.filter pointer and drops
+> the reference.
+>
+> The locking here is kind of gross, but basically I think you can
+> change this code to use lock_task_sighand() / unlock_task_sighand()
+> (see the other examples in fs/proc/base.c), and bail out if
+> lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
+> something like this:
+>
+> /* We are effectively holding the siglock by not having any sighand. */
+> WARN_ON(tsk->sighand != NULL);
 
-Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
+Ah thanks. I was thinking about how tasks exit and get freed and that
+sort of stuff, and how this would race against them. The last time I
+worked with procfs there was some magic going on that I could not
+figure out, so I was thinking if some magic will stop the task_struct
+from being released, considering it's an argument here.
 
-> ---
->  Documentation/translations/it_IT/kernel-hacking/hacking.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git
-> a/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-> b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-> index 6aab27a8d323..3d30b69f1ec1 100644
-> --- a/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-> +++ b/Documentation/translations/it_IT/kernel-hacking/hacking.rst
-> @@ -402,7 +402,7 @@ il valore convertito. Tutte le varianti supportano
-> anche il processo inverso:
->  :c:func:`be32_to_cpu()`, eccetera.
-> 
->  Queste funzioni hanno principalmente due varianti: la variante per
-> -puntatori, come :c:func:`cpu_to_be32p(), che prende un puntatore
-> +puntatori, come :c:func:`cpu_to_be32p()`, che prende un puntatore
->  ad un tipo, e ritorna il valore convertito. L'altra variante per
->  la famiglia di conversioni "in-situ", come :c:func:`cpu_to_be32s()`,
->  che convertono il valore puntato da un puntatore, e ritornano void.
+I just looked at release_task and related functions; looks like it
+will, at the end, decrease the reference count of the task_struct.
+Does procfs increase the refcount while calling the procfs functions?
+Hence, in procfs functions one can rely on the task_struct still being
+a task_struct, but any direct effects of release_task may happen while
+the procfs functions are running?
 
--- 
-Federico Vaga
-http://www.federicovaga.it/
+YiFei Zhu
