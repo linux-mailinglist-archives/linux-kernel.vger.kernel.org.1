@@ -2,124 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CF4280113
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE582800ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732550AbgJAOOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:14:05 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43883 "EHLO mga01.intel.com"
+        id S1732400AbgJAOJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:09:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:35318 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732380AbgJAON3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:13:29 -0400
-IronPort-SDR: EQiVQCH8AQzV/a0KK8nV6nd8SOm8I+Wp1sepWYPk4X5xuDz+JF0mPgq2fmMK9o/RLPibJe8WHr
- XvZXmNgfAOmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="180886429"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="180886429"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 07:13:23 -0700
-IronPort-SDR: bmZJ7wZCbPa1qohThNsz8ulJQttOgQ9RPtJZpJhw/+c/SvEcD5ckhP1nt8nXHZDeneP3eEYKUf
- LgR1c8zdmB0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="308648024"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga003.jf.intel.com with ESMTP; 01 Oct 2020 07:13:18 -0700
-Date:   Thu, 1 Oct 2020 22:08:34 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     lee.jones@linaro.org, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        mdf@kernel.org, yilun.xu@intel.com
-Subject: Re: [PATCH v3 0/2] add Intel MAX 10 BMC MFD driver & hwmon sub driver
-Message-ID: <20201001140834.GA5471@yilunxu-OptiPlex-7050>
-References: <1600669071-26235-1-git-send-email-yilun.xu@intel.com>
- <20200930205249.GA241905@roeck-us.net>
+        id S1732147AbgJAOJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:09:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22681D6E;
+        Thu,  1 Oct 2020 07:09:42 -0700 (PDT)
+Received: from [10.57.50.177] (unknown [10.57.50.177])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BB99A3F6CF;
+        Thu,  1 Oct 2020 07:09:39 -0700 (PDT)
+Subject: Re: [PATCH 1/2] docs: Clarify abstract scale usage for power values
+ in Energy Model
+To:     Doug Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20200929121610.16060-1-lukasz.luba@arm.com>
+ <CAD=FV=UnNkjMiOc0DZE7+OM3-Kr1ZRynxSerdA=ifbyGiRa2Zw@mail.gmail.com>
+ <a1d1fe2a-485f-a21e-2f91-9b609223aa5a@arm.com>
+ <62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org>
+ <1f713ff6-32f6-4ea6-b7f7-4c61f097cf2a@arm.com>
+ <b74a5907-47dc-6c3c-3da8-94959af07ea8@codeaurora.org>
+ <CAD=FV=V84RmTpKN50Rz-BJqccSme3T3yw=hT5KvYerx=X7aEsA@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <e878bfe8-7224-5395-4632-4bb985fb306b@arm.com>
+Date:   Thu, 1 Oct 2020 15:09:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930205249.GA241905@roeck-us.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAD=FV=V84RmTpKN50Rz-BJqccSme3T3yw=hT5KvYerx=X7aEsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+Hi Douglas
 
-On Wed, Sep 30, 2020 at 01:52:49PM -0700, Guenter Roeck wrote:
-> On Mon, Sep 21, 2020 at 02:17:49PM +0800, Xu Yilun wrote:
-> > I recently realized that maintainers may have trouble to apply patches to
-> > their trees if the patches depend on other being-reviewed patches. So I'm
-> > trying to wrapper the 2 patches into one patchset and let all the
-> > maintainers see the dependencies.
-> > 
-> > But the patch version is then not aligned between the 2 patches. I'm not
-> > sure how to handle it. I just picked the smaller number on Subject, but
-> > you could still see their own version changes in commit message of each
-> > patch. Sorry if it makes confusing.
-> > 
+On 9/30/20 6:24 PM, Doug Anderson wrote:
+> Hi,
 > 
-> If you started with separate patches, it would be much better to pick
-> the larger number, and add a note into the individual patch(es) stating
-> the reason for the gap. Everything else is highly confusing. I would not
-> be surprised if no one in the mfd world even looks at the mfd patch
-> since it went back from v6 (?) to v3 according to its subject line.
-
-I got it. Thanks for your guide.
-
-Fortunately, the mfd maintainer has replied and applied the mfd patch
-(the previous separate one). And I see you added a Reviewed-by for the hwmon
-patch, so I assume I don't have to do anything more, is it?
-
-I'll take care of the version number next time.
-
-Thanks,
-Yilun
-
+> On Wed, Sep 30, 2020 at 8:48 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>
+>>
+>> On 9/30/2020 7:34 PM, Lukasz Luba wrote:
+>>>
+>>>
+>>> On 9/30/20 11:55 AM, Rajendra Nayak wrote:
+>>>>
+>>>> On 9/30/2020 1:55 PM, Lukasz Luba wrote:
+>>>>> Hi Douglas,
+>>>>>
+>>>>> On 9/30/20 12:53 AM, Doug Anderson wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> On Tue, Sep 29, 2020 at 5:16 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>>>>
+>>>>>>> The Energy Model (EM) can store power values in milli-Watts or in abstract
+>>>>>>> scale. This might cause issues in the subsystems which use the EM for
+>>>>>>> estimating the device power, such as:
+>>>>>>> - mixing of different scales in a subsystem which uses multiple
+>>>>>>>     (cooling) devices (e.g. thermal Intelligent Power Allocation (IPA))
+>>>>>>> - assuming that energy [milli-Joules] can be derived from the EM power
+>>>>>>>     values which might not be possible since the power scale doesn't have to
+>>>>>>>     be in milli-Watts
+>>>>>>>
+>>>>>>> To avoid misconfiguration add the needed documentation to the EM and
+>>>>>>> related subsystems: EAS and IPA.
+>>>>>>>
+>>>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>>>>>> ---
+>>>>>>>    .../driver-api/thermal/power_allocator.rst          |  8 ++++++++
+>>>>>>>    Documentation/power/energy-model.rst                | 13 +++++++++++++
+>>>>>>>    Documentation/scheduler/sched-energy.rst            |  5 +++++
+>>>>>>>    3 files changed, 26 insertions(+)
+>>>>>>
+>>>>>> I haven't read through these files in massive detail, but the quick
+>>>>>> skim makes me believe that your additions seem sane.  In general, I'm
+>>>>>> happy with documenting reality, thus:
+>>>>>>
+>>>>>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>>>>>
+>>>>> Thank you for the review.
+>>>>>
+>>>>>>
+>>>>>> I will note: you haven't actually updated the device tree bindings.
+>>>>>> Thus, presumably, anyone who is specifying these numbers in the device
+>>>>>> tree is still supposed to specify them in a way that mW can be
+>>>>>> recovered, right?  Said another way: nothing about your patches makes
+>>>>>> it OK to specify numbers in device trees using an "abstract scale",
+>>>>>> right?
+>>>>>
+>>>>> For completeness, we are talking here about the binding from:
+>>>>> Documentation/devicetree/bindings/arm/cpus.yaml
+>>>>> which is 'dynamic-power-coefficient'. Yes, it stays untouched, also the
+>>>>> unit (uW/MHz/V^2) which then allows to have mW in the power
+>>>>> values in the EM.
+>>>>
+>>>> So for platforms where 'dynamic-power-coefficient' is specified in device tree,
+>>>> its always expected to be derived from 'real' power numbers on these platforms in
+>>>> 'real' mW?
+>>>
+>>> Yes, the purpose and the name of that binding was only for 'real'
+>>> power in mW.
+>>>
+>>>>
+>>>> Atleast on Qualcomm platforms we have these numbers scaled, so in essence it
+>>>> can't be used to derive 'real' mW values. That said we also do not have any of
+>>>> the 'platform might face potential issue of mixing devices in one thermal zone
+>>>> of two scales' problem.
+>>>
+>>> If you have these numbers scaled, then it's probably documented
+>>> somewhere in your docs for your OEMs, because they might assume it's in
+>>> uW/MHz/V^2 (according to the bindings doc). If not, they probably
+>>> realized it during the measurements and comparison (that the power in
+>>> EM is not what they see on the power meter).
+>>> This binding actually helps those developers who take the experiments
+>>> and based on measured power values, store derived coefficient.
+>>> Everyone can just measure in local setup and compare the results
+>>> easily, speaking the same language (proposing maybe a patch adjusting
+>>> the value in DT).
+>>>
+>>>>
+>>>> So the question is, can such platforms still use 'dynamic-power-coefficient'
+>>>> in device tree and create an abstract scale? The other way of doing this would
+>>>> be to *not* specify this value in device tree and have these values stored in the
+>>>> cpufreq driver and register a custom callback to do the math.
+>>>
+>>> But then we would also have to change the name of that binding.
+>>>
+>>> I'd recommend you the second way that you've described. It will avoid
+>>> your OEMs confusion. In your cpufreq driver you can simply register
+>>> to EM using the em_dev_register_perf_domain(). In your local
+>>> callback you can do whatever you need (read driver array, firmware,
+>>> DT, scale or not, etc).
+>>> The helper code in dev_pm_opp_of_register_em() is probably not suited
+>>> for your use case (when you don't want to share the real power of the
+>>> SoC).
+>>
+>> Got it, thanks for the clarification. I will get the cpufreq driver updated
+>> to use em_dev_register_perf_domain() with a custom callback and get rid of these
+>> values from device tree.
 > 
-> Thanks,
-> Guenter
+> This sounds good.  ...except...
 > 
-> > 
-> > Patch #1 implements the basic functions of the BMC chip for some Intel
-> > FPGA PCIe Acceleration Cards (PAC). The BMC is implemented using the
-> > Intel MAX 10 CPLD.
-> > 
-> > This BMC chip is connected to the FPGA by a SPI bus. To provide direct
-> > register access from the FPGA, the "SPI slave to Avalon Master Bridge"
-> > (spi-avmm) IP is integrated in the chip. It converts encoded streams of
-> > bytes from the host to the internal register read/write on the Avalon
-> > bus. So This driver uses the regmap-spi-avmm for register accessing.
-> > 
-> > Patch #2 adds support for the hwmon sub device in Intel MAX 10 BMC
-> > 
-> > 
-> > Xu Yilun (2):
-> >   mfd: intel-m10-bmc: add Intel MAX 10 BMC chip support for Intel FPGA
-> >     PAC
-> >   hwmon: intel-m10-bmc-hwmon: add hwmon support for Intel MAX 10 BMC
-> > 
-> >  .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
-> >  Documentation/hwmon/index.rst                      |   1 +
-> >  Documentation/hwmon/intel-m10-bmc-hwmon.rst        |  78 +++++
-> >  drivers/hwmon/Kconfig                              |  11 +
-> >  drivers/hwmon/Makefile                             |   1 +
-> >  drivers/hwmon/intel-m10-bmc-hwmon.c                | 334 +++++++++++++++++++++
-> >  drivers/mfd/Kconfig                                |  13 +
-> >  drivers/mfd/Makefile                               |   2 +
-> >  drivers/mfd/intel-m10-bmc.c                        | 164 ++++++++++
-> >  include/linux/mfd/intel-m10-bmc.h                  |  65 ++++
-> >  10 files changed, 684 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
-> >  create mode 100644 Documentation/hwmon/intel-m10-bmc-hwmon.rst
-> >  create mode 100644 drivers/hwmon/intel-m10-bmc-hwmon.c
-> >  create mode 100644 drivers/mfd/intel-m10-bmc.c
-> >  create mode 100644 include/linux/mfd/intel-m10-bmc.h
-> > 
-> > -- 
-> > 2.7.4
-> > 
+> How exactly are boards supposed to provide their "sustainable-power"
+> number in this model?  As far as I'm aware, there's no place to
+> specify this board-specific file other than in device tree, and the
+> bindings [1] say that this value has to be in mW.  Lukasz: how do you
+> envision boards can provide "sustainable-power" in cases where the
+> energy model is in "abstract scale"?
+> 
+> [1] Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> 
+
+
+I am currently investigating this issue. I will keep you in CC list
+when I send some patches.
+
+Regards,
+Lukasz
