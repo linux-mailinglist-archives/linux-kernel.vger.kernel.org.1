@@ -2,210 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEBD2802B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB492802B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732410AbgJAP0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgJAP0I (ORCPT
+        id S1732514AbgJAP0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:26:31 -0400
+Received: from smtprelay0090.hostedemail.com ([216.40.44.90]:44778 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730534AbgJAP0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:26:08 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70617C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:26:07 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m7so6000279oie.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qeiaTsO7c1keaxzsMiXnIexJPkXRFvvWYuhNwlUAnXk=;
-        b=NxVn9ALRqf8yCnkX4pPQfE7CZOlkyITto6hJuRkpOfetrPy2MKiNsCW96J99ewnt33
-         0dVAPEAfaoZwuq+3yYWqDWYWufyYvqdqqSpNv7RpSL/Hlfc3Rg3jtyxjZeLm8KOqKGF1
-         4fL0svk40G2NzpImY+tl/rnGckM9MYkIM0AFc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qeiaTsO7c1keaxzsMiXnIexJPkXRFvvWYuhNwlUAnXk=;
-        b=nj2UDo4e8Gye7Jr2boWK09gLuOGdexbjQRgcoIbmP+R3XNIjU+9O2rEpA2RLD6DC5L
-         gWJ5GJ63msd1maEq2l1SG8bZQnyS4f9FpXSQvbsJXlcZCplC10uo1/PGtWU4m7nkJxGQ
-         TnwZEbCOa9+GfRmYFMB7GIjXk/u76JGvXcHD93YzkJ+6xGclo7M5DTqlbHg1YI2r13hZ
-         tA4E8S9AvE9lWUIS4UdfWMV70O60CM6WnGnCmxLfOd11E6XQCvaHsICDhFOVgD4EYAbb
-         dKT5P5YdOEnwUlXMZbaVieUGKUA+mpLxzxE0suThcBbTPDH9ukFJiXjNDQhBfciT2rg4
-         BsSg==
-X-Gm-Message-State: AOAM533egTkAooKkklr02RaqYt0wSt+Gq5t9L17N09d4r5lQxLfUy9qE
-        FTLpF5brcuunFE+TpD2o2MFFifp/C5ES+ept/w23Pevbx+uBHQ==
-X-Google-Smtp-Source: ABdhPJz+2wKWjvqnBlbQPqQkli65OPYTCk+uOZV9wexfBZJFtTgu+lOuX5lXJOHUc/SmGhRNrpeUMojZ7e4tdjBCbaA=
-X-Received: by 2002:aca:eb49:: with SMTP id j70mr286415oih.101.1601565966665;
- Thu, 01 Oct 2020 08:26:06 -0700 (PDT)
+        Thu, 1 Oct 2020 11:26:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 84903100E7B42;
+        Thu,  1 Oct 2020 15:26:28 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2693:2828:2901:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4117:4184:4321:4605:5007:6119:7903:9010:9149:10004:10848:10946:11026:11232:11233:11473:11658:11914:12043:12295:12297:12438:12663:12740:12760:12895:13005:13017:13018:13019:13095:13141:13230:13439:14180:14181:14659:14721:21060:21080:21433:21451:21627:21740:21939:21990:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: judge34_4014a9f2719c
+X-Filterd-Recvd-Size: 6149
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 15:26:27 +0000 (UTC)
+Message-ID: <dc985938aa3986702815a0bd68dfca8a03c85447.camel@perches.com>
+Subject: Re: [PATCH RFC] checkpatch: fix multi-statement macro checks
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 01 Oct 2020 08:26:26 -0700
+In-Reply-To: <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com>
+References: <20201001103314.136645-1-dwaipayanray1@gmail.com>
+         <8e110121c89414ab1601071868dbcf410195a209.camel@perches.com>
+         <CABJPP5CFE3KXzMzuvVxtJt5tOg8Ye6y1V7-mqT5pqazHjVWvJw@mail.gmail.com>
+         <f3dadda8af7eef6613d7a4105170058f2759507d.camel@perches.com>
+         <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
+         <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20200930211723.3028059-1-robdclark@gmail.com> <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
- <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
-In-Reply-To: <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 1 Oct 2020 17:25:55 +0200
-Message-ID: <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Tim Murray <timmurray@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 5:15 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Thu, Oct 1, 2020 at 12:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > The android userspace treats the display pipeline as a realtime problem.
-> > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > that I found.)
-> > >
-> > > But this presents a problem with using workqueues for non-blocking
-> > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > preempt the worker.  Which is not really the outcome you want.. once
-> > > the required fences are scheduled, you want to push the atomic commit
-> > > down to hw ASAP.
-> > >
-> > > But the decision of whether commit_work should be RT or not really
-> > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > >
-> > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > update loop.  And the last patch exposes the task id to userspace as
-> > > a CRTC property, so that userspace can adjust the priority and sched
-> > > policy to fit it's needs.
-> > >
-> > >
-> > > v2: Drop client cap and in-kernel setting of priority/policy in
-> > >     favor of exposing the kworker tid to userspace so that user-
-> > >     space can set priority/policy.
-> >
-> > Yeah I think this looks more reasonable. Still a bit irky interface,
-> > so I'd like to get some kworker/rt ack on this. Other opens:
-> > - needs userspace, the usual drill
->
-> fwiw, right now the userspace is "modetest + chrt".. *probably* the
-> userspace will become a standalone helper or daemon, mostly because
-> the chrome gpu-process sandbox does not allow setting SCHED_FIFO.  I'm
-> still entertaining the possibility of switching between rt and cfs
-> depending on what is in the foreground (ie. only do rt for android
-> apps).
->
-> > - we need this also for vblank workers, otherwise this wont work for
-> > drivers needing those because of another priority inversion.
->
-> I have a thought on that, see below..
+On Thu, 2020-10-01 at 07:38 -0700, Joe Perches wrote:
+> On Thu, 2020-10-01 at 19:44 +0530, Dwaipayan Ray wrote:
+> > On Thu, Oct 1, 2020 at 7:12 PM Joe Perches <joe@perches.com> wrote:
+> > > On Thu, 2020-10-01 at 18:57 +0530, Dwaipayan Ray wrote:
+> > > > On Thu, Oct 1, 2020 at 6:47 PM Joe Perches <joe@perches.com> wrote:
+> > > > > On Thu, 2020-10-01 at 16:03 +0530, Dwaipayan Ray wrote:
+> > > > > > Checkpatch.pl doesn't have a check for excluding while (...) {...}
+> > > > > > blocks from MULTISTATEMENT_MACRO_USE_DO_WHILE error.
+> > > > > > 
+> > > > > > For example, running checkpatch.pl on the file mm/access.c in the
+> > > > > > kernel generates the following error:
+> > > > > > 
+> > > > > > ERROR: Macros with complex values should be enclosed in parentheses
+> > > > > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)        \
+> > > > > > +     while (len >= sizeof(type)) {                                   \
+> > > > > > +             __get_kernel_nofault(dst, src, type, err_label);        \
+> > > > > > +             dst += sizeof(type);                                    \
+> > > > > > +             src += sizeof(type);                                    \
+> > > > > > +             len -= sizeof(type);                                    \
+> > > > > > +     }
+> > > > > > 
+> > > > > > The error is misleading for this case. Enclosing it in parantheses
+> > > > > > doesn't make any sense.
+> > > > > 
+> > > > > OK
+> > > > > 
+> > > > > > Checkpatch already has an exception list for such common macro types.
+> > > > > > Added a new exception for while (...) {...} style blocks to the same.
+> > > > > > This effectively fixed the wrong error message.
+> > > > > []
+> > > > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > > > []
+> > > > > > @@ -5342,6 +5342,7 @@ sub process {
+> > > > > >                           $dstat !~ /^\.$Ident\s*=/ &&                                # .foo =
+> > > > > >                           $dstat !~ /^(?:\#\s*$Ident|\#\s*$Constant)\s*$/ &&          # stringification #foo
+> > > > > >                           $dstat !~ /^do\s*$Constant\s*while\s*$Constant;?$/ &&       # do {...} while (...); // do {...} while (...)
+> > > > > > +                         $dstat !~ /^while\s*$Constant\s*$Constant\s*$/ &&           # while (...) {...}
+> > > 
+> > > Note the \s*
+> > >                                                               ^
+> > > 
+> > > > > Did you try to output $dstat for some matching cases?
+> > > > > What was the $dstat value for the cases you tried?
+> > > > > 
+> > > > > 
+> > > > Hi,
+> > > > I did check $dstat values.
+> > > > 
+> > > > For example on file mm/maccess.c, there were two such macros:
+> > > > 
+> > > > Case 1:
+> > > > 
+> > > > $ctx:
+> > > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label) \
+> > > > + while (len >= sizeof(type)) { \
+> > > > + __get_kernel_nofault(dst, src, type, err_label); \
+> > > > + dst += sizeof(type); \
+> > > > + src += sizeof(type); \
+> > > > + len -= sizeof(type); \
+> > > > + }
+> > > > 
+> > > > $dstat:
+> > > > while 1 1
+> > > 
+> > > And perhaps this test should use \s+ instead.
+> > > What is $dstat with a #define like:
+> > > 
+> > > #define foo(bar,baz)while(bar){bar--;baz++;}
+> > > 
+> > > (no spaces anywhere bot the required one after define
+> > > 
+> > 
+> > In this case, $dstat is: while11
+> > 
+> > So, if \s+ is used, it won't match with this. I ran checkpatch
+> > on it and some other condition seems to match, so it is
+> > excluded from the error.
+> > 
+> > However, if the macro is like:
+> > 
+> > #define foo(bar,baz)while(bar) {bar--;baz++;}
+> > (one space after condition)
+> > 
+> > $dstat is: while1 1
+> > (space after first 1)
+> > and the same error is again emitted.
+> > 
+> > So I think \s* works better since there can be
+> > 0 or more whitespaces between them.
+> 
+> All I'm trying to point out to you is that $Constant\s*$Constant
+> isn't a proper test as the first $Constant will pull the test
+> entire sequence of digits and the second $Constant will not be
+> met.
+> 
+> It may take some conversion of the collapsing of the dstat
+> block to work appropriately
+> 
+> 
+> 			# Flatten any parentheses and braces
+> 			while ($dstat =~ s/\([^\(\)]*\)/1/ ||
+> 			       $dstat =~ s/\{[^\{\}]*\}/1/ ||
+> 			       $dstat =~ s/.\[[^\[\]]*\]/1/)
+> 			{
+> 			}
+> 
+> Maybe the /1/ should be / 1 / but I didn't look to see what
+> happens to the exclusion tests below that.
 
-Hm, not seeing anything about vblank worker below?
+I think your patch would work well enough if the /1/ bits
+here were simply changed to /1u/.
 
-> > - we probably want some indication of whether this actually does
-> > something useful, not all drivers use atomic commit helpers. Not sure
-> > how to do that.
->
-> I'm leaning towards converting the other drivers over to use the
-> per-crtc kwork, and then dropping the 'commit_work` from atomic state.
-> I can add a patch to that, but figured I could postpone that churn
-> until there is some by-in on this whole idea.
-
-i915 has its own commit code, it's not even using the current commit
-helpers (nor the commit_work). Not sure how much other fun there is.
-
-> > - not sure whether the vfunc is an awesome idea, I'd frankly just
-> > open-code this inline. We have similar special cases already for e.g.
-> > dpms (and in multiple places), this isn't the worst.
->
-> I could introduce a "PID" property type.  This would be useful if we
-> wanted to also expose the vblank workers.
-
-Hm right, but I think we need at most 2 for commit thread and vblank
-thread (at least with the current design). So open-coded if with two
-if (prop == crtc_worker_pid_prop || prop  ==
-crtc_vblank_worker_pid_prop) doesn't seem too horrible to me.
-Otherwise people start creating really funny stuff in their drivers
-with this backend, and I don't want to spend all the time making sure
-they don't abuse this :-)
-
-> > - still feeling we could at least change the default to highpriority niceness.
->
-> AFAIU this would still be preempted by something that is SCHED_FIFO.
-> Also, with cfs/SCHED_NORMAL, you can still be preempted by lower
-> priority things that haven't had a chance to run for a while.
-
-i915 uses highprio workqueue, so I guess to avoid regressions we need
-that (it's also not using the commit helpers right now, but no reason
-not to afaics, stuff simply happened in parallel back then.
-
-> > - there's still the problem that commit works can overlap, and a
-> > single worker can't do that anymore. So rolling that out for everyone
-> > as-is feels a bit risky.
->
-> That is why it is per-CRTC..  I'm not sure there is a need to overlap
-> work for a single CRTC?
->
-> We could OFC make this a driver knob, and keep the old 'commit_work'
-> option, but that doesn't really feel like the right direction
-
-drm_atomic_helper_commit_hw_done is what unblocks the next worker on
-the same set of crtc. It's before we do all the buffer cleanup, which
-has a full vblank stall beforehand. Most drivers also have the same
-vblank stall in their next commit, plus generally the fb cleanup is
-cheap, but neither is a requirement. So yeah you can get overlapping
-commit work on the same crtc, and that was kinda intentional. Maybe
-was overkill, I guess minimally just something that needs to be in the
-commit message.
--Daniel
-
->
-> BR,
-> -R
->
-> > Cheers, Daniel
-> >
-> > >
-> > > Rob Clark (3):
-> > >   drm/crtc: Introduce per-crtc kworker
-> > >   drm/atomic: Use kthread worker for nonblocking commits
-> > >   drm: Expose CRTC's kworker task id
-> > >
-> > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++++----
-> > >  drivers/gpu/drm/drm_crtc.c          | 14 +++++++++++++
-> > >  drivers/gpu/drm/drm_mode_config.c   | 14 +++++++++++++
-> > >  drivers/gpu/drm/drm_mode_object.c   |  4 ++++
-> > >  include/drm/drm_atomic.h            | 31 +++++++++++++++++++++++++++++
-> > >  include/drm/drm_crtc.h              |  8 ++++++++
-> > >  include/drm/drm_mode_config.h       |  9 +++++++++
-> > >  include/drm/drm_property.h          |  9 +++++++++
-> > >  8 files changed, 98 insertions(+), 4 deletions(-)
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+1 is a $Constant as it's just a number.
+11 though is also a $Constant.
+1u is also a $Constant but it stops the acquisition of
+digits that 11 would not and the sequence of
+"while1u1u" should match your newly introduced test
+of $Constant\s*$Constant as "while11" would not match.
 
 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+
+
+
+> 
+
