@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB2E27F99A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FEF327F9A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731093AbgJAGmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:42:02 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54906 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGmB (ORCPT
+        id S1725960AbgJAGsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:48:50 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44195 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725878AbgJAGst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:42:01 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0916fvGe112995;
-        Thu, 1 Oct 2020 01:41:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601534517;
-        bh=WAQBSDfsouAtHKLExKivcljiQxBv5HXEbRiRoGIS/Cw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AfHKGOGv7buJ3sRUXOdvyiBGF3Q8wq6WeGkgzSrk+x0OqBdXc0/QSKRvlYL+LCnig
-         cC42BDKKacVtiPHhARtZlHXVeqdyLZNavPhU3/GuO+y/wtOHFo96K5+GJs49s0O4wc
-         RgUTfhdFaQjBnB88n0rwf1/fVyZtL8Xe4bpzXlYw=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916fvNL040434;
-        Thu, 1 Oct 2020 01:41:57 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 01:41:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 01:41:57 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916fspd008476;
-        Thu, 1 Oct 2020 01:41:55 -0500
-Subject: Re: [PATCH 11/11] soc: ti: k3-socinfo: Add entry for AM64 SoC family
-To:     Grygorii Strashko <grygorii.strashko@ti.com>, <nm@ti.com>,
-        <t-kristo@ti.com>, <ssantosh@kernel.org>, <lokeshvutla@ti.com>,
-        "Nori, Sekhar" <nsekhar@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Anna, Suman" <s-anna@ti.com>
-References: <20200928083429.17390-1-peter.ujfalusi@ti.com>
- <20200928083429.17390-12-peter.ujfalusi@ti.com>
- <aa10c7a1-ddbd-a3ae-3035-f26a5ce073ae@ti.com>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <c2dcf5a3-abff-923c-7610-a670f02479e6@ti.com>
-Date:   Thu, 1 Oct 2020 09:42:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 02:48:49 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4AD475802D5;
+        Thu,  1 Oct 2020 02:48:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 01 Oct 2020 02:48:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=0
+        3y1LiXg1NxtfKztmvM8LbH/TEW6ApaxXsj4nZFsU/Y=; b=Y6aYG549ji3R5bqFH
+        9av9nW2HMSCqOW8ILmPQ9DO9PADhouU+HCosxcRyU1HWnwE3jH9j4rtqPQwTbi4N
+        XMOYj3HX+92mR8FcGFPnSwyRuGmllsY20Ino3Db+yU4OK1kX7Xr67RMTPjOpoiT6
+        GOPTELpikQukLTrUiHH9SSAU6cUv9Sf0a0cYsf3noCf9alBTxkQ+qnthn2LskoZ9
+        phrovTvomvmxoxycrbqvAxw0pILcbOrFeadpS4HXF5j67yW5bjs4tWaZFnKMP5n3
+        IQIPkCcM6cT1eNFz8KD1iFzMIrDlIEDbRpSSWCwVcNdUHkpnCdyZEODrp+njtsqE
+        vc4Mg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=03y1LiXg1NxtfKztmvM8LbH/TEW6ApaxXsj4nZFsU
+        /Y=; b=pB8oDVlpmy+POTenpKlW1uN3BO1+4klcZcOMsK4VzOVTzE49rektbmX9o
+        VOVLN0aBHQ2bzK156gbjSmLLOfTkR9CZAsih8Gt1HHYcejVQVlLMlXw+C4zfHUvS
+        Ra74bqBvdHOzsYwAjPkptfInPbhd36IP3yD6TiHGZA4uuf2WU9HQLoIqMy264crW
+        3tv6x3CjwQ8FP+pld68MQ3gQV54/Yt6yIaUAwNpocyA0z6h9+VHxJagqwZ9wyGiQ
+        6En6BQo3Qj2zfyHq/Na/gBQG66EzkET2jGhnrSg5ieogPRDJeH6ZrMMra3IXEnin
+        bY+zC68/smGmvPtiFmUiFWwC2m8GA==
+X-ME-Sender: <xms:znt1X5-KnSvepcmMSA1PDMGZ4DvKkWQ84zppi5zRrhPPzA7EwbqgFw>
+    <xme:znt1X9v7KBFbtkmPfwzbdoqadCasdNUC8TOZPd_ZacQcM4WmeLlo_zYK2vK7UiWrQ
+    1hrCTNDL35BgxTdnco>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdduudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
+    gedvudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:znt1X3BW_i-B-1QSTk70n9pad11-gqVBl3goZGzxSFGEUIylbUq71w>
+    <xmx:znt1X9fZFgXAvPY9nkJHMLsMOIGD-bn72-Dye8ToCKOmPUuN9br2Bg>
+    <xmx:znt1X-Ou6TIR-BESGifaLpzKaRpgjbD1X7OTeSHDgmMKuKWtYmQcyg>
+    <xmx:0Ht1X_lHv9osxByeCbMa85d4DE7t5SbK28952YbKXm2DmmKA4m4ytA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5D2D43280063;
+        Thu,  1 Oct 2020 02:48:46 -0400 (EDT)
+Date:   Thu, 1 Oct 2020 08:48:43 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+Message-ID: <20201001064843.dlewcu3b7dvqanyy@gilmour.lan>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+ <20200929221526.GA1370981@ubuntu-m3-large-x86>
+ <20200930140758.gummt3umouva3wyu@gilmour.lan>
+ <20200930163823.GA237050@ubuntu-m3-large-x86>
+ <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
 MIME-Version: 1.0
-In-Reply-To: <aa10c7a1-ddbd-a3ae-3035-f26a5ce073ae@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Grygorii,
+Hi Stefan,
 
-On 30/09/2020 16.56, Grygorii Strashko wrote:
+On Wed, Sep 30, 2020 at 06:52:13PM +0200, Stefan Wahren wrote:
+> Am 30.09.20 um 18:38 schrieb Nathan Chancellor:
+> > On Wed, Sep 30, 2020 at 04:07:58PM +0200, Maxime Ripard wrote:
+> >> Hi Nathan,
+> >>
+> >> On Tue, Sep 29, 2020 at 03:15:26PM -0700, Nathan Chancellor wrote:
+> >>> On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
+> >>>> Now that all the drivers have been adjusted for it, let's bring in t=
+he
+> >>>> necessary device tree changes.
+> >>>>
+> >>>> The VEC and PV3 are left out for now, since it will require a more s=
+pecific
+> >>>> clock setup.
+> >>>>
+> >>>> Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> >>>> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> >>>> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> >>>> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+> >>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> >>> Apologies if this has already been reported or have a solution but th=
+is
+> >>> patch (and presumably series) breaks output to the serial console aft=
+er
+> >>> a certain point during init. On Raspbian, I see systemd startup messa=
+ges
+> >>> then the output just turns into complete garbage. It looks like this
+> >>> patch is merged first in linux-next, which is why my bisect fell on t=
+he
+> >>> DRM merge. I am happy to provide whatever information could be helpful
+> >>> for debugging this. I am on the latest version of the firmware
+> >>> (currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
+> >> Unfortunately, the miniUART is in the same clock tree than the core
+> >> clock and will thus have those kind of issues when the core clock is
+> >> changed (which is also something that one should expect when using the
+> >> DRM or other drivers).
+> >>
+> >> The only real workaround there would be to switch to one of the PL011
+> >> UARTs. I guess we can also somehow make the UART react to the core clo=
+ck
+> >> frequency changes, but that's going to require some effort
+> >>
+> >> Maxime
+> > Ack, thank you for the reply! There does not really seem to be a whole
+> > ton of documentation around using one of the other PL011 UARTs so for
+> > now, I will just revert this commit locally.
 >=20
+> there was a patch series & discussion about this topic, but we finally
+> didn't find a rock solid solution.
 >=20
-> On 28/09/2020 11:34, Peter Ujfalusi wrote:
->> It's JTAG PARTNO is 0xBB38.
->>
->> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> ---
->> =C2=A0 drivers/soc/ti/k3-socinfo.c | 1 +
->> =C2=A0 1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c=
+> You can have a look at "[RFC 5/5] serial: 8250: bcm2835aux: add notifier
+> to follow clock changes" from 3.4.2019 on linux-rpi-kernel.
 
->> index bbbc2d2b7091..a14ec68846dd 100644
->> --- a/drivers/soc/ti/k3-socinfo.c
->> +++ b/drivers/soc/ti/k3-socinfo.c
->> @@ -40,6 +40,7 @@ static const struct k3_soc_id {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 { 0xBB5A, "AM65X" },
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 { 0xBB64, "J721E" },
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 { 0xBB6D, "J7200" },
->> +=C2=A0=C2=A0=C2=A0 { 0xBB38, "AM64" }
->=20
-> Shouldn't it be AM64X
+I couldn't find that discussion on the archive, but based on the title I
+guess there's some patches that have been merged this cycle for the 8250
+driver to do just that (868f3ee6e452 ("serial: 8250: Add 8250 port clock
+update method") and cc816969d7b5 ("serial: 8250_dw: Fix common clocks
+usage race condition")).
 
-Good point, I'll fix this up and then the DMA series.
+However, I'm not entirely sure the clock notifier works in our case with
+the firmware / MMIO clocks duality
 
-While here, what do you think: should we keep the DMA compatibles as I
-have them in v1 (am64-dmss-bcdma and am64-dmss-pktdma):
-https://lore.kernel.org/lkml/20200930091412.8020-10-peter.ujfalusi@ti.com=
-/
-https://lore.kernel.org/lkml/20200930091412.8020-11-peter.ujfalusi@ti.com=
-/
-
-or change them to am64x-dmss-* ?
-
-I'll ask Rob on the binding doc patches as well.
-
->=20
->> =C2=A0 };
->> =C2=A0 =C2=A0 static int
->>
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Maxime
