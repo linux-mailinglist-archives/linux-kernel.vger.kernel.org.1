@@ -2,297 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7447727F79B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9213027F7A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728660AbgJABwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        id S1730151AbgJACAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgJABwb (ORCPT
+        with ESMTP id S1725372AbgJACAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:52:31 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBF1C0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:52:30 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i26so5610153ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:52:30 -0700 (PDT)
+        Wed, 30 Sep 2020 22:00:21 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C11DC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:00:19 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d4so1293440wmd.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1bLW1cuECr8U7GaM7z86G6hDD6exav2AJLPz5W/9Rmc=;
-        b=kWsAhO4IucLVoZpMkahGgNES5DttbXTJpcoZ05moKrnMJckcHdlnDveEpyQqJc8ldL
-         QfmGxf8Eh4Ts/puB9RclgWUNuwb8+d/iVmtJDeUBqGiXQbFScpcYNmbeq7REh8GBZzeT
-         kLpXr6famz6F0NUDrEYV8TJ5EJq6Nq8M6GVDbEf26mf8kaU1XPG2YffLFbMei3Nk91vQ
-         QdDbgSTH81W6Vq5el8rE1yJwMjFMyj2dtgPTKf+GCr0p1w2ZwEJrKJ3piLN2eBBO7yzq
-         DUiUUF2/1A5woJuzwtDu3Xmtc/UNDykkbFsVApnq68QIoe/tglaDjWjVMTFxgl8A6CWl
-         gExw==
+         :cc;
+        bh=ivrZpUtEROi7RAF0nFuQJJGKHFNcErwlwJXYrDh//aU=;
+        b=oU7XD9Ld1nZHRqmxXUxeVkd21g26csgtsRw2bgqpywRnNiOrAVj+am/gNJr8tsj48Z
+         hp1GbD1RYs5OYrmSpu+1B+WeqgbIIhwJJdOqj5uasnxF0vYHYJD18PQSbZJLoah3yauB
+         sXERv2A67binehzAiFSfVcpaUoqMqOdPRdTdnJLl7dP/DU5UDN5qCNZbl4bxGMVhtlYp
+         GRDzz25ewfkKPUnJ0/TF+FY+mQvid7yWvtTvxF+Vnym6CdVSaMOEiB/kskp90WBP0/ck
+         weSe74LTfnjrloch601fC1KGW+7CXzO1h0GvdO/iL0ty3CcVtqaDIQSz9OV1EqzDja6X
+         bh6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1bLW1cuECr8U7GaM7z86G6hDD6exav2AJLPz5W/9Rmc=;
-        b=j5mEJdNzuz5446b3pPCtGAxFiNYSf+H9g0S1awSNbp19i8RJ9mpQDxPeezrqvTdayZ
-         qX/UCAWxXoDm7Ea6Qnm0n8NwQ5oUEWVUhy4eGwE95Ze/3l0OcEzFly5LLPndsM1kpw0D
-         h9FseQO633sbF4g3/MHthnl/VAWqf3dljKNC23sT4RlaYPLF2NPhXw+k+47BBLbBzj7t
-         Nae/M3qZPlP6A7LcmlhSMCrB5lDDhW5jMnxAnYy1TOMvg/0yRuzGO/ncLZjfqclEccrP
-         pyP5rZXUfiaoewBZ35LDD1eShy4TomC17OAardmmIm1CP9h2LUKSXBfgRRzfuzzMUF6t
-         c8YQ==
-X-Gm-Message-State: AOAM533oHyEJUW6knag5DeEpX8oC4WVtbVfZSM4Olye+c0qTBmIpujn9
-        q0kQjSvpyc5P8DtIhCdfrEhmSuQhoF4T1DJNupg1YQ==
-X-Google-Smtp-Source: ABdhPJy9aveDYFv4Gp14hKtilrKvNnkWXVsoiclevL5nYsStDKDifSDiKxQQKSwQqipgFKjnKXSV1kjDNtmgRMOszBo=
-X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr5795435ejr.493.1601517149212;
- Wed, 30 Sep 2020 18:52:29 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ivrZpUtEROi7RAF0nFuQJJGKHFNcErwlwJXYrDh//aU=;
+        b=Wh+1hFWyFKyCDSKDeFsztvcK92kVx1x9rHX5NVQ2AT5hI5AAjVY2Gn0W0zzvqm0WGK
+         G2TjoMEFyEug/qOe1hLx6oIDdLgrK0PZ6GQ89/8Kik2Fk4zWte6fvSPs6qOKLaZcfyLc
+         jT2wDUJTxxu0OzFdtbk8soVf+lae7qCzX8e8pWlljfg5qSYlLtKDgPVjt6Oq7MAoj+J3
+         pMTRCd2UDJRxlFqRwh5UG2+9O4+FedPeq/QcQa4Bly6GGgIXDacGw7fZTzXlcocIlK9k
+         bDb4C4sJRplL33sHdn3f5DWX3ViJYF6dofpvRrpbCKO9S1RDCwmctb4Bi9p4E6ape0lQ
+         AfpA==
+X-Gm-Message-State: AOAM531IoL5aqyRlDz+7gvRiw9gF0333otQTLkd12JiSmj1Q5j6f8WJX
+        6LAaliIFJ9ie6vXsI10j48/PASsgD6RpEW5xOcbhtA==
+X-Google-Smtp-Source: ABdhPJy42uAhDqsBhqu4iUoXSCFJaRfduXkKQY9F4EkWVxWaqmoyUk18P5mCGBD7Y5fqSSEXbrIjBwyIPuMtAtRmkmo=
+X-Received: by 2002:a7b:cd08:: with SMTP id f8mr5736758wmj.124.1601517618007;
+ Wed, 30 Sep 2020 19:00:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco>
-In-Reply-To: <20200930232456.GB1260245@cisco>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 03:52:02 +0200
-Message-ID: <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-2-jolsa@kernel.org>
+In-Reply-To: <20200930171512.3986425-2-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 30 Sep 2020 19:00:05 -0700
+Message-ID: <CAP-5=fVwe5wowm9Z6RgMAKA-nRd01U6DL0LGuUJSnPc_H=w17w@mail.gmail.com>
+Subject: Re: [PATCH 1/9] perf tools: Add build id shell test
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
-> > On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wrote=
-:
-> > > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages)=
- wrote:
-> > > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> > > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pa=
-ges) wrote:
-> > > > >>        =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
-> > > > >>        =E2=94=82FIXME                                           =
-     =E2=94=82
-> > > > >>        =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
-> > > > >>        =E2=94=82From my experiments,  it  appears  that  if  a  =
-SEC=E2=80=90 =E2=94=82
-> > > > >>        =E2=94=82COMP_IOCTL_NOTIF_RECV   is  done  after  the  ta=
-rget =E2=94=82
-> > > > >>        =E2=94=82process terminates, then the ioctl()  simply  bl=
-ocks =E2=94=82
-> > > > >>        =E2=94=82(rather than returning an error to indicate that=
- the =E2=94=82
-> > > > >>        =E2=94=82target process no longer exists).               =
-     =E2=94=82
-> > > > >
-> > > > > Yeah, I think Christian wanted to fix this at some point,
-> > > >
-> > > > Do you have a pointer that discussion? I could not find it with a
-> > > > quick search.
-> > > >
-> > > > > but it's a
-> > > > > bit sticky to do.
-> > > >
-> > > > Can you say a few words about the nature of the problem?
-> > >
-> > > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp=
-:
-> > > notify about unused filter"). So maybe there's a bug here?
-> >
-> > That thing only notifies on ->poll, it doesn't unblock ioctls; and
-> > Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
-> > commit doesn't have any effect on this kind of usage.
+On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
-> we don't have a count of all of them, unfortunately.
+> Adding test for build id cache that adds binary
+> with sha1 and md5 build ids and verifies it's
+> added properly.
 >
-> We could maybe look inside the wait_list, but that will probably make
-> people angry :)
+> The test updates build id cache with perf record
+> and perf buildid-cache -a.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-The easiest way would probably be to open-code the semaphore-ish part,
-and let the semaphore and poll share the waitqueue. The current code
-kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
-entire semaphore would IMO be cleaner than that. And it's not like
-semaphore semantics are even a good fit for this code anyway.
+Acked-by: Ian Rogers <irogers@google.com>
 
-Let's see... if we didn't have the existing UAPI to worry about, I'd
-do it as follows (*completely* untested). That way, the ioctl would
-block exactly until either there actually is a request to deliver or
-there are no more users of the filter. The problem is that if we just
-apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
-an event loop and don't set O_NONBLOCK will be screwed. So we'd
-probably also have to add some stupid counter in place of the
-semaphore's counter that we can use to preserve the old behavior of
-returning -ENOENT once for each cancelled request. :(
+This is great! If I build perf and test from the build directory the
+test gets run. If I build using O=/tmp/perf and run from that
+directory then ./tests/shell isn't found and the test doesn't run.
+Similarly the install directory doesn't contain the executables and so
+the test is skipped. Is there any way to get the test running in these
+other scenarios?
 
-I guess this is a nice point in favor of Michael's usual complaint
-that if there are no man pages for a feature by the time the feature
-lands upstream, there's a higher chance that the UAPI will suck
-forever...
+Thanks,
+Ian
 
-
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 676d4af62103..f0f4c68e0bc6 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -138,7 +138,6 @@ struct seccomp_kaddfd {
-  * @notifications: A list of struct seccomp_knotif elements.
-  */
- struct notification {
--       struct semaphore request;
-        u64 next_id;
-        struct list_head notifications;
- };
-@@ -859,7 +858,6 @@ static int seccomp_do_user_notification(int this_syscal=
-l,
-        list_add(&n.list, &match->notif->notifications);
-        INIT_LIST_HEAD(&n.addfd);
-
--       up(&match->notif->request);
-        wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
-        mutex_unlock(&match->notify_lock);
-
-@@ -1175,9 +1173,10 @@ find_notification(struct seccomp_filter *filter, u64=
- id)
-
-
- static long seccomp_notify_recv(struct seccomp_filter *filter,
--                               void __user *buf)
-+                               void __user *buf, bool blocking)
- {
-        struct seccomp_knotif *knotif =3D NULL, *cur;
-+       DECLARE_WAITQUEUE(wait, current);
-        struct seccomp_notif unotif;
-        ssize_t ret;
-
-@@ -1190,11 +1189,9 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-
-        memset(&unotif, 0, sizeof(unotif));
-
--       ret =3D down_interruptible(&filter->notif->request);
--       if (ret < 0)
--               return ret;
--
-        mutex_lock(&filter->notify_lock);
-+
-+retry:
-        list_for_each_entry(cur, &filter->notif->notifications, list) {
-                if (cur->state =3D=3D SECCOMP_NOTIFY_INIT) {
-                        knotif =3D cur;
-@@ -1202,14 +1199,32 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-                }
-        }
-
--       /*
--        * If we didn't find a notification, it could be that the task was
--        * interrupted by a fatal signal between the time we were woken and
--        * when we were able to acquire the rw lock.
--        */
-        if (!knotif) {
--               ret =3D -ENOENT;
--               goto out;
-+               /* This has to happen before checking &filter->users. */
-+               prepare_to_wait(&filter->wqh, &wait, TASK_INTERRUPTIBLE);
-+
-+               /*
-+                * If all users of the filter are gone, throw an error inst=
-ead
-+                * of pointlessly continuing to block.
-+                */
-+               if (refcount_read(&filter->users) =3D=3D 0) {
-+                       ret =3D -ENOTCON;
-+                       goto out;
-+               }
-+               if (blocking) {
-+                       /* No notifications pending - wait for one,
-then retry. */
-+                       mutex_unlock(&filter->notify_lock);
-+                       schedule();
-+                       mutex_lock(&filter->notify_lock);
-+                       if (signal_pending(current)) {
-+                               ret =3D -EINTR;
-+                               goto out;
-+                       }
-+                       goto retry;
-+               } else {
-+                       ret =3D -ENOENT;
-+                       goto out;
-+               }
-        }
-
-        unotif.id =3D knotif->id;
-@@ -1220,6 +1235,7 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-        wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
-        ret =3D 0;
- out:
-+       finish_wait(&filter->wqh, &wait);
-        mutex_unlock(&filter->notify_lock);
-
-        if (ret =3D=3D 0 && copy_to_user(buf, &unotif, sizeof(unotif))) {
-@@ -1233,10 +1249,8 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-                 */
-                mutex_lock(&filter->notify_lock);
-                knotif =3D find_notification(filter, unotif.id);
--               if (knotif) {
-+               if (knotif)
-                        knotif->state =3D SECCOMP_NOTIFY_INIT;
--                       up(&filter->notif->request);
--               }
-                mutex_unlock(&filter->notify_lock);
-        }
-
-@@ -1412,11 +1426,12 @@ static long seccomp_notify_ioctl(struct file
-*file, unsigned int cmd,
- {
-        struct seccomp_filter *filter =3D file->private_data;
-        void __user *buf =3D (void __user *)arg;
-+       bool blocking =3D !(file->f_flags & O_NONBLOCK);
-
-        /* Fixed-size ioctls */
-        switch (cmd) {
-        case SECCOMP_IOCTL_NOTIF_RECV:
--               return seccomp_notify_recv(filter, buf);
-+               return seccomp_notify_recv(filter, buf, blocking);
-        case SECCOMP_IOCTL_NOTIF_SEND:
-                return seccomp_notify_send(filter, buf);
-        case SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR:
-@@ -1485,7 +1500,6 @@ static struct file *init_listener(struct
-seccomp_filter *filter)
-        if (!filter->notif)
-                goto out;
-
--       sema_init(&filter->notif->request, 0);
-        filter->notif->next_id =3D get_random_u64();
-        INIT_LIST_HEAD(&filter->notif->notifications);
+> ---
+>  tools/perf/Makefile.perf          | 14 +++++
+>  tools/perf/tests/shell/buildid.sh | 90 +++++++++++++++++++++++++++++++
+>  2 files changed, 104 insertions(+)
+>  create mode 100755 tools/perf/tests/shell/buildid.sh
+>
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 920d8afb9238..b2aeefa64e92 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -126,6 +126,8 @@ include ../scripts/utilities.mak
+>  #
+>  # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
+>  #
+> +# Define NO_BUILDID_EX if you do not want buildid-ex-* binaries
+> +#
+>
+>  # As per kernel Makefile, avoid funny character set dependencies
+>  unexport LC_ALL
+> @@ -349,6 +351,11 @@ ifndef NO_PERF_READ_VDSOX32
+>  PROGRAMS += $(OUTPUT)perf-read-vdsox32
+>  endif
+>
+> +ifndef NO_BUILDID_EX
+> +PROGRAMS += $(OUTPUT)buildid-ex-sha1
+> +PROGRAMS += $(OUTPUT)buildid-ex-md5
+> +endif
+> +
+>  LIBJVMTI = libperf-jvmti.so
+>
+>  ifndef NO_JVMTI
+> @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
+>         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
+>  endif
+>
+> +ifndef NO_BUILDID_EX
+> +$(OUTPUT)buildid-ex-sha1:
+> +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
+> +$(OUTPUT)buildid-ex-md5:
+> +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
+> +endif
+> +
+>  ifndef NO_JVMTI
+>  LIBJVMTI_IN := $(OUTPUT)jvmti/jvmti-in.o
+>
+> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> new file mode 100755
+> index 000000000000..57fcd28bc4bd
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/buildid.sh
+> @@ -0,0 +1,90 @@
+> +#!/bin/sh
+> +# build id cache operations
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# skip if there are no test binaries
+> +if [ ! -x buildid-ex-sha1 -a ! -x buildid-ex-md5 ]; then
+> +       echo "failed: no test binaries"
+> +       exit 2
+> +fi
+> +
+> +# skip if there's no readelf
+> +if [ ! -x `which readelf` ]; then
+> +       echo "failed: no readelf, install binutils"
+> +       exit 2
+> +fi
+> +
+> +check()
+> +{
+> +       id=`readelf -n $1 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+> +
+> +       echo "build id: ${id}"
+> +
+> +       link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+> +       echo "link: ${link}"
+> +
+> +       if [ ! -h $link ]; then
+> +               echo "failed: link ${link} does not exist"
+> +               exit 1
+> +       fi
+> +
+> +       file=${build_id_dir}/.build-id/${id:0:2}/`readlink ${link}`/elf
+> +       echo "file: ${file}"
+> +
+> +       if [ ! -x $file ]; then
+> +               echo "failed: file ${file} does not exist"
+> +               exit 1
+> +       fi
+> +
+> +       diff ${file} ${1}
+> +       if [ $? -ne 0 ]; then
+> +               echo "failed: ${file} do not match"
+> +               exit 1
+> +       fi
+> +
+> +       echo "OK for ${1}"
+> +}
+> +
+> +test_add()
+> +{
+> +       build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+> +       perf="perf --buildid-dir ${build_id_dir}"
+> +
+> +       ${perf} buildid-cache -v -a ${1}
+> +       if [ $? -ne 0 ]; then
+> +               echo "failed: add ${1} to build id cache"
+> +               exit 1
+> +       fi
+> +
+> +       check ${1}
+> +
+> +       rm -rf ${build_id_dir}
+> +}
+> +
+> +test_record()
+> +{
+> +       data=$(mktemp /tmp/perf.data.XXX)
+> +       build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+> +       perf="perf --buildid-dir ${build_id_dir}"
+> +
+> +       ${perf} record --buildid-all -o ${data} ${1}
+> +       if [ $? -ne 0 ]; then
+> +               echo "failed: record ${1}"
+> +               exit 1
+> +       fi
+> +
+> +       check ${1}
+> +
+> +       rm -rf ${build_id_dir}
+> +       rm -rf ${data}
+> +}
+> +
+> +# add binaries manual via perf buildid-cache -a
+> +test_add buildid-ex-sha1
+> +test_add buildid-ex-md5
+> +
+> +# add binaries via perf record post processing
+> +test_record buildid-ex-sha1
+> +test_record buildid-ex-md5
+> +
+> +exit ${err}
+> --
+> 2.26.2
+>
