@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7054527FC57
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BCA27FC5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731464AbgJAJRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:17:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgJAJRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:17:04 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE0292087D;
-        Thu,  1 Oct 2020 09:17:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601543824;
-        bh=6tCffKGBRQz3g32yfl6DkyDrZEG2XbapbE2KKFd9bFs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AN5SSI5U9O+gMSlLWJ7RJOfXa6uj3epvq3cELm3AS4w2TgnFg/ARJ99641p7wyjax
-         /Vd1pJplNN2ZBYVbriQEJSC8YfpkG2CBaGDgmIngJsh0Ag3sfPb7VoR1NK/lBocqpU
-         yjNKsTwUq4SwbS0IzKrXv0GFCXToU7BCaJFXEdYE=
-Received: by mail-ej1-f54.google.com with SMTP id i26so6925998ejb.12;
-        Thu, 01 Oct 2020 02:17:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532hCmnhb101TA0jGuVTQoLwBtmlg5LhmBWhmF7Bcq0UbFWc9uYE
-        LR4pZV2Pd77fsatHlMQnRKoWT2qDnDfA5ZNgPZ0=
-X-Google-Smtp-Source: ABdhPJx7RqEWMyME2IKnFfBCTPbZGoQbdgNCC9RgXX5fvV3JQrHTkEvY3um+08QeqrdUI5ekmiwWk7hCt1fKWvSIx/Y=
-X-Received: by 2002:a17:906:82d1:: with SMTP id a17mr6907875ejy.385.1601543822483;
- Thu, 01 Oct 2020 02:17:02 -0700 (PDT)
+        id S1731592AbgJAJV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgJAJV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:21:26 -0400
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A8EC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 02:21:25 -0700 (PDT)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id DEF2E5C02DF;
+        Thu,  1 Oct 2020 11:21:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1601544082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cJK2/g5MDYjG3Sxi9BcFtEIq5rC8/bqmlZd0eKbR634=;
+        b=hroJCYAiStf8dHR+l235HZ4Q/wXFIt0RGC0QrXUjZM6vMQtcSlNWvSatOm5CqbWHVcLPoz
+        sH1xFsuRN5uEi9y63ljnone2N3VCyU4jkQPNXCZi1jc8KbD9y4vMkSNaJeXum7vJWBhwlv
+        xqJ3IorFVg1q/EFjnE8eC2J2ylTrBrk=
 MIME-Version: 1.0
-References: <CGME20201001083615eucas1p2886f47d032844823b419a92fa02994ad@eucas1p2.samsung.com>
- <20201001072236.GA4815@kozik-lap> <dleftjr1qigx6p.fsf%l.stelmach@samsung.com>
-In-Reply-To: <dleftjr1qigx6p.fsf%l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 1 Oct 2020 11:16:48 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfghaFLruCJwkgoG0j_G6+EVZTPKY2MNsQ33CkxD2naxg@mail.gmail.com>
-Message-ID: <CAJKOXPfghaFLruCJwkgoG0j_G6+EVZTPKY2MNsQ33CkxD2naxg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: exynos: Add a placeholder for a MAC address
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 01 Oct 2020 11:21:22 +0200
+From:   Stefan Agner <stefan@agner.ch>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Jann Horn <jannh@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lucas Stach <dev@lynxeye.de>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: rawnand: Replace one-element array with
+ flexible-array member
+In-Reply-To: <20201001101206.6e4beea7@xps13>
+References: <20200930210824.GA12277@embeddedor>
+ <CAG48ez3X3aZwfde3_2Sc+gdtUGRHfzan6oNFiffAvNzFDSsFDw@mail.gmail.com>
+ <20200930213634.GA12855@embeddedor>
+ <CAG48ez3XqE0m2UmRh+OtmYJRhyCBYY=sdJKaWBXtJZKCRpLMYQ@mail.gmail.com>
+ <20201001101206.6e4beea7@xps13>
+User-Agent: Roundcube Webmail/1.4.1
+Message-ID: <22e3b020f4c7e7a8cd0c1f474ba07cad@agner.ch>
+X-Sender: stefan@agner.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Oct 2020 at 10:36, Lukasz Stelmach <l.stelmach@samsung.com> wrote=
-:
->
-> It was <2020-10-01 czw 09:22>, when Krzysztof Kozlowski wrote:
-> > On Wed, Sep 30, 2020 at 04:31:51PM +0200, =C5=81ukasz Stelmach wrote:
-> >> Add a placeholder for a MAC address. A bootloader may fill it
-> >> to set the MAC address and override EEPROM settings.
-> >>
-> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> >> ---
-> >>  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
-> >>  1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boo=
-t/dts/exynos5422-odroidxu3.dts
-> >> index db0bc17a667b..9f7f3eacb750 100644
-> >> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> >> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
-> >> @@ -70,3 +70,21 @@ &pwm {
-> >>  &usbdrd_dwc3_1 {
-> >>      dr_mode =3D "peripheral";
-> >>  };
-> >> +
-> >> +&usbhost2 {
-> >> +    #address-cells =3D <1>;
-> >> +    #size-cells =3D <0>;
-> >> +
-> >> +    hub@1 {
-> >> +            compatible =3D "usb8087,0024";
-> >> +            reg =3D <1>;
-> >> +            #address-cells =3D <1>;
-> >> +            #size-cells =3D <0>;
-> >> +
-> >> +            ethernet: usbether@1 {
-> >> +                    compatible =3D "usb0c45,6310";
-> >> +                    reg =3D <1>;
-> >> +                    mac-address =3D [00 00 00 00 00 00]; /* Filled in=
- by a bootloader */
-> >
-> > Why do you need a placeholder? U-Boot can just append the
-> > address/property.
->
-> Several other dts files have such placeholder
->
-> git grep 'mac-addr.*\[00 00 00 00 00 00\]' arch/arm/boot/dts/ | wc -l
-> 26
+On 2020-10-01 10:12, Miquel Raynal wrote:
+> Hi Jann,
+> 
+> Jann Horn <jannh@google.com> wrote on Thu, 1 Oct 2020 00:32:24 +0200:
+> 
+>> On Wed, Sep 30, 2020 at 11:30 PM Gustavo A. R. Silva
+>> <gustavoars@kernel.org> wrote:
+>> > On Wed, Sep 30, 2020 at 11:10:43PM +0200, Jann Horn wrote:
+>> > > On Wed, Sep 30, 2020 at 11:02 PM Gustavo A. R. Silva
+>> > > <gustavoars@kernel.org> wrote:
+>> > > > There is a regular need in the kernel to provide a way to declare having
+>> > > > a dynamically sized set of trailing elements in a structure. Kernel code
+>> > > > should always use “flexible array members”[1] for these cases. The older
+>> > > > style of one-element or zero-length arrays should no longer be used[2].
+>> > >
+>> > > But this is not such a case, right? Isn't this a true fixed-size
+>> > > array? It sounds like you're just changing it because it
+>> > > pattern-matched on "array of length 1 at the end of a struct".
+>> >
+>> > Yeah; I should have changed that 'dynamically' part of the text above
+>> > a bit. However, as I commented in the text below, in the case that more
+>> > CS IDs are needed (let's wait for the maintainers to comment on this...)
+>> > in the future, this change makes the code more maintainable, as for
+>> > the allocation part, the developer would only have to update the CS_N
+>> > macro to the number of CS IDs that are needed.
+>>
+>> But in that case, shouldn't you change it to "int cs[CS_N]" and get
+>> rid of the struct_size() stuff?
+> 
+> I do agree with Jann, I think it's best to consider this a fixed-size
+> array for now. If we ever want to extend the number of supported CS,
+> there is much more rework involved anyway.
 
-Yeah, but if this is cargo cult, then it is not a good reason. First of all=
-,
-git grep '[^-]mac-addr.*\[.*00 00 00 00 00 00.*\]' arch/arm/boot/dts/
-gives just seven boards. Not a big number to make a standard. :)
+I agree, too, just assume this is a fixed-size array of 1 element.
 
-The meaning of mac-address, I think, is not a placeholder, but:
-"should be used in cases where the MAC address assigned to the device
-by the boot program is different from the local-mac-address property."
+In fact, I am not aware of a design which needs multiple chip selects.
 
-I think you actually wanted a local-mac-address and the majority of
-DTSes use it. Not mac-address.
-
->
-> I can see two scenarios where this patch may be helpful. Another
-> (simple) boot loading code might be used.
-
-OK, good point. However other bootloader still has to adhere to the DT
-specification and the bindings.
-
-> The value may also be
-> customized during build time and used without any support of a
-> bootloader.
-
-Yes, with an overlay. You do not need a placeholder for this and
-actually having a placeholder instead of using overlays is the wrong
-approach for customization of boots/builds.
-
-> Finding and filling a placeholder would be easier in u-boot too.
-
-U-Boot already has the code for updating mac-address or
-local-mac-address so how is it easier for him? You mean that it cannot
-find an ethernet node here?
-
-> And it serves as a reference how to configure a USB device in a dts
-
-Great places for references are examples in bindings.
-
-Best regards,
-Krzysztof
+--
+Stefan
