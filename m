@@ -2,196 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF6A27FCAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BC327FCAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731673AbgJAJwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgJAJwA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:52:00 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA85CC0613D0;
-        Thu,  1 Oct 2020 02:51:59 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p9so7076805ejf.6;
-        Thu, 01 Oct 2020 02:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aPY+MyaN3eHD52C4pGO+iu+NSxmmOLBQGpmRY1viv6c=;
-        b=bVa3j7DFaJdudCtmoiaTsVjk7lsQZkfEAlX8wmufqsJVZ1hTWHFjKyzxTuSzbNqBfL
-         VN6JoknzhePNt/5Pb+Rrm5QrIIIwQ5X6sOu3jUB8X46wSVeZ+tSY7vfFeLuG8bTeFnNa
-         U8Clrrec+YrqQvOkNALd1taQ0uurzd7rfN1wfysg3/rY9N1PB/cJhPPqzG8PPHdxWjr6
-         EarFIZigBkgyWtYqgrWAurK2ArZNVNX8p7AROwzjbGztxW5TW2h1cSMPirlqGs4b01Dn
-         YFXQUwS5UMRkXfghSPMLpx0bkT6rlc++RXl5lRf0vi1HYm0x5yqS6SvZSKk6rLCwu2p2
-         z9YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aPY+MyaN3eHD52C4pGO+iu+NSxmmOLBQGpmRY1viv6c=;
-        b=KnR/dSrR6yv+f7bPGrwcGKQeGCBpHW+UllftaMAugnFaDvV8iLHCzarYa0Ry2c8GEB
-         ofv7dBmecPIlUJXNvgU3HFiz1o3PGBfLIdO2gcaFHVhG27hPdT1DsDimB5DUFv2YHSMY
-         LMFsjlVWhv9xlK/dpuO04dc8S/Cge6JKFrOfDuiH8MJdXtsmIbPfQSZ8mPecsLMnYDEg
-         iWnh/R0imVUJhPjQu+jROdxnWgYfvubEC26/x8ZUYF/3wKoluKJYwrj8JhCmWLMW1rPL
-         5/jfR/czo43bFJ4EhZt21ACJ1z8kWFghwF+lvZ742iQzo2xI9MagFwLxz2Dmd2BmqLQ7
-         G6qQ==
-X-Gm-Message-State: AOAM533vtdYjzZwezil5UvmE5/q74Hhd4zEZIHi3elIrmOamMfOlITqb
-        /hVgBK7GBEBKopBwg3gaBl4=
-X-Google-Smtp-Source: ABdhPJx+7eAB9ejqZO0LRBbDrS6HTe/2rWdJAxOZl3urF2SeUR0xFxi5gkfUXGyNtvkYSnLmQi2Flg==
-X-Received: by 2002:a17:906:aec1:: with SMTP id me1mr7368299ejb.225.1601545918322;
-        Thu, 01 Oct 2020 02:51:58 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id a2sm3705187ejx.27.2020.10.01.02.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 02:51:57 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:51:52 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20201001095152.GD3919720@ulmo>
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <20200930153131.GB3833404@ulmo>
- <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
- <20200930213244.GA10573@Asurada-Nvidia>
- <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
- <20201001012630.GA28240@Asurada-Nvidia>
+        id S1731747AbgJAJwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:52:50 -0400
+Received: from mail-eopbgr00104.outbound.protection.outlook.com ([40.107.0.104]:59679
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731067AbgJAJwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:52:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YeFVLGuVx10C6fnKfZrrWZ848NZk9J/DC6opHPVZxgpkotXcDELpUJISJWNcS5D+snFghVahyO82eUqEBssZAzFkOqNv1zu11VSE94Tpb2YWV3YcZMLXmrIvkP7LZsoxlJp8HMKU5P2ik9aAGhilZDGszRkynTCfMm6+mdUfcpYC9TvmgZwkTFCG+z99ArtNgL9DcX9OlB+AtNvod2bn3apmjYP/hgQsYessoKo6GN5fmvGG4E5JIKP/uCp3k/V8m3hBUBuZr7Nw4YBwgEdSbEfjcYY56FqCgDeoYTsFdaI6LuC4kTD484rB1zKKYOCiECw/YzoHnbuwAO3W0FJfqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hdf0TTzNeLIE0H33RBB+tCI0qQINCctH7jMUrbPX5yE=;
+ b=SeHZtoCbuxs4WWdvs0b7jTudUxU0303v2MyWvont5ycodq0QOxVNpms0I5CIaKLJGk9qlrHbh1fZ9HHa9ziur12heIWLmZi8BQUldjU79KWPHBwLRgosQudGf9X4aJr1DDhrVft7oG9YzBOsMD1Ts4WQCqI+oe6OWQtGcHk2RLwiwy4g0mQk4rfChi74NUTQ0fpxRE4iLAjnJJ/QKenFCiUkJnrPUSkiPgfsi4ZQZUgxZCuZsv6/5O66Q0TMF7P5bgn/FMKyekOTbdfvzykNRqVpU2/l0ND1tXrkFkjRdIk6E1KzWnoigEcl45dWHvzcqT1gFFIHuXCiiDhZ7+ZRig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.com; dmarc=pass action=none header.from=kontron.com;
+ dkim=pass header.d=kontron.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hdf0TTzNeLIE0H33RBB+tCI0qQINCctH7jMUrbPX5yE=;
+ b=Geg24OJ5o/kJv+L2y6nWU99SdmFiKeHiMFK1i1zExjmcACeZeVV1W1IFYMUsyxZ+ykQj9XmVJAvKFPfS8QxeUZzGzByoVFNH9rnoVoJCMYcY9ENuoYu8JroUaEqXLXbsz3Tt/xGYUPQmHwvjaIEvDvWTtf1Sx9kqlke7GiAshjo=
+Received: from AM8PR10MB4066.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e4::23)
+ by AM0PR10MB3283.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Thu, 1 Oct
+ 2020 09:52:46 +0000
+Received: from AM8PR10MB4066.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d4d9:7d25:3bc9:603c]) by AM8PR10MB4066.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d4d9:7d25:3bc9:603c%7]) with mapi id 15.20.3412.029; Thu, 1 Oct 2020
+ 09:52:46 +0000
+From:   Michael Brunner <Michael.Brunner@kontron.com>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "mibru@gmx.de" <mibru@gmx.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mfd: kempld-core: Mark kempld-acpi_table as __maybe_unused
+Thread-Topic: [PATCH] mfd: kempld-core: Mark kempld-acpi_table as
+ __maybe_unused
+Thread-Index: AQHWl9idDQYeZ/9tfUC7Hluf7RcAMw==
+Date:   Thu, 1 Oct 2020 09:52:46 +0000
+Message-ID: <37c55c13f9042dde06fd67c829b06765286d0580.camel@kontron.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.4-0ubuntu1 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=kontron.com;
+x-originating-ip: [195.243.149.94]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dc94a1bb-5ebd-44f1-6c33-08d865efbfde
+x-ms-traffictypediagnostic: AM0PR10MB3283:
+x-microsoft-antispam-prvs: <AM0PR10MB32833E20B63BEDE6F562F28FE3300@AM0PR10MB3283.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LNISd/u6CpsmklZN4xsK0/xF5DkTQ57+uty05M1JanveD8t7pnDCO6/gb0ZvLH63e/ZoLaBwEGiBs+IBI3lvq9NoPHTKRKXtUytsXLJZbWDUviXJf5dQ5gLNPevDC9C5MX9XmOlwNPoCoEvKm7ldECED4r+luhDnfuQTSFjnR7R/z+Pvoi/KSPmW9zgnhzxVpd5DEaFbXDsdN5g/YzFFXpS3iE42t1TQJxYxp/SDo4f0M3egg3w2oZFxMVWnEVEtunWk6o9EYyyEDEq1xTD5yzNq4ADAgWNT21aABDyaIrtUyAB66829Zyzldv23fzvNxhIOKywq3xhJloeGiXUlSA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR10MB4066.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(136003)(39860400002)(26005)(6512007)(2906002)(76116006)(83380400001)(71200400001)(8676002)(186003)(4326008)(5660300002)(66476007)(36756003)(6916009)(2616005)(316002)(54906003)(8936002)(66446008)(64756008)(86362001)(66556008)(6506007)(6486002)(66946007)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bvfsGSffZPatKJ7PRFuqAxv2fVw+C9gtvLZeKb21HrBFOkdLE90ipXpu0vHGmxjt2JwXOL2yJ3N5DwemTb9BkFh87QY0jJ5UJp248JaNuEnSqmSm6RImmf+GxMO/j2xUBh9sFMBwjn8n/s9DMZSEcAaMx1FEiqaNWLL0dfpbY7RvtJCUq77ErUOotH6cZ3fISoGSOxmMBKUPoEQn98NQvtbWE90IB11VO/0Yqto/o/0afBa0cK1HVORBcgUrw1Jikm9aGvb7twxJ8VFlHP6mYq4o9B1CCB0Zb2XKN3GbltKOyyiGHokQ8WUprZ+oOF0boWDWCIQyvthLi0bm+8tK1ofy6zc3hQFNpcRzHDptY8dk/pSojGuxvYgWt949GGP64PCOWrUfbwsZJmsDAkYIQEqwO1IlVWbEnZ0ICOWgCblRLUZMPV7JQY/P9VtaVibNUteuOVfl8IdtffC2I5rxZWM9GievyAnIMNHnyPUV3fam7LfA6DU21eX5s4+FVFhvSEGBTD/O2q5GKZlBj5B0n6COfpbOzabIFOzuK14zn5djtDbXghCeTVVvroLzjIoapAX12xJzflxxZZKZt3DdZevq5Y2fEZRRpJwld6//GQhkg3GFKesweJ+tISuXNAbQXxOVC2Lr60pzFtFlaqD7ug==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-15"
+Content-ID: <33664278AECA684C9A7C75AB3412BABA@EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="veXX9dWIonWZEC6h"
-Content-Disposition: inline
-In-Reply-To: <20201001012630.GA28240@Asurada-Nvidia>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+X-OriginatorOrg: kontron.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR10MB4066.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc94a1bb-5ebd-44f1-6c33-08d865efbfde
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 09:52:46.1866
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U38Wni651PbsyBi+jZh0P39V276jZPa7rhnc39HRygqufsePF+EBoSiA5zkXnc8Wx96r0Ibjxl/7fLuyW0HGTZ4a2iVxsYEU8eIxp26oCYw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3283
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Intel 0-DAY CI Kernel Test Service reports an unused variable
+warning when compiling with clang for PowerPC:
 
---veXX9dWIonWZEC6h
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> drivers/mfd/kempld-core.c:556:36: warning: unused variable 'kempld_acpi_=
+table' [-Wunused-const-variable]
+   static const struct acpi_device_id kempld_acpi_table[] =3D {
 
-On Wed, Sep 30, 2020 at 06:26:30PM -0700, Nicolin Chen wrote:
-> On Thu, Oct 01, 2020 at 12:56:46AM +0300, Dmitry Osipenko wrote:
-> > 01.10.2020 00:32, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > On Thu, Oct 01, 2020 at 12:24:25AM +0300, Dmitry Osipenko wrote:
-> > >> ...
-> > >>>> It looks to me like the only reason why you need this new global A=
-PI is
-> > >>>> because PCI devices may not have a device tree node with a phandle=
- to
-> > >>>> the IOMMU. However, SMMU support for PCI will only be enabled if t=
-he
-> > >>>> root complex has an iommus property, right? In that case, can't we
-> > >>>> simply do something like this:
-> > >>>>
-> > >>>> 	if (dev_is_pci(dev))
-> > >>>> 		np =3D find_host_bridge(dev)->of_node;
-> > >>>> 	else
-> > >>>> 		np =3D dev->of_node;
-> > >>>>
-> > >>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm =
-pretty
-> > >>>> sure that exists.
-> > >>>>
-> > >>>> Once we have that we can still iterate over the iommus property an=
-d do
-> > >>>> not need to rely on this global variable.
-> > >>>
-> > >>> I agree that it'd work. But I was hoping to simplify the code
-> > >>> here if it's possible. Looks like we have an argument on this
-> > >>> so I will choose to go with your suggestion above for now.
-> > >>
-> > >> This patch removed more lines than were added. If this will be oppos=
-ite
-> > >> for the Thierry's suggestion, then it's probably not a great suggest=
-ion.
-> > >=20
-> > > Sorry, I don't quite understand this comments. Would you please
-> > > elaborate what's this "it" being "not a great suggestion"?
-> > >=20
-> >=20
-> > I meant that you should try to implement Thierry's solution, but if the
-> > end result will be worse than the current patch, then you shouldn't make
-> > a v4, but get back to this discussion in order to choose the best option
-> > and make everyone agree on it.
->=20
-> I see. Thanks for the reply. And here is a sample implementation:
->=20
-> @@ -814,12 +815,15 @@ static struct tegra_smmu *tegra_smmu_find(struct de=
-vice_node *np)
->  }
-> =20
->  static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *=
-dev,
-> -				struct of_phandle_args *args)
-> +				struct of_phandle_args *args, struct fwnode_handle *fwnode)
->  {
->  	const struct iommu_ops *ops =3D smmu->iommu.ops;
->  	int err;
-> =20
-> -	err =3D iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
-> +	if (!fwnode)
-> +		return -ENOENT;
-> +
-> +	err =3D iommu_fwspec_init(dev, fwnode, ops);
->  	if (err < 0) {
->  		dev_err(dev, "failed to initialize fwspec: %d\n", err);
->  		return err;
-> @@ -835,6 +839,19 @@ static int tegra_smmu_configure(struct tegra_smmu *s=
-mmu, struct device *dev,
->  	return 0;
->  }
-> =20
-> +static struct device_node *tegra_smmu_find_pci_np(struct pci_dev *pci_de=
-v)
-> +{
-> +	struct pci_bus *bus =3D pci_dev->bus;
-> +	struct device *dev =3D &bus->dev;
-> +
-> +	while (!of_property_read_bool(dev->of_node, "iommus") && bus->parent) {
-> +		dev =3D &bus->parent->dev;
-> +		bus =3D bus->parent;
-> +	}
-> +
-> +	return dev->of_node;
-> +}
+The issue can be fixed by marking kempld_acpi_table as __maybe_unused.
 
-This seems like it's the equivalent of pci_get_host_bridge_device(). Can
-you use that instead? I think you might use the parent of the host
-bridge that's returned from that function, though.
+Fixes: e8299c7313af ("[PATCH] mfd: Add ACPI support to Kontron PLD driver")
 
-Thierry
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
+---
+ drivers/mfd/kempld-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---veXX9dWIonWZEC6h
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
+index 1dfe556df038..273481dfaad4 100644
+--- a/drivers/mfd/kempld-core.c
++++ b/drivers/mfd/kempld-core.c
+@@ -553,7 +553,7 @@ static int kempld_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+=20
+-static const struct acpi_device_id kempld_acpi_table[] =3D {
++static const struct acpi_device_id __maybe_unused kempld_acpi_table[] =3D =
+{
+ 	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
+ 	{}
+ };
+--=20
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl91prcACgkQ3SOs138+
-s6Fzow/9EGA/miigYk1RYGKaX6nN8Jl2bZRTKfwp0TTaegw7NEya34qmC1q6Ifou
-MRCbSPSDXC97bkOQ5dZloJvAnv1mzZd+79ihEEGGeoEwkGk2FqA99/1vTSKYK+58
-MN1A2NY1DtOD6yoRsJbfjI7tc+Embd3aymXaI/gT9yOYPRd9z/0Fg+FoJudUIEhE
-Gs+AP0VCpre0XkRDiq1mONE74lgcfidMp6wXHLWNdbJ6OjK87xgqFQZ0tD1Y0ecS
-MS1dttMszm3S43a/1QdY0Qr9p0Nxl6KgDRtmez2ELTY8n63vfslQ4RDd+Om/++nW
-divpQqi3W8dYtHE9CwEI45mtUlJSMTup+ThfYJ4/O6sh/JDSIYxX9ligNEsySpsy
-5ZHIsEE77tdFSwynk7oxnHCBYkLo/qp5CvW5t+e1hx8Cf2Jaj6gQ5YjAxbOBy2Zk
-8tGdm7d5XhJjyPzWq1q5nHBY2iEi7PAQlmAurHJkTTujYc318H1Xp3NYgKThdFGd
-SueTpE1dIouqFpVdp3hks8jzFSqOP0tjOAHBW2OVm3r0EseG8W6uXvoYUF8FN9ui
-ajYqfqrtpUrfdOGnEqCClmUbOoJvb9nnzI861SLYEv9OZJ0ag4Pwic4wf5XEl8CM
-M/AdWcldy82Bbhr0KmmP6Av7/DBSjIM2RskCiOHvfFnMWQ+YfnI=
-=eSx1
------END PGP SIGNATURE-----
-
---veXX9dWIonWZEC6h--
