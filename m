@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF59280A78
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD688280A7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733294AbgJAWsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55100 "EHLO mail.kernel.org"
+        id S1733306AbgJAWsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726741AbgJAWsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:48:05 -0400
+        id S1726741AbgJAWsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:48:16 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EB1220739;
-        Thu,  1 Oct 2020 22:48:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80D1F2074B;
+        Thu,  1 Oct 2020 22:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601592484;
-        bh=Nvkte901QOw+ByOlm8I9+Vi8S6WvVKEWOvVVAhYCQ9E=;
+        s=default; t=1601592496;
+        bh=7nhZm4Z57rJlixmBtfhqpW/9+gIJ5bjUhbfuvWxZj3E=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=YHt9iIJRF2vcSkJRSAu+FU6dDgHWFxnlxKaJbHm+pZbfi6KwA1RSdYTk+MJA72LSu
-         MOIIeQXuwhh+G3ZsFo4eFggq6442BBudeUoQ69pKNqfCPZUWHLnnCrflGfmkc1g/NE
-         wV6e4EJU+YeWfFQbXIUqPOWi03luOjMJ+lTV/dP4=
-Date:   Thu, 01 Oct 2020 23:47:05 +0100
+        b=AdRFLXuu8QFIO6i8U8Rmhf2bMPqqVuOwob2NMhQQf4nbhVUTm6JtZqsuDyq3z7UPQ
+         DAx79W7Ko3TAV1Ri8CiR+kR1eVe79o8EUbi6OPjh9F+nCLZdPhCvc8s21Ewm4NUqPT
+         zJJW3ppT1A/bKFGyJxTftCosN9VOPlCf6IoLH7+s=
+Date:   Thu, 01 Oct 2020 23:47:16 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20200929112938.47599-1-miaoqinglang@huawei.com>
-References: <20200929112938.47599-1-miaoqinglang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: tegra: tegra_wm8753: use
- devm_snd_soc_register_card()
-Message-Id: <160159237544.44588.1813029211899275864.b4-ty@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Nisha Kumari <nishakumari@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200930162602.18583-1-rikard.falkeborn@gmail.com>
+References: <20200930162602.18583-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] regulator: qcom: labibb: Constify static structs
+Message-Id: <160159243691.44970.9154350525275171802.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -45,18 +43,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020 19:29:38 +0800, Qinglang Miao wrote:
-> Using devm_snd_soc_register_card() can make the code
-> shorter and cleaner.
+On Wed, 30 Sep 2020 18:26:02 +0200, Rikard Falkeborn wrote:
+> The only usage of qcom_labibb_ops is to assign it to the ops field in
+> the regulator_desc struct, which is a const pointer. The only usage of
+> pmi8998_lab_desc and pmi8998_ibb_desc is to assign their address to the
+> desc field in the labibb_regulator_data struct which can be made const,
+> since it is only copied into the desc field in the
+> labbibb_regulator_data struct. This struct is modified, but that's a
+> copy of the static one. Make them const to allow the compiler to put
+> them in read-only memory.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: tegra: tegra_wm8753: use devm_snd_soc_register_card()
-      commit: 1b59b995774a086ea74e740b2dd38bba6d3d6664
+[1/1] regulator: qcom: labibb: Constify static structs
+      commit: e6f5ff17ca96456deceef94cf2577012a9df737f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
