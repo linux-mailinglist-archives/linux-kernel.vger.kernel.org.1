@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A74128046C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5E4280472
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732786AbgJARAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:00:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37986 "EHLO mx2.suse.de"
+        id S1732809AbgJARCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732213AbgJARAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:00:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601571642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FBxjpUPAONJ+XqUQuZPU/FmGyoPMABIG8dYwepWTg9o=;
-        b=nhlNWx9WKyL/R8ePbdgLs+VJsvxFk3kt2QqgvZxDohm1sNNcQukYleQjt8TxHMeHWc+KG4
-        Bpi0vvxmAB/rl2mmaVD2UwnbgRwMogFFKIU5CnqlDsIIRnpV/O/OjQGzd/rXf+d+3gZNmE
-        d4L3k7kbRYqNo3CclC3b/kt+poFTwFA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C78D4ADBB;
-        Thu,  1 Oct 2020 17:00:42 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 19:00:36 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 4/4] mm: convert page kmemcg type to a page memcg flag
-Message-ID: <20201001170036.GA29848@blackbook>
-References: <20201001002710.748166-1-guro@fb.com>
- <20201001002710.748166-5-guro@fb.com>
+        id S1732360AbgJARCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:02:17 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D57A208B6;
+        Thu,  1 Oct 2020 17:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601571736;
+        bh=sgTI1pReU0OH6N+t9LIFaXFWSw9Gg4El0/cro75I080=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tleQxA9Usy8EMlbjjfcLgW1O5nEP666Fx0SDN5uWndimLCercOPoQ0lMjbsyLow4P
+         Smg2YxuBRvFvcFyqm3VJN8B0dMIJjMaDKcnRI4QAb32mRLC7QXwzYByg6oNGBe4GAZ
+         kwZhSdohSm1E5gCYck+018Oj/4mgdXiqlF/PMSAc=
+Date:   Thu, 1 Oct 2020 18:01:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     kholk11@gmail.com
+Cc:     lgirdwood@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Support for PM660/PM660L SPMI and SMD regulators
+Message-ID: <20201001170117.GR6715@sirena.org.uk>
+References: <20200926125549.13191-1-kholk11@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tuFXEhzhBeitrIAu"
 Content-Disposition: inline
-In-Reply-To: <20201001002710.748166-5-guro@fb.com>
+In-Reply-To: <20200926125549.13191-1-kholk11@gmail.com>
+X-Cookie: Stay away from flying saucers today.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---zYM0uCDKw75PZbzx
+--tuFXEhzhBeitrIAu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi.
+On Sat, Sep 26, 2020 at 02:55:42PM +0200, kholk11@gmail.com wrote:
 
-On Wed, Sep 30, 2020 at 05:27:10PM -0700, Roman Gushchin <guro@fb.com> wrote:
-> @@ -369,8 +371,12 @@ enum page_memcg_data_flags {
->   */
->  static inline struct mem_cgroup *page_memcg(struct page *page)
->  {
-> +	unsigned long memcg_data = page->memcg_data;
-> +
->  	VM_BUG_ON_PAGE(PageSlab(page), page);
-> -	return (struct mem_cgroup *)page->memcg_data;
-> +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
-> +
-> +	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
-Shouldn't this change go also into page_memcg_rcu()? (I don't think the
-current single user (workingset_activation() would pass a non-slab
-kernel page but for consistency sake.)
+> AngeloGioacchino Del Regno (7):
+>   regulator: core: Enlarge max OF property name length to 64 chars
+>   regulator: qcom_spmi: Add support for new regulator types
+>   regulator: qcom_spmi: Add PM660/PM660L regulators
+>   regulator: dt-bindings: Document the PM660/660L SPMI PMIC entries
+>   regulator: qcom_smd: Add PM660/PM660L regulator support
+>   mfd: qcom-spmi-pmic: Add support for PM660/PM660L
+>   regulator: dt-bindings: Document the PM660/PM660L PMICs entries
 
-Alternatively, I'm thinking why (in its single use) is there
-page_memcg_rcu() a separate function to page_memcg() (cross memcg page
-migration?).
+This said patch 0/5 but there are 7 patches here...
 
-Regards,
-Michal
-
---zYM0uCDKw75PZbzx
+--tuFXEhzhBeitrIAu
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl92CywACgkQia1+riC5
-qSiqEA//SFQ/WkWbKkYPDQ+OghC6osKkFtrUsL47bJda7RmwZBt8HEdVQF80bilH
-FT6WJF9TiSW7ezR3Gj6KrmHBKvy8vYOOiTRLv4qQG/ThSpGdrxlT7L9u1BMrWW0c
-3aCNmHUGCpUU03dMaa9H8KfhPY6pRON/wz26at9xsGPgMkn0EBrzOA8WDBOxLhtS
-mVXj8wKPbX2UY8VewV6chYIlucx4joCnbw4xjbNcoW1+XJ6bglBWX0dS1dwz/hoV
-fLxdMdXlCs5fM53Xzqlv2BgHkV//l3oCUN2G8wi4EKSg+iit9mBRnYDPQ/pOXN7o
-uXWjxQBZMBxCt1Ct5avF3P/Af5CLhVbUPwsNItDlMTTZDoUV1/4drfH5uikMw4/k
-ORS9BkU2Bl1SFL6ivYtxFqSrEAbzzj2RuDyMBc6GnlvkNO8lva2wyCrPUuIFsDT9
-W+88q8gNSq0B6MsiLfP6/cIqaesm/9lRIjEKmnRlD8x8B5lV/bMFa4C0wAOc6zyw
-yxxBD0b7cAVlRaBD/SADEzfEE+M9A36X/sgnl0LJSFKSozPgabUekUgoRSHkZLVw
-wfITwV7HvYux5uWXCeyIQI18iO45F9GDh/sArHiYCwQUVsri8QTNgJbn3dl4tNBu
-hE3nDTgseJJb6l0AFTepeiecNjTmvj0sT2vUSxHXjizC//zhVVI=
-=l/la
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl92C1wACgkQJNaLcl1U
+h9Apowf+M8mQLNlk5C94v/lobmqDbp7yeHjIkO29sX/+IA/8l3WhZdODZBZympxf
+4MX9afgFpZBbdIhbd+010VVDItDmhoFKMf7pAR8x/ZiGropxJxejerfNnDNUGLeB
+gTc2lMBvuaJjJ5uzFiKDhQl+1jBAwhfN64/mVbZREPXleJck4OXEuwCDpO2lMzM8
+wYCczlhHpRsqdDWvmIXGs0430LJrlnxMcV1B1Tp2KKH4Wl40qkqtv4a9xw2WriWl
+GU7XDUFGRazpyOY1zrZC7XiwFx4VwD1ECupoq8DzF+wwR9XYfBeFhteHb2hhKIlK
+3TQOhIHxtwr7ZmM9915GK388ZkhucA==
+=AhOy
 -----END PGP SIGNATURE-----
 
---zYM0uCDKw75PZbzx--
+--tuFXEhzhBeitrIAu--
