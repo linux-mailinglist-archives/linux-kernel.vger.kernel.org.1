@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98DF280118
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31B528011B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732423AbgJAOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        id S1732421AbgJAORN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732339AbgJAOPu (ORCPT
+        with ESMTP id S1732104AbgJAORN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:15:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53EBC0613D0;
-        Thu,  1 Oct 2020 07:15:48 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id m6so5982277wrn.0;
-        Thu, 01 Oct 2020 07:15:48 -0700 (PDT)
+        Thu, 1 Oct 2020 10:17:13 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CCAC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 07:17:13 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o5so5957253wrn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BEVeioAblvOjShBbM1jBg6agZyVGfRoTs/GtPxjBCbI=;
-        b=oMhrCQWAOHqG6HxVMBmqVZPYxMru6FIXm3mJvAbc8rbL7tactK29OZk+GvNiM5PZk8
-         rF6p5qi0AyXKRjNx+f23OJ8VJ+FleD7gQP9lLRLq2Y4dXvx012uxiiO1b7fpiRntPsoI
-         PI0IvzVtjor7xv0a/TguOEJumonWGlfE65S4PwSOaNJs2XyLk4l1P2ZKGnjoloQnXwyz
-         6CDkgfu187Eq4Lf2dvoi1cHfzHjCKVZhmf5NrBoC9ZlJVUhX8aK9BA+/KWZFgHuk8Wxl
-         7frfWbzrA5r6wEJBfZ+pXNAGHzjb8U3WB0CfY06Dbqb+2MmXIltXnqleTmlcDnjvc9Mi
-         EFtg==
+        bh=Sl1bAhx7C9a4MYgOdjHVAIRELO6dtKoJoTULLqIN/Wk=;
+        b=y/ZQT2oTP990NGhLz0VE6mjD9demWCTb6hdXe/1KXtNeTq3UKilVkGveT6XoMd7Co+
+         Lq7VLj73rXe7Xi7C5iOBrHt0b5FyRHzHELdqVFyL3AFr8htaN2aYkKoFvX1P4pTxG/b2
+         ETrmYNh+p+sQNyUgaoWw1ql7xHVYwEMCS6Qso5qpTqM8E7W+Ly2kUqigIKLybbjc9y9m
+         ZeT0Gm3AlLQblWSXkwgGqw+J+RNhSf74jLbrS9xsvgkc4uzJ7TThdKYF7tvBy86d926Z
+         5YfoLfI9MK8XAaj9YdbIy3uedWyeFqFd2fmh2eQF+Ltvm6H9pqul7mYMTmJQAsopGULi
+         O3Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BEVeioAblvOjShBbM1jBg6agZyVGfRoTs/GtPxjBCbI=;
-        b=HbEo7gVGRlw2ugI3ZSZ3AWHARrqmWTTmInCljAwWrPb4rEdmRzMDF5udluFCZnoZ+U
-         mQNkfG3gdCx616tVTzvlUGT2/GQ/ttRe/rXtxQ/VuZPpjNYBWRsKNhIDanlIcWonJMWa
-         g1IVnq1DmYrnLFZ1ZQjonvwehEY3FnxSnR9fFCJSYaf/ERo8vrXkryWsjAAYDbHnuaCl
-         AI3Xe/urnrBk9TWFs9J6YEUafb3dkDtrK0gnPJNBLc7VCR4XOeGQmxJy8CbbR7Zq+LRz
-         arD8eqymjDgDxRAqb/4+AoGKfK3YUGzDSGrg/sfIMLAs1oTcawtZTOu+Bl5FqPD7OVu4
-         iH5A==
-X-Gm-Message-State: AOAM533dlyHIlXQz1c46N7XkXL4oVuk6GzYb0gju21XFub9y5Fle4dTD
-        DHBMGeQ1Fc5iMgNRX6rQntc=
-X-Google-Smtp-Source: ABdhPJwUjBFOW1XPUuWU4ekSqDncW2iPM/Z45iswZFbsIeOrE+yuHZU3Vu24DSJPTVO2+ih9PwthHw==
-X-Received: by 2002:adf:e4cf:: with SMTP id v15mr9174610wrm.174.1601561747382;
-        Thu, 01 Oct 2020 07:15:47 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id v4sm96564wml.46.2020.10.01.07.15.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 07:15:45 -0700 (PDT)
-Subject: Re: [PATCH v3 7/9] clk: mediatek: Fix asymmetrical PLL enable and
- disable control
-To:     Weiyi Lu <weiyi.lu@mediatek.com>, Rob Herring <robh@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     James Liao <jamesjj.liao@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com, Wendell Lin <wendell.lin@mediatek.com>
-References: <1599103380-4155-1-git-send-email-weiyi.lu@mediatek.com>
- <1599103380-4155-8-git-send-email-weiyi.lu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <516a5f5b-f5af-0362-a73e-97b3db7300aa@gmail.com>
-Date:   Thu, 1 Oct 2020 16:15:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        bh=Sl1bAhx7C9a4MYgOdjHVAIRELO6dtKoJoTULLqIN/Wk=;
+        b=bdXMfgCD3xF7YgXU6t0eab/LQFfImaBVE8FEd0iTbbBBpe90hih4xO3/HKZzWJiBoz
+         bUI0/MVnNmBBEXr4ceqJQWwSQhFTJMuedRJwJIAk9eR89ztwEhlLunhVbKY3UCp8WKyI
+         8pXiePkPpzKxQmwyQKboRzPAfOJZNshQZ4DgvoLlLi+/vmSFY2A9CH0ExohLTPqzdyxd
+         rb8qb5rtIjoqM5lDY+UMnTMZygjV3j/5Z9MvGwPjR33kDCzSLC1UHvT9TazcTmGV33hS
+         j6ha1dtkIm+t3cMxNKEDz+7ehBSl500ISbwWmytq1O3a/nUY7b5pzt8P5nhJ/nkxB+7A
+         kTJA==
+X-Gm-Message-State: AOAM533kZ6t/+0uS01VsdPVkevwF7FVtJtnxdaa7p4+1vgqYk3XuDBmk
+        1WSrIAY8wAZgptRAQOEc9CNU7UyD0yjMIg==
+X-Google-Smtp-Source: ABdhPJwl3Qt3yXjApNCsYKWImfYfzWd1X048vsHexXEeQPoYe8fsopjjZ5dzuW0nZ38MjD7rW9cqAA==
+X-Received: by 2002:adf:fe42:: with SMTP id m2mr9135525wrs.367.1601561831064;
+        Thu, 01 Oct 2020 07:17:11 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id u2sm10529568wre.7.2020.10.01.07.17.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Oct 2020 07:17:10 -0700 (PDT)
+Subject: Re: [PATCH 3/3] nvmem: qfprom: Don't touch certain fuses
+To:     Evan Green <evgreen@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20200929205807.2360405-1-evgreen@chromium.org>
+ <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8f467220-3ac8-c8fc-33fe-8d86904571fe@linaro.org>
+Date:   Thu, 1 Oct 2020 15:17:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1599103380-4155-8-git-send-email-weiyi.lu@mediatek.com>
+In-Reply-To: <20200929135741.3.I1bb1b0e94be3b792804e08831d6a55481e162d63@changeid>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,58 +72,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Evan,
 
-
-On 03/09/2020 05:22, Weiyi Lu wrote:
-> The en_mask actually is a combination of divider enable mask
-> and pll enable bit(bit0).
-> Before this patch, we enabled both divider mask and bit0 in prepare(),
-> but only cleared the bit0 in unprepare().
-> Now, setting the enable register(CON0) in 2 steps: first divider mask,
-> then bit0 during prepare(), vice versa.
-> Hence, en_mask will only be used as divider enable mask.
-> Meanwhile, all the SoC PLL data are updated.
+On 29/09/2020 21:58, Evan Green wrote:
+> Some fuse ranges are protected by the XPU such that the AP cannot
+> access them. Attempting to do so causes an SError. Use the newly
+> introduced per-soc compatible string to attach the set of regions
+> we should not access. Then tiptoe around those regions.
 > 
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+
+This is a generic feature that can be used by any nvmem provider, can 
+you move this logic to nvmem core instead of having it in qfprom!
+
+
+thanks,
+srini
+
+> Signed-off-by: Evan Green <evgreen@chromium.org>
 > ---
->   drivers/clk/mediatek/clk-mt2701.c | 26 +++++++++++++-------------
->   drivers/clk/mediatek/clk-mt2712.c | 30 +++++++++++++++---------------
->   drivers/clk/mediatek/clk-mt6765.c | 20 ++++++++++----------
->   drivers/clk/mediatek/clk-mt6779.c | 24 ++++++++++++------------
->   drivers/clk/mediatek/clk-mt6797.c | 20 ++++++++++----------
->   drivers/clk/mediatek/clk-mt7622.c | 18 +++++++++---------
->   drivers/clk/mediatek/clk-mt7629.c | 12 ++++++------
->   drivers/clk/mediatek/clk-mt8173.c | 28 ++++++++++++++--------------
->   drivers/clk/mediatek/clk-mt8183.c | 22 +++++++++++-----------
->   drivers/clk/mediatek/clk-pll.c    | 16 ++++++++++++----
->   10 files changed, 112 insertions(+), 104 deletions(-)
 > 
-[...]
+>   drivers/nvmem/qfprom.c | 55 +++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 51 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+> index 5e9e60e2e591d..feea39ae52164 100644
+> --- a/drivers/nvmem/qfprom.c
+> +++ b/drivers/nvmem/qfprom.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/mod_devicetable.h>
+>   #include <linux/nvmem-provider.h>
+>   #include <linux/platform_device.h>
+> +#include <linux/property.h>
+>   #include <linux/regulator/consumer.h>
 >   
-> diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
-> index f440f2cd..e0b00bc 100644
-> --- a/drivers/clk/mediatek/clk-pll.c
-> +++ b/drivers/clk/mediatek/clk-pll.c
-> @@ -247,10 +247,14 @@ static int mtk_pll_prepare(struct clk_hw *hw)
->   	writel(r, pll->pwr_addr);
->   	udelay(1);
+>   /* Blow timer clock frequency in Mhz */
+> @@ -51,6 +52,17 @@ struct qfprom_soc_data {
+>   	u32 qfprom_blow_set_freq;
+>   };
 >   
-> -	r = readl(pll->base_addr + REG_CON0);
-> -	r |= pll->data->en_mask;
-> +	r = readl(pll->base_addr + REG_CON0) | CON0_BASE_EN;
->   	writel(r, pll->base_addr + REG_CON0);
+> +/**
+> + * struct qfprom_keepout_region - registers to avoid touching.
+> + *
+> + * @start: The first byte offset to avoid.
+> + * @end: One after the last byte offset to avoid.
+> + */
+> +struct qfprom_keepout_region {
+> +	u32 start;
+> +	u32 end;
+> +};
+> +
+>   /**
+>    * struct qfprom_priv - structure holding qfprom attributes
+>    *
+> @@ -63,6 +75,7 @@ struct qfprom_soc_data {
+>    * @secclk:       Clock supply.
+>    * @vcc:          Regulator supply.
+>    * @soc_data:     Data that for things that varies from SoC to SoC.
+> + * @keepout:      Fuse regions not to access, as they may cause SErrors.
+>    */
+>   struct qfprom_priv {
+>   	void __iomem *qfpraw;
+> @@ -73,6 +86,7 @@ struct qfprom_priv {
+>   	struct clk *secclk;
+>   	struct regulator *vcc;
+>   	const struct qfprom_soc_data *soc_data;
+> +	const struct qfprom_keepout_region *keepout;
+>   };
 >   
-> +	if (pll->data->en_mask) {
-> +		r = readl(pll->base_addr + REG_CON0) | pll->data->en_mask;
-> +		writel(r, pll->base_addr + REG_CON0);
+>   /**
+> @@ -88,6 +102,12 @@ struct qfprom_touched_values {
+>   	u32 timer_val;
+>   };
+>   
+> +const struct qfprom_keepout_region sc7180_qfprom[] = {
+> +	{.start = 0x128, .end = 0x148},
+> +	{.start = 0x220, .end = 0x228},
+> +	{} /* Sentinal where start == end. */
+> +};
+> +
+>   /**
+>    * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
+>    * @priv: Our driver data.
+> @@ -171,6 +191,23 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+>   	return ret;
+>   }
+>   
+> +static int qfprom_check_reg(struct qfprom_priv *priv, unsigned int reg)
+> +{
+> +	const struct qfprom_keepout_region *keepout = priv->keepout;
+> +
+> +	if (!keepout)
+> +		return 1;
+> +
+> +	while (keepout->start != keepout->end) {
+> +		if ((reg >= keepout->start) && (reg < keepout->end))
+> +			return 0;
+> +
+> +		keepout++;
 > +	}
 > +
-
-I think a better approach here would be to add a flag to mtk_pll_data instead of 
-changing all drivers in one big patch. This will allow you to add the driver 
-that needs to write the en_mask after writing CON0_BASE_EN more easily. And it 
-will later allow you to change the remaining driver one by one until all are 
-using the new flag.
-
-Regards,
-Matthias
+> +	return 1;
+> +}
+> +
+>   /**
+>    * qfprom_efuse_reg_write() - Write to fuses.
+>    * @context: Our driver data.
+> @@ -228,8 +265,10 @@ static int qfprom_reg_write(void *context, unsigned int reg, void *_val,
+>   		goto exit_enabled_fuse_blowing;
+>   	}
+>   
+> -	for (i = 0; i < words; i++)
+> -		writel(value[i], priv->qfpraw + reg + (i * 4));
+> +	for (i = 0; i < words; i++) {
+> +		if (qfprom_check_reg(priv, reg + (i * 4)))
+> +			writel(value[i], priv->qfpraw + reg + (i * 4));
+> +	}
+>   
+>   	ret = readl_relaxed_poll_timeout(
+>   		priv->qfpconf + QFPROM_BLOW_STATUS_OFFSET,
+> @@ -257,8 +296,14 @@ static int qfprom_reg_read(void *context,
+>   	if (read_raw_data && priv->qfpraw)
+>   		base = priv->qfpraw;
+>   
+> -	while (words--)
+> -		*val++ = readb(base + reg + i++);
+> +	while (words--) {
+> +		if (qfprom_check_reg(priv, reg + i))
+> +			*val++ = readb(base + reg + i);
+> +		else
+> +			*val++ = 0;
+> +
+> +		i++;
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -299,6 +344,7 @@ static int qfprom_probe(struct platform_device *pdev)
+>   	econfig.priv = priv;
+>   
+>   	priv->dev = dev;
+> +	priv->keepout = device_get_match_data(dev);
+>   
+>   	/*
+>   	 * If more than one region is provided then the OS has the ability
+> @@ -354,6 +400,7 @@ static int qfprom_probe(struct platform_device *pdev)
+>   
+>   static const struct of_device_id qfprom_of_match[] = {
+>   	{ .compatible = "qcom,qfprom",},
+> +	{ .compatible = "qcom,sc7180-qfprom", .data = &sc7180_qfprom},
+>   	{/* sentinel */},
+>   };
+>   MODULE_DEVICE_TABLE(of, qfprom_of_match);
+> 
