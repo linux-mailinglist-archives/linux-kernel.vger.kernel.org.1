@@ -2,312 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467FB280319
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FA928031F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732603AbgJAPqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S1732494AbgJAPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732279AbgJAPqT (ORCPT
+        with ESMTP id S1732308AbgJAPsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:46:19 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64494C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:46:19 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so4870633pfa.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:46:19 -0700 (PDT)
+        Thu, 1 Oct 2020 11:48:22 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505E8C0613E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:48:22 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p15so8776144ejm.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=QW720dDg6w8WjYZQQLyUzFkTDggeR43z1zPv/IrMZ24=;
-        b=dT0cpPKGpgzEScHP6GjGacfyG89UjBtM4nbWhLskXE8OBM+LpA3cfiIaQQzwNTfnh4
-         uWeC8lhol/0pNhI0i9kxVq5tjolCKWjKI2SwVKJZAA+dfYporGTzxFSp69fV3t89j4V8
-         LQN81t24F5+XcsoRXyJDNWQfPaCnlvqvP522Mu0dN951VwZuHg1PN6gtbt7rq1DKIo4T
-         YskPmbBPJBLm/ql6UEeV9WaZF0qcH8F2y688w751qYuK9ARsSw579XDi0vFek3hG/91T
-         m/4vD51knsCwY6pPeK/ury1qzq3med0bXP6YEo6+yzH4cHSI2kER7GqeEOlQYOw4Q+kY
-         9CBQ==
+        bh=8IFUkJPw/kRc69ZxpOZH7IdKr2uNB4GcMACMPjhB0mM=;
+        b=sY7GNFIvYaNfMnuHljMi/SlQZ6n4BcGZhCTAkvb73jwrTAP++F0FA96srmG4n+saym
+         LPs0Qo1rf+Gc/KbMjrfFVvv0dVBlQo5xErKWSXr8vfIbgudw/fJB81Prkbi9Pii7XtRh
+         bwufKgriflGSXWbjmbN1+qvivFzU+VKLk390fTxTMNBo7z+CsZ1XFTp/HjN3R699Gw+C
+         vfciTTmpKgNNA11LmOMtAz8ZR9nakBZvoaMyZp8Hz1UVlkM5vLsghRNGZtT0pDQ9PVkF
+         +xdKQnhRbsvPbhl29QQtDseBMWcFAJ8tpq31IZJtch0aWdpaPLCLP06UMF/rwp7udtiZ
+         WVOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QW720dDg6w8WjYZQQLyUzFkTDggeR43z1zPv/IrMZ24=;
-        b=KTzmLdsRE9SkTTG6E3EZJ+KwJ8kDJky9/BbGHWZDCAn6WvMmvANytJtbPqs73DwdAZ
-         cy6mHfabvSVh+lfQVZyjy1FqNGBx+4CKz21jOMNQ+vK2J1mFqkW5DnUuRnVM/m3EdDyS
-         gZ65l4GXkCMP+srY/R84mamjm90mlOPrK+Ge2cQwJGNvbm/ZILFuxqD6Pl07jGEyMYn0
-         tKXn/ysb50BmMY286Ea2d1repiG6g+1T3TheqbNHnWLRatQ+1AUyyhODl5WMn8KwLstR
-         uWHi8w4oHgeVmOY1N4R51XrZQzTnVg3Tzr3gm7v+F7F9cuFMgkzGnNSi7dlG1BWD88kM
-         U2mg==
-X-Gm-Message-State: AOAM530+9yaIDinZpV7Y1isdClKyj6oLfLBGLsPH3pu+aze1oRzbDmBN
-        8UfzdmD4Fd+xwCApN9+O28+HCYlFgxnSvMVno4DtCw==
-X-Google-Smtp-Source: ABdhPJwyo92ngttdaUJqIplWuz05ypEN5fgXAsM5QaNEs5Dyzgrhise69twwtOtjBiI/RFlHiC37e/EUKB9mlZBcVdM=
-X-Received: by 2002:a65:5cc2:: with SMTP id b2mr6663685pgt.124.1601567178571;
- Thu, 01 Oct 2020 08:46:18 -0700 (PDT)
+        bh=8IFUkJPw/kRc69ZxpOZH7IdKr2uNB4GcMACMPjhB0mM=;
+        b=El7i8N7N5vST/3xm/HcTszpG9I7v6WAYdIArk0qW3LZuNJvlLCpDju76TmHkX9FfKk
+         b79ZilE635nIF+9g0ZpsD4Yn3NgqtQ2hkanWibnM+hwVgOFS2tfDnbj70auvloks7M5Y
+         Ov1RecWCGdnMLhogshJrfkgYd6ALe3gJKzkYZZgKkRGHngYGBOFFR/qukSxpy1WxE9Yu
+         weJhSVgIYcrXGSPqde8N4j0ZbOql4PxPovCf/giGYvQk7DlxPlPPqzN9LdNgKGPbRh7t
+         4ueghp4zfCZgkWdeBGJhJx/7xAG/7JDSwEwyITairX+k+BjGzkNSVEOGGY9vjfF/igwE
+         8pyA==
+X-Gm-Message-State: AOAM533/psRwKGqo4Vwq+4EQmKY/bn+jq2JIMtlPlhExYkdUz3pmP/G7
+        sc8AvBbQYPATSOoKBfE8UL2HdRDtOzXilWAbAG6Jhw==
+X-Google-Smtp-Source: ABdhPJzN5UXlteDmV4gmQvsi+vrDa7wXLtdd0FT669/Cj8yL3OSvmpnW8FNcV9j4cLbSCSgCO88bO4oWC48rzvXf8wo=
+X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr8931066ejr.493.1601567300584;
+ Thu, 01 Oct 2020 08:48:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
- <20200930222130.4175584-2-kaleshsingh@google.com> <0dc41856-e406-7f00-1eb9-5e97e476afa4@nvidia.com>
-In-Reply-To: <0dc41856-e406-7f00-1eb9-5e97e476afa4@nvidia.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Thu, 1 Oct 2020 11:46:07 -0400
-Message-ID: <CAC_TJvdrAhyypTFqgYRmZj1ndiuuad0VfvgENhdWAO+Kp1r_=Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] kselftests: vm: Add mremap tests
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <CAG48ez3aqLs_-xgU0bThOLqRiiDWGObxcg-X9iFe6D5RDnLVJg@mail.gmail.com> <20201001125043.dj6taeieatpw3a4w@gmail.com>
+In-Reply-To: <20201001125043.dj6taeieatpw3a4w@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 17:47:54 +0200
+Message-ID: <CAG48ez2U1K2XYZu6goRYwmQ-RSu7LkKSOhPt8_wPVEUQfm7Eeg@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Christian Brauner <christian.brauner@canonical.com>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Will Drewry <wad@chromium.org>,
         Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Dave Martin <Dave.Martin@arm.com>, Jia He <justin.he@arm.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Zi Yan <ziy@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian@brauner.io>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 3:24 AM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 9/30/20 3:21 PM, Kalesh Singh wrote:
-> > Test mremap on regions of various sizes and alignments and validate
-> > data after remapping. Also provide total time for remapping
-> > the region which is useful for performance comparison of the mremap
-> > optimizations that move pages at the PMD/PUD levels if HAVE_MOVE_PMD
-> > and/or HAVE_MOVE_PUD are enabled.
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > ---
-> >   tools/testing/selftests/vm/.gitignore    |   1 +
-> >   tools/testing/selftests/vm/Makefile      |   1 +
-> >   tools/testing/selftests/vm/mremap_test.c | 243 ++++++++++++++++++++++=
-+
-> >   tools/testing/selftests/vm/run_vmtests   |  11 +
-> >   4 files changed, 256 insertions(+)
-> >   create mode 100644 tools/testing/selftests/vm/mremap_test.c
-> >
->
-> Hi,
->
-> This takes 100x longer to run than it should: 1:46 min of running time on
-> my x86_64 test machine. The entire selftests/vm test suite takes 45 sec o=
-n a
-> bad day, where a bad day is defined as up until about tomorrow, when I wi=
-ll
-> post a compaction_test.c patch that will cut that time down to about half=
-, or
-> 24 sec total run time...for 22 tests!
->
-> In other words, most tests here should take about 1 or 2 seconds, unless =
-they
-> are exceptionally special snowflakes.
->
-> At the very least, the invocation within run_vmtests could pass in a para=
-meter
-> to tell it to run a shorter test. But there's also opportunities to speed=
- it
-> up, too.
-
-
-Hi John. Thanks for the comments.
-
-The bulk of the test time comes from setting and verifying the byte
-pattern in 1GB
-or larger regions for testing the HAVE_MOVE_PUD functionality. Without test=
+On Thu, Oct 1, 2020 at 2:54 PM Christian Brauner
+<christian.brauner@canonical.com> wrote:
+> On Wed, Sep 30, 2020 at 05:53:46PM +0200, Jann Horn via Containers wrote:
+> > On Wed, Sep 30, 2020 at 1:07 PM Michael Kerrisk (man-pages)
+> > <mtk.manpages@gmail.com> wrote:
+> > > NOTES
+> > >        The file descriptor returned when seccomp(2) is employed with =
+the
+> > >        SECCOMP_FILTER_FLAG_NEW_LISTENER  flag  can  be  monitored  us=
 ing
-1GB or larger regions the test takes 0.18 seconds on my x86_64 system.
+> > >        poll(2), epoll(7), and select(2).  When a notification  is  pe=
+nd=E2=80=90
+> > >        ing,  these interfaces indicate that the file descriptor is re=
+ad=E2=80=90
+> > >        able.
+> >
+> > We should probably also point out somewhere that, as
+> > include/uapi/linux/seccomp.h says:
+> >
+> >  * Similar precautions should be applied when stacking SECCOMP_RET_USER=
+_NOTIF
+> >  * or SECCOMP_RET_TRACE. For SECCOMP_RET_USER_NOTIF filters acting on t=
+he
+> >  * same syscall, the most recently added filter takes precedence. This =
+means
+> >  * that the new SECCOMP_RET_USER_NOTIF filter can override any
+> >  * SECCOMP_IOCTL_NOTIF_SEND from earlier filters, essentially allowing =
+all
+> >  * such filtered syscalls to be executed by sending the response
+> >  * SECCOMP_USER_NOTIF_FLAG_CONTINUE. Note that SECCOMP_RET_TRACE can eq=
+ually
+> >  * be overriden by SECCOMP_USER_NOTIF_FLAG_CONTINUE.
+> >
+> > In other words, from a security perspective, you must assume that the
+> > target process can bypass any SECCOMP_RET_USER_NOTIF (or
+> > SECCOMP_RET_TRACE) filters unless it is completely prohibited from
+> > calling seccomp(). This should also be noted over in the main
+> > seccomp(2) manpage, especially the SECCOMP_RET_TRACE part.
+>
+> So I was actually wondering about this when I skimmed this and a while
+> ago but forgot about this again... Afaict, you can only ever load a
+> single filter with SECCOMP_FILTER_FLAG_NEW_LISTENER set. If there
+> already is a filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER property
+> in the tasks filter hierarchy then the kernel will refuse to load a new
+> one?
+>
+> static struct file *init_listener(struct seccomp_filter *filter)
+> {
+>         struct file *ret =3D ERR_PTR(-EBUSY);
+>         struct seccomp_filter *cur;
+>
+>         for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
+>                 if (cur->notif)
+>                         goto out;
+>         }
+>
+> shouldn't that be sufficient to guarantee that USER_NOTIF filters can't
+> override each other for the same task simply because there can only ever
+> be a single one?
 
-One option I think would be to only validate to a certain threshold of the =
-remap
-region. We can have a flag to specify a threshold or to validate the
-full size of the
-remapped region. I did some initial testing with a 4MB threshold and
-the total time
-dropped to 0.38 seconds from 1:12 minutes (for verifying the entire
-remapped region).
-The 4MB threshold would cover the full region of all the tests
-excluding those for the
-1GB and 2GB sized regions. Let me know what you think.
+Good point. Exceeeept that that check seems ineffective because this
+happens before we take the locks that guard against TSYNC, and also
+before we decide to which existing filter we want to chain the new
+filter. So if two threads race with TSYNC, I think they'll be able to
+chain two filters with listeners together.
 
-Your other comments below sound good to me. I=E2=80=99ll make those changes=
- in
-the next version.
+I don't know whether we want to eternalize this "only one listener
+across all the filters" restriction in the manpage though, or whether
+the man page should just say that the kernel currently doesn't support
+it but that security-wise you should assume that it might at some
+point.
 
-Thanks,
-Kalesh
+[...]
+> > >            if (procMemFd =3D=3D -1)
+> > >                errExit("Supervisor: open");
+> > >
+> > >            /* Check that the process whose info we are accessing is s=
+till alive.
+> > >               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performe=
+d
+> > >               in checkNotificationIdIsValid()) succeeds, we know that=
+ the
+> > >               /proc/PID/mem file descriptor that we opened correspond=
+s to the
+> > >               process for which we received a notification. If that p=
+rocess
+> > >               subsequently terminates, then read() on that file descr=
+iptor
+> > >               will return 0 (EOF). */
+> > >
+> > >            checkNotificationIdIsValid(notifyFd, req->id);
+> > >
+> > >            /* Seek to the location containing the pathname argument (=
+i.e., the
+> > >               first argument) of the mkdir(2) call and read that path=
+name */
+> > >
+> > >            if (lseek(procMemFd, req->data.args[0], SEEK_SET) =3D=3D -=
+1)
+> > >                errExit("Supervisor: lseek");
+> > >
+> > >            ssize_t s =3D read(procMemFd, path, PATH_MAX);
+> > >            if (s =3D=3D -1)
+> > >                errExit("read");
+> >
+> > Why not pread() instead of lseek()+read()?
+>
+> With multiple arguments to be read process_vm_readv() should also be
+> considered.
 
->
-> ...
-> > +
-> > +#define MAKE_TEST(source_align, destination_align, size,     \
-> > +               overlaps, should_fail, test_name)             \
-> > +{                                                            \
-> > +     .name =3D test_name,                                      \
-> > +     .config =3D {                                             \
-> > +             .src_alignment =3D source_align,                  \
-> > +             .dest_alignment =3D destination_align,            \
-> > +             .region_size =3D size,                            \
-> > +             .overlapping =3D overlaps,                        \
-> > +     },                                                      \
-> > +     .expect_failure =3D should_fail                           \
-> > +}
-> > +
->
-> OK...
->
-> > +#define MAKE_SIMPLE_TEST(source_align, destination_align, size)      \
-> > +     MAKE_TEST(source_align, destination_align, size, 0, 0,  \
-> > +               #size " mremap - Source " #source_align       \
-> > +               " aligned, Destination " #destination_align   \
-> > +               " aligned")
-> > +
->
-> ...and not OK. :)  Because this is just obscuring things. Both the
-> code and the output are harder to read. For these tiny test programs,
-> clarity is what we want, not necessarily compactness on the screen.
-> Because people want to get in, understand what they seen in the code
-> and match it up with what is printed to stdout--without spending much
-> time. (And that includes run time, as hinted at above.)
->
-> ...
-> > +
-> > +/* Returns the time taken for the remap on success else returns -1. */
-> > +static long long remap_region(struct config c)
-> > +{
-> > +     void *addr, *src_addr, *dest_addr;
-> > +     int i, j;
-> > +     struct timespec t_start =3D {0, 0}, t_end =3D {0, 0};
-> > +     long long  start_ns, end_ns, align_mask, ret, offset;
-> > +     char pattern[] =3D {0xa8, 0xcd, 0xfe};
->
-> I'd recommend using rand() to help choose the pattern, and using differen=
-t
-> patterns for different runs. When testing memory, it's a pitfall to have
-> the same test pattern.
->
-> Normally, you'd also want to report the random seed or the test pattern(s=
-)
-> or both to stdout, and provide a way to run with the same pattern, but
-> here I don't *think* you care: all patterns should have the same performa=
-nce.
->
-> > +     int pattern_size =3D ARRAY_SIZE(pattern);
-> > +
-> > +     src_addr =3D get_source_mapping(c);
-> > +     if (!src_addr) {
-> > +             ret =3D -1;
-> > +             goto out;
-> > +     }
-> > +
-> > +     /* Set byte pattern */
-> > +     for (i =3D 0; i < c.region_size; i++) {
-> > +             for (j =3D 0; i+j < c.region_size && j < pattern_size; j+=
-+)
-> > +                     memset((char *) src_addr + i+j, pattern[j], 1);
-> > +             i +=3D pattern_size-1;
-> > +     }
-> > +
-> > +     align_mask =3D ~(c.dest_alignment - 1);
-> > +     offset =3D (c.overlapping) ? -c.dest_alignment : c.dest_alignment=
-;
->
-> A comment for what the above two lines are doing would be a nice touch.
->
-> ...
-> > +     start_ns =3D t_start.tv_sec * 1000000000ULL + t_start.tv_nsec;
-> > +     end_ns =3D t_end.tv_sec * 1000000000ULL + t_end.tv_nsec;
->
-> A const or #defined for all those 0000's would help.
->
-> ...
-> > +int main(int argc, char *argv[])
-> > +{
-> > +     int failures =3D 0;
-> > +     int i;
-> > +
-> > +     struct test test_cases[] =3D {
-> > +             /* Expected mremap failures */
-> > +             MAKE_TEST(_4KB, _4KB, _4KB, 1 /* overlaps */, 1 /* fails =
-*/,
->
-> Named flags instead of 1's and 0's would avoid the need for messy comment=
-s.
->
-> > +                       "mremap - Source and Destination Regions Overla=
-pping"),
-> > +             MAKE_TEST(_4KB, _1KB, _4KB, 0 /* overlaps */, 1 /* fails =
-*/,
-> > +                       "mremap - Destination Address Misaligned (1KB-a=
-ligned)"),
-> > +             MAKE_TEST(_1KB, _4KB, _4KB, 0 /* overlaps */, 1 /* fails =
-*/,
-> > +                       "mremap - Source Address Misaligned (1KB-aligne=
-d)"),
-> > +
-> > +             /* Src addr PTE aligned */
-> > +             MAKE_SIMPLE_TEST(PTE, PTE, _8KB),
-> > +
-> > +             /* Src addr 1MB aligned */
-> > +             MAKE_SIMPLE_TEST(_1MB, PTE, _2MB),
-> > +             MAKE_SIMPLE_TEST(_1MB, _1MB, _2MB),
-> > +
-> > +             /* Src addr PMD aligned */
-> > +             MAKE_SIMPLE_TEST(PMD, PTE, _4MB),
-> > +             MAKE_SIMPLE_TEST(PMD, _1MB, _4MB),
-> > +             MAKE_SIMPLE_TEST(PMD, PMD, _4MB),
-> > +
-> > +             /* Src addr PUD aligned */
-> > +             MAKE_SIMPLE_TEST(PUD, PTE, _2GB),
-> > +             MAKE_SIMPLE_TEST(PUD, _1MB, _2GB),
-> > +             MAKE_SIMPLE_TEST(PUD, PMD, _2GB),
-> > +             MAKE_SIMPLE_TEST(PUD, PUD, _2GB),
->
->
-> Too concise. Not fun lining these up with the stdout report.
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+process_vm_readv() can end up doing each read against a different
+process, which is sort of weird semantically. You would end up taking
+page faults at random addresses in unrelated processes, blocking on
+their mmap locks, potentially triggering their userfaultfd notifiers,
+and so on.
+
+Whereas if you first open /proc/$tid/mem, then re-check
+SECCOMP_IOCTL_NOTIF_ID_VALID, and then do the read, you know that
+you're only taking page faults on the process where you intended to do
+it.
+
+So until there is a variant of process_vm_readv() that operates on
+pidfds, I would not recommend using that here.
