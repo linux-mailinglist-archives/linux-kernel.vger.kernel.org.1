@@ -2,52 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A272808D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92B62808DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgJAUy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgJAUy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:54:56 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A52F20738;
-        Thu,  1 Oct 2020 20:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601585695;
-        bh=SjmdQT/xowg1GrQZByhxKNZm5Btq5Bqi/jfw9XlnQP4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WLCTM/cDciFV0g70Qi2DEeiebne3c1E03kClrfL9hPXhRh5qQMMyMxSrJvawYbhA4
-         KLaetytFp1AO/ABrSOIHlgGGDERI2Mq56Ee2EyNbnp8aXROdhLveJgfL5txuOne9Qu
-         gfP9RFXQj2iC7aA/5ScMHra7r1vQwhWGVf4XVrIU=
-Date:   Thu, 1 Oct 2020 13:54:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 01/16] devlink: Change
- devlink_reload_supported() param type
-Message-ID: <20201001135454.668bafca@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1601560759-11030-2-git-send-email-moshe@mellanox.com>
-References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
-        <1601560759-11030-2-git-send-email-moshe@mellanox.com>
+        id S1730008AbgJAU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgJAU5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:57:06 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C26C0613D0;
+        Thu,  1 Oct 2020 13:57:05 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a15so44831ljk.2;
+        Thu, 01 Oct 2020 13:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XflpFmvYU4ZauRyF/CvBEwazfjgIznjHbxbdFQln060=;
+        b=pB1zmEc6F+GNDrYLg2UDm3+/iTPpyEZy82EwS6wWv6/OIbXMKTiu2yN//9Ac84AiNg
+         gTXy52KKNB6js3gVl0ifMsGb85RSdIHM+Ln17kx1FCqgfg24pXWZlcP2s90nvmWrVM8g
+         f4OTw3GEdfH48iFyfS1wUWfouG8Xb41rFGvMYH7uLW+gwoAZZ80Eb2es1GBX+QFqJuZT
+         tIy/40aGUd+Ld5xjZecBZoiwey8WewTHJBUr7c98dsRf4z5orc937BsQ3dLa+8wtKxd4
+         QUSLJjImPfuVBbG7KLdWIM9TQkD1nLXri/a2+ktop2U2v3DGIuYLL3XP/0jKV8XGblP9
+         3mDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XflpFmvYU4ZauRyF/CvBEwazfjgIznjHbxbdFQln060=;
+        b=dgvkX8HTXIcxTekCG5WC36lTtZXhA74wphi8REKg2Y4WiKSkPLo78IE+wzIqpl5txf
+         leFUVxQte6hLqUpSr6vAf7hiPleF0oGte5RLzwIPKYh46ZpWWb+rK/IosorUXJj9kqjv
+         JEO7/eN/3EGjTEPpQ5FFUE99AS7gabvBwD6aDGkmcWIhQAOdQ2x2rJ+J1AU3AamxggIO
+         srJyVitZ58uiC+3P3eAxeTCgnZidmBRybuL70DINYN+pYeIniWr5yjU7RaKWJR1ppey2
+         RA4zdlF8tCB9cJQOEX7bfDOLhXGRwpsnp8d/JY/CQ7ASP06Jm/SVVV7d6R4Tow91PSyG
+         4Hzw==
+X-Gm-Message-State: AOAM530ea+44BFctMpyMGS5IpReO8uHNvCxWe1kr3wSvMVkVlgOO5zHZ
+        gXoTZTtifgKKPwi9YytAL0OC5w/Su04=
+X-Google-Smtp-Source: ABdhPJzzGOQYtFDLJ0Uinx31Or+7BavRRvl4lQZJncQmtxUElVDfDWAHIwhVcDOYFMPCeoTTheo3UQ==
+X-Received: by 2002:a2e:9d8a:: with SMTP id c10mr3146731ljj.83.1601585824206;
+        Thu, 01 Oct 2020 13:57:04 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id g23sm712844lfb.230.2020.10.01.13.57.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 13:57:03 -0700 (PDT)
+Subject: Re: [PATCH v3 10/13] ASoC: tegra: Add audio graph based card driver
+To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        kuninori.morimoto.gx@renesas.com,
+        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
+        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
+        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
+        nwartikar@nvidia.com, swarren@nvidia.com, nicoleotsuka@gmail.com
+References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-11-git-send-email-spujar@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <98f01f9e-96f8-6867-1af3-475294e81a9d@gmail.com>
+Date:   Thu, 1 Oct 2020 23:57:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1601573587-15288-11-git-send-email-spujar@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 16:59:04 +0300 Moshe Shemesh wrote:
-> Change devlink_reload_supported() function to get devlink_ops pointer
-> param instead of devlink pointer param.
-> This change will be used in the next patch to check if devlink reload is
-> supported before devlink instance is allocated.
-> 
-> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+01.10.2020 20:33, Sameer Pujar пишет:
+> +/* Setup PLL clock as per the given sample rate */
+> +static int tegra_audio_graph_update_pll(struct snd_pcm_substream *substream,
+> +					struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+> +	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+> +	struct device *dev = rtd->card->dev;
+> +	struct tegra_audio_graph_data *graph_data =
+> +		(struct tegra_audio_graph_data *)priv->data;
+> +	struct tegra_audio_chip_data *chip_data =
+> +		(struct tegra_audio_chip_data *)of_device_get_match_data(dev);
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+void* doesn't need casting
