@@ -2,285 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8D327F7C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C0927F7BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730964AbgJACMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:12:09 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:60905 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730201AbgJACL6 (ORCPT
+        id S1728270AbgJACLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJACLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:11:58 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 669FC58030D;
-        Wed, 30 Sep 2020 22:11:53 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=gKhvqXOjb9UBY
-        vIUjTakRt05bYPTaGMxv+dqb+gLEvI=; b=hnebuOzzxhCONvUwwPaxEGlK0Sk25
-        ZUBZfEzNGGZMXrFOXE/22tNjZz7v/OEvV0sCEVtvJ1h/fy4evO6m5PvidasTVImU
-        RDgVIDN3WBqnhH0mgjgga4/AE1KEGdE3cMf+BYoSNLt8Aln+8hnYiWTu+ssUG7OZ
-        RHYuESNWLssA/nnEdAPKam1C515lukzCrmsKMzUeq5TZFAb7SjY5HcmlrQ0FF3s3
-        d3xxJ8JSWF+fDZUCqw9nyVp3OHVGS4K+eReN1vRHDlihjiqSEvq/ApYNiRCi8NMj
-        jTn5t0FqIe+87aCg8kohxh5QnFP7GaU04kHUiqy4bquW4PDIPHiL0bjUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=gKhvqXOjb9UBYvIUjTakRt05bYPTaGMxv+dqb+gLEvI=; b=cELtpasU
-        +jTcLgMCo9lx4QADju1XL1WD8Iny9uXEhmQRYbGxntT5PVH1WS3TIArpwiMDIgpv
-        TFTCDqKP7CW2z8sVZqaNCaVxkvhg3C60r9YD3yK52/6wT9E3ATvDHfh4rH8d8qMd
-        TTdTK3WkEV7NC10K9KUbITKxq9RHCU8/HPbDw1OrY6EceHpmhLwlJ6QetaYZZw8v
-        NaZCa4ts4hxC/3c45tRYZOfvfrSl6G7Op/t5DrinWCewq25SzkWDLqs7de6BwFi+
-        RtExXF5D3zuFNcCIN8Jdv5ZSbHA1iJrw7rvm12XIcqc63SWj4SZrB01EOR9xWVMd
-        k1wRlwmmUKGpQw==
-X-ME-Sender: <xms:6Tp1X6QdsfsrNtdMvvsTY3N3R5Wuq48nllK3pDuD0GLssssOwY_8kQ>
-    <xme:6Tp1X_wSMR5oCv7Pni84sZRmRNaAaMo3-YTS636g1On7kNvTOhO8VVVOFEvv0yMXH
-    qgj215-ruA-K1bMFA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
-    gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
-    rdhorhhg
-X-ME-Proxy: <xmx:6Tp1X33Vo_GhBFGlSGREtkerNfJMhie1JxBeAJc1Dg_1eDay7r6-jw>
-    <xmx:6Tp1X2Cgr47YwRIE9pJFt1qiCgIxReFCqDBjWzQfldNAFd7_iY8YIw>
-    <xmx:6Tp1XzhNod-iEWcUyVDZ9OUn_dxNC8vnMrTRQOleeXJQhIdc03PUxw>
-    <xmx:6Tp1X0UXl3ZKtYchbr_k2q_iqjnBBEiclqq1vV2xRLzcdArC4NeTMQ>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9D6313064680;
-        Wed, 30 Sep 2020 22:11:52 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 07/25] ASoC: sun8i-codec: Enable AIF mono/stereo control
-Date:   Wed, 30 Sep 2020 21:11:30 -0500
-Message-Id: <20201001021148.15852-8-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
-References: <20201001021148.15852-1-samuel@sholland.org>
+        Wed, 30 Sep 2020 22:11:34 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE52FC061755;
+        Wed, 30 Sep 2020 19:11:33 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u8so4609046lff.1;
+        Wed, 30 Sep 2020 19:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2b8YJ/jVVR7JmlsGa7FjoHY0aps0ZebG9cV7sMoGxuM=;
+        b=B8imYH9RcCeEdOmTlUlnev52Sz270GKuLllWU517V8pBJHqahNa9XWjov3tmmX6fP1
+         dWfGwinkASFIxxmS5B9EsUhrlIXLNDKeTWWmMFK3WnuffX6XRuQNaQJKM+IrflrL0XL5
+         Kfj38N/rW4KPdGlNEmUauhFW4WmdwxxrfKyLKl9U9blBFvUBj+6hBEkEID4QjUL09w/Z
+         ng67npv0nUB8qsxjb7Yb2c/izGuY57asrEkrP/RrLl3IBr3HjTynacPIqW3ckJf/DgRf
+         WI2QwGjSnzJ4U4vjWbJB3pK9LXx79pjYeHTWtBWtecZ06aQWkCS9NuXoHFRtYjr1cXbb
+         1RkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2b8YJ/jVVR7JmlsGa7FjoHY0aps0ZebG9cV7sMoGxuM=;
+        b=eXWU72LF+ptcRSZQJYVFsgT6M+JV/fPQuH9ekg41iNfXHQ+H4YiRt5kiIsBEiw9gmW
+         KsaeCaL45QlJxoe/OnAI3Ruc+D/xd6Xhes8W/qUr/vLC0ADNunSuvdXlJzf/wmylbmMP
+         YNe/2gVyp3z9GhmJ+x4CEyzh+K+DBy4zJFGGM0tsgbLv+vEvi5ja5IGt/B1U7aEUPivn
+         9iUzRmjSs8IofCK6wg+FDazwVquTvbt/bXyIHtFa0oF60M5kIIliG9GdT958BX4aDmLT
+         Rljr2Uh/Ani5Hy1NFePLRmFQlyrB6t3asp/Qv4rDFWS0F1jp+gwjbK8qyhh3RvyBbtom
+         /1Xg==
+X-Gm-Message-State: AOAM5321XJ9L7l0HsKAtmQ2Acq29AzMj8yFzTMosH+nm/4yP10I4oeKS
+        NdQIjzjWRBwvDaxyu5H6h+ir2uI3jTc=
+X-Google-Smtp-Source: ABdhPJwzkF/zX8i+aEADE+pp5Wl1aHNmiLSe9AZv5i60TKPO1ExNfB1hE9HpZELpWSIBfNYcGBcS4A==
+X-Received: by 2002:a19:40c8:: with SMTP id n191mr1959843lfa.29.1601518292137;
+        Wed, 30 Sep 2020 19:11:32 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id e8sm303688ljk.25.2020.09.30.19.11.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Sep 2020 19:11:31 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
+ <20200930160626.GD3833404@ulmo>
+ <f11d7d8a-8ce6-a53c-6219-ceec05432002@gmail.com>
+ <20200930164707.GB3852280@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <35115ac1-fb25-7226-7b50-61193669e696@gmail.com>
+Date:   Thu, 1 Oct 2020 05:11:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200930164707.GB3852280@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each left/right pair of AIF input/output channels can be swapped or
-combined. This is useful for sending a mono audio source to both sides
-of a stereo sink, or for creating complex mixing scenarios.
+30.09.2020 19:47, Thierry Reding пишет:
+> On Wed, Sep 30, 2020 at 07:25:41PM +0300, Dmitry Osipenko wrote:
+>> 30.09.2020 19:06, Thierry Reding пишет:
+>>> On Wed, Sep 30, 2020 at 06:36:52PM +0300, Dmitry Osipenko wrote:
+>>>>  I'...
+>>>>>> +	struct tegra_mc *mc = devm_tegra_get_memory_controller(dev);
+>>>>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>>>>
+>>>>> It looks to me like the only reason why you need this new global API is
+>>>>> because PCI devices may not have a device tree node with a phandle to
+>>>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
+>>>>> root complex has an iommus property, right? In that case, can't we
+>>>>> simply do something like this:
+>>>>>
+>>>>> 	if (dev_is_pci(dev))
+>>>>> 		np = find_host_bridge(dev)->of_node;
+>>>>> 	else
+>>>>> 		np = dev->of_node;
+>>>>>
+>>>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+>>>>> sure that exists.
+>>>>>
+>>>>> Once we have that we can still iterate over the iommus property and do
+>>>>> not need to rely on this global variable.
+>>>>
+>>>> This sounds more complicated than the current variant.
+>>>>
+>>>> Secondly, I'm already about to use the new tegra_get_memory_controller()
+>>>> API for all the T20/30/124/210 EMC and devfreq drivers.
+>>>
+>>> Why do we need it there? They seem to work fine without it right now.
+>>
+>> All the Tegra30/124/210 EMC drivers are already duplicating that MC
+>> lookup code and only the recent T210 driver does it properly.
+>>
+>>> If it is required for new functionality, we can always make the dependent
+>>> on a DT reference via phandle without breaking any existing code.
+>>
+>> That's correct, it will be also needed for the new functionality as
+>> well, hence even more drivers will need to perform the MC lookup.
+> 
+> I don't have any issues with adding a helper if we need it from several
+> different locations. But the helper should be working off of a given
+> device and look up the device via the device tree node referenced by
+> phandle. We already have those phandles in place for the EMC devices,
+> and any other device that needs to interoperate with the MC should also
+> get such a reference.
+> 
+>> I don't quite understand why you're asking for the phandle reference,
+>> it's absolutely not needed for the MC lookup and won't work for the
+> 
+> We need that phandle in order to establish a link between the devices.
+> Yes, you can probably do it without the phandle and just match by
+> compatible string. But we don't do that for other types of devices
+> either, right? For a display driver we reference the attached panel via
+> phandle, but we could also just look it up via name or absolute path or
+> some other heuristic. But a phandle is just a much more explicit way of
+> linking the devices, so why not use it?
 
-Add the support to control this feature from userspace.
+There are dozens variants of the panels and system could easily have
+more than one panel, hence a direct lookup by phandle is a natural
+choice for the panels.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- sound/soc/sunxi/sun8i-codec.c | 82 ++++++++++++++++++++++++++++++++---
- 1 file changed, 76 insertions(+), 6 deletions(-)
+While all Tegra SoCs have a single fixed MC in the system, and thus,
+there is no real need to use phandle because we can't mix up MC with
+anything else.
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 2c89974243e1..578c0c0e6330 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -49,19 +49,23 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
- #define SUN8I_AIF1_ADCDAT_CTRL				0x044
- #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
- #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
-+#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC		10
-+#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC		8
- #define SUN8I_AIF1_DACDAT_CTRL				0x048
- #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
- #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
-+#define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_SRC		10
-+#define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_SRC		8
- #define SUN8I_AIF1_MXR_SRC				0x04c
- #define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L	15
- #define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL	14
- #define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_ADCL		13
- #define SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACR	12
- #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R	11
- #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR	10
- #define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
-@@ -327,16 +331,30 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_SYS_SR_CTRL,
- 			   SUN8I_SYS_SR_CTRL_AIF1_FS_MASK,
- 			   sample_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
- 
- 	return 0;
- }
- 
-+static const char *const sun8i_aif_stereo_mux_enum_values[] = {
-+	"Stereo", "Reverse Stereo", "Sum Mono", "Mix Mono"
-+};
-+
-+static SOC_ENUM_DOUBLE_DECL(sun8i_aif1_ad0_stereo_mux_enum,
-+			    SUN8I_AIF1_ADCDAT_CTRL,
-+			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC,
-+			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC,
-+			    sun8i_aif_stereo_mux_enum_values);
-+
-+static const struct snd_kcontrol_new sun8i_aif1_ad0_stereo_mux_control =
-+	SOC_DAPM_ENUM("AIF1 AD0 Stereo Capture Route",
-+		      sun8i_aif1_ad0_stereo_mux_enum);
-+
- static const struct snd_kcontrol_new sun8i_aif1_ad0_mixer_controls[] = {
- 	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
- 			SUN8I_AIF1_MXR_SRC,
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L,
- 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
- 	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch",
- 			SUN8I_AIF1_MXR_SRC,
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL,
-@@ -346,16 +364,26 @@ static const struct snd_kcontrol_new sun8i_aif1_ad0_mixer_controls[] = {
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_ADCL,
- 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR, 1, 0),
- 	SOC_DAPM_DOUBLE("AIF2 Inv Digital ADC Capture Switch",
- 			SUN8I_AIF1_MXR_SRC,
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACR,
- 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL, 1, 0),
- };
- 
-+static SOC_ENUM_DOUBLE_DECL(sun8i_aif1_da0_stereo_mux_enum,
-+			    SUN8I_AIF1_DACDAT_CTRL,
-+			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_SRC,
-+			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_SRC,
-+			    sun8i_aif_stereo_mux_enum_values);
-+
-+static const struct snd_kcontrol_new sun8i_aif1_da0_stereo_mux_control =
-+	SOC_DAPM_ENUM("AIF1 DA0 Stereo Playback Route",
-+		      sun8i_aif1_da0_stereo_mux_enum);
-+
- static const struct snd_kcontrol_new sun8i_dac_mixer_controls[] = {
- 	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital DAC Playback Switch",
- 			SUN8I_DAC_MXR_SRC,
- 			SUN8I_DAC_MXR_SRC_DACL_MXR_SRC_AIF1DA0L,
- 			SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF1DA0R, 1, 0),
- 	SOC_DAPM_DOUBLE("AIF1 Slot 1 Digital DAC Playback Switch",
- 			SUN8I_DAC_MXR_SRC,
- 			SUN8I_DAC_MXR_SRC_DACL_MXR_SRC_AIF1DA1L,
-@@ -412,22 +440,34 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 	/* AIF "ADC" Outputs */
- 	SND_SOC_DAPM_AIF_OUT("AIF1 AD0L", "Capture", 0,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA, 0),
- 	SND_SOC_DAPM_AIF_OUT("AIF1 AD0R", "Capture", 1,
- 			     SUN8I_AIF1_ADCDAT_CTRL,
- 			     SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA, 0),
- 
-+	/* AIF "ADC" Mono/Stereo Muxes */
-+	SND_SOC_DAPM_MUX("AIF1 AD0L Stereo Mux", SND_SOC_NOPM, 0, 0,
-+			 &sun8i_aif1_ad0_stereo_mux_control),
-+	SND_SOC_DAPM_MUX("AIF1 AD0R Stereo Mux", SND_SOC_NOPM, 0, 0,
-+			 &sun8i_aif1_ad0_stereo_mux_control),
-+
- 	/* AIF "ADC" Mixers */
- 	SOC_MIXER_ARRAY("AIF1 AD0L Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
- 	SOC_MIXER_ARRAY("AIF1 AD0R Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
- 
-+	/* AIF "DAC" Mono/Stereo Muxes */
-+	SND_SOC_DAPM_MUX("AIF1 DA0L Stereo Mux", SND_SOC_NOPM, 0, 0,
-+			 &sun8i_aif1_da0_stereo_mux_control),
-+	SND_SOC_DAPM_MUX("AIF1 DA0R Stereo Mux", SND_SOC_NOPM, 0, 0,
-+			 &sun8i_aif1_da0_stereo_mux_control),
-+
- 	/* AIF "DAC" Inputs */
- 	SND_SOC_DAPM_AIF_IN("AIF1 DA0L", "Playback", 0,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
- 	SND_SOC_DAPM_AIF_IN("AIF1 DA0R", "Playback", 1,
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
- 
-@@ -468,35 +508,65 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 
- 	{ "CLK DAC", NULL, "SYSCLK" },
- 	{ "RST DAC", NULL, "CLK DAC" },
- 	{ "DAC", NULL, "RST DAC" },
- 	{ "DACL", NULL, "DAC" },
- 	{ "DACR", NULL, "DAC" },
- 
- 	/* AIF "ADC" Output Routes */
--	{ "AIF1 AD0L", NULL, "AIF1 AD0L Mixer" },
--	{ "AIF1 AD0R", NULL, "AIF1 AD0R Mixer" },
-+	{ "AIF1 AD0L", NULL, "AIF1 AD0L Stereo Mux" },
-+	{ "AIF1 AD0R", NULL, "AIF1 AD0R Stereo Mux" },
-+
-+	/* AIF "ADC" Mono/Stereo Mux Routes */
-+	{ "AIF1 AD0L Stereo Mux", "Stereo", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0L Stereo Mux", "Reverse Stereo", "AIF1 AD0R Mixer" },
-+	{ "AIF1 AD0L Stereo Mux", "Sum Mono", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0L Stereo Mux", "Sum Mono", "AIF1 AD0R Mixer" },
-+	{ "AIF1 AD0L Stereo Mux", "Mix Mono", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0L Stereo Mux", "Mix Mono", "AIF1 AD0R Mixer" },
-+
-+	{ "AIF1 AD0R Stereo Mux", "Stereo", "AIF1 AD0R Mixer" },
-+	{ "AIF1 AD0R Stereo Mux", "Reverse Stereo", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0R Stereo Mux", "Sum Mono", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0R Stereo Mux", "Sum Mono", "AIF1 AD0R Mixer" },
-+	{ "AIF1 AD0R Stereo Mux", "Mix Mono", "AIF1 AD0L Mixer" },
-+	{ "AIF1 AD0R Stereo Mux", "Mix Mono", "AIF1 AD0R Mixer" },
- 
- 	/* AIF "ADC" Mixer Routes */
--	{ "AIF1 AD0L Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0L" },
-+	{ "AIF1 AD0L Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0L Stereo Mux" },
- 	{ "AIF1 AD0L Mixer", "AIF1 Data Digital ADC Capture Switch", "ADCL" },
- 
--	{ "AIF1 AD0R Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0R" },
-+	{ "AIF1 AD0R Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0R Stereo Mux" },
- 	{ "AIF1 AD0R Mixer", "AIF1 Data Digital ADC Capture Switch", "ADCR" },
- 
-+	/* AIF "DAC" Mono/Stereo Mux Routes */
-+	{ "AIF1 DA0L Stereo Mux", "Stereo", "AIF1 DA0L" },
-+	{ "AIF1 DA0L Stereo Mux", "Reverse Stereo", "AIF1 DA0R" },
-+	{ "AIF1 DA0L Stereo Mux", "Sum Mono", "AIF1 DA0L" },
-+	{ "AIF1 DA0L Stereo Mux", "Sum Mono", "AIF1 DA0R" },
-+	{ "AIF1 DA0L Stereo Mux", "Mix Mono", "AIF1 DA0L" },
-+	{ "AIF1 DA0L Stereo Mux", "Mix Mono", "AIF1 DA0R" },
-+
-+	{ "AIF1 DA0R Stereo Mux", "Stereo", "AIF1 DA0R" },
-+	{ "AIF1 DA0R Stereo Mux", "Reverse Stereo", "AIF1 DA0L" },
-+	{ "AIF1 DA0R Stereo Mux", "Sum Mono", "AIF1 DA0L" },
-+	{ "AIF1 DA0R Stereo Mux", "Sum Mono", "AIF1 DA0R" },
-+	{ "AIF1 DA0R Stereo Mux", "Mix Mono", "AIF1 DA0L" },
-+	{ "AIF1 DA0R Stereo Mux", "Mix Mono", "AIF1 DA0R" },
-+
- 	/* DAC Output Routes */
- 	{ "DACL", NULL, "DACL Mixer" },
- 	{ "DACR", NULL, "DACR Mixer" },
- 
- 	/* DAC Mixer Routes */
--	{ "DACL Mixer", "AIF1 Slot 0 Digital DAC Playback Switch", "AIF1 DA0L" },
-+	{ "DACL Mixer", "AIF1 Slot 0 Digital DAC Playback Switch", "AIF1 DA0L Stereo Mux" },
- 	{ "DACL Mixer", "ADC Digital DAC Playback Switch", "ADCL" },
- 
--	{ "DACR Mixer", "AIF1 Slot 0 Digital DAC Playback Switch", "AIF1 DA0R" },
-+	{ "DACR Mixer", "AIF1 Slot 0 Digital DAC Playback Switch", "AIF1 DA0R Stereo Mux" },
- 	{ "DACR Mixer", "ADC Digital DAC Playback Switch", "ADCR" },
- };
- 
- static const struct snd_soc_dapm_widget sun8i_codec_legacy_widgets[] = {
- 	/* Legacy ADC Inputs (connected to analog codec DAPM context) */
- 	SND_SOC_DAPM_ADC("AIF1 Slot 0 Left ADC", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("AIF1 Slot 0 Right ADC", NULL, SND_SOC_NOPM, 0, 0),
- 
--- 
-2.26.2
+>> older DTs if DT change will be needed. Please give a detailed explanation.
+> 
+> New functionality doesn't have to work with older DTs.
 
+This is fine in general, but I'm afraid that in this particular case we
+will need to have a fall back anyways because otherwise it should break
+the old functionality.
+
+So I don't think that using phandle for the MC device finding is really
+warrant.
+
+Phandle is kinda more applicable for the cases where only the DT node
+lookup is needed (not the lookup of the MC device driver), but even then
+it is also not mandatory.
+
+I hope you agree.
