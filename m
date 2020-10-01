@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643E627F7CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA51527F7CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731235AbgJACMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:12:30 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:32849 "EHLO
+        id S1731193AbgJACM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:12:29 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:54645 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730672AbgJACMB (ORCPT
+        by vger.kernel.org with ESMTP id S1730679AbgJACMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:12:01 -0400
+        Wed, 30 Sep 2020 22:12:03 -0400
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6053D5803A5;
+        by mailnew.nyi.internal (Postfix) with ESMTP id E88B75803A7;
         Wed, 30 Sep 2020 22:12:00 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:12:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=dzVr8TUYYufuG
-        Z55x/cuWx14x/WrGzXTpsfi12FdIuQ=; b=bU5via5LhVT6E8Kd9QO2zetm9GbF/
-        6BPvwmEHUyXJ1tGdneKRDTubhK5BZqaJGQQVnWQMbb55TXANtdbEMPQuIwK8ItXd
-        KHN02YpvYvhB7cp9HWDPhU1eAqFNpcG+bx6vRnGxKvox8VffyPo4KY+in1Qe8eyS
-        ddvgltTlXxg4+qLFRg/dbn9H2jvIV3pXPVnEvUx/+xhZvgcMywZOwXTuHrielwds
-        +K6CwVtFlougSYAK3koIX6i7k6mVodxC/XPwKbFZrN6kmwxH90zzMNXtrwG9ndrP
-        65j41u+C+5SCG2v3dPjyIp5/wzZsY5oSyBnP4MiZV8wtjv4cBVhXSBRtA==
+        :mime-version:content-transfer-encoding; s=fm3; bh=NHewFzRu2vXyA
+        rCi8ixciz6kRCOAqCT1XEIhbh7PdCU=; b=tYZA3t1Sde8gEp3CrBwSVT9aDOrYD
+        UrGqOTfSqjt3BrqTomxzBtwavpIiCjrG7skdi1MWa5ALe0GS/ePg6Pp8nwRKGJtp
+        dyUE1U3bE9wcpzbUv7u06yU0fG3QN0Zljui9MFMB0wPOsfbjrl18eRHwSZ5XyyD2
+        cMJGshS5r9IKVm0QiOP+Mjba3iulArTzPA4uJ9RZRc8pewTo9CuWsmiSP1HmmEVx
+        u9agADMVUcU/fxWMHHquNpMkr5xDvm4H5dmHF/nKHul0dEwjdqzkfJPqfPc19kFW
+        B8f4vOxrvYnu2MoALXmY39pW29WwL5TRjSmw7wUaeMRLViZJMjcWE9Ibw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=dzVr8TUYYufuGZ55x/cuWx14x/WrGzXTpsfi12FdIuQ=; b=bF2CGdFP
-        BkIQJx/nt3Itqh4AHzqnofuFusol0FZdSnO9xkit/AyXptja81Toqe4EiVyXzq1W
-        VHTThEez1YC/1ahXqlh6Bq7IsSzV/+I3/KqStDWUeSXrSJBRtJXKEcOP0LdKxpyZ
-        j/JE1Ndw2KJCXDQnpHS5gr0G+vtrK8KkaXIqUi7NTQ3Z+g//SA+giW3cuIAVN5KW
-        1KVQqWw+oJeeV3TRr3jAfa0a0AYjQV9GW7R92CjmpWhzs3MsJ3SUswXYJOL/90EM
-        u0PL0fNPpZpOUWANxwadaz1/50H5812ZUGcddQmKUlUtJ5ieb+d3OUslj8PEEEQZ
-        OcJh7z+JGdomNA==
-X-ME-Sender: <xms:8Dp1X-N-84Ryg6A7acqTyQa8Am3j3YiKkv-f_Z9PH_86O0zJnjnbHg>
-    <xme:8Dp1X88U53roPGyzlgyYm1ZNDlyNlpo1b6ixt15Y-c1DbvauArWyG9hDXdeemtPw4
-    i7agykDRmE8n2t5vQ>
+        fm3; bh=NHewFzRu2vXyArCi8ixciz6kRCOAqCT1XEIhbh7PdCU=; b=eoISlPhD
+        22MoUrDjt4OapBuHT+Kmuq9zojOvppx2s4AvPQcK45mN6y4IzzQKV7pAPIji0hKg
+        hP2KSAciZGf+bXqQ+Sv+p8aJ4NIyov9jB2BsQ1nEidaFgZ1xYYOVX4l0Fygb6Hcv
+        OjnAuUYbgKbIsqyPOhC/jtrq6fnIEZVHAwKT6fAiFil5LH8CvUVvWk+zv/+/iD13
+        aHIJ7A9WHvbXD6Yjcp9K1k7RjlG2sBbt5gIreQOL+CvgxTMNEq2Lp5glzDuAy8wW
+        wzESrCLqGdLCzpZPt/KFf/VAXHqMEvy0Ku8hsI55DCHFUaNt4VJ7hHlyVyqNbXlU
+        4wsXH3dSiuxf+g==
+X-ME-Sender: <xms:8Dp1X18PuIRIiK4McFFezHIAugtjt5Go_Lo_ks4QmkgqpBwI7gaOWA>
+    <xme:8Dp1X5sBuLUXayNmKyc8oT7tlKPmZx2oZf2Wn2Tbsb-veipNoSfMlM2L847J2zDw-
+    PQmg5d39MDQgp3nwQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -49,13 +49,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
     jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
     gvpedujeenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
     ugdrohhrgh
-X-ME-Proxy: <xmx:8Dp1X1QuSpm5HQUUpqilKs9vXudxkchjZNgBe44eQ5S4pSbXgIy5sQ>
-    <xmx:8Dp1X-udiLzW8MITtxzf8VY5YBrGgvQ4ngTmK8b8d4L2ywR39yBgvQ>
-    <xmx:8Dp1X2cj9J4d4L4lCSw0U_4mGf_Ny2lFkh1j6Cf6Nj9Xh2UHDw18ug>
-    <xmx:8Dp1X9xT8TXF0WqCRQcHt8eEa6xu0mI2sVGQ7fbuOkOxoSrrhOORVw>
+X-ME-Proxy: <xmx:8Dp1XzBJDo3iCpM8mZYfmulm6IMAeFg8KF4OQXuk2H1m7Mni9GS-VA>
+    <xmx:8Dp1X5e1-UGIBAOLjxiCDk2n_pBBdsm_gZBK6wjN5LqRCCtw_2pcNg>
+    <xmx:8Dp1X6O_7wUFLc6grhb98AeK34ftvrRi0TUsk4tSMh8JqqhzbIgU5w>
+    <xmx:8Dp1X7jdoU6H7Ej8YAPjRrDJwyVuss0Ez83oZSjSb2K8KqE2CCNUGQ>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A84A53064684;
-        Wed, 30 Sep 2020 22:11:59 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2710C306467E;
+        Wed, 30 Sep 2020 22:12:00 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -65,9 +65,9 @@ To:     Mark Brown <broonie@kernel.org>,
 Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 22/25] ASoC: sun8i-codec: Enable all supported PCM formats
-Date:   Wed, 30 Sep 2020 21:11:45 -0500
-Message-Id: <20201001021148.15852-23-samuel@sholland.org>
+Subject: [PATCH 23/25] ASoC: sun8i-codec: Generalize AIF clock control
+Date:   Wed, 30 Sep 2020 21:11:46 -0500
+Message-Id: <20201001021148.15852-24-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -77,77 +77,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the DAI clock setup is correct for all hardware-supported PCM
-formats, we can enable them in the driver. With the appropriate support
-in the CPU DAI driver, this allows userspace to access the additional
-formats.
-
-Since this codec is connected to the CPU via a DAI, not directly, we do
-not care if the CPU DAI is using 3-byte or 4-byte formats, so we can
-support them both.
+The AIF clock control register has the same layout for all three AIFs.
+The only difference between them is that AIF3 is missing some fields. We
+can reuse the same register field definitions for all three registers,
+and use the DAI ID to select the correct register address.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 64 +++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 30 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index d8ce84533ddb..032a3f714dbb 100644
+index 032a3f714dbb..1c34502ac47a 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -91,16 +91,23 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK	GENMASK(14, 13)
- #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
+@@ -37,23 +37,23 @@
+ #define SUN8I_MOD_CLK_ENA_DAC				2
+ #define SUN8I_MOD_RST_CTL				0x014
+ #define SUN8I_MOD_RST_CTL_AIF1				15
+ #define SUN8I_MOD_RST_CTL_ADC				3
+ #define SUN8I_MOD_RST_CTL_DAC				2
+ #define SUN8I_SYS_SR_CTRL				0x018
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
+-#define SUN8I_AIF1CLK_CTRL				0x040
+-#define SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD		15
+-#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV			13
+-#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+-#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+-#define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
++#define SUN8I_AIF_CLK_CTRL(n)				(0x040 * (1 + (n)))
++#define SUN8I_AIF_CLK_CTRL_MSTR_MOD			15
++#define SUN8I_AIF_CLK_CTRL_CLK_INV			13
++#define SUN8I_AIF_CLK_CTRL_BCLK_DIV			9
++#define SUN8I_AIF_CLK_CTRL_LRCK_DIV			6
++#define SUN8I_AIF_CLK_CTRL_WORD_SIZ			4
++#define SUN8I_AIF_CLK_CTRL_DATA_FMT			2
+ #define SUN8I_AIF1_ADCDAT_CTRL				0x044
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_ENA		15
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_ENA		14
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0L_SRC		10
+ #define SUN8I_AIF1_ADCDAT_CTRL_AIF1_AD0R_SRC		8
+ #define SUN8I_AIF1_DACDAT_CTRL				0x048
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
+ #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
+@@ -83,21 +83,21 @@
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF1DA1R		10
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_AIF2DACR		9
+ #define SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR		8
+ 
+ #define SUN8I_SYSCLK_CTL_AIF1CLK_SRC_MASK	GENMASK(9, 8)
+ #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
+ #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
+-#define SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK	GENMASK(14, 13)
+-#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
+-#define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+-#define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
++#define SUN8I_AIF_CLK_CTRL_CLK_INV_MASK		GENMASK(14, 13)
++#define SUN8I_AIF_CLK_CTRL_BCLK_DIV_MASK	GENMASK(12, 9)
++#define SUN8I_AIF_CLK_CTRL_LRCK_DIV_MASK	GENMASK(8, 6)
++#define SUN8I_AIF_CLK_CTRL_WORD_SIZ_MASK	GENMASK(5, 4)
++#define SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK	GENMASK(3, 2)
  
  #define SUN8I_CODEC_PASSTHROUGH_SAMPLE_RATE 48000
  
-+#define SUN8I_CODEC_PCM_FORMATS	(SNDRV_PCM_FMTBIT_S8     |\
-+				 SNDRV_PCM_FMTBIT_S16_LE |\
-+				 SNDRV_PCM_FMTBIT_S20_LE |\
-+				 SNDRV_PCM_FMTBIT_S24_LE |\
-+				 SNDRV_PCM_FMTBIT_S20_3LE|\
-+				 SNDRV_PCM_FMTBIT_S24_3LE)
+ #define SUN8I_CODEC_PCM_FORMATS	(SNDRV_PCM_FMTBIT_S8     |\
+ 				 SNDRV_PCM_FMTBIT_S16_LE |\
+ 				 SNDRV_PCM_FMTBIT_S20_LE |\
+ 				 SNDRV_PCM_FMTBIT_S24_LE |\
+ 				 SNDRV_PCM_FMTBIT_S20_3LE|\
+@@ -223,32 +223,34 @@ static int sun8i_codec_update_sample_rate(struct sun8i_codec *scodec)
+ 			   hw_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
+ 
+ 	return 0;
+ }
+ 
+ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
++	u32 reg = SUN8I_AIF_CLK_CTRL(dai->id);
+ 	u32 format, invert, value;
+ 
+ 	/* clock masters */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
+ 		value = 0x1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
+ 		value = 0x0;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD);
 +
- #define SUN8I_CODEC_PCM_RATES	(SNDRV_PCM_RATE_8000_48000|\
- 				 SNDRV_PCM_RATE_88200     |\
- 				 SNDRV_PCM_RATE_96000     |\
- 				 SNDRV_PCM_RATE_176400    |\
- 				 SNDRV_PCM_RATE_192000    |\
- 				 SNDRV_PCM_RATE_KNOT)
++	regmap_update_bits(scodec->regmap, reg,
++			   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
++			   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
  
- enum {
-@@ -531,26 +538,26 @@ static struct snd_soc_dai_driver sun8i_codec_dais[] = {
- 		.id	= AIF1,
- 		.ops	= &sun8i_codec_dai_ops,
- 		/* capture capabilities */
- 		.capture = {
- 			.stream_name	= "AIF1 Capture",
- 			.channels_min	= 1,
- 			.channels_max	= 2,
- 			.rates		= SUN8I_CODEC_PCM_RATES,
--			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+			.formats	= SUN8I_CODEC_PCM_FORMATS,
- 			.sig_bits	= 24,
- 		},
- 		/* playback capabilities */
- 		.playback = {
- 			.stream_name	= "AIF1 Playback",
- 			.channels_min	= 1,
- 			.channels_max	= 2,
- 			.rates		= SUN8I_CODEC_PCM_RATES,
--			.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+			.formats	= SUN8I_CODEC_PCM_FORMATS,
- 		},
- 		.symmetric_rates	= true,
- 		.symmetric_channels	= true,
- 		.symmetric_samplebits	= true,
- 	},
- };
+ 	/* DAI format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		format = 0x0;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		format = 0x1;
+@@ -262,19 +264,20 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		format = 0x3;
+ 		invert = 0x1; /* Set LRCK_INV to 1 */
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK,
+-			   format << SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT);
++
++	regmap_update_bits(scodec->regmap, reg,
++			   SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK,
++			   format << SUN8I_AIF_CLK_CTRL_DATA_FMT);
  
- static int sun8i_codec_aif_event(struct snd_soc_dapm_widget *w,
+ 	/* clock inversion */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF: /* Normal */
+ 		value = 0x0;
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF: /* Inverted LRCK */
+ 		value = 0x1;
+@@ -305,19 +308,19 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		 * Since the DAI here is our regular i2s driver that have been
+ 		 * tested with way more codecs than just this one, it means
+ 		 * that the codec probably gets it backward, and we have to
+ 		 * invert the value here.
+ 		 */
+ 		value ^= scodec->quirks->lrck_inversion;
+ 	}
+ 
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV_MASK,
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_CLK_INV);
++	regmap_update_bits(scodec->regmap, reg,
++			   SUN8I_AIF_CLK_CTRL_CLK_INV_MASK,
++			   value << SUN8I_AIF_CLK_CTRL_CLK_INV);
+ 
+ 	return 0;
+ }
+ 
+ static int sun8i_codec_set_tdm_slot(struct snd_soc_dai *dai,
+ 				    unsigned int tx_mask, unsigned int rx_mask,
+ 				    int slots, int slot_width)
+ {
+@@ -435,16 +438,17 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+ 	struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
+ 	unsigned int sample_rate = params_rate(params);
+ 	unsigned int slots = aif->slots ?: params_channels(params);
+ 	unsigned int slot_width = aif->slot_width ?: params_width(params);
+ 	unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
+ 	int bclk_div, lrck_div_order, ret, word_size;
++	u32 reg = SUN8I_AIF_CLK_CTRL(dai->id);
+ 
+ 	/* word size */
+ 	switch (params_width(params)) {
+ 	case 8:
+ 		word_size = 0x0;
+ 		break;
+ 	case 16:
+ 		word_size = 0x1;
+@@ -454,37 +458,37 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	case 24:
+ 		word_size = 0x3;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
+-			   word_size << SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ);
++	regmap_update_bits(scodec->regmap, reg,
++			   SUN8I_AIF_CLK_CTRL_WORD_SIZ_MASK,
++			   word_size << SUN8I_AIF_CLK_CTRL_WORD_SIZ);
+ 
+ 	/* LRCK divider (BCLK/LRCK ratio) */
+ 	lrck_div_order = sun8i_codec_get_lrck_div_order(slots, slot_width);
+ 	if (lrck_div_order < 0)
+ 		return lrck_div_order;
+ 
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+-			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
++	regmap_update_bits(scodec->regmap, reg,
++			   SUN8I_AIF_CLK_CTRL_LRCK_DIV_MASK,
++			   (lrck_div_order - 4) << SUN8I_AIF_CLK_CTRL_LRCK_DIV);
+ 
+ 	/* BCLK divider (SYSCLK/BCLK ratio) */
+ 	bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
+ 	if (bclk_div < 0)
+ 		return bclk_div;
+ 
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+-			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
++	regmap_update_bits(scodec->regmap, reg,
++			   SUN8I_AIF_CLK_CTRL_BCLK_DIV_MASK,
++			   bclk_div << SUN8I_AIF_CLK_CTRL_BCLK_DIV);
+ 
+ 	/* SYSCLK rate */
+ 	if (aif->open_streams) {
+ 		ret = clk_set_rate(scodec->clk_module, sysclk_rate);
+ 		if (ret < 0)
+ 			return ret;
+ 	} else {
+ 		ret = clk_set_rate_exclusive(scodec->clk_module, sysclk_rate);
 -- 
 2.26.2
 
