@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618A8280133
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B60280131
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732492AbgJAOZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:25:08 -0400
+        id S1732479AbgJAOZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:25:06 -0400
 Received: from mga14.intel.com ([192.55.52.115]:5353 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732478AbgJAOZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:25:07 -0400
-IronPort-SDR: N0sH4oSoFJlOMjEjMwnWbRrQBNlZ6EtMgcXEkV58SL7BjuKj5uzi/+depi7n7w3HMlZHXuvg7u
- xjmVzlOvCmHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161975952"
+        id S1732207AbgJAOZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:25:05 -0400
+IronPort-SDR: 9o3XsY6BuAU5jSIJ1HPXFcO8x+o3G0kgSQ/KMlmCjkXhaFjDr7oWjbgtYDh/C7+nhkX4SvFAQG
+ tldCSCl2Rjpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="161975958"
 X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="161975952"
+   d="scan'208";a="161975958"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 07:24:54 -0700
-IronPort-SDR: 2oyD6q+1pgU7g+tns2MMQSQyRywT+gr6/OpkgRA2Hv4O2o513H/0CMdy2/Ooa07KZWIE4ZidAV
- O7DVdSPFmnpg==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 07:24:56 -0700
+IronPort-SDR: 2vrrK1q5PUNNl6kwZPWlQsp/8WXdeiW1rrgXqKHOAgXpNyQ28d+KLB2kzFwqh89kH88zVjP7j+
+ 8SpAxKm6aZiw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="294992486"
+   d="scan'208";a="294992500"
 Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2020 07:24:51 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 01 Oct 2020 07:24:54 -0700
 From:   muhammad.husaini.zulkifli@intel.com
 To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
         ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
@@ -34,57 +34,90 @@ To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
 Cc:     lakshmi.bai.raja.subramanian@intel.com,
         wan.ahmad.zainie.wan.mohamad@intel.com,
         muhammad.husaini.zulkifli@intel.com, arnd@arndb.de
-Subject: [PATCH v2 0/3] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
-Date:   Thu,  1 Oct 2020 22:21:46 +0800
-Message-Id: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
+Subject: [PATCH v2 1/3] dt-bindings: arm: firmware: Add binding for Keem Bay Firmware Support
+Date:   Thu,  1 Oct 2020 22:21:47 +0800
+Message-Id: <20201001142149.23445-2-muhammad.husaini.zulkifli@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
+References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Hi.
+Add bindings for Keem Bay implementation of Arm Trusted Firmware
+Services call.
 
-The first patch is to document DT bindings for Keem Bay Firmware Driver and update
-the Maintainers list.
+Update the MAINTAINERS list.
 
-The second patch is the firmware driver file.
-
-The third patch is to enable UHS-1 Support for Keem Bay EVM.
-
-The patch was tested with Keem Bay evaluation module board.
-
-Kindly help to review this patch set.
-
-Thank you.
-
-Changes since v1:
-- Add Document DT Bindings for Keembay Firmware.
-- Created Firmware Driver to handle ATF Service call
-- Provide API for arasan driver for sd card voltage changes
-
-Muhammad Husaini Zulkifli (3):
-  dt-bindings: arm: firmware: Add binding for Keem Bay Firmware Support
-  firmware: Keem Bay: Add support for Arm Trusted Firmware Service call
-  mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
-
- .../arm/firmware/keembay,firmware.yaml        |  36 +++++
- MAINTAINERS                                   |   7 +
- drivers/firmware/Kconfig                      |   1 +
- drivers/firmware/Makefile                     |   1 +
- drivers/firmware/intel/Kconfig                |  14 ++
- drivers/firmware/intel/Makefile               |   4 +
- drivers/firmware/intel/keembay_smc.c          | 119 ++++++++++++++++
- drivers/mmc/host/sdhci-of-arasan.c            | 127 ++++++++++++++++++
- include/linux/firmware/intel/keembay_smc.h    |  27 ++++
- 9 files changed, 336 insertions(+)
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+---
+ .../arm/firmware/keembay,firmware.yaml        | 36 +++++++++++++++++++
+ MAINTAINERS                                   |  7 ++++
+ 2 files changed, 43 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/arm/firmware/keembay,firmware.yaml
- create mode 100644 drivers/firmware/intel/Kconfig
- create mode 100644 drivers/firmware/intel/Makefile
- create mode 100644 drivers/firmware/intel/keembay_smc.c
- create mode 100644 include/linux/firmware/intel/keembay_smc.h
 
---
+diff --git a/Documentation/devicetree/bindings/arm/firmware/keembay,firmware.yaml b/Documentation/devicetree/bindings/arm/firmware/keembay,firmware.yaml
+new file mode 100644
+index 000000000000..9bb5a15f1e3c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/firmware/keembay,firmware.yaml
+@@ -0,0 +1,36 @@
++# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/firmware/keembay,firmware.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Keem Bay Device Tree Bindings
++
++maintainers:
++  - Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
++
++properties:
++  $nodename:
++    const: keembay_firmware
++
++  compatible:
++    enum:
++      - keembay,firmware
++
++  method:
++   $ref: '/schemas/types.yaml#/definitions/string'
++   oneOf:
++      - enum:
++          - smc
++
++required:
++  - compatible
++  - method
++
++examples:
++  - |
++    keembay_firmware {
++        compatible = "keembay,firmware";
++        method = "smc";
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 190c7fa2ea01..33b8ded820f3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19278,6 +19278,13 @@ L:	linux-mm@kvack.org
+ S:	Maintained
+ F:	mm/zswap.c
+ 
++KEEMBAY FIRMWARE
++M:	Muhammad Husaini Zulkifli <Muhammad.Husaini.Zulkifli@intel.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/arm/firmware/keembay,firmware.yaml
++F:	drivers/firmware/intel/keembay_smc.c
++F:	linux/include/linux/firmware/intel/keembay_smc.h
++
+ THE REST
+ M:	Linus Torvalds <torvalds@linux-foundation.org>
+ L:	linux-kernel@vger.kernel.org
+-- 
 2.17.1
 
