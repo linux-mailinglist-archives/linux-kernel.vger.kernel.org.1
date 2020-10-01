@@ -2,523 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C50427F781
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3D827F791
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbgJABnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:43:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:48414 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgJABm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:42:59 -0400
-IronPort-SDR: rei45rgVNxx5mzLnR4YrshtHyUJPbDc0ArX1sPlm4wnrWjL6E1xtZJqsS9VQCk/L4msMC1oKQI
- isaFULm3/4BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="180750566"
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="180750566"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 18:42:57 -0700
-IronPort-SDR: q8mjuYQENXxIQ1RqQeeYDZHUMqe+lJQHEOqLsEoin4CQ7lQexbdAcQZoSpulQRTsgX/1+j2dvq
- KJvTlp2FHqFQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
-   d="scan'208";a="294226096"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Sep 2020 18:42:57 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id 1AD6C58094E;
-        Wed, 30 Sep 2020 18:42:57 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     lee.jones@linaro.org, david.e.box@linux.intel.com,
-        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        alexander.h.duyck@linux.intel.com, hdegoede@redhat.com,
-        alexey.budankov@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH V7 5/5] platform/x86: Intel PMT Crashlog capability driver
-Date:   Wed, 30 Sep 2020 18:42:50 -0700
-Message-Id: <20201001014250.26987-6-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201001014250.26987-1-david.e.box@linux.intel.com>
-References: <20201001014250.26987-1-david.e.box@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730398AbgJABnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:43:51 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:47543 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725800AbgJABnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 21:43:51 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id A4BB55C0262;
+        Wed, 30 Sep 2020 21:43:49 -0400 (EDT)
+Received: from imap4 ([10.202.2.54])
+  by compute2.internal (MEProxy); Wed, 30 Sep 2020 21:43:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duggan.us; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=N5xYIHNsQj6YcLP2u7bpecTn7CyjbfD
+        /aVUxvvuMkDY=; b=EAHXRTFCPKtzDcPZQ31Tr62i6gweFh4/VsShVPcJw9hVD5H
+        i5VRO7n5k3/+26s6x7OgHKI5aRC8rLN+PT/698Mh28CTd6zXZI7sVIiKaN5Z3QDc
+        ukWfg+6OyJCAcqqU0A0YTyTxZNxEQY1a2KNoj04liORjmAUXm0THxL7oNgqknAuy
+        YLWHeCNvXEbxRT3ZrdyA5of99z9CnZ2cmUrUZMBbp2MOfRMmjMp5FokZL9CfxJAr
+        9EBvp3tavaBFA7U3jlGsUH6dCe2AjSHeXJ0sw6BEbIQjlQO3PC7ykoxZKxfPVwr9
+        geCi0AP+Dr3vAk2sHvEDxOO6b3knNmbNUrN5yqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=N5xYIH
+        NsQj6YcLP2u7bpecTn7CyjbfD/aVUxvvuMkDY=; b=AHFoXn1hq2ZSlJ47TUq69+
+        eda6b8knnzuXPo2w6IU3wshKjUbxANgMyxhlqjPfJlpfuRnD+83CrmjTdhOhMMv6
+        L9AC50hNeamGYoHKE0WFgIKLr6mleQvthsuIcrXChMK6HXnA4DixPhHbafXQp8Vv
+        07d+fAdpyx4EAk+6OmNcaty/1scagWEVMxNaCSEf6i3AWaw6gijfIbXgBVlcgF6P
+        8j0kMqjyEkNRtjB05y+wtwyaL3ZiXb5me3wjss+2hnSAC3mbQXFr7RXnI2Y4/Q3g
+        tZpllQmmbciufYGTMN4ugvYJ/ep6dBieQS/MFvGKfCtlukvsg9gNvh6l46irDxAg
+        ==
+X-ME-Sender: <xms:VTR1X4HUQKo25Y0GMiuiy-p0e4u487aD95_V2t5F7Olfxu2zxEBJTA>
+    <xme:VTR1XxV9aMncB8G_aORNp05ZTZsUkGw9xrJGR2IgsvSezS4FcJ_5-WkxxLRAZGYeW
+    egQeBpwGP1WjGAaig>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
+    vgifucffuhhgghgrnhdfuceorghnughrvgifseguuhhgghgrnhdruhhsqeenucggtffrrg
+    htthgvrhhnpedvgfeuvefgffelvefgieeujeeuueekiedtvedtleehuefgvedtgedtudeu
+    ieelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesughughhgrghnrdhush
+X-ME-Proxy: <xmx:VTR1XyJ4mh7zy86UjTGt_CqrHpcHJKKKIj9e_4v8obRH3y9_JbRFIw>
+    <xmx:VTR1X6Ee70_znYDeBNTWORRjIAJSeyKQsJpY6zwrfUayJx7F1Icm0Q>
+    <xmx:VTR1X-V0BPV_mecCj3JT_yFQGD_UJGTldcOjDLGGD5Fp9uZ5wIkL8A>
+    <xmx:VTR1X5F2b3QKSjvu2kr7np2YWffo8jUl-4o8ST1OKvrf2IUVq4MELw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 320643C0411; Wed, 30 Sep 2020 21:43:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
+Mime-Version: 1.0
+Message-Id: <28c71947-0cab-443f-b405-33cf3ab7ecaf@www.fastmail.com>
+In-Reply-To: <20200930094147.635556-2-vincent.huang@tw.synaptics.com>
+References: <20200930094147.635556-1-vincent.huang@tw.synaptics.com>
+ <20200930094147.635556-2-vincent.huang@tw.synaptics.com>
+Date:   Wed, 30 Sep 2020 18:43:06 -0700
+From:   "Andrew Duggan" <andrew@duggan.us>
+To:     "Vincent Huang" <vincent.huang@tw.synaptics.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Jiri Kosina" <jikos@kernel.org>,
+        "Andrew Duggan" <aduggan@synaptics.com>,
+        "Hans de Goede" <hdegoede@redhat.com>,
+        "Benjamin Tissoires" <btissoir@redhat.com>,
+        "Lyude Paul" <lyude@redhat.com>,
+        "Chris Heiny" <chris.heiny@synaptics.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_1/2]_Input:_synaptics-rmi4_-_rename_f30=5Fdata_t?=
+ =?UTF-8?Q?o_gpio=5Fdata?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-Add support for the Intel Platform Monitoring Technology crashlog
-interface. This interface provides a few sysfs values to allow for
-controlling the crashlog telemetry interface as well as a character driver
-to allow for mapping the crashlog memory region so that it can be accessed
-after a crashlog has been recorded.
 
-This driver is meant to only support the server version of the crashlog
-which is identified as crash_type 1 with a version of zero. Currently no
-other types are supported.
+On Wed, Sep 30, 2020, at 2:41 AM, Vincent Huang wrote:
+> f30_data in rmi_device_platform_data could be also referenced by RMI
+> function 3A, so rename it and the structure name to avoid confusion.
+> 
+> Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
 
-Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
----
- .../ABI/testing/sysfs-class-intel_pmt         |  65 ++++
- drivers/platform/x86/Kconfig                  |   8 +
- drivers/platform/x86/Makefile                 |   1 +
- drivers/platform/x86/intel_pmt_crashlog.c     | 339 ++++++++++++++++++
- 4 files changed, 413 insertions(+)
- create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+Reviewed-by: Andrew Duggan <aduggan@synaptics.com>
 
-diff --git a/Documentation/ABI/testing/sysfs-class-intel_pmt b/Documentation/ABI/testing/sysfs-class-intel_pmt
-index 926b5cf95fd1..67ca47123cbf 100644
---- a/Documentation/ABI/testing/sysfs-class-intel_pmt
-+++ b/Documentation/ABI/testing/sysfs-class-intel_pmt
-@@ -52,3 +52,68 @@ Contact:	David Box <david.e.box@linux.intel.com>
- Description:
- 		(RO) The offset of telemetry region in bytes that corresponds to
- 		the mapping for the telem file.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		The crashlog<x> directory contains files for configuring an
-+		instance of a PMT crashlog device that can perform crash data
-+		recoring. Each crashlog<x> device has an associated crashlog
-+		file. This file can be opened and mapped or read to access the
-+		resulting crashlog buffer. The register layout for the buffer
-+		can be determined from an XML file of specified guid for the
-+		parent device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/crashlog
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	David Box <david.e.box@linux.intel.com>
-+Description:
-+		(RO) The crashlog buffer for this crashlog device. This file
-+		may be mapped or read to obtain the data.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/guid
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The guid for this crashlog device. The guid identifies the
-+		version of the XML file for the parent device that should be
-+		used to determine the register layout.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/size
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The length of the result buffer in bytes that corresponds
-+		to the size for the crashlog buffer.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/offset
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The offset of the buffer in bytes that corresponds
-+		to the mapping for the crashlog device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/enable
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RW) Boolean value controlling if the crashlog functionality
-+		is enabled for the crashlog device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/trigger
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RW) Boolean value controlling the triggering of the crashlog
-+		device node. When read it provides data on if the crashlog has
-+		been triggered. When written to it can be used to either clear
-+		the current trigger by writing false, or to trigger a new
-+		event if the trigger is not currently set.
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 8eae17a57a5b..529c5ee2eabf 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1377,6 +1377,14 @@ config INTEL_PMT_TELEMETRY
- 	  access to hardware telemetry metrics on devices that support the
- 	  feature.
- 
-+config INTEL_PMT_CRASHLOG
-+	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
-+	select INTEL_PMT_CLASS
-+	help
-+	  The Intel Platform Monitoring Technology (PMT) crashlog driver provides
-+	  access to hardware crashlog capabilities on devices that support the
-+	  feature.
-+
- config INTEL_PUNIT_IPC
- 	tristate "Intel P-Unit IPC Driver"
- 	help
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 6a7b61f59ea8..ca82c1344977 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -142,6 +142,7 @@ obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
- obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
- obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
- obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
-+obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
- obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
- obj-$(CONFIG_INTEL_SCU_IPC)		+= intel_scu_ipc.o
- obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
-diff --git a/drivers/platform/x86/intel_pmt_crashlog.c b/drivers/platform/x86/intel_pmt_crashlog.c
-new file mode 100644
-index 000000000000..9c77be39ac16
---- /dev/null
-+++ b/drivers/platform/x86/intel_pmt_crashlog.c
-@@ -0,0 +1,339 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel Platform Monitoring Technology Crashlog driver
-+ *
-+ * Copyright (c) 2020, Intel Corporation.
-+ * All Rights Reserved.
-+ *
-+ * Author: "Alexander Duyck" <alexander.h.duyck@linux.intel.com>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+
-+#include "intel_pmt_class.h"
-+
-+#define DRV_NAME		"pmt_crashlog"
-+
-+/* Crashlog discovery header types */
-+#define CRASH_TYPE_OOBMSM	1
-+
-+/* Control Flags */
-+#define CRASHLOG_FLAG_DISABLE	BIT(27)
-+#define CRASHLOG_FLAG_CLEAR	BIT(28)
-+#define CRASHLOG_FLAG_EXECUTE	BIT(29)
-+#define CRASHLOG_FLAG_COMPLETE	BIT(31)
-+#define CRASHLOG_FLAG_MASK	GENMASK(31, 28)
-+
-+/* Crashlog Discovery Header */
-+#define CONTROL_OFFSET		0x0
-+#define GUID_OFFSET		0x4
-+#define BASE_OFFSET		0x8
-+#define SIZE_OFFSET		0xC
-+#define GET_ACCESS(v)		((v) & GENMASK(3, 0))
-+#define GET_TYPE(v)		(((v) & GENMASK(7, 4)) >> 4)
-+#define GET_VERSION(v)		(((v) & GENMASK(19, 16)) >> 16)
-+/* size is in bytes */
-+#define GET_SIZE(v)		((v) * sizeof(u32))
-+
-+struct crashlog_entry {
-+	/* entry must be first member of struct */
-+	struct intel_pmt_entry		entry;
-+	struct mutex			control_mutex;
-+};
-+
-+struct pmt_crashlog_priv {
-+	int			num_entries;
-+	struct crashlog_entry	entry[];
-+};
-+
-+/*
-+ * I/O
-+ */
-+static bool pmt_crashlog_complete(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* return current value of the crashlog complete flag */
-+	return !!(control & CRASHLOG_FLAG_COMPLETE);
-+}
-+
-+static bool pmt_crashlog_disabled(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* return current value of the crashlog disabled flag */
-+	return !!(control & CRASHLOG_FLAG_DISABLE);
-+}
-+
-+static bool pmt_crashlog_supported(struct intel_pmt_entry *entry)
-+{
-+	u32 discovery_header = readl(entry->disc_table + CONTROL_OFFSET);
-+	u32 crash_type, version;
-+
-+	crash_type = GET_TYPE(discovery_header);
-+	version = GET_VERSION(discovery_header);
-+
-+	/*
-+	 * Currenty we only recognize OOBMSM version 0 devices.
-+	 * We can ignore all other crashlog devices in the system.
-+	 */
-+	return crash_type == CRASH_TYPE_OOBMSM && version == 0;
-+}
-+
-+static void pmt_crashlog_set_disable(struct intel_pmt_entry *entry,
-+				     bool disable)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* clear control bits */
-+	control &= ~(CRASHLOG_FLAG_MASK | CRASHLOG_FLAG_DISABLE);
-+	if (disable)
-+		control |= CRASHLOG_FLAG_DISABLE;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+static void pmt_crashlog_set_clear(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* clear control bits */
-+	control &= ~CRASHLOG_FLAG_MASK;
-+	control |= CRASHLOG_FLAG_CLEAR;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+static void pmt_crashlog_set_execute(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* clear control bits */
-+	control &= ~CRASHLOG_FLAG_MASK;
-+	control |= CRASHLOG_FLAG_EXECUTE;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+/*
-+ * sysfs
-+ */
-+static ssize_t
-+enable_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct intel_pmt_entry *entry;
-+	int enabled;
-+
-+	entry = dev_get_drvdata(dev);
-+	enabled = !pmt_crashlog_disabled(entry);
-+
-+	return sprintf(buf, "%d\n", enabled);
-+}
-+
-+static ssize_t
-+enable_store(struct device *dev, struct device_attribute *attr,
-+	    const char *buf, size_t count)
-+{
-+	struct crashlog_entry *entry;
-+	bool enabled;
-+	int result;
-+
-+	entry = dev_get_drvdata(dev);
-+
-+	result = kstrtobool(buf, &enabled);
-+	if (result)
-+		return result;
-+
-+	mutex_lock(&entry->control_mutex);
-+	pmt_crashlog_set_disable(&entry->entry, !enabled);
-+	mutex_unlock(&entry->control_mutex);
-+
-+	return strnlen(buf, count);
-+}
-+static DEVICE_ATTR_RW(enable);
-+
-+static ssize_t
-+trigger_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct intel_pmt_entry *entry;
-+	int trigger;
-+
-+	entry = dev_get_drvdata(dev);
-+	trigger = pmt_crashlog_complete(entry);
-+
-+	return sprintf(buf, "%d\n", trigger);
-+}
-+
-+static ssize_t
-+trigger_store(struct device *dev, struct device_attribute *attr,
-+	    const char *buf, size_t count)
-+{
-+	struct crashlog_entry *entry;
-+	bool trigger;
-+	int result;
-+
-+	entry = dev_get_drvdata(dev);
-+
-+	result = kstrtobool(buf, &trigger);
-+	if (result)
-+		return result;
-+
-+	mutex_lock(&entry->control_mutex);
-+
-+	if (!trigger) {
-+		pmt_crashlog_set_clear(&entry->entry);
-+	} else if (pmt_crashlog_complete(&entry->entry)) {
-+		/* we cannot trigger a new crash if one is still pending */
-+		result = -EEXIST;
-+		goto err;
-+	} else if (pmt_crashlog_disabled(&entry->entry)) {
-+		/* if device is currently disabled, return busy */
-+		result = -EBUSY;
-+		goto err;
-+	} else {
-+		pmt_crashlog_set_execute(&entry->entry);
-+	}
-+
-+	result = strnlen(buf, count);
-+err:
-+	mutex_unlock(&entry->control_mutex);
-+	return result;
-+}
-+static DEVICE_ATTR_RW(trigger);
-+
-+static struct attribute *pmt_crashlog_attrs[] = {
-+	&dev_attr_enable.attr,
-+	&dev_attr_trigger.attr,
-+	NULL
-+};
-+
-+static struct attribute_group pmt_crashlog_group = {
-+	.attrs	= pmt_crashlog_attrs,
-+};
-+
-+static DEFINE_XARRAY_ALLOC(crashlog_array);
-+static struct intel_pmt_namespace pmt_crashlog_ns = {
-+	.name = "crashlog",
-+	.xa = &crashlog_array,
-+	.attr_grp = &pmt_crashlog_group
-+};
-+
-+/*
-+ * initialization
-+ */
-+static int pmt_crashlog_add_entry(struct intel_pmt_entry *entry,
-+				  struct device *parent,
-+				  struct resource *disc_res)
-+{
-+	void __iomem *disc_table = entry->disc_table;
-+	struct intel_pmt_header header;
-+	int ret;
-+
-+	header.access_type = GET_ACCESS(readl(disc_table));
-+	header.guid = readl(disc_table + GUID_OFFSET);
-+	header.base_offset = readl(disc_table + BASE_OFFSET);
-+
-+	/* Size is measured in DWORDS, but accessor returns bytes */
-+	header.size = GET_SIZE(readl(disc_table + SIZE_OFFSET));
-+
-+	ret = intel_pmt_populate_entry(entry, &header, parent, disc_res);
-+	if (ret)
-+		return ret;
-+
-+	ret = intel_pmt_dev_create(entry, &pmt_crashlog_ns, parent);
-+	if (!ret)
-+		return 0;
-+
-+	dev_err(parent, "Failed to add crashlog controls\n");
-+	intel_pmt_dev_destroy(entry, &pmt_crashlog_ns);
-+
-+	return ret;
-+}
-+
-+static int pmt_crashlog_remove(struct platform_device *pdev)
-+{
-+	struct pmt_crashlog_priv *priv = platform_get_drvdata(pdev);
-+	int i;
-+
-+	for (i = 0; i < priv->num_entries; i++)
-+		intel_pmt_dev_destroy(&priv->entry[i].entry, &pmt_crashlog_ns);
-+
-+	return 0;
-+}
-+
-+static int pmt_crashlog_probe(struct platform_device *pdev)
-+{
-+	struct pmt_crashlog_priv *priv;
-+	size_t size;
-+	int i, ret;
-+
-+	size = offsetof(struct pmt_crashlog_priv, entry[pdev->num_resources]);
-+	priv = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	for (i = 0; i < pdev->num_resources; i++) {
-+		struct intel_pmt_entry *entry = &priv->entry[i].entry;
-+		struct resource	*disc_res;
-+
-+		ret = -ENODEV;
-+
-+		/* initialize control mutex */
-+		mutex_init(&priv->entry[i].control_mutex);
-+
-+		disc_res = platform_get_resource(pdev, IORESOURCE_MEM, i);
-+		if (!disc_res)
-+			goto abort_probe;
-+
-+		ret = intel_pmt_ioremap_discovery_table(entry, pdev, i);
-+		if (ret)
-+			goto abort_probe;
-+
-+		if (!pmt_crashlog_supported(entry))
-+			continue;
-+
-+		ret = pmt_crashlog_add_entry(entry, &pdev->dev, disc_res);
-+		if (ret)
-+			goto abort_probe;
-+
-+		priv->num_entries++;
-+	}
-+
-+	return 0;
-+abort_probe:
-+	pmt_crashlog_remove(pdev);
-+	return ret;
-+}
-+
-+static struct platform_driver pmt_crashlog_driver = {
-+	.driver = {
-+		.name   = DRV_NAME,
-+	},
-+	.remove = pmt_crashlog_remove,
-+	.probe  = pmt_crashlog_probe,
-+};
-+
-+static int __init pmt_crashlog_init(void)
-+{
-+	return platform_driver_register(&pmt_crashlog_driver);
-+}
-+
-+static void __exit pmt_crashlog_exit(void)
-+{
-+	platform_driver_unregister(&pmt_crashlog_driver);
-+	xa_destroy(&crashlog_array);
-+}
-+
-+module_init(pmt_crashlog_init);
-+module_exit(pmt_crashlog_exit);
-+
-+MODULE_AUTHOR("Alexander Duyck <alexander.h.duyck@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel PMT Crashlog driver");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_LICENSE("GPL v2");
--- 
-2.20.1
-
+> ---
+>  drivers/hid/hid-rmi.c           |  2 +-
+>  drivers/input/mouse/synaptics.c |  2 +-
+>  drivers/input/rmi4/rmi_f30.c    | 14 +++++++-------
+>  include/linux/rmi.h             | 11 ++++++-----
+>  4 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-rmi.c b/drivers/hid/hid-rmi.c
+> index 9ce22acdfaca..62315e31d520 100644
+> --- a/drivers/hid/hid-rmi.c
+> +++ b/drivers/hid/hid-rmi.c
+> @@ -722,7 +722,7 @@ static int rmi_probe(struct hid_device *hdev, const 
+> struct hid_device_id *id)
+>  	}
+>  
+>  	if (data->device_flags & RMI_DEVICE_HAS_PHYS_BUTTONS)
+> -		rmi_hid_pdata.f30_data.disable = true;
+> +		rmi_hid_pdata.gpio_data.disable = true;
+>  
+>  	data->xport.dev = hdev->dev.parent;
+>  	data->xport.pdata = rmi_hid_pdata;
+> diff --git a/drivers/input/mouse/synaptics.c 
+> b/drivers/input/mouse/synaptics.c
+> index 4b81b2d0fe06..8a54efd6eb95 100644
+> --- a/drivers/input/mouse/synaptics.c
+> +++ b/drivers/input/mouse/synaptics.c
+> @@ -1752,7 +1752,7 @@ static int synaptics_create_intertouch(struct 
+> psmouse *psmouse,
+>  			.kernel_tracking = false,
+>  			.topbuttonpad = topbuttonpad,
+>  		},
+> -		.f30_data = {
+> +		.gpio_data = {
+>  			.buttonpad = SYN_CAP_CLICKPAD(info->ext_cap_0c),
+>  			.trackstick_buttons =
+>  				!!SYN_CAP_EXT_BUTTONS_STICK(info->ext_cap_10),
+> diff --git a/drivers/input/rmi4/rmi_f30.c b/drivers/input/rmi4/rmi_f30.c
+> index a90dad1d9ac7..35045f161dc2 100644
+> --- a/drivers/input/rmi4/rmi_f30.c
+> +++ b/drivers/input/rmi4/rmi_f30.c
+> @@ -168,17 +168,17 @@ static int rmi_f30_config(struct rmi_function *fn)
+>  				rmi_get_platform_data(fn->rmi_dev);
+>  	int error;
+>  
+> -	/* can happen if f30_data.disable is set */
+> +	/* can happen if gpio_data.disable is set */
+>  	if (!f30)
+>  		return 0;
+>  
+> -	if (pdata->f30_data.trackstick_buttons) {
+> +	if (pdata->gpio_data.trackstick_buttons) {
+>  		/* Try [re-]establish link to F03. */
+>  		f30->f03 = rmi_find_function(fn->rmi_dev, 0x03);
+>  		f30->trackstick_buttons = f30->f03 != NULL;
+>  	}
+>  
+> -	if (pdata->f30_data.disable) {
+> +	if (pdata->gpio_data.disable) {
+>  		drv->clear_irq_bits(fn->rmi_dev, fn->irq_mask);
+>  	} else {
+>  		/* Write Control Register values back to device */
+> @@ -245,10 +245,10 @@ static int rmi_f30_map_gpios(struct rmi_function *fn,
+>  		if (!rmi_f30_is_valid_button(i, f30->ctrl))
+>  			continue;
+>  
+> -		if (pdata->f30_data.trackstick_buttons &&
+> +		if (pdata->gpio_data.trackstick_buttons &&
+>  		    i >= TRACKSTICK_RANGE_START && i < TRACKSTICK_RANGE_END) {
+>  			f30->gpioled_key_map[i] = trackstick_button++;
+> -		} else if (!pdata->f30_data.buttonpad || !button_mapped) {
+> +		} else if (!pdata->gpio_data.buttonpad || !button_mapped) {
+>  			f30->gpioled_key_map[i] = button;
+>  			input_set_capability(input, EV_KEY, button++);
+>  			button_mapped = true;
+> @@ -264,7 +264,7 @@ static int rmi_f30_map_gpios(struct rmi_function *fn,
+>  	 * but I am not sure, so use only the pdata info and the number of
+>  	 * mapped buttons.
+>  	 */
+> -	if (pdata->f30_data.buttonpad || (button - BTN_LEFT == 1))
+> +	if (pdata->gpio_data.buttonpad || (button - BTN_LEFT == 1))
+>  		__set_bit(INPUT_PROP_BUTTONPAD, input->propbit);
+>  
+>  	return 0;
+> @@ -372,7 +372,7 @@ static int rmi_f30_probe(struct rmi_function *fn)
+>  	struct f30_data *f30;
+>  	int error;
+>  
+> -	if (pdata->f30_data.disable)
+> +	if (pdata->gpio_data.disable)
+>  		return 0;
+>  
+>  	if (!drv_data->input) {
+> diff --git a/include/linux/rmi.h b/include/linux/rmi.h
+> index 7b22366d0065..00dda5381bf8 100644
+> --- a/include/linux/rmi.h
+> +++ b/include/linux/rmi.h
+> @@ -102,15 +102,16 @@ struct rmi_2d_sensor_platform_data {
+>  };
+>  
+>  /**
+> - * struct rmi_f30_data - overrides defaults for a single F30 GPIOs/LED 
+> chip.
+> + * struct rmi_gpio_data - overrides defaults for a single F30/F3A 
+> GPIOs/LED
+> + * chip.
+>   * @buttonpad - the touchpad is a buttonpad, so enable only the first 
+> actual
+>   * button that is found.
+> - * @trackstick_buttons - Set when the function 30 is handling the 
+> physical
+> + * @trackstick_buttons - Set when the function 30 or 3a is handling 
+> the physical
+>   * buttons of the trackstick (as a PS/2 passthrough device).
+> - * @disable - the touchpad incorrectly reports F30 and it should be 
+> ignored.
+> + * @disable - the touchpad incorrectly reports F30/F3A and it should 
+> be ignored.
+>   * This is a special case which is due to misconfigured firmware.
+>   */
+> -struct rmi_f30_data {
+> +struct rmi_gpio_data {
+>  	bool buttonpad;
+>  	bool trackstick_buttons;
+>  	bool disable;
+> @@ -218,7 +219,7 @@ struct rmi_device_platform_data {
+>  	/* function handler pdata */
+>  	struct rmi_2d_sensor_platform_data sensor_pdata;
+>  	struct rmi_f01_power_management power_management;
+> -	struct rmi_f30_data f30_data;
+> +	struct rmi_gpio_data gpio_data;
+>  };
+>  
+>  /**
+> -- 
+> 2.25.1
+> 
+>
