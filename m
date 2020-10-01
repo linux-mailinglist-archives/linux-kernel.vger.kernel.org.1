@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC75D27FC51
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7054527FC57
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731886AbgJAJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:13:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34530 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731663AbgJAJNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:13:02 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601543580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tYBTMaQHVuVYsYUY0Zvr7F9tikwzDOAPYv+gCxumIkQ=;
-        b=O/0fuph25Ea2RKXzd2OjiZOVQ1tE80qGWulsJ4UkxzyqgqqaBH4WyWqTms364VyGowCon5
-        xLd+eICWgQSXDzM6fanCgUyfqR1bb/AMufqNYIdG8ecO3PB3JYYzav/8Gto0SN5Um9kBtH
-        U/Afkzj6lgha1T4KmdY/0xNYYTku3Q8HhbSiFndUErxCEwnSutznbFbO6V3hVpl2l/zJkx
-        4RkA3GMs/S3vmv/U/fc/TCKQk82tFPXBMpghPzhdo+KdDVsnLjeA0MEqJOCa0/zK5toWTU
-        vo9Ud+bdAehLcvOqZbK2lAS9wQ+jWWb5POVrQK8/6YoWF7mXcr0HZl+to3UecA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601543580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tYBTMaQHVuVYsYUY0Zvr7F9tikwzDOAPYv+gCxumIkQ=;
-        b=LFcyRUxzhcWIgf1CEvwD9FOglI/VZj8UR07zAQeKJRi7uUqtsTyZnTN6kez8t1Y/tX6hGr
-        VpnVTEebncTpbXCw==
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: mb2q experience and couple issues
-In-Reply-To: <CAADnVQLV86GcC5fE68Eiv0aM9g7o3a5ZDh0kmXv7Tba4x-jRbg@mail.gmail.com>
-References: <CAADnVQLV86GcC5fE68Eiv0aM9g7o3a5ZDh0kmXv7Tba4x-jRbg@mail.gmail.com>
-Date:   Thu, 01 Oct 2020 11:13:00 +0200
-Message-ID: <87sgayfgwz.fsf@nanos.tec.linutronix.de>
+        id S1731464AbgJAJRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725894AbgJAJRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:17:04 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE0292087D;
+        Thu,  1 Oct 2020 09:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601543824;
+        bh=6tCffKGBRQz3g32yfl6DkyDrZEG2XbapbE2KKFd9bFs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AN5SSI5U9O+gMSlLWJ7RJOfXa6uj3epvq3cELm3AS4w2TgnFg/ARJ99641p7wyjax
+         /Vd1pJplNN2ZBYVbriQEJSC8YfpkG2CBaGDgmIngJsh0Ag3sfPb7VoR1NK/lBocqpU
+         yjNKsTwUq4SwbS0IzKrXv0GFCXToU7BCaJFXEdYE=
+Received: by mail-ej1-f54.google.com with SMTP id i26so6925998ejb.12;
+        Thu, 01 Oct 2020 02:17:03 -0700 (PDT)
+X-Gm-Message-State: AOAM532hCmnhb101TA0jGuVTQoLwBtmlg5LhmBWhmF7Bcq0UbFWc9uYE
+        LR4pZV2Pd77fsatHlMQnRKoWT2qDnDfA5ZNgPZ0=
+X-Google-Smtp-Source: ABdhPJx7RqEWMyME2IKnFfBCTPbZGoQbdgNCC9RgXX5fvV3JQrHTkEvY3um+08QeqrdUI5ekmiwWk7hCt1fKWvSIx/Y=
+X-Received: by 2002:a17:906:82d1:: with SMTP id a17mr6907875ejy.385.1601543822483;
+ Thu, 01 Oct 2020 02:17:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CGME20201001083615eucas1p2886f47d032844823b419a92fa02994ad@eucas1p2.samsung.com>
+ <20201001072236.GA4815@kozik-lap> <dleftjr1qigx6p.fsf%l.stelmach@samsung.com>
+In-Reply-To: <dleftjr1qigx6p.fsf%l.stelmach@samsung.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 1 Oct 2020 11:16:48 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfghaFLruCJwkgoG0j_G6+EVZTPKY2MNsQ33CkxD2naxg@mail.gmail.com>
+Message-ID: <CAJKOXPfghaFLruCJwkgoG0j_G6+EVZTPKY2MNsQ33CkxD2naxg@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: exynos: Add a placeholder for a MAC address
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexei,
-
-On Wed, Sep 30 2020 at 11:12, Alexei Starovoitov wrote:
-> For the last couple years we've been using mb2q tool to normalize patches
-> and it worked wonderfully.
-
-Fun. I thought I'm the only user of it :)
-
-> Recently we've hit few bugs:
-> curl -s https://patchwork.kernel.org/patch/11807443/mbox/ >
-> /tmp/mbox.i; ~/bin/mb2q --mboxout mbox.o /tmp/mbox.i
-> Drop Message w/o Message-ID: No subject
-> No patches found in mbox
+On Thu, 1 Oct 2020 at 10:36, Lukasz Stelmach <l.stelmach@samsung.com> wrote=
+:
 >
-> I've tried to debug it, but couldn't figure out what's going on.
-> The subject and message-id fields are parsed correctly,
-> but later something happens.
-> Could you please take a look?
-
-The problem is the mbox storage format. The mbox created by curl has a
-mail body which has a line starting with 'From' in the mail body:
-
-  From the VAR btf_id, the verifier can also read the address of the
-  ksym's corresponding kernel var from kallsyms and use that to fill
-  dst_reg.
-
-The mailbox parser trips over that From and takes it as start of the
-next message.
-
-     http://qmail.org/qmail-manual-html/man5/mbox.html
-
-Usually mailbox storage escapes a From at the start of a
-newline with '>':
-
-  >From the VAR btf_id, the verifier can also read the address of the
-  ksym's corresponding kernel var from kallsyms and use that to fill
-  dst_reg.
-
-Yes, it's ugly and I haven't figured out a proper way to deal with
-that. There are quite some mbox formats out there and they all are
-incompatible with each other and all of them have different horrors.
-
-Let me think about it.
-
-> Another issue we've hit was that some mailers split message-id
-> into few lines like this:
-> curl -s https://patchwork.kernel.org/patch/11809399/mbox/|grep -2 Message-Id:
-> Subject: [PATCH bpf-next v4 1/6] bpf: add classid helper only based on skb->sk
-> Date: Wed, 30 Sep 2020 17:18:15 +0200
-> Message-Id:
->  <ed633cf27a1c620e901c5aa99ebdefb028dce600.1601477936.git.daniel@iogearbox.net>
-> X-Mailer: git-send-email 2.21.0
+> It was <2020-10-01 czw 09:22>, when Krzysztof Kozlowski wrote:
+> > On Wed, Sep 30, 2020 at 04:31:51PM +0200, =C5=81ukasz Stelmach wrote:
+> >> Add a placeholder for a MAC address. A bootloader may fill it
+> >> to set the MAC address and override EEPROM settings.
+> >>
+> >> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> >> ---
+> >>  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+> >>  1 file changed, 18 insertions(+)
+> >>
+> >> diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3.dts b/arch/arm/boo=
+t/dts/exynos5422-odroidxu3.dts
+> >> index db0bc17a667b..9f7f3eacb750 100644
+> >> --- a/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> >> +++ b/arch/arm/boot/dts/exynos5422-odroidxu3.dts
+> >> @@ -70,3 +70,21 @@ &pwm {
+> >>  &usbdrd_dwc3_1 {
+> >>      dr_mode =3D "peripheral";
+> >>  };
+> >> +
+> >> +&usbhost2 {
+> >> +    #address-cells =3D <1>;
+> >> +    #size-cells =3D <0>;
+> >> +
+> >> +    hub@1 {
+> >> +            compatible =3D "usb8087,0024";
+> >> +            reg =3D <1>;
+> >> +            #address-cells =3D <1>;
+> >> +            #size-cells =3D <0>;
+> >> +
+> >> +            ethernet: usbether@1 {
+> >> +                    compatible =3D "usb0c45,6310";
+> >> +                    reg =3D <1>;
+> >> +                    mac-address =3D [00 00 00 00 00 00]; /* Filled in=
+ by a bootloader */
+> >
+> > Why do you need a placeholder? U-Boot can just append the
+> > address/property.
 >
-> That was an easy fix:
-> - mid = pmsg.msgid.lstrip('<').rstrip('>')
-> + mid = pmsg.msgid.lstrip('\n').lstrip(' ').lstrip('<').rstrip('>')
+> Several other dts files have such placeholder
 >
-> The tglx/quilttools.git doesn't have this fix, so I'm guessing you
-> haven't seen it yet.
+> git grep 'mac-addr.*\[00 00 00 00 00 00\]' arch/arm/boot/dts/ | wc -l
+> 26
 
-Indeed, but it just should be:
+Yeah, but if this is cargo cult, then it is not a good reason. First of all=
+,
+git grep '[^-]mac-addr.*\[.*00 00 00 00 00 00.*\]' arch/arm/boot/dts/
+gives just seven boards. Not a big number to make a standard. :)
 
- + mid = pmsg.msgid.strip().lstrip('<').rstrip('>')
+The meaning of mac-address, I think, is not a placeholder, but:
+"should be used in cases where the MAC address assigned to the device
+by the boot program is different from the local-mac-address property."
 
-Thanks,
+I think you actually wanted a local-mac-address and the majority of
+DTSes use it. Not mac-address.
 
-        tglx
+>
+> I can see two scenarios where this patch may be helpful. Another
+> (simple) boot loading code might be used.
+
+OK, good point. However other bootloader still has to adhere to the DT
+specification and the bindings.
+
+> The value may also be
+> customized during build time and used without any support of a
+> bootloader.
+
+Yes, with an overlay. You do not need a placeholder for this and
+actually having a placeholder instead of using overlays is the wrong
+approach for customization of boots/builds.
+
+> Finding and filling a placeholder would be easier in u-boot too.
+
+U-Boot already has the code for updating mac-address or
+local-mac-address so how is it easier for him? You mean that it cannot
+find an ethernet node here?
+
+> And it serves as a reference how to configure a USB device in a dts
+
+Great places for references are examples in bindings.
+
+Best regards,
+Krzysztof
