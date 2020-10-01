@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30DA28096D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A4B28097E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgJAVcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:32:17 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33219 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgJAVcQ (ORCPT
+        id S1727794AbgJAVkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgJAVkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:32:16 -0400
-Received: by mail-io1-f71.google.com with SMTP id m10so34902ioq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:32:16 -0700 (PDT)
+        Thu, 1 Oct 2020 17:40:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E3AC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:40:00 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so78616pjd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ip4I9Zi92cmMy48EZDjEqPXg+PzOqP4wFP+0NOc0leE=;
+        b=WTnFo6h7qTDLtJzYjwKVAtNU/occKNeoida7yMLlmzoxLe2fzaVVWqANDfs1zj7PTO
+         l60FsvpvT6bTSvVsvd55fbacf4g+a/Rwpi1mLXQW40gO6w1Vl5ySDrXRBQC5+mAbKquH
+         2SKHIZocesnNABZLexOctr5c/hPDP6/0m1Fj0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ZmmhCPSV2yuVdiNMfX2E/gWsiasW2ZIKGSc1ceHT8IA=;
-        b=MYUvclhcJ+C21orvKPkjd2MJ21iGXMIt7mldkTt0N7/VK5ebgVUrO9Eb3hQ31hdW0d
-         tMSYDpPDqarr/enfTd9/fT670NyEzKMfYcgmL7dCR/UIXS9eQRHj9mPTWg9MbHp6B0yx
-         zDQRBRodnx9qRqht4vBouzKaWR/D9QazErCn2iJ+EUAQcmh0b08P/Ufm+Zfuex1jy8rw
-         y5RpAs+l0SszRKEk/Mn5oqN8vyOzNt5ZAQWGXFa9DsPP2sMHMFqF5ssP2lHmjol2a/6L
-         /+EofuF0lzyPhCSNEEtAe3X+2gj5hqcEai4HWlA9DdlZeTucbyb2fDvm17vtvUPZlSKK
-         xK8A==
-X-Gm-Message-State: AOAM532H8vLTcw3isDTLiWavBFnSeio3alGJmKmi65pEClKhbVSwGmPi
-        vXTs5M+foHqPdcvijmzkKWm2MzC+a6jSgVa9yhqtswMPli5q
-X-Google-Smtp-Source: ABdhPJy/AYl890p55pbZI0m5U9ns3Irtm4NtzihUovqDGpGYM6HicnCoHbnVTOXfYcZeSyBjsb8Mik29hIVzL6YD8wv+svCNCsNJ
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ip4I9Zi92cmMy48EZDjEqPXg+PzOqP4wFP+0NOc0leE=;
+        b=ugKzLETg52BM7GgACHxjNJmwEacjjGWG1EPrf3q/QsB3pl5wzVabNu1jFTi0bFfyvm
+         yr8rBtoCEpNGmBfKivwAb7m0bXTjbXRWm/0cvrL/qPCUXF3bBnuegNPi+a/n2zwiIDZX
+         F4WL3w8aWLUGv4T+S8E2aIujR1PNOtMAh9f9QP+KPQbs7HQkz7hQRi6Jr2r/9T6Iftnh
+         yTbJUBbhV4UDDfUFq5nuZpgGA5EyDa4CfLX1BzZ7IDknonDTqIKz77P4Cnj+ERUat06C
+         f1GAi93+Qa7oY140/3HBiBdtig0+AoBDnlY0KcDBFII6s3LN1v5hRES7NkRw0eb6/DfD
+         T0KA==
+X-Gm-Message-State: AOAM533Te1DyJMVd1K92rMY+eRLBJdu77ctyVk3E+krBBxzI3uCU9lME
+        j/r04M4wwKFBe2RcwJw8qpgu/g==
+X-Google-Smtp-Source: ABdhPJwsFXq6zSWxUWlEvb8LGWzKnUYFfTMmDFpm+t6KJ1yD7cy92p01ZXNxTyikGyl26sHg5FwE/Q==
+X-Received: by 2002:a17:90b:891:: with SMTP id bj17mr1876241pjb.11.1601588399703;
+        Thu, 01 Oct 2020 14:39:59 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id k7sm788262pjs.9.2020.10.01.14.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 14:39:58 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 14:39:57 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201001213957.GA2362632@google.com>
+References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200929201701.GA1080459@bogus>
+ <20200929220912.GF1621304@google.com>
+ <20200930013229.GB194665@rowland.harvard.edu>
+ <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAD=FV=WhowcppEhmd=QG7YFk5iSVaCKsfGJkGBQJTwMs=bwekA@mail.gmail.com>
+ <CAL_Jsq+mzUV53U1h6YixT=d+Q6oouNNNeFGHvpauMh054x-3Jg@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:849a:: with SMTP id y26mr502397ilk.38.1601587935781;
- Thu, 01 Oct 2020 14:32:15 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 14:32:15 -0700
-In-Reply-To: <0000000000007b357405b099798f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd29d205b0a2bf28@google.com>
-Subject: Re: WARNING in cfg80211_connect
-From:   syzbot <syzbot+5f9392825de654244975@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+mzUV53U1h6YixT=d+Q6oouNNNeFGHvpauMh054x-3Jg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Sep 30, 2020 at 02:19:32PM -0500, Rob Herring wrote:
+> On Wed, Sep 30, 2020 at 1:00 PM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > > On Wed, Sep 30, 2020 at 7:44 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > We already have hubs in DT. See [1][2][3][4]. What's new here?
+> >
+> > After I sent my response I kept thinking about this and I realized
+> > that I have prior art I can point out too!  :-)  Check out
+> > "smsc,usb3503a".  That is describing a USB hub too and, at least on
+> > "exynos5250-spring.dts" is is a top level node.  Since "smsc,usb3503a"
+> > can be optionally connected to an i2c bus too, it could be listed
+> > under an i2c controller as well (I believe it wasn't hooked up to i2c
+> > on spring).
+> >
+> > Interestingly enough, the USB Hub that Matthias is trying to add
+> > support for can _also_ be hooked up to i2c.  We don't actually have
+> > i2c hooked up on our board, but conceivably it could be.  Presumably,
+> > if i2c was hooked up, we would have no other choice but to represent
+> > this chip as several device tree nodes: at least one under the i2c
+> > controller and one (or two) under the USB controller.  Just because
+> > (on this board) i2c isn't hooked up doesn't change the fact that there
+> > is some extra control logic that could be represented in its own
+> > device tree node.  To me, this seems to give extra evidence that the
+> > correct way to model this device in device tree is with several nodes.
+> >
+> > I'll point out that on "exynos5250-spring.dts" we didn't have to solve
+> > the problem that Matthias is trying to solve here because we never
+> > actually supported waking up from USB devices there.  Thus the
+> > regulator for the hub on spring can be unconditionally powered off in
+> > suspend.  On newer boards we'd like to support waking up from USB
+> > devices but also to save power if no wakeup devices are plugged into
+> > USB.  In order to achieve this we need some type of link from the
+> > top-level hub device to the actual USB devices that were enumerated.
+> 
+> Yes, in a prior version I mentioned we already had 2 ways to describe
+> hubs. I view this as a 3rd way.
 
-HEAD commit:    87d5034d Merge tag 'mlx5-updates-2020-09-30' of git://git...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=121d2313900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7b5cc8ec2218e99d
-dashboard link: https://syzkaller.appspot.com/bug?extid=5f9392825de654244975
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1100d333900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1414c997900000
+The description of the onboard hub driver is essentially the same as
+that for the 'smsc,usb3503a'. Ths driver doesn't require the USB device
+nodes, but they could as well exist, they are only omitted most of the
+time because USB does discovery, some DT files include these implicit
+nodes though.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
+It would be possible to rewrite the onboard_usb_hub driver in a way that
+it wouldn't require phandles of the 'usb_hub' (or whatever) node, and
+instead provide the 'usb_hub' with phandles of the USB devices. The
+hub would be specified exactly once:
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6914 at net/wireless/sme.c:533 cfg80211_sme_connect net/wireless/sme.c:533 [inline]
-WARNING: CPU: 0 PID: 6914 at net/wireless/sme.c:533 cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 6914 Comm: syz-executor935 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:cfg80211_sme_connect net/wireless/sme.c:533 [inline]
-RIP: 0010:cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
-Code: 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 80 3c 02 00 0f 85 a2 0a 00 00 49 83 bd 48 01 00 00 00 0f 84 b6 f7 ff ff e8 7e 1e b5 f9 <0f> 0b e8 77 1e b5 f9 48 8b 54 24 18 48 b8 00 00 00 00 00 fc ff df
-RSP: 0018:ffffc90005667360 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888093bdc380 RSI: ffffffff87c166d2 RDI: ffffffff896172c0
-RBP: ffff888088cf8d30 R08: 0000000000000001 R09: ffff888088cf8d35
-R10: ffffed101119f1a6 R11: 0000000000000000 R12: ffffc90005667500
-R13: ffff888088cf8c10 R14: ffff888088cf8d58 R15: ffffffff89617180
- nl80211_connect+0x1646/0x2220 net/wireless/nl80211.c:10615
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x442139
-Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff18327468 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000442139
-RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000002000000000 R09: 0000002000000000
-R10: 0000002000000000 R11: 0000000000000246 R12: 000000000000f7cb
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+{
+	usb_hub: usb-hub {
+		compatible = "realtek,rts5411", "onboard-usb-hub";
+		usbdevs = <&usb_1_udev1>, <&usb_1_udev2>;
+		vdd-supply = <&pp3300_hub>;
+        };
 
+	&usb_1_dwc3 {
+		usb_1_udev1: usb@1 {
+        		reg = <1>;
+		};
+
+		usb_1_udev2: usb@2 {
+			reg = <2>;
+	        };
+	};
+}
+
+The only difference with the 'smsc,usb3503a' would be that the nodes of
+the (existing!) USB devices would be specified (without any custom
+properties).
+
+I'm not convinced that 'pre-probes' can solve the entire problem on the
+driver side and keep thinking that there needs to be a single non-USB
+instance that controls the power state, particularly for the
+suspend/resume case. I will provide some more details in another reply
+to this thread.
