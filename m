@@ -2,161 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C0927F7BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1347D27F7C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728270AbgJACLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgJACLe (ORCPT
+        id S1730736AbgJACMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:12:02 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:56857 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730233AbgJACL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:11:34 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE52FC061755;
-        Wed, 30 Sep 2020 19:11:33 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u8so4609046lff.1;
-        Wed, 30 Sep 2020 19:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2b8YJ/jVVR7JmlsGa7FjoHY0aps0ZebG9cV7sMoGxuM=;
-        b=B8imYH9RcCeEdOmTlUlnev52Sz270GKuLllWU517V8pBJHqahNa9XWjov3tmmX6fP1
-         dWfGwinkASFIxxmS5B9EsUhrlIXLNDKeTWWmMFK3WnuffX6XRuQNaQJKM+IrflrL0XL5
-         Kfj38N/rW4KPdGlNEmUauhFW4WmdwxxrfKyLKl9U9blBFvUBj+6hBEkEID4QjUL09w/Z
-         ng67npv0nUB8qsxjb7Yb2c/izGuY57asrEkrP/RrLl3IBr3HjTynacPIqW3ckJf/DgRf
-         WI2QwGjSnzJ4U4vjWbJB3pK9LXx79pjYeHTWtBWtecZ06aQWkCS9NuXoHFRtYjr1cXbb
-         1RkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2b8YJ/jVVR7JmlsGa7FjoHY0aps0ZebG9cV7sMoGxuM=;
-        b=eXWU72LF+ptcRSZQJYVFsgT6M+JV/fPQuH9ekg41iNfXHQ+H4YiRt5kiIsBEiw9gmW
-         KsaeCaL45QlJxoe/OnAI3Ruc+D/xd6Xhes8W/qUr/vLC0ADNunSuvdXlJzf/wmylbmMP
-         YNe/2gVyp3z9GhmJ+x4CEyzh+K+DBy4zJFGGM0tsgbLv+vEvi5ja5IGt/B1U7aEUPivn
-         9iUzRmjSs8IofCK6wg+FDazwVquTvbt/bXyIHtFa0oF60M5kIIliG9GdT958BX4aDmLT
-         Rljr2Uh/Ani5Hy1NFePLRmFQlyrB6t3asp/Qv4rDFWS0F1jp+gwjbK8qyhh3RvyBbtom
-         /1Xg==
-X-Gm-Message-State: AOAM5321XJ9L7l0HsKAtmQ2Acq29AzMj8yFzTMosH+nm/4yP10I4oeKS
-        NdQIjzjWRBwvDaxyu5H6h+ir2uI3jTc=
-X-Google-Smtp-Source: ABdhPJwzkF/zX8i+aEADE+pp5Wl1aHNmiLSe9AZv5i60TKPO1ExNfB1hE9HpZELpWSIBfNYcGBcS4A==
-X-Received: by 2002:a19:40c8:: with SMTP id n191mr1959843lfa.29.1601518292137;
-        Wed, 30 Sep 2020 19:11:32 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id e8sm303688ljk.25.2020.09.30.19.11.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 19:11:31 -0700 (PDT)
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
- <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <20200930153131.GB3833404@ulmo>
- <ece615ad-8d6b-96ae-d8b4-9667aef17281@gmail.com>
- <20200930160626.GD3833404@ulmo>
- <f11d7d8a-8ce6-a53c-6219-ceec05432002@gmail.com>
- <20200930164707.GB3852280@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <35115ac1-fb25-7226-7b50-61193669e696@gmail.com>
-Date:   Thu, 1 Oct 2020 05:11:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 30 Sep 2020 22:11:57 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C948C580325;
+        Wed, 30 Sep 2020 22:11:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=NSmhqV0mmdPNs
+        m8wsirGm6E7M0NDVR5Is3lE3Iwkiks=; b=mPaarXF8nE3/c5b4a4ZlpbeBiCHYA
+        MGvoS3kmSrPM23eq3Qc2uXTYODFttE0xuX9YfOrUjCLPUf1Bb9dXzGCPks87HlDI
+        vVokQUrTnpQUmL1ax27ENxq0lePnCx/celdadlyo9Ucwlaz2GqvHCB8MnMZ1kEPm
+        FFeR6ZJ8Y2zZnnld7O72OZKQa865LmTuvWaFHCXXAMGoJQj+mr3IOW6jqtJARCgc
+        5kmETlBw2VAMVbI3UET4cwtYZkrUlMJHE05owSaZfP5mssSqiCrcCnC13GJHyhhx
+        TfmSndem2WLOVD/AGTCwDXgxztXJd8uv2PUlruoKeaqla5b69jgeQRPZA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=NSmhqV0mmdPNsm8wsirGm6E7M0NDVR5Is3lE3Iwkiks=; b=JJzqrXNX
+        E+sOpyWwQvdM2rCzzbBJZBsHxp5Ed6IkRwZ52C8U7mvdgSChVEdZvWEYxEk7iyNs
+        zZnU65lLXyvz0w+cS6jU+qgdj+FWXddvol8ejiYQ91mQC24PeBWWWF80Zdl+sQQO
+        wLuo5su//BtXMUVb915O9Ewa1qLpqjiSrF1Biz3+eipUc+08Vog6siUdlmUoCo3O
+        dJ+C6BIfjjY/URHu5TqSAIFm3Wly9tjvsIlZrrakMJsCu4biu4eWMlIyHeOOuzRw
+        S54y+vbc4b8jbFB3DD3AEoM9OKu7m3fTrdM9YpGFDU451kLckgtxFVqbMNWQ/eGy
+        y1PxF0MVWBAlSA==
+X-ME-Sender: <xms:6Tp1X8JMpKPc64Vd7mHI_LF35nI72T66J44at7gvHOD6SlMhrEj8AA>
+    <xme:6Tp1X8IWuZBWkUKi-saVWNfHbKKHXcv4KvOLOUspsXXlnmTx7DKfIPWQkP6XJA2qJ
+    FrTzs6w-iHBCtIr9A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
+    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
+    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
+    jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
+    gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+    rdhorhhg
+X-ME-Proxy: <xmx:6Tp1X8tUeRelrf7E5mmhF8CpilM2mnBCVtNlVHrXQnslBjv8OXDo1Q>
+    <xmx:6Tp1X5bo3nof-8x23NF0rSFuqPEZJXF0wxMXD9wj7yHqX1BVYGgIwg>
+    <xmx:6Tp1XzaQa1BTCwBG-4vJ504eadw7iGC8JOUnsMRTueiuHeXuEvY1lA>
+    <xmx:6Tp1XxMGI6xRE7cmx2VsdWhvC66Z7YLdcbzDLA2t4cXt1PY2TljdAw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1ADA03064682;
+        Wed, 30 Sep 2020 22:11:53 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 08/25] ASoC: sun8i-codec: Use snd_soc_dai_get_drvdata
+Date:   Wed, 30 Sep 2020 21:11:31 -0500
+Message-Id: <20201001021148.15852-9-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
+References: <20201001021148.15852-1-samuel@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <20200930164707.GB3852280@ulmo>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 19:47, Thierry Reding пишет:
-> On Wed, Sep 30, 2020 at 07:25:41PM +0300, Dmitry Osipenko wrote:
->> 30.09.2020 19:06, Thierry Reding пишет:
->>> On Wed, Sep 30, 2020 at 06:36:52PM +0300, Dmitry Osipenko wrote:
->>>>  I'...
->>>>>> +	struct tegra_mc *mc = devm_tegra_get_memory_controller(dev);
->>>>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->>>>>
->>>>> It looks to me like the only reason why you need this new global API is
->>>>> because PCI devices may not have a device tree node with a phandle to
->>>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
->>>>> root complex has an iommus property, right? In that case, can't we
->>>>> simply do something like this:
->>>>>
->>>>> 	if (dev_is_pci(dev))
->>>>> 		np = find_host_bridge(dev)->of_node;
->>>>> 	else
->>>>> 		np = dev->of_node;
->>>>>
->>>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
->>>>> sure that exists.
->>>>>
->>>>> Once we have that we can still iterate over the iommus property and do
->>>>> not need to rely on this global variable.
->>>>
->>>> This sounds more complicated than the current variant.
->>>>
->>>> Secondly, I'm already about to use the new tegra_get_memory_controller()
->>>> API for all the T20/30/124/210 EMC and devfreq drivers.
->>>
->>> Why do we need it there? They seem to work fine without it right now.
->>
->> All the Tegra30/124/210 EMC drivers are already duplicating that MC
->> lookup code and only the recent T210 driver does it properly.
->>
->>> If it is required for new functionality, we can always make the dependent
->>> on a DT reference via phandle without breaking any existing code.
->>
->> That's correct, it will be also needed for the new functionality as
->> well, hence even more drivers will need to perform the MC lookup.
-> 
-> I don't have any issues with adding a helper if we need it from several
-> different locations. But the helper should be working off of a given
-> device and look up the device via the device tree node referenced by
-> phandle. We already have those phandles in place for the EMC devices,
-> and any other device that needs to interoperate with the MC should also
-> get such a reference.
-> 
->> I don't quite understand why you're asking for the phandle reference,
->> it's absolutely not needed for the MC lookup and won't work for the
-> 
-> We need that phandle in order to establish a link between the devices.
-> Yes, you can probably do it without the phandle and just match by
-> compatible string. But we don't do that for other types of devices
-> either, right? For a display driver we reference the attached panel via
-> phandle, but we could also just look it up via name or absolute path or
-> some other heuristic. But a phandle is just a much more explicit way of
-> linking the devices, so why not use it?
+Remove a level of indirection by getting the device directly from the
+passed-in struct snd_soc_dai, instead of going through its component.
 
-There are dozens variants of the panels and system could easily have
-more than one panel, hence a direct lookup by phandle is a natural
-choice for the panels.
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-While all Tegra SoCs have a single fixed MC in the system, and thus,
-there is no real need to use phandle because we can't mix up MC with
-anything else.
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 578c0c0e6330..7590c4b04d14 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -162,17 +162,17 @@ static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
+ 		return 0xa;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ }
+ 
+ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
++	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+ 	u32 value;
+ 
+ 	/* clock masters */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
+ 		value = 0x1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
+@@ -294,17 +294,17 @@ static int sun8i_codec_get_lrck_div(unsigned int channels,
+ 
+ 	return ilog2(div) - 4;
+ }
+ 
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+-	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
++	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
+ 	int sample_rate, lrck_div;
+ 	u8 bclk_div;
+ 
+ 	/*
+ 	 * The CPU DAI handles only a sample of 16 bits. Configure the
+ 	 * codec to handle this type of sample resolution.
+ 	 */
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-- 
+2.26.2
 
->> older DTs if DT change will be needed. Please give a detailed explanation.
-> 
-> New functionality doesn't have to work with older DTs.
-
-This is fine in general, but I'm afraid that in this particular case we
-will need to have a fall back anyways because otherwise it should break
-the old functionality.
-
-So I don't think that using phandle for the MC device finding is really
-warrant.
-
-Phandle is kinda more applicable for the cases where only the DT node
-lookup is needed (not the lookup of the MC device driver), but even then
-it is also not mandatory.
-
-I hope you agree.
