@@ -2,305 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E382B27FA17
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3DB27FA1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730984AbgJAHVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:21:52 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:3149 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgJAHVw (ORCPT
+        id S1731154AbgJAHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgJAHWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:21:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601536911; x=1633072911;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=zHN7oQE6+CqRvfQc5+UfDHhivcDLyVx8dHDj4J4UyHE=;
-  b=Digxs7ePIXEPr36Qe6E08W1IaoAbRsycpUxME0hZikKLtym84rmVr5MD
-   +EmBMg1ko826vMUrDnQETWFBVN7PJpyE4uwCDt3f81PSBYUEpQtxwXwnU
-   haesqm1rk2dR8/6fw1E3WzYlyJ7zDBbxeVGrKMpin/dfNOgaxjhJGqHn6
-   8PqIAlWWdcr6qI7f0O6tvPAHLldUbpPOlXk/fYARwfJBX+rvU/DWZftUt
-   0GVunacEFvb4UK+dalPKmYsM9XZNOeUbC3uHRkxy03C0j0cCUZ3Ai4qkg
-   UY9OWucDNEb46pJqHacq1t2CsAQXPmsVVOl3s/E0yeuym/se7tDk4WVWg
-   Q==;
-IronPort-SDR: tRChLQeKZj3sWzVsUJqO4+pGo0x5yAGaf/bw0vfym2tXymSTbwLXhyYcf1Gl2Z+5+SHAFuOYlj
- hCuDb3bbsMtUwYenNqtsjVjuc52DUO3c5DyJCB80nVrsQgZOyFvVAo7I4kWQWV3qTqv55MDVkd
- efQi88xjLYIiibIu2mx5ZFGxJHZ58/pbeCYmDW8wwKkL8zWd3x2MxPBXiLACIJI/1E0prT4QbT
- 9WdOVJ/+YThmMtuGTw8hHGnvg4W29euaT1Od4QePZTS66BRJftHu7v7ReuygH2rqLb4QWJ90Am
- w38=
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="93850583"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Oct 2020 00:21:51 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 1 Oct 2020 00:21:50 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Thu, 1 Oct 2020 00:21:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ACF6SzVSGgpQ+55q7Bxqtab+U92aaRFIb1B7zlhFCxIVixHiccwILJ2F/0eKl+3EG8xdPvAM2wMvYvNXxDWUIejQ4zRif1EhDZDR3CjozU3QJbf7yDLiKfH8uTRDcWZXBbhc5bu3nVOlCqFHsTaNkXSVbpmwJbQLStcUKkF0CRaUoM6nnohYbN9clDOtdOZdr78zhLtlTjJegml5CWumE2jsJvHcHY8tDr8/6I4AF1yY4gGjGR+EdjAJHSpb6jqRXVUmJ5GpbMdgiw0SlElwT4Ls3LazgW0XjBymrSU3gcHz8BkAyQl8BUAhc4WW7o+jjA2sxxcYcOqt4cW0P2lWTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zHN7oQE6+CqRvfQc5+UfDHhivcDLyVx8dHDj4J4UyHE=;
- b=ODdapZYkNWlr24PVnNLBMT0okMvMWT76QBaStB+Hiq2CrLFyqGt9hF24m/if+hbxbUcVEn+CEZGSX/VOG7w0l1spcWX+MpVDbM9St2uNnaixJRlOOw5T+qqx3seoNxpZPj2joYiUG9BXljWmiGst5m2JrCZkcydEpD5uUgz6wAa3MmsS6czUukfXD3RGUvsV9lxtSpkc5XwwOnvGPxMthgPY1pJj5la6SEQMZHQ7xMHhldYKkyMGwYnP/opb1pfWXXvqZEr5PUlicfLXPtpG3rsZrmZPk/4KaXMV/CL1JdqGicTOHeHiGyFmFCXRedh6/pNckZhC5dC8MfBD42hiDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zHN7oQE6+CqRvfQc5+UfDHhivcDLyVx8dHDj4J4UyHE=;
- b=XW6qcKCi1vm4+BtFVHVO3JuKTMONV27CiIOM4f1A6q0yKuHXU9cPZZ9AvHWB8lpjxj4zA1RTfULbRThdrd2fNEPVPPOx45+gQC8HWx2tdwja+MDU3EbMSUBDILcMA/dUCpWs2lV0BcB5zufyXvEqTfOuqT4nblKwCEPnW5mkqSI=
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com (2603:10b6:3:112::12)
- by DM6PR11MB4442.namprd11.prod.outlook.com (2603:10b6:5:1d9::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.26; Thu, 1 Oct
- 2020 07:21:48 +0000
-Received: from DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a]) by DM5PR11MB1914.namprd11.prod.outlook.com
- ([fe80::f44a:f58e:c13b:947a%4]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 07:21:48 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v14 02/15] mtd: spi-nor: add
- spi_nor_controller_ops_{read_reg,write_reg,erase}()
-Thread-Topic: [PATCH v14 02/15] mtd: spi-nor: add
- spi_nor_controller_ops_{read_reg,write_reg,erase}()
-Thread-Index: AQHWl8OFLwMazeNsuUO8siQdU3S5/Q==
-Date:   Thu, 1 Oct 2020 07:21:48 +0000
-Message-ID: <3289f3b0-6690-3e0e-5250-ba459d884b81@microchip.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-3-p.yadav@ti.com>
-In-Reply-To: <20200930185732.6201-3-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [5.13.51.157]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6aec8c53-ccee-4d33-13bc-08d865daa90f
-x-ms-traffictypediagnostic: DM6PR11MB4442:
-x-microsoft-antispam-prvs: <DM6PR11MB44423DBB800C645C065CBB18F0300@DM6PR11MB4442.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:255;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WnKH8tRfviNNXBkPV4Z8xPzYBNtTecZ6stgrz4mVcB8Jun5KtiGMLDQcD0NlaKgw+W3FjtnSZOEMWsGe7Wf6pbcsT3ghgxQrfNJBMajmaPu8gd6bV5AskpuRNCM1nWjx7TU1YHb27to+TKw70Qdr6PB/2yQ4aQZPXtYYy8sKYyfCZL+lZAdyJTV+kzFNoAjKtaNTJV55XHNFodN777M6sLhPWrwUrYOREmKboD2Jna0iZVAxQFngdsjyOorH9MQt3vBVFIFbUg2/m+KmzZbnz4rmqm3Pufm9BOfrhfrVOiylxIUlwV1SrDbpx7Wtpnc37mOoNDq7DoEAGBlINEigJQqv4kRKYD3mWWM9t445iNQxS7fVKLi7TLXkYquRCOzfzGN9Lr0+fBUzmrBtDExDrKJ+GTxhaMLwe7LV+gIbHs4KkYpjlaVbKatwKJs4CUf/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(376002)(136003)(39860400002)(316002)(110136005)(6486002)(6512007)(5660300002)(4326008)(54906003)(66946007)(31696002)(64756008)(66476007)(36756003)(53546011)(2906002)(26005)(186003)(6506007)(66446008)(66556008)(83380400001)(71200400001)(8676002)(86362001)(2616005)(91956017)(76116006)(31686004)(478600001)(8936002)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: X075VCRSPvTgwISncBSJ9D9ecvEO7SHsTPp6X612wnOMwlgHNeR2je0sa2YQoF2hjwmSL9RX84uSL3niyS6N6zR1VuOG31iVIG5ybt4utzGsmIniEONlQHN+w9xBbz/5kOTNU63VBI1TZ2L3h8NS7wXIagpRx2GGePXWstY6KMSUoJCio9IXIwbY2M5JlnV5wtO+PrfGuh6ueAVl8XQ3FLMZgIRbIogK0CVdVD5EP7N7NM8+8WKYUaxMmYG0Sh7MbNwTLr1EpPLiMq2nMy8ilIbSz0YLHTukbH1Rfmvpe5WlCcm5/VpMjTO2Obl0tBEspfHbZeRViQwUYgcUremo6E5+zkgHt3gFsWQQ054+4ZDozdNofdWTtJ3OzR3sZVZNG1U472MhjOmZHEEfgBGSKoErMpfRS8p2NAoVd9Va7E2wvxFYSFshNkAhHQgAzhEbv0MbfuNIXETXTpLbrIZp3PqpFadG1B2ZuMEX1duGee+hkYclbuTGRXUAz+nkOZk6TD0iMyB1AiNS4Xj8RnK7f8xItdPyY/qmp/sDceJzE5TLlWWNUOBseEcSw5VFihxFNJmmUM1kLwUHrEztZMJpBBPLvLd4wRC0SwyIwwBTSQ2FgF/ahQmppEjG8aGG5gqQufsdg8cQpEpC2Rfpb+1JuA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0C55CB5797A09041B072C31849E4FFA4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 1 Oct 2020 03:22:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1439BC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:22:09 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kNsuk-0000iy-E1; Thu, 01 Oct 2020 09:22:06 +0200
+Subject: Re: [PATCH v2 08/12] ARM: dts: imx6dl-pico: fix board compatibles
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200930190143.27032-1-krzk@kernel.org>
+ <20200930190143.27032-9-krzk@kernel.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <0a0afea6-8cbb-3e89-5a4f-89660c942ca3@pengutronix.de>
+Date:   Thu, 1 Oct 2020 09:22:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6aec8c53-ccee-4d33-13bc-08d865daa90f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 07:21:48.5848
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KkAO4rQT4WdZsU6G0GTeFPxbSDpevqX3Lw40qdB7yR6n3+Wyo0b9oMjyCmyVs5kM8V6dmtYdgoJnlB1N7djaDgbdEcfztnZjPBt8CXC4mbU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4442
+In-Reply-To: <20200930190143.27032-9-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gOS8zMC8yMCA5OjU3IFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBUaGV5IGFyZSB0aGluIHdyYXBwZXJzIGFyb3Vu
-ZA0KPiBub3ItPmNvbnRyb2xsZXJfb3BzLT57cmVhZF9yZWcsd3JpdGVfcmVnLGVyYXNlfSgpLiBJ
-biBhIGZ1dHVyZSBjb21taXQNCj4gRFRSIHN1cHBvcnQgd2lsbCBiZSBhZGRlZC4gVGhlc2Ugb3Bz
-IGNhbiBub3QgYmUgc3VwcG9ydGVkIGJ5IHRoZQ0KPiBjb250cm9sbGVyX29wcyBob29rcyBhbmQg
-dGhlc2UgaGVscGVycyB3aWxsIG1ha2UgaXQgZWFzaWVyIHRvIHJlamVjdA0KPiB0aG9zZSBjYWxs
-cy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFByYXR5dXNoIFlhZGF2IDxwLnlhZGF2QHRpLmNvbT4N
-Cg0KUmV2aWV3ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNv
-bT4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIHwgODcgKysrKysrKysr
-KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNl
-cnRpb25zKCspLCAzNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210
-ZC9zcGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jDQo+IGluZGV4IDRk
-MGY4ZDE2NTU0NC4uN2EzYmY0NjBhMmZhIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9zcGkt
-bm9yL2NvcmUuYw0KPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYw0KPiBAQCAtODIs
-NiArODIsMjMgQEAgc3RhdGljIGludCBzcGlfbm9yX3NwaW1lbV9leGVjX29wKHN0cnVjdCBzcGlf
-bm9yICpub3IsIHN0cnVjdCBzcGlfbWVtX29wICpvcCkNCj4gICAgICAgICByZXR1cm4gc3BpX21l
-bV9leGVjX29wKG5vci0+c3BpbWVtLCBvcCk7DQo+ICB9DQo+IA0KPiArc3RhdGljIGludCBzcGlf
-bm9yX2NvbnRyb2xsZXJfb3BzX3JlYWRfcmVnKHN0cnVjdCBzcGlfbm9yICpub3IsIHU4IG9wY29k
-ZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHU4ICpidWYs
-IHNpemVfdCBsZW4pDQo+ICt7DQo+ICsgICAgICAgcmV0dXJuIG5vci0+Y29udHJvbGxlcl9vcHMt
-PnJlYWRfcmVnKG5vciwgb3Bjb2RlLCBidWYsIGxlbik7DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyBp
-bnQgc3BpX25vcl9jb250cm9sbGVyX29wc193cml0ZV9yZWcoc3RydWN0IHNwaV9ub3IgKm5vciwg
-dTggb3Bjb2RlLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IGNvbnN0IHU4ICpidWYsIHNpemVfdCBsZW4pDQo+ICt7DQo+ICsgICAgICAgcmV0dXJuIG5vci0+
-Y29udHJvbGxlcl9vcHMtPndyaXRlX3JlZyhub3IsIG9wY29kZSwgYnVmLCBsZW4pOw0KPiArfQ0K
-PiArDQo+ICtzdGF0aWMgaW50IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfZXJhc2Uoc3RydWN0IHNw
-aV9ub3IgKm5vciwgbG9mZl90IG9mZnMpDQo+ICt7DQo+ICsgICAgICAgcmV0dXJuIG5vci0+Y29u
-dHJvbGxlcl9vcHMtPmVyYXNlKG5vciwgb2Zmcyk7DQo+ICt9DQo+ICsNCj4gIC8qKg0KPiAgICog
-c3BpX25vcl9zcGltZW1fcmVhZF9kYXRhKCkgLSByZWFkIGRhdGEgZnJvbSBmbGFzaCdzIG1lbW9y
-eSByZWdpb24gdmlhDQo+ICAgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNwaS1tZW0N
-Cj4gQEAgLTIyOSw4ICsyNDYsOCBAQCBpbnQgc3BpX25vcl93cml0ZV9lbmFibGUoc3RydWN0IHNw
-aV9ub3IgKm5vcikNCj4gDQo+ICAgICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Ao
-bm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAg
-IHJldCA9IG5vci0+Y29udHJvbGxlcl9vcHMtPndyaXRlX3JlZyhub3IsIFNQSU5PUl9PUF9XUkVO
-LA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IE5VTEwsIDApOw0KPiArICAgICAgICAgICAgICAgcmV0ID0gc3BpX25vcl9jb250cm9sbGVyX29w
-c193cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JFTiwNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5VTEwsIDApOw0KPiAgICAgICAgIH0N
-Cj4gDQo+ICAgICAgICAgaWYgKHJldCkNCj4gQEAgLTI1OCw4ICsyNzUsOCBAQCBpbnQgc3BpX25v
-cl93cml0ZV9kaXNhYmxlKHN0cnVjdCBzcGlfbm9yICpub3IpDQo+IA0KPiAgICAgICAgICAgICAg
-ICAgcmV0ID0gc3BpX21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAmb3ApOw0KPiAgICAgICAgIH0g
-ZWxzZSB7DQo+IC0gICAgICAgICAgICAgICByZXQgPSBub3ItPmNvbnRyb2xsZXJfb3BzLT53cml0
-ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JESSwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gKyAgICAgICAgICAgICAgIHJl
-dCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09QX1dSREks
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBOVUxMLCAwKTsNCj4gICAgICAgICB9DQo+IA0KPiAgICAgICAgIGlmIChyZXQpDQo+IEBAIC0y
-ODksOCArMzA2LDggQEAgc3RhdGljIGludCBzcGlfbm9yX3JlYWRfc3Ioc3RydWN0IHNwaV9ub3Ig
-Km5vciwgdTggKnNyKQ0KPiANCj4gICAgICAgICAgICAgICAgIHJldCA9IHNwaV9tZW1fZXhlY19v
-cChub3ItPnNwaW1lbSwgJm9wKTsNCj4gICAgICAgICB9IGVsc2Ugew0KPiAtICAgICAgICAgICAg
-ICAgcmV0ID0gbm9yLT5jb250cm9sbGVyX29wcy0+cmVhZF9yZWcobm9yLCBTUElOT1JfT1BfUkRT
-UiwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHNyLCAxKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNf
-cmVhZF9yZWcobm9yLCBTUElOT1JfT1BfUkRTUiwgc3IsDQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEpOw0KPiAgICAgICAgIH0NCj4gDQo+
-ICAgICAgICAgaWYgKHJldCkNCj4gQEAgLTMyMCw4ICszMzcsOCBAQCBzdGF0aWMgaW50IHNwaV9u
-b3JfcmVhZF9mc3Ioc3RydWN0IHNwaV9ub3IgKm5vciwgdTggKmZzcikNCj4gDQo+ICAgICAgICAg
-ICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAg
-ICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJldCA9IG5vci0+Y29udHJvbGxlcl9vcHMt
-PnJlYWRfcmVnKG5vciwgU1BJTk9SX09QX1JERlNSLA0KPiAtICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZnNyLCAxKTsNCj4gKyAgICAgICAgICAgICAg
-IHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfcmVhZF9yZWcobm9yLCBTUElOT1JfT1BfUkRG
-U1IsIGZzciwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgMSk7DQo+ICAgICAgICAgfQ0KPiANCj4gICAgICAgICBpZiAocmV0KQ0KPiBAQCAt
-MzUyLDcgKzM2OSw4IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9yZWFkX2NyKHN0cnVjdCBzcGlfbm9y
-ICpub3IsIHU4ICpjcikNCj4gDQo+ICAgICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNf
-b3Aobm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAg
-ICAgIHJldCA9IG5vci0+Y29udHJvbGxlcl9vcHMtPnJlYWRfcmVnKG5vciwgU1BJTk9SX09QX1JE
-Q1IsIGNyLCAxKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9v
-cHNfcmVhZF9yZWcobm9yLCBTUElOT1JfT1BfUkRDUiwgY3IsDQo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEpOw0KPiAgICAgICAgIH0NCj4g
-DQo+ICAgICAgICAgaWYgKHJldCkNCj4gQEAgLTM4NSwxMCArNDAzLDEwIEBAIGludCBzcGlfbm9y
-X3NldF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpDQo+
-IA0KPiAgICAgICAgICAgICAgICAgcmV0ID0gc3BpX21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAm
-b3ApOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+IC0gICAgICAgICAgICAgICByZXQgPSBub3ItPmNv
-bnRyb2xsZXJfb3BzLT53cml0ZV9yZWcobm9yLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVuYWJsZSA/IFNQSU5PUl9PUF9FTjRCIDoNCj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBTUElOT1JfT1BfRVg0QiwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNw
-aV9ub3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwNCj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVuYWJsZSA/IFNQSU5PUl9PUF9F
-TjRCIDoNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIFNQSU5PUl9PUF9FWDRCLA0KPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTlVMTCwgMCk7DQo+ICAgICAgICAgfQ0K
-PiANCj4gICAgICAgICBpZiAocmV0KQ0KPiBAQCAtNDIxLDggKzQzOSw4IEBAIHN0YXRpYyBpbnQg
-c3BhbnNpb25fc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVu
-YWJsZSkNCj4gDQo+ICAgICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5z
-cGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJldCA9
-IG5vci0+Y29udHJvbGxlcl9vcHMtPndyaXRlX3JlZyhub3IsIFNQSU5PUl9PUF9CUldSLA0KPiAt
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5vci0+
-Ym91bmNlYnVmLCAxKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxl
-cl9vcHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09QX0JSV1IsDQo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3ItPmJvdW5jZWJ1ZiwgMSk7
-DQo+ICAgICAgICAgfQ0KPiANCj4gICAgICAgICBpZiAocmV0KQ0KPiBAQCAtNDUzLDggKzQ3MSw4
-IEBAIGludCBzcGlfbm9yX3dyaXRlX2VhcihzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1OCBlYXIpDQo+
-IA0KPiAgICAgICAgICAgICAgICAgcmV0ID0gc3BpX21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAm
-b3ApOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+IC0gICAgICAgICAgICAgICByZXQgPSBub3ItPmNv
-bnRyb2xsZXJfb3BzLT53cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JFQVIsDQo+IC0gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbm9yLT5ib3VuY2Vi
-dWYsIDEpOw0KPiArICAgICAgICAgICAgICAgcmV0ID0gc3BpX25vcl9jb250cm9sbGVyX29wc193
-cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JFQVIsDQo+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBub3ItPmJvdW5jZWJ1ZiwgMSk7DQo+ICAg
-ICAgICAgfQ0KPiANCj4gICAgICAgICBpZiAocmV0KQ0KPiBAQCAtNDg0LDggKzUwMiw4IEBAIGlu
-dCBzcGlfbm9yX3hyZWFkX3NyKHN0cnVjdCBzcGlfbm9yICpub3IsIHU4ICpzcikNCj4gDQo+ICAg
-ICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+
-ICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJldCA9IG5vci0+Y29udHJvbGxl
-cl9vcHMtPnJlYWRfcmVnKG5vciwgU1BJTk9SX09QX1hSRFNSLA0KPiAtICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3IsIDEpOw0KPiArICAgICAgICAg
-ICAgICAgcmV0ID0gc3BpX25vcl9jb250cm9sbGVyX29wc19yZWFkX3JlZyhub3IsIFNQSU5PUl9P
-UF9YUkRTUiwgc3IsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIDEpOw0KPiAgICAgICAgIH0NCj4gDQo+ICAgICAgICAgaWYgKHJldCkNCj4g
-QEAgLTUyOSw4ICs1NDcsOCBAQCBzdGF0aWMgdm9pZCBzcGlfbm9yX2NsZWFyX3NyKHN0cnVjdCBz
-cGlfbm9yICpub3IpDQo+IA0KPiAgICAgICAgICAgICAgICAgcmV0ID0gc3BpX21lbV9leGVjX29w
-KG5vci0+c3BpbWVtLCAmb3ApOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+IC0gICAgICAgICAgICAg
-ICByZXQgPSBub3ItPmNvbnRyb2xsZXJfb3BzLT53cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfQ0xT
-UiwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBOVUxMLCAwKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9v
-cHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09QX0NMU1IsDQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gICAgICAgICB9
-DQo+IA0KPiAgICAgICAgIGlmIChyZXQpDQo+IEBAIC01OTMsOCArNjExLDggQEAgc3RhdGljIHZv
-aWQgc3BpX25vcl9jbGVhcl9mc3Ioc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gDQo+ICAgICAgICAg
-ICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAg
-ICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJldCA9IG5vci0+Y29udHJvbGxlcl9vcHMt
-PndyaXRlX3JlZyhub3IsIFNQSU5PUl9PUF9DTEZTUiwNCj4gLSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gKyAgICAgICAgICAg
-ICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09Q
-X0NMRlNSLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgTlVMTCwgMCk7DQo+ICAgICAgICAgfQ0KPiANCj4gICAgICAgICBpZiAocmV0KQ0K
-PiBAQCAtNzM3LDggKzc1NSw4IEBAIHN0YXRpYyBpbnQgc3BpX25vcl93cml0ZV9zcihzdHJ1Y3Qg
-c3BpX25vciAqbm9yLCBjb25zdCB1OCAqc3IsIHNpemVfdCBsZW4pDQo+IA0KPiAgICAgICAgICAg
-ICAgICAgcmV0ID0gc3BpX21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAmb3ApOw0KPiAgICAgICAg
-IH0gZWxzZSB7DQo+IC0gICAgICAgICAgICAgICByZXQgPSBub3ItPmNvbnRyb2xsZXJfb3BzLT53
-cml0ZV9yZWcobm9yLCBTUElOT1JfT1BfV1JTUiwNCj4gLSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzciwgbGVuKTsNCj4gKyAgICAgICAgICAgICAg
-IHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09QX1dS
-U1IsIHNyLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgbGVuKTsNCj4gICAgICAgICB9DQo+IA0KPiAgICAgICAgIGlmIChyZXQpIHsNCj4g
-QEAgLTkzOSw4ICs5NTcsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3Jfd3JpdGVfc3IyKHN0cnVjdCBz
-cGlfbm9yICpub3IsIGNvbnN0IHU4ICpzcjIpDQo+IA0KPiAgICAgICAgICAgICAgICAgcmV0ID0g
-c3BpX21lbV9leGVjX29wKG5vci0+c3BpbWVtLCAmb3ApOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+
-IC0gICAgICAgICAgICAgICByZXQgPSBub3ItPmNvbnRyb2xsZXJfb3BzLT53cml0ZV9yZWcobm9y
-LCBTUElOT1JfT1BfV1JTUjIsDQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgc3IyLCAxKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9u
-b3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwgU1BJTk9SX09QX1dSU1IyLA0KPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3IyLCAx
-KTsNCj4gICAgICAgICB9DQo+IA0KPiAgICAgICAgIGlmIChyZXQpIHsNCj4gQEAgLTk3Myw4ICs5
-OTEsOCBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcmVhZF9zcjIoc3RydWN0IHNwaV9ub3IgKm5vciwg
-dTggKnNyMikNCj4gDQo+ICAgICAgICAgICAgICAgICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9y
-LT5zcGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBlbHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJl
-dCA9IG5vci0+Y29udHJvbGxlcl9vcHMtPnJlYWRfcmVnKG5vciwgU1BJTk9SX09QX1JEU1IyLA0K
-PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Iy
-LCAxKTsNCj4gKyAgICAgICAgICAgICAgIHJldCA9IHNwaV9ub3JfY29udHJvbGxlcl9vcHNfcmVh
-ZF9yZWcobm9yLCBTUElOT1JfT1BfUkRTUjIsIHNyMiwNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMSk7DQo+ICAgICAgICAgfQ0KPiANCj4g
-ICAgICAgICBpZiAocmV0KQ0KPiBAQCAtMTAwNCw4ICsxMDIyLDkgQEAgc3RhdGljIGludCBzcGlf
-bm9yX2VyYXNlX2NoaXAoc3RydWN0IHNwaV9ub3IgKm5vcikNCj4gDQo+ICAgICAgICAgICAgICAg
-ICByZXQgPSBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBl
-bHNlIHsNCj4gLSAgICAgICAgICAgICAgIHJldCA9IG5vci0+Y29udHJvbGxlcl9vcHMtPndyaXRl
-X3JlZyhub3IsIFNQSU5PUl9PUF9DSElQX0VSQVNFLA0KPiAtICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5VTEwsIDApOw0KPiArICAgICAgICAgICAg
-ICAgcmV0ID0gc3BpX25vcl9jb250cm9sbGVyX29wc193cml0ZV9yZWcobm9yLA0KPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU1BJTk9SX09Q
-X0NISVBfRVJBU0UsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBOVUxMLCAwKTsNCj4gICAgICAgICB9DQo+IA0KPiAgICAgICAgIGlmIChy
-ZXQpDQo+IEBAIC0xMTQ2LDcgKzExNjUsNyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfZXJhc2Vfc2Vj
-dG9yKHN0cnVjdCBzcGlfbm9yICpub3IsIHUzMiBhZGRyKQ0KPiANCj4gICAgICAgICAgICAgICAg
-IHJldHVybiBzcGlfbWVtX2V4ZWNfb3Aobm9yLT5zcGltZW0sICZvcCk7DQo+ICAgICAgICAgfSBl
-bHNlIGlmIChub3ItPmNvbnRyb2xsZXJfb3BzLT5lcmFzZSkgew0KPiAtICAgICAgICAgICAgICAg
-cmV0dXJuIG5vci0+Y29udHJvbGxlcl9vcHMtPmVyYXNlKG5vciwgYWRkcik7DQo+ICsgICAgICAg
-ICAgICAgICByZXR1cm4gc3BpX25vcl9jb250cm9sbGVyX29wc19lcmFzZShub3IsIGFkZHIpOw0K
-PiAgICAgICAgIH0NCj4gDQo+ICAgICAgICAgLyoNCj4gQEAgLTExNTgsOCArMTE3Nyw4IEBAIHN0
-YXRpYyBpbnQgc3BpX25vcl9lcmFzZV9zZWN0b3Ioc3RydWN0IHNwaV9ub3IgKm5vciwgdTMyIGFk
-ZHIpDQo+ICAgICAgICAgICAgICAgICBhZGRyID4+PSA4Ow0KPiAgICAgICAgIH0NCj4gDQo+IC0g
-ICAgICAgcmV0dXJuIG5vci0+Y29udHJvbGxlcl9vcHMtPndyaXRlX3JlZyhub3IsIG5vci0+ZXJh
-c2Vfb3Bjb2RlLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgbm9yLT5ib3VuY2VidWYsIG5vci0+YWRkcl93aWR0aCk7DQo+ICsgICAgICAgcmV0dXJuIHNw
-aV9ub3JfY29udHJvbGxlcl9vcHNfd3JpdGVfcmVnKG5vciwgbm9yLT5lcmFzZV9vcGNvZGUsDQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5vci0+Ym91
-bmNlYnVmLCBub3ItPmFkZHJfd2lkdGgpOw0KPiAgfQ0KPiANCj4gIC8qKg0KPiAtLQ0KPiAyLjI4
-LjANCj4gDQoNCg==
+Hello Krzysztof,
+
+On 9/30/20 9:01 PM, Krzysztof Kozlowski wrote:
+> There are four flavors of TechNexion PICO-IMX6 boards.  They have their
+> own DTSes, even though in Dwarf, Nymph and Pi are exactly the same.
+> They also have their own bindings so adjust the compatibles to match the
+> bindings.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. None
+> ---
+>  arch/arm/boot/dts/imx6dl-pico-dwarf.dts  | 2 +-
+>  arch/arm/boot/dts/imx6dl-pico-hobbit.dts | 2 +-
+>  arch/arm/boot/dts/imx6dl-pico-nymph.dts  | 2 +-
+>  arch/arm/boot/dts/imx6dl-pico-pi.dts     | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx6dl-pico-dwarf.dts b/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
+> index 659a8e8714ea..d85b15a8c127 100644
+> --- a/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
+> +++ b/arch/arm/boot/dts/imx6dl-pico-dwarf.dts
+> @@ -13,5 +13,5 @@
+>  
+>  / {
+>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Dwarf baseboard";
+> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
+> +	compatible = "technexion,imx6dl-pico-dwarf", "fsl,imx6dl";
+
+Could you change this to have all three compatibles ("technexion,imx6dl-pico-dwarf", "technexion,imx6dl-pico",
+"fsl,imx6dl") and likewise for the other files? 
+That way other firmware that reuses the Linux device tree files and match against the SoM compatible
+continues to work after update.
+
+>  };
+> diff --git a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> index d7403c5c4337..08fedcbcc91b 100644
+> --- a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> +++ b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
+> @@ -13,5 +13,5 @@
+>  
+>  / {
+>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Hobbit baseboard";
+> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
+> +	compatible = "technexion,imx6dl-pico-hobbit", "fsl,imx6dl";
+>  };
+> diff --git a/arch/arm/boot/dts/imx6dl-pico-nymph.dts b/arch/arm/boot/dts/imx6dl-pico-nymph.dts
+> index b282dbf953aa..32ccfc5d41ce 100644
+> --- a/arch/arm/boot/dts/imx6dl-pico-nymph.dts
+> +++ b/arch/arm/boot/dts/imx6dl-pico-nymph.dts
+> @@ -13,5 +13,5 @@
+>  
+>  / {
+>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Nymph baseboard";
+> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
+> +	compatible = "technexion,imx6dl-pico-nymph", "fsl,imx6dl";
+>  };
+> diff --git a/arch/arm/boot/dts/imx6dl-pico-pi.dts b/arch/arm/boot/dts/imx6dl-pico-pi.dts
+> index b7b1c07f96f3..4590e8ad9a91 100644
+> --- a/arch/arm/boot/dts/imx6dl-pico-pi.dts
+> +++ b/arch/arm/boot/dts/imx6dl-pico-pi.dts
+> @@ -13,5 +13,5 @@
+>  
+>  / {
+>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and PI baseboard";
+> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
+> +	compatible = "technexion,imx6dl-pico-pi", "fsl,imx6dl";
+>  };
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
