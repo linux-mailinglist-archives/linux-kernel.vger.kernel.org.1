@@ -2,98 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3462809A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979F42809A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733101AbgJAVtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726626AbgJAVtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:49:42 -0400
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9D1A2177B
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 21:49:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601588982;
-        bh=6/33owwRi5A7FNKzkkiUdJvvFMmIQNDCM+CvjlAcElY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BS+VwNksm+Izlsdnlf3ZUdWncUhsTErPQl10AGJ8FSyBAkLgqr6N1uAypC7PYP+f0
-         7d4VVLUHZ4gEfuc5g7ccLgjBM4Xk9jwBToFZOLN5cNI7B4PGRCczrNiHdlj6V8s1z8
-         gW6Y5OZWuEfob38snFMoaGjY1/08DnKhHPRj30iU=
-Received: by mail-wr1-f52.google.com with SMTP id j2so340700wrx.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:49:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5322M7d5N3ZU+YX8LcdvhB3v6lASemihrzWAQPLrPN3sz3ZhAq21
-        JEwuTH05J8kZA3EOpWrRmi+kGp5GnDS5M78q/zReRA==
-X-Google-Smtp-Source: ABdhPJy08zx7EFM9Zzjkij4vwZV7ukFXxeyn8MyPYxiVmJlaKl3n7NLOG2W/8E07JIknS49kmlp3xkwLg2/1M3bRJpg=
-X-Received: by 2002:adf:ce8e:: with SMTP id r14mr11100849wrn.257.1601588980460;
- Thu, 01 Oct 2020 14:49:40 -0700 (PDT)
+        id S1733150AbgJAVt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727017AbgJAVt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:49:59 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35820C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:49:59 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q4so129777iop.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Iy5S/CocA4xCeHEwjE56oFZuNhGNChEoPiCnQuweeI=;
+        b=JF12ACJLftzwhNu9nVnsKGKuCmb4iMZtewMkS5axJYVffQIRSTwSZr3V7JiYxwCSwb
+         DaUIPYVSZjV7tjbEdAyrhQn92sCld8QDD1p5WjTE2GTOGKt40oeZCxmUidqzipkWbbQb
+         sb0TithxjeKXf1HPKecZcq/1PCDERmGY7XQxrSuqM1dFGXPBY2knwmTnqGfVYNld5QW6
+         pXZpYvlLfdg3C8PKJq/WzVT0wNZBVEFEBv3mGrgDh3bdDYZsZdXx+Xh6dtSUZt0Frrdi
+         X2VRedTWdouNk26PfNx+bjw853bfjVxPL5GXl5dzWw222dfTmJH2vCSfwPwQ1EFTavGZ
+         ISBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Iy5S/CocA4xCeHEwjE56oFZuNhGNChEoPiCnQuweeI=;
+        b=I+fYWiq3tU7GlyhRgic4A8/UtGxn17friyxRLROMRqsTbZ3sWOUzWwbZ8DOhdCgPqT
+         5epdKi3Eae7FrwAbt085pW5shF7+REWDewvjQb3YCxyDfgKdw4pnjekNaAaWqh99iFFq
+         gos+va0JIG8ptW28mqEkKbHX0IK0iVmsT5zn3wKCNbTjmec5CUKIhVXq4Pb2yAqFd/j+
+         YaFKF1HnSq775vM3abMrfpuy1EBKIlY+pa4CO6ITtBw+IhlT/myUS1jKpYdS1YvHkHnt
+         Ru/W1SgNORcMgFywp6AGQE328Sf7CMweH5hyvG7f3tUNJ/T+P2fh5zu+wa8oEnwh+9ez
+         IItQ==
+X-Gm-Message-State: AOAM531Zy7CfSNYiZZ88sUUBDE9d5gHxTZ62r5C/7z/nj+WqbJ1qZ3cM
+        iIT4CCALwDW3DdelrPHGOv7ROwDLA+Iso6WWMcOzwA==
+X-Google-Smtp-Source: ABdhPJzs96cfey8q3xfC68y/H4jPYcqEEDpnSYeDMjEeFUGu22lKOJNhMhPS834Wj0unntcNunS6X7sjvEWpyvdJwYs=
+X-Received: by 2002:a6b:d60b:: with SMTP id w11mr4673204ioa.198.1601588998029;
+ Thu, 01 Oct 2020 14:49:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201001205819.27879-1-krisman@collabora.com> <20201001205819.27879-6-krisman@collabora.com>
-In-Reply-To: <20201001205819.27879-6-krisman@collabora.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 1 Oct 2020 14:49:28 -0700
-X-Gmail-Original-Message-ID: <CALCETrWJFUahjX09Z-6zzmmX_EfTQa2L=DhOYdcR36gViWZmdw@mail.gmail.com>
-Message-ID: <CALCETrWJFUahjX09Z-6zzmmX_EfTQa2L=DhOYdcR36gViWZmdw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/9] x86: elf: Use e_machine to select start_thread for x32
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@lst.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Robert Richter <rric@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, kernel@collabora.com
+References: <20200918183114.2571146-1-dlatypov@google.com> <CAGS_qxpt1NLhh=XEKLCNEayTmB4ZhjOY32XjmL1YRPDnYVvYMw@mail.gmail.com>
+ <CAFd5g44dLSRUVMA6ggYFACNcYtuh5-z7JyMzpBpjXG3UvBh-zg@mail.gmail.com>
+In-Reply-To: <CAFd5g44dLSRUVMA6ggYFACNcYtuh5-z7JyMzpBpjXG3UvBh-zg@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 1 Oct 2020 14:49:46 -0700
+Message-ID: <CAGS_qxqSgcJaWAR6=382e0YYHAEtZg5UjgPGSf_5NzbO8W0T+g@mail.gmail.com>
+Subject: Re: [RFC v1 00/12] kunit: introduce class mocking support.
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Stephen Boyd <sboyd@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:59 PM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
+On Mon, Sep 28, 2020 at 4:24 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
 >
-> Since TIF_X32 is going away, avoid using it to find the ELF type on
-> compat_start_thread
+> On Tue, Sep 22, 2020 at 5:24 PM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > On Fri, Sep 18, 2020 at 11:31 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > >
+> > > # Background
+> > > KUnit currently lacks any first-class support for mocking.
+> > > For an overview and discussion on the pros and cons, see
+> > > https://martinfowler.com/articles/mocksArentStubs.html
+> > >
+> > > This patch set introduces the basic machinery needed for mocking:
+> > > setting and validating expectations, setting default actions, etc.
+> > >
+> > > Using that basic infrastructure, we add macros for "class mocking", as
+> > > it's probably the easiest type of mocking to start with.
+> > >
+> > > ## Class mocking
+> > >
+> > > By "class mocking", we're referring mocking out function pointers stored
+> > > in structs like:
+> > >   struct sender {
+> > >         int (*send)(struct sender *sender, int data);
+> > >   };
+> >
+> > Discussed this offline a bit with Brendan and David.
+> > The requirement that the first argument is a `sender *` means this
+> > doesn't work for a few common cases.
+> >
+> > E.g. ops structs don't usually have funcs that take `XXX_ops *`
+> > `pci_ops` all take a `struct pci_bus *`, which at least contains a
+> > `struct pci_ops*`.
+> >
+> > Why does this matter?
+> > We need to stash a  `struct mock` somewhere to store expectations.
+> > For this version of class mocking (in patch 10), we've assumed we could have
+> >
+> > struct MOCK(sender) {
+> >          struct mock ctrl;
+> >          struct sender trgt; //&trgt assumed to be the first param
+> > }
+> >
+> > Then we can always use `container_of(sender)` to get the MOCK(sender)
+> > which holds `ctrl`.
+> > But if the first parameter isn't a `struct sender*`, this trick
+> > obviously doesn't work.
+> >
+> > So to support something like pci_ops, we'd need another approach to
+> > stash `ctrl`.
+> >
+> > After thinking a bit more, we could perhaps decouple the first param
+> > from the mocked struct.
+> > Using pci_ops as the example:
+> >
+> > struct MOCK(pci_ops) {
+> >          struct mock ctrl;
+> >          struct pci_bus *self; // this is the first param. Using
+> > python terminology here.
+> >          struct pci_ops trgt; // continue to store this, as this holds
+> > the function pointers
+> > }
+> >
+> > // Name of this func is currently based on the class we're mocking
+> > static inline struct mock *from_pci_ops_to_mock(
+> >   const struct pci_bus *self)
+> > {
+> >           return mock_get_ctrl(container_of(self, struct MOCK(pci_ops), self));
+> > }
+> >
+> > // then in tests, we'd need something like
+> > struct pci_bus bus;
+> > bus.ops = mock_get_trgt(mock_ops);
+> > mock_ops.self = &bus;
+> >
+> > Do others have thoughts/opinions?
 >
-> According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
-> have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
-> differentiate a x32 object from a IA32 object when executing
-> start_thread in compat mode.
+> In the above example, wouldn't we actually want to mock struct
+> pci_bus, not struct pci_ops?
 >
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  arch/x86/include/asm/elf.h   | 11 +++++++++--
->  arch/x86/kernel/process_64.c | 11 +++++++----
->  2 files changed, 16 insertions(+), 6 deletions(-)
+> I think pci_bus is what actually gets implemented. Consider the
+> Rockchip PCIe host controller:
 >
-> diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-> index 9220efc65d78..33c1c9be2e07 100644
-> --- a/arch/x86/include/asm/elf.h
-> +++ b/arch/x86/include/asm/elf.h
-> @@ -186,8 +186,15 @@ static inline void elf_common_init(struct thread_struct *t,
->  #define        COMPAT_ELF_PLAT_INIT(regs, load_addr)           \
->         elf_common_init(&current->thread, regs, __USER_DS)
+> Rockchip provides it's own pci_ops struct:
 >
-> -void compat_start_thread(struct pt_regs *regs, u32 new_ip, u32 new_sp);
-> -#define compat_start_thread compat_start_thread
-> +void compat_start_thread_ia32(struct pt_regs *regs, u32 new_ip, u32 new_sp);
-> +void compat_start_thread_x32(struct pt_regs *regs, u32 new_ip, u32 new_sp);
-> +#define compat_start_thread(regs, new_ip, new_sp)                      \
-> +do {                                                                   \
-> +       if (elf_ex->e_machine == EM_X86_64)                             \
-> +               compat_start_thread_x32(regs, new_ip, new_sp);          \
-> +       else                                                            \
-> +               compat_start_thread_ia32(regs, new_ip, new_sp);         \
-> +} while (0)
+> https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/pcie-rockchip-host.c#L256
+>
+> If you look at one of the implemented methods, say
+> rockchip_pcie_rd_conf(), you will see:
+>
+> ...
+> struct rockchip_pcie *rockchip = bus->sysdata;
+> ...
+> (This function signature is:
+>
+> int (*read)(struct pci_bus *bus, unsigned int devfn, int where, int
+> size, u32 *val);
+>
+> ).
+>
+> Thus, conceptually struct pci_bus is what is being manipulated; it
+> best fits the candidate for the *self pointer.
+>
+> In fact - if I am not mistaken - I think if you were to mock pci_bus
+> and just pretend that the methods were on pci_bus, not pci_ops, I
+> think it might just work.
 
-This is evil -- it looks like a real function, but it's not.  Can you
-instead add a const struct elf32_hdr *elf_ex parameter to all the
-compat_start_thread implementations?  There appear to be only four of
-them in the whole kernel.  For patches like this, it should be fine to
-do it all as one patch as long as you Cc all the arch maintainers.
+It works with this code as-is, yes.
 
---Andy
+But messing around with it, it seems like it might be helpful for the
+mock init funcs access to `struct kunit *test` in case they want to
+allocate.
+
+E.g. in cases where the ops struct points to a shared instance.
+We'd want to allocate a new ops struct so we don't accidentally affect
+more objects than expected by altering global state.
+
+It's a simple enough change, i.e.
+
+diff --git a/include/kunit/mock.h b/include/kunit/mock.h
+index 955c4267d726..9006f0e492dc 100644
+--- a/include/kunit/mock.h
++++ b/include/kunit/mock.h
+@@ -613,7 +613,7 @@ static inline bool is_naggy_mock(struct mock *mock)
+                                                                               \
+                        mock_init_ctrl(test, mock_get_ctrl(mock_obj));         \
+                                                                               \
+-                       if (init_func(mock_obj))                               \
++                       if (init_func(test, mock_obj))                         \
+                                return NULL;                                   \
+                                                                               \
+                        return mock_obj;                                       \
+diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
+index cd538cdb2a96..38c87f163d2f 100644
+--- a/lib/kunit/kunit-example-test.c
++++ b/lib/kunit/kunit-example-test.c
+@@ -66,7 +66,7 @@ DEFINE_STRUCT_CLASS_MOCK(METHOD(foo), CLASS(example),
+  * parent. In this example, all we have to do is populate the member functions
+  * of the parent class with the mock versions we defined.
+  */
+-static int example_init(struct MOCK(example) *mock_example)
++static int example_init(struct kunit *test, struct MOCK(example) *mock_example)
+ {
+        /* This is how you get a pointer to the parent class of a mock. */
+        struct example *example = mock_get_trgt(mock_example);
+
+>
+> The bigger problem is that it seems pci_bus does not want the user to
+> allocate it: in the case of rockchip_pcie, it is allocated by
+> devm_pci_alloc_host_bridge(). Thus, embedding pci_bus inside of a
+> MOCK(pci_bus) would probably not work, so you would need to have
+> different tooling around that and would then need to provide a custom
+> definition of from_pci_bus_to_mock() (generated by
+> DECLARE_STRUCT_CLASS_MOCK_CONVERTER()).
+
+Yeah, I'm still not sure about this.
+
+One approach would be to only support objects we can allocate and thus
+embed inside a wrapper MOCK(class) struct.
+Users would have to write a custom wrapper struct and
+from_<class>_to_mock() funcs for everything else.
+
+E.g. they'd write
+
+struct MOCK(pci_bus) {
+  struct mock ctrl;
+  struct pci_bus *bus; // normally, the macro would generate without *
+}
+
+static inline struct mock *from_pci_ops_to_mock(
+    const struct pci_bus *self) {
+  // let user provide magic logic to do this lookup
+ struct MOCK(pci_bus) *mock = somehow_get_wrapper(pci_bus);
+ return mock_get_ctrl(mock);
+}
+
+With the proposed change above to pass a `struct kunit *` to the init,
+we open the possibility of using a kunit_resource to store this
+mapping.
+Perhaps the conversion func could also be changed to take a `struct
+kunit *` as well?
+
+static int mock_pci_bus_init(struct kunit *test, struct MOCK(pci_bus) *mocked) {
+  // somehow establish mapping
+ kunit_add_named_resource(test, ....);
+}
+
+Given resources are looked up via a linear scan, perhaps we do
+something like create a single instance for each mocked type.
+E.g. we have a `map_pci_bus_to_mock` hashtable that either gets
+allocated or updated with each call?
+
+>
+> > After grepping around for examples, I'm struck by how the number of
+> > outliers there are.
+> > E.g. most take a `struct thing *` as the first param, but cfspi_ifc in
+> > caif_spi.h opts to take that as the last parameter.
+>
+> That's not a problem, just use the
+> DECLARE_STRUCT_CLASS_MOCK_HANDLE_INDEX() variant to create your mock
+> (as opposed to DECLARE_STRUCT_CLASS_MOCK()).
+
+Here's the function pointers
+  void (*ss_cb) (bool assert, struct cfspi_ifc *ifc);
+  void (*xfer_done_cb) (struct cfspi_ifc *ifc);
+
+So sadly that won't work (unless you only wanted to mock one of the funcs).
+But as we agree that we don't want to try and support everything, this is fine.
+
+>
+> For example let's say you have the following struct that you want to mock:
+>
+> struct example {
+>     ...
+>     int (*foo)(int bar, char baz, struct example *self);
+> };
+>
+> You could mock the function with:
+>
+> DECLARE_STRUCT_CLASS_MOCK_HANDLE_INDEX(
+>     METHOD(foo), CLASS(example),
+>     2, /* The "handle" is in position 2. */
+>     RETURNS(int),
+>     PARAMS(int, char, struct example *));
+>
+> > And others take a different mix of structs for each function.
+> >
+> > But it feels like a decoupled self / struct-holding-func-pointers
+> > approach should be generic enough, as far as I can tell.
+> > The more exotic types will probably have to remain unsupported.
+>
+> I think the code is pretty much here to handle any situation in which
+> one of the parameters input to the function can be used to look up a
+> mock object; we just need to expose the from_<class>_to_mock()
+> function to the user to override. The problem I see with what we have
+> now is the assumption that the user gets to create the object that
+> they want to mock. Your example has illustrated that that is not a
+> safe assumption.
+
+Agree.
+The code itself is more or less able to handle most of these use cases.
+Concern was more about how frequent + painful minor deviations from
+the current pattern would be.
+As noted above, I think allowing the mock init funcs to safely
+allocate a new ops struct if they want might be enough.
+
+For more exotic cases, users can write custom from_<class>_to_mock()
+funcs to handle a lot of cases.
+As long as the first argument to the mocked functions matches the
+first argument of _to_mock(), then it should all work out.
+
+>
+> But yes, sufficiently exoctic cases will have to be unsupported.
+>
+> BTW, sorry for not sharing the above in our offline discussion; since
+> we were talking without concrete examples in front of us, the problem
+> sounded worse than it looks here.
+>
+> [...]
