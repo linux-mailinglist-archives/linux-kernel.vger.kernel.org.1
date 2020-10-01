@@ -2,291 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDD027F8AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 06:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63A227F8C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 06:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgJAEaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 00:30:02 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:49603 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725823AbgJAEaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 00:30:02 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 18AA65C0B52;
-        Thu,  1 Oct 2020 00:30:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 01 Oct 2020 00:30:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=kdb3kbwzYhNDGsfhViy7/NTRx6
-        PPKrAMEf6/0UcczjE=; b=Wp57QM0J+bg+dYtETNoW4/LpT5nY8ZjIoAhbm70PaK
-        6ABLKYCgB6SC/f+co+ARPoQ/1vh4FN4TtX4o9UtJrd6DZCh1C7JBM+I3nXmiQCco
-        CGRKzsGRu4ZrQyHJqav7WKxnYQjlH2oRu/46IDpYayGDZr+Ij9LppWPj5uxPBd3/
-        FK5Y9A+0mE7t3o6UIc4iHOxSVSzDqf8valpsVh0mLwltMVb2XHsW+dta0in4XJzV
-        oseQN0GlvENErLPPpPknuWUNqPZdpWllM21b+OSTjJ15Bv5Qo+HCoo22bvtJRsCU
-        +88NCRjsfqgQhICKwDNQ+X/4YINJU/7finstgWeLQJ+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=kdb3kbwzYhNDGsfhV
-        iy7/NTRx6PPKrAMEf6/0UcczjE=; b=h8+v609Mj/SH/Iy+v0rgjeM4+gzCMgHHo
-        Jcdi/u/EwWdVykDPt821NKm3uHPlN3dZbwokLcaspD9OP99PS7BFT8tViyr00WIa
-        gXMhvVChj+UxabVLFu05p6xmvC67/dltaY8PlRklkoEWsBI3mJpw68G+hcubw9SR
-        rD2P2rRkdvTZhhyvcMF+q4ue498coMtEtL1mwoca+XmhZ92mBDxeDcC7r7/Rba7Q
-        TbyItJQsEp4oZozCwwsUU/rxeDqlpABfL02j3W6CltYEl7rzoglo328WFEnHC4Ag
-        0X03KLrKT9zUCxViawZHFZFwxbTJ9p+C+23CDP1eb8Dl1u0K7dCqA==
-X-ME-Sender: <xms:R1t1X04djMJx4hCLbnoWjTC7wpA1KOWcuXkfjs84feox2-F92-oVJA>
-    <xme:R1t1X16q2qdPX2Yj8lgbqFw_WA2Bli08UQBMUxXEE7eQELFeZ-LqXr_thoFWWRQLY
-    mqC0e7LNjbUg5JRbw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehnughrvgifucfl
-    vghffhgvrhihuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrfgrthhtvghrnh
-    epieetheduveelhfdvvdejleeuhfelteevheffgfeitdefgeekjeefieevgfehhefgnecu
-    ffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddukedrvddutddrudekkedrud
-    ejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegr
-    nhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:R1t1XzdWM3cVP2z0y3S3C2J23jh3fs4Mkm05jJEPYPoS96G0pkRltQ>
-    <xmx:R1t1X5KL6FGnS88D8gXBabX8T13lR2YxmSWaqXmcHhGUFPaZyt0ZbA>
-    <xmx:R1t1X4JdRFBB1DtkFHZK1wQWCjowUZaCIcdnqYz2pSZvLLIcVNS0LA>
-    <xmx:SFt1Xw9yk7Drv7FM-Opa5CLobCtT4-nAt-9WcbfWBMhxmdD5leYYRg>
-Received: from localhost.localdomain (ppp118-210-188-175.adl-adc-lon-bras34.tpg.internode.on.net [118.210.188.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4ED443064684;
-        Thu,  1 Oct 2020 00:29:56 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux@armlinux.org.uk, mhiramat@kernel.org, labbott@redhat.com,
-        keescook@chromium.org, mathieu.desnoyers@efficios.com,
-        linux-kernel@vger.kernel.org,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Subject: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying optprobe template
-Date:   Thu,  1 Oct 2020 13:59:27 +0930
-Message-Id: <20201001042927.2147800-1-andrew@aj.id.au>
-X-Mailer: git-send-email 2.25.1
+        id S1725932AbgJAEgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 00:36:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40170 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgJAEgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 00:36:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F878AF40;
+        Thu,  1 Oct 2020 04:36:29 +0000 (UTC)
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Vicente Bergas <vicencb@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+References: <20200930160854.65710-1-colyli@suse.de>
+ <5178b9e0-6b95-45ef-80f1-862de554e625@intel.com>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH] mmc: core: don't set limits.discard_granularity as 0
+Message-ID: <026e4bab-5d1d-50b9-29c4-e871fcd27b8b@suse.de>
+Date:   Thu, 1 Oct 2020 12:36:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <5178b9e0-6b95-45ef-80f1-862de554e625@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
-to a panic in memcpy() when injecting a kprobe despite the fixes found
-in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
-FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
-optimized kprobes illegal instruction").
+On 2020/10/1 01:23, Adrian Hunter wrote:
+> On 30/09/20 7:08 pm, Coly Li wrote:
+>> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+>> might be set as 0 (when card->pref_erase > max_discard) while the mmc
+>> device still declares to support discard operation. This is buggy and
+>> triggered the following kernel warning message,
+>>
+>> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+>> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+>> Hardware name: Google Kevin (DT)
+>> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+>> pc : __blkdev_issue_discard+0x200/0x294
+>> lr : __blkdev_issue_discard+0x54/0x294
+>> sp : ffff800011dd3b10
+>> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+>> __blkdev_issue_discard+0x200/0x294
+>> __submit_discard_cmd+0x128/0x374
+>> __issue_discard_cmd_orderly+0x188/0x244
+>> __issue_discard_cmd+0x2e8/0x33c
+>> issue_discard_thread+0xe8/0x2f0
+>> kthread+0x11c/0x120
+>> ret_from_fork+0x10/0x1c
+>> ---[ end trace e4c8023d33dfe77a ]---
+>>
+>> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+>> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+>> complain from __blkdev_issue_discard() for the improper value of discard
+>> granularity.
+>>
+>> Fixes: commit e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
+> 
+> That "Fixes" tag is a bit misleading.  For some time, the block layer had
+> no problem with discard_granularity of zero, and blk_bio_discard_split()
+> still doesn't (see below).
+> 
+> static struct bio *blk_bio_discard_split(struct request_queue *q,
+> 					 struct bio *bio,
+> 					 struct bio_set *bs,
+> 					 unsigned *nsegs)
+> {
+> 	unsigned int max_discard_sectors, granularity;
+> 	int alignment;
+> 	sector_t tmp;
+> 	unsigned split_sectors;
+> 
+> 	*nsegs = 1;
+> 
+> 	/* Zero-sector (unknown) and one-sector granularities are the same.  */
+> 	granularity = max(q->limits.discard_granularity >> 9, 1U);
+> 
 
-arch/arm/include/asm/kprobes.h effectively declares
-the target type of the optprobe_template_entry assembly label as a u32
-which leads memcpy()'s __builtin_object_size() call to determine that
-the pointed-to object is of size four. However, the symbol is used as a handle
-for the optimised probe assembly template that is at least 96 bytes in size.
-The symbol's use despite its type blows up the memcpy() in ARM's
-arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
-should instead copy the optimised probe template into place:
+From Documentation/block/queue-sysfs.rst, the discard_granularity is
+described as,
 
-```
-$ sudo perf probe -a aspeed_g6_pinctrl_probe
-[  158.457252] detected buffer overflow in memcpy
-[  158.458069] ------------[ cut here ]------------
-[  158.458283] kernel BUG at lib/string.c:1153!
-[  158.458436] Internal error: Oops - BUG: 0 [#1] SMP ARM
-[  158.458768] Modules linked in:
-[  158.459043] CPU: 1 PID: 99 Comm: perf Not tainted 5.9.0-rc7-00038-gc53ebf8167e9 #158
-[  158.459296] Hardware name: Generic DT based system
-[  158.459529] PC is at fortify_panic+0x18/0x20
-[  158.459658] LR is at __irq_work_queue_local+0x3c/0x74
-[  158.459831] pc : [<8047451c>]    lr : [<8020ecd4>]    psr: 60000013
-[  158.460032] sp : be2d1d50  ip : be2d1c58  fp : be2d1d5c
-[  158.460174] r10: 00000006  r9 : 00000000  r8 : 00000060
-[  158.460348] r7 : 8011e434  r6 : b9e0b800  r5 : 7f000000  r4 : b9fe4f0c
-[  158.460557] r3 : 80c04cc8  r2 : 00000000  r1 : be7c03cc  r0 : 00000022
-[  158.460801] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-[  158.461037] Control: 10c5387d  Table: b9cd806a  DAC: 00000051
-[  158.461251] Process perf (pid: 99, stack limit = 0x81c71a69)
-[  158.461472] Stack: (0xbe2d1d50 to 0xbe2d2000)
-[  158.461757] 1d40:                                     be2d1d84 be2d1d60 8011e724 80474510
-[  158.462104] 1d60: b9e0b800 b9fe4f0c 00000000 b9fe4f14 80c8ec80 be235000 be2d1d9c be2d1d88
-[  158.462436] 1d80: 801cee44 8011e57c b9fe4f0c 00000000 be2d1dc4 be2d1da0 801d0ad0 801cedec
-[  158.462742] 1da0: 00000000 00000000 b9fe4f00 ffffffea 00000000 be235000 be2d1de4 be2d1dc8
-[  158.463087] 1dc0: 80204604 801d0738 00000000 00000000 b9fe4004 ffffffea be2d1e94 be2d1de8
-[  158.463428] 1de0: 80205434 80204570 00385c00 00000000 00000000 00000000 be2d1e14 be2d1e08
-[  158.463880] 1e00: 802ba014 b9fe4f00 b9e718c0 b9fe4f84 b9e71ec8 be2d1e24 00000000 00385c00
-[  158.464365] 1e20: 00000000 626f7270 00000065 802b905c be2d1e94 0000002e 00000000 802b9914
-[  158.464829] 1e40: be2d1e84 be2d1e50 802b9914 8028ff78 804629d0 b9e71ec0 0000002e b9e71ec0
-[  158.465141] 1e60: be2d1ea8 80c04cc8 00000cc0 b9e713c4 00000002 80205834 80205834 0000002e
-[  158.465488] 1e80: be235000 be235000 be2d1ea4 be2d1e98 80205854 80204e94 be2d1ecc be2d1ea8
-[  158.465806] 1ea0: 801ee4a0 80205840 00000002 80c04cc8 00000000 0000002e 0000002e 00000000
-[  158.466110] 1ec0: be2d1f0c be2d1ed0 801ee5c8 801ee428 00000000 be2d0000 006b1fd0 00000051
-[  158.466398] 1ee0: 00000000 b9eedf00 0000002e 80204410 006b1fd0 be2d1f60 00000000 00000004
-[  158.466763] 1f00: be2d1f24 be2d1f10 8020442c 801ee4c4 80205834 802c613c be2d1f5c be2d1f28
-[  158.467102] 1f20: 802c60ac 8020441c be2d1fac be2d1f38 8010c764 802e9888 be2d1f5c b9eedf00
-[  158.467447] 1f40: b9eedf00 006b1fd0 0000002e 00000000 be2d1f94 be2d1f60 802c634c 802c5fec
-[  158.467812] 1f60: 00000000 00000000 00000000 80c04cc8 006b1fd0 00000003 76f7a610 00000004
-[  158.468155] 1f80: 80100284 be2d0000 be2d1fa4 be2d1f98 802c63ec 802c62e8 00000000 be2d1fa8
-[  158.468508] 1fa0: 80100080 802c63e0 006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-[  158.468858] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-[  158.469202] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338 60000010 00000003 00000000 00000000
-[  158.469461] Backtrace:
-[  158.469683] [<80474504>] (fortify_panic) from [<8011e724>] (arch_prepare_optimized_kprobe+0x1b4/0x1f8)
-[  158.470021] [<8011e570>] (arch_prepare_optimized_kprobe) from [<801cee44>] (alloc_aggr_kprobe+0x64/0x70)
-[  158.470287]  r9:be235000 r8:80c8ec80 r7:b9fe4f14 r6:00000000 r5:b9fe4f0c r4:b9e0b800
-[  158.470478] [<801cede0>] (alloc_aggr_kprobe) from [<801d0ad0>] (register_kprobe+0x3a4/0x5a0)
-[  158.470685]  r5:00000000 r4:b9fe4f0c
-[  158.470790] [<801d072c>] (register_kprobe) from [<80204604>] (__register_trace_kprobe+0xa0/0xa4)
-[  158.471001]  r9:be235000 r8:00000000 r7:ffffffea r6:b9fe4f00 r5:00000000 r4:00000000
-[  158.471188] [<80204564>] (__register_trace_kprobe) from [<80205434>] (trace_kprobe_create+0x5ac/0x9ac)
-[  158.471408]  r7:ffffffea r6:b9fe4004 r5:00000000 r4:00000000
-[  158.471553] [<80204e88>] (trace_kprobe_create) from [<80205854>] (create_or_delete_trace_kprobe+0x20/0x3c)
-[  158.471766]  r10:be235000 r9:be235000 r8:0000002e r7:80205834 r6:80205834 r5:00000002
-[  158.471949]  r4:b9e713c4
-[  158.472027] [<80205834>] (create_or_delete_trace_kprobe) from [<801ee4a0>] (trace_run_command+0x84/0x9c)
-[  158.472255] [<801ee41c>] (trace_run_command) from [<801ee5c8>] (trace_parse_run_command+0x110/0x1f8)
-[  158.472471]  r6:00000000 r5:0000002e r4:0000002e
-[  158.472594] [<801ee4b8>] (trace_parse_run_command) from [<8020442c>] (probes_write+0x1c/0x28)
-[  158.472800]  r10:00000004 r9:00000000 r8:be2d1f60 r7:006b1fd0 r6:80204410 r5:0000002e
-[  158.472968]  r4:b9eedf00
-[  158.473046] [<80204410>] (probes_write) from [<802c60ac>] (vfs_write+0xcc/0x1e8)
-[  158.473226] [<802c5fe0>] (vfs_write) from [<802c634c>] (ksys_write+0x70/0xf8)
-[  158.473400]  r8:00000000 r7:0000002e r6:006b1fd0 r5:b9eedf00 r4:b9eedf00
-[  158.473567] [<802c62dc>] (ksys_write) from [<802c63ec>] (sys_write+0x18/0x1c)
-[  158.473745]  r9:be2d0000 r8:80100284 r7:00000004 r6:76f7a610 r5:00000003 r4:006b1fd0
-[  158.473932] [<802c63d4>] (sys_write) from [<80100080>] (ret_fast_syscall+0x0/0x54)
-[  158.474126] Exception stack(0xbe2d1fa8 to 0xbe2d1ff0)
-[  158.474305] 1fa0:                   006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
-[  158.474573] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
-[  158.474811] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338
-[  158.475171] Code: e24cb004 e1a01000 e59f0004 ebf40dd3 (e7f001f2)
-[  158.475847] ---[ end trace 55a5b31c08a29f00 ]---
-[  158.476088] Kernel panic - not syncing: Fatal exception
-[  158.476375] CPU0: stopping
-[  158.476709] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.9.0-rc7-00038-gc53ebf8167e9 #158
-[  158.477176] Hardware name: Generic DT based system
-[  158.477411] Backtrace:
-[  158.477604] [<8010dd28>] (dump_backtrace) from [<8010dfd4>] (show_stack+0x20/0x24)
-[  158.477990]  r7:00000000 r6:60000193 r5:00000000 r4:80c2f634
-[  158.478323] [<8010dfb4>] (show_stack) from [<8046390c>] (dump_stack+0xcc/0xe8)
-[  158.478686] [<80463840>] (dump_stack) from [<80110750>] (handle_IPI+0x334/0x3a0)
-[  158.479063]  r7:00000000 r6:00000004 r5:80b65cc8 r4:80c78278
-[  158.479352] [<8011041c>] (handle_IPI) from [<801013f8>] (gic_handle_irq+0x88/0x94)
-[  158.479757]  r10:10c5387d r9:80c01ed8 r8:00000000 r7:c0802000 r6:80c0537c r5:000003ff
-[  158.480146]  r4:c080200c r3:fffffff4
-[  158.480364] [<80101370>] (gic_handle_irq) from [<80100b6c>] (__irq_svc+0x6c/0x90)
-[  158.480748] Exception stack(0x80c01ed8 to 0x80c01f20)
-[  158.481031] 1ec0:                                                       000128bc 00000000
-[  158.481499] 1ee0: be7b8174 8011d3a0 80c00000 00000000 80c04cec 80c04d28 80c5d7c2 80a026d4
-[  158.482091] 1f00: 10c5387d 80c01f34 80c01f38 80c01f28 80109554 80109558 60000013 ffffffff
-[  158.482621]  r9:80c00000 r8:80c5d7c2 r7:80c01f0c r6:ffffffff r5:60000013 r4:80109558
-[  158.482983] [<80109518>] (arch_cpu_idle) from [<80818780>] (default_idle_call+0x38/0x120)
-[  158.483360] [<80818748>] (default_idle_call) from [<801585a8>] (do_idle+0xd4/0x158)
-[  158.483945]  r5:00000000 r4:80c00000
-[  158.484237] [<801584d4>] (do_idle) from [<801588f4>] (cpu_startup_entry+0x28/0x2c)
-[  158.484784]  r9:80c78000 r8:00000000 r7:80c78000 r6:80c78040 r5:80c04cc0 r4:000000d6
-[  158.485328] [<801588cc>] (cpu_startup_entry) from [<80810a78>] (rest_init+0x9c/0xbc)
-[  158.485930] [<808109dc>] (rest_init) from [<80b00ae4>] (arch_call_rest_init+0x18/0x1c)
-[  158.486503]  r5:80c04cc0 r4:00000001
-[  158.486857] [<80b00acc>] (arch_call_rest_init) from [<80b00fcc>] (start_kernel+0x46c/0x548)
-[  158.487589] [<80b00b60>] (start_kernel) from [<00000000>] (0x0)
-```
+discard_granularity (RO)
+------------------------
+This shows the size of internal allocation of the device in bytes, if
+reported by the device. A value of '0' means device does not support
+the discard functionality.
 
-Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
-Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
-Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
----
-v1 was sent some time back, in May:
 
-https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
+And from Documentation/ABI/testing/sysfs-block, the discard_granularity
+is described as,
 
-I've taken the patch that Kees' suggested in the replies and tested it.
----
- arch/arm/include/asm/kprobes.h    | 22 +++++++++++-----------
- arch/arm/probes/kprobes/opt-arm.c | 18 +++++++++---------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+What:           /sys/block/<disk>/queue/discard_granularity
+Date:           May 2011
+Contact:        Martin K. Petersen <martin.petersen@oracle.com>
+Description:
+                Devices that support discard functionality may
+                internally allocate space using units that are bigger
+                than the logical block size. The discard_granularity
+                parameter indicates the size of the internal allocation
+                unit in bytes if reported by the device. Otherwise the
+                discard_granularity will be set to match the device's
+                physical block size. A discard_granularity of 0 means
+                that the device does not support discard functionality.
 
-diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
-index 213607a1f45c..e26a278d301a 100644
---- a/arch/arm/include/asm/kprobes.h
-+++ b/arch/arm/include/asm/kprobes.h
-@@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
- 			     unsigned long val, void *data);
- 
- /* optinsn template addresses */
--extern __visible kprobe_opcode_t optprobe_template_entry;
--extern __visible kprobe_opcode_t optprobe_template_val;
--extern __visible kprobe_opcode_t optprobe_template_call;
--extern __visible kprobe_opcode_t optprobe_template_end;
--extern __visible kprobe_opcode_t optprobe_template_sub_sp;
--extern __visible kprobe_opcode_t optprobe_template_add_sp;
--extern __visible kprobe_opcode_t optprobe_template_restore_begin;
--extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
--extern __visible kprobe_opcode_t optprobe_template_restore_end;
-+extern __visible kprobe_opcode_t optprobe_template_entry[];
-+extern __visible kprobe_opcode_t optprobe_template_val[];
-+extern __visible kprobe_opcode_t optprobe_template_call[];
-+extern __visible kprobe_opcode_t optprobe_template_end[];
-+extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
-+extern __visible kprobe_opcode_t optprobe_template_add_sp[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
-+extern __visible kprobe_opcode_t optprobe_template_restore_end[];
- 
- #define MAX_OPTIMIZED_LENGTH	4
- #define MAX_OPTINSN_SIZE				\
--	((unsigned long)&optprobe_template_end -	\
--	 (unsigned long)&optprobe_template_entry)
-+	((unsigned long)optprobe_template_end -	\
-+	 (unsigned long)optprobe_template_entry)
- #define RELATIVEJUMP_SIZE	4
- 
- struct arch_optimized_insn {
-diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-index 7a449df0b359..c78180172120 100644
---- a/arch/arm/probes/kprobes/opt-arm.c
-+++ b/arch/arm/probes/kprobes/opt-arm.c
-@@ -85,21 +85,21 @@ asm (
- 			"optprobe_template_end:\n");
- 
- #define TMPL_VAL_IDX \
--	((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
- #define TMPL_CALL_IDX \
--	((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
- #define TMPL_END_IDX \
--	((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
- #define TMPL_ADD_SP \
--	((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
- #define TMPL_SUB_SP \
--	((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
- #define TMPL_RESTORE_BEGIN \
--	((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
- #define TMPL_RESTORE_ORIGN_INSN \
--	((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
- #define TMPL_RESTORE_END \
--	((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
-+	((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
- 
- /*
-  * ARM can always optimize an instruction when using ARM ISA, except
-@@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
- 	}
- 
- 	/* Copy arch-dep-instance from template. */
--	memcpy(code, (unsigned long *)&optprobe_template_entry,
-+	memcpy(code, (unsigned long *)optprobe_template_entry,
- 			TMPL_END_IDX * sizeof(kprobe_opcode_t));
- 
- 	/* Adjust buffer according to instruction. */
--- 
-2.25.1
 
+Therefore I took it as a bug when a driver sets its queue
+discard_granularity as 0 but still announces to support discard operation.
+
+But if you don't like the Fixes: tag, it is OK for me to remove it in
+next version.
+
+(CC Martin because he is the origin of the above information)
+
+Thanks.
+
+Coly Li
