@@ -2,99 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0972280194
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE1C280196
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732493AbgJAOqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732020AbgJAOqq (ORCPT
+        id S1732486AbgJAOrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:47:03 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:17860 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732020AbgJAOrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:46:46 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71519C0613D0;
-        Thu,  1 Oct 2020 07:46:46 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id n14so4702237pff.6;
-        Thu, 01 Oct 2020 07:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/bvJaeIsvnVRyggeVeOl1YTR4So/Xa/e8HzZoos6sug=;
-        b=hDzu1IyME39GYnbjWw4BBFlrkMJP7fdud853cSG9GTOcrxENdsTmlATM/v3JjnXH18
-         2lRsNhTDtVgJhpdW/8YJUjxcHjjYAXk1NTLmmLIdzwl4j4cYpliXjmioKmRhlfVCuxDv
-         V5lwQY7ec1dESimJTLFfCdPeAqAK860WhBRTdW7/7elmIOQiI2E3FbwM1UrP8SE/2/4h
-         0dabI25Qy31pPdCq4JYI3wzHjAZwMBI5J4p69B/1ohk/ng5x9ltM1Yrxhdf24f4lXQJk
-         bZk85kzBw1MpgsjimKsu6RrMlZGSakjQ7iujFCd4sgxiVlFoeLYuCgq7nNXEQmgeVqZ2
-         syNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/bvJaeIsvnVRyggeVeOl1YTR4So/Xa/e8HzZoos6sug=;
-        b=COv4uKD/irI+gSW9hxMVyrgb3gqaRrxy73sTK2X25MrjYCKORf3IU9HjiMGbxVwP3r
-         oeK9agM+Tf6dyBnQPpmiK04g/rmUpCQh8bgastzZ2xfLDBsDbCTpGg1lAK/5mxogPvCM
-         JX7nopeiIXIqieNas/Qn5cIcBfuRkmLcfcu5H819HvyDzpGAJvLnPwTZ/vx4UtxrCfoI
-         9cWHxa9XMHQRFqlSJVe9Ek4o2gW+OkQl9+NGApVwDP0i27fjE8KBretsCDl5ky1h+aI+
-         dASggRkg/uqFL74JSe95F5AHPZWLDgnkmkhzToQOUpjL6F0nEmIbYPJn5iEVfuv165N0
-         7DUg==
-X-Gm-Message-State: AOAM530wsDd14s1/F/sg186cAUTwHfK3ArROB66IOpXfbrXjU3EWTsMu
-        L2CULnlEEWsGfbW2OXAclDoCg0/Bn90p6g==
-X-Google-Smtp-Source: ABdhPJz842WSS8+2az075Bn5TOYPjtXo7qBjlhcNob1H7oqEdivj3cWK61Ab0DfvT7PGLgSiA9zjXA==
-X-Received: by 2002:aa7:86ce:0:b029:152:1702:d791 with SMTP id h14-20020aa786ce0000b02901521702d791mr1654244pfo.13.1601563606016;
-        Thu, 01 Oct 2020 07:46:46 -0700 (PDT)
-Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id h31sm5549185pgh.71.2020.10.01.07.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 07:46:42 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:46:41 +0000
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     tj@kernel.org
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Remove unnecessary call to strstrip()
-Message-ID: <20201001144641.GB8928@haolee.github.io>
-References: <20200908133350.GA22979@haolee.github.io>
+        Thu, 1 Oct 2020 10:47:02 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091EfdNK008888;
+        Thu, 1 Oct 2020 16:46:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=MfBPhNoT6FPttKa4wn46gmWhQf3voOCyoRh7mAmqjtQ=;
+ b=lmaJnxIvuhVdBBphI1l6uSPcpDE5J76TxZx5DxECVq/BICBYIkO6ryeTcOZR2bwfhGd+
+ xcDTJIB82nD85CgadXA65Hjh+zb5+JMYXdiBL6ljuO/sFTRdhQbZamLnVA5kqJKIz/E5
+ ltdVAb/405w6k1o8pQyg4LALZAfxzuIAXcTZKWFdmviyomyfzIIA6HhNWBmfXz/oGmEG
+ vAHrkBC9tIX3iIWjRBQ4cRv3BAQ9Q8x8wQCJTzkcxOJ1qIos9XeOV9Awj02Cwx7che9m
+ nwydvMdLV/1wqvWdNlgmRv5K0uMTGquAMhFVoljoebH9+3bEjTAJdkYbJAIsi1YjFZ0f dA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33su4054tg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 01 Oct 2020 16:46:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8251F10002A;
+        Thu,  1 Oct 2020 16:46:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6EF2F2B2057;
+        Thu,  1 Oct 2020 16:46:56 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.51) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
+ 2020 16:46:55 +0200
+Subject: Re: [PATCH 02/10] rpmsg: core: Add channel creation internal API
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
+ <20200922001000.899956-3-mathieu.poirier@linaro.org>
+ <20200930063553.GB20683@ubuntu>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <beb0b4d9-e661-43d2-c5d5-b90eccf11036@st.com>
+Date:   Thu, 1 Oct 2020 16:46:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908133350.GA22979@haolee.github.io>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200930063553.GB20683@ubuntu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_04:2020-10-01,2020-10-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping. Thanks.
 
-On Tue, Sep 08, 2020 at 01:33:50PM +0000, Hao Lee wrote:
-> The string buf will be stripped in cgroup_procs_write_start() before it
-> is converted to int, so remove this unnecessary call to strstrip().
+
+On 9/30/20 8:35 AM, Guennadi Liakhovetski wrote:
+> On Mon, Sep 21, 2020 at 06:09:52PM -0600, Mathieu Poirier wrote:
+>> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>
+>> Add the channel creation API as a first step to be able to define the
+>> name service announcement as a rpmsg driver independent from the RPMsg
+>> virtio bus.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_core.c     | 45 ++++++++++++++++++++++++++++++++++
+>>  drivers/rpmsg/rpmsg_internal.h | 12 +++++++++
+>>  2 files changed, 57 insertions(+)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+>> index 91de940896e3..50a835eaf1ba 100644
+>> --- a/drivers/rpmsg/rpmsg_core.c
+>> +++ b/drivers/rpmsg/rpmsg_core.c
+>> @@ -20,6 +20,51 @@
+>>  
+>>  #include "rpmsg_internal.h"
+>>  
+>> +/**
+>> + * rpmsg_create_channel() - create a new rpmsg channel
+>> + * using its name and address info.
+>> + * @rpdev: rpmsg driver
 > 
-> Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
-> ---
->  kernel/cgroup/cgroup.c | 2 --
->  1 file changed, 2 deletions(-)
+> device
 > 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index b6714166106d..90ee7e73eb2e 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -4772,14 +4772,12 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
->  {
->  	struct cgroup *src_cgrp, *dst_cgrp;
->  	struct task_struct *task;
->  	ssize_t ret;
->  	bool locked;
->  
-> -	buf = strstrip(buf);
-> -
->  	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
->  	if (!dst_cgrp)
->  		return -ENODEV;
->  
->  	task = cgroup_procs_write_start(buf, false, &locked);
->  	ret = PTR_ERR_OR_ZERO(task);
-> -- 
-> 2.24.1
+>> + * @chinfo: channel_info to bind
+>> + *
+>> + * Returns a pointer to the new rpmsg device on success, or NULL on error.
+>> + */
+>> +struct rpmsg_device *
+>> +	rpmsg_create_channel(struct rpmsg_device *rpdev,
 > 
+> You might call this nitpicking, but we already have two indentation styles for 
+> functions:
+> 
+> return_type function(type1 arg1,
+> 			...)
+> 
+> (my personal preference, it also has sub-variants - depending on the aligning 
+> of the second line and any following lines, and one more moving "type1 arg1" 
+> to the second line)
+> 
+> return_type
+> function(...
+> 
+> and now you're also introducing the third style - with "function" indented... 
+> Maybe we don't need more of those, particularly since now with 100 chars per 
+> line in most cases the very first style can be used.
+
+Right, bad coding style.
+
+> 
+>> +			     struct rpmsg_channel_info *chinfo)
+>> +{
+>> +	if (WARN_ON(!rpdev))
+>> +		return NULL;
+>> +	if (!rpdev->ops || !rpdev->ops->create_channel) {
+>> +		dev_err(&rpdev->dev, "no create_channel ops found\n");
+>> +		return NULL;
+>> +	}
+>> +
+>> +	return rpdev->ops->create_channel(rpdev, chinfo);
+>> +}
+>> +EXPORT_SYMBOL(rpmsg_create_channel);
+>> +
+>> +/**
+>> + * rpmsg_release_channel() - release a rpmsg channel
+>> + * using its name and address info.
+>> + * @rpdev: rpmsg driver
+> 
+> device
+> 
+>> + * @chinfo: channel_info to bind
+>> + *
+>> + * Returns 0 on success or an appropriate error value.
+>> + */
+>> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
+>> +			  struct rpmsg_channel_info *chinfo)
+>> +{
+>> +	if (WARN_ON(!rpdev))
+>> +		return -EINVAL;
+>> +	if (!rpdev->ops || !rpdev->ops->release_channel) {
+>> +		dev_err(&rpdev->dev, "no release_channel ops found\n");
+>> +		return -EPERM;
+> 
+> ENOSYS or EOPNOTSUPP? I'm never sure which one is appropriate for 
+> this kind of errors.
+
+For coherency with the other RPMsg API functions, could be ENXIO...
+
+> 
+>> +	}
+>> +
+>> +	return rpdev->ops->release_channel(rpdev, chinfo);
+>> +}
+>> +EXPORT_SYMBOL(rpmsg_release_channel);
+>> +
+>>  /**
+>>   * rpmsg_create_ept() - create a new rpmsg_endpoint
+>>   * @rpdev: rpmsg channel device
+>> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+>> index 3fc83cd50e98..587f723757d4 100644
+>> --- a/drivers/rpmsg/rpmsg_internal.h
+>> +++ b/drivers/rpmsg/rpmsg_internal.h
+>> @@ -20,6 +20,8 @@
+>>  
+>>  /**
+>>   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+>> + * @create_channel:	create backend-specific channel, optional
+>> + * @release_channel:	release backend-specific channel, optional
+> 
+> Are they really optional? You return errors if they aren't available.
+
+I think they are optional, the back-end might not support the operation. 
+In this case, activating an RPMsg client that uses the interface should result in an
+error because the service is not compatible with the back-end implementation.
+
+Regards,
+Arnaud
+
+> 
+>>   * @create_ept:		create backend-specific endpoint, required
+>>   * @announce_create:	announce presence of new channel, optional
+>>   * @announce_destroy:	announce destruction of channel, optional
+>> @@ -29,6 +31,11 @@
+>>   * advertise new channels implicitly by creating the endpoints.
+>>   */
+>>  struct rpmsg_device_ops {
+>> +	struct rpmsg_device *(*create_channel)(struct rpmsg_device *rpdev,
+>> +					     struct rpmsg_channel_info *chinfo);
+>> +	int (*release_channel)(struct rpmsg_device *rpdev,
+>> +			       struct rpmsg_channel_info *chinfo);
+>> +
+>>  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
+>>  					    rpmsg_rx_cb_t cb, void *priv,
+>>  					    struct rpmsg_channel_info chinfo);
+>> @@ -75,6 +82,11 @@ int rpmsg_unregister_device(struct device *parent,
+>>  struct device *rpmsg_find_device(struct device *parent,
+>>  				 struct rpmsg_channel_info *chinfo);
+>>  
+>> +struct rpmsg_device *
+>> +rpmsg_create_channel(struct rpmsg_device *rpdev,
+>> +		     struct rpmsg_channel_info *chinfo);
+>> +int rpmsg_release_channel(struct rpmsg_device *rpdev,
+>> +			  struct rpmsg_channel_info *chinfo);
+>>  /**
+>>   * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
+>>   * @rpdev:	prepared rpdev to be used for creating endpoints
+>> -- 
+>> 2.25.1
+>>
