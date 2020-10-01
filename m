@@ -2,111 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82818280438
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D87280449
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732801AbgJAQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:47:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54524 "EHLO mx2.suse.de"
+        id S1732610AbgJAQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:51:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59840 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732778AbgJAQrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:47:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1ED28B17E;
-        Thu,  1 Oct 2020 16:47:18 +0000 (UTC)
-Message-ID: <8bc3f2b0d1b5ae59996bc9316a401a68c92ebac7.camel@suse.de>
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Tim Gover <tim.gover@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Thu, 01 Oct 2020 18:47:13 +0200
-In-Reply-To: <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-         <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
-         <20200929221526.GA1370981@ubuntu-m3-large-x86>
-         <20200930140758.gummt3umouva3wyu@gilmour.lan>
-         <20200930163823.GA237050@ubuntu-m3-large-x86>
-         <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
-         <20201001064843.dlewcu3b7dvqanyy@gilmour.lan>
-         <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
-         <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-l+ZiDYkuyn4YRFrpqm4U"
-User-Agent: Evolution 3.36.5 
+        id S1732016AbgJAQvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:51:41 -0400
+IronPort-SDR: jgp66Icb9SwbB6eEHv6R1yhBmm+K2sToWhrceCkSOhX1EkToiMCa1iRc4pE2mt+K3Sys9OcYJb
+ g5FQxk1SXxkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180933792"
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="180933792"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 09:51:38 -0700
+IronPort-SDR: MI//hR/qDfigJQ/WhDVCXIhf6/vl8bAvbmWqe3dt+FZvFbfeHbaqAKVc7xnQKoOak2hvZBeZho
+ A8V7kczDvZog==
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="346148630"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.213.183.12]) ([10.213.183.12])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 09:51:35 -0700
+Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
+ Branch Tracking for vsyscall emulation
+To:     Andy Lutomirski <luto@kernel.org>, "H.J. Lu" <hjl.tools@gmail.com>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
+ <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
+ <d9099183dadde8fe675e1b10e589d13b0d46831f.camel@intel.com>
+ <CALCETrWuhPE3A7eWC=ERJa7i7jLtsXnfu04PKUFJ-Gybro+p=Q@mail.gmail.com>
+ <b8797fcd-9d70-5749-2277-ef61f2e1be1f@intel.com>
+ <CALCETrWvWAxEuyteLaPmmu-r5LcWdh_DuW4JAOh3pVD4skWoBQ@mail.gmail.com>
+ <CALCETrVvob1dbdWSvaB0ZK1kJ19o9ZKy=U3tFifwOR++_xk=zA@mail.gmail.com>
+ <dd4310bd-a76b-cf19-4f12-0b52d7bc483d@intel.com>
+ <CALCETrXgde6yHTKw1Njnxp9cANp6Ee8bmG9C2X4e-Fz0ZZCuBw@mail.gmail.com>
+ <CAMe9rOonjX-b46sJ3AYSJZV84d=oU6-KhScnk5vksVqoLgQ90A@mail.gmail.com>
+ <CALCETrWoGXDDEvy10LoYVY6c_tkpMVABhCy+8pse9Rw8L9L=5A@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <79d1e67d-2394-1ce6-3bad-cce24ba792bd@intel.com>
+Date:   Thu, 1 Oct 2020 09:51:35 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <CALCETrWoGXDDEvy10LoYVY6c_tkpMVABhCy+8pse9Rw8L9L=5A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/30/2020 6:10 PM, Andy Lutomirski wrote:
+> On Wed, Sep 30, 2020 at 6:01 PM H.J. Lu <hjl.tools@gmail.com> wrote:
+>>
+>> On Wed, Sep 30, 2020 at 4:44 PM Andy Lutomirski <luto@kernel.org> wrote:
 
---=-l+ZiDYkuyn4YRFrpqm4U
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-Hi Tim, thanks for the info!
+>>>>>>>    From 09803e66dca38d7784e32687d0693550948199ed Mon Sep 17 00:00:00 2001
+>>>>>>> From: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>>>>>>> Date: Thu, 29 Nov 2018 14:15:38 -0800
+>>>>>>> Subject: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and
+>>>>>>> Indirect Branch
+>>>>>>>     Tracking for vsyscall emulation
+>>>>>>>
+>>>>>>> Vsyscall entry points are effectively branch targets.  Mark them with
+>>>>>>> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
+>>>>>>> and reset IBT state machine.
+>>>>>>>
+>>>>>>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>>>>>>> ---
+>>>>>>> v13:
+>>>>>>> - Check shadow stack address is canonical.
+>>>>>>> - Change from writing to MSRs to writing to CET xstate.
+>>>>>>>
+>>>>>>>     arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
+>>>>>>>     arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
+>>>>>>>     arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
+>>>>>>>     3 files changed, 44 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c
+>>>>>>> b/arch/x86/entry/vsyscall/vsyscall_64.c
+>>>>>>> index 44c33103a955..30b166091d46 100644
+>>>>>>> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+>>>>>>> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+>>>>>>> @@ -38,6 +38,9 @@
+>>>>>>>     #include <asm/fixmap.h>
+>>>>>>>     #include <asm/traps.h>
+>>>>>>>     #include <asm/paravirt.h>
+>>>>>>> +#include <asm/fpu/xstate.h>
+>>>>>>> +#include <asm/fpu/types.h>
+>>>>>>> +#include <asm/fpu/internal.h>
+>>>>>>>
+>>>>>>>     #define CREATE_TRACE_POINTS
+>>>>>>>     #include "vsyscall_trace.h"
+>>>>>>> @@ -286,6 +289,44 @@ bool emulate_vsyscall(unsigned long error_code,
+>>>>>>>           /* Emulate a ret instruction. */
+>>>>>>>           regs->ip = caller;
+>>>>>>>           regs->sp += 8;
+>>>>>>> +
+>>>>>>> +#ifdef CONFIG_X86_CET
+>>>>>>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
+>>>>>>> +               struct cet_user_state *cet;
+>>>>>>> +               struct fpu *fpu;
+>>>>>>> +
+>>>>>>> +               fpu = &tsk->thread.fpu;
+>>>>>>> +               fpregs_lock();
+>>>>>>> +
+>>>>>>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+>>>>>>> +                       copy_fpregs_to_fpstate(fpu);
+>>>>>>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
+>>>>>>> +               }
+>>>>>>> +
+>>>>>>> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+>>>>>>> +               if (!cet) {
+>>>>>>> +                       /*
+>>>>>>> +                        * This should not happen.  The task is
+>>>>>>> +                        * CET-enabled, but CET xstate is in INIT.
+>>>>>>> +                        */
+>>>>>>
+[...]
+>>>>>>
+>>>>>
+>>>>> For what it's worth, I think there is an alternative.  If you all
+>>>>> (userspace people, etc) can come up with a credible way for a user
+>>>>> program to statically declare that it doesn't need vsyscalls, then we
+>>>>> could make SHSTK depend on *that*, and we could avoid this mess.  This
+>>>>> breaks orthogonality, but it's probably a decent outcome.
+>>>>>
+>>>>
+>>>> Would an arch_prctl(DISABLE_VSYSCALL) work?  The kernel then sets a
+>>>> thread flag, and in emulate_vsyscall(), checks the flag.
+>>>>
+>>>> When CET is enabled, ld-linux will do DISABLE_VSYSCALL.
+>>>>
+>>>> How is that?
+>>>
+>>> Backwards, no?  Presumably vsyscall needs to be disabled before or
+>>> concurrently with CET being enabled, not after.
+>>>
+>>> I think the solution of making vsyscall emulation work correctly with
+>>> CET is going to be better and possibly more straightforward.
+>>>
+>>
+>> We can do
+>>
+>> 1. Add ARCH_X86_DISABLE_VSYSCALL to disable the vsyscall page.
+>> 2. If CPU supports CET and the program is CET enabled:
+>>      a. Disable the vsyscall page.
+>>      b. Pass control to user.
+>>      c. Enable the vsyscall page when ARCH_X86_CET_DISABLE is called.
+>>
+>> So when control is passed from kernel to user, the vsyscall page is
+>> disabled if the program
+>> is CET enabled.
+> 
+> Let me say this one more time:
+> 
+> If we have a per-process vsyscall disable control and a per-process
+> CET control, we are going to keep those settings orthogonal.  I'm
+> willing to entertain an option in which enabling SHSTK without also
+> disabling vsyscalls is disallowed, We are *not* going to have any CET
+> flags magically disable vsyscalls, though, and we are not going to
+> have a situation where disabling vsyscalls on process startup requires
+> enabling SHSTK.
+> 
+> Any possible static vsyscall controls (and CET controls, for that
+> matter) also need to come with some explanation of whether they are
+> properties set on the ELF loader, the ELF program being loaded, or
+> both.  And this explanation needs to cover what happens when old
+> binaries link against new libc versions and vice versa.  A new
+> CET-enabled binary linked against old libc running on a new kernel
+> that is expected to work on a non-CET CPU MUST work on a CET CPU, too.
+> 
+> Right now, literally the only thing preventing vsyscall emulation from
+> coexisting with SHSTK is that the implementation eeds work.
+> 
+> So your proposal is rejected.  Sorry.
+>
+I think, even with shadow stack/ibt enabled, we can still allow XONLY 
+without too much mess.
 
-On Thu, 2020-10-01 at 11:15 +0100, Tim Gover wrote:
-> hdmi_enable_4k60=3D1 causes the firmware to select 3.3 GHz for the PLLC
-> VCO to support a core-frequency of 550 MHz which is the minimum
-> frequency required by the HVS at 4Kp60. The side effect is that if the
-> display clock requirements are lower than 4Kp60 then you will see
-> different core frequencies selected by DVFS.
->=20
-> If enable_uart=3D1 and the mini-uart is selected (default unless
+What about this?
 
-What is the actual test made to check if mini-uart is selected? I can't get
-firmware to trigger this behaviour with 64-bit upstream kernel/dts. Note th=
-at I
-see the core clk setup at 200MHz just before having VC4 set it to 500MHz.
+Thanks,
+Yu-cheng
 
-The only thing I've got on my config.txt is:
+======
 
-enable_uart=3D1
-arm_64bit=3D1
+diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c 
+b/arch/x86/entry/vsyscall/vsyscall_64.c
+index 8b0b32ac7791..d39da0a15521 100644
+--- a/arch/x86/entry/vsyscall/vsyscall_64.c
++++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+@@ -48,16 +48,16 @@
+  static enum { EMULATE, XONLY, NONE } vsyscall_mode __ro_after_init =
+  #ifdef CONFIG_LEGACY_VSYSCALL_NONE
+         NONE;
+-#elif defined(CONFIG_LEGACY_VSYSCALL_XONLY)
++#elif defined(CONFIG_LEGACY_VSYSCALL_XONLY) || defined(CONFIG_X86_CET)
+         XONLY;
+-#else
++#else
+         EMULATE;
+  #endif
 
-Maybe we're missing some kind of DT alias upstream?
-
-Regards,
-Nicolas
-
-> bluetooth is disabled) then the firmware will pin the core-frequency
-> to either core_freq max (500 or 550). Although, I think there is a way
-> of pinning it to a lower fixed frequency.
->=20
-> The table in overclocking.md defines options for setting the maximum
-> core frequency but unless core_freq_min is specified DVFS will
-> automatically pick the lowest idle frequency required by the display
-> resolution.
-
-
---=-l+ZiDYkuyn4YRFrpqm4U
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl92CBEACgkQlfZmHno8
-x/6Fhgf+K45CVMk1ERaruIYgmRB2UNbRccC5JFlbwPuxX9BJ5by+WUgicZ1aESej
-v3EgZJ3c23NBQYWZM/rlGym3699PzjNagEq1+Q0X9HPaxveWDc4icOIK25hxC2ek
-16LeBHAkuPNsm0UKIpdz5aVWmJ6sEaFvPVRU5cUJw1c/HdzNbmtXUCEc8t3N1jV4
-0TxNvPb3SD2bCUq2GrReGwkO6uTK2Bpa4Ze0X3GLDbxHbDre7DgXz5yUCzAFOTLi
-yWKzAkiyKkVWlXxzAkL+IkNonS9eDaWfeuI/qnjuUEFhSrD1yAarIJDtJZBFjGYg
-swhYvJDXlfCINUxL5yo+22YAOvv8Xw==
-=jRxj
------END PGP SIGNATURE-----
-
---=-l+ZiDYkuyn4YRFrpqm4U--
-
+  static int __init vsyscall_setup(char *str)
+  {
+         if (str) {
+-               if (!strcmp("emulate", str))
++               if (!strcmp("emulate", str) && !IS_ENABLED(CONFIG_X86_CET))
+                         vsyscall_mode = EMULATE;
+                 else if (!strcmp("xonly", str))
+                         vsyscall_mode = XONLY;
