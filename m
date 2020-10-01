@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F4627FD25
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA8627FD38
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731897AbgJAKTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        id S1731682AbgJAKXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731819AbgJAKTL (ORCPT
+        with ESMTP id S1725938AbgJAKXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:19:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AC2C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 03:19:11 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kNvg5-0005E9-KP; Thu, 01 Oct 2020 12:19:09 +0200
-Subject: Re: [PATCH v2 08/12] ARM: dts: imx6dl-pico: fix board compatibles
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200930190143.27032-1-krzk@kernel.org>
- <20200930190143.27032-9-krzk@kernel.org>
- <0a0afea6-8cbb-3e89-5a4f-89660c942ca3@pengutronix.de>
- <20201001073208.GA5208@kozik-lap>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <027fd826-6822-9e92-0c6c-2ebed63f4a07@pengutronix.de>
-Date:   Thu, 1 Oct 2020 12:19:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 06:23:23 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B06C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 03:23:21 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id g3so3822477qtq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W259fc64ya1EFQ9j8EJVUKriprN8ho0dBOONikOqrRM=;
+        b=kYJsfwJVV85sgpQD1coWo9LLy7qyUDalbDV7oqIK+P2WIq0ATEoL86j1k4chqIyoH7
+         nQRLbUPxNN3LWRlXFlh0WYrLLVMHVLu7PIiE9BNawhNDuWAuTd3YGjJALquD4pr8UsR+
+         yuTZNiIbxTFbMIPpMY3s0mYvkrvBTxw9fvgWz0F3713JxJ/NgV6XtuOs9ogz9YmLqzL7
+         fiRT5NZtJR/TLfghDYnNJRGuCQGV9LSNoK3ljkdzvsYIIMf318KKvQnNtXeprDhMs/Vw
+         6qdaGDHH7YvDtolLSuFMJXxHecJIhWEAFDdvyxX0hCjajIlkPGr279PbpRMt+7T6YH65
+         XrKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W259fc64ya1EFQ9j8EJVUKriprN8ho0dBOONikOqrRM=;
+        b=jjmfNMXW87lC+e2N6PUKqNkV2+cwM+511YaVSz5zrWYP22xpRbA2grSA1gyqqx4msD
+         aABZGnwiPad0fRBkiQuq4XeVk64BDg3ntE6vSEnBIClHKr6xq53CwdQtR2lZej9gOVfr
+         z5uRpBMN2oJmhVy5fJKTJF4KbMb86WWzAM1HLq7+skbwv1jseAOfb2X7+oO365j3nXxm
+         FDUBHxbjX3b04KaHMeHF6EclrcMtQJRfhk/OwtHos2RIzHqKk2UfQ966Lmbnx9PaNHaD
+         csKmrTwg4ODjhYsxDNgfiIGlRkqmC8wdNZoTT4siRBedzqPnCuO2wNrB79VwR2Rs2zdO
+         8gJA==
+X-Gm-Message-State: AOAM530+bpD1lufaN0KwZ1AuHVg0sDfS9kqMRTRtq+4WPk36cAonbP8c
+        uvrEUxcpj3df8BS44kIqRVqQTe/qo5OfN5lw4n0wxw==
+X-Google-Smtp-Source: ABdhPJzT+5d2SnMzfm8dsQQEakN3AJz21lx4XznpyBIx2gtnxKnYm7cuN2hkt4UD00GmNfpOr7/MxM/NrfDzB4rzIG0=
+X-Received: by 2002:ac8:4658:: with SMTP id f24mr6711635qto.158.1601547800344;
+ Thu, 01 Oct 2020 03:23:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001073208.GA5208@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
+ <20200928083819.GD1685@zn.tnic> <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic> <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+ <20200928202353.GI1685@zn.tnic> <20200929083336.GA21110@zn.tnic>
+ <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
+ <20200930161711.GH6810@zn.tnic> <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
+ <20200930163120.GJ6810@zn.tnic>
+In-Reply-To: <20200930163120.GJ6810@zn.tnic>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 1 Oct 2020 12:23:08 +0200
+Message-ID: <CACT4Y+amigeTPFtwEgbeOGGTiRXFOVZauhOhQCz9CQ70HM17Ow@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Sep 30, 2020 at 6:31 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Sep 30, 2020 at 06:23:44PM +0200, Dmitry Vyukov wrote:
+> > Here is the answer:
+> > https://github.com/google/syzkaller/blob/master/tools/create-gce-image.sh#L189
+> >
+> > # rodata=n: mark_rodata_ro becomes very slow with KASAN (lots of PGDs)
+> >
+> > I have some vague memory that there was some debug double checking
+> > that pages are indeed read-only and that debug check was slow, but it
+> > was always executed without rodata=n.
+>
+> Sounds like debug_checkwx() which is disabled by turning off
+> CONFIG_DEBUG_WX.
+>
+> You could either disable it in your .configs or, provided there's even
+> such an option, disable KASAN checking around it until that one-time
+> boot test completes and then reenable KASAN.
 
-On 10/1/20 9:32 AM, Krzysztof Kozlowski wrote:
-> On Thu, Oct 01, 2020 at 09:22:03AM +0200, Ahmad Fatoum wrote:
->>> diff --git a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
->>> index d7403c5c4337..08fedcbcc91b 100644
->>> --- a/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
->>> +++ b/arch/arm/boot/dts/imx6dl-pico-hobbit.dts
->>> @@ -13,5 +13,5 @@
->>>  
->>>  / {
->>>  	model = "TechNexion PICO-IMX6 DualLite/Solo Board and Hobbit baseboard";
->>> -	compatible = "technexion,imx6dl-pico", "fsl,imx6dl";
->>> +	compatible = "technexion,imx6dl-pico-hobbit", "fsl,imx6dl";
->>>  };
-> 
-> The bindings, added in commit 53b61224ca40 ("dt-bindings: arm: fsl: Add
-> TechNexion boards"), describe that these are the only valid compatibles.
-> "technexion,imx6dl-pico" is not valid and would require changing the
-> bindings, thus breaking compatibility which you want to avoid.> 
-> The bindings, not what is present in DTS, is considered ABI.
+Thanks!
 
-The existing binding doesn't cover these boards then and needs to be
-extended, no? How about following patch?
+I've prepared a change that removes rodata=n:
+https://github.com/google/syzkaller/pull/2155
 
-[I guess we need to keep the two-compatible list they were originally
- in for compatibility even if it's unused among upstream device trees?]
-
-Cheers,
-Ahmad
-
--------------------------8<---------------------------
-
-From d2e44951f900a1774ef289db22812969e72925d6 Mon Sep 17 00:00:00 2001
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Date: Thu, 1 Oct 2020 12:03:36 +0200
-Subject: [RFC PATCH] dt-bindings: arm: fsl: add technexion,imx6dl-pico compatible
-
-The technexion,imx6dl-pico -dwarf, -hobbit, -nymph and -pi all use the
-same SoM. Reflect this compatibility with the SoM in the binding.
-
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 6da9d734cdb7..b7110305ce81 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -211,6 +211,16 @@ properties:
-           - const: gw,ventana
-           - const: fsl,imx6dl
- 
-+      - description: i.MX6DL TechNexion Pico Boards
-+        items:
-+          - enum:
-+              - technexion,imx6dl-pico-dwarf   # TechNexion i.MX6DL Pico-Dwarf
-+              - technexion,imx6dl-pico-hobbit  # TechNexion i.MX6DL Pico-Hobbit
-+              - technexion,imx6dl-pico-nymph   # TechNexion i.MX6DL Pico-Nymph
-+              - technexion,imx6dl-pico-pi      # TechNexion i.MX6DL Pico-Pi
-+          - const: technexion,imx6dl-pico
-+          - const: fsl,imx6dl
-+
-       - description: i.MX6SL based Boards
-         items:
-           - enum:
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+I think we will be able to indirectly evaluate if it helps or not over
+some period of time based on occurrence of any new similar crashes.
