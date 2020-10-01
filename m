@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C087827FCDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8663B27FCC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgJAKJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:09:31 -0400
-Received: from mail-m975.mail.163.com ([123.126.97.5]:58166 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgJAKJa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:09:30 -0400
-X-Greylist: delayed 934 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 06:09:29 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=+4m/E
-        60rd4MuVV6IHtmEXYYNuvcrK2YYQtFtbcmsOP4=; b=FrhotxVHrq4eURvN2ZD4q
-        RCPQ/3jYiLQTL+dgyeO0KxUEPGPxSVQoCiHL11fFofSCEeMvsM3kBXAuJaXCmjDM
-        h9Fri3aSaxO+VnT02/MqCOCNtMn+0qr0PoRWtGrAve+SZ9dZ6RHUJI3XnD2fVwYC
-        zkR14cCw2syCJgz5ZClL+o=
-Received: from ubuntu.localdomain (unknown [125.120.102.69])
-        by smtp5 (Coremail) with SMTP id HdxpCgBnVQ8ep3Vf0ouQOw--.234S4;
-        Thu, 01 Oct 2020 17:53:42 +0800 (CST)
-From:   Li Qiang <liq3ea@163.com>
-To:     pbonzini@redhat.com, corbet@lwn.net, lnowakow@eng.ucsd.edu,
-        kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     liq3ea@gmail.com, Li Qiang <liq3ea@163.com>
-Subject: [PATCH] Documentation: kvm: fix a typo
-Date:   Thu,  1 Oct 2020 02:53:33 -0700
-Message-Id: <20201001095333.7611-1-liq3ea@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S1731611AbgJAKCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:02:37 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2938 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725938AbgJAKCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 06:02:37 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id A04EBA1DF8756758B9D4;
+        Thu,  1 Oct 2020 11:02:35 +0100 (IST)
+Received: from localhost (10.52.127.250) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
+ 11:02:35 +0100
+Date:   Thu, 1 Oct 2020 11:00:52 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
+        <ashok.raj@intel.com>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v7 06/13] PCI/ERR: Limit AER resets in
+ pcie_do_recovery()
+Message-ID: <20201001100052.00004f86@Huawei.com>
+In-Reply-To: <20200930215820.1113353-7-seanvk.dev@oregontracks.org>
+References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+        <20200930215820.1113353-7-seanvk.dev@oregontracks.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HdxpCgBnVQ8ep3Vf0ouQOw--.234S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw18Gw17Zr45Xw4rGFyDZFb_yoW3XrbE9r
-        1DtFsYqr18tr1Sqw4UGFs5ZF13Xa1rCFyUCw1kArs5Aa4Ut395uFyDC3y2y345XFsxurZ8
-        JFZxZrW5Jw129jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRR75r3UUUUU==
-X-Originating-IP: [125.120.102.69]
-X-CM-SenderInfo: 5oltjvrd6rljoofrz/xtbBZgawbVaD6D9K2AAAst
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.250]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: e287d6de62f74 ("Documentation: kvm: Convert cpuid.txt to .rst")
-Signed-off-by: Li Qiang <liq3ea@163.com>
----
- Documentation/virt/kvm/cpuid.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, 30 Sep 2020 14:58:13 -0700
+Sean V Kelley <seanvk.dev@oregontracks.org> wrote:
 
-diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-index a7dff9186bed..ff2b38d3e108 100644
---- a/Documentation/virt/kvm/cpuid.rst
-+++ b/Documentation/virt/kvm/cpuid.rst
-@@ -62,7 +62,7 @@ KVM_FEATURE_PV_EOI                6           paravirtualized end of interrupt
-                                               handler can be enabled by
-                                               writing to msr 0x4b564d04
- 
--KVM_FEATURE_PV_UNHAULT            7           guest checks this feature bit
-+KVM_FEATURE_PV_UNHALT             7           guest checks this feature bit
-                                               before enabling paravirtualized
-                                               spinlock support
- 
--- 
-2.25.1
+> From: Sean V Kelley <sean.v.kelley@intel.com>
+> 
+> In some cases a bridge may not exist as the hardware
+> controlling may be handled only by firmware and so is
+> not visible to the OS. This scenario is also possible
+> in future use cases involving non-native use of RCECs
+> by firmware. So explicitly apply conditional logic
+> around these resets by limiting them to root ports and
+> downstream ports.
+> 
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/pci/pcie/err.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index c6922c099c76..9e552330155b 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -203,9 +203,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	pci_dbg(dev, "broadcast resume message\n");
+>  	pci_walk_bus(bus, report_resume, &status);
+>  
+> -	if (pcie_aer_is_native(dev))
+> -		pcie_clear_device_status(dev);
+> -	pci_aer_clear_nonfatal_status(dev);
+> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM) {
+> +		if (pcie_aer_is_native(bridge))
+> +			pcie_clear_device_status(bridge);
+> +		pci_aer_clear_nonfatal_status(bridge);
+> +	}
+>  	pci_info(dev, "device recovery successful\n");
+>  	return status;
+>  
+
 
