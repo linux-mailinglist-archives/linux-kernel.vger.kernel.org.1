@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A1827FA0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B53227FA0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgJAHR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAHR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:17:57 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6316C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:17:56 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x69so5282427lff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3a093mPLZMLxYyJzXYAdUThLjs9nDEPaRY1HYNU1+A8=;
-        b=phLR2D7CIuwvfBdghXXEUpr407xElTXrTDs2NErBJJ3Hp4IIqhS43vO9WMmQ+YHKjV
-         zuvzvkwd8kpxVAtzGR85PbLYtoNVBFOOu4w+24eGTQG+PHfPdI2bNkPx1oyHihf+idr7
-         yp9F7VfRN2oJ04fEB6IWHUYGS0bSM+wqG5RNcspEjlOq9W+buV2zkHTXzDOko+Tto1jH
-         5sSqHwbjKMZbZRFVQVNwDTuZ+VHP4RYa5fLfStVK0xPZbB8ptS0xvZop+ABB522Ql3ZQ
-         DHvl5vL3844FufgDd0+XOvb6ysV5VviMShTsgfpk15pWEYzWSBhJJWoL2bRIKPIWiUG5
-         faJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3a093mPLZMLxYyJzXYAdUThLjs9nDEPaRY1HYNU1+A8=;
-        b=gx1ya9FVK5SBVGJD93WArtVqOgBg8XEt7cUhqe8yJWAbpqqL3Cj2pcmVxyqFS4Ionj
-         xhUDMT7DOjSqkkoExsGj487rToB3P/sJgOrD5k+4T2j/wWeyMvS+3VUSMueY3dhxWENA
-         WAfdpzaf7Q+0wYVtgDMt3u63wHGmVCSt9TVKBksxfeNs/5dNFrd7AXs7tPkw62qM1D0X
-         iynNPfkCyXFLkDjlWUzJ5fUWc0ffNN6HGj+FCPJnDkd9E0o5twIDtDXhpWPAkQ89yGf2
-         1R2OKjG2BGb+HzMjhRW3T+EDd2vGSgEZJhEy0VHunt8hvaCt7GI34lJOKSlS6Oy7kFCb
-         M7mQ==
-X-Gm-Message-State: AOAM531RMrrlfWR6CD3IoXxm2WD1IpqGd3ADylY0Kc4pmMt61oUt6GMh
-        ndp0SsoHilwywG7AVvkQ8CMm8SujS/NH3c0Dg8nRvg==
-X-Google-Smtp-Source: ABdhPJxP55D2hhWqSR4tCJ07ITlzNDCAZ+lnrwKrTe9ednrN2CUOtNrfTEpWdc0cRTFZa+RQE8MRM/YY+CPChPBADKM=
-X-Received: by 2002:ac2:43c2:: with SMTP id u2mr1975724lfl.573.1601536675034;
- Thu, 01 Oct 2020 00:17:55 -0700 (PDT)
+        id S1731255AbgJAHSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:18:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAHSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:18:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B357CADB3;
+        Thu,  1 Oct 2020 07:18:29 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Coly Li <colyli@suse.de>, Vicente Bergas <vicencb@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v3] mmc: core: don't set limits.discard_granularity as 0
+Date:   Thu,  1 Oct 2020 15:18:24 +0800
+Message-Id: <20201001071824.24995-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200930173532.1069092-1-posk@google.com>
-In-Reply-To: <20200930173532.1069092-1-posk@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 1 Oct 2020 09:17:43 +0200
-Message-ID: <CAKfTPtBbaw5Ny_qmdhwiQyErfpE+GehY3wTMUxNVtfBjnAVC5w@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: tweak pick_next_entity
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Oskolkov <posk@posk.io>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 at 19:35, Peter Oskolkov <posk@google.com> wrote:
->
-> Currently, pick_next_entity(...) has the following structure
-> (simplified):
->
-> [...]
-> if (last_buddy_ok())
->   result = last_buddy;
-> if (next_buddy_ok())
->   result = next_buddy;
-> [...]
->
-> The intended behavior is to prefer next buddy over last buddy;
-> the current code somewhat obfuscates this, and also wastes
-> cycles checking the last buddy when eventually the next buddy is
-> picked up.
->
-> So this patch refactors two 'ifs' above into
->
-> [...]
-> if (next_buddy_ok())
->     result = next_buddy;
-> else if (last_buddy_ok())
->     result = last_buddy;
-> [...]
->
-> Signed-off-by: Peter Oskolkov <posk@google.com>
+In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+might be set as 0 (when card->pref_erase > max_discard) while the mmc
+device still declares to support discard operation. This is buggy and
+triggered the following kernel warning message,
 
-Reviewed-by: Vincent Guittot <vincent.guitttot@linaro.org>
+WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+Hardware name: Google Kevin (DT)
+pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+pc : __blkdev_issue_discard+0x200/0x294
+lr : __blkdev_issue_discard+0x54/0x294
+sp : ffff800011dd3b10
+x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+__blkdev_issue_discard+0x200/0x294
+__submit_discard_cmd+0x128/0x374
+__issue_discard_cmd_orderly+0x188/0x244
+__issue_discard_cmd+0x2e8/0x33c
+issue_discard_thread+0xe8/0x2f0
+kthread+0x11c/0x120
+ret_from_fork+0x10/0x1c
+---[ end trace e4c8023d33dfe77a ]---
 
-> ---
->  kernel/sched/fair.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index fc3410b8b990..cec6cf9b2bb3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4465,17 +4465,17 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
->                         se = second;
->         }
->
-> -       /*
-> -        * Prefer last buddy, try to return the CPU to a preempted task.
-> -        */
-> -       if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1)
-> -               se = cfs_rq->last;
-> -
-> -       /*
-> -        * Someone really wants this to run. If it's not unfair, run it.
-> -        */
-> -       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1)
-> +       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> +               /*
-> +                * Someone really wants this to run. If it's not unfair, run it.
-> +                */
->                 se = cfs_rq->next;
-> +       } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-> +               /*
-> +                * Prefer last buddy, try to return the CPU to a preempted task.
-> +                */
-> +               se = cfs_rq->last;
-> +       }
->
->         clear_buddies(cfs_rq, se);
->
-> --
-> 2.28.0.709.gb0816b6eb0-goog
->
+This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+complain from __blkdev_issue_discard() for the improper value of discard
+granularity.
+
+This issue is exposed after commit b35fd7422c2f ("block: check queue's
+limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
+is also added for the commit to make sure people won't miss this patch
+after applying the change of __blkdev_issue_discard().
+
+Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
+Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
+Reported-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+---
+Changelog,
+v3, add Fixes tag for both commits.
+v2, change commit id of the Fixes tag.
+v1, initial version.
+
+ drivers/mmc/core/queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index 6c022ef0f84d..350d0cc4ee62 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
+ 	q->limits.discard_granularity = card->pref_erase << 9;
+ 	/* granularity must not be greater than max. discard */
+ 	if (card->pref_erase > max_discard)
+-		q->limits.discard_granularity = 0;
++		q->limits.discard_granularity = SECTOR_SIZE;
+ 	if (mmc_can_secure_erase_trim(card))
+ 		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+ }
+-- 
+2.26.2
+
