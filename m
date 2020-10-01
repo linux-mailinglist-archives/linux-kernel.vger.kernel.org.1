@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F75F2807FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56D8280801
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733074AbgJATo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:44:57 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18229 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729990AbgJATo4 (ORCPT
+        id S1732842AbgJATp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729990AbgJATp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:44:56 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7631ab0001>; Thu, 01 Oct 2020 12:44:43 -0700
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 1 Oct
- 2020 19:44:47 +0000
-Subject: Re: [PATCH v3 10/13] ASoC: tegra: Add audio graph based card driver
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        "Sameer Pujar" <spujar@nvidia.com>
-CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <thierry.reding@gmail.com>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-11-git-send-email-spujar@nvidia.com>
- <20201001190733.GD23339@qmqm.qmqm.pl>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <85fe1be4-7b67-da99-06a5-28089f662a1d@nvidia.com>
-Date:   Thu, 1 Oct 2020 20:44:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Oct 2020 15:45:59 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD58DC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 12:45:58 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v23so5686115ljd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 12:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2gfbOiiR0so3N0eX6gQPc6WKY7PeKJeRfa9G0R50hA=;
+        b=L8wFd+HleRUy2It+KmWJB1fwyoQVZjtyVGCA52KJRhRXbSNUGkkwN3/7mIaxQepJR7
+         iuog+JhLqKQBpndNTN35oHdPDn2rnXahO3Xx7vmOsxZXqDUs1JrtwY5UwiWm423plAQj
+         lo4HD9GZCPKZ25/bwDhXwjYcudcL/Zg3xzqRhLqf4r9rXjw1u5njkPwGOnFinErUgbBz
+         YCDMiwdlkMrqWJj2GxZ5QqLrv8qMsrR+Iqj0LfK5k4TPlCzy3PughEAPTlwiNRXlpGVR
+         XFx8eCdsk0HIUFNeGUhrVgk3rWB5BrHFd9Ow8NqbjOPmaYbuAs3sCg2YWbchqAuzJNzK
+         2vUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2gfbOiiR0so3N0eX6gQPc6WKY7PeKJeRfa9G0R50hA=;
+        b=OY6v7wefa4eYo7/PdK2HSolMDXbIe6OiR0u/rzK/Lwsx1F5IIK2Mis6b7ZUsKPY58O
+         1n9p76FATzuEwf7jWdRs/0qalvBDKsL5t8J/0vvyjTE9ufO/VF8EbFzUvJvWtk4wrYKb
+         Ac4PiIb4Ii1acyY7VZI02vWPW7ZNX+0+EaSPcnTmhgQ4tvRAoQNNZxfDvMs9xQA7dpxz
+         YjI0wrJPlkyc6auhBcU4Ww+3/uIcxuBgei5QaSzUDJtyajn2IjbHtrjNGMH1oQGEtsVY
+         IDqQuqpoTnT8m/+Em1cOJBMLf5tx83WsDTI1VK8trsj+eUUG/67PEyBD9K0bB/JJ4un0
+         udQw==
+X-Gm-Message-State: AOAM530yJMvj3ECECL2KJtubpY1v9jGCjiGq8j6AZZO68LFAn3yp4yTo
+        J3aMrmqwXXBXxVk0OZd/fOT80heKGsIvoqGZUT3Apw==
+X-Google-Smtp-Source: ABdhPJzhr62N6D/DY0NMD6Re7tm+lJuTbYgAQTgrVa6ZpBk/+rg4S7xE0mJMNKGk9FcSYDYEXfBWz/WFBYcaS/gYx8o=
+X-Received: by 2002:a2e:804f:: with SMTP id p15mr2979567ljg.199.1601581557161;
+ Thu, 01 Oct 2020 12:45:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001190733.GD23339@qmqm.qmqm.pl>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601581483; bh=SzR9+Kg5ALQEhT+jW9ABsLDoFclETsOIFF0nIoKFTsA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=VnZsQ/DtIwGXa9gGozOJfBdr/CWcgyy5AB1KaSPWc6HwRB/SLJvflJHSIqwv9WeLD
-         DSm4YmBMmwFzpkqawyiIW8cTP8upzOJsLvd3GcOE+kI6+MEzAVNL9EuDX7ysk1qla2
-         T/xWi2lo63yvxPkwDRSlnNV+xiykixQD62CYiG5LaQnzwzIuShDTylG/ciZZqbFPzG
-         nwZuFqNQQzZV40S1nILc37TJJpze9P7fAyI8vjEbHf1y8onAKOY/OcCbIw46p+kIMR
-         KaGuBnlzYFcZivHzgfCEhY4JYfXnv7sb5JszTw7DsgfQpwbTDIDxFlzRd7Xcdu4H0W
-         /bK8u789odIBg==
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+ <20200929221526.GA1370981@ubuntu-m3-large-x86> <20200930140758.gummt3umouva3wyu@gilmour.lan>
+ <20200930163823.GA237050@ubuntu-m3-large-x86> <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
+ <20201001064843.dlewcu3b7dvqanyy@gilmour.lan> <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
+ <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com> <8bc3f2b0d1b5ae59996bc9316a401a68c92ebac7.camel@suse.de>
+In-Reply-To: <8bc3f2b0d1b5ae59996bc9316a401a68c92ebac7.camel@suse.de>
+From:   Tim Gover <tim.gover@raspberrypi.com>
+Date:   Thu, 1 Oct 2020 20:45:45 +0100
+Message-ID: <CAAvKZ65qyKDrmzHR=HELJmrRdchJ8MEXJZJGcj1oyNXg-BamZA@mail.gmail.com>
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Eric Anholt <eric@anholt.net>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sorry, my previous statement was misleading.
 
-On 01/10/2020 20:07, Micha=B3 Miros=B3aw wrote:
-> On Thu, Oct 01, 2020 at 11:03:04PM +0530, Sameer Pujar wrote:
->> Add Tegra audio machine driver which is based on generic audio graph car=
-d
->> driver. It re-uses most of the common stuff from audio graph driver and
->> uses the same DT binding. Required Tegra specific customizations are don=
-e
->> in the driver.
-> [...]
->> +	switch (srate) {
->> +	case 11025:
->> +	case 22050:
->> +	case 44100:
->> +	case 88200:
->> +	case 176400:
->> +		plla_out0_rate =3D chip_data->plla_out0_rates[x11_RATE];
->> +		plla_rate =3D chip_data->plla_rates[x11_RATE];
->> +		break;
->> +	case 8000:
->> +	case 16000:
->> +	case 32000:
->> +	case 48000:
->> +	case 96000:
->> +	case 192000:
-> [...]
->=20
-> Do you really need to enumerate the frequencies? Wouldn't just checking
-> srate % 11025 be enough to divide the set in two? Or just calculating
-> the PLLA base rate by multiplying?
+enable_uart will select the mini_uart for gpio14,15 unless the
+disable-bt device tree overlay is loaded. As well as disabling
+bluetooth disable-bt swaps the uart0 pin configs to point the regular
+UART to gpio 14,15. After resolving the DT overlays the firmware does
+the initial UART setup according to which controller is pointed at
+pins 14,15.
 
+I'll have to speak to others about exactly when the fixing of the core
+clock takes effect. There have been a few changes related to the
+initial turbo frequency configuration and how this is reported via the
+mbox APIs
 
-This is quite common among other ASoC drivers from what I can see. The
-PLL rate does not scale with the srate, we just use a different PLL rate
-depending on if the srate is 11025 Hz or 8000 Hz based. I don't see any
-need to change the above.
-
-Cheers
-Jon
-
---=20
-nvpublic
+On Thu, 1 Oct 2020 at 17:47, Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Hi Tim, thanks for the info!
+>
+> On Thu, 2020-10-01 at 11:15 +0100, Tim Gover wrote:
+> > hdmi_enable_4k60=1 causes the firmware to select 3.3 GHz for the PLLC
+> > VCO to support a core-frequency of 550 MHz which is the minimum
+> > frequency required by the HVS at 4Kp60. The side effect is that if the
+> > display clock requirements are lower than 4Kp60 then you will see
+> > different core frequencies selected by DVFS.
+> >
+> > If enable_uart=1 and the mini-uart is selected (default unless
+>
+> What is the actual test made to check if mini-uart is selected? I can't get
+> firmware to trigger this behaviour with 64-bit upstream kernel/dts. Note that I
+> see the core clk setup at 200MHz just before having VC4 set it to 500MHz.
+>
+> The only thing I've got on my config.txt is:
+>
+> enable_uart=1
+> arm_64bit=1
+>
+> Maybe we're missing some kind of DT alias upstream?
+>
+> Regards,
+> Nicolas
+>
+> > bluetooth is disabled) then the firmware will pin the core-frequency
+> > to either core_freq max (500 or 550). Although, I think there is a way
+> > of pinning it to a lower fixed frequency.
+> >
+> > The table in overclocking.md defines options for setting the maximum
+> > core frequency but unless core_freq_min is specified DVFS will
+> > automatically pick the lowest idle frequency required by the display
+> > resolution.
+>
