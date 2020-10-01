@@ -2,214 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D9327F6BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16C827F6B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731973AbgJAA2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730707AbgJAA2x (ORCPT
+        id S1732032AbgJAA1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:27:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36634 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730703AbgJAA1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:28:53 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD29C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:28:53 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id n10so2959552qtv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T5hEEgrzHP6xona5H9P8wQCkpRbT+BaAwY69OVtYbLU=;
-        b=Xb7cZV1yMjoJufikGNVrE0G5ExXSdV4DFVrPjt+WNdtS6wmXacRpszB2twNaR7W0s2
-         XPMb/ZGzfmj+r+XC67Ln4/tdYzEitwFCmxcVQIvTRU6TeNxE05Ibe1NJRpJp6DeVYSmx
-         NlVt193sjgps+Jj5eqfISQ6AYWA/SyBi/iKVck1atdK7DB6dq+kvBlA5iZkFtH3ONTDo
-         c6Q1v2y5+CqY4sz5e5c5WjJbj5T9VCDAP0aAVIbGu6IkeO7LHgRC3K/q80tnv6TCQFke
-         EO/1/gO4H8I4Pha19qIBnWS7H37XwK+fsuU31qkXdj7RBkGlANaphx6x4wwOBM6s1xRo
-         C1EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T5hEEgrzHP6xona5H9P8wQCkpRbT+BaAwY69OVtYbLU=;
-        b=Qt8Z9hfRx3HD392AryIAnQkEMtzKjV02brr6AFqWacilMaXbuo5v0H639oHZFYV7Y7
-         XC4PYoXzrFnVCX/AHTvkiyeSLyJeBzRZkJKIhlnHLeKngD+C56MK0VTU/TEkzg6QsqkN
-         BAL5ROBPCxkZpMj9OR9RRIGAOjq94jl+O/tMWuD8F3eZqpHuZ9ezIR9dBMPLBVZPd3w6
-         h/UuhvKQzO8P753GfJdhFY4/Iv5pw3b7wpoI8H0hVRX54VvZlZdCa3SQNynfZQ5F0Jvl
-         txvVVKpa1hkReOxAycT6V7l7+3dc5KXBmAuQBVNOkZmPlfV/n4yDagVTI5ydsAZQTQBj
-         L5ag==
-X-Gm-Message-State: AOAM532J38JkkRqTyGiQ6806em+DSlskAlby1Er4PVZOE0FulVe/kkQC
-        eqbPm0ZMgxa8Wri521E1LBSgMA==
-X-Google-Smtp-Source: ABdhPJy69Sxv91n1Jc0BaMa4zZnlW8UtuNB+eKW8IrJ2HhPJd81fBDCjDt8EUpnYy3V2EVVUFEgY+g==
-X-Received: by 2002:ac8:6d2a:: with SMTP id r10mr5057104qtu.170.1601512132544;
-        Wed, 30 Sep 2020 17:28:52 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 205sm3850908qki.118.2020.09.30.17.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 17:28:52 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent cache maintenance
-Date:   Wed, 30 Sep 2020 20:27:05 -0400
-Message-Id: <20201001002709.21361-3-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20201001002709.21361-1-jonathan@marek.ca>
-References: <20201001002709.21361-1-jonathan@marek.ca>
+        Wed, 30 Sep 2020 20:27:43 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0910RdMO005973
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:27:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=nxkYWmR9uHeb56di1Os7YYMXD4UUaIBrdPMR7dN2WgA=;
+ b=AmS+dOR1TpaKANUAoIm4Wc9MwmsJfF5gvMuKdWFB4vCb+85Xp4jkfvIHrPiwD0KdIQqx
+ l40ODsxbzKut1oKdcsODB+Olbvg1fdL+Y0QHreifRfW3TqeNqDO4EnWYmNz8mVqo4sU4
+ VQCt77fLDqwgcan/YDkNb7NN9qJ3ES9LgBI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 33w05n1hhj-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:27:42 -0700
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 30 Sep 2020 17:27:19 -0700
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id BFB48DE9665; Wed, 30 Sep 2020 17:27:17 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>
+Subject: [PATCH v4 0/4] mm: allow mapping accounted kernel pages to userspace
+Date:   Wed, 30 Sep 2020 17:27:06 -0700
+Message-ID: <20201001002710.748166-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=543 impostorscore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010002
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes it possible to use the non-coherent cached MSM_BO_CACHED mode,
-which otherwise doesn't provide any method for cleaning/invalidating the
-cache to sync with the device.
+Currently a non-slab kernel page which has been charged to a memory
+cgroup can't be mapped to userspace. The underlying reason is simple:
+PageKmemcg flag is defined as a page type (like buddy, offline, etc),
+so it takes a bit from a page->mapped counter. Pages with a type set
+can't be mapped to userspace.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/msm_drv.c | 21 +++++++++++++++++++++
- drivers/gpu/drm/msm/msm_drv.h |  2 ++
- drivers/gpu/drm/msm/msm_gem.c | 15 +++++++++++++++
- include/uapi/drm/msm_drm.h    | 20 ++++++++++++++++++++
- 4 files changed, 58 insertions(+)
+But in general the kmemcg flag has nothing to do with mapping to
+userspace. It only means that the page has been accounted by the page
+allocator, so it has to be properly uncharged on release.
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 9716210495fc..305db1db1064 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -964,6 +964,26 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
- 	return msm_submitqueue_remove(file->driver_priv, id);
- }
- 
-+static int msm_ioctl_gem_sync_cache(struct drm_device *dev, void *data,
-+		struct drm_file *file)
-+{
-+	struct drm_msm_gem_sync_cache *args = data;
-+	struct drm_gem_object *obj;
-+
-+	if (args->flags & ~MSM_GEM_SYNC_CACHE_FLAGS)
-+		return -EINVAL;
-+
-+	obj = drm_gem_object_lookup(file, args->handle);
-+	if (!obj)
-+		return -ENOENT;
-+
-+	msm_gem_sync_cache(obj, args->flags, args->offset, args->end);
-+
-+	drm_gem_object_put(obj);
-+
-+	return 0;
-+}
-+
- static const struct drm_ioctl_desc msm_ioctls[] = {
- 	DRM_IOCTL_DEF_DRV(MSM_GET_PARAM,    msm_ioctl_get_param,    DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_GEM_NEW,      msm_ioctl_gem_new,      DRM_RENDER_ALLOW),
-@@ -976,6 +996,7 @@ static const struct drm_ioctl_desc msm_ioctls[] = {
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_NEW,   msm_ioctl_submitqueue_new,   DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_CLOSE, msm_ioctl_submitqueue_close, DRM_RENDER_ALLOW),
- 	DRM_IOCTL_DEF_DRV(MSM_SUBMITQUEUE_QUERY, msm_ioctl_submitqueue_query, DRM_RENDER_ALLOW),
-+	DRM_IOCTL_DEF_DRV(MSM_GEM_SYNC_CACHE,    msm_ioctl_gem_sync_cache,    DRM_RENDER_ALLOW),
- };
- 
- static const struct vm_operations_struct vm_ops = {
-diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-index 6384844b1696..5e932dae453f 100644
---- a/drivers/gpu/drm/msm/msm_drv.h
-+++ b/drivers/gpu/drm/msm/msm_drv.h
-@@ -314,6 +314,8 @@ void msm_gem_move_to_active(struct drm_gem_object *obj,
- void msm_gem_move_to_inactive(struct drm_gem_object *obj);
- int msm_gem_cpu_prep(struct drm_gem_object *obj, uint32_t op, ktime_t *timeout);
- int msm_gem_cpu_fini(struct drm_gem_object *obj);
-+void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-+		size_t range_start, size_t range_end);
- void msm_gem_free_object(struct drm_gem_object *obj);
- int msm_gem_new_handle(struct drm_device *dev, struct drm_file *file,
- 		uint32_t size, uint32_t flags, uint32_t *handle, char *name);
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index ad9a627493ae..93da88b3fc50 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -8,6 +8,7 @@
- #include <linux/shmem_fs.h>
- #include <linux/dma-buf.h>
- #include <linux/pfn_t.h>
-+#include <linux/dma-noncoherent.h>
- 
- #include <drm/drm_prime.h>
- 
-@@ -808,6 +809,20 @@ int msm_gem_cpu_fini(struct drm_gem_object *obj)
- 	return 0;
- }
- 
-+void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
-+		size_t range_start, size_t range_end)
-+{
-+	struct msm_gem_object *msm_obj = to_msm_bo(obj);
-+
-+	/* TODO: sync only the required range, and don't invalidate on clean */
-+
-+	if (flags & MSM_GEM_SYNC_CACHE_CLEAN)
-+		sync_for_device(msm_obj);
-+
-+	if (flags & MSM_GEM_SYNC_CACHE_INVALIDATE)
-+		sync_for_cpu(msm_obj);
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- static void describe_fence(struct dma_fence *fence, const char *type,
- 		struct seq_file *m)
-diff --git a/include/uapi/drm/msm_drm.h b/include/uapi/drm/msm_drm.h
-index 474497e8743a..1dfafa71fc94 100644
---- a/include/uapi/drm/msm_drm.h
-+++ b/include/uapi/drm/msm_drm.h
-@@ -319,6 +319,24 @@ struct drm_msm_submitqueue_query {
- 	__u32 pad;
- };
- 
-+/*
-+ * Host cache maintenance (relevant for MSM_BO_CACHED)
-+ * driver may both clean/invalidate (flush) for clean
-+ */
-+
-+#define MSM_GEM_SYNC_CACHE_CLEAN	0x1
-+#define MSM_GEM_SYNC_CACHE_INVALIDATE	0x2
-+
-+#define MSM_GEM_SYNC_CACHE_FLAGS	(MSM_GEM_SYNC_CACHE_CLEAN | \
-+					 MSM_GEM_SYNC_CACHE_INVALIDATE)
-+
-+struct drm_msm_gem_sync_cache {
-+	__u32 handle;
-+	__u32 flags;
-+	__u64 offset;
-+	__u64 end;      /* offset + size */
-+};
-+
- #define DRM_MSM_GET_PARAM              0x00
- /* placeholder:
- #define DRM_MSM_SET_PARAM              0x01
-@@ -336,6 +354,7 @@ struct drm_msm_submitqueue_query {
- #define DRM_MSM_SUBMITQUEUE_NEW        0x0A
- #define DRM_MSM_SUBMITQUEUE_CLOSE      0x0B
- #define DRM_MSM_SUBMITQUEUE_QUERY      0x0C
-+#define DRM_MSM_GEM_SYNC_CACHE         0x0D
- 
- #define DRM_IOCTL_MSM_GET_PARAM        DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GET_PARAM, struct drm_msm_param)
- #define DRM_IOCTL_MSM_GEM_NEW          DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_GEM_NEW, struct drm_msm_gem_new)
-@@ -348,6 +367,7 @@ struct drm_msm_submitqueue_query {
- #define DRM_IOCTL_MSM_SUBMITQUEUE_NEW    DRM_IOWR(DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_NEW, struct drm_msm_submitqueue)
- #define DRM_IOCTL_MSM_SUBMITQUEUE_CLOSE  DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_CLOSE, __u32)
- #define DRM_IOCTL_MSM_SUBMITQUEUE_QUERY  DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_SUBMITQUEUE_QUERY, struct drm_msm_submitqueue_query)
-+#define DRM_IOCTL_MSM_GEM_SYNC_CACHE     DRM_IOW (DRM_COMMAND_BASE + DRM_MSM_GEM_SYNC_CACHE, struct drm_msm_gem_sync_cache)
- 
- #if defined(__cplusplus)
- }
--- 
-2.26.1
+Some bpf maps are mapping the vmalloc-based memory to userspace, and
+their memory can't be accounted because of this implementation detail.
+
+This patchset removes this limitation by moving the PageKmemcg flag
+into one of the free bits of the page->mem_cgroup pointer. Also it
+formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
+using new helpers, adds several checks and removes a couple of obsolete
+functions. As the result the code became more robust with fewer
+open-coded bits tricks.
+
+v4:
+  - more cosmetic changes, by Johannes
+
+v3:
+  - READ_ONCE() in page_memcg_rcu() and page_objcgs*(), by Johannes
+  - many cosmetic changes and renamings, by Johannes
+
+v2:
+  - fixed a bug in page_obj_cgroups_check()
+  - moved some definitions between patches, by Shakeel
+  - dropped the memcg flags mutual exclusion requirement, by Shakeel
+
+v1:
+  - added and fixed comments, by Shakeel
+  - added some VM_BUG_ON() checks
+  - fixed the debug output format of page->memcg_data
+
+
+Roman Gushchin (4):
+  mm: memcontrol: use helpers to access page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
+
+ fs/buffer.c                      |   2 +-
+ fs/iomap/buffered-io.c           |   2 +-
+ include/linux/memcontrol.h       | 242 +++++++++++++++++++++++++++++--
+ include/linux/mm.h               |  22 ---
+ include/linux/mm_types.h         |   5 +-
+ include/linux/page-flags.h       |  11 +-
+ include/trace/events/writeback.h |   2 +-
+ kernel/fork.c                    |   7 +-
+ mm/debug.c                       |   4 +-
+ mm/huge_memory.c                 |   4 +-
+ mm/memcontrol.c                  | 139 ++++++++----------
+ mm/page_alloc.c                  |   8 +-
+ mm/page_io.c                     |   6 +-
+ mm/slab.h                        |  38 ++---
+ mm/workingset.c                  |   2 +-
+ 15 files changed, 327 insertions(+), 167 deletions(-)
+
+--=20
+2.26.2
 
