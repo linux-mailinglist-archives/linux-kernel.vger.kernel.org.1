@@ -2,196 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FA928031F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B30280328
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732494AbgJAPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732308AbgJAPsW (ORCPT
+        id S1732619AbgJAPtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:49:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732507AbgJAPtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:48:22 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505E8C0613E3
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:48:22 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p15so8776144ejm.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8IFUkJPw/kRc69ZxpOZH7IdKr2uNB4GcMACMPjhB0mM=;
-        b=sY7GNFIvYaNfMnuHljMi/SlQZ6n4BcGZhCTAkvb73jwrTAP++F0FA96srmG4n+saym
-         LPs0Qo1rf+Gc/KbMjrfFVvv0dVBlQo5xErKWSXr8vfIbgudw/fJB81Prkbi9Pii7XtRh
-         bwufKgriflGSXWbjmbN1+qvivFzU+VKLk390fTxTMNBo7z+CsZ1XFTp/HjN3R699Gw+C
-         vfciTTmpKgNNA11LmOMtAz8ZR9nakBZvoaMyZp8Hz1UVlkM5vLsghRNGZtT0pDQ9PVkF
-         +xdKQnhRbsvPbhl29QQtDseBMWcFAJ8tpq31IZJtch0aWdpaPLCLP06UMF/rwp7udtiZ
-         WVOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8IFUkJPw/kRc69ZxpOZH7IdKr2uNB4GcMACMPjhB0mM=;
-        b=El7i8N7N5vST/3xm/HcTszpG9I7v6WAYdIArk0qW3LZuNJvlLCpDju76TmHkX9FfKk
-         b79ZilE635nIF+9g0ZpsD4Yn3NgqtQ2hkanWibnM+hwVgOFS2tfDnbj70auvloks7M5Y
-         Ov1RecWCGdnMLhogshJrfkgYd6ALe3gJKzkYZZgKkRGHngYGBOFFR/qukSxpy1WxE9Yu
-         weJhSVgIYcrXGSPqde8N4j0ZbOql4PxPovCf/giGYvQk7DlxPlPPqzN9LdNgKGPbRh7t
-         4ueghp4zfCZgkWdeBGJhJx/7xAG/7JDSwEwyITairX+k+BjGzkNSVEOGGY9vjfF/igwE
-         8pyA==
-X-Gm-Message-State: AOAM533/psRwKGqo4Vwq+4EQmKY/bn+jq2JIMtlPlhExYkdUz3pmP/G7
-        sc8AvBbQYPATSOoKBfE8UL2HdRDtOzXilWAbAG6Jhw==
-X-Google-Smtp-Source: ABdhPJzN5UXlteDmV4gmQvsi+vrDa7wXLtdd0FT669/Cj8yL3OSvmpnW8FNcV9j4cLbSCSgCO88bO4oWC48rzvXf8wo=
-X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr8931066ejr.493.1601567300584;
- Thu, 01 Oct 2020 08:48:20 -0700 (PDT)
+        Thu, 1 Oct 2020 11:49:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601567375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oiTRa+VL3UYBQkggS5s/6LNHr5dPZxoNb4+G/XwOhxk=;
+        b=KpHip++un7Gd1DCLvPdPjvQ6kk038l9RqrC1XB4VT7ea75MfYPK0jHuWW1mBbecZd+Y4hQ
+        qVCzgb+y7yjS5Usa7KaEnGSDlI7+0W25gewl0VCU8ZW6JCRV71JqR1UjSJom5eIgVUVNaN
+        bK6+1q0MSfbKISaTCZtYyJ/MEg9+fxk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-V-0SDF6zNCGHF2bdrKJvuQ-1; Thu, 01 Oct 2020 11:49:01 -0400
+X-MC-Unique: V-0SDF6zNCGHF2bdrKJvuQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CCC97805EE3;
+        Thu,  1 Oct 2020 15:48:58 +0000 (UTC)
+Received: from localhost (ovpn-12-47.pek2.redhat.com [10.72.12.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B7B919650;
+        Thu,  1 Oct 2020 15:48:47 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH V7 0/2] percpu_ref & block: reduce memory footprint of percpu_ref in fast path
+Date:   Thu,  1 Oct 2020 23:48:40 +0800
+Message-Id: <20201001154842.26896-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <CAG48ez3aqLs_-xgU0bThOLqRiiDWGObxcg-X9iFe6D5RDnLVJg@mail.gmail.com> <20201001125043.dj6taeieatpw3a4w@gmail.com>
-In-Reply-To: <20201001125043.dj6taeieatpw3a4w@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 17:47:54 +0200
-Message-ID: <CAG48ez2U1K2XYZu6goRYwmQ-RSu7LkKSOhPt8_wPVEUQfm7Eeg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Christian Brauner <christian.brauner@canonical.com>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Will Drewry <wad@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Christian Brauner <christian@brauner.io>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 2:54 PM Christian Brauner
-<christian.brauner@canonical.com> wrote:
-> On Wed, Sep 30, 2020 at 05:53:46PM +0200, Jann Horn via Containers wrote:
-> > On Wed, Sep 30, 2020 at 1:07 PM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> > > NOTES
-> > >        The file descriptor returned when seccomp(2) is employed with =
-the
-> > >        SECCOMP_FILTER_FLAG_NEW_LISTENER  flag  can  be  monitored  us=
-ing
-> > >        poll(2), epoll(7), and select(2).  When a notification  is  pe=
-nd=E2=80=90
-> > >        ing,  these interfaces indicate that the file descriptor is re=
-ad=E2=80=90
-> > >        able.
-> >
-> > We should probably also point out somewhere that, as
-> > include/uapi/linux/seccomp.h says:
-> >
-> >  * Similar precautions should be applied when stacking SECCOMP_RET_USER=
-_NOTIF
-> >  * or SECCOMP_RET_TRACE. For SECCOMP_RET_USER_NOTIF filters acting on t=
-he
-> >  * same syscall, the most recently added filter takes precedence. This =
-means
-> >  * that the new SECCOMP_RET_USER_NOTIF filter can override any
-> >  * SECCOMP_IOCTL_NOTIF_SEND from earlier filters, essentially allowing =
-all
-> >  * such filtered syscalls to be executed by sending the response
-> >  * SECCOMP_USER_NOTIF_FLAG_CONTINUE. Note that SECCOMP_RET_TRACE can eq=
-ually
-> >  * be overriden by SECCOMP_USER_NOTIF_FLAG_CONTINUE.
-> >
-> > In other words, from a security perspective, you must assume that the
-> > target process can bypass any SECCOMP_RET_USER_NOTIF (or
-> > SECCOMP_RET_TRACE) filters unless it is completely prohibited from
-> > calling seccomp(). This should also be noted over in the main
-> > seccomp(2) manpage, especially the SECCOMP_RET_TRACE part.
->
-> So I was actually wondering about this when I skimmed this and a while
-> ago but forgot about this again... Afaict, you can only ever load a
-> single filter with SECCOMP_FILTER_FLAG_NEW_LISTENER set. If there
-> already is a filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER property
-> in the tasks filter hierarchy then the kernel will refuse to load a new
-> one?
->
-> static struct file *init_listener(struct seccomp_filter *filter)
-> {
->         struct file *ret =3D ERR_PTR(-EBUSY);
->         struct seccomp_filter *cur;
->
->         for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
->                 if (cur->notif)
->                         goto out;
->         }
->
-> shouldn't that be sufficient to guarantee that USER_NOTIF filters can't
-> override each other for the same task simply because there can only ever
-> be a single one?
+Hi,
 
-Good point. Exceeeept that that check seems ineffective because this
-happens before we take the locks that guard against TSYNC, and also
-before we decide to which existing filter we want to chain the new
-filter. So if two threads race with TSYNC, I think they'll be able to
-chain two filters with listeners together.
+The 1st patch removes memory footprint of percpu_ref in fast path
+from 7 words to 2 words, since it is often used in fast path and
+embedded in user struct.
 
-I don't know whether we want to eternalize this "only one listener
-across all the filters" restriction in the manpage though, or whether
-the man page should just say that the kernel currently doesn't support
-it but that security-wise you should assume that it might at some
-point.
+The 2nd patch moves .q_usage_counter to 1st cacheline of
+'request_queue'.
 
-[...]
-> > >            if (procMemFd =3D=3D -1)
-> > >                errExit("Supervisor: open");
-> > >
-> > >            /* Check that the process whose info we are accessing is s=
-till alive.
-> > >               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performe=
-d
-> > >               in checkNotificationIdIsValid()) succeeds, we know that=
- the
-> > >               /proc/PID/mem file descriptor that we opened correspond=
-s to the
-> > >               process for which we received a notification. If that p=
-rocess
-> > >               subsequently terminates, then read() on that file descr=
-iptor
-> > >               will return 0 (EOF). */
-> > >
-> > >            checkNotificationIdIsValid(notifyFd, req->id);
-> > >
-> > >            /* Seek to the location containing the pathname argument (=
-i.e., the
-> > >               first argument) of the mkdir(2) call and read that path=
-name */
-> > >
-> > >            if (lseek(procMemFd, req->data.args[0], SEEK_SET) =3D=3D -=
-1)
-> > >                errExit("Supervisor: lseek");
-> > >
-> > >            ssize_t s =3D read(procMemFd, path, PATH_MAX);
-> > >            if (s =3D=3D -1)
-> > >                errExit("read");
-> >
-> > Why not pread() instead of lseek()+read()?
->
-> With multiple arguments to be read process_vm_readv() should also be
-> considered.
+Simple test on null_blk shows ~2% IOPS boost on one 16cores(two threads
+per core) machine, dual socket/numa.
 
-process_vm_readv() can end up doing each read against a different
-process, which is sort of weird semantically. You would end up taking
-page faults at random addresses in unrelated processes, blocking on
-their mmap locks, potentially triggering their userfaultfd notifiers,
-and so on.
+V7:
+	- add comments about reason for struct split
 
-Whereas if you first open /proc/$tid/mem, then re-check
-SECCOMP_IOCTL_NOTIF_ID_VALID, and then do the read, you know that
-you're only taking page faults on the process where you intended to do
-it.
+V6:
+	- drop the 1st patch which adds percpu_ref_is_initialized() for MD
+	only, since Christoph doesn't like it
 
-So until there is a variant of process_vm_readv() that operates on
-pidfds, I would not recommend using that here.
+V5:
+	- fix memory leak on ref->data, only percpu_ref_exit() of patch 2
+	is modified.
+
+V4:
+	- rename percpu_ref_inited as percpu_ref_is_initialized
+
+V3:
+	- fix kernel oops on MD
+	- add patch for avoiding to use percpu-refcount internal from md
+	  code
+	- pass Red Hat CKI test which is done by Veronika Kabatova
+
+V2:
+	- pass 'gfp' to kzalloc() for fixing block/027 failure reported by
+	kernel test robot
+	- protect percpu_ref_is_zero() with destroying percpu-refcount by
+	spin lock  
+
+Ming Lei (2):
+  percpu_ref: reduce memory footprint of percpu_ref in fast path
+  block: move 'q_usage_counter' into front of 'request_queue'
+
+ drivers/infiniband/sw/rdmavt/mr.c |   2 +-
+ include/linux/blkdev.h            |   3 +-
+ include/linux/percpu-refcount.h   |  52 ++++++------
+ lib/percpu-refcount.c             | 131 ++++++++++++++++++++++--------
+ 4 files changed, 125 insertions(+), 63 deletions(-)
+
+Cc: Veronika Kabatova <vkabatov@redhat.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Bart Van Assche <bvanassche@acm.org>
+-- 
+2.25.2
+
