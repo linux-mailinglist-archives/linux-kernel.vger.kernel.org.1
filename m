@@ -2,204 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D06528011D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D6428011F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732465AbgJAORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732104AbgJAORZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:17:25 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE220C0613D0;
-        Thu,  1 Oct 2020 07:17:24 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so5968287wrp.8;
-        Thu, 01 Oct 2020 07:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wrgbpSMujaBkBPxDtAAR67AoZk1S06YHAzySi1MsGYU=;
-        b=ditlDCKKU9HqUqfVFjYSDHW942T4w9nZZt0RWGaRFgLJpwzM/pfBUyuBv6Hr7U1IqS
-         XwvJR3w41IgTU938MCI3AljNPScbvZwirGpmDJ/G1Cedh1aBe/G0pKvI5/8SGRZ4flmw
-         kmZvBd9+rPUXAIUdjD9DwXvigTmnENGDrAZqOdMylnHxeeyczkUP8Gsrnf0BzVV839gr
-         KkhhIFhS1U+qriLRT7hCK6/tbMR/mAyq4+pKDlTt4tVViPzN7N/Y0uSZbdh2S9LKtDiM
-         KyKSJD7gjLnIMjaOFnIHJVCDbLC03ioXlGgkC7LzMHTEXLNwxPQ204Nt4s+Ue4UcYMrn
-         dejw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wrgbpSMujaBkBPxDtAAR67AoZk1S06YHAzySi1MsGYU=;
-        b=L0jYAsy5h+5Yu6kvryB4O1X9obifeemPOccotez3ZSJjK4YmvOa5fs8iNjLXnk5pvq
-         hrdQ/2cjga30QhKEtihkzct4ILUDVt0oW3NyEkJi2+tg+P3I5Ckvcx27zK8kj5OL1MbU
-         5TgsNbGRAIEPv+U/qytlX8kNyky8rvrnhLnh0JnXWLcGjXMEVZMIwKzkg6z6UGB/XXfa
-         8X/YmHgTSRQBUEdhnTzHSal9MugdtBvgD6iy0xKNE2IOrkgzV/U8wIBr25g8DZUxR3fT
-         6r+5hQlTjxoscYQA4BZdvzHh+96T025f/gIg1UKFB+Ijtx+PDRFGap11Tb5zAAe8kQdE
-         V90Q==
-X-Gm-Message-State: AOAM533VgF0MW+usedIP9feyirG1Jt9msVRRR2vVwtO7uXXH8irkS2DZ
-        AEGuX1zzcr6brvkLemwoD1w=
-X-Google-Smtp-Source: ABdhPJzDdMobU6yFcAy6Zrkvz4ePQZ4w54ThvdXfXBqTNiIkY00AycivITxuDsvIy9DNgXukDplFXw==
-X-Received: by 2002:a5d:43cb:: with SMTP id v11mr9707751wrr.188.1601561843371;
-        Thu, 01 Oct 2020 07:17:23 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id h3sm10070951wrq.0.2020.10.01.07.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 07:17:22 -0700 (PDT)
-Subject: Re: [PATCH v3 0/9] Mediatek MT8192 clock support
-To:     Weiyi Lu <weiyi.lu@mediatek.com>, Rob Herring <robh@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     James Liao <jamesjj.liao@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com, Wendell Lin <wendell.lin@mediatek.com>
-References: <1599103380-4155-1-git-send-email-weiyi.lu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <206e01ba-24a6-57b1-6768-b6629d713eb7@gmail.com>
-Date:   Thu, 1 Oct 2020 16:17:21 +0200
+        id S1732443AbgJAOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:18:00 -0400
+Received: from mail-am6eur05on2105.outbound.protection.outlook.com ([40.107.22.105]:11784
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732104AbgJAOSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:18:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VpAqdmPNs5ZBWVR/ESzWEPscm8zbPl1bTRWkKwgq2gb8uH9NX5zVV31UlFtv0hGk37WYBo3WIJYCiXHrLLw6jOzi9cQLvCSA4YXKYx5WnYHFWZG5qAh26e/MSrbDpl8T4BJKR5RIZ9NVS5atU3lO18g3bp5pV34XTADU+upmXrdc0OQCFxNiQmx34Z29U1n0cohXILv6Q1b6e5s2xGnl7HI1foSAqfi3T/4DtUKSiumOi/8x+kqB+4AVFzNnqYxPb9dEUmwrWIDJccnlvT/pCcpeY25EHW1GCI0w59/YbZGTIhL9i/aA95ixl0exiI/R5WDUq6a15EbJy7xLbxNBxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4TaDZ/AAxl4Dvcps094bcdo0lW95pmkoBi0meLLx1ZI=;
+ b=NQQ/TJjGoYhSEpIuKwvobIw7HwSLl0zASrxH+H+Xlt359HGRFom8mZ4LImU319M87xZ/wOJuE+8sUoqIjvHzbbdWrhFGdNCNBaAQnSaEfxJ3J4ArW2oI4JKFWIC8HL6S4N1vG+JadG15iHIYTNlgvvAL8HfiJS2/HjFex1bISd1o7qRbk3BUAG7jFVvALYjVLq7CSldb6+wrEFUsfMyxuqHZIzpbErPrnXMPLi5TyXJR1WVYmT2S6O3S5ekZMfrDctNet5dYs1fweM7AOFuCVjXb62VmaYvdC7vjD7z68s9EKd0CDrvtirGYqVNKSxnTqS99XSn6UPwGxqwy2zBozQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4TaDZ/AAxl4Dvcps094bcdo0lW95pmkoBi0meLLx1ZI=;
+ b=JRGlyHyhYMlOG7lZbwUYxBsZ05HXEkQ5wUDpt56lUs5L3MWe6LiLix9P3RH43Q8LLYVU11XrC6zSOe9xkWKL+Zfajm2gw3JGRobFlZ3j3bcCW33upAYHVzfFKUZOpXVV0/8hSrIp6Xl5HR57GL4JcA5Kms6q0VQOBTzVxNGHVvw=
+Authentication-Results: virtuozzo.com; dkim=none (message not signed)
+ header.d=none;virtuozzo.com; dmarc=none action=none
+ header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM6PR08MB3416.eurprd08.prod.outlook.com (2603:10a6:20b:50::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Thu, 1 Oct
+ 2020 14:17:55 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3433.037; Thu, 1 Oct 2020
+ 14:17:55 +0000
+Subject: Re: [PATCH 0/4] fs: add mount_setattr()
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andrew Vagin <avagin@virtuozzo.com>
+References: <20200714161415.3886463-1-christian.brauner@ubuntu.com>
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Message-ID: <8f815e88-d51d-9f70-89f1-a7f54b1200ce@virtuozzo.com>
+Date:   Thu, 1 Oct 2020 17:17:53 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1599103380-4155-1-git-send-email-weiyi.lu@mediatek.com>
+ Thunderbird/68.11.0
+In-Reply-To: <20200714161415.3886463-1-christian.brauner@ubuntu.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [46.39.230.109]
+X-ClientProxiedBy: AM0PR01CA0163.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::32) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.192] (46.39.230.109) by AM0PR01CA0163.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Thu, 1 Oct 2020 14:17:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7ec28eb8-ec6d-4717-4f60-08d86614ca5c
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3416:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR08MB3416974C6CD6D171911D14E7B7300@AM6PR08MB3416.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o+TAdO/8ylEr+3WAvlJKFksyaLTUUkWx9FruoNEjP4/4+ZJQYzU6C16HmDTZmWR7tAFXfqyQx+9y/68Ne/V2ya624FTkywF8OxW2bSguP7WaUbSjEaPAyl8ZTAmvhSm6pUGp1kGSKLB6w4+RB4gtBHsf5gRnFXyT25Cy5Pd0b/BmmzDJThR7eVIrvC2bEqo8mnA0pHn1/HCbnonPmW94ftpbxBSFbxZH5KDCR9JzQD4r4NEfhSm/VTa4qBPKaRhwduYzxG9AknPX2oWI9Fn8Ytitz4uuhe25C+RmMRmlB5OuNPh0kBT6EU1xZCgmMkTsvzBZXLhizwB+L3h0WaGw9Nnk1dNRRdURiI9slvH8VnxheqdML9rrXD05Clcv8gHYwsktRpUCfg2pLFdXeSc+d+gIRE5yPWJtie+fK6DsQUEtW9zz5aCJUVm0UIQ+HbdRzWwFIkBpniE1pDmU6beD0pi4Wr8jCQEos8g5Mea0gPsUlmvMraBqhZSD0SeyC15x
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39830400003)(366004)(54906003)(966005)(31696002)(16576012)(52116002)(2906002)(31686004)(8936002)(4326008)(66946007)(110136005)(2616005)(478600001)(6486002)(316002)(66556008)(66476007)(8676002)(956004)(107886003)(36756003)(83380400001)(86362001)(5660300002)(26005)(186003)(16526019)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: MHeX/xIbnPj+L17IiVexXmPxASgnis0369mRmokJsxPF8VT8zsinpzNEDIKf1HeeShijzwxWEW2gd+n1igHSJ4Z0qTs7EQ9GCVoXSDms9vwgBoyYB9/4OqTn2O2xewV149LESbSBcoT2Yr7Si+j0w8O7+KBTJdxOdJllXoX3V3C5YdRGpXvwDzBXl0YFPKGzaKhpmZyY94jiTnvdzhaD+fEXq2qc4Nl/9UGEEAwfT1DyGsfqq7zASIPtUZU8M3H7lYJwmHzZQ74lingNx0OMC0DxRHIuPT3gKyt0cPZYijO6lZZYyTL0qAHbaG+YFvvQ/XbSMsCA51M0Lutbbm0A91G+mk2R8KGTkayROC8yzoO2MFNZon5ta8TuNcqi7ojdxnB4VIsfvv9Jy70HOPy9GsvTZZzpxLaskR9MfRb/Q/RwNB8C1Q8EFkaxQvXrwf5HxCDlPnibPAkZGzSEfeXEZzNSsLZxdpWMB4H6bQL6wCIbb8xHRIIrCE+20Gs5SltSrQWwU/KZU3HzwtbDmUEr9JcKyGIUH0c+EY95ZJz+0/dJykf45UMmNv1hcH1rDzGs9Jn4klSPwpGktTkj50b/+OIYBH7knIXuRXIqb3sytnwd+SDNTrpY8fkENRodam0qgf4/K7WvfOs2tdOAEe6lKQ==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ec28eb8-ec6d-4717-4f60-08d86614ca5c
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 14:17:55.5470
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t3Kl/ZwtS4hR2yEJnvXqiITR9Lx1Qyd2z+ZOmKTDUvXMhvS/CilDJxqqEvR3+bHb239jf0M4LpNKvXVt1vlxenJ8aM/Bvq/QAzWXydb0/90=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3416
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Weiyi,
-
-On 03/09/2020 05:22, Weiyi Lu wrote:
-> This series is based on v5.9-rc1 and MT8192 dts[1].
-> 
-> [1] https://patchwork.kernel.org/cover/11713555/
-> 
-> changes since v2:
-> - update and split dt-binding documents by functionalities
-> - add error checking in probe() function
-> - fix incorrect clock relation and add critical clocks
-> - update license identifier and minor fix of coding style
-> 
-> changes since v1:
-> - fix asymmetrical control of PLL
-> - have en_mask used as divider enable mask on all MediaTek SoC
-> 
-> Weiyi Lu (9):
->    dt-bindings: ARM: Mediatek: Document bindings for MT8192 BSP
->    dt-bindings: ARM: Mediatek: Document bindings for MT8192 Audio
->    dt-bindings: ARM: Mediatek: Document bindings for MT8192 Multimedia
->    dt-bindings: ARM: Mediatek: Document bindings for MT8192 Camera
->    dt-bindings: ARM: Mediatek: Document bindings for MT8192 APU and GPU
->    clk: mediatek: Add dt-bindings for MT8192 clocks
->    clk: mediatek: Fix asymmetrical PLL enable and disable control
->    clk: mediatek: Add configurable enable control to mtk_pll_data
->    clk: mediatek: Add MT8192 clock support
-
-This looks like a big mix of different changes and I don't see the relation 
-between them.
-To help facilitate the review process, I'd propose:
-Any new binding with a new yaml file should be a single patch. Don't mix just 
-adding one string with adding a new binding file in the same patch.
-
-Split patch 9/9 into different patches, one for each driver. Otherwise it is 
-nearly impossible to review such a big chunk of code.
-
-Regards,
-Matthias
 
 > 
->   .../arm/mediatek/mediatek,apmixedsys.txt      |    1 +
->   .../bindings/arm/mediatek/mediatek,audsys.txt |    1 +
->   .../arm/mediatek/mediatek,camsys-raw.yaml     |   54 +
->   .../bindings/arm/mediatek/mediatek,camsys.txt |    1 +
->   .../bindings/arm/mediatek/mediatek,imgsys.txt |    2 +
->   .../arm/mediatek/mediatek,imp_iic_wrap.yaml   |   78 +
->   .../arm/mediatek/mediatek,infracfg.txt        |    1 +
->   .../bindings/arm/mediatek/mediatek,ipesys.txt |    1 +
->   .../arm/mediatek/mediatek,mdpsys.yaml         |   38 +
->   .../bindings/arm/mediatek/mediatek,mfgcfg.txt |    1 +
->   .../bindings/arm/mediatek/mediatek,mmsys.txt  |    1 +
->   .../bindings/arm/mediatek/mediatek,msdc.yaml  |   46 +
->   .../arm/mediatek/mediatek,pericfg.yaml        |    1 +
->   .../arm/mediatek/mediatek,scp-adsp.yaml       |   38 +
->   .../arm/mediatek/mediatek,topckgen.txt        |    1 +
->   .../arm/mediatek/mediatek,vdecsys-soc.yaml    |   38 +
->   .../arm/mediatek/mediatek,vdecsys.txt         |    1 +
->   .../arm/mediatek/mediatek,vencsys.txt         |    1 +
->   drivers/clk/mediatek/Kconfig                  |  146 ++
->   drivers/clk/mediatek/Makefile                 |   24 +
->   drivers/clk/mediatek/clk-mt2701.c             |   26 +-
->   drivers/clk/mediatek/clk-mt2712.c             |   30 +-
->   drivers/clk/mediatek/clk-mt6765.c             |   20 +-
->   drivers/clk/mediatek/clk-mt6779.c             |   24 +-
->   drivers/clk/mediatek/clk-mt6797.c             |   20 +-
->   drivers/clk/mediatek/clk-mt7622.c             |   18 +-
->   drivers/clk/mediatek/clk-mt7629.c             |   12 +-
->   drivers/clk/mediatek/clk-mt8173.c             |   28 +-
->   drivers/clk/mediatek/clk-mt8183.c             |   22 +-
->   drivers/clk/mediatek/clk-mt8192-aud.c         |  118 ++
->   drivers/clk/mediatek/clk-mt8192-cam.c         |   72 +
->   drivers/clk/mediatek/clk-mt8192-cam_rawa.c    |   59 +
->   drivers/clk/mediatek/clk-mt8192-cam_rawb.c    |   59 +
->   drivers/clk/mediatek/clk-mt8192-cam_rawc.c    |   59 +
->   drivers/clk/mediatek/clk-mt8192-img.c         |   60 +
->   drivers/clk/mediatek/clk-mt8192-img2.c        |   62 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_c.c  |   61 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_e.c  |   58 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_n.c  |   59 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_s.c  |   60 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_w.c  |   58 +
->   .../clk/mediatek/clk-mt8192-imp_iic_wrap_ws.c |   60 +
->   drivers/clk/mediatek/clk-mt8192-ipe.c         |   64 +
->   drivers/clk/mediatek/clk-mt8192-mdp.c         |   89 ++
->   drivers/clk/mediatek/clk-mt8192-mfg.c         |   57 +
->   drivers/clk/mediatek/clk-mt8192-mm.c          |  108 ++
->   drivers/clk/mediatek/clk-mt8192-msdc.c        |   57 +
->   drivers/clk/mediatek/clk-mt8192-msdc_top.c    |   71 +
->   drivers/clk/mediatek/clk-mt8192-scp_adsp.c    |   57 +
->   drivers/clk/mediatek/clk-mt8192-vdec.c        |   82 +
->   drivers/clk/mediatek/clk-mt8192-vdec_soc.c    |   82 +
->   drivers/clk/mediatek/clk-mt8192-venc.c        |   60 +
->   drivers/clk/mediatek/clk-mt8192.c             | 1340 +++++++++++++++++
->   drivers/clk/mediatek/clk-mtk.h                |    2 +
->   drivers/clk/mediatek/clk-mux.h                |   15 +
->   drivers/clk/mediatek/clk-pll.c                |   28 +-
->   include/dt-bindings/clock/mt8192-clk.h        |  592 ++++++++
->   57 files changed, 4116 insertions(+), 108 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,camsys-raw.yaml
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,imp_iic_wrap.yaml
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mdpsys.yaml
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,msdc.yaml
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,scp-adsp.yaml
->   create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,vdecsys-soc.yaml
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-aud.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-cam.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-cam_rawa.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-cam_rawb.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-cam_rawc.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-img.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-img2.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_c.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_e.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_n.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_s.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_w.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap_ws.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-ipe.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-mdp.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-mfg.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-msdc.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-msdc_top.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-scp_adsp.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-vdec.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-vdec_soc.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
->   create mode 100644 drivers/clk/mediatek/clk-mt8192.c
->   create mode 100644 include/dt-bindings/clock/mt8192-clk.h
+> mount_setattr() can be expected to grow over time and is designed with
+> extensibility in mind. It follows the extensible syscall pattern we have
+> used with other syscalls such as openat2(), clone3(),
+> sched_{set,get}attr(), and others.
+> The set of mount options is passed in the uapi struct mount_attr which
+> currently has the following layout:
 > 
+> struct mount_attr {
+> 	__u64 attr_set;
+> 	__u64 attr_clr;
+> 	__u32 propagation;
+> 	__u32 atime;
+> };
+> 
+
+We probably can rework "mnt: allow to add a mount into an existing 
+group" (MS_SET_GROUP https://lkml.org/lkml/2017/1/23/712) to an 
+extension mount_setattr. Do anyone have any objections?
+
+We need it in CRIU because it is a big problem to restore complex mount 
+trees with complex propagation flags (see my LPC talk for details 
+https://linuxplumbersconf.org/event/7/contributions/640/) of 
+system-containers.
+
+If we allow set(copy) sharing options we can separate mount tree restore 
+and propagation restore and everything becomes much simpler. (And we 
+already have CRIU implementation based on it, which helps with variety 
+of bugs with mounts we previously had. 
+https://src.openvz.org/projects/OVZ/repos/criu/browse/criu/mount-v2.c#880)
+
+I've also tried to consider another approach 
+https://github.com/Snorch/linux/commit/84886f588527b062993ec3e9760c879163852518 
+to disable actual propagation while restoring the mount tree. But with 
+this approach it looks like it would be still hard to restore in CRIU 
+because: With "MS_SET_GROUP" we don't care about roots. Imagine we have 
+mount A (shared_id=1, root="/some/sub/path") and mount B (master_id=1, 
+root="/some/other/sub/path", with MS_SET_GROUP we can copy sharing from 
+mount A to B and make B MS_SLAVE to restore them. In case we want to do 
+the same with only inheritance we would have to have some helper mount 
+in this share C (shared_id=1, root="/") so that B can inherit this share...
+
+-- 
+Best regards, Tikhomirov Pavel
+Software Developer, Virtuozzo.
