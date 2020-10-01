@@ -2,408 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6684427F797
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7447727F79B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgJABpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:45:40 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:43091 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730262AbgJABpj (ORCPT
+        id S1728660AbgJABwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgJABwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:45:39 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4FE4C5C01CF;
-        Wed, 30 Sep 2020 21:45:38 -0400 (EDT)
-Received: from imap4 ([10.202.2.54])
-  by compute2.internal (MEProxy); Wed, 30 Sep 2020 21:45:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duggan.us; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=OEvra/kQRMJYU434Z8WtWsoSpFSSkrk
-        bWyT4ojkfUVs=; b=gh3QrPhGE2u7Kvg1O5VMLAJ3QNVuiRjHTSfjQK/HZPBfaBT
-        XaTfnVosR9rxl2O3TPmV2eyP2wMNR4mGuHx+xTaYowjvGKLOqMkjiR8ln0DP6ZXJ
-        EQA/Xc6hXva6T0M77lynKJz8Ka8aytpzeuUaqxEDxJPmgPsgU14X2/mLLSG8rYv8
-        AQbY+1PiVRPVy9WP3WrgS4r03lHYhUMv6v8pXwd0803nHHxhkfh5PKaRj6rKg3kO
-        p+ln00ADKxGyBiEOwDOng+9YxTQawtboeCnd5hJLBgcBvQ6W6115wYh2p8QAZmWC
-        Kkg+NaL1P1TjhzCFu3PY8Q+fTI9ZyhYXGxG678g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OEvra/
-        kQRMJYU434Z8WtWsoSpFSSkrkbWyT4ojkfUVs=; b=AwZUehyrdvchHZP2TeerGQ
-        hUrMeNs0IdjckyZwQadcb8A2iwqUsViprNdJoy5GBz+3RI4hUdzlwq1G5lUgC1EQ
-        wReaZcTmFT4eQqCumzWl8JrjOVAkSfhIUjSGjoOx7v0zvF1/SqZ+68xT4gyfJCaJ
-        +aGiRZVw2OuhCGfHTWMvhmCfxtZKYAs8bOIRjNJWKbFSlPr4ESYzRQOYkAGr3wGM
-        hrbAp3EeZmBGG5V142vAGEzEGd83WHEg+x0fa/fhqjWGp8Dfandwk52xSpDuS+fj
-        mHpIZ/bD14S3ls0WghqJ5bAAmoMh0ZUaPePTCaehP/X51oScw/L8FQex2J7/OE9w
-        ==
-X-ME-Sender: <xms:wjR1X7_hLAWo9G_nu86b-WGUL6-XL-XDYWdXP4Zuy2Y3lJSyS4X45A>
-    <xme:wjR1X3vU94yYzWkVzTYOh9p7zUNv4jBQEYb3-NvGWUtV1vH6CAhXlXvQcaTnleszt
-    ZaEqH2jl156COFcmg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucffuhhgghgrnhdfuceorghnughrvgifseguuhhgghgrnhdruhhsqeenucggtffrrg
-    htthgvrhhnpeevtdfgffetvdfhtdetuddukeeifeekueffkedvudefudehieekheehudei
-    veevheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesughughhgrghnrdhush
-X-ME-Proxy: <xmx:wjR1X5BSMDFFAO0fpvTpcPrcudS_9wDshm48tbnFXpmM0SjTltym1A>
-    <xmx:wjR1X3fzY52JnOuifEpVj7mBHIbIUlE7S-fsO_r3qB5Wb0pEzuqvhg>
-    <xmx:wjR1XwNYQ7B3TGivL4wgfSFbFGd0UkGXZZHxBmORJSuubmZC_cq2vw>
-    <xmx:wjR1X3dzuxQ4jr665KmMW2A-rjFS4ImvXmdV7DPKfHCU9NTWQnfbOg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E3B003C0411; Wed, 30 Sep 2020 21:45:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
-Mime-Version: 1.0
-Message-Id: <e7a23e34-0fbb-468f-9e87-5d34ec6a3daa@www.fastmail.com>
-In-Reply-To: <20200930094147.635556-3-vincent.huang@tw.synaptics.com>
-References: <20200930094147.635556-1-vincent.huang@tw.synaptics.com>
- <20200930094147.635556-3-vincent.huang@tw.synaptics.com>
-Date:   Wed, 30 Sep 2020 18:45:16 -0700
-From:   "Andrew Duggan" <andrew@duggan.us>
-To:     "Vincent Huang" <vincent.huang@tw.synaptics.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        "Jiri Kosina" <jikos@kernel.org>,
-        "Andrew Duggan" <aduggan@synaptics.com>,
-        "Hans de Goede" <hdegoede@redhat.com>,
-        "Benjamin Tissoires" <btissoir@redhat.com>,
-        "Lyude Paul" <lyude@redhat.com>,
-        "Chris Heiny" <chris.heiny@synaptics.com>
-Subject: Re: [PATCH v3 2/2] Input: synaptics-rmi4 - add support for F3A
-Content-Type: text/plain
+        Wed, 30 Sep 2020 21:52:31 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBF1C0613D0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:52:30 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i26so5610153ejb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1bLW1cuECr8U7GaM7z86G6hDD6exav2AJLPz5W/9Rmc=;
+        b=kWsAhO4IucLVoZpMkahGgNES5DttbXTJpcoZ05moKrnMJckcHdlnDveEpyQqJc8ldL
+         QfmGxf8Eh4Ts/puB9RclgWUNuwb8+d/iVmtJDeUBqGiXQbFScpcYNmbeq7REh8GBZzeT
+         kLpXr6famz6F0NUDrEYV8TJ5EJq6Nq8M6GVDbEf26mf8kaU1XPG2YffLFbMei3Nk91vQ
+         QdDbgSTH81W6Vq5el8rE1yJwMjFMyj2dtgPTKf+GCr0p1w2ZwEJrKJ3piLN2eBBO7yzq
+         DUiUUF2/1A5woJuzwtDu3Xmtc/UNDykkbFsVApnq68QIoe/tglaDjWjVMTFxgl8A6CWl
+         gExw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1bLW1cuECr8U7GaM7z86G6hDD6exav2AJLPz5W/9Rmc=;
+        b=j5mEJdNzuz5446b3pPCtGAxFiNYSf+H9g0S1awSNbp19i8RJ9mpQDxPeezrqvTdayZ
+         qX/UCAWxXoDm7Ea6Qnm0n8NwQ5oUEWVUhy4eGwE95Ze/3l0OcEzFly5LLPndsM1kpw0D
+         h9FseQO633sbF4g3/MHthnl/VAWqf3dljKNC23sT4RlaYPLF2NPhXw+k+47BBLbBzj7t
+         Nae/M3qZPlP6A7LcmlhSMCrB5lDDhW5jMnxAnYy1TOMvg/0yRuzGO/ncLZjfqclEccrP
+         pyP5rZXUfiaoewBZ35LDD1eShy4TomC17OAardmmIm1CP9h2LUKSXBfgRRzfuzzMUF6t
+         c8YQ==
+X-Gm-Message-State: AOAM533oHyEJUW6knag5DeEpX8oC4WVtbVfZSM4Olye+c0qTBmIpujn9
+        q0kQjSvpyc5P8DtIhCdfrEhmSuQhoF4T1DJNupg1YQ==
+X-Google-Smtp-Source: ABdhPJy9aveDYFv4Gp14hKtilrKvNnkWXVsoiclevL5nYsStDKDifSDiKxQQKSwQqipgFKjnKXSV1kjDNtmgRMOszBo=
+X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr5795435ejr.493.1601517149212;
+ Wed, 30 Sep 2020 18:52:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco>
+In-Reply-To: <20200930232456.GB1260245@cisco>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 1 Oct 2020 03:52:02 +0200
+Message-ID: <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, Sep 30, 2020, at 2:41 AM, Vincent Huang wrote:
-> RMI4 F3A supports the touchpad GPIO function, it's designed to
-> support more GPIOs and used on newer touchpads. This patch adds
-> support of the touchpad buttons.
-> 
-> Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
-
-Reviewed-by: Andrew Duggan <aduggan@synaptics.com>
-
-> ---
->  drivers/input/rmi4/Kconfig      |   8 ++
->  drivers/input/rmi4/Makefile     |   1 +
->  drivers/input/rmi4/rmi_bus.c    |   3 +
->  drivers/input/rmi4/rmi_driver.h |   1 +
->  drivers/input/rmi4/rmi_f3a.c    | 240 ++++++++++++++++++++++++++++++++
->  5 files changed, 253 insertions(+)
->  create mode 100644 drivers/input/rmi4/rmi_f3a.c
-> 
-> diff --git a/drivers/input/rmi4/Kconfig b/drivers/input/rmi4/Kconfig
-> index a212ff706f74..16119f760d11 100644
-> --- a/drivers/input/rmi4/Kconfig
-> +++ b/drivers/input/rmi4/Kconfig
-> @@ -100,6 +100,14 @@ config RMI4_F34
->  	  device via the firmware loader interface. This is triggered using a
->  	  sysfs attribute.
->  
-> +config RMI4_F3A
-> +	bool "RMI4 Function 3A (GPIO)"
-> +	help
-> +	  Say Y here if you want to add support for RMI4 function 3A.
-> +
-> +	  Function 3A provides GPIO support for RMI4 devices. This includes
-> +	  support for buttons on TouchPads and ClickPads.
-> +
->  config RMI4_F54
->  	bool "RMI4 Function 54 (Analog diagnostics)"
->  	depends on VIDEO_V4L2=y || (RMI4_CORE=m && VIDEO_V4L2=m)
-> diff --git a/drivers/input/rmi4/Makefile b/drivers/input/rmi4/Makefile
-> index f17631656987..02f14c846861 100644
-> --- a/drivers/input/rmi4/Makefile
-> +++ b/drivers/input/rmi4/Makefile
-> @@ -10,6 +10,7 @@ rmi_core-$(CONFIG_RMI4_F11) += rmi_f11.o
->  rmi_core-$(CONFIG_RMI4_F12) += rmi_f12.o
->  rmi_core-$(CONFIG_RMI4_F30) += rmi_f30.o
->  rmi_core-$(CONFIG_RMI4_F34) += rmi_f34.o rmi_f34v7.o
-> +rmi_core-$(CONFIG_RMI4_F3A) += rmi_f3a.o
->  rmi_core-$(CONFIG_RMI4_F54) += rmi_f54.o
->  rmi_core-$(CONFIG_RMI4_F55) += rmi_f55.o
->  
-> diff --git a/drivers/input/rmi4/rmi_bus.c b/drivers/input/rmi4/rmi_bus.c
-> index af706a583656..47d1b97ed6cf 100644
-> --- a/drivers/input/rmi4/rmi_bus.c
-> +++ b/drivers/input/rmi4/rmi_bus.c
-> @@ -365,6 +365,9 @@ static struct rmi_function_handler *fn_handlers[] = {
->  #ifdef CONFIG_RMI4_F34
->  	&rmi_f34_handler,
->  #endif
-> +#ifdef CONFIG_RMI4_F3A
-> +	&rmi_f3a_handler,
-> +#endif
->  #ifdef CONFIG_RMI4_F54
->  	&rmi_f54_handler,
->  #endif
-> diff --git a/drivers/input/rmi4/rmi_driver.h b/drivers/input/rmi4/rmi_driver.h
-> index 65bfaa95e193..1c6c6086c0e5 100644
-> --- a/drivers/input/rmi4/rmi_driver.h
-> +++ b/drivers/input/rmi4/rmi_driver.h
-> @@ -135,6 +135,7 @@ extern struct rmi_function_handler rmi_f11_handler;
->  extern struct rmi_function_handler rmi_f12_handler;
->  extern struct rmi_function_handler rmi_f30_handler;
->  extern struct rmi_function_handler rmi_f34_handler;
-> +extern struct rmi_function_handler rmi_f3a_handler;
->  extern struct rmi_function_handler rmi_f54_handler;
->  extern struct rmi_function_handler rmi_f55_handler;
->  #endif
-> diff --git a/drivers/input/rmi4/rmi_f3a.c b/drivers/input/rmi4/rmi_f3a.c
-> new file mode 100644
-> index 000000000000..11ff35f811b0
-> --- /dev/null
-> +++ b/drivers/input/rmi4/rmi_f3a.c
-> @@ -0,0 +1,240 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2012-2020 Synaptics Incorporated
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/rmi.h>
-> +#include <linux/input.h>
-> +#include <linux/slab.h>
-> +#include "rmi_driver.h"
-> +
-> +#define RMI_F3A_MAX_GPIO_COUNT		128
-> +#define RMI_F3A_MAX_REG_SIZE		DIV_ROUND_UP(RMI_F3A_MAX_GPIO_COUNT, 8)
-> +
-> +/* Defs for Query 0 */
-> +#define RMI_F3A_GPIO_COUNT		0x7F
-> +
-> +#define RMI_F3A_DATA_REGS_MAX_SIZE	RMI_F3A_MAX_REG_SIZE
-> +
-> +#define TRACKSTICK_RANGE_START		3
-> +#define TRACKSTICK_RANGE_END		6
-> +
-> +struct f3a_data {
-> +	/* Query Data */
-> +	u8 gpio_count;
-> +
-> +	u8 register_count;
-> +
-> +	u8 data_regs[RMI_F3A_DATA_REGS_MAX_SIZE];
-> +	u16 *gpio_key_map;
-> +
-> +	struct input_dev *input;
-> +
-> +	struct rmi_function *f03;
-> +	bool trackstick_buttons;
-> +};
-> +
-> +static void rmi_f3a_report_button(struct rmi_function *fn,
-> +				  struct f3a_data *f3a, unsigned int button)
-> +{
-> +	u16 key_code = f3a->gpio_key_map[button];
-> +	bool key_down = !(f3a->data_regs[0] & BIT(button));
-> +
-> +	if (f3a->trackstick_buttons &&
-> +		button >= TRACKSTICK_RANGE_START &&
-> +		button <= TRACKSTICK_RANGE_END) {
-> +		rmi_f03_overwrite_button(f3a->f03, key_code, key_down);
-> +	} else {
-> +		rmi_dbg(RMI_DEBUG_FN, &fn->dev,
-> +			"%s: call input report key (0x%04x) value (0x%02x)",
-> +			__func__, key_code, key_down);
-> +		input_report_key(f3a->input, key_code, key_down);
-> +	}
-> +}
-> +
-> +static irqreturn_t rmi_f3a_attention(int irq, void *ctx)
-> +{
-> +	struct rmi_function *fn = ctx;
-> +	struct f3a_data *f3a = dev_get_drvdata(&fn->dev);
-> +	struct rmi_driver_data *drvdata = dev_get_drvdata(&fn->rmi_dev->dev);
-> +	int error;
-> +	int i;
-> +
-> +	if (drvdata->attn_data.data) {
-> +		if (drvdata->attn_data.size < f3a->register_count) {
-> +			dev_warn(&fn->dev,
-> +				 "F3A interrupted, but data is missing\n");
-> +			return IRQ_HANDLED;
-> +		}
-> +		memcpy(f3a->data_regs, drvdata->attn_data.data,
-> +			f3a->register_count);
-> +		drvdata->attn_data.data += f3a->register_count;
-> +		drvdata->attn_data.size -= f3a->register_count;
-> +	} else {
-> +		error = rmi_read_block(fn->rmi_dev, fn->fd.data_base_addr,
-> +					f3a->data_regs, f3a->register_count);
-> +		if (error) {
-> +			dev_err(&fn->dev,
-> +				"%s: Failed to read F3a data registers: %d\n",
-> +				__func__, error);
-> +			return IRQ_RETVAL(error);
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < f3a->gpio_count; i++)
-> +		if (f3a->gpio_key_map[i] != KEY_RESERVED)
-> +			rmi_f3a_report_button(fn, f3a, i);
-> +	if (f3a->trackstick_buttons)
-> +		rmi_f03_commit_buttons(f3a->f03);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int rmi_f3a_config(struct rmi_function *fn)
-> +{
-> +	struct f3a_data *f3a = dev_get_drvdata(&fn->dev);
-> +	struct rmi_driver *drv = fn->rmi_dev->driver;
-> +	const struct rmi_device_platform_data *pdata =
-> +			rmi_get_platform_data(fn->rmi_dev);
-> +
-> +	if (!f3a)
-> +		return 0;
-> +
-> +	if (pdata->gpio_data.trackstick_buttons) {
-> +		/* Try [re-]establish link to F03. */
-> +		f3a->f03 = rmi_find_function(fn->rmi_dev, 0x03);
-> +		f3a->trackstick_buttons = f3a->f03 != NULL;
-> +	}
-> +
-> +	drv->set_irq_bits(fn->rmi_dev, fn->irq_mask);
-> +
-> +	return 0;
-> +}
-> +
-> +static bool rmi_f3a_is_valid_button(int button, struct f3a_data *f3a,
-> +					u8 *query1_regs, u8 *ctrl1_regs)
-> +{
-> +	/* gpio exist && direction input */
-> +	return (query1_regs[0] & BIT(button)) && !(ctrl1_regs[0] & BIT(button));
-> +}
-> +
-> +static int rmi_f3a_map_gpios(struct rmi_function *fn, struct f3a_data *f3a,
-> +				u8 *query1_regs, u8 *ctrl1_regs)
-> +{
-> +	const struct rmi_device_platform_data *pdata =
-> +			rmi_get_platform_data(fn->rmi_dev);
-> +	struct input_dev *input = f3a->input;
-> +	unsigned int button = BTN_LEFT;
-> +	unsigned int trackstick_button = BTN_LEFT;
-> +	bool button_mapped = false;
-> +	int i;
-> +	int button_count = min_t(u8, f3a->gpio_count, TRACKSTICK_RANGE_END);
-> +
-> +	f3a->gpio_key_map = devm_kcalloc(&fn->dev,
-> +						button_count,
-> +						sizeof(f3a->gpio_key_map[0]),
-> +						GFP_KERNEL);
-> +	if (!f3a->gpio_key_map) {
-> +		dev_err(&fn->dev, "Failed to allocate gpio map memory.\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	for (i = 0; i < button_count; i++) {
-> +		if (!rmi_f3a_is_valid_button(i, f3a, query1_regs, ctrl1_regs))
-> +			continue;
-> +
-> +		if (pdata->gpio_data.trackstick_buttons &&
-> +			i >= TRACKSTICK_RANGE_START &&
-> +			i < TRACKSTICK_RANGE_END) {
-> +			f3a->gpio_key_map[i] = trackstick_button++;
-> +		} else if (!pdata->gpio_data.buttonpad || !button_mapped) {
-> +			f3a->gpio_key_map[i] = button;
-> +			input_set_capability(input, EV_KEY, button++);
-> +			button_mapped = true;
-> +		}
-> +	}
-> +	input->keycode = f3a->gpio_key_map;
-> +	input->keycodesize = sizeof(f3a->gpio_key_map[0]);
-> +	input->keycodemax = f3a->gpio_count;
-> +
-> +	if (pdata->gpio_data.buttonpad || (button - BTN_LEFT == 1))
-> +		__set_bit(INPUT_PROP_BUTTONPAD, input->propbit);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rmi_f3a_initialize(struct rmi_function *fn, struct f3a_data *f3a)
-> +{
-> +	u8 query1[RMI_F3A_MAX_REG_SIZE];
-> +	u8 ctrl1[RMI_F3A_MAX_REG_SIZE];
-> +	u8 buf;
-> +	int error;
-> +
-> +	error = rmi_read(fn->rmi_dev, fn->fd.query_base_addr, &buf);
-> +	if (error < 0) {
-> +		dev_err(&fn->dev, "Failed to read general info register: %d\n",
-> +			error);
-> +		return -ENODEV;
-> +	}
-> +
-> +	f3a->gpio_count = buf & RMI_F3A_GPIO_COUNT;
-> +	f3a->register_count = DIV_ROUND_UP(f3a->gpio_count, 8);
-> +
-> +	/* Query1 -> gpio exist */
-> +	error = rmi_read_block(fn->rmi_dev, fn->fd.query_base_addr + 1,
-> +				query1, f3a->register_count);
-> +	if (error) {
-> +		dev_err(&fn->dev, "Failed to read query1 register\n");
-> +		return error;
-> +	}
-> +
-> +	/* Ctrl1 -> gpio direction */
-> +	error = rmi_read_block(fn->rmi_dev, fn->fd.control_base_addr + 1,
-> +				ctrl1, f3a->register_count);
-> +	if (error) {
-> +		dev_err(&fn->dev, "Failed to read control1 register\n");
-> +		return error;
-> +	}
-> +
-> +	error = rmi_f3a_map_gpios(fn, f3a, query1, ctrl1);
-> +	if (error)
-> +		return error;
-> +	return 0;
-> +}
-> +
-> +static int rmi_f3a_probe(struct rmi_function *fn)
-> +{
-> +	struct rmi_device *rmi_dev = fn->rmi_dev;
-> +	struct rmi_driver_data *drv_data = dev_get_drvdata(&rmi_dev->dev);
-> +	struct f3a_data *f3a;
-> +	int error;
-> +
-> +	if (!drv_data->input) {
-> +		dev_info(&fn->dev, "F3A: no input device found, ignoring\n");
-> +		return -ENXIO;
-> +	}
-> +
-> +	f3a = devm_kzalloc(&fn->dev, sizeof(*f3a), GFP_KERNEL);
-> +	if (!f3a)
-> +		return -ENOMEM;
-> +
-> +	f3a->input = drv_data->input;
-> +
-> +	error = rmi_f3a_initialize(fn, f3a);
-> +	if (error)
-> +		return error;
-> +
-> +	dev_set_drvdata(&fn->dev, f3a);
-> +	return 0;
-> +}
-> +
-> +struct rmi_function_handler rmi_f3a_handler = {
-> +	.driver = {
-> +		.name = "rmi4_f3a",
-> +	},
-> +	.func = 0x3a,
-> +	.probe = rmi_f3a_probe,
-> +	.config = rmi_f3a_config,
-> +	.attention = rmi_f3a_attention,
-> +};
-> -- 
-> 2.25.1
-> 
+On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
+> > On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wrote=
+:
+> > > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages)=
+ wrote:
+> > > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
+> > > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pa=
+ges) wrote:
+> > > > >>        =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+> > > > >>        =E2=94=82FIXME                                           =
+     =E2=94=82
+> > > > >>        =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
+> > > > >>        =E2=94=82From my experiments,  it  appears  that  if  a  =
+SEC=E2=80=90 =E2=94=82
+> > > > >>        =E2=94=82COMP_IOCTL_NOTIF_RECV   is  done  after  the  ta=
+rget =E2=94=82
+> > > > >>        =E2=94=82process terminates, then the ioctl()  simply  bl=
+ocks =E2=94=82
+> > > > >>        =E2=94=82(rather than returning an error to indicate that=
+ the =E2=94=82
+> > > > >>        =E2=94=82target process no longer exists).               =
+     =E2=94=82
+> > > > >
+> > > > > Yeah, I think Christian wanted to fix this at some point,
+> > > >
+> > > > Do you have a pointer that discussion? I could not find it with a
+> > > > quick search.
+> > > >
+> > > > > but it's a
+> > > > > bit sticky to do.
+> > > >
+> > > > Can you say a few words about the nature of the problem?
+> > >
+> > > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp=
+:
+> > > notify about unused filter"). So maybe there's a bug here?
+> >
+> > That thing only notifies on ->poll, it doesn't unblock ioctls; and
+> > Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
+> > commit doesn't have any effect on this kind of usage.
 >
+> Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
+> we don't have a count of all of them, unfortunately.
+>
+> We could maybe look inside the wait_list, but that will probably make
+> people angry :)
+
+The easiest way would probably be to open-code the semaphore-ish part,
+and let the semaphore and poll share the waitqueue. The current code
+kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
+entire semaphore would IMO be cleaner than that. And it's not like
+semaphore semantics are even a good fit for this code anyway.
+
+Let's see... if we didn't have the existing UAPI to worry about, I'd
+do it as follows (*completely* untested). That way, the ioctl would
+block exactly until either there actually is a request to deliver or
+there are no more users of the filter. The problem is that if we just
+apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
+an event loop and don't set O_NONBLOCK will be screwed. So we'd
+probably also have to add some stupid counter in place of the
+semaphore's counter that we can use to preserve the old behavior of
+returning -ENOENT once for each cancelled request. :(
+
+I guess this is a nice point in favor of Michael's usual complaint
+that if there are no man pages for a feature by the time the feature
+lands upstream, there's a higher chance that the UAPI will suck
+forever...
+
+
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 676d4af62103..f0f4c68e0bc6 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -138,7 +138,6 @@ struct seccomp_kaddfd {
+  * @notifications: A list of struct seccomp_knotif elements.
+  */
+ struct notification {
+-       struct semaphore request;
+        u64 next_id;
+        struct list_head notifications;
+ };
+@@ -859,7 +858,6 @@ static int seccomp_do_user_notification(int this_syscal=
+l,
+        list_add(&n.list, &match->notif->notifications);
+        INIT_LIST_HEAD(&n.addfd);
+
+-       up(&match->notif->request);
+        wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
+        mutex_unlock(&match->notify_lock);
+
+@@ -1175,9 +1173,10 @@ find_notification(struct seccomp_filter *filter, u64=
+ id)
+
+
+ static long seccomp_notify_recv(struct seccomp_filter *filter,
+-                               void __user *buf)
++                               void __user *buf, bool blocking)
+ {
+        struct seccomp_knotif *knotif =3D NULL, *cur;
++       DECLARE_WAITQUEUE(wait, current);
+        struct seccomp_notif unotif;
+        ssize_t ret;
+
+@@ -1190,11 +1189,9 @@ static long seccomp_notify_recv(struct
+seccomp_filter *filter,
+
+        memset(&unotif, 0, sizeof(unotif));
+
+-       ret =3D down_interruptible(&filter->notif->request);
+-       if (ret < 0)
+-               return ret;
+-
+        mutex_lock(&filter->notify_lock);
++
++retry:
+        list_for_each_entry(cur, &filter->notif->notifications, list) {
+                if (cur->state =3D=3D SECCOMP_NOTIFY_INIT) {
+                        knotif =3D cur;
+@@ -1202,14 +1199,32 @@ static long seccomp_notify_recv(struct
+seccomp_filter *filter,
+                }
+        }
+
+-       /*
+-        * If we didn't find a notification, it could be that the task was
+-        * interrupted by a fatal signal between the time we were woken and
+-        * when we were able to acquire the rw lock.
+-        */
+        if (!knotif) {
+-               ret =3D -ENOENT;
+-               goto out;
++               /* This has to happen before checking &filter->users. */
++               prepare_to_wait(&filter->wqh, &wait, TASK_INTERRUPTIBLE);
++
++               /*
++                * If all users of the filter are gone, throw an error inst=
+ead
++                * of pointlessly continuing to block.
++                */
++               if (refcount_read(&filter->users) =3D=3D 0) {
++                       ret =3D -ENOTCON;
++                       goto out;
++               }
++               if (blocking) {
++                       /* No notifications pending - wait for one,
+then retry. */
++                       mutex_unlock(&filter->notify_lock);
++                       schedule();
++                       mutex_lock(&filter->notify_lock);
++                       if (signal_pending(current)) {
++                               ret =3D -EINTR;
++                               goto out;
++                       }
++                       goto retry;
++               } else {
++                       ret =3D -ENOENT;
++                       goto out;
++               }
+        }
+
+        unotif.id =3D knotif->id;
+@@ -1220,6 +1235,7 @@ static long seccomp_notify_recv(struct
+seccomp_filter *filter,
+        wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
+        ret =3D 0;
+ out:
++       finish_wait(&filter->wqh, &wait);
+        mutex_unlock(&filter->notify_lock);
+
+        if (ret =3D=3D 0 && copy_to_user(buf, &unotif, sizeof(unotif))) {
+@@ -1233,10 +1249,8 @@ static long seccomp_notify_recv(struct
+seccomp_filter *filter,
+                 */
+                mutex_lock(&filter->notify_lock);
+                knotif =3D find_notification(filter, unotif.id);
+-               if (knotif) {
++               if (knotif)
+                        knotif->state =3D SECCOMP_NOTIFY_INIT;
+-                       up(&filter->notif->request);
+-               }
+                mutex_unlock(&filter->notify_lock);
+        }
+
+@@ -1412,11 +1426,12 @@ static long seccomp_notify_ioctl(struct file
+*file, unsigned int cmd,
+ {
+        struct seccomp_filter *filter =3D file->private_data;
+        void __user *buf =3D (void __user *)arg;
++       bool blocking =3D !(file->f_flags & O_NONBLOCK);
+
+        /* Fixed-size ioctls */
+        switch (cmd) {
+        case SECCOMP_IOCTL_NOTIF_RECV:
+-               return seccomp_notify_recv(filter, buf);
++               return seccomp_notify_recv(filter, buf, blocking);
+        case SECCOMP_IOCTL_NOTIF_SEND:
+                return seccomp_notify_send(filter, buf);
+        case SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR:
+@@ -1485,7 +1500,6 @@ static struct file *init_listener(struct
+seccomp_filter *filter)
+        if (!filter->notif)
+                goto out;
+
+-       sema_init(&filter->notif->request, 0);
+        filter->notif->next_id =3D get_random_u64();
+        INIT_LIST_HEAD(&filter->notif->notifications);
