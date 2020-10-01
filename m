@@ -2,140 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3711C28064D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7AA280653
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbgJASLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:11:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:42122 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730070AbgJASLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:11:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A6BD1042;
-        Thu,  1 Oct 2020 11:11:29 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.51.119])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 218163F6CF;
-        Thu,  1 Oct 2020 11:11:21 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 19:11:19 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan.Cameron@huawei.com, Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 01/10] mm: add Kernel Electric-Fence infrastructure
-Message-ID: <20201001181119.GB89689@C02TD0UTHF1T.local>
-References: <20200921132611.1700350-1-elver@google.com>
- <20200921132611.1700350-2-elver@google.com>
- <20200929142411.GC53442@C02TD0UTHF1T.local>
- <CAG_fn=UOJARteeqT_+1ORPEP9SB5HR3B3W8830rA9kjZLoN+Ww@mail.gmail.com>
+        id S1732795AbgJASNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730070AbgJASNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 14:13:04 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8320EC0613D0;
+        Thu,  1 Oct 2020 11:13:04 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id u126so6549737oif.13;
+        Thu, 01 Oct 2020 11:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SzTn2rI/Abg1eZ9zAHO1/DWnogFkdoJUTHuSooKPL2E=;
+        b=Qzcadvf6BDIWj2kiq5IHHTykWrHh+PTE1qfxqV53SovX41d7yTx5E9ITGILZrZsFCa
+         L0YiDagi6hzWUqlhI7J8n78eMglZdjfK3r2mEX93N6SMOpj2qBe/YE6OWxPdDdUKuzZ4
+         GJZ+EmdjbhG8ft28WBwygyX4jDRbICCkXoOaOj2cB9DwmLhzySW5pnHHVyIcCazvc0Y6
+         kwLqPHGDUSjB/UOopqarbdPjQQLnH9Y+VLDMMrOZ8jEpk5XYQzKL/0f5MY7fSYOv6+04
+         DpMwQ4nVSRLb+TIEic+l8zu6FzSK4fxz+ubJcVj0jSLjNKZICwe/6lwvIk9EAw19wND+
+         McDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=SzTn2rI/Abg1eZ9zAHO1/DWnogFkdoJUTHuSooKPL2E=;
+        b=FOEIYz0s9+8IJmlRI1ZEtb0xwF/8ej2E47d9tLpyFF0nSMDKVG2oyBMZuQQDIyom+4
+         RNrKyygEdRSKsJacnZo9Nbn9Y0lFsTFdkqPuWiXNuQMxCIuNCAedCkPAIZ/jS1cZsCWn
+         e6Q0kTDmCwKSE5SZ6zl9quJ7qqvmyjSDBvB/ydes45H/MxR0cKWTAdSIyINrvq96Z4gP
+         kyP0AKHbCZv003PfEdoStlhrKunjL7ZXH/0dXNTJYBncZ4xOrutssjDeHnXIVqZiNYxx
+         J9QqzhDCidJTfysFPzDf1DuqkDeyn+cbLg01YKU4mgrkbqmZpfZDmPcoG/MKO9DXMc/L
+         GMIQ==
+X-Gm-Message-State: AOAM530EBLfWMuyfy+0IQePNW7It8MdXE9jGuoWxCIDC6enTcBgntZgj
+        Rfg+xJUxnXuWqmWbPKVd9chHFoBenXA=
+X-Google-Smtp-Source: ABdhPJyxJsZP6Xw8K3zvINh8skVbgJ/emHDMHzj6V8A+FA6UlqbmaepJPNtBu3vDPFDKANe8CC379w==
+X-Received: by 2002:aca:4a4d:: with SMTP id x74mr757686oia.6.1601575983764;
+        Thu, 01 Oct 2020 11:13:03 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q81sm1190747oia.46.2020.10.01.11.13.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 11:13:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 3/3] hwmon: (lm75) Add regulator support
+To:     Alban Bedel <alban.bedel@aerq.com>, linux-hwmon@vger.kernel.org
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201001145738.17326-1-alban.bedel@aerq.com>
+ <20201001145738.17326-4-alban.bedel@aerq.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <8bfad666-10e7-e5d7-c4d8-3877c3f7b449@roeck-us.net>
+Date:   Thu, 1 Oct 2020 11:13:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG_fn=UOJARteeqT_+1ORPEP9SB5HR3B3W8830rA9kjZLoN+Ww@mail.gmail.com>
+In-Reply-To: <20201001145738.17326-4-alban.bedel@aerq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 05:51:58PM +0200, Alexander Potapenko wrote:
-> On Tue, Sep 29, 2020 at 4:24 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Mon, Sep 21, 2020 at 03:26:02PM +0200, Marco Elver wrote:
-> > > From: Alexander Potapenko <glider@google.com>
-> > >
-> > > This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
-> > > low-overhead sampling-based memory safety error detector of heap
-> > > use-after-free, invalid-free, and out-of-bounds access errors.
-> > >
-> > > KFENCE is designed to be enabled in production kernels, and has near
-> > > zero performance overhead. Compared to KASAN, KFENCE trades performance
-> > > for precision. The main motivation behind KFENCE's design, is that with
-> > > enough total uptime KFENCE will detect bugs in code paths not typically
-> > > exercised by non-production test workloads. One way to quickly achieve a
-> > > large enough total uptime is when the tool is deployed across a large
-> > > fleet of machines.
-> > >
-> > > KFENCE objects each reside on a dedicated page, at either the left or
-> > > right page boundaries. The pages to the left and right of the object
-> > > page are "guard pages", whose attributes are changed to a protected
-> > > state, and cause page faults on any attempted access to them. Such page
-> > > faults are then intercepted by KFENCE, which handles the fault
-> > > gracefully by reporting a memory access error. To detect out-of-bounds
-> > > writes to memory within the object's page itself, KFENCE also uses
-> > > pattern-based redzones. The following figure illustrates the page
-> > > layout:
-> > >
-> > >   ---+-----------+-----------+-----------+-----------+-----------+---
-> > >      | xxxxxxxxx | O :       | xxxxxxxxx |       : O | xxxxxxxxx |
-> > >      | xxxxxxxxx | B :       | xxxxxxxxx |       : B | xxxxxxxxx |
-> > >      | x GUARD x | J : RED-  | x GUARD x | RED-  : J | x GUARD x |
-> > >      | xxxxxxxxx | E :  ZONE | xxxxxxxxx |  ZONE : E | xxxxxxxxx |
-> > >      | xxxxxxxxx | C :       | xxxxxxxxx |       : C | xxxxxxxxx |
-> > >      | xxxxxxxxx | T :       | xxxxxxxxx |       : T | xxxxxxxxx |
-> > >   ---+-----------+-----------+-----------+-----------+-----------+---
-> > >
-> > > Guarded allocations are set up based on a sample interval (can be set
-> > > via kfence.sample_interval). After expiration of the sample interval, a
-> > > guarded allocation from the KFENCE object pool is returned to the main
-> > > allocator (SLAB or SLUB). At this point, the timer is reset, and the
-> > > next allocation is set up after the expiration of the interval.
-> >
-> > From other sub-threads it sounds like these addresses are not part of
-> > the linear/direct map.
-> For x86 these addresses belong to .bss, i.e. "kernel text mapping"
-> section, isn't that the linear map?
+On 10/1/20 7:57 AM, Alban Bedel wrote:
+> Add regulator support for boards where the sensor first need to be
+> powered up before it can be used.
+> 
+> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
+> ---
+> v2: Rely on dummy regulators instead of explicitly handling missing
+>     regulator
+> v3: Use a devm action to handle disabling the regulator
+> ---
 
-No; the "linear map" is the "direct mapping" on x86, and the "image" or
-"kernel text mapping" is a distinct VA region. The image mapping aliases
-(i.e. uses the same physical pages as) a portion of the linear map, and
-every page in the linear map has a struct page.
+Second '---' is not needed.
 
-Fon the x86_64 ivirtual memory layout, see:
+I can not apply patches 1 and 2 of the series since I don't have an
+Ack from a DT maintainer, but this one looks good. Applied.
 
-https://www.kernel.org/doc/html/latest/x86/x86_64/mm.html
+Guenter
 
-Originally, the kernel image lived in the linear map, but it was split
-out into a distinct VA range (among other things) to permit KASLR.  When
-that split was made, the x86 virt_to_*() helpers were updated to detect
-when they were passed a kernel image address, and automatically fix that
-up as-if they'd been handed the linear map alias of that address.
 
-For going one-way from virt->{phys,page} that works ok, but it doesn't
-survive the round-trip, and introduces redundant work into each
-virt_to_*() call.
+>  drivers/hwmon/lm75.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> index ba0be48aeadd..e9c1f55b2706 100644
+> --- a/drivers/hwmon/lm75.c
+> +++ b/drivers/hwmon/lm75.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/of.h>
+>  #include <linux/regmap.h>
+>  #include <linux/util_macros.h>
+> +#include <linux/regulator/consumer.h>
+>  #include "lm75.h"
+>  
+>  /*
+> @@ -101,6 +102,7 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
+>  struct lm75_data {
+>  	struct i2c_client		*client;
+>  	struct regmap			*regmap;
+> +	struct regulator		*vs;
+>  	u8				orig_conf;
+>  	u8				current_conf;
+>  	u8				resolution;	/* In bits, 9 to 16 */
+> @@ -534,6 +536,13 @@ static const struct regmap_config lm75_regmap_config = {
+>  	.use_single_write = true,
+>  };
+>  
+> +static void lm75_disable_regulator(void *data)
+> +{
+> +	struct lm75_data *lm75 = data;
+> +
+> +	regulator_disable(lm75->vs);
+> +}
+> +
+>  static void lm75_remove(void *data)
+>  {
+>  	struct lm75_data *lm75 = data;
+> @@ -567,6 +576,10 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
+>  	data->client = client;
+>  	data->kind = kind;
+>  
+> +	data->vs = devm_regulator_get(dev, "vs");
+> +	if (IS_ERR(data->vs))
+> +		return PTR_ERR(data->vs);
+> +
+>  	data->regmap = devm_regmap_init_i2c(client, &lm75_regmap_config);
+>  	if (IS_ERR(data->regmap))
+>  		return PTR_ERR(data->regmap);
+> @@ -581,6 +594,17 @@ lm75_probe(struct i2c_client *client, const struct i2c_device_id *id)
+>  	data->sample_time = data->params->default_sample_time;
+>  	data->resolution = data->params->default_resolution;
+>  
+> +	/* Enable the power */
+> +	err = regulator_enable(data->vs);
+> +	if (err) {
+> +		dev_err(dev, "failed to enable regulator: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = devm_add_action_or_reset(dev, lm75_disable_regulator, data);
+> +	if (err)
+> +		return err;
+> +
+>  	/* Cache original configuration */
+>  	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+>  	if (status < 0) {
+> 
 
-As it was largely arch code that was using image addresses, we didn't
-bother with the fixup on arm64, as we preferred the stronger warning. At
-the time I was also under the impression that on x86 they wanted to get
-rid of the automatic fixup, but that doesn't seem to have happened.
-
-Thanks,
-Mark.
