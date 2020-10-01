@@ -2,241 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E52A280410
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E46280414
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732685AbgJAQgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
+        id S1732230AbgJAQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732016AbgJAQgA (ORCPT
+        with ESMTP id S1731917AbgJAQhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:36:00 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCE3C0613D0;
-        Thu,  1 Oct 2020 09:36:00 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id j19so2274824pjl.4;
-        Thu, 01 Oct 2020 09:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wJgRdiCdKwAPzZOQSHLzYM1xBP+RpvAhHe8SfcDOWCQ=;
-        b=FMQviEiop2nNX40IOELYb4bZp14f5BWgDYWIonOaZe+EqH6mB/AhZB5O0fiZ+7A5Nl
-         J7QDDooYh37iUDtXoyyheEl2Li78otQHcJ4gSBh0wcGEq6TkmI8MhmDRaNRl1Mmbn8pr
-         TQ79UEZI6bM7y2Ttq5WT5MhhtlssSSGTiOdAlul7d6Xtcxnq9cY48a6sG1nL1fSfJ7uj
-         z9IxR6fvErbkufcn1bNCgP9M9KT6F3AU3XEd3WCMHxSn1mZYjVr8kWoJMe1ZAhwD3vWy
-         Lf+zSg3Ll4TRF5CGfHGEL9G5IZmdUCiKFUqVrBA6MoKB9VUJMMhAHIkT6kgaH262VySQ
-         mHMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wJgRdiCdKwAPzZOQSHLzYM1xBP+RpvAhHe8SfcDOWCQ=;
-        b=s1O9mUsIdWGJMHZshwlcJbgm0hisAqw1DEnqoHZMS2ZUuXDTd7vfyjquZqXwlKBVoF
-         MecJgo6vH941YgcvNSmpqPpLbTL2D3LLt1tU0HlfZWdFwm54ORd/MaSP94mKtzM1/0xI
-         l0ZaYcE4TSB/jdDRh3gcgFl2mHpVVrthtC9qQwEQtb+OTII63NkNW+/r+2mcL/dG3WK/
-         Lvc8FMX8hF0WwxPmubq2CPlvGK/ZX7rOOApHrpd0GWA5SnsyPTl7GCkNoEYtRzfavhbe
-         V9Dim2M/lX/7N/fOkz+kCxkdgCYGi51CrZsHNb5CkvCtlFnQUG4M1LP+ShXSgOH5m/4d
-         E83Q==
-X-Gm-Message-State: AOAM531CQIl+Vux3HP07TJK96ON9Ikm/8slWcxeEgAKk6dGIU0qF4biv
-        ub0IOZ6lv0IT2Q+dGTz300s8jaemqPHGN0fTzPQ=
-X-Google-Smtp-Source: ABdhPJyhJXxJ1O/nOqwa2gkHNmjNMlGkW2vYIvPvka/GZnsH8l4+514dsPGkZiw7sWQJrwWmJIeTzoKWFwFBeF7tYYI=
-X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr754862pjb.129.1601570160261;
- Thu, 01 Oct 2020 09:36:00 -0700 (PDT)
+        Thu, 1 Oct 2020 12:37:03 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF433C0613D0;
+        Thu,  1 Oct 2020 09:37:03 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kO1ZW-009vym-B9; Thu, 01 Oct 2020 16:36:46 +0000
+Date:   Thu, 1 Oct 2020 17:36:46 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201001163646.GG3421308@ZenIV.linux.org.uk>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
 MIME-Version: 1.0
-References: <20201001014250.26987-1-david.e.box@linux.intel.com> <20201001014250.26987-6-david.e.box@linux.intel.com>
-In-Reply-To: <20201001014250.26987-6-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 1 Oct 2020 19:35:41 +0300
-Message-ID: <CAHp75VcP58Ub=gmbRVy0TPJtntKvnQZoi3tOakxE0qsEqzGPVA@mail.gmail.com>
-Subject: Re: [PATCH V7 5/5] platform/x86: Intel PMT Crashlog capability driver
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alexey.budankov@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001161529.GA251468@rowland.harvard.edu>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
-> Add support for the Intel Platform Monitoring Technology crashlog
-> interface. This interface provides a few sysfs values to allow for
-> controlling the crashlog telemetry interface as well as a character driver
-> to allow for mapping the crashlog memory region so that it can be accessed
-> after a crashlog has been recorded.
->
-> This driver is meant to only support the server version of the crashlog
-> which is identified as crash_type 1 with a version of zero. Currently no
-> other types are supported.
+On Thu, Oct 01, 2020 at 12:15:29PM -0400, Alan Stern wrote:
+> > <viro> CPU1:
+> > <viro>         to_free = NULL
+> > <viro>         spin_lock(&LOCK)
+> > <viro>         if (!smp_load_acquire(&V->B))
+> > <viro>                 to_free = V
+> > <viro>         V->A = 0
+> > <viro>         spin_unlock(&LOCK)
+> > <viro>         kfree(to_free)
+> > <viro>
+> > <viro> CPU2:
+> > <viro>         to_free = V;
+> > <viro>         if (READ_ONCE(V->A)) {
+> > <viro>                 spin_lock(&LOCK)
+> > <viro>                 if (V->A)
+> > <viro>                         to_free = NULL
+> > <viro>                 smp_store_release(&V->B, 0);
+> > <viro>                 spin_unlock(&LOCK)
+> > <viro>         }
+> > <viro>         kfree(to_free);
+> > <viro> 1) is it guaranteed that V will be freed exactly once and that
+> > 	  no accesses to *V will happen after freeing it?
+> > <viro> 2) do we need smp_store_release() there?  I.e. will anything
+> > 	  break if it's replaced with plain V->B = 0?
+> 
+> Here are my answers to Al's questions:
+> 
+> 1) It is guaranteed that V will be freed exactly once.  It is not 
+> guaranteed that no accesses to *V will occur after it is freed, because 
+> the test contains a data race.  CPU1's plain "V->A = 0" write races with 
+> CPU2's READ_ONCE;
 
-...
+What will that READ_ONCE() yield in that case?  If it's non-zero, we should
+be fine - we won't get to kfree() until after we are done with the spinlock.
+And if it's zero...  What will CPU1 do with *V accesses _after_ it has issued
+the store to V->A?
 
-> +               The crashlog<x> directory contains files for configuring an
-> +               instance of a PMT crashlog device that can perform crash data
-> +               recoring. Each crashlog<x> device has an associated crashlog
+Confused...
 
-recording
+> if the plain write were replaced with 
+> "WRITE_ONCE(V->A, 0)" then the guarantee would hold.  Equally well, 
+> CPU1's smp_load_acquire could be replaced with a plain read while the 
+> plain write is replaced with smp_store_release.
 
-> +               file. This file can be opened and mapped or read to access the
-> +               resulting crashlog buffer. The register layout for the buffer
-> +               can be determined from an XML file of specified guid for the
-> +               parent device.
-
-...
-
-> +               (RO) The guid for this crashlog device. The guid identifies the
-
-guid -> GUID
-
-Please, spell check all ABI files in this series.
-
-...
-
-> +config INTEL_PMT_CRASHLOG
-> +       tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
-> +       select INTEL_PMT_CLASS
-> +       help
-> +         The Intel Platform Monitoring Technology (PMT) crashlog driver provides
-> +         access to hardware crashlog capabilities on devices that support the
-> +         feature.
-
-Name of the module?
-
-...
-
-> +       /*
-
-> +        * Currenty we only recognize OOBMSM version 0 devices.
-
-Currently. Please spell check all comments in the code.
-
-> +        * We can ignore all other crashlog devices in the system.
-> +        */
-
-...
-
-> +       /* clear control bits */
-
-What new information readers get from this comment?
-
-> +       control &= ~(CRASHLOG_FLAG_MASK | CRASHLOG_FLAG_DISABLE);
-
-How does the second constant play any role here?
-
-...
-
-> +       /* clear control bits */
-
-Ditto. And moreover it's ambiguous due to joined two lines below.
-
-> +       control &= ~CRASHLOG_FLAG_MASK;
-> +       control |= CRASHLOG_FLAG_EXECUTE;
-
-...
-
-> +       return strnlen(buf, count);
-
-How is this different to count?
-
-...
-
-> +       struct crashlog_entry *entry;
-> +       bool trigger;
-> +       int result;
-> +
-
-> +       entry = dev_get_drvdata(dev);
-
-You may reduce LOCs by direct assigning in the definition block above.
-
-...
-
-> +       result = strnlen(buf, count);
-
-How is it different from count?
-
-...
-
-> +static DEFINE_XARRAY_ALLOC(crashlog_array);
-> +static struct intel_pmt_namespace pmt_crashlog_ns = {
-> +       .name = "crashlog",
-> +       .xa = &crashlog_array,
-> +       .attr_grp = &pmt_crashlog_group
-
-Leave the comma here.
-
-> +};
-
-...
-
-> +       ret = intel_pmt_dev_create(entry, &pmt_crashlog_ns, parent);
-> +       if (!ret)
-> +               return 0;
-> +
-> +       dev_err(parent, "Failed to add crashlog controls\n");
-> +       intel_pmt_dev_destroy(entry, &pmt_crashlog_ns);
-> +
-> +       return ret;
-
-Can we use traditional patterns?
-if (ret) {
-  ...
-}
-return ret;
-
-...
-
-> +       size = offsetof(struct pmt_crashlog_priv, entry[pdev->num_resources]);
-> +       priv = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
-
-struct_size()
-
-...
-
-> +               /* initialize control mutex */
-> +               mutex_init(&priv->entry[i].control_mutex);
-> +
-> +               disc_res = platform_get_resource(pdev, IORESOURCE_MEM, i);
-> +               if (!disc_res)
-> +                       goto abort_probe;
-> +
-> +               ret = intel_pmt_ioremap_discovery_table(entry, pdev, i);
-> +               if (ret)
-> +                       goto abort_probe;
-> +
-> +               if (!pmt_crashlog_supported(entry))
-> +                       continue;
-> +
-> +               ret = pmt_crashlog_add_entry(entry, &pdev->dev, disc_res);
-> +               if (ret)
-> +                       goto abort_probe;
-> +
-> +               priv->num_entries++;
-
-Are you going to duplicate this in each driver? Consider to refactor
-to avoid duplication of a lot of code.
-
-...
-
-> +               .name   = DRV_NAME,
-
-> +MODULE_ALIAS("platform:" DRV_NAME);
-
-I'm not sure I have interpreted this:
-        - Use 'raw' string instead of defines for device names
-correctly. Can you elaborate?
-
---
-With Best Regards,
-Andy Shevchenko
+Er...  Do you mean the write to ->A on CPU1?
