@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DD327FD7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3C927FD79
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732238AbgJAKdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
+        id S1732228AbgJAKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731647AbgJAKdo (ORCPT
+        with ESMTP id S1732191AbgJAKdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:33:44 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59AFC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 03:33:43 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so4081719pfd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:33:43 -0700 (PDT)
+        Thu, 1 Oct 2020 06:33:25 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39524C0613D0;
+        Thu,  1 Oct 2020 03:33:25 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q4so1742235pjh.5;
+        Thu, 01 Oct 2020 03:33:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fQTw1sCQWT6GYrgDpI3EitnTCGAU23/niMRjTpsTEn4=;
-        b=PQSa3su63uNtIjlg9q35vYgWy61NXgVmNIoZglHykMU0smYylecz7wgQHRBOtXO74H
-         V5JzxrlzocXIY7niAMtmZvggSGDQyIKmhihr2b0iDsZew2RnZiY7J5x9y5DfWa/ZVvjI
-         2/suiC/V6yYc3CGEo8aSfS9xltkPBQCamsoAYe+DZ/2xQmiFcHAeqb6M7emezENMnlxW
-         b2mS+F+SKRCl+5m1w3cdOi9ZpLwnZjTmDL5fX9NH4pyvZQ2qlVv2P4h6Myi1RDjuofhl
-         9TkpPCP7PdcoKmL5dTMSPgbBYxiq7CrOEUMyc8u/DF1RtN0gpMj2/jDhrhekXwVk+g5V
-         XZNA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rGjo8l+NdpUXZUZilL4Q0g6fe7v4+HYilXIVrlEcVns=;
+        b=kIlhuTNqwSTNhpHOrcs3e9r8cZPB4BQivq2B++Zm7J3/CHW/Q1TguGqKMZqeU9Etek
+         rXcQE2DBMTI02L3/D7/2zw2SBASLVn7JPYyGbwvmCKZM6OOhy4ewV1MSEDCFAhJfZQto
+         QoQE7DyXm+g8YWoG01UrHPNSjm6PV2+cNF/IQUanhW5bL0nJkaBH7oNnPZ7FCHECkU2E
+         ERneJFOPz70xBd676Ns1f/VFEL0QcI4yxFSV5F9p8mbwe7lARibAQ7IuedFD9jtrJoai
+         SThkqUcd9rE/QVJQ2RNjR8DrPFR7FOzdhfeOXK3F6s+7LflIhKxFx+DmyZrtEFN+51AP
+         XstA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fQTw1sCQWT6GYrgDpI3EitnTCGAU23/niMRjTpsTEn4=;
-        b=uZqCqEesEe2gGwLPGFXK2+3noJcyAY4KI/YnMSpC6MIljMNnlbc00YLQ05pS5d7y52
-         nf2qVnET6AdwfpvONRXEM9bG28jivrY9bbS4oDvPA/Fxx8v8f2uooScfI2VvdnWtTa55
-         cl6kEHpLcdlZXnbthT7Oi3Rsx/GNQ05jb0VsVrje0ZLogKAHRIvez3BQZKYySUR2lRee
-         32dpmK4SHXvGQnh1ha+GRV0Yj1xxYnT4rU0h/9qcI99mYHyS/bkHHik9Zv54OGcy8Yrw
-         s0n5QQoc2QXm43zq2UkA3Y0zhWatZtg8uxZHh4ekjXW3GbJpmvP+RJClW1on6rdJ02KC
-         31PQ==
-X-Gm-Message-State: AOAM5304uRZVxWyljotmOkaRUnIMk3MXWUDEKnuuParJTzODpc/TNcdW
-        3ANoTdcbYRwwKmaB3qr7igk=
-X-Google-Smtp-Source: ABdhPJx/yV/zBeBpAEW1BN1LxMFduT0jhl9l1ixStjCEezC3xVB/TlAd7E5L7HzhUdDr0IIdF1Rzmw==
-X-Received: by 2002:a63:d852:: with SMTP id k18mr5599858pgj.49.1601548423007;
-        Thu, 01 Oct 2020 03:33:43 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:6895:98fa:b2ef:d209:c1d4])
-        by smtp.gmail.com with ESMTPSA id f18sm6198124pfe.153.2020.10.01.03.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 03:33:42 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com
-Subject: [PATCH RFC] checkpatch: fix multi-statement macro checks
-Date:   Thu,  1 Oct 2020 16:03:14 +0530
-Message-Id: <20201001103314.136645-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rGjo8l+NdpUXZUZilL4Q0g6fe7v4+HYilXIVrlEcVns=;
+        b=uRStvAmtjl+0Qls7hDHK/OUPjD5khEa4jfE352NMgujwahM3xihZlNApusydOMu5LP
+         ttM57GKnqQknru/QfQXN/rkXYVDNXnjvFnqLSNee92HqHlIou29jWmEF+TMyuMDDifxI
+         C35NZrcfVDfWzS1gikf9xBciroWbTMvWLQNJlujILmyr+M3MOdNm2iCJb/VBW40IfttU
+         +zQ+xXR6MLZe5R3FUv2lbx/f51zweGSq/xZC4aYkxu6tpq9TOdEglidTVGdEX0RGUNqH
+         PKjhlUuKjUh/yMfxNYL7XzBanuTmHQGb2RlRxNgD12ek1THxKuEwJGaAUER9Z9igVxcO
+         LM2g==
+X-Gm-Message-State: AOAM531xw5xXX9EoekWJPZv+qqd1i7rRZBJoscithsq68uFYeirxOCAS
+        gcexkAk6SgsywkTjXZcjhxs=
+X-Google-Smtp-Source: ABdhPJzDPpJPeWaB0a9XY6UYJikyluOcFnxBCnGqwbuZq2h+kV9PGioTgzS16S8Vp0+7n2WHSE0rVg==
+X-Received: by 2002:a17:90b:a44:: with SMTP id gw4mr6137841pjb.26.1601548404519;
+        Thu, 01 Oct 2020 03:33:24 -0700 (PDT)
+Received: from Asurada (c-73-162-191-63.hsd1.ca.comcast.net. [73.162.191.63])
+        by smtp.gmail.com with ESMTPSA id h5sm5432799pja.55.2020.10.01.03.33.23
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Oct 2020 03:33:24 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 03:33:19 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20201001103318.GA1272@Asurada>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <20200930203618.GC2110@Asurada-Nvidia>
+ <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+ <20200930213244.GA10573@Asurada-Nvidia>
+ <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+ <20201001012630.GA28240@Asurada-Nvidia>
+ <20201001095152.GD3919720@ulmo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001095152.GD3919720@ulmo>
+User-Agent: Mutt/1.5.22 (2013-10-16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch.pl doesn't have a check for excluding while (...) {...}
-blocks from MULTISTATEMENT_MACRO_USE_DO_WHILE error.
+On Thu, Oct 01, 2020 at 11:51:52AM +0200, Thierry Reding wrote:
+> > > >> ...
+> > > >>>> It looks to me like the only reason why you need this new global API is
+> > > >>>> because PCI devices may not have a device tree node with a phandle to
+> > > >>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
+> > > >>>> root complex has an iommus property, right? In that case, can't we
+> > > >>>> simply do something like this:
+> > > >>>>
+> > > >>>> 	if (dev_is_pci(dev))
+> > > >>>> 		np = find_host_bridge(dev)->of_node;
+> > > >>>> 	else
+> > > >>>> 		np = dev->of_node;
+> > > >>>>
+> > > >>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm pretty
+> > > >>>> sure that exists.
 
-For example, running checkpatch.pl on the file mm/access.c in the
-kernel generates the following error:
+> > @@ -814,12 +815,15 @@ static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
+> >  }
+> >  
+> >  static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
+> > -				struct of_phandle_args *args)
+> > +				struct of_phandle_args *args, struct fwnode_handle *fwnode)
+> >  {
+> >  	const struct iommu_ops *ops = smmu->iommu.ops;
+> >  	int err;
+> >  
+> > -	err = iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
+> > +	if (!fwnode)
+> > +		return -ENOENT;
+> > +
+> > +	err = iommu_fwspec_init(dev, fwnode, ops);
+> >  	if (err < 0) {
+> >  		dev_err(dev, "failed to initialize fwspec: %d\n", err);
+> >  		return err;
+> > @@ -835,6 +839,19 @@ static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
+> >  	return 0;
+> >  }
+> >  
+> > +static struct device_node *tegra_smmu_find_pci_np(struct pci_dev *pci_dev)
+> > +{
+> > +	struct pci_bus *bus = pci_dev->bus;
+> > +	struct device *dev = &bus->dev;
+> > +
+> > +	while (!of_property_read_bool(dev->of_node, "iommus") && bus->parent) {
+> > +		dev = &bus->parent->dev;
+> > +		bus = bus->parent;
+> > +	}
+> > +
+> > +	return dev->of_node;
+> > +}
+> 
+> This seems like it's the equivalent of pci_get_host_bridge_device(). Can
+> you use that instead? I think you might use the parent of the host
+> bridge that's returned from that function, though.
 
-ERROR: Macros with complex values should be enclosed in parentheses
-+#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)	\
-+	while (len >= sizeof(type)) {					\
-+		__get_kernel_nofault(dst, src, type, err_label);	\
-+		dst += sizeof(type);					\
-+		src += sizeof(type);					\
-+		len -= sizeof(type);					\
-+	}
+I noticed that one when looking up one of the of_ functions, yet
+also found that this pci_get_host_bridge_device() is privated by
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/pci/pci.h?id=975e1ac173058b8710e5979e97fc1397233301f3
 
-The error is misleading for this case. Enclosing it in parantheses
-doesn't make any sense.
-
-Checkpatch already has an exception list for such common macro types.
-Added a new exception for while (...) {...} style blocks to the same.
-This effectively fixed the wrong error message.
-
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 72c4072307ea..c2c211374662 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5342,6 +5342,7 @@ sub process {
- 			    $dstat !~ /^\.$Ident\s*=/ &&				# .foo =
- 			    $dstat !~ /^(?:\#\s*$Ident|\#\s*$Constant)\s*$/ &&		# stringification #foo
- 			    $dstat !~ /^do\s*$Constant\s*while\s*$Constant;?$/ &&	# do {...} while (...); // do {...} while (...)
-+			    $dstat !~ /^while\s*$Constant\s*$Constant\s*$/ &&		# while (...) {...}
- 			    $dstat !~ /^for\s*$Constant$/ &&				# for (...)
- 			    $dstat !~ /^for\s*$Constant\s+(?:$Ident|-?$Constant)$/ &&	# for (...) bar()
- 			    $dstat !~ /^do\s*{/ &&					# do {...
--- 
-2.27.0
-
+Would PCI folks be that willing to (allow to) revert it?
