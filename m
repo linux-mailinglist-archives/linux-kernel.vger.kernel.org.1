@@ -2,221 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF74E2809DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37522809E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733112AbgJAWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgJAWHz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:07:55 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBBFC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:07:54 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id 26so24467ois.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DTsNkTRKBFGiT3RnxqZet+e/40+acfLy05o3xQ2l+Jk=;
-        b=aIR4I+0sBlNa3HSvx1eZnX3VRUlq2nZJCCPjELSWgEO/0HvnarH6GN/9/l4L8lCTVY
-         Nu8RN/zvEY8WYHB7mMSiRF5p56z7dklm5ZfpjGbjrRdte7TTPgaD62XFFUmjgkgP8rVZ
-         dVyFISlOu2Q22Kot4krNb4RRdEyX3QqoJBane5oI0QT5JT9MSp5kqfjKo3e5tnmESdby
-         DtDDccIGRn76SbXAKheT0SFV1hn7BfQ9MqKX7JoEN1b8UrJlCqET+UkVsLrVSkO+6x81
-         vErLl4xayHwrPjhYKw/1dA2rAb2lq4sNE5h/4OMvayGCqtS+/b8XRUBcTxOJjcbtshfv
-         BfQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DTsNkTRKBFGiT3RnxqZet+e/40+acfLy05o3xQ2l+Jk=;
-        b=VZeDGT7m5rwXKUABDYinXYtn9dv++d4SEblMkOCr93DnEI0/JW8b3Xt7ndMFwivv5q
-         h/pD5eMAvZBNbJvLB+9OjRJzQ/Ur1qNLaL3dwcm0ch+4ZOeIgNNt2kDFSp9Hog1wMlR+
-         QmB7iIXwY8tkG325JZtX+l+NqWoaKzJ9RsuyaIXbJc6tVUnDzxvPQx6MsgqOj2ptXnTY
-         1xR/3xbASmOzOK9szIrkgL4c+q5xmFk4YEGv1YHXS7ixMhCKyF4rIzN6RwuXjHAAiUnB
-         M1+WB8pv/oNvY9MTXvvbhBPNR6amzUMZVfm+qTiidIW0tE1cE8ENV8r4BttNz2VRaJSQ
-         pPWA==
-X-Gm-Message-State: AOAM531ovQ9zwegTiKKaF2oL47el6lKYc9yZhTon+zf0UH93C4NPaSw7
-        PlbsbFDPM14fh5l7s4bFd34jjgMFweFhEDGIDQjHZw==
-X-Google-Smtp-Source: ABdhPJytLfO0smIK/xEv6VzJQe4myTsLm8ipjd0O6CWHheM/Dyq/BY10cueJ7Vwo1iCD6z7vzAM7/RY4nBV8/6B0afg=
-X-Received: by 2002:a54:4d88:: with SMTP id y8mr1380233oix.97.1601590074016;
- Thu, 01 Oct 2020 15:07:54 -0700 (PDT)
+        id S1733104AbgJAWJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726731AbgJAWJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:09:46 -0400
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1265220872
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 22:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601590186;
+        bh=JD0QD/5GZj9VsMPcG0jt6vOmXJdCO47p4iuLta8SrMc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IumYpTmSDtvVAZtx6ucDnf6I9x3ZZycuk3RnNuBzoUsarUGvbG2d0ylXo/4rSHO8B
+         lkN+XhztGQLDB8C8p8vgIytKy/a1SbuCgd0kAbp4l9TP6zsqODd+f+JHzQPHwFNOp9
+         7t6KZ8ME4w06dyO6M+YVlUY3u7paz/hiqoKZQgL8=
+Received: by mail-wm1-f49.google.com with SMTP id e11so3153854wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:09:45 -0700 (PDT)
+X-Gm-Message-State: AOAM5310b+vqeEt2noyI+3WpEZdGcTwzwR7K5esKSW3QIE9wyVMGp7wC
+        wRlfR5L2dIVAmuTZzBpohnpLvEXAFnMIePF/w0NCLw==
+X-Google-Smtp-Source: ABdhPJxNerLFrNoSEFgaH3xNb7S1tiL7x7QuxPKHgklHcZWsvN5ibwkigJ3+CcjZ47N4GrCB+VN5sLWQzLHrX2OgPv0=
+X-Received: by 2002:a1c:63c1:: with SMTP id x184mr2153711wmb.138.1601590184619;
+ Thu, 01 Oct 2020 15:09:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200926042453.67517-1-john.stultz@linaro.org>
- <20200926042453.67517-6-john.stultz@linaro.org> <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
-In-Reply-To: <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 1 Oct 2020 15:07:42 -0700
-Message-ID: <CALAqxLWv+Uz_mPUtx8TzfEvKHk7kp0XS5XLX6qyW6tqacGZU5g@mail.gmail.com>
-Subject: Re: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to
- system heap
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20201001205819.27879-1-krisman@collabora.com> <20201001205819.27879-9-krisman@collabora.com>
+In-Reply-To: <20201001205819.27879-9-krisman@collabora.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 1 Oct 2020 15:09:33 -0700
+X-Gmail-Original-Message-ID: <CALCETrXPXxGZBGOf_DnYogamnkp29u8EqY33zDZb-HD+fj9ugg@mail.gmail.com>
+Message-ID: <CALCETrXPXxGZBGOf_DnYogamnkp29u8EqY33zDZb-HD+fj9ugg@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] x86: Convert mmu context ia32_compat into a proper
+ flags field
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Andrew Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Robert Richter <rric@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, kernel@collabora.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 9:46 PM Chris Goldsworthy
-<cgoldswo@codeaurora.org> wrote:
+On Thu, Oct 1, 2020 at 1:59 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
 >
-> On 2020-09-25 21:24, John Stultz wrote:
-> > Reuse/abuse the pagepool code from the network code to speed
-> > up allocation performance.
-> >
-> > This is similar to the ION pagepool usage, but tries to
-> > utilize generic code instead of a custom implementation.
-> >
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: Liam Mark <lmark@codeaurora.org>
-> > Cc: Laura Abbott <labbott@kernel.org>
-> > Cc: Brian Starkey <Brian.Starkey@arm.com>
-> > Cc: Hridya Valsaraju <hridya@google.com>
-> > Cc: Suren Baghdasaryan <surenb@google.com>
-> > Cc: Sandeep Patil <sspatil@google.com>
-> > Cc: =C3=98rjan Eide <orjan.eide@arm.com>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> > Cc: Simon Ser <contact@emersion.fr>
-> > Cc: James Jones <jajones@nvidia.com>
-> > Cc: linux-media@vger.kernel.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: John Stultz <john.stultz@linaro.org>
-> > ---
-> >  drivers/dma-buf/heaps/Kconfig       |  1 +
-> >  drivers/dma-buf/heaps/system_heap.c | 32 +++++++++++++++++++++++++----
-> >  2 files changed, 29 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/dma-buf/heaps/Kconfig
-> > b/drivers/dma-buf/heaps/Kconfig
-> > index a5eef06c4226..f13cde4321b1 100644
-> > --- a/drivers/dma-buf/heaps/Kconfig
-> > +++ b/drivers/dma-buf/heaps/Kconfig
-> > @@ -1,6 +1,7 @@
-> >  config DMABUF_HEAPS_SYSTEM
-> >       bool "DMA-BUF System Heap"
-> >       depends on DMABUF_HEAPS
-> > +     select PAGE_POOL
-> >       help
-> >         Choose this option to enable the system dmabuf heap. The system
-> > heap
-> >         is backed by pages from the buddy allocator. If in doubt, say Y=
-.
-> > diff --git a/drivers/dma-buf/heaps/system_heap.c
-> > b/drivers/dma-buf/heaps/system_heap.c
-> > index 882a632e9bb7..9f57b4c8ae69 100644
-> > --- a/drivers/dma-buf/heaps/system_heap.c
-> > +++ b/drivers/dma-buf/heaps/system_heap.c
-> > @@ -20,6 +20,7 @@
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/vmalloc.h>
-> > +#include <net/page_pool.h>
-> >
-> >  struct dma_heap *sys_heap;
-> >
-> > @@ -46,6 +47,7 @@ struct dma_heap_attachment {
-> >  static gfp_t order_flags[] =3D {HIGH_ORDER_GFP, LOW_ORDER_GFP,
-> > LOW_ORDER_GFP};
-> >  static const unsigned int orders[] =3D {8, 4, 0};
-> >  #define NUM_ORDERS ARRAY_SIZE(orders)
-> > +struct page_pool *pools[NUM_ORDERS];
-> >
-> >  static struct sg_table *dup_sg_table(struct sg_table *table)
-> >  {
-> > @@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct
-> > dma_buf *dmabuf)
-> >       struct system_heap_buffer *buffer =3D dmabuf->priv;
-> >       struct sg_table *table;
-> >       struct scatterlist *sg;
-> > -     int i;
-> > +     int i, j;
-> >
-> >       table =3D &buffer->sg_table;
-> >       for_each_sg(table->sgl, sg, table->nents, i) {
-> >               struct page *page =3D sg_page(sg);
-> >
-> > -             __free_pages(page, compound_order(page));
-> > +             for (j =3D 0; j < NUM_ORDERS; j++) {
-> > +                     if (compound_order(page) =3D=3D orders[j])
-> > +                             break;
-> > +             }
-> > +             page_pool_put_full_page(pools[j], page, false);
-> >       }
-> >       sg_free_table(table);
-> >       kfree(buffer);
-> > @@ -300,8 +306,7 @@ static struct page
-> > *alloc_largest_available(unsigned long size,
-> >                       continue;
-> >               if (max_order < orders[i])
-> >                       continue;
-> > -
-> > -             page =3D alloc_pages(order_flags[i], orders[i]);
-> > +             page =3D page_pool_alloc_pages(pools[i], order_flags[i]);
-> >               if (!page)
-> >                       continue;
-> >               return page;
-> > @@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops =
-=3D
-> > {
-> >  static int system_heap_create(void)
-> >  {
-> >       struct dma_heap_export_info exp_info;
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < NUM_ORDERS; i++) {
-> > +             struct page_pool_params pp;
-> > +
-> > +             memset(&pp, 0, sizeof(pp));
-> > +             pp.order =3D orders[i];
-> > +             pp.dma_dir =3D DMA_BIDIRECTIONAL;
-> > +             pools[i] =3D page_pool_create(&pp);
-> > +
-> > +             if (IS_ERR(pools[i])) {
-> > +                     int j;
-> > +
-> > +                     pr_err("%s: page pool creation failed!\n", __func=
-__);
-> > +                     for (j =3D 0; j < i; j++)
-> > +                             page_pool_destroy(pools[j]);
-> > +                     return PTR_ERR(pools[i]);
-> > +             }
-> > +     }
-> >
-> >       exp_info.name =3D "system";
-> >       exp_info.ops =3D &system_heap_ops;
+> The ia32_compat attribute is a weird thing.  It mirrors TIF_IA32 and
+> TIF_X32 and is used only in two very unrelated places: (1) to decide if
+> the vsyscall page is accessible (2) for uprobes to find whether the
+> patched instruction is 32 or 64 bit.  In preparation to remove the TI
+> flags, we want new values for ia32_compat, but given its odd semantics,
+> I'd rather make it a real flags field that configures these specific
+> behaviours.  So, set_personality_x64 can ask for the vsyscall page,
+> which is not available in x32/ia32 and set_personality_ia32 can
+> configure the uprobe code as needed.
 >
-> This is cool, I didn't know about this pooling code under /net/core.
-> Nice and compact.
+> uprobe cannot rely on other methods like user_64bit_mode() to decide how
+> to patch, so it needs some specific flag like this.
 
-Oh, bummer. I just realized when allocating w/ __GFP_ZERO from the
-page-pool, the logic doesn't actually clear pages when pulling from
-the cache.
-So unfortunately this is what accounts for much of the performance
-benefit I was seeing with this approach, so I'll have to retract my
-claim on the performance gain with this. :(
+I like this quite a bit, but can you rename MM_CONTEXT_GATE_PAGE to
+MM_CONTEXT_HAS_VSYSCALL?
 
-I've got a first pass at zeroing the pages we put into the pool, but
-the numbers are not so great just yet so I've got some further work to
-do.
-
-thanks
--john
+--Andy
