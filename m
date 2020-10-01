@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C17B2802CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076ED2802D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgJAPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:34:06 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:42001 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730534AbgJAPeG (ORCPT
+        id S1732516AbgJAPeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:34:19 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:8278 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732104AbgJAPeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:34:06 -0400
-Received: by mail-io1-f79.google.com with SMTP id w3so3874196iou.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=p3I8AGMy+YrC12QmQ5gsY3D38zGF8Pag/wYZhM1xiNM=;
-        b=heMyWDEvT9NohZIjZbuU2Tm4hkDkHDbHgVO60gKt1rb9dQSEON8Gj96FMd2pkSB7ji
-         jAbOeaXd4RTpeB2qYUdZBQrCjfjfznK5bzKtt610je1CtDnU0zThDGOc8InpJWtGH8ZP
-         E7R/55wOcXJiREdMdzVTQADOu0G5jHGafn5DfM7mXnu4Tba1S13sLVbFOno0Y+ETmYB9
-         /j/GJIHhQL60VaueLqkpadFCrovAeNxtqVHCfGvR+nSwz0rS2rb6jnI+kLoW/fpSWKj1
-         0oiIP0uKTSJJPbIomkj/YDaDrWt9npOwkyB4bEGMkZMc8b0KU5ELpLtYIYVHnkaKoF5C
-         KD9Q==
-X-Gm-Message-State: AOAM5302t9rNnnhL5wUrnMwe+SGl5uM7VXKkzOi3CW8YJXDcvPtS92ap
-        Akq2WFqswGTm6oxtzh7uPqRRnQDnE/w88wEtj5UVvaLAsarM
-X-Google-Smtp-Source: ABdhPJzWXX40gZdF7EK/pSohyG4bjSkTey+WsRbE2NFpHS3R9P98PRdoZno5HwO3cr2VYcwXmBfh1igws3xj4NbPQiMxM+0aJ+6L
+        Thu, 1 Oct 2020 11:34:16 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 091FLNLf002767;
+        Thu, 1 Oct 2020 10:34:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type;
+ s=PODMain02222019; bh=1phbf9nP/JdnVs9Te4TQSzfkG3pPtuHiUYXLQB0Q/Ss=;
+ b=ErF3PtQmoTLkEvA7BHHV1cqwGTcCIXhbeFWc9ejKmJcSWcElzm3DnzWqjQtI7l7QZd5h
+ YqIKpra4IQO/PSxcb0EwCNFjKmMMSbWvPndPpqO5xYHCJ3ZySIIQw//9Da4Kr20PQhnZ
+ Q4339DqecN/liBHGoD/yyr0BJ1R0cL5PZGBRNfgZHQLxV1D5k3gd5PXIqRyFK2cvm0aH
+ V6Rkcmmoq815CBR/xlpU1Pq/5Yfi41EBSMTdujUcJF3v0C5Gc8VhX9dYrOjlsYvuospd
+ gv2Ld5M5zUfJV/t9BzmMhu8kbrCxMGq12L5FO+aOTTT76UlWUsjEeGi6tJ7iJOReR5po LA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 33t22p7c7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 01 Oct 2020 10:34:14 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
+ 16:34:13 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 1 Oct 2020 16:34:13 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 439142A1;
+        Thu,  1 Oct 2020 15:34:13 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: [PATCH 1/2] mfd: madera: Add reset as part of resume
+Date:   Thu, 1 Oct 2020 16:34:12 +0100
+Message-ID: <20201001153413.22948-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:e01:: with SMTP id a1mr2940074ilk.162.1601566445088;
- Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 08:34:05 -0700
-In-Reply-To: <0000000000009383f505adc8c5a0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b380805b09dbf40@google.com>
-Subject: Re: general protection fault in nexthop_is_blackhole
-From:   syzbot <syzbot+b2c08a2f5cfef635cc3a@syzkaller.appspotmail.com>
-To:     a@unstable.cc, anant.thazhemadam@gmail.com, andriin@fb.com,
-        anmol.karan123@gmail.com, ast@kernel.org,
-        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
-        hariprasad.kelam@gmail.com, herbert@gondor.apana.org.au,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, nikolay@cumulusnetworks.com,
-        songliubraving@fb.com, steffen.klassert@secunet.com,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=894
+ impostorscore=0 suspectscore=1 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010010132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+The DCVDD supply does not always power down when the CODEC enters
+suspend, for example shared regulators or always-on regulators. In
+these cases if a register is written back to the default value whilst
+the CODEC is in suspend that register will retain the previous value.
+As DCVDD never powered down, the register retains its old value and
+as the cache sync only synchronises registers that differ from the
+default the new value is never written out.
 
-commit eeaac3634ee0e3f35548be35275efeca888e9b23
-Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Date:   Sat Aug 22 12:06:36 2020 +0000
+Ensure the registers are in the expected state after suspend by always
+resetting the CODEC on resume. This also has the benefit of being
+recommended by the datasheet for DCVDD supplies that take longer than
+2mS to rise.
 
-    net: nexthop: don't allow empty NHA_GROUP
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ drivers/mfd/madera-core.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116177a7900000
-start commit:   c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2c08a2f5cfef635cc3a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d75e39900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12aea519900000
+diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
+index 4ed6ad8ce0020..a9c6f0833f327 100644
+--- a/drivers/mfd/madera-core.c
++++ b/drivers/mfd/madera-core.c
+@@ -291,6 +291,8 @@ static int __maybe_unused madera_runtime_resume(struct device *dev)
+ 
+ 	dev_dbg(dev, "Leaving sleep mode\n");
+ 
++	madera_enable_hard_reset(madera);
++
+ 	ret = regulator_enable(madera->dcvdd);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
+@@ -300,7 +302,19 @@ static int __maybe_unused madera_runtime_resume(struct device *dev)
+ 	regcache_cache_only(madera->regmap, false);
+ 	regcache_cache_only(madera->regmap_32bit, false);
+ 
+-	usleep_range(MADERA_RESET_MIN_US, MADERA_RESET_MAX_US);
++	madera_disable_hard_reset(madera);
++
++	if (!madera->pdata.reset) {
++		ret = madera_wait_for_boot(madera);
++		if (ret)
++			goto err;
++
++		ret = madera_soft_reset(madera);
++		if (ret) {
++			dev_err(dev, "Failed to reset: %d\n", ret);
++			goto err;
++		}
++	}
+ 
+ 	ret = madera_wait_for_boot(madera);
+ 	if (ret)
+-- 
+2.11.0
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: nexthop: don't allow empty NHA_GROUP
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
