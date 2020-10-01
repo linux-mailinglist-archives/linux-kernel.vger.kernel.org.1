@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0E6280222
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B971128022A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732490AbgJAPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732213AbgJAPGX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:06:23 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFADC0613D0;
-        Thu,  1 Oct 2020 08:06:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t10so6216516wrv.1;
-        Thu, 01 Oct 2020 08:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9X3iERDbIbWtybzrjpm4PyjretbOiJRxybaokBX9Fg0=;
-        b=Tzq+4MRra4zQj+RCJIesVpnmOpe+lMM0r5EyIM+dLL5Y8ZF45juiRpqBPjXpJjTEep
-         jZqq+RlXkaF/7ymYK2gdZSuAo1xTI2zzeGOyiH5XRCGvh9uPRFbC3h8nx1n33VUQlrZ0
-         /kr0x697ID/2lcyIjaxNcz0mJG3bStTpSsihScQjy0hHcaic+wJFZrzkLiuRuTSUUIlb
-         KgwwBZlSaKNU+ROfDzecfBCJY+QlrcpwkhAzMqLAWFnUI6TFgByOePz4Hfz/nt+yzrp4
-         HXkxXEl5Im4vKPPK02YrT5J+KVFE70i2d49HTdnpdbQkmwnBqU8+NiBXJxGMUHqwIKf7
-         /M1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9X3iERDbIbWtybzrjpm4PyjretbOiJRxybaokBX9Fg0=;
-        b=US0EdcxOgO7lEHeLkN2GT+Mu9bq6sybb466zv0JKMTY7/0AKhu+PrkhL85uGi8P5XO
-         YDPL7P4OEntne3ZhMaTxjd9Lp8axRjpnk2axtMXoRQF3lsGuMzhj6FN3ghdEjF7jdGpg
-         gu091jfdyZTBZY30qv8249XUAXYnr2FbkF7fcs0MGNnN3KW11D2wsvPSBQl7TfGOtOLy
-         AYuXvxv82B3pNub9FOnKL/MZ6C9zgzIXXG0RNFSVU2Gl5FrHoExZBZ31GZ9CqfB6Yp+Z
-         BfVwV/mnFVtmbp+MLVbuh12FP5nDvSJvrmr1y0/2eVrPTE+wVLgn5hXbqdjkxdVNF9M3
-         Iq/g==
-X-Gm-Message-State: AOAM532UMd4TfMVo0gwYObSRMtnh6+0xgUF+aE5C034p3snNylpjB3Lg
-        fsoxaisAJ6q5yimwf1orWZM=
-X-Google-Smtp-Source: ABdhPJytgs70Nfgs1c16EtWZewVO9V+uwz7ZoF4TGOHupPJthQ6GrjQPZnvAXDHBzTfqqriYbRKa+Q==
-X-Received: by 2002:adf:f5c1:: with SMTP id k1mr10257410wrp.271.1601564781886;
-        Thu, 01 Oct 2020 08:06:21 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id d19sm391985wmd.0.2020.10.01.08.06.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 08:06:20 -0700 (PDT)
-Subject: Re: [PATCH] arm64: dts: mt8173-elm: Remove ddc property from panel
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, drinkcat@chromium.org,
-        hsinyi@chromium.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200826090218.682931-1-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <55a87e63-0c9d-3481-797a-b2b4a13946c4@gmail.com>
-Date:   Thu, 1 Oct 2020 17:06:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1732452AbgJAPI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:08:29 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3056 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732213AbgJAPI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:08:28 -0400
+IronPort-SDR: 2/bjamm5NXgcRVfi6LE3LpT/AjcVtk3DftdkGBPv7i39vEr3OHaSeuQzPOBr/XGQ5hFjL1QCrA
+ UqymGpyqRRUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="226872520"
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="226872520"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 08:08:21 -0700
+IronPort-SDR: O74dZO2eJgRDJLthE9jBgpEVhqwkllD59i4GnCHCxutJccngda6LcTYLp6JKVj8dIEg/+jV4fu
+ l6hOT1x/4JaQ==
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="504034506"
+Received: from lraichel-mobl.ger.corp.intel.com (HELO localhost) ([10.249.36.225])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 08:08:17 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm tree with the drm-intel tree
+In-Reply-To: <CAKMK7uFfBLsZ=wetii4bc+BTiKObD5DJ7B-kDO4am6AhBY+AhQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201001203917.43d46a3d@canb.auug.org.au> <20201001135350.GA14869@lst.de> <CAKMK7uFfBLsZ=wetii4bc+BTiKObD5DJ7B-kDO4am6AhBY+AhQ@mail.gmail.com>
+Date:   Thu, 01 Oct 2020 18:08:36 +0300
+Message-ID: <87h7rem1aj.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200826090218.682931-1-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 01 Oct 2020, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> On Thu, Oct 1, 2020 at 3:53 PM Christoph Hellwig <hch@lst.de> wrote:
+>>
+>> On Thu, Oct 01, 2020 at 08:39:17PM +1000, Stephen Rothwell wrote:
+>> > Hi all,
+>> >
+>> > Today's linux-next merge of the akpm tree got a conflict in:
+>> >
+>> >   drivers/gpu/drm/i915/gem/i915_gem_pages.c
+>> >
+>> > between commit:
+>> >
+>> >   4caf017ee937 ("drm/i915/gem: Avoid implicit vmap for highmem on x86-32")
+>> >   ba2ebf605d5f ("drm/i915/gem: Prevent using pgprot_writecombine() if PAT is not supported")
+>
+> Uh these patches shouldn't be in linux-next because they're for 5.11,
+> not the 5.10 merge window that will open soon. Joonas?
 
+I don't know anything else, but both are tagged Cc: stable.
 
-On 26/08/2020 11:02, Enric Balletbo i Serra wrote:
-> The elm and hana devices uses an Embedded DisplayPort (eDP) as interface
-> for its panel, so the DDC channel specified in the binding is useless.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
+BR,
+Jani.
 
-Applied to v5.10-tmp/dts64 which will be rebased on v5.10-rc1 and called 
-v5.10-next/dts64
+>
+>> > from the drm-intel tree and patch:
+>> >
+>> >   "drm/i915: use vmap in i915_gem_object_map"
+>> >
+>> > from the akpm tree.
+>> >
+>> > I fixed it up (I just dropped the changes in the former commits) and
+>>
+>> Sigh.  The solution is a bit more complicated, but I just redid my
+>> patches to not depend on the above ones.  I can revert back to the old
+>> version, though.  Andrew, let me know what works for you.
+>
+> Imo ignore, rebasing onto linux-next without those intel patches was
+> the right thing for the 5.10 merge window.
+> -Daniel
 
-Thanks,
-Matthias
-
-> 
->   arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> index a5a12b2599a4..1fe5dac24ba1 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-> @@ -86,7 +86,6 @@ volume_up {
->   	panel: panel {
->   		compatible = "lg,lp120up1";
->   		power-supply = <&panel_fixed_3v3>;
-> -		ddc-i2c-bus = <&i2c0>;
->   		backlight = <&backlight>;
->   
->   		port {
-> 
+-- 
+Jani Nikula, Intel Open Source Graphics Center
