@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9759427FB1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9411027FB20
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbgJAIMM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Oct 2020 04:12:12 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:56687 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAIMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:12:12 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id ECF2124000D;
-        Thu,  1 Oct 2020 08:12:07 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 10:12:06 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] mtd: rawnand: Replace one-element array with
- flexible-array member
-Message-ID: <20201001101206.6e4beea7@xps13>
-In-Reply-To: <CAG48ez3XqE0m2UmRh+OtmYJRhyCBYY=sdJKaWBXtJZKCRpLMYQ@mail.gmail.com>
-References: <20200930210824.GA12277@embeddedor>
-        <CAG48ez3X3aZwfde3_2Sc+gdtUGRHfzan6oNFiffAvNzFDSsFDw@mail.gmail.com>
-        <20200930213634.GA12855@embeddedor>
-        <CAG48ez3XqE0m2UmRh+OtmYJRhyCBYY=sdJKaWBXtJZKCRpLMYQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731342AbgJAIMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:12:44 -0400
+Received: from muru.com ([72.249.23.125]:45862 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730902AbgJAIMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 04:12:44 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 284258057;
+        Thu,  1 Oct 2020 08:12:44 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 11:12:38 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>,
+        Christina Quast <cquast@hanoverdisplays.com>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH] ARM: dts: am33xx: modify AM33XX_IOPAD for #pinctrl-cells
+ = 2
+Message-ID: <20201001081238.GV9471@atomide.com>
+References: <20200921225053.4126745-1-drew@beagleboard.org>
+ <CACRpkdb3J8y8jy9RVgY5J1ypEs15dDU7pcaEGdk5okrydTvmKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdb3J8y8jy9RVgY5J1ypEs15dDU7pcaEGdk5okrydTvmKg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jann,
-
-Jann Horn <jannh@google.com> wrote on Thu, 1 Oct 2020 00:32:24 +0200:
-
-> On Wed, Sep 30, 2020 at 11:30 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> > On Wed, Sep 30, 2020 at 11:10:43PM +0200, Jann Horn wrote:  
-> > > On Wed, Sep 30, 2020 at 11:02 PM Gustavo A. R. Silva
-> > > <gustavoars@kernel.org> wrote:  
-> > > > There is a regular need in the kernel to provide a way to declare having
-> > > > a dynamically sized set of trailing elements in a structure. Kernel code
-> > > > should always use “flexible array members”[1] for these cases. The older
-> > > > style of one-element or zero-length arrays should no longer be used[2].  
-> > >
-> > > But this is not such a case, right? Isn't this a true fixed-size
-> > > array? It sounds like you're just changing it because it
-> > > pattern-matched on "array of length 1 at the end of a struct".  
-> >
-> > Yeah; I should have changed that 'dynamically' part of the text above
-> > a bit. However, as I commented in the text below, in the case that more
-> > CS IDs are needed (let's wait for the maintainers to comment on this...)
-> > in the future, this change makes the code more maintainable, as for
-> > the allocation part, the developer would only have to update the CS_N
-> > macro to the number of CS IDs that are needed.  
+* Linus Walleij <linus.walleij@linaro.org> [201001 08:08]:
+> On Tue, Sep 22, 2020 at 12:57 AM Drew Fustini <drew@beagleboard.org> wrote:
 > 
-> But in that case, shouldn't you change it to "int cs[CS_N]" and get
-> rid of the struct_size() stuff?
+> > Modify the AM33XX_IOPAD macro so that it works now that #pinctrl-cells =
+> > <2>. The third parameter is just a zero and the pinctrl-single driver
+> > will just OR this with the second parameter so it has no actual effect.
+> >
+> > There are no longer any dts files using this macro (following my patch
+> > to am335x-guardian.dts), but this will keep dts files not in mainline
+> > from breaking.
+> >
+> > Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
+> > Suggested-by: Tony Lindgren <tony@atomide.com>
+> > Reported-by: Trent Piepho <tpiepho@gmail.com>
+> > Link: https://lore.kernel.org/linux-devicetree/20200921064707.GN7101@atomide.com/
+> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> 
+> I didn't get a review tag on this one, Tony is this something I
+> should be applying?
 
-I do agree with Jann, I think it's best to consider this a fixed-size
-array for now. If we ever want to extend the number of supported CS,
-there is much more rework involved anyway.
+Thanks for checking, looks like I already applied into my fixes branch:
 
-Thanks,
-Miquèl
+b753e41d9999 ("ARM: dts: am33xx: modify AM33XX_IOPAD for #pinctrl-cells = 2")
+
+Regards,
+
+Tony
