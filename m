@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189E4280771
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F375280780
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732998AbgJATGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:06:09 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:19201 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732981AbgJATGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:06:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1601579168; x=1633115168;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ulQnabrQ3jIylqco3wGP6BdFDL6aVGXR3PWdQHcEP2w=;
-  b=hh4DGE0HNqjV+I15ClShmzNjjRZRID9mt9l3uUxIcsFHfC9CR+IuNzIB
-   1Rjn7Z+pHiRhLzck5CAx2hY+mpI+tXIHOnNvnwliGMJbyYqeLduT3durL
-   QpuCtUp+v42I53TtkVheRK7avPso2czUDyU8na5SMsqoXl7gDbisdOXe9
-   GrNKAESoxl74yXoVyRIKMoFzQhwPkzAsg7SKBv/yr3TKB1N+DkapNfNW3
-   RyzlyyHegm07Vm4a7Hfb4HOVoHZh6bXOLyDdFW4hCkX7GeT46WYXGlAmC
-   fRlhwSlHX7nmNRkchw2/i0vah4QCVQhPv4hcBvjkurTUa9a2EunEbD8Ej
-   w==;
-IronPort-SDR: nRW10HwRqpy34LWFKHb630lU+QeYe4O/8qM8RVYNHlCwFeAVtlOZppVdoXkpneA+13OI5KSfxX
- s3SFebRGaYIrDxnzQmMWPtwXlVTUmgxbUVoWtE0UKCB0ZdOqLi1O1QXB9SIWpXpWFJfucth+v5
- fXcSOdqMMq+nMV8ASeKBra3c/hBo3JuiUFA2DmsxW/Unn3mbbfqcQnFUcDjO4iMtJqTKvm3F2g
- 7MwqBoImLSgj5aedLvqtSWDI2iDJMHSpcZ+rvIJvP+8TIADj7DVkbkaB0IY4wItvJTvs15QwCH
- 7uA=
-X-IronPort-AV: E=Sophos;i="5.77,324,1596470400"; 
-   d="scan'208";a="148739978"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Oct 2020 03:06:00 +0800
-IronPort-SDR: w1iQ4dMUuLMnOsuu8PwCTrOmadLwkRLA+zrLjj0MatJyH8oFFGWt2xXOoMACmLNtql/iavrhUW
- j1oJdcPpF3pw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 11:51:57 -0700
-IronPort-SDR: mvbPBDuJNTR0nqO9Lt8qZ/T52jy0A+M4P5lzYhD22tEfN/14+jnWpZRem5hTJzK89KUjTP6zXy
- 4Tdxnni4PDFQ==
-WDCIronportException: Internal
-Received: from 30tyk72.ad.shared (HELO jedi-01.hgst.com) ([10.86.59.249])
-  by uls-op-cesaip02.wdc.com with ESMTP; 01 Oct 2020 12:05:59 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH v3] RISC-V: Remove any memblock representing unusable memory area
-Date:   Thu,  1 Oct 2020 12:05:57 -0700
-Message-Id: <20201001190557.2860741-1-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
+        id S1732631AbgJATHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:07:38 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:4893 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729418AbgJATHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:07:38 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4C2N130q5Sz5q;
+        Thu,  1 Oct 2020 21:07:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1601579255; bh=ExLBEjOkPAKZY4CTfp2wxnMR3zRyIOPgeBy2wLsMIwc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sz0EJjwTa3tpON/hc29MK011y7SJzcSEjSyox5yA0zDnMshZbLRdXUNtNrf1oD9Gm
+         eXEe81ZubdIS21bxDS3RrZCBA56PYrEl01+WwktudpPIFpchHzRRPkYadPuJAGTyK6
+         hiUJGX7vDXRSrEVpLPKJ9VR75Y5JbkdhKl2pVRsvr8lEEzYlfAja5i8mdLZjhOfRAt
+         LhG6hWKoD4JppKejIzmviNnNd1R/KuSKgC0zE9VRTS8fx/+2y7up1rm0eJ7R3dalwp
+         2bMLEgnLEwNkJkKxOClp32SPe0e7fQOj/V/IsmwV8yCGmwdSO/ZS8sl3EIuaQrSiJV
+         3UQZFvsDsoHiQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Thu, 1 Oct 2020 21:07:33 +0200
+From:   =?iso-8859-2?B?TWljaGGzoE1pcm9zs2F3?= <mirq-linux@rere.qmqm.pl>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+        kuninori.morimoto.gx@renesas.com,
+        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
+        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
+        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
+        nwartikar@nvidia.com, swarren@nvidia.com, nicoleotsuka@gmail.com
+Subject: Re: [PATCH v3 10/13] ASoC: tegra: Add audio graph based card driver
+Message-ID: <20201001190733.GD23339@qmqm.qmqm.pl>
+References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-11-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1601573587-15288-11-git-send-email-spujar@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISC-V limits the physical memory size by -PAGE_OFFSET. Any memory beyond
-that size from DRAM start is unusable. Just remove any memblock pointing
-to those memory region without worrying about computing the maximum size.
+On Thu, Oct 01, 2020 at 11:03:04PM +0530, Sameer Pujar wrote:
+> Add Tegra audio machine driver which is based on generic audio graph card
+> driver. It re-uses most of the common stuff from audio graph driver and
+> uses the same DT binding. Required Tegra specific customizations are done
+> in the driver.
+[...]
+> +	switch (srate) {
+> +	case 11025:
+> +	case 22050:
+> +	case 44100:
+> +	case 88200:
+> +	case 176400:
+> +		plla_out0_rate = chip_data->plla_out0_rates[x11_RATE];
+> +		plla_rate = chip_data->plla_rates[x11_RATE];
+> +		break;
+> +	case 8000:
+> +	case 16000:
+> +	case 32000:
+> +	case 48000:
+> +	case 96000:
+> +	case 192000:
+[...]
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Do you really need to enumerate the frequencies? Wouldn't just checking
+srate % 11025 be enough to divide the set in two? Or just calculating
+the PLLA base rate by multiplying?
 
----
-Changes from v2->v3
-Updated comment as per Mike's suggestion.
----
- arch/riscv/mm/init.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index ca03762a3733..564e0be677b7 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -146,8 +146,6 @@ static phys_addr_t dtb_early_pa __initdata;
- void __init setup_bootmem(void)
- {
- 	struct memblock_region *reg;
--	phys_addr_t mem_size = 0;
--	phys_addr_t total_mem = 0;
- 	phys_addr_t mem_start, end = 0;
- 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
- 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-@@ -155,21 +153,18 @@ void __init setup_bootmem(void)
- 	/* Find the memory region containing the kernel */
- 	for_each_memblock(memory, reg) {
- 		end = reg->base + reg->size;
--		if (!total_mem)
-+		if (!mem_start)
- 			mem_start = reg->base;
- 		if (reg->base <= vmlinux_start && vmlinux_end <= end)
- 			BUG_ON(reg->size == 0);
--		total_mem = total_mem + reg->size;
- 	}
- 
- 	/*
--	 * Remove memblock from the end of usable area to the
--	 * end of region
-+	 * The maximal physical memory size is -PAGE_OFFSET.
-+	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
-+	 * as it is unusable by kernel.
- 	 */
--	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
--	if (mem_start + mem_size < end)
--		memblock_remove(mem_start + mem_size,
--				end - mem_start - mem_size);
-+	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
- 
- 	/* Reserve from the start of the kernel to the end of the kernel */
- 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
--- 
-2.25.1
-
+Best Regards,
+Micha³ Miros³aw
