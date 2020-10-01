@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC1827F981
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4380627F982
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730868AbgJAGco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:32:44 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:33392 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGcn (ORCPT
+        id S1730498AbgJAGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:34:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43834 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAGej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:32:43 -0400
-Received: by mail-ej1-f67.google.com with SMTP id j11so6389667ejk.0;
-        Wed, 30 Sep 2020 23:32:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Xmk7QqgzWHEf2kAzN/HwHzqm9lc4tGogyl6PVuD6LYk=;
-        b=LbSeM2Yqk6ty3m5hpYKIk28x89IWR1x8aR0NEKDX992dGTriYCC1yue8lCg741BiU8
-         UI/ujofoE3fu784IH46BrFQEhgEL9zKt/wfrd49b3O5SlfzZZZKRcQJxXccZzYoanPMi
-         yF1zuSzHbOmR/OhmBh8x9DdXwQAF+uAg3pwOoaeEAe7kuoT+y5cbYxOtdB8eWb22TFll
-         eUo+UePwvuHw7bP12krESTK8zzthiUaetGmHeSMwebR6w3ALUkWkGSQWQH4P93GkdmO0
-         1ylhlNPPDyel33cBvGUf7MRheyFumQu4FnmXqwYiCjOg/3wuBGLeBPJujDGXFK3pb8Ss
-         AHWg==
-X-Gm-Message-State: AOAM531FB1n415VyRNqCEEPsP0t+6F8yVZU1PAy0/V0RsC3pyNWXAP41
-        oQ7NIx5EF9m9cxteQLu9JPg=
-X-Google-Smtp-Source: ABdhPJzfzsQUKG81+k7bBDBXYDfD+EqZ9SwVyG67JUcEXYVNy08TlY9pUSN/c/gtZ16GnNwLLap45w==
-X-Received: by 2002:a17:906:e50:: with SMTP id q16mr6769749eji.544.1601533959674;
-        Wed, 30 Sep 2020 23:32:39 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id d20sm156359edt.32.2020.09.30.23.32.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 23:32:38 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 08:32:36 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v6 03/17] dt-bindings: arm: hisilicon: split the
- dt-bindings of each controller into a separate file
-Message-ID: <20201001063236.GB3018@kozik-lap>
-References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
- <20200930031712.2365-4-thunder.leizhen@huawei.com>
+        Thu, 1 Oct 2020 02:34:39 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0916YNch013296;
+        Thu, 1 Oct 2020 01:34:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601534063;
+        bh=XVFQ5GLbFfp9MKYTIQfqxjcku0NgzU2HqmWayPSwDzc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=lLf3FYUNgFwfQ2v3ZS0isMYAfQ85gUFR5SPPDXvbjK0kCjz0fAW4rztXPIIG6G6Fh
+         bmyEBM5L9KegNVyOpZLD2j7Fu8ftIe2aQivul+QUsCreCyEqRHoo9HmYGAaW55/3qF
+         qpv2N41djolqq9m96TOX9ZW6c+TfD15hzvJ2ej7A=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0916YNtF045955
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Oct 2020 01:34:23 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 01:34:22 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 01:34:22 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916YMnH127527;
+        Thu, 1 Oct 2020 01:34:22 -0500
+Date:   Thu, 1 Oct 2020 12:04:21 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Bert Vermeulen <bert@biot.com>
+CC:     <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
+Message-ID: <20201001063421.qcjdikj2tje3jn6k@ti.com>
+References: <20200930235611.6355-1-bert@biot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200930031712.2365-4-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200930235611.6355-1-bert@biot.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:16:58AM +0800, Zhen Lei wrote:
-> Split the devicetree bindings of each Hisilicon controller from
-> hisilicon.txt into a separate file, the file name is the compatible name
-> attach the .txt file name extension.
+Hi,
+
+On 01/10/20 01:56AM, Bert Vermeulen wrote:
+> Flash chips that announce BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 capability
+> get an addr_width of 3. This breaks when the flash chip is actually
+> larger than 16MB, since that requires a 4-byte address. The MX25L25635F
+> does exactly this, breaking anything over 16MB.
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> spi-nor only enables 4-byte opcodes or 4-byte address mode if addr_width
+> is 4, so no 4-byte mode is ever enabled. The > 16MB check in
+> spi_nor_set_addr_width() only works if addr_width wasn't already set
+> by the SFDP, which it was.
+> 
+> It could be fixed in a post_bfpt fixup for the MX25L25635F, but setting
+> addr_width to 4 when BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 is found fixes the
+> problem for all such cases.
+
+JESD216D.01 says: "01b: 3- or 4-Byte addressing (e.g., defaults to 
+3-Byte mode; enters 4-Byte mode on command)"
+
+So using an address width of 4 here is not necessarily the right thing 
+to do. This change would break SMPT parsing for all flashes that use 
+3-byte addressing by default because SMPT parsing can involve register 
+reads/writes. One such device is the Cypress S28HS flash. In fact, this 
+was what prompted me to write the patch [0].
+
+Before that patch, how did MX25L25635F decide to use 4-byte addressing? 
+Coming out of BFPT parsing addr_width would still be 0. My guess is that 
+it would go into spi_nor_set_addr_width() with addr_width still 0 and 
+then the check for (nor->mtd.size > 0x1000000) would set it to 4. Do I 
+guess correctly?
+
+In that case maybe we can do a better job of deciding what gets priority 
+in the if-else chain. For example, giving addr_width from nor->info 
+precedence over the one configured by SFDP can solve this problem. Then 
+all you have to do is set the addr_width in the info struct, which is 
+certainly easier than adding a fixup hook. There may be a more elegant 
+solution to this but I haven't given it much thought.
+
+So from my side, NACK!
+
+> 
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > ---
->  .../arm/hisilicon/controller/hisilicon,cpuctrl.txt |   8 +
->  .../controller/hisilicon,hi3798cv200-perictrl.txt  |  21 +++
->  .../controller/hisilicon,hi6220-aoctrl.txt         |  18 ++
->  .../controller/hisilicon,hi6220-mediactrl.txt      |  18 ++
->  .../controller/hisilicon,hi6220-pmctrl.txt         |  18 ++
->  .../controller/hisilicon,hi6220-sysctrl.txt        |  19 ++
->  .../controller/hisilicon,hip01-sysctrl.txt         |  19 ++
->  .../controller/hisilicon,hip04-bootwrapper.txt     |   9 +
->  .../controller/hisilicon,hip04-fabric.txt          |   5 +
->  .../arm/hisilicon/controller/hisilicon,pctrl.txt   |  13 ++
->  .../arm/hisilicon/controller/hisilicon,sysctrl.txt |  25 +++
->  .../bindings/arm/hisilicon/hisilicon.txt           | 194 ---------------------
->  12 files changed, 173 insertions(+), 194 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,cpuctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi3798cv200-perictrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-aoctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-mediactrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-pmctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-bootwrapper.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip04-fabric.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,pctrl.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+>  drivers/mtd/spi-nor/sfdp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index e2a43d39eb5f..6fedc425bcf7 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -456,10 +456,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	/* Number of address bytes. */
+>  	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
+>  	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
+> -	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+>  		nor->addr_width = 3;
+>  		break;
+>  
+> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+>  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+>  		nor->addr_width = 4;
+>  		break;
 
-If I understand correctly, first you create multiple TXT bindings files
-in this patch and then convert them one by one to JSON.
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f9acd7fa80be6ee14aecdc54429f2a48e56224e8
 
-No, it does not make sense creating a temporary file.
-
-Split out the bindings one by one from hisilicon.txt into JSON directly.
-
-Best regards,
-Krzysztof
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
