@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61126280040
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43010280042
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732200AbgJANgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731993AbgJANgo (ORCPT
+        id S1732258AbgJANhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:37:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47223 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732147AbgJANhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:36:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64148C0613D0;
-        Thu,  1 Oct 2020 06:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fKHBx2l1x20GN0S3b+jTfen0uwxhiVfe2eiMSbpdaJc=; b=rkoYrYmb5/6jzedCCWXFLJn1Js
-        Su3dhZ5KWDv1MASUxHWIyi0HHPm/ePgWAlqmlPl7vX0YAy66AJdPY+/xm0WAUYoRmEBX+mO+6T8+V
-        Icj9pc59qTGH/yoN90T+98J5m6GdmDo4o+YQ6Qcwfvu5StJC1CMj+dZsOTyf/c9HP8WlPBGOb+o0Q
-        6D9yVgyZ+6MFyhrDwUasgeNYH4HtwuVAWOPmdotfUbYA/8kLlXOVNla6GYLXq1AzitcCts/t+cL5h
-        IEg2Eshs26M+j10DrIY85wx56KguUB9k4rNB/xtXHnDIekBqXSRpUNU87NEPTQuVilHGV1nifj4NB
-        bclif4ew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNyko-0004ix-3E; Thu, 01 Oct 2020 13:36:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 436ED300446;
-        Thu,  1 Oct 2020 15:36:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30D1F203DC1C6; Thu,  1 Oct 2020 15:36:12 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 15:36:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, jthierry@redhat.com, jpoimboe@redhat.com
-Subject: Re: [PATCH v4 04/29] objtool: Add a pass for generating __mcount_loc
-Message-ID: <20201001133612.GQ2628@hirez.programming.kicks-ass.net>
-References: <20200929214631.3516445-1-samitolvanen@google.com>
- <20200929214631.3516445-5-samitolvanen@google.com>
- <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
+        Thu, 1 Oct 2020 09:37:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601559425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0sGr2wExNAO71PZ/d9+MAsn8iYPVAzjyIKeYzyAJt0k=;
+        b=jKHmI64yF5lENHEmhqQrxmR3iOlINr8gcdY2RfrUXdLc66vHXGueTlwhaE1d4NgSJFKPH/
+        hrb56+SvWVyqAYJd4Yu4k7hMkCw4dBO44XB1Rj8WU8UrPPxHAZonjlXEJ8Lf2xCbj5/aeZ
+        mTYbxndb37UnGYZwILJvTZGTNxr1la4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-Zwr6LNjaOsK4ZrBOyt_CXA-1; Thu, 01 Oct 2020 09:37:04 -0400
+X-MC-Unique: Zwr6LNjaOsK4ZrBOyt_CXA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1029C51BA;
+        Thu,  1 Oct 2020 13:37:03 +0000 (UTC)
+Received: from ovpn-115-202.rdu2.redhat.com (ovpn-115-202.rdu2.redhat.com [10.10.115.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9681E55772;
+        Thu,  1 Oct 2020 13:37:02 +0000 (UTC)
+Message-ID: <68ab61d0ba3a6ddd7838bc293c9e24f5d8002e27.camel@redhat.com>
+Subject: Re: [PATCH v3] pipe: Fix memory leaks in create_pipe_files()
+From:   Qian Cai <cai@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 01 Oct 2020 09:37:02 -0400
+In-Reply-To: <20201001131659.GE3421308@ZenIV.linux.org.uk>
+References: <20201001125055.5042-1-cai@redhat.com>
+         <20201001131659.GE3421308@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 03:17:07PM +0200, Miroslav Benes wrote:
+On Thu, 2020-10-01 at 14:16 +0100, Al Viro wrote:
+> On Thu, Oct 01, 2020 at 08:50:55AM -0400, Qian Cai wrote:
+> > Calling pipe2() with O_NOTIFICATION_PIPE could results in memory leaks
+> > in an error path or CONFIG_WATCH_QUEUE=n. Plug them.
+> 
+> [snip the copy of bug report]
+> 
+> No objections on the patch itself, but commit message is just about
+> unreadable.  How about something along the lines of the following?
+> 
+> =======================
+> 	Calling pipe2() with O_NOTIFICATION_PIPE could results in memory
+> leaks unless watch_queue_init() is successful.
+> 
+> 	In case of watch_queue_init() failure in pipe2() we are left
+> with inode and pipe_inode_info instances that need to be freed.  That
+> failure exit has been introduced in commit c73be61cede5 ("pipe: Add
+> general notification queue support") and its handling should've been
+> identical to nearby treatment of alloc_file_pseudo() failures - it
+> is dealing with the same situation.  As it is, the mainline kernel
+> leaks in that case.
+> 
+> 	Another problem is that CONFIG_WATCH_QUEUE and !CONFIG_WATCH_QUEUE 
+> cases are treated differently (and the former leaks just pipe_inode_info,
+> the latter - both pipe_inode_info and inode).
+> 
+> 	Fixed by providing a dummy wath_queue_init() in !CONFIG_WATCH_QUEUE
+> case and by having failures of wath_queue_init() handled the same way
+> we handle alloc_file_pseudo() ones.
+> 
+> Fixes: c73be61cede5 ("pipe: Add general notification queue support")
+> Signed-off-by: Qian Cai <cai@redhat.com>
+> =======================
 
-> I also wonder about making 'mcount' command separate from 'check'. Similar 
-> to what is 'orc' now. But that could be done later.
+Thanks Al. This looks very good to me.
 
-I'm not convinced more commands make sense. That only begets us the
-problem of having to run multiple commands.
