@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7649227FEB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B65327FEBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731893AbgJAL42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:56:28 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54684 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731670AbgJAL42 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:56:28 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091BuGJv084959;
-        Thu, 1 Oct 2020 06:56:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601553376;
-        bh=CVKY5T/YKKZG90aaeqafF0OA/PsmDSYnTFMbTSYWs44=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=K0v0C7RdqkYGQvWpbcxjqQDYwj/G38eHeRaDouqxWWlg7BEmCfnSRjZ2SKWs/iU2k
-         bN3u2FNjWgS+enMz1uuDV8znWSNY6SBkc3EPQYjpukeyTTgz/4qZWS78ky0lnPC9oe
-         ud24s1Yo7vLCFpbPiN/IOa0nlg8nr32/AHJnzjGE=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091BuG7v002616
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Oct 2020 06:56:16 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 06:56:16 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 06:56:15 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091BuFIC046820;
-        Thu, 1 Oct 2020 06:56:15 -0500
-Date:   Thu, 1 Oct 2020 17:26:14 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v14 10/15] mtd: spi-nor: Parse SFDP SCCR Map
-Message-ID: <20201001115612.7i4d2wmeinv2kyz5@ti.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-11-p.yadav@ti.com>
- <81fa2331-d808-fed6-232f-f8b67e7e9dac@microchip.com>
+        id S1731930AbgJAMBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:01:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14794 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731816AbgJAMBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:01:00 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C0F4AFDFF130EFB85FEA;
+        Thu,  1 Oct 2020 20:00:56 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.200.149) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 1 Oct 2020 20:00:46 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Alexey Budankov" <alexey.budankov@linux.intel.com>
+Subject: [PATCH] perf evlist: fix memory corruption for Kernel PMU event
+Date:   Fri, 2 Oct 2020 00:57:29 +1300
+Message-ID: <20201001115729.27116-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <81fa2331-d808-fed6-232f-f8b67e7e9dac@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.200.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/20 08:20AM, Tudor.Ambarus@microchip.com wrote:
-> On 9/30/20 9:57 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > 
-> > Parse just the 22nd dword and look for the 'DTR Octal Mode Enable
-> > Volatile bit'.
-> > 
-> > SPI_NOR_IO_MODE_EN_VOLATILE should be set just for the flashes
-> > that don't define the optional SFDP SCCR Map. For the others,
-> > let the SFDP do its job and fill the SNOR_F_IO_MODE_EN_VOLATILE
-> > flag. We avoid this way polluting the flash flags when declaring
-> > one.
-> > 
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/sfdp.c | 52 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 52 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > index ebc1188f7533..0b5b9ea44cfc 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.c
-> > +++ b/drivers/mtd/spi-nor/sfdp.c
-> >         return ret;
-> >  }
-> > 
-> > +#define SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE             BIT(31)
-> > +
-> > +/**
-> > + * spi_nor_parse_sccr() - Parse the Status, Control and Configuration Register
-> > + *                        Map.
-> > + * @nor:               pointer to a 'struct spi_nor'
-> > + * @sccr_header:       pointer to the 'struct sfdp_parameter_header' describing
-> > + *                     the SCCR Map table length and version.
-> > + * @params:            pointer to the 'struct spi_nor_flash_parameter' to be.
-> > + *
-> > + * Return: 0 on success, -errno otherwise.
-> > + */
-> > +static int spi_nor_parse_sccr(struct spi_nor *nor,
-> > +                             const struct sfdp_parameter_header *sccr_header,
-> > +                             struct spi_nor_flash_parameter *params)
-> > +{
-> > +       u32 *dwords, addr;
-> > +       size_t len;
-> > +       int ret;
-> > +       u8 io_mode_en_volatile;
-> 
-> would a bool work here?
+Commit 7736627b865d ("perf stat: Use affinity for closing file
+descriptors") will use FD(evsel, cpu, thread) to read and write
+file descriptors xyarray. For a kernel PMU event, this leads to
+serious memory corruption and perf crash.
+I have seen evlist->core.cpus->nr is 1 while evsel has cpus->nr
+with the total number of CPUs. so xyarray which is allocated by
+evlist->core.cpus->nr will get overflow. This leads to various
+segmentation faults in perf tool for kernel PMU events, eg:
+./perf stat -e bus_cycles  sleep 1
+*** Error in `./perf': free(): invalid next size (fast): 0x00000000401e6370 ***
+Aborted (core dumped)
 
-It should. I'll change it.
+Fixes: 7736627b865d ("perf stat: Use affinity for closing file descriptors")
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ tools/perf/util/evlist.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index c0768c6..3022152 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1226,10 +1226,14 @@ void evlist__close(struct evlist *evlist)
+ 	int cpu, i;
  
-> > +
-> > +       len = sccr_header->length * sizeof(*dwords);
-> > +       dwords = kmalloc(len, GFP_KERNEL);
-> > +       if (!dwords)
-> > +               return -ENOMEM;
-> > +
-> > +       addr = SFDP_PARAM_HEADER_PTP(sccr_header);
-> > +       ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-> > +       if (ret)
-> > +               goto out;
-> > +
-> > +       le32_to_cpu_array(dwords, sccr_header->length);
-> > +
-> > +       io_mode_en_volatile = FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
-> > +                                       dwords[22]);
-> > +
-> > +       if (io_mode_en_volatile)
-> > +               nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
-> > +
-> > +out:
-> > +       kfree(dwords);
-> > +       return ret;
-> > +}
-> > +
-> >  /**
-> 
-
+ 	/*
+-	 * With perf record core.cpus is usually NULL.
++	 * With perf record core.cpus is usually NULL;
++	 * For Kernel PMU event x, "perf stat -e x" will set evlist->core.cpus->nr to
++	 * 1 while evsel has cpus->nr which contains all CPUs. evsel__cpu_iter_skip()
++	 * will be false, memory corruption will happen if we use affinity to close
++	 * file descriptors;
+ 	 * Use the old method to handle this for now.
+ 	 */
+-	if (!evlist->core.cpus) {
++	if (!evlist->core.cpus || evlist->core.cpus->nr == 1) {
+ 		evlist__for_each_entry_reverse(evlist, evsel)
+ 			evsel__close(evsel);
+ 		return;
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.7.4
+
