@@ -2,223 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD15280630
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF6E280634
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732982AbgJASEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
+        id S1732955AbgJASG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730029AbgJASEG (ORCPT
+        with ESMTP id S1730029AbgJASG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:04:06 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72122C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:04:05 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so6873735wrm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:04:05 -0700 (PDT)
+        Thu, 1 Oct 2020 14:06:27 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063A7C0613D0;
+        Thu,  1 Oct 2020 11:06:26 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 197so4624337pge.8;
+        Thu, 01 Oct 2020 11:06:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0OdyXaVNiyIQMSnkmN1U5DBWCyVDZmuQfjlNhLtDrKs=;
-        b=dPA+Od53q5f/HBtQwvz6tXehIq+teMdNnK314CY3s0ajOt31vt/u/6D54Q/Ix/LC86
-         VtbYmG/LRaO//ScEveC5LTytEFM1+3pyoHPWuviFMpXhjPErq3Ufy2aSE62Z1E54Jr6x
-         fqWFaqqQi3HGXr9rIfyLZrmvxYUAsZ3HsNF8y8akiDP5oppHmkSq2PJk0baeSBr0X0ou
-         AUH/o1uBlIATCN1Px1ykRaBmK5Mn1QE0VhyzivGl4dPLnU2lDdrakcyrmDF6NyYXkxzN
-         SJIsUNhdD1tp2kvB482PCt/cq9B2r/JGgCl6SNVrMLV76ZijAIXnbqO8oNjGq3WyT6CK
-         Rs/w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VidyP4Br3Bd5gpNl04/ZhGSkOKHbPGQFzy5qnDDJFBc=;
+        b=ObjZLQEU100mPnxXXhtZeXbbNGSI92SaG4BVgKZwO0bjGKgPJcpQzKyqkXGr0mh/jJ
+         0tZIaPcLqLPSgt8J0llgL7PAJ58unHGOa4aljkmfFWLva8RT8Vxy3pgc6yKS2v1hYEDC
+         4j45Kc/45D2QPJqjuPZUZRqTnBmcw+u3yXYalMITB6rEAoI0kTzNcVb1ggWo7tRuRS05
+         eghahMMO7RNm13z1w59Jdyc8qZdCi+/F+Jdu6ocWp9iGT6u4P9IvP7ivdLL2oczMNUxu
+         GSTvNA1ydRqcrAxqqDo/sxfa2LpiU2dvZCmlZegOWyFeMQuMdsTioP3QYoHoKtlDTVR5
+         75ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0OdyXaVNiyIQMSnkmN1U5DBWCyVDZmuQfjlNhLtDrKs=;
-        b=K++IQ0M12z5zpGW6Khy4IhHWPRSLE8i5UpIJvNBjgxgEPV8LvZQGqcNWEzqhxr3lUR
-         J/eitAHk8jhSuN4pfvmrmsZLzKfJvG4n0keXq+sqOaFuhtoMnnk4+qOTn0gZmGMHa5oO
-         Rn+/Ww0ZmbJ8EIA8v22wR/ErfRCz9mayZLGk7ph8oPJbM2iDQtooFKE+usT+iU1HQXwT
-         1PVr2+62ifi9fxTVsqQJmb8KP0cja6BjjWHexge8pMv8UJJ9S/Os1Ayz6D9+9fxmum5n
-         Bdg363uOO/BljlK/1ioN/lV5lRrgr8wHh1sAelZTtEgEaauuI6/qgHcMru4M3KdkFITe
-         888Q==
-X-Gm-Message-State: AOAM530+dmNAtt/+KcyekaTrrK+L4l8Vl8cm9zSdGoUefWkAQDIhgWNM
-        DiO4P9j55j6V+u7zhdxsWCBUww==
-X-Google-Smtp-Source: ABdhPJwzl9G8I0FIwZnl+qK3rpBAlZVN5JVj57b7Bi+4u6kcK9IXkcXgdVGaQG1V73bZU6YmgI5YXQ==
-X-Received: by 2002:adf:e4cf:: with SMTP id v15mr10259531wrm.174.1601575443811;
-        Thu, 01 Oct 2020 11:04:03 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id k6sm950946wmf.30.2020.10.01.11.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 11:04:03 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 20:03:57 +0200
-From:   elver@google.com
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 39/39] kasan: add documentation for hardware tag-based
- mode
-Message-ID: <20201001180357.GW4162920@elver.google.com>
-References: <cover.1600987622.git.andreyknvl@google.com>
- <b6edb566f7439224c3e235186305bc07de8d27b9.1600987622.git.andreyknvl@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VidyP4Br3Bd5gpNl04/ZhGSkOKHbPGQFzy5qnDDJFBc=;
+        b=WIp5BjX8lTupI87nCutIBB3s0PW9bNxfQM/SVFB3hJQ0WfnSoYfJVT8W04uiNCjCTN
+         nP/mPb1XRKbbazJNQzdxB9r8ZCsqN4elm8YbuI5Pdt18L2sXXh/IkcRBSHZH9jmbWwbj
+         wgnneaWmbt3/7nul6sSKy1M1DcGWvR6t0SwJkwInBO5UVySqbZSSz6HkRP9FayoKWEWj
+         WJRBzQ2PaNXhOU7RD0Yl6kAsnv6uSjUD1xuzTvYahmT2JC3gj0QUSS7G2CymqpvyGoES
+         7q0qRzu3CQ30Z7gFVu7+Qc9DRQemGAm4+Q9gSgNf2PguRBsMHodzn8m08GNARwixMx4O
+         IHBw==
+X-Gm-Message-State: AOAM533GF09gljy3UNQFpU+f6cMhXbq+nbA6MmXRCzKtfyZaHNsVjzAp
+        XnNde4OY+4v5xqnO6o9mlhyEMCCM34N9oH3RRajvqQ7Gw/rshw==
+X-Google-Smtp-Source: ABdhPJz5ykt96PRbBDJPSIKx/aKRKOeOOX0eav0SxbcpOlKJCQ/1BOciMnlqP+18oWVLWYVuYn1ezIVr5N+qo0bfLso=
+X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
+ c21-20020aa781d50000b0290142250139famr8554374pfn.73.1601575586233; Thu, 01
+ Oct 2020 11:06:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6edb566f7439224c3e235186305bc07de8d27b9.1600987622.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.5 (2020-06-23)
+References: <20201001014250.26987-1-david.e.box@linux.intel.com>
+ <20201001014250.26987-4-david.e.box@linux.intel.com> <CAHp75VdkjFvaGvw=a9kMO3ZW0+t0AvPDGySNXW6Nbi=YZkEcXg@mail.gmail.com>
+ <CAKgT0UeNLKa1oshmL42pncFy5QYNOVZK=OJEQ8MNFQLrBPb_Pw@mail.gmail.com>
+In-Reply-To: <CAKgT0UeNLKa1oshmL42pncFy5QYNOVZK=OJEQ8MNFQLrBPb_Pw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 1 Oct 2020 21:06:07 +0300
+Message-ID: <CAHp75VcmLbXpG6-Z6wrZn3MGWMDN8CGBAe2c3TYYy4MQk3jXNw@mail.gmail.com>
+Subject: Re: [PATCH V7 3/5] platform/x86: Intel PMT class driver
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
-> Add documentation for hardware tag-based KASAN mode and also add some
-> clarifications for software tag-based mode.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+On Thu, Oct 1, 2020 at 8:44 PM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+> On Thu, Oct 1, 2020 at 9:26 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
 
-Reviewed-by: Marco Elver <elver@google.com>
+...
 
-> ---
-> Change-Id: Ib46cb444cfdee44054628940a82f5139e10d0258
-> ---
->  Documentation/dev-tools/kasan.rst | 78 ++++++++++++++++++++++---------
->  1 file changed, 57 insertions(+), 21 deletions(-)
-> 
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index a3030fc6afe5..d2d47c82a7b9 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -5,12 +5,14 @@ Overview
->  --------
->  
->  KernelAddressSANitizer (KASAN) is a dynamic memory error detector designed to
-> -find out-of-bound and use-after-free bugs. KASAN has two modes: generic KASAN
-> -(similar to userspace ASan) and software tag-based KASAN (similar to userspace
-> -HWASan).
-> +find out-of-bound and use-after-free bugs. KASAN has three modes:
-> +1. generic KASAN (similar to userspace ASan),
-> +2. software tag-based KASAN (similar to userspace HWASan),
-> +3. hardware tag-based KASAN (based on hardware memory tagging).
->  
-> -KASAN uses compile-time instrumentation to insert validity checks before every
-> -memory access, and therefore requires a compiler version that supports that.
-> +Software KASAN modes (1 and 2) use compile-time instrumentation to insert
-> +validity checks before every memory access, and therefore require a compiler
-> +version that supports that.
->  
->  Generic KASAN is supported in both GCC and Clang. With GCC it requires version
->  8.3.0 or later. With Clang it requires version 7.0.0 or later, but detection of
-> @@ -19,7 +21,7 @@ out-of-bounds accesses for global variables is only supported since Clang 11.
->  Tag-based KASAN is only supported in Clang and requires version 7.0.0 or later.
->  
->  Currently generic KASAN is supported for the x86_64, arm64, xtensa, s390 and
-> -riscv architectures, and tag-based KASAN is supported only for arm64.
-> +riscv architectures, and tag-based KASAN modes are supported only for arm64.
->  
->  Usage
->  -----
-> @@ -28,14 +30,16 @@ To enable KASAN configure kernel with::
->  
->  	  CONFIG_KASAN = y
->  
-> -and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN) and
-> -CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN).
-> +and choose between CONFIG_KASAN_GENERIC (to enable generic KASAN),
-> +CONFIG_KASAN_SW_TAGS (to enable software tag-based KASAN), and
-> +CONFIG_KASAN_HW_TAGS (to enable hardware tag-based KASAN).
->  
-> -You also need to choose between CONFIG_KASAN_OUTLINE and CONFIG_KASAN_INLINE.
-> -Outline and inline are compiler instrumentation types. The former produces
-> -smaller binary while the latter is 1.1 - 2 times faster.
-> +For software modes, you also need to choose between CONFIG_KASAN_OUTLINE and
-> +CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
-> +The former produces smaller binary while the latter is 1.1 - 2 times faster.
->  
-> -Both KASAN modes work with both SLUB and SLAB memory allocators.
-> +Both software KASAN modes work with both SLUB and SLAB memory allocators,
-> +hardware tag-based KASAN currently only support SLUB.
->  For better bug detection and nicer reporting, enable CONFIG_STACKTRACE.
->  
->  To augment reports with last allocation and freeing stack of the physical page,
-> @@ -196,17 +200,24 @@ and the second to last.
->  Software tag-based KASAN
->  ~~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -Tag-based KASAN uses the Top Byte Ignore (TBI) feature of modern arm64 CPUs to
-> -store a pointer tag in the top byte of kernel pointers. Like generic KASAN it
-> -uses shadow memory to store memory tags associated with each 16-byte memory
-> +Software tag-based KASAN requires software memory tagging support in the form
-> +of HWASan-like compiler instrumentation (see HWASan documentation for details).
-> +
-> +Software tag-based KASAN is currently only implemented for arm64 architecture.
-> +
-> +Software tag-based KASAN uses the Top Byte Ignore (TBI) feature of arm64 CPUs
-> +to store a pointer tag in the top byte of kernel pointers. Like generic KASAN
-> +it uses shadow memory to store memory tags associated with each 16-byte memory
->  cell (therefore it dedicates 1/16th of the kernel memory for shadow memory).
->  
-> -On each memory allocation tag-based KASAN generates a random tag, tags the
-> -allocated memory with this tag, and embeds this tag into the returned pointer.
-> +On each memory allocation software tag-based KASAN generates a random tag, tags
-> +the allocated memory with this tag, and embeds this tag into the returned
-> +pointer.
-> +
->  Software tag-based KASAN uses compile-time instrumentation to insert checks
->  before each memory access. These checks make sure that tag of the memory that
->  is being accessed is equal to tag of the pointer that is used to access this
-> -memory. In case of a tag mismatch tag-based KASAN prints a bug report.
-> +memory. In case of a tag mismatch software tag-based KASAN prints a bug report.
->  
->  Software tag-based KASAN also has two instrumentation modes (outline, that
->  emits callbacks to check memory accesses; and inline, that performs the shadow
-> @@ -215,9 +226,34 @@ simply printed from the function that performs the access check. With inline
->  instrumentation a brk instruction is emitted by the compiler, and a dedicated
->  brk handler is used to print bug reports.
->  
-> -A potential expansion of this mode is a hardware tag-based mode, which would
-> -use hardware memory tagging support instead of compiler instrumentation and
-> -manual shadow memory manipulation.
-> +Software tag-based KASAN uses 0xFF as a match-all pointer tag (accesses through
-> +pointers with 0xFF pointer tag aren't checked). The value 0xFE is currently
-> +reserved to tag freed memory regions.
-> +
-> +Software tag-based KASAN currently only supports tagging of slab memory.
-> +
-> +Hardware tag-based KASAN
-> +~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +Hardware tag-based KASAN is similar to the software mode in concept, but uses
-> +hardware memory tagging support instead of compiler instrumentation and
-> +shadow memory.
-> +
-> +Hardware tag-based KASAN is currently only implemented for arm64 architecture
-> +and based on both arm64 Memory Tagging Extension (MTE) introduced in ARMv8.5
-> +Instruction Set Architecture, and Top Byte Ignore (TBI).
-> +
-> +Special arm64 instructions are used to assign memory tags for each allocation.
-> +Same tags are assigned to pointers to those allocations. On every memory
-> +access, hardware makes sure that tag of the memory that is being accessed is
-> +equal to tag of the pointer that is used to access this memory. In case of a
-> +tag mismatch a fault is generated and a report is printed.
-> +
-> +Hardware tag-based KASAN uses 0xFF as a match-all pointer tag (accesses through
-> +pointers with 0xFF pointer tag aren't checked). The value 0xFE is currently
-> +reserved to tag freed memory regions.
-> +
-> +Hardware tag-based KASAN currently only supports tagging of slab memory.
->  
->  What memory accesses are sanitised by KASAN?
->  --------------------------------------------
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
-> 
+> > > Intel Platform Monitoring Technology is meant to provide a common way to
+> > > access telemetry and system metrics.
+> > >
+> > > Register mappings are not provided by the driver. Instead, a GUID is read
+> > > from a header for each endpoint. The GUID identifies the device and is to
+> > > be used with an XML, provided by the vendor, to discover the available set
+> > > of metrics and their register mapping.  This allows firmware updates to
+> > > modify the register space without needing to update the driver every time
+> > > with new mappings. Firmware writes a new GUID in this case to specify the
+> > > new mapping.  Software tools with access to the associated XML file can
+> > > then interpret the changes.
+> >
+> > Where one may find a database of these reserved GUIDs / XMLs?
+> > How do you prevent a chaos which happens with other registries?
+>
+> The database will be posted on intel.com eventually. Although I don't
+> believe the URL is public yet.
+
+How can we be sure that this won't be forgotten? How can we be sure it
+will be public at the end? Please, elaborate this in the commit
+message.
+
+...
+
+> > > +static const struct pci_device_id pmt_telem_early_client_pci_ids[] = {
+> > > +       { PCI_VDEVICE(INTEL, 0x9a0d) }, /* TGL */
+> > > +       { }
+> > > +};
+> > > +bool intel_pmt_is_early_client_hw(struct device *dev)
+> > > +{
+> > > +       struct pci_dev *parent = to_pci_dev(dev->parent);
+> > > +
+> > > +       return !!pci_match_id(pmt_telem_early_client_pci_ids, parent);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(intel_pmt_is_early_client_hw);
+> >
+> > What is this and why is it in the class driver?
+>
+> I chose to use the class driver as a central place to store code
+> common to all of the instances of the class. In this case we have
+> quirks that are specific to Tiger Lake and so I chose to store the
+> function to test for the device here.
+
+Can it be done in another file module at least (let's say intel_pmt_quirks.c)?
+
+...
+
+> > > +       if (off < 0)
+> > > +               return -EINVAL;
+> > Is this real or theoretical?
+>
+> Not sure. I am not that familiar with the interface. It was something
+> I copied from read_bmof which is what I based this code on based on an
+> earlier suggestion.
+
+I'm not a fan of cargo cult when there is no understanding why certain
+code appears in the driver.
+
+...
+
+> > > +       if (count)
+> >
+> > Useless.
+>
+> I'm assuming that is because memcpy_fromio is assumed to handle this case?
+
+Right.
+
+> > > +               memcpy_fromio(buf, entry->base + off, count);
+
+...
+
+> > > +       psize = (PFN_UP(entry->base_addr + entry->size) - pfn) * PAGE_SIZE;
+> >
+> > PFN_PHYS(PFN_UP(...)) ?
+>
+> I'm not sure how that would work. Basically what we are doing here is
+> determining the size of the mapping based on the number of pages that
+> will be needed. So we wake the pfn of the start of the region,
+> subtract that from the pfn for the end of the region and multiply by
+> the size of a page.
+
+PFN_PHYS() is a replacement for multiplication. You may check its
+implementation.
+
+...
+
+> > > +       /* if size is 0 assume no data buffer, so no file needed */
+> > > +       if (!entry->size)
+> > > +               return 0;
+> >
+> > Hmm... But presence of the file is also an information that might be
+> > useful for user, no?
+>
+> I'm not sure what you mean? If the size of the region is zero it means
+> there is no data there. There are cases in future devices where we may
+> have controls for a telemetry function that is actually streaming the
+> data elsewhere. That will be the use case for the entry size of 0 and
+> in that case it doesn't make any sense to have a file as there is no
+> data to present in it.
+
+This is not understandable from 'no data buffer' above. Can you
+elaborate in the comment?
+
+...
+
+> > > +       entry->base = devm_ioremap_resource(dev, &res);
+> > > +       if (IS_ERR(entry->base)) {
+> > > +               dev_err(dev, "Failed to ioremap device region\n");
+> > > +               goto fail_ioremap;
+> > > +       }
+> >
+> > > +       iounmap(entry->base);
+> >
+> > This is interesting. How do you avoid double unmap with (1)?
+>
+> I think I get what you are trying to say. This is redundant since we
+> used the devm_ioremap_resource it will already be freed when the
+> driver is detached, correct?
+
+Right. Above is the leftover that shows the poor testing of v7.
+
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/xarray.h>
+> > > +
+> > > +/* PMT access types */
+> > > +#define ACCESS_BARID           2
+> > > +#define ACCESS_LOCAL           3
+> > > +
+> > > +/* PMT discovery base address/offset register layout */
+> > > +#define GET_BIR(v)             ((v) & GENMASK(2, 0))
+> > > +#define GET_ADDRESS(v)         ((v) & GENMASK(31, 3))
+> >
+> > bits.h
+>
+> That is already included from a few different sources.
+
+Please, read again what I wrote below. Ditto for other inclusions.
+
+> > > +struct intel_pmt_entry {
+
+> > > +       struct bin_attribute    pmt_bin_attr;
+> > > +       struct kobject          *kobj;
+> > > +       void __iomem            *disc_tabl
+> > > +       void __iomem            *base;
+> > > +       unsigned long           base_addr;
+> > > +       size_t                  size;
+> >
+> > > +       u32                     guid;
+> >
+> > types.h
+>
+> Is included through xarray.h.
+>
+> > > +       int                     devid;
+> > > +};
+> >
+> > > +static inline int
+> > > +intel_pmt_ioremap_discovery_table(struct intel_pmt_entry *entry,
+> > > +                                 struct platform_device *pdev,  int i)
+> > > +{
+> >
+> > > +       entry->disc_table = devm_platform_ioremap_resource(pdev, i);
+> >
+> > io.h ?
+>
+> That one I will move from the class.c file.
+>
+> > > +
+> > > +       return PTR_ERR_OR_ZERO(entry->disc_table);
+> >
+> > err.h
+>
+> That is included as a part of io.h.
+>
+> > > +}
+> >
+> > The rule of thumb is to include all headers that you have direct users of.
+> > Then you may optimize by removing those which are guaranteed to be
+> > included by others, like bits.h always included by bitops.h.
+>
+> Yeah, from what I can tell the only one I didn't have was io.h and
+> part of that is because this was something I had moved to the header
+> file in order to commonize it since it was being used in the other
+> drivers.
+
+types.h not necessarily be included by above and so on...
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
