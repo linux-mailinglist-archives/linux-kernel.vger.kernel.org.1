@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BCF28032B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E8C280324
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732658AbgJAPto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:49:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732287AbgJAPtl (ORCPT
+        id S1732539AbgJAPtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731917AbgJAPtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:49:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601567380;
+        Thu, 1 Oct 2020 11:49:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C172DC0613D0;
+        Thu,  1 Oct 2020 08:49:08 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601567346;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EbzAX+YvEvHOO3NGqM8YXZj1EdlAEAqHUR00Ej4MfhM=;
-        b=igWvr/JwxX+7CkCsH51OZ66lSjPZq4W5HGkMKODyVjXUgw64KHJKi1OwRzjejIVYul7Qbl
-        ICk3pM+i06W/5W/5GBN6GmzoeyiX7jelkl/kR8druKn5ymZGaIE6zBGKNxWafbCgUOG4G1
-        ymtvIAnWiVZ/r0/sVE42Wg7dUeYB6Ok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-219-xCk5aG_QNSaf-emfrz6JHA-1; Thu, 01 Oct 2020 11:49:38 -0400
-X-MC-Unique: xCk5aG_QNSaf-emfrz6JHA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3C2C1009639;
-        Thu,  1 Oct 2020 15:49:31 +0000 (UTC)
-Received: from localhost (ovpn-12-47.pek2.redhat.com [10.72.12.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F3D684C20;
-        Thu,  1 Oct 2020 15:49:30 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH V7 2/2] block: move 'q_usage_counter' into front of 'request_queue'
-Date:   Thu,  1 Oct 2020 23:48:42 +0800
-Message-Id: <20201001154842.26896-3-ming.lei@redhat.com>
-In-Reply-To: <20201001154842.26896-1-ming.lei@redhat.com>
-References: <20201001154842.26896-1-ming.lei@redhat.com>
+        bh=UM0JZQ72FkjBPMNhFWZ2Two/L1BX9C8tgytDYVf/RhQ=;
+        b=rqYFIwf3UxNUqitpDNZ3t/Z78J6IhNj6IZ4wQNTCc043ezyXQ6jDV1EQBXEzLfnRWTz8lU
+        lB4/gNfxCpBrcRalduBnmHKcRAwkadJcjDcE+DAwtbwcBwNQCVScuctqbMHm9SMV6x/YCM
+        gfmIQGyvV/XqOXDnEBXS5+S3Vt8vqSf8HK2bqasL2Jx/3OlwO2qkwg841GOhuETxYiymsb
+        xeHJHgvJBlWqaURc6+pT1xJuLow0V76NzlDR+IMBlEShm2TmPq+o97cFPEZUB9XdOCFZH1
+        Jfe4yVhGRd8fz6GCL2XdbmEKWbUJJeQZy3hdSF5+sSe5P9OrYMdsyyAiJ6Xf4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601567346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UM0JZQ72FkjBPMNhFWZ2Two/L1BX9C8tgytDYVf/RhQ=;
+        b=N+Mm42UgmgrrnX+5c8fQc/8rqkv3rT/6SmljLmsVQR63Yq65LFEI43rWxqHAStuCweS3a2
+        kkViMpxsDYiaR0Dw==
+To:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH RFC] kernel: decouple TASK_WORK TWA_SIGNAL handling from signals
+In-Reply-To: <3eafe8ec-7d31-bd46-8641-2d26aca5420d@kernel.dk>
+References: <0b5336a7-c975-a8f8-e988-e983e2340d99@kernel.dk> <875z7uezys.fsf@nanos.tec.linutronix.de> <3eafe8ec-7d31-bd46-8641-2d26aca5420d@kernel.dk>
+Date:   Thu, 01 Oct 2020 17:49:05 +0200
+Message-ID: <87362yeyku.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The field of 'q_usage_counter' is always fetched in fast path of every
-block driver, and move it into front of 'request_queue', so it can be
-fetched into 1st cacheline of 'request_queue' instance.
+On Thu, Oct 01 2020 at 09:26, Jens Axboe wrote:
+> On 10/1/20 9:19 AM, Thomas Gleixner wrote:
+>>>  	ret = task_work_add(tsk, cb, notify);
+>>> -	if (!ret)
+>>> +	if (!ret && !notify)
+>> 
+>> !notify assumes that TWA_RESUME == 0. Fun to debug if that ever changes.
+>
+> Agree, I'll make that
+>
+> 	if (!ret && notify != TWA_SIGNAL)
+>
+> instead, that's more sane.
 
-Tested-by: Veronika Kabatova <vkabatov@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Sagi Grimberg <sagi@grimberg.me>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- include/linux/blkdev.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It's not more sane. It's just more correct.
 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index d5a3e1a4c2f7..67935b3bef6c 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -397,6 +397,8 @@ struct request_queue {
- 	struct request		*last_merge;
- 	struct elevator_queue	*elevator;
- 
-+	struct percpu_ref	q_usage_counter;
-+
- 	struct blk_queue_stats	*stats;
- 	struct rq_qos		*rq_qos;
- 
-@@ -569,7 +571,6 @@ struct request_queue {
- 	 * percpu_ref_kill() and percpu_ref_reinit().
- 	 */
- 	struct mutex		mq_freeze_lock;
--	struct percpu_ref	q_usage_counter;
- 
- 	struct blk_mq_tag_set	*tag_set;
- 	struct list_head	tag_set_list;
--- 
-2.25.2
+>> This is really a hack. TWA_SIGNAL is a misnomer with the new
+>> functionality and combined with the above
+>> 
+>>          if (!ret && !notify)
+>>   		wake_up_process(tsk);
+>> 
+>> there is not really a big difference between TWA_RESUME and TWA_SIGNAL
+>> anymore. Just the delivery mode and the syscall restart magic.
+>
+> Agree, maybe it'd make more sense to rename TWA_SIGNAL to TWA_RESTART or
+> something like that. The only user of this is io_uring, so it's not like
+> it's a lot of churn to do so.
+
+I really hate that extra TIF flag just for this. We have way too many
+already and there is work in progress already to address that. I told
+other people already that new TIF flags are not going to happen unless
+the mess is cleaned up. There is work in progress to do so.
+
+>> This needs a lot more thoughts.
+>
+> Definitely, which is why I'm posting it as an RFC. It fixes a real
+> performance regression, and there's no reliable way to use TWA_RESUME
+> that I can tell.
+
+It's not a performance regression simply because the stuff you had in
+the first place which had more performance was broken. We are not
+measuring broken vs. correct, really.
+
+You are looking for a way to make stuff perform better and that's
+something totally different and does not need to be rushed. Especially
+rushing stuff into sensible areas like the entry code is not going to
+happen just because you screwed up your initial design.
+
+> What kind of restart behavior do we need? Before this change, everytime
+> _TIF_SIGPENDING is set and we don't deliver a signal in the loop, we go
+> through the syscall restart code. After this change, we only do so at
+> the end. I'm assuming that's your objection?
+
+No. That should work by some definition of work, but doing a restart
+while delivering a signal cannot work at all.
+
+> For _TIF_TASKWORK, we'll always want to restat the system call, if we
+> were currently doing one. For signals, only if we didn't deliver a
+> signal. So we'll want to retain the restart inside signal delivery?
+
+No. This needs more thoughts about how restart handling is supposed to
+work in the bigger picture and I'm not going to look at new versions of
+this which are rushed out every half an hour unless there is a proper
+analysis of how all this should play together in a way which does not
+make an utter mess of everything.
+
+Thanks,
+
+        tglx
+
+
+
+
+
 
