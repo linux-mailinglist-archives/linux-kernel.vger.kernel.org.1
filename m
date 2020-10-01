@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0464F2808F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFDC2808E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387453AbgJAVAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387403AbgJAU77 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:59:59 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B62C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 13:59:58 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 8BBD429D137
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     luto@kernel.org, tglx@linutronix.de
-Cc:     hch@lst.de, hpa@zytor.com, bp@alien8.de, rric@kernel.org,
-        peterz@infradead.org, mingo@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v2 9/9] x86: Reclaim TIF_IA32 and TIF_X32
-Date:   Thu,  1 Oct 2020 16:58:19 -0400
-Message-Id: <20201001205819.27879-10-krisman@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201001205819.27879-1-krisman@collabora.com>
-References: <20201001205819.27879-1-krisman@collabora.com>
+        id S1727172AbgJAU7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:59:01 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40269 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgJAU7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:59:01 -0400
+IronPort-SDR: 6YxHkvyg2f7QlNVt1YqWnOUkhySaz1+5/SYXHuV8MLditFWd+R9y4jWbXQnPDkiIo7aNRUoK6k
+ ngK2JU+lBicw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="142845748"
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="142845748"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 13:58:59 -0700
+IronPort-SDR: jeuPtPMtwp6onCuVQMFiGkBz7UMIDnT8y8V9SNnYQtTfEDDPb7y1jmI1qCfFL2f/ECGl2Q1vgj
+ pOp4OxIAoVyw==
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="313227300"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 13:58:58 -0700
+Date:   Thu, 1 Oct 2020 13:58:57 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: How should we handle illegal task FPU state?
+Message-ID: <20201001205857.GH7474@linux.intel.com>
+References: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
+ <71682bce-a925-d3bd-18ef-d2e4eb8ebc8e@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71682bce-a925-d3bd-18ef-d2e4eb8ebc8e@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that these flags are no longer used, reclaim those TI bits.
+On Thu, Oct 01, 2020 at 01:32:04PM -0700, Yu, Yu-cheng wrote:
+> On 10/1/2020 10:43 AM, Andy Lutomirski wrote:
+> >The question is: what do we do about it?  We have two basic choices, I think.
+> >
+> >a) Decide that the saved FPU for a task *must* be valid at all times.
+> >If there's a failure to restore state, kill the task.
+> >
+> >b) Improve our failed restoration handling and maybe even
+> >intentionally make it possible to create illegal state to allow
+> >testing.
+> >
+> >(a) sounds like a nice concept, but I'm not convinced it's practical.
+> >For example, I'm not even convinced that the set of valid SSP values
+> >is documented.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- arch/x86/include/asm/thread_info.h | 4 ----
- arch/x86/kernel/process_64.c       | 6 ------
- 2 files changed, 10 deletions(-)
+Eh, crappy SDM writing isn't a good reason to make our lives harder.  The
+SSP MSRs are canonical MSRs and follow the same rules as the SYSCALL,
+FS/GS BASE, etc... MSRs.  I'll file an SDM bug.
 
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index 267701ae3d86..6888aa39c4d6 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -91,7 +91,6 @@ struct thread_info {
- #define TIF_NEED_FPU_LOAD	14	/* load FPU on return to userspace */
- #define TIF_NOCPUID		15	/* CPUID is not accessible in userland */
- #define TIF_NOTSC		16	/* TSC is not accessible in userland */
--#define TIF_IA32		17	/* IA32 compatibility process */
- #define TIF_SLD			18	/* Restore split lock detection on context switch */
- #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
- #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
-@@ -101,7 +100,6 @@ struct thread_info {
- #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
- #define TIF_SYSCALL_TRACEPOINT	28	/* syscall tracepoint instrumentation */
- #define TIF_ADDR32		29	/* 32-bit address space on 64 bits */
--#define TIF_X32			30	/* 32-bit native x86-64 binary */
- #define TIF_FSCHECK		31	/* Check FS is USER_DS on return */
- 
- #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
-@@ -121,7 +119,6 @@ struct thread_info {
- #define _TIF_NEED_FPU_LOAD	(1 << TIF_NEED_FPU_LOAD)
- #define _TIF_NOCPUID		(1 << TIF_NOCPUID)
- #define _TIF_NOTSC		(1 << TIF_NOTSC)
--#define _TIF_IA32		(1 << TIF_IA32)
- #define _TIF_SLD		(1 << TIF_SLD)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_IO_BITMAP		(1 << TIF_IO_BITMAP)
-@@ -130,7 +127,6 @@ struct thread_info {
- #define _TIF_LAZY_MMU_UPDATES	(1 << TIF_LAZY_MMU_UPDATES)
- #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
- #define _TIF_ADDR32		(1 << TIF_ADDR32)
--#define _TIF_X32		(1 << TIF_X32)
- #define _TIF_FSCHECK		(1 << TIF_FSCHECK)
- 
- /* flags to check in __switch_to() */
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 3226ceed409c..b557312aa9cb 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -644,9 +644,7 @@ void set_personality_64bit(void)
- 	/* inherit personality from parent */
- 
- 	/* Make sure to be in 64bit mode */
--	clear_thread_flag(TIF_IA32);
- 	clear_thread_flag(TIF_ADDR32);
--	clear_thread_flag(TIF_X32);
- 	/* Pretend that this comes from a 64bit execve */
- 	task_pt_regs(current)->orig_ax = __NR_execve;
- 	current_thread_info()->status &= ~TS_COMPAT;
-@@ -663,8 +661,6 @@ void set_personality_64bit(void)
- static void __set_personality_x32(void)
- {
- #ifdef CONFIG_X86_X32
--	clear_thread_flag(TIF_IA32);
--	set_thread_flag(TIF_X32);
- 	if (current->mm)
- 		current->mm->context.flags = 0;
- 
-@@ -685,8 +681,6 @@ static void __set_personality_x32(void)
- static void __set_personality_ia32(void)
- {
- #ifdef CONFIG_IA32_EMULATION
--	set_thread_flag(TIF_IA32);
--	clear_thread_flag(TIF_X32);
- 	if (current->mm) {
- 		/*
- 		 * uprobes applied to this MM need to know this and
--- 
-2.28.0
+> >So maybe (b) is the right choice.  Getting a good implementation might
+> >be tricky.  Right now, we restore FPU too late in
+> >arch_exit_to_user_mode_prepare(), and that function isn't allowed to
+> >fail or to send signals.  We could kill the task on failure, and I
+> >suppose we could consider queueing a signal, sending IPI-to-self, and
+> >returning with TIF_NEED_FPU_LOAD still set and bogus state.  Or we
+> >could rework the exit-to-usermode code to allow failure.  All of this
+> >becomes utterly gross for the return-from-NMI path, although I guess
+> >we don't restore FPU regs in that path regardless.  Or we can
+> >do_exit() and just bail outright.
+> >
+> >I think it would be polite to at least allow core dumping a bogus FPU
+> >state, and notifying ptrace() might be nice.  And, if the bogus part
+> >of the FPU state is non-supervisor, we could plausibly deliver a
+> >signal, but this is (as above) potentially quite difficult.
+> >
+> >(As an aside, our current handling of signal delivery failure sucks.
+> >We should *at least* log something useful.)
+> >
+> >
+> >Regardless of how we decide to handle this, I do think we need to do
+> >*something* before applying the CET patches.
+> >
+> 
+> Before supervisor states are introduced, XRSTOR* fails because one of the
+> following: memory operand is invalid, xstate_header is wrong, or
+> fxregs_state->mxcsr is wrong.  So the code in ex_handler_fprestore() was
+> good.
+> 
+> When supervisor states are introduced for CET and PASID, XRSTORS can fail
+> for only one additional reason: if it effects a WRMSR of invalid values.
+> 
+> If the kernel writes to the MSRs directly, there is wrmsr_safe().  If the
+> kernel writes to MSRs' xstates, it can check the values first.  So this
+> might not need a generalized handling (but I would not oppose it). Maybe we
+> can add a config debug option to check if any writes to those MSR xstates
+> are checked before being written (and print out warnings when not)?
 
+That's not really checking the values first though, e.g. if the WRMSR succeeds,
+which is the common case, but a later WRMSR fails, then you have to back out
+the first MSR.  Even if all goes well, each WRMSR is 125+ cycles, which means
+that loading state would get very painful and would defeat the entire reason
+for shoving CET into XSAVE state.
+
+Having a try-catch variant at the lowest level, i.e. propagating errors to the
+the caller, and building on that sounds appealing.  E.g. KVM could use the
+try-catch to test that incoming XSAVE state is valid when userspace is stuffing
+guest state instead of manually validating every piece.  Validating CET and
+PASID won't be too painful, but there might be a breaking point if the current
+trend of shoving everything into XSAVE continues.
+
+One thought for a lowish effort approach to pave the way for CET would be to
+try XRSTORS multiple times in switch_fpu_return().  If the first try fails,
+then WARN, init non-supervisor state and try a second time, and if _that_ fails
+then kill the task.  I.e. do the minimum effort to play nice with bad FPU
+state, but don't let anything "accidentally" turn off CET.
