@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3136E2808B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70712808B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733277AbgJAUoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:44:12 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58718 "EHLO mga11.intel.com"
+        id S1733265AbgJAUoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:44:10 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58726 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730017AbgJAUm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:42:58 -0400
-IronPort-SDR: +HRAlbeL3FBi05BpErQIukaIrHj7EOciEG7NPP1ZbTvbru5Lb0r3cPPwe0mKB7YZhOexRAekaT
- jC4jPrDtqMzw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="160170708"
+        id S1733064AbgJAUnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:43:16 -0400
+IronPort-SDR: fza0v1cjHYKP6SqAW60YTJKuwKoYpQuNhb/YIARKPxMNCjZvZ97rfWamEVkEjmbGwfHsVRVIJi
+ nw37Acklo+2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="160170701"
 X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
-   d="scan'208";a="160170708"
+   d="scan'208";a="160170701"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 13:42:51 -0700
-IronPort-SDR: CEzqFgSfA5hh2SUumpyFIP37p19uiC6VdR0p+/SqFhjC4Q3RD8v/MqioChUkHkylsFVQdvr1+7
- V9RSXlCkvjog==
+IronPort-SDR: JT3cW7si4Isk6UuP3TJx5OsaCMJyGh1CNUi+kkrWKavd7ITA25Gy+gTjjqZWdjpg5JrNMIm9OC
+ UKoMZJNULj8Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
-   d="scan'208";a="351297035"
+   d="scan'208";a="351297026"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2020 13:42:51 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -32,120 +32,161 @@ To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: [RFC PATCH 00/22] x86: Support Intel Advanced Matrix Extensions
-Date:   Thu,  1 Oct 2020 13:38:51 -0700
-Message-Id: <20201001203913.9125-1-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com, kvm@vger.kernel.org
+Subject: [RFC PATCH 01/22] x86/fpu/xstate: Modify area init helper prototypes to access all the possible areas
+Date:   Thu,  1 Oct 2020 13:38:52 -0700
+Message-Id: <20201001203913.9125-2-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201001203913.9125-1-chang.seok.bae@intel.com>
+References: <20201001203913.9125-1-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Advanced Matrix Extensions (AMX)[1][2] will be shipping on servers
-soon.  AMX consists of configurable TMM "TILE" registers plus new
-accelerator instructions that operate on them.  TMUL (Tile matrix MULtiply)
-is the first accelerator instruction set to use the new registers, and we
-anticipate additional instructions in the future.
+The xstate infrastructure is not flexible to support dynamic areas in
+task->fpu. Change the fpstate_init() prototype to access task->fpu
+directly. It treats a null pointer as indicating init_fpstate, as this
+initial data does not belong to any task. For the compacted format,
+fpstate_init_xstate() now accepts the state component bitmap to configure
+XCOMP_BV.
 
-Neither AMX state nor TMUL instructions depend on AVX.  However, AMX and
-AVX do share common challenges.  The TMM registers are 8KB today, and
-architecturally as large as 64KB, which merits updates to hardware and
-software state management.
+No functional change.
 
-Further, both technologies run faster when they are not simultaneously
-running on SMT siblings, and both technologies use of power and bandwidth
-impact the power and performance available to neighboring cores.  (This
-impact has measurably improved in recent hardware.)
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+Reviewed-by: Len Brown <len.brown@intel.com>
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: kvm@vger.kernel.org
+---
+ arch/x86/include/asm/fpu/internal.h |  6 +++---
+ arch/x86/kernel/fpu/core.c          | 14 +++++++++++---
+ arch/x86/kernel/fpu/init.c          |  2 +-
+ arch/x86/kernel/fpu/regset.c        |  2 +-
+ arch/x86/kernel/fpu/xstate.c        |  3 +--
+ arch/x86/kvm/x86.c                  |  2 +-
+ 6 files changed, 18 insertions(+), 11 deletions(-)
 
-If the existing kernel approach for managing XSAVE state was employed to
-handle AMX, 8KB space would be added to every task, but possibly rarely
-used.  So Linux support is optimized by using a new XSAVE feature: eXtended
-Feature Disabling (XFD).  The kernel arms XFD to provide a #NM exception
-upon a tasks' first access to TILE state. The kernel exception handler
-installs the appropriate XSAVE context switch buffer, and the task behaves
-as if the kernel had done that for all tasks.  Using XFD, AMX space is
-allocated only when needed, eliminating the memory waste for unused state
-components.
-
-This series requires the new minimum sigaltstack support [4] and is based
-on the mainline with dynamic supervisor state support [3]. The series is
-composed of three parts:
-* Patch 1-16: Foundation to support dynamic user state management, as
-              preparatory for managing tile data state.
-* Patch 17-21: Actual AMX enablement, including unit tests
-* Patch 22: Introduce boot parameters
-
-Thanks to Len Brown and Dave Hansen for help with the cover letter.
-
-[1]: Intel Architecture Instruction Set Extension Programming Reference
-     June 2020, https://software.intel.com/content/dam/develop/public/us/en/documents/architecture-instruction-set-extensions-programming-reference.pdf
-[2]: https://software.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/intrinsics/intrinsics-for-intel-advanced-matrix-extensions-intel-amx-instructions.html
-[3]: https://lore.kernel.org/lkml/1593780569-62993-1-git-send-email-kan.liang@linux.intel.com/
-[4]: https://lore.kernel.org/lkml/20200929205746.6763-1-chang.seok.bae@intel.com/
-
-Chang S. Bae (22):
-  x86/fpu/xstate: Modify area init helper prototypes to access all the
-    possible areas
-  x86/fpu/xstate: Modify xstate copy helper prototypes to access all the
-    possible areas
-  x86/fpu/xstate: Modify address finder prototypes to access all the
-    possible areas
-  x86/fpu/xstate: Modify save and restore helper prototypes to access
-    all the possible areas
-  x86/fpu/xstate: Introduce a new variable for dynamic user states
-  x86/fpu/xstate: Outline dynamic xstate area size in the task context
-  x86/fpu/xstate: Introduce helpers to manage an xstate area dynamically
-  x86/fpu/xstate: Define the scope of the initial xstate data
-  x86/fpu/xstate: Introduce wrapper functions for organizing xstate area
-    access
-  x86/fpu/xstate: Update xstate save function for supporting dynamic
-    user xstate
-  x86/fpu/xstate: Update xstate area address finder for supporting
-    dynamic user xstate
-  x86/fpu/xstate: Update xstate context copy function for supporting
-    dynamic area
-  x86/fpu/xstate: Expand dynamic user state area on first use
-  x86/fpu/xstate: Inherit dynamic user state when used in the parent
-  x86/fpu/xstate: Support ptracer-induced xstate area expansion
-  x86/fpu/xstate: Support dynamic user state in the signal handling path
-  x86/fpu/xstate: Extend the table for mapping xstate components with
-    features
-  x86/cpufeatures/amx: Enumerate Advanced Matrix Extension (AMX) feature
-    bits
-  x86/fpu/amx: Define AMX state components and have it used for
-    boot-time checks
-  x86/fpu/amx: Enable the AMX feature in 64-bit mode
-  selftest/x86/amx: Include test cases for the AMX state management
-  x86/fpu/xstate: Introduce boot-parameters for control some state
-    component support
-
- .../admin-guide/kernel-parameters.txt         |  15 +
- arch/x86/include/asm/cpufeatures.h            |   4 +
- arch/x86/include/asm/fpu/internal.h           |  99 ++-
- arch/x86/include/asm/fpu/types.h              |  62 +-
- arch/x86/include/asm/fpu/xstate.h             |  41 +-
- arch/x86/include/asm/msr-index.h              |   2 +
- arch/x86/include/asm/pgtable.h                |   2 +-
- arch/x86/include/asm/processor.h              |  10 +-
- arch/x86/include/asm/trace/fpu.h              |   6 +-
- arch/x86/kernel/cpu/common.c                  |   2 +-
- arch/x86/kernel/cpu/cpuid-deps.c              |   3 +
- arch/x86/kernel/fpu/core.c                    | 107 ++-
- arch/x86/kernel/fpu/init.c                    |  89 ++-
- arch/x86/kernel/fpu/regset.c                  |  65 +-
- arch/x86/kernel/fpu/signal.c                  |  41 +-
- arch/x86/kernel/fpu/xstate.c                  | 483 ++++++++++--
- arch/x86/kernel/process.c                     |  11 +
- arch/x86/kernel/process_32.c                  |   2 +-
- arch/x86/kernel/process_64.c                  |   2 +-
- arch/x86/kernel/traps.c                       |   3 +
- arch/x86/kvm/x86.c                            |  43 +-
- arch/x86/mm/pkeys.c                           |   2 +-
- tools/testing/selftests/x86/Makefile          |   2 +-
- tools/testing/selftests/x86/amx.c             | 736 ++++++++++++++++++
- 24 files changed, 1620 insertions(+), 212 deletions(-)
- create mode 100644 tools/testing/selftests/x86/amx.c
-
---
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 0a460f2a3f90..c404fedf1a75 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -79,20 +79,20 @@ static __always_inline __pure bool use_fxsr(void)
+ 
+ extern union fpregs_state init_fpstate;
+ 
+-extern void fpstate_init(union fpregs_state *state);
++extern void fpstate_init(struct fpu *fpu);
+ #ifdef CONFIG_MATH_EMULATION
+ extern void fpstate_init_soft(struct swregs_state *soft);
+ #else
+ static inline void fpstate_init_soft(struct swregs_state *soft) {}
+ #endif
+ 
+-static inline void fpstate_init_xstate(struct xregs_state *xsave)
++static inline void fpstate_init_xstate(struct xregs_state *xsave, u64 xcomp_mask)
+ {
+ 	/*
+ 	 * XRSTORS requires these bits set in xcomp_bv, or it will
+ 	 * trigger #GP:
+ 	 */
+-	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | xfeatures_mask_all;
++	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | xcomp_mask;
+ }
+ 
+ static inline void fpstate_init_fxstate(struct fxregs_state *fx)
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index eb86a2b831b1..41d926c76615 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -191,8 +191,16 @@ static inline void fpstate_init_fstate(struct fregs_state *fp)
+ 	fp->fos = 0xffff0000u;
+ }
+ 
+-void fpstate_init(union fpregs_state *state)
++/* If a null pointer is given, assume to take the initial FPU state, init_fpstate. */
++void fpstate_init(struct fpu *fpu)
+ {
++	union fpregs_state *state;
++
++	if (fpu)
++		state = &fpu->state;
++	else
++		state = &init_fpstate;
++
+ 	if (!static_cpu_has(X86_FEATURE_FPU)) {
+ 		fpstate_init_soft(&state->soft);
+ 		return;
+@@ -201,7 +209,7 @@ void fpstate_init(union fpregs_state *state)
+ 	memset(state, 0, fpu_kernel_xstate_size);
+ 
+ 	if (static_cpu_has(X86_FEATURE_XSAVES))
+-		fpstate_init_xstate(&state->xsave);
++		fpstate_init_xstate(&state->xsave, xfeatures_mask_all);
+ 	if (static_cpu_has(X86_FEATURE_FXSR))
+ 		fpstate_init_fxstate(&state->fxsave);
+ 	else
+@@ -261,7 +269,7 @@ static void fpu__initialize(struct fpu *fpu)
+ 	WARN_ON_FPU(fpu != &current->thread.fpu);
+ 
+ 	set_thread_flag(TIF_NEED_FPU_LOAD);
+-	fpstate_init(&fpu->state);
++	fpstate_init(fpu);
+ 	trace_x86_fpu_init_state(fpu);
+ }
+ 
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 61ddc3a5e5c2..4e89a2698cfb 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -125,7 +125,7 @@ static void __init fpu__init_system_generic(void)
+ 	 * Set up the legacy init FPU context. (xstate init might overwrite this
+ 	 * with a more modern format, if the CPU supports it.)
+ 	 */
+-	fpstate_init(&init_fpstate);
++	fpstate_init(NULL);
+ 
+ 	fpu__init_system_mxcsr();
+ }
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index c413756ba89f..4c4d9059ff36 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -144,7 +144,7 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
+ 	 * In case of failure, mark all states as init:
+ 	 */
+ 	if (ret)
+-		fpstate_init(&fpu->state);
++		fpstate_init(fpu);
+ 
+ 	return ret;
+ }
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 038e19c0019e..ee4946c60ab1 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -454,8 +454,7 @@ static void __init setup_init_fpu_buf(void)
+ 	print_xstate_features();
+ 
+ 	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		init_fpstate.xsave.header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
+-						     xfeatures_mask_all;
++		fpstate_init_xstate(&init_fpstate.xsave, xfeatures_mask_all);
+ 
+ 	/*
+ 	 * Init all the features state with header.xfeatures being 0x0
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ce856e0ece84..9da8cb4b8589 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9448,7 +9448,7 @@ static int sync_regs(struct kvm_vcpu *vcpu)
+ 
+ static void fx_init(struct kvm_vcpu *vcpu)
+ {
+-	fpstate_init(&vcpu->arch.guest_fpu->state);
++	fpstate_init(vcpu->arch.guest_fpu);
+ 	if (boot_cpu_has(X86_FEATURE_XSAVES))
+ 		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
+ 			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+-- 
 2.17.1
 
