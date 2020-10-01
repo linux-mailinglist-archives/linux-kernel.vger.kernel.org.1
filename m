@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A165127F976
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3611527F977
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgJAG2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:28:24 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:40013 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAG2X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:28:23 -0400
-Received: by mail-ej1-f66.google.com with SMTP id p15so6288932ejm.7;
-        Wed, 30 Sep 2020 23:28:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sXjztgQs4OO0npzayoInTJMBK//CsB18DBIyfceLo3w=;
-        b=TfFsEnNR2rNPWvvWrZU6nElcvgPjtf2/94izHlNi8pmidCNp4f10cVdAVZa6+KmvD2
-         G9haV2VII+F1B+QNKnzWDNJyp6H//1Q3Rcok193/Z/Cqu+UzfZFGPwmfKzGCCe26tw7z
-         4tON46zRd639+T/6YDZuwndMCx7IboyvTIIZC/gF7Rtr8MPsoLP2B2nPwnyj2x1+kSzi
-         rjQC6QCRqOCWNMFyneHnPgTd7grPMyeuv/pC8j5KxtZDuKFyGpq9GypN4kMdEXMc2SxL
-         0T/eqbJsjWdet+/U2sW+w3sTJjk/I5TpdKaRDSzGn23IXDNCjUvBAiQheXcS83rDy4uc
-         oi7w==
-X-Gm-Message-State: AOAM532v93vOKTXTJjBQBF5jrjl2205+45SE8Rq7n3JpOEPU3QYAgdAL
-        TmFGNp84gO/RaUQx8jXh47qJk2FmCVM=
-X-Google-Smtp-Source: ABdhPJyvPBYgRRfyktawPt6elyV0sOb/6UtF5uiqyBNwFaH0jq3z5jWzqHRKi6ge8PVtzz+9DB3HTA==
-X-Received: by 2002:a17:906:9389:: with SMTP id l9mr6681372ejx.537.1601533701792;
-        Wed, 30 Sep 2020 23:28:21 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id e9sm3265779edu.49.2020.09.30.23.28.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 23:28:20 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 08:28:18 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v6 02/17] dt-bindings: arm: hisilicon: delete the
- descriptions of HiP05/HiP06 controllers
-Message-ID: <20201001062818.GA3018@kozik-lap>
-References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
- <20200930031712.2365-3-thunder.leizhen@huawei.com>
+        id S1730705AbgJAG3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAG3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 02:29:14 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FC7420838;
+        Thu,  1 Oct 2020 06:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601533753;
+        bh=fZGGbCLnvCvTU8YE+8viQyhuUl17bRTfbA2M4DJIR9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KEHmAvsmHO8Cf3rs1KPDaLI4s8oBxsxIXcl8yk13X6+JL4+iD1slSsZIonSvgq2st
+         H9zc2cjrlR+HB1p8p503AcgeoKwXHplGnc2hn8aFfYPFyS2HQrn1TgSpMPf45h2ORF
+         XYtcKSQSmHJitKx+jF4FKwVXxCIpEV9LU0zO8Azk=
+Date:   Thu, 1 Oct 2020 08:29:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Corey Minyard <minyard@acm.org>, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] MAINTAINERS: exclude char maintainers from things they
+ do not maintain
+Message-ID: <20201001062911.GB27677@kroah.com>
+References: <20200930121007.GA1615300@kroah.com>
+ <20200930133656.GY3674@minyard.net>
+ <20200930162828.GA1672130@kroah.com>
+ <ec0ed7046e170f315a100fbf7c7c2dd9d6f92958.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200930031712.2365-3-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <ec0ed7046e170f315a100fbf7c7c2dd9d6f92958.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:16:57AM +0800, Zhen Lei wrote:
-> The compatible strings of Hi6220 SRAM controller, HiP05/HiP06 PCIe-SAS
-> subsystem controller, HiP05/HiP06 PERI subsystem controller and
-> HiP05/HiP06 DSA subsystem controller is in syscon.yaml now.
+On Wed, Sep 30, 2020 at 01:02:46PM -0700, Joe Perches wrote:
+> On Wed, 2020-09-30 at 18:28 +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Sep 30, 2020 at 08:36:56AM -0500, Corey Minyard wrote:
+> > > On Wed, Sep 30, 2020 at 02:10:07PM +0200, Greg Kroah-Hartman wrote:
+> > > > There are a number of subdirectories and files in drivers/char/ that
+> > > > have their own maintainers and developers and ways of getting patches to
+> > > > Linus.  This includes random.c, IPMI, hardware random drivers, TPM
+> > > > drivers, and agp drivers.  Instead of sending those patches to Arnd and
+> > > > myself, who can't do anything with them, send them to the proper
+> > > > developers instead.
+> > > > 
+> > > > Cc: Arnd Bergmann <arnd@arndb.de>
+> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > 
+> > > Yes, please do.  No reason for you to get all the noise from these.
+> > > 
+> > > Acked-by: Corey Minyard <cminyard@mvista.com>
+> > 
+> > Thanks!
+> > 
+> > greg k-h
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../bindings/arm/hisilicon/hisilicon.txt           | 68 ----------------------
->  1 file changed, 68 deletions(-)
+> Your exclusion list is:
+> 
+> +X:	drivers/char/agp/
+> +X:	drivers/char/hw_random/
+> +X:	drivers/char/ipmi/
+> +X:	drivers/char/random.c
+> +X:	drivers/char/tpm/
+> 
+> But the current subdirectories of drivers/char are:
+> 
+> drivers/char/agp
+> drivers/char/hw_random
+> drivers/char/ipmi
+> drivers/char/mwave
+> drivers/char/pcmcia
+> drivers/char/tpm
+> drivers/char/tpm/eventlog
+> drivers/char/tpm/st33zp24
+> drivers/char/xilinx_hwicap
+> drivers/char/xillybus
+> 
+> do you want to specifically maintain any of them?
 
-This should be squashed with the patch moving them to syscon YAML.
+Yes, the other ones we do maintain.
 
-Best regards,
-Krzysztof
+> Wouldn't it be easier to add a single subdirectory exclusion
+> and add specific inclusions for subdirectories you actually
+> do want to maintain>
+> 
+> 
+> X:	drivers/char/*/
+> F:	drivers/char/<whatever>
+
+If we do that, it will be one extra line in the MAINTAINERS file, as we
+are dealing with 4 we want, and 4 we don't :)
+
+I like being explicit as to what we do NOT want to review, it's easier
+to see when glancing at the file.
+
+thanks,
+
+greg k-h
