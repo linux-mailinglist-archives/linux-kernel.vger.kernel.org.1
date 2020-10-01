@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8857C280769
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79FEE280768
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732913AbgJATFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:05:07 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:19126 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729047AbgJATFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:05:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1601579104; x=1633115104;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mvG+0a31TUnr2CleZRBwC1uO2SIRLdp7lGvzolLznks=;
-  b=FxFJb639QLF3QB4JTV2szdyYzGOqSrCn+hiHw5gtBobyZPhNQ1BKd4kC
-   U2TlCOH5sMd4Zx6PNEWOsMAIafZSe7itcwPXCGA4UCtuyvlb+vRCxTR9w
-   lZ2c7vIUB3d3h8UXouj3JxtMbEbJXi45sRFbno6TyWG+6QqAiERGwHoEJ
-   tH0piOUeauJ0cjavXHJNYyctzx5g4Drk1L12WYzVIEy64w0+jPIeB8hLO
-   e0tg08b/raSiI469w37WIVntMaS7ObzrkebPBapQqqbuujfZZNSyRjSWR
-   SO9wMDGI5CWsw023BawUnvGlEWwPfsOIpW6r8vLPXEEy+xmNsoB1JlLIV
-   g==;
-IronPort-SDR: gyxO8q3bJDi884dH2Imn0LAU6rjUzcCFxCDbNI4vgF7w3bc7abg44hcjRii6lZ256aHBsybIfB
- sfDFDe3zVRe0VZEa2V8yK1xXtfgMysUga0UiGKwAFbe/CLiuuwvs1X/e0v07sz7WzHiJgC9/dC
- f8EC7HsSAD5SFKuLX8ujjhd8FyVJJ6ZtDVcHyZF/9GT5611VRqIT4iDIYqmlv5N8768jFvcO97
- XQXSAoD2Zqlmp7PQfH38Pf1IGEsSvwlrCPZck+jqG1sEGJvqbZK+JaCTNx7ixCGgqWlxQMSiLk
- MtY=
-X-IronPort-AV: E=Sophos;i="5.77,324,1596470400"; 
-   d="scan'208";a="148739896"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Oct 2020 03:05:03 +0800
-IronPort-SDR: /TUkh5ki1yOrS71KUVH61J2Pu+ExxSEap7IuwFfpE8Yvncn0rELnOFTEWDttKLen6vJVko4ItS
- b8CEBJcIdR9g==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 11:51:00 -0700
-IronPort-SDR: ANr0iEXCHrjkkstTEh+kleISfOPOrgEc0i+HKg80Rgg/9bBuEMNWDj59/ju9D1TYggD0hpBPNn
- st5KEKQTthnQ==
-WDCIronportException: Internal
-Received: from 30tyk72.ad.shared (HELO jedi-01.hgst.com) ([10.86.59.249])
-  by uls-op-cesaip02.wdc.com with ESMTP; 01 Oct 2020 12:05:03 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] RISC-V: Make sure memblock reserves the memory containing DT
-Date:   Thu,  1 Oct 2020 12:04:56 -0700
-Message-Id: <20201001190456.2860155-1-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
+        id S1732883AbgJATFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:05:02 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39557 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729047AbgJATFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:05:01 -0400
+IronPort-SDR: EqynEkvofLb+eFbncaaHxvBwWSgsm+g+pMvXK6U8ATyzuhUeZ5s20Va4O7VAPUtjoQ6u04BWnP
+ vcSYwvOt+qZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150448492"
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="150448492"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 12:04:58 -0700
+IronPort-SDR: rEn4SKQb/Ibvs+CtetDaB/Vp5zFSx7cc+mDkQ3KcU0LzyIfgMGCcWRAERwqk4B7R+BHjriNqZI
+ U44dk2k5YpvQ==
+X-IronPort-AV: E=Sophos;i="5.77,324,1596524400"; 
+   d="scan'208";a="385641450"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 12:04:58 -0700
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 9D16A6369;
+        Thu,  1 Oct 2020 12:04:58 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 12:04:58 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+Subject: Re: [PATCH v5] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+Message-ID: <20201001190458.GC25055@mtg-dev.jf.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20200929025521.59573-1-divya.bharathi@dell.com>
+ <20200930002319.GI19084@mtg-dev.jf.intel.com>
+ <DM6PR19MB2636FB3D94EBA95B7CE0DE54FA330@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <42f8e710-38f7-6f80-9f4a-af68cd376538@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42f8e710-38f7-6f80-9f4a-af68cd376538@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the memory containing DT is not reserved. Thus, that region
-of memory can be reallocated or reused for other purposes. This may result
-in  corrupted DT for nommu virt board in Qemu. We may not face any issue
-in kendryte as DT is embedded in the kernel image for that.
+On Thu, Oct 01, 2020 at 11:26:36AM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 9/30/20 11:02 PM, Limonciello, Mario wrote:
+> > > > +		possible_values:	A file that can be read to obtain the possible
+> > > > +					values of the <attr>. Values are separated using
+> > > > +					semi-colon (``;``).
+> > > why not use set notation from math classes assuming intergers?  i.e.
+> > > (a, b)  all integers beween a and b but not including a or b (open set)
+> > > or
+> > > [a, b] all integerger betwen a and b including and b?  (closed set)
+> > > 
+> > > Anyway its ambiguous if the the extremes are included in the set of possible
+> > > values as written.
+> > > 
+> > 
+> > Enumeration attributes mean that there are fixed values, specifically not integers.
+> > Integers are in the "integer" type and explained below.
+> > 
+> > An example value that would be seen here is possible_values:
+> > 
+> > Enabled;Disabled;
+> 
+> That might not be the best example, because in that case arguably we
+> could export it as a boolean type (except that the WMI interface does
+> not give us boolean as an explicit / separate type).
+> 
+> Mark these enum attributes are really like enums in C, so we
+> have a fixed set of possible values which are described by
+> strings, since using integers for it makes no sense from a human
+> interaction pov. E.g. on the Lenovo X1C8 I have some attributes
+> have the following possible value sets:
+> 
+>                 Package (0x03)
+>                 {
+>                     "High",
+>                     "Normal",
+>                     "Silent"
+>                 },
+> 
+>                 Package (0x02)
+>                 {
+>                     "LCD",
+>                     "ExternalDisplay"
+>                 },
+> 
+>                 Package (0x02)
+>                 {
+>                     "Independent",
+>                     "Synchronized"
+>                 },
+> 
+> I hope this helps clarify things.
+It does.  Please ignore my comment on this topic then.
 
-Fixes: 6bd33e1ece52 ("riscv: add nommu support")
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
+thanks
 
----
-@Palmer This patch is applicable for v5.9 & before. This fix is already
-part of the "RISC-V: Move DT mapping outof fixmap" patch from UEFI support
-series. That's why, this patch doesn't need to go into for-next.
----
- arch/riscv/mm/init.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 564e0be677b7..cabf1697e748 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -510,6 +510,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- #else
- 	dtb_early_va = (void *)dtb_pa;
- #endif
-+	dtb_early_pa = dtb_pa;
- }
- 
- static inline void setup_vm_final(void)
--- 
-2.25.1
+--mark
 
