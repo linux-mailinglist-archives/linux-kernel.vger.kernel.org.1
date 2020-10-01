@@ -2,163 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC28028009A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1800B2800A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732404AbgJAN7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:59:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:21913 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732380AbgJAN7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:59:24 -0400
-IronPort-SDR: GUwW7gxwROGniQgi/eDsA8Gpo6aUgW0b+XAt7K+GZcI4yLHo0zvdYc0JNgkCuGaW0fedjMpwza
- vwaUFFUV7kfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="160059678"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="160059678"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 06:59:23 -0700
-IronPort-SDR: k1hKEQ5bxsRKdUoaTCEhLyqcHeLxgPy0VFF0ahREsAbOwat63le8JRUZGtbGO6zXRHhsOaVP5i
- U/zWNk9jp5yA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="308639200"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga003.jf.intel.com with ESMTP; 01 Oct 2020 06:59:23 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V9 4/4] perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
-Date:   Thu,  1 Oct 2020 06:57:49 -0700
-Message-Id: <20201001135749.2804-5-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001135749.2804-1-kan.liang@linux.intel.com>
-References: <20201001135749.2804-1-kan.liang@linux.intel.com>
+        id S1732544AbgJAOAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:00:38 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:36621 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732357AbgJAOA3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:00:29 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
+        with SMTP; 1 Oct 2020 17:00:23 +0300
+Received: from dev-l-vrt-136.mtl.labs.mlnx (dev-l-vrt-136.mtl.labs.mlnx [10.234.136.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 091E0NAv001720;
+        Thu, 1 Oct 2020 17:00:23 +0300
+Received: from dev-l-vrt-136.mtl.labs.mlnx (localhost [127.0.0.1])
+        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 091E0NFb011161;
+        Thu, 1 Oct 2020 17:00:23 +0300
+Received: (from moshe@localhost)
+        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 091E0NWc011160;
+        Thu, 1 Oct 2020 17:00:23 +0300
+From:   Moshe Shemesh <moshe@mellanox.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Moshe Shemesh <moshe@mellanox.com>
+Subject: [PATCH net-next 01/16] devlink: Change devlink_reload_supported() param type
+Date:   Thu,  1 Oct 2020 16:59:04 +0300
+Message-Id: <1601560759-11030-2-git-send-email-moshe@mellanox.com>
+X-Mailer: git-send-email 1.8.4.3
+In-Reply-To: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
+Change devlink_reload_supported() function to get devlink_ops pointer
+param instead of devlink pointer param.
+This change will be used in the next patch to check if devlink reload is
+supported before devlink instance is allocated.
 
-When studying code layout, it is useful to capture the page size of the
-sampled code address.
-
-Add a new sample type for code page size.
-The new sample type requires collecting the ip. The code page size can
-be calculated from the NMI-safe perf_get_page_size().
-
-For large PEBS, it's very unlikely that the mapping is gone for the
-earlier PEBS records. Enable the feature for the large PEBS. The worst
-case is that page-size '0' is returned.
-
-Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Stephane Eranian <eranian@google.com>
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
 ---
- arch/x86/events/perf_event.h    |  2 +-
- include/linux/perf_event.h      |  1 +
- include/uapi/linux/perf_event.h |  4 +++-
- kernel/events/core.c            | 11 ++++++++++-
- 4 files changed, 15 insertions(+), 3 deletions(-)
+RFCv5 -> v1:
+- New patch
+---
+ net/core/devlink.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 345442410a4d..10629ef1b626 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -132,7 +132,7 @@ struct amd_nb {
- 	PERF_SAMPLE_DATA_SRC | PERF_SAMPLE_IDENTIFIER | \
- 	PERF_SAMPLE_TRANSACTION | PERF_SAMPLE_PHYS_ADDR | \
- 	PERF_SAMPLE_REGS_INTR | PERF_SAMPLE_REGS_USER | \
--	PERF_SAMPLE_PERIOD)
-+	PERF_SAMPLE_PERIOD | PERF_SAMPLE_CODE_PAGE_SIZE)
- 
- #define PEBS_GP_REGS			\
- 	((1ULL << PERF_REG_X86_AX)    | \
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 7e3785dd27d9..e533b03af053 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1035,6 +1035,7 @@ struct perf_sample_data {
- 	u64				phys_addr;
- 	u64				cgroup;
- 	u64				data_page_size;
-+	u64				code_page_size;
- } ____cacheline_aligned;
- 
- /* default value for data source */
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index cc6ea346e9f9..c2f20ee3124d 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -144,8 +144,9 @@ enum perf_event_sample_format {
- 	PERF_SAMPLE_AUX				= 1U << 20,
- 	PERF_SAMPLE_CGROUP			= 1U << 21,
- 	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
-+	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
- 
--	PERF_SAMPLE_MAX = 1U << 23,		/* non-ABI */
-+	PERF_SAMPLE_MAX = 1U << 24,		/* non-ABI */
- 
- 	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
- };
-@@ -898,6 +899,7 @@ enum perf_event_type {
- 	 *	{ u64			size;
- 	 *	  char			data[size]; } && PERF_SAMPLE_AUX
- 	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
-+	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
- 	 * };
- 	 */
- 	PERF_RECORD_SAMPLE			= 9,
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index dc0ae692e32b..51452d5edfac 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1898,6 +1898,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
- 	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
- 		size += sizeof(data->data_page_size);
- 
-+	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
-+		size += sizeof(data->code_page_size);
-+
- 	event->header_size = size;
+diff --git a/net/core/devlink.c b/net/core/devlink.c
+index 6f2863e717a9..722a9431ff60 100644
+--- a/net/core/devlink.c
++++ b/net/core/devlink.c
+@@ -2946,9 +2946,9 @@ static void devlink_reload_netns_change(struct devlink *devlink,
+ 				     DEVLINK_CMD_PARAM_NEW);
  }
  
-@@ -6944,6 +6947,9 @@ void perf_output_sample(struct perf_output_handle *handle,
- 	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
- 		perf_output_put(handle, data->data_page_size);
+-static bool devlink_reload_supported(const struct devlink *devlink)
++static bool devlink_reload_supported(const struct devlink_ops *ops)
+ {
+-	return devlink->ops->reload_down && devlink->ops->reload_up;
++	return ops->reload_down && ops->reload_up;
+ }
  
-+	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
-+		perf_output_put(handle, data->code_page_size);
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		perf_output_put(handle, data->aux_size);
+ static void devlink_reload_failed_set(struct devlink *devlink,
+@@ -2992,7 +2992,7 @@ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
+ 	struct net *dest_net = NULL;
+ 	int err;
  
-@@ -7124,7 +7130,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
  
- 	__perf_event_header__init_id(header, data, event);
+ 	err = devlink_resources_validate(devlink, NULL, info);
+@@ -7516,7 +7516,7 @@ EXPORT_SYMBOL_GPL(devlink_register);
+ void devlink_unregister(struct devlink *devlink)
+ {
+ 	mutex_lock(&devlink_mutex);
+-	WARN_ON(devlink_reload_supported(devlink) &&
++	WARN_ON(devlink_reload_supported(devlink->ops) &&
+ 		devlink->reload_enabled);
+ 	devlink_notify(devlink, DEVLINK_CMD_DEL);
+ 	list_del(&devlink->list);
+@@ -8553,7 +8553,7 @@ __devlink_param_driverinit_value_set(struct devlink *devlink,
+ int devlink_param_driverinit_value_get(struct devlink *devlink, u32 param_id,
+ 				       union devlink_param_value *init_val)
+ {
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
  
--	if (sample_type & PERF_SAMPLE_IP)
-+	if (sample_type & (PERF_SAMPLE_IP | PERF_SAMPLE_CODE_PAGE_SIZE))
- 		data->ip = perf_instruction_pointer(regs);
+ 	return __devlink_param_driverinit_value_get(&devlink->param_list,
+@@ -8600,7 +8600,7 @@ int devlink_port_param_driverinit_value_get(struct devlink_port *devlink_port,
+ {
+ 	struct devlink *devlink = devlink_port->devlink;
  
- 	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
-@@ -7252,6 +7258,9 @@ void perf_prepare_sample(struct perf_event_header *header,
- 	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
- 		data->data_page_size = perf_get_page_size(data->addr);
+-	if (!devlink_reload_supported(devlink))
++	if (!devlink_reload_supported(devlink->ops))
+ 		return -EOPNOTSUPP;
  
-+	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
-+		data->code_page_size = perf_get_page_size(data->ip);
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		u64 size;
- 
+ 	return __devlink_param_driverinit_value_get(&devlink_port->param_list,
+@@ -9733,7 +9733,7 @@ static void __net_exit devlink_pernet_pre_exit(struct net *net)
+ 	mutex_lock(&devlink_mutex);
+ 	list_for_each_entry(devlink, &devlink_list, list) {
+ 		if (net_eq(devlink_net(devlink), net)) {
+-			if (WARN_ON(!devlink_reload_supported(devlink)))
++			if (WARN_ON(!devlink_reload_supported(devlink->ops)))
+ 				continue;
+ 			err = devlink_reload(devlink, &init_net, NULL);
+ 			if (err && err != -EOPNOTSUPP)
 -- 
-2.17.1
+2.18.2
 
