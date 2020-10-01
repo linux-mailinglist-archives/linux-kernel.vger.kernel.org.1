@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C894927F7CE
+	by mail.lfdr.de (Postfix) with ESMTP id 5A21727F7CD
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731339AbgJACMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:12:40 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:49235 "EHLO
+        id S1731306AbgJACMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:12:38 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42357 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730009AbgJACMA (ORCPT
+        by vger.kernel.org with ESMTP id S1725799AbgJACMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 30 Sep 2020 22:12:00 -0400
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 10834580399;
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6D87D58039C;
         Wed, 30 Sep 2020 22:11:59 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=/5PkmJdsATQhY
-        tiJ6QitOB2ll2wdiEKavDMfs3UWCw0=; b=Zp+9l3F6zMpMJOrUaAatP1J1Qo9l3
-        df+eLHw3+tuj1+Fi4wJ3bHGigyeyrl5hNFoGMWcu8jLIfswvLWgcFakTo799nlQe
-        4+q9NSXG0mKJN+bkCyK4cAaSy6nqlowUxGxMl9YwHZjVg6XIEnA4r75SlbOkiArG
-        pKRt3k0LDyaEknfFnDNRgzu2+JCQ7+9uc4/iHYUk40SITSirLIupGlX3zNSZJQgE
-        8tQy+EEDbsvfLaNwly/CIntEfA9CXgGKRgpHd0bajKbYy6nwRIUOiFbVpj87Yevc
-        2+5y4vSsm0g051dpZxY6CdUYsAJ/ICI7F5QKyQB/CS/ZrDTwLG+DC+EYA==
+        :mime-version:content-transfer-encoding; s=fm3; bh=5k3SUOehEkVJQ
+        tme0JHjR/CoY8DUxDwQgt0QBEnrJQw=; b=m+EWPEymCYukaw/YH6/fa6Ffs5Gae
+        KHLwVePL9K9RBfOcaCUHqiiihvHZ60VhBCrY4oOUct35r7UzL1fONlZT0wziLvfd
+        fAVo5jo/TKQB/wwWVOjzlbVFB5/SNiHDrqBIktOEWOWSn6EpmvUfMByAg9fBub93
+        nzwgqSDhQjr1ocUWjsxeVKfw5VhBpjsrgzWO8pwmtT1d2Z9ii0fIYtA4Wdt/bZo6
+        snywUNuxPKRefRP1QFYpngcACu2hURIyhEzAFPk+D/+vILfjYXFeN2LkjrvLQ4dv
+        fkbk9W+UqIkrqnUxyUzrXbp7TmcSAk29SyBAc7csGJhC5vBEk4egamoig==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=/5PkmJdsATQhYtiJ6QitOB2ll2wdiEKavDMfs3UWCw0=; b=qwhAAlrK
-        uoyDFlKLKJCgyf1UFR/fCWGBfO3jW+4cP/LoOBTx7aVRSLHmBAW7Wvp+HE6BAu2l
-        4rQKFf4BKYWIS+daDjQKz8tKBqx7de/ugvpLVX3CPr1XAbWIQyMojKRDtnkSRAK/
-        jFPSazpnXnUSJYR4NDvJlboocT3L8RiTMXBVcSGBoIbHZsIo8xq/IwNMtZiweqoX
-        p1OdpWEjT0I1SyfDDa+H/fgmdy1ArlX+MlwZxnnKj9ikIi6vJK3zihDW9EWmKf/R
-        4tbcCGPW8tkiNy+m1N0lWu+ZC7BehMdFUnN46N1nhCbaScHAiJl65VpGV2I0T2jD
-        sVevq+RoSNv2Vw==
-X-ME-Sender: <xms:7jp1X3Re49fTx0JBPykCZsXcPSaPTofdtbipRLOlERiegqNA1_a96Q>
-    <xme:7jp1X4yLkSUCMsL-P69yD_ml70wtGXE_gbd78DhtKMGEDw51UH_fwBheZKnILa-aP
-    VqOcwfIJ2_RqNkO7g>
+        fm3; bh=5k3SUOehEkVJQtme0JHjR/CoY8DUxDwQgt0QBEnrJQw=; b=XH5liIg8
+        wIeQWOHVlvXLpxoO7r5jYwLF3XOae/fYZKmpTWKN11y8VlSQlCoRaQATl/9TorjQ
+        vps65xqznWuj1FVUU9SJlkU4WLmidTVQ+YEGLlhfzmoYzR7O6SPRPIrTRtnYQIZs
+        oKG5/FWqI+ZCI4sSBo0njDG2ztLg180aqBWabOKByV9MQSUUcjoDKpSQCORv776X
+        uyDxJsw+EHb/TKMStua3Dpst3htBF2P5h1kOJ0mDDL1JVaH59gZx639redJi8ZLJ
+        jwqVxEz2JBQ2FL0bmjxmYptNL9e0Ko4YlND3Sv3zSMjhkHbZIKDZA2SW9+iE+nR4
+        MRrhBYBwJxCKWw==
+X-ME-Sender: <xms:7zp1XzMa4L1aLGyvrxUpQphKPiBxj0lH1niX5JzZaLwttMdSc_rhgg>
+    <xme:7zp1X98V79j-dtjoLabL3XPnDnOQbNv_9p-IaFT-76Yvib-GzboLlIt2de9878upz
+    9zFUZzzcl0jCNLsMg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
     jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
     gvpedujeenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
     ugdrohhrgh
-X-ME-Proxy: <xmx:7jp1X82KyMaI4CfK7Nz2bHxd5utCKKVxV2lJhtDF7EqaTlXxbTdGiQ>
-    <xmx:7jp1X3Cz9s8lFAGAMnq6u01H7mA7AbuLA9ibV8AYu5lSbJYyxuUuNA>
-    <xmx:7jp1XwjLxPhU8ObbV-Mf48iQS1_ZfnhOrv3Nh14coAXmTsBU3cknOw>
-    <xmx:7zp1X5XAkwbSUb2Hmvqj6SikI1-iMm_isqzi_fKjvkGc_Lj-hVBRig>
+X-ME-Proxy: <xmx:7zp1XyQCZ64VAgujoTU-4Qh1ZTW77olzed-es9aFIuZfrdQjI3n_GA>
+    <xmx:7zp1X3ut20MJjrYkWwZ_PgZ3vNX2WOgEdpWXM9C6Kxo1KI31N29v2g>
+    <xmx:7zp1X7cjDRbP-GE58ekSEW4dTvt2qUq8gyZ2cEgEj_WrhoccRRVSUg>
+    <xmx:7zp1X6y7KsbUs_0ISYQZCxK7lOuik88RJ1jWlkU6IWoWmSZAWdvfzw>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 46BCA3064688;
+        by mail.messagingengine.com (Postfix) with ESMTPA id B93043064682;
         Wed, 30 Sep 2020 22:11:58 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Mark Brown <broonie@kernel.org>,
@@ -65,9 +65,9 @@ To:     Mark Brown <broonie@kernel.org>,
 Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 19/25] ASoC: sun8i-codec: Constrain to compatible sample rates
-Date:   Wed, 30 Sep 2020 21:11:42 -0500
-Message-Id: <20201001021148.15852-20-samuel@sholland.org>
+Subject: [PATCH 20/25] ASoC: sun8i-codec: Protect the clock rate while streams are open
+Date:   Wed, 30 Sep 2020 21:11:43 -0500
+Message-Id: <20201001021148.15852-21-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -77,122 +77,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While another stream is active, only allow userspace to use sample rates
-that are compatible with the current SYSCLK frequency. This ensures the
-actual sample rate will always match what is given in hw_params.
+The codec's clock input is shared among all AIFs, and shared with other
+audio-related hardware in the SoC, including I2S and SPDIF controllers.
+To ensure sample rates selected by userspace or by codec2codec DAI links
+are maintained, the clock rate must be protected while it is in use.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 59 ++++++++++++++++++++++++++++++++---
- 1 file changed, 55 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 43b4319e3d84..501af64d43a0 100644
+index 501af64d43a0..86065bee7cd3 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -121,16 +121,18 @@ struct sun8i_codec_quirks {
- 	bool lrck_inversion	: 1;
- };
+@@ -416,27 +416,32 @@ static int sun8i_codec_get_lrck_div_order(unsigned int slots,
+ 	unsigned int div = slots * slot_width;
  
- struct sun8i_codec {
- 	struct regmap			*regmap;
- 	struct clk			*clk_module;
- 	const struct sun8i_codec_quirks	*quirks;
- 	struct sun8i_codec_aif		aifs[NAIFS];
-+	unsigned int			sysclk_rate;
-+	int				sysclk_refcnt;
- };
- 
- static int sun8i_codec_runtime_resume(struct device *dev)
- {
- 	struct sun8i_codec *scodec = dev_get_drvdata(dev);
- 	int ret;
- 
- 	regcache_cache_only(scodec->regmap, false);
-@@ -319,16 +321,57 @@ static int sun8i_codec_set_tdm_slot(struct snd_soc_dai *dai,
+ 	if (div < 16 || div > 256)
  		return -EINVAL;
  
- 	aif->slots = slots;
- 	aif->slot_width = slot_width;
- 
- 	return 0;
+ 	return order_base_2(div);
  }
  
-+static const unsigned int sun8i_codec_rates[] = {
-+	  7350,   8000,  11025,  12000,  14700,  16000,  22050,  24000,
-+	 29400,  32000,  44100,  48000,  88200,  96000, 176400, 192000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list sun8i_codec_all_rates = {
-+	.list	= sun8i_codec_rates,
-+	.count	= ARRAY_SIZE(sun8i_codec_rates),
-+};
-+
-+static const struct snd_pcm_hw_constraint_list sun8i_codec_22M_rates = {
-+	.list	= sun8i_codec_rates,
-+	.count	= ARRAY_SIZE(sun8i_codec_rates),
-+	.mask	= 0x5555,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list sun8i_codec_24M_rates = {
-+	.list	= sun8i_codec_rates,
-+	.count	= ARRAY_SIZE(sun8i_codec_rates),
-+	.mask	= 0xaaaa,
-+};
-+
-+static int sun8i_codec_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
++static unsigned int sun8i_codec_get_sysclk_rate(unsigned int sample_rate)
 +{
-+	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
-+	const struct snd_pcm_hw_constraint_list *list;
-+
-+	if (!scodec->sysclk_refcnt)
-+		list = &sun8i_codec_all_rates;
-+	else if (scodec->sysclk_rate == 22579200)
-+		list = &sun8i_codec_22M_rates;
-+	else if (scodec->sysclk_rate == 24576000)
-+		list = &sun8i_codec_24M_rates;
-+	else
-+		return -EINVAL;
-+
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					  SNDRV_PCM_HW_PARAM_RATE, list);
++	return sample_rate % 4000 ? 22579200 : 24576000;
 +}
 +
- struct sun8i_codec_clk_div {
- 	u8	div;
- 	u8	val;
- };
- 
- static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
- 	{ .div = 1,	.val = 0 },
- 	{ .div = 2,	.val = 1 },
-@@ -341,22 +384,21 @@ static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
- 	{ .div = 32,	.val = 8 },
- 	{ .div = 48,	.val = 9 },
- 	{ .div = 64,	.val = 10 },
- 	{ .div = 96,	.val = 11 },
- 	{ .div = 128,	.val = 12 },
- 	{ .div = 192,	.val = 13 },
- };
- 
--static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
-+static u8 sun8i_codec_get_bclk_div(unsigned int sysclk_rate,
- 				   unsigned int lrck_div_order,
- 				   unsigned int sample_rate)
- {
--	unsigned long clk_rate = clk_get_rate(scodec->clk_module);
--	unsigned int div = clk_rate / sample_rate >> lrck_div_order;
-+	unsigned int div = sysclk_rate / sample_rate >> lrck_div_order;
- 	unsigned int best_val = 0, best_diff = ~0;
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
- 		const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
- 		unsigned int diff = abs(bdiv->div - div);
- 
- 		if (diff < best_diff) {
-@@ -383,16 +425,17 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
  				 struct snd_pcm_hw_params *params,
  				 struct snd_soc_dai *dai)
  {
@@ -201,8 +114,10 @@ index 43b4319e3d84..501af64d43a0 100644
  	unsigned int sample_rate = params_rate(params);
  	unsigned int slots = aif->slots ?: params_channels(params);
  	unsigned int slot_width = aif->slot_width ?: params_width(params);
-+	unsigned int sysclk_rate = clk_get_rate(scodec->clk_module);
- 	int lrck_div_order, word_size;
+-	unsigned int sysclk_rate = clk_get_rate(scodec->clk_module);
+-	int lrck_div_order, word_size;
++	unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
++	int lrck_div_order, ret, word_size;
  	u8 bclk_div;
  
  	/* word size */
@@ -210,34 +125,40 @@ index 43b4319e3d84..501af64d43a0 100644
  	case 8:
  		word_size = 0x0;
  		break;
-@@ -418,46 +461,54 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 	if (lrck_div_order < 0)
- 		return lrck_div_order;
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+ 	case 16:
+@@ -466,17 +471,30 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
  			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
  
  	/* BCLK divider (SYSCLK/BCLK ratio) */
--	bclk_div = sun8i_codec_get_bclk_div(scodec, lrck_div_order, sample_rate);
-+	bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
+ 	bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
  	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
  			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
  			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
  
-+	if (!aif->open_streams) {
-+		scodec->sysclk_rate = sysclk_rate;
-+		scodec->sysclk_refcnt++;
-+	}
+-	if (!aif->open_streams) {
++	/* SYSCLK rate */
++	if (aif->open_streams) {
++		ret = clk_set_rate(scodec->clk_module, sysclk_rate);
++		if (ret < 0)
++			return ret;
++	} else {
++		ret = clk_set_rate_exclusive(scodec->clk_module, sysclk_rate);
++		if (ret == -EBUSY)
++			dev_err(dai->dev, "%s: clock is busy! Sample rate %u Hz "
++				"conflicts with other audio streams.\n",
++				dai->name, sample_rate);
++		if (ret < 0)
++			return ret;
 +
+ 		scodec->sysclk_rate = sysclk_rate;
+ 		scodec->sysclk_refcnt++;
+ 	}
+ 
  	aif->sample_rate = sample_rate;
  	aif->open_streams |= BIT(substream->stream);
  
  	return sun8i_codec_update_sample_rate(scodec);
- }
- 
- static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
+@@ -487,16 +505,17 @@ static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
  {
  	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
  	struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
@@ -245,8 +166,9 @@ index 43b4319e3d84..501af64d43a0 100644
  	if (aif->open_streams != BIT(substream->stream))
  		goto done;
  
-+	scodec->sysclk_refcnt--;
-+
+ 	scodec->sysclk_refcnt--;
++	clk_rate_exclusive_put(scodec->clk_module);
+ 
  	aif->sample_rate = 0;
  
  done:
@@ -254,18 +176,6 @@ index 43b4319e3d84..501af64d43a0 100644
  	return 0;
  }
  
- static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
- 	.set_fmt	= sun8i_codec_set_fmt,
- 	.set_tdm_slot	= sun8i_codec_set_tdm_slot,
-+	.startup	= sun8i_codec_startup,
- 	.hw_params	= sun8i_codec_hw_params,
- 	.hw_free	= sun8i_codec_hw_free,
- };
- 
- static struct snd_soc_dai_driver sun8i_codec_dais[] = {
- 	{
- 		.name	= "sun8i-codec-aif1",
- 		.id	= AIF1,
 -- 
 2.26.2
 
