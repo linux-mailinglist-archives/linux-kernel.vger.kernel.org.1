@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395D127FD43
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6769E27FD4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731943AbgJAKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:25:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49595 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725938AbgJAKZb (ORCPT
+        id S1731934AbgJAK20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:28:26 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:53796 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731647AbgJAK2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601547929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iMHq4W3FFlmuZXN1AAYUBjJey9b4v21DrESV0WQsAwk=;
-        b=TYUTYFPfcasXTIDzfW39mf9t5BgsN9xYQIoRu4rH3wuJMjeY9R5A8Cc0mDzPXU3X8HI6zY
-        bwjQx1t+iQGvb5ieBldd8Iq0/ZLuw6dEJh8VoWM8gDWZjnonpTnQ9FBn1GNtE8iqmX2IAU
-        9FeCMAfXBWcYsLHoYLeUF+wpfejtKGw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-4DOucC4hPbKdx8l4F5ZGwQ-1; Thu, 01 Oct 2020 06:25:24 -0400
-X-MC-Unique: 4DOucC4hPbKdx8l4F5ZGwQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ADA7802B5C;
-        Thu,  1 Oct 2020 10:25:23 +0000 (UTC)
-Received: from krava (ovpn-115-79.ams2.redhat.com [10.36.115.79])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9ABB55D9D3;
-        Thu,  1 Oct 2020 10:25:19 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 12:25:17 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 1/9] perf tools: Add build id shell test
-Message-ID: <20201001102517.GC3999500@krava>
-References: <20200930171512.3986425-1-jolsa@kernel.org>
- <20200930171512.3986425-2-jolsa@kernel.org>
- <CAP-5=fVwe5wowm9Z6RgMAKA-nRd01U6DL0LGuUJSnPc_H=w17w@mail.gmail.com>
- <20201001092530.GB3999500@krava>
+        Thu, 1 Oct 2020 06:28:21 -0400
+Received: by mail-io1-f79.google.com with SMTP id x1so3213118iov.20
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:28:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/gRHChS+roFslhUKPLCtpF9Kz+ORaa/x7ZKv8fOXc4o=;
+        b=r2r+wwoxNJwSBg+3oL/yAdu3ENs9nuDSIteEcjvFzD/cgahVOpDuyxlop19n4Qg/12
+         OmuasJ00mOFCRS4zHCt2AFFmWHyDUoKaYyZCtWTlqIMAt4xPKemyguyH806tdTd5GfY5
+         DSMWnFEq0SRKCnZRZnEImTxaaZUYWqO/jax9xz5kkEe89xv9uW6rFKc6qeUhLBAofbnJ
+         WRWYOqfQB6isDImerUyb0qn8YekIp8Z2KAB40a4XL+Wx1j4kq5jt2sExBgBZGwRPIc6n
+         tWmbui8TR2voOgMft/YTdI4dQu2ldTqcLl0Qb26ZOQZlLg/UhBrAcD2IpQnX+04r3cKx
+         p4Jg==
+X-Gm-Message-State: AOAM531NrwUjq3mU8xrqSmi3Z1mKLCwqNZqt+6DVH25geiiHxQq8Emcy
+        49SSJyUKjbgWPC/JZllCPj/ZFQLN6jllFIaLYjs4vnQ89AmM
+X-Google-Smtp-Source: ABdhPJwLse6qUMuEyyMcPgXI+MKxUxri5krnpHdh9hdpJhZNW/Zt/4cFZSynn5O5CeOjzZGhHmk664zBigpIbmtb+iEhshOFubni
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001092530.GB3999500@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Received: by 2002:a92:dacb:: with SMTP id o11mr1714886ilq.67.1601548098154;
+ Thu, 01 Oct 2020 03:28:18 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 03:28:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b357405b099798f@google.com>
+Subject: WARNING in cfg80211_connect
+From:   syzbot <syzbot+5f9392825de654244975@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:25:34AM +0200, Jiri Olsa wrote:
-> On Wed, Sep 30, 2020 at 07:00:05PM -0700, Ian Rogers wrote:
-> > On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding test for build id cache that adds binary
-> > > with sha1 and md5 build ids and verifies it's
-> > > added properly.
-> > >
-> > > The test updates build id cache with perf record
-> > > and perf buildid-cache -a.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > 
-> > Acked-by: Ian Rogers <irogers@google.com>
-> > 
-> > This is great! If I build perf and test from the build directory the
-> > test gets run. If I build using O=/tmp/perf and run from that
-> > directory then ./tests/shell isn't found and the test doesn't run.
-> > Similarly the install directory doesn't contain the executables and so
-> > the test is skipped. Is there any way to get the test running in these
-> > other scenarios?
-> 
-> ok, if there's already some way to get the build path I did not see that
-> I'll check and add something if it's missing
+Hello,
 
-would the patch below work for you?
+syzbot found the following issue on:
 
-thanks,
-jirka
+HEAD commit:    60e72093 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12adca47900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e0df28c181f1b6d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f9392825de654244975
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 17631 at net/wireless/sme.c:533 cfg80211_sme_connect net/wireless/sme.c:533 [inline]
+WARNING: CPU: 0 PID: 17631 at net/wireless/sme.c:533 cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 17631 Comm: syz-executor.1 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:cfg80211_sme_connect net/wireless/sme.c:533 [inline]
+RIP: 0010:cfg80211_connect+0x1432/0x2010 net/wireless/sme.c:1258
+Code: 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 80 3c 02 00 0f 85 a2 0a 00 00 49 83 bd 48 01 00 00 00 0f 84 b6 f7 ff ff e8 ce 82 c2 f9 <0f> 0b e8 c7 82 c2 f9 48 8b 54 24 18 48 b8 00 00 00 00 00 fc ff df
+RSP: 0018:ffffc90008ad7340 EFLAGS: 00010212
+RAX: 0000000000000499 RBX: 0000000000000000 RCX: ffffc90002c73000
+RDX: 0000000000040000 RSI: ffffffff87b3bbc2 RDI: ffffffff895f55e0
+RBP: ffff8880578d0d30 R08: 0000000000000001 R09: ffff8880578d0d35
+R10: ffffed100af1a1a6 R11: 0000000000000000 R12: ffffc90008ad74e0
+R13: ffff8880578d0c10 R14: ffff8880578d0d58 R15: ffffffff895f54a0
+ nl80211_connect+0x1646/0x2220 net/wireless/nl80211.c:10392
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fcd549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55c70bc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000020000340
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
-diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-index 57fcd28bc4bd..dd9f9c306c34 100755
---- a/tools/perf/tests/shell/buildid.sh
-+++ b/tools/perf/tests/shell/buildid.sh
-@@ -2,12 +2,23 @@
- # build id cache operations
- # SPDX-License-Identifier: GPL-2.0
- 
-+ex_md5=buildid-ex-md5
-+ex_sha1=buildid-ex-sha1
-+
- # skip if there are no test binaries
- if [ ! -x buildid-ex-sha1 -a ! -x buildid-ex-md5 ]; then
--	echo "failed: no test binaries"
--	exit 2
-+	ex_dir=$(dirname `which perf`)
-+	ex_md5=${ex_dir}/buildid-ex-md5
-+	ex_sha1=${ex_dir}/buildid-ex-sha1
-+
-+	if [ ! -x ${ex_sha1} -a ! -x ${ex_md5} ]; then
-+		echo "failed: no test binaries"
-+		exit 2
-+	fi
- fi
- 
-+echo "test binaries: ${ex_sha1} ${ex_md5}"
-+
- # skip if there's no readelf
- if [ ! -x `which readelf` ]; then
- 	echo "failed: no readelf, install binutils"
-@@ -80,11 +91,11 @@ test_record()
- }
- 
- # add binaries manual via perf buildid-cache -a
--test_add buildid-ex-sha1
--test_add buildid-ex-md5
-+test_add ${ex_sha1}
-+test_add ${ex_md5}
- 
- # add binaries via perf record post processing
--test_record buildid-ex-sha1
--test_record buildid-ex-md5
-+test_record ${ex_sha1}
-+test_record ${ex_md5}
- 
- exit ${err}
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
