@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51600280388
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC9E280389
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732655AbgJAQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732380AbgJAQF2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:05:28 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E459C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:05:28 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id md26so3208976ejb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 09:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IMB73dDKkouoCGF4bPiVkzHfDrWjLelK7eqM7hnqOfQ=;
-        b=v0zUtKZZ9u7C+SlsQ2sjJJXn5TQDdDxiCusGcV7Bneg7l6BBK2FRvU6tKaf6cwbkZr
-         Bxr4HqFic8ETbL+6s6FkrDBJ6RrJRdxI5e6jH9HqzuAdekZiVBeBfcE+BsIOQYPibWjH
-         5wDBH5QUEc3dmwkTqAvAlue2C4c55WjFjAt60tuobqpclbLDVXzW3t/vv/ks3GMmLmS3
-         6Ce5Q9qnrrxYVWmqMxqGZedF4dz75mbs5iMjV4WMHNXLA/xqRf88EKEmLm0XEz+E9Fl7
-         PyFGoySwCEvboCSlpTknQ/0twIK7Hhr3NtN64G/bzOO0hO0Q5LjfZQ38IYFXieNRFg9b
-         ZFXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IMB73dDKkouoCGF4bPiVkzHfDrWjLelK7eqM7hnqOfQ=;
-        b=TH/PlvhsqKVE7P8ocNyHvt67vcmGy0uf79Yelqey6rrHoNSBT70GuYtvLftGJJU7xr
-         Kpb/qGn4RBDQHd2mqg/8RG3mW4a47pjZ2HGHeS1j1KKVpB9fkQkaEp91jIIpDFcq3LgV
-         zrV3lzu0/QV163iKC4O8CTkZKJQvp/QGKzdIYqCPWz/SvxOi5M+++eWac0wAw8CCkNQz
-         rQAp0X9OmmQ8nvjszJBIySJWFq9ccsko6k74as2rGQNwIRVonP/GardVmE4IQPmzg8va
-         qvO0QkKuCfsAD4e0Ws96F+1Un0Mmr6NpaUy/HglirQWhfzfr85W6bM8QLyFyiGOWpq5r
-         qf/w==
-X-Gm-Message-State: AOAM533s9voWicjzHIBEi2vu1+HJViPkl6t6qBHzk+TYnkNYykDqsCaE
-        0DVZ3Lx3lObIdOf7+Lzk0dCZFmzQxPDhE8l++UCRkQ==
-X-Google-Smtp-Source: ABdhPJxKtttAvVo28q3xfu3pZ2Zdcn3tId/kcpgfnRwxqrJNDHKqiBhxtoN0zCN6pGxjHl75UiIS9gSFsZdo/e98VLw=
-X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr4247020eja.233.1601568326659;
- Thu, 01 Oct 2020 09:05:26 -0700 (PDT)
+        id S1732063AbgJAQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:06:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732026AbgJAQGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:06:13 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5902C20759;
+        Thu,  1 Oct 2020 16:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601568372;
+        bh=L/YtuZPUMMSPRWZ99pIdHDDw4x+7yKzv/vOzp4gl8oY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Uvu4pcAFy5q0LOTPi5wb/RreOS2gnBN6WwsVaIZL0jnXZjw64OBlugttrGMUKpwG3
+         68VWkEq81byo1v3DwkIeVwHhhZsVgliIZJ8TC+XlV0CUhXw+ci0HVgzEdz1VEpFFnW
+         kk0LoMEsN4pw0+Qur4bqwJ8vJ269J5dOi74x/nd8=
+Date:   Thu, 1 Oct 2020 11:06:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Li Heng <liheng40@huawei.com>
+Subject: Re: linux-next: manual merge of the tip tree with the pci tree
+Message-ID: <20201001160611.GA2696105@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
- <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com> <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com>
-In-Reply-To: <CABqSeATEMTB_hRt9D9teW6GcDvz4VLfMQyvX=nvgR4Uu4+AgoA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 18:05:00 +0200
-Message-ID: <CAG48ez3nqG_O3OYLLffVOcFf+ONgFwU9mc+HZ1GixBPbHZLyvw@mail.gmail.com>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001163827.20ea7bf9@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 2:06 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> On Wed, Sep 30, 2020 at 5:01 PM Jann Horn <jannh@google.com> wrote:
-> > Hmm, this won't work, because the task could be exiting, and seccomp
-> > filters are detached in release_task() (using
-> > seccomp_filter_release()). And at the moment, seccomp_filter_release()
-> > just locklessly NULLs out the tsk->seccomp.filter pointer and drops
-> > the reference.
-> >
-> > The locking here is kind of gross, but basically I think you can
-> > change this code to use lock_task_sighand() / unlock_task_sighand()
-> > (see the other examples in fs/proc/base.c), and bail out if
-> > lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
-> > something like this:
-> >
-> > /* We are effectively holding the siglock by not having any sighand. */
-> > WARN_ON(tsk->sighand != NULL);
->
-> Ah thanks. I was thinking about how tasks exit and get freed and that
-> sort of stuff, and how this would race against them. The last time I
-> worked with procfs there was some magic going on that I could not
-> figure out, so I was thinking if some magic will stop the task_struct
-> from being released, considering it's an argument here.
->
-> I just looked at release_task and related functions; looks like it
-> will, at the end, decrease the reference count of the task_struct.
-> Does procfs increase the refcount while calling the procfs functions?
-> Hence, in procfs functions one can rely on the task_struct still being
-> a task_struct, but any direct effects of release_task may happen while
-> the procfs functions are running?
+On Thu, Oct 01, 2020 at 04:38:27PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the tip tree got a conflict in:
+> 
+>   arch/x86/pci/xen.c
+> 
+> between commit:
+> 
+>   b0623566c2e9 ("x86/xen: Fix xen_msi_init() missing prototype warning")
 
-Yeah.
+I dropped this from my tree, thanks for the heads-up.
 
-The ONE() entry you're adding to tgid_base_stuff is used to help
-instantiate a "struct inode" when someone looks up the path
-"/proc/$tgid/seccomp_cache"; then when that path is opened, a "struct
-file" is created that holds a reference to the inode; and while that
-file exists, your proc_pid_seccomp_cache() can be invoked.
+> from the pci tree and commit:
+> 
+>   2905c50b7d3e ("x86/xen: Make xen_msi_init() static and rename it to xen_hvm_msi_init()")
+> 
+> from the tip tree.
+> 
+> I fixed it up (I just used the latter since it incorporated the change
+> from the former) and can carry the fix as necessary. This is now fixed
+> as far as linux-next is concerned, but any non trivial conflicts should
+> be mentioned to your upstream maintainer when your tree is submitted
+> for merging.  You may also want to consider cooperating with the
+> maintainer of the conflicting tree to minimise any particularly complex
+> conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-proc_pid_seccomp_cache() is invoked from proc_single_show()
-("PROC_I(inode)->op.proc_show" is proc_pid_seccomp_cache), and
-proc_single_show() obtains a temporary reference to the task_struct
-using get_pid_task() on a "struct pid" and drops that reference
-afterwards with put_task_struct(). The "struct pid" is obtained from
-the "struct proc_inode", which is essentially a subclass of "struct
-inode". The "struct pid" is kept refererenced until the inode goes
-away, via proc_pid_evict_inode(), called by proc_evict_inode().
 
-By looking at put_task_struct() and its callees, you can figure out
-which parts of the "struct task" are kept alive by the reference to
-it.
-
-By the way, maybe it'd make sense to add this to tid_base_stuff as
-well? That should just be one extra line of code. Seccomp filters are
-technically per-thread, so it would make sense to have them visible in
-the per-thread subdirectories /proc/$pid/task/$tid/.
