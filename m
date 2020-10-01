@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0552800E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6089E2800FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732406AbgJAOHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:07:21 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:56672 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732018AbgJAOHV (ORCPT
+        id S1732489AbgJAONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:13:15 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:46561 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732421AbgJAONH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:07:21 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091Dviuw009746;
-        Thu, 1 Oct 2020 10:07:19 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4u3a5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Oct 2020 10:07:19 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 091E7H4I003282
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 1 Oct 2020 10:07:17 -0400
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 1 Oct 2020 07:07:07 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 1 Oct 2020 07:07:07 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 1 Oct 2020 07:07:07 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 091E7Djx029050;
-        Thu, 1 Oct 2020 10:07:13 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: adc: ad7887: invert/rework external ref logic
-Date:   Thu, 1 Oct 2020 17:11:43 +0300
-Message-ID: <20201001141143.925-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 1 Oct 2020 10:13:07 -0400
+Received: from threadripper.lan ([46.223.126.90]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MDQmW-1kEben1bZW-00ASUI; Thu, 01 Oct 2020 16:12:51 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Russell King <linux@armlinux.org.uk>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 00/10] ARM: remove set_fs callers and implementation
+Date:   Thu,  1 Oct 2020 16:12:23 +0200
+Message-Id: <20201001141233.119343-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-01_04:2020-10-01,2020-10-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010010120
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:uvT0YYMCSl5yaLC0/r8RyA+xGdKVT1cAiXxy5fc6u04+Z7n9ImA
+ J6uOW5QZ/LsnTiydt7y11fk9jnUMLq1J2fKNQj/BVedh2XfzFisuEDQrKA4ybpaUNFEUtnz
+ IuuxJCH7VyCbIARbJox82g2ljhI7S52bXKBbaIFCrjE4UgS6vcwwQxXrAkf1Cv9E4YEMpgW
+ geXoKOZ1Dl3DAgMusEkNQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:upTsn8YWAJw=:bCdYpMIkHwcotA5EW6TSXq
+ iIuZdlAHh5fZnmzQj7wOUNsBOJbqbmCGyhYbaO6GS6UOUxI9ePnw49zQct8RaEDRTRf8KKiGk
+ 03Sf2fIJcCnG4gpMu7KeYxOPHH0Vriqz27KTWuMNHDZ6OF0iTbtEhAn96dMHTJD97mHBTu6Jq
+ uoTgZi6ElWW2sEOnp2jrrHq0Kk20CSwAnLlPWC7dlLIijzc+Id82FNXfaU55LPfJ014kOOrDi
+ m7wnkLf87f33csKJEcUu6HtABRlMRwVtNOu7Roi6Cze7Zc/hmLyTca4zSNoFCA+f1Jg6SIMax
+ f2YLED/AMOF/6xtWOihOzizHtGll7SaSeIMJs887u/RFXBr41sztwh1PbmOx4y2F5QBY2ETYg
+ AmZcE2pwFlcJe5tPZkyxzddnXgUog0VxyqFm1VDm18d7TpCZy7dXZjxXSJNjZ6dxtDboz4kE1
+ DfkuwdL1lHKaIU3mYQneWnDU+1yutpqBZ17EvdfJ46lnb5V6mDvfJ6l34f9GrrrLDt65+6lAP
+ J0oMVZ9cZxHTvw1tZgGRytaTxN9nT0a4j5QEU8PGZ8s/3XIIrH7EQSjc4/MnX0ALshbVpAr+J
+ 1z736Q3pLNDRpkGP5+aoBg2Y34ox0wyvlyHyb1fddP6bS3nw9cEnl74x+XdHQQ0utT4fQFcSL
+ Wm3H8Nb/Wzhy33xYSSY9F+Jae2cCHLzKbFr/TPGg6ua5OCHTrFYkDYXR+e/jnfnB/SqlebcML
+ rk0C0eo5hAtplfQogMhE4zIzh65DH0MOoLsNW9w8O7ZYx5TPJf5CotTsnl6Uf+Y6oqv1aG7La
+ J7dnKMtRyjA1fFUJw4BAFHowogyZNrte4cp0yzvlVrdQeajzPF2AlWSQWdEGnX1h07a8OGQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change inverts/reworks the logic to use an external reference via a
-provided regulator.
+Hi Christoph, Russell,
 
-Now the driver tries to obtain a regulator. If one is found, then it is
-used. The rest of the driver logic already checks if there is a non-NULL
-reference to a regulator, so it should be fine.
+This is the updated version of my ARM set_fs patches, hopefully
+I managed to address your previous concerns.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/adc/ad7887.c             | 10 +++++++---
- include/linux/platform_data/ad7887.h |  4 ----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+I have tested the oabi-compat changes using the LTP tests for the three
+modified syscalls using an Armv7 kernel and a Debian 5 OABI user space.
 
-diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-index 037bcb47693c..9b32b1f43c34 100644
---- a/drivers/iio/adc/ad7887.c
-+++ b/drivers/iio/adc/ad7887.c
-@@ -246,11 +246,15 @@ static int ad7887_probe(struct spi_device *spi)
- 
- 	st = iio_priv(indio_dev);
- 
--	if (!pdata || !pdata->use_onchip_ref) {
--		st->reg = devm_regulator_get(&spi->dev, "vref");
--		if (IS_ERR(st->reg))
-+	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
-+	if (IS_ERR(st->reg)) {
-+		if (PTR_ERR(st->reg) != -ENODEV)
- 			return PTR_ERR(st->reg);
- 
-+		st->reg = NULL;
-+	}
-+
-+	if (st->reg) {
- 		ret = regulator_enable(st->reg);
- 		if (ret)
- 			return ret;
-diff --git a/include/linux/platform_data/ad7887.h b/include/linux/platform_data/ad7887.h
-index 732af46b2d16..9b4dca6ae70b 100644
---- a/include/linux/platform_data/ad7887.h
-+++ b/include/linux/platform_data/ad7887.h
-@@ -13,13 +13,9 @@
-  *	second input channel, and Vref is internally connected to Vdd. If set to
-  *	false the device is used in single channel mode and AIN1/Vref is used as
-  *	VREF input.
-- * @use_onchip_ref: Whether to use the onchip reference. If set to true the
-- *	internal 2.5V reference is used. If set to false a external reference is
-- *	used.
-  */
- struct ad7887_platform_data {
- 	bool en_dual;
--	bool use_onchip_ref;
- };
- 
- #endif /* IIO_ADC_AD7887_H_ */
+I also tested the syscall_get_nr() in all combinations of OABI/EABI
+kernel user space and fixed the bugs I found after Russell pointed
+out one of those issues.
+
+The series is now based on
+https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=base.set_fs
+with no extra patches, after I included a patch to define a
+private TASK_SIZE_MAX.
+
+Russell, if you would still consider this seris for the next merge
+window and there are no further review comments, you can pull it
+from
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git \
+	arm-kill-set_fs-7
+
+At this point I'd probably just defer it another release and
+rebase once -rc1 is out, dropping the TASK_SIZE_MAX patch.
+
+     Arnd
+
+
+Arnd Bergmann (10):
+  mm/maccess: fix unaligned copy_{from,to}_kernel_nofault
+  ARM: traps: use get_kernel_nofault instead of set_fs()
+  ARM: oabi-compat: add epoll_pwait handler
+  ARM: syscall: always store thread_info->syscall
+  ARM: oabi-compat: rework epoll_wait/epoll_pwait emulation
+  ARM: oabi-compat: rework sys_semtimedop emulation
+  ARM: oabi-compat: rework fcntl64() emulation
+  ARM: uaccess: add __{get,put}_kernel_nofault
+  ARM: provide a TASK_SIZE_MAX definition
+  ARM: uaccess: remove set_fs() implementation
+
+ arch/arm/Kconfig                   |   1 -
+ arch/arm/include/asm/memory.h      |   2 +
+ arch/arm/include/asm/ptrace.h      |   1 -
+ arch/arm/include/asm/syscall.h     |  16 ++-
+ arch/arm/include/asm/thread_info.h |   4 -
+ arch/arm/include/asm/uaccess-asm.h |   6 -
+ arch/arm/include/asm/uaccess.h     | 169 ++++++++++++++-------------
+ arch/arm/kernel/asm-offsets.c      |   3 +-
+ arch/arm/kernel/entry-common.S     |  17 +--
+ arch/arm/kernel/process.c          |   7 +-
+ arch/arm/kernel/ptrace.c           |   9 +-
+ arch/arm/kernel/signal.c           |   8 --
+ arch/arm/kernel/sys_oabi-compat.c  | 181 ++++++++++++++++-------------
+ arch/arm/kernel/traps.c            |  47 +++-----
+ arch/arm/lib/copy_from_user.S      |   3 +-
+ arch/arm/lib/copy_to_user.S        |   3 +-
+ arch/arm/tools/syscall.tbl         |   2 +-
+ fs/eventpoll.c                     |   5 +-
+ include/linux/eventpoll.h          |  18 +++
+ include/linux/syscalls.h           |   3 +
+ ipc/sem.c                          |  84 ++++++++-----
+ mm/maccess.c                       |  28 ++++-
+ 22 files changed, 334 insertions(+), 283 deletions(-)
+
 -- 
-2.17.1
+2.27.0
 
