@@ -2,108 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB44280B70
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5D6280B76
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733225AbgJAXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:52:02 -0400
-Received: from mail-eopbgr30076.outbound.protection.outlook.com ([40.107.3.76]:13901
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727017AbgJAXwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:52:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oW5lqDHab04JOdbrzOkAsoQQ55HE90k16J6Y99tgA9hFh5fAXkNJG2OjHoX78QFW6Okk1jM+qOMLWAYm/hzD7qT9DxxkZRamnqS9vQec6kA6umYWHveYWnU3F3AeqULBgBta/OmVQ6VZ9x5TUeiakVlgMEuNRx7Jb9nAiNaglCJONdDgZlu4Fem4UB2KGgz5PP3Zez8aI4NkXSoiOPu+4m80FQVC8nciKlgQeQuU6HtJRJ50xCiuoSFRnUWk5S5jkhcjnqCgoh4Z0siJHLcA7o5oFTqEjer/68KeU8gEXsUYssgO7pTuCbCOc1gaohzJ0JQCeHCPPA+EzzOffs0+Kg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bDcX4FwocfEgtRJHvKdMqrhQDxVurVXetPPET8lEvqY=;
- b=Sv/lcK2fcNIR5jXw5gPGQIEjX+/kAB6FN1R3yxTi2vgybevf1Z46YDxesor8N6CyAxUx0Gsd5JNMv1AF/LkQpU7XP5ZWkITJmkmcV4KQDbKdNt/ZYwFR0a66skGNm38xiv0Fohs1rOp8HYqEo9Dzbfa+kR0Ny+k8jUFLhTlyJdzeEdC68woHTJNP+nAUT+T/1vFoQh2zkQ5XnmkhgG7QoB7mBUwlUvVtxIqfkeQXt6cmHG7aSqh3QLTcK8FFvBzJYGLsiwS1gLdtebkTrp/jwJhUpqdwyMjWCczTcADTY/ctXKwXmfB30cGGMIWhUk1IFUgqQVioWrgn8qHplqZcVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bDcX4FwocfEgtRJHvKdMqrhQDxVurVXetPPET8lEvqY=;
- b=LyLPwyYNtsukuzECdMTNG6ZZvyW6aW45Rzo6+uXqy99JPv+zURivpwg5kiE5oAQxyGBhZf0hGhIi87XUZGLzvlgxVx8H2/3++kIhAwuzQqHivTyYQXL++dtB80RziZB+VBjtmBZu4HRnrHP7NGDIwMEvESmTCXBjio+KPCPGP6s=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VI1PR04MB5504.eurprd04.prod.outlook.com (2603:10a6:803:d8::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 1 Oct
- 2020 23:51:58 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
- 23:51:58 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] net: dsa: Support bridge 802.1Q while
- untagging
-Thread-Topic: [PATCH net-next v2] net: dsa: Support bridge 802.1Q while
- untagging
-Thread-Index: AQHWl5/dhVmGK5kbOEm6gGxCRTuWC6mDZKQAgAAG5oCAAADmAA==
-Date:   Thu, 1 Oct 2020 23:51:57 +0000
-Message-ID: <20201001235156.qtaftzw7oelfucci@skbuf>
-References: <20201001030623.343535-1-f.fainelli@gmail.com>
- <20201001232402.77gglnqqfsq6l4fj@skbuf>
- <8610459d-3700-bf80-edea-c9ee24b38bc2@gmail.com>
-In-Reply-To: <8610459d-3700-bf80-edea-c9ee24b38bc2@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.229.171]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: adc0601e-48b2-4f0c-ad4a-08d86664fbca
-x-ms-traffictypediagnostic: VI1PR04MB5504:
-x-microsoft-antispam-prvs: <VI1PR04MB55043A901EF8653C0C7AEE04E0300@VI1PR04MB5504.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lwAzXHTcSzJaWcaJUitvQQL+NLgowmGYrsqtDQN4zkpKJ15d7MY7w+sGEoKASdfnt9PspqETalnXe6m32qlj/NlPDzevjuzsvB6NwSuu6G+JbEAqG+3aM8QdZL3OqFp6iqk1LR9jpTc4KPOIXnrN8GPBatufOAUovMArcY8IEzcLWFWihWjueaP5Ogp6ZaQCbysQPxwMonDotf757JqZgydcvdDRIYEjvkxTiKHtHcnIA5YNpKBu7jwrLIc3VTH24HAcgeDNqD8DGrUtuLP9aJZoOkR7kghO4ItBAfUX+669zqhkuUzLCbwgIaWby5XIH/lzsoowlfERd7IdXuM1UwKlwZIr3iJ4gcWAsg0zUvcgCB1zOfg8KcDfkL/thO1t
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(366004)(396003)(376002)(346002)(39850400004)(66446008)(66556008)(5660300002)(64756008)(76116006)(4744005)(6512007)(316002)(1076003)(9686003)(91956017)(33716001)(71200400001)(86362001)(44832011)(4326008)(26005)(6486002)(54906003)(2906002)(478600001)(66946007)(8936002)(8676002)(6916009)(186003)(6506007)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: MbmEKHuf1MhGDdN9jisgJ2MiI3IrwP9nOuZ920FiwKmDyZeSNIc0/7eQyjWegBTWb0XBMoZuWM1wrafnoXolzdyt+WWKYpA27Qrl6tjKY6KWVDr13cz9Wl3PONOTsIbWp4qoCEP2TxxJcYwgTDUezJd9ezjCr7fGI7WOubQ+DJR4hno5IiZKkfzHJ8F9aLPMWkzdLHuE235zlKEoRG6NOJh9V8SG3MNdNGAnKjB5oqSPl9OO1rKRsA7pWURom7izsw3ATF+SVIZGF4zTL7D4UcSJyCB/TjxJ/BjGfK4wyXsd1/Kaw+YWOpIWlkJ7BXFB5oWVTIx0gRCVrs3GbrURLyWkee+rw1JHCVN9hTftQZE+KkHllsP1xlupo5NqkoLJ+1g1OulZa8yDwxB9ilyKMmaRI2eoniC2UsXJzbw9vP3DjyHCaLEpV11KfBts61PGx+D7AMI3X+3TQL6BAUHqbSx9LH4FCYp9NQMm9CjhQBKnU66vw+yeMARb/uD2D0H/C5aRiIbSA8zvm6JVCWK7UJE8SBPvnlpfNJ6cdFkTcX11NnUYqtV8MPzdeEVNRWPxooIgyYdnOOe4+cttdaKB5pGJmnX+NX1+pHZG5GB5ICznrtHw1DTsT5sZQV232dAPUelGFKuA/nOOl/yyVoSGnA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EF6A0DE4AA061641A9FB4024B1639AB2@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1733261AbgJAXyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:54:17 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55904 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727017AbgJAXyR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:54:17 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 25EFD60;
+        Fri,  2 Oct 2020 01:54:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601596454;
+        bh=VLmwZy4647imvJUV3k08ckcOoCKcxqcQrPN5fHTM198=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u6qXuQtejQMUqWJtfTnaLpXDe+pognigiR0XcJl+6WrOeRRszJ0z6rQ5WciGZYqVJ
+         eysrJPvK4reOQ12bXd1E9+qlp15iVvktQ01gTYYrbopbtWgQ1umtOTCm4j97+jUG/K
+         kNPU/fpmOzwKW8YhxEQEXTX6kRfJUEqoxEIvos9s=
+Date:   Fri, 2 Oct 2020 02:53:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan =?utf-8?Q?Riedm=C3=BCller?= <s.riedmueller@phytec.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Jan Luebbe <jlu@pengutronix.de>
+Subject: Re: [PATCH v2 1/5] media: mt9p031: Add support for 8 bit and 10 bit
+ formats
+Message-ID: <20201001235336.GI3722@pendragon.ideasonboard.com>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+ <20200930114231.GH5689@pendragon.ideasonboard.com>
+ <eacb7df5-bc68-3047-b893-4c1ba4975278@phytec.de>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: adc0601e-48b2-4f0c-ad4a-08d86664fbca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 23:51:57.9002
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HRAXMYZgix9620ShI7cmSsF9lluqK92gRL/gvEHZjb1J4ysMPz0+J8NHqr/VrjQFH7Mm4K7tzrUsUEzdAf732Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5504
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eacb7df5-bc68-3047-b893-4c1ba4975278@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 04:48:43PM -0700, Florian Fainelli wrote:
-> > - move dsa_untag_bridge_pvid() after eth_type_trans(), similar to what
-> >    you did in your initial patch - maybe this is the cleanest
->
-> This would be my preference and it would not be hurting the fast-path tha=
-t
-> much.
+Hi Stefan,
 
-Ok, let's do that. You can also replace the hdr->h_vlan_proto with
-skb->protocol in that case, and remove this:
+On Thu, Oct 01, 2020 at 11:07:00AM +0200, Stefan Riedmüller wrote:
+> On 30.09.20 13:42, Laurent Pinchart wrote:
+> > On Wed, Sep 30, 2020 at 12:51:29PM +0200, Stefan Riedmueller wrote:
+> >> From: Christian Hemp <c.hemp@phytec.de>
+> >>
+> >> Aside from 12 bit monochrome or color format the sensor implicitly
+> >> supports 10 and 8 bit formats as well by simply dropping the
+> >> corresponding LSBs.
+> > 
+> > That's not how it should work though. If you set the format on
+> > MEDIA_BUS_FMT_SGRBG8_1X8 through the pipeline for instance, you will end
+> > up capturing the 8 LSB, not the 8 MSB.
+> > 
+> > What's your use case for this ?
+> 
+> I use this sensor in combination with an i.MX 6 and i.MX 6UL. When the 
+> sensor is connected with 12 bit (or 10 bit on the i.MX 6UL) and I set 
+> MEDIA_BUS_FMT_SGRBG8_1X8 through the pipeline the CSI interface drops the 
+> unused 4 LSB (or 2 LSB on the i.MX 6UL) so I get the 8 MSB from my 12 bit 
+> sensor.
 
-	struct vlan_ethhdr *hdr =3D vlan_eth_hdr(skb);
+Is that the PIXEL_BIT bit in CSI_CSICR1 for the i.MX6UL ? If so I think
+this should be handled in the imx7-media-csi driver. You could set the
+format to MEDIA_BUS_FMT_SGRBG10_1X10 on the sink pad of the CSI and to
+MEDIA_BUS_FMT_SGRBG8_1X8 on the source pad to configure this. I don't
+think the sensor driver should be involved, otherwise we'd have to patch
+all sensor drivers. From a sensor point of view, it outputs 12-bit
+Bayer, not 8-bit.
 
-Thanks!
--Vladimir=
+Now there's a caveat. When used with the i.MX6UL, I assume you connected
+D[11:2] of the sensor to D[9:0] of the i.MX6UL, right ? The i.MX6UL
+doesn't support 12-bit inputs, so it should accept
+MEDIA_BUS_FMT_SGRBG12_1X12 on its sink pad. In this case, as D[1:0] of
+the sensor are left unconnected, I think you should set data-shift to 2
+and bus-width to 10 in DT on the sensor side. The MT9P031 driver should
+parse that, and output MEDIA_BUS_FMT_SGRBG10_1X10 instead of
+MEDIA_BUS_FMT_SGRBG12_1X12 in that case.
+
+> Does this clarify things? Maybe the description in the commit message is not 
+> accurate enough or did I get something wrong?
+> 
+> >> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+> >> [jlu@pengutronix.de: simplified by dropping v4l2_colorspace handling]
+> >> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+> >> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> >> ---
+> >> Changes in v2:
+> >>   - Use unsigned int for num_fmts and loop variable in find_datafmt
+> >>   - Remove superfluous const qualifier from find_datafmt
+> >> ---
+> >>   drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++--------
+> >>   1 file changed, 40 insertions(+), 10 deletions(-)
+> >>
+> >> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> >> index dc23b9ed510a..2e6671ef877c 100644
+> >> --- a/drivers/media/i2c/mt9p031.c
+> >> +++ b/drivers/media/i2c/mt9p031.c
+> >> @@ -116,6 +116,18 @@ enum mt9p031_model {
+> >>   	MT9P031_MODEL_MONOCHROME,
+> >>   };
+> >>   
+> >> +static const u32 mt9p031_color_fmts[] = {
+> >> +	MEDIA_BUS_FMT_SGRBG8_1X8,
+> >> +	MEDIA_BUS_FMT_SGRBG10_1X10,
+> >> +	MEDIA_BUS_FMT_SGRBG12_1X12,
+> >> +};
+> >> +
+> >> +static const u32 mt9p031_monochrome_fmts[] = {
+> >> +	MEDIA_BUS_FMT_Y8_1X8,
+> >> +	MEDIA_BUS_FMT_Y10_1X10,
+> >> +	MEDIA_BUS_FMT_Y12_1X12,
+> >> +};
+> >> +
+> >>   struct mt9p031 {
+> >>   	struct v4l2_subdev subdev;
+> >>   	struct media_pad pad;
+> >> @@ -138,6 +150,9 @@ struct mt9p031 {
+> >>   	struct v4l2_ctrl *blc_auto;
+> >>   	struct v4l2_ctrl *blc_offset;
+> >>   
+> >> +	const u32 *fmts;
+> >> +	unsigned int num_fmts;
+> >> +
+> >>   	/* Registers cache */
+> >>   	u16 output_control;
+> >>   	u16 mode2;
+> >> @@ -148,6 +163,17 @@ static struct mt9p031 *to_mt9p031(struct v4l2_subdev *sd)
+> >>   	return container_of(sd, struct mt9p031, subdev);
+> >>   }
+> >>   
+> >> +static u32 mt9p031_find_datafmt(struct mt9p031 *mt9p031, u32 code)
+> >> +{
+> >> +	unsigned int i;
+> >> +
+> >> +	for (i = 0; i < mt9p031->num_fmts; i++)
+> >> +		if (mt9p031->fmts[i] == code)
+> >> +			return mt9p031->fmts[i];
+> >> +
+> >> +	return mt9p031->fmts[mt9p031->num_fmts-1];
+> >> +}
+> >> +
+> >>   static int mt9p031_read(struct i2c_client *client, u8 reg)
+> >>   {
+> >>   	return i2c_smbus_read_word_swapped(client, reg);
+> >> @@ -476,10 +502,11 @@ static int mt9p031_enum_mbus_code(struct v4l2_subdev *subdev,
+> >>   {
+> >>   	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
+> >>   
+> >> -	if (code->pad || code->index)
+> >> +	if (code->pad || code->index >= mt9p031->num_fmts)
+> >>   		return -EINVAL;
+> >>   
+> >> -	code->code = mt9p031->format.code;
+> >> +	code->code = mt9p031->fmts[code->index];
+> >> +
+> >>   	return 0;
+> >>   }
+> >>   
+> >> @@ -573,6 +600,8 @@ static int mt9p031_set_format(struct v4l2_subdev *subdev,
+> >>   	__format->width = __crop->width / hratio;
+> >>   	__format->height = __crop->height / vratio;
+> >>   
+> >> +	__format->code = mt9p031_find_datafmt(mt9p031, format->format.code);
+> >> +
+> >>   	format->format = *__format;
+> >>   
+> >>   	return 0;
+> >> @@ -951,10 +980,7 @@ static int mt9p031_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
+> >>   
+> >>   	format = v4l2_subdev_get_try_format(subdev, fh->pad, 0);
+> >>   
+> >> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> >> -		format->code = MEDIA_BUS_FMT_Y12_1X12;
+> >> -	else
+> >> -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> >> +	format->code = mt9p031_find_datafmt(mt9p031, 0);
+> >>   
+> >>   	format->width = MT9P031_WINDOW_WIDTH_DEF;
+> >>   	format->height = MT9P031_WINDOW_HEIGHT_DEF;
+> >> @@ -1121,10 +1147,14 @@ static int mt9p031_probe(struct i2c_client *client,
+> >>   	mt9p031->crop.left = MT9P031_COLUMN_START_DEF;
+> >>   	mt9p031->crop.top = MT9P031_ROW_START_DEF;
+> >>   
+> >> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> >> -		mt9p031->format.code = MEDIA_BUS_FMT_Y12_1X12;
+> >> -	else
+> >> -		mt9p031->format.code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> >> +	if (mt9p031->model == MT9P031_MODEL_MONOCHROME) {
+> >> +		mt9p031->fmts = mt9p031_monochrome_fmts;
+> >> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_monochrome_fmts);
+> >> +	} else {
+> >> +		mt9p031->fmts = mt9p031_color_fmts;
+> >> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_color_fmts);
+> >> +	}
+> >> +	mt9p031->format.code = mt9p031_find_datafmt(mt9p031, 0);
+> >>   
+> >>   	mt9p031->format.width = MT9P031_WINDOW_WIDTH_DEF;
+> >>   	mt9p031->format.height = MT9P031_WINDOW_HEIGHT_DEF;
+
+-- 
+Regards,
+
+Laurent Pinchart
