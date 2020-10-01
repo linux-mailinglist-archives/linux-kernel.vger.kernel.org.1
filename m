@@ -2,194 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAD427FDE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CA327FDEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732059AbgJAK5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731913AbgJAK5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:57:36 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2DAC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 03:57:36 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so2561318wmi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uIC7dj7oltWe68l04x0L6fWnaqmGQcvXiQBbnnS12XU=;
-        b=N8ey+YcuMPXshManX3zPwywfOqeeNx1A+UcGWlWQ42qMYLsZxU5gVninqb376OrTab
-         tNm3q9DB534M24+asCWHSsEssHzbplzSFsBkc/pCgsZEtnQ3elRGtE/Q5IObT50DijC3
-         UmLLTpgJ4lUr0H3OJqpDW9aKOBWB0RZ5DmvrxumWfUN1rm//1CbPYTGxeQc1Uw8Lz7VG
-         ZKeffsRrg8mjPPKf3ixhWmGOQCKOIMLPWb1x7KTnlxYxloWGwEZphXYNeZxt64BP0cn8
-         pj2+tCmKLs0ZV7qNvGV4xuQNOpINkqV75Nc+NtD3jroYMhe+0So6sTTrTI+FvV0K3nRF
-         FE0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uIC7dj7oltWe68l04x0L6fWnaqmGQcvXiQBbnnS12XU=;
-        b=EoL1ZBJs/8C9iwoplqBSZuQgfhkR1BBzM99BlM4adnkuz+6gneJR/McCKrjNQlbjh7
-         9QaJVu4O80euxh/tUAupF2BROmIBPhKB+cEp2HEbutDftixuTAsrdrVAsmfEOvg9U1t9
-         NI/YEXskMXdxjIDyM3yGZe2R2qfhWckqWzBzc8Cg2vF3+4/BirXqHUR86Noza6gNJUqR
-         gx7rUi5E69Dq6j+Iefb5xQS1H1gjsKJ36f1YWYQLXH1jHlwMC3Sn5JBgqQAhoPJs0sDk
-         2VDAgOU4lWiG/BarJ29/e2ZCFp2DkhD8rNVJsRopf5xQ+h3gRE+S18xymrtx6EOt2CSC
-         Z6tg==
-X-Gm-Message-State: AOAM532MALJOg4ZiGmtm8RU41FMmPz+7pjtMqxVbbzwhJrTwjpT8phWO
-        rqoyEf/4vE6EWLQ2SUwOGV9EEQ==
-X-Google-Smtp-Source: ABdhPJzH81yvoV14kh0UBrupVwtAp8vc2BgwRUJ/AgiG5QgwEW8w4M550SI7tTEK9mrDCKojnPs7wA==
-X-Received: by 2002:a1c:f612:: with SMTP id w18mr7636314wmc.47.1601549854655;
-        Thu, 01 Oct 2020 03:57:34 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:109:4a0f:cfff:fe4a:6363])
-        by smtp.gmail.com with ESMTPSA id z13sm8267476wro.97.2020.10.01.03.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 03:57:33 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:57:29 +0100
-From:   Andrew Scull <ascull@google.com>
-To:     George-Aurelian Popescu <georgepope@google.com>
-Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        masahiroy@kernel.org, michal.lkml@markovi.net,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
-        keescook@chromium.org, akpm@linux-foundation.org,
-        dvyukov@google.com, elver@google.com, tglx@linutronix.de,
-        arnd@arndb.de
-Subject: Re: [PATCH 07/14] KVM: arm64: Enable UBSAN_BOUNDS for the both the
- kernel and hyp/nVHE
-Message-ID: <20201001105729.GA632887@google.com>
-References: <20200914172750.852684-1-georgepope@google.com>
- <20200914172750.852684-8-georgepope@google.com>
+        id S1732164AbgJAK6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:58:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:59082 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732145AbgJAK6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 06:58:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCC5D30E;
+        Thu,  1 Oct 2020 03:58:13 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C733F70D;
+        Thu,  1 Oct 2020 03:58:12 -0700 (PDT)
+Subject: Re: [PATCH -next] drm/panfrost: simplify the return expression of
+ cz_ih_hw_init()
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200921131019.91558-1-miaoqinglang@huawei.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <a50ee060-b313-2d53-9ffc-6180fd5a5643@arm.com>
+Date:   Thu, 1 Oct 2020 11:57:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914172750.852684-8-georgepope@google.com>
+In-Reply-To: <20200921131019.91558-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 05:27:43PM +0000, George-Aurelian Popescu wrote:
-> From: George Popescu <georgepope@google.com>
+On 21/09/2020 14:10, Qinglang Miao wrote:
+> Simplify the return expression.
 > 
-> If an out of bounds happens inside the hyp/nVHE code, the
-> ubsan_out_of_bounds handler stores the logging data inside the
-> kvm_ubsan_buffer. The one responsible for printing is the kernel
-> ubsan_out_of_bounds handler. The process of decapsulating the data happens
-> in kvm_ubsan_buffer.c.
-> 
-> The struct kvm_ubsan_info contains three main components:
-> -enum type, which is used to identify which handler to call from the
-> kernel.
-> -struct ubsan_values, which stores the operands involved during the
-> undefined behaviours, which can be one, two or zero, depending on what
-> undefiend behaviour is reported. As an example for: out_of_bounds there
-> is only one operand (the index).
-> 
-> Accessing a slot with no type should do nothing. Each slot is marked
-> with the UBSAN_NONE tag after it's first usage.
-> 
-> Signed-off-by: George Popescu <georgepope@google.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+
 > ---
->  arch/arm64/include/asm/kvm_ubsan.h | 19 ++++++++++++++++++-
->  arch/arm64/kvm/hyp/nvhe/ubsan.c    | 13 ++++++++++++-
->  arch/arm64/kvm/kvm_ubsan_buffer.c  | 13 ++++++++++++-
->  3 files changed, 42 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/panfrost/panfrost_device.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-> index af607a796376..575881e0bd5f 100644
-> --- a/arch/arm64/include/asm/kvm_ubsan.h
-> +++ b/arch/arm64/include/asm/kvm_ubsan.h
-> @@ -11,7 +11,24 @@
->  #define UBSAN_MAX_TYPE 6
->  #define KVM_UBSAN_BUFFER_SIZE 1000
->  
-> +struct ubsan_values {
-> +	void *lval;
-> +	void *rval;
-> +	char op;
-> +};
-> +
->  struct kvm_ubsan_info {
-> -	int type;
-> +	enum {
-> +		UBSAN_NONE,
-> +		UBSAN_OUT_OF_BOUNDS
-> +	} type;
-> +	union {
-> +		struct out_of_bounds_data out_of_bounds_data;
-> +	};
-> +	union {
-> +		struct ubsan_values u_val;
-> +	};
->  };
->  #endif
-> +
-> +void __ubsan_handle_out_of_bounds(void *_data, void *index);
-> diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> index a43c9646e1e8..b2d3404f6215 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-> @@ -43,7 +43,18 @@ void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
->  
->  void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
->  
-> -void __ubsan_handle_out_of_bounds(void *_data, void *index) {}
-> +void __ubsan_handle_out_of_bounds(void *_data, void *index)
-> +{
-> +	struct kvm_ubsan_info *slot = NULL;
-> +	struct out_of_bounds_data *data = _data;
-> +
-> +	slot = kvm_ubsan_buffer_next_slot();
-> +	if (slot) {
-> +		slot->type = UBSAN_OUT_OF_BOUNDS;
-> +		slot->out_of_bounds_data = *data;
-> +		slot->u_val.lval = index;
-> +	}
-> +}
->  
->  void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
->  
-> diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> index 28dcf19b5706..ce796bdd027e 100644
-> --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
-> +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-> @@ -16,6 +16,17 @@
->  
->  DECLARE_KVM_DEBUG_BUFFER(struct kvm_ubsan_info, kvm_ubsan_buff, KVM_UBSAN_BUFFER_SIZE);
->  
-> +void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
-> +{
-> +	switch (slot->type) {
-> +	case UBSAN_NONE:
-> +		break;
-> +	case UBSAN_OUT_OF_BOUNDS:
-> +		__ubsan_handle_out_of_bounds(&slot->out_of_bounds_data,
-> +				slot->u_val.lval);
-> +		break;
-> +	}
-> +}
->  
->  void __kvm_check_ubsan_buffer(void)
->  {
-> @@ -25,7 +36,7 @@ void __kvm_check_ubsan_buffer(void)
->  
->  	init_kvm_debug_buffer(kvm_ubsan_buff, struct kvm_ubsan_info, slot, write_ind);
->  	for_each_kvm_debug_buffer_slot(slot, write_ind, it) {
-> -		/* check ubsan data */
-> +		__kvm_check_ubsan_data(slot);
->  		slot->type = 0;
-
-0's called UBSAN_NONE now
-
->  	}
->  }
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+> index e68967338..ea8d31863 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -18,19 +18,13 @@
+>   
+>   static int panfrost_reset_init(struct panfrost_device *pfdev)
+>   {
+> -	int err;
+> -
+>   	pfdev->rstc = devm_reset_control_array_get(pfdev->dev, false, true);
+>   	if (IS_ERR(pfdev->rstc)) {
+>   		dev_err(pfdev->dev, "get reset failed %ld\n", PTR_ERR(pfdev->rstc));
+>   		return PTR_ERR(pfdev->rstc);
+>   	}
+>   
+> -	err = reset_control_deassert(pfdev->rstc);
+> -	if (err)
+> -		return err;
+> -
+> -	return 0;
+> +	return reset_control_deassert(pfdev->rstc);
+>   }
+>   
+>   static void panfrost_reset_fini(struct panfrost_device *pfdev)
 > 
+
