@@ -2,138 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE41927F6CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C3927F6D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732136AbgJAAgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:36:43 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42777 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730403AbgJAAgn (ORCPT
+        id S1732171AbgJAAmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:42:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731339AbgJAAmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:36:43 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 272555C0140;
-        Wed, 30 Sep 2020 20:36:42 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Wed, 30 Sep 2020 20:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=06pnMJ4ySgrR3zE2veXLevcnyQj0lWc
-        d++eStXNSg1c=; b=Aog4yJOxWHUIdns67r9LYv+XkJAwb8pOR5Onlp08+awFaVQ
-        qew0hYLCc6vzzaQ2xXldxtzOEib9UU3GlebbtT5s3RWmdfW+3VwtxKb5tN78A17U
-        sCa1scmhP7epAZBhBslpHDUTqcdBfCTWYlFo/a94pN5E7hlFxNlWslqFAeqIce3z
-        fPvBGf3Y8xPHEWBd80R8vLgRy9Bneb3UydjHdhH4kTQM8S357sgoiFRpsei5nQzY
-        4bTrZukk1cFIcXdoGF41Ly9CZ61XhD5YD84NsHyTXgmJb8qqBQxX8kmjnnKOptQy
-        8zTmM/5f3QvGySRCU0qudk/ucffcQXNTxI25FLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=06pnMJ
-        4ySgrR3zE2veXLevcnyQj0lWcd++eStXNSg1c=; b=W18IL9tIpICdtp1ksfSx7G
-        g//5j74iOFQ1KT0VH87Qm5MWF7jKkycw19OPnIiEniZrjkxPdWiJ3TfPXxHjPrTd
-        sMBBhyhHLS1IxTr/GjdpojnzfbDJ4DPShKZRkLLf6WKglSuoD5PkFw+Mkm1Bv81L
-        KklfxlyW4YCDKHbPf/hM1p2fLpDxZBKDrGlDuBUPlR0JzCFRy4OidviRVMwkJWjK
-        IM4VWIRtG5k2z/M0iuj5IBz3dkJJXdmGFBO8K+Xf9d0zsA/xHlizht9WqZKj25qf
-        VwfcNYODqSVBfRRPepbcRRhLb5BP9x/UxI2hdFxd2RZDMftS52nJZFWq1AqaDYhA
-        ==
-X-ME-Sender: <xms:mCR1X-_E6qEcX4YynjhFOS6dRl2zwSYIot-RarN41PcZLZBBa2h-EA>
-    <xme:mCR1X-uvLvSse5KO3u0wIB6RCOI4Wk8dq_8P2MNFIh3VS8uqIl0LJDY-SLBJQ5h9J
-    vNxUYMOpJe9NWnEmA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:mCR1X0Bh8tdoFB07gLuf1a6kETGgeneoqjQd-MEiOUTX8WQLEQB_qg>
-    <xmx:mCR1X2dUdiFgP6Ewcrsh7Xm6opGU6lcQ3-T0OcYfbjl_xKmOIVriIw>
-    <xmx:mCR1XzM-buy3w0I7LvnEp8OHZeo51JnVCN0Gi9EheEyqzmrPCwcuvg>
-    <xmx:miR1X-1IWYTN3IiERWOIzaNQZe2QRh4t6k83qs-DIRztZgWt7ptwQQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6D6B9E0181; Wed, 30 Sep 2020 20:36:39 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
-Mime-Version: 1.0
-Message-Id: <6bc40a50-8c21-4642-ad9e-e92f756aac25@www.fastmail.com>
-In-Reply-To: <20200930051113.32465-1-billy_tsai@aspeedtech.com>
-References: <20200930051113.32465-1-billy_tsai@aspeedtech.com>
-Date:   Thu, 01 Oct 2020 10:06:20 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Billy Tsai" <billy_tsai@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     BMC-SW@aspeedtech.com
-Subject: Re: [PATCH] ARM: dts: aspeed-g6: Add sgpiom/sgpios node
-Content-Type: text/plain
+        Wed, 30 Sep 2020 20:42:21 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601512940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1dZAHWtiKSMf8mYBi0q5UFXISwoH04KbR1oFeQ0MPNQ=;
+        b=AA28nO6pNpydMLSZBYQBBnEDkzRVvxfuYEtCceEDkQdL3XmkV+DBn7nrp7zIZENUUspiyp
+        UxPUoLIeBVX24JDV6SSys2iXStajMMyrhNW2sWgNxh+rZaBeelsZOKbrEoHaEueWlXQY6S
+        knBkbiijs8Duc6lkHrQmrK06zPxprGA=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-bP_o5P85PDO7x8eYEhtl-Q-1; Wed, 30 Sep 2020 20:42:18 -0400
+X-MC-Unique: bP_o5P85PDO7x8eYEhtl-Q-1
+Received: by mail-qv1-f71.google.com with SMTP id a13so2065334qvl.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 17:42:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1dZAHWtiKSMf8mYBi0q5UFXISwoH04KbR1oFeQ0MPNQ=;
+        b=YvYCpTqIDjSBrlf/OFVYVvNiMgTs2QflFbUBmUqEIClS4ABGdCyzPrmUqqUEWqAMhc
+         CYgi0I8v++3Ppnd0c1Y0qJFX1VY2B7zuH3vNkBRD9B3NP1xuJkcf0qVWEqjjwFQ9HoqD
+         CpyYyW5XbS/gxISs+pwadYbqWa0B4yDKmU7QisEzDQnCqKDLoa4LX/JeN/v/fcWa+kmE
+         JLnZrcA53XxVbjGxk4t8MzhFAE50KhKPGvCghWmMSa21+h4MhL6nl+U1NV2gRuyeFzbZ
+         JoL0pLR//lzir1J6u2ugkqsx8q4AuWwmwDG9MpCtePl2yg8H4E55jwZRd7cQYLaMhUKh
+         Euyw==
+X-Gm-Message-State: AOAM531DQDVLTuXC7rrC2QdGTKsynPtsSKSTwIeEL5aIKsRC9GQU24el
+        GK/K8TGQHqqGRyef2gf5uRx01V4JeakXZYjegJhQ6QzMRR2Ut4eVpijZh+B8zk2B2JcrvMlxUr2
+        LvoMxUhOvdpJ/cY11ehos6v2o
+X-Received: by 2002:a05:620a:b18:: with SMTP id t24mr5452568qkg.401.1601512937987;
+        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIDSvnLGUwNL+2BLIEvn9OGWviDasq6qOhSb244j0gvhx6q/5RSZ+zbvBvAe8dG2VfZreS1Q==
+X-Received: by 2002:a05:620a:b18:: with SMTP id t24mr5452548qkg.401.1601512937723;
+        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
+        by smtp.gmail.com with ESMTPSA id y46sm4602375qtc.30.2020.09.30.17.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 17:42:17 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 20:42:18 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v12 00/13] KVM: Dirty ring interface
+Message-ID: <20201001004218.GA6063@xz-x1>
+References: <20200930214948.47225-1-peterx@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200930214948.47225-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
+On Wed, Sep 30, 2020 at 05:49:35PM -0400, Peter Xu wrote:
+> - rebase
 
-On Wed, 30 Sep 2020, at 14:41, Billy Tsai wrote:
-> This commit add two sgpiom and two sgpios node into aspeed-g6.dtsi
-> and change the register range of gpio0 to fix the hardware design.
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-g6.dtsi | 51 +++++++++++++++++++++++++++++++-
->  1 file changed, 50 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> index 97ca743363d7..00237daec2a1 100644
-> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> @@ -357,7 +357,7 @@
->  				#gpio-cells = <2>;
->  				gpio-controller;
->  				compatible = "aspeed,ast2600-gpio";
-> -				reg = <0x1e780000 0x800>;
-> +				reg = <0x1e780000 0x500>;
->  				interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
->  				gpio-ranges = <&pinctrl 0 0 208>;
->  				ngpios = <208>;
-> @@ -365,6 +365,55 @@
->  				interrupt-controller;
->  				#interrupt-cells = <2>;
->  			};
-> +			sgpiom0: sgpiom@1e780500 {
-> +				#gpio-cells = <2>;
-> +				gpio-controller;
-> +				compatible = "aspeed,ast2600-sgpiom";
-> +				reg = <0x1e780500 0x100>;
-> +				interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
-> +				ngpios = <128>;
-> +				clocks = <&syscon ASPEED_CLK_APB2>;
-> +				interrupt-controller;
-> +				bus-frequency = <12000000>;
-> +
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_sgpm1_default>;
-> +				status = "disabled";
-> +			};
-> +
-> +			sgpiom1: sgpiom@1e780600 {
-> +				#gpio-cells = <2>;
-> +				gpio-controller;
-> +				compatible = "aspeed,ast2600-sgpiom";
-> +				reg = <0x1e780600 0x100>;
-> +				interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-> +				ngpios = <80>;
-> +				clocks = <&syscon ASPEED_CLK_APB2>;
-> +				interrupt-controller;
-> +				bus-frequency = <12000000>;
-> +
-> +				pinctrl-names = "default";
-> +				pinctrl-0 = <&pinctrl_sgpm2_default>;
+I made the same mistake again on rebasing to 5.9-rc7 rather than kvm/queue.
+Doing it again.  Sorry for the noise.
 
-Have you tried building this on top of upstream? Because neither sgpm2 nor 
-sgps2 are supported by the pinctrl driver. If you have patches that implement 
-both mux configurations, can you post them too?
+-- 
+Peter Xu
 
-Andrew
