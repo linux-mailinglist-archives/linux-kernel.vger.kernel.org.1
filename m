@@ -2,166 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD7928063B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C428063D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732961AbgJASIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S1733007AbgJASJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730029AbgJASIV (ORCPT
+        with ESMTP id S1730029AbgJASJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:08:21 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C21C0613D0;
-        Thu,  1 Oct 2020 11:08:21 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id 26so6566361ois.5;
-        Thu, 01 Oct 2020 11:08:21 -0700 (PDT)
+        Thu, 1 Oct 2020 14:09:07 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8634AC0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:09:07 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id u6so7822442iow.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0RXPHjO88Bo5yGksZ2SXAZiFjfdhUtK7FW+8v3RNcMM=;
-        b=RYCerRbU5ginYvNutbvNVZknIP57y3tqMkUWY2bH2JTeJdp/XOqQkULfSZWLVbL8vK
-         gfT1DpzviJZqLpp1/bS83IN/3uxZqHYEzLi21emnShjm7v8uRoH++2yk7+Vu4Uv2Dx7D
-         qbl9eF5F0W6juaLRoiCEHyNqKnBvkYRs+JOHoscjisSLrY85Hk4ho7JN/0DuB+S0+Mdo
-         EtC/1WwgWe+optP7l5IW82MnexvdoZIqEfb0TzTYeWQEGXjGCOH+3/aL+H+7ifi8C0py
-         NLkaqteLkzkYlpPDea3nU+NQneUfTCt/PJxj5YYVz1CzTqN+ByPkZPtTC8UKDsQrCYXM
-         o+/g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yYyLL8/5sTCIqw3c2AOtgstQUUljt/etSnN5D+fO0uY=;
+        b=Wzssz5fTJS9vvZ2ypkoGhiI+koyTl7pvaRONIvAdV8ZIhy+2BNj4z+zfiNA1glezsm
+         C50ZoyCscM7qSZNF3Qmr5ISeX2ZXcW2185mYm/U/eBlt/DMZBI+UaWN16f+ba76jbPYL
+         q4VexChWOdrzYr4OLseC0ogYE9VaeS9VByVPyB5SWU8autJFBrdRP0X0Pg2gHpXGE9LL
+         8+659IorxM/GxV8Ynytoio0HZJjAeMEbpo37KGkPgYe4Yw9L/5Z86JnAAWs4jn9etwaO
+         /AoCizLXBbHaI511apTYq/YFE6miXPetCawdl4gRiwRT0ABPLfASVpyQjDNICK1ifpYE
+         iKCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0RXPHjO88Bo5yGksZ2SXAZiFjfdhUtK7FW+8v3RNcMM=;
-        b=lBHUFmXoY/E8JGkwJNQTSUC4MaZ5GaL2xbvc5CaYYKLlhhq69q8eBdY+LYz3k4A5Am
-         dLWVWDtpbskqFYjP/tqCpFHa6FvU1vKok6BT8vH0Bwfg+ge+WXQ8FCgDRS73WyJCE0+Y
-         gi8vL1cbmovPJrqqTwoCgzYE1F018Cr+BNFZ552BhGfDkI8cdQwzqhhTSK7lE7O0szSD
-         Z5/GZ2LwjvDS2+uRDKaaSoULwIM6lqTiCmbGCUU8Q/hckPX5WgLbds4VM8MDuCCUZuQm
-         zo/fiP+8ejsg5ysaMtZftUb2L5VKCAOwQtfMBYEYlRdFjOJeCnkVeiHFmR1kRVs/LNvN
-         ZvqQ==
-X-Gm-Message-State: AOAM530Zeg3ZFxmPmWb02VVepcKA8Dm/SVOYE66S5eijj3Rj7ZZa5cZ3
-        F0OT/TH9U52zS4bD7KLPUAM=
-X-Google-Smtp-Source: ABdhPJz/CHdhwT9lXs9Ic3Fxgin2Xfeb1Db8R4YK5YsrF/7K3n3LK1JivJNCGe++ZEDaLwmEd3WYmA==
-X-Received: by 2002:aca:44c6:: with SMTP id r189mr776313oia.140.1601575700520;
-        Thu, 01 Oct 2020 11:08:20 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s13sm1388970otq.5.2020.10.01.11.08.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 11:08:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: hwmon: Add the +vs supply to the lm75
- bindings
-To:     Alban Bedel <alban.bedel@aerq.com>, linux-hwmon@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-References: <20201001145738.17326-1-alban.bedel@aerq.com>
- <20201001145738.17326-3-alban.bedel@aerq.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <9c164930-ffec-415e-caf7-4eb8c2e57576@roeck-us.net>
-Date:   Thu, 1 Oct 2020 11:08:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yYyLL8/5sTCIqw3c2AOtgstQUUljt/etSnN5D+fO0uY=;
+        b=V7GyhVWgaeQLvt4zpZTnwbkGF6NZAU3l+l6XkmyuXb9mV1+n43FAWPCQjUZRP9lO1k
+         fm7DpvUNw1SmTvE2+DtcsuvGhAS9afTZcf4QU57NDEjgoT/rYEuqOa9lZeVbf1jIJ+2T
+         AGZangIZlG3uEhmIaExDZl9vQ1ARzf+zcHWLxCFHQdL8p5PTwznaQne0gOvVm2RolnDC
+         5ZVoQs3lOia062H9va7Bfb5K7TSRWA3MF2qpOJCRhQNng1ofslxYzGUiopXDO4VFT7ji
+         6s3HIgq84PaSlpMZrTGIq+qqKwdh0PfunMOL7/fr4gZ+NLqTCxXbPcnS6xyxLKZy2Dmu
+         TldA==
+X-Gm-Message-State: AOAM530j/ulpih7eQYbvCqV60M5gY0wGQ/txaaeLd7H39l4wRm0xl8xY
+        QkGE3vqApUxPzWEqEl/inwZYdbqbhmv4vpvLro8fCA==
+X-Google-Smtp-Source: ABdhPJxvHgh4I8y6d8KgrIpb3bycChN66g8zti9jALO364IlRnc6OjCOSgFqu7DNUn0tqHzUl0VobVjNTevVq7c19L4=
+X-Received: by 2002:a05:6638:210f:: with SMTP id n15mr6948049jaj.41.1601575746451;
+ Thu, 01 Oct 2020 11:09:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001145738.17326-3-alban.bedel@aerq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200922004024.3699923-1-vipinsh@google.com> <20200922014836.GA26507@linux.intel.com>
+ <20200922211404.GA4141897@google.com> <20200924192116.GC9649@linux.intel.com> <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+In-Reply-To: <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Thu, 1 Oct 2020 12:08:55 -0600
+Message-ID: <CAMkAt6oX+18cZy_t3hm0zo-sLmTGeGs5H9YAWvj7WBU7_uwU5Q@mail.gmail.com>
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tj@kernel.org,
+        lizefan@huawei.com, Joerg Roedel <joro@8bytes.org>, corbet@lwn.net,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>, eric.vantassell@amd.com,
+        Matt Gingell <gingell@google.com>,
+        David Rientjes <rientjes@google.com>,
+        kvm list <kvm@vger.kernel.org>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Sep 24, 2020 at 1:55 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>
+> On 9/24/20 2:21 PM, Sean Christopherson wrote:
+> > On Tue, Sep 22, 2020 at 02:14:04PM -0700, Vipin Sharma wrote:
+> >> On Mon, Sep 21, 2020 at 06:48:38PM -0700, Sean Christopherson wrote:
+> >>> On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
+> >>>> Hello,
+> >>>>
+> >>>> This patch series adds a new SEV controller for tracking and limiting
+> >>>> the usage of SEV ASIDs on the AMD SVM platform.
+> >>>>
+> >>>> SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
+> >>>> but this resource is in very limited quantity on a host.
+> >>>>
+> >>>> This limited quantity creates issues like SEV ASID starvation and
+> >>>> unoptimized scheduling in the cloud infrastructure.
+> >>>>
+> >>>> SEV controller provides SEV ASID tracking and resource control
+> >>>> mechanisms.
+> >>>
+> >>> This should be genericized to not be SEV specific.  TDX has a similar
+> >>> scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
+> >>> (gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
+> >>> would change anything, I think it'd just be a bunch of renaming.  The hardest
+> >>> part would probably be figuring out a name :-).
+> >>>
+> >>> Another idea would be to go even more generic and implement a KVM cgroup
+> >>> that accounts the number of VMs of a particular type, e.g. legacy, SEV,
+> >>> SEV-ES?, and TDX.  That has potential future problems though as it falls
+> >>> apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
+> >>> account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
+> >>> light of day.
+> >>
+> >> I read about the TDX and its use of the KeyID for encrypting VMs. TDX
+> >> has two kinds of KeyIDs private and shared.
+> >
+> > To clarify, "shared" KeyIDs are simply legacy MKTME KeyIDs.  This is relevant
+> > because those KeyIDs can be used without TDX or KVM in the picture.
+> >
+> >> On AMD platform there are two types of ASIDs for encryption.
+> >> 1. SEV ASID - Normal runtime guest memory encryption.
+> >> 2. SEV-ES ASID - Extends SEV ASID by adding register state encryption with
+> >>               integrity.
+> >>
+> >> Both types of ASIDs have their own maximum value which is provisioned in
+> >> the firmware
+> >
+> > Ugh, I missed that detail in the SEV-ES RFC.  Does SNP add another ASID type,
+> > or does it reuse SEV-ES ASIDs?  If it does add another type, is that trend
+> > expected to continue, i.e. will SEV end up with SEV, SEV-ES, SEV-ES-SNP,
+> > SEV-ES-SNP-X, SEV-ES-SNP-X-Y, etc...?
+>
+> SEV-SNP and SEV-ES share the same ASID range.
 
-On 10/1/20 7:57 AM, Alban Bedel wrote:
-> Some boards might have a regulator that control the +VS supply, add it
-> to the bindings.
-> 
-> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-
-I have nothing in my records, and nothing in patchwork, that suggests
-that Rob gave this patch an Acked-by:. Please point me to the respective
-e-mail.
-
-Patch 1/3 is also missing an Acked-by: or Reviewed-by: from a DT
-maintainer.
-
-Thanks,
-Guenter
-
-> ---
-> v2: Removed the unneeded `maxItems` attribute
-> ---
->  Documentation/devicetree/bindings/hwmon/lm75.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/lm75.yaml b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> index c9a001627945..96eed5cc7841 100644
-> --- a/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/lm75.yaml
-> @@ -43,6 +43,9 @@ properties:
->    reg:
->      maxItems: 1
->  
-> +  vs-supply:
-> +    description: phandle to the regulator that provides the +VS supply
-> +
->  required:
->    - compatible
->    - reg
-> @@ -58,5 +61,6 @@ examples:
->        sensor@48 {
->          compatible = "st,stlm75";
->          reg = <0x48>;
-> +        vs-supply = <&vs>;
->        };
->      };
-> 
-
+Where is this documented? From the SEV-SNP FW ABI Spec 0.8 "The
+firmware checks that ASID is an encryption capable ASID. If not, the
+firmware returns INVALID_ASID." that doesn't seem clear that an SEV-ES
+ASID is required. Should this document be more clear?
