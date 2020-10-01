@@ -2,110 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F083C28053E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1921A280543
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732951AbgJARbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:31:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55638 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732407AbgJARbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:31:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 548E3B224;
-        Thu,  1 Oct 2020 17:31:22 +0000 (UTC)
-Message-ID: <b47232e2173e9e5ddf8f5be4c7b5a2f897f34eb7.camel@suse.de>
-Subject: Re: [PATCH 1/4] of/fdt: Update zone_dma_bits when running in bcm2711
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, will@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org, robh+dt@kernel.org,
-        linux-rpi-kernel@lists.infradead.org, robin.murphy@arm.com,
-        hch@lst.de, linux-arm-kernel@lists.infradead.org
-Date:   Thu, 01 Oct 2020 19:31:19 +0200
-In-Reply-To: <20201001172320.GQ21544@gaia>
-References: <20201001161740.29064-1-nsaenzjulienne@suse.de>
-         <20201001161740.29064-2-nsaenzjulienne@suse.de>
-         <20201001171500.GN21544@gaia> <20201001172320.GQ21544@gaia>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-seD6uijt62oXdXYvdJ0h"
-User-Agent: Evolution 3.36.5 
+        id S1732963AbgJARbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732287AbgJARbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:31:36 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C407BC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:31:35 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id o5so6733161wrn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9y69t8F5YRXIJmWOKtKIVuW0N+iZ5Wjjkop2pJOmrWw=;
+        b=S2VPvy+yfX7lCSe6hY72G+aYpAZ71nHXTRZOCRdmOwXH1Y4rJ0qu6iEq438XvChkkF
+         ZP1bBV+mymfkBLckANuLFCz1fAf3BfuChLnTX+EvoYY6PBuXKc+fN/YEU7dmSfsefK6z
+         ADZoH3mIJyXye3U53R4dfkTthLEIxEEbtOMyMKTBusTmWLuo9PQlO0D83jQ9tKnqsiCZ
+         jVFZlElWPHdM59CSMPox6HBlTkBHQK3M3bONDVDxxVoYDVqpQhnJ4LxoaLdYgdb9md0N
+         vLW7e0UcqlKmfoMUWOIjJgpqetZcjIKrlUpRuhu4doLx9xLQv8DePZYqt6Hnv4bOvQjp
+         W1sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9y69t8F5YRXIJmWOKtKIVuW0N+iZ5Wjjkop2pJOmrWw=;
+        b=KkxiDnlpBSAn1Zv2G5Ip7owAg7/bGFl8OsPrE37XJNoJIKoCuD6FlEbj02ycXntnNN
+         yREaHIqM7EOWyzPMEgMx6Tj0TCP9pVk+D9VXKX5Pq3E6RJj+m/5B2J1fiqB7NpxO6m6f
+         Uogw5dMa7CwtMaRAKjbzDFp9Xnt83NZ1GpPQONrD8SeEHvmu4rPLyPQz7o5iWb4kR4qc
+         7RW1QXFOR0eTr1XboR3MvOfjZsIaKWdezLmq86P7llLXIfMqKI2o2h8Jvi7TrorUThFi
+         WdJhMltbvT7AVGUtlCblysL9Y/UTY9dlJ+HufzIjJie5rhe/IlwzwWCSXr8e9/e2mspx
+         Z5xQ==
+X-Gm-Message-State: AOAM530yBYlD8LV8gmnh69fd2iVLHhj/AGi590YxcSuODeOvKqkgUMbL
+        +DMIh81SJakg7cn3UHCq8CHV1Q==
+X-Google-Smtp-Source: ABdhPJzkxPq4EcGJtwVIc6ITsszbvZgR21dP/f/x0nsDSirU1V+SInvO6OVxupSKTyKdt9Ygm/qIBw==
+X-Received: by 2002:adf:de11:: with SMTP id b17mr10148567wrm.82.1601573494286;
+        Thu, 01 Oct 2020 10:31:34 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id j14sm10670513wrr.66.2020.10.01.10.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:31:33 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:31:27 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 07/39] kasan: only build init.c for software modes
+Message-ID: <20201001173127.GE4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <3ecf44f226dac37eb35409dc78568a99343fbf9e.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ecf44f226dac37eb35409dc78568a99343fbf9e.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+> 
+> The new mode won't be using shadow memory, so only build init.c that
+> contains shadow initialization code for software modes.
+> 
+> No functional changes for software modes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
---=-seD6uijt62oXdXYvdJ0h
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Marco Elver <elver@google.com>
 
-On Thu, 2020-10-01 at 18:23 +0100, Catalin Marinas wrote:
-> On Thu, Oct 01, 2020 at 06:15:01PM +0100, Catalin Marinas wrote:
-> > Hi Nicolas,
-> >=20
-> > Thanks for putting this together.
-> >=20
-> > On Thu, Oct 01, 2020 at 06:17:37PM +0200, Nicolas Saenz Julienne wrote:
-> > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> > > index 4602e467ca8b..cd0d115ef329 100644
-> > > --- a/drivers/of/fdt.c
-> > > +++ b/drivers/of/fdt.c
-> > > @@ -25,6 +25,7 @@
-> > >  #include <linux/serial_core.h>
-> > >  #include <linux/sysfs.h>
-> > >  #include <linux/random.h>
-> > > +#include <linux/dma-direct.h>	/* for zone_dma_bits */
-> > > =20
-> > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
-> > >  #include <asm/page.h>
-> > > @@ -1198,6 +1199,14 @@ void __init early_init_dt_scan_nodes(void)
-> > >  	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-> > >  }
-> > > =20
-> > > +void __init early_init_dt_update_zone_dma_bits(void)
-> > > +{
-> > > +	unsigned long dt_root =3D of_get_flat_dt_root();
-> > > +
-> > > +	if (of_flat_dt_is_compatible(dt_root, "brcm,bcm2711"))
-> > > +		zone_dma_bits =3D 30;
-> > > +}
-> >=20
-> > I think we could keep this entirely in the arm64 setup_machine_fdt() an=
-d
-> > not pollute the core code with RPi4-specific code.
->=20
-> Actually, even better, could we not move the check to
-> arm64_memblock_init() when we initialise zone_dma_bits?
-
-I did it this way as I vaguely remembered Rob saying he wanted to centralis=
-e
-all early boot fdt code in one place. But I'll be happy to move it there.
-
-Regards,
-Nicolas
-
-
---=-seD6uijt62oXdXYvdJ0h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl92EmcACgkQlfZmHno8
-x/650wf7BuG9OAXrpcJx+slOiIpUn27A9VP5PUiZhylbJPYElYlFJCs1q9tLFNHw
-2xXUtjY3QDdSH9GtDY1utSkQ2VeyqLRsDeVMkiwV721Gtn3y9veD2tNiJb4WXtet
-C9us1mhEFgpu691D6JilmlxSxjfCOHZYGmZXGpTOPOSu12/YQlHCYc33cRKkDbfn
-G5H0tNc4gXkWwJh5OSZixd08Ek7+d4HzG8hpZB5ifDWYLY7ZTDWC27mF1xYWGwAE
-d7WUXSQ11UaAQBl5maIqrL3X19tg/GsdidU3yrsjIBtBEFaulKmVtggI33JTfgoo
-v517kqitPiAV14ZYWJoifJK6ZppdiQ==
-=E6vz
------END PGP SIGNATURE-----
-
---=-seD6uijt62oXdXYvdJ0h--
-
+> ---
+> Change-Id: I8d68c47345afc1dbedadde738f34a874dcae5080
+> ---
+>  mm/kasan/Makefile | 6 +++---
+>  mm/kasan/init.c   | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+> index 370d970e5ab5..7cf685bb51bd 100644
+> --- a/mm/kasan/Makefile
+> +++ b/mm/kasan/Makefile
+> @@ -29,6 +29,6 @@ CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+>  
+> -obj-$(CONFIG_KASAN) := common.o init.o report.o
+> -obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+> -obj-$(CONFIG_KASAN_SW_TAGS) += tags.o tags_report.o
+> +obj-$(CONFIG_KASAN) := common.o report.o
+> +obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o generic_report.o quarantine.o
+> +obj-$(CONFIG_KASAN_SW_TAGS) += init.o tags.o tags_report.o
+> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+> index dfddd6c39fe6..1a71eaa8c5f9 100644
+> --- a/mm/kasan/init.c
+> +++ b/mm/kasan/init.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * This file contains some kasan initialization code.
+> + * This file contains KASAN shadow initialization code.
+>   *
+>   * Copyright (c) 2015 Samsung Electronics Co., Ltd.
+>   * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
