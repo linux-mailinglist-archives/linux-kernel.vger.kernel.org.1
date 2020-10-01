@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27C927F9EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A797927F9F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731311AbgJAHI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:08:26 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:42456 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAHI0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:08:26 -0400
-Received: from marcel-macbook.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8D48ECECD2;
-        Thu,  1 Oct 2020 09:15:24 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [Linux-kernel-mentees][PATCH] bluetooth: hci_h5: close serdev
- device and free hu in h5_close
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200929185815.12879-1-anant.thazhemadam@gmail.com>
-Date:   Thu, 1 Oct 2020 09:08:24 +0200
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <9D145813-A4B8-46AB-A55F-54C4AF82FD19@holtmann.org>
-References: <20200929185815.12879-1-anant.thazhemadam@gmail.com>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1731020AbgJAHJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:09:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgJAHJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:09:24 -0400
+Received: from localhost.localdomain (unknown [122.167.37.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D85F21481;
+        Thu,  1 Oct 2020 07:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601536164;
+        bh=RrOO/dbEnbrwC702tlxo6/rizE5c9N9saYv9zBvOWMs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IBjNcf7YOD7SmkwdBQudIQxU8fB8F2GLQO+bZv2O0AByBC2ZNgWzx8PuzxM0YLiml
+         Detw1tjJd1vclcoOyUbkz9MFkV+qb3UCb7M0lvmY57AniFlMNXswmJBpeK0kQojkqO
+         U2CD3tT7SeXMXJqaQSkN8WDhXGL2fcbdsUCmUFSo=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] phy: qcom-qmp: initialize the pointer to NULL
+Date:   Thu,  1 Oct 2020 12:39:11 +0530
+Message-Id: <20201001070911.140019-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anant,
+Smatch complains:
+drivers/phy/qualcomm/phy-qcom-qmp.c:3899 qcom_qmp_phy_probe() error: uninitialized symbol 'dp_cfg'.
+drivers/phy/qualcomm/phy-qcom-qmp.c:3900 qcom_qmp_phy_probe() error: uninitialized symbol 'dp_serdes'.
+drivers/phy/qualcomm/phy-qcom-qmp.c:3902 qcom_qmp_phy_probe() error: uninitialized symbol 'usb_cfg'.
 
-> When h5_close() gets called, the memory allocated for the hu gets 
-> freed only if hu->serdev doesn't exist. This leads to a memory leak.
-> So when h5_close() is requested, close the serdev device instance and
-> free the memory allocated to the hu entirely instead.
-> 
-> Fixes: https://syzkaller.appspot.com/bug?extid=6ce141c55b2f7aafd1c4
-> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
-> drivers/bluetooth/hci_h5.c | 8 ++++++--
-> 1 file changed, 6 insertions(+), 2 deletions(-)
+This is a warning but not a practical one as dp_cfg, dp_serdes and
+usb_cfg will be set and used when valid. So we can set the pointers to
+NULL to quiesce the warnings.
 
-patch has been applied to bluetooth-next tree.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 52e013d0bffa ("phy: qcom-qmp: Add support for DP in USB3+DP combo phy")
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Regards
-
-Marcel
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index 6171b44da050..5d33ad4d06f2 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -3928,9 +3928,9 @@ static int qcom_qmp_phy_probe(struct platform_device *pdev)
+ 	void __iomem *usb_serdes;
+ 	void __iomem *dp_serdes;
+ 	const struct qmp_phy_combo_cfg *combo_cfg = NULL;
+-	const struct qmp_phy_cfg *cfg;
+-	const struct qmp_phy_cfg *usb_cfg;
+-	const struct qmp_phy_cfg *dp_cfg;
++	const struct qmp_phy_cfg *cfg = NULL;
++	const struct qmp_phy_cfg *usb_cfg = NULL;
++	const struct qmp_phy_cfg *dp_cfg = NULL;
+ 	int num, id, expected_phys;
+ 	int ret;
+ 
+-- 
+2.26.2
 
