@@ -2,191 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3F927F6E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE9927F6E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732291AbgJAAyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:54:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38411 "EHLO
+        id S1732317AbgJAA62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:58:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31412 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730155AbgJAAyC (ORCPT
+        by vger.kernel.org with ESMTP id S1731813AbgJAA62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:54:02 -0400
+        Wed, 30 Sep 2020 20:58:28 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601513640;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XFZ4y9PW18tIpaRq1GakM+ear76FmQioomwiibA1G8E=;
-        b=OmgHNSnu6sF8YEdy33NVijBNV6/GZdTppJAdWWffECLjQWzENFibKtzpjvassRg9FjqtvG
-        1ztomfpYy10tXDqM7/pt8sW34WpoFGwg+WaUDA5NEsQB8ID9IlY2xTKkZgtt+cSA+Xxio9
-        CIUS3ibbx3Mwfth1wpUwqmqqKm7e4fg=
+        s=mimecast20190719; t=1601513907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6/nUF3ElHb92nC9jUNM3d81i3q6Balac69D72MKGCa4=;
+        b=esrxau4dxL8ND7zeLlePLKXO4njP2VAexexrzju/+D1CZraLby2vBsZEpIEUYumVW5WKqo
+        0SA/SzjnCHTy5NiZlFuP7yfxw8Z6bPvIjzH7QQP5+vTCHSiJImvCtE7J8t18pcn6pGK6VO
+        RIsVSgtltW1LhfBxOxPQ9sAL+voVij4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-nsUy6JLWNIqFVcYcAYcAtw-1; Wed, 30 Sep 2020 20:53:56 -0400
-X-MC-Unique: nsUy6JLWNIqFVcYcAYcAtw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-342-SwV6iesROOWnE9tmOJEqAw-1; Wed, 30 Sep 2020 20:58:22 -0400
+X-MC-Unique: SwV6iesROOWnE9tmOJEqAw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06EAE1891E8A;
-        Thu,  1 Oct 2020 00:53:55 +0000 (UTC)
-Received: from [10.64.54.133] (vpn2-54-133.bne.redhat.com [10.64.54.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A0765578A;
-        Thu,  1 Oct 2020 00:53:52 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH V4 3/3] arm64/mm/hotplug: Ensure early memory sections are
- all online
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-References: <1601387687-6077-1-git-send-email-anshuman.khandual@arm.com>
- <1601387687-6077-4-git-send-email-anshuman.khandual@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <471fed64-0f61-9c16-3943-2bb8f77ee810@redhat.com>
-Date:   Thu, 1 Oct 2020 10:53:50 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7797186DD22;
+        Thu,  1 Oct 2020 00:58:21 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-115-71.rdu2.redhat.com [10.10.115.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D09973678;
+        Thu,  1 Oct 2020 00:58:21 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pipe: Fix memory leaks in create_pipe_files()
+Date:   Wed, 30 Sep 2020 20:58:04 -0400
+Message-Id: <20201001005804.25641-1-cai@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1601387687-6077-4-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Calling pipe2() with O_NOTIFICATION_PIPE could results in memory leaks
+in an error path or CONFIG_WATCH_QUEUE=n. Plug them.
 
-On 9/29/20 11:54 PM, Anshuman Khandual wrote:
-> This adds a validation function that scans the entire boot memory and makes
-> sure that all early memory sections are online. This check is essential for
-> the memory notifier to work properly, as it cannot prevent any boot memory
-> from offlining, if all sections are not online to begin with. The notifier
-> registration is skipped, if this validation does not go through. Although
-> the boot section scanning is selectively enabled with DEBUG_VM.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Steve Capper <steve.capper@arm.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   arch/arm64/mm/mmu.c | 59 +++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 59 insertions(+)
+unreferenced object 0xc00000141114a0d8 (size 992):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    80 11 00 00 e8 03 00 00 00 00 00 00 00 00 00 00  ................
+    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+  backtrace:
+    [<00000000abff13d7>] kmem_cache_alloc+0x1b4/0x470
+    [<000000009502e5d5>] alloc_inode+0xd0/0x130
+    [<00000000ca1c1a21>] new_inode_pseudo+0x1c/0x80
+new_inode_pseudo at fs/inode.c:932
+    [<000000000c01d1d6>] create_pipe_files+0x48/0x2d0
+get_pipe_inode at fs/pipe.c:874
+(inlined by) create_pipe_files at fs/pipe.c:914
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+__do_pipe_flags at fs/pipe.c:965
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+do_pipe2 at fs/pipe.c:1013
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+__se_sys_pipe2 at fs/pipe.c:1028
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
+unreferenced object 0xc000001f575ce600 (size 512):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 ad 4e ad de  .............N..
+    ff ff ff ff 00 00 00 00 ff ff ff ff ff ff ff ff  ................
+  backtrace:
+    [<00000000d74d5e3a>] kmem_cache_alloc_trace+0x1c4/0x2d0
+    [<0000000061cbc9cb>] alloc_pipe_info+0x88/0x2c0
+kmalloc at include/linux/slab.h:554
+(inlined by) kzalloc at include/linux/slab.h:666
+(inlined by) alloc_pipe_info at fs/pipe.c:793
+    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
+get_pipe_inode at fs/pipe.c:883
+(inlined by) create_pipe_files at fs/pipe.c:914
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
+unreferenced object 0xc000000d94f20400 (size 1024):
+  comm "trinity-c61", pid 1353192, jiffies 4296255779 (age 25989.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000e60ee00f>] __kmalloc+0x1e4/0x330
+    [<00000000130e8cc8>] alloc_pipe_info+0x154/0x2c0
+kmalloc_array at include/linux/slab.h:594
+(inlined by) kcalloc at include/linux/slab.h:605
+(inlined by) alloc_pipe_info at fs/pipe.c:810
+    [<00000000efd6129c>] create_pipe_files+0x6c/0x2d0
+    [<00000000d13ff4c4>] __do_pipe_flags+0x50/0x120
+    [<0000000003941e42>] do_pipe2+0x3c/0x100
+    [<00000000a006b818>] sys_pipe2+0x1c/0x30
+    [<00000000a6925b55>] system_call_exception+0xf8/0x1d0
+    [<000000001c6b0740>] system_call_common+0xe8/0x218
 
-I don't understand why this is necessary. The core already ensure the
-corresponding section is online when trying to offline it. It's guranteed
-that section is online when the notifier is triggered. I'm not sure if
-there is anything I missed?
-  
+Fixes: c73be61cede5 ("pipe: Add general notification queue support")
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ fs/pipe.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 90a30f5ebfc0..b67a657ea1ad 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1522,6 +1522,62 @@ static struct notifier_block prevent_bootmem_remove_nb = {
->   	.notifier_call = prevent_bootmem_remove_notifier,
->   };
->   
-> +/*
-> + * This ensures that boot memory sections on the plaltform are online
-                                                     ^^^^^^^^^
-> + * during early boot. They could not be prevented from being offlined
-> + * if for some reason they are not brought online to begin with. This
-> + * help validate the basic assumption on which the above memory event
-> + * notifier works to prevent boot memory offlining and it's possible
-> + * removal.
-> + */
-> +static bool validate_bootmem_online(void)
-> +{
-> +	struct memblock_region *mblk;
-> +	struct mem_section *ms;
-> +	unsigned long pfn, end_pfn, start, end;
-> +	bool all_online = true;
-> +
-> +	/*
-> +	 * Scanning across all memblock might be expensive
-> +	 * on some big memory systems. Hence enable this
-> +	 * validation only with DEBUG_VM.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_DEBUG_VM))
-> +		return all_online;
-> +
-> +	for_each_memblock(memory, mblk) {
-> +		pfn = PHYS_PFN(mblk->base);
-> +		end_pfn = PHYS_PFN(mblk->base + mblk->size);
-> +
-
-It's not a good idea to access @mblk->{base, size}. There are two
-accessors: memblock_region_memory_{base, end}_pfn().
-
-> +		for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
-> +			ms = __pfn_to_section(pfn);
-> +
-> +			/*
-> +			 * All memory ranges in the system at this point
-> +			 * should have been marked early sections.
-> +			 */
-> +			WARN_ON(!early_section(ms));
-> +
-> +			/*
-> +			 * Memory notifier mechanism here to prevent boot
-> +			 * memory offlining depends on the fact that each
-> +			 * early section memory on the system is intially
-> +			 * online. Otherwise a given memory section which
-> +			 * is already offline will be overlooked and can
-> +			 * be removed completely. Call out such sections.
-> +			 */
-
-s/intially/initially
-
-> +			if (!online_section(ms)) {
-> +				start = PFN_PHYS(pfn);
-> +				end = start + (1UL << PA_SECTION_SHIFT);
-> +				pr_err("Memory range [%lx %lx] is offline\n", start, end);
-> +				pr_err("Memory range [%lx %lx] can be removed\n", start, end);
-> +				all_online = false;
-
-These two error messages can be combined:
-
-     pr_err("Memory range [%lx %lx] not online, can't be offlined\n",
-            start, end);
-
-I think you need to return @all_online immediately, without
-checking if the subsequent sections are online or not? :)
-
-> +			}
-> +		}
-> +	}
-> +	return all_online;
-> +}
-> +
->   static int __init prevent_bootmem_remove_init(void)
->   {
->   	int ret = 0;
-> @@ -1529,6 +1585,9 @@ static int __init prevent_bootmem_remove_init(void)
->   	if (!IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
->   		return ret;
->   
-> +	if (!validate_bootmem_online())
-> +		return -EINVAL;
-> +
->   	ret = register_memory_notifier(&prevent_bootmem_remove_nb);
->   	if (ret)
->   		pr_err("%s: Notifier registration failed %d\n", __func__, ret);
-> 
-
-Cheers,
-Gavin
+diff --git a/fs/pipe.c b/fs/pipe.c
+index 60dbee457143..5184972cd9c0 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -920,10 +920,13 @@ int create_pipe_files(struct file **res, int flags)
+ 	if (flags & O_NOTIFICATION_PIPE) {
+ #ifdef CONFIG_WATCH_QUEUE
+ 		if (watch_queue_init(inode->i_pipe) < 0) {
++			free_pipe_info(inode->i_pipe);
+ 			iput(inode);
+ 			return -ENOMEM;
+ 		}
+ #else
++		free_pipe_info(inode->i_pipe);
++		iput(inode);
+ 		return -ENOPKG;
+ #endif
+ 	}
+-- 
+2.28.0
 
