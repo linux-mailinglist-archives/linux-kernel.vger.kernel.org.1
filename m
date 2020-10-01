@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BABA27FB2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4256627FB5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731623AbgJAIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgJAIPI (ORCPT
+        id S1731045AbgJAIRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:17:46 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34208 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAIRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:15:08 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBD5C0613D0;
-        Thu,  1 Oct 2020 01:15:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id b19so3846763lji.11;
-        Thu, 01 Oct 2020 01:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aUUVeqRwkBYrQVEK/UzZRxRNNQt/Zxuufn7DOR6D2tw=;
-        b=r80diBXJwyeo0EkkDukjWFUW6oDkzGj3hQk88hB5dKgc1vckC2eoYJ06DHuGPp6CbJ
-         LEr5NIY5d9jOlwMkTPdTIz1mDS2K2fHa/INEJpwyzBjg+Ps44cKLHB/bt5rJd74Dumc7
-         lDTpEAmYo0n7Fai56DU/URyBj5vTHKz9C9Vv+Qf/L/9An+bVaylj5OVfx74J8M3BZRe8
-         qu9XaCEvPFr3MH0iwZej65tdmExqH+Nk2ijEImUlbL++ZMj/2aYrk1QN0WZF+lFlORlH
-         X/3/rw+bsRikyJVgnGuj/0g4hbpkf7rxt5+rlzdcydonvubgV9n7ReQKEirYnvCIhAhO
-         Rhlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=aUUVeqRwkBYrQVEK/UzZRxRNNQt/Zxuufn7DOR6D2tw=;
-        b=JYSA/44rIAHjTj1PofP0ERnyv3SdOjdruYR2q93dIawqu+K7xDqP8gcndc6B1GzvsW
-         aNwDuQEOCE9XkBzwtaSMOGICsLWnBjDXrbW0sO4Yi8dAqM6zFtz+N5FDzDrt/62B/wT/
-         NOKWiPxwsaBwmG1oet2+zdJlR6/Icb3fYqC6NxmV2zx1TECpPBesKtYKSsfRYXZV8mRn
-         qppcAhrz7uWnseFtRyZy8byZvP1RMtKTYfwy77DQERlzbajBRuejd6GzpdA7g29lz+UR
-         leBJF4tQfyGsiX44S50xT91Jwg5hxjP9z4TOqE9xX8ukthhC5sbWjTlq2v8wjJIEoZwM
-         5wBw==
-X-Gm-Message-State: AOAM530a0GM7AcprwDujYUxVx/XfnTPx7uuDfzHXWL5CZrjIK1cLk/Ip
-        xHccbo7uTot0poX49vlJBde/1BK44sdRNg==
-X-Google-Smtp-Source: ABdhPJwJ3p25brycCQk0ug1xWVQXq4mMwgUt1thwnF1wAjjBckD3tyMvnHgJlqZSngFMrtfBm+kXgQ==
-X-Received: by 2002:a05:651c:505:: with SMTP id o5mr2071308ljp.177.1601540104970;
-        Thu, 01 Oct 2020 01:15:04 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:429a:7583:e8d3:5f22:8a90:2c65? ([2a00:1fa0:429a:7583:e8d3:5f22:8a90:2c65])
-        by smtp.gmail.com with ESMTPSA id 192sm467509lfb.154.2020.10.01.01.15.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 01:15:04 -0700 (PDT)
-Subject: Re: [PATCH v3 4/5] arm64: dts: qcom: sc7180: Use pdc interrupts for
- USB instead of GIC interrupts
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>
-References: <1601376452-31839-1-git-send-email-sanm@codeaurora.org>
- <1601376452-31839-5-git-send-email-sanm@codeaurora.org>
- <07de71c5-71d0-fbf1-8aa7-c039aeb9dffd@gmail.com>
- <160151435796.310579.15010135021160402839@swboyd.mtv.corp.google.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <e04f3a59-6b65-6bfd-3589-11c985912dbb@gmail.com>
-Date:   Thu, 1 Oct 2020 11:14:51 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 1 Oct 2020 04:17:46 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601540264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aaFFFYU2nU1c1LpxzaEuCrlEv0dNxBBazmDNCKzjWhQ=;
+        b=jA8VuHqG7dR12X3FlJNmeMd47nnRDcgsJ5n5bOmbpMql9hCd3e0CnHU9VtShqOb5V0lK/Y
+        SkASnX+as95eOAJO+Hfqoidik1erwa5SlXEKo8Iuy+dSZ4ieggN1+8GYNGJrtbHTu8C8eo
+        6xqamF6nz4wd7VRNaJJSbHCIrwnmIjH/fGDlxS9kD/kJ8SPrltiWc7DZkBqV/ZuEfvhnKw
+        qlvQ5Nv751/xHGIjh+F/87xaHVVsKOPhGRyCVOkTHA+mLjzOW98FTFdhCXoQ7h0E3eon4u
+        N9HM6brDT3RvB7kFiTyXWAd5I8GfTJT2gf6WGPEBpy1CaI4Aq84Ya6zmcqQ9dw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601540264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aaFFFYU2nU1c1LpxzaEuCrlEv0dNxBBazmDNCKzjWhQ=;
+        b=INF3/uYoiagoxP4R7kr72ColYm0dw1/wNd0cPL1pK1bhqdx4jL1EJPV58QoQLrKwe4tX0E
+        zY3ka4FhKY34RODQ==
+To:     "Singh\, Balbir" <sblbir@amazon.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86\@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux\@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "kernel-janitors\@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-safety\@lists.elisa.tech" <linux-safety@lists.elisa.tech>
+Subject: Re: [PATCH -next for tip:x86/pti] x86/tlb: drop unneeded local vars in enable_l1d_flush_for_task()
+In-Reply-To: <044e9835-f4fe-6670-90df-15fe376ecadd@amazon.com>
+References: <20200928124457.27289-1-lukas.bulwahn@gmail.com> <20200929071211.GJ2628@hirez.programming.kicks-ass.net> <20200929083709.GC2651@hirez.programming.kicks-ass.net> <87eemji887.fsf@nanos.tec.linutronix.de> <20200930170316.GB2628@hirez.programming.kicks-ass.net> <87blhni1pg.fsf@nanos.tec.linutronix.de> <20200930183552.GG2628@hirez.programming.kicks-ass.net> <87k0wbgd2s.fsf@nanos.tec.linutronix.de> <19f57cbe-ba33-17d5-440c-2765e670782f@amazon.com> <044e9835-f4fe-6670-90df-15fe376ecadd@amazon.com>
+Date:   Thu, 01 Oct 2020 10:17:43 +0200
+Message-ID: <877dsagy1k.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <160151435796.310579.15010135021160402839@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.10.2020 4:05, Stephen Boyd wrote:
+On Thu, Oct 01 2020 at 10:48, Balbir Singh wrote:
+> On 1/10/20 9:49 am, Singh, Balbir wrote:
+>>  
+>> +static void l1d_flush_kill(struct callback_head *ch)
+>> +{
+>> +	clear_ti_thread_flag(&current->thread_info, TIF_SPEC_L1D_FLUSH);
+>> +	force_signal(SIGBUS);
+>> +}
+>> +
+>>  void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+>>  	       struct task_struct *tsk)
+>>  {
+>> @@ -443,12 +438,14 @@ static void cond_mitigation(struct task_struct *next)
+>>  	}
+>>  
+>>  	/*
+>> -	 * Flush only if SMT is disabled as per the contract, which is checked
+>> -	 * when the feature is enabled.
+>> +	 * Flush only if SMT is disabled, if flushing is enabled
+>> +	 * and we are on an SMT enabled core, kill the task
+>>  	 */
+>> -	if (sched_smt_active() && !this_cpu_read(cpu_info.smt_active) &&
+>> -		(prev_mm & LAST_USER_MM_L1D_FLUSH))
+>> -		l1d_flush_hw();
+>> +	if (unlikely(prev_mm & LAST_USER_MM_L1D_FLUSH)) {
+>> +		if (!this_cpu_read(cpu_info.smt_active))
+>> +			l1d_flush_hw();
+>> +		else
+>> +			task_work_add(prev, l1d_flush_kill, true);
+>
+> We have no access the to the previous task and mm->owner depends on MEMCG :)
+> We can do the magic in mm_mangle_tif_spec_bits(), I suppose
 
-[...]
->>> Using pdc interrupts for USB instead of GIC interrupts to
->>> support wake up in case xo shutdown.
->>
->>      s/xo/of/?
-> 
-> No it is xo. If anything it could be capitalized because it's the
-> pin name and usually stands for "crystal oscillator".
+No, because we don't have access to prev task there either. Interesting
+problem to solve.
 
-    In this case, "of" is still needed. :-)
+Thanks,
 
->>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->>> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+        tglx
 
-MBR, Sergei
+
