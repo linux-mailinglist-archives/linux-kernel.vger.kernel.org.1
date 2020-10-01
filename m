@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AFF2809A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB5E2809A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733199AbgJAVuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42288 "EHLO mail.kernel.org"
+        id S1733187AbgJAVuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:50:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:20207 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733191AbgJAVun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:50:43 -0400
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02B1C21D92
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 21:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601589042;
-        bh=76o5IWY0IjEXulXQPFJbRhNDDvLFQbEd3W7KfG4VVzQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F/AbhBklTEaoJTrxlE28WYn134NeK+ItLT5KGSjSOWgumyyPk90OtPCXVNwOxDOPF
-         IGwJhLToUWHhbPKercPHmh+7VdP/vhFxOP5dN2HxhmjNZhR3pJuHtliCkGZ4jNPjqk
-         uiXt0Izcohrli6QHsKe8LEE9m5T+IP5R+3sIf+jE=
-Received: by mail-wr1-f43.google.com with SMTP id z1so366522wrt.3
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:50:41 -0700 (PDT)
-X-Gm-Message-State: AOAM531qGGR87BV8cZ9E4DOmbcYCa7AJLFMgB8Ay1tZWO1aVjrV89a/R
-        ER9TRddxP48/tQFY10TRCZNkSp/KZKbzc00STMqTpg==
-X-Google-Smtp-Source: ABdhPJwz02u+tA81G85f6eUcbq3fJ/XxlDI2vCgAc1BLqJbu1PPjTrJSIZlFAS9dQr64CgMfW5bdcqm4f4MZL0XuKYc=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr11023133wrb.70.1601589040533;
- Thu, 01 Oct 2020 14:50:40 -0700 (PDT)
+        id S1727017AbgJAVuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:50:40 -0400
+IronPort-SDR: 0N7yM66fRGXCEDQW6R1L2ii8qTIRPLX5wgmzTyL4uXDM8k02uvosR01X9bd9fgEot47S2g7iNR
+ ls/JdVa1vdiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="180994235"
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="180994235"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 14:50:39 -0700
+IronPort-SDR: XUrwvxFOeLSMRXlDoaClCE5+M8+66alqfK4DH+gAj9iHdvIHGkHRVG0W/0YE16qMC8d8GpDi8Z
+ Kp9qT0ElOZvw==
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="505733140"
+Received: from kignaci-mobl1.amr.corp.intel.com (HELO [10.251.133.95]) ([10.251.133.95])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 14:50:38 -0700
+Subject: Re: How should we handle illegal task FPU state?
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
+ <71682bce-a925-d3bd-18ef-d2e4eb8ebc8e@intel.com>
+ <20201001205857.GH7474@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f1835c1f-31bc-16a9-ffa5-896b1aeb895a@intel.com>
+Date:   Thu, 1 Oct 2020 14:50:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201001205819.27879-1-krisman@collabora.com> <20201001205819.27879-7-krisman@collabora.com>
-In-Reply-To: <20201001205819.27879-7-krisman@collabora.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 1 Oct 2020 14:50:29 -0700
-X-Gmail-Original-Message-ID: <CALCETrW4FivPZg5W8MrrJznsX4O-WNhHCHm-PkskGD0LvxxTvQ@mail.gmail.com>
-Message-ID: <CALCETrW4FivPZg5W8MrrJznsX4O-WNhHCHm-PkskGD0LvxxTvQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] x86: elf: Use e_machine to select
- setup_additional_pages for x32
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@lst.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Robert Richter <rric@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201001205857.GH7474@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:59 PM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
-> Since TIF_X32 is going away, avoid using it to find the ELF type when
-> choosing which additional pages to set up.
->
-> According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
-> have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
-> differentiate a x32 object from a IA32 object when executing
-> start_thread in compat mode.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> ---
->  arch/x86/entry/vdso/vma.c  | 21 ++++++++++++---------
->  arch/x86/include/asm/elf.h | 11 ++++++++---
->  2 files changed, 20 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-> index 9185cb1d13b9..7a3cda8294a3 100644
-> --- a/arch/x86/entry/vdso/vma.c
-> +++ b/arch/x86/entry/vdso/vma.c
-> @@ -412,22 +412,25 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
->  }
->
->  #ifdef CONFIG_COMPAT
-> -int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
-> -                                      int uses_interp)
-> +int compat_arch_setup_additional_pages_ia32(struct linux_binprm *bprm,
-> +                                           int uses_interp)
->  {
-> -#ifdef CONFIG_X86_X32_ABI
-> -       if (test_thread_flag(TIF_X32)) {
-> -               if (!vdso64_enabled)
-> -                       return 0;
-> -               return map_vdso_randomized(&vdso_image_x32);
-> -       }
-> -#endif
->  #ifdef CONFIG_IA32_EMULATION
->         return load_vdso32();
->  #else
->         return 0;
->  #endif
->  }
-> +
-> +int compat_arch_setup_additional_pages_x32(struct linux_binprm *bprm,
-> +                                          int uses_interp)
-> +{
-> +#ifdef CONFIG_X86_X32_ABI
-> +       if (vdso64_enabled)
-> +               return map_vdso_randomized(&vdso_image_x32);
-> +#endif
-> +       return 0;
-> +}
->  #endif
->  #else
->  int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-> diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-> index 33c1c9be2e07..4d91f5b1079f 100644
-> --- a/arch/x86/include/asm/elf.h
-> +++ b/arch/x86/include/asm/elf.h
-> @@ -388,9 +388,14 @@ struct linux_binprm;
->  #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
->  extern int arch_setup_additional_pages(struct linux_binprm *bprm,
->                                        int uses_interp);
-> -extern int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
-> -                                             int uses_interp);
-> -#define compat_arch_setup_additional_pages compat_arch_setup_additional_pages
-> +extern int compat_arch_setup_additional_pages_ia32(struct linux_binprm *bprm,
-> +                                                  int uses_interp);
-> +extern int compat_arch_setup_additional_pages_x32(struct linux_binprm *bprm,
-> +                                                 int uses_interp);
-> +
-> +#define compat_arch_setup_additional_pages                             \
-> +       ((elf_ex->e_machine == EM_X86_64) ?                             \
-> +        compat_arch_setup_additional_pages_x32 : compat_arch_setup_additional_pages_ia32)
->
+On 10/1/20 1:58 PM, Sean Christopherson wrote:
+> One thought for a lowish effort approach to pave the way for CET would be to
+> try XRSTORS multiple times in switch_fpu_return().  If the first try fails,
+> then WARN, init non-supervisor state and try a second time, and if _that_ fails
+> then kill the task.  I.e. do the minimum effort to play nice with bad FPU
+> state, but don't let anything "accidentally" turn off CET.
 
-As in the previous patch, can you wire up the new argument for real, please?
+I'm not sure we should ever keep running userspace after an XRSTOR*
+failure.  For MPX, this might have provided a nice, additional vector
+for an attacker to turn off MPX.  Same for pkeys if we didn't correctly
+differentiate between the hardware init state versus the "software init"
+state that we keep in init_task.
+
+What's the advantage of letting userspace keep running after we init its
+state?  That it _might_ be able to recover?
