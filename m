@@ -2,312 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E40327FDD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAD427FDE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732344AbgJAKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:54:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34202 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732116AbgJAKx7 (ORCPT
+        id S1732059AbgJAK5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731913AbgJAK5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:53:59 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091ArtKF098069;
-        Thu, 1 Oct 2020 05:53:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601549635;
-        bh=7U60rcJagVgqZGhl4iVXfst6M+VbVwiRMgDoQ76EAl4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=yhLkgG74hSWxbvICnReI1C1YbqkkdtKM+l/MZ1G2UB8s32tUpzCgbS1+4hR8mzdGj
-         PqL4PEti+GywJo7ER8GJoaTHMyc/z3JQP5Xcy4hTZSsMDlF9focm4JhHdY82n9XEqG
-         r4JFteupYD4eAzWeaTZ2293SLiIRj/unAmNRiPKE=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091Art1P130587
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Oct 2020 05:53:55 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 05:53:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 05:53:55 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091Arri0074487;
-        Thu, 1 Oct 2020 05:53:54 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next 8/8] net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
-Date:   Thu, 1 Oct 2020 13:52:58 +0300
-Message-ID: <20201001105258.2139-9-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201001105258.2139-1-grygorii.strashko@ti.com>
-References: <20201001105258.2139-1-grygorii.strashko@ti.com>
+        Thu, 1 Oct 2020 06:57:36 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2DAC0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 03:57:36 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so2561318wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 03:57:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uIC7dj7oltWe68l04x0L6fWnaqmGQcvXiQBbnnS12XU=;
+        b=N8ey+YcuMPXshManX3zPwywfOqeeNx1A+UcGWlWQ42qMYLsZxU5gVninqb376OrTab
+         tNm3q9DB534M24+asCWHSsEssHzbplzSFsBkc/pCgsZEtnQ3elRGtE/Q5IObT50DijC3
+         UmLLTpgJ4lUr0H3OJqpDW9aKOBWB0RZ5DmvrxumWfUN1rm//1CbPYTGxeQc1Uw8Lz7VG
+         ZKeffsRrg8mjPPKf3ixhWmGOQCKOIMLPWb1x7KTnlxYxloWGwEZphXYNeZxt64BP0cn8
+         pj2+tCmKLs0ZV7qNvGV4xuQNOpINkqV75Nc+NtD3jroYMhe+0So6sTTrTI+FvV0K3nRF
+         FE0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uIC7dj7oltWe68l04x0L6fWnaqmGQcvXiQBbnnS12XU=;
+        b=EoL1ZBJs/8C9iwoplqBSZuQgfhkR1BBzM99BlM4adnkuz+6gneJR/McCKrjNQlbjh7
+         9QaJVu4O80euxh/tUAupF2BROmIBPhKB+cEp2HEbutDftixuTAsrdrVAsmfEOvg9U1t9
+         NI/YEXskMXdxjIDyM3yGZe2R2qfhWckqWzBzc8Cg2vF3+4/BirXqHUR86Noza6gNJUqR
+         gx7rUi5E69Dq6j+Iefb5xQS1H1gjsKJ36f1YWYQLXH1jHlwMC3Sn5JBgqQAhoPJs0sDk
+         2VDAgOU4lWiG/BarJ29/e2ZCFp2DkhD8rNVJsRopf5xQ+h3gRE+S18xymrtx6EOt2CSC
+         Z6tg==
+X-Gm-Message-State: AOAM532MALJOg4ZiGmtm8RU41FMmPz+7pjtMqxVbbzwhJrTwjpT8phWO
+        rqoyEf/4vE6EWLQ2SUwOGV9EEQ==
+X-Google-Smtp-Source: ABdhPJzH81yvoV14kh0UBrupVwtAp8vc2BgwRUJ/AgiG5QgwEW8w4M550SI7tTEK9mrDCKojnPs7wA==
+X-Received: by 2002:a1c:f612:: with SMTP id w18mr7636314wmc.47.1601549854655;
+        Thu, 01 Oct 2020 03:57:34 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:109:4a0f:cfff:fe4a:6363])
+        by smtp.gmail.com with ESMTPSA id z13sm8267476wro.97.2020.10.01.03.57.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 03:57:33 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 11:57:29 +0100
+From:   Andrew Scull <ascull@google.com>
+To:     George-Aurelian Popescu <georgepope@google.com>
+Cc:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
+        keescook@chromium.org, akpm@linux-foundation.org,
+        dvyukov@google.com, elver@google.com, tglx@linutronix.de,
+        arnd@arndb.de
+Subject: Re: [PATCH 07/14] KVM: arm64: Enable UBSAN_BOUNDS for the both the
+ kernel and hyp/nVHE
+Message-ID: <20201001105729.GA632887@google.com>
+References: <20200914172750.852684-1-georgepope@google.com>
+ <20200914172750.852684-8-georgepope@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914172750.852684-8-georgepope@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds final multi-port support to TI AM65x CPSW driver in
-preparation for adding support for multi-port devices, like Main CPSW0 on
-K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
-- the separate netdev is created for every enabled external Port;
-- DMA channels are common/shared for all external Ports and the RX/TX NAPI
-and DMA processing assigned to first netdev;
-- external Ports are configured in mac-only mode, which is similar to TI
-"dual-mac" mode for legacy TI CPSW - packets are sent to the Host port only
-in ingress and directly to the Port on egress. No packet switching between
-external ports happens.
-- every port supports the same features as current AM65x CPSW on external
-device.
+On Mon, Sep 14, 2020 at 05:27:43PM +0000, George-Aurelian Popescu wrote:
+> From: George Popescu <georgepope@google.com>
+> 
+> If an out of bounds happens inside the hyp/nVHE code, the
+> ubsan_out_of_bounds handler stores the logging data inside the
+> kvm_ubsan_buffer. The one responsible for printing is the kernel
+> ubsan_out_of_bounds handler. The process of decapsulating the data happens
+> in kvm_ubsan_buffer.c.
+> 
+> The struct kvm_ubsan_info contains three main components:
+> -enum type, which is used to identify which handler to call from the
+> kernel.
+> -struct ubsan_values, which stores the operands involved during the
+> undefined behaviours, which can be one, two or zero, depending on what
+> undefiend behaviour is reported. As an example for: out_of_bounds there
+> is only one operand (the index).
+> 
+> Accessing a slot with no type should do nothing. Each slot is marked
+> with the UBSAN_NONE tag after it's first usage.
+> 
+> Signed-off-by: George Popescu <georgepope@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_ubsan.h | 19 ++++++++++++++++++-
+>  arch/arm64/kvm/hyp/nvhe/ubsan.c    | 13 ++++++++++++-
+>  arch/arm64/kvm/kvm_ubsan_buffer.c  | 13 ++++++++++++-
+>  3 files changed, 42 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
+> index af607a796376..575881e0bd5f 100644
+> --- a/arch/arm64/include/asm/kvm_ubsan.h
+> +++ b/arch/arm64/include/asm/kvm_ubsan.h
+> @@ -11,7 +11,24 @@
+>  #define UBSAN_MAX_TYPE 6
+>  #define KVM_UBSAN_BUFFER_SIZE 1000
+>  
+> +struct ubsan_values {
+> +	void *lval;
+> +	void *rval;
+> +	char op;
+> +};
+> +
+>  struct kvm_ubsan_info {
+> -	int type;
+> +	enum {
+> +		UBSAN_NONE,
+> +		UBSAN_OUT_OF_BOUNDS
+> +	} type;
+> +	union {
+> +		struct out_of_bounds_data out_of_bounds_data;
+> +	};
+> +	union {
+> +		struct ubsan_values u_val;
+> +	};
+>  };
+>  #endif
+> +
+> +void __ubsan_handle_out_of_bounds(void *_data, void *index);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+> index a43c9646e1e8..b2d3404f6215 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+> @@ -43,7 +43,18 @@ void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
+>  
+>  void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
+>  
+> -void __ubsan_handle_out_of_bounds(void *_data, void *index) {}
+> +void __ubsan_handle_out_of_bounds(void *_data, void *index)
+> +{
+> +	struct kvm_ubsan_info *slot = NULL;
+> +	struct out_of_bounds_data *data = _data;
+> +
+> +	slot = kvm_ubsan_buffer_next_slot();
+> +	if (slot) {
+> +		slot->type = UBSAN_OUT_OF_BOUNDS;
+> +		slot->out_of_bounds_data = *data;
+> +		slot->u_val.lval = index;
+> +	}
+> +}
+>  
+>  void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
+>  
+> diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
+> index 28dcf19b5706..ce796bdd027e 100644
+> --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
+> +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
+> @@ -16,6 +16,17 @@
+>  
+>  DECLARE_KVM_DEBUG_BUFFER(struct kvm_ubsan_info, kvm_ubsan_buff, KVM_UBSAN_BUFFER_SIZE);
+>  
+> +void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
+> +{
+> +	switch (slot->type) {
+> +	case UBSAN_NONE:
+> +		break;
+> +	case UBSAN_OUT_OF_BOUNDS:
+> +		__ubsan_handle_out_of_bounds(&slot->out_of_bounds_data,
+> +				slot->u_val.lval);
+> +		break;
+> +	}
+> +}
+>  
+>  void __kvm_check_ubsan_buffer(void)
+>  {
+> @@ -25,7 +36,7 @@ void __kvm_check_ubsan_buffer(void)
+>  
+>  	init_kvm_debug_buffer(kvm_ubsan_buff, struct kvm_ubsan_info, slot, write_ind);
+>  	for_each_kvm_debug_buffer_slot(slot, write_ind, it) {
+> -		/* check ubsan data */
+> +		__kvm_check_ubsan_data(slot);
+>  		slot->type = 0;
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 111 ++++++++++++++---------
- 1 file changed, 70 insertions(+), 41 deletions(-)
+0's called UBSAN_NONE now
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index a8094e8e49ca..1658c4f305b5 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -272,8 +272,8 @@ static int am65_cpsw_nuss_ndo_slave_kill_vid(struct net_device *ndev,
- 	return ret;
- }
- 
--static void am65_cpsw_slave_set_promisc_2g(struct am65_cpsw_port *port,
--					   bool promisc)
-+static void am65_cpsw_slave_set_promisc(struct am65_cpsw_port *port,
-+					bool promisc)
- {
- 	struct am65_cpsw_common *common = port->common;
- 
-@@ -298,7 +298,7 @@ static void am65_cpsw_nuss_ndo_slave_set_rx_mode(struct net_device *ndev)
- 	bool promisc;
- 
- 	promisc = !!(ndev->flags & IFF_PROMISC);
--	am65_cpsw_slave_set_promisc_2g(port, promisc);
-+	am65_cpsw_slave_set_promisc(port, promisc);
- 
- 	if (promisc)
- 		return;
-@@ -631,13 +631,13 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
- 
- 	am65_cpsw_port_set_sl_mac(port, ndev->dev_addr);
- 
--	if (port->slave.mac_only)
-+	if (port->slave.mac_only) {
- 		/* enable mac-only mode on port */
- 		cpsw_ale_control_set(common->ale, port->port_id,
- 				     ALE_PORT_MACONLY, 1);
--	if (AM65_CPSW_IS_CPSW2G(common))
- 		cpsw_ale_control_set(common->ale, port->port_id,
- 				     ALE_PORT_NOLEARN, 1);
-+	}
- 
- 	port_mask = BIT(port->port_id) | ALE_PORT_HOST;
- 	cpsw_ale_add_ucast(common->ale, ndev->dev_addr,
-@@ -1398,7 +1398,7 @@ static int am65_cpsw_nuss_ndo_slave_set_features(struct net_device *ndev,
- 	return 0;
- }
- 
--static const struct net_device_ops am65_cpsw_nuss_netdev_ops_2g = {
-+static const struct net_device_ops am65_cpsw_nuss_netdev_ops = {
- 	.ndo_open		= am65_cpsw_nuss_ndo_slave_open,
- 	.ndo_stop		= am65_cpsw_nuss_ndo_slave_stop,
- 	.ndo_start_xmit		= am65_cpsw_nuss_ndo_slave_xmit,
-@@ -1855,14 +1855,18 @@ static void am65_cpsw_pcpu_stats_free(void *data)
- 	free_percpu(stats);
- }
- 
--static int am65_cpsw_nuss_init_ndev_2g(struct am65_cpsw_common *common)
-+static int
-+am65_cpsw_nuss_init_port_ndev(struct am65_cpsw_common *common, u32 port_idx)
- {
- 	struct am65_cpsw_ndev_priv *ndev_priv;
- 	struct device *dev = common->dev;
- 	struct am65_cpsw_port *port;
- 	int ret;
- 
--	port = am65_common_get_port(common, 1);
-+	port = &common->ports[port_idx];
-+
-+	if (port->disabled)
-+		return 0;
- 
- 	/* alloc netdev */
- 	port->ndev = devm_alloc_etherdev_mqs(common->dev,
-@@ -1891,7 +1895,7 @@ static int am65_cpsw_nuss_init_ndev_2g(struct am65_cpsw_common *common)
- 	port->ndev->features = port->ndev->hw_features |
- 			       NETIF_F_HW_VLAN_CTAG_FILTER;
- 	port->ndev->vlan_features |=  NETIF_F_SG;
--	port->ndev->netdev_ops = &am65_cpsw_nuss_netdev_ops_2g;
-+	port->ndev->netdev_ops = &am65_cpsw_nuss_netdev_ops;
- 	port->ndev->ethtool_ops = &am65_cpsw_ethtool_ops_slave;
- 
- 	/* Disable TX checksum offload by default due to HW bug */
-@@ -1904,18 +1908,33 @@ static int am65_cpsw_nuss_init_ndev_2g(struct am65_cpsw_common *common)
- 
- 	ret = devm_add_action_or_reset(dev, am65_cpsw_pcpu_stats_free,
- 				       ndev_priv->stats);
--	if (ret) {
--		dev_err(dev, "Failed to add percpu stat free action %d\n", ret);
--		return ret;
-+	if (ret)
-+		dev_err(dev, "failed to add percpu stat free action %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int am65_cpsw_nuss_init_ndevs(struct am65_cpsw_common *common)
-+{
-+	struct am65_cpsw_port *port;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < common->port_num; i++) {
-+		ret = am65_cpsw_nuss_init_port_ndev(common, i);
-+		if (ret)
-+			return ret;
- 	}
- 
-+	port = am65_common_get_port(common, 1);
-+
- 	netif_napi_add(port->ndev, &common->napi_rx,
- 		       am65_cpsw_nuss_rx_poll, NAPI_POLL_WEIGHT);
- 
- 	return ret;
- }
- 
--static int am65_cpsw_nuss_ndev_add_napi_2g(struct am65_cpsw_common *common)
-+static int am65_cpsw_nuss_ndev_add_tx_napi(struct am65_cpsw_common *common)
- {
- 	struct device *dev = common->dev;
- 	struct am65_cpsw_port *port;
-@@ -1944,16 +1963,27 @@ static int am65_cpsw_nuss_ndev_add_napi_2g(struct am65_cpsw_common *common)
- 	return ret;
- }
- 
--static int am65_cpsw_nuss_ndev_reg_2g(struct am65_cpsw_common *common)
-+static void am65_cpsw_nuss_cleanup_ndev(struct am65_cpsw_common *common)
-+{
-+	struct am65_cpsw_port *port;
-+	int i;
-+
-+	for (i = 0; i < common->port_num; i++) {
-+		port = &common->ports[i];
-+		if (port->ndev)
-+			unregister_netdev(port->ndev);
-+	}
-+}
-+
-+static int am65_cpsw_nuss_register_ndevs(struct am65_cpsw_common *common)
- {
- 	struct device *dev = common->dev;
- 	struct am65_cpsw_port *port;
--	int ret = 0;
-+	int ret = 0, i;
- 
--	port = am65_common_get_port(common, 1);
--	ret = am65_cpsw_nuss_ndev_add_napi_2g(common);
-+	ret = am65_cpsw_nuss_ndev_add_tx_napi(common);
- 	if (ret)
--		goto err;
-+		return ret;
- 
- 	ret = devm_request_irq(dev, common->rx_chns.irq,
- 			       am65_cpsw_nuss_rx_irq,
-@@ -1961,17 +1991,31 @@ static int am65_cpsw_nuss_ndev_reg_2g(struct am65_cpsw_common *common)
- 	if (ret) {
- 		dev_err(dev, "failure requesting rx irq %u, %d\n",
- 			common->rx_chns.irq, ret);
--		goto err;
-+		return ret;
-+	}
-+
-+	for (i = 0; i < common->port_num; i++) {
-+		port = &common->ports[i];
-+
-+		if (!port->ndev)
-+			continue;
-+
-+		ret = register_netdev(port->ndev);
-+		if (ret) {
-+			dev_err(dev, "error registering slave net device%i %d\n",
-+				i, ret);
-+			goto err_cleanup_ndev;
-+		}
- 	}
- 
--	ret = register_netdev(port->ndev);
--	if (ret)
--		dev_err(dev, "error registering slave net device %d\n", ret);
- 
- 	/* can't auto unregister ndev using devm_add_action() due to
- 	 * devres release sequence in DD core for DMA
- 	 */
--err:
-+	return 0;
-+
-+err_cleanup_ndev:
-+	am65_cpsw_nuss_cleanup_ndev(common);
- 	return ret;
- }
- 
-@@ -1984,19 +2028,7 @@ int am65_cpsw_nuss_update_tx_chns(struct am65_cpsw_common *common, int num_tx)
- 	if (ret)
- 		return ret;
- 
--	return am65_cpsw_nuss_ndev_add_napi_2g(common);
--}
--
--static void am65_cpsw_nuss_cleanup_ndev(struct am65_cpsw_common *common)
--{
--	struct am65_cpsw_port *port;
--	int i;
--
--	for (i = 0; i < common->port_num; i++) {
--		port = &common->ports[i];
--		if (port->ndev)
--			unregister_netdev(port->ndev);
--	}
-+	return am65_cpsw_nuss_ndev_add_tx_napi(common);
- }
- 
- struct am65_cpsw_soc_pdata {
-@@ -2084,9 +2116,6 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 		return -ENOENT;
- 	of_node_put(node);
- 
--	if (common->port_num != 1)
--		return -EOPNOTSUPP;
--
- 	common->rx_flow_id_base = -1;
- 	init_completion(&common->tdown_complete);
- 	common->tx_ch_num = 1;
-@@ -2181,11 +2210,11 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(dev, common);
- 
--	ret = am65_cpsw_nuss_init_ndev_2g(common);
-+	ret = am65_cpsw_nuss_init_ndevs(common);
- 	if (ret)
- 		goto err_of_clear;
- 
--	ret = am65_cpsw_nuss_ndev_reg_2g(common);
-+	ret = am65_cpsw_nuss_register_ndevs(common);
- 	if (ret)
- 		goto err_of_clear;
- 
--- 
-2.17.1
-
+>  	}
+>  }
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
+> 
