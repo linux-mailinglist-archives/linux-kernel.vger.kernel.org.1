@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F8F280951
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38A6280955
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733022AbgJAVRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        id S1733038AbgJAVTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgJAVRk (ORCPT
+        with ESMTP id S1726581AbgJAVTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:17:40 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9398FC0613D0;
-        Thu,  1 Oct 2020 14:17:38 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id q8so348147lfb.6;
-        Thu, 01 Oct 2020 14:17:38 -0700 (PDT)
+        Thu, 1 Oct 2020 17:19:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1EEC0613E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:19:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w21so263560pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:19:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zPU8K8mX10SuX1nIiSrp3KwYZ3RHW0pkIeqC3Pyqkok=;
-        b=IZ/a9RN3TdKPmV25cFyxFKwqh+FVNslFuOMHaU39uIw4UJYs3Y2xz8RDkwtM723F50
-         oZLLO98XxJt/vn5u1Kh/6ymcVJRXS3Th1JacSRA1rMgZWSr6z3jpVEuOQjO1gzx6umws
-         UOsszk4i8tRTCalqmk8dYpxuCcdW3ukj1tEbe/Q5A81qZXLUu3Xlblw+yEdwFgT0aJk5
-         zCLSCpfoMppasEc4Ja2m1dTCQe2MBR2TLz6DYS0/7Tnn/0Xe4DGFnG6iPjI2T/HuZq5P
-         8xgFQV88Cs036VP7FGq0+9eXwxa9QJ8W/9rJz5TE/NeK3ly8t+rxxOunoDMASQr+Ibaf
-         pEWQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o6gfDXEJLeAYyj9Q6Zq3Q1hxYl7JjjLOkCkFFqFw28U=;
+        b=aX/si9tOkchkaGMk3LdngnIu1GASm/NLGr+AK+wKhh78asvuqlfSXJGdK5V89uPO7I
+         E2gb+pj2CprllK7XDzYwU5ECAEARZno2bMoUScyskTDVI0FESNfaVGfkrVCc+pb+UjJK
+         +rr6GkoyuXusXuBxnUl6IBv8UWOJIFHafnURI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zPU8K8mX10SuX1nIiSrp3KwYZ3RHW0pkIeqC3Pyqkok=;
-        b=ehciPDjsUU2muDQ9jrdqvhI/TBYGlsGkTUVJAX+rFJgmN3dwQExsy1l8i9fSDojkYI
-         KIskhQ4GBo/1sGC+XIkIUEWcX91Q98IyHfLA68ct0kIaU8fNRtktp5Nw+cYBAr2kEYfD
-         6X9I+ZJSX2QScKBoC1c7ZvDhl0MCs4Rl1fBuiQmM+c6tWJK/AxEbOEWyZi+bq3+vX6N0
-         ce6okKdTZII9hy3w0LCN3dxTvjfM0ZZnTQk/Pnd+kraehAI7zsNp1R29KSfoF+pTfcKD
-         tGJt1YYg9s9IxQRhyaq5Emi0WlnLj5JzQDpeo9ufjC0hnZ73rKx+o7NqKg3LZlFB9XsO
-         i6QQ==
-X-Gm-Message-State: AOAM533jOlaep9sfo1gGSQd2brYALJy5Gh4JGHX7AED3YUMnTyHpNfss
-        zbpFaWmo9hG9r40HLfhCZcoyv7OtRV0=
-X-Google-Smtp-Source: ABdhPJykYzz6fn4GvWqYoqONjU2/EsYPbVcVjtaYD4deC7pTzwp00Au4rvNcgXE1Hf8N5cBckCNL9g==
-X-Received: by 2002:a19:771d:: with SMTP id s29mr3066742lfc.521.1601587056869;
-        Thu, 01 Oct 2020 14:17:36 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id f12sm712855lfp.69.2020.10.01.14.17.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 14:17:36 -0700 (PDT)
-Subject: Re: [PATCH v7 0/4] input: elants: Support Asus TF300T and Nexus 7
- touchscreen
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        James Chen <james.chen@emc.com.tw>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        Scott Liu <scott.liu@emc.com.tw>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Harry Cutts <hcutts@chromium.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1600551334.git.mirq-linux@rere.qmqm.pl>
- <20200930172841.GB12964@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b4144b19-9a53-1810-5092-acf932be9762@gmail.com>
-Date:   Fri, 2 Oct 2020 00:17:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=o6gfDXEJLeAYyj9Q6Zq3Q1hxYl7JjjLOkCkFFqFw28U=;
+        b=dBHo7N0SwjAqR3IYQOp1/WWq6sqMkxtD4TOD8ymZjUSVrY2y1g+zBuCU61WEe9NWMj
+         Bwz6MjFInhYJLvEX2tzcSI6O1X01ONfGjVPeQJixpfMy+sBpJAQgh/6/wPGjcjY/0Gc0
+         OZDvbkVsTAU2XXnip4/5h58wENS4nKCoDkFlblGP4QHFSCv04GMxEIvQ6N3nPvaal0hR
+         HIFx8v4kaJtqZFpqY/faZ8ik46C9C3ex3HcCkMICTIjYASV+XFLfGnD3q3kvfsJ9sVzQ
+         3IL9oVy6Rn4Qc2HKRmcwIzKfMYoX2M8dM1RyLbfiv8kwgV0ay1sGX1BOPg9MXTeFBChc
+         58Ng==
+X-Gm-Message-State: AOAM533qZAF7ueuUxLkmoBzrrvZeNhswCFYAF9SSeDMKZ9azE8lgBXbx
+        RFp3KZkrbNvm65BYrcoQfz95Zg==
+X-Google-Smtp-Source: ABdhPJwZF0ZAWF2PfTHClWpYeuET6GaWsOLh7BAKXN8nDHEimGl2jek4GooFykamHhkjawIgEYQLDA==
+X-Received: by 2002:aa7:9059:0:b029:151:d725:e230 with SMTP id n25-20020aa790590000b0290151d725e230mr8854719pfo.77.1601587140205;
+        Thu, 01 Oct 2020 14:19:00 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id q5sm7268990pfn.172.2020.10.01.14.18.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 14:18:59 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Fix one forgotten interconnect reference
+Date:   Thu,  1 Oct 2020 14:18:55 -0700
+Message-Id: <20201001141838.1.I08054d1d976eed64ffa1b0e21d568e0dc6040b54@changeid>
+X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
 MIME-Version: 1.0
-In-Reply-To: <20200930172841.GB12964@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.09.2020 20:28, Michał Mirosław пишет:
-> On Sat, Sep 19, 2020 at 11:41:19PM +0200, Michał Mirosław wrote:
->> This series cleans up the driver a bit and implements changes needed to
->> support EKTF3624-based touchscreen used in Asus TF300T, Google Nexus 7
->> and similar Tegra3-based tablets.
-> [...]
-> 
-> Ping? Should I resend? This got only cosmetic fixups and rebases through
-> last couple of iterations.
+In commit e23b1220a246 ("arm64: dts: qcom: sc7180: Increase the number
+of interconnect cells") we missed increasing the cells on one
+interconnect.  That's no bueno.  Fix it.
 
-+1 We want to get a working touchscreen on our ASUS devices :)
+NOTE: it appears that things aren't totally broken without this fix,
+but clearly something isn't going to be working right.  If nothing
+else, without this fix I see this in the logs:
 
-Please consider merging this series. The upstream Nexus 7 DT is already
-preapared, now just need the two-line driver change to get the TS working.
+  OF: /soc@0/mdss@ae00000: could not get #interconnect-cells for /soc@0/interrupt-controller@17a00000
+
+Fixes: e23b1220a246 ("arm64: dts: qcom: sc7180: Increase the number of interconnect cells")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6678f1e8e395..a02776ce77a1 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -2811,7 +2811,7 @@ mdss: mdss@ae00000 {
+ 			interrupt-controller;
+ 			#interrupt-cells = <1>;
+ 
+-			interconnects = <&mmss_noc MASTER_MDP0 &mc_virt SLAVE_EBI1>;
++			interconnects = <&mmss_noc MASTER_MDP0 0 &mc_virt SLAVE_EBI1 0>;
+ 			interconnect-names = "mdp0-mem";
+ 
+ 			iommus = <&apps_smmu 0x800 0x2>;
+-- 
+2.28.0.709.gb0816b6eb0-goog
+
