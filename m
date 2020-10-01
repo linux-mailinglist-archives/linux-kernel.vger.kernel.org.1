@@ -2,173 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDCD280168
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E616E280169
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732413AbgJAOhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:37:47 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:50161 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgJAOhq (ORCPT
+        id S1732434AbgJAOiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:38:16 -0400
+Received: from smtprelay0124.hostedemail.com ([216.40.44.124]:56228 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726412AbgJAOiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:37:46 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id CA37D22F99;
-        Thu,  1 Oct 2020 16:37:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601563064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sHnoC007BhcQryU1h/VWQg6Nfp1hU7r14kF5KUeDT6U=;
-        b=HB1pojtydHPtv5XR0DjynLgNLsylo8bVN0HuJHIC9t+XPG6HOtSq79G815KFYQ4izsCl7a
-        haPh77jV4xmGv/vlE7uQ0OtDyUKMuSb0HSNqtRBpEhgLYZ6XlpLGnFSpLFoT4OnqvJFpU0
-        xhnRGkmNV+3m838p3TpWOFhsyHxb3nE=
+        Thu, 1 Oct 2020 10:38:16 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id A3387100E7B4E;
+        Thu,  1 Oct 2020 14:38:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2693:2828:2901:3138:3139:3140:3141:3142:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4184:4321:4605:5007:6119:7903:9010:9149:10004:10848:10946:11026:11232:11233:11473:11657:11658:11914:12043:12295:12297:12438:12663:12740:12760:12895:13095:13141:13230:13439:14180:14181:14659:14721:21060:21080:21433:21451:21627:21740:21939:21990:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: trick94_48130ec2719c
+X-Filterd-Recvd-Size: 5426
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 14:38:13 +0000 (UTC)
+Message-ID: <361bda20762efce0e374bd2ba7c82d1c64628a67.camel@perches.com>
+Subject: Re: [PATCH RFC] checkpatch: fix multi-statement macro checks
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 01 Oct 2020 07:38:12 -0700
+In-Reply-To: <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
+References: <20201001103314.136645-1-dwaipayanray1@gmail.com>
+         <8e110121c89414ab1601071868dbcf410195a209.camel@perches.com>
+         <CABJPP5CFE3KXzMzuvVxtJt5tOg8Ye6y1V7-mqT5pqazHjVWvJw@mail.gmail.com>
+         <f3dadda8af7eef6613d7a4105170058f2759507d.camel@perches.com>
+         <CABJPP5AM01voDwARL4G0vMhFw4hMY+=dEQ7=obiKPzNtunyb7Q@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 01 Oct 2020 16:37:43 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor.Ambarus@microchip.com
-Cc:     linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Subject: Re: [RFC PATCH 1/2] mtd: spi-nor: atmel: remove global
- SNOR_F_HAS_LOCK
-In-Reply-To: <137692b0-ab6d-b9be-17c2-68e3b3146076@microchip.com>
-References: <20201001122828.23186-1-michael@walle.cc>
- <5eb8f95c-e9d5-6043-fb7d-bffcda044262@microchip.com>
- <871da0d058ba89320615098ee26150b3@walle.cc>
- <137692b0-ab6d-b9be-17c2-68e3b3146076@microchip.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <279cea35b94647031b6593a45f8f2608@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-10-01 16:25, schrieb Tudor.Ambarus@microchip.com:
-> On 10/1/20 5:12 PM, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Am 2020-10-01 16:06, schrieb Tudor.Ambarus@microchip.com:
->>> On 10/1/20 3:28 PM, Michael Walle wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you 
->>>> know
->>>> the content is safe
->>>> 
->>>> This is considered bad for the following reasons:
->>>>  (1) We only support the block protection with BPn bits for write
->>>>      protection. Not all Atmel parts support this.
->>>>  (2) Newly added flash chip will automatically inherit the "has
->>>>      locking" support and thus needs to explicitly tested. Better
->>>>      be opt-in instead of opt-out.
->>>>  (3) There are already supported flashes which don't support the
->>>> locking
->>>>          scheme. So I assume this wasn't properly tested before 
->>>> adding
->>>> that
->>>>          chip; which enforces my previous argument that locking
->>>> support should
->>>>          be an opt-in.
->>>> 
->>>> Remove the global flag and add individual flags to all flashes
->>>> which supports BP locking. In particular the following flashes
->>>> don't support the BP scheme:
->>>>  - AT26F004
->>>>  - AT25SL321
->>>>  - AT45DB081D
->>>> 
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>>> ---
->>>>  drivers/mtd/spi-nor/atmel.c | 28 +++++++++-------------------
->>>>  1 file changed, 9 insertions(+), 19 deletions(-)
->>>> 
->>>> diff --git a/drivers/mtd/spi-nor/atmel.c 
->>>> b/drivers/mtd/spi-nor/atmel.c
->>>> index 3f5f21a473a6..49d392c6c8bc 100644
->>>> --- a/drivers/mtd/spi-nor/atmel.c
->>>> +++ b/drivers/mtd/spi-nor/atmel.c
->>>> @@ -10,37 +10,27 @@
->>>> 
->>>>  static const struct flash_info atmel_parts[] = {
->>>>         /* Atmel -- some are (confusingly) marketed as "DataFlash" 
->>>> */
->>>> -       { "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K) 
->>>> },
->>>> -       { "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K) 
->>>> },
->>>> +       { "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>>> +       { "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> after a quick look in the datasheets of these flashes, I suspect that
->>> what we have now in the SPI NOR core for SR locking does not work for
->>> them. They probably supported just "unlock all", clearing all the
->>> BP bits. Anyway, different problem.
->>>> 
->>>> -       { "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K) 
->>>> },
->>>> -       { "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K) 
->>>> },
->>>> -       { "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K) 
->>>> },
->>>> -       { "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) 
->>>> },
->>>> +       { "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> this one does not support BP locking:
->>> https://www.adestotech.com/wp-content/uploads/doc3668.pdf
->>> 
->>>> +       { "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> neither this one:
->>> https://datasheet.octopart.com/AT25DF321-S3U-Atmel-datasheet-8700896.pdf
->>> 
->>>> +       { "at25df321a", INFO(0x1f4701, 0, 64 * 1024,  64, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> nor this one: 
->>> https://www.adestotech.com/wp-content/uploads/doc3686.pdf
->>> 
->>>> +       { "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K |
->>>> SPI_NOR_HAS_LOCK) },
->>> 
->>> nor this one: 
->>> https://www.adestotech.com/wp-content/uploads/doc3680.pdf
->>> 
->>> I stop here.
->> 
->> These are all the ones which use the global unlock. I cannot just skip
->> the HAS_LOCK bit here, because otherwise this patch wouldn't be
->> backwards
->> compatibe. Yes I missed that in the commit log, my bad.
->> 
+On Thu, 2020-10-01 at 19:44 +0530, Dwaipayan Ray wrote:
+> On Thu, Oct 1, 2020 at 7:12 PM Joe Perches <joe@perches.com> wrote:
+> > On Thu, 2020-10-01 at 18:57 +0530, Dwaipayan Ray wrote:
+> > > On Thu, Oct 1, 2020 at 6:47 PM Joe Perches <joe@perches.com> wrote:
+> > > > On Thu, 2020-10-01 at 16:03 +0530, Dwaipayan Ray wrote:
+> > > > > Checkpatch.pl doesn't have a check for excluding while (...) {...}
+> > > > > blocks from MULTISTATEMENT_MACRO_USE_DO_WHILE error.
+> > > > > 
+> > > > > For example, running checkpatch.pl on the file mm/access.c in the
+> > > > > kernel generates the following error:
+> > > > > 
+> > > > > ERROR: Macros with complex values should be enclosed in parentheses
+> > > > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label)        \
+> > > > > +     while (len >= sizeof(type)) {                                   \
+> > > > > +             __get_kernel_nofault(dst, src, type, err_label);        \
+> > > > > +             dst += sizeof(type);                                    \
+> > > > > +             src += sizeof(type);                                    \
+> > > > > +             len -= sizeof(type);                                    \
+> > > > > +     }
+> > > > > 
+> > > > > The error is misleading for this case. Enclosing it in parantheses
+> > > > > doesn't make any sense.
+> > > > 
+> > > > OK
+> > > > 
+> > > > > Checkpatch already has an exception list for such common macro types.
+> > > > > Added a new exception for while (...) {...} style blocks to the same.
+> > > > > This effectively fixed the wrong error message.
+> > > > []
+> > > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > > []
+> > > > > @@ -5342,6 +5342,7 @@ sub process {
+> > > > >                           $dstat !~ /^\.$Ident\s*=/ &&                                # .foo =
+> > > > >                           $dstat !~ /^(?:\#\s*$Ident|\#\s*$Constant)\s*$/ &&          # stringification #foo
+> > > > >                           $dstat !~ /^do\s*$Constant\s*while\s*$Constant;?$/ &&       # do {...} while (...); // do {...} while (...)
+> > > > > +                         $dstat !~ /^while\s*$Constant\s*$Constant\s*$/ &&           # while (...) {...}
+> > 
+> > Note the \s*
+> >                                                               ^
+> > 
+> > > > Did you try to output $dstat for some matching cases?
+> > > > What was the $dstat value for the cases you tried?
+> > > > 
+> > > > 
+> > > Hi,
+> > > I did check $dstat values.
+> > > 
+> > > For example on file mm/maccess.c, there were two such macros:
+> > > 
+> > > Case 1:
+> > > 
+> > > $ctx:
+> > > +#define copy_from_kernel_nofault_loop(dst, src, len, type, err_label) \
+> > > + while (len >= sizeof(type)) { \
+> > > + __get_kernel_nofault(dst, src, type, err_label); \
+> > > + dst += sizeof(type); \
+> > > + src += sizeof(type); \
+> > > + len -= sizeof(type); \
+> > > + }
+> > > 
+> > > $dstat:
+> > > while 1 1
+> > 
+> > And perhaps this test should use \s+ instead.
+> > What is $dstat with a #define like:
+> > 
+> > #define foo(bar,baz)while(bar){bar--;baz++;}
+> > 
+> > (no spaces anywhere bot the required one after define
+> > 
 > 
-> No worries.
+> In this case, $dstat is: while11
 > 
-> "unlock all at boot" just cleared the SR bits. Clearing the SR bits 
-> unlocks
-> these flashes?
+> So, if \s+ is used, it won't match with this. I ran checkpatch
+> on it and some other condition seems to match, so it is
+> excluded from the error.
+> 
+> However, if the macro is like:
+> 
+> #define foo(bar,baz)while(bar) {bar--;baz++;}
+> (one space after condition)
+> 
+> $dstat is: while1 1
+> (space after first 1)
+> and the same error is again emitted.
+> 
+> So I think \s* works better since there can be
+> 0 or more whitespaces between them.
 
-Clearing bits 5,4,3,2, yes (with SPRL=0)
+All I'm trying to point out to you is that $Constant\s*$Constant
+isn't a proper test as the first $Constant will pull the test
+entire sequence of digits and the second $Constant will not be
+met.
 
-   Conversely, to perform a Global Unprotect, the same WP and SPRL 
-conditions
-   must be met but the system must write a Logical 0 to bits 5, 4, 3, and 
-2
-   of the first byte of the Status Register.
+It may take some conversion of the collapsing of the dstat
+block to work appropriately
 
-This will hopefully be cleaned up by my "mtd: spi-nor: keep lock bits if 
-they
-are non-volatile" patch.
 
--michael
+			# Flatten any parentheses and braces
+			while ($dstat =~ s/\([^\(\)]*\)/1/ ||
+			       $dstat =~ s/\{[^\{\}]*\}/1/ ||
+			       $dstat =~ s/.\[[^\[\]]*\]/1/)
+			{
+			}
+
+Maybe the /1/ should be / 1 / but I didn't look to see what
+happens to the exclusion tests below that.
+
+
