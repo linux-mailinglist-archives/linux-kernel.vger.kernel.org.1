@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CF9280047
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2D2280033
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732336AbgJANhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:37:41 -0400
-Received: from twelve.deepafrica.com ([67.225.192.144]:45776 "EHLO
-        twelve.deepafrica.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732026AbgJANhk (ORCPT
+        id S1732235AbgJANbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:31:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20559 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731993AbgJANbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:37:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=horizonsecurity.co.ke; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:Reply-to:Subject:To:From:Message-ID:Date:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=O3zuiBDMilVGFxBaOgdMoOlqgmFdYCE/d5aR5RvE4w4=; b=ELesHU0/sNfC0mSIW8B7di8Fkc
-        mtmBgJ0tbRKRQDInfYDra/2pDrSh6+mHXHqlHCWzyS9jMTdBoaz1yQJnJ17sM2wgBrr6mQ1WHEfz5
-        IETuN+B3b+ch50NmD+3F8yAGTFn9D/mqtCFItV1e5nc8ELpledEi0B8zKSFsRvJpPIibTvCE9XAur
-        wcT14VPc9bWUwwHnYOA3MK2nTspiIAbPjXik5f4TGIf96HoQz9hl2yYPHPgRPMvtwj37OtqYj/9lI
-        o5e+5ZAzhAjw0xxqW0mbwhPom9GZCr3SUa2lmLXvvKWqt+pqL+Tr5PLdjY4cdalZRJD2ZHW8BMnqC
-        abiIgKIg==;
-Received: from [::1] (port=50312 helo=twelve.deepafrica.com)
-        by twelve.deepafrica.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <sender@horizonsecurity.co.ke>)
-        id 1kN6pk-0003mZ-0C; Tue, 29 Sep 2020 07:01:44 +0300
-Received: from [197.242.118.245] ([197.242.118.245]) by
- twelve.deepafrica.com (Horde Framework) with HTTPS; Tue, 29 Sep 2020
- 07:01:43 +0300
-Date:   Tue, 29 Sep 2020 07:01:43 +0300
-Message-ID: <20200929070143.Horde.JhIzOQWxUBPsEvdHGq6A0JC@twelve.deepafrica.com>
-From:   SEDAT =?utf-8?b?U0VWxLBOw4c=?= <sender@horizonsecurity.co.ke>
-Subject: Re:Inquiry
-Reply-to: steveanderson1858@gmail.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        Thu, 1 Oct 2020 09:31:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601559099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bSNYRgr1s5QShIox/qdOqO/zSDA77sqfVML7LKhu+Eo=;
+        b=PultOSXS4y7VxEG32PG+qWce8gWCR1xYYf9kn71pNy86luMjAC4UsLJyB+cJI3pjO+lOI9
+        5GOBg6t7ZMB26a9Miu+v2zaiejjYNbTbKK3zfh8G0WCcha0QLT3Yw601IR4FlkzlBnM2tY
+        s2O2oQOapAdtdobPdiqr3of49p72kds=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-spdIK0nJOseCc1HGKUT1SQ-1; Thu, 01 Oct 2020 09:31:37 -0400
+X-MC-Unique: spdIK0nJOseCc1HGKUT1SQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D2A58D4EA0;
+        Thu,  1 Oct 2020 13:31:36 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-115-202.rdu2.redhat.com [10.10.115.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 00BCC55762;
+        Thu,  1 Oct 2020 13:31:35 +0000 (UTC)
+From:   Qian Cai <cai@redhat.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH -next] pci: Fix -Wunused-function warnings for pci_ltr_*
+Date:   Thu,  1 Oct 2020 09:28:49 -0400
+Message-Id: <20201001132850.7630-1-cai@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - twelve.deepafrica.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - horizonsecurity.co.ke
-X-Get-Message-Sender-Via: twelve.deepafrica.com: authenticated_id: sender@horizonsecurity.co.ke
-X-Authenticated-Sender: twelve.deepafrica.com: sender@horizonsecurity.co.ke
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-To:     unlisted-recipients:; (no To-header on input)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When CONFIG_PCIEASPM=n,
 
+drivers/pci/pci.c:3098:12: warning: 'pci_ltr_encode' defined but not used [-Wunused-function]
+ static u16 pci_ltr_encode(u64 val)
+            ^~~~~~~~~~~~~~
+drivers/pci/pci.c:3076:12: warning: 'pci_ltr_decode' defined but not used [-Wunused-function]
+ static u64 pci_ltr_decode(u16 latency)
+            ^~~~~~~~~~~~~~
 
+Fixes: 5ccf2a6e483f ("PCI/ASPM: Add support for LTR _DSM")
+Signed-off-by: Qian Cai <cai@redhat.com>
+---
+ drivers/pci/pci.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index db8feb2033e7..e96e5933b371 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3069,6 +3069,7 @@ void pci_pm_init(struct pci_dev *dev)
+ 		dev->imm_ready = 1;
+ }
+ 
++#ifdef CONFIG_PCIEASPM
+ /**
+  * pci_ltr_decode - Decode the latency to a value in ns
+  * @latency: latency register value according to PCIe r5.0, sec 6.18, 7.8.2
+@@ -3113,7 +3114,6 @@ static u16 pci_ltr_encode(u64 val)
+  */
+ void pci_ltr_init(struct pci_dev *dev)
+ {
+-#ifdef CONFIG_PCIEASPM
+ 	int ltr;
+ 	struct pci_dev *bridge;
+ 	u64 snoop = 0, nosnoop = 0;
+@@ -3150,9 +3150,15 @@ void pci_ltr_init(struct pci_dev *dev)
+ 		pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT,
+ 				      nosnoop_enc);
+ 	}
+-#endif
+ }
+ 
++#else
++void pci_ltr_init(struct pci_dev *dev)
++{
++}
++
++#endif
++
+ static unsigned long pci_ea_flags(struct pci_dev *dev, u8 prop)
+ {
+ 	unsigned long flags = IORESOURCE_PCI_FIXED | IORESOURCE_PCI_EA_BEI;
 -- 
-Dear Sir/Ma,
-
-I am Steve Anderson, the Purchase Manager of Sedat SEVİNÇ.
-We are interested in a large or wholesale supply of your Company Products.
-Please send us your product catalog and prices.
-Also kindly inform us about your Minimum Order Quantity, delivery time or
-CIF and payment terms.
-
-We are looking forward to receiving your early reply and assure you that
-it will have our best and prompt attention.
-
-Best regards
-
-Steve Anderson
-Sedat SEVİNÇ
-Address 520 Beach Street Apt 3
-Address Cont.
-City Revere
-State MA
-Postal (Zip) Code 02151
-Country USA
-Tel +1 857-615-5790
-Mobile (Cell) Phone
-Fax +1 617-322-0413
-Email: steveanderson1858@gmail.com
+2.28.0
 
