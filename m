@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B53927FFB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9398727FFB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgJANGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:06:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732259AbgJANGC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732264AbgJANGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 1 Oct 2020 09:06:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601557561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CqeR3uAKWwgiVR77lBGw+uusUYIh/rVmFkUgiBSbq/E=;
-        b=ApU/D7myfXW/UaXyt32CqW6g6rTZQpFGRFTD+6OduYBlb3FvuwMw9dgNnq5JwfzbjxmRgF
-        RpHpgCS9U8pdL4frdwhpOjr39sAUu9cX9Qr1GKb4ICr/LWEo8HqIyiP/1VEn1ZDU0Oe/X+
-        7Vlv5+QlKhkJpz8BYQJGznWfCCMW3Q8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-4bY9DclHMEqb7ZA8h96vhw-1; Thu, 01 Oct 2020 09:05:57 -0400
-X-MC-Unique: 4bY9DclHMEqb7ZA8h96vhw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32CD5AE821;
-        Thu,  1 Oct 2020 13:05:56 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDE295C1CF;
-        Thu,  1 Oct 2020 13:05:53 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Wei Huang <whuang2@amd.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] KVM: x86: bump KVM_MAX_CPUID_ENTRIES
-Date:   Thu,  1 Oct 2020 15:05:41 +0200
-Message-Id: <20201001130541.1398392-4-vkuznets@redhat.com>
-In-Reply-To: <20201001130541.1398392-1-vkuznets@redhat.com>
-References: <20201001130541.1398392-1-vkuznets@redhat.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732230AbgJANF7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:05:59 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60BBC0613E4
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 06:05:59 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o5so5111685qke.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 06:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=q1eU55WaiYq5ihsh9bOPBHwp2S1wxvI9ryjmDJ2+rFo=;
+        b=ucw3RiPgMjc04+dk/EjJ22ZmGSReRMg/WD2i57bu9XH0sC1jQ+Y7BscCnd8XKX+smW
+         Y0tAxswDDFAc5ujTcgf/pt/AeZ9ZObjowOx2r0ccf0QVA1FCHy6mtXzegCkhliJcsioA
+         4FS8bJXA0eAN84GYt93cHrZsQ2w0nX20c8KFVO/2UqKAdVe+Z0vMxZLju+ICVgeu2o+S
+         dm+0YaOqqGU8oE8SXMpgUHZqzXjiTPIcH3WKy5rlHEVuHCATkT3QMebuw4qkRNywnTer
+         +tiOWryzz6wRfaFBlsap+A6mapVVS/6mxo8dqs2zZA2jCOiDvkn9XjoWsI5wajp+NqVG
+         ud5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=q1eU55WaiYq5ihsh9bOPBHwp2S1wxvI9ryjmDJ2+rFo=;
+        b=tAKrfD0Bsw2IQ2BObFJVhRvAXPV6wmhcyfJHYmP9ZnVkd+yNvRyUafIF1eEIDUfAyy
+         0QWygN/fahkma/BEy+e1VgrEQPZRqGNowxxRip5SW1Y7VVD1bL8U2ELh/SjH2CwuUJxi
+         J8/fw7VhP31a4YOMyJxjZGePbYWu3M2K2U32qtKdUZtf4aPaG2l888Pmm+zWA84r4Mjy
+         fHyBYZi989nz6Y2gzsFaPvxTn3hcqD9yqC+WU4V6U/tZ3nAX25V2CpbX1Vv4gISZk4YM
+         eTn5jPzID3R0+bXazLChpOAJnTwVBcVHZt+UygfPZlMTfsRPMe98CZK9afgGsZ9uvTD2
+         4jhw==
+X-Gm-Message-State: AOAM533ru9+VFDHSdlazqRwgxKxL+OsXsowPEA7ZZKrIHbUZibdJeeKF
+        /cszpVo63eAfWPY8PrnYdcqe6u259DyB0HUPWHBQ1Q==
+X-Google-Smtp-Source: ABdhPJxoNi3A0iIn8S36y2UPdzAdaXTwkptOY34WGlEaili7XJhcivxY9F7KBM3sH3737tehdlfk+KAbWNHNcrMqpiY=
+X-Received: by 2002:a37:a785:: with SMTP id q127mr7355005qke.256.1601557558431;
+ Thu, 01 Oct 2020 06:05:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <0000000000001fe79005afbf52ea@google.com> <20200930165756.GQ6756@twin.jikos.cz>
+ <20200930180522.GR6756@twin.jikos.cz>
+In-Reply-To: <20200930180522.GR6756@twin.jikos.cz>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 1 Oct 2020 15:05:44 +0200
+Message-ID: <CACT4Y+b6ctH447Hy9JuP1hF5MSV368WAB2tXz8xfi-5ZM-=tOg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in btrfs_scan_one_device
+To:     dsterba@suse.cz,
+        syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As vcpu->arch.cpuid_entries is now allocated dynamically, the only
-remaining use for KVM_MAX_CPUID_ENTRIES is to check KVM_SET_CPUID/
-KVM_SET_CPUID2 input for sanity. Since it was reported that the
-current limit (80) is insufficient for some CPUs, bump
-KVM_MAX_CPUID_ENTRIES and use an arbitrary value '256' as the new
-limit.
+On Wed, Sep 30, 2020 at 8:06 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Wed, Sep 30, 2020 at 06:57:56PM +0200, David Sterba wrote:
+> > On Sun, Sep 20, 2020 at 07:12:14AM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=10a0a8bb900000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
+> >
+> > #syz fix: btrfs: fix overflow when copying corrupt csums for a message
+>
+> Johannes spotted that this is not the right fix for this report, I don't
+> know how to tell syzbot to revert the 'fix:' command, there isn't
+> 'unfix' (like there's 'undup').
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/kvm_host.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi David,
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7d259e21ea04..f6d6df64e63a 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -133,7 +133,7 @@ static inline gfn_t gfn_to_index(gfn_t gfn, gfn_t base_gfn, int level)
- #define KVM_NUM_MMU_PAGES (1 << KVM_MMU_HASH_SHIFT)
- #define KVM_MIN_FREE_MMU_PAGES 5
- #define KVM_REFILL_PAGES 25
--#define KVM_MAX_CPUID_ENTRIES 80
-+#define KVM_MAX_CPUID_ENTRIES 256
- #define KVM_NR_FIXED_MTRR_REGION 88
- #define KVM_NR_VAR_MTRR 8
- 
--- 
-2.25.4
+I've added "unfix" command:
+https://github.com/google/syzkaller/pull/2156
 
+Let's give it a try:
+#syz unfix
+
+Thanks
