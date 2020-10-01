@@ -2,332 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01201280B65
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41A6280B6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 01:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733222AbgJAXmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 19:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47214 "EHLO mail.kernel.org"
+        id S1733192AbgJAXs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 19:48:29 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:16459 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727713AbgJAXmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 19:42:01 -0400
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+        id S1727780AbgJAXs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 19:48:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601596102; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=6GE3EtQgnkmIsP2dtiobgWeVOTWXks2cDd33yl18lEk=; b=rpYv0aKQpRy4LKQR2p+h5KCFsXzQXVO/OTSYCcEcW0DOtdfC8B4vFnllxoWBm2I7EzzDuSLS
+ RvVPvQ1BngaVRiztilk59nX4vO4bXDEK3Csk3rVOUijfOoC9980fxQD+gROTrjUVy1V4o7/c
+ fmJV1+AtqxqkwgG6vOcwdqFrHCs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f766ab3ebd6fbc87991470d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 23:48:03
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 44D1FC433FE; Thu,  1 Oct 2020 23:48:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 843D92075F
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601595720;
-        bh=1G4bCgqGLCXb4ju+bQWFF0z6CCt2MlkQllCKDVS80jE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sVxfjefedJCwWRDjVFkiuwtCH70eKQ37jAsxZRfCNrkNQIISxl5VfQfxN63GA3/A1
-         b0wNYEV47wDqk4UxFWY1VjzNQEtw6RE222zluJalQ+8xrKlcmHH1Y5gAWMDB/HBm4z
-         m3zv1MfugpnYTrbYNW6Rbaet3/tdi3E7mLAYMeKc=
-Received: by mail-wr1-f42.google.com with SMTP id e16so576633wrm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 16:42:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530p7UUljW36SwnaYY3jROJnzyS7APIify0rYJFprr37WgFxUVCs
-        GKjFTzUnroFlb6jSlaPLndT5TdkOZqIXM/HcCEDXwQ==
-X-Google-Smtp-Source: ABdhPJw9P1JlgLSOjiD4lZbkRNbt3m6RHtpuLTYac1loz7Bcb4RQ4U0MPYpGkFeL158jw59kT81juIcRiwvCjdSxqcc=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr11378320wrb.70.1601595719017;
- Thu, 01 Oct 2020 16:41:59 -0700 (PDT)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 408C0C433C8;
+        Thu,  1 Oct 2020 23:48:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 408C0C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Thu, 1 Oct 2020 17:47:58 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] drm/msm: add MSM_BO_CACHED_COHERENT
+Message-ID: <20201001234758.GH29832@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Shawn Guo <shawn.guo@linaro.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-2-jonathan@marek.ca>
 MIME-Version: 1.0
-References: <20201001203913.9125-1-chang.seok.bae@intel.com> <20201001203913.9125-8-chang.seok.bae@intel.com>
-In-Reply-To: <20201001203913.9125-8-chang.seok.bae@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 1 Oct 2020 16:41:47 -0700
-X-Gmail-Original-Message-ID: <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
-Message-ID: <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 07/22] x86/fpu/xstate: Introduce helpers to manage an
- xstate area dynamically
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001002709.21361-2-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 1:42 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
->
-> task->fpu has a buffer to keep the extended register states, but it is not
-> expandable at runtime. Introduce runtime methods and new fpu struct fields
-> to support the expansion.
->
-> fpu->state_mask indicates the saved states per task and fpu->state_ptr
-> points the dynamically allocated area.
->
-> alloc_xstate_area() uses vmalloc() for its scalability. However, set a
-> threshold (64KB) to watch out a potential need for an alternative
-> mechanism.
->
-> Also, introduce a new helper -- get_xstate_size() to calculate the area
-> size.
->
-> No functional change until the kernel supports dynamic user states.
->
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Cc: x86@kernel.org
-> Cc: linux-kernel@vger.kernel.org
+On Wed, Sep 30, 2020 at 08:27:04PM -0400, Jonathan Marek wrote:
+> Add a new cache mode for creating coherent host-cached BOs.
+
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
->  arch/x86/include/asm/fpu/types.h  |  29 +++++--
->  arch/x86/include/asm/fpu/xstate.h |   3 +
->  arch/x86/kernel/fpu/core.c        |   3 +
->  arch/x86/kernel/fpu/xstate.c      | 124 ++++++++++++++++++++++++++++++
->  4 files changed, 154 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-> index c87364ea6446..4b7756644824 100644
-> --- a/arch/x86/include/asm/fpu/types.h
-> +++ b/arch/x86/include/asm/fpu/types.h
-> @@ -327,14 +327,33 @@ struct fpu {
->          */
->         unsigned long                   avx512_timestamp;
->
-> +       /*
-> +        * @state_mask:
-> +        *
-> +        * The state component bitmap. It indicates the saved xstate in
-> +        * either @state or @state_ptr. The map value starts to be aligned
-> +        * with @state and then with @state_ptr once it is in use.
-> +        */
-> +       u64                             state_mask;
+>  drivers/gpu/drm/msm/adreno/adreno_device.c | 1 +
+>  drivers/gpu/drm/msm/msm_drv.h              | 1 +
+>  drivers/gpu/drm/msm/msm_gem.c              | 8 ++++++++
+>  include/uapi/drm/msm_drm.h                 | 5 ++---
+>  4 files changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> index 9eeb46bf2a5d..2aa707546254 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+> @@ -410,6 +410,7 @@ static int adreno_bind(struct device *dev, struct device *master, void *data)
+>  		config.rev.minor, config.rev.patchid);
+>  
+>  	priv->is_a2xx = config.rev.core == 2;
+> +	priv->has_cached_coherent = config.rev.core >= 6;
+>  
+>  	gpu = info->init(drm);
+>  	if (IS_ERR(gpu)) {
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 2c3225bc1794..6384844b1696 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -167,6 +167,7 @@ struct msm_drm_private {
+>  	struct msm_file_private *lastctx;
+>  	/* gpu is only set on open(), but we need this info earlier */
+>  	bool is_a2xx;
+> +	bool has_cached_coherent;
+>  
+>  	struct drm_fb_helper *fbdev;
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+> index b2f49152b4d4..ad9a627493ae 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.c
+> +++ b/drivers/gpu/drm/msm/msm_gem.c
+> @@ -431,6 +431,9 @@ static int msm_gem_pin_iova(struct drm_gem_object *obj,
+>  	if (msm_obj->flags & MSM_BO_MAP_PRIV)
+>  		prot |= IOMMU_PRIV;
+>  
+> +	if (msm_obj->flags & MSM_BO_CACHED_COHERENT)
+> +		prot |= IOMMU_CACHE;
 > +
-> +       /*
-> +        * @state_ptr:
-> +        *
-> +        * Copy of all extended register states, in a dynamically-allocated
-> +        * area, we save and restore over context switches. When a task is
-> +        * using extended features, the register state is always the most
-> +        * current. This state copy is more recent than @state. If the task
-> +        * context-switches away, they get saved here, representing the xstate.
-> +        */
-> +       union fpregs_state              *state_ptr;
-> +
->         /*
->          * @state:
->          *
-> -        * In-memory copy of all FPU registers that we save/restore
-> -        * over context switches. If the task is using the FPU then
-> -        * the registers in the FPU are more recent than this state
-> -        * copy. If the task context-switches away then they get
-> -        * saved here and represent the FPU state.
-> +        * Copy of some extended register state that we save and restore
-> +        * over context switches. If a task uses a dynamically-allocated
-> +        * area, @state_ptr, then it has a more recent state copy than this.
-> +        * This copy follows the same attributes as described for @state_ptr.
->          */
->         union fpregs_state              state;
->         /*
-> diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> index 9aad91c0725b..37728bfcb71e 100644
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -103,6 +103,9 @@ extern void __init update_regset_xstate_info(unsigned int size,
->                                              u64 xstate_mask);
->
->  void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
-> +int alloc_xstate_area(struct fpu *fpu, u64 mask, unsigned int *alloc_size);
-> +void free_xstate_area(struct fpu *fpu);
-> +
->  const void *get_xsave_field_ptr(int xfeature_nr);
->  int using_compacted_format(void);
->  int xfeature_size(int xfeature_nr);
-> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 875620fdfe61..e25f7866800e 100644
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -235,6 +235,9 @@ int fpu__copy(struct task_struct *dst, struct task_struct *src)
->          */
->         memset(&dst_fpu->state.xsave, 0, fpu_kernel_xstate_default_size);
->
-> +       dst_fpu->state_mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
-> +       dst_fpu->state_ptr = NULL;
-> +
->         /*
->          * If the FPU registers are not current just memcpy() the state.
->          * Otherwise save current FPU registers directly into the child's FPU
-> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> index 6e0d8a9699ed..af60332aafef 100644
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -10,6 +10,7 @@
->  #include <linux/pkeys.h>
->  #include <linux/seq_file.h>
->  #include <linux/proc_fs.h>
-> +#include <linux/vmalloc.h>
->
->  #include <asm/fpu/api.h>
->  #include <asm/fpu/internal.h>
-> @@ -69,6 +70,7 @@ static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] =
->  static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
->  static unsigned int xstate_comp_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
->  static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
-> +static bool xstate_aligns[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = false};
->
->  /*
->   * The XSAVE area of kernel can be in standard or compacted format;
-> @@ -128,6 +130,48 @@ static bool xfeature_is_supervisor(int xfeature_nr)
->         return ecx & 1;
->  }
->
-> +/*
-> + * Available once those arrays for the offset, size, and alignment info are set up,
-> + * by setup_xstate_features().
-> + */
-> +static unsigned int get_xstate_size(u64 mask)
-> +{
-> +       unsigned int size;
-> +       u64 xmask;
-> +       int i, nr;
-> +
-> +       if (!mask)
-> +               return 0;
-> +       else if (mask == (xfeatures_mask_all & ~xfeatures_mask_user_dynamic))
-> +               return fpu_kernel_xstate_default_size;
-> +       else if (mask == xfeatures_mask_all)
-> +               return fpu_kernel_xstate_max_size;
-> +
-> +       nr = fls64(mask) - 1;
-> +
-> +       if (!using_compacted_format())
-> +               return xstate_offsets[nr] + xstate_sizes[nr];
-> +
-> +       xmask = BIT_ULL(nr + 1) - 1;
-> +
-> +       if (mask == (xmask & xfeatures_mask_all))
-> +               return xstate_comp_offsets[nr] + xstate_sizes[nr];
-> +
-> +       /*
-> +        * Calculate the size by summing up each state together, since no known
-> +        * size found with the xstate area format out of the given mask.
-> +        */
-> +       for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
-> +               if (!(mask & BIT_ULL(i)))
-> +                       continue;
-> +
-> +               if (xstate_aligns[i])
-> +                       size = ALIGN(size, 64);
-> +               size += xstate_sizes[i];
-> +       }
-> +       return size;
-> +}
-> +
->  /*
->   * When executing XSAVEOPT (or other optimized XSAVE instructions), if
->   * a processor implementation detects that an FPU state component is still
-> @@ -268,10 +312,12 @@ static void __init setup_xstate_features(void)
->         xstate_offsets[XFEATURE_FP]     = 0;
->         xstate_sizes[XFEATURE_FP]       = offsetof(struct fxregs_state,
->                                                    xmm_space);
-> +       xstate_aligns[XFEATURE_FP]      = true;
->
->         xstate_offsets[XFEATURE_SSE]    = xstate_sizes[XFEATURE_FP];
->         xstate_sizes[XFEATURE_SSE]      = sizeof_field(struct fxregs_state,
->                                                        xmm_space);
-> +       xstate_aligns[XFEATURE_SSE]     = true;
->
->         for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
->                 if (!xfeature_enabled(i))
-> @@ -289,6 +335,7 @@ static void __init setup_xstate_features(void)
->                         continue;
->
->                 xstate_offsets[i] = ebx;
-> +               xstate_aligns[i] = (ecx & 2) ? true : false;
->
->                 /*
->                  * In our xstate size checks, we assume that the highest-numbered
-> @@ -753,6 +800,9 @@ static bool is_supported_xstate_size(unsigned int test_xstate_size)
->         return false;
->  }
->
-> +/* The watched threshold size of dynamically allocated xstate area */
-> +#define XSTATE_AREA_MAX_BYTES          (64 * 1024)
-> +
->  static int __init init_xstate_size(void)
+>  	WARN_ON(!mutex_is_locked(&msm_obj->lock));
+>  
+>  	if (WARN_ON(msm_obj->madv != MSM_MADV_WILLNEED))
+> @@ -998,6 +1001,7 @@ static int msm_gem_new_impl(struct drm_device *dev,
+>  		uint32_t size, uint32_t flags,
+>  		struct drm_gem_object **obj)
 >  {
->         /* Recompute the context size for enabled features: */
-> @@ -777,6 +827,14 @@ static int __init init_xstate_size(void)
->         if (!is_supported_xstate_size(fpu_kernel_xstate_default_size))
->                 return -EINVAL;
->
-> +       /*
-> +        * When observing the allocation goes beyond the threshold, it is better to consider
-> +        * switching a better scalable mechanism than the current.
-> +        */
-> +       if (fpu_kernel_xstate_max_size > XSTATE_AREA_MAX_BYTES)
-> +               pr_warn("x86/fpu: xstate buffer too large (%u > %u)\n",
-> +                       fpu_kernel_xstate_max_size, XSTATE_AREA_MAX_BYTES);
-> +
->         /*
->          * User space is always in standard format.
->          */
-> @@ -867,6 +925,12 @@ void __init fpu__init_system_xstate(void)
->         if (err)
->                 goto out_disable;
->
-> +       /*
-> +        * At this point, it passed the size sanity check. Have the init_task take
-> +        * the feature mask.
-> +        */
-> +       current->thread.fpu.state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
-> +
->         /*
->          * Update info used for ptrace frames; use standard-format size and no
->          * supervisor xstates:
-> @@ -1086,6 +1150,66 @@ static inline bool xfeatures_mxcsr_quirk(u64 xfeatures)
->         return true;
->  }
->
-> +void free_xstate_area(struct fpu *fpu)
-> +{
-> +       vfree(fpu->state_ptr);
-> +}
-> +
-> +/*
-> + * Allocate a new xstate area with a calculated size, based on the given bit value.
-> + *
-> + * No mechanism implemented yet to shrink or reclaim the xstate area on the fly,
-> + * the need of which is subject to the real usage.
-> + */
-> +int alloc_xstate_area(struct fpu *fpu, u64 mask, unsigned int *alloc_size)
-> +{
-> +       union fpregs_state *state_ptr;
-> +       unsigned int oldsz, newsz;
-> +       u64 state_mask;
-> +
-> +       state_mask = fpu->state_mask | mask;
-> +
-> +       oldsz = get_xstate_size(fpu->state_mask);
-> +       newsz = get_xstate_size(state_mask);
-> +
-> +       if (oldsz >= newsz)
-> +               return 0;
-> +
-> +       if (newsz > fpu_kernel_xstate_max_size) {
-> +               pr_warn_once("x86/fpu: state buffer too large (%u > %u bytes)\n",
-> +                            newsz, fpu_kernel_xstate_max_size);
-> +               XSTATE_WARN_ON(1);
-> +               return 0;
-> +       }
-> +
-> +       /*
-> +        * The caller may be under interrupt disabled condition. Ensure interrupt
-> +        * allowance before the memory allocation, which may involve with page faults.
-> +        */
-> +       local_irq_enable();
-> +       /* We need 64B aligned pointer, but vmalloc() returns a page-aligned address */
-> +       state_ptr = vmalloc(newsz);
+> +	struct msm_drm_private *priv = dev->dev_private;
+>  	struct msm_gem_object *msm_obj;
+>  
+>  	switch (flags & MSM_BO_CACHE_MASK) {
+> @@ -1005,6 +1009,10 @@ static int msm_gem_new_impl(struct drm_device *dev,
+>  	case MSM_BO_CACHED:
+>  	case MSM_BO_WC:
+>  		break;
+> +	case MSM_BO_CACHED_COHERENT:
+> +		if (priv->has_cached_coherent)
+> +			break;
+> +		/* fallthrough */
 
-I'm speechless.
+It confused me that this kind of implicitly fell into the else clause in
+msm_gem_mmap_obj, but I'm on board. This is a good solution since it only allows
+I/O coherence with caching.
 
-First, you can't just enable IRQs here.  If IRQs are off, they're off
-for a reason.  Secondly, if they're *on*, you just forgot that fact.
+>  	default:
+>  		DRM_DEV_ERROR(dev->dev, "invalid cache flag: %x\n",
+>  				(flags & MSM_BO_CACHE_MASK));
+> diff --git a/include/uapi/drm/msm_drm.h b/include/uapi/drm/msm_drm.h
+> index a6c1f3eb2623..474497e8743a 100644
+> --- a/include/uapi/drm/msm_drm.h
+> +++ b/include/uapi/drm/msm_drm.h
+> @@ -94,12 +94,11 @@ struct drm_msm_param {
+>  #define MSM_BO_CACHED        0x00010000
+>  #define MSM_BO_WC            0x00020000
+>  #define MSM_BO_UNCACHED      0x00040000
+> +#define MSM_BO_CACHED_COHERENT 0x080000
+>  
+>  #define MSM_BO_FLAGS         (MSM_BO_SCANOUT | \
+>                                MSM_BO_GPU_READONLY | \
+> -                              MSM_BO_CACHED | \
+> -                              MSM_BO_WC | \
+> -                              MSM_BO_UNCACHED)
+> +                              MSM_BO_CACHE_MASK)
+>  
+>  struct drm_msm_gem_new {
+>  	__u64 size;           /* in */
+> -- 
+> 2.26.1
+> 
 
-And allocating this state from vmalloc() seems questionable.  Why are
-you doing this?
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
