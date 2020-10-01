@@ -2,136 +2,479 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0392280641
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84993280645
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733035AbgJASJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        id S1732974AbgJASKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730029AbgJASJL (ORCPT
+        with ESMTP id S1730116AbgJASKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:09:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633F4C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:09:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id 5so4637844pgf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:09:11 -0700 (PDT)
+        Thu, 1 Oct 2020 14:10:43 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44A0C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:10:42 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m34so4625036pgl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PtuekNoU7BQ4fWy1XFBKnyR+pN5uqF4DdrBhyKg+UhM=;
-        b=Xabcep2JhqLck7//1CRquAZmQYOXu3EpJ669MtMcS89PDB7ToYcTSsFmV42ajY+V7Z
-         9ZX6B+Vzqv9lyFNTmHhPWviy17UBWN6BR3agnBurKZ5lfykjBp+iqmHpvPCbZgN1CBf8
-         yHdjifmzyluVwk24JlHZd4nyiPRN8CbjTjo/rPZkECLadK8z6mX0LQQifbBu+S+qFoeo
-         FjiMKXSC+LFzy476AWpAahvpoqyWvDV11iMF2PaKmibl26QHVCTy86AeREGd8jn7YcW4
-         9OmsREnu7mhjy4sGMbHZmZxa33gmoWUDb7zPd6GcfkCH07wzoyqjPi0+15r1pExIRclb
-         F9hQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5k48lXNCpXrvc//iysJwDBgdFvSGnGwhyGrPtUgyDYg=;
+        b=D9G7o9e5VA684K9qsYwR6hPwEgX/cIjeS8ETcdfwUHesCS4dSmieZiYf1Vv2ZCwHzE
+         ravrrUwiTqvexHirj+tvedRXPtVaEqvWMs+1gAAWNX3I9v5dXCNvRwm8lwFgF114RnnN
+         dTSb3wTofiOBupGiyTk2DRA3P9RFUtIABSc7+Uve7qzCvIn5W2ylnC7ma+425GndZx1u
+         dmFNmw6aVR4G4+NPy5WXcVN43ffnqKKL4db6GwzBSxFOD9lx1Iv+hYMhVBte4TFv908Q
+         2m3pgVsxG2qY9m8PFbD58T6xuXHpePEdvnQhi0H7FagcKuiBDV/FrW9/Gg3nJuxoZDq+
+         wL7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PtuekNoU7BQ4fWy1XFBKnyR+pN5uqF4DdrBhyKg+UhM=;
-        b=TbFv4m/Bsa1wqhJ6cEq+5fp1Se+upxYGYpJgZ8kl2FRdL1POycDqrmkwIe/9KYYpUh
-         nkoZ9Uk+f6qYG5AEuctfY0VwAt7MCxiwf6dfRQ5KIayOor3zUAD7niT/rKlwOVVhXqRP
-         GOHFG0haXbOvfjg2NhU5V9zOcUmUiOikhpF9Ceql93dwyQtILpWwfxfVOeZTPNJwsj6d
-         Boa5e3P7chtcgE1coXION8QvOfcZ1DG4gmHebiNuU5itlJ2y0HHAzVNdov5JxXXuiO+K
-         WgTQkewCI5/q725Zg2c0C/a/G7f8lwAWAGj9szZUDe0r9q2fbmfFcJPxg6Dm/HpMVjSo
-         ILMg==
-X-Gm-Message-State: AOAM530zHMzcQBKPb6+5aTVspetDnWZh5ITTHL0A0rqM695g0gP/ndP+
-        pC7scaSvVtc2TIq1gV3phYw=
-X-Google-Smtp-Source: ABdhPJzHJmF1lu+SRWpH0rtjLB2oVFYm3H6n4cv/c3dkIIDnjTeHT5RLa+NY7PYfMTE3TLudRL7udQ==
-X-Received: by 2002:a17:902:848a:b029:d2:4276:1b00 with SMTP id c10-20020a170902848ab02900d242761b00mr3880436plo.36.1601575750784;
-        Thu, 01 Oct 2020 11:09:10 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id e2sm6072137pgc.29.2020.10.01.11.09.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 11:09:10 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 11:09:08 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
-Message-ID: <20201001180908.GA3159642@ubuntu-m3-large-x86>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
- <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
- <20200929221526.GA1370981@ubuntu-m3-large-x86>
- <20200930140758.gummt3umouva3wyu@gilmour.lan>
- <20200930163823.GA237050@ubuntu-m3-large-x86>
- <eb0c0edaf22404fd69440a85bb78397a14d49ddc.camel@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5k48lXNCpXrvc//iysJwDBgdFvSGnGwhyGrPtUgyDYg=;
+        b=UcYZhH3eggf9FUUoT0gkUc01nVI3BMhHQ7kYItB0U+xDNIUMz1gBMJdX2HBkunWlwu
+         IJfD1N2z9NwECORPLWxJlb3jnXv3rHlGhbT9+c+LKWpB0pXc+CT1iPFRqkk/7xLirjPp
+         JYaKr1CueY2Iz5+CHv/v+qRMekRCrNhRy6swIyM8+oOcfW4/dcOQhcPq9ylic77bBeH9
+         6ZCLoZmA8mI9iwa7L64bisCDkvMmb57uS4FlXukDdgzqq5NZPPeFHe61x1vpOUJDNzpR
+         IDuLwA/Kq+gbK63XiUkQ6rz4LlzXT2UmSTu+mzhzBDU9PZJo8XUm7ITBSGDFuY3VZcPv
+         krEA==
+X-Gm-Message-State: AOAM531J9C6GmNs8QildtEpxb2Nk+H2nSRvgvXq19HrTD9Y+MVgLxqnz
+        sApa85Q1a5HFOXPPQKwsFVKIXQgCN/faTlN2gaxl+g==
+X-Google-Smtp-Source: ABdhPJxccLIPcOzpBV4N/j8IEnFgMupXhkI/8ckY2PjBTKBGzFs0D63OmD8v4Ll/W7SRgv0QPdGARiJNoFWEF3P8rQ4=
+X-Received: by 2002:a65:4481:: with SMTP id l1mr6978077pgq.19.1601575842139;
+ Thu, 01 Oct 2020 11:10:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb0c0edaf22404fd69440a85bb78397a14d49ddc.camel@suse.de>
+References: <20200930222130.4175584-1-kaleshsingh@google.com>
+ <20200930222130.4175584-4-kaleshsingh@google.com> <20201001123651.arcr5gqtia2myt22@black.fi.intel.com>
+ <CAC_TJvft1MfzF0AVBjZ_CCk+NKuwFzjduv5xoG2oLW70FzH8CQ@mail.gmail.com>
+In-Reply-To: <CAC_TJvft1MfzF0AVBjZ_CCk+NKuwFzjduv5xoG2oLW70FzH8CQ@mail.gmail.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Thu, 1 Oct 2020 14:10:31 -0400
+Message-ID: <CAC_TJvdxmz4jX=uKDfgdxXe7Q3+L1wEgarbBp4CcaHXgH0oN+w@mail.gmail.com>
+Subject: Re: [PATCH 3/5] mm: Speedup mremap on 1GB or larger regions
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Chris von Recklinghausen <crecklin@redhat.com>,
+        Jia He <justin.he@arm.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:22:03AM +0200, Nicolas Saenz Julienne wrote:
-> On Wed, 2020-09-30 at 09:38 -0700, Nathan Chancellor wrote:
-> > On Wed, Sep 30, 2020 at 04:07:58PM +0200, Maxime Ripard wrote:
-> > > Hi Nathan,
-> > > 
-> > > On Tue, Sep 29, 2020 at 03:15:26PM -0700, Nathan Chancellor wrote:
-> > > > On Thu, Sep 03, 2020 at 10:01:52AM +0200, Maxime Ripard wrote:
-> > > > > Now that all the drivers have been adjusted for it, let's bring in the
-> > > > > necessary device tree changes.
-> > > > > 
-> > > > > The VEC and PV3 are left out for now, since it will require a more specific
-> > > > > clock setup.
-> > > > > 
-> > > > > Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> > > > > Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> > > > > Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> > > > > Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-> > > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > > 
-> > > > Apologies if this has already been reported or have a solution but this
-> > > > patch (and presumably series) breaks output to the serial console after
-> > > > a certain point during init. On Raspbian, I see systemd startup messages
-> > > > then the output just turns into complete garbage. It looks like this
-> > > > patch is merged first in linux-next, which is why my bisect fell on the
-> > > > DRM merge. I am happy to provide whatever information could be helpful
-> > > > for debugging this. I am on the latest version of the firmware
-> > > > (currently 26620cc9a63c6cb9965374d509479b4ee2c30241).
-> > > 
-> > > Unfortunately, the miniUART is in the same clock tree than the core
-> > > clock and will thus have those kind of issues when the core clock is
-> > > changed (which is also something that one should expect when using the
-> > > DRM or other drivers).
-> > > 
-> > > The only real workaround there would be to switch to one of the PL011
-> > > UARTs. I guess we can also somehow make the UART react to the core clock
-> > > frequency changes, but that's going to require some effort
-> > > 
-> > > Maxime
-> > 
-> > Ack, thank you for the reply! There does not really seem to be a whole
-> > ton of documentation around using one of the other PL011 UARTs so for
-> > now, I will just revert this commit locally.
-> 
-> Nathan, a less intrusive solution would be to add 'core_freq_min=500' into your
-> config.txt.
-> 
-> Funnily enough core_freq=500 doesn't seem to work in that regard. It might be
-> related with what Maxime is commenting.
-> 
-> Regards,
-> Nicolas
-> 
-
-Excellent, thank you for the tip, that worked well!
-
-Cheers,
-Nathan
+On Thu, Oct 1, 2020 at 12:40 PM Kalesh Singh <kaleshsingh@google.com> wrote=
+:
+>
+> On Thu, Oct 1, 2020 at 8:37 AM Kirill A. Shutemov
+> <kirill.shutemov@linux.intel.com> wrote:
+> >
+> > On Wed, Sep 30, 2020 at 10:21:20PM +0000, Kalesh Singh wrote:
+> > > Android needs to move large memory regions for garbage collection.
+> > > Optimize mremap for >=3D 1GB-sized regions by moving at the PUD/PGD
+> > > level if the source and destination addresses are PUD-aligned.
+> > > For CONFIG_PGTABLE_LEVELS =3D=3D 3, moving at the PUD level in effect=
+ moves
+> > > PGD entries, since the PUD entry is =E2=80=9Cfolded back=E2=80=9D ont=
+o the PGD entry.
+> > > Add HAVE_MOVE_PUD so that architectures where moving at the PUD level
+> > > isn't supported/tested can turn this off by not selecting the config.
+> > >
+> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > > ---
+> > >  arch/Kconfig                     |   7 +
+> > >  arch/arm64/include/asm/pgtable.h |   1 +
+> > >  mm/mremap.c                      | 211 ++++++++++++++++++++++++++---=
+--
+> > >  3 files changed, 189 insertions(+), 30 deletions(-)
+> > >
+> > > diff --git a/arch/Kconfig b/arch/Kconfig
+> > > index af14a567b493..5eabaa00bf9b 100644
+> > > --- a/arch/Kconfig
+> > > +++ b/arch/Kconfig
+> > > @@ -602,6 +602,13 @@ config HAVE_IRQ_TIME_ACCOUNTING
+> > >         Archs need to ensure they use a high enough resolution clock =
+to
+> > >         support irq time accounting and then call enable_sched_clock_=
+irqtime().
+> > >
+> > > +config HAVE_MOVE_PUD
+> > > +     bool
+> > > +     help
+> > > +       Architectures that select this are able to move page tables a=
+t the
+> > > +       PUD level. If there are only 3 page table levels, the move ef=
+fectively
+> > > +       happens at the PGD level.
+> > > +
+> > >  config HAVE_MOVE_PMD
+> > >       bool
+> > >       help
+> > > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/as=
+m/pgtable.h
+> > > index d5d3fbe73953..8848125e3024 100644
+> > > --- a/arch/arm64/include/asm/pgtable.h
+> > > +++ b/arch/arm64/include/asm/pgtable.h
+> > > @@ -415,6 +415,7 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+> > >  #define pfn_pud(pfn,prot)    __pud(__phys_to_pud_val((phys_addr_t)(p=
+fn) << PAGE_SHIFT) | pgprot_val(prot))
+> > >
+> > >  #define set_pmd_at(mm, addr, pmdp, pmd)      set_pte_at(mm, addr, (p=
+te_t *)pmdp, pmd_pte(pmd))
+> > > +#define set_pud_at(mm, addr, pudp, pud)      set_pte_at(mm, addr, (p=
+te_t *)pudp, pud_pte(pud))
+> > >
+> > >  #define __p4d_to_phys(p4d)   __pte_to_phys(p4d_pte(p4d))
+> > >  #define __phys_to_p4d_val(phys)      __phys_to_pte_val(phys)
+> >
+> > This doesn't belong to the patch.
+> Good catch. I'll move this into a separate patch.
+> >
+> > > diff --git a/mm/mremap.c b/mm/mremap.c
+> > > index 138abbae4f75..a5a1440bd366 100644
+> > > --- a/mm/mremap.c
+> > > +++ b/mm/mremap.c
+> > > @@ -249,14 +249,167 @@ static bool move_normal_pmd(struct vm_area_str=
+uct *vma, unsigned long old_addr,
+> > >
+> > >       return true;
+> > >  }
+> > > +#else
+> > > +static inline bool move_normal_pmd(struct vm_area_struct *vma, unsig=
+ned long old_addr,
+> > > +               unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pm=
+d)
+> > > +{
+> > > +     return false;
+> > > +}
+> > >  #endif
+> > >
+> > > +#ifdef CONFIG_HAVE_MOVE_PUD
+> > > +static pud_t *get_old_pud(struct mm_struct *mm, unsigned long addr)
+> > > +{
+> > > +     pgd_t *pgd;
+> > > +     p4d_t *p4d;
+> > > +     pud_t *pud;
+> > > +
+> > > +     pgd =3D pgd_offset(mm, addr);
+> > > +     if (pgd_none_or_clear_bad(pgd))
+> > > +             return NULL;
+> > > +
+> > > +     p4d =3D p4d_offset(pgd, addr);
+> > > +     if (p4d_none_or_clear_bad(p4d))
+> > > +             return NULL;
+> > > +
+> > > +     pud =3D pud_offset(p4d, addr);
+> > > +     if (pud_none_or_clear_bad(pud))
+> > > +             return NULL;
+> > > +
+> > > +     return pud;
+> > > +}
+> > > +
+> > > +static pud_t *alloc_new_pud(struct mm_struct *mm, struct vm_area_str=
+uct *vma,
+> > > +                         unsigned long addr)
+> > > +{
+> > > +     pgd_t *pgd;
+> > > +     p4d_t *p4d;
+> > > +     pud_t *pud;
+> > > +
+> > > +     pgd =3D pgd_offset(mm, addr);
+> > > +     p4d =3D p4d_alloc(mm, pgd, addr);
+> > > +     if (!p4d)
+> > > +             return NULL;
+> > > +     pud =3D pud_alloc(mm, p4d, addr);
+> > > +     if (!pud)
+> > > +             return NULL;
+> > > +
+> > > +     return pud;
+> > > +}
+> > > +
+> > > +static bool move_normal_pud(struct vm_area_struct *vma, unsigned lon=
+g old_addr,
+> > > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pu=
+d)
+> > > +{
+> > > +     spinlock_t *old_ptl, *new_ptl;
+> > > +     struct mm_struct *mm =3D vma->vm_mm;
+> > > +     pud_t pud;
+> > > +
+> > > +     /*
+> > > +      * The destination pud shouldn't be established, free_pgtables(=
+)
+> > > +      * should have released it.
+> > > +      */
+> > > +     if (WARN_ON_ONCE(!pud_none(*new_pud)))
+> > > +             return false;
+> > > +
+> > > +     /*
+> > > +      * We don't have to worry about the ordering of src and dst
+> > > +      * ptlocks because exclusive mmap_lock prevents deadlock.
+> > > +      */
+> > > +     old_ptl =3D pud_lock(vma->vm_mm, old_pud);
+> > > +     new_ptl =3D pud_lockptr(mm, new_pud);
+> > > +     if (new_ptl !=3D old_ptl)
+> > > +             spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
+> > > +
+> > > +     /* Clear the pud */
+> > > +     pud =3D *old_pud;
+> > > +     pud_clear(old_pud);
+> > > +
+> > > +     VM_BUG_ON(!pud_none(*new_pud));
+> > > +
+> > > +     /* Set the new pud */
+> > > +     set_pud_at(mm, new_addr, new_pud, pud);
+> > > +     flush_tlb_range(vma, old_addr, old_addr + PUD_SIZE);
+> > > +     if (new_ptl !=3D old_ptl)
+> > > +             spin_unlock(new_ptl);
+> > > +     spin_unlock(old_ptl);
+> > > +
+> > > +     return true;
+> > > +}
+> > > +#else
+> > > +static inline bool move_normal_pud(struct vm_area_struct *vma, unsig=
+ned long old_addr,
+> > > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pu=
+d)
+> > > +{
+> > > +     return false;
+> > > +}
+> > > +#endif
+> > > +
+> > > +enum pgt_entry {
+> > > +     NORMAL_PMD,
+> > > +     HPAGE_PMD,
+> > > +     NORMAL_PUD,
+> > > +};
+> > > +
+> > > +/*
+> > > + * Returns an extent of the corresponding size for the pgt_entry spe=
+cified if valid.
+> > > + * Else returns a smaller extent bounded by the end of the source an=
+d destination
+> > > + * pgt_entry. Returns 0 if an invalid pgt_entry is specified.
+> > > + */
+> > > +static unsigned long get_extent(enum pgt_entry entry, unsigned long =
+old_addr,
+> > > +                     unsigned long old_end, unsigned long new_addr)
+> > > +{
+> > > +     unsigned long next, extent, mask, size;
+> > > +
+> > > +     if (entry =3D=3D NORMAL_PMD || entry =3D=3D HPAGE_PMD) {
+> > > +             mask =3D PMD_MASK;
+> > > +             size =3D PMD_SIZE;
+> > > +     } else if (entry =3D=3D NORMAL_PUD) {
+> > > +             mask =3D PUD_MASK;
+> > > +             size =3D PUD_SIZE;
+> > > +     } else
+> > > +             return 0;
+> > > +
+> > > +     next =3D (old_addr + size) & mask;
+> > > +     /* even if next overflowed, extent below will be ok */
+> > > +     extent =3D (next > old_end) ? old_end - old_addr : next - old_a=
+ddr;
+> > > +     next =3D (new_addr + size) & mask;
+> > > +     if (extent > next - new_addr)
+> > > +             extent =3D next - new_addr;
+> > > +     return extent;
+> > > +}
+> > > +
+> > > +/*
+> > > + * Attempts to speedup the move by moving entry at the level corresp=
+onding to
+> > > + * pgt_entry. Returns true if the move was successful, else false.
+> > > + */
+> > > +static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_stru=
+ct *vma,
+> > > +                     unsigned long old_addr, unsigned long new_addr,=
+ void *old_entry,
+> > > +                     void *new_entry, bool need_rmap_locks)
+> > > +{
+> > > +     bool moved =3D false;
+> > > +
+> > > +     /* See comment in move_ptes() */
+> > > +     if (need_rmap_locks)
+> > > +             take_rmap_locks(vma);
+> > > +     if (entry =3D=3D NORMAL_PMD)
+> > > +             moved =3D  move_normal_pmd(vma, old_addr, new_addr, old=
+_entry, new_entry);
+> > > +     else if (entry =3D=3D NORMAL_PUD)
+> > > +             moved =3D  move_normal_pud(vma, old_addr, new_addr, old=
+_entry, new_entry);
+> > > +     else if (entry =3D=3D HPAGE_PMD)
+> > > +             moved =3D  move_huge_pmd(vma, old_addr, new_addr, old_e=
+ntry, new_entry);
+> > > +     else
+> > > +             WARN_ON_ONCE(1);
+> >
+> > BUILD_BUG() should work.
+Please ignore the previous comment. You are right, BUILD_BUG() would work.
+> This doesn't get caught at compile time since entry isn't a constant.
+> >
+> > And why not use switch() instead of ifs.
+> I'll move to switch() in the next version.
+> Thanks, Kalesh
+> >
+> > > +     if (need_rmap_locks)
+> > > +             drop_rmap_locks(vma);
+> > > +
+> > > +     return moved;
+> > > +}
+> > > +
+> > >  unsigned long move_page_tables(struct vm_area_struct *vma,
+> > >               unsigned long old_addr, struct vm_area_struct *new_vma,
+> > >               unsigned long new_addr, unsigned long len,
+> > >               bool need_rmap_locks)
+> > >  {
+> > > -     unsigned long extent, next, old_end;
+> > > +     unsigned long extent, old_end;
+> > >       struct mmu_notifier_range range;
+> > >       pmd_t *old_pmd, *new_pmd;
+> > >
+> > > @@ -269,14 +422,27 @@ unsigned long move_page_tables(struct vm_area_s=
+truct *vma,
+> > >
+> > >       for (; old_addr < old_end; old_addr +=3D extent, new_addr +=3D =
+extent) {
+> > >               cond_resched();
+> > > -             next =3D (old_addr + PMD_SIZE) & PMD_MASK;
+> > > -             /* even if next overflowed, extent below will be ok */
+> > > -             extent =3D next - old_addr;
+> > > -             if (extent > old_end - old_addr)
+> > > -                     extent =3D old_end - old_addr;
+> > > -             next =3D (new_addr + PMD_SIZE) & PMD_MASK;
+> > > -             if (extent > next - new_addr)
+> > > -                     extent =3D next - new_addr;
+> > > +#ifdef CONFIG_HAVE_MOVE_PUD
+> > > +             /*
+> > > +              * If extent is PUD-sized try to speed up the move by m=
+oving at the
+> > > +              * PUD level if possible.
+> > > +              */
+> > > +             extent =3D get_extent(NORMAL_PUD, old_addr, old_end, ne=
+w_addr);
+> > > +             if (extent =3D=3D PUD_SIZE) {
+> > > +                     pud_t *old_pud, *new_pud;
+> > > +
+> > > +                     old_pud =3D get_old_pud(vma->vm_mm, old_addr);
+> > > +                     if (!old_pud)
+> > > +                             continue;
+> > > +                     new_pud =3D alloc_new_pud(vma->vm_mm, vma, new_=
+addr);
+> > > +                     if (!new_pud)
+> > > +                             break;
+> > > +                     if (move_pgt_entry(NORMAL_PUD, vma, old_addr, n=
+ew_addr,
+> > > +                                        old_pud, new_pud, need_rmap_=
+locks))
+> > > +                             continue;
+> > > +             }
+> > > +#endif
+> > > +             extent =3D get_extent(NORMAL_PMD, old_addr, old_end, ne=
+w_addr);
+> > >               old_pmd =3D get_old_pmd(vma->vm_mm, old_addr);
+> > >               if (!old_pmd)
+> > >                       continue;
+> > > @@ -284,18 +450,10 @@ unsigned long move_page_tables(struct vm_area_s=
+truct *vma,
+> > >               if (!new_pmd)
+> > >                       break;
+> > >               if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) |=
+| pmd_devmap(*old_pmd)) {
+> > > -                     if (extent =3D=3D HPAGE_PMD_SIZE) {
+> > > -                             bool moved;
+> > > -                             /* See comment in move_ptes() */
+> > > -                             if (need_rmap_locks)
+> > > -                                     take_rmap_locks(vma);
+> > > -                             moved =3D move_huge_pmd(vma, old_addr, =
+new_addr,
+> > > -                                                   old_pmd, new_pmd)=
+;
+> > > -                             if (need_rmap_locks)
+> > > -                                     drop_rmap_locks(vma);
+> > > -                             if (moved)
+> > > -                                     continue;
+> > > -                     }
+> > > +                     if (extent =3D=3D HPAGE_PMD_SIZE &&
+> > > +                         move_pgt_entry(HPAGE_PMD, vma, old_addr, ne=
+w_addr, old_pmd,
+> > > +                                        new_pmd, need_rmap_locks))
+> > > +                             continue;
+> > >                       split_huge_pmd(vma, old_pmd, old_addr);
+> > >                       if (pmd_trans_unstable(old_pmd))
+> > >                               continue;
+> > > @@ -305,15 +463,8 @@ unsigned long move_page_tables(struct vm_area_st=
+ruct *vma,
+> > >                        * If the extent is PMD-sized, try to speed the=
+ move by
+> > >                        * moving at the PMD level if possible.
+> > >                        */
+> > > -                     bool moved;
+> > > -
+> > > -                     if (need_rmap_locks)
+> > > -                             take_rmap_locks(vma);
+> > > -                     moved =3D move_normal_pmd(vma, old_addr, new_ad=
+dr,
+> > > -                                             old_pmd, new_pmd);
+> > > -                     if (need_rmap_locks)
+> > > -                             drop_rmap_locks(vma);
+> > > -                     if (moved)
+> > > +                     if (move_pgt_entry(NORMAL_PMD, vma, old_addr, n=
+ew_addr, old_pmd,
+> > > +                                        new_pmd, need_rmap_locks))
+> > >                               continue;
+> > >  #endif
+> > >               }
+> > > --
+> > > 2.28.0.709.gb0816b6eb0-goog
+> > >
+> >
+> > --
+> >  Kirill A. Shutemov
+> >
+> > --
+> > To unsubscribe from this group and stop receiving emails from it, send =
+an email to kernel-team+unsubscribe@android.com.
+> >
