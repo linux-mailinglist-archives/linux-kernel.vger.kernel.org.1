@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0D527FE11
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F00427FE16
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731904AbgJALEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731548AbgJALEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:04:30 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE1DC0613D0;
-        Thu,  1 Oct 2020 04:04:28 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u3so1691832pjr.3;
-        Thu, 01 Oct 2020 04:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kwUefxEc2VKbwnC6MpLeVeUZR7V/IW6FImc8bCJZL2g=;
-        b=aNg1K8NEZunLQmWhVbBO36QAXTlfpFp49OAdMVRRVb5ZH4Zoqt2Be1/6Wf/TzDVNp9
-         37AcV94pUrFEaRto2MR9IFK40gmn8xCD+TvadaEemWr7v7Vj76aOWSWlkhQrF5po+UVn
-         ztfTWAo0xzGVWkcDYAjYRjPhC7LZhF4/6rsgdUycBe653d+Dl0L6IVmGN5E/Pby3IVEN
-         Msv9wcU0LlkqzQLKJ8vbt+kZ178nZpArUaWVHeGQ47AB0PXjPLi3GsLJ6a8Q7GzskKaW
-         F3fV1FL+/2ioSnI0s+hwKQ8X1VljKEHYeBbQ5ZiHj2atKjLaWnAtRcvhbogn7yJdx5xz
-         xBqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kwUefxEc2VKbwnC6MpLeVeUZR7V/IW6FImc8bCJZL2g=;
-        b=g53jLMYxrOlSMFGrlD/J+THYmt0dOJcRZSK2zKMO0AjPSm96l3KRePIHAOjsH29Po0
-         W9nzkT6ANgZl3UcmsndF7tEN+LidJJIMnYcjYeRHeQ1LWGqFKOdIpynmet9gahNXJFgl
-         GXF+l4JPVpffyx4gkLKKORpx6l6nYXUYeilFfLw6b1+EwD/7/V7l3SPdJOxF7cBmrS/a
-         mUxhquzNx5KMMGRQfH9JaqKP7VNn5P1uFOGifUjb73sZ5sb2xvRHzZ5tejfJh9DtmZ0G
-         xzoQ+xew/x1sJ7Ti//ZV8cW3BZ08oiJtA+NlXMMJl2HE1qFV4XvM80eRsg7GwNZUNNzW
-         t16Q==
-X-Gm-Message-State: AOAM531tZKRnGsqzrtnRJTl5jgN4v9Wm+KQT2iOmNmLO9VYpkf2qvbPZ
-        vwm/6TzXpCvvNE9ni0Cikas=
-X-Google-Smtp-Source: ABdhPJzLpth+rE+tUrfWWYVadP7gpURbzlQAvd7inBklRMAZfhnIqldBIWQKgfle0cwSrKp6IwwU0w==
-X-Received: by 2002:a17:90a:fe07:: with SMTP id ck7mr6542657pjb.20.1601550268351;
-        Thu, 01 Oct 2020 04:04:28 -0700 (PDT)
-Received: from Asurada (c-73-162-191-63.hsd1.ca.comcast.net. [73.162.191.63])
-        by smtp.gmail.com with ESMTPSA id z6sm4446676pgz.87.2020.10.01.04.04.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 01 Oct 2020 04:04:28 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 04:04:25 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20201001110425.GB1272@Asurada>
-References: <20200930084258.25493-3-nicoleotsuka@gmail.com>
- <20200930153131.GB3833404@ulmo>
- <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
- <20200930213244.GA10573@Asurada-Nvidia>
- <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
- <20201001012630.GA28240@Asurada-Nvidia>
- <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
- <20201001024850.GA28456@Asurada-Nvidia>
- <20201001102316.GF3919720@ulmo>
+        id S1731959AbgJALFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:05:22 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:41896 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731839AbgJALFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:05:21 -0400
+Received: from zn.tnic (p200300ec2f089d0086f50977b536c1c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:9d00:86f5:977:b536:c1c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5551A1EC04B9;
+        Thu,  1 Oct 2020 13:05:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601550320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9c/l0kmClTAlJvD865tYjP10jYTfLqBs8vejfOpvoT4=;
+        b=j/AbL0RwAq2++eRYzmx63l1TDHmKg/0tgsz+0kUUrORBXneDyoXc966/ag2axOHxyLtxVT
+        SGLOrFdgBFy5qcm7oICYTxyahmmDZkwZ5hbu3ivexYbXBXXG8Fn537oJ991Zo6WzKZvj6j
+        b5ebJvBT21yLjw2ICiHL7WxjGNBbkOQ=
+Date:   Thu, 1 Oct 2020 13:05:12 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20201001110512.GB17683@zn.tnic>
+References: <CACT4Y+bPFASnmFRKpQ=KY1z+RnTbGmkPU3aikzdXZpKkV03D9A@mail.gmail.com>
+ <20200928085401.GE1685@zn.tnic>
+ <CACT4Y+Z4Y6SJJ6iYBhVRiknrWBAD6gGhQXiXLhxPniDNBFJGsA@mail.gmail.com>
+ <20200928202353.GI1685@zn.tnic>
+ <20200929083336.GA21110@zn.tnic>
+ <CACT4Y+bfKwoZe3SC-BKJkOET1GxGp9tCpLzkae8q1sjWYnmgmw@mail.gmail.com>
+ <20200930161711.GH6810@zn.tnic>
+ <CACT4Y+Zc7kD431Aed49U4R6cqzWGAWqEXevnheRHKQRQoEnh7w@mail.gmail.com>
+ <20200930163120.GJ6810@zn.tnic>
+ <CACT4Y+amigeTPFtwEgbeOGGTiRXFOVZauhOhQCz9CQ70HM17Ow@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201001102316.GF3919720@ulmo>
-User-Agent: Mutt/1.5.22 (2013-10-16)
+In-Reply-To: <CACT4Y+amigeTPFtwEgbeOGGTiRXFOVZauhOhQCz9CQ70HM17Ow@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:23:16PM +0200, Thierry Reding wrote:
- > > >>>>>> It looks to me like the only reason why you need this new global API is
-> > > >>>>>> because PCI devices may not have a device tree node with a phandle to
-> > > >>>>>> the IOMMU. However, SMMU support for PCI will only be enabled if the
-> > > >>>>>> root complex has an iommus property, right? In that case, can't we
-> > > >>>>>> simply do something like this:
-> > > >>>>>>
-> > > >>>>>> 	if (dev_is_pci(dev))
-> > > >>>>>> 		np = find_host_bridge(dev)->of_node;
-> > > >>>>>> 	else
-> > > >>>>>> 		np = dev->of_node;
+On Thu, Oct 01, 2020 at 12:23:08PM +0200, Dmitry Vyukov wrote:
+> I've prepared a change that removes rodata=n:
+> https://github.com/google/syzkaller/pull/2155
 
-> > I personally am not a fan of adding a path for PCI device either,
-> > since PCI/IOMMU cores could have taken care of it while the same
-> > path can't be used for other buses.
-> 
-> There's already plenty of other drivers that do something similar to
-> this. Take a look at the arm-smmu driver, for example, which seems to be
-> doing exactly the same thing to finding the right device tree node to
-> look at (see dev_get_dev_node() in drivers/iommu/arm-smmu/arm-smmu.c).
+Looks good.
 
-Hmm..okay..that is quite convincing then...
+> I think we will be able to indirectly evaluate if it helps or not over
+> some period of time based on occurrence of any new similar crashes.
 
-> > If we can't come to an agreement on globalizing mc pointer, would
-> > it be possible to pass tegra_mc_driver through tegra_smmu_probe()
-> > so we can continue to use driver_find_device_by_fwnode() as v1?
-> > 
-> > v1: https://lkml.org/lkml/2020/9/26/68
-> 
-> tegra_smmu_probe() already takes a struct tegra_mc *. Did you mean
-> tegra_smmu_probe_device()? I don't think we can do that because it isn't
+Yap, that would be interesting to see whether those corruptions
+disappear. If they do, you probably should start getting #PFs of writes
+to RO memory, instead, resulting from those stray writes. We'll see.
 
-I was saying to have a global parent_driver pointer: similar to
-my v1, yet rather than "extern" the tegra_mc_driver, we pass it
-through egra_smmu_probe() and store it in a static global value
-so as to call tegra_smmu_get_by_fwnode() in ->probe_device().
+Thx.
 
-Though I agree that creating a global device pointer (mc) might
-be controversial, yet having a global parent_driver pointer may
-not be against the rule, considering that it is common in iommu
-drivers to call driver_find_device_by_fwnode in probe_device().
+-- 
+Regards/Gruss,
+    Boris.
 
-> known at that point whether MC really is the SMMU. That's in fact the
-> whole reason why we have to go through this whole dance of iterating
-> over the iommus entries to find the SMMU.
-
-Hmm..I don't quite get the meaning of:
-"it isn't known at that point whether MC really is the SMMU".
-
-Are you saying the stage of bus_set_iommu()? So because at that
-point either SMMU probe() or MC probe() hasn't finished yet?
-
-Thanks!
+https://people.kernel.org/tglx/notes-about-netiquette
