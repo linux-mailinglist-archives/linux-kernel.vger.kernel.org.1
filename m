@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7629728051E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B497928052B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732898AbgJAR1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
+        id S1732924AbgJAR24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732287AbgJAR1H (ORCPT
+        with ESMTP id S1732096AbgJAR24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:27:07 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC25EC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:27:06 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z25so7591830iol.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:27:06 -0700 (PDT)
+        Thu, 1 Oct 2020 13:28:56 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A11C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:28:56 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q63so6260357qkf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3+RJYPu41mwLqfoRk1xkYq/KaTqNR1uDzCPQN4v6bBs=;
-        b=Plg8tsdRI/R7o709XKJTsq2pR+nwvNuRFyBcClgYjSYL4BRmFSM7AixIqO+5Jmsb2y
-         rHPrvtQlRkqpBUC5y6bMhv8RaSi3s95fii7B2Rf9BbaGoGuuh1mwJCOBMvZhBpePMpA2
-         +eBz54opKH24XqOVuX6tI2HTwKBdfHHB58CXKpGJh0ulyRu0ANTn8izynha7gdn3vmA8
-         WJfFqh5VbdWfJbyR3mhBY4TamQFoCwSxdpQshXrtrvHr1fRacAd8Gy1xwxlyw9lz0TFM
-         FhWC8UYLAgM3Eg8OAScGFYYUfxxdyv3lhCuA1DDgi54oE5exb9mLWdYidJkr5ISn5u0M
-         cjjg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cTvaI1eVY2OnmFQ3ki6lTkVmY7EWHdYKiZzBjOwmf/A=;
+        b=Ifiyw27kae41qtg0PObv6iwLOlFsSlh/I22uTxIBiFePtUZG77QvMVXvSLXSu46b7k
+         Xk9QAwByiv2cwG33zWYbXdCXqIsxMyXSd04HJXKyvY44jEphpO8BcF5aWwRTrmj4B9lk
+         kN9K9q5hYC08A9xBQmrKULBykNAl1njgO1Hl5pJdhtGU25e0RPFnhkzBU23nTGFC23ZC
+         jk8YIVzMS28GVFcnSA7r6q8cSk/Jv+Z612HHu+ARlwnhjWCjGXymFNjb1omMdEyREAi/
+         TXtpfXi/4d8L6z6Ea9P+CSSCrxe3oa7R5rn8Tp5kw8/ZGX4ePKad8lLnLFNPw8oTsmWe
+         eFSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3+RJYPu41mwLqfoRk1xkYq/KaTqNR1uDzCPQN4v6bBs=;
-        b=FMTlRS38QZwECSR4CiqDYZNwIIq7wt2v3yb02vAQ84JeLMEZlcuTrIeujGdPFPcgqR
-         RliqymmG7Dw3gHObcRvo8cJ93mdqxTFvXYIcvCp83T8AyCUvXOlvbj4ih9koiaPv8vuZ
-         fjbWXUfKhxW3UlbckD+UuBl7JLNep6Xu9CWxo4rBRAIXqikuHqhow7JGI6b44W8Q76Mb
-         nptUVL81En1L7TDUb7A5hc64I/MF0EAVtULAziMMSucO0HyEEUNTtnLLZ5uxEK3dXoGa
-         zc1YRss2DfrP1iwEKVFIgScYbvL5M9keDENgYJOwJUBLJGe6FfU3XN9hqeWHzCIJXwSX
-         pSHw==
-X-Gm-Message-State: AOAM530wAiy4PTntN8mF8llA5MzwHxieAuT8dCsq218D+iKLHfDgcHDs
-        c423Jkv7neOhyUIfZLbmH4Aw6TW2fz0Bxg==
-X-Google-Smtp-Source: ABdhPJwFAsd2S+ePNELhoAW6SNZFg9nm3/YXTTQWfx/z+qPLhvZQqQDOz0rECSAO+PqVgWSN36M6Kg==
-X-Received: by 2002:a05:6602:2d0c:: with SMTP id c12mr2879062iow.117.1601573225976;
-        Thu, 01 Oct 2020 10:27:05 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e4sm2295271iom.14.2020.10.01.10.27.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 10:27:05 -0700 (PDT)
-Subject: Re: [PATCH RFC v2] kernel: decouple TASK_WORK TWA_SIGNAL handling
- from signals
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
- <20201001162719.GD13633@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <93d57ae4-7445-31bd-6491-78ae965a8ef6@kernel.dk>
-Date:   Thu, 1 Oct 2020 11:27:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cTvaI1eVY2OnmFQ3ki6lTkVmY7EWHdYKiZzBjOwmf/A=;
+        b=SlLUvdIdn2+mbNR0AIGYYZ1ji20DyCLQX3Z2zkG2VeLwKn6Va474tvsca9+1EU0kyV
+         W2rjSGqrovlEtphhNF1oRjeimr//fYL0cgS6jyF8VS5n4I9tk9ORsNUjFcRH6h651ecj
+         H7AWFEUBx7zRFrPb4J5ZXvQHS6SAzhxTiq9zn0rXKIjTJrGqV0+/hcih+zUWUoq/xnjb
+         OS12X8G7cmiBWiXcneLhiVb2fMv8WXbtXj/XAR/HJgs8+fIn8UE1xTkf0ndusbZZ+O4O
+         Q4Ls6MU7y/XOvsFbuzB8ehYDtZLik9LzAV3najM4DYu0Rq/ekK7r+uLGL3SK8Qj3V72R
+         svSA==
+X-Gm-Message-State: AOAM531tQw1Z/urTOiNUJqdwRWK073SPAXwaQdOtCkILz7fnWiOmgeC3
+        eN4qTKqFQbg1bf7tgugNB3hZlA==
+X-Google-Smtp-Source: ABdhPJxOL87QOYC8fbmvcToVHw7h3RdDxNazf3n7Us2F4dA657WGsRkzwapgpDTbyaOcfYeMlZm7kg==
+X-Received: by 2002:a37:ef14:: with SMTP id j20mr8885502qkk.101.1601573335441;
+        Thu, 01 Oct 2020 10:28:55 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4e22])
+        by smtp.gmail.com with ESMTPSA id 90sm3871205qtb.6.2020.10.01.10.28.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:28:54 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 13:27:13 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 4/4] mm: convert page kmemcg type to a page memcg flag
+Message-ID: <20201001172713.GA500308@cmpxchg.org>
+References: <20201001002710.748166-1-guro@fb.com>
+ <20201001002710.748166-5-guro@fb.com>
+ <20201001170036.GA29848@blackbook>
 MIME-Version: 1.0
-In-Reply-To: <20201001162719.GD13633@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001170036.GA29848@blackbook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 10:27 AM, Oleg Nesterov wrote:
-> Jens,
+On Thu, Oct 01, 2020 at 07:00:36PM +0200, Michal Koutný wrote:
+> Hi.
 > 
-> I'll read this version tomorrow, but:
-> 
-> On 10/01, Jens Axboe wrote:
->>
->>  static inline int signal_pending(struct task_struct *p)
->>  {
->> -	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
->> +#ifdef TIF_TASKWORK
->> +	/*
->> +	 * TIF_TASKWORK isn't really a signal, but it requires the same
->> +	 * behavior of restarting the system call to force a kernel/user
->> +	 * transition.
->> +	 */
->> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING) ||
->> +			test_tsk_thread_flag(p, TIF_TASKWORK));
->> +#else
->> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
->> +#endif
-> 
-> This change alone is already very wrong.
-> 
-> signal_pending(task) == T means that this task will do get_signal() as
-> soon as it can, and this basically means you can't "divorce" SIGPENDING
-> and TASKWORK.
-> 
-> Simple example. Suppose we have a single-threaded task T.
-> 
-> Someone does task_work_add(T, TWA_SIGNAL). This makes signal_pending()==T
-> and this is what we need.
-> 
-> Now suppose that another task sends a signal to T before T calls
-> task_work_run() and clears TIF_TASKWORK. In this case SIGPENDING won't
-> be set because signal_pending() is already set (see wants_signal), and
-> this means that T won't notice this signal.
+> On Wed, Sep 30, 2020 at 05:27:10PM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > @@ -369,8 +371,12 @@ enum page_memcg_data_flags {
+> >   */
+> >  static inline struct mem_cgroup *page_memcg(struct page *page)
+> >  {
+> > +	unsigned long memcg_data = page->memcg_data;
+> > +
+> >  	VM_BUG_ON_PAGE(PageSlab(page), page);
+> > -	return (struct mem_cgroup *)page->memcg_data;
+> > +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
+> > +
+> > +	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
+> >  }
+> Shouldn't this change go also into page_memcg_rcu()? (I don't think the
+> current single user (workingset_activation() would pass a non-slab
+> kernel page but for consistency sake.)
 
-That's a good point, and I have been thinking along those lines. The
-"problem" is the two different use cases:
++1
 
-1) The "should I return from schedule() or break out of schedule() loops
-   kind of use cases".
+> Alternatively, I'm thinking why (in its single use) is there
+> page_memcg_rcu() a separate function to page_memcg() (cross memcg page
+> migration?).
 
-2) Internal signal delivery use cases.
+It goes back to commit 55779ec759ccc3c12b917b3712a7716e1140c652.
 
-The former wants one that factors in TIF_TASKWORK, while the latter
-should of course only look at TIF_SIGPENDING.
+The activation code is the only path where page migration is not
+excluded. Because unlike with page state statistics, we don't really
+mind a race when counting an activation event.
 
-Now, my gut reaction would be to have __signal_pending() that purely
-checks for TIF_SIGPENDING, and make sure we use that on the signal
-delivery side of things. Or something with a better name than that, but
-functionally the same. Ala:
-
-static inline int __signal_pending(struct task_struct *p)
-{
-	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
-}
-
-static inline int signal_pending(struct task_struct *p)
-{
-#ifdef TIF_TASKWORK
-	return unlikely(test_tsk_thread_flag(p, TIF_TASKWORK)||
-			__signal_pending(p));
-#else
-	return __signal_pending(p));
-#endif
-}
-
-and then use __signal_pending() on the signal delivery side.
-
-It's still not great in the sense that renaming signal_pending() would
-be a better choice, but that's a whole lot of churn...
-
--- 
-Jens Axboe
-
+I do think there is a bug, though: mem_cgroup_move_account() should
+use WRITE_ONCE() on page->mem_cgroup.
