@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D39D280851
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83154280854
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733057AbgJAUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:18:30 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:47671 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgJAUS1 (ORCPT
+        id S1733077AbgJAUTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:19:23 -0400
+Received: from smtprelay0169.hostedemail.com ([216.40.44.169]:60940 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726581AbgJAUTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:18:27 -0400
-Received: by mail-il1-f207.google.com with SMTP id s18so2243864ili.14
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 13:18:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OXIZsSnUOlc4gw4iyjdMyg6484OMYqcylRmSwR+4wSw=;
-        b=Y8rJSGfuTSmkmbS+VJTHBuQuOLbCPNb8uW0ncjJCsTZKkzxQA2pn37q/3y0Io7OwM2
-         k7xRsDEzNPiol5ztOju7dGM6jCvBNujdmZ08lnDe6GJM2BjD7Ivplw9ixJ+NcRG9awqA
-         qfYgrnlnOPNe4yQN1Qex6UhBxvQgjS4Q0vHQc8TNccTS63QbWZW2D6oXedIJj+HbU1Lg
-         TN+/MwcZGGK/fcatC8yzJ9tWaBYn53bnLKVJ3MHUfTM6EmbLG6HWEuFt8gRO3feOs4WT
-         0yqHjcN1KA2HzjdriL+CHAJsPUXGFV3almZEjvXvTK8wtGFWe52LbQV+0x0PBnM0scrp
-         Eyhg==
-X-Gm-Message-State: AOAM533ApRlfYWLQnuGm38BoK0dDV44xuhZNODOwf3uFhg+lprYbJkF5
-        xR10EKe5B9+6Yibpq+6tmxyzkVRw4AD/5vUX7JANbRw6vyaQ
-X-Google-Smtp-Source: ABdhPJwT/dpYIRCW3/PoHCOUt9O1bS/nQ9SMyEkaCehe2TanjqOnWqQbBKb5eZrQlzsed5b2jOZsjZDiHJWLKEX47Ksdg2cuvdi/
+        Thu, 1 Oct 2020 16:19:23 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 283CD180A7FF8;
+        Thu,  1 Oct 2020 20:19:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:4321:5007:6120:6742:9040:9108:10004:10400:10471:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14180:14659:14721:21060:21080:21433:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: mice75_5c06f2d2719e
+X-Filterd-Recvd-Size: 2850
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 20:19:19 +0000 (UTC)
+Message-ID: <61445711991c2d6eb7c8fb05bed2814458e2593b.camel@perches.com>
+Subject: Re: [RFC PATCH next-20200930] treewide: Convert macro and uses of
+ __section(foo) to __section("foo")
+From:   Joe Perches <joe@perches.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 01 Oct 2020 13:19:18 -0700
+In-Reply-To: <20201001193937.GM28786@gate.crashing.org>
+References: <20200929192549.501516-1-ndesaulniers@google.com>
+         <CA+icZUVgfnVQ1=zjUGhGKnJAs9g3Q06sWN3ffNdrfZMZLCEkbA@mail.gmail.com>
+         <133589afbe999347454dfcc46ae782897bf9e3a2.camel@perches.com>
+         <46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com>
+         <CAKwvOdkhyvTpY6pHT+CLSsBFuKRWsXucjbwN_tyJAsryZXvG1A@mail.gmail.com>
+         <417ffa3fd3fba5d4a481db6a0b0c9b48cbbb17c4.camel@perches.com>
+         <CAKwvOd=P+j0RaQfHsXPfB0EL3oRgAu8Q0+spUOn_v-p2+3=3pw@mail.gmail.com>
+         <aefe941251d5d58062d06099afb58dea1d1d4e17.camel@perches.com>
+         <46040e2776a4848add06126ce1cb8f846709294f.camel@perches.com>
+         <CANiq72mSjs4myQQtUoegjRggjTx9UF70nAcWoXRoTeLMOuf0xQ@mail.gmail.com>
+         <20201001193937.GM28786@gate.crashing.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-X-Received: by 2002:a5e:820d:: with SMTP id l13mr6866782iom.3.1601583504502;
- Thu, 01 Oct 2020 13:18:24 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 13:18:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dd392b05b0a1b7ac@google.com>
-Subject: WARNING in handle_exception_nmi
-From:   syzbot <syzbot+4e78ae6b12b00b9d1042@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 2020-10-01 at 14:39 -0500, Segher Boessenkool wrch/ote:
+> Hi!
+> 
+> On Thu, Oct 01, 2020 at 12:15:39PM +0200, Miguel Ojeda wrote:
+> > > So it looks like the best option is to exclude these
+> > > 2 files from conversion.
+> > 
+> > Agreed. Nevertheless, is there any reason arch/powerpc/* should not be
+> > compiling cleanly with compiler.h? (CC'ing the rest of the PowerPC
+> > reviewers and ML).
+> 
+> You need to #include compiler_types.h to get this #define?
 
-syzbot found the following issue on:
+Actually no, you need to add
 
-HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a7329d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=adebb40048274f92
-dashboard link: https://syzkaller.appspot.com/bug?extid=4e78ae6b12b00b9d1042
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173937ad900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1041373d900000
+#include <linux/compiler_attributes.h>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4e78ae6b12b00b9d1042@syzkaller.appspotmail.com
+to both files and then it builds properly.
 
-L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6854 at arch/x86/kvm/vmx/vmx.c:4809 handle_exception_nmi+0x1051/0x12a0 arch/x86/kvm/vmx/vmx.c:4809
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6854 Comm: syz-executor665 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:handle_exception_nmi+0x1051/0x12a0 arch/x86/kvm/vmx/vmx.c:4809
-Code: fd 98 00 e9 17 f1 ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c da f0 ff ff 48 89 df e8 a9 fd 98 00 e9 cd f0 ff ff e8 1f 19 59 00 <0f> 0b e9 e0 f6 ff ff 89 d1 80 e1 07 80 c1 03 38 c1 0f 8c f4 f1 ff
-RSP: 0018:ffffc90000e979b0 EFLAGS: 00010293
-RAX: ffffffff811be461 RBX: fffffffffffffff8 RCX: ffff888091f42200
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
-RBP: 0000000000000000 R08: ffffffff811bdb3a R09: ffffed1014faf071
-R10: ffffed1014faf071 R11: 0000000000000000 R12: ffff8880a7d78380
-R13: 1ffff11014faf026 R14: ffff8880a7d78040 R15: 0000000000000002
- vcpu_enter_guest+0x6725/0x8a50 arch/x86/kvm/x86.c:8655
- vcpu_run+0x332/0xc00 arch/x86/kvm/x86.c:8720
- kvm_arch_vcpu_ioctl_run+0x451/0x8f0 arch/x86/kvm/x86.c:8937
- kvm_vcpu_ioctl+0x64f/0xa50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3230
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443bb9
-Code: e8 dc a3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 00 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff4f9aff08 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000443bb9
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
-RBP: 00000000006ce018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000012 R11: 0000000000000246 R12: 0000000000404120
-R13: 00000000004041b0 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Ideally though nothing should include this file directly.
 
+> (The twice-defined thing is a warning, not an error.  It should be fixed
+> of course, but it is less important; although it may be pointing to a
+> deeper problem.)
+> 
+> 
+> Segher
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
