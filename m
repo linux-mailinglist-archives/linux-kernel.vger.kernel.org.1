@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46D927F864
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 06:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C0027F8AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 06:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgJAEWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 00:22:23 -0400
-Received: from smtprelay0025.hostedemail.com ([216.40.44.25]:53216 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725800AbgJAEWX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 00:22:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 60A7C182CED34;
-        Thu,  1 Oct 2020 04:22:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2376:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:7903:8531:10004:10400:10848:11026:11232:11658:11914:12295:12297:12663:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14659:14721:21080:21451:21627:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:13,LUA_SUMMARY:none
-X-HE-Tag: owl02_1c06edc27198
-X-Filterd-Recvd-Size: 2148
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  1 Oct 2020 04:22:20 +0000 (UTC)
-Message-ID: <9b57d0d4896a91debc330a70a20ae0f240afbd3b.camel@perches.com>
-Subject: Re: [PATCH V3 1/8] sysfs: Add sysfs_emit and sysfs_emit_at to
- format sysfs output
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Date:   Wed, 30 Sep 2020 21:22:19 -0700
-In-Reply-To: <202009302108.18B05CA38@keescook>
-References: <cover.1600285923.git.joe@perches.com>
-         <884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com>
-         <20200930115740.GA1611809@kroah.com> <202009302108.18B05CA38@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1725919AbgJAE3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 00:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbgJAE3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 00:29:13 -0400
+Received: from localhost (unknown [122.167.37.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6798021531;
+        Thu,  1 Oct 2020 04:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601526553;
+        bh=GRJyHppYoU3yAd0Hf9faOF9M9F0Po2XXmWUXqinU49A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GS0Sm+hl+tOjOpMqOyTzs9OfRcjI7rtRjpJAOiPLShYww2/aBrhZmel8QTDwk704D
+         uSovgqkrVQcv1n993m7Mbkf611YMjuxcxmimj8rc4fCA7oM9DR27NG34snWK6bOLXT
+         pxRUgZPmDoGDXX1WO/RFsQcevMZoWic6dQ/saUN0=
+Date:   Thu, 1 Oct 2020 09:59:08 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, dan.j.williams@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, ashok.raj@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/5] Add shared workqueue support for idxd driver
+Message-ID: <20201001042908.GO2968@vkoul-mobl>
+References: <20200924180041.34056-1-dave.jiang@intel.com>
+ <a2a6f147-c4ad-a225-e348-b074a8017a10@intel.com>
+ <20200924215136.GS5030@zn.tnic>
+ <4d857287-c751-8b37-d067-b471014c3b73@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d857287-c751-8b37-d067-b471014c3b73@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-30 at 21:17 -0700, Kees Cook wrote:
-> On Wed, Sep 30, 2020 at 01:57:40PM +0200, Greg Kroah-Hartman wrote:
-> > Kees, and Rafael, I don't know if you saw this proposal from Joe for
-> > sysfs files, questions below:
+Hi Dave,
+
+On 30-09-20, 15:19, Dave Jiang wrote:
 > 
-> I'm a fan. I think the use of sprintf() in sysfs might have been one of
-> my earliest complaints about unsafe code patterns in the kernel. ;)
-[]
-> > > +	if (WARN(!buf || offset_in_page(buf),
-> > > +		 "invalid sysfs_emit: buf:%p\n", buf))
-
-The dump_stack() is also going to emit pointers
-so I don't see how it does anything but help
-show where the buffer was.  It is hashed...
-
-> I don't want the %p here, but otherwise, sure. I'd also make it a _ONCE
-> variant:
 > 
-> 	if (WARN_ONCE(!buf || offset_in_page(buf),
-> 		 "invalid sysfs_emit: offset_in_page(buf):%zd\n",
-> 		  buf ? offset_in_page(buf) : 0))
+> On 9/24/2020 2:51 PM, Borislav Petkov wrote:
+> > On Thu, Sep 24, 2020 at 02:32:35PM -0700, Dave Jiang wrote:
+> > > Hi Vinod,
+> > > Looks like we are cleared on the x86 patches for this series with sign offs
+> > > from maintainer Boris. Please consider the series for 5.10 inclusion. Thank
+> > > you!
+> > 
+> > As I said here, I'd strongly suggest we do this:
+> > 
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/5FKNWNCCRV3AXUAEXUGQFF4EDQNANF3F/
+> > 
+> > and Vinod should merge the x86/pasid branch. Otherwise is his branch
+> > and incomplete you could not have tested it properly.
+> > 
+> 
+> Hi Vinod,
+> Just checking to see if you have any objections or concerns with respect to
+> this series. We are hoping it can be queued for the 5.10 merge if there are
+> no objections. Thanks!
 
-I don't think that helps as multiple defects can easily
-exist.  Log spam in this case isn't horrible either.
+I was out for last few days, so haven't checked on this yet, but given
+that we are very close to merge widow I fear it is bit late to merge
+this late. I will go thru the series today though..
 
-
+Thanks
+-- 
+~Vinod
