@@ -2,209 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5837B28068E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8BE280694
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732782AbgJAS25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729412AbgJAS25 (ORCPT
+        id S1732417AbgJASal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 14:30:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46170 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729412AbgJASal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:28:57 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DBEC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 11:28:57 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id a2so6424337otr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kz26kZpY5ux5dw8pIZFhmygrJ593+m//lklRbB5JLMk=;
-        b=krgZIkCBzg/+xOHmycMkxy7ew3qfkC0MS0ZIrW5pW70VF+EdVeRyXZkO0Oqn+NmQPZ
-         3d8X7dl4fIZHceqwzlgL7ugXqkARNaXTy5Jvjm7d23XORMeTKP6u/GCUxyGzd2Kp7xSW
-         NlJ8SXOPI4fnPP9FPBquFC7YwdWMSbvrQjMj1vHCIHtyBfwjrIUctakeZp2iUeob2HzI
-         493E8mgiXqSHYFRmii2ajY29+GjRs7aZtpJsCwdyiR8TDqSSgQ5r48GSUQi0ynZ+YL6t
-         sRL2rgrHkzJ1gabqFC3brt9Irdgq1Um5Ex8kmH1G01ZIfEbF4HpRZeHg9WwpslvpZKZH
-         mHTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kz26kZpY5ux5dw8pIZFhmygrJ593+m//lklRbB5JLMk=;
-        b=b1Eo4kAfn5A/vqldorQQ+tpRaHIfdB7fuEwg2Z5Mq60OgU+tuoc1XFwD7eNjG1u7t1
-         IBrfJIi7mRtwzUDsZsi/LX2YAMesNHYyJZQ7+eZpkRLaDHtnwpycj078qc1XE90kEOoI
-         n7GYAnsi9OepNPXMmMg9FUXMvEWHSzirxTNCzeSw62yAYEMJGldS4dPhBzn46v4Wc5ax
-         9hKTrcaSkjFlXP/tIOVUMAsMyIoF9qSodNOr8t0xftTeISlg8+uGDNIEiqxkWJq//vNM
-         giGiVcIIvvr6QxvbNZrvr4j6iPuwHbgkzgZvc4QobmtHFE27LY2jOAtq0CbVkYDMEzqE
-         hB9Q==
-X-Gm-Message-State: AOAM533vouMvgqKvwXZ65xxb0SGY+NesSjrU9hNh3Mgrus0RIJgA6YgZ
-        zjHxpMqYvTq0WJpKnlHJlngFP6qVck0gymgdrUrdjw==
-X-Google-Smtp-Source: ABdhPJxL7u7PML17vhq85pqQ5R14JB/fSmnxH08J41Mst1wYV1OOwGpMYndJDi0i2JZkiDxG3NgBdMiTZbuIaGCHOYQ=
-X-Received: by 2002:a05:6830:196:: with SMTP id q22mr5638905ota.221.1601576936284;
- Thu, 01 Oct 2020 11:28:56 -0700 (PDT)
+        Thu, 1 Oct 2020 14:30:41 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091IOgAM016495;
+        Thu, 1 Oct 2020 11:30:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=QywiLy+GoFsQX5t2c9RiwK0yDMi63PjmpVFdJbe8qpg=;
+ b=nFvjD6J6O2TwrlgiHYdHmOtjMCL8iZtSktmSo2bQlW4paUhAD5IfLpQNAGXjE0PXK7P1
+ Ep8EGcEAhvE/EidH+cFdwrsGYu9E+wCqnISuRo0/w6vt2aBMHVPB9wPsEbfgZnFmd/7a
+ BKVkm9bo9rwgAgg8FV+tEckmFmgfK7ykaF8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33vpwcs79x-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 01 Oct 2020 11:30:28 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 1 Oct 2020 11:30:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I8uLApN/ckTXhwd/NQDJX7bog4AA2gZLJKwS1wBWqT7k83ld+KadcJ4ihurnz9jkBk43RkWcdIwoMFBQdhtkhFBBtxLapLNU3wjEsVgFsXhCL6IEYWr0aI4zKSa4+4MgtD7fKjtoqNpmvJEyj+dwomQC72GiU3PcKFaB46/hwjnjlo2+wSikxgSqJIpQCNx+JjTfjMPATn28UsPJieXbtjjzoL8m59r3vH5AjjyADWBGSLjOFv30GzCh91W1orxKSz/vfD++nQrQKN7GR7tvlcBCpmBK8xq2gptZSVYG0GPwMN+Re/XldhFud1kK2ldphXq94eNTXPEZXtVC2iHz5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QywiLy+GoFsQX5t2c9RiwK0yDMi63PjmpVFdJbe8qpg=;
+ b=RDKf6tZSzp5ABETpxZBs+YM9KnXi1BFPZ9PX9TjkbgJ1myKeBPWPePyfPEQJO3ZZLJaJU9LnzDwiptsSuQJ9yZcpIANw5TOhttL/CbnzAAj8T4q0lWinLupJ0/0g369wIgL4NeLgizopmc8lh8OdlZfXixZuyGd34u6WckIEnMiSJ9Lb0/XhIOorRrb9v/PD9bd1ET3ld++WjcCV2MfZB2z8WUZarJTJDNTgWXiB04vB2VKM6sdMoTPdDET/lnBA+o4AFlZ/9Skh3GjDz0Jd74/fTn9RxB6ZgxPxm6OoiMDRYhZ90BNtnlMSSRNIylLyX27zby/cwyIX+24ik60oKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QywiLy+GoFsQX5t2c9RiwK0yDMi63PjmpVFdJbe8qpg=;
+ b=K2KLznPNo0JPqo+SpaKJa6itYXlbCmOerhl1yeT37kZFkDHRPew6Ol4LffiewdytnEcVABUAT8oRGsqAaQ+mXuQBWi5fyZ6BCiBwQZkVKyCw+Eq+6hVLAo47+ThE0qLYo95JARSexnCv/8Cd+6gaCAE3YP2+luzKYlSGhMuMrHc=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SA0PR15MB3872.namprd15.prod.outlook.com
+ (2603:10b6:806:91::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.28; Thu, 1 Oct
+ 2020 18:30:18 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 18:30:18 +0000
+Date:   Thu, 1 Oct 2020 11:30:13 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH v4 4/4] mm: convert page kmemcg type to a page memcg flag
+Message-ID: <20201001183013.GB2706729@carbon.DHCP.thefacebook.com>
+References: <20201001002710.748166-1-guro@fb.com>
+ <20201001002710.748166-5-guro@fb.com>
+ <20201001170036.GA29848@blackbook>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001170036.GA29848@blackbook>
+X-Originating-IP: [2620:10d:c090:400::5:5d5]
+X-ClientProxiedBy: MWHPR17CA0068.namprd17.prod.outlook.com
+ (2603:10b6:300:93::30) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
-References: <20200926042453.67517-1-john.stultz@linaro.org>
- <20200926042453.67517-6-john.stultz@linaro.org> <1e109a138c86be7b06e20cb30a243fc7@codeaurora.org>
- <ef00c83a9be572a1f9319b818de71266@codeaurora.org>
-In-Reply-To: <ef00c83a9be572a1f9319b818de71266@codeaurora.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Thu, 1 Oct 2020 11:28:45 -0700
-Message-ID: <CALAqxLXWa=19FDvO2RmvBwdCG2=mrpfsk62kDknbmo0YA2rXXw@mail.gmail.com>
-Subject: Re: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to
- system heap
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:5d5) by MWHPR17CA0068.namprd17.prod.outlook.com (2603:10b6:300:93::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Thu, 1 Oct 2020 18:30:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0a81dc5c-43df-4648-971e-08d866380c00
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3872:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB38725AFA2D3D52B3106D693BBE300@SA0PR15MB3872.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iAeFTxW7XoEunADVqv4v5ajmsml4JhypcyCUstDUdwiR1SSBol/sRRwSW7dpIQjyKlPAliqwYuNhyvb7H9gPi4PQWxGCA4SMaoewyXkrG4iyEb3lCVodOzXkGiq6cfyhe6wI9TDmVQEBlF0Ll2PdGiVOJtQwTPhN/ZgDpRobDbLKJoEl9ocTSAN95N2vUQ/OkZyuPPMz7nvQ/0hnWdPEUQ5WJbW33ZgpTiaqXEq3tqGoquzn3OuUwUAwBro90i7e94wjqGyGcwh6wNYKQsYaniwEI7vq5FT8XPTeUAY6Ze4+hvhUh8ccbtFM3R8xPRRdWtp86y5SpDc1R0I4+KB6A0xORvoG3mDzLwyxTg98ejJXptOEZ2dsU+ZGjB6qYj64
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(376002)(366004)(136003)(6666004)(2906002)(16526019)(52116002)(83380400001)(8936002)(186003)(6506007)(66556008)(1076003)(54906003)(86362001)(4744005)(55016002)(66946007)(4326008)(6916009)(8676002)(5660300002)(316002)(478600001)(33656002)(66476007)(9686003)(7696005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: rIvSkFu6AirNDWNZg5q/IUsdh5Zo9brlIUvGPoz7ebBFtGoz3mnN31tUtWa1ExRRMNMQMq7XeLTNjhdwhs+ZUtEHIvpx3r1e7GwOcx5wiLGcY5u9T1FD4weju/XLMbiBt448ezLvCTzgzCfWv2jd7gkfL3fNSRtL9DZcr4U0g4MMytGHOid5L1EUhSsc6pJrvX0pkigvv8wPn54MeWeAjQAZd3M2kFF4qbNM4t/8kBirj+gAdkiuZKmHnAPxTY9AxFxfX3vT3xKOFAKwxj2YRVhdPqUwGTBWV9jvMGQWMpvwzRHtzbV6fqoeC7BJeRyyGDwkve+U4sEaQpj/42TbwI/MkjG7Z0NdPvqea+nKrhkCdhhn3tZB5wcu5jBdb5wJoo9O2rBUI5rubRFJeY+c3gvoXyx98P8zB/OWyHRovdi+YNw8Ai4v4nKyLYWcq4trBsOkhPWD/Cc1aKmEreoKIimz8wGOvdtBgN45+/c+S8QXUbKRntdn0DNg6E5iLRE3Zg6xO0+0xnMmrhA43P5D8pYBSaqmhRoVxUf7c4jsKxOfs/x65OJkCK9XSrpbY+j6vR/N1WsNzSt9wcuUjVoi3qSEQiwKghU3tHxWeb9DG7oPKJL06birLJ6O2E4pWWSWqKRuDzXI5lVmCt8uipGibBS1WkrJ3QZHy2WdzMLV/SM=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a81dc5c-43df-4648-971e-08d866380c00
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 18:30:18.0321
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WVmwyY4lUp54LsXJacvIO8QPyW40LEXd9H92xFSllvZPybS7B39hEaTHOcbzd+uo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3872
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_07:2020-10-01,2020-10-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 suspectscore=1
+ clxscore=1011 malwarescore=0 mlxlogscore=986 spamscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 7:49 AM Chris Goldsworthy
-<cgoldswo@codeaurora.org> wrote:
-> On 2020-09-29 21:46, Chris Goldsworthy wrote:
-> > On 2020-09-25 21:24, John Stultz wrote:
-> >> Reuse/abuse the pagepool code from the network code to speed
-> >> up allocation performance.
-> >>
-> >> This is similar to the ION pagepool usage, but tries to
-> >> utilize generic code instead of a custom implementation.
-> >>
-> >> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> >> Cc: Liam Mark <lmark@codeaurora.org>
-> >> Cc: Laura Abbott <labbott@kernel.org>
-> >> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> >> Cc: Hridya Valsaraju <hridya@google.com>
-> >> Cc: Suren Baghdasaryan <surenb@google.com>
-> >> Cc: Sandeep Patil <sspatil@google.com>
-> >> Cc: =C3=98rjan Eide <orjan.eide@arm.com>
-> >> Cc: Robin Murphy <robin.murphy@arm.com>
-> >> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> >> Cc: Simon Ser <contact@emersion.fr>
-> >> Cc: James Jones <jajones@nvidia.com>
-> >> Cc: linux-media@vger.kernel.org
-> >> Cc: dri-devel@lists.freedesktop.org
-> >> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> >> ---
-> >>  drivers/dma-buf/heaps/Kconfig       |  1 +
-> >>  drivers/dma-buf/heaps/system_heap.c | 32
-> >> +++++++++++++++++++++++++----
-> >>  2 files changed, 29 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/dma-buf/heaps/Kconfig
-> >> b/drivers/dma-buf/heaps/Kconfig
-> >> index a5eef06c4226..f13cde4321b1 100644
-> >> --- a/drivers/dma-buf/heaps/Kconfig
-> >> +++ b/drivers/dma-buf/heaps/Kconfig
-> >> @@ -1,6 +1,7 @@
-> >>  config DMABUF_HEAPS_SYSTEM
-> >>      bool "DMA-BUF System Heap"
-> >>      depends on DMABUF_HEAPS
-> >> +    select PAGE_POOL
-> >>      help
-> >>        Choose this option to enable the system dmabuf heap. The system
-> >> heap
-> >>        is backed by pages from the buddy allocator. If in doubt, say Y=
-.
-> >> diff --git a/drivers/dma-buf/heaps/system_heap.c
-> >> b/drivers/dma-buf/heaps/system_heap.c
-> >> index 882a632e9bb7..9f57b4c8ae69 100644
-> >> --- a/drivers/dma-buf/heaps/system_heap.c
-> >> +++ b/drivers/dma-buf/heaps/system_heap.c
-> >> @@ -20,6 +20,7 @@
-> >>  #include <linux/scatterlist.h>
-> >>  #include <linux/slab.h>
-> >>  #include <linux/vmalloc.h>
-> >> +#include <net/page_pool.h>
-> >>
-> >>  struct dma_heap *sys_heap;
-> >>
-> >> @@ -46,6 +47,7 @@ struct dma_heap_attachment {
-> >>  static gfp_t order_flags[] =3D {HIGH_ORDER_GFP, LOW_ORDER_GFP,
-> >> LOW_ORDER_GFP};
-> >>  static const unsigned int orders[] =3D {8, 4, 0};
-> >>  #define NUM_ORDERS ARRAY_SIZE(orders)
-> >> +struct page_pool *pools[NUM_ORDERS];
-> >>
-> >>  static struct sg_table *dup_sg_table(struct sg_table *table)
-> >>  {
-> >> @@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct
-> >> dma_buf *dmabuf)
-> >>      struct system_heap_buffer *buffer =3D dmabuf->priv;
-> >>      struct sg_table *table;
-> >>      struct scatterlist *sg;
-> >> -    int i;
-> >> +    int i, j;
-> >>
-> >>      table =3D &buffer->sg_table;
-> >>      for_each_sg(table->sgl, sg, table->nents, i) {
-> >>              struct page *page =3D sg_page(sg);
-> >>
-> >> -            __free_pages(page, compound_order(page));
-> >> +            for (j =3D 0; j < NUM_ORDERS; j++) {
-> >> +                    if (compound_order(page) =3D=3D orders[j])
-> >> +                            break;
-> >> +            }
-> >> +            page_pool_put_full_page(pools[j], page, false);
-> >>      }
-> >>      sg_free_table(table);
-> >>      kfree(buffer);
-> >> @@ -300,8 +306,7 @@ static struct page
-> >> *alloc_largest_available(unsigned long size,
-> >>                      continue;
-> >>              if (max_order < orders[i])
-> >>                      continue;
-> >> -
-> >> -            page =3D alloc_pages(order_flags[i], orders[i]);
-> >> +            page =3D page_pool_alloc_pages(pools[i], order_flags[i]);
-> >>              if (!page)
-> >>                      continue;
-> >>              return page;
-> >> @@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops
-> >> =3D {
-> >>  static int system_heap_create(void)
-> >>  {
-> >>      struct dma_heap_export_info exp_info;
-> >> +    int i;
-> >> +
-> >> +    for (i =3D 0; i < NUM_ORDERS; i++) {
-> >> +            struct page_pool_params pp;
-> >> +
-> >> +            memset(&pp, 0, sizeof(pp));
-> >> +            pp.order =3D orders[i];
-> >> +            pp.dma_dir =3D DMA_BIDIRECTIONAL;
->
-> Hey John,
->
-> Correct me if I'm wrong, but I think that in order for pp.dma_dir to be
-> used in either page_pool_alloc_pages() or page_pool_put_full_page(), we
-> need to at least have PP_FLAG_DMA_MAP set (to have
-> page_pool_dma_sync_for_device() called, PP_FLAG_DMA_SYNC_DEV should also
-> be set I think).  I think you'd also need to to have pp->dev set.  Are
-> we setting dma_dir with the intention of doing the necessary CMOs before
-> we start using the page?
+On Thu, Oct 01, 2020 at 07:00:36PM +0200, Michal Koutny wrote:
+> Hi.
+> 
+> On Wed, Sep 30, 2020 at 05:27:10PM -0700, Roman Gushchin <guro@fb.com> wrote:
+> > @@ -369,8 +371,12 @@ enum page_memcg_data_flags {
+> >   */
+> >  static inline struct mem_cgroup *page_memcg(struct page *page)
+> >  {
+> > +	unsigned long memcg_data = page->memcg_data;
+> > +
+> >  	VM_BUG_ON_PAGE(PageSlab(page), page);
+> > -	return (struct mem_cgroup *)page->memcg_data;
+> > +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
+> > +
+> > +	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
+> >  }
+> Shouldn't this change go also into page_memcg_rcu()? (I don't think the
+> current single user (workingset_activation() would pass a non-slab
+> kernel page but for consistency sake.)
 
-Looking, I think my setting of the dma_dir there on the pool is
-unnecessary (and as you point out, it doesn't have much effect as long
-as the PP_FLAG_DMA_MAP isn't set).
-I'm really only using the pagepool as a page cache, and the dmabuf ops
-are still used for mapping and syncing operations.
+Yes, a good idea, I will add it.
 
-thanks
--john
+Thanks!
