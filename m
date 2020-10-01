@@ -2,209 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A65C280962
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD6280965
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgJAVZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726626AbgJAVZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:25:24 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9FF720796;
-        Thu,  1 Oct 2020 21:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601587523;
-        bh=z9qChKyiXBJIvvzoDEBPPNvdqvYMu7kAtRlPFN7R4Os=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P3fQwq+56xcDw775iu5eI8mg/BhV/jsGdOA8h97pglr2yH8y7NDwL1CMRIJuEkRtU
-         6zMDakFz/x8bDqQA0SLVhLx+z1Do9Bp9P44N2y61Xh5vSz4CzQl085tsKXW5rX7lYp
-         ZmibhOQ+kEPB7RTGFaemleLfS2Cu1Y90M9nlCuj8=
-Date:   Thu, 1 Oct 2020 14:25:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 04/16] devlink: Add reload stats
-Message-ID: <20201001142521.0c9ac25c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1601560759-11030-5-git-send-email-moshe@mellanox.com>
-References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
-        <1601560759-11030-5-git-send-email-moshe@mellanox.com>
+        id S1733026AbgJAV07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:26:59 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:37842 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgJAV07 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1601587620;
+  h=subject:to:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=NOZNF47ur+0SexRLYTKp2dLrB2spnFA1n9g1wn7WrI0=;
+  b=Hhm/HbwS7tXATDlItMumv+vH+QElFxzY2WLAQJW51V+UANSycgpxGKMc
+   99W9nAesqggl4Lg4YDKMGsWKS4qJRuXqlrS/rJNUjY8uc0eySfW6pv7Ff
+   AArem5IV7HWOzYXfeotrfORdLdV1deWZJJeREf69cWXQu2EctLHdEmVRr
+   c=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: mtvjRlBS1f2o5cdHfV1n1wQ90ltUWco3cbqAOdDabpYAl4NbUhZQS+SXfhaC5hnIX/ibKHh6Do
+ ET9F4YwgX8fF5Qc1Pe+NBEmrfBOS/yNaEv4bYTVNpEFf5t1jc9pY4eIipIlRjxTQPNaeiHPI1M
+ 9ed7fqGFCYFHn4bQZ8exRyE9S7AGpJa3p6XjKYTGje3Qto0tU/3yTH7EMH7XvS+MhOcQROSO+1
+ mCT4nGhS9FNG47tYZ3aaL2v7zxXnacObOFDaYDsXL8PTMt1auR4wgqFiTTxQAiiqEn5HFyN7hf
+ IZA=
+X-SBRS: None
+X-MesageID: 28455620
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,325,1596513600"; 
+   d="scan'208";a="28455620"
+Subject: Re: How should we handle illegal task FPU state?
+To:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, "X86 ML" <x86@kernel.org>,
+        Rik van Riel <riel@surriel.com>
+References: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <675cdebe-e06f-ff4d-2db6-ea531d21168f@citrix.com>
+Date:   Thu, 1 Oct 2020 22:26:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CALCETrXENKF9iVXaQrQcbgFq7fksC2pGz86tr9YGgDdeP3uR-Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ FTLPEX02CL05.citrite.net (10.13.108.178)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 16:59:07 +0300 Moshe Shemesh wrote:
-> Add reload stats to hold the history per reload action type and limit.
-> 
-> For example, the number of times fw_activate has been performed on this
-> device since the driver module was added or if the firmware activation
-> was performed with or without reset.
-> 
-> Add devlink notification on stats update.
-> 
-> Expose devlink reload stats to the user through devlink dev get command.
-> 
-> Examples:
-> $ devlink dev show
-> pci/0000:82:00.0:
->   stats:
->       reload_stats:
->         driver_reinit 2
->         fw_activate 1
->         fw_activate_no_reset 0
-> pci/0000:82:00.1:
->   stats:
->       reload_stats:
->         driver_reinit 1
->         fw_activate 0
->         fw_activate_no_reset 0
-> 
-> $ devlink dev show -jp
+On 01/10/2020 18:43, Andy Lutomirski wrote:
+> Our current handling of illegal task FPU state is currently rather
+> simplistic.  We basically ignore the issue with this extable code:
+>
+> /*
+>  * Handler for when we fail to restore a task's FPU state.  We should never get
+>  * here because the FPU state of a task using the FPU (task->thread.fpu.state)
+>  * should always be valid.  However, past bugs have allowed userspace to set
+>  * reserved bits in the XSAVE area using PTRACE_SETREGSET or sys_rt_sigreturn().
+>  * These caused XRSTOR to fail when switching to the task, leaking the FPU
+>  * registers of the task previously executing on the CPU.  Mitigate this class
+>  * of vulnerability by restoring from the initial state (essentially, zeroing
+>  * out all the FPU registers) if we can't restore from the task's FPU state.
+>  */
+> __visible bool ex_handler_fprestore(const struct exception_table_entry *fixup,
+>                                     struct pt_regs *regs, int trapnr,
+>                                     unsigned long error_code,
+>                                     unsigned long fault_addr)
 > {
->     "dev": {
->         "pci/0000:82:00.0": {
->             "stats": {
->                 "reload_stats": [ {
->                         "driver_reinit": 2
->                     },{
->                         "fw_activate": 1
->                     },{
->                         "fw_activate_no_reset": 0
->                     } ]
->             }
->         },
->         "pci/0000:82:00.1": {
->             "stats": {
->                 "reload_stats": [ {
->                         "driver_reinit": 1
->                     },{
->                         "fw_activate": 0
->                     },{
->                         "fw_activate_no_reset": 0
->                     } ]
-
-This will be a question to the user space part but IDK why every stat
-is in a separate object?
-
-Instead of doing an array of objects -> [ {}, {}, {} ]
-make "reload_stats" itself an object.
-
->             }
->         }
->     }
+>         regs->ip = ex_fixup_addr(fixup);
+>
+>         WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+>                   (void *)instruction_pointer(regs));
+>
+>         __copy_kernel_to_fpregs(&init_fpstate, -1);
+>         return true;
 > }
-> 
-> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+> EXPORT_SYMBOL_GPL(ex_handler_fprestore);
+>
+> In other words, we mostly pretend that illegal FPU state can't happen,
+> and, if it happens, we print a WARN and we blindly run the task with
+> the wrong state.  This is at least an improvement from the previous
+> code -- see
+>
+> commit d5c8028b4788f62b31fb79a331b3ad3e041fa366
+> Author: Eric Biggers <ebiggers@google.com>
+> Date:   Sat Sep 23 15:00:09 2017 +0200
+>
+>     x86/fpu: Reinitialize FPU registers if restoring FPU state fails
+>
+> And we have some code that tries to sanitize user state to avoid this.
+>
+> IMO this all made a little bit of sense when "FPU" meant literally FPU
+> or at least state that was more or less just user registers.  But now
+> we have this fancy "supervisor" state, and I don't think we should be
+> running user code in a context with potentially corrupted or even
+> potentially incorrectly re-initialized supervisor state.  This is an
+> issue for SHSTK -- if an attacker can find a straightforward way to
+> corrupt a target task's FPU state, then that task will run with CET
+> disabled.  Whoops!
 
-Minor nits, looks good overall:
+-1 would not recommend.
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+> The question is: what do we do about it?  We have two basic choices, I think.
+>
+> a) Decide that the saved FPU for a task *must* be valid at all times.
+> If there's a failure to restore state, kill the task.
+>
+> b) Improve our failed restoration handling and maybe even
+> intentionally make it possible to create illegal state to allow
+> testing.
+>
+> (a) sounds like a nice concept, but I'm not convinced it's practical.
+> For example, I'm not even convinced that the set of valid SSP values
+> is documented.
 
-> diff --git a/net/core/devlink.c b/net/core/devlink.c
-> index 6de7d6aa6ed1..05516f1e4c3e 100644
-> --- a/net/core/devlink.c
-> +++ b/net/core/devlink.c
-> @@ -500,10 +500,68 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
->  	return test_bit(limit, &devlink->ops->reload_limits);
->  }
->  
-> +static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
-> +				   enum devlink_reload_limit limit, u32 value)
-> +{
-> +	struct nlattr *reload_stats_entry;
-> +
-> +	reload_stats_entry = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS_ENTRY);
-> +	if (!reload_stats_entry)
-> +		return -EMSGSIZE;
-> +
-> +	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action))
-> +		goto nla_put_failure;
-> +	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_LIMIT, limit))
-> +		goto nla_put_failure;
-> +	if (nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
-> +		goto nla_put_failure;
+SSP is just a stack pointer, but its not included in XSTATE.
 
-nit: it's common to combine such expressions into:
+The CET_U XSTATE component contains MSR_PL3_SSP and MSR_U_CET, both of
+which have well defined validity descriptions in the manual.
 
-if (nla_put...() ||
-    nla_put...() ||
-    nla_put...())
-    goto ...;
+The CET_S XSTATE component contains MSR_PL{2..0}_SSP, but this will be
+of no interest to Linux at all.
 
-> +	nla_nest_end(msg, reload_stats_entry);
-> +	return 0;
-> +
-> +nla_put_failure:
-> +	nla_nest_cancel(msg, reload_stats_entry);
-> +	return -EMSGSIZE;
-> +}
-> +
-> +static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
-> +{
-> +	struct nlattr *reload_stats_attr;
-> +	int i, j, stat_idx;
-> +	u32 value;
-> +
-> +	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
-> +
-> +	if (!reload_stats_attr)
-> +		return -EMSGSIZE;
-> +
-> +	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
-> +		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+As these can only be loaded in supervisor mode, neither operate on the
+currently active SSP.
 
-Why check this? It can't be supported.
+Given how broken Rings 1 and 2 are by CET-SS, I'm very surprised that an
+XSTATE was allocated for this purpose.  Nothing in the architecture ever
+updates these values in hardware, so they're never modified since the
+last XRSTORS, unless someone played with the MSRs directly.
 
-> +		    !devlink_reload_limit_is_supported(devlink, j))
-> +			continue;
-> +		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
-> +			if (!devlink_reload_action_is_supported(devlink, i) ||
-> +			    devlink_reload_combination_is_invalid(i, j))
+> So maybe (b) is the right choice.  Getting a good implementation might
+> be tricky.  Right now, we restore FPU too late in
+> arch_exit_to_user_mode_prepare(), and that function isn't allowed to
+> fail or to send signals.  We could kill the task on failure, and I
+> suppose we could consider queueing a signal, sending IPI-to-self, and
+> returning with TIF_NEED_FPU_LOAD still set and bogus state.  Or we
+> could rework the exit-to-usermode code to allow failure.  All of this
+> becomes utterly gross for the return-from-NMI path, although I guess
+> we don't restore FPU regs in that path regardless.  Or we can
+> do_exit() and just bail outright.
+>
+> I think it would be polite to at least allow core dumping a bogus FPU
+> state, and notifying ptrace() might be nice.  And, if the bogus part
+> of the FPU state is non-supervisor, we could plausibly deliver a
+> signal, but this is (as above) potentially quite difficult.
+>
+> (As an aside, our current handling of signal delivery failure sucks.
+> We should *at least* log something useful.)
+>
+>
+> Regardless of how we decide to handle this, I do think we need to do
+> *something* before applying the CET patches.
 
-Again, devlink instance would not have been registered with invalid
-combinations, right?
+Conceptually, a fault on [F]XRSTOR[S] ought to be fatal.  Something
+corrupt there is definitely an exceptional circumstance.
 
-> +				continue;
-> +
-> +			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
-> +			value = devlink->reload_stats[stat_idx];
-> +			if (devlink_reload_stat_put(msg, i, j, value))
-> +				goto nla_put_failure;
-> +		}
-> +	}
-> +	nla_nest_end(msg, reload_stats_attr);
-> +	return 0;
-> +
-> +nla_put_failure:
-> +	nla_nest_cancel(msg, reload_stats_attr);
-> +	return -EMSGSIZE;
-> +}
+Making it accessible in a coredump is a nice touch.  In theory it should
+be impossible, but CPUs don't have a perfect track record of being able
+to consume the data they emit - the Haswell/Broadwell TSX errata with
+LBR MSRs come to mind, even if it wasn't XSTATE.
 
+Identifying the faulty state isn't necessarily trivial.  Even presuming
+no memory corruption, it could be one or multiple of the components, and
+even if you can find the bad one(s), this issue demonstrates that
+zeroing it isn't necessarily the safe thing to do.
 
-> @@ -3004,6 +3072,34 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
->  }
->  EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
->  
-> +static void
-> +__devlink_reload_stats_update(struct devlink *devlink, u32 *reload_stats,
-> +			      enum devlink_reload_limit limit, unsigned long actions_performed)
+This condition is going to be a slowpath anyway.  What about a fixup
+function which runs across an arbitrary XSTATE blob, and tries to
+sanitises it?  This can be reused by software (i.e. non-[F]XSAVE[S]
+sources) of XSTATE to reject bad input, and on fault to try and cope
+with fallout.  If the fixed up version faults again, then you have to
+terminate the task anyway.
 
-> +	for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
+Whatever happens, even if running the task with fixed up state, the
+fixup action needs to be very loud in the logs, so someone will
+investigate and fix the root cause.
 
-nit: for_each_set_bit
-
-> +		if (!test_bit(action, &actions_performed))
-> +			continue;
-> +		stat_idx = limit * __DEVLINK_RELOAD_ACTION_MAX + action;
-> +		reload_stats[stat_idx]++;
-> +	}
-> +	devlink_notify(devlink, DEVLINK_CMD_NEW);
-> +}
+~Andrew
