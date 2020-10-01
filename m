@@ -2,98 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D02D280240
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818A8280243
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732596AbgJAPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:12:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732384AbgJAPMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:12:49 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26001208B6;
-        Thu,  1 Oct 2020 15:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601565169;
-        bh=0tp/yT04bI9YEzGZ7JU9CrvtzZ2lCVTf/YhR8YSvl1w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ri2zKa4L3913Z+XrUkCW1KGdtyI7MxP7tlck2HW9hwIv0UX352si7rIbuiOS6hnLI
-         fL4PO8r4qCePIcfTb3hcCvb86OHYbQ9AJGQu7kFCilpMLbmC9NCq9FN/JKtkaiDjsA
-         o76d0ekIB4Wm4Bbq1dMQo5EMvZ+7+Kwup+k/tJiw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 467E8403AC; Thu,  1 Oct 2020 12:12:47 -0300 (-03)
-Date:   Thu, 1 Oct 2020 12:12:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     stable@vger.kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: Re: [PATCH] perf tools: Fix printable strings in python3 scripts
-Message-ID: <20201001151247.GC18693@kernel.org>
-References: <20200928201135.3633850-1-jolsa@kernel.org>
+        id S1732606AbgJAPNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732384AbgJAPNi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:13:38 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EEBC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 08:13:37 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m12so5787989otr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 08:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gyqBR8rgovZvV1br57kzCLeVLh2BC1/nJFNuCWvX/Hg=;
+        b=HWt7G37MzABEhEJzmhYn37I7HQ3nrxFri1BtglWKxVHv8+/mx3PgqLVDr8TJioVn6Z
+         VBrO8lu+BrDDf++bBGjpolziIxr53jSkmw6Dl7y+ZEpC6tjtW8qYmqqcqaVVJlKnzxOQ
+         dbBNgP25HQUrv/PQjs8tElcIUqDde1j02SHy8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gyqBR8rgovZvV1br57kzCLeVLh2BC1/nJFNuCWvX/Hg=;
+        b=EsZrxhiEnz+42otVaHDQ9pBhKoiJMk5zhRCLxOfC4mgcJhg+6pBFaUKxpXmvZxzxn0
+         lTLklO9NjLjgJY4eskPbFp/Cugd75HJjXaJ+GEAY8Twvdtvsp9p4owcKhF0Ox8NU6AO9
+         Ph+MECuu1OsfxjT8dwJ9UQxIPuxJ6Da8E4laM7B2l4H3fd1NUYoyudyzEuT/NUDH6qVn
+         XF6HWp3+i8rZlfxqC755g97jNO0ZjoM1tdxaSTxtcasSrUxSam4hwG6UkR8j5PT/w+cZ
+         k6SntPhjRzJZkTsoeSbUsznSCV7nZ7B+62OneTxzL9/1UmQHolpdojqh6Pzq5r+9CDXG
+         kdvw==
+X-Gm-Message-State: AOAM5324fMTDTeoIawNP755yAQcf/eCAneptSV+RCGy0YDm0bQpuZgf8
+        Eb/rjDcl8R3UlVnDBLWNfA8o4JUdHK6Gi0usu3zZVg==
+X-Google-Smtp-Source: ABdhPJwnkX4j2N+uVgeHBKZEsf4a1EiVhC8hXdATqgJLW5d3fzqdEPJfxlIxYzf9TYqPMnVDwuLs9HodRVSnVkw5BC0=
+X-Received: by 2002:a9d:4b99:: with SMTP id k25mr5484928otf.281.1601565217247;
+ Thu, 01 Oct 2020 08:13:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928201135.3633850-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20201001203917.43d46a3d@canb.auug.org.au> <20201001135350.GA14869@lst.de>
+ <CAKMK7uFfBLsZ=wetii4bc+BTiKObD5DJ7B-kDO4am6AhBY+AhQ@mail.gmail.com> <87h7rem1aj.fsf@intel.com>
+In-Reply-To: <87h7rem1aj.fsf@intel.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 1 Oct 2020 17:13:26 +0200
+Message-ID: <CAKMK7uFOuFEOjrLGpB+oejs=J9kEvrRb6K9Ng6nBt+WS4gwKtQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the akpm tree with the drm-intel tree
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 28, 2020 at 10:11:35PM +0200, Jiri Olsa escreveu:
-> Hagen reported broken strings in python3 tracepoint scripts:
-> 
->   make PYTHON=python3
->   ./perf record -e sched:sched_switch -a -- sleep 5
->   ./perf script --gen-script py
->   ./perf script -s ./perf-script.py
-> 
->   [..]
->   sched__sched_switch      7 563231.759525792        0 swapper   \
->   prev_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), \
->   prev_pid=0, prev_prio=120, prev_state=, next_comm=bytearray(b'mutex-thread-co\x00'),
-> 
-> The problem is in is_printable_array function that does not take
-> zero byte into account and claim such string as not printable,
-> so the code will create byte array instead of string.
+On Thu, Oct 1, 2020 at 5:08 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>
+> On Thu, 01 Oct 2020, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > On Thu, Oct 1, 2020 at 3:53 PM Christoph Hellwig <hch@lst.de> wrote:
+> >>
+> >> On Thu, Oct 01, 2020 at 08:39:17PM +1000, Stephen Rothwell wrote:
+> >> > Hi all,
+> >> >
+> >> > Today's linux-next merge of the akpm tree got a conflict in:
+> >> >
+> >> >   drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> >> >
+> >> > between commit:
+> >> >
+> >> >   4caf017ee937 ("drm/i915/gem: Avoid implicit vmap for highmem on x86-32")
+> >> >   ba2ebf605d5f ("drm/i915/gem: Prevent using pgprot_writecombine() if PAT is not supported")
+> >
+> > Uh these patches shouldn't be in linux-next because they're for 5.11,
+> > not the 5.10 merge window that will open soon. Joonas?
+>
+> I don't know anything else, but both are tagged Cc: stable.
 
-Thanks, tested and applied.
+Uh right I got confused, they're on -fixes now. Well -next-fixes,
+which seems like the wrong one for a cc: stable, I guess this should
+go into 5.9 even. Apologies for my confusion.
+-Daniel
 
-- Arnaldo
- 
-> Cc: stable@vger.kernel.org
-> Fixes: 249de6e07458 ("perf script python: Fix string vs byte array resolving")
-> Tested-by: Hagen Paul Pfeifer <hagen@jauu.net>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/print_binary.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/print_binary.c b/tools/perf/util/print_binary.c
-> index 599a1543871d..13fdc51c61d9 100644
-> --- a/tools/perf/util/print_binary.c
-> +++ b/tools/perf/util/print_binary.c
-> @@ -50,7 +50,7 @@ int is_printable_array(char *p, unsigned int len)
->  
->  	len--;
->  
-> -	for (i = 0; i < len; i++) {
-> +	for (i = 0; i < len && p[i]; i++) {
->  		if (!isprint(p[i]) && !isspace(p[i]))
->  			return 0;
->  	}
-> -- 
-> 2.26.2
-> 
+>
+> BR,
+> Jani.
+>
+> >
+> >> > from the drm-intel tree and patch:
+> >> >
+> >> >   "drm/i915: use vmap in i915_gem_object_map"
+> >> >
+> >> > from the akpm tree.
+> >> >
+> >> > I fixed it up (I just dropped the changes in the former commits) and
+> >>
+> >> Sigh.  The solution is a bit more complicated, but I just redid my
+> >> patches to not depend on the above ones.  I can revert back to the old
+> >> version, though.  Andrew, let me know what works for you.
+> >
+> > Imo ignore, rebasing onto linux-next without those intel patches was
+> > the right thing for the 5.10 merge window.
+> > -Daniel
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
+
+
 
 -- 
-
-- Arnaldo
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
