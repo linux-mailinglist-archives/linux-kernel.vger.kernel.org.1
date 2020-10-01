@@ -2,229 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3D827F791
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B7827F792
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730398AbgJABnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:43:51 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:47543 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725800AbgJABnv (ORCPT
+        id S1730652AbgJABoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:44:12 -0400
+Received: from smtprelay0167.hostedemail.com ([216.40.44.167]:53716 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725800AbgJABoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:43:51 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id A4BB55C0262;
-        Wed, 30 Sep 2020 21:43:49 -0400 (EDT)
-Received: from imap4 ([10.202.2.54])
-  by compute2.internal (MEProxy); Wed, 30 Sep 2020 21:43:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duggan.us; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=N5xYIHNsQj6YcLP2u7bpecTn7CyjbfD
-        /aVUxvvuMkDY=; b=EAHXRTFCPKtzDcPZQ31Tr62i6gweFh4/VsShVPcJw9hVD5H
-        i5VRO7n5k3/+26s6x7OgHKI5aRC8rLN+PT/698Mh28CTd6zXZI7sVIiKaN5Z3QDc
-        ukWfg+6OyJCAcqqU0A0YTyTxZNxEQY1a2KNoj04liORjmAUXm0THxL7oNgqknAuy
-        YLWHeCNvXEbxRT3ZrdyA5of99z9CnZ2cmUrUZMBbp2MOfRMmjMp5FokZL9CfxJAr
-        9EBvp3tavaBFA7U3jlGsUH6dCe2AjSHeXJ0sw6BEbIQjlQO3PC7ykoxZKxfPVwr9
-        geCi0AP+Dr3vAk2sHvEDxOO6b3knNmbNUrN5yqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=N5xYIH
-        NsQj6YcLP2u7bpecTn7CyjbfD/aVUxvvuMkDY=; b=AHFoXn1hq2ZSlJ47TUq69+
-        eda6b8knnzuXPo2w6IU3wshKjUbxANgMyxhlqjPfJlpfuRnD+83CrmjTdhOhMMv6
-        L9AC50hNeamGYoHKE0WFgIKLr6mleQvthsuIcrXChMK6HXnA4DixPhHbafXQp8Vv
-        07d+fAdpyx4EAk+6OmNcaty/1scagWEVMxNaCSEf6i3AWaw6gijfIbXgBVlcgF6P
-        8j0kMqjyEkNRtjB05y+wtwyaL3ZiXb5me3wjss+2hnSAC3mbQXFr7RXnI2Y4/Q3g
-        tZpllQmmbciufYGTMN4ugvYJ/ep6dBieQS/MFvGKfCtlukvsg9gNvh6l46irDxAg
-        ==
-X-ME-Sender: <xms:VTR1X4HUQKo25Y0GMiuiy-p0e4u487aD95_V2t5F7Olfxu2zxEBJTA>
-    <xme:VTR1XxV9aMncB8G_aORNp05ZTZsUkGw9xrJGR2IgsvSezS4FcJ_5-WkxxLRAZGYeW
-    egQeBpwGP1WjGAaig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
-    vgifucffuhhgghgrnhdfuceorghnughrvgifseguuhhgghgrnhdruhhsqeenucggtffrrg
-    htthgvrhhnpedvgfeuvefgffelvefgieeujeeuueekiedtvedtleehuefgvedtgedtudeu
-    ieelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesughughhgrghnrdhush
-X-ME-Proxy: <xmx:VTR1XyJ4mh7zy86UjTGt_CqrHpcHJKKKIj9e_4v8obRH3y9_JbRFIw>
-    <xmx:VTR1X6Ee70_znYDeBNTWORRjIAJSeyKQsJpY6zwrfUayJx7F1Icm0Q>
-    <xmx:VTR1X-V0BPV_mecCj3JT_yFQGD_UJGTldcOjDLGGD5Fp9uZ5wIkL8A>
-    <xmx:VTR1X5F2b3QKSjvu2kr7np2YWffo8jUl-4o8ST1OKvrf2IUVq4MELw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 320643C0411; Wed, 30 Sep 2020 21:43:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-382-ge235179-fm-20200928.002-ge2351794
-Mime-Version: 1.0
-Message-Id: <28c71947-0cab-443f-b405-33cf3ab7ecaf@www.fastmail.com>
-In-Reply-To: <20200930094147.635556-2-vincent.huang@tw.synaptics.com>
-References: <20200930094147.635556-1-vincent.huang@tw.synaptics.com>
- <20200930094147.635556-2-vincent.huang@tw.synaptics.com>
-Date:   Wed, 30 Sep 2020 18:43:06 -0700
-From:   "Andrew Duggan" <andrew@duggan.us>
-To:     "Vincent Huang" <vincent.huang@tw.synaptics.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        "Jiri Kosina" <jikos@kernel.org>,
-        "Andrew Duggan" <aduggan@synaptics.com>,
-        "Hans de Goede" <hdegoede@redhat.com>,
-        "Benjamin Tissoires" <btissoir@redhat.com>,
-        "Lyude Paul" <lyude@redhat.com>,
-        "Chris Heiny" <chris.heiny@synaptics.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v3_1/2]_Input:_synaptics-rmi4_-_rename_f30=5Fdata_t?=
- =?UTF-8?Q?o_gpio=5Fdata?=
-Content-Type: text/plain
+        Wed, 30 Sep 2020 21:44:11 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 7EE063648;
+        Thu,  1 Oct 2020 01:44:10 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3874:4250:4321:4384:5007:7901:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13095:13311:13357:13439:13972:14161:14659:14721:21080:21433:21627:30009:30054:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: hate49_5204d4a27197
+X-Filterd-Recvd-Size: 2746
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  1 Oct 2020 01:44:09 +0000 (UTC)
+Message-ID: <6cbd011cef2e52f39812bc8f6505fdd95f98d14d.camel@perches.com>
+Subject: Re: [PATCH v5 09/15] misc: bcm-vk: add VK messaging support
+From:   Joe Perches <joe@perches.com>
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Desmond Yan <desmond.yan@broadcom.com>
+Date:   Wed, 30 Sep 2020 18:43:44 -0700
+In-Reply-To: <20201001012810.4172-10-scott.branden@broadcom.com>
+References: <20201001012810.4172-1-scott.branden@broadcom.com>
+         <20201001012810.4172-10-scott.branden@broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-09-30 at 18:28 -0700, Scott Branden wrote:
+> Add message support in order to be able to communicate
+> to VK card via message queues.
 
+trivia:
 
-On Wed, Sep 30, 2020, at 2:41 AM, Vincent Huang wrote:
-> f30_data in rmi_device_platform_data could be also referenced by RMI
-> function 3A, so rename it and the structure name to avoid confusion.
-> 
-> Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
+> +/* structure that is used to faciliate displaying of register content */
+> +struct bcm_vk_entry {
+> +	const u32 mask;
+> +	const u32 exp_val;
+> +	const char *str;
+> +};
+[]
+> +/*
+> + * alerts that could be generated from peer
+> + */
+> +struct bcm_vk_entry const bcm_vk_peer_err[BCM_VK_PEER_ERR_NUM] = {
 
-Reviewed-by: Andrew Duggan <aduggan@synaptics.com>
+const struct bcm_vk_entry
 
-> ---
->  drivers/hid/hid-rmi.c           |  2 +-
->  drivers/input/mouse/synaptics.c |  2 +-
->  drivers/input/rmi4/rmi_f30.c    | 14 +++++++-------
->  include/linux/rmi.h             | 11 ++++++-----
->  4 files changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-rmi.c b/drivers/hid/hid-rmi.c
-> index 9ce22acdfaca..62315e31d520 100644
-> --- a/drivers/hid/hid-rmi.c
-> +++ b/drivers/hid/hid-rmi.c
-> @@ -722,7 +722,7 @@ static int rmi_probe(struct hid_device *hdev, const 
-> struct hid_device_id *id)
+> +	{ERR_LOG_UECC, ERR_LOG_UECC, "uecc"},
+> +	{ERR_LOG_SSIM_BUSY, ERR_LOG_SSIM_BUSY, "ssim_busy"},
+> +	{ERR_LOG_AFBC_BUSY, ERR_LOG_AFBC_BUSY, "afbc_busy"},
+> +	{ERR_LOG_HIGH_TEMP_ERR, ERR_LOG_HIGH_TEMP_ERR, "high_temp"},
+> +	{ERR_LOG_WDOG_TIMEOUT, ERR_LOG_WDOG_TIMEOUT, "wdog_timeout"},
+> +	{ERR_LOG_SYS_FAULT, ERR_LOG_SYS_FAULT, "sys_fault"},
+> +	{ERR_LOG_RAMDUMP, ERR_LOG_RAMDUMP, "ramdump"},
+> +	{ERR_LOG_MEM_ALLOC_FAIL, ERR_LOG_MEM_ALLOC_FAIL, "malloc_fail warn"},
+> +	{ERR_LOG_LOW_TEMP_WARN, ERR_LOG_LOW_TEMP_WARN, "low_temp warn"},
+> +	{ERR_LOG_ECC, ERR_LOG_ECC, "ecc"},
+> +};
+> +
+> +/* alerts detected by the host */
+> +struct bcm_vk_entry const bcm_vk_host_err[BCM_VK_HOST_ERR_NUM] = {
+
+here too
+
+> +	{ERR_LOG_HOST_PCIE_DWN, ERR_LOG_HOST_PCIE_DWN, "PCIe_down"},
+> +	{ERR_LOG_HOST_HB_FAIL, ERR_LOG_HOST_HB_FAIL, "hb_fail"},
+> +	{ERR_LOG_HOST_INTF_V_FAIL, ERR_LOG_HOST_INTF_V_FAIL, "intf_ver_fail"},
+> +};
+[]
+> @@ -970,6 +1251,9 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  		}
 >  	}
 >  
->  	if (data->device_flags & RMI_DEVICE_HAS_PHYS_BUTTONS)
-> -		rmi_hid_pdata.f30_data.disable = true;
-> +		rmi_hid_pdata.gpio_data.disable = true;
->  
->  	data->xport.dev = hdev->dev.parent;
->  	data->xport.pdata = rmi_hid_pdata;
-> diff --git a/drivers/input/mouse/synaptics.c 
-> b/drivers/input/mouse/synaptics.c
-> index 4b81b2d0fe06..8a54efd6eb95 100644
-> --- a/drivers/input/mouse/synaptics.c
-> +++ b/drivers/input/mouse/synaptics.c
-> @@ -1752,7 +1752,7 @@ static int synaptics_create_intertouch(struct 
-> psmouse *psmouse,
->  			.kernel_tracking = false,
->  			.topbuttonpad = topbuttonpad,
->  		},
-> -		.f30_data = {
-> +		.gpio_data = {
->  			.buttonpad = SYN_CAP_CLICKPAD(info->ext_cap_0c),
->  			.trackstick_buttons =
->  				!!SYN_CAP_EXT_BUTTONS_STICK(info->ext_cap_10),
-> diff --git a/drivers/input/rmi4/rmi_f30.c b/drivers/input/rmi4/rmi_f30.c
-> index a90dad1d9ac7..35045f161dc2 100644
-> --- a/drivers/input/rmi4/rmi_f30.c
-> +++ b/drivers/input/rmi4/rmi_f30.c
-> @@ -168,17 +168,17 @@ static int rmi_f30_config(struct rmi_function *fn)
->  				rmi_get_platform_data(fn->rmi_dev);
->  	int error;
->  
-> -	/* can happen if f30_data.disable is set */
-> +	/* can happen if gpio_data.disable is set */
->  	if (!f30)
->  		return 0;
->  
-> -	if (pdata->f30_data.trackstick_buttons) {
-> +	if (pdata->gpio_data.trackstick_buttons) {
->  		/* Try [re-]establish link to F03. */
->  		f30->f03 = rmi_find_function(fn->rmi_dev, 0x03);
->  		f30->trackstick_buttons = f30->f03 != NULL;
->  	}
->  
-> -	if (pdata->f30_data.disable) {
-> +	if (pdata->gpio_data.disable) {
->  		drv->clear_irq_bits(fn->rmi_dev, fn->irq_mask);
->  	} else {
->  		/* Write Control Register values back to device */
-> @@ -245,10 +245,10 @@ static int rmi_f30_map_gpios(struct rmi_function *fn,
->  		if (!rmi_f30_is_valid_button(i, f30->ctrl))
->  			continue;
->  
-> -		if (pdata->f30_data.trackstick_buttons &&
-> +		if (pdata->gpio_data.trackstick_buttons &&
->  		    i >= TRACKSTICK_RANGE_START && i < TRACKSTICK_RANGE_END) {
->  			f30->gpioled_key_map[i] = trackstick_button++;
-> -		} else if (!pdata->f30_data.buttonpad || !button_mapped) {
-> +		} else if (!pdata->gpio_data.buttonpad || !button_mapped) {
->  			f30->gpioled_key_map[i] = button;
->  			input_set_capability(input, EV_KEY, button++);
->  			button_mapped = true;
-> @@ -264,7 +264,7 @@ static int rmi_f30_map_gpios(struct rmi_function *fn,
->  	 * but I am not sure, so use only the pdata info and the number of
->  	 * mapped buttons.
->  	 */
-> -	if (pdata->f30_data.buttonpad || (button - BTN_LEFT == 1))
-> +	if (pdata->gpio_data.buttonpad || (button - BTN_LEFT == 1))
->  		__set_bit(INPUT_PROP_BUTTONPAD, input->propbit);
->  
->  	return 0;
-> @@ -372,7 +372,7 @@ static int rmi_f30_probe(struct rmi_function *fn)
->  	struct f30_data *f30;
->  	int error;
->  
-> -	if (pdata->f30_data.disable)
-> +	if (pdata->gpio_data.disable)
->  		return 0;
->  
->  	if (!drv_data->input) {
-> diff --git a/include/linux/rmi.h b/include/linux/rmi.h
-> index 7b22366d0065..00dda5381bf8 100644
-> --- a/include/linux/rmi.h
-> +++ b/include/linux/rmi.h
-> @@ -102,15 +102,16 @@ struct rmi_2d_sensor_platform_data {
->  };
->  
->  /**
-> - * struct rmi_f30_data - overrides defaults for a single F30 GPIOs/LED 
-> chip.
-> + * struct rmi_gpio_data - overrides defaults for a single F30/F3A 
-> GPIOs/LED
-> + * chip.
->   * @buttonpad - the touchpad is a buttonpad, so enable only the first 
-> actual
->   * button that is found.
-> - * @trackstick_buttons - Set when the function 30 is handling the 
-> physical
-> + * @trackstick_buttons - Set when the function 30 or 3a is handling 
-> the physical
->   * buttons of the trackstick (as a PS/2 passthrough device).
-> - * @disable - the touchpad incorrectly reports F30 and it should be 
-> ignored.
-> + * @disable - the touchpad incorrectly reports F30/F3A and it should 
-> be ignored.
->   * This is a special case which is due to misconfigured firmware.
->   */
-> -struct rmi_f30_data {
-> +struct rmi_gpio_data {
->  	bool buttonpad;
->  	bool trackstick_buttons;
->  	bool disable;
-> @@ -218,7 +219,7 @@ struct rmi_device_platform_data {
->  	/* function handler pdata */
->  	struct rmi_2d_sensor_platform_data sensor_pdata;
->  	struct rmi_f01_power_management power_management;
-> -	struct rmi_f30_data f30_data;
-> +	struct rmi_gpio_data gpio_data;
->  };
->  
->  /**
-> -- 
-> 2.25.1
-> 
->
+> +	/* enable hb */
+> +	bcm_vk_hb_init(vk);
+> +
+>  	dev_dbg(dev, "BCM-VK:%u created, 0x%p\n", id, vk);
+
+Not much purpose in displaying the pointer.
+
+
