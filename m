@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B0D27FB90
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190FD27FB92
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731596AbgJAIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:37:57 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37660 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgJAIh4 (ORCPT
+        id S1731620AbgJAIia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgJAIia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:37:56 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0918bgBD053910;
-        Thu, 1 Oct 2020 03:37:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601541462;
-        bh=Hi8WgMTw+/dEZZLoXlkBElU7G3gt+3V10JrngjJzxwI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=o0Y2JkObjtO7UyzG5aFY2Q7/r7HweK13KhBazrgv1MR+vMjjUfYe1KJCqlsPWLunD
-         jZLGTMmOB7FPNcFpI7AN7cEG955mGy7yTEzxHA+Ftr/Fd6qw/GaejBFAlszK1ANxdU
-         hyp3W3smevtMJE/n7pp8vK0K3Ae86WbWyWM3SNR4=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0918bgvs059099
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 1 Oct 2020 03:37:42 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 03:37:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 03:37:41 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0918beBV092139;
-        Thu, 1 Oct 2020 03:37:41 -0500
-Date:   Thu, 1 Oct 2020 14:07:39 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <Tudor.Ambarus@microchip.com>
-CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v14 03/15] mtd: spi-nor: add support for DTR protocol
-Message-ID: <20201001083737.iacunfb7l75elvex@ti.com>
-References: <20200930185732.6201-1-p.yadav@ti.com>
- <20200930185732.6201-4-p.yadav@ti.com>
- <67f14906-ef28-ff4c-b41f-3500c9212ad7@microchip.com>
+        Thu, 1 Oct 2020 04:38:30 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D37C0613D0;
+        Thu,  1 Oct 2020 01:38:30 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t12so5314816ilh.3;
+        Thu, 01 Oct 2020 01:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ON+opjPHh020IQmczBcWo4ofg8g1dUfmPb5G/fCa/xM=;
+        b=UxT+icRRDjkJqTwowa+yksEbAFoaVgOcdX5i9ootPoFm8eByk2RqgID5LGYe4eDu+T
+         9LXj64mErLGO7AOnF1xcqEEZm1MnXZQ7jGrb+YFY91tXtjJT701jIWv6k6KNW9DEdScX
+         c///UmuzY8emR42MbtkBvPP3MJeRHqTGtrRfdTKeiiMzM0MoAwuby/T+l3OU9w9WmBZR
+         P/DilkKhwM73elyF+ptm4Ua8L7M951+8F/WI0FUJOy7ELDrUiYyZyZVSfWwreuvDmxJQ
+         D0zdRWhhUQ3iQc17bzKO8U3RqgRinzFx/PEsDFJnCphHTBxu3MrcRtfI481Fhx//8CkD
+         dzeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ON+opjPHh020IQmczBcWo4ofg8g1dUfmPb5G/fCa/xM=;
+        b=iLvfe4mVySTqnlPMMB3G+eO04KyRia4Xc3baLh8QnPTQ0uEuP0M6IBypIBwsX6qFQB
+         QnHtNCOfaijLzwmpx4P0qcezP7kXryQFzTPm2SOgJvC8PnCpsqddV8TA0JheSJHSptoN
+         zAZ4cKcZBVh1Uml82LMuVWyUyAetII3+ekWUXLYENpXwBfTlDBjCqnt1lRp3KFuTPXwg
+         Z2QI5NPQINsEuiFRfeMqfufr+r9UGXOp5sHkDKM+2FHaQcHCEJchDItNudSUp+pqsE9G
+         QLA98JBpfacLsr6HgK/ZyYY/XPF8POHCvP8OdH0tDvHUASqnK+TfHEUrDue2KHh2qhGu
+         RPYw==
+X-Gm-Message-State: AOAM533DmECNP/IxqCrfv9c6HfoklgcS6D/NbsNb/wCmf0Tn/Ua6uZjA
+        fSC4jY2ii40T6DnjAP6JmieT5/F4IJqFSmDkLAQ=
+X-Google-Smtp-Source: ABdhPJyP/Kis1ixw1glVmQd3wC94hDNv72egaBNUhNfr283RbQ5OTHGCLB7GaqHRRwlQ/aIs0deVlk+1bfQeLif2hJs=
+X-Received: by 2002:a92:aa8f:: with SMTP id p15mr1639564ill.100.1601541509515;
+ Thu, 01 Oct 2020 01:38:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <67f14906-ef28-ff4c-b41f-3500c9212ad7@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201001071824.24995-1-colyli@suse.de>
+In-Reply-To: <20201001071824.24995-1-colyli@suse.de>
+From:   Vicente Bergas <vicencb@gmail.com>
+Date:   Thu, 1 Oct 2020 10:38:18 +0200
+Message-ID: <CAAMcf8Ao8Go7GdB2XFXAHsWrcxb0VqtDRpHReOGTsjegq2XP0Q@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: core: don't set limits.discard_granularity as 0
+To:     Coly Li <colyli@suse.de>, Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/10/20 07:46AM, Tudor.Ambarus@microchip.com wrote:
-> On 9/30/20 9:57 PM, Pratyush Yadav wrote:
-> > @@ -2387,12 +2496,16 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor 
-> > *nor, u32 *hwcaps)
-> >         struct spi_nor_flash_parameter *params = nor->params;
-> >         unsigned int cap;
-> > 
-> > -       /* DTR modes are not supported yet, mask them all. */
-> > -       *hwcaps &= ~SNOR_HWCAPS_DTR;
-> > -
-> >         /* X-X-X modes are not supported yet, mask them all. */
-> >         *hwcaps &= ~SNOR_HWCAPS_X_X_X;
-> > 
-> > +       /*
-> > +        * If the reset line is broken, we do not want to enter a stateful
-> > +        * mode.
-> > +        */
-> > +       if (nor->flags & SNOR_F_BROKEN_RESET)
-> > +               *hwcaps &= ~(SNOR_HWCAPS_X_X_X | SNOR_HWCAPS_X_X_X_DTR);
-> 
-> SNOR_HWCAPS_X_X_X is already masked out above. Do we need to do it again?
+On Thu, Oct 1, 2020 at 9:18 AM Coly Li <colyli@suse.de> wrote:
+>
+> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+> might be set as 0 (when card->pref_erase > max_discard) while the mmc
+> device still declares to support discard operation. This is buggy and
+> triggered the following kernel warning message,
+>
+> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+> Hardware name: Google Kevin (DT)
+> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=3D--)
+> pc : __blkdev_issue_discard+0x200/0x294
+> lr : __blkdev_issue_discard+0x54/0x294
+> sp : ffff800011dd3b10
+> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ff=
+ff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1d=
+eaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19=
+: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000=
+000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000=
+ x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : fff=
+f800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f192=
+6400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 :=
+ 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+> __blkdev_issue_discard+0x200/0x294
+> __submit_discard_cmd+0x128/0x374
+> __issue_discard_cmd_orderly+0x188/0x244
+> __issue_discard_cmd+0x2e8/0x33c
+> issue_discard_thread+0xe8/0x2f0
+> kthread+0x11c/0x120
+> ret_from_fork+0x10/0x1c
+> ---[ end trace e4c8023d33dfe77a ]---
+>
+> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+> complain from __blkdev_issue_discard() for the improper value of discard
+> granularity.
+>
+> This issue is exposed after commit b35fd7422c2f ("block: check queue's
+> limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
+> is also added for the commit to make sure people won't miss this patch
+> after applying the change of __blkdev_issue_discard().
+>
+> Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum di=
+scard timeout")
+> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in =
+__blkdev_issue_discard()").
+> Reported-by: Vicente Bergas <vicencb@gmail.com>
 
-That might change later and the person removing that line might not 
-remember or even know to add it back here.
- 
-> > +
-> >         for (cap = 0; cap < sizeof(*hwcaps) * BITS_PER_BYTE; cap++) {
-> >                 int rdidx, ppidx;
-> > 
-> > @@ -2967,7 +3098,9 @@ static int spi_nor_init(struct spi_nor *nor)
-> >                 return err;
-> >         }
-> > 
-> > -       if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
-> > +       if (nor->addr_width == 4 &&
-> > +           nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
-> > +           !(nor->flags & SNOR_F_4B_OPCODES)) {
-> >                 /*
-> >                  * If the RESET# pin isn't hooked up properly, or the system
-> >                  * otherwise doesn't perform a reset command in the boot
-> > @@ -3024,7 +3157,21 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
-> > 
-> >  static int spi_nor_set_addr_width(struct spi_nor *nor)
-> >  {
-> > -       if (nor->addr_width) {
-> > +       if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
-> 
-> This should come as an "else if". We need to let the posibility to retrieve
-> addr_width from SFDP, the standard knows better than us.
-
-Ok. Will fix.
- 
-> With these addressed, one can add:
-> 
-> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> > +               /*
-> > +                * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
-> > +                * in this protocol an odd address width cannot be used because
-> > +                * then the address phase would only span a cycle and a half.
-> > +                * Half a cycle would be left over. We would then have to start
-> > +                * the dummy phase in the middle of a cycle and so too the data
-> > +                * phase, and we will end the transaction with half a cycle left
-> > +                * over.
-> > +                *
-> > +                * Force all 8D-8D-8D flashes to use an address width of 4 to
-> > +                * avoid this situation.
-> > +                */
-> > +               nor->addr_width = 4;
-> > +       } else if (nor->addr_width) {
-> >                 /* already configured from SFDP */
-> >         } else if (nor->info->addr_width) {
-> >                 nor->addr_width = nor->info->addr_width;
-
--- 
+Hi Coly, Adrian,
+would you like me to reply with a tested-by?
+before testing it: what are the chances of losing data?
 Regards,
-Pratyush Yadav
-Texas Instruments India
+  Vicente.
+
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+> Changelog,
+> v3, add Fixes tag for both commits.
+> v2, change commit id of the Fixes tag.
+> v1, initial version.
+>
+>  drivers/mmc/core/queue.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> index 6c022ef0f84d..350d0cc4ee62 100644
+> --- a/drivers/mmc/core/queue.c
+> +++ b/drivers/mmc/core/queue.c
+> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_qu=
+eue *q,
+>         q->limits.discard_granularity =3D card->pref_erase << 9;
+>         /* granularity must not be greater than max. discard */
+>         if (card->pref_erase > max_discard)
+> -               q->limits.discard_granularity =3D 0;
+> +               q->limits.discard_granularity =3D SECTOR_SIZE;
+>         if (mmc_can_secure_erase_trim(card))
+>                 blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+>  }
+> --
+> 2.26.2
+>
