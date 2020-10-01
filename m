@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C4227F98A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E8827F98D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbgJAGg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:36:58 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:45973 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGg6 (ORCPT
+        id S1730854AbgJAGif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAGif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:36:58 -0400
-Received: by mail-ej1-f66.google.com with SMTP id i26so6307209ejb.12;
-        Wed, 30 Sep 2020 23:36:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sihoIIR1T+XV8pIaHvxkkGpsDFWAH7E2gjDd1woe3nQ=;
-        b=O9qrc/wPhUkLYL9QSby0t8c81uY2WKz1PO974CAHANsENGOtoR4aHxTT+pxTUaUikp
-         /2C1BY8YhlzVPoyFEJXrn6k6q7N0ptabI+oELhKWzr58rvnca9KKd3MIzPTGcm/QJlsK
-         /kj/HBvqqGp6ifJSSqPTgD2Rb/1fSZ/KZRCP4N4ATqVSRD5uGSMOiC86yN+vNDp5NMrQ
-         CNTdFMXNkYQmUHqSwEca/k+DLJV47JS/fhAFvkObd9d7GGNKcS/eNo52vpOHQtA05IAa
-         Cz9GNU838BedG22a3TnX4tp1IiWRWAi8Wd2UuMV7cpEmX1KuRkg64Diq8nOKybNZ/Mza
-         CNnA==
-X-Gm-Message-State: AOAM5315z1nP7QHZf/3oQtXOf1JpGWNoBcloeFIiR2GI5K+jxk+Ks4WA
-        0xYP46Z+2EsiTIoEO8M7z6Q=
-X-Google-Smtp-Source: ABdhPJxzENJ3Dhl8zzXtpXBgMHEv+rVLDKLGfR2tKJZbPYLEGdgt+iZqRheAXy+b9/7OxWCRXoKqrA==
-X-Received: by 2002:a17:907:2115:: with SMTP id qn21mr6431866ejb.278.1601534215857;
-        Wed, 30 Sep 2020 23:36:55 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id a20sm3341930ejb.81.2020.09.30.23.36.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 23:36:54 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 08:36:52 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v6 08/17] ARM: dts: add SD5203 dts
-Message-ID: <20201001063652.GD3018@kozik-lap>
-References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
- <20200930031712.2365-9-thunder.leizhen@huawei.com>
+        Thu, 1 Oct 2020 02:38:35 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C8CC0613D0;
+        Wed, 30 Sep 2020 23:38:34 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C23Ng6vpDz9sTR;
+        Thu,  1 Oct 2020 16:38:27 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601534312;
+        bh=RBJiBoz8G2EGVdAT6E3of1uC7YVoBJ+eg8J8ki0v5Zw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ukDmWTSgy0pWJYmgcGGafRBIxLEjprqygoQANgUOP+XgiSRPbmZUKnX5l68ljT8x7
+         cMz+awKoxLyLQ/ILC4NWn8lYuaJsiZhJWAQ4xZq0+O1uu+h6Yl6aryQI/e6bwIyJAZ
+         7C42lzLvos1czc75boZXKtoJUcbg7Cza+9fmjgYs6dJ19LotbQdtA/YFBvH4w+4AlL
+         0fQIGpw77Pbsxu+zKiw1lcOP6tICIOH9z/Rzm5jEjbtOM49aQLVa/tPo1TZzsPCYc9
+         RoCuxhkWKK3NPv3uh9h8GnfE/ED7VNjLv+682UHg0L7dT/rii1lTIxpeT3EvGmlde4
+         NNwxXixxYEevA==
+Date:   Thu, 1 Oct 2020 16:38:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Li Heng <liheng40@huawei.com>
+Subject: linux-next: manual merge of the tip tree with the pci tree
+Message-ID: <20201001163827.20ea7bf9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200930031712.2365-9-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 11:17:03AM +0800, Zhen Lei wrote:
-> From: Kefeng Wang <wangkefeng.wang@huawei.com>
-> 
-> Add sd5203.dts for Hisilicon SD5203 SoC platform.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  arch/arm/boot/dts/Makefile   |  2 +
->  arch/arm/boot/dts/sd5203.dts | 96 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 98 insertions(+)
->  create mode 100644 arch/arm/boot/dts/sd5203.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 4572db3fa5ae302..1d1262df5c55907 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -357,6 +357,8 @@ dtb-$(CONFIG_ARCH_MPS2) += \
->  	mps2-an399.dtb
->  dtb-$(CONFIG_ARCH_MOXART) += \
->  	moxart-uc7112lx.dtb
-> +dtb-$(CONFIG_ARCH_SD5203) += \
-> +	sd5203.dtb
->  dtb-$(CONFIG_SOC_IMX1) += \
->  	imx1-ads.dtb \
->  	imx1-apf9328.dtb
-> diff --git a/arch/arm/boot/dts/sd5203.dts b/arch/arm/boot/dts/sd5203.dts
-> new file mode 100644
-> index 000000000000000..3cc9a23910be62e
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sd5203.dts
-> @@ -0,0 +1,96 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020 Hisilicon Limited.
-> + *
-> + * DTS file for Hisilicon SD5203 Board
-> + */
-> +
-> +/dts-v1/;
-> +
-> +/ {
-> +	model = "Hisilicon SD5203";
-> +	compatible = "H836ASDJ", "hisilicon,sd5203";
-> +	interrupt-parent = <&vic>;
-> +	#address-cells = <1>;
-> +	#size-cells = <1>;
-> +
-> +	chosen {
-> +		bootargs="console=ttyS0,9600 earlycon=uart8250,mmio32,0x1600d000";
-> +	};
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		cpu0 {
-> +			device_type = "cpu";
-> +			compatible = "arm,arm926ej-s";
-> +			reg = <0x0>;
-> +		};
-> +	};
-> +
-> +	memory@30000000 {
-> +		device_type = "memory";
-> +		reg = <0x30000000 0x8000000>;
-> +	};
-> +
-> +	soc {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "simple-bus";
-> +		ranges;
-> +
-> +		vic: interrupt-controller@10130000 {
-> +			compatible = "snps,dw-apb-ictl";
-> +			reg = <0x10130000 0x1000>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <1>;
-> +		};
-> +
-> +		refclk125mhz: refclk125mhz {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <125000000>;
+--Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Is this a reference clock really in the SoC? Not outside, e.g. property
-of the board?
+Hi all,
 
-Best regards,
-Krzysztof
+Today's linux-next merge of the tip tree got a conflict in:
+
+  arch/x86/pci/xen.c
+
+between commit:
+
+  b0623566c2e9 ("x86/xen: Fix xen_msi_init() missing prototype warning")
+
+from the pci tree and commit:
+
+  2905c50b7d3e ("x86/xen: Make xen_msi_init() static and rename it to xen_h=
+vm_msi_init()")
+
+from the tip tree.
+
+I fixed it up (I just used the latter since it incorporated the change
+from the former) and can carry the fix as necessary. This is now fixed
+as far as linux-next is concerned, but any non trivial conflicts should
+be mentioned to your upstream maintainer when your tree is submitted
+for merging.  You may also want to consider cooperating with the
+maintainer of the conflicting tree to minimise any particularly complex
+conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91eWMACgkQAVBC80lX
+0GzLywf/dOqnhX1Yge95OzotCZ2NODjW4HiVdq7pmj2/Ok0CEH9pvKYRhmDxSICk
+NhwlpBz38HLKwpH5XPf2DPsCmrLRr6PuxnUs5NP+XY2QpU7TaKetqhoNxiRtunyS
+5ZT5JDdW3I5p1/2cgYCcgyxAuVm1r+MpIXLSsJIgpAnei1d78g/KSWSbqBNZYFrU
+NI7Jjq5GhuEXmPnW3ZplPIySTpsBY5lVjsXe11g4EoahPvzNoz7APj3Nqu/8CIfN
+QY57Vyk2RY5D1occ2kYMol03oqZJA5FmbpA2XM2h7gUgHrF4ibWfoIrgtoZ2V7e7
+zDARyRGPq6F1mvTZHOacIhxXInaLfQ==
+=NUS9
+-----END PGP SIGNATURE-----
+
+--Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv--
