@@ -2,100 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDC827F94C
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEC327F94E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgJAGHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:07:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57986 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725878AbgJAGHj (ORCPT
+        id S1725966AbgJAGKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAGKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:07:39 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09160wbL016873;
-        Thu, 1 Oct 2020 02:07:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=uA5mowoeweD99tZDuEShnULMMefM1qLpUThlt+WjlLI=;
- b=UYm8nJEffXl7u32roo8/XkrBvf4HSackwN08ihu/FrL4gAwWOvECV0pwFPEDOorsrpcS
- bfGTdUno+re+OhtcJiL+PRV782hcPgIFMqkfu8uuNs2+bWULMVf4/vXbTq4Zw9tiy3JL
- fH1oxgf0Cgu6m2gnaaTVgf+dhPRIkGe68s33e5Ox+3u43Ny2RZ5TqEpO7rl8J7Ay/Rj1
- TCTKgKSDdp/vqqCv1Dn+rKG01dTC51lQ1rGuAVTUXRmij0YrP6rtfH0Z4CZ6SgHeEpkO
- evkAPfqYwZnvRILoXc1QF0R6iykO16ZrelnCPnJHsX+EAqyuTvVFSbTWV9+BH7LkV1SW 3Q== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33w4f0769t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Oct 2020 02:07:02 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 091670x8017580;
-        Thu, 1 Oct 2020 06:07:00 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 33sw97w6f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 01 Oct 2020 06:07:00 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09166wcm34472322
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 1 Oct 2020 06:06:58 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29349AE057;
-        Thu,  1 Oct 2020 06:06:58 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 68B60AE051;
-        Thu,  1 Oct 2020 06:06:56 +0000 (GMT)
-Received: from JAVRIS.in.ibm.com (unknown [9.85.92.124])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  1 Oct 2020 06:06:56 +0000 (GMT)
-Subject: Re: [PATCH v4 23/52] docs: trace-uses.rst: remove bogus c-domain tags
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-kernel@vger.kernel.org
-References: <cover.1601467849.git.mchehab+huawei@kernel.org>
- <f1d8fc4bb976f8c25c6fb444b0b675d9a849ba06.1601467849.git.mchehab+huawei@kernel.org>
-From:   Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Message-ID: <5e19b1d5-8015-c41d-788d-00b121599c6b@linux.vnet.ibm.com>
-Date:   Thu, 1 Oct 2020 11:36:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 1 Oct 2020 02:10:35 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661F5C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:10:35 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ce10so194386ejc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:10:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=jbnyjE/AX8v5NK7McM5EMdYujaOTMVhXCvWjXTugsV0=;
+        b=SvnLqHLCcb7P9dp8E9hxoz1SZX58Ash9xa9eorxUta1zThnWr76YnSj0hBjuqKzfYD
+         UzpMmLiQ+J2JyGOTDTzZ336tF66umuqnb44mV0aznbpJzaJaz4pcOvxlEWO2/ZgaLji7
+         upUHEh4hv76I4+a7RZadMc2Hh22e4EMzh4Y2dzWgMuM004iHWueNVabZAtCfkKUDjwfp
+         bf3ORHXgr1dsr2HQc5p8EU0J5EmOQJ3Ng4AKp0YoUmkM9I3shuKBYefLfSgAEChNiLJp
+         a46KDpGLFl/70DzDopzg4OivdycgI746MK/aEF09Ywpft7y5z+t6S5gFZy0eZ7zX+TQy
+         G5UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=jbnyjE/AX8v5NK7McM5EMdYujaOTMVhXCvWjXTugsV0=;
+        b=bf2eaMK4OcAI2/4wjPBpEYv7vzd1CE3RGpZFZaz16OE8NH7SIZoOB9Gm9xH4cmEOOt
+         ehSqFCc/hEDyrUIy6L5M+uUoteEHg+DBgC63NHgYNi3foJV45W95FvzRm956WnlCGzZz
+         Nqcpvsh3pTDGfjoDHAdLMPpyoE2PYSXMqbriX7GLXZ+95b33Ze0gQQWMLhmj2BHP8gf0
+         obaSzn8a1UYhuE247IOQt8RZqhnHUNwI+unBKHqicys+5QSZhiHFpJJaCG/ox6hIVDPf
+         tSKgv0Cg7s5KdH0RCoVpDV29ubxyuTbE4NspTzdtYkTc4LTlAY2aRRRBbAMz/zxcfQ/q
+         UOqg==
+X-Gm-Message-State: AOAM531jXt2qFHiKC6gScorypWQJQ7Od8MKfpS49fgO4hTBuTUN+FNXP
+        edxDZGoSzv2nmJc97hOwreYj0NUDdpfgKzMYBbVmKh9r090=
+X-Google-Smtp-Source: ABdhPJx5ZPnGimrx4CYU7hNFQsc9cNWp7vY2oYg3MErIcXroIUebbl2iOqyyjXQzoAh3Kbs4U+Yl4dNgP1pikiYnir8=
+X-Received: by 2002:a17:906:fb8c:: with SMTP id lr12mr6753781ejb.9.1601532633857;
+ Wed, 30 Sep 2020 23:10:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f1d8fc4bb976f8c25c6fb444b0b675d9a849ba06.1601467849.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-01_02:2020-10-01,2020-10-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
- phishscore=0 clxscore=1011 mlxlogscore=974 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010010050
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Thu, 1 Oct 2020 16:10:22 +1000
+Message-ID: <CAPM=9txPMxjzQTiZiWeMCs_LDoYGid_d3F6W5HdBr8UB=tjvug@mail.gmail.com>
+Subject: [git pull] drm amdgpu + vmwgfx fixes for 5.9-rc8
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/09/20 6:54 pm, Mauro Carvalho Chehab wrote:
-> There are some c-domain tags that are wrong. While this won't
-> cause problems with Sphinx < 3.0, this cause troubles with
-> newer versions, as the C parser won't recognize the contents
-> of the tag, and will drop it from the output.
-> 
-> Let's just place them at literal blocks.
-> 
+Hi Linus,
 
-tired with Sphinx v3.2.1, invalid C declaration warnings are not
-seen with the patch.
+Just dequeuing these a bit early as the AMD ones are bit larger than
+I'd prefer, but Alex missed last week so it's a double set of fixes.
+The larger ones are just register header fixes for the new chips that
+were just introduced in rc1 along with some new PCI IDs for new hw.
+Otherwise it is usual fixes.
 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The vmwgfx fix was due to some testing I was doing and found we
+weren't booting properly, vmware had the fix internally so hurried it
+out to me.
 
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+I'm off tomorrow and Monday but I'll be around in case there are any
+major issues with this, or if I get set of intel or misc fixes come
+in.
 
--- 
-Kamalesh
+Dave.
+
+drm-fixes-2020-10-01-1:
+drm amd/vmwgfx fixes for 5.9-rc8
+
+vmwgfx:
+- fix a regression due to TTM refactor
+
+amdgpu:
+- Fix potential double free in userptr handling
+- Sienna Cichlid and Navy Flounder updates
+- Add Sienna Cichlid PCI IDs
+- Drop experimental flag for navi12
+- Raven fixes
+- Renoir fixes
+- HDCP fix
+- DCN3 fix for clang and older versions of gcc
+- Fix a runtime pm refcount issue
+The following changes since commit a1b8638ba1320e6684aa98233c15255eb803fac7:
+
+  Linux 5.9-rc7 (2020-09-27 14:38:10 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-01-1
+
+for you to fetch changes up to 132d7c8abeaa6b10ed5f47330b0f06c6dd220a43:
+
+  Merge tag 'amd-drm-fixes-5.9-2020-09-30' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes (2020-10-01
+15:25:33 +1000)
+
+----------------------------------------------------------------
+drm amd/vmwgfx fixes for 5.9-rc8
+
+vmwgfx:
+- fix a regression due to TTM refactor
+
+amdgpu:
+- Fix potential double free in userptr handling
+- Sienna Cichlid and Navy Flounder udpates
+- Add Sienna Cichlid PCI IDs
+- Drop experimental flag for navi12
+- Raven fixes
+- Renoir fixes
+- HDCP fix
+- DCN3 fix for clang and older versions of gcc
+- Fix a runtime pm refcount issue
+
+----------------------------------------------------------------
+Alex Deucher (6):
+      drm/amdgpu: add the GC 10.3 VRS registers
+      drm/amdgpu: add VCN 3.0 AV1 registers
+      drm/amdgpu: use the AV1 defines for VCN 3.0
+      drm/amdgpu: remove experimental flag from navi12
+      drm/amdgpu/display: fix CFLAGS setup for DCN30
+      drm/amdgpu/swsmu/smu12: fix force clock handling for mclk
+
+Dave Airlie (2):
+      Merge branch 'vmwgfx-fixes-5.9' of
+git://people.freedesktop.org/~sroland/linux into drm-fixes
+      Merge tag 'amd-drm-fixes-5.9-2020-09-30' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+
+Dirk Gouders (1):
+      drm/amd/display: remove duplicate call to rn_vbios_smu_get_smu_version()
+
+Evan Quan (1):
+      drm/amd/pm: setup APU dpm clock table in SMU HW initialization
+
+Flora Cui (1):
+      drm/amd/display: fix return value check for hdcp_work
+
+Jean Delvare (1):
+      drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+
+Jiansong Chen (2):
+      drm/amdgpu: remove gpu_info fw support for sienna_cichlid etc.
+      drm/amdgpu: disable gfxoff temporarily for navy_flounder
+
+Likun Gao (1):
+      drm/amdgpu: add device ID for sienna_cichlid (v2)
+
+Philip Yang (1):
+      drm/amdgpu: prevent double kfree ttm->sg
+
+Sudheesh Mavila (1):
+      drm/amd/pm: Removed fixed clock in auto mode DPM
+
+Zack Rusin (1):
+      drm/vmwgfx: Fix error handling in get_node
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 10 +----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            | 12 +++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  1 +
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  3 ++
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c              | 16 +++----
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c |  2 +-
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  1 -
+ drivers/gpu/drm/amd/display/dc/dcn30/Makefile      | 18 +++++++-
+ .../amd/include/asic_reg/gc/gc_10_3_0_default.h    |  2 +
+ .../drm/amd/include/asic_reg/gc/gc_10_3_0_offset.h |  4 ++
+ .../amd/include/asic_reg/gc/gc_10_3_0_sh_mask.h    | 50 ++++++++++++++++++++++
+ .../amd/include/asic_reg/vcn/vcn_3_0_0_sh_mask.h   | 34 +++++++++++++++
+ drivers/gpu/drm/amd/powerplay/amdgpu_smu.c         | 22 +++++-----
+ drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c  | 10 +++--
+ drivers/gpu/drm/amd/powerplay/renoir_ppt.c         |  8 ++--
+ drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c      |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_thp.c                |  2 +-
+ 18 files changed, 156 insertions(+), 43 deletions(-)
