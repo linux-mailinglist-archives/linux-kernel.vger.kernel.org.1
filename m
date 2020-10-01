@@ -2,152 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D11A280337
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF7280335
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732744AbgJAPuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S1732718AbgJAPuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732361AbgJAPub (ORCPT
+        with ESMTP id S1732457AbgJAPuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:50:31 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3829AC0613D0;
-        Thu,  1 Oct 2020 08:50:31 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h23so2084329pjv.5;
-        Thu, 01 Oct 2020 08:50:31 -0700 (PDT)
+        Thu, 1 Oct 2020 11:50:22 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D986DC0613D0;
+        Thu,  1 Oct 2020 08:50:21 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w12so5817213qki.6;
+        Thu, 01 Oct 2020 08:50:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zW6MWyzUUn9v50tgBMkokxQ6HCYRd4j3AET8fbnVFGQ=;
-        b=sFQH6PoDSExgmvW4YvMi67GxJNWIl7LX5tWGYahGkpCBd/2MiqSpwTNwN1dywDJN4w
-         8xWWgUutoHyVe/DvE9AuTBtRpU/2KHHfUIgvxcMl3muvpnCAGZU40DEdXec8hi7HjNr5
-         dbXvNkq+9PzxC+0uDrrH1rP2chYegT2611n4AgQ1m+yp4ZEc+F6yd5yF4UjCbR8PVeUn
-         T3Yzt4sE1TQ50Z0WhtVGaNe+Hp4YdjO5PfFh9pC92WpQ03BH6q0F7KvAIcAbm7unROLv
-         HZAfOZv6qCtXqrVjGjrZH78mkoj9uSNk/diZKGa/kKmJ1u5F50haUvhTc6IOqbQmutA7
-         hEew==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4TKDLyOiOaTpRi0XFmbou9G+aDghP55pLdrmC2nfTZI=;
+        b=sv3aii8Yzpq8Hy1TcDYaeEF2E0HITVeVv6UjEXvV99mdAzTai//eqmcZo5/S5aNLK7
+         q0wI3p0Uy5r9dNxJfJilWphjX13ccZKuSMkJPfi4E0j16pMDvyBc+P2FJRVDeCwIUS/9
+         8TSPTKG2RPSmi2ah7EwFi9ui8edKlYFXSoCizZtvzhIR46oPzgASvBAuWF5WQJn2A0oi
+         lNfoKpK9Kj/xCg3b+1CXRkoQ6cDCeEuJqKyjVbowEnO4E88wfORS5S8m4ajZjYiTtoST
+         mp5Bf/sUetiUCGxXI521SPTC3zoF/4KT0zm7gj7dA1CgyUARExiXHfwPjI4/9hCHFXMX
+         mSlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zW6MWyzUUn9v50tgBMkokxQ6HCYRd4j3AET8fbnVFGQ=;
-        b=fFjnJKtw3CVtOBKjew4Hp6kXzebMvIVeZN5AgTwvmu6wGFVxVBy3OwFmIz7tTnl5/r
-         uYxrsgmITAP6E4UhgFxFgDI+iPf08kvTjPkWJkYLHOGujM5XzZ1FdRnfpjbZKQyVkjl4
-         toxG3HoASckdk6wv91x7nVxg1C9+buJVJ6RqELumhwfGTp26Seu8lNK8PGV+T2XdOUOD
-         QXids0r0w2913nQlOKdmgSUvwxOQcu32lpmBddZ0DsYMULVV2Pmq5IGJRfM0ccz0cxA7
-         NKCTlFV3K1MR75/mOxRlnEspO6QS/3i34/5PxmFrNZyKOe2ErodhD8lYrTgmJR+D7Wae
-         PKTA==
-X-Gm-Message-State: AOAM530DGdljvpIXMViSfc0xawzkr2O9MQ0njW/l0BqcS+DPQRzYdMza
-        HvWuu1rR9Jt+xv2rcKH70OLNuspVSb/WAy/Y+V8=
-X-Google-Smtp-Source: ABdhPJxXDVgMtObNqA6AtgN+lLgmhryChf5KWYzlmENLVsBETeuJv5yARzq1Nqr0CJpC5A71MmqeuAXRhFtfSwTYgOg=
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr532278pjs.181.1601567430625;
- Thu, 01 Oct 2020 08:50:30 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4TKDLyOiOaTpRi0XFmbou9G+aDghP55pLdrmC2nfTZI=;
+        b=oRO/VE1kQCdKh49aq5P34W7bDywFnuj8wg6v0+hZ40AoFZwTNbK5FQt9BJXpFtKl1q
+         e0o5Qmi863YtCOh4LbULycm9zo0zi0ge+c5X5b+bd0l0KSOY8Tbw6m+uCeu6iPDnyOeW
+         tc8ze1NZv6Y4UA7BcRfg3ayhcHBjZEEVkmy22bEbfBe0hYoFa5NLizNk9NjBMLlCou/f
+         Aliz1TyxBnYmbB2fq9OPwAt3W7XjPJNlji6CYkuJy440vRMztecfMyVzxNaHTIkw0ax9
+         18pf7xJ9CSF9U1ezco6qCDeT+Bnot8hPpLuBwBSw8o3/cIkLHL7zKMKFd/el6eyf7fzK
+         JR9A==
+X-Gm-Message-State: AOAM530QAvnxbB0ZZ/dbOTTzCeuVzYHwaAQILqshs/zO8vLngYTYe+Sx
+        v75yrhaxomn/znvhITcgsAE=
+X-Google-Smtp-Source: ABdhPJyYT+y5QiAzK1NBkP4h7DJn3OT0F2IyibRjH47XYSYTyKM3PH+svp4CMVNKEkzagRPbkKlt6A==
+X-Received: by 2002:a37:a83:: with SMTP id 125mr7837342qkk.360.1601567421004;
+        Thu, 01 Oct 2020 08:50:21 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3475])
+        by smtp.gmail.com with ESMTPSA id c40sm7280723qtb.72.2020.10.01.08.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 08:50:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 1 Oct 2020 11:50:18 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH V7 1/2] percpu_ref: reduce memory footprint of percpu_ref
+ in fast path
+Message-ID: <20201001155018.GI4441@mtj.duckdns.org>
+References: <20201001154842.26896-1-ming.lei@redhat.com>
+ <20201001154842.26896-2-ming.lei@redhat.com>
 MIME-Version: 1.0
-References: <490e5002c3fea266524c31e1a94853dca9c3286c.1601551027.git.mchehab+huawei@kernel.org>
-In-Reply-To: <490e5002c3fea266524c31e1a94853dca9c3286c.1601551027.git.mchehab+huawei@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 1 Oct 2020 18:50:12 +0300
-Message-ID: <CAHp75Ve3B_YzC3JpswDv_8sYoMmvh58q4iWxfx2090Nfk3+_Fw@mail.gmail.com>
-Subject: Re: [PATCH v3] media: atomisp: fixes build breakage for ISP2400 due
- to a cleanup
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001154842.26896-2-ming.lei@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 2:17 PM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> A temporary var needed for building with ISP2400 was removed
-> by accident on a cleanup patch.
->
-> Fix the breakage.
+On Thu, Oct 01, 2020 at 11:48:41PM +0800, Ming Lei wrote:
+> 'struct percpu_ref' is often embedded into one user structure, and the
+> instance is usually referenced in fast path, however actually only
+> 'percpu_count_ptr' is needed in fast path.
+> 
+> So move other fields into one new structure of 'percpu_ref_data', and
+> allocate it dynamically via kzalloc(), then memory footprint of
+> 'percpu_ref' in fast path is reduced a lot and becomes suitable to put
+> into hot cacheline of user structure.
+> 
+> Tested-by: Veronika Kabatova <vkabatov@redhat.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Cc: Sagi Grimberg <sagi@grimberg.me>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Signed-off-by: Ming Lei <ming.lei@redhat.com>
 
-Is this in any of your branches?
+Acked-by: Tejun Heo <tj@kernel.org>
 
->
-> Fixes: 852a53a02cf0 ("media: atomisp: get rid of unused vars")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/staging/media/atomisp/pci/sh_css.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
-> index e8c5caf3dfe6..ddee04c8248d 100644
-> --- a/drivers/staging/media/atomisp/pci/sh_css.c
-> +++ b/drivers/staging/media/atomisp/pci/sh_css.c
-> @@ -1365,7 +1365,6 @@ start_binary(struct ia_css_pipe *pipe,
->  {
->         assert(pipe);
->         /* Acceleration uses firmware, the binary thus can be NULL */
-> -       /* assert(binary != NULL); */
->
->         if (binary)
->                 sh_css_metrics_start_binary(&binary->metrics);
-> @@ -1381,10 +1380,10 @@ start_binary(struct ia_css_pipe *pipe,
->  #endif
->
->  #if !defined(ISP2401)
-> -       if (stream->reconfigure_css_rx) {
-> +       if (pipe->stream->reconfigure_css_rx) {
->                 ia_css_isys_rx_configure(&pipe->stream->csi_rx_config,
->                                          pipe->stream->config.mode);
-> -               stream->reconfigure_css_rx = false;
-> +               pipe->stream->reconfigure_css_rx = false;
->         }
->  #endif
->  }
-> @@ -2820,6 +2819,8 @@ load_preview_binaries(struct ia_css_pipe *pipe) {
->         bool need_isp_copy_binary = false;
->  #ifdef ISP2401
->         bool sensor = false;
-> +#else
-> +       bool continuous;
->  #endif
->         /* preview only have 1 output pin now */
->         struct ia_css_frame_info *pipe_out_info = &pipe->output_info[0];
-> @@ -2833,6 +2834,8 @@ load_preview_binaries(struct ia_css_pipe *pipe) {
->         online = pipe->stream->config.online;
->  #ifdef ISP2401
->         sensor = pipe->stream->config.mode == IA_CSS_INPUT_MODE_SENSOR;
-> +#else
-> +       continuous = pipe->stream->config.continuous;
->  #endif
->
->         if (mycs->preview_binary.info)
-> @@ -5987,6 +5990,8 @@ static int load_primary_binaries(
->         bool need_ldc = false;
->  #ifdef ISP2401
->         bool sensor = false;
-> +#else
-> +       bool memory, continuous;
->  #endif
->         struct ia_css_frame_info prim_in_info,
->                        prim_out_info,
-> @@ -6009,6 +6014,9 @@ static int load_primary_binaries(
->         online = pipe->stream->config.online;
->  #ifdef ISP2401
->         sensor = (pipe->stream->config.mode == IA_CSS_INPUT_MODE_SENSOR);
-> +#else
-> +       memory = pipe->stream->config.mode == IA_CSS_INPUT_MODE_MEMORY;
-> +       continuous = pipe->stream->config.continuous;
->  #endif
->
->         mycs = &pipe->pipe_settings.capture;
-> --
-> 2.26.2
->
-
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+tejun
