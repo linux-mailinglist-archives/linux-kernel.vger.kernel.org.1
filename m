@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A906C280354
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D38B28034E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 17:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbgJAP51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 11:57:27 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:60462 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732213AbgJAP50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:57:26 -0400
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d31 with ME
-        id afxE2300B2lQRaH03fxLjb; Thu, 01 Oct 2020 17:57:24 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 01 Oct 2020 17:57:24 +0200
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 5/6] can: usb: etas_es58X: add support for ETAS ES58X CAN USB interfaces
-Date:   Fri,  2 Oct 2020 00:56:41 +0900
-Message-Id: <20201001155641.3421-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200930161838.GB1663344@kroah.com>
-References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr> <20200930144602.10290-6-mailhol.vincent@wanadoo.fr> <20200930161838.GB1663344@kroah.com>
+        id S1732656AbgJAP5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 11:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732213AbgJAP5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:57:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A48E20759;
+        Thu,  1 Oct 2020 15:57:00 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 11:56:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/ftrace: check for do_sys_openat2 in
+ user-memory test
+Message-ID: <20201001115658.164e28b9@gandalf.local.home>
+In-Reply-To: <80cee321-d8ed-31fd-2f53-d9306b1d9545@canonical.com>
+References: <20201001085641.51130-1-colin.king@canonical.com>
+        <20201001104448.427a0eaa@gandalf.local.home>
+        <80cee321-d8ed-31fd-2f53-d9306b1d9545@canonical.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +	num_element =
-> > +	    es58x_msg_num_element(es58x_dev->dev,
-> > +				  bulk_rx_loopback_msg->rx_loopback_msg,
-> > +				  msg_len);
-> > +	if (unlikely(num_element <= 0))
-> > +		return num_element;
-> 
-> Meta-comment on your use of 'unlikely' everywhere.  Please drop it, it's
-> only to be used if you can actually measure the difference in a
-> benchmark.  You are dealing with USB devices, which are really really
-> slow here.  Also, humans make horrible guessers for this type of thing,
-> the compiler and CPU can get this right much more often than we can, and
-> we had the numbers for it (someone measured that 80-90% of our usages of
-> these markings are actually wrong on modern cpus).
-> 
-> So just drop them all, it makes the code simpler to read and understand,
-> and the cpu can actually go faster.
+On Thu, 1 Oct 2020 16:40:33 +0100
+Colin Ian King <colin.king@canonical.com> wrote:
 
-All those branch on which the unlikely() macro were applied were
-supposed to never been executed under normal circumstances. But I
-indeed have no benchmark to claim such use.
+> So this test breaks with a recent libc and support tools built against
+> libc.  I believe the do_sys_open is not being detected because
+> do_sys_openat2 is being called instead.
+> 
+> Not sure now of the correct way to fix this.
 
-Thank you for the detailed explanation, makes perfect sense. Each use
-of the likely()/unlikely() macros will be removed in v3 revision.
+Perhaps by enabling both events?
+
+-- Steve
