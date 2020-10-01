@@ -2,393 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3634427FF4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DCC27FF52
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732196AbgJAMh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:37:29 -0400
-Received: from mga03.intel.com ([134.134.136.65]:41838 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731888AbgJAMhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:37:03 -0400
-IronPort-SDR: 2L4krIeGB3ZHiPgq4h34mqZRPRlzKkGLlegbuECLAHfKTrw3vW5DBqV31M7C6bO00bHYvLQxPl
- GvAuxUWwXIpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="162787553"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="162787553"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 05:37:02 -0700
-IronPort-SDR: r6/xZHaIjdd2ngKSwqFRcGl5UAH2GkwYEJbWKAdZ1Gz6ciEvoGuwnw4xxxzharOfXRCUJjcjfn
- ZIHNJmXDbcxQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="385509890"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 01 Oct 2020 05:36:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id E3A1B327; Thu,  1 Oct 2020 15:36:51 +0300 (EEST)
-Date:   Thu, 1 Oct 2020 15:36:51 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
-        lokeshgidra@google.com, kernel-team@android.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S1732195AbgJAMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:38:45 -0400
+Received: from mail-eopbgr60111.outbound.protection.outlook.com ([40.107.6.111]:50499
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731993AbgJAMi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:38:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KLdVFhPC4GW/KMrFlbhU84LJgrlK035Yc1UDtKVWyu9m8wj8yxHSemwKC2fJHzNAgW22ur6cUUl+cdD1JGmpOH8j5fcs/OCdFoBOV411GJm2cu5ptTkvmbIzTTXCPDG1lqm8qYyGa/KLcK/Qm4YhTT2W8lLsKh+xdk7YXCWsOnWtaJ6AKKJfNLcsZ4borT5b8SyulkvUTNflU9Or7iXrqjpLRuVLgQVETUKmUAgA+AKG+0PK8H6zFAzOw7+I5Lw3k4K4YjnqTNYKl97WBMY066EcNCdg11wpJYahWoWrpSQXSZabctCnNG17rmpAW2mpdPurak8aMazXT8y1BHGIMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ZZHFQf0LQ65mVjAftyCQyEEBVnxkamPSZfzvOtlZnA=;
+ b=QFEZcPKH8RF2DKgbKbbE0ov7UXxy50JWwVc1Hb6G9PxcBs4wOLetqX9hBUKHmWLubyDx1AOyQVlL+K4bMvCRUttdcM2LVLROs6398U6iwv4bpcERwX3h/Vm+9uVidw6WcZY4ulR0RJYoc3hvo5t4+FDgnnd9SrBsTyzkNA2efTuTMUZvHc5qi4zjSJsVeVAOlGi+gOE/0SfyXY+XDnL7/YrnqcJ5EU5Q+2yximsXGJ8fUZAgeptRjI1FgadhktYdBJwzGEs8dRBr7K7opBtnpt7iVEhbfdeLc2pApHEUSzusctvrXWvi5Kkrtqbygg90h6rc4yd16v0tEgUTnl7LbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ZZHFQf0LQ65mVjAftyCQyEEBVnxkamPSZfzvOtlZnA=;
+ b=mkxgt8V7yNceh6qz8HjZMwudKG5d9qnkY/lwx5YvAc6yoNwUoRR/o87vMQRgvtl2VJm0P1VQDTHafFhUgaR4Uqw1Vloj9UNVwsq9Kxg9z1qdbGqo6klFbEkD5PqKDJN1yFgOJG9yp0KjY+aT6lZhk4GuqhrM6jJRRpseq8/Gt6Y=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB2354.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:da::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Thu, 1 Oct
+ 2020 12:38:25 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5%6]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 12:38:25 +0000
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mm-kontron: Add support for ultra
+ high speed modes on SD card
+To:     Robin Gong <yibin.gong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Jia He <justin.he@arm.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 3/5] mm: Speedup mremap on 1GB or larger regions
-Message-ID: <20201001123651.arcr5gqtia2myt22@black.fi.intel.com>
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
- <20200930222130.4175584-4-kaleshsingh@google.com>
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201001123447.1610-1-frieder.schrempf@kontron.de>
+ <20201001123447.1610-2-frieder.schrempf@kontron.de>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <ebf8035f-8d9e-d2e3-d1f4-c398bca92790@kontron.de>
+Date:   Thu, 1 Oct 2020 14:38:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201001123447.1610-2-frieder.schrempf@kontron.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.247.42.197]
+X-ClientProxiedBy: AM5P194CA0014.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:203:8f::24) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930222130.4175584-4-kaleshsingh@google.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.17] (89.247.42.197) by AM5P194CA0014.EURP194.PROD.OUTLOOK.COM (2603:10a6:203:8f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Thu, 1 Oct 2020 12:38:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 10f2071d-3059-4a1b-ab64-08d86606e42c
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2354:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2354CAEFFC5D70537BE3B8B9E9300@AM0PR10MB2354.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JWZmx/p0eTQwkvXtLXmdFmM2HySs/cdpWaIU7zoXl8dUNyYizbm1giVEiCPKMm85tNNdjhlMetENUPZEMhJNhJdJuQWhiGZdahRN2waATY2QrTN65hG1AgZ7WMsycm1rpzudqqVr/mod/4nB5w9DCi4n1qRSk8Kahdt2E8z2/Ma+Srl7MrmnLfI69TW09FaX91bPpkkfW21RPWxdgizKGzdoZKegHBkGlsRjKyCoSgnhRiM3+1pM9KGDGd8URr/lBrnYOWn6VmT3iHI9T0emIfUtiZ/1dS3blKVGUJU4hUUPsusSf/KIWMv/+R/MIYttD/np9LmmSPNkXUJsUZGBGq8ingBIFT+Czl7FW4f5H8hGydVQ6hbD0FLWk04dT3EP/HCzGQEWSStdkKgNL0itmexmoMRlFf0o8Q81Zv6zAM92AAZFnem9L+hgGKdzIYWLlGcSa7hfQMjX1eTTu68ZXKUbtC1+7Uf/vK340+6rLxZLhbDouIjQgpW6yxaOuqZQ+2Sy0hWynizVyKIUejI3vx2HqwsnQAF7r+pyQMxgn40=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(6486002)(26005)(7416002)(86362001)(31696002)(83380400001)(186003)(16526019)(31686004)(53546011)(52116002)(478600001)(2906002)(966005)(110136005)(66476007)(36756003)(2616005)(316002)(8676002)(44832011)(66946007)(956004)(66556008)(16576012)(8936002)(4326008)(5660300002)(32563001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: K0wTJHjgj5wuuVF0V5NAREnS52HS1nnypmv5oqkt3PZduMiRnRBz+EgSCp5zEXkTV/Ld1FYUOHxH71eqIebaqgsaPTu6KR03qq6VJZx3B0/gm6wodTxB/LV28NieTrnZl0aH52TAiQ96i5++eKKq/tHe+cljl4DlMv3mAJyAIVWy+v69LGwb43KO3JU/tnVCHoPHaZjGHFr8U/XGIWDK64PoicxyskRd1ySFKkCOA8Fyj8UqvyLrEYidjDu7364qmspunc3Eo3dMoXm264UB20/t1cgcqi4ESOhTbSdST0JuUSj3gP+t6hbBPkMTFC/ZBFiahuYbRUJvgqWQfVhR9zqGvxzj/YnUvBzHyzNmds0bZe+WOOt2iNEUvZFEIx/BaAI0BeL3qGSYS9WS9B4sfwzhIx3TEIITqNi4eIqOFPnRu7hzTKMm+HkUm1ziZkKk3r9NMycidwQJTblPTF5zmoNPjOEffW+fna/Gjt/4vO67gbJe8UlrUclITEw6h/cbFFpiO5vqJZRlrVtibPjIeorRXJR/5xJHhLrt8ty3BCG0L8E3hpPSLPkCmj4caWOaviP1O9gsfScGxs3y8iCLiYUetidLNs4UvysBxlN8OrSNXhP5oOKVRBktDcHMYkc9Mp8sqmS/I45pqrg+u0Tkqg==
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10f2071d-3059-4a1b-ab64-08d86606e42c
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 12:38:25.8194
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lhRZFxwY8bP7adjK1jlUWeIZUcrLr3jQlQXZtqhBh03qvY4AOb0GOC1K6BH9x+ZWN4MFX/JONHFicsb3AC+enwjZefO7ioxrsSO8is5olVM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2354
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:21:20PM +0000, Kalesh Singh wrote:
-> Android needs to move large memory regions for garbage collection.
-> Optimize mremap for >= 1GB-sized regions by moving at the PUD/PGD
-> level if the source and destination addresses are PUD-aligned.
-> For CONFIG_PGTABLE_LEVELS == 3, moving at the PUD level in effect moves
-> PGD entries, since the PUD entry is “folded back” onto the PGD entry.
-> Add HAVE_MOVE_PUD so that architectures where moving at the PUD level
-> isn't supported/tested can turn this off by not selecting the config.
+On 01.10.20 14:34, Schrempf Frieder wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
 > 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> In order to use ultra high speed modes (UHS) on the SD card slot, we
+> add matching pinctrls and fix the voltage switching for LDO5 of the
+> PMIC, by providing the SD_VSEL pin as GPIO to the PMIC driver.
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+Sorry, forgot to mention that this depends on the board support patch:
+https://patchwork.kernel.org/patch/11811347/
+
 > ---
->  arch/Kconfig                     |   7 +
->  arch/arm64/include/asm/pgtable.h |   1 +
->  mm/mremap.c                      | 211 ++++++++++++++++++++++++++-----
->  3 files changed, 189 insertions(+), 30 deletions(-)
+>   .../dts/freescale/imx8mm-kontron-n801x-s.dts  | 27 +++++++++++++++++++
+>   .../freescale/imx8mm-kontron-n801x-som.dtsi   |  2 ++
+>   2 files changed, 29 insertions(+)
 > 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index af14a567b493..5eabaa00bf9b 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -602,6 +602,13 @@ config HAVE_IRQ_TIME_ACCOUNTING
->  	  Archs need to ensure they use a high enough resolution clock to
->  	  support irq time accounting and then call enable_sched_clock_irqtime().
->  
-> +config HAVE_MOVE_PUD
-> +	bool
-> +	help
-> +	  Architectures that select this are able to move page tables at the
-> +	  PUD level. If there are only 3 page table levels, the move effectively
-> +	  happens at the PGD level.
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> index 389e735b2880..6913aefa56aa 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> @@ -190,8 +190,11 @@
+>   };
+>   
+>   &usdhc2 {
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+>   	pinctrl-names = "default";
+>   	pinctrl-0 = <&pinctrl_usdhc2>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+>   	vmmc-supply = <&reg_vdd_3v3>;
+>   	vqmmc-supply = <&reg_nvcc_sd>;
+>   	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+> @@ -320,4 +323,28 @@
+>   			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+>   		>;
+>   	};
 > +
->  config HAVE_MOVE_PMD
->  	bool
->  	help
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index d5d3fbe73953..8848125e3024 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -415,6 +415,7 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
->  #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
->  
->  #define set_pmd_at(mm, addr, pmdp, pmd)	set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd))
-> +#define set_pud_at(mm, addr, pudp, pud)	set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud))
->  
->  #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
->  #define __phys_to_p4d_val(phys)	__phys_to_pte_val(phys)
-
-This doesn't belong to the patch.
-
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 138abbae4f75..a5a1440bd366 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -249,14 +249,167 @@ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
->  
->  	return true;
->  }
-> +#else
-> +static inline bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-> +		  unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pmd)
-> +{
-> +	return false;
-> +}
->  #endif
->  
-> +#ifdef CONFIG_HAVE_MOVE_PUD
-> +static pud_t *get_old_pud(struct mm_struct *mm, unsigned long addr)
-> +{
-> +	pgd_t *pgd;
-> +	p4d_t *p4d;
-> +	pud_t *pud;
+> +	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x194
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
+> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+> +		>;
+> +	};
 > +
-> +	pgd = pgd_offset(mm, addr);
-> +	if (pgd_none_or_clear_bad(pgd))
-> +		return NULL;
-> +
-> +	p4d = p4d_offset(pgd, addr);
-> +	if (p4d_none_or_clear_bad(p4d))
-> +		return NULL;
-> +
-> +	pud = pud_offset(p4d, addr);
-> +	if (pud_none_or_clear_bad(pud))
-> +		return NULL;
-> +
-> +	return pud;
-> +}
-> +
-> +static pud_t *alloc_new_pud(struct mm_struct *mm, struct vm_area_struct *vma,
-> +			    unsigned long addr)
-> +{
-> +	pgd_t *pgd;
-> +	p4d_t *p4d;
-> +	pud_t *pud;
-> +
-> +	pgd = pgd_offset(mm, addr);
-> +	p4d = p4d_alloc(mm, pgd, addr);
-> +	if (!p4d)
-> +		return NULL;
-> +	pud = pud_alloc(mm, p4d, addr);
-> +	if (!pud)
-> +		return NULL;
-> +
-> +	return pud;
-> +}
-> +
-> +static bool move_normal_pud(struct vm_area_struct *vma, unsigned long old_addr,
-> +		  unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
-> +{
-> +	spinlock_t *old_ptl, *new_ptl;
-> +	struct mm_struct *mm = vma->vm_mm;
-> +	pud_t pud;
-> +
-> +	/*
-> +	 * The destination pud shouldn't be established, free_pgtables()
-> +	 * should have released it.
-> +	 */
-> +	if (WARN_ON_ONCE(!pud_none(*new_pud)))
-> +		return false;
-> +
-> +	/*
-> +	 * We don't have to worry about the ordering of src and dst
-> +	 * ptlocks because exclusive mmap_lock prevents deadlock.
-> +	 */
-> +	old_ptl = pud_lock(vma->vm_mm, old_pud);
-> +	new_ptl = pud_lockptr(mm, new_pud);
-> +	if (new_ptl != old_ptl)
-> +		spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-> +
-> +	/* Clear the pud */
-> +	pud = *old_pud;
-> +	pud_clear(old_pud);
-> +
-> +	VM_BUG_ON(!pud_none(*new_pud));
-> +
-> +	/* Set the new pud */
-> +	set_pud_at(mm, new_addr, new_pud, pud);
-> +	flush_tlb_range(vma, old_addr, old_addr + PUD_SIZE);
-> +	if (new_ptl != old_ptl)
-> +		spin_unlock(new_ptl);
-> +	spin_unlock(old_ptl);
-> +
-> +	return true;
-> +}
-> +#else
-> +static inline bool move_normal_pud(struct vm_area_struct *vma, unsigned long old_addr,
-> +		  unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
-> +{
-> +	return false;
-> +}
-> +#endif
-> +
-> +enum pgt_entry {
-> +	NORMAL_PMD,
-> +	HPAGE_PMD,
-> +	NORMAL_PUD,
-> +};
-> +
-> +/*
-> + * Returns an extent of the corresponding size for the pgt_entry specified if valid.
-> + * Else returns a smaller extent bounded by the end of the source and destination
-> + * pgt_entry. Returns 0 if an invalid pgt_entry is specified.
-> + */
-> +static unsigned long get_extent(enum pgt_entry entry, unsigned long old_addr,
-> +			unsigned long old_end, unsigned long new_addr)
-> +{
-> +	unsigned long next, extent, mask, size;
-> +
-> +	if (entry == NORMAL_PMD || entry == HPAGE_PMD) {
-> +		mask = PMD_MASK;
-> +		size = PMD_SIZE;
-> +	} else if (entry == NORMAL_PUD) {
-> +		mask = PUD_MASK;
-> +		size = PUD_SIZE;
-> +	} else
-> +		return 0;
-> +
-> +	next = (old_addr + size) & mask;
-> +	/* even if next overflowed, extent below will be ok */
-> +	extent = (next > old_end) ? old_end - old_addr : next - old_addr;
-> +	next = (new_addr + size) & mask;
-> +	if (extent > next - new_addr)
-> +		extent = next - new_addr;
-> +	return extent;
-> +}
-> +
-> +/*
-> + * Attempts to speedup the move by moving entry at the level corresponding to
-> + * pgt_entry. Returns true if the move was successful, else false.
-> + */
-> +static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
-> +			unsigned long old_addr, unsigned long new_addr, void *old_entry,
-> +			void *new_entry, bool need_rmap_locks)
-> +{
-> +	bool moved = false;
-> +
-> +	/* See comment in move_ptes() */
-> +	if (need_rmap_locks)
-> +		take_rmap_locks(vma);
-> +	if (entry == NORMAL_PMD)
-> +		moved =  move_normal_pmd(vma, old_addr, new_addr, old_entry, new_entry);
-> +	else if (entry == NORMAL_PUD)
-> +		moved =  move_normal_pud(vma, old_addr, new_addr, old_entry, new_entry);
-> +	else if (entry == HPAGE_PMD)
-> +		moved =  move_huge_pmd(vma, old_addr, new_addr, old_entry, new_entry);
-> +	else
-> +		WARN_ON_ONCE(1);
-
-BUILD_BUG() should work.
-
-And why not use switch() instead of ifs.
-
-> +	if (need_rmap_locks)
-> +		drop_rmap_locks(vma);
-> +
-> +	return moved;
-> +}
-> +
->  unsigned long move_page_tables(struct vm_area_struct *vma,
->  		unsigned long old_addr, struct vm_area_struct *new_vma,
->  		unsigned long new_addr, unsigned long len,
->  		bool need_rmap_locks)
->  {
-> -	unsigned long extent, next, old_end;
-> +	unsigned long extent, old_end;
->  	struct mmu_notifier_range range;
->  	pmd_t *old_pmd, *new_pmd;
->  
-> @@ -269,14 +422,27 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
->  
->  	for (; old_addr < old_end; old_addr += extent, new_addr += extent) {
->  		cond_resched();
-> -		next = (old_addr + PMD_SIZE) & PMD_MASK;
-> -		/* even if next overflowed, extent below will be ok */
-> -		extent = next - old_addr;
-> -		if (extent > old_end - old_addr)
-> -			extent = old_end - old_addr;
-> -		next = (new_addr + PMD_SIZE) & PMD_MASK;
-> -		if (extent > next - new_addr)
-> -			extent = next - new_addr;
-> +#ifdef CONFIG_HAVE_MOVE_PUD
-> +		/*
-> +		 * If extent is PUD-sized try to speed up the move by moving at the
-> +		 * PUD level if possible.
-> +		 */
-> +		extent = get_extent(NORMAL_PUD, old_addr, old_end, new_addr);
-> +		if (extent == PUD_SIZE) {
-> +			pud_t *old_pud, *new_pud;
-> +
-> +			old_pud = get_old_pud(vma->vm_mm, old_addr);
-> +			if (!old_pud)
-> +				continue;
-> +			new_pud = alloc_new_pud(vma->vm_mm, vma, new_addr);
-> +			if (!new_pud)
-> +				break;
-> +			if (move_pgt_entry(NORMAL_PUD, vma, old_addr, new_addr,
-> +					   old_pud, new_pud, need_rmap_locks))
-> +				continue;
-> +		}
-> +#endif
-> +		extent = get_extent(NORMAL_PMD, old_addr, old_end, new_addr);
->  		old_pmd = get_old_pmd(vma->vm_mm, old_addr);
->  		if (!old_pmd)
->  			continue;
-> @@ -284,18 +450,10 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
->  		if (!new_pmd)
->  			break;
->  		if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || pmd_devmap(*old_pmd)) {
-> -			if (extent == HPAGE_PMD_SIZE) {
-> -				bool moved;
-> -				/* See comment in move_ptes() */
-> -				if (need_rmap_locks)
-> -					take_rmap_locks(vma);
-> -				moved = move_huge_pmd(vma, old_addr, new_addr,
-> -						      old_pmd, new_pmd);
-> -				if (need_rmap_locks)
-> -					drop_rmap_locks(vma);
-> -				if (moved)
-> -					continue;
-> -			}
-> +			if (extent == HPAGE_PMD_SIZE &&
-> +			    move_pgt_entry(HPAGE_PMD, vma, old_addr, new_addr, old_pmd,
-> +					   new_pmd, need_rmap_locks))
-> +				continue;
->  			split_huge_pmd(vma, old_pmd, old_addr);
->  			if (pmd_trans_unstable(old_pmd))
->  				continue;
-> @@ -305,15 +463,8 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
->  			 * If the extent is PMD-sized, try to speed the move by
->  			 * moving at the PMD level if possible.
->  			 */
-> -			bool moved;
-> -
-> -			if (need_rmap_locks)
-> -				take_rmap_locks(vma);
-> -			moved = move_normal_pmd(vma, old_addr, new_addr,
-> -						old_pmd, new_pmd);
-> -			if (need_rmap_locks)
-> -				drop_rmap_locks(vma);
-> -			if (moved)
-> +			if (move_pgt_entry(NORMAL_PMD, vma, old_addr, new_addr, old_pmd,
-> +					   new_pmd, need_rmap_locks))
->  				continue;
->  #endif
->  		}
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
+> +	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x196
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
+> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+> +		>;
+> +	};
+>   };
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> index 5c6a660f4395..282a56fb3949 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> @@ -85,6 +85,7 @@
+>   		pinctrl-0 = <&pinctrl_pmic>;
+>   		interrupt-parent = <&gpio1>;
+>   		interrupts = <0 GPIO_ACTIVE_LOW>;
+> +		sd-vsel-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+>   
+>   		regulators {
+>   			reg_vdd_soc: BUCK1 {
+> @@ -224,6 +225,7 @@
+>   	pinctrl_pmic: pmicgrp {
+>   		fsl,pins = <
+>   			MX8MM_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x41
+> +			MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4		0x41
+>   		>;
+>   	};
+>   
 > 
-
--- 
- Kirill A. Shutemov
