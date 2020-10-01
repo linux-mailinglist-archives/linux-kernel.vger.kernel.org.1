@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD1027FE01
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FFA27FE31
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732116AbgJALCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:02:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731131AbgJALCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:02:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D93AE20B1F;
-        Thu,  1 Oct 2020 11:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601550170;
-        bh=xYiMC3INrKF34oEyrsmUUrqjbwI/zSijaQlQHN9HorA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KEei53PbBIIkdzQLDb/7K/52YSbflBQYn3bG/m713eKa8/9nV0fPPDI4yq6H+/fvV
-         xVqht4hR38nzz4Qgnh/AAp0mk+5WyFzIOOYfEFPMoUP75ral06RLc43LxHUnNG4hb1
-         tZZP4hijlYOR/icBsCoZV1jH7RB2VuKegMZKFfws=
-Date:   Thu, 1 Oct 2020 12:01:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-Message-ID: <20201001110150.GA6715@sirena.org.uk>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
- <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
- <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
- <20200929113745.GB4799@sirena.org.uk>
- <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
+        id S1731937AbgJALPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:15:05 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:12490 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgJALPE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 07:15:04 -0400
+X-Greylist: delayed 366 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 07:15:03 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1601550901;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=/NR1RhFRl7ZRzYb5IEKZPg3jR111DNCJSbUggUIOTcs=;
+        b=hB9iRyAdHx9OdfPe5K18QzkN0r+6M1fjlGLVZCYyI7124nP8JPKhn8CKsmrmCrURFj
+        ZgMnGhjZM2XwPeNeqbcfhpp56smMiC0XSvA0kXOXkaH9qp0cCo0r5rKiWLThaYzuHFRC
+        c0t0mxDidHH9Uo2S8rCiH5tzKXPLppyILKyy+g0LtUurLcSeTECdgt8TEgxWzjRpHBjF
+        6oamtq0PvOVkOrVH0ZveM0QbI31xoq3U2hy32rKbrFD8/1qzipi1iPwQ80d9O0WGOp8Y
+        AwR5PUSkHqyN3ZMxlI3G5HPKjT5tCI8iCvs5oIUz63Y5+mE8q/3IGA7Ffis/nHYxKPcx
+        61/A==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j/IcvFBg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.1.9 DYNA|AUTH)
+        with ESMTPSA id z04ddcw91B2u63q
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 1 Oct 2020 13:02:56 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 13:02:49 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Jun Nie <jun.nie@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org, shawn.guo@linaro.org
+Subject: Re: [PATCH v3 0/2] Add MSM8939 RPM power domains
+Message-ID: <20201001110249.GA1592@gerhold.net>
+References: <20200930100145.9457-1-jun.nie@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
-X-Cookie: Stay away from flying saucers today.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200930100145.9457-1-jun.nie@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 30, 2020 at 06:01:43PM +0800, Jun Nie wrote:
+> Add MSM8939 RPM power domains and associated document. This is based on
+> Stephan's patch set to reuse max state definition:
+> https://lore.kernel.org/linux-arm-msm/20200916104135.25085-1-stephan@gerhold.net/
+> 
+> Changes vs v2:
+>  - fix max power domain state value.
+>  - trim code layout.
+> 
+> Jun Nie (2):
+>   dt-bindings: power: rpmpd: Add MSM8939 RPM power domains
+>   soc: qcom: rpmpd: Add MSM8939 power-domains
+> 
+>  .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
+>  drivers/soc/qcom/rpmpd.c                      | 27 +++++++++++++++++++
+>  include/dt-bindings/power/qcom-rpmpd.h        | 10 +++++++
+>  3 files changed, 38 insertions(+)
+> 
+> -- 
+> 2.17.1
+> 
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for making the changes! I don't know much about MSM8939 but from
+what I know this looks good to me. FWIW, for both patches:
 
-On Wed, Sep 30, 2020 at 12:33:39PM -0700, Joe Perches wrote:
-> On Tue, 2020-09-29 at 12:37 +0100, Mark Brown wrote:
-
-> > Feel free to submit patches to b4.
-
-> Have you tried the existing option to send
-> thank you's on a specific ranges of patches?
-
-I am relying on b4 to identify which patches that I've downloaded are in
-the pushed branches.  Given that it explicitly lists the patches that
-are applied it appears to be doing an OK job here.
-
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl91tx4ACgkQJNaLcl1U
-h9D1IAf/a6Dh+mjW+LjpuCd+hkWCJa8iJTLmYSy9suf32mX9fM1T/gbOLQ1RJtu4
-ZQP0A5w52htIbRIWtYHrgtZQGXrq2SIm+peRmnKP0DXly+Fj0/G0zxg4lqxKzXtV
-+XpQjLbvcjF6JIV1ok5ScRg5HH8bfLJQvbGBbpmL9pvI+WniF4smB5bQRwd3qWEf
-MrBNI79S+kr1Cvjxnya+/TP7O4TtOQzzpB695ejEGvqxlTJQM5GGaZTLNJlBivOz
-ygXvOFlrffOajvN1K7URe41xznaDG4+c8pfziFXllSoEGp3yzANBNTtCGEvny0SY
-Nx0W3O8/sebfFJPHQ89w2atWG/nVEQ==
-=onQ8
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
