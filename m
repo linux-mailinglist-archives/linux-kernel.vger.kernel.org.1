@@ -2,104 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A3F27FD88
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BD427FD8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 12:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731968AbgJAKj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 06:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731131AbgJAKjZ (ORCPT
+        id S1732090AbgJAKkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 06:40:53 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41118 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731131AbgJAKkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 06:39:25 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0FEC0613D0;
-        Thu,  1 Oct 2020 03:39:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C28kY697yz9sSf;
-        Thu,  1 Oct 2020 20:39:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601548763;
-        bh=JmbLezRzmSGuU5WK2PvyAyFQp3GhmDoCVA9yDQLx69k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cu1vuSZAb/gRpe7X9+frUCo2ClK8MEKqUCRsiSozM0M4XYBoN4aeP5rNLmuhI4jnS
-         cgd64ioHd+aMKd30oJZ3uyoMPD5IJQKEwSXLRzCVFRdkslkG5fkWpyMRvjdFnA8Yu0
-         khDFod5sZ3ZIIxPtnxSbALsmM2PqhvpZihkasJah0+zK489/w5cmEVzza7dRtKEcXG
-         w88yM2nisN/KfsFfH8Xm0fbTZiSkq+hDESIzRUA7iqW3GzswdOQhNAqlPudZc+GvEs
-         kq6CbBhUyjLSFllpwL1PIxX1a8KN6vbcTf1Ejpc9f7GGN6t1dnJXNSlOsv2IRhuwPK
-         QJ1rZIoaFMqRg==
-Date:   Thu, 1 Oct 2020 20:39:17 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Dave Airlie <airlied@linux.ie>, Christoph Hellwig <hch@lst.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the akpm tree with the drm-intel tree
-Message-ID: <20201001203917.43d46a3d@canb.auug.org.au>
+        Thu, 1 Oct 2020 06:40:53 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091Aeeel060723;
+        Thu, 1 Oct 2020 05:40:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601548840;
+        bh=N9YEPqkdsieOwi0bDbR5PhkEgKwy0dRnGH8nrDktbwM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=PEq+IhaA6pfFeLRh1ukujEcA4GiIQsuWzX9Gd1fi8gDRSJIFgAxi14XMNkBZr0Q1C
+         CYQMYd8tbhUEDZ9Lq5aK1yEjXQTlIS6QCwOw46flMwlMiRFnfti4L1QJvZnpGjpEkI
+         /BO6XyfNN12iOEQMLdiynGFAytRvDM3UaXXPzd64=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 091Aee1j030734
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 1 Oct 2020 05:40:40 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 05:40:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 05:40:40 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091AebfS107891;
+        Thu, 1 Oct 2020 05:40:38 -0500
+Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
+To:     Michael Walle <michael@walle.cc>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+References: <20200327155939.13153-1-michael@walle.cc>
+ <523c3645-e37d-5d86-ba91-5c1be9e3881e@ti.com>
+ <fb33aa707744ad6c25a4d332e7d73c58@walle.cc>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <58d1ffaa-53a0-d14a-6448-6203197d7b42@ti.com>
+Date:   Thu, 1 Oct 2020 16:10:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DdEb5MkgX7Rcxn6kn4rpov4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <fb33aa707744ad6c25a4d332e7d73c58@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DdEb5MkgX7Rcxn6kn4rpov4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the akpm tree got a conflict in:
+On 10/1/20 4:21 AM, Michael Walle wrote:
+> Am 2020-09-30 12:35, schrieb Vignesh Raghavendra:
+> [..]
+>>> Signed-off-by: Michael Walle <michael@walle.cc>
+>>> ---
+>>> changes since v2:
+>>>  - add Kconfig option to be able to retain legacy behaviour
+>>>  - rebased the patch due to the spi-nor rewrite
+>>>  - dropped the Fixes: tag, it doens't make sense after the spi-nor
+>>> rewrite
+>>>  - mention commit 3e0930f109e76 which further modified the unlock
+>>>    behaviour.
+>>>
+>>> changes since v1:
+>>>  - completely rewrote patch, the first version used a device tree flag
+>>>
+>>>  drivers/mtd/spi-nor/Kconfig | 35 +++++++++++++++++++++++++++++
+>>>  drivers/mtd/spi-nor/atmel.c | 24 +++++++++++++-------
+>>>  drivers/mtd/spi-nor/core.c  | 44 ++++++++++++++++++++++++++++---------
+>>>  drivers/mtd/spi-nor/core.h  |  6 +++++
+>>>  drivers/mtd/spi-nor/esmt.c  |  6 ++---
+>>>  drivers/mtd/spi-nor/intel.c |  6 ++---
+>>>  drivers/mtd/spi-nor/sst.c   | 21 +++++++++---------
+>>>  include/linux/mtd/spi-nor.h |  6 +++++
+>>>  8 files changed, 114 insertions(+), 34 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+>>> index 6e816eafb312..647de17c81e2 100644
+>>> --- a/drivers/mtd/spi-nor/Kconfig
+>>> +++ b/drivers/mtd/spi-nor/Kconfig
+>>> @@ -24,6 +24,41 @@ config MTD_SPI_NOR_USE_4K_SECTORS
+>>>        Please note that some tools/drivers/filesystems may not work with
+>>>        4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
+>>>
+>>> +choice
+>>> +    prompt "Write protection at boot"
+>>> +    default MTD_SPI_NOR_WP_DISABLE
+>>
+>> These choice control how BP0-X bits are manipulated on boot. Hence, to
+>> be consistent should use Block Protection (BP) terminology throughout.
+>>
+>> This would also be inline with most flash datasheets which also use
+>> term BP
+> 
+> Where should I mention the BP bits? In the choice or in the help text.
 
-  drivers/gpu/drm/i915/gem/i915_gem_pages.c
+choice prompt and in help text.
 
-between commit:
+> I tried to keep the choice prompt as easy to understand as possible, so an
+> user who doesn't know anything about how the write protection actually
+> works
+> can still make that choice (without first reading a datasheet). Also
+> keep in
+> mind, that there is also the per sector locking. Wouldn't this option also
+> apply to that?
+> 
 
-  4caf017ee937 ("drm/i915/gem: Avoid implicit vmap for highmem on x86-32")
-  ba2ebf605d5f ("drm/i915/gem: Prevent using pgprot_writecombine() if PAT i=
-s not supported")
+But, there is more than one way of achieving write protection in 
+addition to BP bits such as Advanced Sector Protection which may be 
+added in future. So we should be as specific as possible while making it 
+easy for user.
 
-from the drm-intel tree and patch:
+How about 
 
-  "drm/i915: use vmap in i915_gem_object_map"
+		prompt "Write Protection (Legacy Block Protection based) at boot"
 
-from the akpm tree.
 
-I fixed it up (I just dropped the changes in the former commits) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/DdEb5MkgX7Rcxn6kn4rpov4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91sdUACgkQAVBC80lX
-0GwY1Af+L5GL9WkeOKfbPmrMAMlWlaXHGD4rkH3IsH8AhCc0xfM78DvlXnJK4Fqq
-DlLWngMCn/ubtPzJRPwSTSLUL1ZwGOapud/G1Tf0teSiunQ0Wc3NzIZt7E82Aw3i
-jCSols7sNh7PvJ4spsowtMrpGNVpBhJMTBaK+BQpXZi8RFCcbqcC5ZaDWdyA5y9W
-eUnZE947oIwiyofvpvzJg7b9GAqSstmMz9U86iM0UEtBTGOjLF0W6tvEgnNPEUIL
-zRJzdQTWrsrKFvCNpdO5ONRyqtj6h+xY9V8QHRMLYaVKYMdAssCC77fPpzTnxEoP
-TWl+u+jgBsx90uEoH2zzbr5eMANPjw==
-=7wpk
------END PGP SIGNATURE-----
-
---Sig_/DdEb5MkgX7Rcxn6kn4rpov4--
+> Therefore, I'd mention in the help text, that (currently) the BP bits are
+> affected.
+> 
+>>> +
+>>> +config MTD_SPI_NOR_WP_DISABLE
+>>> +    bool "Disable WP on any flashes (legacy behaviour)"
+>>> +    help
+>>> +      This option disables the write protection on any SPI flashes at
+>>> +      boot-up.
+>>> +
+>>> +      Don't use this if you intent to use the write protection of your
+>>> +      SPI flash. This is only to keep backwards compatibility.
+>>> +
+>>> +config MTD_SPI_NOR_WP_DISABLE_ON_VOLATILE
+>>> +    bool "Disable WP on flashes w/ volatile protection bits"
+>>> +    help
+>>> +      Some SPI flashes have volatile block protection bits, ie. after a
+>>> +      power-up or a reset the flash is write protected by default.
+>>> +
+>>> +      This option disables the write protection for these kind of
+>>> flashes
+>>> +      while keeping it enabled for any other SPI flashes which have
+>>> +      non-volatile block protection bits.
+>>> +
+>>> +      If you are unsure, select this option.
+>>> +
+>>> +config MTD_SPI_NOR_WP_KEEP
+>>> +    bool "Keep write protection as is"
+>>> +    help
+>>> +      If you select this option the write protection of any SPI flashes
+>>> +      will not be changed. If your flash is write protected or will be
+>>> +      automatically write protected after power-up you have to manually
+>>> +      unlock it before you are able to write to it.
+>>> +
+>>> +endchoice
+>>> +
+>>>  source "drivers/mtd/spi-nor/controllers/Kconfig"
+>>>
+>>>  endif # MTD_SPI_NOR
+>>
+>> [...]
+>>
+>>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>>> index 6f2f6b27173f..9a33c023717f 100644
+>>> --- a/drivers/mtd/spi-nor/core.h
+>>> +++ b/drivers/mtd/spi-nor/core.h
+>>> @@ -26,6 +26,7 @@ enum spi_nor_option_flags {
+>>>      SNOR_F_HAS_SR_TB_BIT6    = BIT(11),
+>>>      SNOR_F_HAS_4BIT_BP      = BIT(12),
+>>>      SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
+>>> +    SNOR_F_NEED_UNPROTECT    = BIT(14),
+>>>  };
+>>>
+>>>  struct spi_nor_read_command {
+>>> @@ -311,6 +312,11 @@ struct flash_info {
+>>>                       * BP3 is bit 6 of status register.
+>>>                       * Must be used with SPI_NOR_4BIT_BP.
+>>>                       */
+>>> +#define SPI_NOR_UNPROTECT    BIT(19)    /*
+>>> +                     * Flash is write-protected after
+>>> +                     * power-up and needs a global
+>>> +                     * unprotect.
+>>> +                     */
+>>>
+>>
+>> It would be better to name the flag to indicate BP bits are volatile or
+>> powers up locked instead of SPI_NOR_UNPROTECT. This makes it easier to
+>> understand what this flag means wrt flash HW feature. Maybe:
+>>
+>> SPI_NOR_LOCKED_ON_POWER_UP or SPI_NOR_BP_IS_VOLATILE
+> 
+> SPI_NOR_BP_IS_VOLATILE sounds good to me.
+> 
+> -michael
