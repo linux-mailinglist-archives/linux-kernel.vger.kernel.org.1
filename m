@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5F228088D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721CE280893
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387404AbgJAUka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgJAUk3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:40:29 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD96BC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 13:40:29 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id r24so44824vsp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 13:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CpqtefYRObu1FEKmxeMO9SEOBqtBM7OcMS8gCbom+4g=;
-        b=NuSBvqifaloJ9Izw7NJIfbEVsg1AENReTiyPJpqc7CgU+rYJLsh7SsQhSQQY0DRaiE
-         iP/X+xTTtJU9vw13M9iQt0cSV2eolmnDwf6GbmJvcUZwJjVl9z4D5w9VwINIZBAgW1hv
-         kWY+FH9GyKNDnbpqe/r7USGJ2XJtaVyQXKVfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CpqtefYRObu1FEKmxeMO9SEOBqtBM7OcMS8gCbom+4g=;
-        b=W8Bvn1Pt8K3HSY7qUr1IBMMLyF0uThWpQ/zxrsJPIaR9gZM/7IYJnKJ460PTGfnvAK
-         tfMZqXrzBqiFoxxYpCVro3ipmbXZYT7Ahx5QLtczqZ9htbvkwhWdFNh3t/8u/zvawJMh
-         tXelXFyuoJgStIS8y/xGomAnDQUF2I8wVMvvY1ANZ6auAnMr92d5tbcBqkZLymS4FJd3
-         AgJosOORutqtCNaTggkl5DLKtjP+FmV9+owzCqhHQn5pj1ceppZzSsKDEcf1Do0H+nTJ
-         dGUs5j5dhioiBRmGCW1ypAbnwvqBEDgBlUPPWExZbJNcFGfR1baJvhjFxpVjpOLEFQuO
-         x5lw==
-X-Gm-Message-State: AOAM5315KQ1EhZiTevS0+mXd2AWU90vbkwWf8NJU2mEUV7ZHcYE+W1Pf
-        kRWi5JBwMu/V5A3o/Puz3wkoQ6G93ZHk7Q==
-X-Google-Smtp-Source: ABdhPJxdo5JRvH/wbh3TA95fnKxb6yU15TXNJVEyxttSp+HoYzh0K1TT2k3pwSnFYCmE36PHSSfWLQ==
-X-Received: by 2002:a67:7c02:: with SMTP id x2mr1297263vsc.12.1601584828476;
-        Thu, 01 Oct 2020 13:40:28 -0700 (PDT)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id y5sm994749uay.0.2020.10.01.13.40.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 13:40:26 -0700 (PDT)
-Received: by mail-vs1-f46.google.com with SMTP id a16so34648vsp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 13:40:26 -0700 (PDT)
-X-Received: by 2002:a67:8bc2:: with SMTP id n185mr7285582vsd.49.1601584825983;
- Thu, 01 Oct 2020 13:40:25 -0700 (PDT)
+        id S1732941AbgJAUnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:43:00 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24474 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728382AbgJAUm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:42:57 -0400
+IronPort-SDR: puIv/AE/V4w2a4QY6oYmfwuIZCgrs4SyhZSlblG97ehHiXKPa77dz22eYB/V8I7MgBi9O+RA64
+ UNCngPQdCj5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="162909323"
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="162909323"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 13:42:52 -0700
+IronPort-SDR: CQ/Q/+qz4wwFCOWyHQMccNqlRzLsoAnc01s1ZZwtzRRqX+CSx96hWaA23AqlOzSIVUkGV2Im6B
+ Ya+cL5WF6Xtg==
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="458307814"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.37.220])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 13:42:51 -0700
+Subject: Re: [PATCH v1 00/12] Intel FPGA Security Manager Class Driver
+To:     "Wu, Hao" <hao.wu@intel.com>, "mdf@kernel.org" <mdf@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <DM6PR11MB38198EC62FA2C63B3E5BC8D0852A0@DM6PR11MB3819.namprd11.prod.outlook.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <f8815af0-96cb-f223-ca1f-6158bae34c42@intel.com>
+Date:   Thu, 1 Oct 2020 13:42:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1598970026-7199-1-git-send-email-rnayak@codeaurora.org>
- <34ed34bd-90fd-0e84-6020-c487d612ad2f@codeaurora.org> <aec87de2-500d-763c-df01-c0daec56b1e2@linaro.org>
-In-Reply-To: <aec87de2-500d-763c-df01-c0daec56b1e2@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 1 Oct 2020 13:40:13 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U=OCQpVL6VOVd4B6rW7HFC5S-wGauMAsOdvzwjLzKLuw@mail.gmail.com>
-Message-ID: <CAD=FV=U=OCQpVL6VOVd4B6rW7HFC5S-wGauMAsOdvzwjLzKLuw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/5] DVFS support for Venus
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DM6PR11MB38198EC62FA2C63B3E5BC8D0852A0@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, Sep 16, 2020 at 12:26 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
+
+On 9/5/20 7:13 AM, Wu, Hao wrote:
+>> Subject: [PATCH v1 00/12] Intel FPGA Security Manager Class Driver
+>>
+>>
+>> These patches depend on the patchset: "add regmap-spi-avmm & Intel
+>> Max10 BMC chip support" which is currently under review.
+>>
+>>            --------------------------------------------------
+>>
+>> This patchset introduces the Intel Security Manager class driver
+>> for managing secure updates on Intel FPGA Cards. It also provides
+>> the n3000bmc-secure mfd sub-driver for the MAX10 BMC for the n3000
+>> Programmable Acceleration Cards (PAC). The n3000bmc-secure driver
+>> is implemented using the Intel Security Manager class driver.
+> So this patchset contains two parts
+> (1) adding a new class driver for Intel FPGA secure update.
+> (2) a new driver which uses (1) to implement secure update for n3000 PAC.
+Yes - that is correct
 >
-> Hi,
+> And only part (2) depends on "Intel MAX10 BMC chip support" patchset.
+> (Maybe you can provide a link to that thread).
 >
-> On 9/16/20 8:33 AM, Rajendra Nayak wrote:
-> >
-> > On 9/1/2020 7:50 PM, Rajendra Nayak wrote:
-> >> Rob, can you pick PATCH 1 since its already reviewed by you.
-> >> Stan, Patch 2 and 3 will need to be picked by you and they both have
-> >> your ACKs
-> >
-> > Rob/Stan, any plans to get the patches merged for 5.10?
+> Is my understanding correct? If yes, is it possible to reorder these patches?
+> At least there is no dependency on the class driver patches, right?
+Yes - I'm splitting the patch set, and I'll provide links for the dependencies
+on the MAX10 BMC Secure Engine patch set.
 >
-> 2/5 and 3/5 are queued up for v5.10 through media tree.
+>> The Intel Security Manager class driver provides a common API for
+>> user-space tools to manage updates for Secure FPGA devices. Device
+>> drivers that instantiate the Intel Security Manager class driver will
+>> interact with the HW secure update engine in order to transfer
+>> new FPGA and BMC images to FLASH so that they will be automatically
+>> loaded when the FPGA card reboots.
+>>
+>> The API consists of sysfs nodes and supports the following functions:
+>>
+>> (1) Instantiate and monitor a secure update
+>> (2) Display security information including: Root Entry Hashes (REH),
+>>     Cancelled Code Signing Keys (CSK), and flash update counts for
+>>     both BMC and FPGA images.
+>>
+>> Secure updates make use of the request_firmware framework, which
+>> requires that image files are accessible under /lib/firmware. A request
+>> for a secure update returns immediately, while the update itself
+>> proceeds in the context of a kernel worker thread. Sysfs files provide
+>> a means for monitoring the progress of a secure update and for
+>> retrieving error information in the event of a failure.
+> Maybe you can explain a little more on why we need to have this done
+> via a class driver not just some internal code in max10 driver? This class
+> driver will be reused in different cases? And why adding a new class
+> driver not just reuse or extend fpga manager (existing fpga mgr is used
+> to update fpga too).
+Yes - I'll so that in the next patch set.
+>
+>> The n3000bmc-secure driver instantiates the Intel Security Manager
+>> class driver and provides the callback functions required to support
+>> secure updates on Intel n3000 PAC devices.
+>>
+>> Russ Weight (12):
+>>   fpga: fpga security manager class driver
+> Intel FPGA Security Manager?
+Yes - I'll make that change
+>
+>>   fpga: create intel max10 bmc security engine
+>>   fpga: expose max10 flash update counts in sysfs
+>>   fpga: expose max10 canceled keys in sysfs
+>>   fpga: enable secure updates
+>>   fpga: add max10 secure update functions
+>>   fpga: expose sec-mgr update status
+>>   fpga: expose sec-mgr update errors
+>>   fpga: expose sec-mgr update size
+>>   fpga: enable sec-mgr update cancel
+>>   fpga: expose hardware error info in sysfs
+> For these patches, is it possible to have a better title for these patches.
+> Then it will be easier to know which component this patch is going to modify.
+> e.g. fpga: ifpga-sec-mgr: xxxxxx
+Yes. Thanks for the comments.
 
-Normally I'd expect device tree bindings (patch #1) to go through the
-same tree as the driver changes.  Does the media tree work
-differently?  If you're expecting Rob Herring to land the device tree
-binding change, is he aware?
+- Russ
+>
+> Thanks
+> Hao
+>
+>>   fpga: add max10 get_hw_errinfo callback func
+>>
+>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 151 ++++
+>>  MAINTAINERS                                   |   8 +
+>>  drivers/fpga/Kconfig                          |  20 +
+>>  drivers/fpga/Makefile                         |   6 +
+>>  drivers/fpga/ifpga-sec-mgr.c                  | 669 ++++++++++++++++++
+>>  drivers/fpga/intel-m10-bmc-secure.c           | 557 +++++++++++++++
+>>  include/linux/fpga/ifpga-sec-mgr.h            | 201 ++++++
+>>  include/linux/mfd/intel-m10-bmc.h             | 116 +++
+>>  8 files changed, 1728 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>  create mode 100644 drivers/fpga/ifpga-sec-mgr.c
+>>  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+>>  create mode 100644 include/linux/fpga/ifpga-sec-mgr.h
+>>
+>> --
+>> 2.17.1
 
-
--Doug
