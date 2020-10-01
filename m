@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92B62808DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457912808E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbgJAU5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgJAU5G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:57:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C26C0613D0;
-        Thu,  1 Oct 2020 13:57:05 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a15so44831ljk.2;
-        Thu, 01 Oct 2020 13:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XflpFmvYU4ZauRyF/CvBEwazfjgIznjHbxbdFQln060=;
-        b=pB1zmEc6F+GNDrYLg2UDm3+/iTPpyEZy82EwS6wWv6/OIbXMKTiu2yN//9Ac84AiNg
-         gTXy52KKNB6js3gVl0ifMsGb85RSdIHM+Ln17kx1FCqgfg24pXWZlcP2s90nvmWrVM8g
-         f4OTw3GEdfH48iFyfS1wUWfouG8Xb41rFGvMYH7uLW+gwoAZZ80Eb2es1GBX+QFqJuZT
-         tIy/40aGUd+Ld5xjZecBZoiwey8WewTHJBUr7c98dsRf4z5orc937BsQ3dLa+8wtKxd4
-         QUSLJjImPfuVBbG7KLdWIM9TQkD1nLXri/a2+ktop2U2v3DGIuYLL3XP/0jKV8XGblP9
-         3mDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XflpFmvYU4ZauRyF/CvBEwazfjgIznjHbxbdFQln060=;
-        b=dgvkX8HTXIcxTekCG5WC36lTtZXhA74wphi8REKg2Y4WiKSkPLo78IE+wzIqpl5txf
-         leFUVxQte6hLqUpSr6vAf7hiPleF0oGte5RLzwIPKYh46ZpWWb+rK/IosorUXJj9kqjv
-         JEO7/eN/3EGjTEPpQ5FFUE99AS7gabvBwD6aDGkmcWIhQAOdQ2x2rJ+J1AU3AamxggIO
-         srJyVitZ58uiC+3P3eAxeTCgnZidmBRybuL70DINYN+pYeIniWr5yjU7RaKWJR1ppey2
-         RA4zdlF8tCB9cJQOEX7bfDOLhXGRwpsnp8d/JY/CQ7ASP06Jm/SVVV7d6R4Tow91PSyG
-         4Hzw==
-X-Gm-Message-State: AOAM530ea+44BFctMpyMGS5IpReO8uHNvCxWe1kr3wSvMVkVlgOO5zHZ
-        gXoTZTtifgKKPwi9YytAL0OC5w/Su04=
-X-Google-Smtp-Source: ABdhPJzzGOQYtFDLJ0Uinx31Or+7BavRRvl4lQZJncQmtxUElVDfDWAHIwhVcDOYFMPCeoTTheo3UQ==
-X-Received: by 2002:a2e:9d8a:: with SMTP id c10mr3146731ljj.83.1601585824206;
-        Thu, 01 Oct 2020 13:57:04 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id g23sm712844lfb.230.2020.10.01.13.57.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 13:57:03 -0700 (PDT)
-Subject: Re: [PATCH v3 10/13] ASoC: tegra: Add audio graph based card driver
-To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        kuninori.morimoto.gx@renesas.com,
-        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
-        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
-        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
-        nwartikar@nvidia.com, swarren@nvidia.com, nicoleotsuka@gmail.com
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-11-git-send-email-spujar@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <98f01f9e-96f8-6867-1af3-475294e81a9d@gmail.com>
-Date:   Thu, 1 Oct 2020 23:57:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732988AbgJAU5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:57:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726515AbgJAU5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 16:57:19 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 044CE207FB;
+        Thu,  1 Oct 2020 20:57:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601585839;
+        bh=KlZU6JDzjRF28UWN2Q1zA7irgAccRi7hkXZ+HCnev7k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iyq/nDS71g/0jZhjClQE07vEb8x3Pg0F1gAle9l+VW/Pey9PoBPrGTSHkYWi7S/3u
+         2qmheQD6XCrnjb7nbIdMtUcay6xOk/smlAFItlqCld0GgbWIkgZf2BBg6p82hsVB9T
+         cBb+CgETu2DMZ/exanYbpjMOB510m/EvO6JYeWPE=
+Received: by mail-ot1-f53.google.com with SMTP id c2so75421otp.7;
+        Thu, 01 Oct 2020 13:57:18 -0700 (PDT)
+X-Gm-Message-State: AOAM5314HA4pJn1mFvw4EWWKKEm3YJEtAN86kX9J0NJXaymfqmQ5i6yi
+        Of38aRXr9tTT+iVRPWK4BEgg3dNn3csIFuVMlwo=
+X-Google-Smtp-Source: ABdhPJyOOLdA7jWUEtZBFDL23RTFxBrkUWqbZEFAKE4ZkSt+VXNgvBHPldjBfbu3uOml/MENyenVJzKXeu0JMfE4b0s=
+X-Received: by 2002:a9d:6250:: with SMTP id i16mr6707860otk.77.1601585838357;
+ Thu, 01 Oct 2020 13:57:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1601573587-15288-11-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200905013107.10457-1-lszubowi@redhat.com> <20200905013107.10457-2-lszubowi@redhat.com>
+ <20201001174436.GA2622286@ubuntu-m3-large-x86>
+In-Reply-To: <20201001174436.GA2622286@ubuntu-m3-large-x86>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 1 Oct 2020 22:57:07 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
+Message-ID: <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] efi: Support for MOK variable config table
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Lenny Szubowicz <lszubowi@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.10.2020 20:33, Sameer Pujar пишет:
-> +/* Setup PLL clock as per the given sample rate */
-> +static int tegra_audio_graph_update_pll(struct snd_pcm_substream *substream,
-> +					struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-> +	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
-> +	struct device *dev = rtd->card->dev;
-> +	struct tegra_audio_graph_data *graph_data =
-> +		(struct tegra_audio_graph_data *)priv->data;
-> +	struct tegra_audio_chip_data *chip_data =
-> +		(struct tegra_audio_chip_data *)of_device_get_match_data(dev);
+On Thu, 1 Oct 2020 at 19:44, Nathan Chancellor <natechancellor@gmail.com> wrote:
+>
+> On Fri, Sep 04, 2020 at 09:31:05PM -0400, Lenny Szubowicz wrote:
+> > Because of system-specific EFI firmware limitations, EFI volatile
+> > variables may not be capable of holding the required contents of
+> > the Machine Owner Key (MOK) certificate store when the certificate
+> > list grows above some size. Therefore, an EFI boot loader may pass
+> > the MOK certs via a EFI configuration table created specifically for
+> > this purpose to avoid this firmware limitation.
+> >
+> > An EFI configuration table is a much more primitive mechanism
+> > compared to EFI variables and is well suited for one-way passage
+> > of static information from a pre-OS environment to the kernel.
+> >
+> > This patch adds initial kernel support to recognize, parse,
+> > and validate the EFI MOK configuration table, where named
+> > entries contain the same data that would otherwise be provided
+> > in similarly named EFI variables.
+> >
+> > Additionally, this patch creates a sysfs binary file for each
+> > EFI MOK configuration table entry found. These files are read-only
+> > to root and are provided for use by user space utilities such as
+> > mokutil.
+> >
+> > A subsequent patch will load MOK certs into the trusted platform
+> > key ring using this infrastructure.
+> >
+> > Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>
+> I have not seen this reported yet but this breaks arm allyesconfig and
+> allmodconfig when CPU_LITTLE_ENDIAN is force selected (because CONFIG_EFI
+> will actually be enabled):
+>
+> $ cat le.config
+> CONFIG_CPU_BIG_ENDIAN=n
+>
+> $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- KCONFIG_ALLCONFIG=le.config allyesconfig drivers/firmware/efi/mokvar-table.o
+> drivers/firmware/efi/mokvar-table.c: In function 'efi_mokvar_table_init':
+> drivers/firmware/efi/mokvar-table.c:139:5: error: implicit declaration of function 'early_memunmap' [-Werror=implicit-function-declaration]
+>   139 |     early_memunmap(va, map_size);
+>       |     ^~~~~~~~~~~~~~
+> drivers/firmware/efi/mokvar-table.c:148:9: error: implicit declaration of function 'early_memremap' [-Werror=implicit-function-declaration]
+>   148 |    va = early_memremap(efi.mokvar_table, map_size);
+>       |         ^~~~~~~~~~~~~~
+> drivers/firmware/efi/mokvar-table.c:148:7: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+>   148 |    va = early_memremap(efi.mokvar_table, map_size);
+>       |       ^
+> cc1: some warnings being treated as errors
+> make[4]: *** [scripts/Makefile.build:283: drivers/firmware/efi/mokvar-table.o] Error 1
+>
+> Cheers,
+> Nathan
 
-void* doesn't need casting
+Hi Nathan,
+
+Does adding
+
+#include <asm/early_ioremap.h>
+
+to drivers/firmware/efi/mokvar-table.c fix the issue?
