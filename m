@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A084027F7D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B1F27F7D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731473AbgJACNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:13:00 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42651 "EHLO
+        id S1731499AbgJACNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:13:02 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42357 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730320AbgJACL6 (ORCPT
+        by vger.kernel.org with ESMTP id S1730301AbgJACL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:11:58 -0400
+        Wed, 30 Sep 2020 22:11:57 -0400
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2DA4A580375;
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9F77D580376;
         Wed, 30 Sep 2020 22:11:56 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute5.internal (MEProxy); Wed, 30 Sep 2020 22:11:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=/bhxd1svwQTQK
-        rVdAoO4naAM8pRc9Q0oebJmrLNI+Go=; b=DPMTZy1JTuNp8bGdp0k6tmWkm0J3L
-        FNrdCXvI7DRMTwKyqoPpr0nziwdZxwXPRH3ICXfa5TRd0gSh/oQZwREwld7r1iLd
-        r4h5U+TvOScX7uGmgeVqY2sj7dhyD8+bOK3OaAJior/yA2rFp5U2W6IAx4DAmlDS
-        ZmoAegZ/pUzjSE/bLmvZ00t8gxQUWEF7NPm8FfReKdCYABww2zgNrEvVIFWYZOv5
-        jrVEGMUJAoZ+eALLXENwlnwguU8WSyZ8PYNyn6bowSo+sRIC6vUCUS/T2lgS/NqV
-        JojF+Hr388pZLDcBWRETR03fAyIJCt5FVY65GSv23fsYuP6oPH5D9KaVA==
+        :mime-version:content-transfer-encoding; s=fm3; bh=Bc9jbqPoO+UOz
+        OZy0yDCeB3vfWInF0AILJdWon8Sumw=; b=J8lHt3/s9pV7XscFWB2nUVSFP2p+o
+        wrFfOw98jCXw+H1mM84nRPIiTUl07W6mSlyzgHweatRySBKkSa0DI0gRezZr73xE
+        W8JQp5RQCK53vE9NDoPW8GKAtWpvRRP3T5KlT2GOdhQV+8QlO7pNFItpUv29md6d
+        QUVnWGufsCfpB0ERDipJvIeHU/8noGIvg881eiwEdSNvUri3iWrQnM0MXzN0sxqW
+        wnPxJDlpmNOsGrE5+IqsxDWWHSquUxQvk8pHVs5Cj5vTGH9URnaVFPse14k1dNTP
+        X2KWdcaASm6Y9Q4vKs3GDGW+kXw7tiIuzrVGlTOYNws6x8Vd1bbMzIO5w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=/bhxd1svwQTQKrVdAoO4naAM8pRc9Q0oebJmrLNI+Go=; b=CbXfEYTo
-        Rdshd2dv9TwKsrbIqXmDAKxdUmZKK8NUMg5QsH7XhsTrHh8Knji5JEK4Ywaapcma
-        ItReHHUQrv+hjw2JNLl4iJVyQKH6yKxpUZAM0ybZIv1fgFlDcw74qnq/UuDa3V52
-        6bmYqKOkh0lUObdOeWUvk8i0lRXHdEbOZ536ulA31eamp5JGGGBkQ4d1FxNQq8l5
-        MW+26yky67HznwQwR1sTBNXwa/NEkj4t0RbCKjyjQO7zkw0bnysSxipnQoemlQ5N
-        H8887GxvSIpryzeqQ+NskD10HeZDzOLfFQ590+NWSXlmrbSvhVyQXGmM5iHvKdKW
-        UyEXhgfQBIKzjQ==
-X-ME-Sender: <xms:6zp1X2DdJx-yFCZPoSTazb1RTcxzvpPYfl2c3q-oBH3LjCSi9BVHWQ>
-    <xme:6zp1XwieU7EqJ92VB-X224Fl-yEkEY1t1cryU4qyvTqEJo2lomgEQT73YvxVYp8sB
-    Xjz9oMO8uNFZ6ZFEQ>
+        fm3; bh=Bc9jbqPoO+UOzOZy0yDCeB3vfWInF0AILJdWon8Sumw=; b=h7Hl3RpQ
+        cYrzvj2leMIlAwWYgce2U49yG0swLsfYmYrUlueApJkQCTMzgYXMbcN49KO5tj/N
+        PlOBT+o2xCZzUTifN2t212hNee42DlnImr210FwaN6BJr1hafB3lL0Ghw6O585hI
+        HIN/tqQuQFYBBWYVWX/9OYwg5cpYKVqsPzL6X4r2JUmePEkrNRnVDCfpsVScdGwC
+        Mz2rPN7Qqmc2rS10onJTVXFF19CX+PPngNe65i/8xWhhRW4+8QG5bf5uBvL0fQia
+        WUaWrXiw2/x7kyVBNfkUF4WdIrERHRve7XZzHGsN3df7k2Y/fkbKdKMPLJ/yd7CT
+        KvJDcEc4vaAZ2Q==
+X-ME-Sender: <xms:7Dp1X9Trc4VuFjbVQy396OoLLi4jurj0A4If8iGpJUoxoX44KSPeHw>
+    <xme:7Dp1X2z9oX8b4ySWV7gt6Wt-ml63YgtkMU44CcEM1QGT4xGlEBLaO1UNLzU5pERK3
+    XbEMEuJBK7MSbzWwQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgdehkecutefuodetggdote
     jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
     gvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
     rdhorhhg
-X-ME-Proxy: <xmx:6zp1X5nRVTfNZB5inus4rpU-gRuY1Pb6xJ4TYS67QD0YJEC-2oNCkg>
-    <xmx:6zp1X0wgydVP_i0CfFIsYZit6c5iAT-7qE5U6PfKps9w89xALsUAQA>
-    <xmx:6zp1X7TM-qPshAjt3DQaD5VdPP6Onddf3SPmSacIbWqR428CvdMQ6Q>
-    <xmx:7Dp1X2FScEnp1mLXIiCiyjT4JaUvyu53fZ0kHdqEBjruimiFp8Zwpg>
+X-ME-Proxy: <xmx:7Dp1Xy1HmCD1oxvLoFifX9smU6ceu2nt1q4tpTogxuMQcZND4shusw>
+    <xmx:7Dp1X1AoKJljpTgr4QEizh7FdH29bwkSW4d2ZQMH1xg3T8uZCpIxgQ>
+    <xmx:7Dp1X2jOVBA--JoQuNmjRcaThwC1TsEEwiVaLnIua18wSF_ooX4wkA>
+    <xmx:7Dp1X_VUS893Lg05kOtyg6Crm09ZJgjB_V3-r_58ADnkNqGUyIPn5A>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 750E5306467E;
+        by mail.messagingengine.com (Postfix) with ESMTPA id E6BF23064682;
         Wed, 30 Sep 2020 22:11:55 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Mark Brown <broonie@kernel.org>,
@@ -65,9 +65,9 @@ To:     Mark Brown <broonie@kernel.org>,
 Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 13/25] ASoC: sun8i-codec: Round up the LRCK divisor
-Date:   Wed, 30 Sep 2020 21:11:36 -0500
-Message-Id: <20201001021148.15852-14-samuel@sholland.org>
+Subject: [PATCH 14/25] ASoC: sun8i-codec: Correct the BCLK divisor calculation
+Date:   Wed, 30 Sep 2020 21:11:37 -0500
+Message-Id: <20201001021148.15852-15-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201001021148.15852-1-samuel@sholland.org>
 References: <20201001021148.15852-1-samuel@sholland.org>
@@ -77,88 +77,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The codec supports only power-of-two BCLK/LRCK divisors. If either the
-slot width or the number of slots is not a power of two, the LRCK
-divisor must be rounded up to provide enough space. To do that, use
-order_base_2 (instead of ilog2, which rounds down).
+Previously, the BCLK divisor calculation assumed a power-of-two slot
+width and exactly two slots. In order to support the TDM slot binding
+and 20/24-bit word sizes, those assumptions must be removed.
 
-Since the rounded divisor is also needed for setting the SYSCLK/BCLK
-divisor, return the order base 2 instead of fully calculating the
-hardware register encoding.
+Due to hardware limitations, the BCLK/LRCK ratio is not as simple as
+"slot_width * slots". However, the correct value is already calculated
+elsewhere in this function, since it must also be programmed into the
+hardware. Reuse that value to calculate the correct SYSCLK/BCLK divisor.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index e7f01a4b4001..779853d023fe 100644
+index 779853d023fe..78feed37aa42 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -300,33 +300,35 @@ static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
- 			best_diff = diff;
- 			best_val = bdiv->val;
- 		}
+@@ -279,21 +279,21 @@ static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
+ 	{ .div = 48,	.val = 9 },
+ 	{ .div = 64,	.val = 10 },
+ 	{ .div = 96,	.val = 11 },
+ 	{ .div = 128,	.val = 12 },
+ 	{ .div = 192,	.val = 13 },
+ };
+ 
+ static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
+-				   unsigned int rate,
+-				   unsigned int word_size)
++				   unsigned int lrck_div_order,
++				   unsigned int sample_rate)
+ {
+ 	unsigned long clk_rate = clk_get_rate(scodec->clk_module);
+-	unsigned int div = clk_rate / rate / word_size / 2;
++	unsigned int div = clk_rate / sample_rate >> lrck_div_order;
+ 	unsigned int best_val = 0, best_diff = ~0;
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
+ 		const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
+ 		unsigned int diff = abs(bdiv->div - div);
+ 
+ 		if (diff < best_diff) {
+@@ -343,30 +343,31 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 	default:
+ 		return -EINVAL;
  	}
  
- 	return best_val;
- }
- 
--static int sun8i_codec_get_lrck_div(unsigned int channels,
--				    unsigned int word_size)
-+static int sun8i_codec_get_lrck_div_order(unsigned int slots,
-+					  unsigned int slot_width)
- {
--	unsigned int div = word_size * channels;
-+	unsigned int div = slots * slot_width;
- 
- 	if (div < 16 || div > 256)
- 		return -EINVAL;
- 
--	return ilog2(div) - 4;
-+	return order_base_2(div);
- }
- 
- static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
- 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
--	int lrck_div, sample_rate, word_size;
-+	unsigned int slots = params_channels(params);
-+	unsigned int slot_width = params_width(params);
-+	int lrck_div_order, sample_rate, word_size;
- 	u8 bclk_div;
- 
- 	/* word size */
- 	switch (params_width(params)) {
- 	case 8:
- 		word_size = 0x0;
- 		break;
- 	case 16:
-@@ -346,24 +348,24 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
  			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
  			   word_size << SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ);
  
- 	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
- 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
- 
--	lrck_div = sun8i_codec_get_lrck_div(params_channels(params),
--					    params_physical_width(params));
--	if (lrck_div < 0)
--		return lrck_div;
-+	/* LRCK divider (BCLK/LRCK ratio) */
-+	lrck_div_order = sun8i_codec_get_lrck_div_order(slots, slot_width);
-+	if (lrck_div_order < 0)
-+		return lrck_div_order;
+-	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
+-	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+-			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+-
+ 	/* LRCK divider (BCLK/LRCK ratio) */
+ 	lrck_div_order = sun8i_codec_get_lrck_div_order(slots, slot_width);
+ 	if (lrck_div_order < 0)
+ 		return lrck_div_order;
  
  	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
  			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
--			   lrck_div << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
-+			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
+ 			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
  
++	/* BCLK divider (SYSCLK/BCLK ratio) */
++	bclk_div = sun8i_codec_get_bclk_div(scodec, lrck_div_order, params_rate(params));
++	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
++			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
++			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
++
  	sample_rate = sun8i_codec_get_hw_rate(params);
  	if (sample_rate < 0)
  		return sample_rate;
@@ -166,6 +156,7 @@ index e7f01a4b4001..779853d023fe 100644
  	regmap_update_bits(scodec->regmap, SUN8I_SYS_SR_CTRL,
  			   SUN8I_SYS_SR_CTRL_AIF1_FS_MASK,
  			   sample_rate << SUN8I_SYS_SR_CTRL_AIF1_FS);
+ 
 -- 
 2.26.2
 
