@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1625D280727
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD90280729
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 20:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgJASqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 14:46:11 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:52140 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729412AbgJASqH (ORCPT
+        id S1730150AbgJASq3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 1 Oct 2020 14:46:29 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:40002 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729412AbgJASq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:46:07 -0400
-Received: by mail-io1-f77.google.com with SMTP id o7so4272553iof.18
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 11:46:05 -0700 (PDT)
+        Thu, 1 Oct 2020 14:46:28 -0400
+Received: by mail-ej1-f66.google.com with SMTP id p15so9571114ejm.7;
+        Thu, 01 Oct 2020 11:46:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=QPaq3GozfGEmcVEfcZ9p2WifWSbg3p4JEASOWyQUygM=;
-        b=cqeVkXAF+uEK3TYp9QFpFT45pPszoxZdJ2VSo1uNgECoqmwgQ+XVr4hnUtQzLv96WQ
-         ckk9K8VZ9G6y3Zf6eoXeI+0N7nClitKhAhBt/Sx/sqk0FpoVSoVmA1U/cmeMUFsepmML
-         ndMStU71tk1nw9J4MFQOB9YdH7cSsEw65M+aBAA2nYwsaAtAQgU7BSTB4i1vkOZHhxCr
-         63YxMRfDDq+hNtPA9dN+6b3r3t+pbzXLGp2zihw4xeVdr9AABKW0gQwwklai3Woyke+n
-         YFP7NC9pfJuAu7zhxUcYGfn99UEAvoG+MJR3y7jbJy3XoQMlLfwGl5mzt512Gu4tYU/B
-         4z/Q==
-X-Gm-Message-State: AOAM532A/1kMA+0sVJ6STUlfeiBTXt45KfYPbhRF1+LXhfedjTCqhJU2
-        SrlyAvx7FgHH5YbmutMYMSH0L8jGBaxV+AI7yNa/svIfxd8H
-X-Google-Smtp-Source: ABdhPJxZy8JSQ93jW1Afj+8O1MF5YFh8NRykTOGDo1ivTsoY0Wr90IQy946nezTTOaKxADBqzM6N18M0Cfj/CgmkiynfD3dUBzzM
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=HFk3PWF1fIGIhUtct1F8xNYI7rsUDHRDpgCUN1z73eg=;
+        b=uhAB1zfEF0jswRt/exCSytN09O4n9sCVl9VY6DIutkWFZJq3gy32hhhkujlyhDrfE1
+         sNv7SJDwRW830cvLB1ZAXXNpgkTDNNHDnNYnce5qfITp3PbMA1JoPyEGJHSgYCRrLwg5
+         jJhmF2hkB6ny7OfE+frERXPEzYDezvkU0sqGagw+AZRbG4bICpTmI9Zr3MnbYjrMXn4D
+         5H9+t6i1bKeoiTfgVr+s8iNZILzK2+jvEFDLVsN3U9fiBnid2WQCsGPMVeclUBs6DGMd
+         cA6qDabDec5QCKsz4uso//p7An3XkNUcB42wvsHv/WqOCevK01YJ12WPbx0TOzxRXNJf
+         f4PA==
+X-Gm-Message-State: AOAM531v0JZwYADqULpc/ark8n8M/9QtAyRzd2sMojPL8mCdsn9MqaXQ
+        E+Ztq8tWPopi3GAwOoOWS+jT601p6sA=
+X-Google-Smtp-Source: ABdhPJyeKTvyYO11tt31HJrJV0L6AW9Pt8JiYnvg8TeyVbTbBaZOXNK9xbMGTIHiaqj+aaQ6Obe88Q==
+X-Received: by 2002:a17:906:4bc4:: with SMTP id x4mr9885165ejv.240.1601577986436;
+        Thu, 01 Oct 2020 11:46:26 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id e9sm4649852edu.49.2020.10.01.11.46.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 01 Oct 2020 11:46:25 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 20:46:19 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com
+Subject: Re: [PATCH v2] ARM: dts: exynos: Add a placeholder for a MAC address
+Message-ID: <20201001184619.GA14823@kozik-lap>
+References: <20200930143151.23961-1-l.stelmach@samsung.com>
+ <CGME20201001135310eucas1p273e3799cec0ebb29891c1b7db38685e0@eucas1p2.samsung.com>
+ <20201001135254.28178-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7005:: with SMTP id l5mr6586653ioc.10.1601577964783;
- Thu, 01 Oct 2020 11:46:04 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 11:46:04 -0700
-In-Reply-To: <0000000000008fddd805adc8c56f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000abcd5505b0a06d96@google.com>
-Subject: Re: general protection fault in rt6_fill_node
-From:   syzbot <syzbot+81af6e9b3c4b8bc874f8@syzkaller.appspotmail.com>
-To:     John.Linn@xilinx.com, a@unstable.cc, anant.thazhemadam@gmail.com,
-        andriin@fb.com, anirudh@xilinx.com, ast@kernel.org,
-        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
-        hancock@sedsystems.ca, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, michal.simek@xilinx.com,
-        netdev@vger.kernel.org, nikolay@cumulusnetworks.com,
-        songliubraving@fb.com, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201001135254.28178-1-l.stelmach@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Oct 01, 2020 at 03:52:54PM +0200, Łukasz Stelmach wrote:
+> Add a placeholder for a MAC address. A bootloader may fill it
+> to set the MAC address and override EEPROM settings.
+> 
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+> Changes in v2:
+>  - use local-mac-address and leave mac-address to be added by a bootloader
+> 
+>  arch/arm/boot/dts/exynos5422-odroidxu3.dts | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 
-commit eeaac3634ee0e3f35548be35275efeca888e9b23
-Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Date:   Sat Aug 22 12:06:36 2020 +0000
+Thanks, applied.
 
-    net: nexthop: don't allow empty NHA_GROUP
+Best regards,
+Krzysztof
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12beed5b900000
-start commit:   c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
-dashboard link: https://syzkaller.appspot.com/bug?extid=81af6e9b3c4b8bc874f8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ff8539900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143f3a96900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: nexthop: don't allow empty NHA_GROUP
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
