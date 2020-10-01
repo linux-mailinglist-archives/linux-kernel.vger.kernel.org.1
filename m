@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D46E28094F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D5228094D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730017AbgJAVRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:17:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27026 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726581AbgJAVRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:17:35 -0400
-IronPort-SDR: iCt5F0Xm6lIHn6yEIprmYl5tUHpBKlAcsLwK+UA6y10zs4z1NfzS9sW/xVOI9iakWA0XFfWptU
- 646q3GyIgD/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="162916104"
-X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
-   d="scan'208";a="162916104"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 14:17:32 -0700
-IronPort-SDR: NTPEIf6h0orzGEwpntApAf89eHeQjG5N6MPpkc940fPwHIcIYufK6slFswvQSBoqe3Gt6TycFe
- Wr3h8ifvzdGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
-   d="scan'208";a="352109940"
-Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
-  by orsmga007.jf.intel.com with ESMTP; 01 Oct 2020 14:17:30 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel: Check perf metrics feature for each CPU
-Date:   Thu,  1 Oct 2020 14:17:11 -0700
-Message-Id: <20201001211711.25708-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727807AbgJAVRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:17:21 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:56506 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbgJAVRV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:17:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hefvlh0ArBsIJRrdxVb8ZMvmEzM/8dfDueDLa3SqvBE=; b=II+kAhiqMFp53BkZhEKEIAZOGX
+        Hf5R/UxJcuMpM1xKOtQiVLnXgHKpY3ATzLuzklegYpm8Lzd1IU8qbxICyHmjkg0Qz2qpCS1bBEP8S
+        HH28gugNZV5UTgyncQIejXImuXayo+8VmT10XfdhXQI5u8R5f9WbfEl5R5I0IT8rf6srCIXu4FuU4
+        LkJGSFOsfVVrzpphiDb6nyv0gbGpMmiFMBmRQXZ8/pSNuY7NINGyaZXcwsZgqVEvlUOKzVawggh7A
+        tut4634lIqWIr54WPvoIxDjlbPT9ChDuA/3NfJEUjDRYWNClm+jYg8mM1rvruUCkLWbKSnLBSv76k
+        bKlc7H2w==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kO5wx-0005DJ-Nq; Thu, 01 Oct 2020 15:17:20 -0600
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <b620cd26-91cc-b564-dbb7-9c7381263f46@deltatee.com>
+Date:   Thu, 1 Oct 2020 15:17:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, Intel-gfx@lists.freedesktop.org, ashok.raj@intel.com, tvrtko.ursulin@linux.intel.com, hch@infradead.org, dwmw2@infradead.org, murphyt7@tcd.ie, joro@8bytes.org, baolu.lu@linux.intel.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.2 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.2
+Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
+ api
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Hi Lu,
 
-It might be possible that different CPUs have different CPU metrics on a
-platform. In this case, writing the GLOBAL_CTRL_EN_PERF_METRICS bit to
-the GLOBAL_CTRL register of a CPU, which doesn't support the TopDown
-perf metrics feature, causes MSR access error.
+On 2020-09-27 12:34 a.m., Lu Baolu wrote:
+> Hi,
+> 
+> The previous post of this series could be found here.
+> 
+> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/
+> 
+> This version introduce a new patch [4/7] to fix an issue reported here.
+> 
+> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/
+> 
+> There aren't any other changes.
+> 
+> Please help to test and review.
 
-Current TopDown perf metrics feature is enumerated using the boot CPU's
-PERF_CAPABILITIES MSR. The MSR only indicates the boot CPU supports this
-feature.
+I've tested this patchset on my Sandy Bridge machine and found no issues (while including a 
+patch to ioat I've sent to that maintainer).
 
-Check the PERF_CAPABILITIES MSR for each CPU. If any CPU doesn't support
-the perf metrics feature, disable the feature globally.
+Tested-By: Logan Gunthorpe <logang@deltatee.com>
 
-Fixes: 59a854e2f3b9 ("perf/x86/intel: Support TopDown metrics on Ice Lake")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Thanks,
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 4def6fa63875..4d70c7d6c750 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4083,6 +4083,17 @@ static void intel_pmu_cpu_starting(int cpu)
- 	if (x86_pmu.counter_freezing)
- 		enable_counter_freeze();
- 
-+	/* Disable perf metrics if any added CPU doesn't support it. */
-+	if (x86_pmu.intel_cap.perf_metrics) {
-+		union perf_capabilities perf_cap;
-+
-+		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap.capabilities);
-+		if (!perf_cap.perf_metrics) {
-+			x86_pmu.intel_cap.perf_metrics = 0;
-+			x86_pmu.intel_ctrl &= ~(1ULL << GLOBAL_CTRL_EN_PERF_METRICS);
-+		}
-+	}
-+
- 	if (!cpuc->shared_regs)
- 		return;
- 
--- 
-2.17.1
-
+Logan
