@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2D2280033
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8775E28002F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732235AbgJANbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:31:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20559 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731993AbgJANbk (ORCPT
+        id S1732301AbgJANar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:30:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35794 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731993AbgJANar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:31:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601559099;
+        Thu, 1 Oct 2020 09:30:47 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601559045;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=bSNYRgr1s5QShIox/qdOqO/zSDA77sqfVML7LKhu+Eo=;
-        b=PultOSXS4y7VxEG32PG+qWce8gWCR1xYYf9kn71pNy86luMjAC4UsLJyB+cJI3pjO+lOI9
-        5GOBg6t7ZMB26a9Miu+v2zaiejjYNbTbKK3zfh8G0WCcha0QLT3Yw601IR4FlkzlBnM2tY
-        s2O2oQOapAdtdobPdiqr3of49p72kds=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-spdIK0nJOseCc1HGKUT1SQ-1; Thu, 01 Oct 2020 09:31:37 -0400
-X-MC-Unique: spdIK0nJOseCc1HGKUT1SQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D2A58D4EA0;
-        Thu,  1 Oct 2020 13:31:36 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-115-202.rdu2.redhat.com [10.10.115.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 00BCC55762;
-        Thu,  1 Oct 2020 13:31:35 +0000 (UTC)
-From:   Qian Cai <cai@redhat.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH -next] pci: Fix -Wunused-function warnings for pci_ltr_*
-Date:   Thu,  1 Oct 2020 09:28:49 -0400
-Message-Id: <20201001132850.7630-1-cai@redhat.com>
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=jy07RVIIzkN80NqzGSqpiv3KKe434lq/SramsDIUsEA=;
+        b=OYBR9cCSSEtH8Opt4cY8XrTU2qiXmAHkcdrtdud5C7L/McKDQOSYRHJNfeYk1o22xHdj6j
+        sWlZg6yXyqo3R9TqmKThT4nkgheruiiJvcffrVDepRCJZrORf6a/GYvzDn8NB8eiz823qK
+        XWi6SeEDwEt07Fy6AjYiq8F7CYPsEMt3TAtWieog9AIBJGq0VpG24LGQLn1F1nfdl5i+wn
+        XkzSqB/4DrTHBwY6W3/EilblrRHz70h19X983dEZpe1WLVmEupCxXCp0Lm9OX4QZmNaCZe
+        DCnImOmdaDwrTD1H19YIG3oQ9fGnuRVh1TCGLQ2zLx+kAVlW6kVjzgBEjOvyaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601559045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=jy07RVIIzkN80NqzGSqpiv3KKe434lq/SramsDIUsEA=;
+        b=u3S4S/wYW2p90qulUUuhcPkaj78LJ48UHJ6qCmUh6v/SeUSRhBKUfB7Hlxi6KHmy9TQcp9
+        NKP/7R40ZLOQs2AQ==
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: mb2q experience and couple issues
+In-Reply-To: <87sgayfgwz.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 01 Oct 2020 15:30:45 +0200
+Message-ID: <87mu16f4ze.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_PCIEASPM=n,
+On Thu, Oct 01 2020 at 11:13, Thomas Gleixner wrote:
+> Yes, it's ugly and I haven't figured out a proper way to deal with
+> that. There are quite some mbox formats out there and they all are
+> incompatible with each other and all of them have different horrors.
+>
+> Let me think about it.
 
-drivers/pci/pci.c:3098:12: warning: 'pci_ltr_encode' defined but not used [-Wunused-function]
- static u16 pci_ltr_encode(u64 val)
-            ^~~~~~~~~~~~~~
-drivers/pci/pci.c:3076:12: warning: 'pci_ltr_decode' defined but not used [-Wunused-function]
- static u64 pci_ltr_decode(u16 latency)
-            ^~~~~~~~~~~~~~
+I've pushed out an update to
 
-Fixes: 5ccf2a6e483f ("PCI/ASPM: Add support for LTR _DSM")
-Signed-off-by: Qian Cai <cai@redhat.com>
----
- drivers/pci/pci.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+     git://git.kernel.org/pub/scm/linux/kernel/git/tglx/quilttools.git
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index db8feb2033e7..e96e5933b371 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3069,6 +3069,7 @@ void pci_pm_init(struct pci_dev *dev)
- 		dev->imm_ready = 1;
- }
- 
-+#ifdef CONFIG_PCIEASPM
- /**
-  * pci_ltr_decode - Decode the latency to a value in ns
-  * @latency: latency register value according to PCIe r5.0, sec 6.18, 7.8.2
-@@ -3113,7 +3114,6 @@ static u16 pci_ltr_encode(u64 val)
-  */
- void pci_ltr_init(struct pci_dev *dev)
- {
--#ifdef CONFIG_PCIEASPM
- 	int ltr;
- 	struct pci_dev *bridge;
- 	u64 snoop = 0, nosnoop = 0;
-@@ -3150,9 +3150,15 @@ void pci_ltr_init(struct pci_dev *dev)
- 		pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT,
- 				      nosnoop_enc);
- 	}
--#endif
- }
- 
-+#else
-+void pci_ltr_init(struct pci_dev *dev)
-+{
-+}
-+
-+#endif
-+
- static unsigned long pci_ea_flags(struct pci_dev *dev, u8 prop)
- {
- 	unsigned long flags = IORESOURCE_PCI_FIXED | IORESOURCE_PCI_EA_BEI;
--- 
-2.28.0
+which contains a few other things I was sitting on for a while.
 
+The mailbox parser is now manual and tries for work around that
+formatting nonsense with some sloppy heuristics which should be good
+enough for kernel development. Having a valid unixfrom line in the
+mail body of a patch is very unlikely :)
+
+Thanks,
+
+        tglx
