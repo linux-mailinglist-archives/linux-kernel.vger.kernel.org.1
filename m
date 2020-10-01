@@ -2,244 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B51A2803D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98702803D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732798AbgJAQXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732610AbgJAQXj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:23:39 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6155C0613D0;
-        Thu,  1 Oct 2020 09:23:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so4985951pfa.10;
-        Thu, 01 Oct 2020 09:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aWqjuVX/rYSbvd6dEA6iMdBuygpme6QfEfawDQ8lNpM=;
-        b=MIk9wjRDQIvMMCTAQK1l3SnKnzKyWfoGkmhjMIT8+69QOUyRwnKh4x1GPXiq3Pakit
-         ReekxqlmTYuyQAgVnoeOlClNtXApk0YsVVFaiTvK/nX1kIVhk6K9HRPwIUxcy+U5O0FG
-         BHg67RCo4Rh7o4n4sPphlIlgx44pyf6oXO5OmlLcqHfJoxau7bu+BYOWaBVUAzoeQH3g
-         qADoXxQjddREvN6dwvrYoUaqgEhzaxZz6A47o6OUHcDfjZO9zvq9sRP0M4tlZqVkSuup
-         l7e5Ws/tUxQ9gujK2R3pl5qKHJTdoPOkZjpMjj5mTHpH6E+q24qtLD8DVViVzPQehb8O
-         X0Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aWqjuVX/rYSbvd6dEA6iMdBuygpme6QfEfawDQ8lNpM=;
-        b=oIy3nwUWPQ507LQ4xQobBLSEsd3/LDlLOyomGD6nR1CvBo56uwvVs6akGyiohBx+2s
-         sW6RylSphYM4jh+uUaiB6a/LdHCWgNqLTs7sQwj/nLod3O0Iwzyt+QxX1iJGX0ah+Rws
-         qoPaLB0/0b+YpgmP/VqRj31gYmswl/rVdHTBM0BO7BHnDvEJBnZ/MqRNd2Ie1K7yCvP3
-         TNiq356BU29SkNn30h2ThWipaNrZlS5BY64RruJ1A9XKswrlEU0N03ckkJ0fYdIft27i
-         lbc0yiT4I/DYO8M5h5xspNjlcitKJcTFB9DhpZiK9obQQ8i9O+mAuO/nMrIKFao7/eqq
-         UfOw==
-X-Gm-Message-State: AOAM531Chmq29PYqlO24RK2WYuwP9UJUMX7xvqdddoy2NaHhDmawgf4r
-        MObpsUSb8aODz4mB8mHmbvfCKznpM+ckOg6bEjQ=
-X-Google-Smtp-Source: ABdhPJxFNenEZvxR/hRDYbmiha04TRCRLTyA6smfQ2mY7RLaJ1atSCpJvD/PdJbyLkf6VB6ZL4kEpmeKVbXqy6fNr+w=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr6720220pgj.4.1601569419297;
- Thu, 01 Oct 2020 09:23:39 -0700 (PDT)
+        id S1732806AbgJAQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:24:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13613 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732342AbgJAQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:24:12 -0400
+IronPort-SDR: xnUGB04Rr1mJ7iPNYeeoN70wC0kR0XxS3RkusPWrx//xrpzBTZbtJd2Xqa0dlWq5BuzKsd5fhE
+ g5zWMkqfxIUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="224387186"
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="224387186"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 09:24:10 -0700
+IronPort-SDR: H+s1QR7RUd4qMX6wRCE6+yHY6AABK+U4nh24a0o63fyId6CoSGpXuHCzGK9QyOUq44ZQYc7910
+ WUAZb7ROtsVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
+   d="scan'208";a="351193383"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 01 Oct 2020 09:24:04 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 01 Oct 2020 19:24:03 +0300
+Date:   Thu, 1 Oct 2020 19:24:03 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     jani.nikula@linux.intel.com,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Imre Deak <imre.deak@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6] drm/i915: Init lspcon after HPD in intel_dp_detect()
+Message-ID: <20201001162403.GT6112@intel.com>
+References: <20200610075542.12882-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-References: <20201001014250.26987-1-david.e.box@linux.intel.com> <20201001014250.26987-4-david.e.box@linux.intel.com>
-In-Reply-To: <20201001014250.26987-4-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 1 Oct 2020 19:23:20 +0300
-Message-ID: <CAHp75VdkjFvaGvw=a9kMO3ZW0+t0AvPDGySNXW6Nbi=YZkEcXg@mail.gmail.com>
-Subject: Re: [PATCH V7 3/5] platform/x86: Intel PMT class driver
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alexey.budankov@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200610075542.12882-1-kai.heng.feng@canonical.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 4:43 AM David E. Box <david.e.box@linux.intel.com> wrote:
->
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->
-> Intel Platform Monitoring Technology is meant to provide a common way to
-> access telemetry and system metrics.
->
-> Register mappings are not provided by the driver. Instead, a GUID is read
-> from a header for each endpoint. The GUID identifies the device and is to
-> be used with an XML, provided by the vendor, to discover the available set
-> of metrics and their register mapping.  This allows firmware updates to
-> modify the register space without needing to update the driver every time
-> with new mappings. Firmware writes a new GUID in this case to specify the
-> new mapping.  Software tools with access to the associated XML file can
-> then interpret the changes.
+On Wed, Jun 10, 2020 at 03:55:10PM +0800, Kai-Heng Feng wrote:
+> On HP 800 G4 DM, if HDMI cable isn't plugged before boot, the HDMI port
+> becomes useless and never responds to cable hotplugging:
+> [    3.031904] [drm:lspcon_init [i915]] *ERROR* Failed to probe lspcon
+> [    3.031945] [drm:intel_ddi_init [i915]] *ERROR* LSPCON init failed on port D
+> 
+> Seems like the lspcon chip on the system only gets powered after the
+> cable is plugged.
+> 
+> Consilidate lspcon_init() into lspcon_resume() to dynamically init
+> lspcon chip, and make HDMI port work.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v6:
+>  - Rebase on latest for-linux-next.
+> 
+> v5:
+>  - Consolidate lspcon_resume() with lspcon_init().
+>  - Move more logic into lspcon code.
+> 
+> v4:
+>  - Trust VBT in intel_infoframe_init().
+>  - Init lspcon in intel_dp_detect().
+> 
+> v3:
+>  - Make sure it's handled under long HPD case.
+> 
+> v2: 
+>  - Move lspcon_init() inside of intel_dp_hpd_pulse().
 
-Where one may find a database of these reserved GUIDs / XMLs?
-How do you prevent a chaos which happens with other registries?
+Hoisted the changelog above --- where it belongs in drm land,
+amended with
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/203
+and pushed the patch to dinq.
 
-> The module manages access to all Intel PMT endpoints on a system,
-> independent of the device exporting them. It creates an intel_pmt class to
-> manage the devices. For each telemetry endpoint, sysfs files provide GUID
-> and size information as well as a pointer to the parent device the
-> telemetry came from. Software may discover the association between
-> endpoints and devices by iterating through the list in sysfs, or by looking
-> for the existence of the class folder under the device of interest.  A
-> binary sysfs attribute of the same name allows software to then read or map
-> the telemetry space for direct access.
+Thanks, and sorry for the horrendous latency.
 
-What are the security implications by direct access?
+PS. This will cause some headache for Uma's lspcon HDR stuff, but
+so be it.
 
-...
-
-> +static const struct pci_device_id pmt_telem_early_client_pci_ids[] = {
-> +       { PCI_VDEVICE(INTEL, 0x9a0d) }, /* TGL */
-> +       { }
-> +};
-> +bool intel_pmt_is_early_client_hw(struct device *dev)
+> 
+>  drivers/gpu/drm/i915/display/intel_ddi.c    | 19 +------
+>  drivers/gpu/drm/i915/display/intel_dp.c     | 10 ++--
+>  drivers/gpu/drm/i915/display/intel_hdmi.c   |  3 +-
+>  drivers/gpu/drm/i915/display/intel_lspcon.c | 63 ++++++++++++---------
+>  drivers/gpu/drm/i915/display/intel_lspcon.h |  3 +-
+>  5 files changed, 43 insertions(+), 55 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+> index aa22465bb56e..af755b1aa24b 100644
+> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+> @@ -4805,7 +4805,7 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>  {
+>  	struct intel_digital_port *intel_dig_port;
+>  	struct intel_encoder *encoder;
+> -	bool init_hdmi, init_dp, init_lspcon = false;
+> +	bool init_hdmi, init_dp;
+>  	enum phy phy = intel_port_to_phy(dev_priv, port);
+>  
+>  	init_hdmi = intel_bios_port_supports_dvi(dev_priv, port) ||
+> @@ -4819,7 +4819,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>  		 * is initialized before lspcon.
+>  		 */
+>  		init_dp = true;
+> -		init_lspcon = true;
+>  		init_hdmi = false;
+>  		drm_dbg_kms(&dev_priv->drm, "VBT says port %c has lspcon\n",
+>  			    port_name(port));
+> @@ -4904,22 +4903,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
+>  			goto err;
+>  	}
+>  
+> -	if (init_lspcon) {
+> -		if (lspcon_init(intel_dig_port))
+> -			/* TODO: handle hdmi info frame part */
+> -			drm_dbg_kms(&dev_priv->drm,
+> -				    "LSPCON init success on port %c\n",
+> -				    port_name(port));
+> -		else
+> -			/*
+> -			 * LSPCON init faied, but DP init was success, so
+> -			 * lets try to drive as DP++ port.
+> -			 */
+> -			drm_err(&dev_priv->drm,
+> -				"LSPCON init failed on port %c\n",
+> -				port_name(port));
+> -	}
+> -
+>  	if (INTEL_GEN(dev_priv) >= 11) {
+>  		if (intel_phy_is_tc(dev_priv, phy))
+>  			intel_dig_port->connected = intel_tc_port_connected;
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index ed9e53c373a7..398a104158a8 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -5962,15 +5962,14 @@ static enum drm_connector_status
+>  intel_dp_detect_dpcd(struct intel_dp *intel_dp)
+>  {
+>  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
+> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+>  	u8 *dpcd = intel_dp->dpcd;
+>  	u8 type;
+>  
+>  	if (WARN_ON(intel_dp_is_edp(intel_dp)))
+>  		return connector_status_connected;
+>  
+> -	if (lspcon->active)
+> -		lspcon_resume(lspcon);
+> +	lspcon_resume(dig_port);
+>  
+>  	if (!intel_dp_get_dpcd(intel_dp))
+>  		return connector_status_disconnected;
+> @@ -7056,14 +7055,13 @@ void intel_dp_encoder_reset(struct drm_encoder *encoder)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
+>  	struct intel_dp *intel_dp = enc_to_intel_dp(to_intel_encoder(encoder));
+> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
+> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
+>  	intel_wakeref_t wakeref;
+>  
+>  	if (!HAS_DDI(dev_priv))
+>  		intel_dp->DP = intel_de_read(dev_priv, intel_dp->output_reg);
+>  
+> -	if (lspcon->active)
+> -		lspcon_resume(lspcon);
+> +	lspcon_resume(dig_port);
+>  
+>  	intel_dp->reset_link_params = true;
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> index 010f37240710..643ad2127931 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> @@ -3155,7 +3155,8 @@ void intel_infoframe_init(struct intel_digital_port *intel_dig_port)
+>  		intel_dig_port->set_infoframes = g4x_set_infoframes;
+>  		intel_dig_port->infoframes_enabled = g4x_infoframes_enabled;
+>  	} else if (HAS_DDI(dev_priv)) {
+> -		if (intel_dig_port->lspcon.active) {
+> +		if (intel_bios_is_lspcon_present(dev_priv,
+> +						 intel_dig_port->base.port)) {
+>  			intel_dig_port->write_infoframe = lspcon_write_infoframe;
+>  			intel_dig_port->read_infoframe = lspcon_read_infoframe;
+>  			intel_dig_port->set_infoframes = lspcon_set_infoframes;
+> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+> index 6ff7b226f0a1..e3dde4c25604 100644
+> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
+> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+> @@ -525,44 +525,17 @@ u32 lspcon_infoframes_enabled(struct intel_encoder *encoder,
+>  	return 0;
+>  }
+>  
+> -void lspcon_resume(struct intel_lspcon *lspcon)
+> -{
+> -	enum drm_lspcon_mode expected_mode;
+> -
+> -	if (lspcon_wake_native_aux_ch(lspcon)) {
+> -		expected_mode = DRM_LSPCON_MODE_PCON;
+> -		lspcon_resume_in_pcon_wa(lspcon);
+> -	} else {
+> -		expected_mode = DRM_LSPCON_MODE_LS;
+> -	}
+> -
+> -	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+> -		return;
+> -
+> -	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+> -		DRM_ERROR("LSPCON resume failed\n");
+> -	else
+> -		DRM_DEBUG_KMS("LSPCON resume success\n");
+> -}
+> -
+>  void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon)
+>  {
+>  	lspcon_wait_mode(lspcon, DRM_LSPCON_MODE_PCON);
+>  }
+>  
+> -bool lspcon_init(struct intel_digital_port *intel_dig_port)
+> +static bool lspcon_init(struct intel_digital_port *intel_dig_port)
+>  {
+>  	struct intel_dp *dp = &intel_dig_port->dp;
+>  	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+> -	struct drm_device *dev = intel_dig_port->base.base.dev;
+> -	struct drm_i915_private *dev_priv = to_i915(dev);
+>  	struct drm_connector *connector = &dp->attached_connector->base;
+>  
+> -	if (!HAS_LSPCON(dev_priv)) {
+> -		DRM_ERROR("LSPCON is not supported on this platform\n");
+> -		return false;
+> -	}
+> -
+>  	lspcon->active = false;
+>  	lspcon->mode = DRM_LSPCON_MODE_INVALID;
+>  
+> @@ -586,3 +559,37 @@ bool lspcon_init(struct intel_digital_port *intel_dig_port)
+>  	DRM_DEBUG_KMS("Success: LSPCON init\n");
+>  	return true;
+>  }
+> +
+> +void lspcon_resume(struct intel_digital_port *intel_dig_port)
 > +{
-> +       struct pci_dev *parent = to_pci_dev(dev->parent);
+> +	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
+> +	struct drm_device *dev = intel_dig_port->base.base.dev;
+> +	struct drm_i915_private *dev_priv = to_i915(dev);
+> +	enum drm_lspcon_mode expected_mode;
 > +
-> +       return !!pci_match_id(pmt_telem_early_client_pci_ids, parent);
+> +	if (!intel_bios_is_lspcon_present(dev_priv, intel_dig_port->base.port))
+> +		return;
+> +
+> +	if (!lspcon->active) {
+> +		if (!lspcon_init(intel_dig_port)) {
+> +			DRM_ERROR("LSPCON init failed on port %c\n",
+> +				  port_name(intel_dig_port->base.port));
+> +			return;
+> +		}
+> +	}
+> +
+> +	if (lspcon_wake_native_aux_ch(lspcon)) {
+> +		expected_mode = DRM_LSPCON_MODE_PCON;
+> +		lspcon_resume_in_pcon_wa(lspcon);
+> +	} else {
+> +		expected_mode = DRM_LSPCON_MODE_LS;
+> +	}
+> +
+> +	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
+> +		return;
+> +
+> +	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
+> +		DRM_ERROR("LSPCON resume failed\n");
+> +	else
+> +		DRM_DEBUG_KMS("LSPCON resume success\n");
 > +}
-> +EXPORT_SYMBOL_GPL(intel_pmt_is_early_client_hw);
-
-What is this and why is it in the class driver?
-
-> +static ssize_t
-> +intel_pmt_read(struct file *filp, struct kobject *kobj,
-> +              struct bin_attribute *attr, char *buf, loff_t off,
-> +              size_t count)
-> +{
-> +       struct intel_pmt_entry *entry = container_of(attr,
-> +                                                    struct intel_pmt_entry,
-> +                                                    pmt_bin_attr);
-
-> +       if (off < 0)
-> +               return -EINVAL;
-
-Is this real or theoretical?
-
-> +       if (count)
-
-Useless.
-
-> +               memcpy_fromio(buf, entry->base + off, count);
-> +
-> +       return count;
-> +}
-
-...
-
-> +       psize = (PFN_UP(entry->base_addr + entry->size) - pfn) * PAGE_SIZE;
-
-PFN_PHYS(PFN_UP(...)) ?
-
-...
-
-> +static struct attribute *intel_pmt_attrs[] = {
-> +       &dev_attr_guid.attr,
-> +       &dev_attr_size.attr,
-> +       &dev_attr_offset.attr,
-> +       NULL
-> +};
-
-> +
-
-Unneeded blank line.
-
-> +ATTRIBUTE_GROUPS(intel_pmt);
-
-...
-
-> +       /* if size is 0 assume no data buffer, so no file needed */
-> +       if (!entry->size)
-> +               return 0;
-
-Hmm... But presence of the file is also an information that might be
-useful for user, no?
-
-...
-
-> +       entry->base = devm_ioremap_resource(dev, &res);
-
-(1)
-
-> +       if (IS_ERR(entry->base)) {
-
-> +               dev_err(dev, "Failed to ioremap device region\n");
-
-Duplicates core message.
-
-> +               ret = -EIO;
-
-Why shadowing real error code?
-
-> +               goto fail_ioremap;
-> +       }
-
-> +       iounmap(entry->base);
-
-This is interesting. How do you avoid double unmap with (1)?
-
-> +#include <linux/platform_device.h>
-> +#include <linux/xarray.h>
-> +
-> +/* PMT access types */
-> +#define ACCESS_BARID           2
-> +#define ACCESS_LOCAL           3
-> +
-> +/* PMT discovery base address/offset register layout */
-> +#define GET_BIR(v)             ((v) & GENMASK(2, 0))
-> +#define GET_ADDRESS(v)         ((v) & GENMASK(31, 3))
-
-bits.h
-
-> +struct intel_pmt_entry {
-> +       struct bin_attribute    pmt_bin_attr;
-> +       struct kobject          *kobj;
-> +       void __iomem            *disc_table;
-> +       void __iomem            *base;
-> +       unsigned long           base_addr;
-> +       size_t                  size;
-
-> +       u32                     guid;
-
-types.h
-
-> +       int                     devid;
-> +};
-
-> +static inline int
-> +intel_pmt_ioremap_discovery_table(struct intel_pmt_entry *entry,
-> +                                 struct platform_device *pdev,  int i)
-> +{
-
-> +       entry->disc_table = devm_platform_ioremap_resource(pdev, i);
-
-io.h ?
-
-> +
-> +       return PTR_ERR_OR_ZERO(entry->disc_table);
-
-err.h
-
-> +}
-
-The rule of thumb is to include all headers that you have direct users of.
-Then you may optimize by removing those which are guaranteed to be
-included by others, like
-bits.h always included by bitops.h.
-
+> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.h b/drivers/gpu/drm/i915/display/intel_lspcon.h
+> index 37cfddf8a9c5..169db35db13e 100644
+> --- a/drivers/gpu/drm/i915/display/intel_lspcon.h
+> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.h
+> @@ -15,8 +15,7 @@ struct intel_digital_port;
+>  struct intel_encoder;
+>  struct intel_lspcon;
+>  
+> -bool lspcon_init(struct intel_digital_port *intel_dig_port);
+> -void lspcon_resume(struct intel_lspcon *lspcon);
+> +void lspcon_resume(struct intel_digital_port *intel_dig_port);
+>  void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon);
+>  void lspcon_write_infoframe(struct intel_encoder *encoder,
+>  			    const struct intel_crtc_state *crtc_state,
+> -- 
+> 2.17.1
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Ville Syrjälä
+Intel
