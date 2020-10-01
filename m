@@ -2,107 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F6E2801A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82192801BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732470AbgJAOuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732020AbgJAOuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:50:24 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1732468AbgJAO4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:56:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49482 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732299AbgJAO4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:56:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601564208;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UhWKlTPk8iTygoL+cIpY5puUEyMwZ9rkuaRoxqem9NU=;
+        b=BXbSazKa5etZgjgU9Q+SiNkOwtPAleLyDRR1Cd9S0jy6iMtKjHzJU8X7Kp/YfVR5JaWrSH
+        b+aVU82AvPByi9FFoIFpvf9wgM8JlWzJhB4LXKopD0TXW3awL/axMkvcVBtr8aC9UvHgH5
+        rpqEjOTTitjPkRdiSSgBp04yu3/NYUY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-5VZJD73uPs2qmN9yMrG81w-1; Thu, 01 Oct 2020 10:56:46 -0400
+X-MC-Unique: 5VZJD73uPs2qmN9yMrG81w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57372207DE;
-        Thu,  1 Oct 2020 14:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601563823;
-        bh=t8pOQPAK1E1iVKSe7VQdeI0ZfBGmMSWbeGcL4rn3VQ0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gGUnxK0b49/8l/Ban0p0C38wTdm7W6PISlJuygjueQPbWtEPIqAAwuAvQb9tUuMfB
-         Lc/AH8TjKM9lM8FQRlHBrdvbwNUG3zSIAQaHAMlU+Ls0GijEe150gfUm4z7O0r0iA5
-         caldDvo0ksv9T0h4JmNunFORCh9CkV/UtXYo5EW4=
-Date:   Thu, 1 Oct 2020 09:56:08 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] x86/uv/time: Replace one-element array and save
- heap space
-Message-ID: <20201001145608.GA10204@embeddedor>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 707A7873115;
+        Thu,  1 Oct 2020 14:56:45 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8DA385C1CF;
+        Thu,  1 Oct 2020 14:56:44 +0000 (UTC)
+Subject: [PATCH net-next 00/23] rxrpc: Fixes and preparation for RxGK
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 01 Oct 2020 15:56:43 +0100
+Message-ID: <160156420377.1728886.5309670328610130816.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
 
-struct uv_rtc_timer_head contains a one-element array cpu[1].
+Here are some fixes for problems encountered whilst writing the RxGK
+security class (this will allow AF_RXRPC to use GSSAPI-negotiated tokens
+and better crypto).  The RxGK security class is not included in this
+patchset.
 
-Switch it to a flexible array and use the struct_size() helper to
-calculate the allocation size. Also, save some heap space in the
-process[3].
+Firstly, there's a keyrings patch to provide the original key description,
+as provided to add_key(), to the preparser so that it can interpret the
+content on that basis.  Unfortunately, the rxrpc_s key type wasn't written
+to interpret its payload as anything other than a string of bytes
+comprising a key, but for RxGK, more information is required as multiple
+Kerberos enctypes are supported.
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9-rc1/process/deprecated.html#zero-length-and-one-element-arrays
-[3] https://lore.kernel.org/lkml/20200518190114.GA7757@embeddedor/
+Secondly, there's a bunch of rxrpc fixes:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/5f75bc0a.rQcNS6620b2eA74S%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+ (1) Fix bundle refcounting for exclusive connections.
+
+ (2) Fix the xdr encoding of the contents read from an rxrpc key.
+
+ (3) Fix a BUG() for a unsupported encoding type.
+
+ (4) Fix missing _bh lock annotations.
+
+ (5) Fix the loss of deferred final ACKs on socket shutdown.
+
+ (6) Fix acceptance handling for an incoming call where the incoming call
+     is encrypted.
+
+ (7) The server token keyring isn't network namespaced - it belongs to the
+     server, so there's no need.
+
+ (8) The default data packet size alignment should be 1, not 4.  It only
+     needs to be something other than 1 if there are crypto requirements.
+
+Thirdly, there are some preparatory changes:
+
+ (1) Remove the rxk5 security class key support.  This class never went
+     anywhere and is now defunct.  RxGK should be used instead.
+
+ (2) Support multiple tokens in a single key, provided they're loaded in a
+     single add_key() operation:
+
+     - Make preparatory moves to allow the choice of class to be made
+       higher up the stack.
+     - Fix some bugs in the XDR parsing.
+     - Display contained token types in /proc/keys
+
+ (3) Split the server key (rxrpc_s-type) into its own file.  It has nothing
+     in common with the session key (rxrpc-type).
+
+ (4) Tidy up the connection security bits:
+
+     - The prime_packet_security() op is redundant.
+
+     - Don't retain the server key in the connection.  It's only used once
+       in a service connection's life when the ticket gets decrypted.  Look
+       it up on demand.
+
+     - Hand server key parsing off to the security class.
+
+     - Don't reserve the security header in the transmit data buffer, but
+       rather just add to the offset.  RxGK has a more complicated
+       structure than rxkad.
+
+     - Organise the connection security into a union, thereby allowing
+       other security classes to add bits in the same space.
+
+     - Allow a security trailer to be reserved.  RxGK may put the checksum
+       after the data.
+
+     - Allow a security class to give more information on a server key in
+       /proc/keys (such as the enctype).
+
+     - Don't use pskb_pull() in rxkad, but rather just add to the offset
+       when extracting data.
+
+ (5) Don't leak key material from server session keys back to userspace.
+
+The patches are tagged here:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+	rxrpc-next-20201010
+
+and can also be found on this branch:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-next
+
+David
 ---
-Changes in v2:
- - Modify changelog text (Thomas).
- - Add Reviewed-by and Build-tested-by tags.
- - Add a public link to the build-test results.
+David Howells (22):
+      keys: Provide the original description to the key preparser
+      rxrpc: Fix bundle counting for exclusive connections
+      rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+      rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+      rxrpc: Fix loss of final ack on shutdown
+      rxrpc: Fix accept on a connection that need securing
+      rxrpc: The server keyring isn't network-namespaced
+      rxrpc: Change basic data packet size alignment to 1
+      rxrpc: Remove the rxk5 security class as it's now defunct
+      rxrpc: List the held token types in the key description in /proc/keys
+      rxrpc: Allow for a security trailer in a packet
+      rxrpc: Merge prime_packet_security into init_connection_security
+      rxrpc: Support keys with multiple authentication tokens
+      rxrpc: Don't retain the server key in the connection
+      rxrpc: Split the server key type (rxrpc_s) into its own file
+      rxrpc: Hand server key parsing off to the security class
+      rxrpc: Don't reserve security header in Tx DATA skbuff
+      rxrpc: Organise connection security to use a union
+      rxrpc: Don't leak the service-side session key to userspace
+      rxrpc: Allow security classes to give more info on server keys
+      rxrpc: Make the parsing of xdr payloads more coherent
+      rxrpc: rxkad: Don't use pskb_pull() to advance through the response packet
 
- arch/x86/platform/uv/uv_time.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Marc Dionne (1):
+      rxrpc: Fix rxkad token xdr encoding
 
-diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-index f82a1337a608..6c348c2d0def 100644
---- a/arch/x86/platform/uv/uv_time.c
-+++ b/arch/x86/platform/uv/uv_time.c
-@@ -52,7 +52,7 @@ struct uv_rtc_timer_head {
- 	struct {
- 		int	lcpu;		/* systemwide logical cpu number */
- 		u64	expires;	/* next timer expiration for this cpu */
--	} cpu[1];
-+	} cpu[];
- };
- 
- /*
-@@ -148,9 +148,8 @@ static __init int uv_rtc_allocate_timers(void)
- 		struct uv_rtc_timer_head *head = blade_info[bid];
- 
- 		if (!head) {
--			head = kmalloc_node(sizeof(struct uv_rtc_timer_head) +
--				(uv_blade_nr_possible_cpus(bid) *
--					2 * sizeof(u64)),
-+			head = kmalloc_node(struct_size(head, cpu,
-+				uv_blade_nr_possible_cpus(bid)),
- 				GFP_KERNEL, nid);
- 			if (!head) {
- 				uv_rtc_deallocate_timers();
--- 
-2.27.0
+
+ include/keys/rxrpc-type.h  |  56 +---
+ include/uapi/linux/rxrpc.h |   2 +-
+ net/rxrpc/Makefile         |   1 +
+ net/rxrpc/ar-internal.h    |  65 ++--
+ net/rxrpc/call_accept.c    | 277 +++-------------
+ net/rxrpc/call_object.c    |   5 +-
+ net/rxrpc/conn_client.c    |  14 +-
+ net/rxrpc/conn_event.c     |  22 +-
+ net/rxrpc/conn_object.c    |   3 +-
+ net/rxrpc/conn_service.c   |   2 -
+ net/rxrpc/insecure.c       |  15 +-
+ net/rxrpc/key.c            | 642 +++----------------------------------
+ net/rxrpc/recvmsg.c        |  36 +--
+ net/rxrpc/rxkad.c          | 197 ++++++++----
+ net/rxrpc/security.c       |  98 ++++--
+ net/rxrpc/sendmsg.c        |  49 ++-
+ net/rxrpc/server_key.c     | 143 +++++++++
+ 17 files changed, 513 insertions(+), 1114 deletions(-)
+ create mode 100644 net/rxrpc/server_key.c
+
 
