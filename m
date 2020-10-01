@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B3280871
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C20280876
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733004AbgJAU1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgJAU1H (ORCPT
+        id S1733042AbgJAU1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:27:51 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48348 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgJAU1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:27:07 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99979C0613D0;
-        Thu,  1 Oct 2020 13:27:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so4485606wmj.5;
-        Thu, 01 Oct 2020 13:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EyAWOpM2Pk1ZBrqrrdSu1rvJL+knSPmewqYJM3X+YZM=;
-        b=F/S72vRwMmvTJ8PZszfC8/s9iZSqKMIp6JFsHp/36W7P7WL0kTOBZl0wLTfDfoL/wi
-         8WD7usifl3QPwN4x5b/SV0VnWj9SY5ac7BhI++csXd8RMaXHTxRF9JIq/MWsDpiNCnN5
-         9Gf6dpGxpQCixE0zna1HpZ8uRyk0ztae+mSIFEmaqiafuJuvV4FA2Q68PbwDf9Qi9O/c
-         gctjBXDPm2/SyD7NBPid3xT9mnjxpeDE+FQPHlINiy0HcSKPnsYzrbBxx13xdw3U97m3
-         N5b2HUh3OFxpOX9VSvp4c/E4kn+rpH1V/TNU62j+tfCK8O0UIDCrIyZKSSnRsAHR/N+n
-         Tn0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=EyAWOpM2Pk1ZBrqrrdSu1rvJL+knSPmewqYJM3X+YZM=;
-        b=GvNH1WXGMtpbuqjWxGn2iLFBeVxreaDNMHKuTr1oQnRsrbs90zUWch8LjZJNdsqiWz
-         m/Vsrm1YXFB6wXpRfz57tgClfhOd4aD/BIHb27xcKnzRvys+BQVVbGuBbDNazycg9mBG
-         rXAHkv3sHiwVSp9tciXyzW2vUAnRsx5LLZzdzzSkVLwV5AJDDObDMe8nEJhOilKU7bAu
-         DY5WzSYKgBtHW8Asq4WAwoEtgFcs1850nqskr0maylVvYcsEUaFxa8+znV1HbRMrb8da
-         mY18U3gknZGUW1HM4TnaBK8k08Xv0UR7DdXPJPeUqXN19M5kLD8YoVDBVj6NLDjKSLOh
-         McgQ==
-X-Gm-Message-State: AOAM531+Vm6V9c4pUkJit+18E7Eg0F8px4Tfn/Yr9GXtMzWBAl5zZUsx
-        4G3RT94uR5R4zd8/lX+d7YI=
-X-Google-Smtp-Source: ABdhPJxr5dY8ODx0EjH/xdbyXabo34Q9MVQw09XwyWKsxYblozqkXLVpvYyaSpB+6I9MEDSt2HvZhA==
-X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr1800943wme.54.1601584026233;
-        Thu, 01 Oct 2020 13:27:06 -0700 (PDT)
-Received: from dell5510 ([62.201.25.198])
-        by smtp.gmail.com with ESMTPSA id w15sm10273988wro.46.2020.10.01.13.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 13:27:05 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 22:27:03 +0200
-From:   Petr Vorel <petr.vorel@gmail.com>
-To:     Rich Felker <dalias@aerifal.cx>
-Cc:     linux-kernel@vger.kernel.org, musl@lists.openwall.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [musl] [PATCH 1/1] uapi: Don't include <linux/sysinfo.h> in
- <linux/kernel.h>
-Message-ID: <20201001202703.GD24195@dell5510>
-Reply-To: Petr Vorel <petr.vorel@gmail.com>
-References: <20201001195231.17226-1-petr.vorel@gmail.com>
- <20201001201108.GR17637@brightrain.aerifal.cx>
+        Thu, 1 Oct 2020 16:27:51 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091KRYij031484;
+        Thu, 1 Oct 2020 15:27:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601584054;
+        bh=zUXpfpiFdmkwvXzdHHcONnE58XGrF2Y+NcBdyFQGd18=;
+        h=From:To:CC:Subject:Date;
+        b=N5IyGadIyPyeTogzeiaI5vh16inWfy6gLqjp+vCLv6U/40ZRkAnEsM/rUct91GbTs
+         2pHHvAgWQRXsrtKdAmLjIMbrZDChL6P3V2snTzxBmnVZKapqmjXc0Vkhu5cNTdfNDB
+         GhFwO38+BMpX1QMTcgkDSsfaO099PwSlsHpv+xH0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091KRYeX092935;
+        Thu, 1 Oct 2020 15:27:34 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 15:27:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 15:27:33 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091KRWXQ004744;
+        Thu, 1 Oct 2020 15:27:33 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     <linux-kernel@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] ARM: multi_v7_defconfig: ti: Enable networking options for nfs boot
+Date:   Thu, 1 Oct 2020 23:27:25 +0300
+Message-ID: <20201001202725.16034-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001201108.GR17637@brightrain.aerifal.cx>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich,
+Enable networking options required for NFS boot on TI platforms, which is
+widely for automated test systems.
+- enable new TI CPSW switch driver and related NET_SWITCHDEV config
+- enable TI DP83867 phy
+- explicitly enable PTP clock support to ensure dependent networking
+drivers will stay built-in
 
-> On Thu, Oct 01, 2020 at 09:52:31PM +0200, Petr Vorel wrote:
-> > + update code where needed (include <linux/sysinfo.h> in code which
-> > included <linux/kernel.h> only to get struct sysinfo or SI_LOAD_SHIFT).
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+---
+ arch/arm/configs/multi_v7_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> > The reason is to avoid indirect <linux/sysinfo.h> include when using
-> > some network headers: <linux/netlink.h> or others [1] ->
-> > <linux/kernel.h> -> <linux/sysinfo.h>.
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index e9e76e32f10f..11b3184d8154 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -152,6 +152,7 @@ CONFIG_INET6_IPCOMP=m
+ CONFIG_IPV6_MIP6=m
+ CONFIG_IPV6_TUNNEL=m
+ CONFIG_IPV6_MULTIPLE_TABLES=y
++CONFIG_NET_SWITCHDEV=y
+ CONFIG_NET_DSA=m
+ CONFIG_CAN=y
+ CONFIG_CAN_AT91=m
+@@ -268,9 +269,12 @@ CONFIG_SNI_AVE=y
+ CONFIG_STMMAC_ETH=y
+ CONFIG_DWMAC_DWC_QOS_ETH=y
+ CONFIG_TI_CPSW=y
++CONFIG_TI_CPSW_SWITCHDEV=y
++CONFIG_TI_CPTS=y
+ CONFIG_XILINX_EMACLITE=y
+ CONFIG_BROADCOM_PHY=y
+ CONFIG_ICPLUS_PHY=y
++CONFIG_DP83867_PHY=y
+ CONFIG_MARVELL_PHY=y
+ CONFIG_MICREL_PHY=y
+ CONFIG_AT803X_PHY=y
+@@ -434,6 +438,7 @@ CONFIG_SPI_TEGRA20_SLINK=y
+ CONFIG_SPI_XILINX=y
+ CONFIG_SPI_SPIDEV=y
+ CONFIG_SPMI=y
++CONFIG_PTP_1588_CLOCK=y
+ CONFIG_PINCTRL_AS3722=y
+ CONFIG_PINCTRL_RZA2=y
+ CONFIG_PINCTRL_STMFX=y
+-- 
+2.17.1
 
-> > This indirect include causes redefinition of struct sysinfo when
-> > included both <sys/sysinfo.h> and some of network headers:
-
-> > In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
-> >                  from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
-> >                  from ../include/tst_netlink.h:14,
-> >                  from tst_crypto.c:13:
-> > x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ‘struct sysinfo’
-> >  struct sysinfo {
-> >         ^~~~~~~
-> > In file included from ../include/tst_safe_macros.h:15,
-> >                  from ../include/tst_test.h:93,
-> >                  from tst_crypto.c:11:
-> > x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
-
-> > [1] or <linux/sysctl.h>, <linux/ethtool.h>, <linux/mroute6.h>, <linux/ethtool.h>
-
-> > Suggested-by: Rich Felker <dalias@aerifal.cx>
-> > Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> > ---
-> > Hi,
-
-> > this looks to be long standing problem: python-psutil [2], iproute2 [3],
-> > even for glibc in the past [4] and it tried to be solved before [5].
-
-> > This will require glibc fix after:
-
-> You can't do this; it breaks the existing contract with glibc. New
-> kernel headers can't force a glibc upgrade.
-Right, got that.
-
-> You just have to get rid
-> of use of <linux/kernel.h> elsewhere in the uapi headers. It was a
-> mistake that <linux/sysinfo.h> was ever separated out of
-> <linux/kernel.h> since it didn't (and couldn't) fix the contract that
-> <linux/kernel.h> exposes struct sysinfo (and that it's misnamed). But
-> it's no big deal. This can all be fixed without any breakage anywhere
-> just by not using it.
-Back to your original suggestion to move the alignment macros to a separate
-header. I was trying to avoid it not sure if introducing new header is
-acceptable, but we'll see.
-
-> Rich
-
-Kind regards,
-Petr
