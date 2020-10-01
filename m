@@ -2,182 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8392809FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A09280A04
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730045AbgJAW0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgJAW0p (ORCPT
+        id S1733147AbgJAW2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:28:48 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:47992 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgJAW2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:26:45 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A1AC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:26:45 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m34so111562pgl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=dzHml+jwKeFJNXR2tTApwu496+pZFDv/DJiJ/AUcP+E=;
-        b=QSZGkLG2wBts2uriXrgmKHi2zaCSAsSUqvLroqogrPwsOsncbxUgL23DEiVyNPtv6M
-         Ik8nDReWhdmL/+GEIlVKJFN8TvkasrJhOyqrF5o1y3kXjP5jhV0wA9IhVTDIOp8NTrCU
-         I/Puc1fJlgPLhFmo8LaWYU8VF7YNfPrAu+YR4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=dzHml+jwKeFJNXR2tTApwu496+pZFDv/DJiJ/AUcP+E=;
-        b=ESQKhJTNA8zTRCWnR7dqwbiwwzGB5AZFKdXasQp8qopx0uQD5ONMZKePvR6erLX4cn
-         exgB629HTXIA1Qh+UURgNSFgWa/MntUHSP9jou41wprMt7M3mGvl7ablzImd5ML0zJ+y
-         CQFX4it/Gb1Lo6lQD+JzeT/2z+5ovFuQp3b4GNtypVvcLJLkKxX36WWMesP8vL704wp7
-         qJFCSfc0OUz1xBH98X6t/vr9+qWwSuFt/iiC8Ti2dWR9yHgbJzCu/9+JJqehrX+66E21
-         Rag2gouRJQTE+0zjlodXG8ynyCHXTQutyh39DsQakpte1beiK3aq0Kvadrtx8RSsblNr
-         aJ0A==
-X-Gm-Message-State: AOAM532hqVPD6zreYBe+aSvn+MsDbZEFUH/Mw6fbb/MH32Cv1S0REve+
-        nX0BRVqyBeJHjnU3CU0IXn7S7Q==
-X-Google-Smtp-Source: ABdhPJzTDw+DVIFwXIIVc88l/FHG9L2oeASomGF0ZGUrvwiBTjAFp/Yhi8Lpn6TWKyF2Bat4sQ43Ew==
-X-Received: by 2002:a63:e655:: with SMTP id p21mr7819559pgj.420.1601591204713;
-        Thu, 01 Oct 2020 15:26:44 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id h5sm829459pja.55.2020.10.01.15.26.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 15:26:44 -0700 (PDT)
-Subject: Re: [PATCH v5 15/15] misc: bcm-vk: add ttyVK support
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-References: <20201001012810.4172-1-scott.branden@broadcom.com>
- <20201001012810.4172-16-scott.branden@broadcom.com>
- <278afb05-8c8d-98d2-eed0-f73b954b03c7@gmail.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <140a5cde-67fd-f4b1-e4a9-9c68adf964c4@broadcom.com>
-Date:   Thu, 1 Oct 2020 15:26:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 1 Oct 2020 18:28:46 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 3AF99803202C;
+        Thu,  1 Oct 2020 22:28:42 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FIH5rPNJLOSD; Fri,  2 Oct 2020 01:28:37 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 00/21] spi: dw: Add full Baikal-T1 SPI Controllers support
+Date:   Fri, 2 Oct 2020 01:28:08 +0300
+Message-ID: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <278afb05-8c8d-98d2-eed0-f73b954b03c7@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dc278a05b0a38256"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dc278a05b0a38256
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+Originally I intended to merge a dedicated Baikal-T1 System Boot SPI
+Controller driver into the kernel and leave the DW APB SSI driver
+untouched. But after a long discussion (see the link at the bottom of the
+letter) Mark and Andy persuaded me to integrate what we developed there
+into the DW APB SSI core driver to be useful for another controllers,
+which may have got the same peculiarities/problems as ours:
+- No IRQ.
+- No DMA.
+- No GPIO CS, so a native CS is utilized.
+- small Tx/Rx FIFO depth.
+- Automatic CS assertion/de-assertion.
+- Slow system bus.
+All of them have been fixed in the framework of this patchset in some
+extent at least for the SPI memory operations. As I expected it wasn't
+that easy and the integration took that many patches as you can see from
+the subject. Though some of them are mere cleanups or weakly related with
+the subject fixes, but we just couldn't leave the code as is at some
+places since we were working with the DW APB SSI driver anyway. Here is
+what we did to fix the original DW APB SSI driver, to make it less messy.
 
-Hi Florian,
+First two patches are just cleanups to simplify the DW APB SSI device
+initialization a bit. We suggest to discard the IRQ threshold macro as
+unused and use a ternary operator to initialize the set_cs callback
+instead of assigning-and-updating it.
 
-On 2020-09-30 7:36 p.m., Florian Fainelli wrote:
->
->
-> On 9/30/2020 6:28 PM, Scott Branden wrote:
->> Add ttyVK support to driver to allow console access to VK card from host.
->>
->> Device node will be in the follow form /dev/bcm-vk.x_ttyVKy where:
->> x is the instance of the VK card
->> y is the tty device number on the VK card
->>
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->
-> Was it not possible to:
->
-> - emulate a standard 8250 UART and just expose an additional bar + MSI vector such that one could get a debug UART out of this device with little to no work on the host side?
-I don't see how such emulation is simpler than what we have.  For a standard 8250 UART implementation how would we emulate a FIFO in memory accessible over PCIe.  I don't see how to do that with shared memory?  Also, we don't have an additional bar available on the PCIe device.  There is currently little to no work on the device side using a circular buffer with read and write pointers.
->
-> - or use virtio console and implement virtio on the firmware that runs on VK?
-Not that possible as the debug/console UARTs are used inside and outside of linux on the VK card.
->
-> It's not a lot of code, but it just feels like this should not have to be done at all.
-If there was a simpler way to do it, yes, I would like a "UART" running over PCIe shared memory via a circular buffer.
-And that is what the code we developed does.
+Then we've discovered that the n_bytes field of the driver private data is
+used by the DW APB SSI IRQ handler, which requires it to be initialized
+before the SMP memory barrier and to be visible from another CPUs. Speaking
+about the SMP memory barrier. Having one right after the shared resources
+initialization is enough and there is no point in using the spin-lock to
+protect the Tx/Rx buffer pointers. The protection functionality is
+redundant there by the driver design. (Though I have a doubt whether the
+SMP memory barrier is also required there because the normal IO-methods
+like readl/writel implies a full memory barrier. So any memory operations
+performed before them are supposed to be seen by devices and another CPUs.
+See the patch log for details of my concern.)
 
+Thirdly we've found out that there is some confusion in the IRQs
+masking/unmasking/clearing in the SPI-transfer procedure. Multiple interrupts
+are unmasked on the SPI-transfer initialization, but just TXEI is only
+masked back on completion. Similarly IRQ status isn't cleared on the
+controller reset, which actually makes the reset being not full and errors
+prone in the controller probe procedure.
 
---000000000000dc278a05b0a38256
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Another very important optimization is using the IO-relaxed accessors in
+the dw_read_io_reg()/dw_write_io_reg() methods. Since the Tx/Rx FIFO data
+registers are the most frequently accessible controller resource, using
+relaxed accessors there will significantly improve the data read/write
+performance. At least on Baikal-T1 SoC such modification opens up a way to
+have the DW APB SSI controller working with higher SPI bus speeds, than
+without it.
 
-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
-I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
-AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
-MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
-YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
-ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
-FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
-HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
-MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
-qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
-uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
-pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
-aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
-H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
-0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
-RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg1QsVX6l0
-xXqR0n0cgVEOZn7sdLd13GN3zu/7Gkoftf0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMjAxMDAxMjIyNjQ1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
-BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFL+HYCLSKP2V9dL3OyQURTKDq+j
-wGmQ18EADMUd5j+JXxBP1xVtImOq4OuqRnUUlMS9ey3Q0AAo1xLKwkWht6XV9zkChwVPCSp5Otzz
-aQyUpThDyAlNzNiRiuM99qSb9xYRgQfhU6aynldAVpggGz+SJt7NnuN9QlWVlBNSxS9xeNNtGwd8
-bxIBzZhoZDIHM4D5YULn8UDx44VGHSBjetCMZ5X/2uQzm/RIAPW9CbsyuIhINc6+UfyIbqS0atXu
-UPjpcHyWbB8NHAniL5YZEnGzTl+1ZteSLpKPFtm8cb8QEINUhWhDKCpefnWvHJ0mqgVLMniJfyvD
-qFPEUdR2aOE=
---000000000000dc278a05b0a38256--
+Fifthly we've made an effort to cleanup the code using the SPI-device
+private data - chip_data. We suggest to remove the chip type from there
+since it isn't used and isn't implemented right anyway. Then instead of
+having a bus speed, clock divider, transfer mode preserved there, and
+recalculating the CR0 fields of the SPI-device-specific phase, polarity
+and frame format each time the SPI transfer is requested, we can save it
+in the chip_data instance. By doing so we'll make that structure finally
+used as it was supposed to by design (see the spi-fsl-dspi.c, spi-pl022.c,
+spi-pxa2xx.c drivers for examples).
+
+Sixthly instead of having the SPI-transfer specific CR0-update callback,
+we suggest to implement the DW APB SSI controller capabilities approach.
+By doing so we can now inject the vendor-specific peculiarities in
+different parts of the DW APB SSI core driver (which is required to
+implement both SPI-transfers and the SPI memory operations). This will
+also make the code less confusing like defining a callback in the core
+driver, setting it up in the glue layer, then calling it from the core
+driver again. Seeing the small capabilities implementation embedded
+in-situ is more readable than tracking the callbacks assignments. This
+will concern the CS-override, Keembay master setup, DW SSI-specific CR0
+registers layout capabilities.
+
+Seventhly since there are going to be two types of the transfers
+implemented in the DW APB SSI core driver, we need a common method to set
+the controller configuration like, Tx/Rx-mode, bus speed, data frame size
+and number of data frames to read in case of the memory operations. So we
+just detached the corresponding code from the SPI-transfer-one method and
+made it to be a part of the new dw_spi_update_config() function, which is
+former update_cr0(). Note that the new method will be also useful for the
+glue drivers, which due to the hardware design need to create their own
+memory operations (for instance, for the dirmap-operations provided in the
+Baikal-T System Boot SPI controller driver).
+
+Eighthly it is the data IO procedure and IRQ-based SPI-transfer
+implementation refactoring. The former one will look much simpler if the
+buffers initial pointers and the buffers length data utilized instead of
+the Tx/Rx buffers start and end pointers. The later one currently lacks of
+valid execution at the final stage of the SPI-transfer. So if there is no
+data left to send, but there is still data which needs to be received, the
+Tx FIFO Empty IRQ will constantly happen until all of the requested
+inbound data is received. So we suggest to fix that by taking the Rx FIFO
+Empty IRQ into account.
+
+Ninthly it's potentially errors prone to enable the DW APB SSI interrupts
+before enabling the chip. It specifically concerns a case if for some
+reason the DW APB SSI IRQs handler is executed before the controller is
+enabled. That will cause a part of the outbound data loss. So we suggest
+to reverse the order.
+
+Tenthly in order to be able to pre-initialize the Tx FIFO with data and
+only the start the SPI memory operations we need to have any CS
+de-activated. We'll fulfil that requirement by explicitly clearing the CS
+on the SPI transfer completion and at the explicit controller reset.
+
+Then seeing all the currently available and potentially being created
+types of the SPI transfers need to perform the DW APB SSI controller
+status register check and the errors handler procedure, we've created a
+common method for all of them.
+
+Eleventhly if before we've mostly had a series of fixups, cleanups and
+refactorings, here we've finally come to the new functionality
+implementation. It concerns the poll-based transfer (as Baikal-T1 System
+Boot SPI controller lacks a dedicated IRQ lane connected) and the SPI
+memory operations implementation. If the former feature is pretty much
+straightforward (see the patch log for details), the later one is a bit
+tricky. It's based on the EEPROM-read (write-then-read) and the Tx-only
+modes of the DW APB SSI controller, which as performing the automatic data
+read and write let's us to implement the faster IO procedure than using
+the Tx-Rx-mode-based approach. Having the memory-operations implemented
+that way is the best thing we can currently do to provide the errors-less
+SPI transfers to SPI devices with native CS attached.
+
+Note the approach utilized here to develop the SPI memory operations can
+be also used to create the "automatic CS toggle problem"-free(ish) SPI
+transfers (combine SPI-message transfers into two buffers, disable
+interrupts, push-pull the combined data). But we don't provide a solution
+in the framework of this patchset. It is a matter of a dedicated one,
+which we currently don't intend to spend our time on.
+
+Finally at the closure of the this patchset you'll find patches, which
+provide the Baikal-T1-specific DW APB SSI controllers support. The SoC has
+got three SPI controllers. Two of them are pretty much normal DW APB SSI
+interfaces: with IRQ, DMA, FIFOs of 64 words depth, 4x CSs. But the third
+one as being a part of the Baikal-T1 System Boot Controller has got a very
+limited resources: no IRQ, no DMA, only a single native chip-select and
+Tx/Rx FIFOs with just 8 words depth available. In order to provide a
+transparent initial boot code execution the System Boot SPI Controller is
+also utilized by an vendor-specific IP-block, which exposes an SPI flash
+memory direct mapping interface. Please see the corresponding patch for
+details.
+
+Link: https://lore.kernel.org/linux-spi/20200508093621.31619-1-Sergey.Semin@baikalelectronics.ru/
+
+[1] "LINUX KERNEL MEMORY BARRIERS", Documentation/memory-barriers.txt,
+    Section "KERNEL I/O BARRIER EFFECTS"
+
+Changelog v2:
+- Replace the ternary operator with the if-else statement in the set_cs
+  callback setting up.
+- Get back the in-code comments to the dw_spi_update_cr0() method and it'
+  further derivatives.
+- Discard the patches from the series as being merged in:
+  [PATCH 00/10] spi: spi-dw: Remove extraneous locking
+  [PATCH 00/09] spi: dw: Add KeemBay Master capability
+  [PATCH 00/08] spi: dw: Convert CS-override to DW SPI capabilities
+  [PATCH 00/07] spi: dw: Discard DW SSI chip type storages
+  [PATCH 00/06] spi: dw: Use relaxed IO-methods to access FIFOs
+  [PATCH 00/05] spi: dw: Disable all IRQs when controller is unused
+  [PATCH 00/04] spi: dw: Clear IRQ status on DW SPI controller reset
+  [PATCH 00/03] spi: dw: Initialize n_bytes before the memory barrier
+  [PATCH 00/01] spi: dw: Discard IRQ threshold macro
+
+Changelog v3:
+- Remove dw_spi_update_cr0() callback assignment from the DW APB SSI PCI
+  glue-driver.
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Lars Povlsen <lars.povlsen@microchip.com>
+Cc: wuxu.wu <wuxu.wu@huawei.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-spi@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (21):
+  spi: dw: Use an explicit set_cs assignment
+  spi: dw: Add DWC SSI capability
+  spi: dw: Detach SPI device specific CR0 config method
+  spi: dw: Update SPI bus speed in a config function
+  spi: dw: Simplify the SPI bus speed config procedure
+  spi: dw: Update Rx sample delay in the config function
+  spi: dw: Add DW SPI controller config structure
+  spi: dw: Refactor data IO procedure
+  spi: dw: Refactor IRQ-based SPI transfer procedure
+  spi: dw: Perform IRQ setup in a dedicated function
+  spi: dw: Unmask IRQs after enabling the chip
+  spi: dw: Discard chip enabling on DMA setup error
+  spi: dw: De-assert chip-select on reset
+  spi: dw: Explicitly de-assert CS on SPI transfer completion
+  spi: dw: Move num-of retries parameter to the header file
+  spi: dw: Add generic DW SSI status-check method
+  spi: dw: Add memory operations support
+  spi: dw: Introduce max mem-ops SPI bus frequency setting
+  spi: dw: Add poll-based SPI transfers support
+  dt-bindings: spi: dw: Add Baikal-T1 SPI Controllers
+  spi: dw: Add Baikal-T1 SPI Controller glue driver
+
+ .../bindings/spi/snps,dw-apb-ssi.yaml         |  33 +-
+ drivers/spi/Kconfig                           |  29 +
+ drivers/spi/Makefile                          |   1 +
+ drivers/spi/spi-dw-bt1.c                      | 339 ++++++++++
+ drivers/spi/spi-dw-core.c                     | 640 ++++++++++++++----
+ drivers/spi/spi-dw-dma.c                      |  16 +-
+ drivers/spi/spi-dw-mmio.c                     |  20 +-
+ drivers/spi/spi-dw-pci.c                      |   6 -
+ drivers/spi/spi-dw.h                          |  48 +-
+ 9 files changed, 956 insertions(+), 176 deletions(-)
+ create mode 100644 drivers/spi/spi-dw-bt1.c
+
+-- 
+2.27.0
+
