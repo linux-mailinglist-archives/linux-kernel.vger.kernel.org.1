@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E69927FFD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A92D27FFDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732180AbgJANRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732018AbgJANRE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:17:04 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FBCC0613D0;
-        Thu,  1 Oct 2020 06:17:03 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kNySB-009qdV-IP; Thu, 01 Oct 2020 13:16:59 +0000
-Date:   Thu, 1 Oct 2020 14:16:59 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Qian Cai <cai@redhat.com>
-Cc:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pipe: Fix memory leaks in create_pipe_files()
-Message-ID: <20201001131659.GE3421308@ZenIV.linux.org.uk>
-References: <20201001125055.5042-1-cai@redhat.com>
+        id S1732233AbgJANRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:17:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55250 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732018AbgJANRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:17:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0B2A4AF59;
+        Thu,  1 Oct 2020 13:17:08 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 15:17:07 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Sami Tolvanen <samitolvanen@google.com>
+cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, jthierry@redhat.com, jpoimboe@redhat.com
+Subject: Re: [PATCH v4 04/29] objtool: Add a pass for generating
+ __mcount_loc
+In-Reply-To: <20200929214631.3516445-5-samitolvanen@google.com>
+Message-ID: <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
+References: <20200929214631.3516445-1-samitolvanen@google.com> <20200929214631.3516445-5-samitolvanen@google.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001125055.5042-1-cai@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 08:50:55AM -0400, Qian Cai wrote:
-> Calling pipe2() with O_NOTIFICATION_PIPE could results in memory leaks
-> in an error path or CONFIG_WATCH_QUEUE=n. Plug them.
+Hi Sami,
 
-[snip the copy of bug report]
+On Tue, 29 Sep 2020, Sami Tolvanen wrote:
 
-No objections on the patch itself, but commit message is just about
-unreadable.  How about something along the lines of the following?
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> Add the --mcount option for generating __mcount_loc sections
+> needed for dynamic ftrace. Using this pass requires the kernel to
+> be compiled with -mfentry and CC_USING_NOP_MCOUNT to be defined
+> in Makefile.
+> 
+> Link: https://lore.kernel.org/lkml/20200625200235.GQ4781@hirez.programming.kicks-ass.net/
+> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> [Sami: rebased to mainline, dropped config changes, fixed to actually use
+>        --mcount, and wrote a commit message.]
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-=======================
-	Calling pipe2() with O_NOTIFICATION_PIPE could results in memory
-leaks unless watch_queue_init() is successful.
+I am sorry to reply on v4. Should have been sooner.
 
-	In case of watch_queue_init() failure in pipe2() we are left
-with inode and pipe_inode_info instances that need to be freed.  That
-failure exit has been introduced in commit c73be61cede5 ("pipe: Add
-general notification queue support") and its handling should've been
-identical to nearby treatment of alloc_file_pseudo() failures - it
-is dealing with the same situation.  As it is, the mainline kernel
-leaks in that case.
+Julien has been sending patches to make objtool's check functionality 
+arch-agnostic as much as possible. So it seems to me that the patch should 
+be based on the effort
 
-	Another problem is that CONFIG_WATCH_QUEUE and !CONFIG_WATCH_QUEUE 
-cases are treated differently (and the former leaks just pipe_inode_info,
-the latter - both pipe_inode_info and inode).
+I also wonder about making 'mcount' command separate from 'check'. Similar 
+to what is 'orc' now. But that could be done later.
 
-	Fixed by providing a dummy wath_queue_init() in !CONFIG_WATCH_QUEUE
-case and by having failures of wath_queue_init() handled the same way
-we handle alloc_file_pseudo() ones.
+See tip-tree/objtool/core for both.
 
-Fixes: c73be61cede5 ("pipe: Add general notification queue support")
-Signed-off-by: Qian Cai <cai@redhat.com>
-=======================
+Thanks
+Miroslav
