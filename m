@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5672B27FF7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156B527FF8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732082AbgJAMx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731993AbgJAMx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:53:27 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14327C0613D0;
-        Thu,  1 Oct 2020 05:53:27 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id C52CA26F; Thu,  1 Oct 2020 14:53:23 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 14:53:22 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Jacob Pan <jacob.pan.linux@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Yi Sun <yi.y.sun@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v12 0/6] IOMMU user API enhancement
-Message-ID: <20201001125322.GD30426@8bytes.org>
-References: <1601051567-54787-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <20200928114053.79170d23@jacob-builder>
+        id S1732173AbgJAMyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732018AbgJAMyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 08:54:39 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF6D920B1F;
+        Thu,  1 Oct 2020 12:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601556879;
+        bh=TpoJ4UrV06C1KGmQmOOR2twdwBBcZrG1wMGgjgt7b0c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fSZP8QDHcWogvbqaO3LeErUFzl8VzCbAIe63RMkVs7dPR1au1uZB2gsc3yCX22dss
+         KGYIukWd0AeU5EER/wWNgiaCK3pABgC9DHoMK7IDAujzRHy7boxX5KMOyglfXMdDc/
+         iTeOvus7eOuoHyeh3S2vJWMd6caxP5Q2HnlaMcq4=
+Date:   Thu, 1 Oct 2020 13:53:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Schrempf Frieder <frieder.schrempf@kontron.de>
+Cc:     Robin Gong <yibin.gong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: pca9450: Add SD_VSEL GPIO for LDO5
+Message-ID: <20201001125339.GF6715@sirena.org.uk>
+References: <20201001123447.1610-1-frieder.schrempf@kontron.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ey/N+yb7u/X9mFhi"
 Content-Disposition: inline
-In-Reply-To: <20200928114053.79170d23@jacob-builder>
+In-Reply-To: <20201001123447.1610-1-frieder.schrempf@kontron.de>
+X-Cookie: Stay away from flying saucers today.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacob,
 
-On Mon, Sep 28, 2020 at 11:40:53AM -0700, Jacob Pan wrote:
-> Just wondering if you will be able to take this for v5.10? There hasn't
-> been any material changes since we last discussed in LPC. We have VFIO and
-> other vSVA patches depending on it.
+--ey/N+yb7u/X9mFhi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Queued for v5.10 now, thanks.
+On Thu, Oct 01, 2020 at 02:34:31PM +0200, Schrempf Frieder wrote:
 
-Regards,
+> +	pca9450->sd_vsel_gpio = gpiod_get_optional(pca9450->dev, "sd-vsel", GPIOD_OUT_HIGH);
 
-	Joerg
+We need a patch adding this to the binding document too.
 
+--ey/N+yb7u/X9mFhi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl910VMACgkQJNaLcl1U
+h9DWLwf+MOLjAxrA/lNrj4PpWUmdW8Gu02d3ZQj1WvUc3ZUToExz4H28Sy3LEzW9
+UO+8NxzPPsp5ZVZF7hBjwLK0pFLGfGZO0A7gbc/YetYq3F26FEZ0iu65sZRMM/zi
+4s3EXdL/UZHgRZiAlKdUGf0G06cFpuSueYC6devwJhivS43zvLJGfbnKhsALW8n9
+829a9r2xtp3iutcT6L6tF700f4NQWObveknCakwgDCBXOiZmls99X0Udgblcp10p
+jgsF1ZczX5o1YBhtxpQ/ArepTbW1gcF0m2OcN9nwVm2/0qFMNe3ySn3mrO1N6tHK
+RhRLcxL1tUXbfGOuoyHIPwO55GZbrQ==
+=4jRA
+-----END PGP SIGNATURE-----
+
+--ey/N+yb7u/X9mFhi--
