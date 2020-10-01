@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEF927F9A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D2527F9A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730660AbgJAGth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:49:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56170 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGth (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:49:37 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0916nUF5115339;
-        Thu, 1 Oct 2020 01:49:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601534970;
-        bh=f39Tm9PGnT5Kb0GT6JYUCDYVTa14cU//tN6YQOFFebI=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=st8gO3sABqq7+kizVNNxkEYJQ1ZwW9CLDWe175b9z+pqhimCnX55ne98V5ZjTCF0l
-         quqRD5yjS7Revhh915W2t1J8+JHBK/KFl4aF+wkIaZjG30J9vna/ACNbNeBQ0KnzHx
-         +TSuM33rmYMQGZgGcwvKFerY/CtLAh/GOPKdgdck=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916nUkb050443;
-        Thu, 1 Oct 2020 01:49:30 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 01:49:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 01:49:29 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0916nRJL084046;
-        Thu, 1 Oct 2020 01:49:27 -0500
-Subject: Re: [PATCH 09/18] dt-bindings: dma: ti: Add document for K3 BCDMA
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>,
-        <robh+dt@kernel.org>, <vigneshr@ti.com>
-CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-10-peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <9b0cea1e-c9c3-b38f-2bf1-1501133c16ae@ti.com>
-Date:   Thu, 1 Oct 2020 09:49:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730763AbgJAGvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:51:03 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:45927 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726540AbgJAGvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 02:51:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601535062; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=gwugQkJdwAsUp0rRePmNc1xDsnuBaLbzJBqGrDfhTLY=; b=Sy6qEBlS552Mxfqo/yIrJkVg/EWIm89FKz4yvorVALN8j0FLgXPxyOFko0gH3OZo/nKRdwag
+ 0sP+JVY7EuU28vuL0s/iAy5LLl0x65QXzBG8UcQhkt+12f50iSVFFpkbb+W3xIlxYvI6I5/2
+ 8cIYRCqsvqq8szOLUQnv3R+TmCQ=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f757c5680da0872b754359f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 06:51:02
+ GMT
+Sender: asitshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7A2EC433CA; Thu,  1 Oct 2020 06:51:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: asitshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D5E0C433C8;
+        Thu,  1 Oct 2020 06:51:01 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200930091412.8020-10-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 01 Oct 2020 12:21:01 +0530
+From:   asitshah@codeaurora.org
+To:     linux-firmware@kernel.org, jwboyer@kernel.org
+Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantg@codeaurora.org, gubbaven@codeaurora.org,
+        abhishekpandit@chromium.org, bgodavar@codeaurora.org
+Subject: Update WCN3991 FW with new enhancement
+Message-ID: <d4a4a37625f6b562c5096cbe1a6ccb61@codeaurora.org>
+X-Sender: asitshah@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On 30/09/2020 12.14, Peter Ujfalusi wrote:
-> New binding document for
-> Texas Instruments K3 Block Copy DMA (BCDMA).
->=20
-> BCDMA is introduced as part of AM64.
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 183 ++++++++++++++++++=
+Hi Team,
 
->  1 file changed, 183 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/ti/k3-bcdma.y=
-aml
->=20
-> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/D=
-ocumentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> new file mode 100644
-> index 000000000000..c84fb641738f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-> @@ -0,0 +1,183 @@
+Please include updated firmware bins for WCN3991.
 
-=2E..
+Snapshot of pull request is as below, let me know if anything is 
+missing.
 
-> +  compatible:
-> +    enum:
-> +      - ti,am64-dmss-bcdma
 
-Would it be OK if I use ti,am64x-dmss-bcdma or should I stick with
-am64-dmss-bcdma.
-The TRM refers to the family as AM64x, but having the 'x' in the
-compatible did not sounded right.
+>>>>>>>>>>>>>> 
 
-- P=C3=A9ter
+The following changes since commit 
+b78a66c909c7150601e1b2a810b0e7c8f98d920c:
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+   linux-firmware: Update firmware for Cadence MHDP8546 DP bridge 
+(2020-09-28 11:38:27 -0400)
 
+are available in the git repository at:
+
+   https://github.com/shahasit/linux-firmware-bt/tree/master
+
+for you to fetch changes up to ad1da95d52f1a9206da3ef52f3484f3b89ec6615:
+
+   QCA : Updated firmware files for WCN3991 (2020-10-01 12:03:01 +0530)
+
+----------------------------------------------------------------
+Asit Shah (1):
+       QCA : Updated firmware files for WCN3991
+
+  WHENCE           |   1 +
+  qca/crbtfw32.tlv | Bin 125896 -> 126300 bytes
+  qca/crnv32.bin   | Bin 5299 -> 5407 bytes
+  qca/crnv32u.bin  | Bin 0 -> 5407 bytes
+  4 files changed, 1 insertion(+)
+  create mode 100644 qca/crnv32u.bin
+
+
+Regards,
+Asit
