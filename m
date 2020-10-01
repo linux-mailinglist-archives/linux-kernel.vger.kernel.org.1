@@ -2,313 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284B227F7DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B8027F7FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 04:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbgJACOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 22:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
+        id S1730192AbgJAC10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 22:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgJACOf (ORCPT
+        with ESMTP id S1725799AbgJAC1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 22:14:35 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB077C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:14:34 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p15so5672663ejm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VRlF+sTfUEUU0FQV/Q3ZTIfFAHBYdXbqZatAP+Y9VjY=;
-        b=f3D4rSyONiBy/W2syYMtXYxEiZxsifbXExflXIoDgFLYJaq88Fye9iITAygHX0Inau
-         94AyiPomN616HnDcapWTX7fv1JiE7wFoC7v7CGcBX4h3ObrkigSJekXbgkrObeDgb8sA
-         RoePxFu67r3XoJaEPM8u2UGZdHgBWVWWciLe7zB2C32HVmLdywhAnM6XV9PG5GpX0DvI
-         ix1v3FQCqnYVPBd5u6kN3TyXKZYWMZEbJXQF83FDnR0n8xs7nobbIdjyzYkj9y3ye20i
-         unMoq/H84N4g7kWMxVnH5h0nwEh01QJ09jrh6oGSqFwyb22qu+9FNVlqLXAiqafRe4e+
-         z4xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VRlF+sTfUEUU0FQV/Q3ZTIfFAHBYdXbqZatAP+Y9VjY=;
-        b=TDPPNdTYVWelkrj8sLTMTcBpaNUami5vfu/XcI4ObimAw+nTS8dbOF3AgFVNpUoQoS
-         BDfeEQv9vaVFJZ2yWxu9/q8YIo4t6szsUeuUdYRtZBUOQGWLVZ4JEJk2Wf0ivkV+1xA0
-         0J2BFH/ObNlychUou0aAcdLhJp7INgxAjd99UqLrTOOO8FI3Y/yhTPTg7xEJQ23DQmyN
-         bn0o8P6co120WwGfF1ilHKsQ3+n0Vj3WBy7p4v6FAHCx5D/hJXC3C9kScHIc4oWmljPo
-         X/Y+UJh5TWW43WDzMAmrXQOa0c/y0JriXpHSX7KCvFcdmNonKOVo7ff4DsiDz846WjU4
-         /EDA==
-X-Gm-Message-State: AOAM531B/wTta7Gw/Ip5YYVorjMitO1X0CXqxp4n/OH9ATlXN+e1U9i6
-        1BW9Jf8CeJL+igczNmsAxD0TfVLZPYAGlQKCHv33RA==
-X-Google-Smtp-Source: ABdhPJzFEQyU1Y0EFbRA6jhr+9dXp0C5I/GT8CyTqnw3SfFunhixdX0N+3zH6ptOPj+ZsewB07FSBmbyi/DGnGjyGEM=
-X-Received: by 2002:a17:907:94cf:: with SMTP id dn15mr5974052ejc.114.1601518472957;
- Wed, 30 Sep 2020 19:14:32 -0700 (PDT)
+        Wed, 30 Sep 2020 22:27:25 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09475C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 19:27:25 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9FE6C891B0;
+        Thu,  1 Oct 2020 15:27:19 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1601519239;
+        bh=3q7aujyn5aL4eaHXCx1VapiKJR7f3QT246G8DzGsvfU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=Zr+yQ4K6zBjWDAJvU9ragAM8RQguacrEdWWpqtH7DbzoGvesYuWWS8+F5Dj0AmNnw
+         M77qpbJ8G9gkwhZWbtw5xoGTEgMEsc5WqO9dFQhapawcQzcTQG4TO5jJZhH4TDUSlv
+         9esc2eUTrSpl68s5nuQ/7qe4G/6w4Y1oblcBc3+C5+KszVYH9xBygXsTdHvXQT3MdM
+         vnbZPPEtks+udMjQxSccmwyN5EdM7rUMQC/hgEBsWAL+4FEOLqnjUm5TkTh3TKYe5A
+         BQE4b4oeLJZsOaEoqLm1dUF537emqG6sxsq/x5CDD6QuP7S1Nchn0tNacLyg4ERmjn
+         SH64Lb00WO1/g==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f753e870001>; Thu, 01 Oct 2020 15:27:19 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 1 Oct 2020 15:27:19 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Thu, 1 Oct 2020 15:27:19 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>
+CC:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: dsa: mv88e6xxx: serdes link without phy
+Thread-Topic: dsa: mv88e6xxx: serdes link without phy
+Thread-Index: AQHWl4wd1x9X1OqsB0SXADYVDL5/gKmBGhoAgAARowA=
+Date:   Thu, 1 Oct 2020 02:27:18 +0000
+Message-ID: <e2c1196a-3a0f-6527-2ae0-8d53af2912df@alliedtelesis.co.nz>
+References: <72e8e25a-db0d-275f-e80e-0b74bf112832@alliedtelesis.co.nz>
+ <20201001012410.GA4050473@lunn.ch>
+In-Reply-To: <20201001012410.GA4050473@lunn.ch>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <55011007F62D2545A9F95AE6D2A04BCF@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
-In-Reply-To: <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 04:14:06 +0200
-Message-ID: <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 3:52 AM Jann Horn <jannh@google.com> wrote:
-> On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
-> > > On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wro=
-te:
-> > > > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-page=
-s) wrote:
-> > > > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> > > > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-=
-pages) wrote:
-> > > > > >>        =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
-> > > > > >>        =E2=94=82FIXME                                         =
-       =E2=94=82
-> > > > > >>        =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
-> > > > > >>        =E2=94=82From my experiments,  it  appears  that  if  a=
-  SEC=E2=80=90 =E2=94=82
-> > > > > >>        =E2=94=82COMP_IOCTL_NOTIF_RECV   is  done  after  the  =
-target =E2=94=82
-> > > > > >>        =E2=94=82process terminates, then the ioctl()  simply  =
-blocks =E2=94=82
-> > > > > >>        =E2=94=82(rather than returning an error to indicate th=
-at the =E2=94=82
-> > > > > >>        =E2=94=82target process no longer exists).             =
-       =E2=94=82
-> > > > > >
-> > > > > > Yeah, I think Christian wanted to fix this at some point,
-> > > > >
-> > > > > Do you have a pointer that discussion? I could not find it with a
-> > > > > quick search.
-> > > > >
-> > > > > > but it's a
-> > > > > > bit sticky to do.
-> > > > >
-> > > > > Can you say a few words about the nature of the problem?
-> > > >
-> > > > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("secco=
-mp:
-> > > > notify about unused filter"). So maybe there's a bug here?
-> > >
-> > > That thing only notifies on ->poll, it doesn't unblock ioctls; and
-> > > Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
-> > > commit doesn't have any effect on this kind of usage.
-> >
-> > Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
-> > we don't have a count of all of them, unfortunately.
-> >
-> > We could maybe look inside the wait_list, but that will probably make
-> > people angry :)
->
-> The easiest way would probably be to open-code the semaphore-ish part,
-> and let the semaphore and poll share the waitqueue. The current code
-> kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
-> entire semaphore would IMO be cleaner than that. And it's not like
-> semaphore semantics are even a good fit for this code anyway.
->
-> Let's see... if we didn't have the existing UAPI to worry about, I'd
-> do it as follows (*completely* untested). That way, the ioctl would
-> block exactly until either there actually is a request to deliver or
-> there are no more users of the filter. The problem is that if we just
-> apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
-> an event loop and don't set O_NONBLOCK will be screwed. So we'd
-> probably also have to add some stupid counter in place of the
-> semaphore's counter that we can use to preserve the old behavior of
-> returning -ENOENT once for each cancelled request. :(
->
-> I guess this is a nice point in favor of Michael's usual complaint
-> that if there are no man pages for a feature by the time the feature
-> lands upstream, there's a higher chance that the UAPI will suck
-> forever...
-
-And I guess this would be the UAPI-compatible version - not actually
-as terrible as I thought it might be. Do y'all want this? If so, feel
-free to either turn this into a proper patch with Co-developed-by, or
-tell me that I should do it and I'll try to get around to turning it
-into something proper.
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 676d4af62103..d08c453fcc2c 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -138,7 +138,7 @@ struct seccomp_kaddfd {
-  * @notifications: A list of struct seccomp_knotif elements.
-  */
- struct notification {
--       struct semaphore request;
-+       bool canceled_reqs;
-        u64 next_id;
-        struct list_head notifications;
- };
-@@ -859,7 +859,6 @@ static int seccomp_do_user_notification(int this_syscal=
-l,
-        list_add(&n.list, &match->notif->notifications);
-        INIT_LIST_HEAD(&n.addfd);
-
--       up(&match->notif->request);
-        wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
-        mutex_unlock(&match->notify_lock);
-
-@@ -901,8 +900,20 @@ static int seccomp_do_user_notification(int this_sysca=
-ll,
-         * *reattach* to a notifier right now. If one is added, we'll need =
-to
-         * keep track of the notif itself and make sure they match here.
-         */
--       if (match->notif)
-+       if (match->notif) {
-                list_del(&n.list);
-+
-+               /*
-+                * We are stuck with a UAPI that requires that after a spur=
-ious
-+                * wakeup, SECCOMP_IOCTL_NOTIF_RECV must return immediately=
-.
-+                * This is the tracking for that, keeping track of whether =
-we
-+                * canceled a request after waking waiters, but before user=
-space
-+                * picked up the notification.
-+                */
-+               if (n.state =3D=3D SECCOMP_NOTIFY_INIT)
-+                       match->notif->canceled_reqs =3D true;
-+       }
-+
- out:
-        mutex_unlock(&match->notify_lock);
-
-@@ -1178,6 +1189,7 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-                                void __user *buf)
- {
-        struct seccomp_knotif *knotif =3D NULL, *cur;
-+       DECLARE_WAITQUEUE(wait, current);
-        struct seccomp_notif unotif;
-        ssize_t ret;
-
-@@ -1190,11 +1202,9 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-
-        memset(&unotif, 0, sizeof(unotif));
-
--       ret =3D down_interruptible(&filter->notif->request);
--       if (ret < 0)
--               return ret;
--
-        mutex_lock(&filter->notify_lock);
-+
-+retry:
-        list_for_each_entry(cur, &filter->notif->notifications, list) {
-                if (cur->state =3D=3D SECCOMP_NOTIFY_INIT) {
-                        knotif =3D cur;
-@@ -1202,14 +1212,32 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-                }
-        }
-
--       /*
--        * If we didn't find a notification, it could be that the task was
--        * interrupted by a fatal signal between the time we were woken and
--        * when we were able to acquire the rw lock.
--        */
-        if (!knotif) {
--               ret =3D -ENOENT;
--               goto out;
-+               /* This has to happen before checking &filter->users. */
-+               prepare_to_wait(&filter->wqh, &wait, TASK_INTERRUPTIBLE);
-+
-+               /*
-+                * If all users of the filter are gone, throw an error inst=
-ead
-+                * of pointlessly continuing to block.
-+                */
-+               if (refcount_read(&filter->users) =3D=3D 0) {
-+                       ret =3D -ENOTCON;
-+                       goto out;
-+               }
-+               if (filter->notif->canceled_reqs) {
-+                       ret =3D -ENOENT;
-+                       goto out;
-+               } else {
-+                       /* No notifications pending - wait for one,
-then retry. */
-+                       mutex_unlock(&filter->notify_lock);
-+                       schedule();
-+                       mutex_lock(&filter->notify_lock);
-+                       if (signal_pending(current)) {
-+                               ret =3D -EINTR;
-+                               goto out;
-+                       }
-+                       goto retry;
-+               }
-        }
-
-        unotif.id =3D knotif->id;
-@@ -1220,6 +1248,8 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-        wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
-        ret =3D 0;
- out:
-+       filter->notif->canceled_reqs =3D false;
-+       finish_wait(&filter->wqh, &wait);
-        mutex_unlock(&filter->notify_lock);
-
-        if (ret =3D=3D 0 && copy_to_user(buf, &unotif, sizeof(unotif))) {
-@@ -1233,10 +1263,8 @@ static long seccomp_notify_recv(struct
-seccomp_filter *filter,
-                 */
-                mutex_lock(&filter->notify_lock);
-                knotif =3D find_notification(filter, unotif.id);
--               if (knotif) {
-+               if (knotif)
-                        knotif->state =3D SECCOMP_NOTIFY_INIT;
--                       up(&filter->notif->request);
--               }
-                mutex_unlock(&filter->notify_lock);
-        }
-
-@@ -1485,7 +1513,6 @@ static struct file *init_listener(struct
-seccomp_filter *filter)
-        if (!filter->notif)
-                goto out;
-
--       sema_init(&filter->notif->request, 0);
-        filter->notif->next_id =3D get_random_u64();
-        INIT_LIST_HEAD(&filter->notif->notifications);
+DQpPbiAxLzEwLzIwIDI6MjQgcG0sIEFuZHJldyBMdW5uIHdyb3RlOg0KPj4gICDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHBvcnRAOCB7DQo+PiAgIMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHJlZyA9IDw4PjsNCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGFiZWwgPSAiaW50ZXJuYWw4IjsNCj4+ICAgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+cGh5LW1vZGUgPSAicmdtaWktaWQiOw0KPj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmaXhlZC1saW5rIHsNCj4+ICAgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHNwZWVkID0gPDEwMDA+Ow0KPj4gICDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgZnVsbC1kdXBsZXg7DQo+PiAgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07DQo+PiAgIMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsNCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwb3J0QDkgew0KPj4gICDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8
+OT47DQo+PiAgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGxhYmVsID0gImludGVybmFsOSI7DQo+PiAgIMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHBoeS1tb2Rl
+ID0gInJnbWlpLWlkIjsNCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZml4ZWQtbGluayB7DQo+PiAgIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBzcGVlZCA9IDwxMDAwPjsNCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZ1
+bGwtZHVwbGV4Ow0KPj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Ow0KPj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07DQo+PiBUaGUgcHJvYmxlbSBpcyB0aGF0IGJ5IGRlY2xh
+cmluZyBwb3J0cyA4ICYgOSBhcyBmaXhlZCBsaW5rIHRoZSBkcml2ZXINCj4+IHNldHMgdGhlIEZv
+cmNlZExpbmsgaW4gdGhlIFBDUyBjb250cm9sIHJlZ2lzdGVyLiBXaGljaCBtb3N0bHkgd29ya3Mu
+DQo+PiBFeGNlcHQgaWYgSSBhZGQgYSBjaGFzc2lzIGNvbnRyb2xsZXIgd2hpbGUgdGhlIHN5c3Rl
+bSBpcyBydW5uaW5nIChvciBvbmUNCj4+IGlzIHJlYm9vdGVkKSB0aGVuIHRoZSBuZXdseSBhZGRl
+ZCBjb250cm9sbGVyIGRvZXNuJ3Qgc2VlIGEgbGluayBvbiB0aGUNCj4+IHNlcmRlcy4NCj4gSGkg
+Q2hyaXMNCj4NCj4gWW91IHNheSBTRVJERVMgaGVyZSwgYnV0IGluIERUIHlvdSBoYXZlIHJnbWlp
+LWlkPw0KWWVhaCB0aGF0J3MgbW9zdGx5IGJlY2F1c2UgaXQgd2FzIGNvcGllZCBmcm9tIHRoZSBD
+UFUgcG9ydCAod2hpY2ggaXMgDQpSR01JSSB3aXRoIGludGVybmFsIGRlbGF5KS4gVGhlIE1hcnZl
+bGwgZGF0YXNoZWV0IHNheXMgIlNFUkRFUyIgc28gSSANCndhc24ndCByZWFsbHkgc3VyZSB3aGF0
+IHRvIHB1dCBoZXJlDQo+IENhbiB5b3UgcnVuIDEwMDBCYXNlLVggb3ZlciB0aGVzZSBsaW5rcz8N
+CldpdGggc29tZSByZWFkaW5nICIxMDAwYmFzZS14IiBkb2VzIHNlZW0gdGhlIHJpZ2h0IHRoaW5n
+IHRvIHNheSBoZXJlLiANCkl0J3MgZXZlbiB3aGF0IGlzIHJlZmxlY3RlZCBpbiB0aGUgQ01PREUg
+ZmllbGQgZm9yIHRob3NlIHBvcnRzLg0KPiBJZiB5b3UgY2FuLCBpdCBpcyBwcm9iYWJseQ0KPiB3
+b3J0aCBjaGF0dGluZyB0byBSdXNzZWxsIEtpbmcgYWJvdXQgdXNpbmcgaW5iYW5kLXNpZ25hbGxp
+bmcsIGFuZCB3aGF0DQo+IGlzIG5lZWRlZCB0byBtYWtlIGl0IHdvcmsgd2l0aG91dCBoYXZpbmcg
+YmFjayB0byBiYWNrIFNGUHMuIElmIGkNCj4gcmVtZW1iZXIgY29ycmVjdGx5LCBSdXNzZWxsIGhh
+cyBzYWlkIG5vdCBtdWNoIGlzIGFjdHVhbGx5IG5lZWRlZC4NCg0KVGhhdCdkIGJlIGlkZWFsLiBU
+aGUgc3RpY2tpbmcgcG9pbnQgc2VlbXMgdG8gYmUgYWxsb3dpbmcgaXQgdG8gaGF2ZSBubyBQSFku
+DQo=
