@@ -2,184 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEC327F94E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF3327F957
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJAGKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
+        id S1725954AbgJAGOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGKf (ORCPT
+        with ESMTP id S1725878AbgJAGOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:10:35 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661F5C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:10:35 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ce10so194386ejc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:10:35 -0700 (PDT)
+        Thu, 1 Oct 2020 02:14:14 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AB4C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:14:13 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id a16so2054253vsp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:14:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=jbnyjE/AX8v5NK7McM5EMdYujaOTMVhXCvWjXTugsV0=;
-        b=SvnLqHLCcb7P9dp8E9hxoz1SZX58Ash9xa9eorxUta1zThnWr76YnSj0hBjuqKzfYD
-         UzpMmLiQ+J2JyGOTDTzZ336tF66umuqnb44mV0aznbpJzaJaz4pcOvxlEWO2/ZgaLji7
-         upUHEh4hv76I4+a7RZadMc2Hh22e4EMzh4Y2dzWgMuM004iHWueNVabZAtCfkKUDjwfp
-         bf3ORHXgr1dsr2HQc5p8EU0J5EmOQJ3Ng4AKp0YoUmkM9I3shuKBYefLfSgAEChNiLJp
-         a46KDpGLFl/70DzDopzg4OivdycgI746MK/aEF09Ywpft7y5z+t6S5gFZy0eZ7zX+TQy
-         G5UA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VlK25AeCqL3jo7oZoKivx7ZKCZnGaTWNtqH24P3Rx58=;
+        b=nsKh9SmyYr6dFqhw75fYDL7n5mG3UUdgFMIuakzzITavWvq6EHjqF1X9nWwIt2r+wX
+         ojx5yjM71XwFhwhBRKWEodxX/dyhQeHrEI6fO/7tXmPZCrQuvRAeuMTU8UkiYbAfYgfV
+         y257KdPrMIfZeX9eyDP+cp0PpHAtvE9Vqtfko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=jbnyjE/AX8v5NK7McM5EMdYujaOTMVhXCvWjXTugsV0=;
-        b=bf2eaMK4OcAI2/4wjPBpEYv7vzd1CE3RGpZFZaz16OE8NH7SIZoOB9Gm9xH4cmEOOt
-         ehSqFCc/hEDyrUIy6L5M+uUoteEHg+DBgC63NHgYNi3foJV45W95FvzRm956WnlCGzZz
-         Nqcpvsh3pTDGfjoDHAdLMPpyoE2PYSXMqbriX7GLXZ+95b33Ze0gQQWMLhmj2BHP8gf0
-         obaSzn8a1UYhuE247IOQt8RZqhnHUNwI+unBKHqicys+5QSZhiHFpJJaCG/ox6hIVDPf
-         tSKgv0Cg7s5KdH0RCoVpDV29ubxyuTbE4NspTzdtYkTc4LTlAY2aRRRBbAMz/zxcfQ/q
-         UOqg==
-X-Gm-Message-State: AOAM531jXt2qFHiKC6gScorypWQJQ7Od8MKfpS49fgO4hTBuTUN+FNXP
-        edxDZGoSzv2nmJc97hOwreYj0NUDdpfgKzMYBbVmKh9r090=
-X-Google-Smtp-Source: ABdhPJx5ZPnGimrx4CYU7hNFQsc9cNWp7vY2oYg3MErIcXroIUebbl2iOqyyjXQzoAh3Kbs4U+Yl4dNgP1pikiYnir8=
-X-Received: by 2002:a17:906:fb8c:: with SMTP id lr12mr6753781ejb.9.1601532633857;
- Wed, 30 Sep 2020 23:10:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VlK25AeCqL3jo7oZoKivx7ZKCZnGaTWNtqH24P3Rx58=;
+        b=euv697QB4I8kFhv0V59fkwI97+4pv7p0hpjAVASxJyGgEUyheWXjlnf3XEwZpHBeCi
+         6krigb02HFP55zU55FGgdCATIRRpFa3UwqXf2rcv4UvlKad9wSZO60ny6sGxt/nsyzYb
+         OusR73CSZp4xe0vUCRewIlWNLtq8WFbZDyyZ+1Lvl48w8agO53Dhy4dpqLbdJKKCPNnA
+         Kh35VHlAwFpZ/fiAsXfSCexcdMR+3AUtOB2Z5Ur03G2wqaZ/e8dSKOxykijCW8qxdTSJ
+         gDHtTZoye6zDBcMmgm3wuy+7sQkbYoEPy6Zg4DYqk3Z2n2zDlbtSbL7jihtXXJWvkW8F
+         +zxg==
+X-Gm-Message-State: AOAM533ghFyIExbcdeLlmWer7Ge1u+Yat3GJr9evaExd+ikmbhLtS1to
+        sVpoUMgY8oMRrq3Z1qKT9ZrUtgwr+n688jf2vyQtQg==
+X-Google-Smtp-Source: ABdhPJxLXQQGLRLzY6RFBL5DI0m1HQoOFsQi0w8LIWHFTIqUlUJYtSC0vKE7KVqUO73TNfZ8033bmhNJ5nUfTYZXppE=
+X-Received: by 2002:a67:be08:: with SMTP id x8mr4072437vsq.47.1601532853052;
+ Wed, 30 Sep 2020 23:14:13 -0700 (PDT)
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 1 Oct 2020 16:10:22 +1000
-Message-ID: <CAPM=9txPMxjzQTiZiWeMCs_LDoYGid_d3F6W5HdBr8UB=tjvug@mail.gmail.com>
-Subject: [git pull] drm amdgpu + vmwgfx fixes for 5.9-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200930083120.11971-1-wenbin.mei@mediatek.com> <20200930083120.11971-5-wenbin.mei@mediatek.com>
+In-Reply-To: <20200930083120.11971-5-wenbin.mei@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Thu, 1 Oct 2020 14:14:02 +0800
+Message-ID: <CANMq1KCQ9x1kgME3dAQmGzjUoqkNLuWGS4dG07qhNKQ3N=o_dw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] mmc: mediatek: Add subsys clock control for MT8192 msdc
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mmc@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Sep 30, 2020 at 4:31 PM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>
+> MT8192 msdc is an independent sub system, we need control more bus
+> clocks for it.
+> Add support for the additional subsys clocks to allow it to be
+> configured appropriately.
+>
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> ---
+>  drivers/mmc/host/mtk-sd.c | 77 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 59 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index a704745e5882..9a1422955593 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -425,6 +425,8 @@ struct msdc_host {
+>         struct clk *h_clk;      /* msdc h_clk */
+>         struct clk *bus_clk;    /* bus clock which used to access register */
+>         struct clk *src_clk_cg; /* msdc source clock control gate */
+> +       struct clk *sys_clk_cg; /* msdc subsys clock control gate */
+> +       struct clk_bulk_data bulk_clks[3];      /* pclk, axi, ahb clock control gate */
+>         u32 mclk;               /* mmc subsystem clock frequency */
+>         u32 src_clk_freq;       /* source clock frequency */
+>         unsigned char timing;
+> @@ -784,6 +786,8 @@ static void msdc_set_busy_timeout(struct msdc_host *host, u64 ns, u64 clks)
+>
+>  static void msdc_gate_clock(struct msdc_host *host)
+>  {
+> +       clk_bulk_disable_unprepare(ARRAY_SIZE(host->bulk_clks),
+> +                                  host->bulk_clks);
+>         clk_disable_unprepare(host->src_clk_cg);
+>         clk_disable_unprepare(host->src_clk);
+>         clk_disable_unprepare(host->bus_clk);
+> @@ -792,10 +796,17 @@ static void msdc_gate_clock(struct msdc_host *host)
+>
+>  static void msdc_ungate_clock(struct msdc_host *host)
+>  {
+> +       int ret;
+> +
+>         clk_prepare_enable(host->h_clk);
+>         clk_prepare_enable(host->bus_clk);
+>         clk_prepare_enable(host->src_clk);
+>         clk_prepare_enable(host->src_clk_cg);
+> +       ret = clk_bulk_prepare_enable(ARRAY_SIZE(host->bulk_clks),
+> +                                     host->bulk_clks);
+> +       if (ret)
+> +               dev_dbg(host->dev, "enable clks failed!\n");
 
-Just dequeuing these a bit early as the AMD ones are bit larger than
-I'd prefer, but Alex missed last week so it's a double set of fixes.
-The larger ones are just register header fixes for the new chips that
-were just introduced in rc1 along with some new PCI IDs for new hw.
-Otherwise it is usual fixes.
+dev_err looks a lot more appropriate. Also, don't you want to exit the
+function in that case, rather than going to the while loop below where
+you may get stuck?
 
-The vmwgfx fix was due to some testing I was doing and found we
-weren't booting properly, vmware had the fix internally so hurried it
-out to me.
+> +
+>         while (!(readl(host->base + MSDC_CFG) & MSDC_CFG_CKSTB))
+>                 cpu_relax();
+>  }
+> @@ -2366,6 +2377,52 @@ static void msdc_of_property_parse(struct platform_device *pdev,
+>                 host->cqhci = false;
+>  }
+>
+> +static int msdc_of_clock_parse(struct platform_device *pdev,
+> +                              struct msdc_host *host)
+> +{
+> +       struct clk *clk;
+> +
+> +       host->src_clk = devm_clk_get(&pdev->dev, "source");
+> +       if (IS_ERR(host->src_clk))
+> +               return PTR_ERR(host->src_clk);
+> +
+> +       host->h_clk = devm_clk_get(&pdev->dev, "hclk");
+> +       if (IS_ERR(host->h_clk))
+> +               return PTR_ERR(host->h_clk);
+> +
+> +       host->bus_clk = devm_clk_get(&pdev->dev, "bus_clk");
+> +       if (IS_ERR(host->bus_clk))
+> +               host->bus_clk = NULL;
 
-I'm off tomorrow and Monday but I'll be around in case there are any
-major issues with this, or if I get set of intel or misc fixes come
-in.
+Use devm_clk_get_optional instead (ditto for the next 2).
 
-Dave.
+> +
+> +       /*source clock control gate is optional clock*/
+> +       host->src_clk_cg = devm_clk_get(&pdev->dev, "source_cg");
+> +       if (IS_ERR(host->src_clk_cg))
+> +               host->src_clk_cg = NULL;
+> +
+> +       host->sys_clk_cg = devm_clk_get(&pdev->dev, "sys_cg");
+> +       if (IS_ERR(host->sys_clk_cg))
+> +               host->sys_clk_cg = NULL;
+> +       else
+> +               clk_prepare_enable(host->sys_clk_cg);
 
-drm-fixes-2020-10-01-1:
-drm amd/vmwgfx fixes for 5.9-rc8
+This doesn't need to be in an else branch, calling clk_prepare_enable
+on a NULL clock is fine.
 
-vmwgfx:
-- fix a regression due to TTM refactor
+However, is it expected that this clock is turned on forever after
+probe?! At the very least, the clock should be disabled in
+msdc_drv_remove, but, really, I think it should be enabled as needed,
+like the other clocks, in msdc_gate_clock?
 
-amdgpu:
-- Fix potential double free in userptr handling
-- Sienna Cichlid and Navy Flounder updates
-- Add Sienna Cichlid PCI IDs
-- Drop experimental flag for navi12
-- Raven fixes
-- Renoir fixes
-- HDCP fix
-- DCN3 fix for clang and older versions of gcc
-- Fix a runtime pm refcount issue
-The following changes since commit a1b8638ba1320e6684aa98233c15255eb803fac7:
+> +
+> +       clk = devm_clk_get(&pdev->dev, "pclk_cg");
+> +       if (IS_ERR(clk))
+> +               clk = NULL;
+> +       host->bulk_clks[0].clk = clk;
+> +
+> +       clk = devm_clk_get(&pdev->dev, "axi_cg");
+> +       if (IS_ERR(clk))
+> +               clk = NULL;
+> +       host->bulk_clks[1].clk = clk;
+> +
+> +       clk = devm_clk_get(&pdev->dev, "ahb_cg");
+> +       if (IS_ERR(clk))
+> +               clk = NULL;
+> +       host->bulk_clks[2].clk = clk;
 
-  Linux 5.9-rc7 (2020-09-27 14:38:10 -0700)
+Use devm_clk_bulk_get_optional for these 3.
 
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-10-01-1
-
-for you to fetch changes up to 132d7c8abeaa6b10ed5f47330b0f06c6dd220a43:
-
-  Merge tag 'amd-drm-fixes-5.9-2020-09-30' of
-git://people.freedesktop.org/~agd5f/linux into drm-fixes (2020-10-01
-15:25:33 +1000)
-
-----------------------------------------------------------------
-drm amd/vmwgfx fixes for 5.9-rc8
-
-vmwgfx:
-- fix a regression due to TTM refactor
-
-amdgpu:
-- Fix potential double free in userptr handling
-- Sienna Cichlid and Navy Flounder udpates
-- Add Sienna Cichlid PCI IDs
-- Drop experimental flag for navi12
-- Raven fixes
-- Renoir fixes
-- HDCP fix
-- DCN3 fix for clang and older versions of gcc
-- Fix a runtime pm refcount issue
-
-----------------------------------------------------------------
-Alex Deucher (6):
-      drm/amdgpu: add the GC 10.3 VRS registers
-      drm/amdgpu: add VCN 3.0 AV1 registers
-      drm/amdgpu: use the AV1 defines for VCN 3.0
-      drm/amdgpu: remove experimental flag from navi12
-      drm/amdgpu/display: fix CFLAGS setup for DCN30
-      drm/amdgpu/swsmu/smu12: fix force clock handling for mclk
-
-Dave Airlie (2):
-      Merge branch 'vmwgfx-fixes-5.9' of
-git://people.freedesktop.org/~sroland/linux into drm-fixes
-      Merge tag 'amd-drm-fixes-5.9-2020-09-30' of
-git://people.freedesktop.org/~agd5f/linux into drm-fixes
-
-Dirk Gouders (1):
-      drm/amd/display: remove duplicate call to rn_vbios_smu_get_smu_version()
-
-Evan Quan (1):
-      drm/amd/pm: setup APU dpm clock table in SMU HW initialization
-
-Flora Cui (1):
-      drm/amd/display: fix return value check for hdcp_work
-
-Jean Delvare (1):
-      drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
-
-Jiansong Chen (2):
-      drm/amdgpu: remove gpu_info fw support for sienna_cichlid etc.
-      drm/amdgpu: disable gfxoff temporarily for navy_flounder
-
-Likun Gao (1):
-      drm/amdgpu: add device ID for sienna_cichlid (v2)
-
-Philip Yang (1):
-      drm/amdgpu: prevent double kfree ttm->sg
-
-Sudheesh Mavila (1):
-      drm/amd/pm: Removed fixed clock in auto mode DPM
-
-Zack Rusin (1):
-      drm/vmwgfx: Fix error handling in get_node
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 10 +----
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c        |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            | 12 +++++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  1 +
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  3 ++
- drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c              | 16 +++----
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c |  2 +-
- .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  1 -
- drivers/gpu/drm/amd/display/dc/dcn30/Makefile      | 18 +++++++-
- .../amd/include/asic_reg/gc/gc_10_3_0_default.h    |  2 +
- .../drm/amd/include/asic_reg/gc/gc_10_3_0_offset.h |  4 ++
- .../amd/include/asic_reg/gc/gc_10_3_0_sh_mask.h    | 50 ++++++++++++++++++++++
- .../amd/include/asic_reg/vcn/vcn_3_0_0_sh_mask.h   | 34 +++++++++++++++
- drivers/gpu/drm/amd/powerplay/amdgpu_smu.c         | 22 +++++-----
- drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c  | 10 +++--
- drivers/gpu/drm/amd/powerplay/renoir_ppt.c         |  8 ++--
- drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c      |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_thp.c                |  2 +-
- 18 files changed, 156 insertions(+), 43 deletions(-)
+> +
+> +       return 0;
+> +}
+> +
+>  static int msdc_drv_probe(struct platform_device *pdev)
+>  {
+>         struct mmc_host *mmc;
+> @@ -2405,25 +2462,9 @@ static int msdc_drv_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto host_free;
+>
+> -       host->src_clk = devm_clk_get(&pdev->dev, "source");
+> -       if (IS_ERR(host->src_clk)) {
+> -               ret = PTR_ERR(host->src_clk);
+> -               goto host_free;
+> -       }
+> -
+> -       host->h_clk = devm_clk_get(&pdev->dev, "hclk");
+> -       if (IS_ERR(host->h_clk)) {
+> -               ret = PTR_ERR(host->h_clk);
+> +       ret = msdc_of_clock_parse(pdev, host);
+> +       if (ret)
+>                 goto host_free;
+> -       }
+> -
+> -       host->bus_clk = devm_clk_get(&pdev->dev, "bus_clk");
+> -       if (IS_ERR(host->bus_clk))
+> -               host->bus_clk = NULL;
+> -       /*source clock control gate is optional clock*/
+> -       host->src_clk_cg = devm_clk_get(&pdev->dev, "source_cg");
+> -       if (IS_ERR(host->src_clk_cg))
+> -               host->src_clk_cg = NULL;
+>
+>         host->reset = devm_reset_control_get_optional_exclusive(&pdev->dev,
+>                                                                 "hrst");
+> --
+> 2.18.0
