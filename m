@@ -2,108 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A430727F691
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ED927F695
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731735AbgJAARC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729980AbgJAARC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:17:02 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4F5C0613D0;
-        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u24so2427845pgi.1;
-        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WqcMmMBNNOIzGt7x1JA06HdtMKTkJlzsGJR/X1W+/9A=;
-        b=qkr/7oaI1LyoLrsxZnebU4g615j4NsvO+jwltcKIUFvNknV8nhhrwqu3kyTq6T0D1T
-         BKBhfX3DY526jjZsKjQPZa4MtzsFDZ7pv32AvzPs375CDFm19DNSiw7+ez3afCK23OS+
-         zIkOxn4kF1TCKFO3eyeWv6w5239jNLG4yrdstgVY+R/C6CZISRpi8grXb0ntwPQMWhO6
-         3yCKu3afIB90kK9LI0+JoFTYlAGRBNSooB2YM/TgHeWThTKygDbMB4hJEZB9vgUkxEmP
-         WlGktQ2iU8jRTeZUWv5tJG4f7SkIWoHhXu29DMH4WzjRj5X53TswTIphzhFt58Z2t0Zi
-         5u0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WqcMmMBNNOIzGt7x1JA06HdtMKTkJlzsGJR/X1W+/9A=;
-        b=eJ+tr+u/ZAxNsgSJTK0VEUibSMdJ02SzUfPi1a1+aPBjq8lzaPfKxGGKyouOG9r08p
-         gpvqcOFDLz/gY+wXUKN4qaLovjnAYM3xtw7KWeYwJKyMxxAmubeSfFGpCovp0uNW8M/W
-         9nfkTterdqz7B1EA9KEPS/17aLiZNJl428qrnX+eNvNSwEWonF3TRonA/VS0V+r4i7J4
-         a7rJaLZ1J+mX0cq94C6GVCdFH2NDDSOJCQd3imA4cjS8y0Umu4S0U2IEOpuny3JQ+PR/
-         e5LzfcL2JkOqVBWHhrBl8L0l0kYPxb6ws3d+mnvXgJs/XojACdSfqyDeWdXNy8C6Wxq5
-         3dSg==
-X-Gm-Message-State: AOAM53157qjnqvV+pp2fV9C7pAtlpksqO6Q0iwGJBfUzdJhq2erpq4cO
-        a2fC2nKkWGbta/q0H7B/LJGWRwqfT0qVIw==
-X-Google-Smtp-Source: ABdhPJwX1+0gsnkqUhoqdO6SrJH9Lb9QfpxuuBi40yDN94OHgYw2Ab0XXHLflVFPUaPhqcN0f9Hc0w==
-X-Received: by 2002:a17:902:9f8f:b029:d3:8e2a:192e with SMTP id g15-20020a1709029f8fb02900d38e2a192emr296926plq.20.1601511421026;
-        Wed, 30 Sep 2020 17:17:01 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s19sm4171253pfc.69.2020.09.30.17.16.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 17:17:00 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: dsa: Support bridge 802.1Q while untagging
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200930203103.225677-1-f.fainelli@gmail.com>
- <20200930204358.574xxijrrciiwh6h@skbuf>
- <89404248-f8ea-b5f5-12c5-a19392397222@gmail.com>
-Message-ID: <30265d9b-fb50-16a7-fb08-1199762a14b3@gmail.com>
-Date:   Wed, 30 Sep 2020 17:16:56 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        id S1731855AbgJAATT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:19:19 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14178 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730268AbgJAATT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 20:19:19 -0400
+IronPort-SDR: Wxka46XZp0xp2MIF6Eo3Iz2pccBCrikkGLsZVoMCkvSLjaYMYP0HrwfkmZKwXk418ZAX6lUSa8
+ 1Ui2pbri+0kA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="224186366"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="224186366"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:19:15 -0700
+IronPort-SDR: DxQVWFOEvZZ4hRXTL1/AnxrxvkeCWRQTFbnfyPUH33DsPQi12X7v46mnyo9bV1A2+/BdCZNHRy
+ bVtlYmOLRZYA==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="457871009"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.91.128])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:19:14 -0700
+Subject: Re: [PATCH v1 00/12] Intel FPGA Security Manager Class Driver
+To:     Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <4d554f31-1267-92cc-f717-00992144c41b@redhat.com>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <7f9b6090-a265-11ec-3ee4-14a2a63206f8@intel.com>
+Date:   Wed, 30 Sep 2020 17:19:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <89404248-f8ea-b5f5-12c5-a19392397222@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <4d554f31-1267-92cc-f717-00992144c41b@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/30/2020 4:29 PM, Florian Fainelli wrote:
-> 
-> 
-> On 9/30/2020 1:43 PM, Vladimir Oltean wrote:
->> On Wed, Sep 30, 2020 at 01:31:03PM -0700, Florian Fainelli wrote:
->>> While we are it, call __vlan_find_dev_deep_rcu() which makes use the
->>> VLAN group array which is faster.
+On 9/5/20 10:16 AM, Tom Rix wrote:
+> resending.
+> sorry for blowing past 80 chars.
+>
+> On 9/4/20 4:52 PM, Russ Weight wrote:
+>> These patches depend on the patchset: "add regmap-spi-avmm & Intel
+>> Max10 BMC chip support" which is currently under review.
+> https://marc.info/?l=linux-kernel&m=159782274232229&w=2
+>
+> regmap-spi-avmm is in linux-next.
+>
+> max10 is not. however applying it does not resolve resolve
+> git am conflicts with yesterday's linux-next.
+> I normally build the larger patchsets as a test.
+I have rebased to a more recent version of linux-next. I'll make sure to
+send dependency information with the next patch set. I'll also split it
+into two patch sets, since the class driver has no dependencies on patches
+that are in flight.
+>
+>>            --------------------------------------------------
 >>
->> Not just "while at it", but I do wonder whether it isn't, in fact,
->> called "deep" for a reason:
+>> This patchset introduces the Intel Security Manager class driver
+>> for managing secure updates on Intel FPGA Cards. It also provides
+>> the n3000bmc-secure mfd sub-driver for the MAX10 BMC for the n3000
+>> Programmable Acceleration Cards (PAC). The n3000bmc-secure driver
+>> is implemented using the Intel Security Manager class driver.
 >>
->>         /*
->>          * Lower devices of master uppers (bonding, team) do not have
->>          * grp assigned to themselves. Grp is assigned to upper device
->>          * instead.
->>          */
+>> The Intel Security Manager class driver provides a common API for
+>> user-space tools to manage updates for Secure FPGA devices. Device
+>> drivers that instantiate the Intel Security Manager class driver will
+>> interact with the HW secure update engine in order to transfer
+>> new FPGA and BMC images to FLASH so that they will be automatically
+>> loaded when the FPGA card reboots.
 >>
->> I haven't tested this, but I wonder if you could actually call
->> __vlan_find_dev_deep_rcu() on the switch port interface and it would
->> cover both this and the bridge having an 8021q upper automatically?
-> 
-> Let me give this a try.
+>> The API consists of sysfs nodes and supports the following functions:
+>>
+>> (1) Instantiate and monitor a secure update
+>> (2) Display security information including: Root Entry Hashes (REH),
+>>     Cancelled Code Signing Keys (CSK), and flash update counts for
+>>     both BMC and FPGA images.
+>>
+>> Secure updates make use of the request_firmware framework, which
+>> requires that image files are accessible under /lib/firmware. A request
+>> for a secure update returns immediately, while the update itself
+>> proceeds in the context of a kernel worker thread. Sysfs files provide
+>> a means for monitoring the progress of a secure update and for
+>> retrieving error information in the event of a failure.
+>>
+>> The n3000bmc-secure driver instantiates the Intel Security Manager
+>> class driver and provides the callback functions required to support
+>> secure updates on Intel n3000 PAC devices.
+> This is a good description.  Because security manager is a new
+> interface, there should be a Documentation/fpga/ifpga-sec-mgr.rst
+> to collect this description.
+Sure - I'll create the documentation file.
+>
+> How will these devices be discovered ? n3000 is a dfl device,
+> will there be a dfl feature id for it at some point ? 
 
-We hit the if (vlan_info) branch and we do not recurse through the 
-upper_dev because of that.
+The n3000 implementation of the MAX10 BMC, and eventually the d5005
+implementation of the MAX10 BMC, both instantiate the MAX10 BMC Secure
+Engine as a sub device. There is a dfl feature ID for the SPI interface
+to the BMC, but no dfl feature ID for the secure engine itself.
 
-I still need to send a v2 to remove the now unused 'iter' variable and 
-fix up the bridge iproute2 command (there is no vlan_filtering=0 it is 
-vlan_filtering 0).
--- 
-Florian
+Given that the security manager is dependent on other hardware and
+firmware to manage the root entry hashes and to verify and program
+the images, I think it is safe to say that implementations of the
+security manager will always be implemented as sub devices. I can't
+think of a case for giving it it's own dfl feature ID.
+
+The class driver, of course, is an abstraction above the MAX10 BMC
+implementation.
+> Can you describe if/how the security manager would live outside
+> of dfl ?  I am wondering why this shouldn't be dfl-sec-mgr. 
+The Intel FPGA Security Manager could be used by Intel FPGA devices that
+are implemented without a Device Feature List.
+
+> I did not see any version handling.  How would this sw adapt
+> to a newer or older version of the bmc interface?
+There are some slight differences in the implementation of the MAX10 BMC
+Secure Engine between the n3000 and d5005 implementations. The d5005
+support is not in the current patch set, but when it is included there
+will be a different device name to indicate which code variations should
+be active. Also, different platform data can be passed into the secure
+engine by the parent MAX10 device if needed for new versions of the BMC.
+
+Thanks,
+- Russ
+>
+> Tom
+>
+>> Russ Weight (12):
+>>   fpga: fpga security manager class driver
+>>   fpga: create intel max10 bmc security engine
+>>   fpga: expose max10 flash update counts in sysfs
+>>   fpga: expose max10 canceled keys in sysfs
+>>   fpga: enable secure updates
+>>   fpga: add max10 secure update functions
+>>   fpga: expose sec-mgr update status
+>>   fpga: expose sec-mgr update errors
+>>   fpga: expose sec-mgr update size
+>>   fpga: enable sec-mgr update cancel
+>>   fpga: expose hardware error info in sysfs
+>>   fpga: add max10 get_hw_errinfo callback func
+>>
+>>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 151 ++++
+>>  MAINTAINERS                                   |   8 +
+>>  drivers/fpga/Kconfig                          |  20 +
+>>  drivers/fpga/Makefile                         |   6 +
+>>  drivers/fpga/ifpga-sec-mgr.c                  | 669 ++++++++++++++++++
+>>  drivers/fpga/intel-m10-bmc-secure.c           | 557 +++++++++++++++
+>>  include/linux/fpga/ifpga-sec-mgr.h            | 201 ++++++
+>>  include/linux/mfd/intel-m10-bmc.h             | 116 +++
+>>  8 files changed, 1728 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+>>  create mode 100644 drivers/fpga/ifpga-sec-mgr.c
+>>  create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+>>  create mode 100644 include/linux/fpga/ifpga-sec-mgr.h
+>>
+
