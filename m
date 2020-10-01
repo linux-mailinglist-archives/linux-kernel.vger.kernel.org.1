@@ -2,75 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14433280433
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2B3280437
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732594AbgJAQqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:46:54 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:40161 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732107AbgJAQqx (ORCPT
+        id S1732741AbgJAQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:47:15 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:39990 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732610AbgJAQrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:46:53 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 6131C22F99;
-        Thu,  1 Oct 2020 18:46:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601570811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SUlIC2qg+S8tqNWZ4hKY5u/wUrtwXqRGM3IktJxX77U=;
-        b=eSnTM3IChuDzLyHwrw9AlCth3cEBefgDJrW6fRp9/IJYcbbPTzhJtb6p79i3hLZeG4y2Lt
-        UL4dW5BvC1otmA9MY957c5zKzKUSvBw/CKFsLbicMWNXwDHYlmsmj0cQkfra4fK1qZZjSM
-        HJA/VRxWo3CQxVHpl5ipQI/rMKlU+9A=
+        Thu, 1 Oct 2020 12:47:15 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091GlCas110323;
+        Thu, 1 Oct 2020 11:47:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601570832;
+        bh=cBELNFIPwspTIBCA2zHV6tM8uGfMKesPrz8uvHLYLcg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vUY7LTfaP0M+evcyJRiNJ/VRusCaAkvktf7q54rf/n5rLFVSwB8gAc/EQu5+K321o
+         M/Mgl660n+GqktMfINmiAlMSkxspuKWiGrAq6yl9hvKUZ1DUZWNPgbfOFHm2IAPHSA
+         /pBlsfI6TWAukvMrhj6nsu4RTNgRS4qtCGBg6MwE=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091GlCRY038514;
+        Thu, 1 Oct 2020 11:47:12 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
+ 2020 11:47:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 1 Oct 2020 11:47:11 -0500
+Received: from [10.250.79.43] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091GlBKo001683;
+        Thu, 1 Oct 2020 11:47:11 -0500
+Subject: Re: [EXTERNAL] Re: [PATCH v4 2/2] power: supply: bq256xx: Introduce
+ the BQ256XX charger driver
+To:     Sebastian Reichel <sre@kernel.org>
+CC:     <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmurphy@ti.com>
+References: <20200923152416.24822-1-r-rivera-matos@ti.com>
+ <20200923152416.24822-3-r-rivera-matos@ti.com>
+ <20200930234725.467aylfzokwzw72z@earth.universe>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <e78c0a78-8401-a6bf-8b49-b1444da79999@ti.com>
+Date:   Thu, 1 Oct 2020 11:47:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200930234725.467aylfzokwzw72z@earth.universe>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Oct 2020 18:46:51 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "Z.q. Hou" <zhiqiang.hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-In-Reply-To: <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
- <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
- <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
- <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20200928093911.GB12010@e121166-lin.cambridge.arm.com>
- <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
- <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
- <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
- <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <99d24fe08ecb5a6f5bba7dc6b1e2b42b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-10-01 15:32, schrieb Kishon Vijay Abraham I:
+Sebastian
 
-> Meanwhile would it be okay to add linkup check atleast for DRA7X so 
-> that
-> we could have it booting in linux-next?
+On 9/30/20 6:47 PM, Sebastian Reichel wrote:
+> Hi,
+>
+> You are leaking some resources, otherwise LGTM.
+ACK
+>
+> On Wed, Sep 23, 2020 at 10:24:16AM -0500, Ricardo Rivera-Matos wrote:
+>> [...]
+>> +static int bq256xx_hw_init(struct bq256xx_device *bq)
+>> +{
+>> +	struct power_supply_battery_info bat_info = { };
+>> +	int wd_reg_val = BQ256XX_WATCHDOG_DIS;
+>> +	int ret = 0;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < BQ256XX_NUM_WD_VAL; i++) {
+>> +		if (bq->watchdog_timer > bq256xx_watchdog_time[i] &&
+>> +		    bq->watchdog_timer < bq256xx_watchdog_time[i + 1])
+>> +			wd_reg_val = i;
+>> +	}
+>> +	ret = regmap_update_bits(bq->regmap, BQ256XX_CHARGER_CONTROL_1,
+>> +				 BQ256XX_WATCHDOG_MASK, wd_reg_val <<
+>> +						BQ256XX_WDT_BIT_SHIFT);
+>> +
+>> +	ret = power_supply_get_battery_info(bq->charger, &bat_info);
+>> +	if (ret) {
+>> +		dev_warn(bq->dev, "battery info missing, default values will be applied\n");
+>> +
+>> +		bat_info.constant_charge_current_max_ua =
+>> +				bq->chip_info->bq256xx_def_ichg;
+>> +
+>> +		bat_info.constant_charge_voltage_max_uv =
+>> +				bq->chip_info->bq256xx_def_vbatreg;
+>> +
+>> +		bat_info.precharge_current_ua =
+>> +				bq->chip_info->bq256xx_def_iprechg;
+>> +
+>> +		bat_info.charge_term_current_ua =
+>> +				bq->chip_info->bq256xx_def_iterm;
+>> +
+>> +		bq->init_data.ichg_max =
+>> +				bq->chip_info->bq256xx_max_ichg;
+>> +
+>> +		bq->init_data.vbatreg_max =
+>> +				bq->chip_info->bq256xx_max_vbatreg;
+>> +	} else {
+>> +		bq->init_data.ichg_max =
+>> +			bat_info.constant_charge_current_max_ua;
+>> +
+>> +		bq->init_data.vbatreg_max =
+>> +			bat_info.constant_charge_voltage_max_uv;
+>> +	}
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_vindpm(bq, bq->init_data.vindpm);
+>> +	if (ret)
+>> +		goto err_out;
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_iindpm(bq, bq->init_data.iindpm);
+>> +	if (ret)
+>> +		goto err_out;
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_ichg(bq,
+>> +				bat_info.constant_charge_current_max_ua);
+>> +	if (ret)
+>> +		goto err_out;
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_iprechg(bq,
+>> +				bat_info.precharge_current_ua);
+>> +	if (ret)
+>> +		goto err_out;
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_vbatreg(bq,
+>> +				bat_info.constant_charge_voltage_max_uv);
+>> +	if (ret)
+>> +		goto err_out;
+>> +
+>> +	ret = bq->chip_info->bq256xx_set_iterm(bq,
+>> +				bat_info.charge_term_current_ua);
+>> +	if (ret)
+>> +		goto err_out;
+> You need to power_supply_put_battery_info().
+ACK
+>
+>> +
+>> +	return 0;
+>> +
+>> +err_out:
+>> +	return ret;
+>> +}
+>> +
+>> +static int bq256xx_parse_dt(struct bq256xx_device *bq)
+>> +{
+>> +	int ret = 0;
+>> +
+>> +	ret = device_property_read_u32(bq->dev, "ti,watchdog-timeout-ms",
+>> +				       &bq->watchdog_timer);
+>> +	if (ret)
+>> +		bq->watchdog_timer = BQ256XX_WATCHDOG_DIS;
+>> +
+>> +	if (bq->watchdog_timer > BQ256XX_WATCHDOG_MAX ||
+>> +	    bq->watchdog_timer < BQ256XX_WATCHDOG_DIS)
+>> +		return -EINVAL;
+>> +
+>> +	ret = device_property_read_u32(bq->dev,
+>> +				       "input-voltage-limit-microvolt",
+>> +				       &bq->init_data.vindpm);
+>> +	if (ret)
+>> +		bq->init_data.vindpm = bq->chip_info->bq256xx_def_vindpm;
+>> +
+>> +	ret = device_property_read_u32(bq->dev,
+>> +				       "input-current-limit-microamp",
+>> +				       &bq->init_data.iindpm);
+>> +	if (ret)
+>> +		bq->init_data.iindpm = bq->chip_info->bq256xx_def_iindpm;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int bq256xx_probe(struct i2c_client *client,
+>> +			 const struct i2c_device_id *id)
+>> +{
+>> +	struct device *dev = &client->dev;
+>> +	struct bq256xx_device *bq;
+>> +	int ret;
+>> +
+>> +	bq = devm_kzalloc(dev, sizeof(*bq), GFP_KERNEL);
+>> +	if (!bq)
+>> +		return -ENOMEM;
+>> +
+>> +	bq->client = client;
+>> +	bq->dev = dev;
+>> +	bq->chip_info = &bq256xx_chip_info_tbl[id->driver_data];
+>> +
+>> +	mutex_init(&bq->lock);
+>> +
+>> +	strncpy(bq->model_name, id->name, I2C_NAME_SIZE);
+>> +
+>> +	bq->regmap = devm_regmap_init_i2c(client,
+>> +					bq->chip_info->bq256xx_regmap_config);
+>> +
+>> +	if (IS_ERR(bq->regmap)) {
+>> +		dev_err(dev, "Failed to allocate register map\n");
+>> +		return PTR_ERR(bq->regmap);
+>> +	}
+>> +
+>> +	i2c_set_clientdata(client, bq);
+>> +
+>> +	ret = bq256xx_parse_dt(bq);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to read device tree properties%d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* OTG reporting */
+>> +	bq->usb2_phy = devm_usb_get_phy(dev, USB_PHY_TYPE_USB2);
+>> +	if (!IS_ERR_OR_NULL(bq->usb2_phy)) {
+>> +		INIT_WORK(&bq->usb_work, bq256xx_usb_work);
+>> +		bq->usb_nb.notifier_call = bq256xx_usb_notifier;
+>> +		usb_register_notifier(bq->usb2_phy, &bq->usb_nb);
+>> +	}
+>> +
+>> +	bq->usb3_phy = devm_usb_get_phy(dev, USB_PHY_TYPE_USB3);
+>> +	if (!IS_ERR_OR_NULL(bq->usb3_phy)) {
+>> +		INIT_WORK(&bq->usb_work, bq256xx_usb_work);
+>> +		bq->usb_nb.notifier_call = bq256xx_usb_notifier;
+>> +		usb_register_notifier(bq->usb3_phy, &bq->usb_nb);
+>> +	}
+>> +
+>> +	if (client->irq) {
+>> +		ret = devm_request_threaded_irq(dev, client->irq, NULL,
+>> +						bq256xx_irq_handler_thread,
+>> +						IRQF_TRIGGER_FALLING |
+>> +						IRQF_ONESHOT,
+>> +						dev_name(&client->dev), bq);
+>> +		if (ret)
+>> +			goto error_out;
+>> +	}
+>> +
+>> +	ret = bq256xx_power_supply_init(bq, dev);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to register power supply\n");
+>> +		goto error_out;
+>> +	}
+>> +
+>> +	ret = bq256xx_hw_init(bq);
+>> +	if (ret) {
+>> +		dev_err(dev, "Cannot initialize the chip.\n");
+>> +		goto error_out;
+>> +	}
+>> +
+>> +	return ret;
+>> +
+>> +error_out:
+>> +	if (!IS_ERR_OR_NULL(bq->usb2_phy))
+>> +		usb_unregister_notifier(bq->usb2_phy, &bq->usb_nb);
+>> +
+>> +	if (!IS_ERR_OR_NULL(bq->usb3_phy))
+>> +		usb_unregister_notifier(bq->usb3_phy, &bq->usb_nb);
+>> +	return ret;
+> This also needs to be called during driver removal. Probably
+> it's best to do this via devm_add_action_or_reset().
+ACK, I will insert devm_add_action_or_reset() just before ret = 
+bq256xx_power_supply_init()
+>
+>> [...]
+> -- Sebastian
+Ricardo
 
-Layerscape SoCs (at least the LS1028A) are also still broken in 
-linux-next,
-did I miss something here?
-
--michael
