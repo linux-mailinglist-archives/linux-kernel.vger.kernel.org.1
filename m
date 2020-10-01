@@ -2,168 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C000E27FFC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE93327FFD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732109AbgJANKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:10:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731993AbgJANKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:10:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601557851;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xFUnXQMv4aORWxidWComJlT9MonN8L32jYIrDxmnjB0=;
-        b=EcaILCjJ0u9NsdrQvhoLlkmgfYSULO3AYBQBiEVofgipD0/ts2IImzkB4YD0UlpIaPMiyn
-        K6ETaCkip2txMIjEF+0gLnUOjsA+Ewvr1zk+FtXu8T62GkYQfsn+TcdhwfbsezQTU7WlJ9
-        IX+Eg+fItpy267tUlKPRga/fI9nHFmU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-nMp98reuOZ2cHbEULI5Lxg-1; Thu, 01 Oct 2020 09:10:49 -0400
-X-MC-Unique: nMp98reuOZ2cHbEULI5Lxg-1
-Received: by mail-wr1-f69.google.com with SMTP id h4so2057469wrb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 06:10:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xFUnXQMv4aORWxidWComJlT9MonN8L32jYIrDxmnjB0=;
-        b=Tr0MBMhkzPPxvc+0uWvBgut11hUanbKzRFKTTIkrdyEe4ahO+an+42X9hYdAZM4qeW
-         /+/AZrXcOjnK6UM77+YiawuKVl/D5YDrhdjr1ADiEg/1TOAevScmR7icQDUcMwNZtccS
-         c70bWEd0a3gTuCvS8/ys6B/JqxpI7MveIRFBNTKvVM1c9I/PyuW9ek1yeNCCdlQcprIT
-         XiFAUhkRYTuH3/mOJntY7aQs6ayqsLGSRLeJ+rM1aI07Jgb++3Us3veAhIzKVl+U5L1H
-         hSdHvgg6nqAh3Kl33x1lmAzq2FCxrq3IoFxVMJ3H90b/LQfhhXLAwggCOBE8fEshKn4s
-         WqGg==
-X-Gm-Message-State: AOAM530JrZ3xarkIsohRCQ6NEaKDest/rGayrdUmsczrADWyphFD0gtN
-        1wxYR2T92wQ80RtlYJNODN2gfdQfC7mKK+SW7yYraLGxreJGDQaDvmuFFbDzMW/f31vlpZJe6AT
-        6LqgM4QroBl4dt0ZeKMYjNVJQ
-X-Received: by 2002:a5d:4d49:: with SMTP id a9mr9570326wru.363.1601557848409;
-        Thu, 01 Oct 2020 06:10:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5nY4zdx/I3zgIudVnED4xhXFzBZtNznZtR56A9chCs3NritAa14+llvalqigruR7QUdi/6Q==
-X-Received: by 2002:a5d:4d49:: with SMTP id a9mr9570229wru.363.1601557847793;
-        Thu, 01 Oct 2020 06:10:47 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n3sm8789121wmn.28.2020.10.01.06.10.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 06:10:45 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org
-Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in hyperv_flush_tlb_others()
-In-Reply-To: <20201001115359.6jhhrybemnhizgok@liuwe-devbox-debian-v2>
-References: <20201001013814.2435935-1-sashal@kernel.org> <87o8lm9te3.fsf@vitty.brq.redhat.com> <20201001115359.6jhhrybemnhizgok@liuwe-devbox-debian-v2>
-Date:   Thu, 01 Oct 2020 15:10:44 +0200
-Message-ID: <87ft6y9jmz.fsf@vitty.brq.redhat.com>
+        id S1732093AbgJANPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:15:20 -0400
+Received: from mail-eopbgr150128.outbound.protection.outlook.com ([40.107.15.128]:37025
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731936AbgJANPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:15:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GFo1aDCDSx8L5RIZOOvrcV19P/ryaoFyesMXdT9RxBeo6TM0DzZIKWv2nGyiHHczMzb2ePgP5DgvVN5/rNAusJqj++qpp8QKdQOEOgxNeOnEWCxlSpyCd0OHmVTNys2KZkVe2B3ttFFCay45fSU3Lfe0MqfgGk3cPPGfMQHh0A6tKwl4T4pkT1a59Ncdp5n9SV9MEMCiOQomS4G3lmx8d/e9lq260Q/kZD2Lxdrz0KfBN6Jh4vApb0wMJdPFvN8IhH7UL7KeJ8JD0hFdSh+amznyjcDAPCxsDeZ60AllskIqThepTEyt5AEjEgKD3NLbOYPmvYT/XLsb0C+wYYRRnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5gKPeFIjRR6YEUHxWYaj0QSznVA29+rhIQrA4qRUsWc=;
+ b=NFPd9/Ps+1+QIg4KNtk82UJk8ulJGA171b3cGLCuyE9EmxGB4P0fz4nkgYQPd5KoIzjuVAaSm7NF97KehQW4O2R/5qGAIOptWnOHFmJoe+BF4NGINF+gSOD45YPNWZmSwpU/hhfSyh3UA3J5Tow5VJ18HltVp3uusRjEmc1sXx+d/1ZbdJYNGXXcOW4mRHhMJrgKGw4fZWoveFygLui+HZgNhS1DxrC5k4fsyGcwPx2zhqDSlTKqCvphmGbx9VbJ0Dn/db+2XF36qfq8m57Q0kDxg+UfQlsmV/UClGn0upw6Duuji0TBK5UA7n8IHC1NN40T9Cf46DxDzoYTtKthAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5gKPeFIjRR6YEUHxWYaj0QSznVA29+rhIQrA4qRUsWc=;
+ b=SELqUtGMJdEtR8RJi3S2aOz0K7szWHlnkny0N5sYi+Kz/3fQf1ObiEfaGmfgZgso/PjUI2lkd1OGxfOB7/bwBtpreD+99cJhxqY3JY9iwpHMzZbwPAUjRvVy+r8WAdVsRyEr/z0GOtiGin1jxEYli2fnwvxjOrEz+oWi56PtbSQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM8PR10MB3988.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e0::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35; Thu, 1 Oct
+ 2020 13:15:15 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852:b8d:8b04:d2f5%6]) with mapi id 15.20.3433.032; Thu, 1 Oct 2020
+ 13:15:15 +0000
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mm-kontron: Add support for ultra
+ high speed modes on SD card
+To:     Robin Gong <yibin.gong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201001123447.1610-1-frieder.schrempf@kontron.de>
+ <20201001123447.1610-2-frieder.schrempf@kontron.de>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <d40f71e8-52d9-e4c3-0fba-f122e03a5fd7@kontron.de>
+Date:   Thu, 1 Oct 2020 15:15:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201001123447.1610-2-frieder.schrempf@kontron.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.247.42.197]
+X-ClientProxiedBy: AM7PR02CA0022.eurprd02.prod.outlook.com
+ (2603:10a6:20b:100::32) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.17] (89.247.42.197) by AM7PR02CA0022.eurprd02.prod.outlook.com (2603:10a6:20b:100::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.37 via Frontend Transport; Thu, 1 Oct 2020 13:15:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ddb65438-e070-4838-22b6-08d8660c095d
+X-MS-TrafficTypeDiagnostic: AM8PR10MB3988:
+X-Microsoft-Antispam-PRVS: <AM8PR10MB398818BA43E930E61BA7AF8CE9300@AM8PR10MB3988.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1l0dCkRaqRXcY89EAvNwyAMjM9cBC6w7zRbNAm+kko2dc4QdsAayAMXmxy+9uRYQU3dSvc0szpzZleeADID2/73TNzC2sypRORJOBocaKD7GsM91fv8jtrj7OA/rdVtACyFQhMy/MPIedDd/DNZApB8lKRiRsiQcipz1Lh03WAYAnhZGq6uPmXqXiq3cXtQs4VTkZNHN1r5Y0WRHRMDrays1JMYvp70GFMVDyERLcsaf9PaopFUQXybmeODHBTBg4unqVHFKKrvXruEfV436YWDeGXrDB01MM2lwp8pHIL77oYfC9MgMlnJSG01vOleXqDWB/Yfg6efC1Vrk8w/b8BeoYTwYQZw+7UvHrlzFui2hg0xLyMoqliqdP3ZiF1ZtFO2H/rdBdaS/NcjEdpkWDQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(39850400004)(396003)(44832011)(83380400001)(52116002)(6486002)(66476007)(2616005)(8936002)(31696002)(956004)(2906002)(7416002)(86362001)(4326008)(16526019)(26005)(31686004)(8676002)(53546011)(16576012)(66946007)(110136005)(316002)(36756003)(186003)(5660300002)(478600001)(66556008)(32563001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: UflgXH/CMEkyvqkj1kG9qhd1iIReJ5sa169KpEOD1g3cZNg4TDOhMiaa0CV1VT3PxFyWuNpVwxQdVAeIiDy0I/acRS/0A3z56466joa3niESMfZ3ycYLTqeKMdpJuKQ9xHPq0J9dXCd/QmyUcAwPsc7da3Fdz4aTCsMXhNgNgKg2AGsMqUC/JDYfimPVn+/5ox0wzMUJ80fe9hyLZ1tBel1gqG7sdeCRwZ/jtulR/BOt2FM/Elkr2+/GWjBN6A20wD/CbEB8Bkc6Qsp2jV2FltNHGY+0BsGxFihnb7iX5yMc0MSNVRQdMzq9ERwiKTivRj2xbfgqn2vFfB6XWpcbK+QuptKTy769NOAbc3eNPXuxK7jh7ZcIKk05oFJtjcLGc1+Ecueizul/0GY9FMbgTfek1omQvKKWj/7YXDlXqcy35qNFT+GkDqNSMSZr2IwnRyioEObJwTBqouN5Da972cmQNwHrcf5ickUCpi7MRsMukg7rWoxSY4AKB4KT6JbIzTYvTUJ+hQJyXIttOjJkCPZA9X0909J7bhFTsPoW+mr3+krmDqmYSb80fWWr5vMOc72piHqWW8Bn1XlcxBW+bthINjWJz0ybodnqAeepoM5QP359mNBf1epMWv8wareFilKaOLSSFd3Da3AmC/tCAA==
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddb65438-e070-4838-22b6-08d8660c095d
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 13:15:15.7373
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sJjDAxoINRqjUOi2SPGikkE+eHOt/VxCyCrN5eBzy94qQqdUgnm/tVHhpFuilNagNl1IPOAe58cMJowrhIvwV0mflHmT+2DgvpVp1AQtq/g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB3988
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Liu <wei.liu@kernel.org> writes:
+On 01.10.20 14:34, Schrempf Frieder wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> 
+> In order to use ultra high speed modes (UHS) on the SD card slot, we
+> add matching pinctrls and fix the voltage switching for LDO5 of the
+> PMIC, by providing the SD_VSEL pin as GPIO to the PMIC driver.
+> 
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> ---
+>   .../dts/freescale/imx8mm-kontron-n801x-s.dts  | 27 +++++++++++++++++++
+>   .../freescale/imx8mm-kontron-n801x-som.dtsi   |  2 ++
+>   2 files changed, 29 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> index 389e735b2880..6913aefa56aa 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dts
+> @@ -190,8 +190,11 @@
+>   };
+>   
+>   &usdhc2 {
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+>   	pinctrl-names = "default";
 
-> On Thu, Oct 01, 2020 at 11:40:04AM +0200, Vitaly Kuznetsov wrote:
->> Sasha Levin <sashal@kernel.org> writes:
->> 
->> > cpumask can change underneath us, which is generally safe except when we
->> > call into hv_cpu_number_to_vp_number(): if cpumask ends up empty we pass
->> > num_cpu_possible() into hv_cpu_number_to_vp_number(), causing it to read
->> > garbage. As reported by KASAN:
->> >
->> > [   83.504763] BUG: KASAN: slab-out-of-bounds in hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
->> > [   83.908636] Read of size 4 at addr ffff888267c01370 by task kworker/u8:2/106
->> > [   84.196669] CPU: 0 PID: 106 Comm: kworker/u8:2 Tainted: G        W         5.4.60 #1
->> > [   84.196669] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018
->> > [   84.196669] Workqueue: writeback wb_workfn (flush-8:0)
->> > [   84.196669] Call Trace:
->> > [   84.196669] dump_stack (lib/dump_stack.c:120)
->> > [   84.196669] print_address_description.constprop.0 (mm/kasan/report.c:375)
->> > [   84.196669] __kasan_report.cold (mm/kasan/report.c:507)
->> > [   84.196669] kasan_report (arch/x86/include/asm/smap.h:71 mm/kasan/common.c:635)
->> > [   84.196669] hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
->> > [   84.196669] flush_tlb_mm_range (arch/x86/include/asm/paravirt.h:68 arch/x86/mm/tlb.c:798)
->> > [   84.196669] ptep_clear_flush (arch/x86/include/asm/tlbflush.h:586 mm/pgtable-generic.c:88)
->> >
->> > Fixes: 0e4c88f37693 ("x86/hyper-v: Use cheaper HVCALL_FLUSH_VIRTUAL_ADDRESS_{LIST,SPACE} hypercalls when possible")
->> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
->> > Cc: stable@kernel.org
->> > Signed-off-by: Sasha Levin <sashal@kernel.org>
->> > ---
->> >  arch/x86/hyperv/mmu.c | 4 +++-
->> >  1 file changed, 3 insertions(+), 1 deletion(-)
->> >
->> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
->> > index 5208ba49c89a9..b1d6afc5fc4a3 100644
->> > --- a/arch/x86/hyperv/mmu.c
->> > +++ b/arch/x86/hyperv/mmu.c
->> > @@ -109,7 +109,9 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
->> >  		 * must. We will also check all VP numbers when walking the
->> >  		 * supplied CPU set to remain correct in all cases.
->> >  		 */
->> > -		if (hv_cpu_number_to_vp_number(cpumask_last(cpus)) >= 64)
->> > +		int last = cpumask_last(cpus);
->> > +
->> > +		if (last < num_possible_cpus() && hv_cpu_number_to_vp_number(last) >= 64)
->> >  			goto do_ex_hypercall;
->> 
->> In case 'cpus' can end up being empty (I'm genuinely suprised it can)
->> the check is mandatory indeed. I would, however, just return directly in
->> this case:
->> 
->> if (last < num_possible_cpus())
->> 	return;
->
-> I think you want 
->
->    last >= num_possible_cpus()
->
-> here?
+And before anyone complains: The above line needs to be dropped of course.
 
-Of course, thanks!
-
->
-> A more important question is, if the mask can change willy-nilly, what
-> is stopping it from changing between these checks? I.e. is there still a
-> windows that hv_cpu_number_to_vp_number(last) can return garbage?
->
-
-AFAIU some CPUs can be dropped from the mask (because they switch to a
-different mm?) and if we still flush there it's not a problem. The only
-real problem I currently see is that we're passing cpumask_last() result
-to hv_cpu_number_to_vp_number() and cpumask_last() returns
-num_possible_cpus() when the mask is empty but this can't be passed to
-hv_cpu_number_to_vp_number().
-
-
-> Wei.
->
->> 
->> if (hv_cpu_number_to_vp_number(last) >= 64)
->> 	goto do_ex_hypercall;
->> 
->> as there's nothing to flush, no need to call into
->> hyperv_flush_tlb_others_ex().
->> 
->> Anyway, the fix seems to be correct, so
->> 
->> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> 
->> >  
->> >  		for_each_cpu(cpu, cpus) {
->> 
->> -- 
->> Vitaly
->> 
->
-
--- 
-Vitaly
-
+>   	pinctrl-0 = <&pinctrl_usdhc2>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+>   	vmmc-supply = <&reg_vdd_3v3>;
+>   	vqmmc-supply = <&reg_nvcc_sd>;
+>   	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+> @@ -320,4 +323,28 @@
+>   			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+>   		>;
+>   	};
+> +
+> +	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x194
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d4
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d4
+> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
+> +		fsl,pins = <
+> +			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK			0x196
+> +			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD			0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2		0x1d6
+> +			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3		0x1d6
+> +			MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12		0x019
+> +		>;
+> +	};
+>   };
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> index 5c6a660f4395..282a56fb3949 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+> @@ -85,6 +85,7 @@
+>   		pinctrl-0 = <&pinctrl_pmic>;
+>   		interrupt-parent = <&gpio1>;
+>   		interrupts = <0 GPIO_ACTIVE_LOW>;
+> +		sd-vsel-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+>   
+>   		regulators {
+>   			reg_vdd_soc: BUCK1 {
+> @@ -224,6 +225,7 @@
+>   	pinctrl_pmic: pmicgrp {
+>   		fsl,pins = <
+>   			MX8MM_IOMUXC_GPIO1_IO00_GPIO1_IO0		0x41
+> +			MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4		0x41
+>   		>;
+>   	};
+>   
+> 
