@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6098E2809CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B121C2809CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733133AbgJAV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
+        id S1733030AbgJAV7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbgJAV5V (ORCPT
+        with ESMTP id S1726731AbgJAV7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:57:21 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1376DC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:57:21 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w21so371579pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:57:21 -0700 (PDT)
+        Thu, 1 Oct 2020 17:59:22 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7FC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 14:59:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q4so103839pjh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 14:59:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7vBVgkba9wR9rMzobTFcbe2FRbrTf2j7jPc/dQj28oc=;
-        b=Qy1x+J2UXRT1xz2r7wKgRtNB1F4SYnCGvzWgd26HhDRfcJr5xRouppP6ZWTiuCc6Cx
-         So404fYI4qWpTcEmcwCsqWAOAVMHLWpwfvpKKjZLHqMaPJhaHIC6GJlM6OoiyqpeYP3Y
-         8+ZIL/Mu7VA7aTeF2dXkfNfXJ8CcRbbhIuxrI8G7JWsYlq1eZLiNiBHWdRnjI2k0pIIV
-         niGwQi8egbLlBCdpeCOCYiVuz2OQ9zI01dk6pVJec4cOhEZq8958HWjrT9stMBGWUx+n
-         BfzvxvsTOtcEoiVWPpioLnVRFXZs5KnakOVvvvikTbh2+eT9bnor5KoZ+CsXIv8sqRtE
-         uZNw==
+        bh=FeLdvrmRrEjRDvLDp8IMeU8yTFWoBJ46ycNhebnMFYM=;
+        b=TBqS7OT7BDG31xwQf95dhSonRR7ScCBFJKbqe4+XrINEJhqRuwnwgecZy7tTH6Nbns
+         YscWwEDlIRlXGm+eBANlE7YicDfj9W1zjh3Ai23OT/VkZ75yEvb10oPH0BRMtXGB5/FP
+         SpV1t5iHjIK3U34Z2OcjJt8GHt4bh+Y0WuFKllrEcyEEknpCOlbICWc0tfrzeebR+iYC
+         Xh2CLK5kSrDevWj2ZKC1LpJMQt+XO/y1J9LwIDbsPzVYdhOXELyUImVa0CT6kq1Fd2UH
+         +Un4kzN92nO46jJYOMrF/tUbxyzk2h1Wv7J5owXuUB5RNIkn637p/9vkkyYWkQBaFgrS
+         8Z9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7vBVgkba9wR9rMzobTFcbe2FRbrTf2j7jPc/dQj28oc=;
-        b=SKaJJRgEKpdwp4h1ev/CIAaZ6Xaq+D80pUml2uxk+zLhf5HZQUyU+monmHmjRIroeo
-         vJXfsVukJuBpNMMrRPwqGb0nYmRz3VsTzsVh+IGTN4yV7dEVWj3u6908bVweR76tvuc3
-         1+ni1H6+2lSUsTGRNL7O9cjTHFOdizXP5TWnQhJtWwatUGns1Qqlt9hKy4B+Int8QjyP
-         h0dRQzckimSgv6RwWry/0m9Ti7tzoqU4b9m0V42UI5irTp4mMKXygQHI/TqMs3GAanh2
-         25e+HAlqIn7V9tsgOtkgWOeTlzbWKp5OnXtd0D05kkKEo0Kn/hm04vS9Ei0+bkTUGTe7
-         2Q9A==
-X-Gm-Message-State: AOAM5339f6y2Cy1JzbywbXxw7M1c4bOSorPPPVhnn8JaTx9b+x2mm3qm
-        21tLe+EUgFieAxypCN68en5sjCv4Kq8sweOl5DeQCA==
-X-Google-Smtp-Source: ABdhPJxBh2MTvD8EqS7uOHLoI01aNYVR8yybqeNK39O4VqSoTBwTqx0glwK0sWgJz6QKEWqjvaypPBIYu3G6Qbn+v7M=
-X-Received: by 2002:a17:902:d716:b029:d3:8e2a:1b5d with SMTP id
- w22-20020a170902d716b02900d38e2a1b5dmr4556745ply.85.1601589440484; Thu, 01
- Oct 2020 14:57:20 -0700 (PDT)
+        bh=FeLdvrmRrEjRDvLDp8IMeU8yTFWoBJ46ycNhebnMFYM=;
+        b=srSS3Ftakyh7XW9319uXQC6mzTdvgvmV+14EnvLqzWd33RlQEwDn5eYPKparookqSt
+         QkC0qUezIAZ867Z9cBBUo3Soyy0219mYkVOt9w+vadM4GuIwXjbA0ehHkJKw56mQOr58
+         bsY7MlOP3beyPlFIbXSPHZ0kKgm/3lTrTguRfPgF86YDoHG2vP6SxRhZZu87g3lKiFBk
+         h/U4zSXvb+v3K5rEDFnE7IHnqd8Sk+DPmfajOp5ZQmq/DKJekH7Z8KyWlvZ38icD7RnA
+         jfT3utR5dIze5zWpMzsGBc3Lu9kwLpWg1BTTJEH9Z7xu0jefsFGIDTuMP6yuZghOIg7D
+         oQtw==
+X-Gm-Message-State: AOAM531+4/bkseMxFJ4UmAUkPhXltQDdJTBGIQVTWvLS3eRbJ8mKZpjj
+        leBgjMrkNptu1+XpDCSmcj6xarmjTlJYjvuwBeRqeg==
+X-Google-Smtp-Source: ABdhPJxpDAhEXXXNzU+k6JEzSlS5oCCC+YHdJ+RToQDBqDvmlBKjtro0xxou2/hL4BdFQAB3kvq6JYo3NiocZoxZbww=
+X-Received: by 2002:a17:90b:140c:: with SMTP id jo12mr1907027pjb.41.1601589561599;
+ Thu, 01 Oct 2020 14:59:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600987622.git.andreyknvl@google.com> <d00f21f69ba7cb4809e850cf322247d48dae75ce.1600987622.git.andreyknvl@google.com>
- <20201001175539.GQ4162920@elver.google.com>
-In-Reply-To: <20201001175539.GQ4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com> <08b7f7fe6b20f6477fa2a447a931b3bbb1ad3121.1600987622.git.andreyknvl@google.com>
+ <20201001175841.GS4162920@elver.google.com>
+In-Reply-To: <20201001175841.GS4162920@elver.google.com>
 From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Thu, 1 Oct 2020 23:57:09 +0200
-Message-ID: <CAAeHK+ygFuqZyJKpKT6dqi8Suu3bnr_wP60ZwAQeLu6vSim+rA@mail.gmail.com>
-Subject: Re: [PATCH v3 21/39] kasan: don't allow SW_TAGS with ARM64_MTE
+Date:   Thu, 1 Oct 2020 23:59:10 +0200
+Message-ID: <CAAeHK+y4cn5sZeoeL1SkwA70kFcgneZiFgs6EwVR=7SaHgi5LQ@mail.gmail.com>
+Subject: Re: [PATCH v3 32/39] kasan: define KASAN_GRANULE_SIZE for HW_TAGS
 To:     Marco Elver <elver@google.com>
 Cc:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,40 +73,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 7:55 PM <elver@google.com> wrote:
->
-> Does that patch title need an ", arm64" in it, like the others?
-
-Yes, will fix in v4, thanks!
-
+On Thu, Oct 1, 2020 at 7:58 PM <elver@google.com> wrote:
 >
 > On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
-> > Software tag-based KASAN provides its own tag checking machinery that
-> > can conflict with MTE. Don't allow enabling software tag-based KASAN
-> > when MTE is enabled.
+> > Hardware tag-based KASAN has granules of MTE_GRANULE_SIZE. Define
+> > KASAN_GRANULE_SIZE to MTE_GRANULE_SIZE for CONFIG_KASAN_HW_TAGS.
 > >
 > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>
+> Reviewed-by: Marco Elver <elver@google.com>
+>
 > > ---
-> > Change-Id: Icd29bd0c6b1d3d7a0ee3d50c20490f404d34fc97
+> > Change-Id: I5d1117e6a991cbca00d2cfb4ba66e8ae2d8f513a
 > > ---
-> >  arch/arm64/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  mm/kasan/kasan.h | 6 ++++++
+> >  1 file changed, 6 insertions(+)
 > >
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index e7450fbd0aa7..e875db8e1c86 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -131,7 +131,7 @@ config ARM64
-> >       select HAVE_ARCH_JUMP_LABEL
-> >       select HAVE_ARCH_JUMP_LABEL_RELATIVE
-> >       select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
-> > -     select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
-> > +     select HAVE_ARCH_KASAN_SW_TAGS if (HAVE_ARCH_KASAN && !ARM64_MTE)
-> >       select HAVE_ARCH_KGDB
-> >       select HAVE_ARCH_MMAP_RND_BITS
-> >       select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> > index 9c73f324e3ce..bd51ab72c002 100644
+> > --- a/mm/kasan/kasan.h
+> > +++ b/mm/kasan/kasan.h
+> > @@ -5,7 +5,13 @@
+> >  #include <linux/kasan.h>
+> >  #include <linux/stackdepot.h>
+> >
+> > +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+> >  #define KASAN_GRANULE_SIZE   (1UL << KASAN_SHADOW_SCALE_SHIFT)
+> > +#else
+> > +#include <asm/mte-kasan.h>
+> > +#define KASAN_GRANULE_SIZE   (MTE_GRANULE_SIZE)
+>
+> Why braces? Shouldn't MTE_GRANULE_SIZE already have braces?
+
+Will fix in v4, thanks!
+
+>
+> > +#endif
+> > +
+> >  #define KASAN_GRANULE_MASK   (KASAN_GRANULE_SIZE - 1)
+> >  #define KASAN_GRANULE_PAGE   (KASAN_GRANULE_SIZE << PAGE_SHIFT)
+> >
 > > --
 > > 2.28.0.681.g6f77f65b4e-goog
 > >
