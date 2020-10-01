@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D5327FB23
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7911A27FB24
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 10:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbgJAINP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 04:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        id S1731559AbgJAINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 04:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730785AbgJAINP (ORCPT
+        with ESMTP id S1730785AbgJAINY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:13:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16107C0613D0;
-        Thu,  1 Oct 2020 01:13:15 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 08:13:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601539992;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MS56uj8IgEx3m9C9hs4o41w2aUZW5RfRArrU0/olnWw=;
-        b=wp5n7eKyFfun1SNq7elFFefdSWIafNtPFMlbISxwKjoxmMHHbhapIG/FP+2SYoQI2fX/Ez
-        VTdg/mK7mwj0z09i6cdbe9v7BLCnxX7PClgsR25tS+oEOAm8uMELFPXvxJ7KRPRP+Tn0TH
-        e3sx9VfWZqUi9vvpFVDm30UoJh6Aft7oMwC67glKj31PAB4WKaKBUja3Aahwk0qrE8Jwh/
-        CFrkUqOMfI1oiIuhSO5FLsecEj+5qXx9AzAjZ0Lytd478LR/uJqTA/R+/eVue4/O6pckz2
-        l4YsLLPgu10u+hGKVSjw8PXV6zBxFFtft3+l9VmFEbhKN5fCuaoYPuv2bOJcMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601539992;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MS56uj8IgEx3m9C9hs4o41w2aUZW5RfRArrU0/olnWw=;
-        b=VALX8lctPDHx9kqE3AfHYSbp/0NXAE3RVGsYy7iCDm+JOWct65oWw0h0Jaop6e0yPWAbVm
-        iNdggxNqvkZ7JcDA==
-From:   "tip-bot2 for Julia Lawall" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/mps2-timer: Use semicolons
- rather than commas to separate statements
-Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1601233948-11629-12-git-send-email-Julia.Lawall@inria.fr>
-References: <1601233948-11629-12-git-send-email-Julia.Lawall@inria.fr>
-MIME-Version: 1.0
-Message-ID: <160153999169.7002.13925781028080360919.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+        Thu, 1 Oct 2020 04:13:24 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F0BC0613E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 01:13:24 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id s14so1192117pju.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 01:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=yWHXn++kRcQbG/MLWQSRUgDAxUjFBToMj9A1ZOoKk8w=;
+        b=KyTas28cFWO3JLCzr/Cl68PZnOKbquWDs/ISwZmjeNElBi0qIqAxuWIavAhRLhXvOx
+         VSoJIkeeyXn+mBZy6dSkBk/jknKuXRAB2E5Z1LX5meG+qGSjWsCfLLJO3tDUMATrTwkE
+         sG/0eJOxRtdcTIWAb6kkq7Iofp50BWjVM72PQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=yWHXn++kRcQbG/MLWQSRUgDAxUjFBToMj9A1ZOoKk8w=;
+        b=ZOKTHrkRyP5U7zc+rt+ePJRtmBfIWm57/HjvwUbHNhHrBgGmRqbT3sKrJ1L9AnguSU
+         hDxK4ZmQ6u4qGcxw1yaWGeLGAJIcoElW3PQGxTDHXXm/nN6yRe1ldmTI51rZ0KRq4usg
+         ZClkhdkzAgzgfSLoTg7KQi6sJz3CbGf19V3Fd1bfmXjGsd+lKMNb39/XvjVnmLuqFk6P
+         prx+zrX4WN4MPBEur4XlIOn4x7xKUBadTA8wLgVY/QugJ5fG2CwMQk1LM92yCUnk4Mfp
+         zxLslpV1RVo5p1V0NrfIwpcqz6phVs866+1Sk/bPBTsx7jVluP9Ks/oOkQWtOqh43+Nq
+         a7JA==
+X-Gm-Message-State: AOAM532lmZFj0ZmX/cHYYgu4oTJhbVsX2m9RydFeTX6vHthcO6f+joCS
+        pM37aFUhzi15XwCXn2j8hVTAwaCpPs+Kfw==
+X-Google-Smtp-Source: ABdhPJwsxlPhxSu0rIBUZbzwNksYMd+sMigsbyAPGmeVkX1Vxi2ToHev2rt0ZPnuKfWBwejxEcLjuQ==
+X-Received: by 2002:a17:90a:b302:: with SMTP id d2mr5841672pjr.150.1601540003379;
+        Thu, 01 Oct 2020 01:13:23 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id q190sm5763338pfc.176.2020.10.01.01.13.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 01:13:22 -0700 (PDT)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
+References: <1601267524-20199-1-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH v6 0/6] irqchip: qcom: pdc: Introduce irq_set_wake call
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, agross@kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, dianders@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, linus.walleij@linaro.org, maz@kernel.org,
+        mka@chromium.org
+Date:   Thu, 01 Oct 2020 01:13:21 -0700
+Message-ID: <160154000142.310579.14473886526667450677@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Quoting Maulik Shah (2020-09-27 21:31:58)
+> Changes in v6:
+> - Update commit message more descriptive in v5 patch 1
+> - Symmetrically enable/disable wakeirqs during suspend/resume in v5 patch=
+ 3
+> - Include Acked-by and Reviewed-by tags from v5 series
+>=20
 
-Commit-ID:     0d555b3ac49b40f94c270681b697d45dcae9faa6
-Gitweb:        https://git.kernel.org/tip/0d555b3ac49b40f94c270681b697d45dcae9faa6
-Author:        Julia Lawall <Julia.Lawall@inria.fr>
-AuthorDate:    Sun, 27 Sep 2020 21:12:21 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 01 Oct 2020 10:07:26 +02:00
+Thanks. I tested this series and it is working for me.
 
-clocksource/drivers/mps2-timer: Use semicolons rather than commas to separate statements
-
-Replace commas with semicolons.  What is done is essentially described by
-the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
-
-// <smpl>
-@@ expression e1,e2; @@
-e1
--,
-+;
-e2
-... when any
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/1601233948-11629-12-git-send-email-Julia.Lawall@inria.fr
----
- drivers/clocksource/mps2-timer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/clocksource/mps2-timer.c b/drivers/clocksource/mps2-timer.c
-index 2e64d98..efe8cad 100644
---- a/drivers/clocksource/mps2-timer.c
-+++ b/drivers/clocksource/mps2-timer.c
-@@ -149,9 +149,9 @@ static int __init mps2_clockevent_init(struct device_node *np)
- 	ce->clkevt.rating = 200;
- 	ce->clkevt.features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
- 	ce->clkevt.cpumask = cpu_possible_mask;
--	ce->clkevt.set_state_shutdown	= mps2_timer_shutdown,
--	ce->clkevt.set_state_periodic	= mps2_timer_set_periodic,
--	ce->clkevt.set_state_oneshot	= mps2_timer_shutdown,
-+	ce->clkevt.set_state_shutdown	= mps2_timer_shutdown;
-+	ce->clkevt.set_state_periodic	= mps2_timer_set_periodic;
-+	ce->clkevt.set_state_oneshot	= mps2_timer_shutdown;
- 	ce->clkevt.set_next_event	= mps2_timer_set_next_event;
- 
- 	/* Ensure timer is disabled */
+Tested-by: Stephen Boyd <swboyd@chromium.org>
