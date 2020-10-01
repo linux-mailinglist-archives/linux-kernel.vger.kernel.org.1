@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1693A27FADE
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF4327FAD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731868AbgJAHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:55:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44520 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731566AbgJAHy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:54:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601538895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0GzEqK1IoDLkQJH9xpDe3707t9F4ttJyks4zmnT/98=;
-        b=CYWlSVnBiRd5RlW5rWRfeyat8XfuOCmt67ydYk5me7ToyLv7VNE2d1fImeH2m5ofHsXIpu
-        9TWTcgZeyc/pk4CXcBi1vmi+VgeoQbfd04BMXOAwncUW62ViyUSiQq5MaH7G1cZwK99Wuk
-        fYQjNdPVwMtvELgVasmgO6xPdwQQGf8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F2CADAD0B;
-        Thu,  1 Oct 2020 07:54:54 +0000 (UTC)
-Date:   Thu, 1 Oct 2020 09:54:53 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v2 1/2] printk: avoid and/or handle record truncation
-Message-ID: <20201001075453.GC17717@alley>
-References: <20200930090134.8723-1-john.ogness@linutronix.de>
- <20200930090134.8723-2-john.ogness@linutronix.de>
- <b4c2ea7ec34aaf05d53264b19a6c40245ed361c0.camel@perches.com>
- <20201001072659.GB17717@alley>
- <873100a17ac1a9fc1c435ff7957b63d2540ce7fc.camel@perches.com>
+        id S1731751AbgJAHzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726647AbgJAHzN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:55:13 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A009C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 00:55:13 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x23so1899952wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 00:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nxchK35WzNClqTZsaQg5x4PMi7z26OOqbOLc2gLFY54=;
+        b=Y9kN6bzXfYnJtEnmJ0d9W1y9qoNRVuLyd0pJrpScGVCWKc2H6HTgNEGiNziQjnFGi4
+         W6NJJpy/mIbqaLAnEkm/Oh5qxZg+fCStul0PeHoiMOZWh5OVvuhadZcDOoXyrDBPmb2Z
+         qf2HSt3QcUUbFNsYWxwIh8xQdjmPrksQjHMnyX/dKe3mDUJTE9dHJt8OBQ/TUagUy93E
+         2LES+b6jYvAbHAtkJrQ64wsr1icfil/zacXERe2n+vbhH27Qx7VB+fbER5+GN0xId2+Y
+         I2Gxn0rijwePJaOkvi6Wv0saJknw6yYZJQF+fXZIOYu37qns3Pz8KBM6NQjOXS8etG1V
+         yxtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nxchK35WzNClqTZsaQg5x4PMi7z26OOqbOLc2gLFY54=;
+        b=BqGP8dPr1bF06Y3afHOAn+R595QnvhwHkPpTDezraDZWyTMORjBXJkDwPOtfZ6E5oF
+         r3gfKhMSf6zOLrg/B3EqCjT9C2v9j4BpJ+8gsKHVC/G0jruYqAFl2EpDKr3SkvjQtnjP
+         4uRbbo5pjGRoNOvgaCI2acy9eQh6jtdjQdxBSBdGwGXZFNq2KNsqgZYAgzjEPKs4E3jK
+         tlVOOwpnYpLoMMvEpC7XM8QyUkJJ3DuJJ8bg2qsoyzSwrTK0UcwNYmdjlApDdi9/6hM1
+         Gg0ZSOfgWpzgajByT5mOvuWejJtwync+Bpm+yAwtuUtbYY8FW2rrB86bNn2Gf+1JVURT
+         TJIw==
+X-Gm-Message-State: AOAM531nUt0U2vqDzWxiSVJMQECqkuLwKdjYwg85h8XsepfKPtcMnJBi
+        fE6++R2Uzrfvmf8Dv5dNMRde8lSGpuBf0A==
+X-Google-Smtp-Source: ABdhPJwaKf0kHIDcNB6uw/SrtqtjTjJBwBxCYFT1dCOJ5o7Fhad9e52Ro92vjcnUxd3g4SlDKWr3GQ==
+X-Received: by 2002:a1c:f208:: with SMTP id s8mr7319753wmc.85.1601538911977;
+        Thu, 01 Oct 2020 00:55:11 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id t17sm7411493wrx.82.2020.10.01.00.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 00:55:11 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 08:55:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     hdegoede@redhat.com, andriy.shevchenko@linux.intel.com,
+        dvhart@infradead.org, andy@infradead.org,
+        alexander.h.duyck@linux.intel.com, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 1/3] mfd: intel_pmt: Add OOBMSM device ID
+Message-ID: <20201001075507.GK6148@dell>
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-2-david.e.box@linux.intel.com>
+ <20200929095106.GG6148@dell>
+ <e23b255493c78d80558b9226920b3c7d54d7c84f.camel@linux.intel.com>
+ <20200930071250.GI6148@dell>
+ <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <873100a17ac1a9fc1c435ff7957b63d2540ce7fc.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47276f4aacbf4ec3729e674a573a28cd6399cfd6.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-10-01 00:39:31, Joe Perches wrote:
-> On Thu, 2020-10-01 at 09:26 +0200, Petr Mladek wrote:
-> > On Wed 2020-09-30 08:25:24, Joe Perches wrote:
-> > > On Wed, 2020-09-30 at 11:07 +0206, John Ogness wrote:
-> > > > If a reader provides a buffer that is smaller than the message text,
-> > > > the @text_len field of @info will have a value larger than the buffer
-> > > > size. If readers blindly read @text_len bytes of data without
-> > > > checking the size, they will read beyond their buffer.
+On Wed, 30 Sep 2020, David E. Box wrote:
+
+> On Wed, 2020-09-30 at 08:12 +0100, Lee Jones wrote:
+> > On Tue, 29 Sep 2020, David E. Box wrote:
+> > 
+> > > On Tue, 2020-09-29 at 10:51 +0100, Lee Jones wrote:
+> > > > On Fri, 11 Sep 2020, David E. Box wrote:
 > > > > 
-> > > > Add this check to record_print_text() to properly recognize when such
-> > > > truncation has occurred.
+> > > > > Add Out of Band Management Services Module device ID to Intel
+> > > > > PMT
+> > > > > driver.
+> > > > > 
+> > > > > Signed-off-by: Alexander Duyck <
+> > > > > alexander.h.duyck@linux.intel.com>
+> > > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > > > ---
+> > > > >  drivers/mfd/intel_pmt.c | 4 ++++
+> > > > >  1 file changed, 4 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/mfd/intel_pmt.c b/drivers/mfd/intel_pmt.c
+> > > > > index 0e572b105101..8f9970ab3026 100644
+> > > > > --- a/drivers/mfd/intel_pmt.c
+> > > > > +++ b/drivers/mfd/intel_pmt.c
+> > > > > @@ -55,6 +55,8 @@ struct pmt_platform_info {
+> > > > >  	unsigned long quirks;
+> > > > >  };
+> > > > >  
+> > > > > +static const struct pmt_platform_info pmt_info;
+> > > > > +
+> > > > >  static const struct pmt_platform_info tgl_info = {
+> > > > >  	.quirks = PMT_QUIRK_NO_WATCHER | PMT_QUIRK_NO_CRASHLOG
+> > > > > |
+> > > > >  		  PMT_QUIRK_TABLE_SHIFT,
+> > > > > @@ -200,8 +202,10 @@ static void pmt_pci_remove(struct pci_dev
+> > > > > *pdev)
+> > > > >  	pm_runtime_get_sync(&pdev->dev);
+> > > > >  }
+> > > > >  
+> > > > > +#define PCI_DEVICE_ID_INTEL_PMT_OOBMSM	0x09a7
+> > > > >  #define PCI_DEVICE_ID_INTEL_PMT_TGL	0x9a0d
+> > > > >  static const struct pci_device_id pmt_pci_ids[] = {
+> > > > > +	{ PCI_DEVICE_DATA(INTEL, PMT_OOBMSM, &pmt_info) },
 > > > > 
-> > > > Add a maximum size argument to the ringbuffer function to extend
-> > > > records so that records can not be created that are larger than the
-> > > > buffer size of readers.
-> > > > 
-> > > > When extending records (LOG_CONT), do not extend records beyond
-> > > > LOG_LINE_MAX since that is the maximum size available in the buffers
-> > > > used by consoles and syslog.
+> > > > Why are you supplying an empty struct?
 > > > 
-> > > I still think it better to support backspace by rewinding
-> > > the buffer rather than truncation of the output.
+> > > Because the OOBMSM device doesn't need code provided driver data,
+> > > but
+> > > info is dereferenced in several areas. We also use kmemdup to copy
+> > > driver_data under the assumption that it was provided. We could
+> > > allow
+> > > for NULL if driver_data is referenced directly.
 > > 
-> > IMHO, backspace support is not worth the complexity. It might do
-> > some fancy animation on console but it does not bring any advantage
-> > in static logs (dmesg, journalctl).
-> > 
-> > It is possible that it worked in the past when the log buffer was
-> > just an array of characters that were pushed to the console when
-> > they appeared.
-> > 
-> > But I am pretty sure that it has stopped working many years agl
-> > variable-length record buffer").
+> > Just check for NULL.  No need to create and send bogus data.
 > 
-> It's more that spinner or timer dots could fill the
-> buffer and any message after the spinner/dots like
-> success or failure is lost via truncation.
+> Sure. If you haven't already, please note that this patch was pulled
+> into the V6 series in the link below. You accepted V5 but Hans
+> suggested some late changes after reviewing the new crashlog driver in
+> this patchset. So rather than have separate patchsets with a
+> dependency, we bundled them all into the original. We'll make these
+> changes in V7 now.
+> 
+> https://lore.kernel.org/patchwork/patch/1313166/
 
-Yeah, pushing existing parts of continuous lines on the console
-would be nice. It would help to see that the system died in
-the middle of a risky operation.
+Sounds reasonable. 
 
-But it requires an extra code in the record based log buffer.
-It actually has been there and it was removed later because it
-complicated the code and did not really worked.
-
-It will be even more complicated with the lockless ringbuffer
-and console handled in kthreads.
-
-It might be added when there is a big demand for it. But it does
-not make sense to support looong lines full of spinners or dots.
-
-
-> There aren't many spinners/dots, perhaps it's better
-> to find and delete them.
-
-Yeah, that would be nice cleanup.
-
-Best Regards,
-Petr
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
