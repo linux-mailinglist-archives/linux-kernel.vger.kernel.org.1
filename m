@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3635527F6F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E3F27F6FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730442AbgJABGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728660AbgJABGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:06:21 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0703FC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:06:21 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id s14so728543pju.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:06:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=m6cLqlOp/ft31zLwPBCSH8KF/odeeRwTKCbnI0xj5qE=;
-        b=LyIjeA4dyrhNIm/akablUCCJYBhKlLNSGA/iiKvwcRgAG1GrfkEF63ZlnAjV73+g+g
-         ZSrY/NdQlZ0nLfsak6m+eEfoR2UWk/UK9x7dnkULwZfkKdQ0mjWYZ29eTX8PalTZXGaS
-         IJ+6bOhE2qfXk5mt8/9u3z9Dt5zfCnSDjO8TE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=m6cLqlOp/ft31zLwPBCSH8KF/odeeRwTKCbnI0xj5qE=;
-        b=uXznK9mqZA7SxQhkSDFpH1xYVZbRCycrZyH5aWtA4nGnYrTiUQkFcEuRM1TGn12uVL
-         kZqx1nawvbC1D8oIMizwJysYj9ZoDbZGKDIpMnI3Ih525Y793oTgC2YFZ7xcB69LpsiU
-         2Th7J53MKRt+WX2PlYacbyHd6kaa4dOZSW+tAvLo8DeAepM6I2jvAKb/Rc40MIE+aWpd
-         TTmGIv9pEeHHJpP5yG4qJMGwAU+Ofbr2mAvRUr4gRg9cvUpoTwgB9VWvIdkbHhRYtTKa
-         aVocBgOB7ijuW9msmDBqSnWJrbjC4+LmBlJKWMO2LbeULhIVah/PZJ6CH1HFb2F8hDJ+
-         SrMg==
-X-Gm-Message-State: AOAM532uSwXyYt5/8m8b87VFy4wOhSHWLipniDmsENa0JAdFQQjzz0ZL
-        QvhXV/LxmCut8swgB2AmuN8Lcw==
-X-Google-Smtp-Source: ABdhPJza+Q5K1BONpRm+emY42aJcB6XhACjqTvUYShtCdNbTcf1vQZnnGILcDLseKsMN8Oh/yGmySw==
-X-Received: by 2002:a17:90a:69e3:: with SMTP id s90mr4673762pjj.130.1601514380501;
-        Wed, 30 Sep 2020 18:06:20 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id c4sm3536519pjq.7.2020.09.30.18.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 18:06:20 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1730519AbgJABHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:07:11 -0400
+Received: from mga12.intel.com ([192.55.52.136]:8006 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728660AbgJABHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 21:07:11 -0400
+IronPort-SDR: S3enRydT4cAp46T/xDqgRVNmaVPNhb4iMvHsJWc+8pgz/ZmkPqkwi14wQQHBnlo0n/Fwf6bd9h
+ ME93+ek3t8yg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="141993972"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="141993972"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 18:07:05 -0700
+IronPort-SDR: aL1xFYH5NfFrPvYJiqGYGWqs04oPhr0Y4J5ZkkCYBrIakBkHzCRY/59YQRmWhFsufyDWNtvSH0
+ X1IVLU0JZH+A==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="457882317"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.15]) ([10.212.91.128])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 18:07:03 -0700
+Subject: Re: [PATCH v1 01/12] fpga: fpga security manager class driver
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+References: <20200904235305.6254-1-russell.h.weight@intel.com>
+ <20200904235305.6254-2-russell.h.weight@intel.com>
+ <20200916201604.GA1076460@epycbox.lan>
+ <aab49157-5b2f-62b0-1682-635b6efbd546@intel.com>
+ <20201001003101.GC121420@archbook>
+From:   Russ Weight <russell.h.weight@intel.com>
+Message-ID: <baf8eec6-c89e-43fc-ab79-9bbc46acd208@intel.com>
+Date:   Wed, 30 Sep 2020 18:07:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1601376452-31839-6-git-send-email-sanm@codeaurora.org>
-References: <1601376452-31839-1-git-send-email-sanm@codeaurora.org> <1601376452-31839-6-git-send-email-sanm@codeaurora.org>
-Subject: Re: [PATCH v3 5/5] arm64: dts: qcom: sc7180: Add wakeup-source property for USB controller node
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Date:   Wed, 30 Sep 2020 18:06:18 -0700
-Message-ID: <160151437880.310579.6472711522859117116@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20201001003101.GC121420@archbook>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sandeep Maheswaram (2020-09-29 03:47:32)
-> Adding wakeup-source property for USB controller for SC7180 boards.
->=20
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Hi Moritz,
+
+On 9/30/20 5:31 PM, Moritz Fischer wrote:
+> I think providing the devm_ managed APIs is nicer, and makes it easier
+> for the consumer of the API to do the right thing.
+
+I see that the fpga_mgr code has support for two versions of the create()
+and register() functions, one uses the devm_ approach, and the other does
+not. Would also want to have two versions for the security manager?
+
+- Russ
