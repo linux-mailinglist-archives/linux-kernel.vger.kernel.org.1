@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D2527F9A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19B327F9CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730763AbgJAGvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:51:03 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:45927 "EHLO z5.mailgun.us"
+        id S1730881AbgJAG7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:59:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41024 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgJAGvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:51:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601535062; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=gwugQkJdwAsUp0rRePmNc1xDsnuBaLbzJBqGrDfhTLY=; b=Sy6qEBlS552Mxfqo/yIrJkVg/EWIm89FKz4yvorVALN8j0FLgXPxyOFko0gH3OZo/nKRdwag
- 0sP+JVY7EuU28vuL0s/iAy5LLl0x65QXzBG8UcQhkt+12f50iSVFFpkbb+W3xIlxYvI6I5/2
- 8cIYRCqsvqq8szOLUQnv3R+TmCQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f757c5680da0872b754359f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 06:51:02
- GMT
-Sender: asitshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C7A2EC433CA; Thu,  1 Oct 2020 06:51:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: asitshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D5E0C433C8;
-        Thu,  1 Oct 2020 06:51:01 +0000 (UTC)
+        id S1725883AbgJAG7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 02:59:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9E6A9B320;
+        Thu,  1 Oct 2020 06:59:49 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Coly Li <colyli@suse.de>, Vicente Bergas <vicencb@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v2] mmc: core: don't set limits.discard_granularity as 0
+Date:   Thu,  1 Oct 2020 14:59:14 +0800
+Message-Id: <20201001065914.24526-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 01 Oct 2020 12:21:01 +0530
-From:   asitshah@codeaurora.org
-To:     linux-firmware@kernel.org, jwboyer@kernel.org
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantg@codeaurora.org, gubbaven@codeaurora.org,
-        abhishekpandit@chromium.org, bgodavar@codeaurora.org
-Subject: Update WCN3991 FW with new enhancement
-Message-ID: <d4a4a37625f6b562c5096cbe1a6ccb61@codeaurora.org>
-X-Sender: asitshah@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+might be set as 0 (when card->pref_erase > max_discard) while the mmc
+device still declares to support discard operation. This is buggy and
+triggered the following kernel warning message,
 
-Hi Team,
+WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+Hardware name: Google Kevin (DT)
+pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+pc : __blkdev_issue_discard+0x200/0x294
+lr : __blkdev_issue_discard+0x54/0x294
+sp : ffff800011dd3b10
+x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+__blkdev_issue_discard+0x200/0x294
+__submit_discard_cmd+0x128/0x374
+__issue_discard_cmd_orderly+0x188/0x244
+__issue_discard_cmd+0x2e8/0x33c
+issue_discard_thread+0xe8/0x2f0
+kthread+0x11c/0x120
+ret_from_fork+0x10/0x1c
+---[ end trace e4c8023d33dfe77a ]---
 
-Please include updated firmware bins for WCN3991.
+This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+complain from __blkdev_issue_discard() for the improper value of discard
+granularity.
 
-Snapshot of pull request is as below, let me know if anything is 
-missing.
+This issue is explored after commit b35fd7422c2f ("block: check queue's
+limits.discard_granularity in __blkdev_issue_discard()"), therefore add
+a "Fixes:" tag for the commit to make sure people won't miss this patch
+after applying the change of __blkdev_issue_discard().
 
+Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
+Reported-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+---
+Changelog,
+v2, change commit id of the Fixes tag.
+v1, initial version.
 
->>>>>>>>>>>>>> 
+ drivers/mmc/core/queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 
-b78a66c909c7150601e1b2a810b0e7c8f98d920c:
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index 6c022ef0f84d..350d0cc4ee62 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
+ 	q->limits.discard_granularity = card->pref_erase << 9;
+ 	/* granularity must not be greater than max. discard */
+ 	if (card->pref_erase > max_discard)
+-		q->limits.discard_granularity = 0;
++		q->limits.discard_granularity = SECTOR_SIZE;
+ 	if (mmc_can_secure_erase_trim(card))
+ 		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+ }
+-- 
+2.26.2
 
-   linux-firmware: Update firmware for Cadence MHDP8546 DP bridge 
-(2020-09-28 11:38:27 -0400)
-
-are available in the git repository at:
-
-   https://github.com/shahasit/linux-firmware-bt/tree/master
-
-for you to fetch changes up to ad1da95d52f1a9206da3ef52f3484f3b89ec6615:
-
-   QCA : Updated firmware files for WCN3991 (2020-10-01 12:03:01 +0530)
-
-----------------------------------------------------------------
-Asit Shah (1):
-       QCA : Updated firmware files for WCN3991
-
-  WHENCE           |   1 +
-  qca/crbtfw32.tlv | Bin 125896 -> 126300 bytes
-  qca/crnv32.bin   | Bin 5299 -> 5407 bytes
-  qca/crnv32u.bin  | Bin 0 -> 5407 bytes
-  4 files changed, 1 insertion(+)
-  create mode 100644 qca/crnv32u.bin
-
-
-Regards,
-Asit
