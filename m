@@ -2,100 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E8827F98D
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E5527F992
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730854AbgJAGif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAGif (ORCPT
+        id S1730842AbgJAGkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:40:13 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:38945 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgJAGkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:38:35 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C8CC0613D0;
-        Wed, 30 Sep 2020 23:38:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C23Ng6vpDz9sTR;
-        Thu,  1 Oct 2020 16:38:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601534312;
-        bh=RBJiBoz8G2EGVdAT6E3of1uC7YVoBJ+eg8J8ki0v5Zw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ukDmWTSgy0pWJYmgcGGafRBIxLEjprqygoQANgUOP+XgiSRPbmZUKnX5l68ljT8x7
-         cMz+awKoxLyLQ/ILC4NWn8lYuaJsiZhJWAQ4xZq0+O1uu+h6Yl6aryQI/e6bwIyJAZ
-         7C42lzLvos1czc75boZXKtoJUcbg7Cza+9fmjgYs6dJ19LotbQdtA/YFBvH4w+4AlL
-         0fQIGpw77Pbsxu+zKiw1lcOP6tICIOH9z/Rzm5jEjbtOM49aQLVa/tPo1TZzsPCYc9
-         RoCuxhkWKK3NPv3uh9h8GnfE/ED7VNjLv+682UHg0L7dT/rii1lTIxpeT3EvGmlde4
-         NNwxXixxYEevA==
-Date:   Thu, 1 Oct 2020 16:38:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Heng <liheng40@huawei.com>
-Subject: linux-next: manual merge of the tip tree with the pci tree
-Message-ID: <20201001163827.20ea7bf9@canb.auug.org.au>
+        Thu, 1 Oct 2020 02:40:07 -0400
+Received: by mail-io1-f72.google.com with SMTP id y16so2924962ioy.6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:40:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=8ZPUiK5xIdDCc0xK61WpBqqfUj8VzeTeMVAnJhuRkZ8=;
+        b=oeBjWEQgkzYOdlsMsPxwduUkWM+5T70B0vx2qRWBLVjGYzFYf0XMG+2fJqxeicTYYo
+         LwXQMiRlcY3WYYc7BCjvqf4rCVPovJ23ZWc5GdM6KaUypKKfi7cNOzxnhubyZZaaGT9j
+         TyqDTCoRAJbcqg1hFhimwVoe1i54Rpuqb36E8HTsXeIFM2gMXFyueCI+InuJ/tdtTKEj
+         Kg0Uxf5jQvPEqTeSRxqXy2tHIO8kHSp/trPwD9HGC+QPO1cB/QGBtrrN7EAUOH23IwZW
+         Zzxgr0mh6FBSE9eJvAMDSH3ekSzk/ZKNHHnmq3ryxs4trPvea2nqLZIUL9r+acgotohD
+         vABA==
+X-Gm-Message-State: AOAM533BAPrEwsSsD4xw3uc2tImUSgxfSCqJhWPDGnHFGNJ2MN3/xhkT
+        JiJGdSeJNc+jH5OWVUHlIa/gzmoqw0Yjs9Lo2FUIrozwrIDf
+X-Google-Smtp-Source: ABdhPJyCUXV1Atqih0XfjzbZqhinetrnbdIcc4dxtZCg5vcKg4pgutDDshPeQdie+3XeA2qiuKejW73TyENaFORzM7nYtxliq4Ng
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a6b:d60b:: with SMTP id w11mr1882148ioa.198.1601534405596;
+ Wed, 30 Sep 2020 23:40:05 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 23:40:05 -0700
+In-Reply-To: <CAM_iQpW+_5wLteCoVc6Wn+z9WOp6FwVUpsy456hM+up0daxedw@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000575e3405b09649ff@google.com>
+Subject: Re: INFO: task hung in tcf_action_init_1
+From:   syzbot <syzbot+82752bc5331601cf4899@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Today's linux-next merge of the tip tree got a conflict in:
+Reported-and-tested-by: syzbot+82752bc5331601cf4899@syzkaller.appspotmail.com
 
-  arch/x86/pci/xen.c
+Tested on:
 
-between commit:
+commit:         d5b70379 request_module()
+git tree:       https://github.com/congwang/linux.git net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=82752bc5331601cf4899
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-  b0623566c2e9 ("x86/xen: Fix xen_msi_init() missing prototype warning")
-
-from the pci tree and commit:
-
-  2905c50b7d3e ("x86/xen: Make xen_msi_init() static and rename it to xen_h=
-vm_msi_init()")
-
-from the tip tree.
-
-I fixed it up (I just used the latter since it incorporated the change
-from the former) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted
-for merging.  You may also want to consider cooperating with the
-maintainer of the conflicting tree to minimise any particularly complex
-conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91eWMACgkQAVBC80lX
-0GzLywf/dOqnhX1Yge95OzotCZ2NODjW4HiVdq7pmj2/Ok0CEH9pvKYRhmDxSICk
-NhwlpBz38HLKwpH5XPf2DPsCmrLRr6PuxnUs5NP+XY2QpU7TaKetqhoNxiRtunyS
-5ZT5JDdW3I5p1/2cgYCcgyxAuVm1r+MpIXLSsJIgpAnei1d78g/KSWSbqBNZYFrU
-NI7Jjq5GhuEXmPnW3ZplPIySTpsBY5lVjsXe11g4EoahPvzNoz7APj3Nqu/8CIfN
-QY57Vyk2RY5D1occ2kYMol03oqZJA5FmbpA2XM2h7gUgHrF4ibWfoIrgtoZ2V7e7
-zDARyRGPq6F1mvTZHOacIhxXInaLfQ==
-=NUS9
------END PGP SIGNATURE-----
-
---Sig_/Tm3Hmv4nFSZ0T+_xTKYqaiv--
+Note: testing is done by a robot and is best-effort only.
