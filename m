@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE0F27F69B
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A7627F6AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 02:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgJAAWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 20:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53758 "EHLO mail.kernel.org"
+        id S1731979AbgJAA1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 20:27:05 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55815 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730258AbgJAAWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 20:22:08 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5312207C3;
-        Thu,  1 Oct 2020 00:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601511727;
-        bh=P0GOJlLoIg+1rmk9lqXN+j1FqQgUxb+yJbLnN9iX4Is=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=oycpxr7iBffWz9n3vhvI1SX9KIVxsSLPlv3aTCq8oQp6skgIZ8odBHa85F/ZGe6h4
-         JfZKKFQIwxGKiyX9/iQs4F16+vMDWzeMLmTGkIy2en8DCvTAzESWLe9CnQixByAVpv
-         HkHh6+6JSPfHN0q43bkXHIaJTxe8W05j3L5jvGOQ=
-Content-Type: text/plain; charset="utf-8"
+        id S1730715AbgJAA1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 30 Sep 2020 20:27:04 -0400
+IronPort-SDR: tWic1MtgXCVMRQjZFA9/oI3z4BVAHDOHe2mfjJ4P/jBmhnvyYeA5Fjs/MoEKLtJMf03fefKO6A
+ JTFGxTmW4www==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="163439634"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="163439634"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:26:59 -0700
+IronPort-SDR: ZLXrQUQsWI6x9aob7bMXSHgC89t677ZCK4fGSzl9R5b9Q4fbL1Z6om5AptXUtgKBNIRVvUgrJy
+ +dKNMr6su64g==
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="350860999"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 17:26:58 -0700
+Date:   Wed, 30 Sep 2020 17:26:57 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH v6 4/4] KVM: nSVM: implement on demand allocation of the
+ nested state
+Message-ID: <20201001002657.GD2988@linux.intel.com>
+References: <20200922211025.175547-1-mlevitsk@redhat.com>
+ <20200922211025.175547-5-mlevitsk@redhat.com>
+ <20200929051526.GD353@linux.intel.com>
+ <0518490df933d0b12b6dc4b0df2234091cd95ce7.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200923214632.079690f6@canb.auug.org.au>
-References: <20200923214632.079690f6@canb.auug.org.au>
-Subject: Re: linux-next: Fixes tag needs some work in the clk tree
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Wed, 30 Sep 2020 17:22:06 -0700
-Message-ID: <160151172628.310579.596467424545504483@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0518490df933d0b12b6dc4b0df2234091cd95ce7.camel@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Rothwell (2020-09-23 04:46:32)
-> Hi all,
->=20
-> In commit
->=20
->   b02cf0c4736c ("clk: socfpga: stratix10: fix the divider for the emac_pt=
-p_free_clk")
->=20
-> Fixes tag
->=20
->   Fixes: 07afb8db7340 ("clk: socfpga: stratix10: add clock driver for
->=20
-> has these problem(s):
->=20
->   - Subject has leading but no trailing parentheses
->   - Subject has leading but no trailing quotes
->=20
-> Please do not split Fixes tags over more that one line.
->=20
+On Wed, Sep 30, 2020 at 06:35:40PM +0300, Maxim Levitsky wrote:
+> On Mon, 2020-09-28 at 22:15 -0700, Sean Christopherson wrote:
+> > Side topic, do we actually need 'initialized'?  Wouldn't checking for a
+> > valid nested.msrpm or nested.hsave suffice?
+> 
+> It a matter of taste - I prefer to have a single variable controlling this,
+> rather than two. 
+> a WARN_ON(svm->nested.initialized && !svm->nested.msrpm || !svm->nested.hsave))
+> would probably be nice to have. IMHO I rather leave this like it is if you
+> don't object.
 
-Thanks for pointing that out. Is this part of checkpatch? I run
-checkpatch on most patches and didn't see any complaint.
+I don't have a strong preference.  I wouldn't bother with the second WARN_ON.
+Unless you take action, e.g. bail early, a NULL pointer will likely provide a
+stack trace soon enough :-).
