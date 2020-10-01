@@ -2,124 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C7A27FCB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4AB27FCB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731782AbgJAJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
+        id S1731802AbgJAJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgJAJx6 (ORCPT
+        with ESMTP id S1726992AbgJAJye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:53:58 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2B4C0613D0;
-        Thu,  1 Oct 2020 02:53:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C27kB1W4rz9sTs;
-        Thu,  1 Oct 2020 19:53:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601546034;
-        bh=EWKQMkJ/Tz+lGXgLkt0ZKJpI0buD4RIdCeYfrd4ddsw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CzOUNaMuHJlqvclqVSO1aLe50W+gD3UlvT/h+H1aA3Ig9AJX3lmAqQz6ZRYx6YVeC
-         sBIp+tLJQ+QZcKuY2Lgzb1dgbX+cXVUC+mQIysT5JMHszV8JH+EmA9HTj9nvROGH+W
-         gwMJme0ePkVwSb4tcyxKEOidXnOXT23+7zpdhFeC3pFk4SycTJGmDoYlQErOBIKeuH
-         R0HYayOa+NK0nmtkMqb4Mi8AyvOA7buy9jbtxPbKeYyZOFKkqAbrx60P9Grky314qT
-         k4eToediCwuXEwmCEe9W4JCba6O47mn6mMHn15fCFDADIFvuvPnCYEiTODH0WzWImC
-         gg93B6XPALwcg==
-Date:   Thu, 1 Oct 2020 19:53:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: linux-next: manual merge of the akpm-current tree with the pm tree
-Message-ID: <20201001195353.7e3551f7@canb.auug.org.au>
+        Thu, 1 Oct 2020 05:54:34 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF52C0613D0;
+        Thu,  1 Oct 2020 02:54:32 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 33so4595764edq.13;
+        Thu, 01 Oct 2020 02:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=efGqsffX4u9vH950l+RdFnOqEZhHr145ZOrzjBNbZJQ=;
+        b=qctVyxiXQeQzGQC0kaWPpGiSXNd+AqHeiD9piKQPIWef2I8izx2d6KiSytItvh0RlT
+         gl53jtEUXVjbulz/hVicyNHRcmWVdqpOhFYKjv/KBsD3WOCVUnv1PVNVHn7GipJwOHTZ
+         r40sbW8fBWoXohBcp7D3ccagMDwsZRl1NtHQ0etxuD9nOmWdvYJKEEfsBREZu+yYZi+r
+         5WQOS/wCWwPnHxqZ+nPJ8FyusXKQQTIQdtNgR4Enc+Jhusk5MtJaFCO1cZQeooyeDs7B
+         IXFpx3uFm/fnJzb2fJ3gcL4tEpTRuKuUvvDrNd468wbMQyBJpR82R30XdskrYm0lcpo+
+         hNIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=efGqsffX4u9vH950l+RdFnOqEZhHr145ZOrzjBNbZJQ=;
+        b=gHd8q5OPrtF/i1zxc9Bavev2VjWYfHTusdO0d7kfFY78LNI2DEW+GcMQ2f1D89dhbg
+         /1voqC+7Gabsyhb/4PiLXW729V4+vFDYcmMLrjI4nN0QaYB6sOGWIYl+AGkgJYiABjSv
+         5hDlwarkTwjnmeFxvNCV9HXGWvUWCBtyMkl9oNKC5dmXCndttxtZeKXpFxcN6jkMGyOq
+         v6/89Myf3fZtrCmyzVbM3A/q1VED8O1ygLUUz5CLqjNMkWv2dTWsrk0QTwIQLYsR3WHY
+         lurB5cknITpnh2Yrjcm8Pixy0S+sA2MH6a9OZD4Uzgtt0rPIJMCB4XfkBLvGSCwRHF+u
+         czTQ==
+X-Gm-Message-State: AOAM532SOxrgMqN8cYgPKbcQA1L3jxUiPiXvvDEBPgnVwJwiAxeWDMwk
+        vJHBA7yMSYm+q9D0vqqgRyA=
+X-Google-Smtp-Source: ABdhPJzJPPAnIKfFwlj9N9xDoFpsYFaqOQ8/fWOTsMXVKq+2zk3e1FIgvsrkW2LL08v60lYvozYplA==
+X-Received: by 2002:a50:cbc7:: with SMTP id l7mr7323346edi.148.1601546071606;
+        Thu, 01 Oct 2020 02:54:31 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id hk1sm3732258ejb.20.2020.10.01.02.54.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 02:54:30 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 11:54:28 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+Message-ID: <20201001095428.GE3919720@ulmo>
+References: <20200930084258.25493-1-nicoleotsuka@gmail.com>
+ <20200930084258.25493-3-nicoleotsuka@gmail.com>
+ <20200930153131.GB3833404@ulmo>
+ <20200930203618.GC2110@Asurada-Nvidia>
+ <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+ <20200930213244.GA10573@Asurada-Nvidia>
+ <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+ <20201001012630.GA28240@Asurada-Nvidia>
+ <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6BWvLz=k3oUAN47eqFkIpd3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+JUInw4efm7IfTNU"
+Content-Disposition: inline
+In-Reply-To: <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6BWvLz=k3oUAN47eqFkIpd3
-Content-Type: text/plain; charset=US-ASCII
+
+--+JUInw4efm7IfTNU
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Thu, Oct 01, 2020 at 05:06:19AM +0300, Dmitry Osipenko wrote:
+> 01.10.2020 04:26, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Thu, Oct 01, 2020 at 12:56:46AM +0300, Dmitry Osipenko wrote:
+> >> 01.10.2020 00:32, Nicolin Chen =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> On Thu, Oct 01, 2020 at 12:24:25AM +0300, Dmitry Osipenko wrote:
+> >>>> ...
+> >>>>>> It looks to me like the only reason why you need this new global A=
+PI is
+> >>>>>> because PCI devices may not have a device tree node with a phandle=
+ to
+> >>>>>> the IOMMU. However, SMMU support for PCI will only be enabled if t=
+he
+> >>>>>> root complex has an iommus property, right? In that case, can't we
+> >>>>>> simply do something like this:
+> >>>>>>
+> >>>>>> 	if (dev_is_pci(dev))
+> >>>>>> 		np =3D find_host_bridge(dev)->of_node;
+> >>>>>> 	else
+> >>>>>> 		np =3D dev->of_node;
+> >>>>>>
+> >>>>>> ? I'm not sure exactly what find_host_bridge() is called, but I'm =
+pretty
+> >>>>>> sure that exists.
+> >>>>>>
+> >>>>>> Once we have that we can still iterate over the iommus property an=
+d do
+> >>>>>> not need to rely on this global variable.
+> >>>>>
+> >>>>> I agree that it'd work. But I was hoping to simplify the code
+> >>>>> here if it's possible. Looks like we have an argument on this
+> >>>>> so I will choose to go with your suggestion above for now.
+> >>>>
+> >>>> This patch removed more lines than were added. If this will be oppos=
+ite
+> >>>> for the Thierry's suggestion, then it's probably not a great suggest=
+ion.
+> >>>
+> >>> Sorry, I don't quite understand this comments. Would you please
+> >>> elaborate what's this "it" being "not a great suggestion"?
+> >>>
+> >>
+> >> I meant that you should try to implement Thierry's solution, but if the
+> >> end result will be worse than the current patch, then you shouldn't ma=
+ke
+> >> a v4, but get back to this discussion in order to choose the best opti=
+on
+> >> and make everyone agree on it.
+> >=20
+> > I see. Thanks for the reply. And here is a sample implementation:
+>=20
+> That's what I supposed to happen :) The new variant adds code and
+> complexity, while old did the opposite. Hence the old variant is clearly
+> more attractive, IMO.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Surely code size can't be the only measure of good code. You can fit the
+above on even fewer lines if you sacrifice readability. In this case you
+can strip away those lines because you're effectively using a global
+variable.
 
-  include/acpi/acpi_numa.h
+So there's always a compromise and I think in this case it's not a good
+one because we sacrifice explicit code that clearly documents what's
+going on with less code that's a bit handwavy about what's happening.
 
-between commit:
+Thierry
 
-  4849bc777049 ("ACPI / NUMA: Add stub function for pxm_to_node()")
-
-from the pm tree and commit:
-
-  623347c1b949 ("x86/numa: cleanup configuration dependent command-line opt=
-ions")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/acpi/acpi_numa.h
-index 09eb3bc20ff5,0e9302285f14..000000000000
---- a/include/acpi/acpi_numa.h
-+++ b/include/acpi/acpi_numa.h
-@@@ -23,9 -23,16 +23,20 @@@ extern void bad_srat(void)
-  extern int srat_disabled(void);
- =20
-  #else				/* CONFIG_ACPI_NUMA */
- +static inline int pxm_to_node(int pxm)
- +{
- +	return 0;
- +}
-+ static inline void disable_srat(void)
-+ {
-+ }
-  #endif				/* CONFIG_ACPI_NUMA */
-+=20
-+ #ifdef CONFIG_ACPI_HMAT
-+ extern void disable_hmat(void);
-+ #else				/* CONFIG_ACPI_HMAT */
-+ static inline void disable_hmat(void)
-+ {
-+ }
-+ #endif				/* CONFIG_ACPI_HMAT */
-  #endif				/* __ACP_NUMA_H */
-
---Sig_/6BWvLz=k3oUAN47eqFkIpd3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--+JUInw4efm7IfTNU
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl91pzEACgkQAVBC80lX
-0Gxr3ggAiyypJPMkTLBiqZIjkHRjUi+TXtvdaeULcJ/pcfIXffC3Z/7Zm3Y8Ti+g
-m6blLRpVGUozgz+kWxBrkrYurgr6/qz2S7FvBob9SF42zEwRB6Q0M+VUm7UIHWwF
-ZzBUwEup+BjdyfhW4PXGzBC8g6dd5oLXWK8MfD9bhQdWpSQplQPQ1jNhI6xbiKhs
-Q16bkAsQ+HatYaPdcdwCaKJ87XQ2dVPMiFox5vG/8Nhl6RHnBEbNzfXSfhD1nx0I
-4lOYuHkmhw8t0ycv0iHVE9J0u7BFbiECytIHNKb1EujYEiU15S7pgg/CWgqiVY+d
-akNfCorJK8v/rwQkgioWBbFhyuqg7A==
-=UyCY
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl91p1QACgkQ3SOs138+
+s6H6PQ/9EI9ebHo2iciyjJUWVjuWPHOF3R3eyAltPRg8zAk9kVxzzmMyBVHzVNxY
+eaz+zf8CRUdYa5UNMfRmpRSJRoHNpJxWedVDhGkKEPQO63ad/l5y8fJnK/G8DkBi
+kvUOANk5U5ocCrwS/Qn2WsnLpDSu484EhgrISCezkb9ufERyTplrU7mNP2aHLbrV
+E/dSxjxE/DwMZgO33kd7v6HEB0ED/8mcKKUlUTmgB3iaS/ZRri2UfZtRhRVPdr3s
+XK4PnPlbdRD18gVe9ioJSdBES5av4nMbFDkfLnmqohduMIhol1FJ7vAErwzMxSJg
+cEWifMp3NVnGjjVbpg5LN82UygJQbNGzGZZRbpGPGOMatjrXJUxqkNpZDhL5KKXM
+0fhu2+1R7VDvkiGbi0kzxfVsLF0wq/Y+hlrrHK4aaw0kCwMk1d2QLOGqTv5QYGLe
+gyQXrsYRESRVdtF/UaaDCOLXgIV+Dr29p6PpB+Eo/yfTuddgR0xrmTlomfkJm8ej
+P4qPWiiUM0JxRct8WB/PBoM0PUWpWeq3/rlm4FWoe4gB+tW1T95alBjBvrWlIzGe
+z2DpgQKtLHJYz7FZGQ+VppRA6U6+b2AwpJ/Pgr23r6dOURoHBhYZQa+vnNN4FXOH
+uKbDq+Dj0hq+CewgBWBsxj9xgCtYu17j1F7tqraJuRyxMR+itt4=
+=VEaE
 -----END PGP SIGNATURE-----
 
---Sig_/6BWvLz=k3oUAN47eqFkIpd3--
+--+JUInw4efm7IfTNU--
