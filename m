@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA12727F91A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE57727F91B
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730918AbgJAFfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S1730998AbgJAFgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgJAFfY (ORCPT
+        with ESMTP id S1725902AbgJAFgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:35:24 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BCCC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:35:24 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k6so5301380ior.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:35:24 -0700 (PDT)
+        Thu, 1 Oct 2020 01:36:03 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5059BC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:36:03 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so5304796ioo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:36:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kRnjwY3zXuwtkmPvB2nr59HaLQ9DcYdXnCK7YwEkNho=;
-        b=h0vUswDykw1wgVUzwFfPN1NjVtAgN1k7IzT+wN12LGPV5ONXF6Tl2ZF+CL+UlrD1+H
-         cDHUYIvTeU2Uu7zaCicr7iQHptZfFgi/VWnT7zaYJXBWsbJPFftt1Vf3ITzGeA9pTr2L
-         PeQRSsTB7Y2b6Hslxc9k81H65wdH0OdFEJTQXmq+9N9JhkPOFbUiotTNMR5TPgLyTDi8
-         wivHADdT6iGWqkgvWCOFeuJmW5k0URU6KgZsDc60iHAzACHku4rICeVQUI4szJ/RIvyS
-         gy3YZrYFstt+15OU2kqRTlbwkN0s1DlJM9o/jlOhbX3DUvxWyilBiOGS7vtJWPiJB1lJ
-         /C2g==
+        bh=QtbZAbWRhVwhreXSB0kTHv0ILfnB5bkBKlrIN7hAzs4=;
+        b=b0n8nDbHjTjdcIuG4adVOb24ZWGiMpRZ9EGSsMco/b/sFDOJMFnn/ZnzjAgD8JOWkc
+         bUNIMkNs6FQ8+7QBIamGHeO/XyzVtesCFr+8SChPfUFJKt8xrwEeskb/AhmE1v/QjI4X
+         RxoYAMAYb1ydtXWVxP8XwLEVVcCLrDgJxtfmLyzcF0jmSTaRO2O6CD1wNOoTEh5IOG8g
+         jjyZwNAfCRaxVyGU8O4xE6DmJnGX1+kyOT1egkypHyVxQ01fnvJNlDStdWQn4RXcUnzN
+         Lr+ZXJy/GSHp4+esU5UJ+bO2AOXGjIScINtSg9cLic0RSjKD/pdhe90zW9gfM08kevij
+         cblw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kRnjwY3zXuwtkmPvB2nr59HaLQ9DcYdXnCK7YwEkNho=;
-        b=adngISVqQhcDR4+/OJ0vifcFilptgFYLS0ZwP7Ax6h+weK3C65pjZsl0XwEJP5uvhf
-         Gf0CWakc2+YxJMq+6eRcC/5amEUO7ZmTp8Z/n8hxxSCQRdung+yPdUUFUtv/ZLjuR5Px
-         nH2DUQdwQzkKcByDM8+A1AfMDhQD0Q6TcY9eo1aPrw7syKsMg18f06B8LAkxuopWFUtV
-         /I5BwXto7j4DshGsFeUzhBPhQeIfSZrdaiS7B6clRb9zo3kj8chxtZHLScNovyZyANLI
-         GBdB9VAvVXwVtOBd1XBdk4QmDhdhMgeSvdYPHVQGZLfpv5vhhPEFFhxCzixuwW1gebej
-         k65g==
-X-Gm-Message-State: AOAM533af4TiQjkrTtkQZ8r+GzcjWr3WuPrV4q1HsGx6VReajsLQf5+4
-        CODp9LLAvLfUsSxoVHnQEqqhq9laMypWw1EVyMs=
-X-Google-Smtp-Source: ABdhPJxDHRvabrCK+mAeKw+HNCxORWPDuHAogeNkLL4gxs3IVAZapJPmnxcXVvvYy1XB2SKMdiWGI9gJvS6Sy5FUO1o=
-X-Received: by 2002:a6b:4a17:: with SMTP id w23mr38921iob.73.1601530523734;
- Wed, 30 Sep 2020 22:35:23 -0700 (PDT)
+        bh=QtbZAbWRhVwhreXSB0kTHv0ILfnB5bkBKlrIN7hAzs4=;
+        b=I+qvRPWeyDkmOBRgKXS3g/sBUAxB8H0OQHEGt38szmMmQhJG3a3sUyJcz2bGnLHloL
+         RgEorwXp/WCn5xM/gii3I/cD2eRr1KuiRAjoN7rle7ueZyvsqekDb8Sdb1wKik6ts3jP
+         UG09EKq8RaLZDcNAZP3E1R4GWsvtvLXfo2V+BCXZSDgph3rM1iSW2k7GBlGW/26EtrUV
+         TkyzVZB1lc9vUV0CZn/9h09kiAP8XYPVefKuMEZGXOrrFhZv1XL1BEsRyL3c8hMMRBP5
+         eZ8MwWqjfjckuBGWtwyvlEuAps78ZrjTxpdgLoh0lZ8dR18CyvT3as9KPmW85Sll8C31
+         zjNw==
+X-Gm-Message-State: AOAM53080icZy2k+tGPuAoAfwBRCh9glg0BcVCSLMbt3jFgqaqyWiPkY
+        hHt3b3S/Y7XVv9Cf82TXxuXVM2s1lhUVZqwqPnk=
+X-Google-Smtp-Source: ABdhPJyEANHPuWScmaWhskyT8qulsVwG0NG2XTMS6k7HxpCz+PzLSYNd8VDRLJamjYd+48fCe4ekPBstE1rZG8FHx+g=
+X-Received: by 2002:a6b:be46:: with SMTP id o67mr4036812iof.133.1601530562491;
+ Wed, 30 Sep 2020 22:36:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911222634.31804-1-michael@walle.cc> <20200911222634.31804-4-michael@walle.cc>
-In-Reply-To: <20200911222634.31804-4-michael@walle.cc>
+References: <20200911222634.31804-1-michael@walle.cc> <20200911222634.31804-5-michael@walle.cc>
+In-Reply-To: <20200911222634.31804-5-michael@walle.cc>
 From:   Heiko Thiery <heiko.thiery@gmail.com>
-Date:   Thu, 1 Oct 2020 07:35:12 +0200
-Message-ID: <CAEyMn7Y3KMvFAVOk3_CFg+0D_PJrsUBA8Vw=C2E=g_gOGh8JZw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] mtd: spi-nor: implement OTP support for Macronix
+Date:   Thu, 1 Oct 2020 07:35:51 +0200
+Message-ID: <CAEyMn7ZXxdO5bKPh0hVU3ne4CRvfcJJ_HVBn8oVTUSo0r0eMqw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] mtd: spi-nor: implement OTP support for Winbond
  and similar flashes
 To:     Michael Walle <michael@walle.cc>
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -64,325 +64,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+HI Michael,
 
 Am Sa., 12. Sept. 2020 um 00:26 Uhr schrieb Michael Walle <michael@walle.cc>:
 >
-> Use the new OTP ops to implement OTP access on Macronix flashes. The
-> Macronix flashes provides one OTP area which is either programmed with
-> an electrical serial number and locked by the factory or is empty and can
-> be locked by the user. To keep things simple and because most devices
-> will have unprogrammed OTP areas, we treat both options as user regions.
-> If there will actually be an ESN preprogrammed, it will appear as a
-> locked user region.
+> Use the new OTP ops to implement OTP access on Winbond flashes. Most
+> Winbond flashes provides up to four different OTP areas ("Security
+> Registers"). Newer flashes uses the first OTP area for SFDP data. Thus,
+> for these flashes only the last three areas are handled and the first
+> one is left untouched.
 >
-> This was tested on a Macronix MX25L6405D as well as on a Adesto
-> AT25SL321.
+> This was tested on a Winbond W25Q32JW as well as on a W25Q32FW.
 >
 > Signed-off-by: Michael Walle <michael@walle.cc>
 
 Reviewed-by: Heiko Thiery <heiko.thiery@gmail.com>
 
 > ---
->  drivers/mtd/spi-nor/atmel.c    |  13 ++-
->  drivers/mtd/spi-nor/core.c     | 170 +++++++++++++++++++++++++++++++++
->  drivers/mtd/spi-nor/core.h     |   9 ++
->  drivers/mtd/spi-nor/macronix.c |  13 ++-
->  include/linux/mtd/spi-nor.h    |   6 ++
->  5 files changed, 209 insertions(+), 2 deletions(-)
+>  drivers/mtd/spi-nor/core.c    | 161 ++++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/core.h    |   4 +
+>  drivers/mtd/spi-nor/winbond.c |  18 +++-
+>  include/linux/mtd/spi-nor.h   |  10 +++
+>  4 files changed, 191 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-> index 3f5f21a473a6..1688c9989c6b 100644
-> --- a/drivers/mtd/spi-nor/atmel.c
-> +++ b/drivers/mtd/spi-nor/atmel.c
-> @@ -19,7 +19,8 @@ static const struct flash_info atmel_parts[] = {
->         { "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
->
->         { "at25sl321",  INFO(0x1f4216, 0, 64 * 1024, 64,
-> -                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> +                            OTP_INFO1(512, 0) },
->
->         { "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
->         { "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
-> @@ -29,9 +30,19 @@ static const struct flash_info atmel_parts[] = {
->         { "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
->  };
->
-> +static const struct spi_nor_otp_ops atmel_otp_ops = {
-> +       .read = spi_nor_otp_read_otp_mode,
-> +       .write = spi_nor_otp_write_otp_mode,
-> +       .lock = spi_nor_otp_lock_scur,
-> +       .is_locked = spi_nor_otp_is_locked_scur,
-> +};
-> +
->  static void atmel_default_init(struct spi_nor *nor)
->  {
->         nor->flags |= SNOR_F_HAS_LOCK;
-> +
-> +       if (nor->params->otp_info.n_otps)
-> +               nor->params->otp_ops = &atmel_otp_ops;
->  }
->
->  static const struct spi_nor_fixups atmel_fixups = {
 > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4244f98e4948..348db19958e9 100644
+> index 348db19958e9..c150e3b6ee44 100644
 > --- a/drivers/mtd/spi-nor/core.c
 > +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2828,6 +2828,176 @@ static int spi_nor_unlock_all(struct spi_nor *nor)
->         return 0;
+> @@ -2997,6 +2997,167 @@ int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region)
+>         return *scur & SCUR_LDSO;
 >  }
 >
 > +/**
-> + * spi_nor_set_secured_otp_mode() - Set secured OTP mode
-> + * @nor:       pointer to 'struct spi_nor'.
-> + * @enable:    true to enter the secured OTP mode, false to exit the secured
-> + *             OTP mode.
-> + *
-> + * Enter and exit OTP mode by using the command SPINOR_OP_ENSO (B1h) and
-> + * SPINOR_EP_EXSO (C1h) command.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spi_nor_set_secured_otp_mode(struct spi_nor *nor, bool enable)
-> +{
-> +       u8 cmd = enable ? SPINOR_OP_ENSO : SPINOR_OP_EXSO;
-> +       int ret;
-> +
-> +       ret = spi_nor_simple_cmd(nor, cmd);
-> +       if (ret)
-> +               dev_dbg(nor->dev, "error %d setting secured OTP mode\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * spi_nor_read_scur() - Read the Security Register using the SPINOR_OP_RDSCUR (2Bh) command.
-> + * @nor:       pointer to 'struct spi_nor'
-> + * @scur:      pointer to a DMA-able buffer where the value of the
-> + *             Security Register will be written.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spi_nor_read_scur(struct spi_nor *nor, u8 *scur)
-> +{
-> +       int ret;
-> +
-> +       ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDSCUR, scur, 1);
-> +       if (ret)
-> +               dev_dbg(nor->dev, "error %d reading SCUR\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * spi_nor_write_scur() - Write the Security Register using the SPINOR_OP_WRSCUR (2Fh) command.
-> + * @nor:       pointer to 'struct spi_nor'
-> + *
-> + * This register contains only one OTP bit. The command doesn't take any
-> + * arguments. In fact it _must not_ take any arugments. Otherwise the command
-> + * is ignored.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int spi_nor_write_scur(struct spi_nor *nor)
-> +{
-> +       int ret;
-> +
-> +       ret = spi_nor_simple_cmd(nor, SPINOR_OP_WRSCUR);
-> +       if (ret)
-> +               dev_dbg(nor->dev, "error %d writing SCUR\n", ret);
-> +
-> +       return ret;
-> +}
-> +
-> +/**
-> + * spi_nor_otp_read_otp_mode() - read OTP data
+> + * spi_nor_otp_read_secr() - read OTP data
 > + * @nor:       pointer to 'struct spi_nor'
 > + * @from:       offset to read from
 > + * @len:        number of bytes to read
 > + * @buf:        pointer to dst buffer
 > + *
-> + * Read OTP data by using the ENSO and EXSO commands. This method is used on
-> + * Adesto, Atmel, Macronix and Micron SPI flashes.
+> + * Read OTP data by using the SPINOR_OP_RSECR commands. This method is used on
+> + * GigaDevice and Winbond flashes.
 > + *
 > + * Return: number of bytes read successfully, -errno otherwise
 > + */
-> +int spi_nor_otp_read_otp_mode(struct spi_nor *nor, loff_t from, uint64_t len, u8 *buf)
+> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
 > +{
+> +       u8 addr_width, read_opcode, read_dummy;
+> +       struct spi_mem_dirmap_desc *rdesc;
+> +       enum spi_nor_protocol read_proto;
 > +       int ret;
 > +
-> +       ret = spi_nor_set_secured_otp_mode(nor, true);
-> +       if (ret)
-> +               return ret;
+> +       read_opcode = nor->read_opcode;
+> +       addr_width = nor->addr_width;
+> +       read_dummy = nor->read_dummy;
+> +       read_proto = nor->read_proto;
+> +       rdesc = nor->dirmap.rdesc;
 > +
-> +       ret = spi_nor_read_data(nor, from, len, buf);
+> +       nor->read_opcode = SPINOR_OP_RSECR;
+> +       nor->addr_width = 3;
+> +       nor->read_dummy = 8;
+> +       nor->read_proto = SNOR_PROTO_1_1_1;
+> +       nor->dirmap.rdesc = NULL;
 > +
-> +       spi_nor_set_secured_otp_mode(nor, false);
+> +       ret = spi_nor_read_data(nor, addr, len, buf);
+> +
+> +       nor->read_opcode = read_opcode;
+> +       nor->addr_width = addr_width;
+> +       nor->read_dummy = read_dummy;
+> +       nor->read_proto = read_proto;
+> +       nor->dirmap.rdesc = rdesc;
 > +
 > +       return ret;
 > +}
 > +
 > +/**
-> + * spi_nor_otp_write_otp_mode() - write OTP data
+> + * spi_nor_otp_write_secr() - write OTP data
 > + * @nor:        pointer to 'struct spi_nor'
 > + * @to:         offset to write to
 > + * @len:        number of bytes to write
 > + * @buf:        pointer to src buffer
 > + *
-> + * Write OTP data by using the ENSO and EXSO commands. This method is used on
-> + * Adesto, Atmel, Macronix and Micron SPI flashes.
+> + * Write OTP data by using the SPINOR_OP_PSECR commands. This method is used on
+> + * GigaDevice and Winbond flashes.
 > + *
 > + * Return: number of bytes written successfully, -errno otherwise
 > + */
-> +int spi_nor_otp_write_otp_mode(struct spi_nor *nor, loff_t to, uint64_t len, u8 *buf)
+> +int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
 > +{
+> +       enum spi_nor_protocol write_proto;
+> +       struct spi_mem_dirmap_desc *wdesc;
+> +       u8 addr_width, program_opcode;
 > +       int ret;
 > +
-> +       ret = spi_nor_set_secured_otp_mode(nor, true);
-> +       if (ret)
-> +               return ret;
+> +       program_opcode = nor->program_opcode;
+> +       addr_width = nor->addr_width;
+> +       write_proto = nor->write_proto;
+> +       wdesc = nor->dirmap.wdesc;
 > +
+> +       nor->program_opcode = SPINOR_OP_PSECR;
+> +       nor->addr_width = 3;
+> +       nor->write_proto = SNOR_PROTO_1_1_1;
+> +       nor->dirmap.wdesc = NULL;
+> +
+> +       /*
+> +        * We only support a write to one single page. For now all winbond
+> +        * flashes only have one page per OTP region.
+> +        */
 > +       ret = spi_nor_write_enable(nor);
 > +       if (ret)
 > +               goto out;
 > +
-> +       ret = spi_nor_write_data(nor, to, len, buf);
+> +       ret = spi_nor_write_data(nor, addr, len, buf);
 > +       if (ret < 0)
 > +               goto out;
 > +
 > +       ret = spi_nor_wait_till_ready(nor);
 > +
 > +out:
-> +       spi_nor_set_secured_otp_mode(nor, false);
+> +       nor->program_opcode = program_opcode;
+> +       nor->addr_width = addr_width;
+> +       nor->write_proto = write_proto;
+> +       nor->dirmap.wdesc = wdesc;
 > +
 > +       return ret;
 > +}
 > +
-> +/**
-> + * spi_nor_otp_lock_scur() - lock the OTP region
-> + * @nor:        pointer to 'struct spi_nor'
-> + * @region:     OTP region
-> + *
-> + * Lock the OTP region by writing the security register. This method is used on
-> + * Adesto, Atmel, Macronix and Micron SPI flashes.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +int spi_nor_otp_lock_scur(struct spi_nor *nor, unsigned int region)
+> +static int spi_nor_otp_lock_bit_cr(unsigned int region)
 > +{
-> +       if (region != 0)
+> +       static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+> +
+> +       if (region >= ARRAY_SIZE(lock_bits))
 > +               return -EINVAL;
 > +
-> +       return spi_nor_write_scur(nor);
+> +       return lock_bits[region];
 > +}
 > +
 > +/**
-> + * spi_nor_otp_is_locked_otp_mode() - get the OTP region lock status
+> + * spi_nor_otp_lock_sr2() - lock the OTP region
 > + * @nor:        pointer to 'struct spi_nor'
 > + * @region:     OTP region
 > + *
-> + * Retrieve the OTP region lock bit by reading the security register. This
-> + * method is used on Adesto, Atmel, Macronix and Micron SPI flashes.
+> + * Lock the OTP region by writing the status register-2. This method is used on
+> + * GigaDevice and Winbond flashes.
 > + *
 > + * Return: 0 on success, -errno otherwise.
 > + */
-> +int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region)
+> +int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region)
 > +{
-> +       u8 *scur = nor->bouncebuf;
+> +       int lock_bit;
+> +       u8 *sr2 = nor->bouncebuf;
 > +       int ret;
 > +
-> +       if (region != 0)
-> +               return -EINVAL;
+> +       lock_bit = spi_nor_otp_lock_bit_cr(region);
+> +       if (lock_bit < 0)
+> +               return lock_bit;
 > +
-> +       ret = spi_nor_read_scur(nor, scur);
+> +       ret = spi_nor_read_cr(nor, sr2);
 > +       if (ret)
 > +               return ret;
 > +
-> +       return *scur & SCUR_LDSO;
+> +       /* check if its already locked */
+> +       if (*sr2 & lock_bit)
+> +               return 0;
+> +
+> +       return spi_nor_write_16bit_cr_and_check(nor, *sr2 | lock_bit);
 > +}
 > +
+> +/**
+> + * spi_nor_otp_is_locked_sr2() - get the OTP region lock status
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @region:     OTP region
+> + *
+> + * Retrieve the OTP region lock bit by reading the status register-2. This
+> + * method is used on GigaDevice and Winbond flashes.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region)
+> +{
+> +       int lock_bit;
+> +       u8 *sr2 = nor->bouncebuf;
+> +       int ret;
 > +
+> +       lock_bit = spi_nor_otp_lock_bit_cr(region);
+> +       if (lock_bit < 0)
+> +               return lock_bit;
+> +
+> +       ret = spi_nor_read_cr(nor, sr2);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return (*sr2 & lock_bit);
+> +}
+>
 >  static int spi_nor_init(struct spi_nor *nor)
 >  {
->         int err;
 > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 516c5973bf88..7ec4add17b72 100644
+> index 7ec4add17b72..74bbb7aef1f1 100644
 > --- a/drivers/mtd/spi-nor/core.h
 > +++ b/drivers/mtd/spi-nor/core.h
-> @@ -414,6 +414,10 @@ struct flash_info {
->                 .otp_start_addr = (_otp_start_addr),                    \
->                 .otp_addr_offset = (_otp_addr_offset),
+> @@ -472,6 +472,10 @@ int spi_nor_otp_read_otp_mode(struct spi_nor *nor, loff_t from, uint64_t len, u8
+>  int spi_nor_otp_write_otp_mode(struct spi_nor *nor, loff_t to, uint64_t len, u8 *buf);
+>  int spi_nor_otp_lock_scur(struct spi_nor *nor, unsigned int region);
+>  int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region);
+> +int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
+> +int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
+> +int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+> +int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
 >
-> +#define OTP_INFO1(_otp_size, _otp_start_addr)                          \
-> +               OTP_INFO(_otp_size, 1, _otp_start_addr, 0)
-> +
-> +
->  /**
->   * struct spi_nor_manufacturer - SPI NOR manufacturer object
->   * @name: manufacturer name
-> @@ -464,6 +468,11 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
->  ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
->                            const u8 *buf);
->
-> +int spi_nor_otp_read_otp_mode(struct spi_nor *nor, loff_t from, uint64_t len, u8 *buf);
-> +int spi_nor_otp_write_otp_mode(struct spi_nor *nor, loff_t to, uint64_t len, u8 *buf);
-> +int spi_nor_otp_lock_scur(struct spi_nor *nor, unsigned int region);
-> +int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region);
-> +
 >  int spi_nor_hwcaps_read2cmd(u32 hwcaps);
 >  u8 spi_nor_convert_3to4_read(u8 opcode);
->  void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index f97f3d127575..31198527f963 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -42,7 +42,8 @@ static const struct flash_info macronix_parts[] = {
->         { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
->         { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
->         { "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-> -       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> +       { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K)
-> +                        OTP_INFO1(64, 0) },
->         { "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
->         { "mx25u3235f",  INFO(0xc22536, 0, 64 * 1024,  64,
->                               SECT_4K | SPI_NOR_DUAL_READ |
-> @@ -92,10 +93,20 @@ static const struct flash_info macronix_parts[] = {
->                               SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  };
->
-> +static const struct spi_nor_otp_ops macronix_otp_ops = {
-> +       .read = spi_nor_otp_read_otp_mode,
-> +       .write = spi_nor_otp_write_otp_mode,
-> +       .lock = spi_nor_otp_lock_scur,
-> +       .is_locked = spi_nor_otp_is_locked_scur,
-> +};
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 6dcde15fb1aa..3b14e96e993f 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -55,14 +55,19 @@ static const struct flash_info winbond_parts[] = {
+>         { "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
+>         { "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
+>                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> -                          SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> +                          SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +                          OTP_INFO(256, 3, 0x1000, 0x1000)
+> +       },
 > +
->  static void macronix_default_init(struct spi_nor *nor)
->  {
->         nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
->         nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
-> +
-> +       if (nor->params->otp_info.n_otps)
-> +               nor->params->otp_ops = &macronix_otp_ops;
+>         { "w25q32jv", INFO(0xef7016, 0, 64 * 1024,  64,
+>                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>                            SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>         },
+>         { "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
+>                             SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> -                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> +                           SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +                           OTP_INFO(256, 3, 0x1000, 0x1000)
+> +       },
+>         { "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+>         { "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
+>                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+> @@ -122,9 +127,18 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>         return spi_nor_write_disable(nor);
 >  }
 >
->  static const struct spi_nor_fixups macronix_fixups = {
+> +static const struct spi_nor_otp_ops winbond_otp_ops = {
+> +       .read = spi_nor_otp_read_secr,
+> +       .write = spi_nor_otp_write_secr,
+> +       .lock = spi_nor_otp_lock_sr2,
+> +       .is_locked = spi_nor_otp_is_locked_sr2,
+> +};
+> +
+>  static void winbond_default_init(struct spi_nor *nor)
+>  {
+>         nor->params->set_4byte_addr_mode = winbond_set_4byte_addr_mode;
+> +       if (nor->params->otp_info.n_otps)
+> +               nor->params->otp_ops = &winbond_otp_ops;
+>  }
+>
+>  static const struct spi_nor_fixups winbond_fixups = {
 > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 081dbd386944..04195d3e43b8 100644
+> index 04195d3e43b8..4750fb631c96 100644
 > --- a/include/linux/mtd/spi-nor.h
 > +++ b/include/linux/mtd/spi-nor.h
-> @@ -95,6 +95,12 @@
->  /* Used for Macronix and Winbond flashes. */
->  #define SPINOR_OP_EN4B         0xb7    /* Enter 4-byte mode */
->  #define SPINOR_OP_EX4B         0xe9    /* Exit 4-byte mode */
-> +#define SPINOR_OP_ENSO         0xb1    /* Enter secured OTP mode */
-> +#define SPINOR_OP_EXSO         0xc1    /* Exit secured OTP mode */
-> +#define SPINOR_OP_RDSCUR       0x2b    /* Read security register */
-> +#define SPINOR_OP_WRSCUR       0x2f    /* Write security register */
-> +#define SCUR_SO                        BIT(0)  /* OTP factory secured */
-> +#define SCUR_LDSO              BIT(1)  /* OTP user lock-down */
+> @@ -110,6 +110,11 @@
+>  #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+>  #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
 >
->  /* Used for Spansion flashes only. */
->  #define SPINOR_OP_BRWR         0x17    /* Bank register write */
+> +/* Used for GigaDevices and Winbond flashes. */
+> +#define SPINOR_OP_ESECR                0x44    /* Erase Security registers */
+> +#define SPINOR_OP_PSECR                0x42    /* Program Security registers */
+> +#define SPINOR_OP_RSECR                0x48    /* Read Security registers */
+> +
+>  /* Status Register bits. */
+>  #define SR_WIP                 BIT(0)  /* Write in progress */
+>  #define SR_WEL                 BIT(1)  /* Write enable latch */
+> @@ -141,8 +146,13 @@
+>
+>  /* Status Register 2 bits. */
+>  #define SR2_QUAD_EN_BIT1       BIT(1)
+> +#define SR2_LB0                        BIT(2)  /* Security Register Lock Bit 0 */
+> +#define SR2_LB1                        BIT(3)  /* Security Register Lock Bit 1 */
+> +#define SR2_LB2                        BIT(4)  /* Security Register Lock Bit 2 */
+> +#define SR2_LB3                        BIT(5)  /* Security Register Lock Bit 3 */
+>  #define SR2_QUAD_EN_BIT7       BIT(7)
+>
+> +
+>  /* Supported SPI protocols */
+>  #define SNOR_PROTO_INST_MASK   GENMASK(23, 16)
+>  #define SNOR_PROTO_INST_SHIFT  16
 >
