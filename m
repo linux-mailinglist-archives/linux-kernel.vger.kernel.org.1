@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74E2280526
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B7428052D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 19:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732910AbgJAR2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 13:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
+        id S1732932AbgJAR3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 13:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732287AbgJAR2I (ORCPT
+        with ESMTP id S1732096AbgJAR3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:28:08 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B373C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:28:08 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d4so3710615wmd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:28:08 -0700 (PDT)
+        Thu, 1 Oct 2020 13:29:10 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23813C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 10:29:09 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y15so4017049wmi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 10:29:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=1M4RAfm7Ka56hTVARaFbgr0VJN7Hux9S4garFliWQrQ=;
-        b=of5jzw3PMgufI53qBrC2IN+3pkDwsZMmS8MapDtIqs/jRJVAtRNIK5NaDLJTzFRu6O
-         EYphTukdKvGCSmMzQwdDNTvjyg55U1+uhs4sZ7UDsqRMrfW+bdIRVAeso5kctUQ3PPmO
-         fTtG7v30wu0HPu+/UspUI3agEHuhSkt+y6qOQYSr+8OqjcVQUHBPsPKO3GDsih2xLp+r
-         VXbby1N/7G0XvD+/BVHbNUwjJVhsoHD5W33pcDGbhV709XEYe5Bn4+eqeuSsh6lRVOlm
-         ntz4ZoUrHhH02HsIwi2Gu/8kiNiJqlqJvyX8lRrJG5U4Ab2lfTUwML+OwasgOQzqTn3E
-         f6jg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iPaQCzihnyHNLy47NnUWbDr7GfchzwJLlA5r6ihLSYU=;
+        b=I+gsOCjjdOcdrl0S25+QXcQmEOn5eVa7r50sBTVtz/w3lhgLaELA5MI6CfjmSQdhwi
+         1+3Za2o2Q+HqdOLiRJ7MjQdLjQHkvUKSzQ+SPBYoONmZRBb1yzPdMIBLOE1HEE5fnLAA
+         BQ8w08laAbz2fQVHMkoQ2oHk+WRiJSiy/g4/cycNeYIpfEq710BsL7OqSnhUtvri5mey
+         kAPsYkq9nmGztS9NNvbO00ngqrQ0vK3QRNtX73q53Rk6fhsRl+ILTHwElJaTko7GuqXh
+         Ss/aOCe77SpYX7k06JceIbLr174mxwekNf4+lbo13Id52IiC75tWRIb7TSu28rMy651R
+         eGpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=1M4RAfm7Ka56hTVARaFbgr0VJN7Hux9S4garFliWQrQ=;
-        b=mQp2R16vJ/8t7QqYmFqJGA67NYbiAi+Pl9HBo46piN6Or3evvZfkH/3y9CALDT6M36
-         ILmmu+rJhziP6OE3qrOESXm2UUFZA8UkgNOlad9tsHlH10OuyoYWWb3bQAP/M6jEw0IU
-         MhHX2C3/7plCoEzvZK2QqxCqLDiAK6Knnt97NwoxrBNRWr5G97m62HLpb/x5V9opdhFs
-         W2USfi9mXf0aV4e4v/KqaryvbORNhA/p6dTuizXrEbaLp19dHmgKFEJbvHvFCSiWv0P5
-         MIGE+duLSYg6qaB+QedP7YjsWIuD+dXK8IgXuQWsJOB3iLxkEp4UcgY2XXxsyCaPAfOZ
-         1jYA==
-X-Gm-Message-State: AOAM533H2z+DHlITKzqLjrNO0TPUg05WhzQvdRUoNmgAJ38eF3tQjsTF
-        sYNaB8lZ4G+8+0MY48bPUNkKJQ==
-X-Google-Smtp-Source: ABdhPJwyVDVxYje8TjchORDThAw8Nf2lyrEVVWCNGUtzSKY/wsPFwtKzJsKQK/RU/wWZQIwlAkVZlA==
-X-Received: by 2002:a7b:ce89:: with SMTP id q9mr1060628wmj.65.1601573286992;
-        Thu, 01 Oct 2020 10:28:06 -0700 (PDT)
-Received: from ?IPv6:2001:861:3a81:3690:b885:8dcf:f8c6:7841? ([2001:861:3a81:3690:b885:8dcf:f8c6:7841])
-        by smtp.gmail.com with ESMTPSA id k6sm827843wmf.30.2020.10.01.10.28.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 01 Oct 2020 10:28:06 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] Add a RPMsg driver to support AI Processing Unit
- (APU)
-To:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        gpain@baylibre.com, stephane.leprovost@mediatek.com,
-        jstephan@baylibre.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        mturquette@baylibre.com, bjorn.andersson@linaro.org,
-        christian.koenig@amd.com, linux-media@vger.kernel.org
-References: <20200930115350.5272-1-abailon@baylibre.com>
- <20201001084856.GC438822@phenom.ffwll.local>
-From:   Alexandre Bailon <abailon@baylibre.com>
-Message-ID: <8e4bb739-c3b3-d790-e8e3-dd5df2d6f869@baylibre.com>
-Date:   Thu, 1 Oct 2020 19:28:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iPaQCzihnyHNLy47NnUWbDr7GfchzwJLlA5r6ihLSYU=;
+        b=TklOlBZxpZhV6Vfw7BS86w7f9WyhkokmBtsXxJUhaPuQb1X4Hrlpq5lrOi5YD0OeAB
+         ssX+xlHW3KnotX7ROELY4JxojIe+aflEgIEve3ccPTlhl2ymJv4Jlm25AiKF1/nnZOhm
+         xLttmdcVnw3dvbYllLm0/FSQFwT+Hz4JATOdNRSyX9pootc+u52JoZ0OrdvVb2R54Ai6
+         iMbHZPj5kJ1jVd6PO/CcNzOSfE4sQq5FMupKdvUvrnYFIQ9lzwPxbobNmkJenJkqkBWV
+         SPJEp/9e1Rf5poug3c39X1t/gXBprUwjkY1NSLXPoF37oPWfRY9XTiVTVYOEc8XAZa1W
+         CRdQ==
+X-Gm-Message-State: AOAM5315zd/DEAprpz2q9Pp+g+AnOZFulAFp8NfAwro9LaT4+dmsRO6o
+        WOrMcWVb+IZGqEtT/+MlfZiOVA==
+X-Google-Smtp-Source: ABdhPJzo235AsBkhXVYPH8dEYiNl0ar42N9voU6aVuWN/1aMLTuHt2yyhF3ju/2L0zAOuQgVIdxysg==
+X-Received: by 2002:a1c:4c0d:: with SMTP id z13mr1011876wmf.113.1601573347642;
+        Thu, 01 Oct 2020 10:29:07 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id m3sm9926381wrs.83.2020.10.01.10.29.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:29:06 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:29:01 +0200
+From:   elver@google.com
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/39] kasan: shadow declarations only for software
+ modes
+Message-ID: <20201001172901.GB4162920@elver.google.com>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <9de4c3b360444c66fcf454e0880fc655c5d80395.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201001084856.GC438822@phenom.ffwll.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9de4c3b360444c66fcf454e0880fc655c5d80395.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+> 
+> Group shadow-related KASAN function declarations and only define them
+> for the two existing software modes.
+> 
+> No functional changes for software modes.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-On 10/1/20 10:48 AM, Daniel Vetter wrote:
-> On Wed, Sep 30, 2020 at 01:53:46PM +0200, Alexandre Bailon wrote:
->> This adds a RPMsg driver that implements communication between the CPU and an
->> APU.
->> This uses VirtIO buffer to exchange messages but for sharing data, this uses
->> a dmabuf, mapped to be shared between CPU (userspace) and APU.
->> The driver is relatively generic, and should work with any SoC implementing
->> hardware accelerator for AI if they use support remoteproc and VirtIO.
->>
->> For the people interested by the firmware or userspace library,
->> the sources are available here:
->> https://github.com/BayLibre/open-amp/tree/v2020.01-mtk/apps/examples/apu
-> Since this has open userspace (from a very cursory look), and smells very
-> much like an acceleration driver, and seems to use dma-buf for memory
-> management: Why is this not just a drm driver?
+Reviewed-by: Marco Elver <elver@google.com>
 
-I have never though to DRM since for me it was only a RPMsg driver.
-I don't know well DRM. Could you tell me how you would do it so I could 
-have a look ?
-
-Thanks,
-Alexandre
-
-> -Daniel
->
->> Alexandre Bailon (3):
->>    Add a RPMSG driver for the APU in the mt8183
->>    rpmsg: apu_rpmsg: update the way to store IOMMU mapping
->>    rpmsg: apu_rpmsg: Add an IOCTL to request IOMMU mapping
->>
->> Julien STEPHAN (1):
->>    rpmsg: apu_rpmsg: Add support for async apu request
->>
->>   drivers/rpmsg/Kconfig          |   9 +
->>   drivers/rpmsg/Makefile         |   1 +
->>   drivers/rpmsg/apu_rpmsg.c      | 752 +++++++++++++++++++++++++++++++++
->>   drivers/rpmsg/apu_rpmsg.h      |  52 +++
->>   include/uapi/linux/apu_rpmsg.h |  47 +++
->>   5 files changed, 861 insertions(+)
->>   create mode 100644 drivers/rpmsg/apu_rpmsg.c
->>   create mode 100644 drivers/rpmsg/apu_rpmsg.h
->>   create mode 100644 include/uapi/linux/apu_rpmsg.h
->>
->> -- 
->> 2.26.2
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> ---
+> Change-Id: I864be75a88b91b443c55e9c2042865e15703e164
+> ---
+>  include/linux/kasan.h | 44 ++++++++++++++++++++++++++-----------------
+>  1 file changed, 27 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index bd5b4965a269..44a9aae44138 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -3,16 +3,24 @@
+>  #define _LINUX_KASAN_H
+>  
+>  #include <linux/types.h>
+> +#include <asm/kasan.h>
+>  
+>  struct kmem_cache;
+>  struct page;
+>  struct vm_struct;
+>  struct task_struct;
+>  
+> -#ifdef CONFIG_KASAN
+> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>  
+>  #include <linux/pgtable.h>
+> -#include <asm/kasan.h>
+> +
+> +/* Software KASAN implementations use shadow memory. */
+> +
+> +#ifdef CONFIG_KASAN_SW_TAGS
+> +#define KASAN_SHADOW_INIT 0xFF
+> +#else
+> +#define KASAN_SHADOW_INIT 0
+> +#endif
+>  
+>  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
+>  extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
+> @@ -29,6 +37,23 @@ static inline void *kasan_mem_to_shadow(const void *addr)
+>  		+ KASAN_SHADOW_OFFSET;
+>  }
+>  
+> +int kasan_add_zero_shadow(void *start, unsigned long size);
+> +void kasan_remove_zero_shadow(void *start, unsigned long size);
+> +
+> +#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+> +
+> +static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+> +{
+> +	return 0;
+> +}
+> +static inline void kasan_remove_zero_shadow(void *start,
+> +					unsigned long size)
+> +{}
+> +
+> +#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+> +
+> +#ifdef CONFIG_KASAN
+> +
+>  /* Enable reporting bugs after kasan_disable_current() */
+>  extern void kasan_enable_current(void);
+>  
+> @@ -69,9 +94,6 @@ struct kasan_cache {
+>  	int free_meta_offset;
+>  };
+>  
+> -int kasan_add_zero_shadow(void *start, unsigned long size);
+> -void kasan_remove_zero_shadow(void *start, unsigned long size);
+> -
+>  size_t __ksize(const void *);
+>  static inline void kasan_unpoison_slab(const void *ptr)
+>  {
+> @@ -137,14 +159,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
+>  	return false;
+>  }
+>  
+> -static inline int kasan_add_zero_shadow(void *start, unsigned long size)
+> -{
+> -	return 0;
+> -}
+> -static inline void kasan_remove_zero_shadow(void *start,
+> -					unsigned long size)
+> -{}
+> -
+>  static inline void kasan_unpoison_slab(const void *ptr) { }
+>  static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>  
+> @@ -152,8 +166,6 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+>  
+>  #ifdef CONFIG_KASAN_GENERIC
+>  
+> -#define KASAN_SHADOW_INIT 0
+> -
+>  void kasan_cache_shrink(struct kmem_cache *cache);
+>  void kasan_cache_shutdown(struct kmem_cache *cache);
+>  void kasan_record_aux_stack(void *ptr);
+> @@ -168,8 +180,6 @@ static inline void kasan_record_aux_stack(void *ptr) {}
+>  
+>  #ifdef CONFIG_KASAN_SW_TAGS
+>  
+> -#define KASAN_SHADOW_INIT 0xFF
+> -
+>  void kasan_init_tags(void);
+>  
+>  void *kasan_reset_tag(const void *addr);
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
