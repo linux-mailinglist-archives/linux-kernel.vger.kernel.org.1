@@ -2,240 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F562809E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41F12809E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733113AbgJAWLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
+        id S1733093AbgJAWMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgJAWLF (ORCPT
+        with ESMTP id S1726731AbgJAWMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:11:05 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6E8C0613D0;
-        Thu,  1 Oct 2020 15:11:05 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 724D560;
-        Fri,  2 Oct 2020 00:11:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1601590261;
-        bh=BL3+7BUUIarVCgjIf0pOiaTwVZt2/LRDcn//hjGXp5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BziXhof8Jw3JTqSeQ1FhkdrztyBAiOatunrf6Y0E4vKXjFiCyNy8wQAelsrb2ucus
-         VS85waTTaA6aw2epiiZGg66iRdn/wlcRh86jUUUkM2b1x3vXyRfOPj7ziEs3Uyblu3
-         4RMcbdS1gW9LLuIoOhwybKKRBK3TOJDCjmjof508=
-Date:   Fri, 2 Oct 2020 01:10:23 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Ben Gamari <ben@smart-cactus.org>, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: OpRegion conflicts for Skylake LPSS
-Message-ID: <20201001221023.GA12766@pendragon.ideasonboard.com>
-References: <87lh41nqqq.fsf@smart-cactus.org>
- <20160426155437.GA10202@lahna.fi.intel.com>
- <87eg9snkiw.fsf@smart-cactus.org>
- <87r3dona7g.fsf@smart-cactus.org>
- <20160429074227.GJ32610@lahna.fi.intel.com>
- <8737q24std.fsf@smart-cactus.org>
- <20160502103501.GP32610@lahna.fi.intel.com>
+        Thu, 1 Oct 2020 18:12:20 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5D4C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:12:20 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t14so81101pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=XRtIX/+or4JHttwvL1xrJoBj96pJY++qvRZDdNNXjmY=;
+        b=Oa3sSb5JsQDUURmaFPtxVmILxd+0Rx0TQ3IAmHiVGDDk0yX4S6yAR4H2g2uIBLe57/
+         4C73x+tTX0Z00OXu98ybMRx0aSR0RijHQccFVuCOGk6toE3e66dj9Uyo0lhYidBtw374
+         exdfgROm8B++437DLI3/pu8Kx+TUDAMiviRWQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=XRtIX/+or4JHttwvL1xrJoBj96pJY++qvRZDdNNXjmY=;
+        b=jNtjX/yJQJH4yW0HJ4DCTeydZP8p+jh+DRjkKdyo5N10wth/pHAoldpWze0lFQlDlU
+         s4FBBxcK+l4bIMZgFLmsXcCTaVYuNJchWXxyV/z5+o+LoLwTAddGs5YwMKwr3ZLyToDV
+         5Xh6571H8jmgau4Fi9jlsdEXN21GqERXPdHZmxrGpOHjmEaNpt71QeIoY3L9WfsI1CT8
+         h56TX7os/0bLywWJcIDpulm0m/3zvHlNMHJYeSEAhv9Kd/UZUpKfAmqUm+yZkLR/E65m
+         +VbwOJvqPBpMXy1uqr1kxE0QYpknKL4Z1RD0fMSv94iFlq9bXwu3ziusHbsV6Dyqr921
+         XQ7A==
+X-Gm-Message-State: AOAM533XN1OSd2xc9L51+6rA+qfDjeTURLpg6LhqtLt5491B6yzCeMtr
+        TVTK13gFsqWbtYV8zpemIyXItg==
+X-Google-Smtp-Source: ABdhPJxnen+aQIm51CQ0Z40kjhFxo5rq2AnaR3lLb2Uz8QkJqKNtcLm+kl4rOfksI6yj6xHuAuXt/g==
+X-Received: by 2002:a63:e444:: with SMTP id i4mr7779518pgk.304.1601590339895;
+        Thu, 01 Oct 2020 15:12:19 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id u18sm6910771pgk.18.2020.10.01.15.12.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 15:12:19 -0700 (PDT)
+Subject: Re: [PATCH v5 11/15] misc: bcm-vk: add BCM_VK_QSTATS
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Desmond Yan <desmond.yan@broadcom.com>
+References: <20201001012810.4172-1-scott.branden@broadcom.com>
+ <20201001012810.4172-12-scott.branden@broadcom.com>
+ <e7b3a4b6-0662-6ead-8ddb-0cf6324a9bd2@gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <5d76c89d-f53a-be22-dcd7-7854a3e1e034@broadcom.com>
+Date:   Thu, 1 Oct 2020 15:12:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20160502103501.GP32610@lahna.fi.intel.com>
+In-Reply-To: <e7b3a4b6-0662-6ead-8ddb-0cf6324a9bd2@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000051146a05b0a34fb6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mika,
+--00000000000051146a05b0a34fb6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-CA
 
-Reviving an old thread.
 
-On Mon, May 02, 2016 at 01:35:01PM +0300, Mika Westerberg wrote:
-> On Sun, May 01, 2016 at 12:47:58AM +0200, Ben Gamari wrote:
-> > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > > On Fri, Apr 29, 2016 at 09:30:27AM +0200, Ben Gamari wrote:
-> > >> Ben Gamari <ben@smart-cactus.org> writes:
-> > >> 
-> > >> > [ Unknown signature status ]
-> > >> > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > >> >
-> > >> >> On Tue, Apr 26, 2016 at 02:44:13AM +0200, Ben Gamari wrote:
-> > >> >>> 
-> > >> > snip
-> > >> >
-> > >> >>> It looks very much like these are describing the same device. Perhaps
-> > >> >>> the lpss driver should be binding to this ACPI node? Or perhaps this is
-> > >> >>> a firmware issue? Any guidance would be greatly appreciated.
-> > >> >>
-> > >> >> Can you send me full acpidump of that machine?
-> > >> >
-> > >> > It can be found at
-> > >> > https://github.com/bgamari/dell-e7470-dsdt/blob/master/acpi.log.
-> > >> >
-> > >> Did this provide any insight? Let me know if more information would be
-> > >> helpful.
-> > >
-> > > Sorry about the delay.
-> >
-> > No worries.
-> > 
-> > > The GEXP device is most probably a GPIO expander that is connected to
-> > > one of the I2C buses. And it indeed looks to use directly the I2C host
-> > > controller registers so kernel rightfully complains about that.
-> > >
-> > > Are you able to run Windows on that machine? If yes, it would be nice to
-> > > know if the INT3446 I2C device is shown in the device manager.
-> >
-> > I had the original SSD that came with the machine with the original
-> > Windows 7 installation intact. I popped it in and found no such device.
-> > I then updated to Windows 10 (albeit still booting with the legacy BIOS,
-> > not EFI) and found that once again there is no such device shown in
-> > device manager.
-> 
-> That's what I would expect. ACPI spec says that if there is an OpRegion
-> touching the same registers than PCI device the OS should not load any
-> driver for that device. I guess this is exactly what Windows does.
-> 
-> Linux does it also but it in addition it issues a scary warning which
-> might get users thinking there is something wrong with their system.
 
-I'm trying to get camera sensors detected on a Microsoft Surface Go 2
-machine (ACPI dumps available at
-https://github.com/linux-surface/acpidumps/tree/master/surface_go_2).
-The CPU is an Intel Pentium Gold 4425Y, based on Kaby Lake-Y. The DSDT
-has been carefully designed, with great care to make it as useless as
-possible, so I'm experiencing a few issues.
+On 2020-09-30 7:33 p.m., Florian Fainelli wrote:
+>
+>
+> On 9/30/2020 6:28 PM, Scott Branden wrote:
+>> Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
+>> queue statistics.
+>>
+>> These statistics keep track of max, abs_max, and average for the
+>> messages queues.
+>>
+>> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
+>> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
+>> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+>> ---
+>
+> [snip]
+>
+>> +#if defined(CONFIG_BCM_VK_QSTATS)
+>> +    /* clear qstats */
+>> +    for (i = 0; i < VK_MSGQ_MAX_NR; i++) {
+>> +        memset(&vk->to_v_msg_chan.qstats[i].qcnts, 0,
+>> +               sizeof(vk->to_v_msg_chan.qstats[i].qcnts));
+>> +        memset(&vk->to_h_msg_chan.qstats[i].qcnts, 0,
+>> +               sizeof(vk->to_h_msg_chan.qstats[i].qcnts));
+>> +    }
+>> +#endif
+>>       /* clear 4096 bits of bitmap */
+>>       bitmap_clear(vk->bmap, 0, VK_MSG_ID_BITMAP_SIZE);
+>
+> It was not clear from looking at this patch how are the statistics exposed and how does one actually get them?
+The QSTATS, since it is only for debug purpose, it will dump out periodically based on processed_num.
+Nothing fancy as we only compile it in in extreme case for recreating a scenario.
 
-One of the camera sensors is connected to I2C4, backed by an LPSS I2C
-controller.
+The following is the part:
 
-00:19.2 Signal processing controller: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #4 (rev 21)
-        Subsystem: QUANTA Computer Inc Sunrise Point-LP Serial IO I2C Controller
-        Flags: fast devsel, IRQ 34
-        Memory at b1648000 (64-bit, non-prefetchable) [size=4K]
-        Capabilities: [80] Power Management version 3
-        Capabilities: [90] Vendor Specific Information: Len=14 <?>
-        Kernel modules: intel_lpss_pci
++       if (++qcnts->cnt >= BCM_VK_QSTATS_ACC_CNT) {
++               /* log average and clear counters */
++               dev_info(&vk->pdev->dev,
++                        "%s[%d]: Max: [%3d/%3d] Acc %d num %d, Aver %d\n",
++                        tag, qstats->q_num,
++                        qcnts->max_occ, qcnts->max_abs,
++                        qcnts->acc_sum,
++                        qcnts->cnt,
++                        qcnts->acc_sum / qcnts->cnt);
++
++               qcnts->cnt = 0;
++               qcnts->max_occ = 0;
++               qcnts->acc_sum = 0; 
 
-Unfortunately the driver fails to probe due to the same issue reported
-by Ben:
+--00000000000051146a05b0a34fb6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-[    2.060237] intel-lpss 0000:00:19.2: enabling device (0000 -> 0002)
-[    2.060483] ACPI Warning: SystemMemory range 0x00000000B1648000-0x00000000B16481FF conflicts with OpRegion 0x00000000B1648000-0x00000000B1648207 (\_SB.PCI0.GEXP.BAR0) (20200528/utaddress-213)
-[    2.060489] ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
-[    2.060726] intel-lpss: probe of 0000:00:19.2 failed with error -16
-
-I've checked the GEXP device in the DSDT, and it includes an LPSS I2C
-host controller driver in AML, using an OpRegion that covers the I2C
-controller registers.
-
-Adding acpi_enforce_resources=lax to the kernel command line allows the
-I2C controller to be probed, but that's hardly a good solution, as two
-drivers (one in the DSDT, one in the kernel) that poke the same hardware
-is calling for trouble.
-
-I've noticed that Windows maps the devices to different addresses than
-Linux. On Windows, the I2C controllers are at
-
-I2C0 (8086:9d60): 0xfe40f000 - 0xfe40ffff (IRQ 16)
-I2C1 (8086:9d61): 0xfe40e000 - 0xfe40efff (IRQ 17)
-I2C2 (8086:96d2): 0xfe40d000 - 0xfe40dfff (IRQ 18)
-I2C3 (8086:96d3): 0xfe40c000 - 0xfe40cfff (IRQ 19)
-I2C4 (8086:96d4): 0xfe409000 - 0xfe409fff (IRQ 34)
-
-while on Linux they're at
-
-I2C0 (8086:9d60): 0xb1642000 - 0xb1642fff (IRQ 16)
-I2C1 (8086:9d61): 0xb1643000 - 0xb1643fff (IRQ 17)
-I2C2 (8086:96d2): 0xb1644000 - 0xb1644fff (IRQ 18)
-I2C3 (8086:96d3): 0xb1645000 - 0xb1645fff (IRQ 19)
-I2C4 (8086:96d4): 0xb1648000 - 0xb1648fff (IRQ 34)
-
-Interestingly, the I2C4 object contains the following in the DSDT:
-
-            If ((SMD4 != 0x02))
-            {
-                Name (_HID, "INT3446")  // _HID: Hardware ID
-                Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision
-                {
-                    Return (LHRV (SB14))
-                }
-
-                Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-                {
-                    Return (LCRS (SMD4, SB04, SIR4))
-                }
-
-                Method (_STA, 0, NotSerialized)  // _STA: Status
-                {
-                    Return (LSTA (SMD4))
-                }
-            }
-
-            If ((SMD4 == 0x02))
-            {
-                Name (_ADR, 0x00190002)  // _ADR: Address
-                Method (_DSM, 4, Serialized)  // _DSM: Device-Specific Method
-                {
-                    If (PCIC (Arg0))
-                    {
-                        Return (PCID (Arg0, Arg1, Arg2, Arg3))
-                    }
-
-                    Return (Buffer (One)
-                    {
-                         0x00                                             // .
-                    })
-                }
-            }
-
-I've evaluated SMD4 with acpidbg and it's equal to 2. I thought it might
-be set to a different value in windows, but the hardware IDs reported by
-the device manager all refer to the PCI device, not the ACPI device, so
-I don't think that's a lead.
-
-I really wonder how this is supposed to be handled, would the device
-really be designed to work in such an unsafe way ? Does Windows remap
-the BAR due to the conflict with the GEXP, rendering the GEXP
-non-operational after boot ? I have tried to locate the GEXP in the
-device manager in Windows, but with its _STA method returning 0x0b, it
-seems not to be visible.
-
-> > >> Also, is there a way to simply allow the driver subsystem to allow
-> > >> probing to proceed despite this resource conflict so that I can resume
-> > >> debugging my original input device issue?
-> > >
-> > > Try to pass "acpi_enforce_resources=lax" in the kernel command line.
-> > 
-> > Thanks, indeed this allows the driver to load. Unfortunately it didn't
-> > take long to encounter further issues.
-> > 
-> > The motivation for all of this is to get the touchpad into I2C mode, since
-> > currently it is merely exposed as a simple PS/2 device. Unfortunately it
-> > seems that even Windows 10 doesn't use the touchpad's I2C mode (although
-> > I suppose it's possible that this is guarded on UEFI boot; moreover
-> > Windows appears to have proper support for configurating this touchpad
-> > in PS/2 mode, which is unfortunately an ALPS devices).
-> > 
-> > Looking at the DSDT it seems that enabling the I2C interface may require
-> > the help of the embedded controller, the state of which is exposed in
-> > the DSDT through a mysteriously-named SDS1 field. It looks like this
-> > field could take on a number of values which identify a variety of
-> > different touchpads. Given that it looks like GPIO pin states may be
-> > determined by the value of this field I'm a bit reluctant to go fiddling
-> > around with it. 
-> > 
-> > I do wish that firmware weren't such a nightmare.
-> 
-> +1
-
--- 
-Regards,
-
-Laurent Pinchart
+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
+I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
+qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
+uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
+pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
+aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
+H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
+0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgMlILBIo2
+EL6Nk52CuJkAtUstwMvzDWW+HiAZs1340RowGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjAxMDAxMjIxMjIwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAKkZTf14nso/C/i5ZuI3qseRS86x
+/Cy5KXQZrGNAa989DfHPF52kZSkgHSnHoq53vhi8TrZhKaZ1doaNMtSA6CCVlSBCUdMGeTszeb4V
+RWbFj3QG16sAqE1XaAK0C/i7fcgXoL6xy2KSvrdnvktczUK7bkSzt+y9pQt977OGiqKiMJ9xgWYb
+JqX2DSlupG760eoxRh7Y6p+BoRlSFNRhCH17b8IXulvmnrL91m9FsrtNOz2BdVDisr6MxObK82av
+lFMzfBJuRvv7/bcfv9UFGAfdXwMBZbxZ5FE2rCfHDolQjYmSLpGQPeZLXnUyXO+LgIkCcIaKBUbE
+tDuLJqae7pM=
+--00000000000051146a05b0a34fb6--
