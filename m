@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E273B2807F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266DC2807FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733060AbgJATnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729990AbgJATnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:43:49 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC020C0613D0;
-        Thu,  1 Oct 2020 12:43:49 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so4855653pgl.2;
-        Thu, 01 Oct 2020 12:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CzsQFq5TcOeOYdaiQDeN/QbyXwYMVKi6+YdbJZoiwuY=;
-        b=tX1GvFWPwIyzM0OHct28YSx+gEK8MvlEAzCcADfC6X+zLiC0nzFmjpiHc0Cr0oxTEw
-         ex5aYR8Whxc7BquvHCD/4e9vKYN9JLw//Hl5iAodd+aa0+cx7ZCtRp/6eXN5C9sfZz2T
-         dS3rXbv5C4j9AWNGk9sbKfOiJYae0Gej7QwyqGlnBfppPt+i0FZum05GT9VNuqT8joaq
-         MQSgW1AtqxhO9sV/l3/3MkFO3wp/IlutjgjHipK8oT/ngiB0YwuIwQRhtEvmuAdNCtj+
-         nMPP62yqIlXLpUzRZril0+xe6f7xANruMG5uzWu0W5/Nh2w6EaP9NRr8J1zdIrwe7aHw
-         p9Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CzsQFq5TcOeOYdaiQDeN/QbyXwYMVKi6+YdbJZoiwuY=;
-        b=DaRe5K21qA7EUWF8WE2pZzvsjlFyk1D+M6+KZ+Yy928zWALjShgV8iQWYFYwstW6/l
-         nhkbOvTCVd89MqWcgbTOihRupffHg3rWBbaBTxeLB3ZlS5znl4Zh1YTmXZ0XIRxpKm/V
-         ys/Tza1m6Bo8LvofyaeoeNRfP92kLAxmtXZq8WABnHESxo8iWJy3cXurjKO+5ERBuaiX
-         TW+IRwezJAaRwBmiDNLHuz7/UUa5g2f1AOWGS4AgCioX1V0CqpRqAtd36dyDwHPi0yvo
-         UPh3kvciu/yjHv8IImSuxbSFHdAuIb2/YH0WXrEOJ6CdTENr+Qojhb7+wd9NLpRxOTWf
-         jcBw==
-X-Gm-Message-State: AOAM532QLRIWziflkjkKm/le7v+JEiCQLQykoj/qEPlu8aFoKzdwcNZl
-        Np5Hg1gcnts2BO92F7NEEKjKvzNkC29Wrg7TSJE=
-X-Google-Smtp-Source: ABdhPJyduhQq86lDaODuQjpM/0yPytt2ShHGue+aD+PiP6gmiSEFi3UuZfNEVSGvFkVs3gvGkZKtCg==
-X-Received: by 2002:a63:ef51:: with SMTP id c17mr7403957pgk.36.1601581429050;
-        Thu, 01 Oct 2020 12:43:49 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.217.69])
-        by smtp.gmail.com with ESMTPSA id q65sm1591670pfq.219.2020.10.01.12.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 12:43:48 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees][PATCH v2] bluetooth: hci_h5: close serdev device and free hu in h5_close
-Date:   Fri,  2 Oct 2020 01:13:28 +0530
-Message-Id: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1733047AbgJAToj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730070AbgJAToj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:44:39 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66B6220759;
+        Thu,  1 Oct 2020 19:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601581478;
+        bh=2V7HlSyNEslc1covxiaFiHZZqdlJlvt46hDyXQkVCA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OJtnGfOAkZWCTKRePMT7l9YhEV6zYwI8uN8ywntl6jogf79hNNlUEeoWHbYWpjFC8
+         nMiJc2FX2JzivOgcjnlbQO6bDjaLHbjFr4oGjmBIrFLwxRF2BbOQaEEWkUn1lD1MIC
+         iRwVhjWf6say2NuFPsEZuZ0Z/Caxnn/B6DxPi8dc=
+Date:   Thu, 1 Oct 2020 20:43:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Lukasz Stelmach <l.stelmach@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
+Subject: Re: [PATCH v2 RESEND 0/9] Some fixes for spi-s3c64xx
+Message-ID: <20201001194339.GX6715@sirena.org.uk>
+References: <20201001161340.GM6715@sirena.org.uk>
+ <CGME20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5@eucas1p1.samsung.com>
+ <dleftjft6xg60r.fsf%l.stelmach@samsung.com>
+ <20201001190257.GA11048@kozik-lap>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Y974o0GblB/Ae/yP"
+Content-Disposition: inline
+In-Reply-To: <20201001190257.GA11048@kozik-lap>
+X-Cookie: Stay away from flying saucers today.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When h5_close() gets called, the memory allocated for the hu gets 
-freed only if hu->serdev doesn't exist. This leads to a memory leak.
-So when h5_close() is requested, close the serdev device instance and
-free the memory allocated to the hu entirely instead.
 
-Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-Changes in v2:
-	* Fixed the Fixes tag
+--Y974o0GblB/Ae/yP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- drivers/bluetooth/hci_h5.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On Thu, Oct 01, 2020 at 09:02:57PM +0200, Krzysztof Kozlowski wrote:
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index e41854e0d79a..3d1585add572 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -248,8 +248,12 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
- 
--	if (!hu->serdev)
--		kfree(h5);
-+	if (hu->serdev)
-+		serdev_device_close(hu->serdev);
-+
-+	kfree_skb(h5->rx_skb);
-+	kfree(h5);
-+	h5 = NULL;
- 
- 	return 0;
- }
--- 
-2.25.1
+> That is correct. We did not provide final comments on the list so they
+> could be added here - in change log. This would also be an explanation
+> why there is a resend. Another solution would be to extend the commit #7
+> description - why only CMU case is covered.
 
+If there's a new changelog then it's not a resend, the changelog is part
+of the content so I'd expect a version bump for that alone.  IIRC the
+changelog needed some clarification anyway?
+
+--Y974o0GblB/Ae/yP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl92MWoACgkQJNaLcl1U
+h9DkUwf/Q5mZrBgWiJ7OR5eXyU6SNeIUcRLdLbFiKgF+3qvxJ1woZzsRRhKnRIMX
+oIF1Pdls2/dYfciM0H50BkbEp9HS8RALDbyx0S33yzU6tnzyd/lQx2GTXfiwzaOv
+fXlFteC36RYVbKD0iFBVEzVFph8xLXxGwqYFkoeLuTMAFLwI7Jm9CJyYG7O8/wYm
+R+gIjO20BYA/43uRbXz1zWT75zWYOaq/wRHv/NKsvb8IeFnaM19rXt9pKKa6h+xM
+admrHi4BPQW5MSoxMl0n1DWknzAUFbAcGOewBhDT5O5BosQiw7b0HC802hzZbKw3
+sN1l4PAqHgmJ9MHZPX7iWFvArD1iEQ==
+=oJPR
+-----END PGP SIGNATURE-----
+
+--Y974o0GblB/Ae/yP--
