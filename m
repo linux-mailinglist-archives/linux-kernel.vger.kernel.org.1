@@ -2,277 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B406D280036
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9F1280044
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 15:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgJANcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 09:32:20 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49602 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731993AbgJANcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:32:19 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 091DW9M1122907;
-        Thu, 1 Oct 2020 08:32:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601559129;
-        bh=8zovruMDRzF30alX1PETs26OJnbOMMxKkERomI+AH/k=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=HKDjAPwN13aROT4VgymsouY0d1uXP3iTjHKWU+mBY2nkOSXn1bFOKwoYe8dlFTpq6
-         YuffONTlMEbxL2o19Rk1MAR8baAbd9cgx5glWUKBYwVPeZL65DhJtQhQU4vQGtKw1p
-         2ANjwGpYinjDLv8ndl7ut/jJJAcSHqEMIZX4P7Io=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091DW9B0128460;
-        Thu, 1 Oct 2020 08:32:09 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 1 Oct
- 2020 08:32:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 1 Oct 2020 08:32:08 -0500
-Received: from [10.250.232.108] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 091DW5Js093105;
-        Thu, 1 Oct 2020 08:32:06 -0500
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-To:     Rob Herring <robh@kernel.org>
-CC:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "Z.q. Hou" <zhiqiang.hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Walle <michael@walle.cc>,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
- <CAL_JsqJwgNUpWFTq2YWowDUigndSOB4rUcVm0a_U=FEpEmk94Q@mail.gmail.com>
- <HE1PR0402MB3371F8191538F47E8249F048843F0@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <CAL_JsqLdQY_DqpduaTv4hMDM_-cvZ_+s8W+HdOuZVVYjTO4yxw@mail.gmail.com>
- <HE1PR0402MB337180458625B05D1529535384390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <20200928093911.GB12010@e121166-lin.cambridge.arm.com>
- <HE1PR0402MB33713A623A37D08AE3253DEB84320@HE1PR0402MB3371.eurprd04.prod.outlook.com>
- <DM5PR12MB1276D80424F88F8A9243D5E2DA320@DM5PR12MB1276.namprd12.prod.outlook.com>
- <CAL_JsqJJxq2jZzbzZffsrPxnoLJdWLLS-7bG-vaqyqs5NkQhHQ@mail.gmail.com>
- <9ac53f04-f2e8-c5f9-e1f7-e54270ec55a0@ti.com>
- <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <67ac959f-561e-d1a0-2d89-9a85d5f92c72@ti.com>
-Date:   Thu, 1 Oct 2020 19:02:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732309AbgJANhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 09:37:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36736 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732147AbgJANhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:37:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 22E8DAC54;
+        Thu,  1 Oct 2020 13:37:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DBE3ADA781; Thu,  1 Oct 2020 15:35:46 +0200 (CEST)
+Date:   Thu, 1 Oct 2020 15:35:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     dsterba@suse.cz,
+        syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: KASAN: use-after-free Read in btrfs_scan_one_device
+Message-ID: <20201001133546.GV6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <0000000000001fe79005afbf52ea@google.com>
+ <20200930165756.GQ6756@twin.jikos.cz>
+ <20200930180522.GR6756@twin.jikos.cz>
+ <CACT4Y+b6ctH447Hy9JuP1hF5MSV368WAB2tXz8xfi-5ZM-=tOg@mail.gmail.com>
+ <CACT4Y+bQdT_eOcE-jOJQQFR_xi14YwBQUosuUTNq1t-k5JSFJQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJEp8yyctJYUjHM4Ti6ggPb4ouYM_WDvpj_PiobnAozBw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CACT4Y+bQdT_eOcE-jOJQQFR_xi14YwBQUosuUTNq1t-k5JSFJQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 30/09/20 8:31 pm, Rob Herring wrote:
-> On Wed, Sep 30, 2020 at 8:22 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->>
->> Hi,
->>
->> On 29/09/20 10:41 pm, Rob Herring wrote:
->>> On Tue, Sep 29, 2020 at 10:24 AM Gustavo Pimentel
->>> <Gustavo.Pimentel@synopsys.com> wrote:
->>>>
->>>> On Tue, Sep 29, 2020 at 5:5:41, Z.q. Hou <zhiqiang.hou@nxp.com> wrote:
->>>>
->>>>> Hi Lorenzo,
->>>>>
->>>>> Thanks a lot for your comments!
->>>>>
->>>>>> -----Original Message-----
->>>>>> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->>>>>> Sent: 2020年9月28日 17:39
->>>>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
->>>>>> Cc: Rob Herring <robh@kernel.org>; linux-kernel@vger.kernel.org; PCI
->>>>>> <linux-pci@vger.kernel.org>; Bjorn Helgaas <bhelgaas@google.com>;
->>>>>> Gustavo Pimentel <gustavo.pimentel@synopsys.com>; Michael Walle
->>>>>> <michael@walle.cc>; Ard Biesheuvel <ardb@kernel.org>
->>>>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
->>>>>> dw_child_pcie_ops
->>>>>>
->>>>>> On Thu, Sep 24, 2020 at 04:24:47AM +0000, Z.q. Hou wrote:
->>>>>>> Hi Rob,
->>>>>>>
->>>>>>> Thanks a lot for your comments!
->>>>>>>
->>>>>>>> -----Original Message-----
->>>>>>>> From: Rob Herring <robh@kernel.org>
->>>>>>>> Sent: 2020年9月18日 23:28
->>>>>>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
->>>>>>>> Cc: linux-kernel@vger.kernel.org; PCI <linux-pci@vger.kernel.org>;
->>>>>>>> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>; Bjorn Helgaas
->>>>>>>> <bhelgaas@google.com>; Gustavo Pimentel
->>>>>>>> <gustavo.pimentel@synopsys.com>; Michael Walle
->>>>>> <michael@walle.cc>;
->>>>>>>> Ard Biesheuvel <ardb@kernel.org>
->>>>>>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
->>>>>>>> dw_child_pcie_ops
->>>>>>>>
->>>>>>>> On Fri, Sep 18, 2020 at 5:02 AM Z.q. Hou <zhiqiang.hou@nxp.com>
->>>>>> wrote:
->>>>>>>>>
->>>>>>>>> Hi Rob,
->>>>>>>>>
->>>>>>>>> Thanks a lot for your comments!
->>>>>>>>>
->>>>>>>>>> -----Original Message-----
->>>>>>>>>> From: Rob Herring <robh@kernel.org>
->>>>>>>>>> Sent: 2020年9月17日 4:29
->>>>>>>>>> To: Z.q. Hou <zhiqiang.hou@nxp.com>
->>>>>>>>>> Cc: linux-kernel@vger.kernel.org; PCI
->>>>>>>>>> <linux-pci@vger.kernel.org>; Lorenzo Pieralisi
->>>>>>>>>> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas
->>>>>>>>>> <bhelgaas@google.com>; Gustavo Pimentel
->>>>>>>>>> <gustavo.pimentel@synopsys.com>; Michael Walle
->>>>>>>> <michael@walle.cc>;
->>>>>>>>>> Ard Biesheuvel <ardb@kernel.org>
->>>>>>>>>> Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
->>>>>>>>>> dw_child_pcie_ops
->>>>>>>>>>
->>>>>>>>>> On Tue, Sep 15, 2020 at 11:49 PM Zhiqiang Hou
->>>>>>>> <Zhiqiang.Hou@nxp.com>
->>>>>>>>>> wrote:
->>>>>>>>>>>
->>>>>>>>>>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
->>>>>>>>>>>
->>>>>>>>>>> On NXP Layerscape platforms, it results in SError in the
->>>>>>>>>>> enumeration of the PCIe controller, which is not connecting
->>>>>>>>>>> with an Endpoint device. And it doesn't make sense to
->>>>>>>>>>> enumerate the Endpoints when the PCIe link is down. So this
->>>>>>>>>>> patch added the link up check to avoid to fire configuration
->>>>>> transactions on link down bus.
->>>>>>>>>>
->>>>>>>>>> Michael reported the same issue as well.
->>>>>>>>>>
->>>>>>>>>> What happens if the link goes down between the check and the
->>>>>> access?
->>>>>>>>>
->>>>>>>>> This patch cannot cover this case, and will get the SError.
->>>>>>>>> But I think it makes sense to avoid firing transactions on link down bus.
->>>>>>>>
->>>>>>>> That's impossible to do without a race even in h/w.
->>>>>>>
->>>>>>> Agree.
->>>>>>>
->>>>>>>>
->>>>>>>>>> It's a racy check. I'd like to find an alternative solution.
->>>>>>>>>> It's even worse if Layerscape is used in ECAM mode. I looked at
->>>>>>>>>> the EDK2 setup for layerscape[1] and it looks like root ports
->>>>>>>>>> are just skipped if link
->>>>>>>> is down.
->>>>>>>>>> Maybe a link down just never happens once up, but if so, then we
->>>>>>>>>> only need to check it once and fail probe.
->>>>>>>>>
->>>>>>>>> Many customers connect the FPGA Endpoint, which may establish PCIe
->>>>>>>>> link after the PCIe enumeration and then rescan the PCIe bus, so I
->>>>>>>>> think it should not exit the probe of root port even if there is
->>>>>>>>> not link up
->>>>>>>> during enumeration.
->>>>>>>>
->>>>>>>> That's a good reason. I want to unify the behavior here as it varies
->>>>>>>> per platform currently and wasn't sure which way to go.
->>>>>>>>
->>>>>>>>
->>>>>>>>>> I've dug into this a bit more and am curious about the
->>>>>>>>>> PCIE_ABSERR register setting which is set to:
->>>>>>>>>>
->>>>>>>>>> #define PCIE_ABSERR_SETTING 0x9401 /* Forward error of
->>>>>>>>>> non-posted request */
->>>>>>>>>>
->>>>>>>>>> It seems to me this is not what we want at least for config
->>>>>>>>>> accesses, but commit 84d897d6993 where this was added seems to
->>>>>>>>>> say otherwise. Is it not possible to configure the response per access
->>>>>> type?
->>>>>>>>>
->>>>>>>>> Thanks a lot for your investigation!
->>>>>>>>> The story is like this: Some customers worry about these silent
->>>>>>>>> error (DWC PCIe IP won't forward the error of outbound non-post
->>>>>>>>> request by default), so we were pushed to enable the error
->>>>>>>>> forwarding to AXI in the commit
->>>>>>>>> 84d897d6993 as you saw. But it cannot differentiate the config
->>>>>>>>> transactions from the MEM_rd, except the Vendor ID access, which
->>>>>>>>> is controlled by a separate bit and it was set to not forward
->>>>>>>>> error of access
->>>>>>>> of Vendor ID.
->>>>>>>>> So we think it's okay to enable the error forwarding, the SError
->>>>>>>>> should not occur, because after the enumeration it won't access
->>>>>>>>> the
->>>>>>>> non-existent functions.
->>>>>>>>
->>>>>>>> We've rejected upstream support for platforms aborting on config
->>>>>>>> accesses[1]. I think there's clear consensus that aborting is the
->>>>>>>> wrong behavior.
->>>>>>>>
->>>>>>>> Do MEM_wr errors get forwarded? Seems like that would be enough.
->>>>>>>> Also, wouldn't page faults catch most OOB accesses anyways? You need
->>>>>>>> things page aligned anyways with an IOMMU and doing userspace access
->>>>>>>> or guest assignment.
->>>>>>>
->>>>>>> Yes, errors of MEM_wr can be forwarded.
->>>>>>>
->>>>>>>>
->>>>>>>> Here's another idea, how about only enabling forwarding errors if
->>>>>>>> the link is up? If really would need to be configured any time the
->>>>>>>> link state changes rather than just at probe. I'm not sure if you
->>>>>>>> have a way to disable it on link down though.
->>>>>>>
->>>>>>> Dug deeper into this issue and found the setting of not forwarding
->>>>>>> error of non-existent Vender ID access counts on the link partner: 1.
->>>>>>> When there is a link partner (namely link up), it will return 0xffff
->>>>>>> when read non-existent function Vendor ID and won't forward error to
->>>>>>> AXI.  2. When no link partner (link down), it will forward the error
->>>>>>> of reading non-existent function Vendor ID to AXI and result in
->>>>>>> SError.
->>>>>>>
->>>>>>> I think this is a DWC PCIe IP specific issue but not get feedback from
->>>>>>> design team.  I'm thinking to disable this error forwarding just like
->>>>>>> other platforms, since when these errors (UR, CA and CT) are detected,
->>>>>>> AER driver can also report the error and try to recover.
->>>>>>
->>>>>> I take this as you shall send a patch to fix this issue shortly, is this correct ?
->>>>>
->>>>> The issue becomes complex:
->>>>> I reviewed the DWC PCIe databook of verion 4.40a which is used on Layerscape platforms, and it said that " Your RC application should not generate CFG requests until it has confirmed that the link is up by sampling the smlh_link_up and rmlh_link_up outputs".
->>>>> So, the link up checking should not be remove before each outbound CFG access.
->>>>> Gustavo, can you share more details on the link up checking? Does it only exist in the 4.40a?
->>>>
->>>> Hi Zhiqiang,
->>>>
->>>> According to the information that I got from the IP team you are correct,
->>>> the same requirement still exists on the newer IP versions.
->>>
->>> How is that possible in a race free way?
->>>
->>> Testing on meson and layerscape (with the forwarding of errors
->>> disabled) shows a link check is not needed. But then dra7xx seems to
->>> need one (or has some f/w setup).
->>
->> Yeah, I don't see any registers in the DRA7x PCIe wrapper for disabling
->> error forwarding.
+On Thu, Oct 01, 2020 at 03:08:34PM +0200, Dmitry Vyukov wrote:
+> On Thu, Oct 1, 2020 at 3:05 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Wed, Sep 30, 2020 at 8:06 PM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Wed, Sep 30, 2020 at 06:57:56PM +0200, David Sterba wrote:
+> > > > On Sun, Sep 20, 2020 at 07:12:14AM -0700, syzbot wrote:
+> > > > > Hello,
+> > > > >
+> > > > > syzbot found the following issue on:
+> > > > >
+> > > > > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10a0a8bb900000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
+> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > >
+> > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
+> > > >
+> > > > #syz fix: btrfs: fix overflow when copying corrupt csums for a message
+> > >
+> > > Johannes spotted that this is not the right fix for this report, I don't
+> > > know how to tell syzbot to revert the 'fix:' command, there isn't
+> > > 'unfix' (like there's 'undup').
+> >
+> > Hi David,
+> >
+> > I've added "unfix" command:
+> > https://github.com/google/syzkaller/pull/2156
+> >
+> > Let's give it a try:
+> > #syz unfix
+> >
+> > Thanks
 > 
-> It's a DWC port logic register AFAICT, but perhaps not present in all versions.
+> Voil�! Unfixed:
+> https://syzkaller.appspot.com/bug?extid=582e66e5edf36a22c7b0
 
-Okay. I see there's a register PCIECTRL_PL_AXIS_SLV_ERR_RESP which has a
-reset value of 0.
-
-It has four bit-fields, RESET_TIMEOUT_ERR_MAP, NO_VID_ERR_MAP,
-DBI_ERR_MAP and SLAVE_ERR_MAP. I'm not seeing any difference in behavior
-if I set all these bits. Maybe it requires platform support too. I'll
-check this with our design team.
-
-Meanwhile would it be okay to add linkup check atleast for DRA7X so that
-we could have it booting in linux-next?
-
-Thanks
-Kishon
+Thanks!
