@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D547F27FF71
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B9F27FF77
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732243AbgJAMqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:46:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35552 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731993AbgJAMqx (ORCPT
+        id S1731828AbgJAMtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731952AbgJAMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:46:53 -0400
-Date:   Thu, 01 Oct 2020 12:46:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601556411;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIMGF7IMxliYtE6naXjW3YcVrnCqmp9ZAntLgNtEnTw=;
-        b=oGhKalmp3Jlhk3CI/UZTFbb6sCLwnjSoZKvghmUmNFQViTy51v0DY7y7/LBbzeKrhO2qzo
-        exhvRFOroWZvpyy1tcf6C2UJjVrCeJGZ0jcZS8wQ6A/7V3dk/1GvCEtxxppEWwfurB9WWs
-        OBM5/byReeATmpr2N2T1bvBi2VDUHpFUjuoDEcjIvd6wpxJAK90krX30ldPWTkp6wwPPh0
-        pzgpYNmp2wC2crKUA9AhdR9TU6lqDp/eav+BK2bHbfNOBcFC81Hkm8CyQWURzmx7fuDq4+
-        Jw3Z/oZVxQCpS6Z8C7uN8Y6tpBpvGVrpmPiOsiwkXU2qtShPn83LDrMwKoFmsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601556411;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YIMGF7IMxliYtE6naXjW3YcVrnCqmp9ZAntLgNtEnTw=;
-        b=TvSjWZxVIgv/MsM+cqSOHolVdfT+bU4ckGjLT1oz/v5bb0SzKGgnN4qSnMdhuvjg/3XzBn
-        xq9DJlPDpJYTuDCA==
-From:   "tip-bot2 for Libing Zhou" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] x86/nmi: Fix nmi_handle() duration miscalculation
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Libing Zhou <libing.zhou@nokia-sbell.com>,
-        Borislav Petkov <bp@suse.de>,
-        Changbin Du <changbin.du@gmail.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200820025641.44075-1-libing.zhou@nokia-sbell.com>
-References: <20200820025641.44075-1-libing.zhou@nokia-sbell.com>
+        Thu, 1 Oct 2020 08:49:32 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD0C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 05:49:32 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id q9so2781585wmj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 05:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yyLMfzb/o8hIuW//ZkJGu3fCQDP2gmFzEzNtOlSIXTw=;
+        b=eIOBDhbGdlEbZpLsBoneOjisPLCLeYjAU+76GBWLWuJhWM3UaY95TH1BJdnWTPS54l
+         2ljEs+FBQyNhjbZrcs7PPzaPSraFBgPIIBsYiFfgdp3EpbeBsNtJkb8IdHHm1fXoVvY4
+         frmhF6dDyiSs9gITepGZqRuRV1n0Yp56JEMXOt1lgCfjARwerHW8TfuaDQQdu1eplysx
+         psQhJgc2IITFwAm6ARiarxhOdenUY7/wJGtV/l4BY2MOGYIiD18CSuqT3GDaTc96HCFi
+         6VPOTtTh7w7YPp4pXtfGmcnqHqZL7Vdt8EqaKRj2gpjymKlu2ZalJBS8TcdTyBWtQfFk
+         oV1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yyLMfzb/o8hIuW//ZkJGu3fCQDP2gmFzEzNtOlSIXTw=;
+        b=tdu/EWENCr4pHULh+5S0HyriQniLiOsZ1BkYHR58+SnZutkJEhXW4vQWtOiaPr6OzB
+         U0K+iAm8fVs7KZDgeGzfV33dcO0oNvZVm0TefE7twgWCOVUtSfqUF1fqPrq5xjAdIhui
+         kFKDKBmwn8mu66obE8kQNiCLlI8kWtIT9HS3InyD0OOIgke8wtwedl6tIaVC3I/d1Anh
+         h3UJGVvUpjxLNRxlB1gr7YrxRnjszpOrXBV5wUBAdEMv76ylywSQcakp/fNafKxWHqDd
+         l+QkdpUI4fXtQt1tm7EATd/o9U9exDNHe1rHCUNBym/8dnEC5UrFj62s7qbzLhRw9kNc
+         HMog==
+X-Gm-Message-State: AOAM531FYvhhJMSY3StIBgXPxU8k+KmsEyKfy0BQOrzMt/onuWBksiqa
+        qcMKMfslLqSYyn+dQGojcfZhHw==
+X-Google-Smtp-Source: ABdhPJztTyQtl0mkxwswpfNCf/7iCTP9fY6RM8UHr294gh0Wwi5PqNq1U6HZoJ576D9n0qQDBVzmFA==
+X-Received: by 2002:a7b:c1c3:: with SMTP id a3mr9059114wmj.68.1601556571012;
+        Thu, 01 Oct 2020 05:49:31 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id t16sm3436694wmi.18.2020.10.01.05.49.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 05:49:30 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 14:49:29 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, roopa@nvidia.com,
+        nikolay@nvidia.com, jiri@mellanox.com, idosch@mellanox.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bridge@lists.linux-foundation.org, UNGLinuxDriver@microchip.com,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [net-next v2 10/11] bridge: switchdev: cfm: switchdev interface
+ implementation
+Message-ID: <20201001124929.GM8264@nanopsycho>
+References: <20201001103019.1342470-1-henrik.bjoernlund@microchip.com>
+ <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
 MIME-Version: 1.0
-Message-ID: <160155641006.7002.1092577567276501633.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001103019.1342470-11-henrik.bjoernlund@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+Thu, Oct 01, 2020 at 12:30:18PM CEST, henrik.bjoernlund@microchip.com wrote:
+>This is the definition of the CFM switchdev interface.
+>
+>The interface consist of these objects:
+>    SWITCHDEV_OBJ_ID_MEP_CFM,
+>    SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM,
+>    SWITCHDEV_OBJ_ID_CC_CONFIG_CFM,
+>    SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM,
+>    SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM,
+>    SWITCHDEV_OBJ_ID_MEP_STATUS_CFM,
+>    SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM
+>
+>MEP instance add/del
+>    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CFM)
+>    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_MEP_CFM)
+>
+>MEP cofigure
+>    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_MEP_CONFIG_CFM)
+>
+>MEP CC cofigure
+>    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CONFIG_CFM)
+>
+>Peer MEP add/del
+>    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>    switchdev_port_obj_del(SWITCHDEV_OBJ_ID_CC_PEER_MEP_CFM)
+>
+>Start/stop CCM transmission
+>    switchdev_port_obj_add(SWITCHDEV_OBJ_ID_CC_CCM_TX_CFM)
+>
+>Get MEP status
+>	switchdev_port_obj_get(SWITCHDEV_OBJ_ID_MEP_STATUS_CFM)
+>
+>Get Peer MEP status
+>	switchdev_port_obj_get(SWITCHDEV_OBJ_ID_PEER_MEP_STATUS_CFM)
+>
+>Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+>Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
 
-Commit-ID:     f94c91f7ba3ba7de2bc8aa31be28e1abb22f849e
-Gitweb:        https://git.kernel.org/tip/f94c91f7ba3ba7de2bc8aa31be28e1abb22f849e
-Author:        Libing Zhou <libing.zhou@nokia-sbell.com>
-AuthorDate:    Thu, 20 Aug 2020 10:56:41 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 01 Oct 2020 14:42:08 +02:00
+You have to submit the driver parts as a part of this patchset.
+Otherwise it is no good.
 
-x86/nmi: Fix nmi_handle() duration miscalculation
-
-When nmi_check_duration() is checking the time an NMI handler took to
-execute, the whole_msecs value used should be read from the @duration
-argument, not from the ->max_duration, the latter being used to store
-the current maximal duration.
-
- [ bp: Rewrite commit message. ]
-
-Fixes: 248ed51048c4 ("x86/nmi: Remove irq_work from the long duration NMI handler")
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Libing Zhou <libing.zhou@nokia-sbell.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: Changbin Du <changbin.du@gmail.com>
-Link: https://lkml.kernel.org/r/20200820025641.44075-1-libing.zhou@nokia-sbell.com
----
- arch/x86/kernel/nmi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 4fc9954..4738166 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -102,7 +102,6 @@ fs_initcall(nmi_warning_debugfs);
- 
- static void nmi_check_duration(struct nmiaction *action, u64 duration)
- {
--	u64 whole_msecs = READ_ONCE(action->max_duration);
- 	int remainder_ns, decimal_msecs;
- 
- 	if (duration < nmi_longest_ns || duration < action->max_duration)
-@@ -110,12 +109,12 @@ static void nmi_check_duration(struct nmiaction *action, u64 duration)
- 
- 	action->max_duration = duration;
- 
--	remainder_ns = do_div(whole_msecs, (1000 * 1000));
-+	remainder_ns = do_div(duration, (1000 * 1000));
- 	decimal_msecs = remainder_ns / 1000;
- 
- 	printk_ratelimited(KERN_INFO
- 		"INFO: NMI handler (%ps) took too long to run: %lld.%03d msecs\n",
--		action->handler, whole_msecs, decimal_msecs);
-+		action->handler, duration, decimal_msecs);
- }
- 
- static int nmi_handle(unsigned int type, struct pt_regs *regs)
+Thanks!
