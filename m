@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266DC2807FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E402807F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733047AbgJAToj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:44:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730070AbgJAToj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:44:39 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66B6220759;
-        Thu,  1 Oct 2020 19:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601581478;
-        bh=2V7HlSyNEslc1covxiaFiHZZqdlJlvt46hDyXQkVCA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OJtnGfOAkZWCTKRePMT7l9YhEV6zYwI8uN8ywntl6jogf79hNNlUEeoWHbYWpjFC8
-         nMiJc2FX2JzivOgcjnlbQO6bDjaLHbjFr4oGjmBIrFLwxRF2BbOQaEEWkUn1lD1MIC
-         iRwVhjWf6say2NuFPsEZuZ0Z/Caxnn/B6DxPi8dc=
-Date:   Thu, 1 Oct 2020 20:43:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Lukasz Stelmach <l.stelmach@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Kukjin Kim <kgene@kernel.org>, Andi Shyti <andi@etezian.org>,
-        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        m.szyprowski@samsung.com, b.zolnierkie@samsung.com
-Subject: Re: [PATCH v2 RESEND 0/9] Some fixes for spi-s3c64xx
-Message-ID: <20201001194339.GX6715@sirena.org.uk>
-References: <20201001161340.GM6715@sirena.org.uk>
- <CGME20201001182315eucas1p1b1fc9d5d0ea91db6e56e92d5cf2583e5@eucas1p1.samsung.com>
- <dleftjft6xg60r.fsf%l.stelmach@samsung.com>
- <20201001190257.GA11048@kozik-lap>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y974o0GblB/Ae/yP"
-Content-Disposition: inline
-In-Reply-To: <20201001190257.GA11048@kozik-lap>
-X-Cookie: Stay away from flying saucers today.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1733043AbgJATns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729990AbgJATns (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:43:48 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A832C0613D0;
+        Thu,  1 Oct 2020 12:43:48 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id E28F81443FFCF;
+        Thu,  1 Oct 2020 12:26:58 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 12:43:45 -0700 (PDT)
+Message-Id: <20201001.124345.2303686561459641833.davem@davemloft.net>
+To:     colyli@suse.de
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chaitanya.kulkarni@wdc.com,
+        cleech@redhat.com, hch@lst.de, amwang@redhat.com,
+        eric.dumazet@gmail.com, hare@suse.de, idryomov@gmail.com,
+        jack@suse.com, jlayton@kernel.org, axboe@kernel.dk,
+        lduncan@suse.com, michaelc@cs.wisc.edu,
+        mskorzhinskiy@solarflare.com, philipp.reisner@linbit.com,
+        sagi@grimberg.me, vvs@virtuozzo.com, vbabka@suse.com
+Subject: Re: [PATCH v9 0/7] Introduce sendpage_ok() to detect misused
+ sendpage in network related drivers
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201001075408.25508-1-colyli@suse.de>
+References: <20201001075408.25508-1-colyli@suse.de>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 01 Oct 2020 12:26:59 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Coly Li <colyli@suse.de>
+Date: Thu,  1 Oct 2020 15:54:01 +0800
 
---Y974o0GblB/Ae/yP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> This series was original by a bug fix in nvme-over-tcp driver which only
+> checked whether a page was allocated from slab allcoator, but forgot to
+> check its page_count: The page handled by sendpage should be neither a
+> Slab page nor 0 page_count page.
+> 
+> As Sagi Grimberg suggested, the original fix is refind to a more common
+> inline routine:
+>     static inline bool sendpage_ok(struct page *page)
+>     {
+>         return  (!PageSlab(page) && page_count(page) >= 1);
+>     }
+> If sendpage_ok() returns true, the checking page can be handled by the
+> concrete zero-copy sendpage method in network layer.
+> 
+> The v9 series has 7 patches, no change from v8 series,
+> - The 1st patch in this series introduces sendpage_ok() in header file
+>   include/linux/net.h.
+> - The 2nd patch adds WARN_ONCE() for improper zero-copy send in
+>   kernel_sendpage().
+> - The 3rd patch fixes the page checking issue in nvme-over-tcp driver.
+> - The 4th patch adds page_count check by using sendpage_ok() in
+>   do_tcp_sendpages() as Eric Dumazet suggested.
+> - The 5th and 6th patches just replace existing open coded checks with
+ ...
 
-On Thu, Oct 01, 2020 at 09:02:57PM +0200, Krzysztof Kozlowski wrote:
-
-> That is correct. We did not provide final comments on the list so they
-> could be added here - in change log. This would also be an explanation
-> why there is a resend. Another solution would be to extend the commit #7
-> description - why only CMU case is covered.
-
-If there's a new changelog then it's not a resend, the changelog is part
-of the content so I'd expect a version bump for that alone.  IIRC the
-changelog needed some clarification anyway?
-
---Y974o0GblB/Ae/yP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl92MWoACgkQJNaLcl1U
-h9DkUwf/Q5mZrBgWiJ7OR5eXyU6SNeIUcRLdLbFiKgF+3qvxJ1woZzsRRhKnRIMX
-oIF1Pdls2/dYfciM0H50BkbEp9HS8RALDbyx0S33yzU6tnzyd/lQx2GTXfiwzaOv
-fXlFteC36RYVbKD0iFBVEzVFph8xLXxGwqYFkoeLuTMAFLwI7Jm9CJyYG7O8/wYm
-R+gIjO20BYA/43uRbXz1zWT75zWYOaq/wRHv/NKsvb8IeFnaM19rXt9pKKa6h+xM
-admrHi4BPQW5MSoxMl0n1DWknzAUFbAcGOewBhDT5O5BosQiw7b0HC802hzZbKw3
-sN1l4PAqHgmJ9MHZPX7iWFvArD1iEQ==
-=oJPR
------END PGP SIGNATURE-----
-
---Y974o0GblB/Ae/yP--
+Series applied and queued up for -stable, thank you.
