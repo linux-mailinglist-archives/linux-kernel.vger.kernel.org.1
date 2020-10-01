@@ -2,146 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDFB28092A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CCE28092E
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 23:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733161AbgJAVHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 17:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727017AbgJAVHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:07:19 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1B4C0613D0;
-        Thu,  1 Oct 2020 14:07:19 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 5so5024307pgf.5;
-        Thu, 01 Oct 2020 14:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ItqIz6gXnh77/Vt2ZHDHcdf0vLA3J3R86d0HFs2hxss=;
-        b=ebxxJDPj/tvbS24ml8ZXMKFMOcecgfeBF7qk10srMX+oBQ38MoQGwEfoDCkk1XFDTf
-         sMHwM1gF3VedZTaQE1scSLDcdNnRASo/Qt/OsAe4qHLX2g69R+pxwgO9+V3Kv801Bqry
-         7bUqgK80b8dIuamzcqtslLPYxPEc3ilBAcVtjXgJYuP81z2HLFRwmb+haB7o/FZxj/Jv
-         HSX8ZZuuYhaz8V90/qARmSrZVVqzhqej01C+AzsjRm9uypUkbK25JTjySehoXo8OFJNS
-         zgkoUG0+xc9TaUar/mt8YRhTN/LTGiEmSBB3yHTDB5hukDtq1vapCLXKgbTBLoWD2Yeg
-         p8/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ItqIz6gXnh77/Vt2ZHDHcdf0vLA3J3R86d0HFs2hxss=;
-        b=UGYxKwuhnxkgP5K9s6Mcj7R9Xr5vHOBY+Nl6u7AqeZ/3mPbXjjeWcZprc1LtpEeCHn
-         GbTrizuJ8RRbTDff9UfLzQ9j++iEPVqXsWAjvYAKU7Pths6SDYmZGMClOGYKnRg+k+vc
-         pn4hBfvJpNuEcbjTPq0L2sYOeRIAMymq/PNJkDKhgDLp1kZcmU4OUTUirORKyZOUCnhR
-         yfGSaoI5qNZoMoCLNWFRozBPQeH10jaf0B9H7iwK5QUcERZyXyvB9onDG0SDe4+TRuT4
-         sABwHWxS82nH/RMF9MZqPwICUG/phQze8ZQiwzxgVC+KAvbOZG4tDqM6QgX9lDlgmAXR
-         QFqA==
-X-Gm-Message-State: AOAM532BAftBXgggC6M8we8vIccB6RCxpF7+7dDl1MWS3iZxeZ3LLOOD
-        XWZfSp/bmseiIrVT26k8q/KWJyyvGmwM5Q==
-X-Google-Smtp-Source: ABdhPJwtlJGYi3KdBqkN8QjF/BYyhY0405HXOyyT6gd5JOL9IIz8WwMUAMTSQlA+2TSKM7IlF2+0Kg==
-X-Received: by 2002:a63:161e:: with SMTP id w30mr7496776pgl.255.1601586438657;
-        Thu, 01 Oct 2020 14:07:18 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id 14sm724389pjn.48.2020.10.01.14.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 14:07:17 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:07:16 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Lenny Szubowicz <lszubowi@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-Subject: Re: [PATCH V2 1/3] efi: Support for MOK variable config table
-Message-ID: <20201001210716.GA3767489@ubuntu-m3-large-x86>
-References: <20200905013107.10457-1-lszubowi@redhat.com>
- <20200905013107.10457-2-lszubowi@redhat.com>
- <20201001174436.GA2622286@ubuntu-m3-large-x86>
- <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
+        id S1733183AbgJAVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 17:08:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727053AbgJAVHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:07:51 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13CC9206FA;
+        Thu,  1 Oct 2020 21:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601586471;
+        bh=BZONBnd/4ese8mXDBV53ByIXM4qMsw4C54W8+/dcXH0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=xqV0FycbtARRwDtBt1l3lUD6yTL32SvX0BvWqonRPf2/5S3tphE0WOmDwQytl1TzQ
+         xoGGlcbZJIMpm+D0jVTz7AOg/07Wx3UeCKj6qZezCi7TvbEkKReZiYpX81p0ARemKk
+         qt8totCMc7WtzVjiZfp8FhWNtGGXFWydJF8SxLYM=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D88873522B33; Thu,  1 Oct 2020 14:07:50 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 14:07:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, urezki@gmail.com,
+        lkp@intel.com, julia.lawall@inria.fr, mhocko@kernel.org,
+        mgorman@techsingularity.net, vbabka@suse.cz, peterz@infradead.org,
+        torvalds@linux-foundation.org
+Subject: [GIT PULL tip/core/rcu+preempt] Fix RT raw/non-raw lock ordering
+Message-ID: <20201001210750.GA25287@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXFoCsO3YqvTZx4nU4mQOhoux1iS1vsa73AZhtc5Y8j59Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 10:57:07PM +0200, Ard Biesheuvel wrote:
-> On Thu, 1 Oct 2020 at 19:44, Nathan Chancellor <natechancellor@gmail.com> wrote:
-> >
-> > On Fri, Sep 04, 2020 at 09:31:05PM -0400, Lenny Szubowicz wrote:
-> > > Because of system-specific EFI firmware limitations, EFI volatile
-> > > variables may not be capable of holding the required contents of
-> > > the Machine Owner Key (MOK) certificate store when the certificate
-> > > list grows above some size. Therefore, an EFI boot loader may pass
-> > > the MOK certs via a EFI configuration table created specifically for
-> > > this purpose to avoid this firmware limitation.
-> > >
-> > > An EFI configuration table is a much more primitive mechanism
-> > > compared to EFI variables and is well suited for one-way passage
-> > > of static information from a pre-OS environment to the kernel.
-> > >
-> > > This patch adds initial kernel support to recognize, parse,
-> > > and validate the EFI MOK configuration table, where named
-> > > entries contain the same data that would otherwise be provided
-> > > in similarly named EFI variables.
-> > >
-> > > Additionally, this patch creates a sysfs binary file for each
-> > > EFI MOK configuration table entry found. These files are read-only
-> > > to root and are provided for use by user space utilities such as
-> > > mokutil.
-> > >
-> > > A subsequent patch will load MOK certs into the trusted platform
-> > > key ring using this infrastructure.
-> > >
-> > > Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
-> >
-> > I have not seen this reported yet but this breaks arm allyesconfig and
-> > allmodconfig when CPU_LITTLE_ENDIAN is force selected (because CONFIG_EFI
-> > will actually be enabled):
-> >
-> > $ cat le.config
-> > CONFIG_CPU_BIG_ENDIAN=n
-> >
-> > $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- KCONFIG_ALLCONFIG=le.config allyesconfig drivers/firmware/efi/mokvar-table.o
-> > drivers/firmware/efi/mokvar-table.c: In function 'efi_mokvar_table_init':
-> > drivers/firmware/efi/mokvar-table.c:139:5: error: implicit declaration of function 'early_memunmap' [-Werror=implicit-function-declaration]
-> >   139 |     early_memunmap(va, map_size);
-> >       |     ^~~~~~~~~~~~~~
-> > drivers/firmware/efi/mokvar-table.c:148:9: error: implicit declaration of function 'early_memremap' [-Werror=implicit-function-declaration]
-> >   148 |    va = early_memremap(efi.mokvar_table, map_size);
-> >       |         ^~~~~~~~~~~~~~
-> > drivers/firmware/efi/mokvar-table.c:148:7: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-> >   148 |    va = early_memremap(efi.mokvar_table, map_size);
-> >       |       ^
-> > cc1: some warnings being treated as errors
-> > make[4]: *** [scripts/Makefile.build:283: drivers/firmware/efi/mokvar-table.o] Error 1
-> >
-> > Cheers,
-> > Nathan
-> 
-> Hi Nathan,
-> 
-> Does adding
-> 
-> #include <asm/early_ioremap.h>
-> 
-> to drivers/firmware/efi/mokvar-table.c fix the issue?
+Hello!
 
-Indeed, that was much simpler than I thought it would be... If you send
-or apply a patch, feel free to add:
+This pull request contains Thomas Gleixner's "Make preempt count
+unconditional" series [1], but with the addition of a kvfree_rcu() bug-fix
+commit making use of this PREEMPT_COUNT addition.  This series reduces
+the size of the kernel by almost 100 lines of code and is intended for
+the upcoming v5.10 merge window.
 
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Please note that these commits must go in via the -tip tree [2].
 
-Cheers,
-Nathan
+The additional bug-fix commit addresses a bug reported by Sebastian
+Andrzej Siewior [3].  Please note that with the advent of the new
+lockdep Kconfig option CONFIG_PROVE_RAW_LOCK_NESTING, this is now also
+a mainline bug.  In happy contrast to the surprisingly large number of
+earlier versions of this fix, this version uses only pre-existing kernel
+interfaces, and furthermore uses them in conventional ways.
+
+This series has been posted to LKML:
+
+https://lore.kernel.org/lkml/20200928233041.GA23230@paulmck-ThinkPad-P72
+
+It has also been exposed to the kernel test robot and to -next testing.
+
+Changes since the LKML posting are limited to the addition of a comment
+block and commit-log changes, the latter including the addition of
+a Reviewed-by.  Additional discussion led to an additional two commits
+containing small updates, but these two additional commits are deferred
+to a later pull request, almost certainly for a later merge window.
+
+							Thanx, Paul
+
+[1]	https://lore.kernel.org/linux-mm/20200914204209.256266093@linutronix.de/
+[2]	https://lore.kernel.org/lkml/871riigxp9.fsf@nanos.tec.linutronix.de/
+[3]	https://lore.kernel.org/lkml/20200630164543.4mdcf6zb4zfclhln@linutronix.de/
+
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/fix-rt
+
+for you to fetch changes up to 849b9c5446ccb0c98c7b11c69f169d22777ab31b:
+
+  kvfree_rcu(): Fix ifnullfree.cocci warnings (2020-10-01 09:07:24 -0700)
+
+----------------------------------------------------------------
+Thomas Gleixner (13):
+      lib/debug: Remove pointless ARCH_NO_PREEMPT dependencies
+      preempt: Make preempt count unconditional
+      preempt: Cleanup PREEMPT_COUNT leftovers
+      lockdep: Cleanup PREEMPT_COUNT leftovers
+      mm/pagemap: Cleanup PREEMPT_COUNT leftovers
+      locking/bitspinlock: Cleanup PREEMPT_COUNT leftovers
+      uaccess: Cleanup PREEMPT_COUNT leftovers
+      sched: Cleanup PREEMPT_COUNT leftovers
+      ARM: Cleanup PREEMPT_COUNT leftovers
+      xtensa: Cleanup PREEMPT_COUNT leftovers
+      drm/i915: Cleanup PREEMPT_COUNT leftovers
+      rcutorture: Cleanup PREEMPT_COUNT leftovers
+      preempt: Remove PREEMPT_COUNT from Kconfig
+
+Uladzislau Rezki (Sony) (1):
+      rcu/tree: Allocate a page when caller is preemptible
+
+kernel test robot (1):
+      kvfree_rcu(): Fix ifnullfree.cocci warnings
+
+ arch/arm/include/asm/assembler.h                   | 11 ---
+ arch/arm/kernel/iwmmxt.S                           |  2 -
+ arch/arm/mach-ep93xx/crunch-bits.S                 |  2 -
+ arch/xtensa/kernel/entry.S                         |  2 +-
+ drivers/gpu/drm/i915/Kconfig.debug                 |  1 -
+ drivers/gpu/drm/i915/i915_utils.h                  |  3 +-
+ include/linux/bit_spinlock.h                       |  4 +-
+ include/linux/lockdep.h                            |  6 +-
+ include/linux/pagemap.h                            |  4 +-
+ include/linux/preempt.h                            | 37 ++--------
+ include/linux/uaccess.h                            |  6 +-
+ kernel/Kconfig.preempt                             |  4 --
+ kernel/rcu/tree.c                                  | 79 ++++++++--------------
+ kernel/sched/core.c                                |  6 +-
+ lib/Kconfig.debug                                  |  3 -
+ .../selftests/rcutorture/configs/rcu/SRCU-t        |  1 -
+ .../selftests/rcutorture/configs/rcu/SRCU-u        |  1 -
+ .../selftests/rcutorture/configs/rcu/TINY01        |  1 -
+ .../testing/selftests/rcutorture/doc/TINY_RCU.txt  |  5 +-
+ .../selftests/rcutorture/doc/TREE_RCU-kconfig.txt  |  1 -
+ .../rcutorture/formal/srcu-cbmc/src/config.h       |  1 -
+ 21 files changed, 44 insertions(+), 136 deletions(-)
