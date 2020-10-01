@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51E27FE4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410CB27FE61
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 13:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731977AbgJALZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 07:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S1731907AbgJAL2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 07:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731134AbgJALZQ (ORCPT
+        with ESMTP id S1731819AbgJAL2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 07:25:16 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D719C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 04:25:16 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id n61so4955204ota.10
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 04:25:16 -0700 (PDT)
+        Thu, 1 Oct 2020 07:28:44 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442AFC0613D0;
+        Thu,  1 Oct 2020 04:28:44 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k8so4214260pfk.2;
+        Thu, 01 Oct 2020 04:28:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=up+YfAa4hUEz2jauGbOGQupzqkFEIqP5miPRNKb6g88=;
-        b=AVTt1tHvqiwpCn8ORfJ3ByfuaERKEB+VTJJVMRxSler0/mRZ/81hC2shW3JAG3KsP8
-         E8u9Nzr6mVudbSqiKqFVv7BGJL7rKVBkWkNYVynnJMbzVpx0UczuVqS8yRzajY0HbTwA
-         CAxQvocmUjBq8KWPNbJzrGa+aEnqrb+128m6M=
+        bh=xdFfszEFg+9Y0mvLhElhzYRXmvD0D1SVXUuvXh8QwZ4=;
+        b=Q8WmUFrIr/vc603KGTrAmH4cx8UN3Ns0p7FV9d6oV5G0E1UzW2wcIiKTGzi/psXe0F
+         dbYbCtnVnsep5+BlbHWMxUST09bcWmkT5/DlEasfOfYdjVErM4OLqFXwE1anqT36Of46
+         wkU7w4dCfExHzBvLmM5QCQMLzRdRxnG1CSJrhx1Co6XcyJukk03V4RRlKnb4NIXbBAiA
+         jf1jzIBvMaHEfxkvHIRXHLSIZlJBo0JMCluU5rqH+wFWA9elNqu9sIokczXBmUDPo3su
+         n76qt4Pq8eWh4ueXAplBInEYIeWhZnIJlHMIZftRjnGTu9F3JxzBCDpxqB5Y0rkUCz+x
+         XRhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=up+YfAa4hUEz2jauGbOGQupzqkFEIqP5miPRNKb6g88=;
-        b=e0Vqb9w1Zb5FBwDQ206ZGPP49aK1eDA/uEXpG/WaK8I4KGBgX7pyKH/2d1PcLFdAKi
-         4b5xuO4EgJ96HK0LzwnEAhGu54L52GUN9XXpm/auyWKWqVQhVT+nMK6LPHZkaOArh5MI
-         hNt1C3ADQbjvGsoLmvq6SdHQpLEqBywyY1Z39b8ghzDZYCFTVkcR1LWp771Ady8jdI+v
-         yM+Pr4JLKvu/rt2o+u70JizTF1v1yueBmS3Vaw7cSsjtpeRFMOkUs5FNyLHaNmsvJQ3Z
-         quZB2XNlI8umtgff2dwkOiG2DT2d9LT1awVCelMSkONHkTxyCVRJek81ETCEp0OB/lql
-         /DOQ==
-X-Gm-Message-State: AOAM531MxhJxVXPLJq/7SOp8D3/AgHSxNwL+4jOfRZPFjps8gUdYCG7X
-        96n0/UGyDJgcnZ7yqIjQpfSvwLovWvFUUdGpqkaEBA==
-X-Google-Smtp-Source: ABdhPJxPbL7LHeQL+k6gIy5NueiQXRMgOWTDIjglH6aXw9lY8zq0IMYSGJyw2kRbFhVw5K0r/VLucvhZmUE5VMcAKsM=
-X-Received: by 2002:a9d:4b99:: with SMTP id k25mr4758628otf.281.1601551515453;
- Thu, 01 Oct 2020 04:25:15 -0700 (PDT)
+        bh=xdFfszEFg+9Y0mvLhElhzYRXmvD0D1SVXUuvXh8QwZ4=;
+        b=i34XKCenPSAcDdPPp8M+Khi/nzSg8vTO8rLV9gz+u1aJ0nCBAtqB/PTt1ejQA/P6P/
+         V7RlSZK47EBPB/emL4gGD3PmbZInuijTalpjk52aBNzJw8rCxqsoKOd7dyOMkksx8IkX
+         J0Dbnk8nHEu4qoBR3TBSpw+hObSjBFE5KZx2YiyshGGxA9L60ndlOC9oJVis71625Hmm
+         Sx6V1YaN6lN/SPs1SVB80X1JKPccNew9Pa5kZ5XQeA81s0kPKMHzzI4XukBZym4uE2X7
+         tnxbUMd3dXjNWUO1natPtcA1QagF64IgvcYBbout1Ul7SUSqQ2USvAN4Ok2q3UB1aTW1
+         6XPA==
+X-Gm-Message-State: AOAM532bgU5Q9UQaOg8dHB7V088bd4wygFbahWYWuwwgGRyT1X+zT26a
+        TtMCnqvnF9NNmOZ3Nt9NOYCcwY4suxdOEGlWDqE=
+X-Google-Smtp-Source: ABdhPJxo9xb5Y/FPu8g8kJ6peODTF6LK6ttQzuwFH2GQul5cR5TkHOeuFJgkfgM8IzutagCPnnpWe3UnBvrCt6BBy/I=
+X-Received: by 2002:a63:906:: with SMTP id 6mr5779235pgj.66.1601551723753;
+ Thu, 01 Oct 2020 04:28:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200921131021.91604-1-miaoqinglang@huawei.com> <8ae8a758-23ee-a413-5b25-b7beb8f4e254@arm.com>
-In-Reply-To: <8ae8a758-23ee-a413-5b25-b7beb8f4e254@arm.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 1 Oct 2020 13:25:03 +0200
-Message-ID: <CAKMK7uHQe3PBnNinaGn37s+Cgko1taKcCT3=Yy1uw63pRurOhw@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/panfrost: simplify the return expression of panfrost_devfreq_target()
-To:     Steven Price <steven.price@arm.com>
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
+In-Reply-To: <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 1 Oct 2020 06:28:32 -0500
+Message-ID: <CABqSeASwCXaP_vNe1=E3EeWAApFYiB1S5xEb9BdH10b0rn0Q6A@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+To:     Jann Horn <jannh@google.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 12:58 PM Steven Price <steven.price@arm.com> wrote:
->
-> On 21/09/2020 14:10, Qinglang Miao wrote:
-> > Simplify the return expression.
-> >
-> > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->
-> Reviewed-by: Steven Price <steven.price@arm.com>
+On Wed, Sep 30, 2020 at 5:24 PM Jann Horn <jannh@google.com> wrote:
+> If you did the architecture enablement for X86 later in the series,
+> you could move this part over into that patch, that'd be cleaner.
 
-As committer/maintainer for this please indicate whether you'll merge
-this or not, with just an r-b patches are in an awkward limbo state.
-Since Qinglang isn't committer you probably want to merge their
-patches, for otherwise they get lost.
--Daniel
->
-> > ---
-> >   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 7 +------
-> >   1 file changed, 1 insertion(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > index 8ab025d00..913eaa6d0 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > @@ -29,18 +29,13 @@ static int panfrost_devfreq_target(struct device *dev, unsigned long *freq,
-> >                                  u32 flags)
-> >   {
-> >       struct dev_pm_opp *opp;
-> > -     int err;
-> >
-> >       opp = devfreq_recommended_opp(dev, freq, flags);
-> >       if (IS_ERR(opp))
-> >               return PTR_ERR(opp);
-> >       dev_pm_opp_put(opp);
-> >
-> > -     err = dev_pm_opp_set_rate(dev, *freq);
-> > -     if (err)
-> > -             return err;
-> > -
-> > -     return 0;
-> > +     return dev_pm_opp_set_rate(dev, *freq);
-> >   }
-> >
-> >   static void panfrost_devfreq_reset(struct panfrost_devfreq *pfdevfreq)
-> >
->
+As in, patch 1: bitmap check logic. patch 2: emulator. patch 3: enable for x86?
 
+> > + * Tis struct is ordered to minimize padding holes.
+>
+> I think this comment can probably go away, there isn't really much
+> trickery around padding holes in the struct as it is now.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Oh right, I was trying the locks and adding bits to indicate if
+certain arches are primed, then I undid that.
+
+> > +                       set_bit(nr, bitmap);
+>
+> set_bit() is atomic, but since we only do this at filter setup, before
+> the filter becomes globally visible, we don't need atomicity here. So
+> this should probably use __set_bit() instead.
+
+Right
+
+YiFei Zhu
