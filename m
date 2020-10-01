@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D827F9E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAE527F9D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731259AbgJAHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:03:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4236 "EHLO mga18.intel.com"
+        id S1730723AbgJAHDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:03:11 -0400
+Received: from mga11.intel.com ([192.55.52.93]:51969 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730785AbgJAHDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:03:31 -0400
-IronPort-SDR: m9uhc6p3nb7haiZMambYtucL7Cs7CopoWiarARH7fYszyG6FcfcAZs7Yka1DAJWPCOhiaeqHlx
- WiH1JK1LlQxg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="150432178"
+        id S1725878AbgJAHDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:03:08 -0400
+IronPort-SDR: wbkqjiEQkIgpZoxcWN2c8RgfVi2DKYRtZeKffTxvYuDRDrjC+30/FxyxrQm9qb5H9Cqdtk0oFH
+ 13qq3d7WLcmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="159970844"
 X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="150432178"
+   d="scan'208";a="159970844"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 00:03:28 -0700
-IronPort-SDR: gwm++hiDFy9+iEO+P2oYXrYRgBmdazSUgOiEJatzVlmjyMNOKQquYlBxzWq6atxzGjtNbS00/X
- 1ePdxBsE7tLQ==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 00:03:07 -0700
+IronPort-SDR: NznTBKtR/XBr4xUZJtZnCqCOEOb6eti80F+NyWHbpI0uZ43OKa0f7dqmxL0ZVH5E6XDkkrGWBL
+ 80k67rAZq97w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="457999882"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga004.jf.intel.com with ESMTP; 01 Oct 2020 00:03:23 -0700
-Subject: Re: [PATCH] mmc: core: don't set limits.discard_granularity as 0
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Vicente Bergas <vicencb@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <20200930160854.65710-1-colyli@suse.de>
- <5178b9e0-6b95-45ef-80f1-862de554e625@intel.com>
- <026e4bab-5d1d-50b9-29c4-e871fcd27b8b@suse.de>
- <3cc59ace-d4b5-d10b-05a0-8677c95515ff@intel.com>
- <2dad99ac-ae48-09a3-ed3b-c021214d7951@suse.de>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <794af2df-3bd7-43c2-e5ff-9453cba1d424@intel.com>
-Date:   Thu, 1 Oct 2020 10:02:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <2dad99ac-ae48-09a3-ed3b-c021214d7951@suse.de>
-Content-Type: text/plain; charset=utf-8
+   d="scan'208";a="351002516"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2020 00:03:07 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 1 Oct 2020 00:03:06 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 1 Oct 2020 00:03:06 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 1 Oct 2020 00:03:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UYVlQgif78vdOL/HbkWNbAJ54ygeWZ9TZmEaIyknDK6D9CyfqKq8yKLrcSlz2in+GmhjNEp1Q5yv8Ie0ejClSL8/AchRBumrgzDTbaKkkU1n4aCKY3dRj9k8SYyvhOzkrSvKJt4Ni9mhUJwC38sqwABLVrC2mW/u9DTgPBuhCXZy/j53FYDorwVHyliiy3DX45mLs1s1bufVxhcH2phLQU+JroQRknEsH4Z/4KfYGgO/sEK+RzJmdDA3je/4H1BY42yRMnMTJb4mhqUri7aw0CYxKOOlgAMpY5WwP3MDWZHyPbGFhKbizs4Fu5jbfVUhhZ2s5t4KcbLhRi3ZN9vyeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BuEQ8Ul38qkmXxvLGJRCP094Tz0nbQBTSrt46rmV5To=;
+ b=dQtdf9VvlOISlFHS+4i1ADQxwSVopUi7HfKP9M5uN4ySboMJ1gw+Tm6XVWlr6U4Wp8hz3Oyd8MFBRV6kCpExN4EpstGvGznwWKwqXiqYXS0JUcRIOcL6wztrSza7DmPRUhVeRbah1K9skLISqpE1Q8GAznMTXCu5x3FofP7LfdVuzhSHS32unjwXOCStY3jqqgQzFNqpzUg04oTVVkiOv1nFRjnkCuqqNn5LBO2xYVUg3fj0HZ+i8DonxBV5qKN9mgmS3W0IERlMPFl10RZEieqgpoH6tPexhRnvgMNKBPm5c0JI83ywVHsCdPxHGkUJUac7Wo4ymQIstcP+euohtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BuEQ8Ul38qkmXxvLGJRCP094Tz0nbQBTSrt46rmV5To=;
+ b=vR6SRQZyrJb6f8eaA0bD3WDmc9+tS1KFhOFGCMwXDQl+aREMk/V/4yUi40+n+EBu9l2789rhdsd0SjUby20kGd+Nb4V0yzcK5tZNRlP+U559u3K+c6RCtxmxYrZKob3xURlSA093/Nm0DZKSyb3Vb1AshcmVFHOw/ZACqAwYy2U=
+Received: from DM6PR11MB2890.namprd11.prod.outlook.com (2603:10b6:5:63::20) by
+ DM6PR11MB2891.namprd11.prod.outlook.com (2603:10b6:5:71::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.25; Thu, 1 Oct 2020 07:03:04 +0000
+Received: from DM6PR11MB2890.namprd11.prod.outlook.com
+ ([fe80::8c79:e56f:7f8b:ebe4]) by DM6PR11MB2890.namprd11.prod.outlook.com
+ ([fe80::8c79:e56f:7f8b:ebe4%7]) with mapi id 15.20.3412.028; Thu, 1 Oct 2020
+ 07:03:04 +0000
+From:   "Brown, Aaron F" <aaron.f.brown@intel.com>
+To:     Tong Zhang <ztong0001@gmail.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH] e1000: do not panic on malformed
+ rx_desc
+Thread-Topic: [Intel-wired-lan] [PATCH] e1000: do not panic on malformed
+ rx_desc
+Thread-Index: AQHWhfynZPHLUfowgUSbCO3qc22yBamCdVeg
+Date:   Thu, 1 Oct 2020 07:03:04 +0000
+Message-ID: <DM6PR11MB28906E70A61ADFD7A3BF1AE7BC300@DM6PR11MB2890.namprd11.prod.outlook.com>
+References: <20200908162231.4592-1-ztong0001@gmail.com>
+In-Reply-To: <20200908162231.4592-1-ztong0001@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [97.120.130.218]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9a27224b-1399-43e5-19cc-08d865d80b2c
+x-ms-traffictypediagnostic: DM6PR11MB2891:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB289158F0010973CFC6562EC0BC300@DM6PR11MB2891.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9NzcWC1GN1xNJ0LcJb7OXdIXEe3iwamXEPmtAKxtvhiQsLUfGRPFccR7LZ7446PfiAfvz3Mc/JAVY6UXQjcuW2prxYmFgHrfw8qU4PQKOt95A5zsinumKCgMANlBi4/d/mkITMLVtVZK9g6zr53NoaeNMlAyWkY2UFnlRW5dmM8pBV2wXGqFs2U0VxpErIWHF05uw0XYL4WFbOjy9JxispROtq0Q/7U3Ujsn7xref8SZRUzzAhuM0JjIQMR7Mt5h3n4MMLIm5CtMhKahFGb6huTTYhjDi9wg5SZ6LROhM1YqrYVfrZlCm9k8G2TzjTTuiUeqMbwT7ExcbWlVWdA3oSdwmO/MA1YIsfIldcptrQCo6ssW6/Oz57ShyudCC9zJ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2890.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(8676002)(83380400001)(6506007)(53546011)(186003)(26005)(7696005)(9686003)(55016002)(66556008)(110136005)(316002)(8936002)(33656002)(71200400001)(5660300002)(52536014)(66446008)(86362001)(64756008)(66946007)(478600001)(2906002)(66476007)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: R7iOC3gVJOLL9qfsY2gDaDJb94Rypwt7+Nhs5PnXLj8FYkPYZy/pTgcHnfx3651PpwBtv5I/RBRhbZI+9ZmyjlTkK3oepc03NBP55cg15hwzFpqMYDfy622ECnPjwH1wfFS/5Gx/qdeU67bcXP2ScaWf3mV3aDDFS1hGv9fJAhkemCnhxadzAPY99jj87gAZmGWeI+o35nwNs5EEEEQXyvspMx1o/91MB0VIWcSjr5d/LOWTOYcmmp4waRFSJjnqsuSApy6z7rVIY2bv0gSSxqexEhH4NTqhCcGivPMB5q68tzTUv2gq8clidXae0rEHlBAOKqPzXAezfdyNUs+LKd9YbFufhzB3naqrSNfSKs8KnNknkHsE6oadGQO+LIfChpdqWSTi65yyOw/JObo7C9kdHVzBMFehZAPQJjc1npj+1JVZ76A1iU2H8SncN1c3pD3JvvL9Gy4TBaoN/IvHVEA1hP1zDk4Ht0pp8o/vyFN6rNdlIwyGvQr5kvikVoGLqTO/YRz4Si1YlNcJpTCusPw1k+qq3hVPY0HAkn/JGUmjGGYUVa6hYVgsUgh8tnVzP9W5Mx5Py4xgUkrDRiyE1tsnjS2uYvHemmuzfL/YRI1XHYc6lo+50QVyFqfh3UfW3M6xl/6vk3gzQw2S+CcYSA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2890.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a27224b-1399-43e5-19cc-08d865d80b2c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2020 07:03:04.5827
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oU9tSEN3sBCjedgJbJC8+lTqMPUQlly+igNchurigN+MGNOOLcBHT79+XBfBawO93InaIPohTtvcUiA6EXecpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2891
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/20 9:29 am, Coly Li wrote:
-> On 2020/10/1 14:14, Adrian Hunter wrote:
->> On 1/10/20 7:36 am, Coly Li wrote:
->>> On 2020/10/1 01:23, Adrian Hunter wrote:
->>>> On 30/09/20 7:08 pm, Coly Li wrote:
->>>>> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
->>>>> might be set as 0 (when card->pref_erase > max_discard) while the mmc
->>>>> device still declares to support discard operation. This is buggy and
->>>>> triggered the following kernel warning message,
->>>>>
->>>>> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
->>>>> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
->>>>> Hardware name: Google Kevin (DT)
->>>>> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
->>>>> pc : __blkdev_issue_discard+0x200/0x294
->>>>> lr : __blkdev_issue_discard+0x54/0x294
->>>>> sp : ffff800011dd3b10
->>>>> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
->>>>> __blkdev_issue_discard+0x200/0x294
->>>>> __submit_discard_cmd+0x128/0x374
->>>>> __issue_discard_cmd_orderly+0x188/0x244
->>>>> __issue_discard_cmd+0x2e8/0x33c
->>>>> issue_discard_thread+0xe8/0x2f0
->>>>> kthread+0x11c/0x120
->>>>> ret_from_fork+0x10/0x1c
->>>>> ---[ end trace e4c8023d33dfe77a ]---
->>>>>
->>>>> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
->>>>> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
->>>>> complain from __blkdev_issue_discard() for the improper value of discard
->>>>> granularity.
->>>>>
->>>>> Fixes: commit e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
->>>>
->>>> That "Fixes" tag is a bit misleading.  For some time, the block layer had
->>>> no problem with discard_granularity of zero, and blk_bio_discard_split()
->>>> still doesn't (see below).
->>>>
->>>> static struct bio *blk_bio_discard_split(struct request_queue *q,
->>>> 					 struct bio *bio,
->>>> 					 struct bio_set *bs,
->>>> 					 unsigned *nsegs)
->>>> {
->>>> 	unsigned int max_discard_sectors, granularity;
->>>> 	int alignment;
->>>> 	sector_t tmp;
->>>> 	unsigned split_sectors;
->>>>
->>>> 	*nsegs = 1;
->>>>
->>>> 	/* Zero-sector (unknown) and one-sector granularities are the same.  */
->>>> 	granularity = max(q->limits.discard_granularity >> 9, 1U);
->>>>
->>>
->>> >From Documentation/block/queue-sysfs.rst, the discard_granularity is
->>> described as,
->>>
->>> discard_granularity (RO)
->>> ------------------------
->>> This shows the size of internal allocation of the device in bytes, if
->>> reported by the device. A value of '0' means device does not support
->>> the discard functionality.
->>>
->>>
->>> And from Documentation/ABI/testing/sysfs-block, the discard_granularity
->>> is described as,
->>>
->>> What:           /sys/block/<disk>/queue/discard_granularity
->>> Date:           May 2011
->>> Contact:        Martin K. Petersen <martin.petersen@oracle.com>
->>> Description:
->>>                 Devices that support discard functionality may
->>>                 internally allocate space using units that are bigger
->>>                 than the logical block size. The discard_granularity
->>>                 parameter indicates the size of the internal allocation
->>>                 unit in bytes if reported by the device. Otherwise the
->>>                 discard_granularity will be set to match the device's
->>>                 physical block size. A discard_granularity of 0 means
->>>                 that the device does not support discard functionality.
->>>
->>>
->>> Therefore I took it as a bug when a driver sets its queue
->>> discard_granularity as 0 but still announces to support discard operation.
->>>
->>> But if you don't like the Fixes: tag, it is OK for me to remove it in
->>> next version.
->>
->> Not at all.  I just wrote "a bit misleading" because people might also want
->> to know from what patch things stopped working.
-> 
-> Oh maybe I understand you. Yes, although this fixed patch was bug, but
-> the warning was triggered since the new discard alignment changes got
-> merged.
-> 
-> Hmm, maybe I should add the Fixes tag to commit b35fd7422c2f ("block:
-> check queue's limits.discard_granularity in __blkdev_issue_discard()").
-> 
-> How do you think of this commit id ?
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of T=
+ong
+> Zhang
+> Sent: Tuesday, September 8, 2020 9:23 AM
+> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; David S. Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; intel-wired-
+> lan@lists.osuosl.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.or=
+g
+> Cc: ztong0001@gmail.com
+> Subject: [Intel-wired-lan] [PATCH] e1000: do not panic on malformed rx_de=
+sc
+>=20
+> length may be corrupted in rx_desc and lead to panic, so check the
+> sanity before passing it to skb_put
+>=20
+> [  167.667701] skbuff: skb_over_panic: text:ffffffffb1e32cc1 len:60224
+> put:60224 head:ffff888055ac5000 data:ffff888055ac5040 tail:0xeb80 end:0x6=
+c0
+> dev:e
+> th0
+> [  167.668429] ------------[ cut here ]------------
+> [  167.668661] kernel BUG at net/core/skbuff.c:109!
+> [  167.668910] invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN PTI
+> [  167.669220] CPU: 1 PID: 170 Comm: sd-resolve Tainted: G        W      =
+   5.8.0+
+> #1
+> [  167.670161] RIP: 0010:skb_panic+0xc4/0xc6
+> [  167.670363] Code: 89 f0 48 c7 c7 60 f2 de b2 55 48 8b 74 24 18 4d 89 f=
+9 56 48
+> 8b 54 24 18 4c 89 e6 52 48 8b 44 24 18 4c 89 ea 50 e8 31 c5 2a ff <0f>
+> 0b 4c 8b 64 24 18 e8 f1 b4 48 ff 48 c7 c1 00 fc de b2 44 89 ee
+> [  167.671272] RSP: 0018:ffff88806d109c68 EFLAGS: 00010286
+> [  167.671527] RAX: 000000000000008c RBX: ffff888065e9af40 RCX:
+> 0000000000000000
+> [  167.671878] RDX: 1ffff1100da24c91 RSI: 0000000000000008 RDI:
+> ffffed100da21380
+> [  167.672227] RBP: ffff88806bde4000 R08: 000000000000008c R09:
+> ffffed100da25cfb
+> [  167.672583] R10: ffff88806d12e7d7 R11: ffffed100da25cfa R12:
+> ffffffffb2defc40
+> [  167.672931] R13: ffffffffb1e32cc1 R14: 000000000000eb40 R15:
+> ffff888055ac5000
+> [  167.673286] FS:  00007fc5f5375700(0000) GS:ffff88806d100000(0000)
+> knlGS:0000000000000000
+> [  167.673681] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  167.673973] CR2: 0000000000cb3008 CR3: 0000000063d36000 CR4:
+> 00000000000006e0
+> [  167.674330] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [  167.674677] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [  167.675035] Call Trace:
+> [  167.675168]  <IRQ>
+> [  167.675315]  ? e1000_clean_rx_irq+0x311/0x630
+> [  167.687459]  skb_put.cold+0x1f/0x1f
+> [  167.687637]  e1000_clean_rx_irq+0x311/0x630
+> [  167.687852]  e1000e_poll+0x19a/0x4d0
+> [  167.688038]  ? e1000_watchdog_task+0x9d0/0x9d0
+> [  167.688262]  ? credit_entropy_bits.constprop.0+0x6f/0x1c0
+> [  167.688527]  net_rx_action+0x26e/0x650
+>=20
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>  drivers/net/ethernet/intel/e1000/e1000_main.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 
-Yes that could be mentioned in the commit message or Fixes or both.
-With that:
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-
+Again, regression tested.  I was not able to trigger the panic with or with=
+out patch.
