@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3F2280A60
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B7B280A6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733129AbgJAWoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:44:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38796 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbgJAWoX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:44:23 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601592260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f5pavRIPBXFgoArTS09EMAvE+9XTGOcnORwLcRx4kkA=;
-        b=U84f6VB+uoY56yY0AbL7m5zFgUQvOqpAnDuLzL3VgEIUJxo3VWnvTmp2r3XUK47/T9+W3/
-        GuaMG375NPiap38Xpq+NieKRecG+teH4PClBFb01m+pyIuxlw3K18VA8kZlmYDCUzLZxrO
-        BxAstiqQYGKe8B7quD/kZ4Ki/Z+w5tMLV4r7VzGOq/UgRGRzZ7qhgfdXay4ECCvbqNv8Dg
-        70F6RFVZFQr0+QI0ovAYfxGYELQYMWbnPi9353lf4a2yTGRFO9YIs87/wg7svnN3lGVQ30
-        3Fw7obB0uR90Z/Oo6ny8VWlc0UPhETzmecph2ts+Mx0h4F5sPk6dcnRupfYkNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601592260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f5pavRIPBXFgoArTS09EMAvE+9XTGOcnORwLcRx4kkA=;
-        b=Xsq66SYfx5Fu5ZSQwlHHuBW51rXywOjw4mGFPmrJrIvzjPkx1LtZ+fV4PzJgwhwk89w2qi
-        jrpBapKbZaJSMlAQ==
-To:     Erez Geva <erez.geva.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Simon Sudler <simon.sudler@siemens.com>,
-        Andreas Meisinger <andreas.meisinger@siemens.com>,
-        Andreas Bucher <andreas.bucher@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andreas Zirkler <andreas.zirkler@siemens.com>,
-        Ermin Sakic <ermin.sakic@siemens.com>,
-        An Ninh Nguyen <anninh.nguyen@siemens.com>,
-        Michael Saenger <michael.saenger@siemens.com>,
-        Bernd Maehringer <bernd.maehringer@siemens.com>,
-        Gisela Greinert <gisela.greinert@siemens.com>,
-        Erez Geva <erez.geva.ext@siemens.com>,
-        Erez Geva <ErezGeva2@gmail.com>
-Subject: Re: [PATCH 4/7] Fix qdisc_watchdog_schedule_range_ns range check
-In-Reply-To: <20201001205141.8885-5-erez.geva.ext@siemens.com>
-References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <20201001205141.8885-5-erez.geva.ext@siemens.com>
-Date:   Fri, 02 Oct 2020 00:44:19 +0200
-Message-ID: <87pn61efcs.fsf@nanos.tec.linutronix.de>
+        id S1733088AbgJAWrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726741AbgJAWrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 18:47:14 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BF7C206C1;
+        Thu,  1 Oct 2020 22:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601592434;
+        bh=ucUxa0HaN69q6wpph89IAO8S5XFVyEHctS45bQykTig=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=ayROnTvhBaiRXUk5chq6bsV9kiMz6CmC6J9M4Y+6EL41VlQrCGTv6NOoHaQMAZhqN
+         LV5wrGawo78IHdC6pEk+p8Bx2fZd6Fqns30TWnYWqYYWJkIAbyfz8pciiDmEkyROl0
+         6Ki78KVNUgVkCCYvxJDBNM1+KPxe7X8F0lQkjaVk=
+Date:   Thu, 01 Oct 2020 23:46:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     NXP Linux Team <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20200929112930.46848-1-miaoqinglang@huawei.com>
+References: <20200929112930.46848-1-miaoqinglang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: fsl: imx-mc13783: use
+ devm_snd_soc_register_card()
+Message-Id: <160159237543.44588.1909303635189216096.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01 2020 at 22:51, Erez Geva wrote:
+On Tue, 29 Sep 2020 19:29:30 +0800, Qinglang Miao wrote:
+> Using devm_snd_soc_register_card() can make the code
+> shorter and cleaner.
 
-Fixes should be at the beginning of a patch series and not be hidden
-somewhere in the middle.
+Applied to
 
->    - As all parameters are unsigned.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This is not a sentence and this list style does not make that changelog
-more readable.
+Thanks!
 
->    - If 'expires' is bigger than 'last_expires' then the left expression
->      overflows.
+[1/1] ASoC: fsl: imx-mc13783: use devm_snd_soc_register_card()
+      commit: bc772a46125f344ffabd7596c5b6b8c6ef703ea0
 
-This would be the most important information and should be clearly
-spelled out as problem description at the very beginning of the change
-log.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->    - It is better to use addition and check both ends of the range.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Is better? Either your change is correcting the problem or not. Just
-better but incorrect does not cut it.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-But let's look at the problem itself. The check is about:
-
-    B <= A <= B + C
-
-A, B, C are all unsigned. So if B > A then the result is false.
-
-Now lets look at the implementation:
-
-    if (A - B <= C)
-    	return;
-
-which works correctly due the wonders of unsigned math.
-
-For B <= A the check is obviously correct.
-
-If B > A then the result of the unsigned subtraction A - B is a very
-large positive number which is pretty much guaranteed to be larger than
-C, i.e. the result is false.
-
-So while not immediately obvious, it's still correct.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-        tglx
-
-
-
+Mark
