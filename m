@@ -2,156 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F5327FEE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866D727FEF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732047AbgJAMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        id S1732177AbgJAM1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731888AbgJAMY4 (ORCPT
+        with ESMTP id S1731926AbgJAM1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:24:56 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C09C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 05:24:55 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so6386023ior.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 05:24:55 -0700 (PDT)
+        Thu, 1 Oct 2020 08:27:52 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A225CC0613D0;
+        Thu,  1 Oct 2020 05:27:52 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id s14so1466853pju.1;
+        Thu, 01 Oct 2020 05:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=akvyyUxuhjWRDCUB2lTKcqgP2Az3Cod92ZdzN8kBfmI=;
-        b=akyrB7L9PdgJwPMXl49tDyta/opvrLvAcOh6D2PtBsJJDPgdb5rhyQ8Dj4isflfOri
-         aP1OSp0tpcj3cONvfzb+GeIc7pUkKJhHYIe/qp8pz88zYsTRvxycBz5FN+gG+ZmXks98
-         LjdqhBCGO2QDntBCBtm2WJtIqBVaALJTR/J9Trf+/1YpQD6ewKpOCEMHxhPDE1/VD8L6
-         toHCB1+6iafUFxjdw/tcJokqxXcQM4OY+2Id1ey6WxkmWAQeKCZ0aDfdpBx4bOAIvB9J
-         PjX3xc1QH9LDOrCzgCzc0HyFQS5C3RDW+FzpCWQou95ew2fyIn4OKBAKz2Yk1DfupLgK
-         ePaA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ouf2Btjyrfu8hsFcX+gtYlfigwnxT6LfTNtyIop3GBc=;
+        b=Z87+Fi6IIGwkNUbmObg3E0/O10eaRcuM5Kd3G82MlAh09V9X7354YHpxaBYFyuNw1G
+         WZmDVHcXg/w5luVGvpjX43K8Zwgyn+A4750tWtcDrYVTESOfZajw4J2U/353zYymU52w
+         X3G/k102+ysSejaWCLDW4VWmsXgfhvIFJ7euzzDP1YbWASctdo07HJPSvYp8JBZWdKwl
+         VLVAY2vy1xzDtS6dMqClEXoEoiMgJpOEbI/kf3MPw3ASAOBu/3gwhylq6WvVbQSenOT/
+         d5Cve0jXoU9L9+EuVPjBjoMvmMTgpgorWPG7eAQur7PIIMfWSGrSHzGcDhBOo1JpS+XR
+         zxvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=akvyyUxuhjWRDCUB2lTKcqgP2Az3Cod92ZdzN8kBfmI=;
-        b=QJVfSMwBEpvTMY08VNcBAH0RdUiW/5af51TYidEehuGOWpQTR5sUSCh+auZtYZCb7N
-         ugiQmHy+fFwGahODNEO/HpxKGHKF2+b9E+eeLOK9RKx+CHgMp0VLhe2et9pwtl1Xfn4n
-         wRVbk67kbADD/lDzuBU6Izi5/mH+kLtNZn73AZtGVmdikmQos07qOgxRf0J3iRnW5OCr
-         t4RzQRElyXtqU9+K67mZVPo6KXgxlY6SbGZ2vPymPw9ozEuMBg+3nBt0vkY/VZxnR1FJ
-         oDmfqSZYMWq8HxQiE8B7DftFR6Eegvart1VjB4qsq9j67mJEipI0PwFjjlzAkHS25JTt
-         Wueg==
-X-Gm-Message-State: AOAM5333u0q38JyjnnTF4wDLd6TzB14V0wAVjljW0K9hkcTf08hw0s0V
-        GTSX+Rxdr8SNEC0oCK724Gvvv/7aV+nG+g7Zfq81yw==
-X-Google-Smtp-Source: ABdhPJz+edA3rfBGq6+sE0dd/GpZjCKzMT9YWEd2MXLCtUNmACjhuwcGQYYh8mKDUJ9HzpAZSfbOiI6hZOMRQGfbwjo=
-X-Received: by 2002:a05:6602:21cc:: with SMTP id c12mr5022461ioc.81.1601555094381;
- Thu, 01 Oct 2020 05:24:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ouf2Btjyrfu8hsFcX+gtYlfigwnxT6LfTNtyIop3GBc=;
+        b=WcviQ5SsYXywhDRHKUu9QVgRVDeZpSIscZBxawBN2l85JD2bR6SyhmDJHf01NAugSt
+         tvcOMkJjA6i3Yc6E9H+UUXQZ/DfORwIhNJ1d0dJhQo+P1Nl7tzKtaM5DLyXmIphZUzaF
+         Rwq9b6lPktf24r2QKhitB1H9Ir/Sur5UpPs2pjKhGhiR9APoTpKwsNPOBwrbrUHrLDwW
+         dX3bBGArEkNvwlMgObXpRG2uzqaWeDZ7T4dtZiYvEUl20XIN4Z0T0mx4Pz4174afBk+T
+         jdeI/UA911oERKjc+BVLETiH6tH+Ku2hBB4FMCxzsFCTbawqCFOvvAe3in12LyZHkIm5
+         a4sQ==
+X-Gm-Message-State: AOAM530kqUg1l0NjL568Ui4+cu6BcAN/uYFSnhbRySwQoPbI6PICxDcs
+        jmLsL/8trY+usgdcEYhqL0Y=
+X-Google-Smtp-Source: ABdhPJxe+iLicMnfTPWlWjlRFAFHdqc2Xz6AwEGS5yjnoYV11M4Hi9lSXBxqapocUcsLDxuimEqxWw==
+X-Received: by 2002:a17:90b:e01:: with SMTP id ge1mr6582136pjb.187.1601555272157;
+        Thu, 01 Oct 2020 05:27:52 -0700 (PDT)
+Received: from varodek.localdomain ([171.61.143.130])
+        by smtp.gmail.com with ESMTPSA id m13sm5695199pjl.45.2020.10.01.05.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 05:27:51 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        John Garry <john.garry@huawei.com>,
+        Don Brace <don.brace@microsemi.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
+        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
+Subject: [PATCH v3 01/28] scsi: megaraid_sas: Drop PCI wakeup calls from .resume
+Date:   Thu,  1 Oct 2020 17:54:44 +0530
+Message-Id: <20201001122511.1075420-2-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
+References: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-References: <20201001012810.4172-1-scott.branden@broadcom.com> <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
-In-Reply-To: <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
-From:   Olof Johansson <olof@lixom.net>
-Date:   Thu, 1 Oct 2020 14:24:43 +0200
-Message-ID: <CAOesGMjoCw9fP+z_2Cc=jUrFc2GA8DEErBZWpTsFbibPZFQzkg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/15] Add Broadcom VK driver
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Broadcom Kernel Feedback List 
-        <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The driver calls pci_enable_wake(...., false) in megasas_resume(), and
+there is no corresponding pci_enable_wake(...., true) in megasas_suspend().
+Either it should do enable-wake the device in .suspend() or should not
+invoke pci_enable_wake() at all.
 
-On Thu, Oct 1, 2020 at 4:38 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 9/30/2020 6:27 PM, Scott Branden wrote:
-> > This patch series drops previous patches in [1]
-> > that were incorporated by Kees Cook into patch series
-> > "Introduce partial kernel_read_file() support" [2].
-> >
-> > Remaining patches are contained in this series to add Broadcom VK driver.
-> > (which depends on request_firmware_into_buf API addition in
-> > other patch series [2] being applied first).
-> >
-> > Please note this patch series will not compile without [2].
-> >
-> > [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
-> > [2] https://lore.kernel.org/lkml/20200729175845.1745471-1-keescook@chromium.org/
->
-> Disclaimer: I am well aware that it is the complete wild west right now
-> as far as accelerators go and that every vendor (that I happen to work
-> for, just not in the same group as Scott) is just seeking to get their
-> drivers included upstream and hopefully for good reasons.
+Concluding that this driver doesn't support enable-wake and PCI core calls
+pci_enable_wake(pci_dev, PCI_D0, false) during resume, drop it from
+megasas_resume().
 
-I'm not sure there are ever bad reasons to get code upstreamed?
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/scsi/megaraid/megaraid_sas_base.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I've mentioned this before, but until we see the code and
-implementations we can guess where the likely commonality is, but
-we'll always miss some of it and overdesign other parts of it. The
-path of allowing some entropy to later be refactored and made common
-is something we've done pretty much everywhere, and it's an approach
-that's been proven to work. While those who have already taken that
-journey think it's "just a matter of jumping to the end state and just
-do things the way they did in the end" is shortsighted: They're not at
-a static endpoint and futureproof solution themselves. Some of these
-things just need to play out naturally over time.
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 00668335c2af..93ade9915ec0 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7614,7 +7614,6 @@ megasas_resume(struct pci_dev *pdev)
+ 
+ 	host = instance->host;
+ 	pci_set_power_state(pdev, PCI_D0);
+-	pci_enable_wake(pdev, PCI_D0, 0);
+ 	pci_restore_state(pdev);
+ 
+ 	dev_info(&pdev->dev, "%s is called\n", __func__);
+-- 
+2.28.0
 
-Luckily, most kernel-facing interfaces are fairly simple and sit as
-isolated drivers today, so it doesn't add maintainer burden across the
-rest of the kernel so the cost of letting some of this code in isn't
-huge. For a few things such as the hwmon and tty aspects it makes
-sense to integrate better just as you suggested, but the "subdrivers"
-for that are fairly simple and don't add a lot of dependencies on
-intricate or complex subsystem features.
-
-Some devices, such as Habana's latest one, is looking at more complex
-integrations with other subsystems (RDMA/networking), and there's
-plenty of discussion going on there.
-
->  From a cursory look however, it sounds like there could be a little
-> better re-utilization of standards, standard framework and interfaces:
-
-I think most of these points are valid, but also not dealbreakers.
-I'll add my opinions on a couple of them below.
-
-> - about 2/3 of your sysfs attributes should incline you to implement a
-> HWMON device, not a complicated one, but anything that indicates
-> current, power, temperature, alerts etc. should be considered
-
-This likely makes sense, and hopefully isn't too much work to move.
-Just like with TTY below, if it needs more time it might make sense to
-take it out of this patchset and follow up with it, since it's useful
-but not strictly required functionality for the rest of the
-driver/device.
-
-> - cannot the firmware loading be supported over remoteproc somehow?
-
-remoteproc is really useful for devices living in a shared SoC,
-needing memory carveout, and run control of the coprocessor. In this
-case the programming model is different, there's a normal/regular PCIe
-host/device relationship and the process of loading firmware onto a
-device is something we do in lots of drivers without using remoteproc.
-I don't think we need to bring that framework into these kind of
-drivers, unless there are tighter coupling between the host/device to
-consider for some reason.
-
-> - could not the TTY interface be using virtio or an existing UART?
-
-hvc is super convenient to integrate with since all you need is a
-getchar and putchar implementation, but the others would work as well.
-I don't have a strong opinion on path forward on this, and if TTY ends
-up holding up the rest of the driver it might make sense to leave that
-piece out and merge the rest. I'm not sure we're at that junction
-quite yet though?
-
-> - what is the format of the message over BAR2 that you expose in patch 13?
->
-> Is there a reference user-space implementation that you can link to this
-> patch submission in case people are curious?
-
-
--Olof
