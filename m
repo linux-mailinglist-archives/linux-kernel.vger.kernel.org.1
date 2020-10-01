@@ -2,240 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1C42809D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EACA2809D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 00:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733025AbgJAWAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 18:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
+        id S1733078AbgJAWCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 18:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgJAWAZ (ORCPT
+        with ESMTP id S1726731AbgJAWCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 18:00:25 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4AC0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:00:25 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x22so5942547pfo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:00:25 -0700 (PDT)
+        Thu, 1 Oct 2020 18:02:42 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E108C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 15:02:42 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id n16so1047153ilm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 15:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=atishpatra.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hBBalclCDJxdO5s6VuYFGVKLPJcYbuOqTzhejbkPQcI=;
-        b=ZSGA97mf3/bTBsC/kFveUTBgIZsDSEXf0/OtKXykBVqXc2emaP1iAlu9qtt/6J4zmX
-         308BktuEfwQDYGsxqNfHCplKcPwcIrEaer9xuV7YaVg7o2ypjKo65cbow7HXmV8PfkdE
-         7MFepRB139JwRbGKIG/zH9mp1x8QWvM/kYfZGmtgaieax6vC3E2Lzxnv8BDOkn7pZ4Py
-         fUJf/GvaEd/wrjC0odghkPB57IhdKdHrE1zpTeXvtHcsIxHgOECRIRn2cud7If9gNj9U
-         GPNIr+qqoPsYEiryMiZ+ziiUx3AP8RATR0ozTZJkDWTPGDBCY71GoGnc1CP58NgkRgew
-         pP5A==
+        bh=7L7K8C/1mZIVHV/yJEj8lKlJqviWDQigWaxJX7/IdHc=;
+        b=r37dZxzJZDMlxnOGWQ0REeugaWE+DNvx1t/53cR5oKf5wiit+zmGKwz9MHRMnSeMyb
+         QByHvKKhmIAGF67naFtzmx0LTOB4BB6UI0xerTngQw7Sq6Ctegj+pvcjneDRLq4Xwfyi
+         w5H5UGpFcnggm/C7BJpE2W0ynaK9YDn7RIwcs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hBBalclCDJxdO5s6VuYFGVKLPJcYbuOqTzhejbkPQcI=;
-        b=sDYuDSe3ajy/X/mcJA45YW2fHuuFIFpS0go4JIHDNF+iUE0JENq+nto6ht+C84/a54
-         KFWeeLgvJwA/b49zX2lSNP7QdmozH4lzzVo1MO6kLL8pWi6WVmIE3RDq8nJHPWOHO3SX
-         8pkdJJD/DIkmjAxkhoqpwX/W6LADqThugOiPL7VdojHNSyZwyM5+ZRutAQrtrbqhDa4x
-         /MXEfZlBwCKoQyUG38j38ZmM5XaAcQbRYcL77nZ36bSryZgMQ8KmbjaaAf20ve3VkWCW
-         DDOqMNddl+/HLmJUqxYyDiN/7NiFAOAPre1gOCjyz141vDV5MbDsfbGGY8+G5uxnzRwB
-         TF8w==
-X-Gm-Message-State: AOAM5332a+iIuAt/Lb4EvODzdxibUDxJF1Ljk52MMqN6yUSfT19Skkl7
-        VPaNpfrtDE5kqhzF/2L+9YpmPBkg3Q+gMR8Jx/bM7A==
-X-Google-Smtp-Source: ABdhPJwXIi35oKWF/1yY/nzbZoT+YB18KEgBa7q+MlJQpAVqIgJHJ0wsqOMO7nGDS7QMv0BQPA5s1ZP9SODbglyi8Yo=
-X-Received: by 2002:a63:5d07:: with SMTP id r7mr7817410pgb.440.1601589624408;
- Thu, 01 Oct 2020 15:00:24 -0700 (PDT)
+        bh=7L7K8C/1mZIVHV/yJEj8lKlJqviWDQigWaxJX7/IdHc=;
+        b=ERWb/OTiT5EVrAr5eSmWqybgzk4PnKcKDNb4gZD6q9Lp4f/hIwZpjMk4RwT6b8JW5A
+         cEgkesUSqwG3CpnH2aitBiDo0MbnA5AJYxTsd0Z+elRTJ4mKSnx+XZTVWQWqYl/31vPS
+         zrEtEPJOPiRTZdNK20I2Fu4tf2u4QXsyNW5ogww6Rwwm3AHPTkmlIfkB+Gf68TY+SVMZ
+         b/zfp+RB6Xlyw1fkUWsMDuN6Q7wOZF79Yji0GFTSv4dqe/mkv2YpGEZLrvrgVuquH6UO
+         +tAo/5jYfGrDZqg3HArPsdtaYsOrlkUxtP3asb8VuzSNX8sifC8ps0g8wzXYcobuvYJ4
+         DdRg==
+X-Gm-Message-State: AOAM531GuHxrmq5XfWfSbY/QA0a/+GbKJyv+58/14Yb73oM/IjhYHOVd
+        VDoMfO7kXhTTQ3zaQU7tsJAtFgTgFrxjtUzO9kgJ
+X-Google-Smtp-Source: ABdhPJy+h7aS2d6ce7vQoMadNRVQ5lCvPyOl9bI6y3UkxMXpJ0ZfXX8vRMMSY43BXQ1oBWzcQfG7mFy2xUCI5cY56HA=
+X-Received: by 2002:a92:ad11:: with SMTP id w17mr4445282ilh.77.1601589761726;
+ Thu, 01 Oct 2020 15:02:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600987622.git.andreyknvl@google.com> <a9229404628ab379bc74010125333f110771d4b6.1600987622.git.andreyknvl@google.com>
- <20201001180329.GV4162920@elver.google.com>
-In-Reply-To: <20201001180329.GV4162920@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 2 Oct 2020 00:00:13 +0200
-Message-ID: <CAAeHK+wiR0o2uSqmvuoCbVQS6ZvcLVpGP-+OAC_K-6wMDQ3xiQ@mail.gmail.com>
-Subject: Re: [PATCH v3 37/39] kasan, slub: reset tags when accessing metadata
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+References: <20200918201140.3172284-1-atish.patra@wdc.com> <20200921164947.000048e1@Huawei.com>
+ <CAOnJCU+mg13P609kut2cK9igmyepOvDc4kU-EzXsdjde7D_RpQ@mail.gmail.com>
+ <20200922122912.00004bcb@Huawei.com> <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
+In-Reply-To: <CAOnJCULdRR1JOkZq6aHW3Xv6ZHo8edOAU-3gf1zxNqQdioek9w@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 1 Oct 2020 15:02:30 -0700
+Message-ID: <CAOnJCUKkJrqAfnmeSKXiVKMZUucydEQ63mpFRpuBQHX7-joJkg@mail.gmail.com>
+Subject: Re: [RFT PATCH v3 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     David Hildenbrand <david@redhat.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Mike Rapoport <rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 8:03 PM <elver@google.com> wrote:
+On Tue, Sep 22, 2020 at 2:04 PM Atish Patra <atishp@atishpatra.org> wrote:
 >
-> On Fri, Sep 25, 2020 at 12:50AM +0200, Andrey Konovalov wrote:
-> > SLUB allocator accesses metadata for slab objects, that may lie
-> > out-of-bounds of the object itself, or be accessed when an object is freed.
-> > Such accesses trigger tag faults and lead to false-positive reports with
-> > hardware tag-based KASAN.
+> On Tue, Sep 22, 2020 at 4:30 AM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
 > >
-> > Software KASAN modes disable instrumentation for allocator code via
-> > KASAN_SANITIZE Makefile macro, and rely on kasan_enable/disable_current()
-> > annotations which are used to ignore KASAN reports.
+> > On Mon, 21 Sep 2020 17:08:32 -0700
+> > Atish Patra <atishp@atishpatra.org> wrote:
 > >
-> > With hardware tag-based KASAN neither of those options are available, as
-> > it doesn't use compiler instrumetation, no tag faults are ignored, and MTE
-> > is disabled after the first one.
+> > > On Mon, Sep 21, 2020 at 8:51 AM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote:
+> > > >
+> > > > On Fri, 18 Sep 2020 13:11:35 -0700
+> > > > Atish Patra <atish.patra@wdc.com> wrote:
+> > > >
+> > > > > This series attempts to move the ARM64 numa implementation to common
+> > > > > code so that RISC-V can leverage that as well instead of reimplementing
+> > > > > it again.
+> > > > >
+> > > > > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> > > > > modified to reuse the common implementation to avoid duplication.
+> > > > >
+> > > > > [1] https://lkml.org/lkml/2020/1/10/233
+> > > > >
+> > > > > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> > > > > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> > > > > This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> > > > > as I am not sure if somebody from ARM64 community or Greg should take up the
+> > > > > maintainership. Ganapatrao was the original author of the arm64 version.
+> > > > > I would be happy to update that in the next revision once it is decided.
+> > > >
+> > >
+> > > Any thoughts on the maintenanership of this code ?
 > >
-> > Instead, reset tags when accessing metadata.
+> > Currently it is a trivial enough bit of code, I'd not be too worried
+> > as long as it doesn't fall through the cracks.  Changes that directory are going
+> > to need a GregKH Ack so unlikely anything will get missed.
 > >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 >
-> Acked-by: Marco Elver <elver@google.com>
+> Yeah. I am fine with the current structure. I just wanted to confirm that
+> everybody is on board with that.
 >
-> I assume you have tested with the various SLUB debug options,
-
-Yes.
-
-> as well as
-> things like memory initialization etc?
-
-Will test before sending v4.
-
-Thanks!
-
+> > If you feel a specific entry is needed in MAINTAINERS go for it.
+> > Feel free to stick me down as a reviewer and I'll keep an eye on
+> > it from ARM64 side of things.
+> >
 >
-> > ---
-> > Change-Id: I39f3c4d4f29299d4fbbda039bedf230db1c746fb
-> > ---
-> >  mm/page_poison.c |  2 +-
-> >  mm/slub.c        | 25 ++++++++++++++-----------
-> >  2 files changed, 15 insertions(+), 12 deletions(-)
+> I will not add any specific entry in MAINTAINERS unless somebody
+> complains about it.
+>
+>
+> > Thanks,
 > >
-> > diff --git a/mm/page_poison.c b/mm/page_poison.c
-> > index 34b9181ee5d1..d90d342a391f 100644
-> > --- a/mm/page_poison.c
-> > +++ b/mm/page_poison.c
-> > @@ -43,7 +43,7 @@ static void poison_page(struct page *page)
+> > Jonathan
 > >
-> >       /* KASAN still think the page is in-use, so skip it. */
-> >       kasan_disable_current();
-> > -     memset(addr, PAGE_POISON, PAGE_SIZE);
-> > +     memset(kasan_reset_tag(addr), PAGE_POISON, PAGE_SIZE);
-> >       kasan_enable_current();
-> >       kunmap_atomic(addr);
-> >  }
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 68c02b2eecd9..f5b4bef3cd6c 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -249,7 +249,7 @@ static inline void *freelist_ptr(const struct kmem_cache *s, void *ptr,
-> >  {
-> >  #ifdef CONFIG_SLAB_FREELIST_HARDENED
-> >       /*
-> > -      * When CONFIG_KASAN_SW_TAGS is enabled, ptr_addr might be tagged.
-> > +      * When CONFIG_KASAN_SW/HW_TAGS is enabled, ptr_addr might be tagged.
-> >        * Normally, this doesn't cause any issues, as both set_freepointer()
-> >        * and get_freepointer() are called with a pointer with the same tag.
-> >        * However, there are some issues with CONFIG_SLUB_DEBUG code. For
-> > @@ -275,6 +275,7 @@ static inline void *freelist_dereference(const struct kmem_cache *s,
 > >
-> >  static inline void *get_freepointer(struct kmem_cache *s, void *object)
-> >  {
-> > +     object = kasan_reset_tag(object);
-> >       return freelist_dereference(s, object + s->offset);
-> >  }
+> > >
+> > > > Was fairly sure this set was a noop on arm64 ACPI systems, but ran a quick
+> > > > sanity check on a 2 socket kunpeng920 and everything came up as normal
+> > > > (4 nodes, around 250G a node)
+> > > >
+> > > > Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > For patches 1 and 2.  Doesn't seem relevant to the rest :)
+> > > >
+> > >
+> > > Thanks a lot!
+> > >
+> > > > >
+> > > > > # numactl --hardware
+> > > > > available: 2 nodes (0-1)
+> > > > > node 0 cpus: 0 1 2 3
+> > > > > node 0 size: 486 MB
+> > > > > node 0 free: 470 MB
+> > > > > node 1 cpus: 4 5 6 7
+> > > > > node 1 size: 424 MB
+> > > > > node 1 free: 408 MB
+> > > > > node distances:
+> > > > > node   0   1
+> > > > >   0:  10  20
+> > > > >   1:  20  10
+> > > > > # numactl -show
+> > > > > policy: default
+> > > > > preferred node: current
+> > > > > physcpubind: 0 1 2 3 4 5 6 7
+> > > > > cpubind: 0 1
+> > > > > nodebind: 0 1
+> > > > > membind: 0 1
+> > > > >
+> > > > > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> > > > > to test the patches in Qemu and 2 socket OmniXtend FPGA.
+> > > > >
+> > > > > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+> > > > >
+> > > > > The patches are also available at
+> > > > >
+> > > > > https://github.com/atishp04/linux/tree/5.10_numa_unified_v3
+> > > > >
+> > > > > There may be some minor conflicts with Mike's cleanup series [2] depending on the
+> > > > > order in which these two series are being accepted. I can rebase on top his series
+> > > > > if required.
+> > > > >
+> > > > > [2] https://lkml.org/lkml/2020/8/18/754
+> > > > >
+> > > > > Changes from v2->v3:
+> > > > > 1. Added Acked-by/Reviewed-by tags.
+> > > > > 2. Replaced asm/acpi.h with linux/acpi.h
+> > > > > 3. Defined arch_acpi_numa_init as static.
+> > > > >
+> > > > > Changes from v1->v2:
+> > > > > 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+> > > > > 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+> > > > > 3. Fixed few typos.
+> > > > >
+> > > > > Atish Patra (4):
+> > > > > numa: Move numa implementation to common code
+> > > > > arm64, numa: Change the numa init functions name to be generic
+> > > > > riscv: Separate memory init from paging init
+> > > > > riscv: Add numa support for riscv64 platform
+> > > > >
+> > > > > Greentime Hu (1):
+> > > > > riscv: Add support pte_protnone and pmd_protnone if
+> > > > > CONFIG_NUMA_BALANCING
+> > > > >
+> > > > > arch/arm64/Kconfig                            |  1 +
+> > > > > arch/arm64/include/asm/numa.h                 | 45 +----------------
+> > > > > arch/arm64/kernel/acpi_numa.c                 | 13 -----
+> > > > > arch/arm64/mm/Makefile                        |  1 -
+> > > > > arch/arm64/mm/init.c                          |  4 +-
+> > > > > arch/riscv/Kconfig                            | 31 +++++++++++-
+> > > > > arch/riscv/include/asm/mmzone.h               | 13 +++++
+> > > > > arch/riscv/include/asm/numa.h                 |  8 +++
+> > > > > arch/riscv/include/asm/pci.h                  | 14 ++++++
+> > > > > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> > > > > arch/riscv/kernel/setup.c                     | 11 ++++-
+> > > > > arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> > > > > arch/riscv/mm/init.c                          | 10 +++-
+> > > > > drivers/base/Kconfig                          |  6 +++
+> > > > > drivers/base/Makefile                         |  1 +
+> > > > > .../mm/numa.c => drivers/base/arch_numa.c     | 31 ++++++++++--
+> > > > > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+> > > > > 17 files changed, 201 insertions(+), 70 deletions(-)
+> > > > > create mode 100644 arch/riscv/include/asm/mmzone.h
+> > > > > create mode 100644 arch/riscv/include/asm/numa.h
+> > > > > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+> > > > > create mode 100644 include/asm-generic/numa.h
+> > > > >
+> > > > > --
+> > > > > 2.25.1
+> > > > >
+> > > >
+> > > >
+> > > >
+> > > > _______________________________________________
+> > > > linux-riscv mailing list
+> > > > linux-riscv@lists.infradead.org
+> > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > >
+> > >
+> > >
 > >
-> > @@ -304,6 +305,7 @@ static inline void set_freepointer(struct kmem_cache *s, void *object, void *fp)
-> >       BUG_ON(object == fp); /* naive detection of double free or corruption */
-> >  #endif
 > >
-> > +     freeptr_addr = (unsigned long)kasan_reset_tag((void *)freeptr_addr);
-> >       *(void **)freeptr_addr = freelist_ptr(s, fp, freeptr_addr);
-> >  }
-> >
-> > @@ -538,8 +540,8 @@ static void print_section(char *level, char *text, u8 *addr,
-> >                         unsigned int length)
-> >  {
-> >       metadata_access_enable();
-> > -     print_hex_dump(level, text, DUMP_PREFIX_ADDRESS, 16, 1, addr,
-> > -                     length, 1);
-> > +     print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
-> > +                     16, 1, addr, length, 1);
-> >       metadata_access_disable();
-> >  }
-> >
-> > @@ -570,7 +572,7 @@ static struct track *get_track(struct kmem_cache *s, void *object,
-> >
-> >       p = object + get_info_end(s);
-> >
-> > -     return p + alloc;
-> > +     return kasan_reset_tag(p + alloc);
-> >  }
-> >
-> >  static void set_track(struct kmem_cache *s, void *object,
-> > @@ -583,7 +585,8 @@ static void set_track(struct kmem_cache *s, void *object,
-> >               unsigned int nr_entries;
-> >
-> >               metadata_access_enable();
-> > -             nr_entries = stack_trace_save(p->addrs, TRACK_ADDRS_COUNT, 3);
-> > +             nr_entries = stack_trace_save(kasan_reset_tag(p->addrs),
-> > +                                           TRACK_ADDRS_COUNT, 3);
-> >               metadata_access_disable();
-> >
-> >               if (nr_entries < TRACK_ADDRS_COUNT)
-> > @@ -747,7 +750,7 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
-> >
-> >  static void init_object(struct kmem_cache *s, void *object, u8 val)
-> >  {
-> > -     u8 *p = object;
-> > +     u8 *p = kasan_reset_tag(object);
-> >
-> >       if (s->flags & SLAB_RED_ZONE)
-> >               memset(p - s->red_left_pad, val, s->red_left_pad);
-> > @@ -777,7 +780,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
-> >       u8 *addr = page_address(page);
-> >
-> >       metadata_access_enable();
-> > -     fault = memchr_inv(start, value, bytes);
-> > +     fault = memchr_inv(kasan_reset_tag(start), value, bytes);
-> >       metadata_access_disable();
-> >       if (!fault)
-> >               return 1;
-> > @@ -873,7 +876,7 @@ static int slab_pad_check(struct kmem_cache *s, struct page *page)
-> >
-> >       pad = end - remainder;
-> >       metadata_access_enable();
-> > -     fault = memchr_inv(pad, POISON_INUSE, remainder);
-> > +     fault = memchr_inv(kasan_reset_tag(pad), POISON_INUSE, remainder);
-> >       metadata_access_disable();
-> >       if (!fault)
-> >               return 1;
-> > @@ -1118,7 +1121,7 @@ void setup_page_debug(struct kmem_cache *s, struct page *page, void *addr)
-> >               return;
-> >
-> >       metadata_access_enable();
-> > -     memset(addr, POISON_INUSE, page_size(page));
-> > +     memset(kasan_reset_tag(addr), POISON_INUSE, page_size(page));
-> >       metadata_access_disable();
-> >  }
-> >
-> > @@ -2884,10 +2887,10 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
-> >               stat(s, ALLOC_FASTPATH);
-> >       }
-> >
-> > -     maybe_wipe_obj_freeptr(s, object);
-> > +     maybe_wipe_obj_freeptr(s, kasan_reset_tag(object));
-> >
-> >       if (unlikely(slab_want_init_on_alloc(gfpflags, s)) && object)
-> > -             memset(object, 0, s->object_size);
-> > +             memset(kasan_reset_tag(object), 0, s->object_size);
-> >
-> >       slab_post_alloc_hook(s, objcg, gfpflags, 1, &object);
-> >
-> > --
-> > 2.28.0.681.g6f77f65b4e-goog
-> >
+>
+>
+> --
+> Regards,
+> Atish
+
+I am planning to send a v4 with a small fix Jonathan pointed out.
+Any more comments/concerns that I can address before that?
+Otherwise, can we get it queued for the next merge window?
+
+-- 
+Regards,
+Atish
