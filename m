@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313F727FC36
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AF927FC3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731749AbgJAJHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:07:24 -0400
-Received: from mga05.intel.com ([192.55.52.43]:17532 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbgJAJHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:07:24 -0400
-IronPort-SDR: eJgSfV6cm6EhjIjjLHH6HVrqLAiMom05acmijyT5nOo1XBOAnU444D9GI5xldZaEOU24Khqngo
- z3th1fNhTXwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="247406051"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="247406051"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 02:07:23 -0700
-IronPort-SDR: LHJfdaouM04KujBSY6KQ55RXm2gWd0ZNryOEbWrYQOsPPMckGkmnD790J5IXK8EMHXf53CDT9k
- P+rsss8dSYVQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="458048812"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga004.jf.intel.com with ESMTP; 01 Oct 2020 02:07:20 -0700
-Subject: Re: [PATCH v3] mmc: core: don't set limits.discard_granularity as 0
-To:     Vicente Bergas <vicencb@gmail.com>, Coly Li <colyli@suse.de>
-Cc:     linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-References: <20201001071824.24995-1-colyli@suse.de>
- <CAAMcf8Ao8Go7GdB2XFXAHsWrcxb0VqtDRpHReOGTsjegq2XP0Q@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <ebd42dfe-d39c-5c13-bbd9-1c6463d73ff0@intel.com>
-Date:   Thu, 1 Oct 2020 12:06:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731676AbgJAJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:08:41 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2937 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725921AbgJAJIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:08:41 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id DCB6EF852BA1783EFB83;
+        Thu,  1 Oct 2020 10:08:39 +0100 (IST)
+Received: from localhost (10.52.127.250) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 1 Oct 2020
+ 10:08:39 +0100
+Date:   Thu, 1 Oct 2020 10:06:57 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>
+CC:     <bhelgaas@google.com>, <rafael.j.wysocki@intel.com>,
+        <ashok.raj@intel.com>, <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@intel.com>, <qiuxu.zhuo@intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v7 05/13] PCI/ERR: Use "bridge" for clarity in
+ pcie_do_recovery()
+Message-ID: <20201001090657.00003fe4@Huawei.com>
+In-Reply-To: <20200930215820.1113353-6-seanvk.dev@oregontracks.org>
+References: <20200930215820.1113353-1-seanvk.dev@oregontracks.org>
+        <20200930215820.1113353-6-seanvk.dev@oregontracks.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <CAAMcf8Ao8Go7GdB2XFXAHsWrcxb0VqtDRpHReOGTsjegq2XP0Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.250]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/20 11:38 am, Vicente Bergas wrote:
-> On Thu, Oct 1, 2020 at 9:18 AM Coly Li <colyli@suse.de> wrote:
->>
->> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
->> might be set as 0 (when card->pref_erase > max_discard) while the mmc
->> device still declares to support discard operation. This is buggy and
->> triggered the following kernel warning message,
->>
->> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
->> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
->> Hardware name: Google Kevin (DT)
->> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
->> pc : __blkdev_issue_discard+0x200/0x294
->> lr : __blkdev_issue_discard+0x54/0x294
->> sp : ffff800011dd3b10
->> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
->> __blkdev_issue_discard+0x200/0x294
->> __submit_discard_cmd+0x128/0x374
->> __issue_discard_cmd_orderly+0x188/0x244
->> __issue_discard_cmd+0x2e8/0x33c
->> issue_discard_thread+0xe8/0x2f0
->> kthread+0x11c/0x120
->> ret_from_fork+0x10/0x1c
->> ---[ end trace e4c8023d33dfe77a ]---
->>
->> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
->> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
->> complain from __blkdev_issue_discard() for the improper value of discard
->> granularity.
->>
->> This issue is exposed after commit b35fd7422c2f ("block: check queue's
->> limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
->> is also added for the commit to make sure people won't miss this patch
->> after applying the change of __blkdev_issue_discard().
->>
->> Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
->> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
->> Reported-by: Vicente Bergas <vicencb@gmail.com>
-> 
-> Hi Coly, Adrian,
-> would you like me to reply with a tested-by?
-> before testing it: what are the chances of losing data?
+On Wed, 30 Sep 2020 14:58:12 -0700
+Sean V Kelley <seanvk.dev@oregontracks.org> wrote:
 
-Very low I would hope, but that is no reason not to have backups :-)
-
-> Regards,
->   Vicente.
+> From: Sean V Kelley <sean.v.kelley@intel.com>
 > 
->> Signed-off-by: Coly Li <colyli@suse.de>
->> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->> Cc: Ulf Hansson <ulf.hansson@linaro.org>
->> ---
->> Changelog,
->> v3, add Fixes tag for both commits.
->> v2, change commit id of the Fixes tag.
->> v1, initial version.
->>
->>  drivers/mmc/core/queue.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
->> index 6c022ef0f84d..350d0cc4ee62 100644
->> --- a/drivers/mmc/core/queue.c
->> +++ b/drivers/mmc/core/queue.c
->> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
->>         q->limits.discard_granularity = card->pref_erase << 9;
->>         /* granularity must not be greater than max. discard */
->>         if (card->pref_erase > max_discard)
->> -               q->limits.discard_granularity = 0;
->> +               q->limits.discard_granularity = SECTOR_SIZE;
->>         if (mmc_can_secure_erase_trim(card))
->>                 blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
->>  }
->> --
->> 2.26.2
->>
+> The term "dev" is being applied to root ports, switch
+> upstream ports, switch downstream ports, and the upstream
+> ports on endpoints. While endpoint upstream ports don't have
+> subordinate buses, a generic term such as "bridge" may be used
+
+This sentence is a bit confusing.  The bit before the comma
+seems only slightly connected. Perhaps 2 sentences?
+
+> for something with a subordinate bus. The current conditional
+> logic in pcie_do_recovery() would also benefit from some
+> simplification with use of pci_upstream_bridge() in place of
+> dev->bus->self. Reverse the pcie_do_recovery() conditional logic
+> and replace use of "dev" with "bridge" for greater clarity.
+> 
+> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/pci/pcie/err.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 950612342f1c..c6922c099c76 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -152,16 +152,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  {
+>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>  	struct pci_bus *bus;
+> +	struct pci_dev *bridge;
+> +	int type;
+>  
+>  	/*
+> -	 * Error recovery runs on all subordinates of the first downstream port.
+> -	 * If the downstream port detected the error, it is cleared at the end.
+> +	 * Error recovery runs on all subordinates of the first downstream
+> +	 * bridge. If the downstream bridge detected the error, it is
+> +	 * cleared at the end.
+>  	 */
+> -	if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	      pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
+> -		dev = dev->bus->self;
+> -	bus = dev->subordinate;
+> -
+> +	type = pci_pcie_type(dev);
+> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+> +	    type == PCI_EXP_TYPE_DOWNSTREAM)
+> +		bridge = dev;
+> +	else
+> +		bridge = pci_upstream_bridge(dev);
+> +
+> +	bus = bridge->subordinate;
+>  	pci_dbg(dev, "broadcast error_detected message\n");
+>  	if (state == pci_channel_io_frozen) {
+>  		pci_walk_bus(bus, report_frozen_detected, &status);
+
 
