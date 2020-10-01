@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857E9280870
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57768280843
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 22:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732952AbgJAU01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 16:26:27 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:59106 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgJAU0V (ORCPT
+        id S1732755AbgJAUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 16:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726606AbgJAUNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:26:21 -0400
-X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 16:26:21 EDT
-Date:   Thu, 1 Oct 2020 16:11:08 -0400
-From:   Rich Felker <dalias@aerifal.cx>
-To:     Petr Vorel <petr.vorel@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, musl@lists.openwall.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [musl] [PATCH 1/1] uapi: Don't include <linux/sysinfo.h> in
- <linux/kernel.h>
-Message-ID: <20201001201108.GR17637@brightrain.aerifal.cx>
-References: <20201001195231.17226-1-petr.vorel@gmail.com>
+        Thu, 1 Oct 2020 16:13:01 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD37C0613D0;
+        Thu,  1 Oct 2020 13:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wARecjB956+ZxxOybHVoSp1V90Wk6TWcZNLZvl0XKV0=; b=s20Lnrhne0qAxzh22PvIC5Pzw+
+        /IaZUvu+qUPaosWxAqAqpFagq8hRzawytGh59H2u0z/X7qsuQN3hYtrCY2VCbMbBECbfyu0hUj6tu
+        wgkEQjAeRpmop4fe2dKtewWtOuKxxOOi74o3rNXXAQrpEJUklRuxU+yHho32GwKDDGTNvgFGJ1UvI
+        ehleSjh5ctyNvUCbERr9OMj+Zy17Y9hmqJCpnC99MCYROJCVwadvJdFTOgKlkZCtUpLrAyP7axLQB
+        DVnVdFcy+QSNIW8bX6wI9pcQ+G1HWfB5Nz1ZX3G3b9nLz6qgl3iKhX8rsd+iaPqO0Azyf0Egc+A++
+        EuxzbRcA==;
+Received: from [2601:1c0:6280:3f0::863]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kO4wk-0007bv-Qt; Thu, 01 Oct 2020 20:12:59 +0000
+Subject: Re: linux-next: Tree for Oct 1 (drivers/mfd/simple-mfd-i2c.o)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+References: <20201001213929.241c1006@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0dca758e-1b61-a4cd-db12-2e2060f7cf60@infradead.org>
+Date:   Thu, 1 Oct 2020 13:12:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201001213929.241c1006@canb.auug.org.au>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001195231.17226-1-petr.vorel@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:52:31PM +0200, Petr Vorel wrote:
-> + update code where needed (include <linux/sysinfo.h> in code which
-> included <linux/kernel.h> only to get struct sysinfo or SI_LOAD_SHIFT).
+On 10/1/20 4:39 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> The reason is to avoid indirect <linux/sysinfo.h> include when using
-> some network headers: <linux/netlink.h> or others [1] ->
-> <linux/kernel.h> -> <linux/sysinfo.h>.
+> Changes since 20200930:
 > 
-> This indirect include causes redefinition of struct sysinfo when
-> included both <sys/sysinfo.h> and some of network headers:
-> 
-> In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
->                  from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
->                  from ../include/tst_netlink.h:14,
->                  from tst_crypto.c:13:
-> x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ‘struct sysinfo’
->  struct sysinfo {
->         ^~~~~~~
-> In file included from ../include/tst_safe_macros.h:15,
->                  from ../include/tst_test.h:93,
->                  from tst_crypto.c:11:
-> x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
-> 
-> [1] or <linux/sysctl.h>, <linux/ethtool.h>, <linux/mroute6.h>, <linux/ethtool.h>
-> 
-> Suggested-by: Rich Felker <dalias@aerifal.cx>
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> ---
-> Hi,
-> 
-> this looks to be long standing problem: python-psutil [2], iproute2 [3],
-> even for glibc in the past [4] and it tried to be solved before [5].
-> 
-> This will require glibc fix after:
 
-You can't do this; it breaks the existing contract with glibc. New
-kernel headers can't force a glibc upgrade. You just have to get rid
-of use of <linux/kernel.h> elsewhere in the uapi headers. It was a
-mistake that <linux/sysinfo.h> was ever separated out of
-<linux/kernel.h> since it didn't (and couldn't) fix the contract that
-<linux/kernel.h> exposes struct sysinfo (and that it's misnamed). But
-it's no big deal. This can all be fixed without any breakage anywhere
-just by not using it.
+on x86_64:
 
-Rich
+ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+simple-mfd-i2c.c:(.text+0x48): undefined reference to `__devm_regmap_init_i2c'
+ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_init':
+simple-mfd-i2c.c:(.init.text+0x14): undefined reference to `i2c_register_driver'
+ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_exit':
+simple-mfd-i2c.c:(.exit.text+0xd): undefined reference to `i2c_del_driver'
+
+
+CONFIG_I2C=m
+CONFIG_MFD_SIMPLE_MFD_I2C=y
+CONFIG_MFD_SL28CPLD=y
+
+
+Is linux-next missing the source code for CONFIG_MFD_SL28CPLD?
+
+
+The build error is caused by:
+
+config MFD_SL28CPLD
+	tristate "Kontron sl28cpld Board Management Controller"
+	select MFD_SIMPLE_MFD_I2C
+
+that "select" when "depends on I2C" is absent/missing.
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
