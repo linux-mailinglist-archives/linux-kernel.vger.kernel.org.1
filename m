@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74872807BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FEE2807C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 21:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732884AbgJAT1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 15:27:12 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:58525 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729990AbgJAT1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 15:27:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601580431; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=zliNTwJnatixXoxg1jg+IQLMPUYmQap7/igTDtXYrJk=;
- b=kR94ktZV19z1jqzoTjQug6/IARmD6xd6XJ5lQTi2UcbmykgyXTBaXtswcYgxnydVwlQLiWgu
- zsKCw0m3OhnOm2ofhf4456XqK7B7eeIRfjAoa6H/eWVvL89dIonXnk3Zai/lbkfstBcv+yQT
- 214B/Bx1hy7TfSpocZLYBtKi9+s=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f762d85726b122f31fb1709 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 01 Oct 2020 19:27:01
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9085EC433CB; Thu,  1 Oct 2020 19:27:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF51FC433CA;
-        Thu,  1 Oct 2020 19:26:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DF51FC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1730136AbgJATaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 15:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729993AbgJATaP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 15:30:15 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F334FC0613D0;
+        Thu,  1 Oct 2020 12:30:14 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kO4H8-00A0dq-BS; Thu, 01 Oct 2020 19:29:58 +0000
+Date:   Thu, 1 Oct 2020 20:29:58 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201001192958.GH3421308@ZenIV.linux.org.uk>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001163646.GG3421308@ZenIV.linux.org.uk>
+ <20201001183925.GA259470@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] ath11k: remove auto_start from channel config struct
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1601369799-22328-1-git-send-email-kvalo@codeaurora.org>
-References: <1601369799-22328-1-git-send-email-kvalo@codeaurora.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        sfr@canb.auug.org.au, govinds@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, davem@davemloft.net
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201001192700.9085EC433CB@smtp.codeaurora.org>
-Date:   Thu,  1 Oct 2020 19:27:00 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001183925.GA259470@rowland.harvard.edu>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> wrote:
+On Thu, Oct 01, 2020 at 02:39:25PM -0400, Alan Stern wrote:
 
-> Recent change in MHI bus removed the option to auto start the channels
-> during MHI driver probe. The channel will only be started when the MHI
-> client driver like QRTR gets probed. So, remove the option from ath11k
-> channel config struct.
+> The problem with a plain write is that it isn't guaranteed to be atomic 
+> in any sense.  In principle, the compiler could generate code for CPU1 
+> which would write 0 to V->A more than once.
 > 
-> Fixes: 1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+> Although I strongly doubt that any real compiler would actually do this, 
+> the memory model does allow for it, out of an overabundance of caution.  
 
-To avoid breaking ath11k we decided to postpone this change after the
-merge window, it's a lot easier to deal at that time.
+Point...  OK, not a problem - actually there will be WRITE_ONCE() for other
+reasons; the real-life (pseudo-)code is
+        spin_lock(&file->f_lock);
+        to_free = NULL;
+        head = file->f_ep;
+        if (head->first == &epitem->fllink && epitem->fllink.next == NULL) {
+		/* the set will go empty */
+                file->f_ep = NULL;
+                if (!is_file_epoll(file)) {
+			/*
+			 * not embedded into struct eventpoll; we want it
+			 * freed unless it's on the check list, in which
+			 * case we leave it for reverse path check to free.
+			 */
+                        v = container_of(head, struct ep_head, epitems);
+                        if (!smp_load_acquire(&v->next))
+                                to_free = v;
+                }
+        }
+        hlist_del_rcu(&epitem->fllink);
+        spin_unlock(file->f_lock);
+        kfree(to_free);
+and hlist_del_rcu() will use WRITE_ONCE() to store the updated forward links.
 
-Patch set to Changes Requested.
-
--- 
-https://patchwork.kernel.org/patch/11805307/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+That goes into ep_remove() and CPU1 side of that thing is the final (set-emptying)
+call.  CPU2 side is the list traversal step in reverse_path_check() and
+in clear_tfile_check_list():
+	// under rcu_read_lock()
+        to_free = head;
+        epitem = rcu_dereference(hlist_first_rcu(&head->epitems));
+        if (epitem) {
+                spin_lock(&epitem->file->f_lock);
+                if (!hlist_empty(&head->epitems))
+                        to_free = NULL;
+                head->next = NULL;
+                spin_unlock(&epitem->file->f_lock);
+        }
+        kfree(to_free);
