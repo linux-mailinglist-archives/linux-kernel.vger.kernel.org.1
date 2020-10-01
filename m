@@ -2,206 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62E827FF15
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF1127FEEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732356AbgJAMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        id S1732086AbgJAM0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731987AbgJAMa1 (ORCPT
+        with ESMTP id S1731888AbgJAM0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:30:27 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5CDC0613D0;
-        Thu,  1 Oct 2020 05:30:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k13so4370654pfg.1;
-        Thu, 01 Oct 2020 05:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7rgufBpw93V8mG4rKsbALHUTh6KZISs0E2Oa73Zj8nQ=;
-        b=IQQEPTYsZAyFdCQMzgShYX9XD3kMKT7z9vH7pMuIDi6Ei0TkMv+wM9MJedgCBQbbaB
-         AbqCwrP7+a/XnWVlL/bj88wlr2pl/WQ2kmUOhQrPDFuNLVyGhlpxd/7/7fzjfNx2phEv
-         ysK+Cu4vORuD71ieEnpxFyTzLncFMamyvDCiFiLTzz64AW72X8BbzJrkd7hY+rds91nC
-         x5U5aj2F4s2F3wpyvYQT/v0ghNWIiyVNFkCKqXTY9pDxZ39B3bu9R3+zAWNr5/QBSiDK
-         vG+KTSWYYxn2mUGxlQpxrCOyuVFxlczOjVM/GustJurog32TRjcnlxPUJG30C3/IDEES
-         9UFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7rgufBpw93V8mG4rKsbALHUTh6KZISs0E2Oa73Zj8nQ=;
-        b=G8sE065Lz24U9737imTu5gSUOMMF0uQ1psg1+YIkvH9mp5NtiEa6tx4h/xFdCJOBQc
-         KXAvAZRLCFzflyXE/DC9m+vWTaWsI+rDixfZiDuwyy+F3zyXUMocfl4xvjQ7uEuqlpFV
-         x4/8GDr+12p6YXxOMCvzQBJZCG5tCVpXR/fntvSX0w+jfYEY3T6grc1lrKY9r+WyElql
-         C4gGKtGKdrjEbhRNa5Nr8apqyQLYsC91z9shvW6zDAr2ciEgDGRsBILOa76yAYiomEj3
-         mV0VJ8G07iUab6nRRXo8jtAFu/o7K5PGWb59JRTRM8tDHOetZIfHFYiDGXtrjZ/rS1sz
-         2cOg==
-X-Gm-Message-State: AOAM531hPV2QjULYnnLTfc7QmFdCkX5myrKIh1um3+J/sLU1OhgrsFLL
-        QfdYW7ZA/sXrGU4Z+htTIDg=
-X-Google-Smtp-Source: ABdhPJxBsH7cHoNMekIO6E7c1Lz4xgNz6S5K0NhR5o6UOdEqCbv12kSwZbqhxobu5u1HFxuJpNwXPg==
-X-Received: by 2002:a63:457:: with SMTP id 84mr5936764pge.191.1601555426990;
-        Thu, 01 Oct 2020 05:30:26 -0700 (PDT)
-Received: from varodek.localdomain ([171.61.143.130])
-        by smtp.gmail.com with ESMTPSA id m13sm5695199pjl.45.2020.10.01.05.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 05:30:26 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: [PATCH v3 15/28] scsi: mpt3sas_scsih: use generic power management
-Date:   Thu,  1 Oct 2020 17:54:58 +0530
-Message-Id: <20201001122511.1075420-16-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
-References: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
+        Thu, 1 Oct 2020 08:26:47 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BB7C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 05:26:47 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 14FD422F99;
+        Thu,  1 Oct 2020 14:26:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1601555204;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YlhjVwPQ/MXstwRRmKyPtrXhpk9JTYKjp4oRrLNhj9E=;
+        b=SfPB4RzB3yM0xeJVaFKDk7JH9EDC4SLEA1L+yvV0t3Zg63A6JeYnaQTuVK86ZAKB1JNdlY
+        LkS1lSlorI+6AQ0yS6TSMvoPUKdgr1tOWJm2CKPk+mC38hDCD97KJzsas1ubs4sEqw7AvK
+        zLx5lDp0ulN26usPwuis+pWLEGQTpKs=
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Thu, 01 Oct 2020 14:26:43 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor.Ambarus@microchip.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vigneshr@ti.com, richard@nod.at, boris.brezillon@collabora.com,
+        miquel.raynal@bootlin.com
+Subject: Re: [PATCH v3] mtd: spi-nor: keep lock bits if they are non-volatile
+In-Reply-To: <2df08e26-b773-9fa5-fd69-6575d3e50f67@microchip.com>
+References: <20200327155939.13153-1-michael@walle.cc>
+ <e56c5f60-2f59-f913-6eea-3bf8dd4c0774@microchip.com>
+ <a82d1ce203383af149ed77c5fd6c8985@walle.cc>
+ <bec5b899-fbd2-1c29-611c-654f17e63dbf@microchip.com>
+ <8cbaef6c7565deed1109fe958291d9e0@walle.cc>
+ <2df08e26-b773-9fa5-fd69-6575d3e50f67@microchip.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <8eeb398d9252547adeed5470254a68fb@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers should do only device-specific jobs. But in general, drivers using
-legacy PCI PM framework for .suspend()/.resume() have to manage many PCI
-PM-related tasks themselves which can be done by PCI Core itself. This
-brings extra load on the driver and it directly calls PCI helper functions
-to handle them.
+Hi Tudor,
 
-Switch to the new generic framework by updating function signatures and
-define a "struct dev_pm_ops" variable to bind PM callbacks. Also, remove
-unnecessary calls to the PCI Helper functions along with the legacy
-.suspend & .resume bindings.
+Am 2020-10-01 13:46, schrieb Tudor.Ambarus@microchip.com:
+>> Am 2020-10-01 09:07, schrieb Tudor.Ambarus@microchip.com:
+>>>>>> diff --git a/drivers/mtd/spi-nor/core.c 
+>>>>>> b/drivers/mtd/spi-nor/core.c
+>>>>>> index cc68ea84318e..fd1c36d70a13 100644
+>>>>>> --- a/drivers/mtd/spi-nor/core.c
+>>>>>> +++ b/drivers/mtd/spi-nor/core.c
+>>>>>> @@ -2916,20 +2916,38 @@ static int spi_nor_quad_enable(struct
+>>>>>> spi_nor
+>>>>>> *nor)
+>>>>>>  }
+>>>>>> 
+>>>>>>  /**
+>>>>>> - * spi_nor_unlock_all() - Unlocks the entire flash memory array.
+>>>>>> + * spi_nor_global_unprotect() - Perform a global unprotect of the
+>>>>>> memory area.
+>>>>>>   * @nor:    pointer to a 'struct spi_nor'.
+>>>>>>   *
+>>>>>>   * Some SPI NOR flashes are write protected by default after a
+>>>>>> power-on reset
+>>>>>>   * cycle, in order to avoid inadvertent writes during power-up.
+>>>>>> Backward
+>>>>>>   * compatibility imposes to unlock the entire flash memory array 
+>>>>>> at
+>>>>>> power-up
+>>>>>> - * by default.
+>>>>>> + * by default. Do it only for flashes where the block protection
+>>>>>> bits
+>>>>>> + * are volatile, this is indicated by SNOR_F_NEED_UNPROTECT.
+>>>>>> + *
+>>>>>> + * We cannot use spi_nor_unlock(nor->params.size) here because
+>>>>>> there
+>>>>>> are
+>>>>>> + * legacy devices (eg. AT25DF041A) which need a "global 
+>>>>>> unprotect"
+>>>>>> command.
+>>>>>> + * This is done by writing 0b0x0000xx to the status register. 
+>>>>>> This
+>>>>>> will also
+>>>>>> + * work for all other flashes which have these bits mapped to BP0
+>>>>>> to
+>>>>>> BP3.
+>>>>>> + * The top most bit is ususally some kind of lock bit for the 
+>>>>>> block
+>>>>>> + * protection bits.
+>>>>>>   */
+>>>>>> -static int spi_nor_unlock_all(struct spi_nor *nor)
+>>>>>> +static int spi_nor_global_unprotect(struct spi_nor *nor)
+>>>>>>  {
+>>>>>> -    if (nor->flags & SNOR_F_HAS_LOCK)
+>>>>>> -            return spi_nor_unlock(&nor->mtd, 0, 
+>>>>>> nor->params->size);
+>>>>>> +    int ret;
+>>>>>> 
+>>>>>> -    return 0;
+>>>>>> +    dev_dbg(nor->dev, "unprotecting entire flash\n");
+>>>>>> +    ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>>>>>> +    if (ret)
+>>>>>> +            return ret;
+>>>>>> +
+>>>>>> +    nor->bouncebuf[0] &= ~SR_GLOBAL_UNPROTECT_MASK;
+>>>>>> +
+>>>>>> +    /*
+>>>>>> +     * Don't use spi_nor_write_sr1_and_check() because writing 
+>>>>>> the
+>>>>>> status
+>>>>>> +     * register might fail if the flash is hardware write
+>>>>>> protected.
+>>>>>> +     */
+>>>>>> +    return spi_nor_write_sr(nor, nor->bouncebuf, 1);
+>>>>>>  }
+>>>>> 
+>>>>> This won't work for all the flashes. You use a GENMASK(5, 2) to 
+>>>>> clear
+>>>>> the Status Register even for BP0-2 flashes and you end up clearing
+>>>>> BIT(5)
+>>>>> which can lead to side effects.
+>>>>> 
+>>>>> We should instead introduce a
+>>>>> nor->params->locking_ops->global_unlock()
+>>>>> hook
+>>>>> for the flashes that have special opcodes that unlock all the flash
+>>>>> blocks,
+>>>>> or for the flashes that deviate from the "clear just your BP bits"
+>>>>> rule.
+>>>> 
+>>>> Wouldn't it make more sense to just set params->locking_ops for 
+>>>> these
+>>>> flashes
+>>>> to different functions? or even provide a 
+>>>> spi_nor_global_unprotect_ops
+>>>> in
+>>>> core.c and these flashes will just set them. there is no individual
+>>>> sector
+>>>> range lock for these chips. just a lock all or nothing.
+>>> 
+>>> I like the idea of having all locking related functions placed in a
+>>> single
+>>> place, thus the global_unlock() should be inside locking_ops struct.
+>> 
+>> My point was that this global unlock shouldn't be a special case for 
+>> the
+>> current spi_nor_unlock() but just another "how to unlock the flash"
+>> function
+>> and thus should replace the original unlock op. For example, it is 
+>> also
+>> likely
+>> that you need a special global lock (i.e. write all 1's).
+>> 
+>> static int spi_nor_global_unlock()
+>> {
+>>   write_sr(0); /* actually it will be a read-modify write */
+>> }
+>> 
+>> static int spi_nor_global_lock()
+>> {
+>>   write_sr(0x1c);
+>> }
+>> 
+>> static int spi_nor_is_global_locked()
+>> {
+>>   return read_sr() & 0x1c;
+>> }
+>> 
+>> const struct spi_nor_locking_ops spi_nor_sr_locking_ops = {
+>>         .lock = spi_nor_global_unlock,
+>>         .unlock = spi_nor_global_lock,
+>>         .is_locked = spi_nor_is_global_locked,
+>> };
+> 
+> Meh, this would be valid only if the flash supports _just_ global 
+> (un)lock,
+> without supporting locking on a smaller granularity.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 34 +++++++++++-----------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+Most (all?) of these flashes will support the per-sector protection, 
+which
+we doesn't support. So yes, this is currently a shortcut for the flashes
+which were unlocked by default in the past, but doesn't fall into the BP
+bits category.
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index ce3dfe26691f..6691b7cddfff 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -10829,44 +10829,40 @@ _scsih_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return rv;
- }
- 
--#ifdef CONFIG_PM
- /**
-  * scsih_suspend - power management suspend main entry point
-- * @pdev: PCI device struct
-- * @state: PM state change to (usually PCI_D3)
-+ * @dev: Device struct
-  *
-  * Return: 0 success, anything else error.
-  */
--static int
--scsih_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused
-+scsih_suspend(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct Scsi_Host *shost = pci_get_drvdata(pdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
--	pci_power_t device_state;
- 
- 	mpt3sas_base_stop_watchdog(ioc);
- 	flush_scheduled_work();
- 	scsi_block_requests(shost);
- 	_scsih_nvme_shutdown(ioc);
--	device_state = pci_choose_state(pdev, state);
--	ioc_info(ioc, "pdev=0x%p, slot=%s, entering operating state [D%d]\n",
--		 pdev, pci_name(pdev), device_state);
-+	ioc_info(ioc, "pdev=0x%p, slot=%s, entering suspended state\n",
-+		pdev, pci_name(pdev));
- 
--	pci_save_state(pdev);
- 	mpt3sas_base_free_resources(ioc);
--	pci_set_power_state(pdev, device_state);
- 	return 0;
- }
- 
- /**
-  * scsih_resume - power management resume main entry point
-- * @pdev: PCI device struct
-+ * @dev: Device struct
-  *
-  * Return: 0 success, anything else error.
-  */
--static int
--scsih_resume(struct pci_dev *pdev)
-+static int __maybe_unused
-+scsih_resume(struct device *dev)
- {
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct Scsi_Host *shost = pci_get_drvdata(pdev);
- 	struct MPT3SAS_ADAPTER *ioc = shost_priv(shost);
- 	pci_power_t device_state = pdev->current_state;
-@@ -10875,8 +10871,6 @@ scsih_resume(struct pci_dev *pdev)
- 	ioc_info(ioc, "pdev=0x%p, slot=%s, previous operating state [D%d]\n",
- 		 pdev, pci_name(pdev), device_state);
- 
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
- 	ioc->pdev = pdev;
- 	r = mpt3sas_base_map_resources(ioc);
- 	if (r)
-@@ -10887,7 +10881,6 @@ scsih_resume(struct pci_dev *pdev)
- 	mpt3sas_base_start_watchdog(ioc);
- 	return 0;
- }
--#endif /* CONFIG_PM */
- 
- /**
-  * scsih_pci_error_detected - Called when a PCI error is detected.
-@@ -11161,6 +11154,8 @@ static struct pci_error_handlers _mpt3sas_err_handler = {
- 	.resume		= scsih_pci_resume,
- };
- 
-+static SIMPLE_DEV_PM_OPS(scsih_pm_ops, scsih_suspend, scsih_resume);
-+
- static struct pci_driver mpt3sas_driver = {
- 	.name		= MPT3SAS_DRIVER_NAME,
- 	.id_table	= mpt3sas_pci_table,
-@@ -11168,10 +11163,7 @@ static struct pci_driver mpt3sas_driver = {
- 	.remove		= scsih_remove,
- 	.shutdown	= scsih_shutdown,
- 	.err_handler	= &_mpt3sas_err_handler,
--#ifdef CONFIG_PM
--	.suspend	= scsih_suspend,
--	.resume		= scsih_resume,
--#endif
-+	.driver.pm	= &scsih_pm_ops,
- };
- 
- /**
--- 
-2.28.0
+It doesn't feel right to add this as a special case to the current
+spi_nor_lock(), which is really a spi_nor_bp_lock(). And this locking
+has nothing to do with BP bits. If there would be support for per-sector
+protection, then this would end up there. But there isn't.
 
+> Otherwise, people will
+> get lazy and just add support for global (unlock) without introducing
+> software for smaller granularity locking, which would be a pity.
+
+I can't relate to this. If people need per-sector locking, there will
+eventually be code. If people just need a protect all or nothing, well
+then.
+
+> If there's such a case, those functions should be manufacturer/flash 
+> specific.
+
+Lucky me, this is (at the moment) just Atmel. So is it acceptable,
+if I'll put this global unlock ops into atmel.c? I mean eventually, this
+will be replaced by proper per-sector locking. It is just there to 
+support
+the flashes which was already unlocked that way in the past. In terms
+of backward compatibility there won't be more flashes which need this
+global unlock.
+
+But then this relates to the question how I should name the menuconfig
+choices. Because these flashes doesn't have the block protection bits.
+
+-michael
