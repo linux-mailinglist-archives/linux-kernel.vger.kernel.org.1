@@ -2,170 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6838C27FC6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6F427FC6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 11:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731794AbgJAJ1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 05:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgJAJ1d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:27:33 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BBCC0613D0;
-        Thu,  1 Oct 2020 02:27:33 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id e5so5417611ilr.8;
-        Thu, 01 Oct 2020 02:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qUia3HgPOs5osTmAsLb1Vjj65TsZDjcpJemkNk78TI4=;
-        b=JarCYdPrqxm+TFo/whyh8Xy7DlG5ExMrNDp5yNFJuFFR18qPfnv3SHhGcswvEizkmm
-         yrqF0JsvDk04/RDpbvPOsMRZFTj8mqCeedjPB0l1Sbjklflvo+nSgsjCk2H59y0nIf8g
-         HhGL6xjfe9dnkyuIhesRNPfMMlHLfghRYnweApamNFp8uVLvuV7vX9vzKR5vKzEac6hw
-         fePGIpgAiLa1zGEarMiHC4NdRzN63ekxFDZt3kM+BRByrMhNSOBnousKb8U+gdLUscS1
-         wGsgAswIWqr1VwhiLTAldr4h8M6xnZG2ZWBvYRiNmyobCk2NBFp8yxzy92tlM9myS3co
-         BhWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qUia3HgPOs5osTmAsLb1Vjj65TsZDjcpJemkNk78TI4=;
-        b=Hiqhwom35a58MtsxIaXwuQWZ7KH1Bu6AnFlpYnauPPuV8DDVuGWkERrEF71OFJcco+
-         ccS9LvP7KGfuN/Z3XSsO36yrza8i2+lJEVEzNS3Fr2vWa0VyH0WGFBv1wWB707tK8Xrd
-         B9wmNND9nqSbjNORKvo6zWkKt6C4GMwE+CHOWy2BtIWE5teNSHCDRx8Ov8SxY6rqlxgj
-         mORdCgh6shNh89DIurLGPWj1fzHZb5+uAH1YUUgVwGiqrqnTdqhgfpkgp1deCWhDIaqt
-         g++yKp6x3Mm/d4QyOA+nIeTQufTadLVRYYRn7wcg/Nb2oqGhgtIhIzqbV+03UZy9Zb5Y
-         kBtg==
-X-Gm-Message-State: AOAM530fubN1XIDCP3sNxs3/2hCBiJWY4BG9+VT6iostBl7vO/4zRlUP
-        ZzTMc9DIZdlac5iUGEPMrHqJR2Kf/JCjhT0cDZU=
-X-Google-Smtp-Source: ABdhPJzQYydYHuL/8miRQc2QEYeHPaCHZx0iwcPD4xPSGr/YYmKlgcmWeAPgSiuboZD2dRyt3UqfW2rJzZGskF8ybrM=
-X-Received: by 2002:a92:9a55:: with SMTP id t82mr1630056ili.24.1601544451890;
- Thu, 01 Oct 2020 02:27:31 -0700 (PDT)
+        id S1731831AbgJAJ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 05:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgJAJ2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 05:28:19 -0400
+Received: from mail.kernel.org (ip5f5ad5d2.dynamic.kabel-deutschland.de [95.90.213.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8F9821707;
+        Thu,  1 Oct 2020 09:28:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601544498;
+        bh=bRxCOT0GHdpfEP+hLDzCHh6ExwWYxA+B8cHCx7grTKU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n3LLptoC05AgdQddGfNE50eXUrN5MxYeojzcuiUzD6/qugKGw2n/lzmGkLFgY6Y+l
+         FKHlShxYF+X6rliQ7qp6rAngJfAxmftkMBOvEOoGPFnagK6T+LJTJYOe89Qk7bI1Y9
+         OsvGDEsyAwGeuAWxsMRH+Fg7r0FTH1+glGBGaJR0=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kNusp-005Xag-QO; Thu, 01 Oct 2020 11:28:15 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net
+Subject: [PATCH 1/3] media: zoran: use upper case for card types
+Date:   Thu,  1 Oct 2020 11:28:13 +0200
+Message-Id: <21fd8f12edb27d269eefdbea172aa3a80e2aa6ce.1601544491.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201001071824.24995-1-colyli@suse.de> <CAAMcf8Ao8Go7GdB2XFXAHsWrcxb0VqtDRpHReOGTsjegq2XP0Q@mail.gmail.com>
- <ebd42dfe-d39c-5c13-bbd9-1c6463d73ff0@intel.com>
-In-Reply-To: <ebd42dfe-d39c-5c13-bbd9-1c6463d73ff0@intel.com>
-From:   Vicente Bergas <vicencb@gmail.com>
-Date:   Thu, 1 Oct 2020 11:27:20 +0200
-Message-ID: <CAAMcf8AXUx8UwJvGyBaSvuMaN8u0i1CTbz=WvC+snvLBe=mtLQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mmc: core: don't set limits.discard_granularity as 0
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Coly Li <colyli@suse.de>, linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 11:07 AM Adrian Hunter <adrian.hunter@intel.com> wro=
-te:
->
-> On 1/10/20 11:38 am, Vicente Bergas wrote:
-> > On Thu, Oct 1, 2020 at 9:18 AM Coly Li <colyli@suse.de> wrote:
-> >>
-> >> In mmc_queue_setup_discard() the mmc driver queue's discard_granularit=
-y
-> >> might be set as 0 (when card->pref_erase > max_discard) while the mmc
-> >> device still declares to support discard operation. This is buggy and
-> >> triggered the following kernel warning message,
-> >>
-> >> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
-> >> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
-> >> Hardware name: Google Kevin (DT)
-> >> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=3D--)
-> >> pc : __blkdev_issue_discard+0x200/0x294
-> >> lr : __blkdev_issue_discard+0x54/0x294
-> >> sp : ffff800011dd3b10
-> >> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26:=
- ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000=
-f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 =
-x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000=
-000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000=
-000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : =
-ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f=
-1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x=
-2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace=
-:
-> >> __blkdev_issue_discard+0x200/0x294
-> >> __submit_discard_cmd+0x128/0x374
-> >> __issue_discard_cmd_orderly+0x188/0x244
-> >> __issue_discard_cmd+0x2e8/0x33c
-> >> issue_discard_thread+0xe8/0x2f0
-> >> kthread+0x11c/0x120
-> >> ret_from_fork+0x10/0x1c
-> >> ---[ end trace e4c8023d33dfe77a ]---
-> >>
-> >> This patch fixes the issue by setting discard_granularity as SECTOR_SI=
-ZE
-> >> instead of 0 when (card->pref_erase > max_discard) is true. Now no mor=
-e
-> >> complain from __blkdev_issue_discard() for the improper value of disca=
-rd
-> >> granularity.
-> >>
-> >> This issue is exposed after commit b35fd7422c2f ("block: check queue's
-> >> limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" t=
-ag
-> >> is also added for the commit to make sure people won't miss this patch
-> >> after applying the change of __blkdev_issue_discard().
-> >>
-> >> Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum=
- discard timeout")
-> >> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity =
-in __blkdev_issue_discard()").
-> >> Reported-by: Vicente Bergas <vicencb@gmail.com>
-> >
-> > Hi Coly, Adrian,
-> > would you like me to reply with a tested-by?
-> > before testing it: what are the chances of losing data?
->
-> Very low I would hope, but that is no reason not to have backups :-)
+Don't mix case there: let's just use uppercase, as this is
+the common pattern for such define-like enums.
 
-I do have backup, it is for the hassle of reinstalling the OS and
-restoring the backup.
-I'll test it later, maybe today.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/staging/media/zoran/zoran.h      |  8 ++++----
+ drivers/staging/media/zoran/zoran_card.c | 20 ++++++++++----------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-> > Regards,
-> >   Vicente.
-> >
-> >> Signed-off-by: Coly Li <colyli@suse.de>
-> >> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> >> ---
-> >> Changelog,
-> >> v3, add Fixes tag for both commits.
-> >> v2, change commit id of the Fixes tag.
-> >> v1, initial version.
-> >>
-> >>  drivers/mmc/core/queue.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> >> index 6c022ef0f84d..350d0cc4ee62 100644
-> >> --- a/drivers/mmc/core/queue.c
-> >> +++ b/drivers/mmc/core/queue.c
-> >> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request=
-_queue *q,
-> >>         q->limits.discard_granularity =3D card->pref_erase << 9;
-> >>         /* granularity must not be greater than max. discard */
+diff --git a/drivers/staging/media/zoran/zoran.h b/drivers/staging/media/zoran/zoran.h
+index 372fadfd9a01..7217a64fe59b 100644
+--- a/drivers/staging/media/zoran/zoran.h
++++ b/drivers/staging/media/zoran/zoran.h
+@@ -75,11 +75,11 @@ enum card_type {
+ 	UNKNOWN = -1,
+ 
+ 	/* Pinnacle/Miro */
+-	DC10_old,		/* DC30 like */
+-	DC10_new,		/* DC10plus like */
+-	DC10plus,
++	DC10_OLD,		/* DC30 like */
++	DC10_NEW,		/* DC10_PLUS like */
++	DC10_PLUS,
+ 	DC30,
+-	DC30plus,
++	DC30_PLUS,
+ 
+ 	/* Linux Media Labs */
+ 	LML33,
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index 84a5d52517cd..8d56d039a686 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -104,8 +104,8 @@ MODULE_VERSION(ZORAN_VERSION);
+ 	.subvendor = (subven), .subdevice = (subdev), .driver_data = (data) }
+ 
+ static const struct pci_device_id zr36067_pci_tbl[] = {
+-	ZR_DEVICE(PCI_VENDOR_ID_MIRO, PCI_DEVICE_ID_MIRO_DC10PLUS, DC10plus),
+-	ZR_DEVICE(PCI_VENDOR_ID_MIRO, PCI_DEVICE_ID_MIRO_DC30PLUS, DC30plus),
++	ZR_DEVICE(PCI_VENDOR_ID_MIRO, PCI_DEVICE_ID_MIRO_DC10PLUS, DC10_PLUS),
++	ZR_DEVICE(PCI_VENDOR_ID_MIRO, PCI_DEVICE_ID_MIRO_DC30PLUS, DC30_PLUS),
+ 	ZR_DEVICE(PCI_VENDOR_ID_ELECTRONICDESIGNGMBH, PCI_DEVICE_ID_LML_33R10, LML33R10),
+ 	ZR_DEVICE(PCI_VENDOR_ID_IOMEGA, PCI_DEVICE_ID_IOMEGA_BUZ, BUZ),
+ 	ZR_DEVICE(PCI_ANY_ID, PCI_ANY_ID, NUM_CARDS),
+@@ -311,7 +311,7 @@ static const unsigned short bt866_addrs[] = { 0x44, I2C_CLIENT_END };
+ 
+ static struct card_info zoran_cards[NUM_CARDS] = {
+ 	{
+-		.type = DC10_old,
++		.type = DC10_OLD,
+ 		.name = "DC10(old)",
+ 		.i2c_decoder = "vpx3220a",
+ 		.addrs_decoder = vpx3220_addrs,
+@@ -340,7 +340,7 @@ static struct card_info zoran_cards[NUM_CARDS] = {
+ 		.input_mux = 0,
+ 		.init = &dc10_init,
+ 	}, {
+-		.type = DC10_new,
++		.type = DC10_NEW,
+ 		.name = "DC10(new)",
+ 		.i2c_decoder = "saa7110",
+ 		.addrs_decoder = saa7110_addrs,
+@@ -369,8 +369,8 @@ static struct card_info zoran_cards[NUM_CARDS] = {
+ 		.input_mux = 0,
+ 		.init = &dc10plus_init,
+ 	}, {
+-		.type = DC10plus,
+-		.name = "DC10plus",
++		.type = DC10_PLUS,
++		.name = "DC10_PLUS",
+ 		.i2c_decoder = "saa7110",
+ 		.addrs_decoder = saa7110_addrs,
+ 		.i2c_encoder = "adv7175",
+@@ -430,8 +430,8 @@ static struct card_info zoran_cards[NUM_CARDS] = {
+ 		.input_mux = 0,
+ 		.init = &dc10_init,
+ 	}, {
+-		.type = DC30plus,
+-		.name = "DC30plus",
++		.type = DC30_PLUS,
++		.name = "DC30_PLUS",
+ 		.i2c_decoder = "vpx3220a",
+ 		.addrs_decoder = vpx3220_addrs,
+ 		.i2c_encoder = "adv7175",
+@@ -694,7 +694,7 @@ int zoran_check_jpg_settings(struct zoran *zr,
+ 		break;
+ 	case 4:
+ 
+-		if (zr->card.type == DC10_new) {
++		if (zr->card.type == DC10_NEW) {
+ 			pci_dbg(zr->pci_dev, "%s - HDec by 4 is not supported on the DC10\n", __func__);
+ 			err0++;
+ 			break;
+@@ -715,7 +715,7 @@ int zoran_check_jpg_settings(struct zoran *zr,
+ 		/* We have to check the data the user has set */
+ 
+ 		if (settings->HorDcm != 1 && settings->HorDcm != 2 &&
+-		    (zr->card.type == DC10_new || settings->HorDcm != 4)) {
++		    (zr->card.type == DC10_NEW || settings->HorDcm != 4)) {
+ 			settings->HorDcm = clamp(settings->HorDcm, 1, 2);
+ 			err0++;
+ 		}
+-- 
+2.26.2
 
-Just out of curiosity, wouldn't it be more performant something like:
-q->limits.discard_granularity =3D minimum(card->pref_erase, max_discard) <<=
- 9;
-or is just that SECTOR_SIZE is a number guaranteed to work?
-
-> >>         if (card->pref_erase > max_discard)
-> >> -               q->limits.discard_granularity =3D 0;
-> >> +               q->limits.discard_granularity =3D SECTOR_SIZE;
-> >>         if (mmc_can_secure_erase_trim(card))
-> >>                 blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
-> >>  }
-> >> --
-> >> 2.26.2
-> >>
->
