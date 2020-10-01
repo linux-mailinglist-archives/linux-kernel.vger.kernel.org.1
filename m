@@ -2,170 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0080827FEF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F5327FEE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 14:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732151AbgJAM1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 08:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S1732047AbgJAMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 08:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731926AbgJAM1i (ORCPT
+        with ESMTP id S1731888AbgJAMY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 08:27:38 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D839CC0613E2;
-        Thu,  1 Oct 2020 05:27:38 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f18so4318928pfa.10;
-        Thu, 01 Oct 2020 05:27:38 -0700 (PDT)
+        Thu, 1 Oct 2020 08:24:56 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C09C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 05:24:55 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k6so6386023ior.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 05:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KnvOWxZ63jDVIsDgpt2eg9PovmEULDReeqd1RWk++3Y=;
-        b=XT3oXB+KwHrk8NDmUsYAVQar7wtEudnXYvLpo0HLetQqt9/WXcp7tKJhmADJ6pMAyX
-         yffVbmBwwOArZ3D2Rf9e5zJUJ+c3EAlVFv2nr1u9LEpoyD9aNnf5yU8lUWpTOlo0i5M5
-         lUnwxH0kKfSLMEvU7nXLVMAHd3hYQyCXoj0TUO1NRhgq1qmYfyOv10jGoobekJ5Ta+B7
-         1+X/Tl4qyvXOZZ5WxsJkRAnDTpI0QFSrVHD7OtmahZktaHR9+2mZiA9EvYN0BNmqPUYR
-         MUJww83bgQQfK6unK2FpmEsfCZ2fam+OdqmIecVxEB8r629Nf7IdmYg1FqipQPT3+KCD
-         egFQ==
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=akvyyUxuhjWRDCUB2lTKcqgP2Az3Cod92ZdzN8kBfmI=;
+        b=akyrB7L9PdgJwPMXl49tDyta/opvrLvAcOh6D2PtBsJJDPgdb5rhyQ8Dj4isflfOri
+         aP1OSp0tpcj3cONvfzb+GeIc7pUkKJhHYIe/qp8pz88zYsTRvxycBz5FN+gG+ZmXks98
+         LjdqhBCGO2QDntBCBtm2WJtIqBVaALJTR/J9Trf+/1YpQD6ewKpOCEMHxhPDE1/VD8L6
+         toHCB1+6iafUFxjdw/tcJokqxXcQM4OY+2Id1ey6WxkmWAQeKCZ0aDfdpBx4bOAIvB9J
+         PjX3xc1QH9LDOrCzgCzc0HyFQS5C3RDW+FzpCWQou95ew2fyIn4OKBAKz2Yk1DfupLgK
+         ePaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KnvOWxZ63jDVIsDgpt2eg9PovmEULDReeqd1RWk++3Y=;
-        b=c+a5VOXX2BjHzmlJQfWZy0kpGzSAKARedZat/Yyz2IhNvz9poe+SQM0RgiDuxiD5Aq
-         REC+EpfBCaTHGyLjh+9fBozKZQRMlZj9zJaf7oEkYjpBZKv3unWaA5YdQEoV+rP6Hupu
-         62zFkdIyzbLwF5TFGIooh5UTbgVyYI8hyr1I+XOSJv42FlxF1+VVX4cAuLJOueIOCn+h
-         CsjdfI7PxaY6N8GqS6r+CstagJ0PvVgtIZ7YtT+4YJ/ozr4UMFnebXdgGaaOAC7fV6TZ
-         XHlhOvhrPx2qP+qDCgUiRsfpbZGXIL3C3wft1psYOXhNB36oxNTrr2OfT8k72784Fc/b
-         J9YA==
-X-Gm-Message-State: AOAM531dmU1+tKjPA+U1T8D0QeZBhgIf97XcO/Va2KBSzeIIehY3Ff+g
-        wABSmJWg4AT5QDnUWKDEYl4=
-X-Google-Smtp-Source: ABdhPJxZxHrN4qdXBPbki0Mn6IkgDW70IP12ApWg4XPJw4fN3UQsJvHGnpRePmsGG3LIJ8wW5pLtFQ==
-X-Received: by 2002:a17:902:b70c:b029:d1:9b2d:1132 with SMTP id d12-20020a170902b70cb02900d19b2d1132mr7043930pls.36.1601555258339;
-        Thu, 01 Oct 2020 05:27:38 -0700 (PDT)
-Received: from varodek.localdomain ([171.61.143.130])
-        by smtp.gmail.com with ESMTPSA id m13sm5695199pjl.45.2020.10.01.05.27.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 05:27:37 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        John Garry <john.garry@huawei.com>,
-        Don Brace <don.brace@microsemi.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-scsi@vger.kernel.org, esc.storagedev@microsemi.com,
-        megaraidlinux.pdl@broadcom.com, MPT-FusionLinux.pdl@broadcom.com
-Subject: [PATCH v3 00/28] scsi: use generic power management
-Date:   Thu,  1 Oct 2020 17:54:43 +0530
-Message-Id: <20201001122511.1075420-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=akvyyUxuhjWRDCUB2lTKcqgP2Az3Cod92ZdzN8kBfmI=;
+        b=QJVfSMwBEpvTMY08VNcBAH0RdUiW/5af51TYidEehuGOWpQTR5sUSCh+auZtYZCb7N
+         ugiQmHy+fFwGahODNEO/HpxKGHKF2+b9E+eeLOK9RKx+CHgMp0VLhe2et9pwtl1Xfn4n
+         wRVbk67kbADD/lDzuBU6Izi5/mH+kLtNZn73AZtGVmdikmQos07qOgxRf0J3iRnW5OCr
+         t4RzQRElyXtqU9+K67mZVPo6KXgxlY6SbGZ2vPymPw9ozEuMBg+3nBt0vkY/VZxnR1FJ
+         oDmfqSZYMWq8HxQiE8B7DftFR6Eegvart1VjB4qsq9j67mJEipI0PwFjjlzAkHS25JTt
+         Wueg==
+X-Gm-Message-State: AOAM5333u0q38JyjnnTF4wDLd6TzB14V0wAVjljW0K9hkcTf08hw0s0V
+        GTSX+Rxdr8SNEC0oCK724Gvvv/7aV+nG+g7Zfq81yw==
+X-Google-Smtp-Source: ABdhPJz+edA3rfBGq6+sE0dd/GpZjCKzMT9YWEd2MXLCtUNmACjhuwcGQYYh8mKDUJ9HzpAZSfbOiI6hZOMRQGfbwjo=
+X-Received: by 2002:a05:6602:21cc:: with SMTP id c12mr5022461ioc.81.1601555094381;
+ Thu, 01 Oct 2020 05:24:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201001012810.4172-1-scott.branden@broadcom.com> <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
+In-Reply-To: <e5855e95-dcae-351e-3351-ed1ba9170f7e@gmail.com>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Thu, 1 Oct 2020 14:24:43 +0200
+Message-ID: <CAOesGMjoCw9fP+z_2Cc=jUrFc2GA8DEErBZWpTsFbibPZFQzkg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] Add Broadcom VK driver
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux Kernel Mentee: Remove Legacy Power Management.
+Hi,
 
-The purpose of this patch series is to upgrade power management in xxxxxxxx
-drivers. This has been done by upgrading .suspend() and .resume() callbacks.
+On Thu, Oct 1, 2020 at 4:38 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 9/30/2020 6:27 PM, Scott Branden wrote:
+> > This patch series drops previous patches in [1]
+> > that were incorporated by Kees Cook into patch series
+> > "Introduce partial kernel_read_file() support" [2].
+> >
+> > Remaining patches are contained in this series to add Broadcom VK driver.
+> > (which depends on request_firmware_into_buf API addition in
+> > other patch series [2] being applied first).
+> >
+> > Please note this patch series will not compile without [2].
+> >
+> > [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
+> > [2] https://lore.kernel.org/lkml/20200729175845.1745471-1-keescook@chromium.org/
+>
+> Disclaimer: I am well aware that it is the complete wild west right now
+> as far as accelerators go and that every vendor (that I happen to work
+> for, just not in the same group as Scott) is just seeking to get their
+> drivers included upstream and hopefully for good reasons.
 
-The upgrade makes sure that the involvement of PCI Core does not change the
-order of operations executed in a driver. Thus, does not change its behavior.
+I'm not sure there are ever bad reasons to get code upstreamed?
 
-In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
-helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
-pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
-their job.
+I've mentioned this before, but until we see the code and
+implementations we can guess where the likely commonality is, but
+we'll always miss some of it and overdesign other parts of it. The
+path of allowing some entropy to later be refactored and made common
+is something we've done pretty much everywhere, and it's an approach
+that's been proven to work. While those who have already taken that
+journey think it's "just a matter of jumping to the end state and just
+do things the way they did in the end" is shortsighted: They're not at
+a static endpoint and futureproof solution themselves. Some of these
+things just need to play out naturally over time.
 
-The conversion requires the removal of those function calls, change the
-callbacks' definition accordingly and make use of dev_pm_ops structure.
+Luckily, most kernel-facing interfaces are fairly simple and sit as
+isolated drivers today, so it doesn't add maintainer burden across the
+rest of the kernel so the cost of letting some of this code in isn't
+huge. For a few things such as the hwmon and tty aspects it makes
+sense to integrate better just as you suggested, but the "subdrivers"
+for that are fairly simple and don't add a lot of dependencies on
+intricate or complex subsystem features.
 
-All patches are compile-tested only.
+Some devices, such as Habana's latest one, is looking at more complex
+integrations with other subsystems (RDMA/networking), and there's
+plenty of discussion going on there.
 
-v3: break down the patches to drop PCI wakeup calls.
+>  From a cursory look however, it sounds like there could be a little
+> better re-utilization of standards, standard framework and interfaces:
 
-Test tools:
-    - Compiler: gcc (GCC) 10.2.0
-    - allmodconfig build: make -j$(nproc) W=1 all
+I think most of these points are valid, but also not dealbreakers.
+I'll add my opinions on a couple of them below.
 
-Vaibhav Gupta (28):
-  scsi: megaraid_sas: Drop PCI wakeup calls from .resume
-  scsi: megaraid_sas: use generic power management
-  scsi: megaraid_sas: update function description
-  scsi: aacraid: Drop pci_enable_wake() from .resume
-  scsi: aacraid: use generic power management
-  scsi: aic7xxx: use generic power management
-  scsi: aic79xx: use generic power management
-  scsi: arcmsr: Drop PCI wakeup calls from .resume
-  scsi: arcmsr: use generic power management
-  scsi: esas2r: Drop PCI Wakeup calls from .resume
-  scsi: esas2r: use generic power management
-  scsi: hisi_sas_v3_hw: Drop PCI Wakeup calls from .resume
-  scsi: hisi_sas_v3_hw: use generic power management
-  scsi: mpt3sas_scsih: Drop PCI Wakeup calls from .resume
-  scsi: mpt3sas_scsih: use generic power management
-  scsi: lpfc: use generic power management
-  scsi: pm_8001:  Drop PCI Wakeup calls from .resume
-  scsi: pm_8001: use generic power management
-  scsi: hpsa: use generic power management
-  scsi: 3w-9xxx: Drop PCI Wakeup calls from .resume
-  scsi: 3w-9xxx: use generic power management
-  scsi: 3w-sas: Drop PCI Wakeup calls from .resume
-  scsi: 3w-sas: use generic power management
-  scsi: mvumi: Drop PCI Wakeup calls from .resume
-  scsi: mvumi: use generic power management
-  scsi: mvumi: update function description
-  scsi: pmcraid: Drop PCI Wakeup calls from .resume
-  scsi: pmcraid: use generic power management
+> - about 2/3 of your sysfs attributes should incline you to implement a
+> HWMON device, not a complicated one, but anything that indicates
+> current, power, temperature, alerts etc. should be considered
 
- drivers/scsi/3w-9xxx.c                    |  30 ++-----
- drivers/scsi/3w-sas.c                     |  32 ++-----
- drivers/scsi/aacraid/linit.c              |  34 ++------
- drivers/scsi/aic7xxx/aic79xx.h            |  12 +--
- drivers/scsi/aic7xxx/aic79xx_core.c       |   8 +-
- drivers/scsi/aic7xxx/aic79xx_osm_pci.c    |  43 +++-------
- drivers/scsi/aic7xxx/aic79xx_pci.c        |   6 +-
- drivers/scsi/aic7xxx/aic7xxx.h            |  10 +--
- drivers/scsi/aic7xxx/aic7xxx_core.c       |   6 +-
- drivers/scsi/aic7xxx/aic7xxx_osm_pci.c    |  46 +++-------
- drivers/scsi/aic7xxx/aic7xxx_pci.c        |   4 +-
- drivers/scsi/arcmsr/arcmsr_hba.c          |  33 +++----
- drivers/scsi/esas2r/esas2r.h              |   5 +-
- drivers/scsi/esas2r/esas2r_init.c         |  48 +++--------
- drivers/scsi/esas2r/esas2r_main.c         |   3 +-
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c    |  31 +++----
- drivers/scsi/hpsa.c                       |  12 +--
- drivers/scsi/lpfc/lpfc_init.c             | 100 +++++++---------------
- drivers/scsi/megaraid/megaraid_sas_base.c |  54 +++---------
- drivers/scsi/mpt3sas/mpt3sas_scsih.c      |  35 +++-----
- drivers/scsi/mvumi.c                      |  49 +++--------
- drivers/scsi/pm8001/pm8001_init.c         |  46 ++++------
- drivers/scsi/pmcraid.c                    |  44 +++-------
- 23 files changed, 198 insertions(+), 493 deletions(-)
+This likely makes sense, and hopefully isn't too much work to move.
+Just like with TTY below, if it needs more time it might make sense to
+take it out of this patchset and follow up with it, since it's useful
+but not strictly required functionality for the rest of the
+driver/device.
 
--- 
-2.28.0
+> - cannot the firmware loading be supported over remoteproc somehow?
 
+remoteproc is really useful for devices living in a shared SoC,
+needing memory carveout, and run control of the coprocessor. In this
+case the programming model is different, there's a normal/regular PCIe
+host/device relationship and the process of loading firmware onto a
+device is something we do in lots of drivers without using remoteproc.
+I don't think we need to bring that framework into these kind of
+drivers, unless there are tighter coupling between the host/device to
+consider for some reason.
+
+> - could not the TTY interface be using virtio or an existing UART?
+
+hvc is super convenient to integrate with since all you need is a
+getchar and putchar implementation, but the others would work as well.
+I don't have a strong opinion on path forward on this, and if TTY ends
+up holding up the rest of the driver it might make sense to leave that
+piece out and merge the rest. I'm not sure we're at that junction
+quite yet though?
+
+> - what is the format of the message over BAR2 that you expose in patch 13?
+>
+> Is there a reference user-space implementation that you can link to this
+> patch submission in case people are curious?
+
+
+-Olof
