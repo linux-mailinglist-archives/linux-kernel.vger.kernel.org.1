@@ -2,187 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E110627F90A
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB7427F90D
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 07:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbgJAF3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 01:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S1725934AbgJAFcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 01:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgJAF3n (ORCPT
+        with ESMTP id S1725878AbgJAFcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:29:43 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08F9C061755;
-        Wed, 30 Sep 2020 22:29:42 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c2so4121941qkf.10;
-        Wed, 30 Sep 2020 22:29:42 -0700 (PDT)
+        Thu, 1 Oct 2020 01:32:00 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14157C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:32:00 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l15so1411021wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 22:31:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zhY5hxIQkMTQaQ3nm7tEbfUHYEvpPQmlr9WcnS8917k=;
-        b=uSUNB1YV1xnHksocWCene6AYfImFzQe38OeAIIpF2pXuVPgqmJebEZzs8DSzWz0od8
-         ji7f+nFXQmoXXiaeKy4UaG2djRyE6mZ3fUvHR5/agPA2dTlaMar/T5nIasN+tnOpbJ0f
-         o+0Ja2Ard0/NH5M4gE0Xpt1ErwFWKISSg8q72J3Fw3uK6IQebb99cSLlCpcui73d+M20
-         NXvbv2S0mPg+nlPWb8IfcxKHdFURFLmKElqnXZnt6dHLVTKHcgofpf3vqVCfTK6idjBS
-         KdWrKH//+EWHMBOiex0fSBIBy0wPjvZ6z6wbakp48M3guMWBoSZyCjgqpZpJa4JEaLMx
-         vNxw==
+        bh=eXLNt1HM/rpSQJlqYVshAKj+ovYp4BRi6qSvoua5+XU=;
+        b=CQz2x6FdUV3I2nS3AU1vSN4zyF/eEjw2A6KvOYIidHB3dKZJ/9DN/oglyI0aL8TkS+
+         fSsYh0SgJD9kK2xlEzIMW7CTbVnxEsan54EWAXU7v52j2go9ikr7xuDEjHrK+188VIUZ
+         sX2KF5W7iiCs7JGrtFE8lJsNDbMGvweF6mrHlD2nI+DNSqY6ZEjMp413vGcsTLGY2Ho0
+         Med7Rer7awVE8tLpmChm4yFD+pW8F86tl5lN9+yjDWulwOSOmqLC2ZLrXKDlo01cliIl
+         hmTe9N+lAloqDOnfCzEen4EKQS0jc3l6rqLGiFkaH9ZlPba6O+Wv52h0+m8Yshj6MR8g
+         8yOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zhY5hxIQkMTQaQ3nm7tEbfUHYEvpPQmlr9WcnS8917k=;
-        b=tes9UjLAMxu0nzMpJ27YeLk6k14tK+g/vgWh7cqWauI3u74cd8zOSwcfxyJHMq597H
-         jvKF0lntaJb77cwCN5CNNdlBRG0+wZKXWv4qsKYll5NRsxjgbxrWchyTrqwKnOWcjQsz
-         Q5ajphFJjebaUvJYkktY3Y13du3sCzjzf4ZYW5AlqFfGNkjiQ+iKmDTdj/YuQFLNGuY3
-         VsoxGmiTPrO3JWllHxPvl1vX22uzsdLbcvv3E+mEOG+jKJPblAjMMViXMqhy2ltZ9uPq
-         yee29SvjAHZTIptwxHBjuoZYVU7Tz3C/zUzPCf2MtdidttcqactJ4goT8ImlZYwFN6/E
-         zyCg==
-X-Gm-Message-State: AOAM532BD42N672D0WZVo3SLWpp4ZLaTDk5B1UvEauQXe2Cv+P/NzZr4
-        pCxanM+XzfbRSnbE0Oa3JjPidIvIFV6kfL1D5Qy/E2xAB+E=
-X-Google-Smtp-Source: ABdhPJwFIcT/1nd4aA8mRqtPX7Afn5mDgHKLPqj0BEqHV6EY6auuZ5x+TyxSUGlFdRvfF7aKpN4c+3WG+ng0xQs5nPw=
-X-Received: by 2002:ae9:e914:: with SMTP id x20mr5979986qkf.163.1601530181916;
- Wed, 30 Sep 2020 22:29:41 -0700 (PDT)
+        bh=eXLNt1HM/rpSQJlqYVshAKj+ovYp4BRi6qSvoua5+XU=;
+        b=f35YS90OobFqLtD8JcjhuBeYcktzHUH6iZ6Tyfdqf8wpcxWkQ2Ac1m06qLaUSjmJRy
+         fh4/i9Q78GZqaswEMV2B0lxRPs/qiUCjAExPeL73VPVjX4LcqSGkqwsYWzYJGplVrktx
+         T9KoUZ38hjTQAwdTdPOwv9DzKA83iggUOew2Hkr3XB3mRWfa8HRvV1VygLRWBoGjrV19
+         yYZjmdh1komzyq2/ZmAqmUvVmD3Rqu9/LRPuHa6FLFVsBMLo7aBHVUpKLUQqwuvXt+AC
+         i3rnxHGcoq4n9nFPVrVomf6Md/ZNG9SFVHWhF5ugclt/U15lAswfDWh9rVav62jnYD5k
+         cGFQ==
+X-Gm-Message-State: AOAM531HresSzwjuV6PpiCk8vr9D6+yiAin7XEAkZaTkcWCfcyguGkvk
+        cJMKGHVjK5OuVJdqIXTmnBHV8xTnke8ueqEeDumtjQ==
+X-Google-Smtp-Source: ABdhPJz+54sywrWA6JpnPPhYnZmqjOvWpP1fufZassx2CvFe9sPlwXXB1I6BNRIh3ojYOez/I6jaWWWCofxGmJV1Wqw=
+X-Received: by 2002:a7b:cd08:: with SMTP id f8mr6385669wmj.124.1601530318496;
+ Wed, 30 Sep 2020 22:31:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200930071342.98691-1-tali.perry1@gmail.com> <20200930093117.GY3956970@smile.fi.intel.com>
-In-Reply-To: <20200930093117.GY3956970@smile.fi.intel.com>
-From:   Tali Perry <tali.perry1@gmail.com>
-Date:   Thu, 1 Oct 2020 08:32:02 +0300
-Message-ID: <CAHb3i=sWxiVLCC0hfY+6-_x92ZEMY7Ctyyuz9CbMYxrH_BqAZQ@mail.gmail.com>
-Subject: Re: [PATCH v1] i2c: npcm7xx: Support changing bus speed using debugfs.
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Alex Qiu <xqiu@google.com>,
-        Kun Yi <kunyi@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        avifishman70@gmail.com, joel@jms.id.au,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200930171512.3986425-1-jolsa@kernel.org> <20200930171512.3986425-9-jolsa@kernel.org>
+In-Reply-To: <20200930171512.3986425-9-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 30 Sep 2020 22:31:47 -0700
+Message-ID: <CAP-5=fV77-=o4GkX4eGo83TMKjAWQskvLukfgksyjRyey3d9ag@mail.gmail.com>
+Subject: Re: [PATCH 8/9] perf tools: Add size to struct perf_record_header_build_id
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 12:31 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Sep 30, 2020 at 10:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Wed, Sep 30, 2020 at 10:13:42AM +0300, Tali Perry wrote:
-> > Systems that can dinamically add and remove slave devices
+> We do not store size with build ids in perf data,
+> but there's enough space to do it. Adding misc bit
+> PERF_RECORD_MISC_BUILD_ID_SIZE to mark build id event
+> with size.
 >
-> dynamically
+> With this fix the dso with md5 build id will have correct
+> build id data and will be usable for debuginfod processing
+> if needed (coming in following patches).
 >
-> > often need to change the bus speed in runtime.
->
-> > This patch exposes the bus frequency to the user.
->
-> Expose the bus frequency to the user.
->
-> > This feature can also be used for test automation.
->
-> In general I think that DT overlays or so should be user rather than this.
-> If we allow to change bus speed settings for debugging purposes it might make
-> sense to do this on framework level for all drivers which support that (via
-> additional callback or so).
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Do you mean adding something like this:
+Acked-by: Ian Rogers <irogers@google.com>
 
-struct i2c_algorithm {
-/*
-* If an adapter algorithm can't do I2C-level access, set master_xfer
-* to NULL. If an adapter algorithm can do SMBus access, set
-* smbus_xfer. If set to NULL, the SMBus protocol is simulated
-* using common I2C messages.
-*
-* master_xfer should return the number of messages successfully
-* processed, or a negative value on error
-*/
-int (*master_xfer)(struct i2c_adapter *adap, struct i2c_msg *msgs,
-  int num);
-....
-int (*set_speed)(struct i2c_adapter *adap, unsigned int speed);
-....
-/* To determine what the adapter supports */
-u32 (*functionality)(struct i2c_adapter *adap);
+Thanks,
+Ian
 
-...
-};
-
-And expose this feature in functionality?
-
-
+> ---
+>  tools/lib/perf/include/perf/event.h | 12 +++++++++++-
+>  tools/perf/util/build-id.c          |  8 +++++---
+>  tools/perf/util/header.c            | 10 +++++++---
+>  3 files changed, 23 insertions(+), 7 deletions(-)
 >
-> > Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
-> > Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-> > ---
-> >  drivers/i2c/busses/i2c-npcm7xx.c | 36 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 36 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
-> > index 2ad166355ec9..44e2340c1893 100644
-> > --- a/drivers/i2c/busses/i2c-npcm7xx.c
-> > +++ b/drivers/i2c/busses/i2c-npcm7xx.c
-> > @@ -2208,6 +2208,41 @@ static const struct i2c_algorithm npcm_i2c_algo = {
-> >  /* i2c debugfs directory: used to keep health monitor of i2c devices */
-> >  static struct dentry *npcm_i2c_debugfs_dir;
-> >
-> > +static int i2c_speed_get(void *data, u64 *val)
-> > +{
-> > +     struct npcm_i2c *bus = data;
-> > +
-> > +     *val = (u64)bus->bus_freq;
-> > +     return 0;
-> > +}
-> > +
-> > +static int i2c_speed_set(void *data, u64 val)
-> > +{
-> > +     struct npcm_i2c *bus = data;
-> > +     int ret;
-> > +
-> > +     if (val < (u64)I2C_FREQ_MIN_HZ || val > (u64)I2C_FREQ_MAX_HZ)
-> > +             return -EINVAL;
-> > +
-> > +     if (val == (u64)bus->bus_freq)
-> > +             return 0;
-> > +
-> > +     i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
-> > +
-> > +     npcm_i2c_int_enable(bus, false);
-> > +
-> > +     ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
-> > +
-> > +     i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
+> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+> index a6dbba6b9073..988c539bedb6 100644
+> --- a/tools/lib/perf/include/perf/event.h
+> +++ b/tools/lib/perf/include/perf/event.h
+> @@ -201,10 +201,20 @@ struct perf_record_header_tracing_data {
+>         __u32                    size;
+>  };
 >
-> While all these explicit castings?
+> +#define PERF_RECORD_MISC_BUILD_ID_SIZE (1 << 15)
+> +
+>  struct perf_record_header_build_id {
+>         struct perf_event_header header;
+>         pid_t                    pid;
+> -       __u8                     build_id[24];
+> +       union {
+> +               __u8             build_id[24];
+> +               struct {
+> +                       __u8     data[20];
+> +                       __u8     size;
+> +                       __u8     reserved1__;
+> +                       __u16    reserved2__;
+> +               };
+> +       };
+>         char                     filename[];
+>  };
 >
-> > +
-> > +     if (ret)
-> > +             return -EAGAIN;
-> > +
-> > +     return 0;
-> > +}
+> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> index b5648735f01f..8763772f1095 100644
+> --- a/tools/perf/util/build-id.c
+> +++ b/tools/perf/util/build-id.c
+> @@ -296,7 +296,7 @@ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
+>                         continue;               \
+>                 else
 >
-> > +
+> -static int write_buildid(const char *name, size_t name_len, u8 *build_id,
+> +static int write_buildid(const char *name, size_t name_len, struct build_id *bid,
+>                          pid_t pid, u16 misc, struct feat_fd *fd)
+>  {
+>         int err;
+> @@ -307,7 +307,9 @@ static int write_buildid(const char *name, size_t name_len, u8 *build_id,
+>         len = PERF_ALIGN(len, NAME_ALIGN);
 >
-> No need to have this blank line
+>         memset(&b, 0, sizeof(b));
+> -       memcpy(&b.build_id, build_id, BUILD_ID_SIZE);
+> +       memcpy(&b.data, bid->data, bid->size);
+> +       b.size = (u8) bid->size;
+> +       misc |= PERF_RECORD_MISC_BUILD_ID_SIZE;
+>         b.pid = pid;
+>         b.header.misc = misc;
+>         b.header.size = sizeof(b) + len;
+> @@ -354,7 +356,7 @@ static int machine__write_buildid_table(struct machine *machine,
+>                 in_kernel = pos->kernel ||
+>                                 is_kernel_module(name,
+>                                         PERF_RECORD_MISC_CPUMODE_UNKNOWN);
+> -               err = write_buildid(name, name_len, pos->bid.data, machine->pid,
+> +               err = write_buildid(name, name_len, &pos->bid, machine->pid,
+>                                     in_kernel ? kmisc : umisc, fd);
+>                 if (err)
+>                         break;
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index 21243adbb9fd..8da3886f10a8 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -2083,8 +2083,12 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
+>         if (dso != NULL) {
+>                 char sbuild_id[SBUILD_ID_SIZE];
+>                 struct build_id bid;
+> +               size_t size = BUILD_ID_SIZE;
 >
-> > +DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%lld\n");
-> > +
-> >  static void npcm_i2c_init_debugfs(struct platform_device *pdev,
-> >                                 struct npcm_i2c *bus)
-> >  {
-> > @@ -2223,6 +2258,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
-> >       debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
-> >       debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
-> >       debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
-> > +     debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
-> >
-> >       bus->debugfs = d;
-> >  }
+> -               build_id__init(&bid, bev->build_id, BUILD_ID_SIZE);
+> +               if (bev->header.misc & PERF_RECORD_MISC_BUILD_ID_SIZE)
+> +                       size = bev->size;
+> +
+> +               build_id__init(&bid, bev->data, size);
+>                 dso__set_build_id(dso, &bid);
+>
+>                 if (dso_space != DSO_SPACE__USER) {
+> @@ -2098,8 +2102,8 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
+>                 }
+>
+>                 build_id__sprintf(&dso->bid, sbuild_id);
+> -               pr_debug("build id event received for %s: %s\n",
+> -                        dso->long_name, sbuild_id);
+> +               pr_debug("build id event received for %s: %s [%lu]\n",
+> +                        dso->long_name, sbuild_id, size);
+>                 dso__put(dso);
+>         }
 >
 > --
-> With Best Regards,
-> Andy Shevchenko
->
+> 2.26.2
 >
