@@ -2,19 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD24280378
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08F4280377
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 18:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732850AbgJAQCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 12:02:31 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38584 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732213AbgJAQCJ (ORCPT
+        id S1732838AbgJAQCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 12:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732773AbgJAQCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 12:02:09 -0400
+        Thu, 1 Oct 2020 12:02:11 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4B5C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 09:02:11 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id A015929D759
+        with ESMTPSA id 7329729D769
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
@@ -22,9 +25,9 @@ Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
         weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 07/12] soc: mediatek: pm-domains: Add extra sram control
-Date:   Thu,  1 Oct 2020 18:01:49 +0200
-Message-Id: <20201001160154.3587848-8-enric.balletbo@collabora.com>
+Subject: [PATCH v2 08/12] soc: mediatek: pm-domains: Add subsystem clocks
+Date:   Thu,  1 Oct 2020 18:01:50 +0200
+Message-Id: <20201001160154.3587848-9-enric.balletbo@collabora.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201001160154.3587848-1-enric.balletbo@collabora.com>
 References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
@@ -36,91 +39,199 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Matthias Brugger <mbrugger@suse.com>
 
-For some power domains like vpu_core on MT8183 whose sram need to do clock
-and internal isolation while power on/off sram. We add a cap
-"MTK_SCPD_SRAM_ISO" to judge if we need to do the extra sram isolation
-control or not.
+For the bus protection operations, some subsystem clocks need to be enabled
+before releasing the protection. This patch identifies the subsystem clocks
+by it's name.
 
-Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+Suggested-by: Weiyi Lu <weiyi.lu@mediatek.com>
+[Adapted the patch to the mtk-pm-domains driver]
 Signed-off-by: Matthias Brugger <mbrugger@suse.com>
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 
 Changes in v2:
-- Nit, split readl(ctl_addr) | pd->data->sram_pdn_bits in two lines.
-- Use regmap API
+- Use dev_err_probe if getting clocks fails, so an error is not printed
+  if is deferred.
 
- drivers/soc/mediatek/mtk-pm-domains.c | 30 +++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ drivers/soc/mediatek/mtk-pm-domains.c | 89 ++++++++++++++++++++++-----
+ 1 file changed, 75 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-index 38f2630bdd0a..e0a52d489fea 100644
+index e0a52d489fea..2075072f16da 100644
 --- a/drivers/soc/mediatek/mtk-pm-domains.c
 +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-@@ -21,6 +21,7 @@
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2020 Collabora Ltd.
+  */
+ #include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+@@ -81,6 +82,8 @@ struct scpsys_bus_prot_data {
+ 	bool bus_prot_reg_update;
+ };
  
- #define MTK_SCPD_ACTIVE_WAKEUP		BIT(0)
- #define MTK_SCPD_FWAIT_SRAM		BIT(1)
-+#define MTK_SCPD_SRAM_ISO		BIT(2)
- #define MTK_SCPD_CAPS(_scpd, _x)	((_scpd)->data->caps & (_x))
- 
- #define SPM_VDE_PWR_CON			0x0210
-@@ -42,6 +43,8 @@
- #define PWR_ON_BIT			BIT(2)
- #define PWR_ON_2ND_BIT			BIT(3)
- #define PWR_CLK_DIS_BIT			BIT(4)
-+#define PWR_SRAM_CLKISO_BIT		BIT(5)
-+#define PWR_SRAM_ISOINT_B_BIT		BIT(6)
- 
- #define PWR_STATUS_DISP			BIT(3)
- #define PWR_STATUS_MFG			BIT(4)
-@@ -155,14 +158,28 @@ static int scpsys_sram_enable(struct scpsys_domain *pd)
- 	struct scpsys *scpsys = pd->scpsys;
- 	u32 val;
- 	int tmp;
-+	int ret;
- 
- 	regmap_read(scpsys->base, pd->data->ctl_offs, &val);
- 	val &= ~pd->data->sram_pdn_bits;
++#define MAX_SUBSYS_CLKS 10
++
+ /**
+  * struct scpsys_domain_data - scp domain data for power on/off flow
+  * @sta_mask: The mask for power on/off status bit.
+@@ -107,6 +110,8 @@ struct scpsys_domain {
+ 	struct scpsys *scpsys;
+ 	int num_clks;
+ 	struct clk_bulk_data *clks;
++	int num_subsys_clks;
++	struct clk_bulk_data *subsys_clks;
+ 	struct regmap *infracfg;
+ 	struct regmap *smi;
+ };
+@@ -318,16 +323,22 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+ 	val |= PWR_RST_B_BIT;
  	regmap_write(scpsys->base, pd->data->ctl_offs, val);
  
- 	/* Either wait until SRAM_PDN_ACK all 1 or 0 */
--	return regmap_read_poll_timeout(scpsys->base, pd->data->ctl_offs, tmp,
--					(tmp & pdn_ack) == 0, MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
-+	ret = regmap_read_poll_timeout(scpsys->base, pd->data->ctl_offs, tmp,
-+				       (tmp & pdn_ack) == 0, MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
-+	if (ret < 0)
-+		return ret;
++	ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
++	if (ret)
++		goto err_pwr_ack;
 +
-+	if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO)) {
-+		regmap_read(scpsys->base, pd->data->ctl_offs, &val);
-+		val |= PWR_SRAM_ISOINT_B_BIT;
-+		regmap_write(scpsys->base, pd->data->ctl_offs, val);
-+		udelay(1);
-+		val &= ~PWR_SRAM_CLKISO_BIT;
-+		regmap_write(scpsys->base, pd->data->ctl_offs, val);
+ 	ret = scpsys_sram_enable(pd);
+ 	if (ret < 0)
+-		goto err_pwr_ack;
++		goto err_sram;
+ 
+ 	ret = scpsys_bus_protect_disable(pd);
+ 	if (ret < 0)
+-		goto err_pwr_ack;
++		goto err_sram;
+ 
+ 	return 0;
+ 
++err_sram:
++	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+ err_pwr_ack:
+ 	clk_bulk_disable(pd->num_clks, pd->clks);
+ 	return ret;
+@@ -348,6 +359,8 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
++
+ 	/* subsys power off */
+ 	regmap_read(scpsys->base, pd->data->ctl_offs, &val);
+ 	val |= PWR_ISO_BIT;
+@@ -380,8 +393,11 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
+ {
+ 	const struct scpsys_domain_data *domain_data;
+ 	struct scpsys_domain *pd;
+-	int i, ret;
++	int i, ret, num_clks;
+ 	u32 id;
++	int clk_ind = 0;
++	struct property *prop;
++	const char *clk_name;
+ 
+ 	ret = of_property_read_u32(node, "reg", &id);
+ 	if (ret) {
+@@ -416,28 +432,63 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
+ 	if (IS_ERR(pd->smi))
+ 		pd->smi = NULL;
+ 
+-	pd->num_clks = of_clk_get_parent_count(node);
+-	if (pd->num_clks > 0) {
++	num_clks = of_clk_get_parent_count(node);
++	if (num_clks > 0) {
++		/* Calculate number of subsys_clks */
++		of_property_for_each_string(node, "clock-names", prop, clk_name) {
++			char *subsys;
++
++			subsys = strchr(clk_name, '-');
++			if (subsys)
++				pd->num_subsys_clks++;
++			else
++				pd->num_clks++;
++		}
++
+ 		pd->clks = devm_kcalloc(scpsys->dev, pd->num_clks, sizeof(*pd->clks), GFP_KERNEL);
+ 		if (!pd->clks)
+ 			return -ENOMEM;
+-	} else {
+-		pd->num_clks = 0;
++
++		pd->subsys_clks = devm_kcalloc(scpsys->dev, pd->num_subsys_clks,
++					       sizeof(*pd->subsys_clks), GFP_KERNEL);
++		if (!pd->subsys_clks)
++			return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < pd->num_clks; i++) {
+-		pd->clks[i].clk = of_clk_get(node, i);
+-		if (IS_ERR(pd->clks[i].clk)) {
+-			ret = PTR_ERR(pd->clks[i].clk);
+-			dev_err_probe(scpsys->dev, ret, "%pOFn: failed to get clk at index %d\n",
+-				      node, i);
+-			return ret;
++		struct clk *clk = of_clk_get(node, i);
++
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			dev_err_probe(scpsys->dev, PTR_ERR(clk),
++				      "%pOFn: failed to get clk at index %d\n", node, i);
++			goto err_put_clocks;
+ 		}
++
++		pd->clks[clk_ind++].clk = clk;
+ 	}
+ 
++	for (i = 0; i < pd->num_subsys_clks; i++) {
++		struct clk *clk = of_clk_get(node, i + clk_ind);
++
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			dev_err_probe(scpsys->dev, PTR_ERR(clk),
++				      "%pOFn: failed to get clk at index %d: %d\n",
++				      node, i + clk_ind, ret);
++			goto err_put_subsys_clocks;
++		}
++
++		pd->subsys_clks[i].clk = clk;
 +	}
 +
-+	return 0;
++	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
++	if (ret)
++		goto err_put_subsys_clocks;
++
+ 	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+ 	if (ret)
+-		goto err_put_clocks;
++		goto err_unprepare_subsys_clocks;
+ 
+ 	/*
+ 	 * Initially turn on all domains to make the domains usable
+@@ -462,6 +513,12 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
+ 
+ err_unprepare_clocks:
+ 	clk_bulk_unprepare(pd->num_clks, pd->clks);
++err_unprepare_subsys_clocks:
++	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
++err_put_subsys_clocks:
++	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
++	devm_kfree(scpsys->dev, pd->subsys_clks);
++	pd->num_subsys_clks = 0;
+ err_put_clocks:
+ 	clk_bulk_put(pd->num_clks, pd->clks);
+ 	devm_kfree(scpsys->dev, pd->clks);
+@@ -541,6 +598,10 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+ 	clk_bulk_unprepare(pd->num_clks, pd->clks);
+ 	clk_bulk_put(pd->num_clks, pd->clks);
+ 	pd->num_clks = 0;
++
++	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
++	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
++	pd->num_subsys_clks = 0;
  }
  
- static int scpsys_sram_disable(struct scpsys_domain *pd)
-@@ -172,6 +189,15 @@ static int scpsys_sram_disable(struct scpsys_domain *pd)
- 	u32 val;
- 	int tmp;
- 
-+	if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO)) {
-+		regmap_read(scpsys->base, pd->data->ctl_offs, &val);
-+		val |= PWR_SRAM_CLKISO_BIT;
-+		regmap_write(scpsys->base, pd->data->ctl_offs, val);
-+		val &= ~PWR_SRAM_ISOINT_B_BIT;
-+		regmap_write(scpsys->base, pd->data->ctl_offs, val);
-+		udelay(1);
-+	}
-+
- 	regmap_read(scpsys->base, pd->data->ctl_offs, &val);
- 	val |= pd->data->sram_pdn_bits;
- 	regmap_write(scpsys->base, pd->data->ctl_offs, val);
+ static void scpsys_domain_cleanup(struct scpsys *scpsys)
 -- 
 2.28.0
 
