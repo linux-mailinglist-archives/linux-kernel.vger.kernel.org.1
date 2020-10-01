@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19B327F9CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2303B27F9CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 08:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730881AbgJAG7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 02:59:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41024 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgJAG7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 02:59:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E6A9B320;
-        Thu,  1 Oct 2020 06:59:49 +0000 (UTC)
-From:   Coly Li <colyli@suse.de>
-To:     linux-mmc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Coly Li <colyli@suse.de>, Vicente Bergas <vicencb@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v2] mmc: core: don't set limits.discard_granularity as 0
-Date:   Thu,  1 Oct 2020 14:59:14 +0800
-Message-Id: <20201001065914.24526-1-colyli@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S1730555AbgJAG7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 02:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgJAG7d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 02:59:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF925C0613E2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:59:32 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e2so1811838wme.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 23:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=I7H3+3zuXlnwMTT9uJKAAuFuUpvHKKuLQD0ufEc89Ec=;
+        b=X4G8Q/XJypmAtZzInxZclYRa9PxF0zGPQCoePn7yt/JM19orLfLUR194h+ViPYYdmY
+         s78PM284RuTmqCT0bJnD+RQu6vgafIGOolyPUA4i/OCRo5q9z0FgXvKyEKGazkoE3Vs7
+         dhcosh8V4L9fKKAcrcK6PjvUzMaQiIE3rVcSY1OYmUM1bkahBxrtW6AoSu0auAFB52Mh
+         d01z/9QpNHV8lZMY4iBlXaO9mw2WiqgYs2+B8VT+8uTTlgbCIHjeByGRGRrNQQfU2Xs9
+         EWJxRdwyhkN0VdybbF5fV2pnZolLxkbvN60uKgkecqIrsRR1exb/4xqWyPVTQ3HAbrJa
+         nrXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=I7H3+3zuXlnwMTT9uJKAAuFuUpvHKKuLQD0ufEc89Ec=;
+        b=NS7rd1t2P+DROdQB/+0Ewx+ck8IaGPWGOsT6t8QpGue81Fyez4bACI66X+vXimGeuV
+         aNBBz4cyb50BtHe1zL1JV3D1/GFPxNsVaniV2w1ukOYsIjXqaVc2r8TFeOcjnJENS3ys
+         tsHOoVN9RRChtMzCLOo6vayiCwPkWRdh3k1o9jC2WoSd58mq2rbfl/T64rmZKlNCA9Of
+         9LivrVgAaYYHUcFZpkoGM9jgQ1slIE6HqWF+BfiJRjauOdzeTt/LiNBAe3Tj7hRAz5pf
+         O2Rw122z3IhOijmwJwxRKE11f1MquYkwSvmqf8wqBaV3YYzenrMchMgqR7FNL8w+vCeS
+         uiiw==
+X-Gm-Message-State: AOAM530iwwxwA0NobH/pCsCYOxAbP8/Wia/Yvjautlm0cU/Wi3nenIuk
+        cDeK58k0dPp5BTeRzr9wnGC7Yw==
+X-Google-Smtp-Source: ABdhPJyJ6sLSqbEYubVG8iWSLoGsRShxYo4Z7aaiVxrytC20EZMrqFnoszXDrW6WnkGhmPIQeNL9GQ==
+X-Received: by 2002:a1c:ed05:: with SMTP id l5mr6826644wmh.106.1601535571292;
+        Wed, 30 Sep 2020 23:59:31 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id 11sm6884601wmi.14.2020.09.30.23.59.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 23:59:30 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 07:59:17 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 01/17] dt-bindings: mfd: syscon: add some compatible
+ strings for Hisilicon
+Message-ID: <20201001065917.GJ6148@dell>
+References: <20200930031712.2365-1-thunder.leizhen@huawei.com>
+ <20200930031712.2365-2-thunder.leizhen@huawei.com>
+ <20200930071110.GH6148@dell>
+ <3045a295-928a-eae6-c887-e34446a170e0@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3045a295-928a-eae6-c887-e34446a170e0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
-might be set as 0 (when card->pref_erase > max_discard) while the mmc
-device still declares to support discard operation. This is buggy and
-triggered the following kernel warning message,
+On Wed, 30 Sep 2020, Leizhen (ThunderTown) wrote:
 
-WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
-CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
-Hardware name: Google Kevin (DT)
-pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-pc : __blkdev_issue_discard+0x200/0x294
-lr : __blkdev_issue_discard+0x54/0x294
-sp : ffff800011dd3b10
-x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
-__blkdev_issue_discard+0x200/0x294
-__submit_discard_cmd+0x128/0x374
-__issue_discard_cmd_orderly+0x188/0x244
-__issue_discard_cmd+0x2e8/0x33c
-issue_discard_thread+0xe8/0x2f0
-kthread+0x11c/0x120
-ret_from_fork+0x10/0x1c
----[ end trace e4c8023d33dfe77a ]---
+> 
+> 
+> On 2020/9/30 15:11, Lee Jones wrote:
+> > On Wed, 30 Sep 2020, Zhen Lei wrote:
+> > 
+> >> Add some compatible strings for Hisilicon controllers:
+> >> hisilicon,hi6220-sramctrl  --> Hi6220 SRAM controller
+> >> hisilicon,pcie-sas-subctrl --> HiP05/HiP06 PCIe-SAS subsystem controller
+> >> hisilicon,peri-subctrl     --> HiP05/HiP06 PERI subsystem controller
+> >> hisilicon,dsa-subctrl      --> HiP05/HiP06 DSA subsystem controller
+> >>
+> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >> ---
+> >>  Documentation/devicetree/bindings/mfd/syscon.yaml | 5 ++++-
+> >>  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > This was already applied by the time you re-sent it.
+> > 
+> > Any reason for sending it again?
+> 
+> Path 15 are modified. The Document patches except Patch 15 are applied,
+> but the config/DTS patches are not applied(They are applied after I re-sent).
 
-This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
-instead of 0 when (card->pref_erase > max_discard) is true. Now no more
-complain from __blkdev_issue_discard() for the improper value of discard
-granularity.
+Could you please only send patches which have not been applied.
 
-This issue is explored after commit b35fd7422c2f ("block: check queue's
-limits.discard_granularity in __blkdev_issue_discard()"), therefore add
-a "Fixes:" tag for the commit to make sure people won't miss this patch
-after applying the change of __blkdev_issue_discard().
-
-Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
-Reported-by: Vicente Bergas <vicencb@gmail.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
----
-Changelog,
-v2, change commit id of the Fixes tag.
-v1, initial version.
-
- drivers/mmc/core/queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index 6c022ef0f84d..350d0cc4ee62 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
- 	q->limits.discard_granularity = card->pref_erase << 9;
- 	/* granularity must not be greater than max. discard */
- 	if (card->pref_erase > max_discard)
--		q->limits.discard_granularity = 0;
-+		q->limits.discard_granularity = SECTOR_SIZE;
- 	if (mmc_can_secure_erase_trim(card))
- 		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
- }
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
