@@ -2,122 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721B227F9F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3204727F9F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 09:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730646AbgJAHNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 03:13:47 -0400
-Received: from mga18.intel.com ([134.134.136.126]:5771 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgJAHNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:13:46 -0400
-IronPort-SDR: kpsAF4EyWg/u1ggPocHHqz6mmsFh5pRewCSkt0+StU7NsR6qXHBT2MtqVo+7rQms0nmhLAIZ1c
- 3zEtJYvpG+tQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="150433356"
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="150433356"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 00:13:46 -0700
-IronPort-SDR: 8aN7VyV3EimkkLyP7R0V+fDmzOOxgeKmllxlDZNhDJF/YWM4MGOOV+Q5121rRPudnd/ZI6B6hr
- SU76V3G1sKrQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,323,1596524400"; 
-   d="scan'208";a="502072813"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga005.jf.intel.com with ESMTP; 01 Oct 2020 00:13:43 -0700
-Subject: Re: [PATCH v2] mmc: core: don't set limits.discard_granularity as 0
-To:     Coly Li <colyli@suse.de>, linux-mmc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Vicente Bergas <vicencb@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-References: <20201001065914.24526-1-colyli@suse.de>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e1c558b6-f33f-a4d6-64fc-ba157d4dcb83@intel.com>
-Date:   Thu, 1 Oct 2020 10:13:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731074AbgJAHOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 03:14:10 -0400
+Received: from esa3.mentor.iphmx.com ([68.232.137.180]:49102 "EHLO
+        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAHOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:14:10 -0400
+IronPort-SDR: xhHhcrYDFEl+vS29il0sag8AtnMhCGiXX4GvkpvwgvzJG2xawyMpVRDj7MoDAa/0/6Pjj6Pc15
+ CVbe1rNqAYq9Rz1nY5BLnDcuipmBe4OWVda4QhY9/2ttOCVR/ufOLLRWazNj1BmDpNmNsyBXxa
+ t9TF2JsLkA/FYIlXjaZdkizw9gXrUUT+lpAi84JRigxHYcVKh2J21wwqukPxH9sR6pzNgdjMzH
+ p3o79s/XU95nbMLvf9J9TJCSsSpeAzkxJg7PvDUNn+fWePjR3n1+1tq7Sfs3zX9cE+BLeDOAV0
+ 6AQ=
+X-IronPort-AV: E=Sophos;i="5.77,323,1596528000"; 
+   d="scan'208";a="53450460"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa3.mentor.iphmx.com with ESMTP; 30 Sep 2020 23:14:09 -0800
+IronPort-SDR: 6qp/5MCh8TZrAUwcXGzSfCbMayY5W5IJffvz4BaVkerN6NCzGdjhHJMnrm4J/AzfNZbvKEylD3
+ DUGuReh8WZthwG0JyTpwm7pE6WE2AejMfsAp8CEPUK6nk1tcUhIwiB4CuNpEOvHz8xkR71l4Zf
+ xlWgEynqWtqJSu3EjByNqCq8bf58p5j6Xxhn3dt4J9b54YhZE+jKpjAttnwuEWKu2mi8hjlkQe
+ A2mMghnPc+N7WYnK/zMyaCXhVi2X6IXN1SM+QdK1JdRNh53RLvpA5U+MzymHOFcan12v52+++8
+ FRk=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+CC:     <linux-renesas-soc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, <geert+renesas@glider.be>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        "Behme, Dirk - Bosch" <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>
+References: <20200930192124.25060-1-andrew_gabbasov@mentor.com>
+In-Reply-To: <20200930192124.25060-1-andrew_gabbasov@mentor.com>
+Subject: RE: [PATCH net] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+Date:   Thu, 1 Oct 2020 10:13:54 +0300
+Organization: Mentor Graphics Corporation
+Message-ID: <000001d697c2$71651d70$542f5850$@mentor.com>
 MIME-Version: 1.0
-In-Reply-To: <20201001065914.24526-1-colyli@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQHWl179dggpQ/YNgUW3t7t7L6TDlKmCUESw
+Content-Language: en-us
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: SVR-IES-MBX-07.mgc.mentorg.com (139.181.222.7) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/20 9:59 am, Coly Li wrote:
-> In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
-> might be set as 0 (when card->pref_erase > max_discard) while the mmc
-> device still declares to support discard operation. This is buggy and
-> triggered the following kernel warning message,
+Hi Sergei,
+
+> -----Original Message-----
+> From: Gabbasov, Andrew
+> Sent: Wednesday, September 30, 2020 10:21 PM
+> To: linux-renesas-soc@vger.kernel.org; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Sergei Shtylyov <sergei.shtylyov@gmail.com>; David
+> S. Miller <davem@davemloft.net>; geert+renesas@glider.be; Julia Lawall
+> <julia.lawall@inria.fr>; Behme, Dirk - Bosch <dirk.behme@de.bosch.com>;
+> Eugeniu Rosca <erosca@de.adit-jv.com>; Gabbasov, Andrew
+> <Andrew_Gabbasov@mentor.com>
+> Subject: [PATCH net] ravb: Fix bit fields checking in ravb_hwtstamp_get()
 > 
-> WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
-> CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
-> Hardware name: Google Kevin (DT)
-> pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-> pc : __blkdev_issue_discard+0x200/0x294
-> lr : __blkdev_issue_discard+0x54/0x294
-> sp : ffff800011dd3b10
-> x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
-> __blkdev_issue_discard+0x200/0x294
-> __submit_discard_cmd+0x128/0x374
-> __issue_discard_cmd_orderly+0x188/0x244
-> __issue_discard_cmd+0x2e8/0x33c
-> issue_discard_thread+0xe8/0x2f0
-> kthread+0x11c/0x120
-> ret_from_fork+0x10/0x1c
-> ---[ end trace e4c8023d33dfe77a ]---
+> In the function ravb_hwtstamp_get() in ravb_main.c with the existing
+values
+> for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
+> (0x6)
 > 
-> This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
-> instead of 0 when (card->pref_erase > max_discard) is true. Now no more
-> complain from __blkdev_issue_discard() for the improper value of discard
-> granularity.
+> if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+> 	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+> else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+> 	config.rx_filter = HWTSTAMP_FILTER_ALL;
 > 
-> This issue is explored after commit b35fd7422c2f ("block: check queue's
-
-explored -> exposed
-
-> limits.discard_granularity in __blkdev_issue_discard()"), therefore add
-> a "Fixes:" tag for the commit to make sure people won't miss this patch
-> after applying the change of __blkdev_issue_discard().
+> if the test on RAVB_RXTSTAMP_TYPE_ALL should be true, it will never be
+> reached.
 > 
-> Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
+> This issue can be verified with 'hwtstamp_config' testing program
+> (tools/testing/selftests/net/hwtstamp_config.c). Setting filter type to
+ALL
+> and subsequent retrieving it gives incorrect value:
+> 
+> $ hwtstamp_config eth0 OFF ALL
+> flags = 0
+> tx_type = OFF
+> rx_filter = ALL
+> $ hwtstamp_config eth0
+> flags = 0
+> tx_type = OFF
+> rx_filter = PTP_V2_L2_EVENT
+> 
+> Correct this by converting if-else's to switch.
 
-I thought you would keep the other fixes tag also
+Earlier you proposed to fix this issue by changing the value
+of RAVB_RXTSTAMP_TYPE_ALL constant to 0x4.
+Unfortunately, simple changing of the constant value will not
+be enough, since the code in ravb_rx() (actually determining
+if timestamp is needed)
 
-> Reported-by: Vicente Bergas <vicencb@gmail.com>
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+u32 get_ts = priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE;
+[...]
+get_ts &= (q == RAVB_NC) ?
+                RAVB_RXTSTAMP_TYPE_V2_L2_EVENT :
+                ~RAVB_RXTSTAMP_TYPE_V2_L2_EVENT;
 
-Otherwise:
+will work incorrectly and will need to be fixed too, making this
+piece of code more complicated.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+So, it's probably easier and safer to keep the constant value and
+the code in ravb_rx() intact, and just fix the get ioctl code,
+where the issue is actually located.
 
+Thanks!
+
+Best regards,
+Andrew
+
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 > ---
-> Changelog,
-> v2, change commit id of the Fixes tag.
-> v1, initial version.
+>  drivers/net/ethernet/renesas/ravb_main.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
->  drivers/mmc/core/queue.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c
+> b/drivers/net/ethernet/renesas/ravb_main.c
+> index df89d09b253e..c0610b2d3b14 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -1802,12 +1802,16 @@ static int ravb_hwtstamp_get(struct net_device
+> *ndev, struct ifreq *req)
+>  	config.flags = 0;
+>  	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
+>  						HWTSTAMP_TX_OFF;
+> -	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+> +	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
+> +	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
+>  		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+> -	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+> +		break;
+> +	case RAVB_RXTSTAMP_TYPE_ALL:
+>  		config.rx_filter = HWTSTAMP_FILTER_ALL;
+> -	else
+> +		break;
+> +	default:
+>  		config.rx_filter = HWTSTAMP_FILTER_NONE;
+> +	}
 > 
-> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-> index 6c022ef0f84d..350d0cc4ee62 100644
-> --- a/drivers/mmc/core/queue.c
-> +++ b/drivers/mmc/core/queue.c
-> @@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
->  	q->limits.discard_granularity = card->pref_erase << 9;
->  	/* granularity must not be greater than max. discard */
->  	if (card->pref_erase > max_discard)
-> -		q->limits.discard_granularity = 0;
-> +		q->limits.discard_granularity = SECTOR_SIZE;
->  	if (mmc_can_secure_erase_trim(card))
->  		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
->  }
-> 
+>  	return copy_to_user(req->ifr_data, &config, sizeof(config)) ?
+>  		-EFAULT : 0;
+> --
+> 2.21.0
+
 
