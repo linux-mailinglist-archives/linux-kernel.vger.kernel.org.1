@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D8527F760
+	by mail.lfdr.de (Postfix) with ESMTP id C6C0427F761
 	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 03:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgJAB24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Sep 2020 21:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S1730613AbgJAB3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Sep 2020 21:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730211AbgJAB2t (ORCPT
+        with ESMTP id S1730378AbgJAB2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Sep 2020 21:28:49 -0400
-Received: from mail-ua1-x963.google.com (mail-ua1-x963.google.com [IPv6:2607:f8b0:4864:20::963])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C278DC0613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:28:49 -0700 (PDT)
-Received: by mail-ua1-x963.google.com with SMTP id v5so999020uau.10
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:28:49 -0700 (PDT)
+        Wed, 30 Sep 2020 21:28:52 -0400
+Received: from mail-vk1-xa62.google.com (mail-vk1-xa62.google.com [IPv6:2607:f8b0:4864:20::a62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6A3C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:28:51 -0700 (PDT)
+Received: by mail-vk1-xa62.google.com with SMTP id b4so741266vkh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Sep 2020 18:28:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2MljkgjooAMeAJ9jp32JbeXo3ZuNj29YW0p4n/9lGSg=;
-        b=G/qsGaMHps1tW9VJt1JgVieb2H9AML20kVlPew/c/WQJXs/YfyX3oFrdes3puA5Ttq
-         HR7eHhUQkL1gh1sX30R7zGdovskFtEuxeKof8s0eVPNhGIdUJQEB9p5Ozx/5hny6fWOp
-         KEGppfsMgXB9o1BGqCgMF8jevchcOem2tDOu8=
+        bh=HQs2Qnt4yBrCD1+M7eU08HdvBhWQd9QwBfGtQr/7WFI=;
+        b=JS8ez8p3Nbh3wLq4IeyXlvL7bULGRQuy8jlrXINixGeOsd8ohYjzZWyDxzoBdIoWLD
+         c8YYDXgjT/dQFQJMGSgehMVnhTE6Ii1xyVcBDI8BZUSH/Ov+PfUiWQ8uX4XnIeTPxwxh
+         LKFpJ0oV9T1ThRn1mFwrG3gn3NWTLaIDFB3Ls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=2MljkgjooAMeAJ9jp32JbeXo3ZuNj29YW0p4n/9lGSg=;
-        b=qfL3imRZqFXjvCw3aEu0qJtBhX0sOQzqg2KLc8yBFAPkaJfNBZpOxnzIR5Byko6s2V
-         t/YqIemnC3JirWo0vO+SX5epE6GVJYZDLrNzQDxd1o2xe4FXl3VlmOMiplnIGHZYsRCG
-         PhKuKLIVlBWBpV3If5NC1NUCvtmFMtzjg70HA9X9nmXcjS/ioyNR9dQoYgV5VtUncwLq
-         YOz/5MlUW/xKyAWmdM/76ovVXwTuijS5zY0lwBykwXhVYcuEGgZjrdpJMXRc4lTRol1L
-         EjVsdEpcqna6wtFtoWaP06kJE6im/NPyREZJrwBX9djXpnXIdj32jq9/zGwWR2cyeIaV
-         XSSg==
-X-Gm-Message-State: AOAM531CJ947Gg1hi9pzuh3ClmwKOammjenHi556vN00EqNh5lPhfPWW
-        kCJZCniVTCL8LyPwLyhQJ5e1leC3s5UI3Goyde/7ODNlKH2s
-X-Google-Smtp-Source: ABdhPJyPlXo7Jxv2wi1iKxJvukXban8+z46duHmMUkcC+Eh1IhNWUyoe7J6MmM75wDnfszxz3Ul8TU6S9qHL
-X-Received: by 2002:ab0:2e85:: with SMTP id f5mr3425804uaa.89.1601515728941;
-        Wed, 30 Sep 2020 18:28:48 -0700 (PDT)
+        bh=HQs2Qnt4yBrCD1+M7eU08HdvBhWQd9QwBfGtQr/7WFI=;
+        b=Vvwmk15WAxRyyvHxSdjVpVuBXsdsV80p/7gY3DLnsUZnMvQD1BNHefqJIcocs/zHMb
+         O8uS1v9mUXbMcRp/VMkV2ap/Ojupx3bvl22dohcA67YqZKlG5NKtCv0y7yeeNpd8w1bI
+         uodAMHyIsE4GDuDzsDTsDP9neRH1qvgwGPmBcmtd2eBfx74iI22XHLOG5x+OutWaidXg
+         R3SjNKc93kqL+VuucDB7nIbQL3AiFR0e0olFYoB4SOSgAH4wJPSJlNmKqbzoYy+6MhgJ
+         b4Esl1jB/gxDJHHtUS80hYn+sCs6clTJFtWvxnyIn5O0+lSBpO6GBq62qruvdfHDvj7g
+         l8nQ==
+X-Gm-Message-State: AOAM532JQwg9fHk7ZcjQcSS8jZS50bPb7qUlRRTjan/9PRYhnydz7WVy
+        Tww4enkaK2Ea9t6/L0LnLUFOJi5pF+YmfHwGy9SXSP3wh2q5
+X-Google-Smtp-Source: ABdhPJxb1sUqqcmb86r0eTTNT2y2PT82yyewnQvy0zJMSrGTNjkfeeIWZ45vkWajUcbAnHMyAWqdwWUkUFYl
+X-Received: by 2002:a1f:bf8c:: with SMTP id p134mr3514043vkf.12.1601515731048;
+        Wed, 30 Sep 2020 18:28:51 -0700 (PDT)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id r25sm520472vkq.14.2020.09.30.18.28.47
+        by smtp-relay.gmail.com with ESMTPS id r25sm520472vkq.14.2020.09.30.18.28.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 18:28:48 -0700 (PDT)
+        Wed, 30 Sep 2020 18:28:51 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -51,10 +51,11 @@ To:     Arnd Bergmann <arnd@arndb.de>,
         Scott Branden <scott.branden@broadcom.com>
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
-        Desmond Yan <desmond.yan@broadcom.com>
-Subject: [PATCH v5 06/15] misc: bcm-vk: add open/release
-Date:   Wed, 30 Sep 2020 18:28:01 -0700
-Message-Id: <20201001012810.4172-7-scott.branden@broadcom.com>
+        Desmond Yan <desmond.yan@broadcom.com>,
+        James Hu <james.hu@broadcom.com>
+Subject: [PATCH v5 07/15] misc: bcm-vk: add ioctl load_image
+Date:   Wed, 30 Sep 2020 18:28:02 -0700
+Message-Id: <20201001012810.4172-8-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201001012810.4172-1-scott.branden@broadcom.com>
 References: <20201001012810.4172-1-scott.branden@broadcom.com>
@@ -62,321 +63,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add open/release to replace private data with context for other methods
-to use.  Reason for the context is because it is allowed for multiple
-sessions to open sysfs.  For each file open, when upper layer queries the
-response, only those that are tied to a specified open should be returned.
+Add ioctl support to issue load_image operation to VK card.
 
 Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
+Co-developed-by: James Hu <james.hu@broadcom.com>
+Signed-off-by: James Hu <james.hu@broadcom.com>
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- drivers/misc/bcm-vk/Makefile     |   4 +-
- drivers/misc/bcm-vk/bcm_vk.h     |  15 ++++
- drivers/misc/bcm-vk/bcm_vk_dev.c |  23 ++++++
- drivers/misc/bcm-vk/bcm_vk_msg.c | 126 +++++++++++++++++++++++++++++++
- drivers/misc/bcm-vk/bcm_vk_msg.h |  31 ++++++++
- 5 files changed, 198 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
- create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
+ drivers/misc/bcm-vk/bcm_vk.h     |  3 +
+ drivers/misc/bcm-vk/bcm_vk_dev.c | 95 ++++++++++++++++++++++++++++++++
+ 2 files changed, 98 insertions(+)
 
-diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-index f8a7ac4c242f..a2ae79858409 100644
---- a/drivers/misc/bcm-vk/Makefile
-+++ b/drivers/misc/bcm-vk/Makefile
-@@ -5,4 +5,6 @@
- 
- obj-$(CONFIG_BCM_VK) += bcm_vk.o
- bcm_vk-objs := \
--	bcm_vk_dev.o
-+	bcm_vk_dev.o \
-+	bcm_vk_msg.o
-+
 diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index f428ad9a0c3d..5f0fcfdaf265 100644
+index 5f0fcfdaf265..726aab71bb6b 100644
 --- a/drivers/misc/bcm-vk/bcm_vk.h
 +++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -7,9 +7,14 @@
- #define BCM_VK_H
- 
- #include <linux/firmware.h>
-+#include <linux/kref.h>
- #include <linux/miscdevice.h>
-+#include <linux/mutex.h>
+@@ -12,6 +12,7 @@
+ #include <linux/mutex.h>
  #include <linux/pci.h>
  #include <linux/sched/signal.h>
-+#include <uapi/linux/misc/bcm_vk.h>
-+
-+#include "bcm_vk_msg.h"
++#include <linux/uaccess.h>
+ #include <uapi/linux/misc/bcm_vk.h>
  
- #define DRV_MODULE_NAME		"bcm-vk"
+ #include "bcm_vk_msg.h"
+@@ -220,6 +221,8 @@ struct bcm_vk {
  
-@@ -218,6 +223,13 @@ struct bcm_vk {
+ 	struct bcm_vk_dauth_info dauth_info;
+ 
++	/* mutex to protect the ioctls */
++	struct mutex mutex;
  	struct miscdevice miscdev;
  	int devid; /* dev id allocated */
  
-+	/* Reference-counting to handle file operations */
-+	struct kref kref;
-+
-+	spinlock_t ctx_lock; /* Spinlock for component context */
-+	struct bcm_vk_ctx ctx[VK_CMPT_CTX_MAX];
-+	struct bcm_vk_ht_entry pid_ht[VK_PID_HT_SZ];
-+
- 	struct workqueue_struct *wq_thread;
- 	struct work_struct wq_work; /* work queue for deferred job */
- 	unsigned long wq_offload[1]; /* various flags on wq requested */
-@@ -278,6 +290,9 @@ static inline bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk)
- 	return (rdy_marker == VK_BAR1_MSGQ_RDY_MARKER);
- }
- 
-+int bcm_vk_open(struct inode *inode, struct file *p_file);
-+int bcm_vk_release(struct inode *inode, struct file *p_file);
-+void bcm_vk_release_data(struct kref *kref);
- int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
- 
- #endif
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index 7ff43d406950..4bcbd507803d 100644
+index 4bcbd507803d..77af701cf579 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -8,6 +8,7 @@
- #include <linux/firmware.h>
- #include <linux/fs.h>
+@@ -10,6 +10,7 @@
  #include <linux/idr.h>
-+#include <linux/kref.h>
+ #include <linux/kref.h>
  #include <linux/module.h>
++#include <linux/mutex.h>
  #include <linux/pci.h>
  #include <linux/pci_regs.h>
-@@ -630,6 +631,12 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
- 	return 0;
- }
- 
-+static const struct file_operations bcm_vk_fops = {
-+	.owner = THIS_MODULE,
-+	.open = bcm_vk_open,
-+	.release = bcm_vk_release,
-+};
-+
- static int bcm_vk_on_panic(struct notifier_block *nb,
- 			   unsigned long e, void *p)
- {
-@@ -652,10 +659,13 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	struct miscdevice *misc_device;
- 	u32 boot_status;
- 
-+	/* allocate vk structure which is tied to kref for freeing */
- 	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
- 	if (!vk)
- 		return -ENOMEM;
- 
-+	kref_init(&vk->kref);
-+
- 	err = pci_enable_device(pdev);
- 	if (err) {
- 		dev_err(dev, "Cannot enable PCI device\n");
-@@ -732,6 +742,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		err = -ENOMEM;
- 		goto err_ida_remove;
+ #include <uapi/linux/misc/bcm_vk.h>
+@@ -580,6 +581,71 @@ static void bcm_vk_wq_handler(struct work_struct *work)
  	}
-+	misc_device->fops = &bcm_vk_fops,
- 
- 	err = misc_register(misc_device);
- 	if (err) {
-@@ -820,6 +831,16 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	return err;
  }
  
-+void bcm_vk_release_data(struct kref *kref)
++static long bcm_vk_load_image(struct bcm_vk *vk,
++			      const struct vk_image __user *arg)
 +{
-+	struct bcm_vk *vk = container_of(kref, struct bcm_vk, kref);
-+	struct pci_dev *pdev = vk->pdev;
-+
-+	dev_dbg(&pdev->dev, "BCM-VK:%d release data 0x%p\n", vk->devid, vk);
-+	pci_dev_put(pdev);
-+	kfree(vk);
-+}
-+
- static void bcm_vk_remove(struct pci_dev *pdev)
- {
- 	int i;
-@@ -863,6 +884,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 	pci_release_regions(pdev);
- 	pci_free_irq_vectors(pdev);
- 	pci_disable_device(pdev);
-+
-+	kref_put(&vk->kref, bcm_vk_release_data);
- }
- 
- static void bcm_vk_shutdown(struct pci_dev *pdev)
-diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
-new file mode 100644
-index 000000000000..eb261fb87c9d
---- /dev/null
-+++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2018-2020 Broadcom.
-+ */
-+
-+#include "bcm_vk.h"
-+#include "bcm_vk_msg.h"
-+
-+/*
-+ * allocate a ctx per file struct
-+ */
-+static struct bcm_vk_ctx *bcm_vk_get_ctx(struct bcm_vk *vk, const pid_t pid)
-+{
-+	u32 i;
-+	struct bcm_vk_ctx *ctx = NULL;
-+	u32 hash_idx = hash_32(pid, VK_PID_HT_SHIFT_BIT);
-+
-+	spin_lock(&vk->ctx_lock);
-+
-+	for (i = 0; i < ARRAY_SIZE(vk->ctx); i++) {
-+		if (!vk->ctx[i].in_use) {
-+			vk->ctx[i].in_use = true;
-+			ctx = &vk->ctx[i];
-+			break;
-+		}
-+	}
-+
-+	if (!ctx) {
-+		dev_err(&vk->pdev->dev, "All context in use\n");
-+
-+		goto all_in_use_exit;
-+	}
-+
-+	/* set the pid and insert it to hash table */
-+	ctx->pid = pid;
-+	ctx->hash_idx = hash_idx;
-+	list_add_tail(&ctx->node, &vk->pid_ht[hash_idx].head);
-+
-+	/* increase kref */
-+	kref_get(&vk->kref);
-+
-+all_in_use_exit:
-+	spin_unlock(&vk->ctx_lock);
-+
-+	return ctx;
-+}
-+
-+static int bcm_vk_free_ctx(struct bcm_vk *vk, struct bcm_vk_ctx *ctx)
-+{
-+	u32 idx;
-+	u32 hash_idx;
-+	pid_t pid;
-+	struct bcm_vk_ctx *entry;
-+	int count = 0;
-+
-+	if (!ctx) {
-+		dev_err(&vk->pdev->dev, "NULL context detected\n");
-+		return -EINVAL;
-+	}
-+	idx = ctx->idx;
-+	pid = ctx->pid;
-+
-+	spin_lock(&vk->ctx_lock);
-+
-+	if (!vk->ctx[idx].in_use) {
-+		dev_err(&vk->pdev->dev, "context[%d] not in use!\n", idx);
-+	} else {
-+		vk->ctx[idx].in_use = false;
-+		vk->ctx[idx].miscdev = NULL;
-+
-+		/* Remove it from hash list and see if it is the last one. */
-+		list_del(&ctx->node);
-+		hash_idx = ctx->hash_idx;
-+		list_for_each_entry(entry, &vk->pid_ht[hash_idx].head, node) {
-+			if (entry->pid == pid)
-+				count++;
-+		}
-+	}
-+
-+	spin_unlock(&vk->ctx_lock);
-+
-+	return count;
-+}
-+int bcm_vk_open(struct inode *inode, struct file *p_file)
-+{
-+	struct bcm_vk_ctx *ctx;
-+	struct miscdevice *miscdev = (struct miscdevice *)p_file->private_data;
-+	struct bcm_vk *vk = container_of(miscdev, struct bcm_vk, miscdev);
 +	struct device *dev = &vk->pdev->dev;
-+	int rc = 0;
++	const char *image_name;
++	struct vk_image image;
++	u32 next_loadable;
++	enum soc_idx idx;
++	int image_idx;
++	int ret = -EPERM;
 +
-+	/* get a context and set it up for file */
-+	ctx = bcm_vk_get_ctx(vk, task_pid_nr(current));
-+	if (!ctx) {
-+		dev_err(dev, "Error allocating context\n");
-+		rc = -ENOMEM;
-+	} else {
-+		/*
-+		 * set up context and replace private data with context for
-+		 * other methods to use.  Reason for the context is because
-+		 * it is allowed for multiple sessions to open the sysfs, and
-+		 * for each file open, when upper layer query the response,
-+		 * only those that are tied to a specific open should be
-+		 * returned.  The context->idx will be used for such binding
-+		 */
-+		ctx->miscdev = miscdev;
-+		p_file->private_data = ctx;
-+		dev_dbg(dev, "ctx_returned with idx %d, pid %d\n",
-+			ctx->idx, ctx->pid);
++	if (copy_from_user(&image, arg, sizeof(image)))
++		return -EACCES;
++
++	if ((image.type != VK_IMAGE_TYPE_BOOT1) &&
++	    (image.type != VK_IMAGE_TYPE_BOOT2)) {
++		dev_err(dev, "invalid image.type %u\n", image.type);
++		return ret;
 +	}
-+	return rc;
-+}
 +
-+int bcm_vk_release(struct inode *inode, struct file *p_file)
-+{
-+	int ret;
-+	struct bcm_vk_ctx *ctx = p_file->private_data;
-+	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
++	next_loadable = bcm_vk_next_boot_image(vk);
++	if (next_loadable != image.type) {
++		dev_err(dev, "Next expected image %u, Loading %u\n",
++			next_loadable, image.type);
++		return ret;
++	}
 +
-+	ret = bcm_vk_free_ctx(vk, ctx);
++	/*
++	 * if something is pending download already.  This could only happen
++	 * for now when the driver is being loaded, or if someone has issued
++	 * another download command in another shell.
++	 */
++	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0) {
++		dev_err(dev, "Download operation already pending.\n");
++		return ret;
++	}
 +
-+	kref_put(&vk->kref, bcm_vk_release_data);
++	image_name = image.filename;
++	if (image_name[0] == '\0') {
++		/* Use default image name if NULL */
++		idx = get_soc_idx(vk);
++		if (idx == VK_IDX_INVALID)
++			goto err_idx;
++
++		/* Image idx starts with boot1 */
++		image_idx = image.type - VK_IMAGE_TYPE_BOOT1;
++		image_name = get_load_fw_name(vk, &image_tab[idx][image_idx]);
++		if (!image_name) {
++			dev_err(dev, "No suitable image found for type %d",
++				image.type);
++			ret = -ENOENT;
++			goto err_idx;
++		}
++	} else {
++		/* Ensure filename is NULL terminated */
++		image.filename[sizeof(image.filename) - 1] = '\0';
++	}
++	ret = bcm_vk_load_image_by_type(vk, image.type, image_name);
++	dev_info(dev, "Load %s, ret %d\n", image_name, ret);
++err_idx:
++	clear_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload);
 +
 +	return ret;
 +}
 +
-diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.h b/drivers/misc/bcm-vk/bcm_vk_msg.h
-new file mode 100644
-index 000000000000..32516abcaf89
---- /dev/null
-+++ b/drivers/misc/bcm-vk/bcm_vk_msg.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2018-2020 Broadcom.
-+ */
+ static void bcm_to_v_reset_doorbell(struct bcm_vk *vk, u32 db_val)
+ {
+ 	vkwrite32(vk, db_val, BAR_0, VK_BAR0_RESET_DB_BASE);
+@@ -631,10 +697,38 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
+ 	return 0;
+ }
+ 
++static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	long ret = -EINVAL;
++	struct bcm_vk_ctx *ctx = file->private_data;
++	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
++	void __user *argp = (void __user *)arg;
 +
-+#ifndef BCM_VK_MSG_H
-+#define BCM_VK_MSG_H
++	dev_dbg(&vk->pdev->dev,
++		"ioctl, cmd=0x%02x, arg=0x%02lx\n",
++		cmd, arg);
 +
-+/* context per session opening of sysfs */
-+struct bcm_vk_ctx {
-+	struct list_head node; /* use for linkage in Hash Table */
-+	unsigned int idx;
-+	bool in_use;
-+	pid_t pid;
-+	u32 hash_idx;
-+	struct miscdevice *miscdev;
-+};
++	mutex_lock(&vk->mutex);
 +
-+/* pid hash table entry */
-+struct bcm_vk_ht_entry {
-+	struct list_head head;
-+};
++	switch (cmd) {
++	case VK_IOCTL_LOAD_IMAGE:
++		ret = bcm_vk_load_image(vk, argp);
++		break;
 +
-+/* total number of supported ctx, 32 ctx each for 5 components */
-+#define VK_CMPT_CTX_MAX		(32 * 5)
++	default:
++		break;
++	}
 +
-+/* hash table defines to store the opened FDs */
-+#define VK_PID_HT_SHIFT_BIT	7 /* 128 */
-+#define VK_PID_HT_SZ		BIT(VK_PID_HT_SHIFT_BIT)
++	mutex_unlock(&vk->mutex);
 +
-+#endif
++	return ret;
++}
++
+ static const struct file_operations bcm_vk_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = bcm_vk_open,
+ 	.release = bcm_vk_release,
++	.unlocked_ioctl = bcm_vk_ioctl,
+ };
+ 
+ static int bcm_vk_on_panic(struct notifier_block *nb,
+@@ -665,6 +759,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		return -ENOMEM;
+ 
+ 	kref_init(&vk->kref);
++	mutex_init(&vk->mutex);
+ 
+ 	err = pci_enable_device(pdev);
+ 	if (err) {
 -- 
 2.17.1
 
