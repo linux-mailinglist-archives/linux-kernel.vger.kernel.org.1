@@ -2,160 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEEA2800BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D432800DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  1 Oct 2020 16:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732139AbgJAOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 10:01:40 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:38801 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732669AbgJAOBe (ORCPT
+        id S1732251AbgJAOF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 10:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732018AbgJAOF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:01:34 -0400
-Received: by mail-oo1-f67.google.com with SMTP id r10so1495345oor.5
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:01:33 -0700 (PDT)
+        Thu, 1 Oct 2020 10:05:29 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216FBC0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 07:05:29 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id l15so2325174wmh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 07:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w3QVRT/jOOAq5ZMDxd7abgDmidUjV54yxotdkWQACvo=;
+        b=iN41AadoYyiL2k6h/OTKkRNPeByAwBmWbJyLRLjWYNFVVD8SxC6zPS0Tt9A49v65L8
+         mvKdqtRpXURUZ5FVmOgY3LFMD2bNEyZraKCvS8uVnZnDX3czYtf5bJcqixyC7HhXFW5i
+         701t5cehleEkwTHc+OW+wfZA0SJjv+HxF26kUP2X98jGTI2kP75QwOHcwQXjlH+w8B4i
+         kgrZUCjcSoS4z9AoO73Hh9acdtbd7bbkSpLFFyCVPNU9xpeM6HpTeAA2HIFWy4cAiXcR
+         4RSxoBKJlJw54BPb2yInaPbc8bdqwitlPQOYkbbwc87/W4od128pVonguMBdFo/AZ5Vd
+         n1HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SPPit0voQ5iZSd9YAtw226cZcfg7JS5J3IK/RTi0Ep0=;
-        b=lkUg/IOmIpzlebYW7/STffzmlqK2NKVRmtuYgekPYA1+aT/wQbjLPmrskCZkOX0DF1
-         fzSg/Hzlz/zpCd5yBiDXb2SV0J9WUh1vJOIn03IjQb3a9d9cloAphN32NC45ORCbRaGX
-         TE/rNgIT8rTo3LzVwhm6rM30NBvyCT93T2GGkyhHtg8026G4prAR6dFhJXQGGCiFWP62
-         gDE8xdT1Ov857XKYW7QEn+Yg9z2lWD/9WUhXiHTgQe/PA40KXRHiCGK59T0mk6/7R1lU
-         5Z95Xkz1MIoH+NGXa3LAMl8xm6rMbY26ipr+++AJ7z88xXBkXbuyiGe0FOYARoZn/GMg
-         7mow==
-X-Gm-Message-State: AOAM533/VIWOk2jMe3WNjBgtTdkurMxF3D7QHUKpKm0MaUandmeyQCTQ
-        TSluFDZ3T3APah+onNcj/A==
-X-Google-Smtp-Source: ABdhPJydih/aHjZHfjgbKwgMy0lYj0D+YWruwhwC4nk7d63ZkCCJeNY48AJ80aqtxuvzpQ8OUVjoAA==
-X-Received: by 2002:a4a:1a44:: with SMTP id 65mr5900885oof.30.1601560892873;
-        Thu, 01 Oct 2020 07:01:32 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id q81sm1032138oia.46.2020.10.01.07.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 07:01:32 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: [PATCH v4 9/9] Documentation: arm64: Document PMU counters access from userspace
-Date:   Thu,  1 Oct 2020 09:01:16 -0500
-Message-Id: <20201001140116.651970-10-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201001140116.651970-1-robh@kernel.org>
-References: <20201001140116.651970-1-robh@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w3QVRT/jOOAq5ZMDxd7abgDmidUjV54yxotdkWQACvo=;
+        b=a8tCCNLYy6Or3Hnx/2ODxFUTazUKbAbXKsulu/y0a+bgt5zzbGeZMRZZS/KxJ0jTBF
+         fH4BqMsv9xlfQBsGYFNDQnuFTd8ycJSaYyIpkOWMIYjCji7lYBbKHKziSdAZ7kwh2+bZ
+         cjUJDkWK3lpw5pJJo2lJ57AGRnIDFnaSHVbt/F8Z2Zosbs8CyQ1U0S39oqSEAA5L3DQz
+         GhwM5VlS1oYON6aBG9TMZGShx0CMH1ZtOGo34n1PtJOpJOHGKkJPmjdWjWwujVZcN/kE
+         /r6tcsMxei0/2JI27VIQFrRGq9HzMinlPJZ2xpXPhb2Hf+DWdXbS4q+H67uQw07Mf5E6
+         /WkA==
+X-Gm-Message-State: AOAM532aJPtryIR4wsb/VAs0/EVUkpJ8OZHFBl/rC8lRx09i0Ch8LBUv
+        iiGlH+XIkKlTtrTdc3JC0x3uuVX9wpDPu2sHYoM=
+X-Google-Smtp-Source: ABdhPJwosbQT4PVtn88XFzi7q/IHiboixcUsoO78LhaeO+AX0pxipGsBjeL77hjCzfCm5W3xTDrV+e6fNdJIlPTjUKs=
+X-Received: by 2002:a1c:49c2:: with SMTP id w185mr201432wma.70.1601561126918;
+ Thu, 01 Oct 2020 07:05:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ghmu1758gs.fsf@gouders.net>
+In-Reply-To: <ghmu1758gs.fsf@gouders.net>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 1 Oct 2020 10:05:15 -0400
+Message-ID: <CADnq5_OOL3UZXKXEKU8VzkZAkOnk9HM8m=nEwywoQPm4GXs0rw@mail.gmail.com>
+Subject: Re: BUG: amdgpu: NULL pointer dereference introduced in 5.9-rc1
+To:     Dirk Gouders <dirk@gouders.net>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
+On Wed, Sep 30, 2020 at 4:46 PM Dirk Gouders <dirk@gouders.net> wrote:
+>
+> Commit c1cf79ca5ced46 (drm/amdgpu: use IP discovery table for renoir)
+> introduced a NULL pointer dereference when booting with
+> amdgpu.discovery=0.
+>
+> For amdgpu.discovery=0 that commit effectively removed the call of
+> vega10_reg_base_init(adev), so I tested the correctness of the bisect
+> session by restoring that function call for amdgpu_discovery == 0 and with
+> that change, the NULL pointer dereference does not occur:
+>
 
-Add a documentation file to describe the access to the pmu hardware
-counters from userspace
+Can I add your Signed-off-by?
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
-  - Update links to test examples
+Thanks,
 
-Changes from Raphael's v4:
-  - Convert to rSt
-  - Update chained event status
-  - Add section for heterogeneous systems
----
- Documentation/arm64/index.rst                 |  1 +
- .../arm64/perf_counter_user_access.rst        | 56 +++++++++++++++++++
- 2 files changed, 57 insertions(+)
- create mode 100644 Documentation/arm64/perf_counter_user_access.rst
+Alex
 
-diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
-index d9665d83c53a..c712a08e7627 100644
---- a/Documentation/arm64/index.rst
-+++ b/Documentation/arm64/index.rst
-@@ -15,6 +15,7 @@ ARM64 Architecture
-     legacy_instructions
-     memory
-     perf
-+    perf_counter_user_access
-     pointer-authentication
-     silicon-errata
-     sve
-diff --git a/Documentation/arm64/perf_counter_user_access.rst b/Documentation/arm64/perf_counter_user_access.rst
-new file mode 100644
-index 000000000000..e49e141f10cc
---- /dev/null
-+++ b/Documentation/arm64/perf_counter_user_access.rst
-@@ -0,0 +1,56 @@
-+=============================================
-+Access to PMU hardware counter from userspace
-+=============================================
-+
-+Overview
-+--------
-+The perf userspace tool relies on the PMU to monitor events. It offers an
-+abstraction layer over the hardware counters since the underlying
-+implementation is cpu-dependent.
-+Arm64 allows userspace tools to have access to the registers storing the
-+hardware counters' values directly.
-+
-+This targets specifically self-monitoring tasks in order to reduce the overhead
-+by directly accessing the registers without having to go through the kernel.
-+
-+How-to
-+------
-+The focus is set on the armv8 pmuv3 which makes sure that the access to the pmu
-+registers is enabled and that the userspace has access to the relevant
-+information in order to use them.
-+
-+In order to have access to the hardware counter it is necessary to open the event
-+using the perf tool interface: the sys_perf_event_open syscall returns a fd which
-+can subsequently be used with the mmap syscall in order to retrieve a page of
-+memory containing information about the event.
-+The PMU driver uses this page to expose to the user the hardware counter's
-+index and other necessary data. Using this index enables the user to access the
-+PMU registers using the `mrs` instruction.
-+
-+The userspace access is supported in libperf using the perf_evsel__mmap()
-+and perf_evsel__read() functions. See `tools/lib/perf/tests/test-evsel.c`_ for
-+an example.
-+
-+About heterogeneous systems
-+---------------------------
-+On heterogeneous systems such as big.LITTLE, userspace PMU counter access can
-+only be enabled when the tasks are pinned to a homogeneous subset of cores and
-+the corresponding PMU instance is opened by specifying the 'type' attribute.
-+The use of generic event types is not supported in this case.
-+
-+Have a look at `tools/perf/arch/arm64/tests/user-events.c`_ for an example. It
-+can be run using the perf tool to check that the access to the registers works
-+correctly from userspace:
-+
-+.. code-block:: sh
-+
-+  perf test -v user
-+
-+About chained events
-+--------------------
-+Chained events are not supported in userspace. If a 64-bit counter is requested,
-+userspace access will only be enabled if the underlying counter is 64-bit.
-+
-+.. Links
-+.. _tools/perf/arch/arm64/tests/user-events.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
--- 
-2.25.1
-
+> diff --git a/drivers/gpu/drm/amd/amdgpu/soc15.c b/drivers/gpu/drm/amd/amdgpu/soc15.c
+> index 84d811b6e48b..2e93c5e1e7e6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/soc15.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+> @@ -699,7 +699,8 @@ static void soc15_reg_base_init(struct amdgpu_device *adev)
+>                                          "fallback to legacy init method\n");
+>                                 vega10_reg_base_init(adev);
+>                         }
+> -               }
+> +               } else
+> +                       vega10_reg_base_init(adev);
+>                 break;
+>         case CHIP_VEGA20:
+>                 vega20_reg_base_init(adev);
+>
+> Dirk
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
