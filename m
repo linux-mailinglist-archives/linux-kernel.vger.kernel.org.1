@@ -2,147 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5927281476
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7758B281478
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387836AbgJBNt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBNt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:49:58 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BE2C0613D0;
-        Fri,  2 Oct 2020 06:49:55 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x22so1245752pfo.12;
-        Fri, 02 Oct 2020 06:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pd2E4pk015R2XdMt2k5oTuv87igGS+Moi+dfcF3aud4=;
-        b=fm6DfaJf6otXShorBJAUKni5EtrE+TSTYSmn0Oyq0izvTGDiRUl0Nz/T4S6Xft7DHi
-         TCAUe6dOLxbEzRzEkNDoD805LI4/4wTbIvcGenDhAOxrbI3F7frwXREjyUyP1E7KYBUa
-         0zxvUrNq27JoPDk4RLH0vjQHvcxdI0dnxOlwnf8JRdZqzqopaErhmw3rHq+2QECPDgJF
-         HmKSYLXBkIBHUu/3mZS1VcMM19Cuz01iwzDZ0pvdEyL8BvgavAwU/PiAYAeW24aO6rEU
-         tCtGwQM9tiAK6EAQqj7Ip43Qj5CI37UuTi6/m4yIFY24mdPl/YF+dQ/D4Bh6bqL11ANp
-         yaow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pd2E4pk015R2XdMt2k5oTuv87igGS+Moi+dfcF3aud4=;
-        b=JOZ1aUI1NUQpi5EKzp1SK2od3MyNREyKY/eOXGMUF3srG/KSK0/4ghxyX3biQhbp3Z
-         KTb4dSI83xbcfm8s6JkKImrOfQGD1XGBM+DScK8yujIADOqwp1Hwt1/DQ6DsopX8JApU
-         HKjl5sT0fyho4ikTnEOAv3/Ckry53LnDXIeBnHFmXzsz34eWtC3gTV0NuLUT8LVVT9xx
-         DCbwSr4fpwo06FJTfGhiFYG9DkpjGASXo61SKJ1rOJk7q7hpeXYByE17HrHSPQdTxPJ6
-         VTewOHLyxtOqy+8colUPvaOp6qR58oHW9q5wJa42ka+PntyY6TgGkWfcOl6oUWrNX5VE
-         n/UA==
-X-Gm-Message-State: AOAM530th12HLUrDq27R6KwTirV9Yb48Ue7VSC0r5EBA6jhBkbTEiKS7
-        CihMwJxX7bFu2YeBd2/Dgg==
-X-Google-Smtp-Source: ABdhPJwaSLwwvJEXpuTtS5g0uD2iW6wSVbjVjp+V+VQFgatBFf4x/OzktcviyT37nI7bHk3P2LQ8iQ==
-X-Received: by 2002:aa7:9ad6:0:b029:142:2501:3975 with SMTP id x22-20020aa79ad60000b029014225013975mr2757157pfp.58.1601646594794;
-        Fri, 02 Oct 2020 06:49:54 -0700 (PDT)
-Received: from PWN ([161.117.80.159])
-        by smtp.gmail.com with ESMTPSA id s4sm2013178pfu.107.2020.10.02.06.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 06:49:53 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 09:49:44 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, glider@google.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: KMSAN: kernel-infoleak in scsi_cmd_ioctl
-Message-ID: <20201002134944.GA8205@PWN>
-References: <000000000000a24fa705ae29dc6c@google.com>
+        id S2387877AbgJBNvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:51:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgJBNvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 09:51:05 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C1D7206DB;
+        Fri,  2 Oct 2020 13:51:02 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 14:51:00 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 24/39] arm64: mte: Add in-kernel MTE helpers
+Message-ID: <20201002135100.GE7034@gaia>
+References: <cover.1601593784.git.andreyknvl@google.com>
+ <96d3ade8c6e050fefc597531fa2889e67ed75349.1601593784.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000a24fa705ae29dc6c@google.com>
+In-Reply-To: <96d3ade8c6e050fefc597531fa2889e67ed75349.1601593784.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 03:28:22AM -0700, syzbot wrote:
-> BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
-> CPU: 1 PID: 12272 Comm: syz-executor.3 Not tainted 5.8.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
->  kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
->  kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
->  instrument_copy_to_user include/linux/instrumented.h:91 [inline]
->  _copy_to_user+0x18e/0x260 lib/usercopy.c:33
->  scsi_put_cdrom_generic_arg include/linux/uaccess.h:170 [inline]
+On Fri, Oct 02, 2020 at 01:10:25AM +0200, Andrey Konovalov wrote:
+> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> 
+> Provide helper functions to manipulate allocation and pointer tags for
+> kernel addresses.
+> 
+> Low-level helper functions (mte_assign_*, written in assembly) operate
+> tag values from the [0x0, 0xF] range. High-level helper functions
+> (mte_get/set_*) use the [0xF0, 0xFF] range to preserve compatibility
+> with normal kernel pointers that have 0xFF in their top byte.
+> 
+> MTE_GRANULE_SIZE and related definitions are moved to mte-def.h header
+> that doesn't have any dependencies and is safe to include into any
+> low-level header.
+> 
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-+ Cc: Greg Kroah-Hartman
-+ Cc: Anant Thazhemadam
-
-Hi all,
-
-In looking at the report, I guess this patch should fix the issue, there's
-a 3-byte hole in `struct compat_cdrom_generic_command`:
-
-[PATCH v3] block/scsi-ioctl: Prevent kernel-infoleak in scsi_put_cdrom_generic_arg()
-https://lore.kernel.org/lkml/20200909095057.1214104-1-yepeilin.cs@gmail.com/
-
-But I cannot verify it, since syzbot doesn't have a reproducer for it.
-The patch adds a 3-byte padding field to `struct
-compat_cdrom_generic_command`. It hasn't been accepted yet.
-
-> Local variable ----cgc32.i42.i@scsi_cmd_ioctl created at:
->  scsi_put_cdrom_generic_arg block/scsi_ioctl.c:695 [inline]
-
-#ifdef CONFIG_COMPAT
-	if (in_compat_syscall()) {
-		struct compat_cdrom_generic_command
-		[...]
-
-$ # before
-$ pahole -C "compat_cdrom_generic_command" !$
-pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
-struct compat_cdrom_generic_command {
-	unsigned char              cmd[12];              /*     0    12 */
-	compat_caddr_t             buffer;               /*    12     4 */
-	compat_uint_t              buflen;               /*    16     4 */
-	compat_int_t               stat;                 /*    20     4 */
-	compat_caddr_t             sense;                /*    24     4 */
-	unsigned char              data_direction;       /*    28     1 */
-
-	/* XXX 3 bytes hole, try to pack */
-
-	compat_int_t               quiet;                /*    32     4 */
-	compat_int_t               timeout;              /*    36     4 */
-	compat_caddr_t             reserved[1];          /*    40     4 */
-
-	/* size: 44, cachelines: 1, members: 9 */
-	/* sum members: 41, holes: 1, sum holes: 3 */
-	/* last cacheline: 44 bytes */
-};
-$ # after
-$ pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
-struct compat_cdrom_generic_command {
-	unsigned char              cmd[12];              /*     0    12 */
-	compat_caddr_t             buffer;               /*    12     4 */
-	compat_uint_t              buflen;               /*    16     4 */
-	compat_int_t               stat;                 /*    20     4 */
-	compat_caddr_t             sense;                /*    24     4 */
-	unsigned char              data_direction;       /*    28     1 */
-	unsigned char              pad[3];               /*    29     3 */
-	compat_int_t               quiet;                /*    32     4 */
-	compat_int_t               timeout;              /*    36     4 */
-	compat_caddr_t             reserved[1];          /*    40     4 */
-
-	/* size: 44, cachelines: 1, members: 10 */
-	/* last cacheline: 44 bytes */
-};
-$ _
-
-Thank you,
-Peilin Ye
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
