@@ -2,51 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6503828195E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CD6281962
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388314AbgJBRgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBRgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:36:13 -0400
-Subject: Re: [git pull] epoll fixes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601660173;
-        bh=+loR71LWEPhA+LFp6jMelBXimV3Kw4zy/FeO1z5xD9k=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=U92NwxLvFKJviG5IlMnThQ6rthb2AttTGCvHjOuRO8v9VFDidk96TJEeO7yWyGunC
-         X1vbx4LghqUAdpEAscFIg6QBtGMNPYKPGf65U6aCEfQoTIYL3XF/sARDLqF7mpam37
-         KjR3PHVlieYmEERc0u6Imk86wkVNNwu3bmSlWHW0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
-References: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.epoll
-X-PR-Tracked-Commit-Id: 3701cb59d892b88d569427586f01491552f377b1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 712138c7f7427c9cb67634ba432be98d42435deb
-Message-Id: <160166017328.10690.13121348190171622227.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Oct 2020 17:36:13 +0000
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S2388318AbgJBRhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgJBRhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:37:09 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEBEC0613D0;
+        Fri,  2 Oct 2020 10:37:05 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id m128so1982126oig.7;
+        Fri, 02 Oct 2020 10:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hUOyiDlGxtVYCkFUlhAd55rFu3JXozDtPtR2lsh7Bn4=;
+        b=VvYITN5dJbSa2AAHUrZJ+HkBWRSMjGIg+dZ4EwhTxTg85xAOp9yFLwNSdeCZOt82P/
+         Fdsgq87Ij8J+1rImho+HXblPqF+OUQ1oxqmZf+vccNNbyXAwcnPmPx70DGUOkkw63pZ0
+         SJYRgB578/VKkUcvAUFL4i9ozGdR6ApHSCzqn+6dUCeRCHrYyMGBEs0bJEDlW2iUY+RO
+         cn0VC6cAHSL6VYfPXh1fAWLWZAzvLZ5pRpqmuHx75PHdrgcRs6UtFi5zA/nAwDXerwTo
+         nvs0UQCk9AClfzs1HHz8PafkfsAVeMk+ur6dJmtQEXA87xE/2769uU0V3VkndYR1hFEQ
+         HvIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hUOyiDlGxtVYCkFUlhAd55rFu3JXozDtPtR2lsh7Bn4=;
+        b=czSod3xGWxAu24+NjJE6+lmpWabuSYk1bHKrBQnWQ80EAjrU+XvlV7ANobA2OHCwY8
+         MdF6jQVaa1o1ckXFgi0CfhUeaubzpmKSSTD4bynoKK73ESPwZDx/EVbZIy9KKNrNzEoB
+         UDoBYJYnMnfWpCFXGwm1yuV/siYqVP27lBXMG3If80H0o+p+JzGkdFDnAN0BHUOCdOqk
+         kVfUQ3ctIQBoPmAQCtfrsgnJoFNjcmmNHPa1HePoO0U7hQfY1GPMamuwLVO7iOt4T9PH
+         Yp9JhE599rcBLLP6TJrTLfld8NQZ+QbwCSRjRSmtItdnxObvWgRsl7Zw7bF7oB53ZQmb
+         EhBg==
+X-Gm-Message-State: AOAM531+gG28AccAVJglDYQAd5JnW0ekGjUPzUJ1gr7NW5oiE2bTKvFM
+        d1+BFdgm8bSLvAwZ3Ax+uc8=
+X-Google-Smtp-Source: ABdhPJy12xAyjffG45w32N7JyLvOfly4SIVNYL1rcoYbFQb7I7Bob08T+YgAHRn4pox18eycnLOXYg==
+X-Received: by 2002:aca:1717:: with SMTP id j23mr1794097oii.61.1601660224509;
+        Fri, 02 Oct 2020 10:37:04 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u9sm531964otq.54.2020.10.02.10.37.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 02 Oct 2020 10:37:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 2 Oct 2020 10:37:02 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] watchdog: cadence: Simplify with dev_err_probe()
+Message-ID: <20201002173702.GA51198@roeck-us.net>
+References: <20200901153141.18960-1-krzk@kernel.org>
+ <20200901154952.GA106798@roeck-us.net>
+ <20201002163124.GB6464@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002163124.GB6464@kozik-lap>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Oct 2020 18:20:25 +0100:
+On Fri, Oct 02, 2020 at 06:31:24PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, Sep 01, 2020 at 08:49:52AM -0700, Guenter Roeck wrote:
+> > On Tue, Sep 01, 2020 at 05:31:39PM +0200, Krzysztof Kozlowski wrote:
+> > > Common pattern of handling deferred probe can be simplified with
+> > > dev_err_probe().  Less code and the error value gets printed.
+> > > 
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Thanks for the review. Who could pick up these patches?
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.epoll
+They are queued up in my watchdog-next branch, and Wim usually
+picks up patches from there.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/712138c7f7427c9cb67634ba432be98d42435deb
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Guenter
