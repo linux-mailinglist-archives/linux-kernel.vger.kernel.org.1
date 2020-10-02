@@ -2,67 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4492A281B5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFBB281B5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388347AbgJBTKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        id S2388389AbgJBTLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgJBTKn (ORCPT
+        with ESMTP id S2388358AbgJBTLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:10:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333B3C0613D0;
-        Fri,  2 Oct 2020 12:10:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601665840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eJktxSNhWJM/BgeMFlAldxUGknWBDzKoGcVcbfFdWEU=;
-        b=UO32msFoUsnCGcCU/nloBL/pLMHuNB23dbBu2ZIdqhsgz9R9A47l+q5WEy5Wb5i5jVkG/t
-        tyIp+WV6ug3qNcoGQqihonvjKn1XL3j/7WK9/0n3+yxMQuRwcYTuDBzCwBOO8kmM+7Q9Vp
-        KNkeJos/TCphe8Lx/DxqHll/LW0UdwymfyzgzcCVpfAZJRzMl3ZY+k+mzVjr0txX7lHzsM
-        gPPQl2Ohob8X6I7oCEmllAvLmo1CYaURiXlcF8Y9HmO1ceRGr6Ku27AV68XPLGjj/KsMgs
-        2yGmUh8SVcU8aEM07fXjecPGvRlQpwG7ki2y87i6EEjuRGmJhwe882dwOEH4fA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601665840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eJktxSNhWJM/BgeMFlAldxUGknWBDzKoGcVcbfFdWEU=;
-        b=kyckBGqyHRgAFJ5nX3wgecTnJO8ACh6+1GODnqeRu6rUz0IBTSZYtE6DSkEdH4UCm/ne+m
-        8CJrryjS68tFs6Cg==
-To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org
-Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
-In-Reply-To: <4c9dbcc4-cae7-c7ad-8066-31d49239750a@kernel.dk>
-References: <20201001194208.1153522-1-axboe@kernel.dk> <20201001194208.1153522-4-axboe@kernel.dk> <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de> <4c9dbcc4-cae7-c7ad-8066-31d49239750a@kernel.dk>
-Date:   Fri, 02 Oct 2020 21:10:40 +0200
-Message-ID: <87y2kocukv.fsf@nanos.tec.linutronix.de>
+        Fri, 2 Oct 2020 15:11:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F048DC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:10:59 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id p21so1471557pju.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 12:10:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Tg1cbAlOlGYiJsswqBh0RLPlIwGpk0pFK93ZlIvhFT0=;
+        b=M8KFg280855rVx0KEWeBj/BfCJrMcDd9RMYKRAqs4qIeVPASe/w8qh2Lqjxpktz4Ex
+         iLRwJUqNM5YGLD4lrmCUdDnNQCk3D8E6TB2bndWkGrWzXPsfYItN/buUavomh9zIC6VP
+         xkjfNUIR13DOvZBrvMZXxY2HcsEAsER336fgZl4bi31huPInbkMV+FAiUMpf1sKNI4y/
+         7n633Ah7jdgYqVq4AEto3YIWGvbNvteFMCNRfJZ/I0NCjUGvX2KhOf9cRwYcn5VB3wRl
+         IgMUJYxjlnPd1QfjtN/q6qJaS2WC1ZmTGT6RN29PC3jpVq8VYLHHa279TEYNFOCg8fls
+         d40A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Tg1cbAlOlGYiJsswqBh0RLPlIwGpk0pFK93ZlIvhFT0=;
+        b=YMIRnGwFE1Ku5JS53KwcZdizqkPgr0CfZDhMqFUNnOM5jrm5MLTDAZuxZwpfRSwpAg
+         sT0oAL/1kX6XHwbHL4VuH64ZEYwJ6NAZynQusC1rOjO/Pxvb//ElwT1B5RFunAncDMhA
+         v/voHNtLum6gLHW89igMJlKKX8ajCaJV/wZXh846KAuzj8ftAwTbao/aq4Bh9Ovy99uX
+         L3C7LnqN5b6NsUjCRiUCO+ZdzpC/LPq3TPhLicMlKa9DK7Wqn6pjKjm9UdOZTFuG8hfh
+         YZ/e0Ae8fujkCCM5fpm+s6beKtKLRJCuk/xWsMKXU2jySsW7fwxRo5OqvWK23FOIzFbU
+         cw2Q==
+X-Gm-Message-State: AOAM530FTP3Kx8+6QQHDs3yYemrdYHfhUZARKcHEpWBvREj+u4+H5Bx5
+        xy0D2ffohM/mPl4p3KdTBL8eHA==
+X-Google-Smtp-Source: ABdhPJz6O93ojd0dzFKataI3JpLuelW/Y11niXA0RRE13MJ0/Otw6VWv+yAgkUeYwsZUAkSr+ytqtg==
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr4245263pjx.119.1601665859439;
+        Fri, 02 Oct 2020 12:10:59 -0700 (PDT)
+Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id t5sm2407080pgs.74.2020.10.02.12.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 12:10:59 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 12:10:51 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 5/6] bonding: update Documentation for
+ port/bond terminology
+Message-ID: <20201002121051.5ca41c1a@hermes.local>
+In-Reply-To: <20201002174001.3012643-6-jarod@redhat.com>
+References: <20201002174001.3012643-1-jarod@redhat.com>
+        <20201002174001.3012643-6-jarod@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02 2020 at 09:52, Jens Axboe wrote:
-> On 10/2/20 9:31 AM, Thomas Gleixner wrote:
->>> This way task_work_run() doesn't need to clear TIF_NOTIFY_SIGNAL and it can
->>> have more users.
->> 
->> I think it's fundamentaly wrong that we have several places and several
->> flags which handle task_work_run() instead of having exactly one place
->> and one flag.
->
-> I don't disagree with that. I know it's not happening in this series, but
-> if we to the TIF_NOTIFY_SIGNAL route and get all archs supporting that,
-> then we can kill the signal and notify resume part of running task_work.
-> And that leaves us with exactly one place that runs it.
->
-> So we can potentially improve the current situation in that regard.
+On Fri,  2 Oct 2020 13:40:00 -0400
+Jarod Wilson <jarod@redhat.com> wrote:
 
-I'll think about it over the weekend.
+> @@ -265,7 +265,7 @@ ad_user_port_key
+>  	This parameter has effect only in 802.3ad mode and is available through
+>  	SysFs interface.
+>  
+> -all_slaves_active
+> +all_ports_active
+
+You can change internal variable names, comments, and documentation all you want, thats great.
+
+But you can't change user API, that includes:
+   * definitions in uapi header
+   * module parameters
+   * sysfs file names or outputs
+
