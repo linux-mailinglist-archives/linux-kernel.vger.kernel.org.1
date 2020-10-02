@@ -2,79 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B796281314
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A036281316
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387876AbgJBMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52820 "EHLO mail.kernel.org"
+        id S2387895AbgJBMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:46:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgJBMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:46:05 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726029AbgJBMqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:46:19 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1ADD20719;
-        Fri,  2 Oct 2020 12:46:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17FC6206CD;
+        Fri,  2 Oct 2020 12:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601642765;
-        bh=bCtzaRKDFcC6YuUdGkA3fP3iUX5nRLBeb5sdrPRndZ8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Eg+u5sklGBOfQ+b+hla5PW8rlB32L+9M+s/iioJHKKIIS8uoCCSd4R00KJFTz5Tns
-         4jlDnfmeKj/VtkUl9mMbvcH38qxWDB4Of47ffcF1AW96nHKdK8OrYIme89y7taZ2w/
-         3NX9asROErfiAICW7baqntIn3PKf2dySkbMO+0iw=
-Received: by mail-ej1-f49.google.com with SMTP id p15so1773520ejm.7;
-        Fri, 02 Oct 2020 05:46:04 -0700 (PDT)
-X-Gm-Message-State: AOAM530be2eb1/e+YdUdV3QOmbBkwepLNpVucP0912tC0q4Hdt3kxZLU
-        GoEq4/8wKRgh76xcmmGuHzYNoGeSq3qPyZXvCKU=
-X-Google-Smtp-Source: ABdhPJyHdSuJWVuVTaGeJJ4aXGymg46mIdaV8WsXZjI8zh12U1ZrTVPnXFOPuICP+IHWoN/kHliPWlQpH9Oz4o4rrUY=
-X-Received: by 2002:a17:906:1a11:: with SMTP id i17mr2036220ejf.381.1601642763320;
- Fri, 02 Oct 2020 05:46:03 -0700 (PDT)
+        s=default; t=1601642777;
+        bh=fa8+43VJW2CwRdhfgbeNrekJyH+rurDoEBlBYSP/trc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2VEvdYSLvOPfnBqOn4Q6cikgVNV1LQbv90343MmGSySe7NW8IBMDkVme5w3nwPo7q
+         p4Ki3cwQH32pVivcjB33LzoCCexBqmXNkZpdDpXq/BnW4UHOhdCvGCpzZTa4LA9s+O
+         jCWB41vHzizZAhhZMJPLc3uebduLtGInPTtWceNI=
+Date:   Fri, 2 Oct 2020 14:46:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     poeschel@lemonage.de
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201002124616.GB3348424@kroah.com>
+References: <20201002123048.3073128-1-poeschel@lemonage.de>
 MIME-Version: 1.0
-References: <20200925212649.23183-1-krzk@kernel.org> <20201002124126.GA3348316@kroah.com>
-In-Reply-To: <20201002124126.GA3348316@kroah.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 2 Oct 2020 14:45:51 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcec1nUmV+y_BtXHw8Jv970Ec_SVCCnLKFy0Lq08KpCuw@mail.gmail.com>
-Message-ID: <CAJKOXPcec1nUmV+y_BtXHw8Jv970Ec_SVCCnLKFy0Lq08KpCuw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: serial: fsl-imx-uart: fix i.MX 53 and 6
- compatible matching
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002123048.3073128-1-poeschel@lemonage.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 14:41, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Sep 25, 2020 at 11:26:49PM +0200, Krzysztof Kozlowski wrote:
-> > The i.MX 53 and i.MX6Q DTS use two compatibles, i.MX 6SL/6SLL/SX three
-> > so update the binding to fix dtbs_check warnings like:
-> >
-> >   serial@21ec000: compatible: ['fsl,imx6q-uart', 'fsl,imx21-uart'] is not valid under any of the given schemas
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  .../devicetree/bindings/serial/fsl-imx-uart.yaml          | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> This doesn't apply to my tty tree :(
+On Fri, Oct 02, 2020 at 02:30:47PM +0200, poeschel@lemonage.de wrote:
+> From: Lars Poeschel <poeschel@lemonage.de>
+> 
+> This adds a class to exported pwm devices.
+> Exporting a pwm through sysfs did not yield udev events. The
+> dev_uevent_filter function does filter-out devices without a bus or
+> class.
+> This was already addressed in commit
+> commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
+> but this did cause problems and the commit got reverted with
+> commit c289d6625237 ("Revert "pwm: Set class for exported channels in
+> sysfs"")
+> Problem with the previous approach was, that there is a clash if we have
+> multiple pwmchips:
+> 	echo 0 > pwmchip0/export
+> 	echo 0 > pwmchip1/export
+> would both export /sys/class/pwm/pwm0 .
+> 
+> Now this patch changes the sysfs interface. We do include the pwmchip
+> number into the pwm directory that gets exported.
+> With the example above we get:
+> 	/sys/class/pwm/pwm-0-0
+> 	/sys/class/pwm/pwm-1-0
+> We maintain ABI backward compatibility through symlinks.
+> 	/sys/class/pwm/pwmchip0/pwm0
+> 	/sys/class/pwm/pwmchip1/pwm0
+> are now symbolic links to the new names.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+> ---
+>  drivers/pwm/sysfs.c | 57 +++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 47 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
+> index 449dbc0f49ed..c708da17a857 100644
+> --- a/drivers/pwm/sysfs.c
+> +++ b/drivers/pwm/sysfs.c
+> @@ -240,8 +240,10 @@ static void pwm_export_release(struct device *child)
+>  
+>  static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
+>  {
+> +	struct pwm_chip *chip = dev_get_drvdata(parent);
+>  	struct pwm_export *export;
+>  	char *pwm_prop[2];
+> +	char *link_name;
+>  	int ret;
+>  
+>  	if (test_and_set_bit(PWMF_EXPORTED, &pwm->flags))
+> @@ -256,25 +258,39 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
+>  	export->pwm = pwm;
+>  	mutex_init(&export->lock);
+>  
+> +	export->child.class = parent->class;
+>  	export->child.release = pwm_export_release;
+>  	export->child.parent = parent;
+>  	export->child.devt = MKDEV(0, 0);
+>  	export->child.groups = pwm_groups;
+> -	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
+> +	dev_set_name(&export->child, "pwm-%u-%u", chip->base, pwm->hwpwm);
+>  
+>  	ret = device_register(&export->child);
+> -	if (ret) {
+> -		clear_bit(PWMF_EXPORTED, &pwm->flags);
+> -		put_device(&export->child);
+> -		export = NULL;
+> -		return ret;
+> +	if (ret)
+> +		goto error;
+> +
+> +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
+> +	if (link_name == NULL) {
+> +		ret = -ENOMEM;
+> +		goto dev_unregister;
+>  	}
+> -	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=pwm%u", pwm->hwpwm);
+> +
+> +	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=%s",
+> +			export->child.kobj.name);
+>  	pwm_prop[1] = NULL;
+>  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
 
-It is rebased on my previous fsl-imx-uart dt-bindings patch which was
-picked up by Rob. Otherwise there would be conflicts.
+Do you still need to do this by hand?  Why can't this uevent field
+belong to the class and have it create this for you automatically when
+the device is added?
 
-Rob,
-Could you pick this up as well?
+>  	kfree(pwm_prop[0]);
+>  
+> -	return 0;
+> +	ret = sysfs_create_link(&parent->kobj, &export->child.kobj, link_name);
 
-Best regards,
-Krzysztof
+You create the link _after_ you told userspace it was there, you raced
+and lost :(
+
+
+
+> +	return ret;
+> +
+> +dev_unregister:
+> +	device_unregister(&export->child);
+> +error:
+> +	clear_bit(PWMF_EXPORTED, &pwm->flags);
+> +	put_device(&export->child);
+> +	export = NULL;
+> +	return ret;
+>  }
+>  
+>  static int pwm_unexport_match(struct device *child, void *data)
+> @@ -286,6 +302,7 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
+>  {
+>  	struct device *child;
+>  	char *pwm_prop[2];
+> +	char *link_name;
+>  
+>  	if (!test_and_clear_bit(PWMF_EXPORTED, &pwm->flags))
+>  		return -ENODEV;
+> @@ -294,7 +311,11 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
+>  	if (!child)
+>  		return -ENODEV;
+>  
+> -	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=pwm%u", pwm->hwpwm);
+> +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
+> +	if (link_name)
+> +		sysfs_delete_link(&parent->kobj, &child->kobj, link_name);
+> +
+> +	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=%s", child->kobj.name);
+>  	pwm_prop[1] = NULL;
+>  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
+
+Same uevent question here.
+
+Otherwise, this looks good, nice work in figuring out the is_visable
+stuff and everything.
+
+thanks,
+
+greg k-h
