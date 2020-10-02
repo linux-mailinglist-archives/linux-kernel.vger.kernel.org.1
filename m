@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53269281C36
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D69281C4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388388AbgJBToV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgJBToT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:44:19 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC466206DD;
-        Fri,  2 Oct 2020 19:44:18 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 15:44:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] tracing: Change STR_VAR_MAX_LEN
-Message-ID: <20201002154417.320ad78b@gandalf.local.home>
-In-Reply-To: <34a494e502fe1364b07896ef4d76f1fbbb8d1d1a.1601588066.git.zanussi@kernel.org>
-References: <cover.1601588066.git.zanussi@kernel.org>
-        <34a494e502fe1364b07896ef4d76f1fbbb8d1d1a.1601588066.git.zanussi@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725730AbgJBTvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJBTvI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:51:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACC8C0613D0;
+        Fri,  2 Oct 2020 12:51:06 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so1570614pju.0;
+        Fri, 02 Oct 2020 12:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=x4V3VUVCJPCE35BDFhz+FiLE5PfEEmnFxZ7BPxNwq5s=;
+        b=pkF3+Yohz2ImUFjF1Fwi3jUaJUmG6l9awkh83VMpCy6blLY5ZY9S09WS5+2vgI/zow
+         ys9Kc6GT/Tbom8ruv41Hmx2Waz8hLnP0V6AG8i8SQ8EgKeoa2GYNV/p59StoEduOVl51
+         p7DhFTpnBYtaIhi/poOb+3gPdxdX2k5tart974/Pg0/IPbJFeOWYhVM5KBvQG1iVLwSH
+         6LMl1/UiNWnKwgrwWEXoIHIWWCRbM3t16LNMEYa0JNeSMRPl9593f028Q8wnCLJtxM1F
+         fBT9PIw7eADfCiobIfKtvtkjQbLHB141Q65PiUkc1H90s4iO3rBMq0kiTXckNoyeNUnA
+         HCWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=x4V3VUVCJPCE35BDFhz+FiLE5PfEEmnFxZ7BPxNwq5s=;
+        b=hPp5uHLlIFOKwhDdinACkyICUDyEZCgzGfCu671tU0OHy8OQ+ifQtbWHcL9Y1crICz
+         8JOX3aHlrkXTLMe0GZKAJATyt3MieMjrXzOiSFa9V6VAP0FAL5pOTVif+OQSwaBT3yIp
+         GEWsZSvl+Ow3+EnpncR88r5jti4fYqJHx/vbV4K2B6spXUy2RxbG93qj/RQPbUyp/v1A
+         v5hT75Z84Ps0yruumAe3D0+bwNK3fHWun9FjRe2pkMvDZmbq4Ei4Ch+k3soGC+OKZ5ha
+         ZpGYRivFi1dnWnBo/0bUZRZAMoGOvC0HztTXGSJLlyF8fIoj4X/B22Rog1mGwCzpTsT0
+         zKZA==
+X-Gm-Message-State: AOAM530gnK6TbdkKLZ8KjYu84/3OH13Q5D7nDmEFrZ4PoLFLLrGC1rih
+        cJAXaoFxEObiRy/dpKHrXEQ=
+X-Google-Smtp-Source: ABdhPJxO3pRWrQgJxmyXJQ7h+39Ykp6X7jI+m7yDWbup3Lg0EaVcSgt5BRjyDLgmzm44NIFeJ2DAhA==
+X-Received: by 2002:a17:90b:289:: with SMTP id az9mr4534418pjb.31.1601668266254;
+        Fri, 02 Oct 2020 12:51:06 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id 34sm2430512pgp.5.2020.10.02.12.51.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 02 Oct 2020 12:51:06 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 12:45:08 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] iommu/tegra-smmu: Use fwspec in
+ tegra_smmu_(de)attach_dev
+Message-ID: <20201002194508.GD29706@Asurada-Nvidia>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-2-nicoleotsuka@gmail.com>
+ <de0b717f-af5c-8813-eb3e-07d19eff5271@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <de0b717f-af5c-8813-eb3e-07d19eff5271@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  1 Oct 2020 16:46:44 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
-
-> 32 is too small for this value, and anyway it makes more sense to use
-> MAX_FILTER_STR_VAL, as this is also the value used for variable-length
-> __strings.
+On Fri, Oct 02, 2020 at 05:41:50PM +0300, Dmitry Osipenko wrote:
+> 02.10.2020 09:08, Nicolin Chen пишет:
+> >  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+> >  				 struct device *dev)
+> >  {
+> > +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> >  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+> >  	struct tegra_smmu_as *as = to_smmu_as(domain);
+> > -	struct device_node *np = dev->of_node;
+> > -	struct of_phandle_args args;
+> >  	unsigned int index = 0;
+> >  	int err = 0;
+> >  
+> > -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> > -					   &args)) {
+> > -		unsigned int swgroup = args.args[0];
+> > -
+> > -		if (args.np != smmu->dev->of_node) {
+> > -			of_node_put(args.np);
+> > -			continue;
+> > -		}
+> > -
+> > -		of_node_put(args.np);
+> > +	if (!fwspec)
+> > +		return -ENOENT;
 > 
-> Tested-by: Axel Rasmussen <axelrasmussen@google.com>
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  kernel/trace/trace_synth.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_synth.h b/kernel/trace/trace_synth.h
-> index ac35c45207c4..5166705d1556 100644
-> --- a/kernel/trace/trace_synth.h
-> +++ b/kernel/trace/trace_synth.h
-> @@ -7,7 +7,7 @@
->  #define SYNTH_SYSTEM		"synthetic"
->  #define SYNTH_FIELDS_MAX	32
->  
-> -#define STR_VAR_LEN_MAX		32 /* must be multiple of sizeof(u64) */
-> +#define STR_VAR_LEN_MAX		MAX_FILTER_STR_VAL /* must be multiple of sizeof(u64) */
+> Could the !fwspec ever be true here as well?
 
-Hmm, this requirement is now passed to MAX_FILTER_STR_VAL, but there's no
-mention of it there. I guess we should have a
-
-	BUILD_BUG_ON(STR_VAR_LEN_MAX & (sizeof(u64) - 1));
-
-in C code somewhere.
-
--- Steve
-
-
->  
->  struct synth_field {
->  	char *type;
-
+There are multiple callers of this function. It's really not that
+straightforward to track every one of them. So I'd rather have it
+here as other iommu drivers do. We are human beings, so we could
+have missed something somewhere, especially callers are not from
+tegra-* drivers.
