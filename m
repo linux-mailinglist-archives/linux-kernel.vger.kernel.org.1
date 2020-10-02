@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1622814A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839162814A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgJBOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:05:53 -0400
-Received: from verein.lst.de ([213.95.11.211]:52518 "EHLO verein.lst.de"
+        id S2387986AbgJBOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:06:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBOFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:05:53 -0400
-Received: by verein.lst.de (Postfix, from userid 2005)
-        id DE3B067373; Fri,  2 Oct 2020 16:05:46 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 16:05:46 +0200
-From:   Torsten Duwe <duwe@lst.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
- SP800-90B compliance
-Message-ID: <20201002140546.GA2565@lst.de>
-References: <20200921075857.4424-1-nstange@suse.de> <20201002123836.GA14807@lst.de> <20201002131555.GD3783@1wt.eu> <20201002133358.GA3386034@kroah.com>
+        id S1726017AbgJBOGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:06:17 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8ECBB206CD;
+        Fri,  2 Oct 2020 14:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601647576;
+        bh=c4j3rEm69/p/IH6X7L+DozfKN3NnLwrHolhiQzZs2lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mqXbkq5l+9HGSlHdk5vLQ5UChn3x/Z2Kg0d/FNzi7lriakUSIaUHW4HAE0WGLfjG5
+         3Tq7RN+wyZAeupYWxy+wlF5QNLDuo1jP/VPSt/iXHxDv5BGw0lNzys3JUbnQLwRpcS
+         OYb2UswTnW1ZZ3N7EcNk4lVkH0l4daY9DGfgB0E0=
+Date:   Fri, 2 Oct 2020 16:05:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        linux-kernel@vger.kernel.org, stuyoder@gmail.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 00/13] bus/fsl-mc: Extend mc-bus driver
+ functionalities in preparation for mc-bus VFIO support
+Message-ID: <20201002140549.GA3492850@kroah.com>
+References: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
+ <8b3c1222-5dbd-5c51-ac10-8b1c1a69d2d5@nxp.com>
+ <20201002135512.GA3466738@kroah.com>
+ <9e5576fb-6e42-4216-286c-7afb7979ed0b@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002133358.GA3386034@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <9e5576fb-6e42-4216-286c-7afb7979ed0b@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:33:58PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 02, 2020 at 03:15:55PM +0200, Willy Tarreau wrote:
-> > On Fri, Oct 02, 2020 at 02:38:36PM +0200, Torsten Duwe wrote:
-> > > Almost two weeks passed and these are the "relevant" replies:
-> > > 
-> > > Jason personally does not like FIPS, and is afraid of
-> > > "subpar crypto". Albeit this patch set strictly isn't about
-> > > crypto at all; the crypto subsystem is in the unlucky position
-> > > to just depend on a good entropy source.
-> > > 
-> > > Greg claims that Linux (kernel) isn't about choice, which is clearly
-> > > wrong.
-> > 
-> > I think there's a small misunderstanding here, my understanding is
-> > that for quite a while, the possibilities offered by the various
-> > random subsystems or their proposed derivative used to range from
-> > "you have to choose between a fast system that may be vulnerable
-> > to some attacks, a system that might not be vulnerable to certain
-> > attacks but might not always boot, or a slow system not vulnerable
-> > to certain attacks". Greg's point seems to be that if we add an
-> > option, it means it's yet another tradeoff between these possibilities
-> > and that someone will still not be happy at the end of the chain. If
-> > the proposed solution covers everything at once (performance,
-> > reliability, unpredictability), then there probably is no more reason
-> > for keeping alternate solutions at all, hence there's no need to give
-> > the user the choice between multiple options when only one is known
-> > to always be valid. At least that's how I see it and it makes sense
-> > to me.
+On Fri, Oct 02, 2020 at 04:56:52PM +0300, Laurentiu Tudor wrote:
+> Hi Greg,
 > 
-> Thanks for spelling it out in much more detail than I was willing to :)
+> On 10/2/2020 4:55 PM, Greg KH wrote:
+> > On Tue, Sep 29, 2020 at 02:06:41PM +0300, Laurentiu Tudor wrote:
+> >>
+> >>
+> >> On 9/29/2020 11:54 AM, Diana Craciun wrote:
+> >>> The vfio-mc bus driver needs some additional services to be exported by the
+> >>> mc-bus driver like:
+> >>> - a way to reset the DPRC container
+> >>> - driver_override support
+> >>> - functions to setup/tear down a DPRC
+> >>> - functions for allocating the pool of interrupts. In case of VFIO the
+> >>> interrupts are not configured at probe time, but later by userspace
+> >>> request
+> >>>
+> >>> v4 -> v5
+> >>> - dprc_celanup should not fail
+> >>>
+> >>> v3 -> v4
+> >>> - Rebased on the latest kernel.
+> >>> - Exported a dprc_remove function
+> >>>
+> >>> v2 -> v3
+> >>> - Add a new version for dprc_get_obj_region
+> >>> - Export the cacheability bus specific bits defines
+> >>>
+> >>> v1 -> v2
+> >>> - Remove driver_override propagation through various functions
+> >>> - Cache the DPRC API version
+> >>>
+> >>> The patches are related with "vfio/fsl-mc: VFIO support for FSL-MC
+> >>> devices" patches, but the series were split because they are targeting
+> >>> different subsystems. However, the mc-bus patches may suffer changes
+> >>> when addressing the VFIO review comments.
+> >>>
+> >>> The patches do not address the comment regarding moving driver_override
+> >>> in the core code. I prefer not to tie these patches on that change and
+> >>> address that separately.
+> >>>
+> >>> Bharat Bhushan (3):
+> >>>   bus/fsl-mc: add support for 'driver_override' in the mc-bus
+> >>>   bus/fsl-mc: Add dprc-reset-container support
+> >>>   bus/fsl-mc: Extend ICID size from 16bit to 32bit
+> >>>
+> >>> Diana Craciun (10):
+> >>>   bus/fsl-mc: Do no longer export the total number of irqs outside
+> >>>     dprc_scan_objects
+> >>>   bus/fsl-mc: Add a new parameter to dprc_scan_objects function
+> >>>   bus/fsl-mc: Set the QMAN/BMAN region flags
+> >>>   bus/fsl-mc: Cache the DPRC API version
+> >>>   bus/fsl-mc: Export dprc_scan/dprc_remove functions to be used by
+> >>>     multiple entities
+> >>>   bus/fsl-mc: Export a cleanup function for DPRC
+> >>>   bus/fsl-mc: Add a container setup function
+> >>>   bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
+> >>>   bus/fsl-mc: Export IRQ pool handling functions to be used by VFIO
+> >>>   bus/fsl-mc: Add a new version for dprc_get_obj_region command
+> >>>
+> >>>  drivers/bus/fsl-mc/dprc-driver.c      | 190 ++++++++++++++++----------
+> >>>  drivers/bus/fsl-mc/dprc.c             | 141 +++++++++++++++----
+> >>>  drivers/bus/fsl-mc/fsl-mc-allocator.c |  12 +-
+> >>>  drivers/bus/fsl-mc/fsl-mc-bus.c       |  64 ++++++++-
+> >>>  drivers/bus/fsl-mc/fsl-mc-private.h   |  31 ++---
+> >>>  drivers/bus/fsl-mc/mc-io.c            |   7 +-
+> >>>  include/linux/fsl/mc.h                |  41 +++++-
+> >>>  7 files changed, 359 insertions(+), 127 deletions(-)
+> >>>
+> >>
+> >> For the series:
+> >> Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> >> Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> > 
+> > Do you want me to take these patches in my tree, or are they going to
+> > Linus some other way?
+> 
+> I'm prefectly fine with you picking up the patches through your tree.
 
-I assume you're not trying to pull the discussion off-topic. The one and
-only choice here is that some people believe in NIST and certifications.
-Yes, others don't, no problem either. The former folks boot with fips=1,
-that's it. Those people are usually certain about their decision.
+Great, now queued up.
 
-That option is about to break, for reasons I stated previously. This patch
-set is to introduce the now-missing pieces. One thing worth to discuss here
-would be whether people not so security conscious should benefit from the
-sanity checks as well. IMHO they should, because, as Willy explained, stick
-with the option that's always valid.
-
-My disappointment was that _none_ of the maintaners had an on-topic,
-technical remark. I get the impression some read "FIPS" and stop, regardless
-of the actual functionality.
-
-	Torsten
-
+greg k-h
