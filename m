@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D9F280CEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337ED280CF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgJBEtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 00:49:09 -0400
-Received: from mx.socionext.com ([202.248.49.38]:24379 "EHLO mx.socionext.com"
+        id S1725984AbgJBEzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 00:55:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgJBEtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 00:49:02 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 02 Oct 2020 13:49:00 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id B9A9D180B3C;
-        Fri,  2 Oct 2020 13:49:00 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 2 Oct 2020 13:49:00 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 1A2741A0509;
-        Fri,  2 Oct 2020 13:49:00 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S1725951AbgJBEzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 00:55:35 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BE2020796;
+        Fri,  2 Oct 2020 04:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601614535;
+        bh=FamPZ+HHgf9+DKHPvSlwIE+9cxI1vXUad3ORQVNzTHQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=chG3RdGcB+M1mHcCQhiqUJW87pI+x2ys1C22PDZFbOowiE1bVdONYyGqRjrBysaoN
+         kSE1P0GLNBo6PlwOgWC1wbtM0bRFQc5GvGoW1DWZZKtK8SLoUlJJ5I0jG8VffrPq+/
+         NyxL7aO2PwnybSkiCRWtHGB41uOcV5npEzFDtNuk=
+Date:   Fri, 2 Oct 2020 06:55:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Kees Cook <keescook@chromium.org>,
         linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH 3/3] PCI: uniphier-ep: Add EPC restart management support
-Date:   Fri,  2 Oct 2020 13:48:47 +0900
-Message-Id: <1601614127-13837-4-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601614127-13837-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1601614127-13837-1-git-send-email-hayashi.kunihiko@socionext.com>
+        bcm-kernel-feedback-list@broadcom.com,
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: Re: [PATCH v5 11/15] misc: bcm-vk: add BCM_VK_QSTATS
+Message-ID: <20201002045531.GB34005@kroah.com>
+References: <20201001012810.4172-1-scott.branden@broadcom.com>
+ <20201001012810.4172-12-scott.branden@broadcom.com>
+ <e7b3a4b6-0662-6ead-8ddb-0cf6324a9bd2@gmail.com>
+ <5d76c89d-f53a-be22-dcd7-7854a3e1e034@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d76c89d-f53a-be22-dcd7-7854a3e1e034@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the polling function and call the init function to enable EPC restart
-management. The polling function detects that the bus-reset signal is a
-rising edge.
+On Thu, Oct 01, 2020 at 03:12:11PM -0700, Scott Branden wrote:
+> 
+> 
+> On 2020-09-30 7:33 p.m., Florian Fainelli wrote:
+> >
+> >
+> > On 9/30/2020 6:28 PM, Scott Branden wrote:
+> >> Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
+> >> queue statistics.
+> >>
+> >> These statistics keep track of max, abs_max, and average for the
+> >> messages queues.
+> >>
+> >> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
+> >> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
+> >> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> >> ---
+> >
+> > [snip]
+> >
+> >> +#if defined(CONFIG_BCM_VK_QSTATS)
+> >> +    /* clear qstats */
+> >> +    for (i = 0; i < VK_MSGQ_MAX_NR; i++) {
+> >> +        memset(&vk->to_v_msg_chan.qstats[i].qcnts, 0,
+> >> +               sizeof(vk->to_v_msg_chan.qstats[i].qcnts));
+> >> +        memset(&vk->to_h_msg_chan.qstats[i].qcnts, 0,
+> >> +               sizeof(vk->to_h_msg_chan.qstats[i].qcnts));
+> >> +    }
+> >> +#endif
+> >>       /* clear 4096 bits of bitmap */
+> >>       bitmap_clear(vk->bmap, 0, VK_MSG_ID_BITMAP_SIZE);
+> >
+> > It was not clear from looking at this patch how are the statistics exposed and how does one actually get them?
+> The QSTATS, since it is only for debug purpose, it will dump out periodically based on processed_num.
+> Nothing fancy as we only compile it in in extreme case for recreating a scenario.
+> 
+> The following is the part:
+> 
+> +       if (++qcnts->cnt >= BCM_VK_QSTATS_ACC_CNT) {
+> +               /* log average and clear counters */
+> +               dev_info(&vk->pdev->dev,
+> +                        "%s[%d]: Max: [%3d/%3d] Acc %d num %d, Aver %d\n",
+> +                        tag, qstats->q_num,
+> +                        qcnts->max_occ, qcnts->max_abs,
+> +                        qcnts->acc_sum,
+> +                        qcnts->cnt,
+> +                        qcnts->acc_sum / qcnts->cnt);
 
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- drivers/pci/controller/dwc/Kconfig            |  1 +
- drivers/pci/controller/dwc/pcie-uniphier-ep.c | 34 +++++++++++++++++++++++++--
- 2 files changed, 33 insertions(+), 2 deletions(-)
+Ah, that's not ok, don't flood the kernel log for non-error things
+please.  If you need to "report" stuff, when all is going well, use the
+other common interfaces for that.
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index bc04986..4932095 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -296,6 +296,7 @@ config PCIE_UNIPHIER_EP
- 	depends on OF && HAS_IOMEM
- 	depends on PCI_ENDPOINT
- 	select PCIE_DW_EP
-+	select PCI_ENDPOINT_RESTART
- 	help
- 	  Say Y here if you want PCIe endpoint controller support on
- 	  UniPhier SoCs. This driver supports Pro5 SoC.
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-index 1483559..bd187b1 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-@@ -26,6 +26,7 @@
- #define PCL_RSTCTRL_PIPE3		BIT(0)
- 
- #define PCL_RSTCTRL1			0x0020
-+#define PCL_RSTCTRL_PERST_MON		BIT(16)
- #define PCL_RSTCTRL_PERST		BIT(0)
- 
- #define PCL_RSTCTRL2			0x0024
-@@ -60,6 +61,7 @@ struct uniphier_pcie_ep_priv {
- 	struct clk *clk, *clk_gio;
- 	struct reset_control *rst, *rst_gio;
- 	struct phy *phy;
-+	bool bus_reset_status;
- 	const struct pci_epc_features *features;
- };
- 
-@@ -218,6 +220,23 @@ static const struct dw_pcie_ep_ops uniphier_pcie_ep_ops = {
- 	.get_features = uniphier_pcie_get_features,
- };
- 
-+static bool uniphier_pcie_ep_poll_reset(void *data)
-+{
-+	struct uniphier_pcie_ep_priv *priv = data;
-+	bool ret, status;
-+
-+	if (!priv)
-+		return false;
-+
-+	status = !(readl(priv->base + PCL_RSTCTRL1) & PCL_RSTCTRL_PERST_MON);
-+
-+	/* return true if the rising edge of bus reset is detected */
-+	ret = !!(status == false && priv->bus_reset_status == true);
-+	priv->bus_reset_status = status;
-+
-+	return ret;
-+}
-+
- static int uniphier_add_pcie_ep(struct uniphier_pcie_ep_priv *priv,
- 				struct platform_device *pdev)
- {
-@@ -241,10 +260,21 @@ static int uniphier_add_pcie_ep(struct uniphier_pcie_ep_priv *priv,
- 	ep->addr_size = resource_size(res);
- 
- 	ret = dw_pcie_ep_init(ep);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev, "Failed to initialize endpoint (%d)\n", ret);
-+		return ret;
-+	}
- 
--	return ret;
-+	/* Set up epc-restart thread */
-+	pci_epc_restart_register_poll_func(ep->epc,
-+					    uniphier_pcie_ep_poll_reset, priv);
-+	/* With call of poll_reset() directly, initialize internal state */
-+	uniphier_pcie_ep_poll_reset(priv);
-+	ret = pci_epc_restart_init(ep->epc);
-+	if (ret)
-+		dev_err(dev, "Failed to initialize epc-restart (%d)\n", ret);
-+
-+	return 0;
- }
- 
- static int uniphier_pcie_ep_enable(struct uniphier_pcie_ep_priv *priv)
--- 
-2.7.4
+Again, drivers, when all is working, are quiet.
 
+thanks,
+
+greg k-h
