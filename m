@@ -2,266 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0351280B99
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2587A280B7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387398AbgJBAYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 20:24:32 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:23440 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727053AbgJBAYc (ORCPT
+        id S1733229AbgJBAG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 20:06:29 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:58108 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731525AbgJBAG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 20:24:32 -0400
-X-Greylist: delayed 1063 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Oct 2020 20:24:31 EDT
-Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09203MoN007074;
-        Fri, 2 Oct 2020 00:06:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=xBHef/nXukWQRZgHd6/isgeQhlsgNf9brfhVD/4UjtI=;
- b=jAn+NGG7I1I+Xp/4iYKcMgJJVAmIRJFiCAdbOObs8kb3QQEsaza+G0GP/oBhzcO8oSuD
- gkm2zsGe0p//xUz58PU2diJxfkraF5SMsPhlP639XUILYQu34ei4IN+Tha8nVsLqHXMk
- toLLtXbiOph9WIzJUSwcw+7VD29jMWP6wr5JSLovPqBAjh87snO3QjF/E+StEwud5YOA
- bMBqFZq9fJwUD1L+nZttNjYWXqykA5HuUrKY0iyVmgAXwWeHx8Z0i0cyrbmBuaAJIN0o
- EcJWiGnWSxxWIdu5RcNuZ9UCCl4a7d2G5p0ZW4V1kJpkoPLPORJ5KmTl5VxMGN16fUxQ gQ== 
-Received: from g2t2353.austin.hpe.com (g2t2353.austin.hpe.com [15.233.44.26])
-        by mx0b-002e3701.pphosted.com with ESMTP id 33wjxx2u5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Oct 2020 00:06:35 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2353.austin.hpe.com (Postfix) with ESMTP id 2F15984;
-        Fri,  2 Oct 2020 00:06:34 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 1AD0239;
-        Fri,  2 Oct 2020 00:06:33 +0000 (UTC)
-From:   Mike Travis <mike.travis@hpe.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mike Travis <mike.travis@hpe.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3 13/13] x86/platform/uv: Update Copyrights to conform to HPE standards
-Date:   Thu,  1 Oct 2020 19:05:38 -0500
-Message-Id: <20201002000538.94424-14-mike.travis@hpe.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201002000538.94424-1-mike.travis@hpe.com>
-References: <20201002000538.94424-1-mike.travis@hpe.com>
+        Thu, 1 Oct 2020 20:06:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3B58660;
+        Fri,  2 Oct 2020 02:06:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601597187;
+        bh=0J7iAt+Nb3bI48G/ac/yPMZNn2hMwS0Lj5HnC8rUelY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ws2c3yi3y2f4g9O0w7n15UkYXvMSVrQn+JsPgWyHlTAdZ5vNkAMBLlBT6u9ESWMHf
+         ResZCtfXJF/WIp/dBVjfuITRs2Z6yUlA2XD8gXj7q+dvjhWj11+6qF/ILedqOONnqu
+         4tOUFRKclkn1Sonnxj8MAuqVkEoa6NO/fgcGMNdA=
+Date:   Fri, 2 Oct 2020 03:05:49 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dirk Bender <d.bender@phytec.de>
+Subject: Re: [PATCH v2 5/5] media: mt9p031: Fix corrupted frame after
+ restarting stream
+Message-ID: <20201002000549.GK3722@pendragon.ideasonboard.com>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+ <20200930105133.139981-5-s.riedmueller@phytec.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-01_10:2020-10-01,2020-10-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=626
- priorityscore=1501 suspectscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 spamscore=0 adultscore=0 bulkscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010010195
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200930105133.139981-5-s.riedmueller@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Copyrights to those files that have been updated for UV5 changes.
+Hi Stefan,
 
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
----
- arch/x86/include/asm/uv/bios.h      | 1 +
- arch/x86/include/asm/uv/uv_hub.h    | 1 +
- arch/x86/include/asm/uv/uv_mmrs.h   | 1 +
- arch/x86/kernel/apic/x2apic_uv_x.c  | 1 +
- arch/x86/platform/uv/bios_uv.c      | 1 +
- arch/x86/platform/uv/uv_nmi.c       | 1 +
- arch/x86/platform/uv/uv_time.c      | 1 +
- drivers/misc/sgi-gru/grufile.c      | 1 +
- drivers/misc/sgi-xp/xp.h            | 1 +
- drivers/misc/sgi-xp/xp_main.c       | 1 +
- drivers/misc/sgi-xp/xp_uv.c         | 1 +
- drivers/misc/sgi-xp/xpc_main.c      | 1 +
- drivers/misc/sgi-xp/xpc_partition.c | 1 +
- drivers/misc/sgi-xp/xpnet.c         | 1 +
- 14 files changed, 14 insertions(+)
+Thank you for the patch.
 
-diff --git a/arch/x86/include/asm/uv/bios.h b/arch/x86/include/asm/uv/bios.h
-index 97ac595ebc6a..08b3d810dfba 100644
---- a/arch/x86/include/asm/uv/bios.h
-+++ b/arch/x86/include/asm/uv/bios.h
-@@ -5,6 +5,7 @@
- /*
-  * UV BIOS layer definitions.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
-diff --git a/arch/x86/include/asm/uv/uv_hub.h b/arch/x86/include/asm/uv/uv_hub.h
-index 610bda21a8d9..5002f52be332 100644
---- a/arch/x86/include/asm/uv/uv_hub.h
-+++ b/arch/x86/include/asm/uv/uv_hub.h
-@@ -5,6 +5,7 @@
-  *
-  * SGI UV architectural definitions
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/arch/x86/include/asm/uv/uv_mmrs.h b/arch/x86/include/asm/uv/uv_mmrs.h
-index 06ea2d1aaa3e..57fa67373262 100644
---- a/arch/x86/include/asm/uv/uv_mmrs.h
-+++ b/arch/x86/include/asm/uv/uv_mmrs.h
-@@ -5,6 +5,7 @@
-  *
-  * HPE UV MMR definitions
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2016 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 0c97315bf864..7c895991389c 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -5,6 +5,7 @@
-  *
-  * SGI UV APIC functions (note: not an Intel compatible APIC)
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2014 Silicon Graphics, Inc. All rights reserved.
-  */
- #include <linux/crash_dump.h>
-diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
-index b148b4c8c2ec..54511eaccf4d 100644
---- a/arch/x86/platform/uv/bios_uv.c
-+++ b/arch/x86/platform/uv/bios_uv.c
-@@ -2,6 +2,7 @@
- /*
-  * BIOS run time interface routines.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Russ Anderson <rja@sgi.com>
-  */
-diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
-index eac26feb0461..0f5cbcf0da63 100644
---- a/arch/x86/platform/uv/uv_nmi.c
-+++ b/arch/x86/platform/uv/uv_nmi.c
-@@ -2,6 +2,7 @@
- /*
-  * SGI NMI support routines
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2007-2017 Silicon Graphics, Inc. All rights reserved.
-  * Copyright (c) Mike Travis
-  */
-diff --git a/arch/x86/platform/uv/uv_time.c b/arch/x86/platform/uv/uv_time.c
-index e94436ba3022..a39e0f394c0e 100644
---- a/arch/x86/platform/uv/uv_time.c
-+++ b/arch/x86/platform/uv/uv_time.c
-@@ -2,6 +2,7 @@
- /*
-  * SGI RTC clock/timer routines.
-  *
-+ *  (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  *  Copyright (c) 2009-2013 Silicon Graphics, Inc.  All Rights Reserved.
-  *  Copyright (c) Dimitri Sivanich
-  */
-diff --git a/drivers/misc/sgi-gru/grufile.c b/drivers/misc/sgi-gru/grufile.c
-index 18aa8c877bf8..7ffcfc0bb587 100644
---- a/drivers/misc/sgi-gru/grufile.c
-+++ b/drivers/misc/sgi-gru/grufile.c
-@@ -7,6 +7,7 @@
-  * This file supports the user system call for file open, close, mmap, etc.
-  * This also incudes the driver initialization code.
-  *
-+ *  (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  *  Copyright (c) 2008-2014 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp.h b/drivers/misc/sgi-xp/xp.h
-index 0af267baf031..7d839d844847 100644
---- a/drivers/misc/sgi-xp/xp.h
-+++ b/drivers/misc/sgi-xp/xp.h
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 2004-2008 Silicon Graphics, Inc. All rights reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp_main.c b/drivers/misc/sgi-xp/xp_main.c
-index 33558555820d..049c9aef0559 100644
---- a/drivers/misc/sgi-xp/xp_main.c
-+++ b/drivers/misc/sgi-xp/xp_main.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xp_uv.c b/drivers/misc/sgi-xp/xp_uv.c
-index 118aef64518d..d28ffb1c7ade 100644
---- a/drivers/misc/sgi-xp/xp_uv.c
-+++ b/drivers/misc/sgi-xp/xp_uv.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_main.c
-index f533ded72941..5a8097e717ae 100644
---- a/drivers/misc/sgi-xp/xpc_main.c
-+++ b/drivers/misc/sgi-xp/xpc_main.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2009 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpc_partition.c b/drivers/misc/sgi-xp/xpc_partition.c
-index c21d48fd65cd..615aa731053b 100644
---- a/drivers/misc/sgi-xp/xpc_partition.c
-+++ b/drivers/misc/sgi-xp/xpc_partition.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (c) 2004-2008 Silicon Graphics, Inc.  All Rights Reserved.
-  */
- 
-diff --git a/drivers/misc/sgi-xp/xpnet.c b/drivers/misc/sgi-xp/xpnet.c
-index fc5cd83f21f2..d19d2ab848cf 100644
---- a/drivers/misc/sgi-xp/xpnet.c
-+++ b/drivers/misc/sgi-xp/xpnet.c
-@@ -3,6 +3,7 @@
-  * License.  See the file "COPYING" in the main directory of this archive
-  * for more details.
-  *
-+ * (C) Copyright 2020 Hewlett Packard Enterprise Development LP
-  * Copyright (C) 1999-2009 Silicon Graphics, Inc. All rights reserved.
-  */
- 
+On Wed, Sep 30, 2020 at 12:51:33PM +0200, Stefan Riedmueller wrote:
+> From: Dirk Bender <d.bender@phytec.de>
+> 
+> To prevent corrupted frames after starting and stopping the sensor it's
+
+s/it's/its/
+
+> datasheet specifies a specific pause sequence to follow:
+> 
+> Stopping:
+> 	Set Pause_Restart Bit -> Set Restart Bit -> Set Chip_Enable Off
+> 
+> Restarting:
+> 	Set Chip_Enable On -> Clear Pause_Restart Bit
+> 
+> The Restart Bit is cleared automatically and must not be cleared
+> manually as this would cause undefined behavior.
+> 
+> Signed-off-by: Dirk Bender <d.bender@phytec.de>
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> ---
+> No changes in v2
+> ---
+>  drivers/media/i2c/mt9p031.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> index d10457361e6c..d59f66e3dcf3 100644
+> --- a/drivers/media/i2c/mt9p031.c
+> +++ b/drivers/media/i2c/mt9p031.c
+> @@ -80,6 +80,8 @@
+>  #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
+>  #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
+>  #define MT9P031_FRAME_RESTART				0x0b
+> +#define		MT9P031_FRAME_RESTART_SET		(1 << 0)
+> +#define		MT9P031_FRAME_PAUSE_RESTART_SET		(1 << 1)
+
+The fields are named Restart and Pause_Restart, I would drop _SET. Could
+you also sort them from MSB to LSB as for the other registers ? Using
+BIT() would be good too, although this could be done as an additional
+patch to convert all the existing macros.
+
+>  #define MT9P031_SHUTTER_DELAY				0x0c
+>  #define MT9P031_RST					0x0d
+>  #define		MT9P031_RST_ENABLE			1
+> @@ -483,9 +485,25 @@ static int mt9p031_set_params(struct mt9p031 *mt9p031)
+>  static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
+>  {
+>  	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
+> +	struct i2c_client *client = v4l2_get_subdevdata(subdev);
+> +	int val;
+>  	int ret;
+>  
+>  	if (!enable) {
+> +		val = mt9p031_read(client, MT9P031_FRAME_RESTART);
+
+Do you need to read the register ? Can't you write
+MT9P031_FRAME_PAUSE_RESTART_SET and then MT9P031_FRAME_PAUSE_RESTART_SET
+| MT9P031_FRAME_RESTART_SET ? And actually, can't we just write both
+bits in one go, do we need two writes ?
+
+> +
+> +		/* enable pause restart */
+> +		val |= MT9P031_FRAME_PAUSE_RESTART_SET;
+> +		ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* enable restart + keep pause restart set */
+> +		val |= MT9P031_FRAME_RESTART_SET;
+> +		ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+>  		/* Stop sensor readout */
+>  		ret = mt9p031_set_output_control(mt9p031,
+>  						 MT9P031_OUTPUT_CONTROL_CEN, 0);
+> @@ -505,6 +523,13 @@ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	val = mt9p031_read(client, MT9P031_FRAME_RESTART);
+> +	/* disable reset + pause restart */
+> +	val &= ~MT9P031_FRAME_PAUSE_RESTART_SET;
+
+Same here, I think you can simply write MT9P031_FRAME_PAUSE_RESTART_SET.
+
+> +	ret = mt9p031_write(client, MT9P031_FRAME_RESTART, val);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	return mt9p031_pll_enable(mt9p031);
+>  }
+>  
+
 -- 
-2.21.0
+Regards,
 
+Laurent Pinchart
