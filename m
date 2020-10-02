@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49291280D29
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 07:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88380280D3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 07:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgJBFuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 01:50:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
+        id S1726231AbgJBFuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 01:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbgJBFt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725951AbgJBFt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Oct 2020 01:49:59 -0400
 Received: from mail.kernel.org (ip5f5ad59f.dynamic.kabel-deutschland.de [95.90.213.159])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 808EE208A9;
+        by mail.kernel.org (Postfix) with ESMTPSA id 75CED20796;
         Fri,  2 Oct 2020 05:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601617798;
-        bh=erD5Z14zGvV3vkBYk2EuYkPYBxMtW1Zib+FfBt1zqFE=;
+        bh=sTwGnquoE6P2N3xCIRO9CZ2Os6A80mTdNqw5RZU1SyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EcyzQkTA2UsBq9CMHMDFFtYqeeOaGGxXrtM23Bs7QkiMxyWKbc1tUTcGFhdAXIYPy
-         N3ZlIB6NKJ8omnqmXxTq5Jn5eoa/Xwh5caK9wQp9zl5Tyk/zp5wfy2yimtnzjbjxRn
-         8fRszpDRbeBL5FzAHS3Sf13nSM/J0bSf6yIBjrwI=
+        b=LO/yhVjpcKKYyooCaLTv+Auj+IRmFi1qXp6f+Nlpzm4Dl0nWPYW5Qw0Rk/AFH0e0u
+         JAdr2UncxBX6V0kfPK5Br6yHvCdLGxK7bHA+/Dw/GONDcggVRXpK8G+vZf+Bf11lOr
+         fum2cdAd3wNLjAcbamr47ooKDjH2QZVemXVPmApA=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kODx6-006hir-BD; Fri, 02 Oct 2020 07:49:56 +0200
+        id 1kODx6-006hit-By; Fri, 02 Oct 2020 07:49:56 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Balbir Singh <sblbir@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jonathan Corbet" <corbet@lwn.net>, Andrew Lunn <andrew@lunn.ch>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 4/6] docs: i2c: index.rst: add slave-testunit-backend.rst
-Date:   Fri,  2 Oct 2020 07:49:48 +0200
-Message-Id: <2ac6bd9d96cc4ff248d1c2e26a99f51a785eb271.1601616399.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 5/6] scripts: kernel-doc: add support for typedef enum
+Date:   Fri,  2 Oct 2020 07:49:49 +0200
+Message-Id: <f381c13667d8794a941457f5ef771fe34788e831.1601616399.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601616399.git.mchehab+huawei@kernel.org>
 References: <cover.1601616399.git.mchehab+huawei@kernel.org>
@@ -47,45 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As warned by Sphinx:
+The PHY kernel-doc markup has gained support for documenting
+a typedef enum.
 
-	.../Documentation/i2c/slave-testunit-backend.rst: WARNING: document isn't included in any toctree
+However, right now the parser was not prepared for it.
 
-This document is not included anywhere.
+So, add support for parsing it.
 
-Fixes: a8335c64c5f0 ("i2c: add slave testunit driver")
+Fixes: 4069a572d423 ("net: phy: Document core PHY structures")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/hw-vuln/l1d_flush.rst | 3 +--
- Documentation/i2c/index.rst                     | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ scripts/kernel-doc | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-index adc4ecc72361..f794e2b1096c 100644
---- a/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-+++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-@@ -22,8 +22,7 @@ mechanism
- Usage Guidelines
- ----------------
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index d94e28fcead0..5ac3749905e5 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1339,14 +1339,22 @@ sub show_warnings($$) {
+ sub dump_enum($$) {
+     my $x = shift;
+     my $file = shift;
++    my $members;
++
  
--Please see document: :ref:`Documentation/userspace-api/spec_ctrl.rst` for
--details.
-+Please see document: :doc:`/userspace-api/spec_ctrl` for details.
+     $x =~ s@/\*.*?\*/@@gos;	# strip comments.
+     # strip #define macros inside enums
+     $x =~ s@#\s*((define|ifdef)\s+|endif)[^;]*;@@gos;
  
- **NOTE**: The feature is disabled by default, applications need to
- specifically opt into the feature to enable it.
-diff --git a/Documentation/i2c/index.rst b/Documentation/i2c/index.rst
-index 8a2ad3845191..9b8df313902c 100644
---- a/Documentation/i2c/index.rst
-+++ b/Documentation/i2c/index.rst
-@@ -38,6 +38,7 @@ Debugging
+-    if ($x =~ /enum\s+(\w*)\s*\{(.*)\}/) {
++    if ($x =~ /typedef\s+enum\s*\{(.*)\}\s*(\w*)\s*;/) {
++	$declaration_name = $2;
++	$members = $1;
++    } elsif ($x =~ /enum\s+(\w*)\s*\{(.*)\}/) {
+ 	$declaration_name = $1;
+-	my $members = $2;
++	$members = $2;
++    }
++
++    if ($declaration_name) {
+ 	my %_members;
  
-    gpio-fault-injection
-    i2c-stub
-+   slave-testunit-backend
- 
- Slave I2C
- =========
+ 	$members =~ s/\s+$//;
+@@ -1381,8 +1389,7 @@ sub dump_enum($$) {
+ 			    'sections' => \%sections,
+ 			    'purpose' => $declaration_purpose
+ 			   });
+-    }
+-    else {
++    } else {
+ 	print STDERR "${file}:$.: error: Cannot parse enum!\n";
+ 	++$errors;
+     }
 -- 
 2.26.2
 
