@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7E3281CD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DAC281CDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725777AbgJBUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUU3 (ORCPT
+        id S1725797AbgJBUUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:20:40 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37931 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBUUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:20:29 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83929C0613D0;
-        Fri,  2 Oct 2020 13:20:27 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id a2so2045697ybj.2;
-        Fri, 02 Oct 2020 13:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZjYnH8NMd9EvKTTZ3QWx8KfiPBRRSNu4BBCpFrxwX6U=;
-        b=jglmkFc7yMnmRm2kf3IEajZwdq/N5wMlZqj1wcr/RoBp7JeOLUhQFSswNRX9+m3SL0
-         FT1ga/PQYnhCSW32/8M/6POIYCpcb46e1xvKi0CVB6DtcHPniQObCSe1Zd3qQIZKJlcz
-         x/r2Tk0DnAcYwf59jzV8p1acVAc9QmoQPkj02DpCjuHPn0lwIBOvnGPjmEFhZBQpixfW
-         W7aulzdcnyOmvETDek2MHUyuvrjEdVWfkh813gnNVWB9BTuLr9gqH50ObVZaUqyY2Q+i
-         tYi7LF7jsqNikZtjl5swV27lHf9vMWmTUYq2vheBqdg0ox1AzcDXfse6keDcy2GF1DkP
-         JzJw==
+        Fri, 2 Oct 2020 16:20:39 -0400
+Received: by mail-pf1-f194.google.com with SMTP id l126so2071916pfd.5;
+        Fri, 02 Oct 2020 13:20:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZjYnH8NMd9EvKTTZ3QWx8KfiPBRRSNu4BBCpFrxwX6U=;
-        b=S7S0eR4RMpNqSX5Lpnxi36mCkrfoEtDbBL2r2DvPKr9LGllZRatEyjDEYIFlf94K4t
-         +12GOTz0nsBYCUAEtoYBolL1EBHI872spC87WP+h+v5ut3w+tubrlkRSSE4zrky7xlkg
-         2wwDWfs6Sw8fUQRWjCpM4xwphNYkRsK1eKh2M2SXfOVXoM9Xij0dyxYeMZ93yxmQo6YG
-         fseu18AFQ2nxtRRl+GhXoQ7TB672eCC4wHWbymjor5EFfQA1Zp7snqv1vf3UIUdmpzMS
-         7lk/3Qt4/Vly5mH7+viPYUouws6RRTLZWC09TyXdMsTRbHLJs3m/I+aTI7ENBOgcb5i9
-         CIgQ==
-X-Gm-Message-State: AOAM530KL65uibBqFVoCTtDJPxttZ/tqpkkizHwAbN69DCJO+X89XpUl
-        L1cAU3xhb+O+naNc5MZp9/SbXvJSf4Z9sYtuy/Q=
-X-Google-Smtp-Source: ABdhPJwzt36OP4Lp8Ish2l0V38vFOreqRh7WQEtDvB8x4bQ+GzXB/7cHtAZN64Qxg0IYfpcCW7l6T34e6u4n9Ckfn3U=
-X-Received: by 2002:a05:6902:4ae:: with SMTP id r14mr5197035ybs.22.1601670026875;
- Fri, 02 Oct 2020 13:20:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PNXMj9wXy59v9qpnujnEiqx2cewwdkt3Afn29BVwn5c=;
+        b=I29wWkqJNcWLmuWX8U7PfkZ+rLbSx6rGWjwILVenrRB7D9b4pmC5ehILfcizm1jtzx
+         zf2qJRUgrzVHoWMoJBnDeh7Bsr8w+py5wovg6kBNapHrcIn5PaF6q/JsPdhPHcE+MS5w
+         FHRZmoaxG2sYCgX/OYHJ3r85SvjsAZ5U1Z9KfmU2WTGzRB4ZrOVbtkW3uyZhrFZCexCm
+         yeSo3yra1EQC5GO2stge1sMutnPBOD/l8t4+RDMDUAuC05aZhaQXVKyB7bnPLlDcoCbv
+         fXHArTBIuRNRPvu8MxOis5bOseKwfdSC4cQ1ITiIpCrRmPF2JiDKxoL+B8H/M9xp+Bo2
+         eR9w==
+X-Gm-Message-State: AOAM531LSskMS6awQ3rs1HSwiXujhNaPtd1zUt0S/XM2FJbjiWqmAOTZ
+        Gn4KJoxbAxLGw9f8/tnNXCEz9P1jdNg=
+X-Google-Smtp-Source: ABdhPJw1scUdnUZRdy3/EYDI1WJHpzUsv5E7oA4yVYCtrzDCdpypISTAeaMWrVX/eBkOYx4+UIzMMw==
+X-Received: by 2002:a63:f104:: with SMTP id f4mr3916557pgi.365.1601670038260;
+        Fri, 02 Oct 2020 13:20:38 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:1be2:3dfb:f0b7:cc27? ([2601:647:4802:9070:1be2:3dfb:f0b7:cc27])
+        by smtp.gmail.com with ESMTPSA id a1sm2388427pjh.2.2020.10.02.13.20.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 13:20:37 -0700 (PDT)
+Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
+ RDMA map queue code
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
+        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org
+References: <20200929091358.421086-1-leon@kernel.org>
+ <20200929091358.421086-2-leon@kernel.org> <20200929102046.GA14445@lst.de>
+ <20200929103549.GE3094@unreal>
+ <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me>
+ <20201002064505.GA9593@lst.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <14fab6a7-f7b5-2f9d-e01f-923b1c36816d@grimberg.me>
+Date:   Fri, 2 Oct 2020 13:20:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201002174001.3012643-1-jarod@redhat.com> <20201002174001.3012643-4-jarod@redhat.com>
-In-Reply-To: <20201002174001.3012643-4-jarod@redhat.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 2 Oct 2020 22:20:13 +0200
-Message-ID: <CANiq72=WDR028qoM0du_ZKr0FSVv+X5BsZJJUw_Hf51dE6MD6w@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/6] bonding: rename slave to port where possible
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201002064505.GA9593@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarod,
 
-On Fri, Oct 2, 2020 at 7:44 PM Jarod Wilson <jarod@redhat.com> wrote:
->
->  .clang-format                                 |    4 +->  #ifdef CONFIG_NET_POLL_CONTROLLER
+>> Yes, basically usage of managed affinity caused people to report
+>> regressions not being able to change irq affinity from procfs.
+> 
+> Well, why would they change it?  The whole point of the infrastructure
+> is that there is a single sane affinity setting for a given setup. Now
+> that setting needed some refinement from the original series (e.g. the
+> current series about only using housekeeping cpus if cpu isolation is
+> in use).  But allowing random users to modify affinity is just a receipe
+> for a trainwreck.
 
-Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Well allowing people to mangle irq affinity settings seem to be a hard
+requirement from the discussions in the past.
 
-Cheers,
-Miguel
+> So I think we need to bring this back ASAP, as doing affinity right
+> out of the box is an absolute requirement for sane performance without
+> all the benchmarketing deep magic.
+
+Well, it's hard to say that setting custom irq affinity settings is
+deemed non-useful to anyone and hence should be prevented. I'd expect
+that irq settings have a sane default that works and if someone wants to
+change it, it can but there should be no guarantees on optimal
+performance. But IIRC this had some dependencies on drivers and some
+more infrastructure to handle dynamic changes...
