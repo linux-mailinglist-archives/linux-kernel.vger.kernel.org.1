@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5F9280EB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42586280EBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387601AbgJBIYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgJBIYn (ORCPT
+        id S2387502AbgJBI1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:27:31 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:26984 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725961AbgJBI1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:24:43 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D38C0613D0;
-        Fri,  2 Oct 2020 01:24:42 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 13so736866wmf.0;
-        Fri, 02 Oct 2020 01:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uepnmvkaBYFWZFNuqOI3SwkTneUXrVb8dyGb7Wp5nmM=;
-        b=Lr4iaoyucrYzxBxbatoVRF+8FVgj1FznYmnJmf87m2qvfXdmKyULjbqmxYQrkszGOq
-         2y7ARzNj0/bQEzAQN9UaSPkhXsG2CzxZcm47C0dYQgD/79YOE9cr0pimndUCxGuIDXPv
-         0FnzpzT2acTxh2P7ddEV1DkJF4v2SeogNdntutGcczjFRzGorYdz9uYvbAlyjJ3T6BPS
-         Xd3KwvwaaGTx0ooOn2h/tYlF1Ynsm+YlltCgA2HxjHctwAqd0UAbGnb7FzvkTxzBW/mP
-         uyhppFQDFwhSNR/4zRL5Zqxe5Xx921HIf2f9obf7tlxaOL1GY08XcBMZ85cuVNx8sl5K
-         m//g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uepnmvkaBYFWZFNuqOI3SwkTneUXrVb8dyGb7Wp5nmM=;
-        b=r4rxELGtCLMu5/W307PHrqVKHdRN6LyLMXBhNaaXRdpXakzmbKN69sXhXAYbD7DprU
-         OxJtGJvWC2Pv5H7e4vikFp2UGChKFoBFpqMMvgxfRQNdG8PCok8trQssYRIepYjnuDup
-         Mi6/1StcQzHyQ04MRH37N5m/3eAB2Cx5QADz09X50yoXDTR3Z3nVvfXq3hvPxN4508WW
-         mwZindn/GU6NWJMBHR10zRGrEB5F0bFNZZcyTYIE4fWLTYCz95nMDzRF7AzJtJqgSwb2
-         9tU60b1lc0J+fH8qGyWITfaJOqUA4oyLdF8bXLnHrYErfHjBm9fKw3rO0zWzel9CtjIR
-         /buQ==
-X-Gm-Message-State: AOAM532v0WnEMeXEOYNMFbY9gWrMEoizp8xS9YtqFS7Yt0OKWFCoIPlq
-        AyIp+EP7jcKHqvVNBAfzfk2y78McQyY=
-X-Google-Smtp-Source: ABdhPJzJ6/QDMUZwbNSfl/vi9c5VAWusWGQJp8tIld00GRV3yGHvAK35ofyqOe1YWmNaK3fY5LEKlg==
-X-Received: by 2002:a1c:f311:: with SMTP id q17mr1630701wmq.168.1601627081017;
-        Fri, 02 Oct 2020 01:24:41 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id l4sm1047135wrc.14.2020.10.02.01.24.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 01:24:40 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] system_data_types.7: Add 'void *'
-To:     Paul Eggert <eggert@cs.ucla.edu>
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        libc-alpha@sourceware.org, gcc@gcc.gnu.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com>
- <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
-Date:   Fri, 2 Oct 2020 10:24:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 2 Oct 2020 04:27:30 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0928LlsA025681;
+        Fri, 2 Oct 2020 04:27:29 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33t2j4wm8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 02 Oct 2020 04:27:29 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0928RROf040519
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 2 Oct 2020 04:27:27 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 2 Oct 2020 01:27:17 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 2 Oct 2020 01:27:16 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 2 Oct 2020 01:27:16 -0700
+Received: from saturn.ad.analog.com ([10.48.65.110])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0928ROCL010924;
+        Fri, 2 Oct 2020 04:27:24 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] iio: adc: ad7887: invert/rework external ref logic
+Date:   Fri, 2 Oct 2020 11:27:23 +0300
+Message-ID: <20201002082723.184810-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201001141143.925-1-alexandru.ardelean@analog.com>
+References: <20201001141143.925-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-02_05:2020-10-02,2020-10-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxlogscore=924 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010020064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+This change inverts/reworks the logic to use an external reference via a
+provided regulator.
 
-On 2020-10-01 19:32, Paul Eggert wrote:
- > If you're going to document this at all, I suggest documenting 'void' as
- > well as 'void *', and putting both sets of documentation into the same
- > man page.
- >
+Now the driver tries to obtain a regulator. If one is found, then it is
+used. The rest of the driver logic already checks if there is a non-NULL
+reference to a regulator, so it should be fine.
 
-All the types we're documenting are in the same page:
-system_data_types(7).
-And then we have links with the name of each type.
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-And yes, I also pretend to document 'void'.
+Changelog v1 -> v2:
+* remove omitted '!pdata->use_onchip_ref' check; the field was removed from
+  the platform data, but was still used
 
+ drivers/iio/adc/ad7887.c             | 12 ++++++++----
+ include/linux/platform_data/ad7887.h |  4 ----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
- > For 'void *' you should also mention that one cannot use arithmetic on
- > void * pointers, so they're special in that way too.
+diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
+index 037bcb47693c..99a480ad3985 100644
+--- a/drivers/iio/adc/ad7887.c
++++ b/drivers/iio/adc/ad7887.c
+@@ -246,11 +246,15 @@ static int ad7887_probe(struct spi_device *spi)
+ 
+ 	st = iio_priv(indio_dev);
+ 
+-	if (!pdata || !pdata->use_onchip_ref) {
+-		st->reg = devm_regulator_get(&spi->dev, "vref");
+-		if (IS_ERR(st->reg))
++	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
++	if (IS_ERR(st->reg)) {
++		if (PTR_ERR(st->reg) != -ENODEV)
+ 			return PTR_ERR(st->reg);
+ 
++		st->reg = NULL;
++	}
++
++	if (st->reg) {
+ 		ret = regulator_enable(st->reg);
+ 		if (ret)
+ 			return ret;
+@@ -269,7 +273,7 @@ static int ad7887_probe(struct spi_device *spi)
+ 	/* Setup default message */
+ 
+ 	mode = AD7887_PM_MODE4;
+-	if (!pdata || !pdata->use_onchip_ref)
++	if (!st->reg)
+ 		mode |= AD7887_REF_DIS;
+ 	if (pdata && pdata->en_dual)
+ 		mode |= AD7887_DUAL;
+diff --git a/include/linux/platform_data/ad7887.h b/include/linux/platform_data/ad7887.h
+index 732af46b2d16..9b4dca6ae70b 100644
+--- a/include/linux/platform_data/ad7887.h
++++ b/include/linux/platform_data/ad7887.h
+@@ -13,13 +13,9 @@
+  *	second input channel, and Vref is internally connected to Vdd. If set to
+  *	false the device is used in single channel mode and AIN1/Vref is used as
+  *	VREF input.
+- * @use_onchip_ref: Whether to use the onchip reference. If set to true the
+- *	internal 2.5V reference is used. If set to false a external reference is
+- *	used.
+  */
+ struct ad7887_platform_data {
+ 	bool en_dual;
+-	bool use_onchip_ref;
+ };
+ 
+ #endif /* IIO_ADC_AD7887_H_ */
+-- 
+2.25.1
 
-Good suggestion!
-
- > Also, you should
- > warn that because one can convert from any pointer type to void * and
- > then to any other pointer type, it's a deliberate hole in C's
- > type-checking.
-
-Also good.  I'll talk about generic function parameters for this.
-
- > It might not also hurt to mention 'void const *', 'void
- > volatile *', 'void const volatile *', etc.
-
-Those are qualifiers for the type,
-and I don't see how any of them would apply differently to 'void *'
-than to any other pointer type (or any type at all),
-so I think they don't belong to system_data_types(7).
-
-However, it might be good that someone starts a page called
-'type_qualifiers(7)' or something like that.
-
-I would love that someone documents 'volatile' correctly,
-as there aren't many good sources about it.
-If someone who knows when to use --and especially when not to use--
-'volatile', is reading this, think about it :-)
-I still wonder if I used it correctly in the few cases I've had to.
-
-BTW, I'll CC the LKML.
-
- >
- > For 'void' you can mention the usual things, such as functions returning
- > void, and functions declared with (void) parameters, why one would want
- > to cast to (void), and so forth.
-
-Yes, I was thinking about that.
-
- >
- > You're starting to document the C language here, and if you're going to
- > do that you might as well do it right.
-
-I'm trying to do so :)
-
-Thanks,
-
-Alex
