@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEEA2819FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BFD281A20
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388141AbgJBRot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        id S2388328AbgJBRvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBRot (ORCPT
+        with ESMTP id S1726017AbgJBRvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:44:49 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7AFC0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:44:48 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u4so1857042ljd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:44:48 -0700 (PDT)
+        Fri, 2 Oct 2020 13:51:32 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1C5C0613D0;
+        Fri,  2 Oct 2020 10:51:32 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id j19so1316969pjl.4;
+        Fri, 02 Oct 2020 10:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d98XeALx0jpZHa3k7E1jf9qNoDRB0A1nKFjz/K+o3Oc=;
-        b=hl0PuFaoCAMYj8GG2Pfudjx+2xWIyYM9u8C0Qdhem4qPxdVN52uCOBMZr+AlpJ6RO/
-         ipSBRwR2iybCGpME/uDGHDNjW1tSQeQNJ5s9JnnASrNUSYKfu65jvz9TAwA+F5Y5sLiI
-         pNXkx5CP960QQ0z0dbv4LFfwNZkQIWPTE3pkA=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=PnAopDPoMZi0dRcrP3NcJfF5hKVlLOzrzm1DdVKLhR0=;
+        b=iR4dVeX6+D3IklROSom59UJ0jVN/HSI9HYBhftutQ7t/p9Sc93B6dsD2bggivEaekj
+         mdROrHJ32eSroJ+v72lDTgS95D15OBGgLQ0tlMbZ5SwUHmiY9T82W2hULzi03LF3XS4l
+         re6HEUDChFGGoPbUCHHBDTJ6qS4JrZpd4k3KXJz7pT+CMEDI2kqlx92vtXXoBkG/OK/M
+         18tVRTqtcSiTt/6rD9JfglugpC7jckj8Q/ZXmK33ZpnKSasV8z8EEPWsGxyyPOsRHYH6
+         KnjClTRyFZo/0O50SDaqd7JsuP6JXk+sLbXIwYojiy3BNm+Y+Ig1EYYS8PcOsHgSJa/S
+         YrHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d98XeALx0jpZHa3k7E1jf9qNoDRB0A1nKFjz/K+o3Oc=;
-        b=qpWvHHfzioqJYeL0Yp1m5JO6wOSpTy2ZzgAayPU7Ji3AJ4ilj3t0KDOhbYGNrZnj8G
-         xP+EY2YK9Pl9Dm6huMC6DwXL37855TmkcgfL4xEGY8Y7kTNCiWZ7g52xO2/FfgzQHL6i
-         TUSBdCaYxW7xEOTIh5r9yYdfRQ1A3mXvcOneGkRKa1kceJRSeeRJPzzYFFHVcsfItifx
-         dxG16pdaIphew2MNMM+ixjL6O7UZ8tJLaAOBYasiSIP5K5yuE6+hzOOOMv13Uk8KoD+2
-         WgUkuT3Gd1zelD4UjeH7yWxJGdcGSZF3Y9poxkQlWYC9+1iNdIkRgBV0CI20UPfoWipd
-         43ug==
-X-Gm-Message-State: AOAM5317jEprvS3iLmT+34uPu3JDCzslZSoTUuKDnkEE0xEEdppxQAai
-        Bat2jnc3EgyWRxi6BEnGXgL/NkIAqeT5KQ==
-X-Google-Smtp-Source: ABdhPJyQKBZbQuPYyM4JeaEDCDuwAJir7xveukZfRUeYypyC1CaCl4PVSgDAiaaSGE0Kj5geWuq0BQ==
-X-Received: by 2002:a05:651c:554:: with SMTP id q20mr1115396ljp.348.1601660686894;
-        Fri, 02 Oct 2020 10:44:46 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id u2sm428766lff.255.2020.10.02.10.44.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 10:44:46 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id b12so2848505lfp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:44:45 -0700 (PDT)
-X-Received: by 2002:ac2:5594:: with SMTP id v20mr1368289lfg.344.1601660685616;
- Fri, 02 Oct 2020 10:44:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=PnAopDPoMZi0dRcrP3NcJfF5hKVlLOzrzm1DdVKLhR0=;
+        b=T0idHqPMjfJ9CuOprBAW0mwkZ2rKszM+sH8ePnEbxvr0zChxUO2e3KxsfUUK9rdDTT
+         pIzQmzKwqX3IGdknwZGkivgTwxm3YrCQKhAQR7ZRafZ/Bt9YIkzSsMlvVLDGyLVk3GJB
+         tvJccegJSbgCIH3s8QiecPEB78JwaVMyXnx/khex4UZqK7hQbPFAN2rzR16EqWcrrcAF
+         8BJdKnAawLl5pFsadL9yBGr/95FDQP4PHoBhlo9/le8fuldnjjBHn6ENkFTpNn54Ockf
+         u39di08u97KOEwOxffPA4XAesLYcWUBTn8qj7Ht2nzlzaY+EfBc2nKzZmINkU3czdgTb
+         a4Ig==
+X-Gm-Message-State: AOAM533VpzRWDEv5JPXZlF9sZFupjxjV1SXHDkPE4b0dplibAX6CSoDd
+        cbb7nlpqp/un5M3enpaROkQ=
+X-Google-Smtp-Source: ABdhPJwlv/hIGmASSyoKCV7NfPLJj/nUKPUI5UhUDO2/qVQbgPa0oKgv034ju05VtBMeh5p5Y/QqXA==
+X-Received: by 2002:a17:90a:62c3:: with SMTP id k3mr3841487pjs.157.1601661091645;
+        Fri, 02 Oct 2020 10:51:31 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id x13sm2625375pfj.199.2020.10.02.10.51.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 02 Oct 2020 10:51:31 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 10:45:32 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
+Message-ID: <20201002174532.GA29706@Asurada-Nvidia>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-4-nicoleotsuka@gmail.com>
+ <eba0d5ff-dfb2-7c17-50c2-5709c506f62e@gmail.com>
 MIME-Version: 1.0
-References: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 2 Oct 2020 10:44:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiHFbAaqS0h_D-9d1=Yc-iq96wE-hrrqOfptGNUZx-GRg@mail.gmail.com>
-Message-ID: <CAHk-=wiHFbAaqS0h_D-9d1=Yc-iq96wE-hrrqOfptGNUZx-GRg@mail.gmail.com>
-Subject: Re: [git pull] epoll fixes
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eba0d5ff-dfb2-7c17-50c2-5709c506f62e@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 10:20 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         Several race fixes in epoll.
+On Fri, Oct 02, 2020 at 05:35:24PM +0300, Dmitry Osipenko wrote:
+> 02.10.2020 09:08, Nicolin Chen пишет:
+> > @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+> >  	group->smmu = smmu;
+> >  	group->soc = soc;
+> >  
+> > -	group->group = iommu_group_alloc();
+> > +	if (dev_is_pci(dev))
+> > +		group->group = pci_device_group(dev);
+> > +	else
+> > +		group->group = generic_device_group(dev);
+> > +
+> >  	if (IS_ERR(group->group)) {
+> >  		devm_kfree(smmu->dev, group);
+> >  		mutex_unlock(&smmu->lock);
+> > @@ -1069,22 +1074,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+> >  	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
+> >  
+> >  	err = iommu_device_register(&smmu->iommu);
+> > -	if (err) {
+> > -		iommu_device_sysfs_remove(&smmu->iommu);
+> > -		return ERR_PTR(err);
+> > -	}
+> > +	if (err)
+> > +		goto err_sysfs;
+> >  
+> >  	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
+> > -	if (err < 0) {
+> > -		iommu_device_unregister(&smmu->iommu);
+> > -		iommu_device_sysfs_remove(&smmu->iommu);
+> > -		return ERR_PTR(err);
+> > -	}
+> > +	if (err < 0)
+> > +		goto err_unregister;
+> > +
+> > +#ifdef CONFIG_PCI
+> > +	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
+> > +	if (err < 0)
+> > +		goto err_bus_set;
+> > +#endif
+> >  
+> >  	if (IS_ENABLED(CONFIG_DEBUG_FS))
+> >  		tegra_smmu_debugfs_init(smmu);
+> >  
+> >  	return smmu;
+> > +
+> > +err_bus_set: __maybe_unused;
+> 
+> __maybe_unused?
 
-Fudge. I screwed up the commit message due to a cut-and-paste error
-(don't ask - sometimes google chrome and gnome-terminal seem to stop
-agreeing about the normal X paste buffer)
-
-And I extra stupidly pushed the thing out after the build succeeded,
-not having noticed how I screwed up the trivial commit message.
-
-I've force-updated the public sites, and I really hope nobody pulled
-in that (very short) time when my tree had a bogus commit message.
-
-(In case anybody cares, the commit message said "SEQCNT_MUTEX_ZERO"
-instead of "Several race fixes in epoll" because that's what I had
-looked at in another terminal. So it was a very WTF message)
-
-I think this was only the second time I had a forced push to fix some
-stupidity of mine. So it's not exactly _common_, but it's
-embarrassing.
-
-                    Linus
+In order to mute a build warning when CONFIG_PCI=n...
