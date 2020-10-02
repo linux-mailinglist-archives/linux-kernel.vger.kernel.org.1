@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72AE280E1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9BF280E2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgJBHf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:35:56 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18348 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBHfz (ORCPT
+        id S1726141AbgJBHjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:39:10 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:52806 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgJBHjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:35:55 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f76d84e0000>; Fri, 02 Oct 2020 00:35:42 -0700
-Received: from [10.2.56.62] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 07:35:55 +0000
-Subject: Re: [PATCH] selftests/vm: fix: make check_config.sh executable
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Linux Next <linux-next@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20201002064811.435769-1-jhubbard@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <fa388abf-c6b6-f975-959c-6bc1be03f026@nvidia.com>
-Date:   Fri, 2 Oct 2020 00:35:54 -0700
+        Fri, 2 Oct 2020 03:39:10 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1kOFea-0006bL-EH; Fri, 02 Oct 2020 07:38:56 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1kOFeY-0004R7-99; Fri, 02 Oct 2020 08:38:56 +0100
+Subject: Re: [PATCH 3/6] docs: virt: user_mode_linux_howto_v2.rst: fix a
+ literal block markup
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Richard Weinberger <richard@nod.at>,
+        Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1601616399.git.mchehab+huawei@kernel.org>
+ <ce8a23cd0f138bd69ccc196e6dbe312da1044938.1601616399.git.mchehab+huawei@kernel.org>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <4ba279b1-7119-e3a5-3b77-6751d5ec3221@cambridgegreys.com>
+Date:   Fri, 2 Oct 2020 08:38:54 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201002064811.435769-1-jhubbard@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <ce8a23cd0f138bd69ccc196e6dbe312da1044938.1601616399.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601624142; bh=6aKRGI4jjZ60KF/SCMuVt1rtkIbOvp8a1aQsfb/vwtA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Qlqk4gqH248giwliwSnfsfUNuGu+EywSeQTKnzTI4rRgmfWbtkp0NCKF7NK4dIoPH
-         ZYPqa6OvGQIB44NsZR1cr1HLBqGBZalf12ELH1sVvQJG4xhNS6PqKryf6Phvj8kzIb
-         dx5tu+3+QVymJk2z7DSEPASgsyioKkA7aXD7JqeP9FD/4s8lXJ1bsxny4BOdN7U2ME
-         JjliyDQvF7TmVxnZmtFAMeZALF6KSZbCVWjsswhYx89OsSfIrqaEQOAFE8v3SPasFE
-         y1xFx0BWcEEs/4PrOMIYWXc045AQz3QDlQpdLXp2QXTs1ejvzUP17KEkHVI97EjN2m
-         eqDgub5ik04RA==
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 11:48 PM, John Hubbard wrote:
-> commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs
-> dependency") created the new check_config.sh file without the execute
-> bits set. This is a problem because the Makefile runs it with "./", so
-> now "make" is failing in that directory.
+
+
+On 02/10/2020 06:49, Mauro Carvalho Chehab wrote:
+> There's a missing new line for a literal block:
 > 
-> The posted patch [1] does seem to have it as an executable file, so I'm
-> not sure how this happened. But in any case, make check_config.sh
-> executable again, so that "make" in selftests/vm works once again.
+> 	.../Documentation/virt/uml/user_mode_linux_howto_v2.rst:682: WARNING: Unexpected indentation.
 > 
-> [1] https://lore.kernel.org/linux-doc/20200929212747.251804-9-jhubbard@nvidia.com/
-> 
-> Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs dependency")
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Fixes: 04301bf5b072 ("docs: replace the old User Mode Linux HowTo with a new one")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
+>   Documentation/virt/uml/user_mode_linux_howto_v2.rst | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> Hi,
-> 
-> This applies to today's 20201001) linux-next. I forgot if this needs to
-> be a separate patch or if it can be fixed up in Andrew's tree.
-> 
-
-hmm, in fact I think something similar also happened to run_vmtest.sh, in the same
-directory. Please let me know if a patch is needed there, or if you can just fix
-up this one or the tree or something?
-
-> thanks,
-> John Hubbard
-> NVIDIA
-> 
-> 
->   tools/testing/selftests/vm/check_config.sh | 0
->   1 file changed, 0 insertions(+), 0 deletions(-)
->   mode change 100644 => 100755 tools/testing/selftests/vm/check_config.sh
-> 
-> diff --git a/tools/testing/selftests/vm/check_config.sh b/tools/testing/selftests/vm/check_config.sh
-> old mode 100644
-> new mode 100755
+> diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> index f70e6f5873c6..312e431695d9 100644
+> --- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> +++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+> @@ -679,6 +679,7 @@ Starting UML
+>   
+>   We can now run UML.
+>   ::
+> +
+>      # linux mem=2048M umid=TEST \
+>       ubd0=Filesystem.img \
+>       vec0:transport=tap,ifname=tap0,depth=128,gro=1 \
 > 
 
-thanks,
+Thanks.
+
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+
 -- 
-John Hubbard
-NVIDIA
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
