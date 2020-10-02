@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D19E281728
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B468D28172C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387978AbgJBPw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S2387990AbgJBPxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBPwZ (ORCPT
+        with ESMTP id S1726090AbgJBPxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:52:25 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EEDC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:52:25 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id k6so2057770ior.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:52:25 -0700 (PDT)
+        Fri, 2 Oct 2020 11:53:49 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461C2C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:53:49 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id f15so1688898ilj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ShMcDvXeEkCRoyhlDuy9K5fYLcZiHQgXh+0uj+Ohgxg=;
-        b=xo6idNonJ34cYdZi7p0oAgxL/XqyAmr+dTYsxxvTIa9nraeuTbEQgGKJUwxRTkDl2G
-         kwNKaKoNhk32fPhft8AXdx+huCB7jN9bGxKL2K3fOQb5S3eV7UBgfPgfR9x+MxEALe8t
-         qeI9OfSf6EXLESTsF8oy2rG5j/t8IX1DohXieOo898zvNAbC1i9UyYMzqFFT7Kuca1th
-         InW18uWhZx8LS6ps3u65Q95nN3nsiPs40JqgWJ2oMxxDFEjw30lbuTiotNn/IISicpFJ
-         BGggnunjxKlKkswxFZDaZtf720oHEoHdIMxriAzeaVA8hisID9A0mCCKX9CA3hLYEzyK
-         lllw==
+        bh=FbzYt+1lqJQv+Lx05+RRyPDz9iRfh2zyAaBiUET49Dc=;
+        b=BdiF/jQHkXOGJ5tGB7XMAQY3DWt9p2gn//KwbsXishc37at0GxMGsz3BqaHq+6Tb+Z
+         lavVukWvQu9yruLKDUNeCt0bCIHftctaFyTEsaW4XvB95yKWABJbP0V8pxt5hL7qeWLl
+         YNLp/bHplcCa+IIqog1ljsc82OJEejzY40f4h40IzjYHXq4LYpOniRMPu7NvnSPTCA40
+         itljo27NycITPYXMd4G8VMwPXbw2VXgS5Iy1Ow0kTuJZ1P62zxm4faMz/hDxeo49+xan
+         9TFFLXKMe0vGQdFEE+pyHucsWA+r7xlT4GFuAYukfv8D/0HfwAUStaX9xVBNDNQ6Luqj
+         9+Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ShMcDvXeEkCRoyhlDuy9K5fYLcZiHQgXh+0uj+Ohgxg=;
-        b=NoAdXwoaK2sRFSwaeYpX9lavxDZJZHc2eyJCSe+0dX3ogtRvqHchg7L1lM2uzKslIk
-         q9vjO+91Ui8B86OSCHqwHdTXoQGDD5iIRLFHCVaDxiUVVoFXoHDFSP6hl2k+0zZ1oIe8
-         +Bvpaa3QtpUjF7OYWf/cLDht/+DFCN0FpJTQwr9AAfr0I7RQRCfI7S9P9RCI+UAuEJBK
-         9MPBSXvj2qDVnlex8ZzdknLVk70VHcvj52WefoP0uabsZdQMwv+1JMGv/VbPGfGWpCt/
-         CZNHABhNJGY9qVW6SAurEEv0ZqOHg4PJe+utO6uoExMzCpvI7uHk0SHkuwvpi1nTVTdV
-         Lqkw==
-X-Gm-Message-State: AOAM533Gp8eKgrQFNoU/HRvaNPrle7rg3sFM60GLgJrY1RpDdFtKNQFU
-        66VfD/yCzPA5IqsjC7mB7h6U9t05tpOlAQ==
-X-Google-Smtp-Source: ABdhPJzsABw7VR67E0uItDylj6BzqZIfExHx8JTfR+CTEnrrwolhL379Ma+d8qAziBAeU+6jG8LeUg==
-X-Received: by 2002:a02:8805:: with SMTP id r5mr2972176jai.52.1601653945179;
-        Fri, 02 Oct 2020 08:52:25 -0700 (PDT)
+        bh=FbzYt+1lqJQv+Lx05+RRyPDz9iRfh2zyAaBiUET49Dc=;
+        b=A8l7+Uqnj+CzWY4UGK5uLuvncqCAiXFOPF/W5oHv12nZnpu+hetMEtZhMaTiY/kkJp
+         tdhFiOTuJto5vXBU6zJrHDsfwey3W/CDa0m6dp1wz5uUpdYVBVg9BphNa0O9bNazIqnj
+         LAqHPB1UJUAfx/d80famI6Oo2cdOfDq4dbLYxoEMdeAemsKxXw6PgBXW7hKmPp9acUnO
+         0SUSRJe4bDhYIGpsTFST0rczqYWXwryyNUDz7JyaGBA9O59iOaMagSVdRgUP/hnmjTbv
+         J3nXXgQjyhQc0213Fq+HNlgtZT+5JFETS/ES4et9vRMGoe//LzQS1KvD7kZ9s61VVUzd
+         b/jw==
+X-Gm-Message-State: AOAM532B23rMrO2AYBc1oWPS/bUj9UB/V8jH5e6EAkUeVXKQcJZlXMcU
+        C7AjiSIaInrus371Wod1g/scDg==
+X-Google-Smtp-Source: ABdhPJwNMa0GiYKCdyEnbZDrl+NAj5pyHSFmIKe53+DJgSLqdjRwXMzubUGSmi/zc+E0oYxtNBibzg==
+X-Received: by 2002:a92:c148:: with SMTP id b8mr1843075ilh.269.1601654028568;
+        Fri, 02 Oct 2020 08:53:48 -0700 (PDT)
 Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id w13sm876380iox.10.2020.10.02.08.52.24
+        by smtp.gmail.com with ESMTPSA id y28sm962240ilk.13.2020.10.02.08.53.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 08:52:24 -0700 (PDT)
+        Fri, 02 Oct 2020 08:53:47 -0700 (PDT)
 Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
+To:     Oleg Nesterov <oleg@redhat.com>
 Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org
+        peterz@infradead.org, tglx@linutronix.de
 References: <20201001194208.1153522-1-axboe@kernel.dk>
  <20201001194208.1153522-4-axboe@kernel.dk>
- <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de>
+ <20201002151415.GA29066@redhat.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4c9dbcc4-cae7-c7ad-8066-31d49239750a@kernel.dk>
-Date:   Fri, 2 Oct 2020 09:52:24 -0600
+Message-ID: <fb15a44f-3fdf-2f12-ee85-f229bd261419@kernel.dk>
+Date:   Fri, 2 Oct 2020 09:53:47 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <871rigejb8.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201002151415.GA29066@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,48 +70,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 9:31 AM, Thomas Gleixner wrote:
-> On Fri, Oct 02 2020 at 17:14, Oleg Nesterov wrote:
->> Heh. To be honest I don't really like 1-2 ;)
+On 10/2/20 9:14 AM, Oleg Nesterov wrote:
+> Heh. To be honest I don't really like 1-2 ;)
 > 
-> I do not like any of this :)
+> Unfortunately, I do not see a better approach right now. Let me think
+> until Monday, it is not that I think I will find a better solution, but
+> I'd like to try anyway.
 > 
->> So I think that if we are going to add TIF_TASKWORK we should generalize
->> this logic and turn it into TIF_NOTIFY_SIGNAL. Similar to TIF_NOTIFY_RESUME
->> but implies signal_pending().
->>
->> IOW, something like
->>
->> 	void set_notify_signal(task)
->> 	{
->> 		if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_SIGNAL)) {
->> 			if (!wake_up_state(task, TASK_INTERRUPTIBLE))
->> 				kick_process(t);
->> 		}
->> 	}
->>
->> 	// called by exit_to_user_mode_loop() if ti_work & _TIF_NOTIFY_SIGNAL
->> 	void tracehook_notify_signal(regs)
->> 	{
->> 		clear_thread_flag(TIF_NOTIFY_SIGNAL);
->> 		smp_mb__after_atomic();
->> 		if (unlikely(current->task_works))
->> 			task_work_run();
->> 	}
->>
->> This way task_work_run() doesn't need to clear TIF_NOTIFY_SIGNAL and it can
->> have more users.
-> 
-> I think it's fundamentaly wrong that we have several places and several
-> flags which handle task_work_run() instead of having exactly one place
-> and one flag.
+> Let me comment 3/3 for now.
 
-I don't disagree with that. I know it's not happening in this series, but
-if we to the TIF_NOTIFY_SIGNAL route and get all archs supporting that,
-then we can kill the signal and notify resume part of running task_work.
-And that leaves us with exactly one place that runs it.
+Thanks, appreciate your time on this!
 
-So we can potentially improve the current situation in that regard.
+>> +static void task_work_signal(struct task_struct *task)
+>> +{
+>> +#ifndef TIF_TASKWORK
+>> +	unsigned long flags;
+>> +
+>> +	/*
+>> +	 * Only grab the sighand lock if we don't already have some
+>> +	 * task_work pending. This pairs with the smp_store_mb()
+>> +	 * in get_signal(), see comment there.
+>> +	 */
+>> +	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
+>> +	    lock_task_sighand(task, &flags)) {
+>> +		task->jobctl |= JOBCTL_TASK_WORK;
+>> +		signal_wake_up(task, 0);
+>> +		unlock_task_sighand(task, &flags);
+>> +	}
+>> +#else
+>> +	set_tsk_thread_flag(task, TIF_TASKWORK);
+>> +	set_notify_resume(task);
+>> +#endif
+> 
+> Again, I can't understand. task_work_signal(task) should set TIF_TASKWORK
+> to make signal_pending() = T _and_ wake/kick the target up, just like
+> signal_wake_up() does. Why do we set TIF_NOTIFY_RESUME ?
+> 
+> So I think that if we are going to add TIF_TASKWORK we should generalize
+> this logic and turn it into TIF_NOTIFY_SIGNAL. Similar to TIF_NOTIFY_RESUME
+> but implies signal_pending().
+> 
+> IOW, something like
+> 
+> 	void set_notify_signal(task)
+> 	{
+> 		if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_SIGNAL)) {
+> 			if (!wake_up_state(task, TASK_INTERRUPTIBLE))
+> 				kick_process(t);
+> 		}
+> 	}
+> 
+> 	// called by exit_to_user_mode_loop() if ti_work & _TIF_NOTIFY_SIGNAL
+> 	void tracehook_notify_signal(regs)
+> 	{
+> 		clear_thread_flag(TIF_NOTIFY_SIGNAL);
+> 		smp_mb__after_atomic();
+> 		if (unlikely(current->task_works))
+> 			task_work_run();
+> 	}
+> 
+> This way task_work_run() doesn't need to clear TIF_NOTIFY_SIGNAL and it can
+> have more users.
+> 
+> What do you think?
+
+I like that. It'll achieve the same thing as far as I'm concerned, but not
+tie the functionality to task_work. Not that we have anything that'd use
+it right now, but it still seems like a better base.
+
+I'll adapt patch 2+3 for this, thanks Oleg.
 
 -- 
 Jens Axboe
