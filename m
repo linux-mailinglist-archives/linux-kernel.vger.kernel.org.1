@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4953D2812DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624DB2812E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387838AbgJBMgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBMgh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:36:37 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0325DC0613D0;
-        Fri,  2 Oct 2020 05:36:37 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 7E41B29C483
-Subject: Re: [PATCH v3 0/2] Add configurable handler to execute a compound
- action
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jiri Slaby <jslaby@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        kernel@collabora.com
-References: <20200818112825.6445-1-andrzej.p@collabora.com>
- <20201002123158.GA3346786@kroah.com>
- <95030036-87fe-8c61-6fc6-c60452d8ca96@collabora.com>
-Message-ID: <9bd7ff2e-ddf3-f950-54ad-c143e9c60daa@collabora.com>
-Date:   Fri, 2 Oct 2020 14:36:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387531AbgJBMjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:39:21 -0400
+Received: from verein.lst.de ([213.95.11.211]:52210 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBMjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:39:21 -0400
+Received: by verein.lst.de (Postfix, from userid 107)
+        id 258BB68C4E; Fri,  2 Oct 2020 14:39:19 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
+        autolearn=disabled version=3.3.1
+Received: from lst.de (p5b0d8779.dip0.t-ipconnect.de [91.13.135.121])
+        by verein.lst.de (Postfix) with ESMTPSA id 90E8467354;
+        Fri,  2 Oct 2020 14:38:40 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 14:38:36 +0200
+From:   Torsten Duwe <duwe@lst.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201002123836.GA14807@lst.de>
+References: <20200921075857.4424-1-nstange@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <95030036-87fe-8c61-6fc6-c60452d8ca96@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921075857.4424-1-nstange@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 02.10.2020 o 14:33, Andrzej Pietrasiewicz pisze:
-> W dniu 02.10.2020 o 14:31, Greg Kroah-Hartman pisze:
->> On Tue, Aug 18, 2020 at 01:28:23PM +0200, Andrzej Pietrasiewicz wrote:
->>> This is a follow-up of this thread:
->>>
->>> https://www.spinics.net/lists/linux-input/msg68446.html
->>
->> lore.kernel.org is easier to pull stuff from :)
->>
->> Anyway, what ever happened to this series?  Is there a newer one
->> somewhere?
->>
->> thanks,
->>
->> greg k-h
->>
-> 
-> https://lkml.org/lkml/2020/8/18/440
-> 
-> Andrzej
+Almost two weeks passed and these are the "relevant" replies:
 
-Sorry about confusion.
+Jason personally does not like FIPS, and is afraid of
+"subpar crypto". Albeit this patch set strictly isn't about
+crypto at all; the crypto subsystem is in the unlucky position
+to just depend on a good entropy source.
 
-This is the same thing, so there is nothing newer.
+Greg claims that Linux (kernel) isn't about choice, which is clearly
+wrong.
 
-Andrzej
+And this is all ???
+
+There are options for stack protection. I can see bounds checking
+and other sanity checks all over the place. And doing a similar thing
+on entropy sources is a problem?
+
+Admittedly, if entropy sources fail, the kernel will happily remain
+running. No bad immediate effects in userland will arise. Only some
+cryptographic algorithms, otherwise very decent, will run on
+unneccessarily weak keys, probably causing some real-world problems.
+Does anybody care?
+The NIST and the BSI do, but that does not mean their solutions are
+automatically wrong or backdoored.
+
+There is now a well layed-out scheme to ensure quality randomness,
+and a lot of work here has been put into its implementation.
+
+Would some maintainer please comment on potential problems or
+shortcomings? Otherwise a "Thanks, applied" would be appropriate, IMO.
+
+	Torsten
+
