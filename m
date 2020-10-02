@@ -2,188 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0D328170B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9876281707
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387950AbgJBPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388026AbgJBPsM (ORCPT
+        id S2388014AbgJBPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:48:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54248 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387950AbgJBPsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:48:12 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E30C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:48:10 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id e23so854975vsk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T1VBeMl6lnk6uGVYC4UMbcUFzllZv34qpogDPSQOP7M=;
-        b=NOBFHu51EDHrcub6xy7AvFiSRurn1fHm20p6heYCzLvQA4DiSWLmItq04o64PqKZJL
-         ON7UOtMwm7wOsHDwKznnfPF3yO5akXtBqmhN2CLd4iY6ZkbJCnZj4n4pPLQQJutstBul
-         NQGnGObIukRPoeNo1cN9Buh0HQPiZDPQomocE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T1VBeMl6lnk6uGVYC4UMbcUFzllZv34qpogDPSQOP7M=;
-        b=dNCgET0P8T8+8txXgGJdLD5uvAFUhZPHZxF+5C0IJjnq1hIfuAUICPMZOcAsnhoV2s
-         cOJjKjjNuGpIZA//Au+EebxSEqFqH8kIDk0VLrRcnKxvsWWf1yB3uW0T02dwD07YXTU7
-         qa2ft47OqRAKKcB63vaShFAJAiJ0SGQ+VZuH0ds0USVY3G6UZFGdp50QxjmP5Et/eY69
-         5SYosp5varWbhhjOf5E9Jr3T8Y2g4LoxgP+wdqvr87jWT2KqT18r7HaW6FJH5Br9GTi4
-         DZa9IpandSnF0zbBZvBdm/bLy7+TOCfN0OuEEHr67ogIhcCD5z70Qw4mNW8eeYIyR3En
-         EfaA==
-X-Gm-Message-State: AOAM531SPR43VriLebTT4QuknZyPbF9gh2XjRA/D8ryHxs8SEt7eAb5j
-        TVD4GD2rm4oLFW4aJplcp4nzey1zAk9S+Q==
-X-Google-Smtp-Source: ABdhPJxOpmRGctMEJ8kU/uXC1qTbuq2JNvJ0+cchWCgFHoo3vUe2H52AmE+KzsnBNmKgDHF4bmnrww==
-X-Received: by 2002:a67:ea4e:: with SMTP id r14mr1748908vso.47.1601653689191;
-        Fri, 02 Oct 2020 08:48:09 -0700 (PDT)
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com. [209.85.221.182])
-        by smtp.gmail.com with ESMTPSA id v76sm307384vke.2.2020.10.02.08.48.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 08:48:08 -0700 (PDT)
-Received: by mail-vk1-f182.google.com with SMTP id n7so384766vkq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:48:07 -0700 (PDT)
-X-Received: by 2002:a1f:a905:: with SMTP id s5mr1631052vke.9.1601653687217;
- Fri, 02 Oct 2020 08:48:07 -0700 (PDT)
+        Fri, 2 Oct 2020 11:48:06 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kONHt-0000L3-6C; Fri, 02 Oct 2020 15:48:01 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] perf: arm-cmn: fix less than zero check on unsigned dtc->irq
+Date:   Fri,  2 Oct 2020 16:48:00 +0100
+Message-Id: <20201002154800.92607-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201002114426.31277-1-lukasz.luba@arm.com> <20201002114426.31277-4-lukasz.luba@arm.com>
- <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com> <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
-In-Reply-To: <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 2 Oct 2020 08:47:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
-Message-ID: <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi Doug,
->
-> On 10/2/20 3:31 PM, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >> Update the documentation for the binding 'sustainable-power' and allow
-> >> to provide values in an abstract scale. It is required when the cooling
-> >> devices use an abstract scale for their power values.
-> >>
-> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> >> ---
-> >>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
-> >>   1 file changed, 9 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> >> index 3ec9cc87ec50..4d8f2e37d1e6 100644
-> >> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> >> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-> >> @@ -99,10 +99,15 @@ patternProperties:
-> >>         sustainable-power:
-> >>           $ref: /schemas/types.yaml#/definitions/uint32
-> >>           description:
-> >> -          An estimate of the sustainable power (in mW) that this thermal zone
-> >> -          can dissipate at the desired control temperature. For reference, the
-> >> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
-> >> -          10-inch tablet is around 4500mW.
-> >> +          An estimate of the sustainable power (in mW or in an abstract scale)
-> >> +         that this thermal zone can dissipate at the desired control
-> >> +         temperature. For reference, the sustainable power of a 4-inch phone
-> >> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
-> >> +
-> >> +         It is possible to express the sustainable power in an abstract
-> >> +         scale. This is the case when the related cooling devices use also
-> >> +         abstract scale to express their power usage. The scale must be
-> >> +         consistent.
-> >
-> > Two thoughts:
-> >
-> > 1. If we're going to allow "sustainable-power" to be in abstract
-> > scale, why not allow "dynamic-power-coefficient" to be in abstract
-> > scale too?  I assume that the whole reason against that originally was
-> > the idea of device tree purity, but if we're allowing the abstract
-> > scale here then there seems no reason not to allow it for
-> > "dynamic-power-coefficient".
->
-> With this binding it's a bit more tricky.
-> I also have to discuss a few things internally. This requirement of
-> uW/MHz/V^2 makes the code easier also for potential drivers
-> like GPU (which are going to register the devfreq cooling with EM).
->
-> Let me think about it, but for now I would just update these bits.
-> These are required to proper IPA operation, the dyn.-pow.-coef. is a
-> nice to have and possible next step.
+Currently the failure check on dtc->irq is always false because
+dtc->irq is an unsigned int. Fix this by using a temporary signed
+int for the less than zero error check.
 
-I guess the problem is that Rajendra is currently planning to remove
-all the "dynamic-power-coefficient" values from device tree right now
-and move them to the source code because the numbers we currently have
-in the device tree _are_ in abstract scale and thus violate the
-bindings.  Moving this to source code won't help us get to more real
-power numbers (since it'll still be abstract scale), it'll just be
-pure churn.  If we're OK with the abstract scale in general then we
-should allow it everywhere and not add churn for no reason.
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/perf/arm-cmn.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+index a76ff594f3ca..21819af163f3 100644
+--- a/drivers/perf/arm-cmn.c
++++ b/drivers/perf/arm-cmn.c
+@@ -1246,11 +1246,13 @@ static int arm_cmn_init_dtc(struct arm_cmn *cmn, struct arm_cmn_node *dn, int id
+ {
+ 	struct arm_cmn_dtc *dtc = cmn->dtc + idx;
+ 	struct arm_cmn_node *xp;
++	int irq;
+ 
+ 	dtc->base = dn->pmu_base - CMN_PMU_OFFSET;
+-	dtc->irq = platform_get_irq(to_platform_device(cmn->dev), idx);
+-	if (dtc->irq < 0)
+-		return dtc->irq;
++	irq = platform_get_irq(to_platform_device(cmn->dev), idx);
++	if (irq < 0)
++		return irq;
++	dtc->irq = irq;
+ 
+ 	writel_relaxed(0, dtc->base + CMN_DT_PMCR);
+ 	writel_relaxed(0x1ff, dtc->base + CMN_DT_PMOVSR_CLR);
+-- 
+2.27.0
 
-> > 2. Is it worth adding some type of indication of what type of units
-> > "sustainable-power" is represented in?  Maybe even a made up unit so
-> > that you could tell the difference between made up units in the same
-> > system?  I'd envision something like:
-> >
-> > sustainable-power-units = "qualcomm,sc7180-bogoWatts"
-> >
-> > ...and on the dynamic-power-coefficient side, the same:
-> >
-> > dynamic-power-coefficient-units = "qualcomm,sc7180-bogoWatts"
-> >
-> > One could imagine someone even later (after devices are widely
-> > distributed) figuring out translations between these bogoWatts numbers
-> > and real Watts if someone could come up with a case where it matters.
->
-> To figure this out we don't need a new binding.
-> I think a simple comment in the DT would be enough for this, even e.g.:
->
-> sustainable-power = <100> /* bogoWatts */
-
-There are some important differences:
-
-a) Your comment is gone when the device tree is compiled.  If we
-actually add a string to the device tree then, in theory, we can add
-conversions in code (without touching the device tree) down the road.
-
-b) I believe there can be more than one abstract scale present in a
-single device tree, at least in theory.  Adding a string allows you to
-know if you're comparing apples to apples or apples to organges.
-
-
-> Thank you for your comments.
-> BTW, I haven't put your 'Reviewed-by' because I have added this
-> sustainable-power new stuff in patch 1/3. I will grateful if you
-> have a look on that.
-
-I can if needed, but I'd kinda like to get the above resolved first
-since it feels like it could have an effect on the other patches?
-
-
--Doug
