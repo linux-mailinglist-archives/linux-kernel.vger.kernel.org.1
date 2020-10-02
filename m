@@ -2,89 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4B7281789
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4C128178B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387966AbgJBQLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:11:34 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:39118 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJBQLd (ORCPT
+        id S2388149AbgJBQLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:11:55 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18582 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBQLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:11:33 -0400
-Received: by mail-ej1-f66.google.com with SMTP id p9so2735266ejf.6;
-        Fri, 02 Oct 2020 09:11:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ksDqHk0nWP4nQljjtYaRrFAhIWD1+rfwypaFmgT3k94=;
-        b=Ehvl2uo62aYZP2XejOeTP1XyrDTwO04hv02BtViUdMb2zY/WpmJXKQ3etiIHr44JLr
-         CvuekS8GaJxZP+WXg6lZ3qEfdQ28l55GKxKwVVqW228UgWmC6hslCy1S1jzdSC4d72Tz
-         ORGUYS0TRXDGbHTh0+JlDn7mXFVkxUwDf7jFeOeziZzZgfUgM2BQULudNscSXeNlL2ST
-         Xt9ljan9SY2HZCbxj/7QFWLAjlX7U5gt1jKthtVMLYqeMGF2dFEIzNipoLLfzXFwsqvc
-         IKs0jr6Qn/95VMgTfjWFMSFbc/kEhW8Z1/qAT2k+kl4S5YpKfKeeaTFw6DFh4CwOXKBx
-         zPLw==
-X-Gm-Message-State: AOAM532BWJWEPFEx062te2DxQSCduso/fm8gg2xOYGHwE2Rgr6Ft6DIV
-        mff4jAxxx+rt4ay3A3Y+sm8=
-X-Google-Smtp-Source: ABdhPJxaoL9cJDAS/3KTQCq9OR55V0vP40AWHy9tKAmxl6vL/n8LS8/lhHN09AET7FLTvZ3xFZ2RMg==
-X-Received: by 2002:a17:906:ad5:: with SMTP id z21mr2873895ejf.461.1601655092107;
-        Fri, 02 Oct 2020 09:11:32 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id t25sm1481672edt.24.2020.10.02.09.11.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 02 Oct 2020 09:11:31 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 18:11:28 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        Alexis Ballier <aballier@gentoo.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] ARM: dts: rk3188: correct interrupt flags
-Message-ID: <20201002161128.GB4542@kozik-lap>
-References: <20200917185211.5483-1-krzk@kernel.org>
+        Fri, 2 Oct 2020 12:11:55 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f77513e0001>; Fri, 02 Oct 2020 09:11:42 -0700
+Received: from [172.27.0.47] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
+ 2020 16:11:36 +0000
+Subject: Re: [PATCH rdma-next v4 1/4] lib/scatterlist: Add support in dynamic
+ allocation of SG table from pages
+To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        "Tvrtko Ursulin" <tvrtko.ursulin@intel.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-2-leon@kernel.org>
+ <20201002150227.GA1350139@nvidia.com>
+From:   Maor Gottlieb <maorg@nvidia.com>
+Message-ID: <ba152cb1-db38-0d70-08a8-ba3c052b5b4e@nvidia.com>
+Date:   Fri, 2 Oct 2020 19:11:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200917185211.5483-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201002150227.GA1350139@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601655102; bh=EynyS8/xmNH/jvPIX2n0LxQ51EmsDlmuClzFEzoFwtY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=Ew/scpFv/p/DET27LPs1qCoK9j94h5PT7f3jVd6smC1vBRQjUbszjKiqgX+qBupVv
+         C6Ap0r8CN73haCwUeNcoo6Qvqo3hdNNInzqCL4n7E/HsfEsqKVgqFv3O0KMzSwupuw
+         RzZ06fdxXjrxpBA/XFdREHNdHHZPXltw4NaXEKbPvWDITA43waFAQwniY0dQO4EmCC
+         FSvpqv++iX7ScnqVLK+t99lV0afYVEm0kREQriRvipkBUe+wsDI1l/t8HiMxZ5Yd+L
+         pObyZTgYDV2byyHXLMJjj6ttCUIsz3Y9DqLaFc50bRq/5Q9UJSg2Xv8rRMAqZ74RhA
+         OBJmWwKCnxY0Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:52:10PM +0200, Krzysztof Kozlowski wrote:
-> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
-> These are simple defines so they could be used in DTS but they will not
-> have the same meaning:
-> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
-> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
-> 
-> Correct the interrupt flags without affecting the code:
->   ACTIVE_HIGH => IRQ_TYPE_NONE
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Not tested on HW.
-> 
-> Changes since v1:
-> 1. Correct title
-> ---
->  arch/arm/boot/dts/rk3188-bqedison2qc.dts | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Hi,
+On 10/2/2020 6:02 PM, Jason Gunthorpe wrote:
+> On Sun, Sep 27, 2020 at 09:46:44AM +0300, Leon Romanovsky wrote:
+>> +struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
+>> +		struct page **pages, unsigned int n_pages, unsigned int offset,
+>> +		unsigned long size, unsigned int max_segment,
+>> +		struct scatterlist *prv, unsigned int left_pages,
+>> +		gfp_t gfp_mask)
+>>   {
+>> -	unsigned int chunks, cur_page, seg_len, i;
+>> +	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
+>> +	struct scatterlist *s = prv;
+>> +	unsigned int table_size;
+>> +	unsigned int tmp_nents;
+>>   	int ret;
+>> -	struct scatterlist *s;
+>>
+>>   	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
+>> -		return -EINVAL;
+>> +		return ERR_PTR(-EINVAL);
+>> +	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
+>> +		return ERR_PTR(-EOPNOTSUPP);
+>> +
+>> +	tmp_nents = prv ? sgt->nents : 0;
+>> +
+>> +	if (prv &&
+>> +	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
+> This calculation of the end doesn't consider sg->offset
 
-Any comments/review/testing from Heiko or other Rockchip folks? Shall I
-cc here someone?
+Right, should be fixed.
+>
+>> +	    page_to_pfn(pages[0]))
+>> +		prv_len = prv->length;
+>>
+>>   	/* compute number of contiguous chunks */
+>>   	chunks = 1;
+>> @@ -410,13 +461,17 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+>>   		}
+>>   	}
+>>
+>> -	ret = sg_alloc_table(sgt, chunks, gfp_mask);
+>> -	if (unlikely(ret))
+>> -		return ret;
+>> +	if (!prv) {
+>> +		/* Only the last allocation could be less than the maximum */
+>> +		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
+>> +		ret = sg_alloc_table(sgt, table_size, gfp_mask);
+>> +		if (unlikely(ret))
+>> +			return ERR_PTR(ret);
+>> +	}
+> This is basically redundant right? Now that get_next_sg() can allocate
+> SGs it can just build them one by one, no need to preallocate.
+>
+> Actually all the changes the the allocation seem like overkill, just
+> allocate a single new array directly in get_next_sg() whenever it
+> needs.
 
-Best regards,
-Krzysztof
-
+No, only the last allocation could be less than maximum. (as written in 
+the comment).
+I am preferring to stick with the current implementation and fix the offset.
+>
+> Something like this:
+>
+> @@ -365,6 +372,37 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
+>   }
+>   EXPORT_SYMBOL(sg_alloc_table);
+>   
+> +static struct scatterlist *get_next_sg(struct sg_table *table,
+> +		struct scatterlist *cur, unsigned long needed_sges,
+> +		gfp_t gfp_mask)
+> +{
+> +	struct scatterlist *new_sg;
+> +	unsigned int alloc_size;
+> +
+> +	if (cur) {
+> +		struct scatterlist *next_sg = sg_next(cur);
+> +
+> +		/* Check if last entry should be keeped for chainning */
+> +		if (!sg_is_last(next_sg) || needed_sges == 1)
+> +			return next_sg;
+> +	}
+> +
+> +	alloc_size = min_t(unsigned long, needed_sges, SG_MAX_SINGLE_ALLOC);
+> +	new_sg = sg_kmalloc(alloc_size, gfp_mask);
+> +	if (!new_sg)
+> +		return ERR_PTR(-ENOMEM);
+> +	sg_init_table(new_sg, alloc_size);
+> +	if (cur) {
+> +		__sg_chain(cur, new_sg);
+> +		table->orig_nents += alloc_size - 1;
+> +	} else {
+> +		table->sgl = new_sg;
+> +		table->orig_nents = alloc_size;
+> +		table->nents = 0;
+> +	}
+> +	return new_sg;
+> +}
+> +
+>   /**
+>    * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
+>    *			         an array of pages
+> @@ -374,29 +412,64 @@ EXPORT_SYMBOL(sg_alloc_table);
+>    * @offset:      Offset from start of the first page to the start of a buffer
+>    * @size:        Number of valid bytes in the buffer (after offset)
+>    * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
+> + * @prv:	 Last populated sge in sgt
+> + * @left_pages:  Left pages caller have to set after this call
+>    * @gfp_mask:	 GFP allocation mask
+>    *
+> - *  Description:
+> - *    Allocate and initialize an sg table from a list of pages. Contiguous
+> - *    ranges of the pages are squashed into a single scatterlist node up to the
+> - *    maximum size specified in @max_segment. An user may provide an offset at a
+> - *    start and a size of valid data in a buffer specified by the page array.
+> - *    The returned sg table is released by sg_free_table.
+> + * Description:
+> + *    If @prv is NULL, allocate and initialize an sg table from a list of pages,
+> + *    else reuse the scatterlist passed in at @prv.
+> + *    Contiguous ranges of the pages are squashed into a single scatterlist
+> + *    entry up to the maximum size specified in @max_segment.  A user may
+> + *    provide an offset at a start and a size of valid data in a buffer
+> + *    specified by the page array.
+>    *
+>    * Returns:
+> - *   0 on success, negative error on failure
+> + *   Last SGE in sgt on success, PTR_ERR on otherwise.
+> + *   The allocation in @sgt must be released by sg_free_table.
+> + *
+> + * Notes:
+> + *   If this function returns non-0 (eg failure), the caller must call
+> + *   sg_free_table() to cleanup any leftover allocations.
+>    */
+> -int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+> -				unsigned int n_pages, unsigned int offset,
+> -				unsigned long size, unsigned int max_segment,
+> -				gfp_t gfp_mask)
+> +struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
+> +		struct page **pages, unsigned int n_pages, unsigned int offset,
+> +		unsigned long size, unsigned int max_segment,
+> +		struct scatterlist *prv, unsigned int left_pages,
+> +		gfp_t gfp_mask)
+>   {
+> -	unsigned int chunks, cur_page, seg_len, i;
+> -	int ret;
+> -	struct scatterlist *s;
+> +	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
+> +	unsigned int added_nents = 0;
+> +	struct scatterlist *s = prv;
+>   
+>   	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
+> -		return -EINVAL;
+> +		return ERR_PTR(-EINVAL);
+> +	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
+> +		return ERR_PTR(-EOPNOTSUPP);
+> +
+> +	if (prv) {
+> +		unsigned long paddr = (page_to_pfn(sg_page(prv)) * PAGE_SIZE +
+> +				       prv->offset + prv->length) /
+> +				      PAGE_SIZE;
+> +
+> +		if (WARN_ON(offset))
+> +			return ERR_PTR(-EINVAL);
+> +
+> +		/* Merge contiguous pages into the last SG */
+> +		prv_len = prv->length;
+> +		while (n_pages && page_to_pfn(pages[0]) == paddr) {
+> +			if (prv->length + PAGE_SIZE > max_segment)
+> +				break;
+> +			prv->length += PAGE_SIZE;
+> +			paddr++;
+> +			pages++;
+> +			n_pages--;
+> +		}
+> +		if (!n_pages) {
+> +			sg_mark_end(sg_next(prv));
+> +			return prv;
+> +		}
+> +	}
+>   
+>   	/* compute number of contiguous chunks */
+>   	chunks = 1;
+> @@ -410,13 +483,9 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+>   		}
+>   	}
+>   
+> -	ret = sg_alloc_table(sgt, chunks, gfp_mask);
+> -	if (unlikely(ret))
+> -		return ret;
+> -
+>   	/* merging chunks and putting them into the scatterlist */
+>   	cur_page = 0;
+> -	for_each_sg(sgt->sgl, s, sgt->orig_nents, i) {
+> +	for (i = 0; i < chunks; i++) {
+>   		unsigned int j, chunk_size;
+>   
+>   		/* look for the end of the current chunk */
+> @@ -429,15 +498,28 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+>   				break;
+>   		}
+>   
+> +		/* Pass how many chunks might be left */
+> +		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
+> +		if (IS_ERR(s)) {
+> +			/*
+> +			 * Adjust entry length to be as before function was
+> +			 * called.
+> +			 */
+> +			if (prv)
+> +				prv->length = prv_len;
+> +			return s;
+> +		}
+>   		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
+>   		sg_set_page(s, pages[cur_page],
+>   			    min_t(unsigned long, size, chunk_size), offset);
+> +		added_nents++;
+>   		size -= chunk_size;
+>   		offset = 0;
+>   		cur_page = j;
+>   	}
+> -
+> -	return 0;
+> +	sgt->nents += added_nents;
+> +	sg_mark_end(s);
+> +	return s;
+>   }
+>   EXPORT_SYMBOL(__sg_alloc_table_from_pages);
+>   
