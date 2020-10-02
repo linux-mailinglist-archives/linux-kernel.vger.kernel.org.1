@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780E62813EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BB42813EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbgJBNUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJBNUb (ORCPT
+        id S2387914AbgJBNUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:20:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48715 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgJBNUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:20:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCDAC0613D0;
-        Fri,  2 Oct 2020 06:20:29 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j136so1747064wmj.2;
-        Fri, 02 Oct 2020 06:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/JX4Jd0493SLr9+MjpTZSSB8EEv9+SWoccnHkCLNQOs=;
-        b=ra3P48UxZ5JqjXwS3sHh43IQ5jWqN5BxIO06U71bJcqPZWRS25oKdLgnrJrsqkHehu
-         cTPVgsHd7eUzslw/UuGuEqgKkrAq0Y1W/jsSAbyVQ5ZuIpvfvAqZvW/xl9MINlpZh+7i
-         bsZX2PY1mxVOMXSADFMgDorxCskbnqKMh9TniqLPYJFBNfdrQzRLw/ry9Sx4AGq9oR4n
-         ZeqM98vUUMVCXV4c5Y3NVq7CdVuzfaTr7331+BB8TCSQHhA763aT/yZpj8XV7FICYNfc
-         RpFLgG5rTbBlPUB5AOCfE9CpuRG+KxsijR6ey3X0vmtY/pLlIpOyexCtVUIUBJsELtWg
-         6tFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/JX4Jd0493SLr9+MjpTZSSB8EEv9+SWoccnHkCLNQOs=;
-        b=kMzs3KPDh6tT+M9YuO1GIO8cUyfSQ1xz/un97kQR58tP7ys8wbgwkRIEnMAey9ZrFo
-         hLEJ3YG64qE1abpm65N8/eUvZoaDwvisbhXIjrY7zwJZVrL/VWlOY8NfSv5zZY2O4dcF
-         xxhy8OBBCrBdBCaDfa9aas+DcqUKbgpIF4TdX8yEoU+13FvfnVOgrqEZ9ivWt5wX9xag
-         UOSF0YVVWyvpV18iTv3RWn8/XkZdezjeBVgnva7zv6DtNPXU/sIjdP4MJozoxGofOjSU
-         6sxkfJKO9iiUINdTe+SaSfef4v8mimQR6MzVA/qiafh8SFXWxNp/XoOetAWGoveDzrn8
-         qx6Q==
-X-Gm-Message-State: AOAM533Avh/agECH2OvtufSGDpulLSEaadALn9yI6ztoLNtj5MSN1QVV
-        wxyJZoeJiog0lmNoybYGaF8=
-X-Google-Smtp-Source: ABdhPJzX+caDkpml67KMGJULyJ4USuiAOmh99POcfkM/aOxt23s2o2Y+Vr8ZKqzcNtbXxxdTknI99Q==
-X-Received: by 2002:a1c:e283:: with SMTP id z125mr2607245wmg.154.1601644828511;
-        Fri, 02 Oct 2020 06:20:28 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id a81sm1848137wmf.32.2020.10.02.06.20.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 06:20:27 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] system_data_types.7: Add 'void *'
-To:     Jonathan Wakely <jwakely.gcc@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Paul Eggert <eggert@cs.ucla.edu>,
-        linux-man <linux-man@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com>
- <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
- <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
- <CAH6eHdSLbaqTyXaPnBxnR4n+WVHJCBDF=C9RXa6To1rSuv0D4w@mail.gmail.com>
- <CAKgNAkiHbK4RU_a_165yg3O6W0-GZMNLQoBNbut6ME=bW7pvCw@mail.gmail.com>
- <CAH6eHdQrmsHxZbk3+JxRVZ5qH1fhFzLxyigs+DtEzSg2cet+kw@mail.gmail.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <63826e82-7a19-0ecc-f73c-56aa560a842f@gmail.com>
-Date:   Fri, 2 Oct 2020 15:20:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 2 Oct 2020 09:20:33 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kOKz7-0008Kk-Qh; Fri, 02 Oct 2020 13:20:29 +0000
+Subject: Re: [PATCH] selftests/ftrace: check for do_sys_openat2 in user-memory
+ test
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201001085641.51130-1-colin.king@canonical.com>
+ <20201002220756.b62653d1e6aba102521054d2@kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <985cc843-a8d1-9fe2-b663-f3db8edbf848@canonical.com>
+Date:   Fri, 2 Oct 2020 14:20:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAH6eHdQrmsHxZbk3+JxRVZ5qH1fhFzLxyigs+DtEzSg2cet+kw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201002220756.b62653d1e6aba102521054d2@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/10/2020 14:07, Masami Hiramatsu wrote:
+> On Thu,  1 Oct 2020 09:56:41 +0100
+> Colin King <colin.king@canonical.com> wrote:
+> 
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> More recent libc implementations are now using openat/openat2 system
+>> calls so also add do_sys_openat2 to the tracing so that the test
+>> passes on these systems because do_sys_open may not be called.
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  .../testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc  | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
+>> index a30a9c07290d..cf1b4c3e9e6b 100644
+>> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
+>> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_user.tc
+>> @@ -9,6 +9,8 @@ grep -A10 "fetcharg:" README | grep -q '\[u\]<offset>' || exit_unsupported
+>>  :;: "user-memory access syntax and ustring working on user memory";:
+>>  echo 'p:myevent do_sys_open path=+0($arg2):ustring path2=+u0($arg2):string' \
+>>  	> kprobe_events
+> 
+> OK, at first, you need to check the kernel has do_sys_openat2 from
+> /proc/kallsyms (grep -qw will help you), because it is new syscall.
+> 
+>> +echo 'p:myevent2 do_sys_openat2 path=+0($arg2):ustring path2=+u0($arg2):string' \
+>> +	> kprobe_events
+> 
+> Also, you need to append (">>") it instead overwrite (">") to kprobe_events.
+> 
+>>  
+>>  grep myevent kprobe_events | \
+>>  	grep -q 'path=+0($arg2):ustring path2=+u0($arg2):string'
+> 
+> And also you have to enable both myevent and myevent2 (if exists) after
+> this.
+> 
+> Then I think your patch will work correctly.
 
+Indeed, thanks. I'll send a V2 shortly.
 
-On 2020-10-02 15:06, Jonathan Wakely wrote:
- > On Fri, 2 Oct 2020 at 12:31, Michael Kerrisk (man-pages)
- > <mtk.manpages@gmail.com> wrote:
- >>
- >> On Fri, 2 Oct 2020 at 12:49, Jonathan Wakely <jwakely.gcc@gmail.com> 
-wrote:
- >>>
- >>> On Fri, 2 Oct 2020 at 09:28, Alejandro Colomar via Gcc 
-<gcc@gcc.gnu.org> wrote:
- >>>> However, it might be good that someone starts a page called
- >>>> 'type_qualifiers(7)' or something like that.
- >>>
- >>> Who is this for? Who is trying to learn C from man pages? Should
- >>> somebody stop them?
- >>
- >> Yes, I think so. To add context, Alex has been doing a lot of work to
- >> build up the new system_data_types(7) page [1], which I think is
- >> especially useful for the POSIX system data types that are used with
- >> various APIs.
- >
- > It's definitely useful for types like struct siginfo_t and struct
- > timeval, which aren't in C.
+> 
+> Thank you!
+> 
 
-Hi Jonathan,
-
-But then the line is a bit diffuse.
-Would you document 'ssize_t' and not 'size_t'?
-Would you not document intN_t types?
-Would you document stdint types, including 'intptr_t', and not 'void *'?
-
-I guess the basic types (int, long, ...) can be left out for now,
-and apart from 'int' those rarely are the most appropriate types
-for most uses.
-But other than that, I would document all of the types.
-And even... when all of the other types are documented,
-it will be only a little extra effort to document those,
-so in the future I might consider that.
-But yes, priority should probably go to Linux/POSIX-only types.
-
-Thanks,
-
-Alex
-
- >
- > Trying to document C seems like a huge task, ill-suited for man-pages,
- > and not worth the effort.
- >
- > Maybe some people prefer man pages, but for everybody else
- > https://en.cppreference.com/w/c already exists and seems like a better
- > use of time.
- >
