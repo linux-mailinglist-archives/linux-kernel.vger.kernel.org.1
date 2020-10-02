@@ -2,167 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32995281EC0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FFD281EC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgJBW6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgJBW6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:58:35 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 398C7206FA;
-        Fri,  2 Oct 2020 22:58:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601679514;
-        bh=kcgoZa2FML0rIwT6XbrrIjjoXmqKbfCgFpDorfrshps=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dPNLZjPQ+Gie0FqEHETgS8rjP8PH1KEwxxTUj3iu/Rl3xP9qmXeHfPHJndVuss/Mm
-         C/HteBa7MlygE9u3slxynzGh/Po+/KqQ/G1y0pn3Lg6a8GZhFn7emUoj4QKRZwFn7/
-         c0KyXxvIIT9j0dV1ILSvPlVZwO5qI88sKl78g4VA=
-Received: by mail-ot1-f52.google.com with SMTP id s66so3011477otb.2;
-        Fri, 02 Oct 2020 15:58:34 -0700 (PDT)
-X-Gm-Message-State: AOAM5318jS0sPP8v/x6KWr2ks422ZoKVF9l0Q1iTU59VsBLeXkhlr1cY
-        mmmhrhPwJYJqS2mLL8c6IerUK/2XKBabGPPrRQ==
-X-Google-Smtp-Source: ABdhPJxEmXxNEtMkiFWap/kdASetpxroZKkBdAu1ipH8rGGfLySK+JHQ9y8EdrYrLKHmls+JVOFTu1wBuZPYvSBAeZk=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr3123918otp.107.1601679513550;
- Fri, 02 Oct 2020 15:58:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200929201701.GA1080459@bogus> <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu> <20200930124915.GA1826870@google.com>
- <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com> <20201002183633.GA296334@rowland.harvard.edu>
-In-Reply-To: <20201002183633.GA296334@rowland.harvard.edu>
+        id S1725795AbgJBW72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:59:28 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:47081 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBW71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:59:27 -0400
+Received: by mail-ot1-f66.google.com with SMTP id a13so2975126otl.13;
+        Fri, 02 Oct 2020 15:59:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cm1FASKC/6qLmqDGJznIVEYyfcRxXEvKrBVthaDAX/A=;
+        b=WqoJTVZ44DK2ccGgR3093KWqu7PkZb2vmuiTTpTUv1WYUTyGWLY6LTEASVj9sSGwbg
+         NyOaoT1LTYOdImSAJ2cDwTaz8d5vVlbT3L+SmXS7zhLDO0vrqtEKCdGMtkN9vHSho0Yv
+         MrBDez8/QyffKGm8/35D1JwpB3Xnrunv4e3KW4/Xykc45xZcTQN4FuMx1R0XW9SHQCUx
+         9goXYDwc2IE55gzLw0mYud5gVEV2kXqgU3Nx4qignWbt/yYGyx5302W+4t0FHQQQZq6C
+         xUTIcMcTLtgRzQYJ8bJCrXzvEISVxOnbubdi6It2RfPtwVYa7M9wcPhzMj42yKYaG1xB
+         Wvww==
+X-Gm-Message-State: AOAM531l6K7SUqBgnAr4QHtqHsfL/tmLEDlib3K5k55YQctlKFUp/Dfv
+        A+ZRI/I2X+P4jS9lnc3YDElLnMmwoDTm
+X-Google-Smtp-Source: ABdhPJyljpSwhWeoftw53nYQUlYuv1ZIcmgJ2iqol1GkWX/pDx6J5CLTdQuFFwIPqI7OhUh64e4SgA==
+X-Received: by 2002:a9d:5545:: with SMTP id h5mr3150095oti.269.1601679565979;
+        Fri, 02 Oct 2020 15:59:25 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id u7sm732278ote.37.2020.10.02.15.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 15:59:25 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 2 Oct 2020 17:58:22 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
-Message-ID: <CAL_JsqKHFA5RWz1SRLkR2JXydURL2pA+4C0+C+4SrJR_h4M0dw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     devicetree@vger.kernel.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        =?UTF-8?q?Guido=20G=C3=BAnther?= <agx@sigxcpu.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>
+Subject: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI controller schemas
+Date:   Fri,  2 Oct 2020 17:59:24 -0500
+Message-Id: <20201002225924.3513700-1-robh@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 1:36 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Oct 02, 2020 at 10:08:17AM -0700, Doug Anderson wrote:
-> > As a more similar example of single device that is listed in more than
-> > one location in the device tree, we can also look at embedded SDIO
-> > BT/WiFi combo cards.  This single device often provides WiFi under an
-> > SDIO bus and BT under a serial / USB bus.  I'm not 100% sure there are
-> > actually cases were the same board provides device tree data to both
-> > at the same time, but "brcm,bcm43540-bt" is an example of providing
-> > data to the Bluetooth (connected over serial port) and
-> > "brcm,bcm4329-fmac" to the WiFi (connected over the SDIO bus).  Of
-> > course WiFi/BT cheat in that the control logic is represented by the
-> > SDIO power sequencing stuff...
-> >
-> >
-> > Back to our case, though.  I guess the issue here is that we're the
-> > child of more than one bus.  Let's first pretend that the i2c lines of
-> > this hub are actually hooked up and establish how that would look
-> > first.  Then we can think about how it looks if this same device isn't
-> > hooked up via i2c.  In this case, it sounds as if you still don't want
-> > the device split among two nodes.  So I guess you'd prefer something
-> > like:
-> >
-> > i2c {
-> >   usb-hub@xx {
-> >     reg = <xx>;
-> >     compatible = "realtek,rts5411", "onboard-usb-hub";
-> >     vdd-supply = <&pp3300_hub>;
-> >     usb-devices = <&usb_controller 1>;
-> >   };
-> > };
-> >
-> > ...and then you wouldn't have anything under the USB controller
-> > itself.  Is that correct?  So even though there are existing bindings
-> > saying that a USB device should be listed via VID/PID, the desire to
-> > represent this as a single node overrides that, right?  (NOTE: this is
-> > similar to what Matthias proposed in his response except that I've
-> > added an index so that we don't need _anything_ under the controller).
-> >
-> > Having this primarily listed under the i2c bus makes sense because the
-> > control logic for the hub is hooked up via i2c.  Having the power
-> > supply associated with it also makes some amount of sense since it's a
-> > control signal.  It's also convenient that i2c devices have their
-> > probe called _before_ we try to detect if they're there because it's
-> > common that i2c devices need power applied first.
-> >
-> > Now, just because we don't have the i2c bus hooked up doesn't change
-> > the fact that there is control logic.  We also certainly wouldn't want
-> > two ways of describing this same hub: one way if the i2c is hooked up
-> > and one way if it's not hooked up.  To me this means that the we
-> > should be describing this hub as a top-level node if i2c isn't hooked
-> > up, just like we do with "smsc,usb3503a"
-> >
-> > Said another way, we have these points:
-> >
-> > a) The control logic for this bus could be hooked up to an i2c bus.
-> >
-> > b) If the control logic is hooked up to an i2c bus it feels like
-> > that's where the device's primary node should be placed, not under the
-> > USB controller.
-> >
-> > c) To keep the i2c and non-i2c case as similar as possible, if the i2c
-> > bus isn't hooked up the hub's primary node should be a top-level node,
-> > not under the USB controller.
-> >
-> >
-> > NOTE ALSO: the fact that we might want to list this hub under an i2c
-> > controller also seems like it's a good argument against putting this
-> > logic in the xhci-platform driver?
->
-> More and more we are going to see devices that are attached to multiple
-> buses.  In this case, one for power control and another for
-> commands/data.  If DT doesn't already have a canonical way of handling
-> such situations, it needs to develop one soon.
+Some DSI controllers are missing a reference to the recently added
+dsi-controller.yaml schema. Add it and we can drop the duplicate parts.
 
-Attached to multiple buses directly is kind of rare from what I've
-seen. Most of the time, it's regulators, GPIOs, clocks, etc. which are
-well defined in DT. If there is a 2nd bus, it's almost always I2C.
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Eric Anholt <eric@anholt.net>
+Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Ray Jui <rjui@broadcom.com>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: "Guido Gúnther" <agx@sigxcpu.org>
+Cc: Robert Chiras <robert.chiras@nxp.com>
+Cc: Philippe Cornu <philippe.cornu@st.com>
+Cc: Yannick Fertre <yannick.fertre@st.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 11 ++-------
+ .../bindings/display/brcm,bcm2835-dsi0.yaml   |  3 +++
+ .../bindings/display/bridge/nwl-dsi.yaml      | 11 ++++-----
+ .../bindings/display/st,stm32-dsi.yaml        | 23 ++++---------------
+ 4 files changed, 14 insertions(+), 34 deletions(-)
 
-> One can make a case that there should be multiple device nodes in this
-> situation, somehow referring to each other so that the system knows they
-> all describe the same device.  Maybe one "primary" node for the device
-> and the others acting kind of like symbolic links.
->
-> Regardless of how the situation is represented in DT, there remains the
-> issue of where (i.e., in which driver module) the appropriate code
-> belongs.  This goes far beyond USB.  In general, what happens when one
-> sort of device normally isn't hooked up through a power regulator, so
-> its driver doesn't have any code to enable a regulator, but then some
-> system does exactly that?
->
-> Even worse, what if the device is on a discoverable bus, so the driver
-> doesn't get invoked at all until the device is discovered, but on the
-> new system it can't be discovered until the regulator is enabled?
+diff --git a/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml b/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
+index 63f948175239..7aa330dabc44 100644
+--- a/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
+@@ -11,9 +11,6 @@ maintainers:
+   - Maxime Ripard <mripard@kernel.org>
+ 
+ properties:
+-  "#address-cells": true
+-  "#size-cells": true
+-
+   compatible:
+     enum:
+       - allwinner,sun6i-a31-mipi-dsi
+@@ -57,12 +54,7 @@ properties:
+       port should be the input endpoint, usually coming from the
+       associated TCON.
+ 
+-patternProperties:
+-  "^panel@[0-9]+$": true
+-
+ required:
+-  - "#address-cells"
+-  - "#size-cells"
+   - compatible
+   - reg
+   - interrupts
+@@ -74,6 +66,7 @@ required:
+   - port
+ 
+ allOf:
++  - $ref: dsi-controller.yaml#
+   - if:
+       properties:
+         compatible:
+@@ -99,7 +92,7 @@ allOf:
+         clocks:
+           minItems: 1
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
+index 3c643b227a70..eb44e072b6e5 100644
+--- a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
++++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
+@@ -9,6 +9,9 @@ title: Broadcom VC4 (VideoCore4) DSI Controller
+ maintainers:
+   - Eric Anholt <eric@anholt.net>
+ 
++allOf:
++  - $ref: dsi-controller.yaml#
++
+ properties:
+   "#clock-cells":
+     const: 1
+diff --git a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
+index b8ba6eb482a1..a125b2dd3a2f 100644
+--- a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
+@@ -14,6 +14,9 @@ description: |
+   NWL MIPI-DSI host controller found on i.MX8 platforms. This is a dsi bridge for
+   the SOCs NWL MIPI-DSI host controller.
+ 
++allOf:
++  - $ref: ../dsi-controller.yaml#
++
+ properties:
+   compatible:
+     const: fsl,imx8mq-nwl-dsi
+@@ -144,10 +147,6 @@ properties:
+ 
+     additionalProperties: false
+ 
+-patternProperties:
+-  "^panel@[0-9]+$":
+-    type: object
+-
+ required:
+   - '#address-cells'
+   - '#size-cells'
+@@ -163,7 +162,7 @@ required:
+   - reset-names
+   - resets
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+@@ -172,7 +171,7 @@ examples:
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
+     #include <dt-bindings/reset/imx8mq-reset.h>
+ 
+-    mipi_dsi: mipi_dsi@30a00000 {
++    dsi@30a00000 {
+               #address-cells = <1>;
+               #size-cells = <0>;
+               compatible = "fsl,imx8mq-nwl-dsi";
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+index 69cc7e8bf15a..327a14d85df8 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+@@ -13,6 +13,9 @@ maintainers:
+ description:
+   The STMicroelectronics STM32 DSI controller uses the Synopsys DesignWare MIPI-DSI host controller.
+ 
++allOf:
++  - $ref: dsi-controller.yaml#
++
+ properties:
+   compatible:
+     const: st,stm32-dsi
+@@ -65,24 +68,6 @@ properties:
+         description:
+           DSI output port node, connected to a panel or a bridge input port"
+ 
+-patternProperties:
+-  "^(panel|panel-dsi)@[0-9]$":
+-    type: object
+-    description:
+-      A node containing the panel or bridge description as documented in
+-      Documentation/devicetree/bindings/display/mipi-dsi-bus.txt
+-    properties:
+-      port:
+-        type: object
+-        description:
+-          Panel or bridge port node, connected to the DSI output port (port@1)
+-
+-  "#address-cells":
+-    const: 1
+-
+-  "#size-cells":
+-    const: 0
+-
+ required:
+   - "#address-cells"
+   - "#size-cells"
+@@ -92,7 +77,7 @@ required:
+   - clock-names
+   - ports
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+-- 
+2.25.1
 
-Yep, it's the same issue here with USB, MDIO which just came up a few
-weeks ago, MMC/SD which hacked around it with 'mmc-pwrseq' binding
-(not something I want to duplicate) and every other discoverable bus.
-What do they all have in common? The kernel's driver model being
-unable to cope with this situation. We really need a common solution
-here and not bus or device specific hack-arounds.
-
-Rob
