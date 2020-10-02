@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C023281DE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66DE281DE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725839AbgJBVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57204 "EHLO mail.kernel.org"
+        id S1725813AbgJBVyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725777AbgJBVyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:54:16 -0400
-Subject: Re: [GIT PULL] pin control fixes for v5.9
+        id S1725775AbgJBVyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:54:17 -0400
+Subject: Re: [GIT PULL] io_uring fixes for 5.9-rc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601675656;
-        bh=/Vw9E0a50ZIjvEkAjRiinAnML2NW/Z/qzob/ILpG3Ls=;
+        s=default; t=1601675657;
+        bh=crSohLd1Km5nkGlKuOBM2Z30ZjsE7aOTllf/8vwt6pk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=GYAFTgbVsrtCOP6NIQZjd0UqcWj/ZHCOluJCFzOOgxS+lIUcvfZayw2QPZNLdMN3x
-         CF9g+11EvafiO7vTmD5XKyCPUqRH/12k8FSNFxzdU2dBiofOpS27spOmhu1GjHidCB
-         Tv40/FZKPF2jwr/AM70jnkzD4QOWMt8J26nFA5a8=
+        b=OZfqG0UOW1xVlJL3IEjjeYJgpocD13lt8mMLrXGzmi++4k6bNDtEtc2Um8juXoCne
+         fiPAdEERifLKuMYgKCPkUGGZnCrKziXgDzthS3fWbYWyWMmk3O6ZeStpGKU8T7PFNq
+         yXoZDQVkQvezj8kWqvDOcf8WCFobqJGBkDnPtHvA=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
-References: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.9-2
-X-PR-Tracked-Commit-Id: 39c4dbe4cc363accd676162c24b264f44c581490
+In-Reply-To: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
+References: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-10-02
+X-PR-Tracked-Commit-Id: c8d317aa1887b40b188ec3aaa6e9e524333caed1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3d45f8220d60a0b2aaaacf8fb2be4e6ffd9008e
-Message-Id: <160167565612.8763.6452165041366614261.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Oct 2020 21:54:16 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
+X-PR-Merge-Commit-Id: 702bfc891db162b99e880da78cc256dac14cfc7f
+Message-Id: <160167565723.8763.5894803145938362727.pr-tracker-bot@kernel.org>
+Date:   Fri, 02 Oct 2020 21:54:17 +0000
+To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Oct 2020 23:45:39 +0200:
+The pull request you sent on Fri, 2 Oct 2020 11:48:48 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.9-2
+> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-10-02
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3d45f8220d60a0b2aaaacf8fb2be4e6ffd9008e
+https://git.kernel.org/torvalds/c/702bfc891db162b99e880da78cc256dac14cfc7f
 
 Thank you!
 
