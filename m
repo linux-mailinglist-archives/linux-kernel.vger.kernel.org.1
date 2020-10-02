@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5E0281647
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1446281649
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388287AbgJBPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:14:02 -0400
-Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:33604 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388223AbgJBPOC (ORCPT
+        id S2388302AbgJBPOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBPOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:14:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 4C7821730842;
-        Fri,  2 Oct 2020 15:14:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3353:3865:3866:3867:3868:3870:3872:3873:3874:4250:4321:4641:5007:8957:10004:10400:10848:11026:11232:11658:11914:12043:12050:12295:12297:12438:12740:12760:12895:13069:13095:13161:13184:13199:13229:13311:13357:13439:14659:21080:21433:21451:21611:21627:21789:30012:30054:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: water67_2d10638271a5
-X-Filterd-Recvd-Size: 2585
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  2 Oct 2020 15:14:00 +0000 (UTC)
-Message-ID: <cc3efa9aa8955e15255807fc852a4ad3d8ab7f44.camel@perches.com>
-Subject: Re: external tool to remove embedded filenames
-From:   Joe Perches <joe@perches.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>
-Date:   Fri, 02 Oct 2020 08:13:58 -0700
-In-Reply-To: <20201002144936.GA17987@Gentoo>
-References: <1fd5f9188a14acdca703ca00301ee323de672a8d.camel@perches.com>
-         <bab3ecae932cb41106834156abbd27159d937e67.camel@perches.com>
-         <20201002144936.GA17987@Gentoo>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 2 Oct 2020 11:14:10 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA68EC0613D0;
+        Fri,  2 Oct 2020 08:14:10 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id s14so978132pju.1;
+        Fri, 02 Oct 2020 08:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cGNKaBMh3uHXuYbt3cZz1U1JxLB1ZMRyGwuoggkhc2M=;
+        b=SyC+iDBKdFLQMS0k3F6plRyS3gb3GKpoQmC6y/r2JgCA1B8FJUFG5mJg0qDfwNKz71
+         whx5e7JlbvNzn+kH41Pajh2h5liry4u8jBbSIp3KcX939HwHlGKnifYnCTPaWfn7J89+
+         LOsHc/6WfjvPwC3eECJCH2gLOfcy7/i+zffVzy6FrylCZnQvXt0HCk2EoZpDjSPZNeVi
+         Bt+Ap8Co9q5QIeY1X7cNKqenHQZzsux+mEbzH0j3IocIhYqhPJgHtKHX4utTuqCMv8ts
+         HRvqTzQ7QCroEYCJGVVq/MOmqOx6ZzhYxjwHNFujubAofK/DeVO5bUh59W/rZ31od08/
+         VqHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cGNKaBMh3uHXuYbt3cZz1U1JxLB1ZMRyGwuoggkhc2M=;
+        b=NqLWa/zjyxes8GYVwrjvxRxlaMZAkA+LVuZVDtP+yKllFx+2l/IauhT8zEwFKFmAGO
+         ibMG/Fw5BOWvu5jekSzLX6EPhxmgge/T3ts6cOg7bqb8eJpnSAFs8OnpMNqviQuIZi6B
+         ieO7v5EW4CajUWCh3UsTyHzY3j6AekbspcnXsAfsK0un8LpouRHR2n7QoKcniLx96vuX
+         75xtSyhvbrkXY7+RYh/fJAOBbxav8vhwkzAg2dHMBepXhHoLOo/XYv6qie+Ie92R3ngp
+         aNLf+eGKgS0tVeIJxYAZ19Rsjsn6BGsTe/9nD8XivzWzyX1I/Ppa1vmKvutZ0lmfZ2SR
+         eSUw==
+X-Gm-Message-State: AOAM531CGxe5PB+IAGhwVnvEnjUhGQc14xlsn7V8P27VwVoycUM02V0X
+        JO4Js7OlHsYP6vWyPjrFElamoibV1Dm5Jg==
+X-Google-Smtp-Source: ABdhPJxRj+oXjCFHLcbUCsWQ3OC/nynuWVNf1/JBivOhLtLXjEPZjhm+ocFv39TW1MFvxBAvTvDZGw==
+X-Received: by 2002:a17:90a:e00e:: with SMTP id u14mr3300963pjy.153.1601651650245;
+        Fri, 02 Oct 2020 08:14:10 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id 22sm2326807pfw.17.2020.10.02.08.14.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 08:14:09 -0700 (PDT)
+Subject: Re: [net-next PATCH v1 3/7] net: phy: Introduce fwnode_get_phy_id()
+To:     Grant Likely <grant.likely@arm.com>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux.cj@gmail.com,
+        netdev@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, nd <nd@arm.com>
+References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+ <20200930160430.7908-4-calvin.johnson@oss.nxp.com>
+ <11e6b553-675f-8f3d-f9d5-316dae381457@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <679fab8f-d33a-9ce8-1982-788d5f90185e@gmail.com>
+Date:   Fri, 2 Oct 2020 08:14:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <11e6b553-675f-8f3d-f9d5-316dae381457@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-( * removing mentors, I originally meant to send that to mentees )
 
-On Fri, 2020-10-02 at 20:19 +0530, Bhaskar Chowdhury wrote:
-> On 11:47 Thu 01 Oct 2020, Joe Perches wrote:
-> > It's rather unnecessary for files to contain their
-> > path/filename in source code comments.
-> > 
-> > Here's a trivial little script that can remove
-> > embedded filenames in c90 style comments from files.
-> > 
-> > This requires git.
-[]
-> > Running it on today's -next gives:
-> > 
-> > $ perl remove_embedded_filenames.pl
-> > $ git diff --shortstat
-> > 2310 files changed, 354 insertions(+), 4239 deletions(-)
-> > 
-> > It's also possible to give any filename or path
-> > as an argument to the script
-> > 
-> > For instance:
-> > 
-> > $ perl remove_embedded_filenames.pl drivers/net
 
-The below was an attachment, it's odd that your
-mailer quoted it.
-
-> > #!/usr/bin/perl -w
-[]
-> > if ($modified && !$quiet) {
-> >    print <<EOT;
-> > Warning: these changes may not be correct.
-> > 
-> > These changes should be carefully reviewed manually and not combined with
-> > any functional changes.
-> > 
-> > Compile, build and test your changes.
-> > 
-> > You should understand and be responsible for all object changes.
-> > 
-> > Make sure you read Documentation/SubmittingPatches before sending
-> > any changes to reviewers, maintainers or mailing lists.
-> > EOT
-> > }
+On 10/2/2020 4:05 AM, Grant Likely wrote:
 > 
-> Suggestion.... please take those damn EOT lines out of it
+> 
+> On 30/09/2020 17:04, Calvin Johnson wrote:
+>> Extract phy_id from compatible string. This will be used by
+>> fwnode_mdiobus_register_phy() to create phy device using the
+>> phy_id.
+>>
+>> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+>> ---
+>>
+>>   drivers/net/phy/phy_device.c | 32 +++++++++++++++++++++++++++++++-
+>>   include/linux/phy.h          |  5 +++++
+>>   2 files changed, 36 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+>> index c4aec56d0a95..162abde6223d 100644
+>> --- a/drivers/net/phy/phy_device.c
+>> +++ b/drivers/net/phy/phy_device.c
+>> @@ -9,6 +9,7 @@
+>>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> +#include <linux/acpi.h>
+>>   #include <linux/bitmap.h>
+>>   #include <linux/delay.h>
+>>   #include <linux/errno.h>
+>> @@ -845,6 +846,27 @@ static int get_phy_c22_id(struct mii_bus *bus, 
+>> int addr, u32 *phy_id)
+>>       return 0;
+>>   }
+>> +/* Extract the phy ID from the compatible string of the form
+>> + * ethernet-phy-idAAAA.BBBB.
+>> + */
+>> +int fwnode_get_phy_id(struct fwnode_handle *fwnode, u32 *phy_id)
+>> +{
+>> +    unsigned int upper, lower;
+>> +    const char *cp;
+>> +    int ret;
+>> +
+>> +    ret = fwnode_property_read_string(fwnode, "compatible", &cp);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
+>> +        *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+>> +        return 0;
+>> +    }
+>> +    return -EINVAL;
+>> +}
+>> +EXPORT_SYMBOL(fwnode_get_phy_id);
+> 
+> This block, and the changes in patch 4 duplicate functions from 
+> drivers/of/of_mdio.c, but it doesn't refactor anything in 
+> drivers/of/of_mdio.c to use the new path. Is your intent to bring all of 
+> the parsing in these functions of "compatible" into the ACPI code path?
+> 
+> If so, then the existing code path needs to be refactored to work with 
+> fwnode_handle instead of device_node.
+> 
+> If not, then the DT path in these functions should call out to of_mdio, 
+> while the ACPI path only does what is necessary.
 
-No.  What's your actual problem with it?
+Rob has been asking before to have drivers/of/of_mdio.c be merged or at 
+least relocated within drivers/net/phy where it would naturally belong. 
+As a preliminary step towards ACPI support that would seem reasonable to do.
 
-It's a tool and it may not be perfect.
-
-It merely emits a single message if it removes
-filenames from files.
-
-
+Then, as Grant suggests you can start re-factoring as much as possible 
+with using fwnode_handle.
+-- 
+Florian
