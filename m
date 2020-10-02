@@ -2,119 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACB6281951
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002FA281953
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388253AbgJBRcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgJBRcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:32:41 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DA1C0613D0;
-        Fri,  2 Oct 2020 10:32:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nJi1k+MxQc2I6nh3mpCm/yq0hw/XmGot+Y/796SGQlk=; b=gc8eH01GUrw8PlBjvLPULw+IVL
-        EL2eLzkGIbJbfUnl8jfGHsTF3RJYY2I5QGWhvZHSEMyY8VI1oihI11iQ/Am4ldLHQ1Ab7YpnRrKw9
-        VJV4ry5mXW8t4xxnJGEw3QQJLUctGMCXbXNeYODx7PtFl8Hpts7sJo9UZswE8k6aK/5A1VaSG3w/i
-        mOZxSudRJ+k3lp5Ln9OikQQxpXFzN5V8TOvD/yL2GU3LnCa87a4u6IzLmpqOO6N1Nf1qLP10PLPBQ
-        QStpxTLilPwQKycBO5EdPqK9Y6USABXEM4QG1Ft+xAF/K+7tIQTcCAMpAvOwhU3l5IBPRHsASpz1Y
-        8tEbWAFA==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOOv9-00058H-E5; Fri, 02 Oct 2020 17:32:39 +0000
-Subject: Re: [RFC PATCH v1 13/26] docs: reporting-bugs: point out the
- environment might be causing issue
-To:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <6dab906efb915c6cd6733df525b1f3da3753c4b4.1601541165.git.linux@leemhuis.info>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a226274e-7bda-bd27-a0a5-1f1bb165fcd1@infradead.org>
-Date:   Fri, 2 Oct 2020 10:32:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S2388248AbgJBRdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:33:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:42458 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBRdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:33:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41D581396;
+        Fri,  2 Oct 2020 10:33:24 -0700 (PDT)
+Received: from [172.16.1.113] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7D453F6CF;
+        Fri,  2 Oct 2020 10:33:22 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+ short time period
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+References: <20201002122235.1280-1-shiju.jose@huawei.com>
+ <20201002124352.GC17436@zn.tnic>
+ <19a8cc62b11c49e9b584857a6a6664e5@huawei.com>
+From:   James Morse <james.morse@arm.com>
+Message-ID: <59950d44-906b-684f-c876-e09c76e5f827@arm.com>
+Date:   Fri, 2 Oct 2020 18:33:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <6dab906efb915c6cd6733df525b1f3da3753c4b4.1601541165.git.linux@leemhuis.info>
+In-Reply-To: <19a8cc62b11c49e9b584857a6a6664e5@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
-> Help users to avoid a few pitfalls, as they might be the real reason why
-> the kernel is acting up somehow.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
->  Documentation/admin-guide/reporting-bugs.rst | 34 ++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-> index d96b21512c03..2292b79cf462 100644
-> --- a/Documentation/admin-guide/reporting-bugs.rst
-> +++ b/Documentation/admin-guide/reporting-bugs.rst
-> @@ -583,6 +583,40 @@ not part of the Linux kernel. Your package manager might thus force you to
->  remove those, too.
->  
->  
-> +Ensure a healthy environment
-> +----------------------------
-> +
-> +    *Make sure it's not the kernels surroundings that are causing the issue you
+Hi Shiju,
 
-                               kernel's
+On 02/10/2020 16:38, Shiju Jose wrote:
+>> -----Original Message-----
+>> From: Borislav Petkov [mailto:bp@alien8.de]
+>> Sent: 02 October 2020 13:44
+>> To: Shiju Jose <shiju.jose@huawei.com>
+>> Cc: linux-edac@vger.kernel.org; linux-acpi@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; tony.luck@intel.com; rjw@rjwysocki.net;
+>> james.morse@arm.com; lenb@kernel.org; Linuxarm
+>> <linuxarm@huawei.com>
+>> Subject: Re: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+>> short time period
+>>
+>> On Fri, Oct 02, 2020 at 01:22:28PM +0100, Shiju Jose wrote:
+>>> Open Questions based on the feedback from Boris, 1. ARM processor
+>>> error types are cache/TLB/bus errors.
+>>>    [Reference N2.4.4.1 ARM Processor Error Information UEFI Spec v2.8]
+>>> Any of the above error types should not be consider for the error
+>>> collection and CPU core isolation?
 
-> +    face.*
-> +
-> +Problems that look a lot like a kernel issue are sometimes caused by build
-> +or runtime environment. It's hard to rule out that problem completely, but you
-> +should minimize it:
-> +
-> + * Use proven tools when building your kernel, as bugs in the compiler or the
-> +   binutils can cause the resulting kernel to misbehave.
-> +
-> + * Ensure your computer components runs within their design specifications;
+Boris' earlier example was that Bus errors have very little to do with the CPU. It may
+just be that this CPU is handling the IRQs for a fault device, and thus receiving the
+errors. irqbalance could change that anytime.
 
-                                      run
-
-> +   that's especially important for the main processor, the main memory, and the
-> +   motherboard. Therefore, stop overclocking when facing a potential kernel
-> +   issue.
-> +
-> + * Try to make sure it's not faulty hardware that is causing your issue. Bad
-> +   main memory for example can result in a multitude of issues that will
-> +   manifest itself in problems looking like kernel issues.
-> +
-> + * If you're dealing with a filesystem issue, you might want to check the file
-> +   system in question with ``fsck`` before trying to reproduce it again.
-> +
-> + * When dealing with a regression, make sure it's not something else that
-> +   changed in parallel to updating the kernel. The problem for example might be
-> +   caused by another software that was updated at the same time. It can also
-
-             by other software
-
-> +   happen that a hardware component coincidentally just broke when you rebooted
-> +   into a new kernel for the first time. Updating the systems BIOS or changing
-> +   something in the BIOS Setup can also lead to problems that on the first sight
-> +   look like a regression.
-> +
-> +
->  .. ############################################################################
->  .. Temporary marker added while this document is rewritten. Sections above
->  .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
-> 
+I'd prefer we just stick with the caches for now.
 
 
--- 
-~Randy
+>>> 2.If disabling entire CPU core is not acceptable, please suggest
+>>> method to disable L1 and L2 cache on ARM64 core?
 
+This is not something linux can do. It may not be possible to do it all.
+
+
+>> More open questions:
+>>
+>>> This requirement is the part of the early fault prediction by taking
+>>> action when large number of corrected errors reported on a CPU core
+>>> before it causing serious faults.
+>>
+>> And do you know of actual real-life examples where this is really the case? Do
+>> you have any users who report a large error count on ARM CPUs, originating
+>>from the caches and that something like that would really help?
+>>
+>> Because from my x86 CPUs limited experience, the cache arrays are mostly
+>> fine and errors reported there are not something that happens very
+>> frequently so we don't even need to collect and count those.
+>>
+>> So is this something which you need to have in order to check a box
+>> somewhere that there is some functionality or is there an actual real-life use
+>> case behind it which a customer has requested?
+
+> We have not got a real-life example for this case. However rare errors
+> like this can occur frequently sometimes at scale, which would cause
+> more serious issues if not handled.
+
+Don't you need to look across all your 'at scale' machines to know what normal looks like?
+
+I can't see how a reasonable prediction can be made from just one machine's behaviour
+since boot. These are corrected errors, nothing has gone wrong.
+
+
+>> Open question from James with my reply to it:
+>>
+>> On Thu, Oct 01, 2020 at 06:16:03PM +0100, James Morse wrote:
+>>> If the corrected-count is available somewhere, can't this policy be
+>>> made in user-space?
+
+> The error count is present in the struct cper_arm_err_info, the fields of
+> this structure  are not reported to the user-space through trace events?
+
+> Presently the fields of table struct cper_sec_proc_arm only are reported 
+> to the user-space through trace-arm-event.
+> Also there can be multiple cper_arm_err_info per cper_sec_proc_arm.
+> Thus I think this need reporting through a new trace event?
+
+I think it would be more useful to feed this into edac like ghes.c already does for memory
+errors. These would end up as corrected errors counts on devices for L3 or whatever.
+
+This saves fixing your user-space component to the arm specific CPER record format, or
+even firmware-first, meaning its useful to the widest number of people.
+
+
+> Also the logical index of a CPU which I think need to extract from the 'mpidr' field of
+> struct cper_sec_proc_arm using platform dependent kernel function get_logical_index().    
+> Thus cpu index also need to report to the user space.
+
+I thought you were talking about caches. These structures have a 'level' for cache errors.
+
+Certainly you need a way of knowing which cache it is, and from that number you should
+also be able to work out which the CPUs it is attached to.
+
+x86 already has a way of doing this:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/x86/resctrl_ui.rst#n327
+
+arm64 doesn't have anything equivalent, but my current proposal for MPAM is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/commit/?h=mpam/snapshot/feb&id=ce3148bd39509ac8b12f5917f0f92ce014a5b22f
+
+I was hoping the PPTT table would grow something we could use as an ID, but I've not seen
+anything yet.
+
+
+>> You mean rasdaemon goes and offlines CPUs when certain thresholds are
+>> reached? Sure. It would be much more flexible too.
+
+> I think adding the CPU error collection to the kernel
+> has the following advantages,
+>     1. The CPU error collection and isolation would not be active if the
+>          rasdaemon stopped running or not running on a machine.
+
+Having CPUs disappear when nothing has gone wrong is deeply surprising. This is going to
+be very specific to a small number of people. I bet they want to calculate the threshold
+cluster-wide.
+
+Having this policy in user-space means you have the ability to do something much more
+useful... e.g move your corrected-error-intolerant workload off the CPU that seems to be
+affected.
+
+(If someone who needs to solve this problem by offlining CPUs could chime in, that would
+really help)
+
+
+>     2. Receiving errors and isolating a CPU core from the user-space would
+>         probably delayed more,  when large number of errors are reported.
+
+These are corrected errors. Nothing has gone wrong.
+
+
+>    3. Supporting the interface for configuration parameters and  error statistics etc
+>         probably easy to implement in the kernel.
+
+I disagree! Once its added as a kernel interface, we can't change it. Its much better for
+these policy-specific algorithms and thresholds to live in user-space. The kernel can just
+deal with the unchanging work of making the counter available.
+
+
+>    4. The interface given for disabling a CPU is easy to use from the kernel level.
+
+Its even easier for privileged user-space:
+| echo 0 > /sys/devices/system/cpu/cpu0/online
+
+
+Thanks,
+
+James
