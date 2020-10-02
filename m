@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98682281D9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC99281D9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgJBVY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S1725838AbgJBVYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBVY1 (ORCPT
+        with ESMTP id S1725283AbgJBVYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:24:27 -0400
-Received: from mail-ua1-x963.google.com (mail-ua1-x963.google.com [IPv6:2607:f8b0:4864:20::963])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5CEC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:24:27 -0700 (PDT)
-Received: by mail-ua1-x963.google.com with SMTP id d18so758249uav.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:24:27 -0700 (PDT)
+        Fri, 2 Oct 2020 17:24:33 -0400
+Received: from mail-vk1-xa64.google.com (mail-vk1-xa64.google.com [IPv6:2607:f8b0:4864:20::a64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D94C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:24:33 -0700 (PDT)
+Received: by mail-vk1-xa64.google.com with SMTP id b4so561932vkh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LZZPtr16SZgDb1uPYb5GxFp3EpLpzY9q7QFgqcTzhYw=;
-        b=IytsHrQVjrTHTdCMe0SWr4xqu9+nwm5pDwcPN7arVvvJjsCI9a3HYhr32LQCna/XUB
-         42TVu/QvPxUogwEhK7NzYorobs6HvQJ3pwR+rwqFVavdu1AtO/v6zMBa1VdEP2Seq0hn
-         3KrtgguYT0SGuGoYhLiXD0avyp6+xSs3Wevgo=
+        bh=bUEoxFfPzHnWhDOKa9FEBm3A8GDzy7s45ien+Sv6Hy4=;
+        b=XWq5tfzL3T34tf8+iQewUYcW4J8BqxExlwXlBnrxoyuOeh0HNuISZhJIRWqiPqfWt3
+         BEohHslQCOo0Tp3MinGdbay6Z56/OrDQCRat54mTX27sTuVY0ILhMWlCCJ2WiepgqPet
+         cqyPf8mkvTqywks3OxWviiAxcUs6pRFH+k3Eo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=LZZPtr16SZgDb1uPYb5GxFp3EpLpzY9q7QFgqcTzhYw=;
-        b=MdhKC4+CL/hktKAEOMfHbieWFj2xM3AeXrOLAcgrP40h13mU4GXoEi75aYg4K7DG2m
-         uBMlxRe10BFY5RuGMlEzaI5xA6TFMlrHMea4ciyTfYt7juKgjJFlyNe9q/Q+97E4tctU
-         drACR3T8bqKvjduIJcKXJJ1lIIY4WfOyDqgqKR+E1L/aOssEsQA5Nk+AMd0Q2jb4U3IC
-         bmx3CAZKr+LPfdhBjr02OtiYSi1NMQQOMENDI7AV1f71Mf327nWHXc/7hX563kzx57zS
-         G9yXZIrwH9CxH8txAIcC6VmW1RsbwMyRTZb7G9OTPdJmDSyiPPsD8OHxzwc72Nm68/ne
-         NPZw==
-X-Gm-Message-State: AOAM533j98GyikdF4xMdvzBk5cNWPVcvtfDVqdgBh+QmoeR5Dab6ghlW
-        rnTErCj+1V09XcMwR0cdGGW94AC6/k8AwSkKUGhYeIMABeUv
-X-Google-Smtp-Source: ABdhPJwaXO3ubiSYkfg3JapP08BkuVuQmSKDY9FOCL4p/245oYphiokClxHebiPaxsA0Xt+69h+jheDjgvJC
-X-Received: by 2002:ab0:20b6:: with SMTP id y22mr2375439ual.30.1601673866277;
-        Fri, 02 Oct 2020 14:24:26 -0700 (PDT)
+        bh=bUEoxFfPzHnWhDOKa9FEBm3A8GDzy7s45ien+Sv6Hy4=;
+        b=qnbH2qI7XrYiYSyVaJObpiuQ1mFVIFTGuwHCTTLL8bq05V+dBqh+LTvt5ymoNNFmDv
+         cIDG8NgL+2bSrBLCpKojuPFdzbcG/r4IV464nVUb1ZZbTUDZZb5ZtsLYOZmHtTANDwSz
+         5EXrrXJYmBnytuT5ILufZtUPYVgZHJ054f18JD9VC9KlLGgpxRipI/SsNpsbfIeR+E5D
+         XusMUMetBI5Ga9M7kFkQ3q65ZzPA2r/hWYkV6Y0ImU7IMVmLJwQAiQOlf16lJsUDZK4n
+         0QhII9sucvKCjp7ua6sEDBvYIFDnl4PwoiVUdkgR/YTITKEz6wucbQhEySXNHu6KlGsX
+         0dRQ==
+X-Gm-Message-State: AOAM5323x3mbhrbXFpdzkceNlFWrJ26xURwqrJbE/0DHspdiYaBln4MQ
+        /5Tfhlqtkim1hmqTIniqr+Nx3Yw53P8P9H/WxWB2OOvT7RVW
+X-Google-Smtp-Source: ABdhPJxNq3xLKq5mqZOCiNYXLhKpB4gSIl5hH89aRL9VOPqcTrzjyLLYS6AXiul5qlsmujr4ZDXl735F3r/7
+X-Received: by 2002:a1f:3849:: with SMTP id f70mr2472276vka.0.1601673871867;
+        Fri, 02 Oct 2020 14:24:31 -0700 (PDT)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id x2sm327292vsn.4.2020.10.02.14.24.21
+        by smtp-relay.gmail.com with ESMTPS id x2sm327292vsn.4.2020.10.02.14.24.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 14:24:26 -0700 (PDT)
+        Fri, 02 Oct 2020 14:24:31 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ To:     Arnd Bergmann <arnd@arndb.de>,
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Olof Johansson <olof@lixom.net>
-Subject: [PATCH v6 05/14] misc: bcm-vk: add triggers when host panic or reboots to notify card
-Date:   Fri,  2 Oct 2020 14:23:18 -0700
-Message-Id: <20201002212327.18393-6-scott.branden@broadcom.com>
+Subject: [PATCH v6 06/14] misc: bcm-vk: add open/release
+Date:   Fri,  2 Oct 2020 14:23:19 -0700
+Message-Id: <20201002212327.18393-7-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201002212327.18393-1-scott.branden@broadcom.com>
 References: <20201002212327.18393-1-scott.branden@broadcom.com>
@@ -63,100 +63,321 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass down an interrupt to card in case of panic or reboot so
-that card can take appropriate action to perform a clean reset.
-Uses kernel notifier block either directly (register on panic list),
-or implicitly (add shutdown method for PCI device).
+Add open/release to replace private data with context for other methods
+to use.  Reason for the context is because it is allowed for multiple
+sessions to open sysfs.  For each file open, when upper layer queries the
+response, only those that are tied to a specified open should be returned.
 
 Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- drivers/misc/bcm-vk/bcm_vk.h     |  2 ++
- drivers/misc/bcm-vk/bcm_vk_dev.c | 29 ++++++++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
+ drivers/misc/bcm-vk/Makefile     |   4 +-
+ drivers/misc/bcm-vk/bcm_vk.h     |  15 ++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  23 ++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.c | 126 +++++++++++++++++++++++++++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.h |  31 ++++++++
+ 5 files changed, 198 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.c
+ create mode 100644 drivers/misc/bcm-vk/bcm_vk_msg.h
 
+diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
+index f8a7ac4c242f..a2ae79858409 100644
+--- a/drivers/misc/bcm-vk/Makefile
++++ b/drivers/misc/bcm-vk/Makefile
+@@ -5,4 +5,6 @@
+ 
+ obj-$(CONFIG_BCM_VK) += bcm_vk.o
+ bcm_vk-objs := \
+-	bcm_vk_dev.o
++	bcm_vk_dev.o \
++	bcm_vk_msg.o
++
 diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index 0a366db693c8..f428ad9a0c3d 100644
+index f428ad9a0c3d..5f0fcfdaf265 100644
 --- a/drivers/misc/bcm-vk/bcm_vk.h
 +++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -223,6 +223,8 @@ struct bcm_vk {
- 	unsigned long wq_offload[1]; /* various flags on wq requested */
- 	void *tdma_vaddr; /* test dma segment virtual addr */
- 	dma_addr_t tdma_addr; /* test dma segment bus addr */
-+
-+	struct notifier_block panic_nb;
- };
+@@ -7,9 +7,14 @@
+ #define BCM_VK_H
  
- /* wq offload work items bits definitions */
+ #include <linux/firmware.h>
++#include <linux/kref.h>
+ #include <linux/miscdevice.h>
++#include <linux/mutex.h>
+ #include <linux/pci.h>
+ #include <linux/sched/signal.h>
++#include <uapi/linux/misc/bcm_vk.h>
++
++#include "bcm_vk_msg.h"
+ 
+ #define DRV_MODULE_NAME		"bcm-vk"
+ 
+@@ -218,6 +223,13 @@ struct bcm_vk {
+ 	struct miscdevice miscdev;
+ 	int devid; /* dev id allocated */
+ 
++	/* Reference-counting to handle file operations */
++	struct kref kref;
++
++	spinlock_t ctx_lock; /* Spinlock for component context */
++	struct bcm_vk_ctx ctx[VK_CMPT_CTX_MAX];
++	struct bcm_vk_ht_entry pid_ht[VK_PID_HT_SZ];
++
+ 	struct workqueue_struct *wq_thread;
+ 	struct work_struct wq_work; /* work queue for deferred job */
+ 	unsigned long wq_offload[1]; /* various flags on wq requested */
+@@ -278,6 +290,9 @@ static inline bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk)
+ 	return (rdy_marker == VK_BAR1_MSGQ_RDY_MARKER);
+ }
+ 
++int bcm_vk_open(struct inode *inode, struct file *p_file);
++int bcm_vk_release(struct inode *inode, struct file *p_file);
++void bcm_vk_release_data(struct kref *kref);
+ int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
+ 
+ #endif
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index c7bedd975609..1755493b3096 100644
+index 1755493b3096..a2980bd0111c 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -630,6 +630,16 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
+@@ -8,6 +8,7 @@
+ #include <linux/firmware.h>
+ #include <linux/fs.h>
+ #include <linux/idr.h>
++#include <linux/kref.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/pci_regs.h>
+@@ -630,6 +631,12 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
  	return 0;
  }
  
-+static int bcm_vk_on_panic(struct notifier_block *nb,
-+			   unsigned long e, void *p)
++static const struct file_operations bcm_vk_fops = {
++	.owner = THIS_MODULE,
++	.open = bcm_vk_open,
++	.release = bcm_vk_release,
++};
++
+ static int bcm_vk_on_panic(struct notifier_block *nb,
+ 			   unsigned long e, void *p)
+ {
+@@ -652,10 +659,13 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	struct miscdevice *misc_device;
+ 	u32 boot_status;
+ 
++	/* allocate vk structure which is tied to kref for freeing */
+ 	vk = kzalloc(sizeof(*vk), GFP_KERNEL);
+ 	if (!vk)
+ 		return -ENOMEM;
+ 
++	kref_init(&vk->kref);
++
+ 	err = pci_enable_device(pdev);
+ 	if (err) {
+ 		dev_err(dev, "Cannot enable PCI device\n");
+@@ -733,6 +743,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		err = -ENOMEM;
+ 		goto err_ida_remove;
+ 	}
++	misc_device->fops = &bcm_vk_fops,
+ 
+ 	err = misc_register(misc_device);
+ 	if (err) {
+@@ -821,6 +832,16 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	return err;
+ }
+ 
++void bcm_vk_release_data(struct kref *kref)
 +{
-+	struct bcm_vk *vk = container_of(nb, struct bcm_vk, panic_nb);
++	struct bcm_vk *vk = container_of(kref, struct bcm_vk, kref);
++	struct pci_dev *pdev = vk->pdev;
 +
-+	bcm_to_v_reset_doorbell(vk, VK_BAR0_RESET_DB_HARD);
-+
-+	return 0;
++	dev_dbg(&pdev->dev, "BCM-VK:%d release data 0x%p\n", vk->devid, vk);
++	pci_dev_put(pdev);
++	kfree(vk);
 +}
 +
- static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ static void bcm_vk_remove(struct pci_dev *pdev)
  {
- 	int err;
-@@ -743,6 +753,15 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	/* sync other info */
- 	bcm_vk_sync_card_info(vk);
+ 	int i;
+@@ -864,6 +885,8 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 	pci_release_regions(pdev);
+ 	pci_free_irq_vectors(pdev);
+ 	pci_disable_device(pdev);
++
++	kref_put(&vk->kref, bcm_vk_release_data);
+ }
  
-+	/* register for panic notifier */
-+	vk->panic_nb.notifier_call = bcm_vk_on_panic;
-+	err = atomic_notifier_chain_register(&panic_notifier_list,
-+					     &vk->panic_nb);
-+	if (err) {
-+		dev_err(dev, "Fail to register panic notifier\n");
-+		goto err_destroy_workqueue;
+ static void bcm_vk_shutdown(struct pci_dev *pdev)
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+new file mode 100644
+index 000000000000..eb261fb87c9d
+--- /dev/null
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2018-2020 Broadcom.
++ */
++
++#include "bcm_vk.h"
++#include "bcm_vk_msg.h"
++
++/*
++ * allocate a ctx per file struct
++ */
++static struct bcm_vk_ctx *bcm_vk_get_ctx(struct bcm_vk *vk, const pid_t pid)
++{
++	u32 i;
++	struct bcm_vk_ctx *ctx = NULL;
++	u32 hash_idx = hash_32(pid, VK_PID_HT_SHIFT_BIT);
++
++	spin_lock(&vk->ctx_lock);
++
++	for (i = 0; i < ARRAY_SIZE(vk->ctx); i++) {
++		if (!vk->ctx[i].in_use) {
++			vk->ctx[i].in_use = true;
++			ctx = &vk->ctx[i];
++			break;
++		}
 +	}
 +
- 	/*
- 	 * lets trigger an auto download.  We don't want to do it serially here
- 	 * because at probing time, it is not supposed to block for a long time.
-@@ -751,7 +770,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (auto_load) {
- 		if ((boot_status & BOOT_STATE_MASK) == BROM_RUNNING) {
- 			if (bcm_vk_trigger_autoload(vk))
--				goto err_destroy_workqueue;
-+				goto err_unregister_panic_notifier;
- 		} else {
- 			dev_err(dev,
- 				"Auto-load skipped - BROM not in proper state (0x%x)\n",
-@@ -763,6 +782,10 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	return 0;
- 
-+err_unregister_panic_notifier:
-+	atomic_notifier_chain_unregister(&panic_notifier_list,
-+					 &vk->panic_nb);
++	if (!ctx) {
++		dev_err(&vk->pdev->dev, "All context in use\n");
 +
- err_destroy_workqueue:
- 	destroy_workqueue(vk->wq_thread);
- 
-@@ -813,6 +836,10 @@ static void bcm_vk_remove(struct pci_dev *pdev)
- 	bcm_vk_trigger_reset(vk);
- 	usleep_range(BCM_VK_UCODE_BOOT_US, BCM_VK_UCODE_BOOT_MAX_US);
- 
-+	/* unregister panic notifier */
-+	atomic_notifier_chain_unregister(&panic_notifier_list,
-+					 &vk->panic_nb);
++		goto all_in_use_exit;
++	}
 +
- 	if (vk->tdma_vaddr)
- 		dma_free_coherent(&pdev->dev, nr_scratch_pages * PAGE_SIZE,
- 				  vk->tdma_vaddr, vk->tdma_addr);
++	/* set the pid and insert it to hash table */
++	ctx->pid = pid;
++	ctx->hash_idx = hash_idx;
++	list_add_tail(&ctx->node, &vk->pid_ht[hash_idx].head);
++
++	/* increase kref */
++	kref_get(&vk->kref);
++
++all_in_use_exit:
++	spin_unlock(&vk->ctx_lock);
++
++	return ctx;
++}
++
++static int bcm_vk_free_ctx(struct bcm_vk *vk, struct bcm_vk_ctx *ctx)
++{
++	u32 idx;
++	u32 hash_idx;
++	pid_t pid;
++	struct bcm_vk_ctx *entry;
++	int count = 0;
++
++	if (!ctx) {
++		dev_err(&vk->pdev->dev, "NULL context detected\n");
++		return -EINVAL;
++	}
++	idx = ctx->idx;
++	pid = ctx->pid;
++
++	spin_lock(&vk->ctx_lock);
++
++	if (!vk->ctx[idx].in_use) {
++		dev_err(&vk->pdev->dev, "context[%d] not in use!\n", idx);
++	} else {
++		vk->ctx[idx].in_use = false;
++		vk->ctx[idx].miscdev = NULL;
++
++		/* Remove it from hash list and see if it is the last one. */
++		list_del(&ctx->node);
++		hash_idx = ctx->hash_idx;
++		list_for_each_entry(entry, &vk->pid_ht[hash_idx].head, node) {
++			if (entry->pid == pid)
++				count++;
++		}
++	}
++
++	spin_unlock(&vk->ctx_lock);
++
++	return count;
++}
++int bcm_vk_open(struct inode *inode, struct file *p_file)
++{
++	struct bcm_vk_ctx *ctx;
++	struct miscdevice *miscdev = (struct miscdevice *)p_file->private_data;
++	struct bcm_vk *vk = container_of(miscdev, struct bcm_vk, miscdev);
++	struct device *dev = &vk->pdev->dev;
++	int rc = 0;
++
++	/* get a context and set it up for file */
++	ctx = bcm_vk_get_ctx(vk, task_pid_nr(current));
++	if (!ctx) {
++		dev_err(dev, "Error allocating context\n");
++		rc = -ENOMEM;
++	} else {
++		/*
++		 * set up context and replace private data with context for
++		 * other methods to use.  Reason for the context is because
++		 * it is allowed for multiple sessions to open the sysfs, and
++		 * for each file open, when upper layer query the response,
++		 * only those that are tied to a specific open should be
++		 * returned.  The context->idx will be used for such binding
++		 */
++		ctx->miscdev = miscdev;
++		p_file->private_data = ctx;
++		dev_dbg(dev, "ctx_returned with idx %d, pid %d\n",
++			ctx->idx, ctx->pid);
++	}
++	return rc;
++}
++
++int bcm_vk_release(struct inode *inode, struct file *p_file)
++{
++	int ret;
++	struct bcm_vk_ctx *ctx = p_file->private_data;
++	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk, miscdev);
++
++	ret = bcm_vk_free_ctx(vk, ctx);
++
++	kref_put(&vk->kref, bcm_vk_release_data);
++
++	return ret;
++}
++
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.h b/drivers/misc/bcm-vk/bcm_vk_msg.h
+new file mode 100644
+index 000000000000..32516abcaf89
+--- /dev/null
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2018-2020 Broadcom.
++ */
++
++#ifndef BCM_VK_MSG_H
++#define BCM_VK_MSG_H
++
++/* context per session opening of sysfs */
++struct bcm_vk_ctx {
++	struct list_head node; /* use for linkage in Hash Table */
++	unsigned int idx;
++	bool in_use;
++	pid_t pid;
++	u32 hash_idx;
++	struct miscdevice *miscdev;
++};
++
++/* pid hash table entry */
++struct bcm_vk_ht_entry {
++	struct list_head head;
++};
++
++/* total number of supported ctx, 32 ctx each for 5 components */
++#define VK_CMPT_CTX_MAX		(32 * 5)
++
++/* hash table defines to store the opened FDs */
++#define VK_PID_HT_SHIFT_BIT	7 /* 128 */
++#define VK_PID_HT_SZ		BIT(VK_PID_HT_SHIFT_BIT)
++
++#endif
 -- 
 2.17.1
 
