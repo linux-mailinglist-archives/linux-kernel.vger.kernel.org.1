@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576E0281937
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E43E28193B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388339AbgJBR1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
+        id S2388169AbgJBR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBR1x (ORCPT
+        with ESMTP id S1725991AbgJBR26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:27:53 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2FBC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:27:53 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id f15so1964187ilj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uhP79kZciUU4dVo6hvpfLle6d5MaeIfDR+3Npq0TkNo=;
-        b=TAqoowxnvS/2fOkInBCExTNrhFd5nD+Liycnhwa/M3NNLKdcdHW/Qqqz2qXZr53ROR
-         ttwqki4//wqATBVHRlsGOcur+nhBEyQEFxZdgOhA9NOChTsDORDQzR1Q40romHycStrN
-         cSkig9d+6ySrm+ZKwU8/pg/6hlDE+2yVOgti4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uhP79kZciUU4dVo6hvpfLle6d5MaeIfDR+3Npq0TkNo=;
-        b=PekmKBqYc/GEgzSNFlWf1YzXPvWyM5Nf9XWIQxnDcal+AkoE4LsfCQPu74auWIdo5n
-         4KRPAV+uEZmzbt8gRdm95ZoC+e8hpKshmADz6wwSxKw4hRC3F5aZrqIwemnm6LdwN7+b
-         82+IHDO7/WlT4L0T3uasj/PQR3BpYrtWDq3pSKQchqnGje3D8gE5KUYWVrBZ9LlXpT5P
-         Cg67CEzh3RvZFEs8w5hrrMnrpj48e+ZGEVEIEbt8kF8eAspfAu+NVJJtLd88ZecB12G2
-         9rmTMDFwyi7QweAW1K17e1hhouV3WZYjBmgx43MjnAx9V0dPDLo4japnT++g14/vlu5c
-         cJDw==
-X-Gm-Message-State: AOAM533u4UgAKKtoX6oXST5hUCExzdxePta7lDz4Gvxf+jloD4s9MTMH
-        tpPOE5xykL88QmCBRXlzpSebNw==
-X-Google-Smtp-Source: ABdhPJw5Rb/qdckezT85qY4GYNBl1+UP/H2HCCr1I0GbqpqMl2E6BQLz0xcxSpI3DzRKcNqGaPGr6w==
-X-Received: by 2002:a92:950d:: with SMTP id y13mr2686126ilh.42.1601659672856;
-        Fri, 02 Oct 2020 10:27:52 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h2sm982660ioj.5.2020.10.02.10.27.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 10:27:52 -0700 (PDT)
-Subject: Re: [PATCH v2] cpupower: Provide online and offline CPU information
-To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
-        shuah@kernel.org, trenn@suse.com
-Cc:     Janakarajan.Natarajan@amd.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Pavithra R . Prakash" <pavrampu@in.ibm.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200929131108.19435-1-latha@linux.vnet.ibm.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6694193a-f44e-1239-26c2-7e01650964fc@linuxfoundation.org>
-Date:   Fri, 2 Oct 2020 11:27:51 -0600
+        Fri, 2 Oct 2020 13:28:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8DAC0613D0;
+        Fri,  2 Oct 2020 10:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=feK8WlxbWzadA8OQDHYoxqGoR3FsSkq+H/fGH7x4bl8=; b=iZKk/p34OUO73OB8i1AJsLINlm
+        gQP/HEEBMYqlPpawjojtPdwcBvO9whovHcRmer7HVpAZOb1jkjPmUqNqOHC8084luMKmMBxVPmW7E
+        +8XCQhUKG5GJFNwBVqt29O7dMnfvJmH5mPxyRFih0ib39qZ3uLEM/1yAq9GH1wvGOr4rSTPKvwlMv
+        wmOXMvsM6gyCY/b8rZGB6nN+OjRTIr90ytwBRiTbzEa7ewuyb1IDgm0gaosJtfV3L+74p71uoNNHF
+        59iLe131ql+mUEz6+ZfixVXkqLvGhh5EY80hFZpS0NEkV6er9RoAykOoK4Kng4KTjIoQ0L0m4lrAr
+        gbrhcgew==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOOrW-0004ts-FS; Fri, 02 Oct 2020 17:28:54 +0000
+Subject: Re: [RFC PATCH v1 12/26] docs: reporting-bugs: tell users to disable
+ DKMS et al.
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <51574b968a9b78a5ce1056acdfa871d4a03d60c7.1601541165.git.linux@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c34bb102-613b-5713-4e96-aa99a3e3c6d2@infradead.org>
+Date:   Fri, 2 Oct 2020 10:28:51 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200929131108.19435-1-latha@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <51574b968a9b78a5ce1056acdfa871d4a03d60c7.1601541165.git.linux@leemhuis.info>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 7:11 AM, Brahadambal Srinivasan wrote:
-> When a user tries to modify cpuidle or cpufreq properties on offline
-> CPUs, the tool returns success (exit status 0) but also does not provide
-> any warning message regarding offline cpus that may have been specified
-> but left unchanged. In case of all or a few CPUs being offline, it can be
-> difficult to keep track of which CPUs didn't get the new frequency or idle
-> state set. Silent failures are difficult to keep track of when there are a
-> huge number of CPUs on which the action is performed.
+On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
+> Tell users to disable solutions like DKMS to make sure the mainline
+> kernel they have to install later remains vanilla. The old text did not
+> do that, but back when it was written these solutions were not that
+> widespread.
 > 
-> This patch adds helper functions to find both online and offline CPUs and
-> print them out accordingly.
-> 
-> We use these helper functions in cpuidle-set and cpufreq-set to print an
-> additional message if the user attempts to modify offline cpus.
-> 
-> Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
-> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
 > ---
->   tools/power/cpupower/utils/cpufreq-set.c     |  3 +
->   tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
->   tools/power/cpupower/utils/cpupower.c        |  8 +++
->   tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
->   tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
->   5 files changed, 92 insertions(+), 1 deletion(-)
+>  Documentation/admin-guide/reporting-bugs.rst | 21 ++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
+> index 05de4e0259cb..d96b21512c03 100644
+> --- a/Documentation/admin-guide/reporting-bugs.rst
+> +++ b/Documentation/admin-guide/reporting-bugs.rst
+> @@ -562,6 +562,27 @@ or reinstall the operating system as well as everything you need to restore the
+>  backup.
+>  
+>  
+> +Make sure your kernel doesn't get enhanced
+> +------------------------------------------
+> +
+> +    *Ensure your system does not enhance its kernels by building additional
+> +    kernel modules on-the-fly locally, which solutions like DKMS might be doing
+> +    without your knowledge.*
+> +
+> +Your kernel will stop being 'vanilla' as soon as it loads a kernel module not
+> +build from the sources used to compile the kernel image itself. That why you
+
+   built                                                           That is why you
+
+> +need to ensure your Linux kernel stays vanilla by removing or disabling
+> +mechanisms like akmods and DKMS: those might build additional kernel modules
+> +automatically, for example when your boot into a newly installed Linux kernel
+> +the first time. Reboot after removing them and any modules they installed.
+> +
+> +Note, you might not be aware that your system is using one of these solutions:
+> +they often get set up silently when you install Nvidias proprietary graphics
+
+                                                   Nvidia's
+
+> +driver, VirtualBox, or other Software that requires a some support from a module
+> +not part of the Linux kernel. Your package manager might thus force you to
+> +remove those, too.
+> +
+> +
+>  .. ############################################################################
+>  .. Temporary marker added while this document is rewritten. Sections above
+>  .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
 > 
 
-Please elaborate the changes made since v1.
 
-I am seeing compile warnings. Please fix and send v3.
+-- 
+~Randy
 
-utils/cpufreq-set.c: In function ‘cmd_freq_set’:
-utils/cpufreq-set.c:332:2: warning: implicit declaration of function 
-‘print_offline_cpus’ [-Wimplicit-function-declaration]
-   332 |  print_offline_cpus();
-       |  ^~~~~~~~~~~~~~~~~~
-   CC       utils/cpupower-set.o
-   CC       utils/cpupower-info.o
-   CC       utils/cpuidle-info.o
-   CC       utils/cpuidle-set.o
-utils/cpuidle-set.c: In function ‘cmd_idle_set’:
-utils/cpuidle-set.c:187:2: warning: implicit declaration of function 
-‘print_offline_cpus’ [-Wimplicit-function-declaration]
-   187 |  print_offline_cpus();
-
-thanks,
--- Shuah
