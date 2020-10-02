@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299D6280F9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D123C280F9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387659AbgJBJL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBJL2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:11:28 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA65FC0613D0;
-        Fri,  2 Oct 2020 02:11:27 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id j136so926381wmj.2;
-        Fri, 02 Oct 2020 02:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n8sjYxuBkwwfLCJdcsNIECFFL7vsWBubB9+n9PHGGPs=;
-        b=TCdfGntsyw1waB7d5uBvcniLx8tutSj7FDcOqvJU4dyVkDfnDWJ7IhasTN846qxkRF
-         eUvNlYKJ60wEdTN0SxEicLHUPbdVzztUVIkfC6nNeWtfsRQmqRZgu2UJynLpfcWrFq7Y
-         +C82+9ko/wvLdY7CmZPElmbUnO3WXiI8VCKr9TgiHKCeJyDhfXmggU6DX/AGICVxLwnW
-         y+kppNhU4mF28ptAXoXC6pqbG28FxSBRpMrnzD/JhC8P2/5TxPjJ3VvgHv2VKBYelR2L
-         zNJ6Kzu0yp/qHcih9cM51/HNxs1+UxqB/OA/CVr8KBOkAoDweaiUJhNkbrWWBUhqINm8
-         y7kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n8sjYxuBkwwfLCJdcsNIECFFL7vsWBubB9+n9PHGGPs=;
-        b=KxCTgSMMssZQE/EVdI/M0LoyOS5I3Bf5NqkTihGEPI4N193DBezF3SPadxmh/t6Zru
-         rCRyDBBMEg92lVa1/JuLGgWMY0mrEux92p3nWEGJvgf3GzH1ZW+L5jij6v3+B9nYzvZF
-         woIuqsachUjFqVSUoUvL+SOY9DM8s+Rbq3rnXYagWTuuU7N8K+GEVWGe/HimZSSXlGNl
-         0cjAP13IxC7+wzbhNetrszlDUPPFjgX3wMYEGD3vF+vmhgwSfVHEOgeWbIz59Rabkh+A
-         89chjsjzRgP6dkdRuGj/VjjKLaiyJzlwJi4uFATCJPl8cLzBXAnR41t6yTrwXuwSCqX+
-         J+hA==
-X-Gm-Message-State: AOAM530JebwTPsSTkG1FrndY8usvSZXaLP9eRip0eyiK6XInj28gOcOj
-        ty9nSmrok5lFd7T+GyTnzWQ=
-X-Google-Smtp-Source: ABdhPJy8Mrw34LM+35Ok95pZgOyUQ2MIWncbi40rYI4yc/UePQnaewZFhARbTSOC00ajkgbtSYmNnA==
-X-Received: by 2002:a1c:1bd8:: with SMTP id b207mr1748837wmb.139.1601629886617;
-        Fri, 02 Oct 2020 02:11:26 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id t203sm1031893wmg.43.2020.10.02.02.11.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 02:11:26 -0700 (PDT)
-Subject: Re: [PATCH v2 12/12] arm64: dts: mediatek: Add mt8183 power domains
- controller
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
-        drinkcat@chromium.org, hsinyi@chromium.org, weiyi.lu@mediatek.com,
-        Matthias Brugger <mbrugger@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
- <20201001160154.3587848-13-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <6b972d3c-df15-7900-eeb0-df928fa3899f@gmail.com>
-Date:   Fri, 2 Oct 2020 11:11:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387550AbgJBJNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJBJNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:13:04 -0400
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF4222074B;
+        Fri,  2 Oct 2020 09:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601629984;
+        bh=8a9a2j+Q9TdoEDPH23Ae2HnjNbpRmIF9vtNV8rnH2vQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e2Ws41X+UNrnNFSTOb3hHvWb3YfjncnZQ59oCGnE7JOU6e7heO6JfoSLH5pHei0eg
+         BC2b71jVluyqxGHJ0QR5kWnUooypgWbQFCErWr5684bzCO+XF6iFpwxtP7Y+nxZdxZ
+         RpIRhmFkBimbov+669+iCgi5oldne2Y5z8G4dV28=
+Received: by mail-ed1-f51.google.com with SMTP id t16so913601edw.7;
+        Fri, 02 Oct 2020 02:13:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533bhUyNTzqj6FIBc7ggNOs45TVm+lKNinn8GSshSYsJEZYmiri4
+        4up+B3qc6q12m/n58FmoW9WbaC+axTBMtJFW8XA=
+X-Google-Smtp-Source: ABdhPJxBtB7fdjB7sO1ypylhPr0oi8dpib+2DW5jCMpkty90gseodUSNpkeVzNSqRvn/UxzjtCaV66+yk1Gc6ZLF7DA=
+X-Received: by 2002:a05:6402:22b7:: with SMTP id cx23mr1353773edb.246.1601629982305;
+ Fri, 02 Oct 2020 02:13:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201001160154.3587848-13-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200930234637.7573-1-post@lespocky.de> <20200930234637.7573-6-post@lespocky.de>
+In-Reply-To: <20200930234637.7573-6-post@lespocky.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 2 Oct 2020 11:12:50 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfBKnESpRkSDZp5CB3T-t95DXg2dNKQnNNXv6Q_ywck2w@mail.gmail.com>
+Message-ID: <CAJKOXPfBKnESpRkSDZp5CB3T-t95DXg2dNKQnNNXv6Q_ywck2w@mail.gmail.com>
+Subject: Re: [PATCH v6 5/7] ARM: dts: Fix schema warnings for pwm-leds
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexander Dahl <ada@thorsis.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/10/2020 18:01, Enric Balletbo i Serra wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
-> 
-> Add power domains controller node for SoC mt8183
-> 
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+On Thu, 1 Oct 2020 at 01:53, Alexander Dahl <post@lespocky.de> wrote:
+>
+> The node names for devices using the pwm-leds driver follow a certain
+> naming scheme (now).
+>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
 > ---
-> 
-> Changes in v2: None
-> 
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 162 +++++++++++++++++++++++
->   drivers/soc/mediatek/mtk-mmsys.c         |   4 -
->   2 files changed, 162 insertions(+), 4 deletions(-)
-> 
-[...]
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index ec4cc5eeabff..0c490f509655 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -560,10 +560,6 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
->   		.compatible = "mediatek,mt8173-mmsys",
->   		.data = &mt8173_mmsys_driver_data,
->   	},
-> -	{
-> -		.compatible = "mediatek,mt8183-mmsys",
-> -		.data = &mt8183_mmsys_driver_data,
-> -	},
+>
+> Notes:
+>     v6:
+>       * added this patch to series
+>
+>  arch/arm/boot/dts/at91-kizbox.dts             | 10 +++----
+>  arch/arm/boot/dts/at91-kizbox2-common.dtsi    |  8 +++---
+>  arch/arm/boot/dts/at91-kizbox3-hs.dts         | 16 ++++++------
+>  arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 10 +++----
+>  arch/arm/boot/dts/at91-kizboxmini-common.dtsi |  8 +++---
+>  arch/arm/boot/dts/at91sam9m10g45ek.dts        | 10 +++----
+>  arch/arm/boot/dts/at91sam9rlek.dts            | 10 +++----
+>  .../boot/dts/berlin2cd-google-chromecast.dts  |  6 ++---
+>  arch/arm/boot/dts/exynos5422-odroidhc1.dts    |  4 +--
+>  arch/arm/boot/dts/exynos5422-odroidxu4.dts    |  4 +--
 
-Looks like an oversight from your side? At least it's not explained in the 
-commit message.
+Somehow you did not CC the maintainers... please use
+scripts/get_maintainers.pl to obtain list of addresses.
 
-Regards,
-Matthias
+All these should be separate patches per sub-architecture.
+
+Best regards,
+Krzysztof
