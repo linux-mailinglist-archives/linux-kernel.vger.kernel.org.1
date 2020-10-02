@@ -2,114 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DBE28194A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69DA28194F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388305AbgJBRbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:31:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726096AbgJBRbC (ORCPT
+        id S2388213AbgJBRbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387908AbgJBRbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:31:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601659861;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TxOHOh0IIejZk+BuR1OyBgwvkUAEztBJORaBCqWyOAI=;
-        b=gAlF4Fb9O5p+bwmkrO3IQWzUsbDWwBUIIKUgIbfPUEOA9oIyL+m9zqL9PwIqFWNG/DgtPO
-        z7gKvzm1WyO9P1hY6sRNfnnBJKGYQOpJW0YKn3wZrXugURbV7VB0NOmuGGFEYSiDZ3Xwhi
-        NL6nHfS6lkZyX7hIMF0xhxdUfdB8KH8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-KpUOSyQiMe2jUtxZppKYww-1; Fri, 02 Oct 2020 13:31:00 -0400
-X-MC-Unique: KpUOSyQiMe2jUtxZppKYww-1
-Received: by mail-wm1-f71.google.com with SMTP id d197so747972wmd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:30:59 -0700 (PDT)
+        Fri, 2 Oct 2020 13:31:47 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F34C0613E3
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:31:46 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 60so2127375otw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rUB+RLk3PpShfXBqDpZYZe36j+5/9E7JczJN7NQ9uno=;
+        b=YjsyE36hS3ag8aak5brR0ERZIBQK/xagWisuHtNr5mrtPspdbyxWqxgv6WobzeGsU3
+         AN3KuXZMRhgHAtH70eUnMpJf8GNtBOdZnIyDz3MRRG1x8RCukJ3i07Sj7f52I9Oygyil
+         x3rRP66aChwnRvohcRykHqp1zRxx6M9OMEFHUvYUptScpGMhd/e36LWPWii/nQJcLg6n
+         7bIIVzlSGk8Q//9vDoyO4NrkMiiF2dN4afHAvH5KdkKtNAsmG+0ooxG9L1BjMXPEXV75
+         vpfV9GrLSdEoMKNEH4ILodCA0i7WYtljNw5hZ+brKZ2QQCtEWXmDJuZSWNeCdFyfUCFw
+         NXKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TxOHOh0IIejZk+BuR1OyBgwvkUAEztBJORaBCqWyOAI=;
-        b=gV/ga6kg2gnCQ8OwyE0VCZbLTg03DpHk1bihyepNe1llKT7jr7lNbc118+sbZ/HDDP
-         pm8jyJ2EfRM31CgcDuS17lv96GPuyicd+bJA3AP7ZWd3P6k/dmno56kYy84HFVnvCEnq
-         U9H33AX5czdTjUPQMHfq4Wk2ZGmUe4KFZ/pkBrGkOPZPLBRXYODfNnlHwP8PROOFhE3q
-         YKL/fb8lMjddZg2tUq4w7OHFQIedrzovNDpsT3VACWqCEOlKqJroaqxRlq4cWXTLH1UP
-         k/OycLGYsx0Qm2M4TCZVxapdzuQxKwL2os96GkJlLgSbrDGS55PCBBvfUb/1yn6oP7BY
-         Lh7g==
-X-Gm-Message-State: AOAM533TQ1sXMb2WiyH7s2Lyf7WN2l8+u8bzLLADaqFdRxqfJ5ScZ2HV
-        lMUg0Et3lPb6c4x/xPL+Zab3I4w0GxVWY1xOtmAXiBV1fu1cFupE/HPQHg/9rlPU1dGpPP8AHOW
-        SFVbXZaQM/SQXhKw5iWWcVfxZ
-X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr4244461wmh.73.1601659858189;
-        Fri, 02 Oct 2020 10:30:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzxM8WopKn+E/7ZEMfQTo4iJ+AulaHlScB3Vysd80PrpI/qioSdeZTkZO1byHJi2o6MFioQsA==
-X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr4244432wmh.73.1601659857933;
-        Fri, 02 Oct 2020 10:30:57 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:47e0:e742:75ba:b84d? ([2001:b07:6468:f312:47e0:e742:75ba:b84d])
-        by smtp.gmail.com with ESMTPSA id o194sm2808207wme.24.2020.10.02.10.30.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 10:30:57 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
- support user-configurable
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Qian Cai <cai@redhat.com>, Mohammed Gamal <mgamal@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        lkft-triage@lists.linaro.org
-References: <20200903141122.72908-1-mgamal@redhat.com>
- <1f42d8f084083cdf6933977eafbb31741080f7eb.camel@redhat.com>
- <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
- <ebcd39a5-364f-c4ac-f8c7-41057a3d84be@redhat.com>
- <2063b592f82f680edf61dad575f7c092d11d8ba3.camel@redhat.com>
- <c385b225-77fb-cf2a-fba3-c70a9b6d541d@redhat.com>
- <CA+G9fYvm1Ux7XmmXgpPHmLJ4WbRoPowbEfbub1HC2G4E-1r-1g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <68a67f54-af5c-8b33-6b87-a67ccbbfc155@redhat.com>
-Date:   Fri, 2 Oct 2020 19:30:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rUB+RLk3PpShfXBqDpZYZe36j+5/9E7JczJN7NQ9uno=;
+        b=NBAj5H8XVIynQ65cE9iXB0uTZ3RSeQU0sZkCSYBY+6EkKyu1Tr3GrBb+l9kjmzCgw+
+         OKj/ZedHC8z1EJdpmJ/h6Zn4iZSDad4Yio96AVZq/2bXuiJUDKr6S1aL2p0+tLClod53
+         dKKVFxEFGP63pxl0yntPXoXYFoD5VjilyofYxTejk3rXULcH4VcflcNdL2CJCnP/tvOi
+         tf0MOes63JbYwQqYYxFb7bIMgQ/MkOSHt2T268ePg9IJX/ceYYsHJC/OMqNGjEr0S4JP
+         /nT6IRadx29w0Nq6E3Xc6zunDEjwy4pjFSfoAKFvA2KUR5NBANF5h0XXm3vGDPsnNkoC
+         q45A==
+X-Gm-Message-State: AOAM5320IJlsJQl14LFcGtNf1aE8jBCiNgTAQ5pPtdIubv6/x/bYp4Sh
+        PyrRii6d2hl1BbzNmZk3SQ/OseGXZDz/2vgfh5hxOg==
+X-Google-Smtp-Source: ABdhPJyzeZQmZr4PjAotLl+ipebUwWEeSYJELG7O8J2R7HvezAxYHoPLjn6Xryi6L+RcPkCJNiYj3WIDsPlaYAcOjiU=
+X-Received: by 2002:a9d:4b99:: with SMTP id k25mr2608245otf.281.1601659905629;
+ Fri, 02 Oct 2020 10:31:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYvm1Ux7XmmXgpPHmLJ4WbRoPowbEfbub1HC2G4E-1r-1g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYtF44bTzjswt26tOwfEQxrWvcSOROmEtH0HKfGn24QbRQ@mail.gmail.com>
+ <20200924143317.getruzwu423g3o3e@wittgenstein> <20200924162126.mbthwz32w7rba7oe@wittgenstein>
+In-Reply-To: <20200924162126.mbthwz32w7rba7oe@wittgenstein>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 2 Oct 2020 23:01:34 +0530
+Message-ID: <CA+G9fYsEwvzW1yLsPtiETGzcEnMSsEdU-0r_OJ+S6h9Bbsntqg@mail.gmail.com>
+Subject: Re: selftests: pidfd: pidfd_wait hangs on linux next kernel on all devices
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-api@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>, Shuah Khan <shuah@kernel.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/20 19:28, Naresh Kamboju wrote:
->>
->> commit 608e2791d7353e7d777bf32038ca3e7d548155a4 (HEAD -> kvm-master)
->> Author: Paolo Bonzini <pbonzini@redhat.com>
->> Date:   Tue Sep 29 08:31:32 2020 -0400
->>
->>     KVM: VMX: update PFEC_MASK/PFEC_MATCH together with PF intercept
->>
->>     The PFEC_MASK and PFEC_MATCH fields in the VMCS reverse the meaning of
->>     the #PF intercept bit in the exception bitmap when they do not match.
->>     This means that, if PFEC_MASK and/or PFEC_MATCH are set, the
->>     hypervisor can get a vmexit for #PF exceptions even when the
->>     corresponding bit is clear in the exception bitmap.
->>
->>     This is unexpected and is promptly reported as a WARN_ON_ONCE.
->>     To fix it, reset PFEC_MASK and PFEC_MATCH when the #PF intercept
->>     is disabled (as is common with enable_ept && !allow_smaller_maxphyaddr).
-> I have tested this patch on an x86_64 machine and the reported issue is gone.
-> 
+On Thu, 24 Sep 2020 at 21:51, Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+>
+> On Thu, Sep 24, 2020 at 04:33:17PM +0200, Christian Brauner wrote:
+> > On Wed, Sep 23, 2020 at 07:52:05PM +0530, Naresh Kamboju wrote:
+> > > selftests: pidfd: pidfd_wait hangs on linux next kernel on x86_64,
+> > > i386 and arm64 Juno-r2
+> > > These devices are using NFS mounted rootfs.
+> > > I have tested pidfd testcases independently and all test PASS.
+> > >
+> > > The Hang or exit from test run noticed when run by run_kselftest.sh
+> > >
+> > > pidfd_wait.c:208:wait_nonblock:Expected sys_waitid(P_PIDFD, pidfd,
+> > > &info, WSTOPPED, NULL) (-1) == 0 (0)
+> > > wait_nonblock: Test terminated by assertion
+> > >
+> > > metadata:
+> > >   git branch: master
+> > >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> > >   git commit: e64997027d5f171148687e58b78c8b3c869a6158
+> > >   git describe: next-20200922
+> > >   make_kernelversion: 5.9.0-rc6
+> > >   kernel-config:
+> > > http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-core2-32/lkft/linux-next/865/config
+> > >
+> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >
+> > Thanks for reproting this. I'm taking a look now!
+>
+> Ok, this is a simple race in the selftests, that I overlooked and which
+> is more likely to hit when there's a lot of processes running on the
+> system. Basically the child process hasn't SIGSTOPed itself yet but the
+> parent is already calling waitid() on a O_NONBLOCK pidfd. Since it
+> doesn't find a WSTOPPED process it returns -EAGAIN correctly.
+>
+> The fix for this is to move the line where we're removing the O_NONBLOCK
+> property from the fd before the waitid() WSTOPPED call so we hang until
+> the child becomes stopped.
+>
+> So I believe the fix is:
 
-Thanks, the issue with my disk is gone too so it'll get to Linus in time
-for rc8.
+I have tested this patch and the pidfd_wait test did not hang this time.
 
-Paolo
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+test log link
+https://lkft.validation.linaro.org/scheduler/job/1813223
+
+>
+> diff --git a/tools/testing/selftests/pidfd/pidfd_wait.c b/tools/testing/selftests/pidfd/pidfd_wait.c
+> index 4063d6f31fa4..be2943f072f6 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_wait.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_wait.c
+> @@ -205,6 +205,8 @@ TEST(wait_nonblock)
+>         ret = sys_waitid(P_PIDFD, pidfd, &info, WEXITED | WNOHANG, NULL);
+>         ASSERT_EQ(ret, 0);
+>
+> +       ASSERT_EQ(fcntl(pidfd, F_SETFL, (flags & ~O_NONBLOCK)), 0);
+> +
+>         ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WSTOPPED, NULL), 0);
+>         ASSERT_EQ(info.si_signo, SIGCHLD);
+>         ASSERT_EQ(info.si_code, CLD_STOPPED);
+> @@ -212,8 +214,6 @@ TEST(wait_nonblock)
+>
+>         ASSERT_EQ(sys_pidfd_send_signal(pidfd, SIGCONT, NULL, 0), 0);
+>
+> -       ASSERT_EQ(fcntl(pidfd, F_SETFL, (flags & ~O_NONBLOCK)), 0);
+> -
+>         ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WEXITED, NULL), 0);
+>         ASSERT_EQ(info.si_signo, SIGCHLD);
+>         ASSERT_EQ(info.si_code, CLD_EXITED);
+>
+
+- Naresh
+
+> Christian
