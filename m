@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CDE280CA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89507280CD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgJBETN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 00:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgJBETM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 00:19:12 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 589E920796;
-        Fri,  2 Oct 2020 04:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601612352;
-        bh=VNJapsQTTyEmiuSQJg6sqrJGIXXBuxZSpS+OAzNcVm4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K89zENm0GcOS4C1dUyty0oeWptjfCLrtXMUt+15Jp1eDyjKnqtAMoQu3Rm8qKyOqV
-         FSWS8i5Et4I+SWKlOybASR3Rop8GkaQxP8PR/YO7B3rQk3++v0QjWYixya02T8PFzj
-         P1hTfSpOYbwF+jnynnoWJGD6S1QevfuVs1ZlktJw=
-Date:   Thu, 1 Oct 2020 21:19:10 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Satya Tangirala <satyat@google.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hankinsea@gmail.com
-Subject: Re: [PATCH 1/2] scsi: ufs: Use memset to initialize variable in
- ufshcd_crypto_keyslot_program
-Message-ID: <20201002041910.GB78003@sol.localdomain>
-References: <20201002040518.1224-1-shipujin.t@gmail.com>
+        id S1726001AbgJBEbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 00:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgJBEbt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 00:31:49 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E3C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 21:31:47 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id v54so254628qtj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 21:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=67QkTaK15BUfYresy1TVjsxU85DKCqPslJxQaWBmDqo=;
+        b=WOXSa3KNsSGI2PwcEc+jkyPoE+qlMfylR7slXy5E0/XErqtokmZQjJjUFnKbZFadaE
+         RV6XS3/5HBprwTNOux9YdH4ALxgZE0CTz63UEnPgs9q/om8237/vuwnWOe6mwhZUKXFt
+         8nOJrMP0r7lyMLyYo0UNpJQleyl5cEsb8TzUYrsD0NQ+evFEBJ69y9V9lzbwz3GrS8LQ
+         UJhrQtujPuLB/BXmcMy8bzhtuhAuIT85Bbozg84zIEbWgTzcj7o0JS0Brg+lXS4iYEaA
+         h4DcjyMRWpEjaTCj5Cop3/JVKRLot4FrVhQ6zyETTrAhEwFrVamcFfjEUO1zrlNqTYKz
+         alug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=67QkTaK15BUfYresy1TVjsxU85DKCqPslJxQaWBmDqo=;
+        b=uoSHridABtpkPFmyFUgC4GrJrgTcSO+GIGTxLv/ls5yoHLuZqLyIG7UCeEeRm34bnd
+         i6SrO/RLI6pRO9ZqFJnvhkR6pgJbDKUYehMW6/mcfYOwRHvcvdfnWDeUS75T6/IJQXQI
+         5j6wxFrZLSgpVKwVOWB4xHPUloNa2GrBpK+rnru/LyoZ6AFfGRPvYXn+PEdJa4rVGzg2
+         zz8NlWUMsKbUWZHlJ7KN1KGS7m2na98Uw/edZSWg76J5xhr22Q5RRXlk8MUbZ5JugEYv
+         g9hHwjpBIPZM3IS6YOvNzktmlTDo6BRxWNC5OKRTXiAkXNnEbwGhljjiJc48CCacu4DI
+         j1SA==
+X-Gm-Message-State: AOAM533wpwFJyGKhfZlNFXmSkztXMSHYTNh9SPsCrHu4fnMOOpqo353L
+        yUzCQP1NCCMfaA6rG2GE/sg=
+X-Google-Smtp-Source: ABdhPJx0+ta5NGLoHQOXc6ltRF6CDwJVRlQ3vRWEXVfnYaOjty2ZAY2gVMDvYHEQradIBnI8u5BERA==
+X-Received: by 2002:aed:3e0e:: with SMTP id l14mr651237qtf.150.1601613106518;
+        Thu, 01 Oct 2020 21:31:46 -0700 (PDT)
+Received: from localhost.localdomain ([68.183.97.120])
+        by smtp.gmail.com with ESMTPSA id t43sm262707qtc.54.2020.10.01.21.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 21:31:45 -0700 (PDT)
+From:   Mark Mossberg <mark.mossberg@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     hpa@zytor.com, jannh@google.com,
+        Mark Mossberg <mark.mossberg@gmail.com>
+Subject: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer error message
+Date:   Fri,  2 Oct 2020 04:29:16 +0000
+Message-Id: <20201002042915.403558-1-mark.mossberg@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002040518.1224-1-shipujin.t@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 12:05:17PM +0800, Pujin Shi wrote:
-> Clang warns:
-> 
-> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: missing braces around initializer [-Wmissing-braces]
->   union ufs_crypto_cfg_entry cfg = { 0 };
->         ^
-> 
+Printing "Bad RIP value" if copy_code() fails can be misleading for
+userspace pointers, since copy_code() can fail if the instruction
+pointer is valid, but the code is paged out. This is because copy_code()
+calls copy_from_user_nmi() for userspace pointers, which disables page
+fault handling.
 
-Which version of clang?  I don't see the warning with clang 10.0.1
-(or with gcc 10.2.0).
+This is reproducible in OOM situations, where it's plausible that the
+code may be reclaimed in the time between entry into the kernel and when
+this message is printed. This leaves a misleading log in dmesg that
+suggests instruction pointer corruption has occurred, which may alarm
+users.
 
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
-> ---
->  drivers/scsi/ufs/ufshcd-crypto.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-> index d2edbd960ebf..8fca2a40c517 100644
-> --- a/drivers/scsi/ufs/ufshcd-crypto.c
-> +++ b/drivers/scsi/ufs/ufshcd-crypto.c
-> @@ -59,9 +59,11 @@ static int ufshcd_crypto_keyslot_program(struct blk_keyslot_manager *ksm,
->  	u8 data_unit_mask = key->crypto_cfg.data_unit_size / 512;
->  	int i;
->  	int cap_idx = -1;
-> -	union ufs_crypto_cfg_entry cfg = { 0 };
-> +	union ufs_crypto_cfg_entry cfg;
->  	int err;
->  
-> +	memset(&cfg, 0, sizeof(cfg));
-> +
+This patch changes the message to state the error condition more
+precisely.
 
-How about an empty initializer?
+Thanks to Jann Horn for help with understanding OOM reclamation.
 
-	union ufs_crypto_cfg_entry cfg = {};
+Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
+---
+ arch/x86/kernel/dumpstack.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Same comments on your other patch.
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 48ce44576947..ea8d51ec251b 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
+ 
+ 	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+-		printk("%sCode: Bad RIP value.\n", loglvl);
++		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
++		       loglvl, prologue);
+ 	} else {
+ 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+ 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
+-- 
+2.25.1
 
-- Eric
