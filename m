@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32705280F40
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDE8280F42
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgJBIvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBIvU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:51:20 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA8CC0613D0;
-        Fri,  2 Oct 2020 01:51:20 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id b19so550603lji.11;
-        Fri, 02 Oct 2020 01:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=i9UuqBprgLgN+56WyW7bVdQAfR56QqIoXp2EYG3DzI8=;
-        b=RTxIg94Qhj4nu/2O9OLnchT6Zp4Au+NXTqkr1j9MF1E4SIWvA8P4Vwqle3kHLif9BG
-         ZB7YmXD6O/NPxZuQKjDdNO/IVP8bPNxpx4VpN27f5geWxUDlovYeL4VVyV7qPne11V8l
-         rbpFJD+Jmy3e6BREPy6SZkVkjcz+P94BtyWT7jYw6M7DCzugNrNia8cv4TchVKh2mWt8
-         4lKUH8em1NoJDrYOs7GnjkowgJu9IuA2wvyOW/NhaZOIY3jZ/G6uMljdmNwdXt4RpWpq
-         fRKknXxGwU9AePsGwQ4gabniJLlW2Hx7Dy6fSC0ysbuZl/MjwXjuIV3YqbAeKlbtyBsY
-         XNgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=i9UuqBprgLgN+56WyW7bVdQAfR56QqIoXp2EYG3DzI8=;
-        b=KAt01vqH0aHrqwiyqPZSL3IY8jCnE+SmAKHZdvfH/X1m8Mr/hYfUOby7GZQIX2vnrp
-         jJlQ+zrOXyCcf5pR0eSeGeXjGx6wOQCX2Wn7+JPwfDs/Mu7oUatgiipZ6tmytkfAZpLC
-         KSf85ClEvpcV7+KwGnFpIwfdeYDshzY/THvUfs+qtvM33R65NH5WkPcu2L6w2AXpGA66
-         pAbt6xoxR8FQJDtE+wHMeDLfWMWvwxB+wPN2X9vBtHp3zZjEAFfx6frL7crRJ9QN1YeX
-         mkXtqty3fT/BiocAC6pu5tndf/uaZj4XqwmOQSRKtf774UGWAj1DfEgCCn/zq9beWBof
-         9QXg==
-X-Gm-Message-State: AOAM532BE1mc/G01Ol4mJ059Q+AgIRROFxTUxQFzua46jkHjUxfxRgED
-        1EHqszoCz1D0NYVuTZ6gNabJLmXjfaDjbdEEIZGmOJgpuDE=
-X-Google-Smtp-Source: ABdhPJzTTOib4aoP23sqvPAGEo1rJYMk0OD+MFvQRWzwDvKzB8l88C9pOE7f/U41j9KtJuhf7AyWtHpyBlRVg4CjEYA=
-X-Received: by 2002:a2e:7014:: with SMTP id l20mr431835ljc.91.1601628678212;
- Fri, 02 Oct 2020 01:51:18 -0700 (PDT)
+        id S1726771AbgJBIva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:51:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41404 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJBIva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 04:51:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E871EAC4D;
+        Fri,  2 Oct 2020 08:51:28 +0000 (UTC)
+Subject: Re: Linux 5.9-rc7 / VmallocTotal wrongly reported
+To:     Roman Gushchin <guro@fb.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bastian Bittorf <bb@npl.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20201001065104.apevlkqrs6nid3r5@hp-nas.internet>
+ <CAHk-=wixd9kUup4o1d1y9Wg9WoRt6_mN7kM5sPX=_nrgrkZzFg@mail.gmail.com>
+ <20201001195610.GC2706729@carbon.DHCP.thefacebook.com>
+ <CAHk-=whwbrbZbdqpXVd9LOG=J04BEVZcT+vT=nXry=XP1JWqYA@mail.gmail.com>
+ <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <9de0c0d4-15ac-bb7f-755b-849433da5ba4@suse.cz>
+Date:   Fri, 2 Oct 2020 10:51:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-From:   =?UTF-8?B?5Y+25bCP6b6Z?= <muryo.ye@gmail.com>
-Date:   Fri, 2 Oct 2020 16:51:07 +0800
-Message-ID: <CAP0D=1X946M=yy=hMBvXuT11paPqxMi_xens-R4m7vyCnkUQzw@mail.gmail.com>
-Subject: Why ping latency is smaller with shorter send interval?
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, net experts,
+On 10/1/20 10:39 PM, Roman Gushchin wrote:
+> On Thu, Oct 01, 2020 at 12:58:36PM -0700, Linus Torvalds wrote:
+>> On Thu, Oct 1, 2020 at 12:56 PM Roman Gushchin <guro@fb.com> wrote:
+>> >
+>> > Bastian, can you, please, share your config?
+>> 
+>> Bastian actually did that in the original email, but that was only
+>> sent to me and Andrew in private.
+>> 
+>> Here's that config replicated for your pleasure,
+> 
+> Thank you!
+> 
+>> 
+>> #
+>> # Processor type and features
+>> #
+>> # CONFIG_ZONE_DMA is not set
+>> # CONFIG_SMP is not set
+> 
+> Yes, here is the deal.
+> 
+> The SMP-version of __mod_node_page_state() converts a passed value from bytes
+> to pages, but the non-SMP doesn't.
+> 
+> Thanks!
+> 
+> 
+> --
+> 
+> From 3d0233b37340c78012b991d3570b92f91cf5ebd2 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Thu, 1 Oct 2020 13:07:49 -0700
+> Subject: [PATCH] mm: memcg/slab: fix slab statistics in !SMP configuration
+> 
+> Since ea426c2a7de8 ("mm: memcg: prepare for byte-sized vmstat items")
+> the write side of slab counters accepts a value in bytes and converts
+> it to pages. It happens in __mod_node_page_state().
+> 
+> However a non-SMP version of __mod_node_page_state() doesn't perform
+> this conversion. It leads to incorrect (unrealistically high) slab
+> counters values. Fix this by adding a similar conversion to the
+> non-SMP version of __mod_node_page_state().
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reported-by: Bastian Bittorf <bb@npl.de>
+> Fixes: ea426c2a7de8 ("mm: memcg: prepare for byte-sized vmstat items")
 
-Hope this is the right place to ask the question :)
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Recently I've tried to measure the network latency between two
-machines by using ping, one interesting observation I found is that
-ping latency will be smaller if I use a shorter interval with -i
-option. For example,
+For consistency we could also duplicate the
+"VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));" in !SMP variants of
+__inc_node_state() and __dec_node_state(), but that's not urgent, and perhaps
+SMP configs are enough to catch any bugs introduced in the future in this area...
 
-when I use default ping (interval is 1s), then the ping result is as
-below with avg latency 0.062ms
+> ---
+>  include/linux/vmstat.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index d5431c1bf6e5..322dcbfcc933 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -312,6 +312,11 @@ static inline void __mod_zone_page_state(struct zone *zone,
+>  static inline void __mod_node_page_state(struct pglist_data *pgdat,
+>  			enum node_stat_item item, int delta)
+>  {
+> +	if (vmstat_item_in_bytes(item)) {
+> +		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> +		delta >>= PAGE_SHIFT;
+> +	}
+> +
+>  	node_page_state_add(delta, pgdat, item);
+>  }
+>  
+> 
 
-# ping 9.9.9.2 -c 10
-PING 9.9.9.2 (9.9.9.2) 56(84) bytes of data.
-64 bytes from 9.9.9.2: icmp_seq=1 ttl=64 time=0.059 ms
-64 bytes from 9.9.9.2: icmp_seq=2 ttl=64 time=0.079 ms
-64 bytes from 9.9.9.2: icmp_seq=3 ttl=64 time=0.060 ms
-64 bytes from 9.9.9.2: icmp_seq=4 ttl=64 time=0.072 ms
-64 bytes from 9.9.9.2: icmp_seq=5 ttl=64 time=0.048 ms
-64 bytes from 9.9.9.2: icmp_seq=6 ttl=64 time=0.069 ms
-64 bytes from 9.9.9.2: icmp_seq=7 ttl=64 time=0.067 ms
-64 bytes from 9.9.9.2: icmp_seq=8 ttl=64 time=0.055 ms
-64 bytes from 9.9.9.2: icmp_seq=9 ttl=64 time=0.058 ms
-64 bytes from 9.9.9.2: icmp_seq=10 ttl=64 time=0.055 ms
-
---- 9.9.9.2 ping statistics ---
-10 packets transmitted, 10 received, 0% packet loss, time 9001ms
-rtt min/avg/max/mdev = 0.048/0.062/0.079/0.010 ms
-
-Then I use "-i 0.001", the lateny (0.038) is way better than defaut ping
-
-# ping 9.9.9.2 -i 0.001 -c 10
-PING 9.9.9.2 (9.9.9.2) 56(84) bytes of data.
-64 bytes from 9.9.9.2: icmp_seq=1 ttl=64 time=0.069 ms
-64 bytes from 9.9.9.2: icmp_seq=2 ttl=64 time=0.039 ms
-64 bytes from 9.9.9.2: icmp_seq=3 ttl=64 time=0.034 ms
-64 bytes from 9.9.9.2: icmp_seq=4 ttl=64 time=0.033 ms
-64 bytes from 9.9.9.2: icmp_seq=5 ttl=64 time=0.033 ms
-64 bytes from 9.9.9.2: icmp_seq=6 ttl=64 time=0.033 ms
-64 bytes from 9.9.9.2: icmp_seq=7 ttl=64 time=0.034 ms
-64 bytes from 9.9.9.2: icmp_seq=8 ttl=64 time=0.036 ms
-64 bytes from 9.9.9.2: icmp_seq=9 ttl=64 time=0.037 ms
-64 bytes from 9.9.9.2: icmp_seq=10 ttl=64 time=0.038 ms
-
---- 9.9.9.2 ping statistics ---
-10 packets transmitted, 10 received, 0% packet loss, time 9ms
-rtt min/avg/max/mdev = 0.033/0.038/0.069/0.012 ms
-
-
-ping loopback shows the similar result.
-
-Default ping avg latency is 0.049ms
-
-# ping 127.0.0.1 -c 10
-PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
-64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.032 ms
-64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.049 ms
-64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.054 ms
-64 bytes from 127.0.0.1: icmp_seq=4 ttl=64 time=0.058 ms
-64 bytes from 127.0.0.1: icmp_seq=5 ttl=64 time=0.049 ms
-64 bytes from 127.0.0.1: icmp_seq=6 ttl=64 time=0.042 ms
-64 bytes from 127.0.0.1: icmp_seq=7 ttl=64 time=0.052 ms
-64 bytes from 127.0.0.1: icmp_seq=8 ttl=64 time=0.052 ms
-64 bytes from 127.0.0.1: icmp_seq=9 ttl=64 time=0.053 ms
-64 bytes from 127.0.0.1: icmp_seq=10 ttl=64 time=0.055 ms
-
---- 127.0.0.1 ping statistics ---
-10 packets transmitted, 10 received, 0% packet loss, time 9001ms
-rtt min/avg/max/mdev = 0.032/0.049/0.058/0.010 ms
-
-ping with "-i 0.001" shows 0.014ms avg latency.
-
-# ping 127.0.0.1 -i 0.001 -c 10
-PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
-64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.040 ms
-64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.014 ms
-64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.012 ms
-64 bytes from 127.0.0.1: icmp_seq=4 ttl=64 time=0.011 ms
-64 bytes from 127.0.0.1: icmp_seq=5 ttl=64 time=0.011 ms
-64 bytes from 127.0.0.1: icmp_seq=6 ttl=64 time=0.011 ms
-64 bytes from 127.0.0.1: icmp_seq=7 ttl=64 time=0.011 ms
-64 bytes from 127.0.0.1: icmp_seq=8 ttl=64 time=0.010 ms
-64 bytes from 127.0.0.1: icmp_seq=9 ttl=64 time=0.010 ms
-64 bytes from 127.0.0.1: icmp_seq=10 ttl=64 time=0.011 ms
-
---- 127.0.0.1 ping statistics ---
-10 packets transmitted, 10 received, 0% packet loss, time 9ms
-rtt min/avg/max/mdev = 0.010/0.014/0.040/0.008 ms
-
-I'm using centos 7.2 with kernel 3.10.
-
-I am very confused about the result. As I understand it, it doesn't
-matter how frequently I send packets, each packet's latency should be
-the same. So How can I understand it from network stack point of view?
-
-Any thoughts or suggestions would be highly appreciated.
-
-
-Thanks,
-Xiaolong
