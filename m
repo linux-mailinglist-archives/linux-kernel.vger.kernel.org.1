@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25131281A73
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674E6281A68
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388378AbgJBSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:05:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBSFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:05:31 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 903BD206DD;
-        Fri,  2 Oct 2020 18:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601661931;
-        bh=K98AP66VVpH1sW1F+yuwy7UvFoxzrQ3z5eMj19KgSYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qvDSd+47gVYYokPvzqNTa7CSC30B++lr99Jdav8wlM5KOdQXYtT06x6vUfOlSQkm/
-         n7LwyKlj3q8R+YIl6R2A+SFA/2+/Oi8VlPLS4Cn3BACyVv5M/YZGgMex35RP8b4uHh
-         g2J9kknn48cpGPEgy7kr5pjpStA82ksE/6JDOoI8=
-Date:   Fri, 2 Oct 2020 19:04:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     David Collins <collinsd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
-Message-ID: <20201002180430.GG5527@sirena.org.uk>
-References: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
- <160151084091.310579.3876905878885019200@swboyd.mtv.corp.google.com>
- <20201001174326.GT6715@sirena.org.uk>
- <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
- <7c45b147-f1d2-4b32-9e51-71c5d2cb576f@codeaurora.org>
- <20201002160324.GE5527@sirena.org.uk>
- <160166091282.310579.8553391053258607173@swboyd.mtv.corp.google.com>
+        id S2388357AbgJBSEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726813AbgJBSEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:04:35 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D6BC0613D0;
+        Fri,  2 Oct 2020 11:04:35 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y17so2918828lfa.8;
+        Fri, 02 Oct 2020 11:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E9bgZxYv/RxOeJOXWw7426mT+7GbY13hZGXLbKnQnYw=;
+        b=iJtZfY19TrniD8h6LVpwXQn4bQdTtYlCkB15ZZDFY5ziTHHV5/ugU9dpZ+n+a/ERuj
+         wQsbUbibEdLoh2fFAQiOuQOkwytpq0Vg3Pv/xKcddMPnkB7WU9JUC5MYsPuEZiJnfUGd
+         4QF3US5PQ8ofVdHAMEZq452OzNSgi05+YD+qYwR9HpNXiNgko8cyVbtyfF1duWz0zwjh
+         GhbQpj46bZT28MWjOGvAQp4PNuXxDD5D73eXdvXQBhApXx4r4Poyvw3TqTZdbNZNGXNi
+         aPB15/efAvaCc2m0FIH5s223YF5fbiKS1XmA/OXdqan6KL5JhZbNToW1wHkCbZ0/iD0C
+         pncQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E9bgZxYv/RxOeJOXWw7426mT+7GbY13hZGXLbKnQnYw=;
+        b=ibIbui6M8cW3awQdAkPvj6R0CUrU1PSp3lF7j7qzewgrbBPDHFYKxGufdszp2qlnXi
+         f3utgTx8QUC2ASJXFq0qltnQB5i0eFTXeiLsDT9bpTKEryNwb2KkQwqOkufrc58F04qT
+         iiWcWonjDgNj9IF5FbwT1VXOz9f5nazvwxNZOfw5wUKnFrQzQFEA017jjmyzmIt8ZWcK
+         DUtoUvWEKCBVZ/iRfklqk2VkSJ/uUDc+Z+7axg0xBlXbxC9BWykz4yKjifhRccdqVG0w
+         mVaPQALdzZYnmAI/eY6MGegmfmijU/Z3ku0xPNmhIxVisFbecVqJkGAf01excsDsIZWY
+         RVrw==
+X-Gm-Message-State: AOAM532nwFexCxvPb++QA8UY3pkMLZkI4OgE209NBGpy2B7cohTcOjNL
+        lBuFuXR6CESzLF62Jq/pOXgxvxkF78k=
+X-Google-Smtp-Source: ABdhPJwYWn5ZEXsgsJyPwVGhib96/ISyH1PDMH0P6JD3SZBGoy/27BBjnJal2G/WWHFCRV+BspS++w==
+X-Received: by 2002:a19:f245:: with SMTP id d5mr1170281lfk.97.1601661873255;
+        Fri, 02 Oct 2020 11:04:33 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id r4sm444396lfc.162.2020.10.02.11.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 11:04:32 -0700 (PDT)
+Subject: Re: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-4-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <6668f545-a2d5-120d-f34d-57f0ed1bbddf@gmail.com>
+Date:   Fri, 2 Oct 2020 21:04:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eVzOFob/8UvintSX"
-Content-Disposition: inline
-In-Reply-To: <160166091282.310579.8553391053258607173@swboyd.mtv.corp.google.com>
-X-Cookie: Words must be weighed, not counted.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201002060807.32138-4-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+02.10.2020 09:08, Nicolin Chen пишет:
+> This patch simply adds support for PCI devices.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
 
---eVzOFob/8UvintSX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Oct 02, 2020 at 10:48:32AM -0700, Stephen Boyd wrote:
-> Quoting Mark Brown (2020-10-02 09:03:24)
-
-> > ...and doing this in the dev_name() should help other diagnostic users
-> > (like dev_printk() for example).
-
-> Don't thinks like dev_printk() prefix the bus name? See
-> dev_driver_string()? So I agree that having the bus name is useful, but
-> confused why there are testing scripts and things on top of regmap
-> debugfs
-
-Not that I've ever noticed, eg on the console.
-
-> Put another way, why not introduce something similar to i2c-dev where
-> userspace can read/write registers for devices on the SPMI bus?
-> Otherwise I presume the test scripts inside Qualcomm are just reading
-> registers out of regmap?
-
-I know some other vendors use the regmap debugfs for their diagnostic
-tools (obviously not with SPMI).  It's generally so they can get the
-benefit of the cache, it's a combination of allowing the state to be
-inspected while the driver has the device powered down and for devices
-on slower buses being much more performant.
-
---eVzOFob/8UvintSX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93a64ACgkQJNaLcl1U
-h9BaWAf/cFdBtjH6GQY9ZqGf9hPnOUU0nn9nOZGmbmyOE9nWblV57YRMn+RfN/KU
-rpdN/51JdNRZBtCh6lQC4llsK41K6EGf/xiscHLcl2iz+8733AuSiEM3nwa9uq7Z
-Bfb/w3SN1TrVV2XYeBdEgYDFCDlpCRjfdNr4MMvRtsVmb2gUpRLL7SOk8D4rvj2t
-QD93bgb13uCfQRHR5z21r+Uzz4rL4Fkhh1Ip+POrTjbuuZPPsdgSzquyk0/0VsoD
-04YJxq072QvA5r42XK3HeAIl0bItvR68F/OXXdW46isM4ybE8gJ/MZLtEgFRMa+m
-2T/vXwIWUYK20s/aBxAg1lLphd+PAQ==
-=te6r
------END PGP SIGNATURE-----
-
---eVzOFob/8UvintSX--
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
