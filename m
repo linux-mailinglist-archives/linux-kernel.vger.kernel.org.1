@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF542813C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944E02813C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387854AbgJBNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBNJj (ORCPT
+        id S2387819AbgJBNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:11:29 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48028 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBNL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:09:39 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE12C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 06:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gYBz8hgJM9a/ElpuLODQCLZ/ySa4mH5edDicIkLqmH4=; b=XCLlEzn6J/ST+ZabwA11x1YyBw
-        KyrWlPeyyuoeVvQZ3pPLS5rX30ZE0LvfZvQUBaOX1t904eWT3ZfDy3ARcxOaSN+FWm8xRVamkArAh
-        +pLiNs+A6ISfbdxn0CGUS9EYFavUrzJoTTJoHzpx53IGSf5PjpTTd/v66C6zVmy1GSQySJJclA/iY
-        zgIhRB5MafUinCXiaOmmpAZhXns88Ktc8mM0t4IobYsNr0BpkZQq/L+HTPja9OUZ92AhzyfRgDrhI
-        RDmNhyz+nHKICRzfXm8YZKcRNa/iJWKBkbNaVvu+qh1O9WoY3zQzqAF6bF0B2rxAtjD8K1NZtgDBW
-        4f8imgSw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOKoX-0000gd-7b; Fri, 02 Oct 2020 13:09:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC9FB3011F0;
-        Fri,  2 Oct 2020 15:09:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9FF54203A8F62; Fri,  2 Oct 2020 15:09:29 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 15:09:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     g@hirez.programming.kicks-ass.net, Qian Cai <cai@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: lockdep null-ptr-deref
-Message-ID: <20201002130929.GW2628@hirez.programming.kicks-ass.net>
-References: <5fd046115645daa00f8841f5467da4c4d960ca92.camel@redhat.com>
- <20200929230823.GC17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200930091610.GV2628@hirez.programming.kicks-ass.net>
- <20200930094937.GE2651@hirez.programming.kicks-ass.net>
- <20200930121818.GD17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200930190228.GL2611@hirez.programming.kicks-ass.net>
- <20201002123602.GE17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        Fri, 2 Oct 2020 09:11:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D54641C0B79; Fri,  2 Oct 2020 15:11:26 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 15:11:26 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Ulrich Windl <Ulrich.Windl@rz.uni-regensburg.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: FYI: PoC: Running 100000 processes in 5.3.18 (SLES15 SP2)
+Message-ID: <20201002131126.GA11778@duo.ucw.cz>
+References: <5F76FA24020000A10003BB47@gwsmtp.uni-regensburg.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
 Content-Disposition: inline
-In-Reply-To: <20201002123602.GE17810@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+In-Reply-To: <5F76FA24020000A10003BB47@gwsmtp.uni-regensburg.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 08:36:02PM +0800, Boqun Feng wrote:
 
-> But what if f2() is called with interrupt disabled? Or f2() disables
-> interrupt inside the function, like:
-> 
-> 	void f2(...)
-> 	{
-> 		local_irq_disable();
-> 		spin_lock(&B);
-> 		g(...);
-> 		...
-> 		local_irq_enable();
-> 	}
-> 
-> In this case, there wouldn't be any LOCK_ENABLED_*_READ usage for
-> rwlock_t A. As a result, we won't see it in the lockdep splat.
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hurm, fair enough. So just to make sure, you're arguing for:
+Hi!
+>=20
+> Just in case someone is interested: As a Proof-of-Concept I started 100 t=
+housand processes on a big machine (72 cores). It worked!
+> However starting those too more than 30 minutes, and top needs more than =
+30 minutes to refresh ist display. Still, interactive input via SSH works n=
+ice, but any file-system access seems quite slow (my test processes just us=
+e CPU; the do no t do any I/O).
+>
 
--#define LOCK_TRACE_STATES              (XXX_LOCK_USAGE_STATES*4 + 1)
-+#define LOCK_TRACE_STATES              (XXX_LOCK_USAGE_STATES*4 + 2)
+Okay, well. So you have kind of N^2 task, new processes need time and
+all the all processes are already eating CPU... You are getting 55
+processes per second, and that's not exactly good result.
 
-On top of my earlier patch, right?
+> Kernel messages while the processes were created:
+> kernel: [65648.247688] perf: interrupt took too long (2516 > 2500), lower=
+ing kernel.perf_event_max_sample_rate to 79250
+> kernel: [65997.263218] perf: interrupt took too long (3146 > 3145), lower=
+ing kernel.perf_event_max_sample_rate to 63500
+> kernel: [66790.221057] perf: interrupt took too long (3938 > 3932), lower=
+ing kernel.perf_event_max_sample_rate to 50750
+> kernel: [69884.371426] perf: interrupt took too long (4925 > 4922), lower=
+ing kernel.perf_event_max_sample_rate to 40500
+>
+
+I'm seething these even without trying to overload the machine.
+
+Best regards,
+									Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX3cm/gAKCRAw5/Bqldv6
+8t55AJ9jdEGeGIv5mB9b2WVmUM9hJ749VgCfc4A7a6dA3siGKNxlAUXEFN2qOO8=
+=PHes
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
