@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E9E281AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1CC281AB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387957AbgJBSQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:16:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37605 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726017AbgJBSQJ (ORCPT
+        id S2388225AbgJBSRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBSRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:16:09 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 092IEIPI018984
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 2 Oct 2020 14:14:19 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9E71642003C; Fri,  2 Oct 2020 14:14:18 -0400 (EDT)
-Date:   Fri, 2 Oct 2020 14:14:18 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Torsten Duwe <duwe@lst.de>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Petr Tesarik <ptesarik@suse.cz>
-Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
- SP800-90B compliance
-Message-ID: <20201002181418.GV23474@mit.edu>
-References: <20200921075857.4424-1-nstange@suse.de>
- <20201002123836.GA14807@lst.de>
- <CY4PR0401MB365298FA8C0C53EAF2D66705C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
- <20201002140428.GC3475053@kroah.com>
- <CY4PR0401MB365240353B6AB3B2045C9F89C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
- <20201002151300.GC5212@kroah.com>
- <CY4PR0401MB3652EA0FFA3CD9679172B02CC3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
+        Fri, 2 Oct 2020 14:17:00 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB8EC0613E3
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:16:59 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id u25so2249989otq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3HxwxxjOyUFsHnvZd90so4n7HtMcvrp+2NDYk+teChw=;
+        b=UroveKdEgKPvYhDgIRFBP6hGaOMHl0KhWjPmr7h+me9Xj+hsNqVEe+KzxfQ5R752mW
+         Q39uBXtohsZOj34gGmK/hanyDQGQMTFvEwg1txwSCZatYOYvpHfVCUEfTc1tX+5qw+e4
+         lhr2S+yleRha4sKjZin5W1q02Y1XO7J4/uNO0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3HxwxxjOyUFsHnvZd90so4n7HtMcvrp+2NDYk+teChw=;
+        b=gnJ2Dpznk1pGe35I7GvPRrFAN3GAj9Yv/LZLkwLczIYLGC3VpSFpl+DorICFIo4MFS
+         l+hSjRQzEtqMBFsqHV9ixsEt9p5ncoLxh9eit/0i0K/ZDIOGIKlBdL52behI+95eqgwf
+         NWguIcQHTT4dQwpI20Oe7s6Z0JXi9Q54d9u1GKD6Hh3o8AzG/Lonr05zWVE19pRHkNnc
+         O/BY2DpkesBY3sBszt5WIWmwc/K2Ie80Ni8bVRy64xQBcnrfe3pZGjT7loiE58IH7PHV
+         szUT1IuBiAuAq0LTvQBYYMpnTCtUEU2ZLzLooexdWZs6N2lmA3VDCHj3ji9JqGOasE0B
+         DIGA==
+X-Gm-Message-State: AOAM531UN2EIvYnz15qONOniuFufhGjHlebmxot78hQJdMGChooAsNCU
+        dfljxUViPqREqaw+epu0dePksS3TtaPYhqFrTmhBww==
+X-Google-Smtp-Source: ABdhPJz/iLpxd0MKJvGez6uG++167T4Nd3ZEU24lIiueGBImWGdkODsxyKl+FpR0pn01MP2E0GHPOCfnbU7WfP4NbAY=
+X-Received: by 2002:a9d:4b99:: with SMTP id k25mr2747483otf.281.1601662619231;
+ Fri, 02 Oct 2020 11:16:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR0401MB3652EA0FFA3CD9679172B02CC3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch> <20201002180603.GL9916@ziepe.ca>
+In-Reply-To: <20201002180603.GL9916@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 2 Oct 2020 20:16:48 +0200
+Message-ID: <CAKMK7uGF+y-r4swLXmodhduRMy0NPa=ASBY8JOXS_g=9Rq9XQw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:39:35PM +0000, Van Leeuwen, Pascal wrote:
-> > Then your company can not contribute in Linux kernel development, as
-> > this is obviously not allowed by such a footer.
+On Fri, Oct 2, 2020 at 8:06 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Fri, Oct 02, 2020 at 07:53:03PM +0200, Daniel Vetter wrote:
+> > For $reasons I've stumbled over this code and I'm not sure the change
+> > to the new gup functions in 55a650c35fea ("mm/gup: frame_vector:
+> > convert get_user_pages() --> pin_user_pages()") was entirely correct.
 > >
-> Interesting, this has never been raised as a problem until today ...
-> Going back through my mail archive, it looks like they started automatically adding that some
-> 3 months ago. Not that they informed anyone about that, it just silently happened.
+> > This here is used for long term buffers (not just quick I/O) like
+> > RDMA, and John notes this in his patch. But I thought the rule for
+> > these is that they need to add FOLL_LONGTERM, which John's patch
+> > didn't do.
+> >
+> > There is already a dax specific check (added in b7f0554a56f2 ("mm:
+> > fail get_vaddr_frames() for filesystem-dax mappings")), so this seems
+> > like the prudent thing to do.
+> >
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Hi all,
+> >
+> > I stumbled over this and figured typing this patch can't hurt. Really
+> > just to maybe learn a few things about how gup/pup is supposed to be
+> > used (we have a bit of that in drivers/gpu), this here isn't really
+> > ralated to anything I'm doing.
+>
+> FOLL_FORCE is a pretty big clue it should be FOLL_LONGTERM, IMHO
 
-So use a private e-mail address (e.g., at fastmail.fm if you don't
-want to run your mail server) and then tunnel out SMTP requests using
-ssh.  It's not hard.  :-)
+Since you're here ... I've noticed that ib sets FOLL_FORCE when the ib
+verb access mode indicates possible writes. I'm not really clear on
+why FOLL_WRITE isn't enough any why you need to be able to write
+through a vma that's write protected currently.
 
-I've worked a multiple $BIG_COMPANY's, and I've been doing this for
-decades.  It's also helpful when I need to send e-mails from
-conference networks from my laptop....
+> > I'm also wondering whether the explicit dax check should be removed,
+> > since FOLL_LONGTERM should take care of that already.
+>
+> Yep! Confirms the above!
+>
+> This get_vaddr_frames() thing looks impossible to use properly. How on
+> earth does a driver guarentee
+>
+>  "If @start belongs to VM_IO | VM_PFNMAP vma, we don't touch page
+>  structures and the caller must make sure pfns aren't reused for
+>  anything else while he is using them."
+>
+> The only possible way to do that is if the driver restricts the VMAs
+> to ones it owns and interacts with the vm_private data to refcount
+> something.
+>
+> Since every driver does this wrong anything that uses this is creating
+> terrifying security issues.
+>
+> IMHO this whole API should be deleted :(
 
-						- Ted
+Yeah that part I just tried to conveniently ignore. I guess this dates
+back to a time when ioremaps where at best fixed, and there wasn't
+anything like a gpu driver dynamically managing vram around, resulting
+in random entirely unrelated things possibly being mapped to that set
+of pfns.
+
+The underlying follow_pfn is also used in other places within
+drivers/media, so this doesn't seem to be an accident, but actually
+intentional.
+
+I guess minimally we'd need a VM_PFNMAP flag for dynamically manged
+drivers like modern drm gpu drivers, to make sure follow_pfn doesn't
+follow these?
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
