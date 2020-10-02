@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66DE281DE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D899281DE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgJBVyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57242 "EHLO mail.kernel.org"
+        id S1725829AbgJBVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgJBVyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:54:17 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.9-rc
+        id S1725781AbgJBVyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:54:18 -0400
+Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601675657;
-        bh=crSohLd1Km5nkGlKuOBM2Z30ZjsE7aOTllf/8vwt6pk=;
+        bh=Oae/0q5EzDwaXRlROT4j61wW2juiOq8Wo+2CtbtFKLs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=OZfqG0UOW1xVlJL3IEjjeYJgpocD13lt8mMLrXGzmi++4k6bNDtEtc2Um8juXoCne
-         fiPAdEERifLKuMYgKCPkUGGZnCrKziXgDzthS3fWbYWyWMmk3O6ZeStpGKU8T7PFNq
-         yXoZDQVkQvezj8kWqvDOcf8WCFobqJGBkDnPtHvA=
+        b=YHHuTnfYxoUWmcbEhPROi0uXgswQU6dlALTaBuWLWKkt2lqQVYB5YJ1phOVU8ahWk
+         Ya6RVV1KeJwHjuH8FbbiMV9YZAEzsBE6r4nwZKIDbXfLCLH3qWiworK+Uy8R4kqEUE
+         OMfUXQwrh2rm/ddv+8/3WNvI6ahTBPAobWLr6s7o=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
-References: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
+In-Reply-To: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
+References: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-10-02
-X-PR-Tracked-Commit-Id: c8d317aa1887b40b188ec3aaa6e9e524333caed1
+X-PR-Tracked-Message-Id: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: bcf3a2953d36bbfb9bd44ccb3db0897d935cc485
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 702bfc891db162b99e880da78cc256dac14cfc7f
-Message-Id: <160167565723.8763.5894803145938362727.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: cb6f55af1fb28655c9f3843bc12c0a48856c1d09
+Message-Id: <160167565743.8763.5887435040064383804.pr-tracker-bot@kernel.org>
 Date:   Fri, 02 Oct 2020 21:54:17 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Oct 2020 11:48:48 -0600:
+The pull request you sent on Fri, 02 Oct 2020 12:28:04 -0700:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-10-02
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/702bfc891db162b99e880da78cc256dac14cfc7f
+https://git.kernel.org/torvalds/c/cb6f55af1fb28655c9f3843bc12c0a48856c1d09
 
 Thank you!
 
