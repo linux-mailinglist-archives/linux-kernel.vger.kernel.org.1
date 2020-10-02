@@ -2,173 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D815028145F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73763281465
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387918AbgJBNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:43:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBNnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:43:33 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D84A206CA;
-        Fri,  2 Oct 2020 13:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601646212;
-        bh=ztJ79iu751NzFNs1C+Y906mgA/xV0xzf9l84gu1qG6Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ydYjizua5HHKMPw1y3vHC3z/Aj+G49Pb/0OdzRNaE0+Jmj/C+HC96w102hxzsKTo0
-         hz0bz0EiwzhuCnnxloiOMTa9WKlYz/U9kr/Q98rJgL+Fw5M0OqRyUUJDV/wlw6LwWA
-         s+9rzsRp9RkP+5XM8uGael6MtHFydliSPWzv41FU=
-Date:   Fri, 2 Oct 2020 15:43:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Gutson <daniel.gutson@eclypsium.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] Platform integrity information in sysfs (version 9)
-Message-ID: <20201002134331.GA3418160@kroah.com>
-References: <20200930163714.12879-1-daniel.gutson@eclypsium.com>
- <20200930163714.12879-3-daniel.gutson@eclypsium.com>
+        id S2387952AbgJBNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387768AbgJBNoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 09:44:55 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9E2C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 06:44:55 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id n16so1263411ilm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 06:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HuaZxNIjoxmWBPLmDlP+LOvkz0SeC33XVwnI4UoKcgE=;
+        b=08Ay7ZlS8S/Op/x80hiuzkfNTS5Oj+MH/QKuVeRlMOF2r4DyLOxGukrNI+Ow4+oYPG
+         rr2RDuVx8BxmHopJA7CP75K2yMZcGzSehFb8uvLT3uuZ5wtU3vWP6sMJ8Z/rycSuUtbS
+         o4PUSyxqOh/0tH8aPpbjLtcdpidN4IxgH5rn3TlvZQtMulRexpF0NoZJlZC1WAwiKbMW
+         uRsJeSsuGF5CXMXJAWyNJ12uSt4SqVNzZD6zTrGwoS9xofivIMtpIxVnu0R5rvqe40EU
+         dLWo6dRNhTg1I3eXah4YLNPFhfWodsha8SFKJx4JZ1QhOh0md9iko1GwCtSnjrF78ems
+         X3Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HuaZxNIjoxmWBPLmDlP+LOvkz0SeC33XVwnI4UoKcgE=;
+        b=Fn3D+gRSIRX1MDZpANyL2IAunLM+2oRgcLjJVSQRBlIfH3YgKywVxVN+PkUz0NR+yS
+         +Yjqlm6QdilFdYNESY+ECfvD/mFI2n9Ksteuer2wcmQxqua0BGF5J+S+W+aHUx7RNpxa
+         iYRO8g7kubGYYytvt2u1XVW0wMCgxplnxBGwMPMWYyeayHeZJwU2fngf8StDKxrEu+Un
+         s4rQuYllTpNTDQYFF0tfJrBl3bpV9S1AlGknUmhiZdmDXuDhqH5+ubCdYqZZYeSyTyrv
+         lcmTX/PQBRViNdnv8CG5AwLS4WyuteQ+XoAOwWMiLDTuqo0zjSYfl0Iyzz1g4FNfuRRw
+         kirg==
+X-Gm-Message-State: AOAM5328maZrq0uokuWf46qczmO5BJTCG9B4rBnjXiU14QyjTtE5SvaE
+        oe7azDQ2ah1vFzFsf3oKVT9CvQ==
+X-Google-Smtp-Source: ABdhPJxzL2xnAh7xDB40PZMjpqbyfdQ6sXsGzL3IKo70ipbWQ2CoeaEDsE8uGCbgl4UuoX1ellY8nA==
+X-Received: by 2002:a92:c212:: with SMTP id j18mr1814640ilo.244.1601646294636;
+        Fri, 02 Oct 2020 06:44:54 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id d1sm754041ila.67.2020.10.02.06.44.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 06:44:54 -0700 (PDT)
+Subject: Re: [PATCH RFC v2] kernel: decouple TASK_WORK TWA_SIGNAL handling
+ from signals
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        io-uring <io-uring@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <3ce9e205-aad0-c9ce-86a7-b281f1c0237a@kernel.dk>
+ <20201001162719.GD13633@redhat.com> <20201002133813.3180-1-hdanton@sina.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <de200581-1e95-c175-4b6a-a41636a34507@kernel.dk>
+Date:   Fri, 2 Oct 2020 07:44:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930163714.12879-3-daniel.gutson@eclypsium.com>
+In-Reply-To: <20201002133813.3180-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:37:14PM -0300, Daniel Gutson wrote:
-> This patch exports the BIOS Write Enable (bioswe), BIOS
-> Lock Enable (biosle), and the SMM BIOS Write Protect (SMM_BIOSWP) fields of
-> the BIOS Control register using the platform-integrity misc kernel module.
-> The idea is to keep adding more flags, not only from the BC but also from
-> other registers in following versions.
+On 10/2/20 7:38 AM, Hillf Danton wrote:
 > 
-> The goal is that the attributes are avilable to fwupd when SecureBoot
-> is turned on.
+> On Thu, 1 Oct 2020 11:27:04 -0600 Jens Axboe wrote:
+>> On 10/1/20 10:27 AM, Oleg Nesterov wrote:
+>>> Jens,
+>>>
+>>> I'll read this version tomorrow, but:
+>>>
+>>> On 10/01, Jens Axboe wrote:
+>>>>
+>>>>  static inline int signal_pending(struct task_struct *p)
+>>>>  {
+>>>> -	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
+>>>> +#ifdef TIF_TASKWORK
+>>>> +	/*
+>>>> +	 * TIF_TASKWORK isn't really a signal, but it requires the same
+>>>> +	 * behavior of restarting the system call to force a kernel/user
+>>>> +	 * transition.
+>>>> +	 */
+>>>> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING) ||
+>>>> +			test_tsk_thread_flag(p, TIF_TASKWORK));
+>>>> +#else
+>>>> +	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
+>>>> +#endif
+>>>
+>>> This change alone is already very wrong.
+>>>
+>>> signal_pending(task) == T means that this task will do get_signal() as
+>>> soon as it can, and this basically means you can't "divorce" SIGPENDING
+>>> and TASKWORK.
+>>>
+>>> Simple example. Suppose we have a single-threaded task T.
+>>>
+>>> Someone does task_work_add(T, TWA_SIGNAL). This makes signal_pending()==T
+>>> and this is what we need.
+>>>
+>>> Now suppose that another task sends a signal to T before T calls
+>>> task_work_run() and clears TIF_TASKWORK. In this case SIGPENDING won't
+>>> be set because signal_pending() is already set (see wants_signal), and
+>>> this means that T won't notice this signal.
+>>
+>> That's a good point, and I have been thinking along those lines. The
+>> "problem" is the two different use cases:
+>>
+>> 1) The "should I return from schedule() or break out of schedule() loops
+>>    kind of use cases".
+>>
+>> 2) Internal signal delivery use cases.
+>>
+>> The former wants one that factors in TIF_TASKWORK, while the latter
+>> should of course only look at TIF_SIGPENDING.
+>>
+>> Now, my gut reaction would be to have __signal_pending() that purely
+>> checks for TIF_SIGPENDING, and make sure we use that on the signal
+>> delivery side of things. Or something with a better name than that, but
+>> functionally the same. Ala:
+>>
+>> static inline int __signal_pending(struct task_struct *p)
+>> {
+>> 	return unlikely(test_tsk_thread_flag(p, TIF_SIGPENDING));
+>> }
+>>
+>> static inline int signal_pending(struct task_struct *p)
+>> {
+>> #ifdef TIF_TASKWORK
+>> 	return unlikely(test_tsk_thread_flag(p, TIF_TASKWORK)||
+>> 			__signal_pending(p));
+>> #else
+>> 	return __signal_pending(p));
+>> #endif
+>> }
+>>
+>> and then use __signal_pending() on the signal delivery side.
+>>
+>> It's still not great in the sense that renaming signal_pending() would
+>> be a better choice, but that's a whole lot of churn...
 > 
-> Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> To avoid that churn, IIUC replace TWA_SIGNAL with TWA_RESUME on
+> adding task work, which is compensated by adding a counter of
+> event source in IO ctx and waiting for event to arrive instead
+> of signal.
 
-The subject line doesn't match what this patch does, please fix that up.
+That doesn't work. If the task is waiting in cqring_wait(), then
+there's no issue already. The problem is if it's waiting somewhere
+else.
 
-But there are more core issues in this patch:
+Imagine three threads, call them T1-3. T1 creates a pipe, and creates
+a ring. T1 queues a poll request for the read end of the pipe, and now
+does a wait for T2. T2 is a completer thread, so it ends up waiting
+for events on the ring. T2 is now in cqring_wait(). T3 is created,
+and it writes to the pipe. This write triggers the original poll
+request from T1, and task_work is now queued for T1. This task work
+needs to be processed for T2 to wakeup and complete, but it can't
+since T1 is in pthread_join() for T2.
 
-> 
-> ---
->  drivers/mtd/spi-nor/controllers/Kconfig       |  1 +
->  .../mtd/spi-nor/controllers/intel-spi-pci.c   | 75 ++++++++++++++-
->  .../spi-nor/controllers/intel-spi-platform.c  |  2 +-
->  drivers/mtd/spi-nor/controllers/intel-spi.c   | 91 ++++++++++++++++++-
->  drivers/mtd/spi-nor/controllers/intel-spi.h   |  9 +-
->  5 files changed, 171 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-> index 5c0e0ec2e6d1..e7eaef506fc2 100644
-> --- a/drivers/mtd/spi-nor/controllers/Kconfig
-> +++ b/drivers/mtd/spi-nor/controllers/Kconfig
-> @@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
->  
->  config SPI_INTEL_SPI
->  	tristate
-> +	depends on PLATFORM_INTEGRITY_DATA
->  
->  config SPI_INTEL_SPI_PCI
->  	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> index c72aa1ab71ad..644b1a6091dc 100644
-> --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-> @@ -10,11 +10,19 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/pci.h>
-> +#include <linux/platform-integrity.h>
->  
->  #include "intel-spi.h"
->  
->  #define BCR		0xdc
->  #define BCR_WPD		BIT(0)
-> +#define BCR_BLE		BIT(1)
-> +#define BCR_SMM_BWP	BIT(5)
-> +
-> +struct cnl_spi_attr {
-> +	struct device_attribute dev_attr;
-> +	u32 mask;
-> +};
->  
->  static const struct intel_spi_boardinfo bxt_info = {
->  	.type = INTEL_SPI_BXT,
-> @@ -24,6 +32,70 @@ static const struct intel_spi_boardinfo cnl_info = {
->  	.type = INTEL_SPI_CNL,
->  };
->  
-> +#ifdef CONFIG_PLATFORM_INTEGRITY_DATA
-> +static ssize_t intel_spi_cnl_spi_attr_show(struct device *dev,
-> +					   struct device_attribute *attr,
-> +					   char *buf, u32 mask)
-> +{
-> +	u32 bcr;
-> +
-> +	if (dev->parent == NULL)
-> +		return -EIO;
-> +
-> +	if (pci_read_config_dword(container_of(dev->parent, struct pci_dev, dev),
-> +				  BCR, &bcr) != PCIBIOS_SUCCESSFUL)
-> +		return -EIO;
-> +
-> +	return sprintf(buf, "%d\n", (int)!!(bcr & mask));
-> +}
-> +
-> +static ssize_t bioswe_show(struct device *dev, struct device_attribute *attr,
-> +			   char *buf)
-> +{
-> +	return intel_spi_cnl_spi_attr_show(dev, attr, buf, BCR_WPD);
-> +}
-> +static DEVICE_ATTR_RO(bioswe);
-> +
-> +static ssize_t biosle_show(struct device *dev, struct device_attribute *attr,
-> +			   char *buf)
-> +{
-> +	return intel_spi_cnl_spi_attr_show(dev, attr, buf, BCR_BLE);
-> +}
-> +static DEVICE_ATTR_RO(biosle);
-> +
-> +static ssize_t smm_bioswp_show(struct device *dev, struct device_attribute *attr,
-> +			       char *buf)
-> +{
-> +	return intel_spi_cnl_spi_attr_show(dev, attr, buf, BCR_SMM_BWP);
-> +}
-> +static DEVICE_ATTR_RO(smm_bioswp);
-> +
-> +static struct attribute *cnl_attrs[] = {
-> +	&dev_attr_bioswe.attr,
-> +	&dev_attr_biosle.attr,
-> +	&dev_attr_smm_bioswp.attr,
-> +	NULL
-> +};
-> +ATTRIBUTE_GROUPS(cnl);
+This is why TWA_SIGNAL is needed, we need it to break the T1 wait
+loop and process this work. No amount of changes in io_uring can
+fix this dependency, and if you look at the last series posted,
+it does in fact not even have any io_uring changes.
 
-If you are forcing the driver to create the groups, then you are forcing
-us to audit each driver and verify that the files are the same name and
-such.  Put the files in the "common" code please, and if you really need
-a way to get the data out, make that a callback or something.
+Hence the goal is to have TWA_SIGNAL have the same kind of semantics
+it does now, but decoupled from ->sighand since that is problematic
+on particularly threaded setups.
 
-Also, this name "platform integrity" is really really generic, while in
-reality you are describing something very specific.  Are you sure you
-want that?
+-- 
+Jens Axboe
 
-thanks,
-
-greg k-h
