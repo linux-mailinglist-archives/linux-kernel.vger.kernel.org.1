@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F5E281A5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1130281A60
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388320AbgJBSCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBSCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:02:07 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC190C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:02:05 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y74so2455879iof.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h8V5q3hBBM9ppuZeH/Xy4eNROVtwo5GE81zegwvnGnU=;
-        b=S3g768h/qg61UFIr+oXtHH+4E/6og3mNqo0DzY618HZdzG9+E+pOIMs8FY/yQSHfhC
-         8hFXjlHsMLLU8LLJKEsnvl5mBJlvgqtOp4YZu3+6XR2+e86NVI+LZw3+PgpOYCapuWwn
-         xc6ofjLibNIo5zvKW3/Lt0ryeNESWVDyJRh/icZHho7fc5/F/2hdAxxe6O4UEiZ4Y3WK
-         5dQWiO/7wFRkEektG/RXn82qMl9uXgtztS7gA5YXbAQctoNYzmR28uLqptsT/vfFir1F
-         0WmccWdhDizKGm/b54nvHbmToZbtPyotVBhe8ObcAsUDfieur9U+6eacMaTBQwTSFnUV
-         qbzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h8V5q3hBBM9ppuZeH/Xy4eNROVtwo5GE81zegwvnGnU=;
-        b=d1porBdRNak2qDAAQhdPdjlb4Ug3FLepUsMGie05z2vd/Kb+UkU2QD7+4+ovifLZMu
-         4xvp9wx2vaqi4jtudIkLFPePDh7fMhOfOxLrZF7g1plODuJKdj0XOsCg7c4iOw7QKJFD
-         UVxM83ptjjnnQy767SLy8FUJiz0a8UfjXVl981hnjcYH5Nmh/sp7bQ5f5mA80yVOh3QH
-         645+PyEke1Rs9M/CPzRGDErqrwUg0lg33/uYFTtbArY/fhwr9VXP7/GA9m5Vs1BCihxq
-         poGkhF922ycKmqGiq+Oa8f9GKzrS4N0q/jyYifqvtnbvwa1NJ1BUcWd233QrV4/cdPOP
-         karw==
-X-Gm-Message-State: AOAM530qilInq25wyI5/7sZk7S7wQmz5oiSrfjVgTPiaRbEmj4+G0sRM
-        0RpE6zGPVvdXcyplifKr93pQ7v33Jk0whA==
-X-Google-Smtp-Source: ABdhPJwavZPyjCsEMgucy9HCbyMFL6IkNC+opMYPqy3LtDW9qjuur+mPiu2YegnxGZ+dir2bwGhDBQ==
-X-Received: by 2002:a02:8b:: with SMTP id 133mr2332650jaa.46.1601661724723;
-        Fri, 02 Oct 2020 11:02:04 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id s23sm994865iol.23.2020.10.02.11.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 11:02:04 -0700 (PDT)
-Subject: Re: [PATCH v4] block/scsi-ioctl: Fix kernel-infoleak in
- scsi_put_cdrom_generic_arg()
-To:     Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        glider@google.com, Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-block@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-References: <000000000000a24fa705ae29dc6c@google.com>
- <20201002142223.9482-1-yepeilin.cs@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <afa31e81-84d9-fc54-e6cf-a8301f1cf33a@kernel.dk>
-Date:   Fri, 2 Oct 2020 12:02:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388344AbgJBSC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:02:28 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:47390 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBSC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:02:28 -0400
+Received: from zn.tnic (p200300ec2f0d630076c6316353094260.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:6300:76c6:3163:5309:4260])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A500E1EC046E;
+        Fri,  2 Oct 2020 20:02:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601661746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=pfeUMFmdB3fOIoL+4yEs3nJFfmZU0aNu3XTvE6X8GXU=;
+        b=B/mvmiIii64QTSUarSBZJugjzMpddCWKGsxAcph0YxkkuhKpWaYYDY/DsL6UewQPOxa1wl
+        aLSdcrDW28mmwHgArBmsgGP71pNh44vPvN/d6RID81lJF1Qa0xpVe6TG2mc9u/gFtU3lbB
+        1XimJqU1CkH3cG26rooRW7vkRyLnVJQ=
+Date:   Fri, 2 Oct 2020 20:02:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     James Morse <james.morse@arm.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+ short time period
+Message-ID: <20201002180125.GD17436@zn.tnic>
+References: <20201002122235.1280-1-shiju.jose@huawei.com>
+ <20201002124352.GC17436@zn.tnic>
+ <19a8cc62b11c49e9b584857a6a6664e5@huawei.com>
+ <59950d44-906b-684f-c876-e09c76e5f827@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002142223.9482-1-yepeilin.cs@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <59950d44-906b-684f-c876-e09c76e5f827@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 8:22 AM, Peilin Ye wrote:
-> scsi_put_cdrom_generic_arg() is copying uninitialized stack memory to
-> userspace, since the compiler may leave a 3-byte hole in the middle of
-> `cgc32`. Fix it by adding a padding field to `struct
-> compat_cdrom_generic_command`.
+On Fri, Oct 02, 2020 at 06:33:17PM +0100, James Morse wrote:
+> > I think adding the CPU error collection to the kernel
+> > has the following advantages,
+> >     1. The CPU error collection and isolation would not be active if the
+> >          rasdaemon stopped running or not running on a machine.
 
-Applied, thanks.
+Wasn't there this thing called systemd which promised that it would
+restart daemons when they fail? And even if it is not there, you can
+always do your own cronjob which checks rasdaemon presence and restarts
+it if it has died and sends a mail to the admin to check why it had
+died.
+
+Everything else I've trimmed but James has put it a lot more eloquently
+than me and I cannot agree more with what he says. Doing this in
+userspace is better in every aspect you can think of.
+
+The current CEC thing runs in the kernel because it has a completely
+different purpose - to limit corrected error reports which turn into
+very expensive support calls for errors which were corrected but people
+simply don't get that they were corrected. Instead, they throw hands in
+the air and go "OMG, my hardware is failing".
+
+Where those are, as James says:
+
+> These are corrected errors. Nothing has gone wrong.
 
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
