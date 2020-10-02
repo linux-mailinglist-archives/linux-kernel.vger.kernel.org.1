@@ -2,90 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B365281DC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0E9281DC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgJBVoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgJBVoO (ORCPT
+        id S1725782AbgJBVo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:44:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51699 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725562AbgJBVo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:44:14 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D133FC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:44:13 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y4so2353213ljk.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:44:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=eAwV6U5ahvTpKCZ5UaKtD2Y1EcpFb5M2DxULPwBOuyI=;
-        b=JPuQYQNMeiw+8SxbJvN6+HWdt+wRJEnJij4CtnjJ/8uvJ+nmJDXKSMLZJzramQeVzQ
-         dAGsDGUgeTe0NEVzrzje3BEZ+hM2IYlu/HaVrFPH1B5q0Hg3lQfpDhSrlJf0qoOg9tlj
-         ax9bNnNxYpm3kUO/Ii+ybi7WSE5+JnOCWCbygsaI/bkGateA554KGpCuXro18MCogEkx
-         /mwFhVkqpONYbVZ5tPbFtIFsNy2rVDnQ01v+Ue2aDA0neYUMQJufAUi21H5Vv1nzMxpA
-         HvyFyKbackOaob9SbncthU/z2n3XpBTIj/QO1fwJBwYGyqE5hNC4gKve/ls6r6eiQmXm
-         m46w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eAwV6U5ahvTpKCZ5UaKtD2Y1EcpFb5M2DxULPwBOuyI=;
-        b=VY4cxRNhEqhBk5UF+I5F54Y0s2DGA14QDcDKNK/CbMCdmj2RVkthzGto38MsHz3hPt
-         k1HOckpvw2dFqfED3EEQtSSVidr0G3PrIZGIW33jQmaqMm/OSzevXQjMTg3QJkgbWZEI
-         CPq3bW1vIW5K3snkY2aC9FHaZXrIIFCeZIQCsCVZsIstwk3XlPvfvRwPQaEx6Tf46250
-         9bS1RKirhRlrg0tBwP7a9MV3wUSXrlK4oxwnamMzQkCy7jGJqxdwqysXydTfxLQXf5nY
-         LgBjOYfYr8eShHee2oM8emrnEgE/DXuVt8Dbr/MeoWTtt20mgZFaeXirqODx8VGLts4j
-         SiZg==
-X-Gm-Message-State: AOAM530mnmjok8OqdGctNRqhrlKGJcYUBBWh3AJg342tbQWAoCVVqwZR
-        qv9HaUIVMyRGzbi3K2lLGANUZ2nYcUc=
-X-Google-Smtp-Source: ABdhPJxqTwlMlspJkUUgaH3YRy2gqtqnVmBlHyaYL3jmMJeGgFhH5qP3DHWF51cuFRKzly+l7XhNgg==
-X-Received: by 2002:a05:651c:102a:: with SMTP id w10mr1221540ljm.64.1601675051875;
-        Fri, 02 Oct 2020 14:44:11 -0700 (PDT)
-Received: from [192.168.1.84] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id m1sm667520lfr.32.2020.10.02.14.44.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 14:44:11 -0700 (PDT)
-Subject: Re: [PATCH] mm: optionally disable brk()
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201002171921.3053-1-toiwoton@gmail.com>
- <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <2a0f5ade-d770-c36e-50bc-ff0c8e9dacbf@gmail.com>
-Date:   Sat, 3 Oct 2020 00:44:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 2 Oct 2020 17:44:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601675064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIUcpI90aSUwNTpPMvVsD/mHHXAF5R2q8TjeCL/HeFE=;
+        b=OYSBnC2pNHdxTCldN/IhS04jfsOT5f/qkUFV0IawJ6jD0x2VsDP6zeqQijklVWdRQzOwKM
+        6eSt5bYikRt4RlIwmiH61emU0zXzNZi3XRGIz7D5EBB0rrfKeeMQSTfvdefyzXAa1cFYmF
+        H6o1EzY+t2vYbNQ3Gdeg4JjsGYU7Zto=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-A2XFeJ3kMfmQGEod4k17Tw-1; Fri, 02 Oct 2020 17:44:20 -0400
+X-MC-Unique: A2XFeJ3kMfmQGEod4k17Tw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF451803F74;
+        Fri,  2 Oct 2020 21:44:18 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 400FB55793;
+        Fri,  2 Oct 2020 21:44:18 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 15:44:17 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] vfio-pci/zdev: define the vfio_zdev header
+Message-ID: <20201002154417.20c2a7ef@x1.home>
+In-Reply-To: <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
+References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
+        <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
+Organization: Red Hat
 MIME-Version: 1.0
-In-Reply-To: <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.10.2020 20.52, David Hildenbrand wrote:
-> On 02.10.20 19:19, Topi Miettinen wrote:
->> The brk() system call allows to change data segment size (heap). This
->> is mainly used by glibc for memory allocation, but it can use mmap()
->> and that results in more randomized memory mappings since the heap is
->> always located at fixed offset to program while mmap()ed memory is
->> randomized.
+On Fri,  2 Oct 2020 16:00:42 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> We define a new device region in vfio.h to be able to get the ZPCI CLP
+> information by reading this region from userspace.
 > 
-> Want to take more Unix out of Linux?
+> We create a new file, vfio_zdev.h to define the structure of the new
+> region defined in vfio.h
 > 
-> Honestly, why care about disabling? User space can happily use mmap() if
-> it prefers.
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> ---
+>  include/uapi/linux/vfio.h      |   5 ++
+>  include/uapi/linux/vfio_zdev.h | 118 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 123 insertions(+)
+>  create mode 100644 include/uapi/linux/vfio_zdev.h
+> 
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 9204705..65eb367 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -326,6 +326,11 @@ struct vfio_region_info_cap_type {
+>   * to do TLB invalidation on a GPU.
+>   */
+>  #define VFIO_REGION_SUBTYPE_IBM_NVLINK2_ATSD	(1)
+> +/*
+> + * IBM zPCI specific hardware feature information for a devcie.  The contents
+> + * of this region are mapped by struct vfio_region_zpci_info.
+> + */
+> +#define VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP	(2)
+>  
+>  /* sub-types for VFIO_REGION_TYPE_GFX */
+>  #define VFIO_REGION_SUBTYPE_GFX_EDID            (1)
+> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
+> new file mode 100644
+> index 0000000..1c8fb62
+> --- /dev/null
+> +++ b/include/uapi/linux/vfio_zdev.h
+> @@ -0,0 +1,118 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Region definition for ZPCI devices
+> + *
+> + * Copyright IBM Corp. 2020
+> + *
+> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
+> + *            Matthew Rosato <mjrosato@linux.ibm.com>
+> + */
+> +
+> +#ifndef _VFIO_ZDEV_H_
+> +#define _VFIO_ZDEV_H_
+> +
+> +#include <linux/types.h>
+> +
+> +/**
+> + * struct vfio_region_zpci_info - ZPCI information
+> + *
+> + * This region provides zPCI specific hardware feature information for a
+> + * device.
+> + *
+> + * The ZPCI information structure is presented as a chain of CLP features
+> + * defined below. argsz provides the size of the entire region, and offset
+> + * provides the location of the first CLP feature in the chain.
+> + *
+> + */
+> +struct vfio_region_zpci_info {
+> +	__u32 argsz;		/* Size of entire payload */
+> +	__u32 offset;		/* Location of first entry */
+> +};
+> +
+> +/**
+> + * struct vfio_region_zpci_info_hdr - ZPCI header information
+> + *
+> + * This structure is included at the top of each CLP feature to define what
+> + * type of CLP feature is presented / the structure version. The next value
+> + * defines the offset of the next CLP feature, and is an offset from the very
+> + * beginning of the region (vfio_region_zpci_info).
+> + *
+> + * Each CLP feature must have it's own unique 'id'.
+> + */
+> +struct vfio_region_zpci_info_hdr {
+> +	__u16 id;		/* Identifies the CLP type */
+> +	__u16	version;	/* version of the CLP data */
+> +	__u32 next;		/* Offset of next entry */
+> +};
+> +
+> +/**
+> + * struct vfio_region_zpci_info_pci - Base PCI Function information
+> + *
+> + * This region provides a set of descriptive information about the associated
+> + * PCI function.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_BASE	1
+> +
+> +struct vfio_region_zpci_info_base {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u64 start_dma;	/* Start of available DMA addresses */
+> +	__u64 end_dma;		/* End of available DMA addresses */
+> +	__u16 pchid;		/* Physical Channel ID */
+> +	__u16 vfn;		/* Virtual function number */
+> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
+> +	__u8 pft;		/* PCI Function Type */
+> +	__u8 gid;		/* PCI function group ID */
+> +};
+> +
+> +
+> +/**
+> + * struct vfio_region_zpci_info_group - Base PCI Function Group information
+> + *
+> + * This region provides a set of descriptive information about the group of PCI
+> + * functions that the associated device belongs to.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_GROUP	2
+> +
+> +struct vfio_region_zpci_info_group {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u64 dasm;		/* DMA Address space mask */
+> +	__u64 msi_addr;		/* MSI address */
+> +	__u64 flags;
+> +#define VFIO_PCI_ZDEV_FLAGS_REFRESH 1 /* Use program-specified TLB refresh */
+> +	__u16 mui;		/* Measurement Block Update Interval */
+> +	__u16 noi;		/* Maximum number of MSIs */
+> +	__u16 maxstbl;		/* Maximum Store Block Length */
+> +	__u8 version;		/* Supported PCI Version */
+> +};
+> +
+> +/**
+> + * struct vfio_region_zpci_info_util - Utility String
+> + *
+> + * This region provides the utility string for the associated device, which is
+> + * a device identifier string made up of EBCDID characters.  'size' specifies
+> + * the length of 'util_str'.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_UTIL	3
+> +
+> +struct vfio_region_zpci_info_util {
+> +	struct vfio_region_zpci_info_hdr hdr;
+> +	__u32 size;
+> +	__u8 util_str[];
+> +};
+> +
+> +/**
+> + * struct vfio_region_zpci_info_pfip - PCI Function Path
+> + *
+> + * This region provides the PCI function path string, which is an identifier
+> + * that describes the internal hardware path of the device. 'size' specifies
+> + * the length of 'pfip'.
+> + */
+> +#define VFIO_REGION_ZPCI_INFO_PFIP	4
+> +
+> +struct vfio_region_zpci_info_pfip {
+> +struct vfio_region_zpci_info_hdr hdr;
+> +	__u32 size;
+> +	__u8 pfip[];
+> +};
+> +
+> +#endif
 
-brk() interface doesn't seem to be used much and glibc is happy to 
-switch to mmap() if brk() fails, so why not allow disabling it 
-optionally? If you don't care to disable, don't do it and this is even 
-the default.
+Can you discuss why a region with embedded capability chain is a better
+solution than extending the VFIO_DEVICE_GET_INFO ioctl to support a
+capability chain and providing this info there?  This all appears to be
+read-only info, so what's the benefit of duplicating yet another
+capability chain in a region?  It would also be possible to define four
+separate device specific regions, one for each of these capabilities
+rather than creating this chain.  It just seems like a strange approach
+TBH.  Thanks,
 
--Topi
-
+Alex
 
