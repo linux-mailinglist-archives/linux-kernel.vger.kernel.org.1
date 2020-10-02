@@ -2,267 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1A12810A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61442810A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387747AbgJBKf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:35:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29987 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBKfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:35:24 -0400
-IronPort-SDR: 7/MlFAq9V3EA2akYHFhyp9Ws2aCN97Uym8pOzRVLtxR4QE06v7UA/V/eRP902uXsD/hbgX2Fw2
- 16fpF6wYdZgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="181090276"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="181090276"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:35:20 -0700
-IronPort-SDR: 0G7etxleBVpGOwOlrqUukpKE6pwya/Ra64Fx2ins+Lify1EK3Ru/mVA+5vmppInJqVPnEiUqtv
- M6jGBj+F5+Ew==
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="339954397"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:35:17 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kOIPA-003Pph-7D; Fri, 02 Oct 2020 13:35:12 +0300
-Date:   Fri, 2 Oct 2020 13:35:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ben Gamari <ben@smart-cactus.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: OpRegion conflicts for Skylake LPSS
-Message-ID: <20201002103512.GZ3956970@smile.fi.intel.com>
-References: <87lh41nqqq.fsf@smart-cactus.org>
- <20160426155437.GA10202@lahna.fi.intel.com>
- <87eg9snkiw.fsf@smart-cactus.org>
- <87r3dona7g.fsf@smart-cactus.org>
- <20160429074227.GJ32610@lahna.fi.intel.com>
- <8737q24std.fsf@smart-cactus.org>
- <20160502103501.GP32610@lahna.fi.intel.com>
- <20201001221023.GA12766@pendragon.ideasonboard.com>
+        id S2387723AbgJBKfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBKfU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:35:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E46C0613D0;
+        Fri,  2 Oct 2020 03:35:20 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 12:35:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601634918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CeDJ1dXLme679M/bPGlRbCUFKCuFkyI8moFOBFkwQtM=;
+        b=Oiv80LLEtF21HuKEaTpvbjRgw5+l7EOAcB/SOXXKTYcbou07z3rJbr4MB0bYSGcA2WJJNa
+        1Nv0EKGxpPyQiztkzJb9aM2oTAOnevTd1Lz5Qk5YVsEO7Cf2Q2q+LeBBwSepc2f9hOAuH3
+        qp7N66HZyRdoSb/HV+p63t8D7iEOOAa2aZuuzyLEsORPQkKCG3HYL87gJM8ToGDGBjRzFr
+        kCrGGHcsr1L5C+cr7z6bw8OtnZofxSg5cHB6Z9qSs1ijtF+7FyN2SQboPT4yr33mbC2CyD
+        dW0xpXTeouJtrVMFvtYmsIf9x6yykUyy9ichRfpWbc5VOan4pcPYXUu84qK0GA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601634918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CeDJ1dXLme679M/bPGlRbCUFKCuFkyI8moFOBFkwQtM=;
+        b=3//r+E4PAS6xtqgqLaHydxvPAjbLIRQymyWCJwefulBoiGjQ02eQLJ3lMuh0vBAITCfvRA
+        RBMIj5yxxTGKH4Bw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [RFC] Status of orinoco_usb
+Message-ID: <20201002103517.fhsi5gaepzbzo2s4@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201001221023.GA12766@pendragon.ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:10:23AM +0300, Laurent Pinchart wrote:
-> Hi Mika,
-> 
-> Reviving an old thread.
+I was trying to get rid of the in in_softirq() in ezusb_req_ctx_wait()
+within the orinoco usb driver,
+drivers/net/wireless/intersil/orinoco/orinoco_usb.c. A small snippet:
 
-Very old :-)
+| static void ezusb_req_ctx_wait(struct ezusb_priv *upriv,
+|                                struct request_context *ctx)
+=E2=80=A6
+|                 if (in_softirq()) {
+|                         /* If we get called from a timer, timeout timers =
+don't
+|                          * get the chance to run themselves. So we make s=
+ure
+|                          * that we don't sleep for ever */
+|                         int msecs =3D DEF_TIMEOUT * (1000 / HZ);
+|=20
+|                         while (!try_wait_for_completion(&ctx->done) && ms=
+ecs--)
+|                                 udelay(1000);
+|                 } else {
+|                         wait_for_completion(&ctx->done);
+=E2=80=A6
+| }
 
-> On Mon, May 02, 2016 at 01:35:01PM +0300, Mika Westerberg wrote:
-> > On Sun, May 01, 2016 at 12:47:58AM +0200, Ben Gamari wrote:
-> > > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > > > On Fri, Apr 29, 2016 at 09:30:27AM +0200, Ben Gamari wrote:
-> > > >> Ben Gamari <ben@smart-cactus.org> writes:
-> > > >> 
-> > > >> > [ Unknown signature status ]
-> > > >> > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > > >> >
-> > > >> >> On Tue, Apr 26, 2016 at 02:44:13AM +0200, Ben Gamari wrote:
-> > > >> >>> 
-> > > >> > snip
-> > > >> >
-> > > >> >>> It looks very much like these are describing the same device. Perhaps
-> > > >> >>> the lpss driver should be binding to this ACPI node? Or perhaps this is
-> > > >> >>> a firmware issue? Any guidance would be greatly appreciated.
-> > > >> >>
-> > > >> >> Can you send me full acpidump of that machine?
-> > > >> >
-> > > >> > It can be found at
-> > > >> > https://github.com/bgamari/dell-e7470-dsdt/blob/master/acpi.log.
-> > > >> >
-> > > >> Did this provide any insight? Let me know if more information would be
-> > > >> helpful.
-> > > >
-> > > > Sorry about the delay.
-> > >
-> > > No worries.
-> > > 
-> > > > The GEXP device is most probably a GPIO expander that is connected to
-> > > > one of the I2C buses. And it indeed looks to use directly the I2C host
-> > > > controller registers so kernel rightfully complains about that.
-> > > >
-> > > > Are you able to run Windows on that machine? If yes, it would be nice to
-> > > > know if the INT3446 I2C device is shown in the device manager.
-> > >
-> > > I had the original SSD that came with the machine with the original
-> > > Windows 7 installation intact. I popped it in and found no such device.
-> > > I then updated to Windows 10 (albeit still booting with the legacy BIOS,
-> > > not EFI) and found that once again there is no such device shown in
-> > > device manager.
-> > 
-> > That's what I would expect. ACPI spec says that if there is an OpRegion
-> > touching the same registers than PCI device the OS should not load any
-> > driver for that device. I guess this is exactly what Windows does.
-> > 
-> > Linux does it also but it in addition it issues a scary warning which
-> > might get users thinking there is something wrong with their system.
-> 
-> I'm trying to get camera sensors detected on a Microsoft Surface Go 2
-> machine (ACPI dumps available at
-> https://github.com/linux-surface/acpidumps/tree/master/surface_go_2).
-> The CPU is an Intel Pentium Gold 4425Y, based on Kaby Lake-Y. The DSDT
-> has been carefully designed, with great care to make it as useless as
-> possible, so I'm experiencing a few issues.
+This is broken. The EHCI and XHCI HCD will complete the URB in
+BH/tasklet. Should we ever get here in_softirq() then we will spin
+here/wait here until the timeout passes because the tasklet won't be
+able to run. OHCI/UHCI HCDs still complete in hard-IRQ so it would work
+here.
 
-I think Sakari has a laptop with PCA953x driver in ASL (AML). I remember it had
-some issues.
+Is it possible to end up here in softirq context or is this a relic?
+Well I have no hardware but I see this:
 
-> One of the camera sensors is connected to I2C4, backed by an LPSS I2C
-> controller.
-> 
-> 00:19.2 Signal processing controller: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #4 (rev 21)
->         Subsystem: QUANTA Computer Inc Sunrise Point-LP Serial IO I2C Controller
->         Flags: fast devsel, IRQ 34
->         Memory at b1648000 (64-bit, non-prefetchable) [size=4K]
->         Capabilities: [80] Power Management version 3
->         Capabilities: [90] Vendor Specific Information: Len=14 <?>
->         Kernel modules: intel_lpss_pci
-> 
-> Unfortunately the driver fails to probe due to the same issue reported
-> by Ben:
-> 
-> [    2.060237] intel-lpss 0000:00:19.2: enabling device (0000 -> 0002)
-> [    2.060483] ACPI Warning: SystemMemory range 0x00000000B1648000-0x00000000B16481FF conflicts with OpRegion 0x00000000B1648000-0x00000000B1648207 (\_SB.PCI0.GEXP.BAR0) (20200528/utaddress-213)
-> [    2.060489] ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
-> [    2.060726] intel-lpss: probe of 0000:00:19.2 failed with error -16
-> 
-> I've checked the GEXP device in the DSDT, and it includes an LPSS I2C
-> host controller driver in AML, using an OpRegion that covers the I2C
-> controller registers.
-> 
-> Adding acpi_enforce_resources=lax to the kernel command line allows the
-> I2C controller to be probed, but that's hardly a good solution, as two
-> drivers (one in the DSDT, one in the kernel) that poke the same hardware
-> is calling for trouble.
-> 
-> I've noticed that Windows maps the devices to different addresses than
-> Linux. On Windows, the I2C controllers are at
-> 
-> I2C0 (8086:9d60): 0xfe40f000 - 0xfe40ffff (IRQ 16)
-> I2C1 (8086:9d61): 0xfe40e000 - 0xfe40efff (IRQ 17)
-> I2C2 (8086:96d2): 0xfe40d000 - 0xfe40dfff (IRQ 18)
-> I2C3 (8086:96d3): 0xfe40c000 - 0xfe40cfff (IRQ 19)
-> I2C4 (8086:96d4): 0xfe409000 - 0xfe409fff (IRQ 34)
-> 
-> while on Linux they're at
-> 
-> I2C0 (8086:9d60): 0xb1642000 - 0xb1642fff (IRQ 16)
-> I2C1 (8086:9d61): 0xb1643000 - 0xb1643fff (IRQ 17)
-> I2C2 (8086:96d2): 0xb1644000 - 0xb1644fff (IRQ 18)
-> I2C3 (8086:96d3): 0xb1645000 - 0xb1645fff (IRQ 19)
-> I2C4 (8086:96d4): 0xb1648000 - 0xb1648fff (IRQ 34)
+  orinoco_set_monitor_channel() [I assume that this is fully preemtible]
+  -> orinoco_lock() [this should point to ezusb_lock_irqsave() which
+                     does spin_lock_bh(lock), so from here on
+		     in_softirq() returns true]
+  -> hw->ops->cmd_wait() [-> ezusb_docmd_wait()]
+  -> ezusb_alloc_ctx() [ sets ctx->in_rid to EZUSB_RID_ACK/0x0710 ]
+  -> ezusb_access_ltv()
+     -> if (ctx->in_rid)
+       -> ezusb_req_ctx_wait(upriv, ctx);
+	 -> ctx->state should be EZUSB_CTX_REQ_COMPLETE so we end up in
+	    the while loop above. So we udelay() 3 * 1000 * 1ms =3D 3sec.
+	 -> Then ezusb_access_ltv() should return with an error due to
+	    timeout.
 
-Addresses are defined by BIOS/Linux PCI core. Basically it sounds like the
-addresses from the BIOS are changed by OS. Can you enable PCI early dump in
-Linux and look at what the BIOS assignments there? Also you may check it in EFI
-shell. In any case I don't think it should affect the system, but if the ASL
-has hard coded addresses for hardware, it's a very bad one and must be avoided.
+This isn't limited to exotic features like monitor mode. orinoco_open()
+does orinoco_lock() followed by orinoco_hw_program_rids() which in the
+end invokes ezusb_write_ltv(,, EZUSB_RID_ACK) which is non-zero and also
+would block (ezusb_xmit() would use 0 as the last argument so it won't
+block).
 
-> Interestingly, the I2C4 object contains the following in the DSDT:
-> 
->             If ((SMD4 != 0x02))
->             {
->                 Name (_HID, "INT3446")  // _HID: Hardware ID
->                 Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision
->                 {
->                     Return (LHRV (SB14))
->                 }
-> 
->                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
->                 {
->                     Return (LCRS (SMD4, SB04, SIR4))
->                 }
-> 
->                 Method (_STA, 0, NotSerialized)  // _STA: Status
->                 {
->                     Return (LSTA (SMD4))
->                 }
->             }
-> 
->             If ((SMD4 == 0x02))
->             {
->                 Name (_ADR, 0x00190002)  // _ADR: Address
->                 Method (_DSM, 4, Serialized)  // _DSM: Device-Specific Method
->                 {
->                     If (PCIC (Arg0))
->                     {
->                         Return (PCID (Arg0, Arg1, Arg2, Arg3))
->                     }
-> 
->                     Return (Buffer (One)
->                     {
->                          0x00                                             // .
->                     })
->                 }
->             }
-> 
-> I've evaluated SMD4 with acpidbg and it's equal to 2. I thought it might
-> be set to a different value in windows, but the hardware IDs reported by
-> the device manager all refer to the PCI device, not the ACPI device, so
-> I don't think that's a lead.
+I don't see how this driver can work on EHCI/XHCI HCD as of today.
+The driver is an orphan since commit
+   3a59babbee409 ("orinoco: update status in MAINTAINERS")
 
-This is basically a switch in the reference BIOS how to enumerate LPSS devices,
-if you don't have such a knob in BIOS menus, I think it's no way to change it.
+which is ten years ago. If I replace in_softirq() with a `may_sleep'
+argument then it is still broken.
+Should it be removed?
 
-> I really wonder how this is supposed to be handled, would the device
-> really be designed to work in such an unsafe way ? Does Windows remap
-> the BAR due to the conflict with the GEXP, rendering the GEXP
-> non-operational after boot ? I have tried to locate the GEXP in the
-> device manager in Windows, but with its _STA method returning 0x0b, it
-> seems not to be visible.
-
-Obviously it's designed for Windows (sic!) for a very certain driver which can
-have all possible ugliness in the world. When people are living by the terms of
-20 years old world and doing things in the same way we won't have situation any
-better.
-
-> > > >> Also, is there a way to simply allow the driver subsystem to allow
-> > > >> probing to proceed despite this resource conflict so that I can resume
-> > > >> debugging my original input device issue?
-> > > >
-> > > > Try to pass "acpi_enforce_resources=lax" in the kernel command line.
-> > > 
-> > > Thanks, indeed this allows the driver to load. Unfortunately it didn't
-> > > take long to encounter further issues.
-> > > 
-> > > The motivation for all of this is to get the touchpad into I2C mode, since
-> > > currently it is merely exposed as a simple PS/2 device. Unfortunately it
-> > > seems that even Windows 10 doesn't use the touchpad's I2C mode (although
-> > > I suppose it's possible that this is guarded on UEFI boot; moreover
-> > > Windows appears to have proper support for configurating this touchpad
-> > > in PS/2 mode, which is unfortunately an ALPS devices).
-> > > 
-> > > Looking at the DSDT it seems that enabling the I2C interface may require
-> > > the help of the embedded controller, the state of which is exposed in
-> > > the DSDT through a mysteriously-named SDS1 field. It looks like this
-> > > field could take on a number of values which identify a variety of
-> > > different touchpads. Given that it looks like GPIO pin states may be
-> > > determined by the value of this field I'm a bit reluctant to go fiddling
-> > > around with it. 
-> > > 
-> > > I do wish that firmware weren't such a nightmare.
-> > 
-> > +1
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sebastian
