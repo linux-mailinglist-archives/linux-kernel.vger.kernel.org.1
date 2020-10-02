@@ -2,138 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016B52817D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0C12817DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388224AbgJBQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:24:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBQYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:24:24 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFD0F206FA;
-        Fri,  2 Oct 2020 16:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601655864;
-        bh=XtQ41aWaPx5+LCDrh/lKMRy5xvIsR4YWuY5PCakwRNQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZYOFhNcFXvip8lefRJnbyFaI5/HwfeDCEj0Me6o8cW0aZDd1ptML2xpAHO5wN2Fzt
-         gANDZaMG7TxBKVsxxs+eHw7SJRzbJeKapSno5Me62+RcoIAs49KXqkdaKPpP8ZwDp2
-         BkhRqVcJ+A80+E7ygmaqaZ0jcoi1zB63H5w75pag=
-Received: by mail-ed1-f54.google.com with SMTP id b12so2245591edz.11;
-        Fri, 02 Oct 2020 09:24:23 -0700 (PDT)
-X-Gm-Message-State: AOAM5315T/swyWw81t001eC4n9lzr4BT3kby/z7Psjw5Pz1KQ+CAzDaH
-        9E7HFzGVz+Oy7cGwWl+bER4C4yo43USYCEQszg==
-X-Google-Smtp-Source: ABdhPJyN//4Cvislw//mSBvfQZBNuVjL4cllDiY+cszv6mSEUbslgvX+YzhtpkT4+KNZyrMAfQjtD7p7+MGd7rEHeu0=
-X-Received: by 2002:aa7:cd56:: with SMTP id v22mr393465edw.49.1601655862471;
- Fri, 02 Oct 2020 09:24:22 -0700 (PDT)
+        id S2388243AbgJBQYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:24:42 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41933 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388064AbgJBQYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:24:39 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2A1805804D8;
+        Fri,  2 Oct 2020 12:24:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 02 Oct 2020 12:24:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=/Na0kRC1+fJJK0wPJ9qf9WplU4t
+        XDhR5vxqGddIyCrw=; b=UYbCVYm6uNUvkTPT1CXHcpN0A0sKzZep1sloQWC7cc6
+        Z6uc+PYvwS0KSgqwVEwlhMkiniQ5ESzva50/bgItKjZMRUtQZbguqN3rkt1COM2h
+        LoPxtQyT1sAqQijVJKK3qEQ51wr/fbMtEXKZ+C8U7+cJDMozWup3fryix6QSLu3b
+        AO3zmBoBPRrhpGWyUN/OX0Rch68zojC6urfNY0D8TgOqYOWtQfo3GVZKCXh5kJ4a
+        nFeJjof00yf7ho3fgGoR9Sm8SmCRZJ5y7NbLfdBdMLNW+LmorYpAB6QE3YhjzZ34
+        +uU52c453RHi3+kzFWm5Z9eBvSICFKkMHi+a+/OocrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/Na0kR
+        C1+fJJK0wPJ9qf9WplU4tXDhR5vxqGddIyCrw=; b=q8tHztdTShmOcPdui24ohx
+        oP0+pIQQj8HjoJ4NAkzJl8SDULqlbSlLYID/DfasQtM8vQX0oAWVvGiIcqT/9H4r
+        0VDyV8KvwVqC1cuBkN30AisoY+IV6vR5Eq0Y3G/BCUpaBkEkV/Qbn3gMTnURoHua
+        ODfpLDWITDXnZYe2pSPvia1rAq1IYOQk2dsvx01/Qgtl6xOoSynVkV/WLynmjiPi
+        u8wj2Y1Jj7P80ZvGVY1pa3kuCuLhvU8a08H15rQvWhw/zJ+AcuKbCEXMGHpbf4Xs
+        DQ4jQunj7/DFFPVyETwMXnmk55G1X2SfG2omQxTVkMSzEySMXXkZDVOHUpKt8HrQ
+        ==
+X-ME-Sender: <xms:Q1R3X7mLLu01yp-vw2Tj3kYqkey0LNwvPaLk8USLY1gF1s7PKlye2w>
+    <xme:Q1R3X-3P21LmswRIA0T1zS5hJ5T-3SOr1Ha4cA-_1g-k3kCaxg4l3A0mS_Jm-uXRj
+    8j2PBU-nZ6oDWsiobE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeeigddutddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:Q1R3XxrOQvByt7kHXDVKybkFEFse2x8sVamnz9GrDwSGnNvifQqOyw>
+    <xmx:Q1R3XzmJeCJS-b2KxVLcZz7Am0HspgjV6lvgaKowFyzkql9C_OjYpQ>
+    <xmx:Q1R3X51nayNSCzWd6EgP_sv-1grfoQ1PTIVevCrISRzsNp4nSHWlGQ>
+    <xmx:RVR3X6s7SZjwuYtak9P9BMpHUFrmBG04UY6mcrE-fTmSXYNOrAxq6Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6BADB3064610;
+        Fri,  2 Oct 2020 12:24:35 -0400 (EDT)
+Date:   Fri, 2 Oct 2020 18:24:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: [linux-sunxi] [PATCH v5 09/20] arm64: dts: allwinner: h6: Add
+ DAI node and soundcard for HDMI
+Message-ID: <20201002162434.3jeksuelrig6yyo5@gilmour.lan>
+References: <20200927192912.46323-1-peron.clem@gmail.com>
+ <20200927192912.46323-10-peron.clem@gmail.com>
+ <CAGb2v64uAHUd=Ag2pQDqH=gjtPVso5dnKKdCn3ihyiVh8V8L=g@mail.gmail.com>
+ <CAGb2v64U9b1Ayq-XNCHb3z6spsds6eDaz3C4EsV9xFOquHrB7w@mail.gmail.com>
+ <CAJiuCcfThSqpobeZW7ugnmokc4Xy0n9o+5jvOfP9eqzvDbu_BQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com> <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
-In-Reply-To: <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 3 Oct 2020 00:24:11 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
-Message-ID: <CAAOTY_-KTs6-5ZpzAWs0Yn-R3AJc8tRhDyKbp8bx60EJtfu-_Q@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
-To:     Neal Liu <neal.liu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pc2zpj5o3hm4cgp3"
+Content-Disposition: inline
+In-Reply-To: <CAJiuCcfThSqpobeZW7ugnmokc4Xy0n9o+5jvOfP9eqzvDbu_BQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neal:
 
-Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B48=E6=9C=8827=E6=97=
-=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:07=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> MediaTek bus fabric provides TrustZone security support and data
-> protection to prevent slaves from being accessed by unexpected
-> masters.
-> The security violation is logged and sent to the processor for
-> further analysis or countermeasures.
->
-> Any occurrence of security violation would raise an interrupt, and
-> it will be handled by mtk-devapc driver. The violation
-> information is printed in order to find the murderer.
->
-> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
-> ---
->  drivers/soc/mediatek/Kconfig      |    9 ++
->  drivers/soc/mediatek/Makefile     |    1 +
->  drivers/soc/mediatek/mtk-devapc.c |  305 +++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 315 insertions(+)
->  create mode 100644 drivers/soc/mediatek/mtk-devapc.c
->
+--pc2zpj5o3hm4cgp3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[snip]
+On Fri, Oct 02, 2020 at 06:01:21PM +0200, Cl=E9ment P=E9ron wrote:
+> Hi Chen-Yu,
+>=20
+> On Mon, 28 Sep 2020 at 07:42, Chen-Yu Tsai <wens@csie.org> wrote:
+> >
+> > On Mon, Sep 28, 2020 at 1:32 PM Chen-Yu Tsai <wens@csie.org> wrote:
+> > >
+> > > On Mon, Sep 28, 2020 at 3:29 AM Cl=E9ment P=E9ron <peron.clem@gmail.c=
+om> wrote:
+> > > >
+> > > > From: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > >
+> > > > Add the I2S node used by the HDMI and a simple-soundcard to
+> > > > link audio between HDMI and I2S.
+> > > >
+> > > > Note that the HDMI codec requires an inverted frame clock and
+> > > > a fixed I2S width. As there is no such option for I2S we use
+> > > > TDM property of the simple-soundcard to do that.
+> > > >
+> > > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > > > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > > > Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 33 ++++++++++++++++=
+++++
+> > > >  1 file changed, 33 insertions(+)
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/ar=
+m64/boot/dts/allwinner/sun50i-h6.dtsi
+> > > > index 28c77d6872f6..a8853ee7885a 100644
+> > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+> > > > @@ -67,6 +67,25 @@ de: display-engine {
+> > > >                 status =3D "disabled";
+> > > >         };
+> > > >
+> > > > +       hdmi_sound: hdmi-sound {
+> > > > +               compatible =3D "simple-audio-card";
+> > > > +               simple-audio-card,format =3D "i2s";
+> > > > +               simple-audio-card,name =3D "sun50i-h6-hdmi";
+> > > > +               simple-audio-card,mclk-fs =3D <128>;
+> > > > +               simple-audio-card,frame-inversion;
+> > > > +               status =3D "disabled";
+> > > > +
+> > > > +               simple-audio-card,codec {
+> > > > +                       sound-dai =3D <&hdmi>;
+> > > > +               };
+> > > > +
+> > > > +               simple-audio-card,cpu {
+> > > > +                       sound-dai =3D <&i2s1>;
+> > > > +                       dai-tdm-slot-num =3D <2>;
+> > >
+> > > Doesn't this end up limiting the number of audio channels HDMI can ca=
+rry?
+> > > AFAICT the TDM properties are all optional, so just leave it out.
+> > >
+> > > Same goes for the other two patches.
+> > >
+> > > > +                       dai-tdm-slot-width =3D <32>;
+> > > > +               };
+> > > > +       };
+> > > > +
+> > > >         osc24M: osc24M_clk {
+> > > >                 #clock-cells =3D <0>;
+> > > >                 compatible =3D "fixed-clock";
+> > > > @@ -609,6 +628,19 @@ mdio: mdio {
+> > > >                         };
+> > > >                 };
+> > > >
+> > > > +               i2s1: i2s@5091000 {
+> > > > +                       #sound-dai-cells =3D <0>;
+> > > > +                       compatible =3D "allwinner,sun50i-h6-i2s";
+> > > > +                       reg =3D <0x05091000 0x1000>;
+> > > > +                       interrupts =3D <GIC_SPI 19 IRQ_TYPE_LEVEL_H=
+IGH>;
+> > > > +                       clocks =3D <&ccu CLK_BUS_I2S1>, <&ccu CLK_I=
+2S1>;
+> > > > +                       clock-names =3D "apb", "mod";
+> > > > +                       dmas =3D <&dma 4>, <&dma 4>;
+> > > > +                       resets =3D <&ccu RST_BUS_I2S1>;
+> > > > +                       dma-names =3D "rx", "tx";
+> >
+> > Sorry, missed this one.
+> >
+> > Given that usage for this interface is transmit only, and there is no
+> > RX DRQ number assigned to it, you should drop the RX DMA number and nam=
+e.
+>=20
+> Indeed if there is no DRQ number assigned we shouldn't have it in the
+> device-tree
+>=20
+> but Samuel told me that the `make dtbs_check` reports:
+>=20
+> i2s@1c22800: dma-names:0: 'rx' was expected
+> i2s@1c22800: dma-names: ['tx'] is too short
+> i2s@1c22800: dmas: [[28, 27]] is too short
+>=20
+> Should I fix the YAML so?
 
-> +
-> +static int mtk_devapc_probe(struct platform_device *pdev)
-> +{
-> +       struct device_node *node =3D pdev->dev.of_node;
-> +       struct mtk_devapc_context *ctx;
-> +       u32 devapc_irq;
-> +       int ret;
-> +
-> +       if (IS_ERR(node))
-> +               return -ENODEV;
-> +
-> +       ctx =3D devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-> +       if (!ctx)
-> +               return -ENOMEM;
-> +
-> +       ctx->data =3D of_device_get_match_data(&pdev->dev);
-> +       ctx->dev =3D &pdev->dev;
-> +
-> +       ctx->infra_base =3D of_iomap(node, 0);
-> +       if (!ctx->infra_base)
-> +               return -EINVAL;
-> +
-> +       devapc_irq =3D irq_of_parse_and_map(node, 0);
-> +       if (!devapc_irq)
-> +               return -EINVAL;
-> +
-> +       ctx->infra_clk =3D devm_clk_get(&pdev->dev, "devapc-infra-clock")=
-;
-> +       if (IS_ERR(ctx->infra_clk))
-> +               return -EINVAL;
-> +
-> +       if (clk_prepare_enable(ctx->infra_clk))
-> +               return -EINVAL;
+Yep :)
 
-What would happen if you do not enable this clock? I think this
-hardware is already initialized in trust zone.
+Maxime
 
-Regards,
-Chun-Kuang.
+--pc2zpj5o3hm4cgp3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +       ret =3D devm_request_irq(&pdev->dev, devapc_irq,
-> +                              (irq_handler_t)devapc_violation_irq,
-> +                              IRQF_TRIGGER_NONE, "devapc", ctx);
-> +       if (ret) {
-> +               clk_disable_unprepare(ctx->infra_clk);
-> +               return ret;
-> +       }
-> +
-> +       platform_set_drvdata(pdev, ctx);
-> +
-> +       start_devapc(ctx);
-> +
-> +       return 0;
-> +}
-> +
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3dUQgAKCRDj7w1vZxhR
+xWNUAQDytEMJPPzTs+e8ZDtzT+2iNv0sKVHta5QD+LfuXZBmbgD/QisIsrbypwx5
+fKJkl2netB5EWbzdHHzRhBS1gkZtpgc=
+=1BCa
+-----END PGP SIGNATURE-----
+
+--pc2zpj5o3hm4cgp3--
