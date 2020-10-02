@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D1B280FEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8922280FF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387679AbgJBJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        id S2387629AbgJBJfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBJcK (ORCPT
+        with ESMTP id S1726181AbgJBJfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:32:10 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60CFC0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:32:08 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so1032255lfi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:32:08 -0700 (PDT)
+        Fri, 2 Oct 2020 05:35:13 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAB7C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:35:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g4so1035839wrs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=cHvxUpBX/Ex7gaAWP6DAAZok4HqUt/n+52o4OhqQm34=;
-        b=dqhNZrsyoGQXeJcvKSrKaAmifPO60OKvjK3mWaZwK8ieVzST+7oiPWCS46NFLzoOP4
-         kvP7IUMOwrPAVhvHjOiIo53CWGsn3kk+D5/o2xV3BXML53OTQxLeX39jIRX0MOAlbhg1
-         wyC6RFt/w/hVf5qHOzLfR/q2l3QGDlldh3Z714JM+XQUgcX537u4v2l0dOmPoKtTtQ7v
-         IxGC0hKvBjCJV7z3lx2u5LC3h8ckWLcCOTGQ2gmsqyrW+WuwyMOkyHpBSqCwWAcphDM1
-         c9tzQDLyqew3MHiRxidpXL9H09E91wvfFw3Bd55v1gYUZC/+Ao4+Uf/cm3LtrDkYMQhu
-         bboQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BpK88C7pHVfm7Xd/YUZRAsUp3EAae6LbRjsv8dXA5cw=;
+        b=gQQEDT2273zbnMI2K24GO8wWvlqW3PZ1C69DxD3QXe13a8vepyBWPq91HKvGAUtIGb
+         TfIFxI8tFBj49Vq+1JGBekM/EcVXfEe59Xz7jBfiqoy5W908ZY36o7Lo3BEIdoGFl+9G
+         Ka+rpz38Ga5EZEKxwD2urFUg/D1mRPbHLczHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=cHvxUpBX/Ex7gaAWP6DAAZok4HqUt/n+52o4OhqQm34=;
-        b=qcEXtwI8c0bmyevw4LGCSrVicQ/WSm/TlxLZC+0hnxRG0WY91mkB/Hq1yMMuTA/yjR
-         h5nHrvBbSbP2tyxtWIo8rY4VhVSHtDn9VLi/vsRAKVDfyrD6k5iPjsIVng8IBmKnepzF
-         dusOmz4cCIvrNWP3F/pJJpn5LRgzVS4E1ntvcOWrv855uQUMIYzfpLu0Cz4affmuCTHy
-         7L/cxrutWBB2yTucU6f9OgzPfm9zNiMn4RWv6w6oVAksO79HezjrJ1+ATNIywfB+3asw
-         9DKWCaF8qc9wiJA/42dNIVpFowcs5Aiuh4sGtYJqzQXXBkPoTR5adC59Arcca2eNOwf3
-         KTCQ==
-X-Gm-Message-State: AOAM530fX8tDejmY/cE5c4q+TdsnR9Dkbw9FOF8BRofgVpxZ/FNlYH98
-        f4l6FQTcwa0mHK6ghSip5J3MpZPaJnngEIZoOwWmlw==
-X-Google-Smtp-Source: ABdhPJxyDNjru0fi8Ui0H16Zchkrjal9WGvcn+nOms6PSaZuEFh66mvkAhvRO0WJb9oc8j3+zZ1FVuvok5A5Y3nzMgM=
-X-Received: by 2002:a19:1c8:: with SMTP id 191mr510225lfb.585.1601631126486;
- Fri, 02 Oct 2020 02:32:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=BpK88C7pHVfm7Xd/YUZRAsUp3EAae6LbRjsv8dXA5cw=;
+        b=fdeYbkaaELL0DBR13HSfZHyaNQ1fT1PBmAWRCnhk9Zaib5rZnsqA4565jOZKnYkgOz
+         GuyOV6cU7gZ2OnH50y9hma4nIdHbfMQSSLucFCd9hL+ZBIQ/ZwIvardRRWrW/4177khm
+         X5KQSv/iiPhrqV3JEkZmoxwM4oi5r9OMNBUVLL6AuNH3+MGkFxmsxnlEEaUnYICDa7R0
+         0qE1ceRpohagAMdKatbW8DLC+w/9SiSaMxmwuU8uuWhTDwWiwtJ1ES0VAUAJ+zvt4T/e
+         gK4rGWyptwXKlBXQYzU/9E8qq+1d6o3TPrrELiXn2fZ7VLF2rUIK/cL5DSJvePASOonV
+         Bzgg==
+X-Gm-Message-State: AOAM531D38s88oC944AK59qOFlTALl20HeGQvs+mUJZQkoMO+uOokhCm
+        wUM7+rDxQ1M1eJv7Mg7gm0IQYA==
+X-Google-Smtp-Source: ABdhPJykrhwgDQ+Cfh4cqZgcNZxoClfD6BLD+KFpVIbHeTXbxtjIEdx893xAoQyqCspb1vNoEtkdFA==
+X-Received: by 2002:adf:8285:: with SMTP id 5mr1892288wrc.97.1601631312192;
+        Fri, 02 Oct 2020 02:35:12 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u66sm1121105wme.12.2020.10.02.02.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 02:35:10 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 11:35:08 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Alexandre Bailon <abailon@baylibre.com>
+Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
+        gpain@baylibre.com, stephane.leprovost@mediatek.com,
+        jstephan@baylibre.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        mturquette@baylibre.com, bjorn.andersson@linaro.org,
+        christian.koenig@amd.com, linux-media@vger.kernel.org
+Subject: Re: [RFC PATCH 0/4] Add a RPMsg driver to support AI Processing Unit
+ (APU)
+Message-ID: <20201002093508.GF438822@phenom.ffwll.local>
+Mail-Followup-To: Alexandre Bailon <abailon@baylibre.com>,
+        linux-remoteproc@vger.kernel.org, ohad@wizery.com,
+        gpain@baylibre.com, stephane.leprovost@mediatek.com,
+        jstephan@baylibre.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        mturquette@baylibre.com, bjorn.andersson@linaro.org,
+        christian.koenig@amd.com, linux-media@vger.kernel.org
+References: <20200930115350.5272-1-abailon@baylibre.com>
+ <20201001084856.GC438822@phenom.ffwll.local>
+ <8e4bb739-c3b3-d790-e8e3-dd5df2d6f869@baylibre.com>
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 2 Oct 2020 11:31:55 +0200
-Message-ID: <CACRpkdbpo65JS6fQjrnb21RSiSG6wbGGYs0R60_vPaa=6WVbag@mail.gmail.com>
-Subject: [GIT PULL] late GPIO fixes for v5.9
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e4bb739-c3b3-d790-e8e3-dd5df2d6f869@baylibre.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Oct 01, 2020 at 07:28:27PM +0200, Alexandre Bailon wrote:
+> Hi Daniel,
+> 
+> On 10/1/20 10:48 AM, Daniel Vetter wrote:
+> > On Wed, Sep 30, 2020 at 01:53:46PM +0200, Alexandre Bailon wrote:
+> > > This adds a RPMsg driver that implements communication between the CPU and an
+> > > APU.
+> > > This uses VirtIO buffer to exchange messages but for sharing data, this uses
+> > > a dmabuf, mapped to be shared between CPU (userspace) and APU.
+> > > The driver is relatively generic, and should work with any SoC implementing
+> > > hardware accelerator for AI if they use support remoteproc and VirtIO.
+> > > 
+> > > For the people interested by the firmware or userspace library,
+> > > the sources are available here:
+> > > https://github.com/BayLibre/open-amp/tree/v2020.01-mtk/apps/examples/apu
+> > Since this has open userspace (from a very cursory look), and smells very
+> > much like an acceleration driver, and seems to use dma-buf for memory
+> > management: Why is this not just a drm driver?
+> 
+> I have never though to DRM since for me it was only a RPMsg driver.
+> I don't know well DRM. Could you tell me how you would do it so I could have
+> a look ?
 
-here is a batch of GPIO fixes for the v5.9 series.
+Well internally it would still be an rpmsg driver ... I'm assuming that's
+kinda similar to how most gpu drivers sit on top of a pci_device or a
+platform_device, it's just a means to get at your "device"?
 
-I'm not entirely happy with myself over this, it is too much
-and too late. New bugs kept popping up, in hindsight I
-should have sent smaller installments, earlier of course.
+The part I'm talking about here is the userspace api. You're creating an
+entirely new chardev interface, which at least from a quick look seems to
+be based on dma-buf buffers and used to submit commands to your device to
+do some kind of computing/processing. That's exactly what drivers/gpu/drm
+does (if you ignore the display/modeset side of things) - at the kernel
+level gpus have nothing to do with graphics, but all with handling buffer
+objects and throwing workloads at some kind of accelerator thing.
 
-I blame stuff like stress and weltschmertz and trying to
-grok KASan and a few more things on my plate.
+Of course that's just my guess of what's going on, after scrolling through
+your driver and userspace a bit, I might be completely off. But if my
+guess is roughly right, then your driver is internally an rpmsg
+driver, but towards userspace it should be a drm driver.
 
-Please pull it in.
+Cheers, Daniel
 
-Yours,
-Linus Walleij
+> 
+> Thanks,
+> Alexandre
+> 
+> > -Daniel
+> > 
+> > > Alexandre Bailon (3):
+> > >    Add a RPMSG driver for the APU in the mt8183
+> > >    rpmsg: apu_rpmsg: update the way to store IOMMU mapping
+> > >    rpmsg: apu_rpmsg: Add an IOCTL to request IOMMU mapping
+> > > 
+> > > Julien STEPHAN (1):
+> > >    rpmsg: apu_rpmsg: Add support for async apu request
+> > > 
+> > >   drivers/rpmsg/Kconfig          |   9 +
+> > >   drivers/rpmsg/Makefile         |   1 +
+> > >   drivers/rpmsg/apu_rpmsg.c      | 752 +++++++++++++++++++++++++++++++++
+> > >   drivers/rpmsg/apu_rpmsg.h      |  52 +++
+> > >   include/uapi/linux/apu_rpmsg.h |  47 +++
+> > >   5 files changed, 861 insertions(+)
+> > >   create mode 100644 drivers/rpmsg/apu_rpmsg.c
+> > >   create mode 100644 drivers/rpmsg/apu_rpmsg.h
+> > >   create mode 100644 include/uapi/linux/apu_rpmsg.h
+> > > 
+> > > -- 
+> > > 2.26.2
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
-
-  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
-tags/gpio-v5.9-2
-
-for you to fetch changes up to 8c1f1c34777bddb633d4a068a9c812d29974c6bd:
-
-  gpio: pca953x: Correctly initialize registers 6 and 7 for PCA957x
-(2020-10-01 10:00:18 +0200)
-
-----------------------------------------------------------------
-Some late GPIO fixes for the v5.9 series:
-
-- Fix compiler warnings on the OMAP when PM is disabled
-
-- Clear the interrupt when setting edge sensitivity on the
-  Spreadtrum driver.
-
-- Fix up spurious interrupts on the TC35894.
-
-- Support threaded interrupts on the Siox controller.
-
-- Fix resource leaks on the mockup driver.
-
-- Fix line event handling in syscall compatible mode
-  for the character device.
-
-- Fix an unitialized variable in the PCA953A driver.
-
-- Fix access to all GPIO IRQs on the Aspeed AST2600.
-
-- Fix line direction on the AMD FCH driver.
-
-- Use the bitmap API instead of compiler intrinsics for
-  bit manipulation in the PCA953x driver.
-
-----------------------------------------------------------------
-Ahmad Fatoum (1):
-      gpio: siox: explicitly support only threaded irqs
-
-Andy Shevchenko (3):
-      gpiolib: Fix line event handling in syscall compatible mode
-      gpio: pca953x: Use bitmap API over implicit GCC extension
-      gpio: pca953x: Correctly initialize registers 6 and 7 for PCA957x
-
-Bartosz Golaszewski (1):
-      gpio: mockup: fix resource leak in error path
-
-Ed Wildgoose (1):
-      gpio: amd-fch: correct logic of GPIO_LINE_DIRECTION
-
-Jeremy Kerr (2):
-      gpio/aspeed-sgpio: enable access to all 80 input & output sgpios
-      gpio/aspeed-sgpio: don't enable all interrupts by default
-
-Linus Walleij (4):
-      Merge tag 'gpio-fixes-for-v5.9-rc4' of
-git://git.kernel.org/.../brgl/linux into fixes
-      Merge tag 'gpio-fixes-for-v5.9-rc6' of
-git://git.kernel.org/.../brgl/linux into fixes
-      Merge tag 'gpio-fixes-for-v5.9-rc7' of
-git://git.kernel.org/.../brgl/linux into fixes
-      Merge tag 'gpio-fixes-for-v5.9' of
-git://git.kernel.org/.../brgl/linux into fixes
-
-Taiping Lai (1):
-      gpio: sprd: Clear interrupt when setting the type as edge
-
-Tao Ren (1):
-      gpio: aspeed: fix ast2600 bank properties
-
-Tony Lindgren (1):
-      gpio: omap: Fix warnings if PM is disabled
-
-Ye Li (1):
-      gpio: pca953x: Fix uninitialized pending variable
-
-dillon min (1):
-      gpio: tc35894: fix up tc35894 interrupt configuration
-
- .../devicetree/bindings/gpio/sgpio-aspeed.txt      |   5 +-
- drivers/gpio/gpio-amd-fch.c                        |   2 +-
- drivers/gpio/gpio-aspeed-sgpio.c                   | 134 +++++++++++++--------
- drivers/gpio/gpio-aspeed.c                         |   4 +-
- drivers/gpio/gpio-mockup.c                         |   2 +
- drivers/gpio/gpio-omap.c                           |   4 +-
- drivers/gpio/gpio-pca953x.c                        |   7 +-
- drivers/gpio/gpio-siox.c                           |   1 +
- drivers/gpio/gpio-sprd.c                           |   3 +
- drivers/gpio/gpio-tc3589x.c                        |   2 +-
- drivers/gpio/gpiolib-cdev.c                        |  34 +++++-
- 11 files changed, 138 insertions(+), 60 deletions(-)
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
