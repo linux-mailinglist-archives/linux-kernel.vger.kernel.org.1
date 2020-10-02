@@ -2,144 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FFC281780
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F258281787
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388083AbgJBQJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:09:55 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59722 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJBQJz (ORCPT
+        id S2388146AbgJBQKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBQKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:09:55 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092G9pRN047766;
-        Fri, 2 Oct 2020 11:09:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601654991;
-        bh=9xTA5+qh/F+xiW0/+hAkPCcePW2qVrOrlKz6iokDxDk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Bw2x/kduHCG1sD/TEX34leq45a8x94VRRnmb0qE4raG6ZUYPBtUB489UPUgE/E8gi
-         BqvCgz0GffMF/UomYKNl4SkOQ5yGT7lsnk1xhS+Foj1KrenUyBjDbaDMqSkYZt8CCq
-         Ofki5wc+Ewx8S04QBALC6e6jjmsEwngwHKiAbkyg=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092G9p2M104454
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 11:09:51 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 11:09:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 11:09:50 -0500
-Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092G9hwS109185;
-        Fri, 2 Oct 2020 11:09:45 -0500
-Subject: Re: [PATCH 0/8] Add support for UHS modes in TI's J721e and J7200
- boards
-To:     Nishanth Menon <nm@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
-        <robh+dt@kernel.org>, <t-kristo@ti.com>
-References: <20201001190541.6364-1-faiz_abbas@ti.com>
- <20201001191302.dlp2tzbvkk35vzgd@akan>
- <2a7ceab9-37ec-9117-1d98-9f307b4b5390@ti.com>
- <20201002124926.rr5dk5hhygavgqs3@akan>
-From:   Faiz Abbas <faiz_abbas@ti.com>
-Message-ID: <00746c65-d240-e7e9-810d-b6e33655cc57@ti.com>
-Date:   Fri, 2 Oct 2020 21:39:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 12:10:48 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B657C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:10:46 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id t16so2201810edw.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TKrnU8OMrTP2HnfeDQ36W4jlkOILiDTjG4Jt9zQv/MU=;
+        b=IwPpPrdNsnu5FlD1OobJFZzCKqafUWQ2s30+vLINDfRq3i2kHN3JPuk792i6I+hxFV
+         ppJtNzpaq2Cyq6riihUjk4eQqNIMm2lNSgD8CghVcRL52lvCfcA//XhoaZmtkPagobKq
+         HCOdykTKtGQhET9fzgpMmoZTDgMd4WrfE/JxVJQpF/4lFDcN7XepWB5YL/3Pf0auVNXk
+         KZrJc6PPwixBYO+cxDLI3DeOJ3ahyyEk4BWSc2EKTkjlRoB+Hw0tLXJtech+Dexow3/q
+         eghOfkOJigf4cnjYXMzGakOnokbBwexTzgZXEAEVFTpz1djWvjOhfbTp7zQs67XINkSU
+         9qnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TKrnU8OMrTP2HnfeDQ36W4jlkOILiDTjG4Jt9zQv/MU=;
+        b=aPjt1fSzBStHs5jAZsvfTHGJASXVgXUrnJTyBjcGyX64TlqV8sHs+UbMKO4XCMwe0B
+         tkGGQptcYutEh5xdcygN+gZCS+q9AdxOviUOCgBTQ/x7FaEQycs/hQxti5QFegW0AeT3
+         fY02z2Cgu6DV8nlh4pKA21WQBz1vQzSV+0SUMGc9C1Cj9JS0o3DBNb0Z2aZg2RBq7a2A
+         06ZMHpv4ML/XDrVViNF9ojmMaZkSnzq9+16oDw/E8GUwlhEnGU97dyCa3RSJGGULAAE8
+         ClPou12HWLSB313EOmfmNiVtZzQM+hVXQs2fl2eujnbhTLH0klDGKY+G740FzkS2lfZW
+         bCKw==
+X-Gm-Message-State: AOAM533m08xp01uED7t1FG43OcE4e+8ydxfAsmp2gLdWwJiPuHDVBkei
+        zIt2vrdkghylx9MvCl1gi0WMtUVebu+BVWw8YBGJrA==
+X-Google-Smtp-Source: ABdhPJxLy7vg7Hji+HMyUSROdJEDLd+lE2ee6OVvCPRAEz3XaYpLc31KjN/VPPgbMoqSSYcuD6bOTMFH3k2TEj8w4JM=
+X-Received: by 2002:a05:6402:b0e:: with SMTP id bm14mr3217947edb.259.1601655044643;
+ Fri, 02 Oct 2020 09:10:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002124926.rr5dk5hhygavgqs3@akan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-4-elver@google.com>
+ <CAG48ez1VNQo2HZSDDxUqtM4w63MmQsDc4SH0xLw92E6vXaPWrg@mail.gmail.com> <CANpmjNMcdM2MSL5J6ewChovxZbe-rKncU4LekQiXwKoVY0xDnQ@mail.gmail.com>
+In-Reply-To: <CANpmjNMcdM2MSL5J6ewChovxZbe-rKncU4LekQiXwKoVY0xDnQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 2 Oct 2020 18:10:18 +0200
+Message-ID: <CAG48ez37Mi+4rRY7v3P9uTgV+35oTT+dpb4Xe=V_Nb=pdMosbA@mail.gmail.com>
+Subject: Re: [PATCH v4 03/11] arm64, kfence: enable KFENCE for ARM64
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
+On Fri, Oct 2, 2020 at 4:19 PM Marco Elver <elver@google.com> wrote:
+>
+> On Fri, 2 Oct 2020 at 08:48, Jann Horn <jannh@google.com> wrote:
+> >
+> > On Tue, Sep 29, 2020 at 3:38 PM Marco Elver <elver@google.com> wrote:
+> > > Add architecture specific implementation details for KFENCE and enable
+> > > KFENCE for the arm64 architecture. In particular, this implements the
+> > > required interface in <asm/kfence.h>. Currently, the arm64 version does
+> > > not yet use a statically allocated memory pool, at the cost of a pointer
+> > > load for each is_kfence_address().
+> > [...]
+> > > diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
+> > [...]
+> > > +static inline bool arch_kfence_initialize_pool(void)
+> > > +{
+> > > +       const unsigned int num_pages = ilog2(roundup_pow_of_two(KFENCE_POOL_SIZE / PAGE_SIZE));
+> > > +       struct page *pages = alloc_pages(GFP_KERNEL, num_pages);
+> > > +
+> > > +       if (!pages)
+> > > +               return false;
+> > > +
+> > > +       __kfence_pool = page_address(pages);
+> > > +       return true;
+> > > +}
+> >
+> > If you're going to do "virt_to_page(meta->addr)->slab_cache = cache;"
+> > on these pages in kfence_guarded_alloc(), and pass them into kfree(),
+> > you'd better mark these pages as non-compound - something like
+> > alloc_pages_exact() or split_page() may help. Otherwise, I think when
+> > SLUB's kfree() does virt_to_head_page() right at the start, that will
+> > return a pointer to the first page of the entire __kfence_pool, and
+> > then when it loads page->slab_cache, it gets some random cache and
+> > stuff blows up. Kinda surprising that you haven't run into that during
+> > your testing, maybe I'm missing something...
+>
+> I added a WARN_ON() check in kfence_initialize_pool() to check if our
+> pages are compound or not; they are not.
+>
+> In slub.c, __GFP_COMP is passed to alloc_pages(), which causes them to
+> have a compound head I believe.
 
-On 02/10/20 6:19 pm, Nishanth Menon wrote:
-> On 10:14-20201002, Faiz Abbas wrote:
->> Hi Nishanth,
->>
->> On 02/10/20 12:43 am, Nishanth Menon wrote:
->>> On 00:35-20201002, Faiz Abbas wrote:
->>>> The following patches add support for UHS modes for TI's j721e and j7200
->>>> boards.
->>>>
->>>> Patches 1-3 add support for gpios to j7200-evm
->>>>
->>>> Patches 4-6 add support for voltage regulators for required by the
->>>> SD card in both devices as well as enable UHS modes at 1.8V
->>>>
->>>> Patches 5-6 add some required configs to the arm64 defconfig.
->>>>
->>>> This series depends on driver patches adding tuning support here:
->>>> https://lore.kernel.org/linux-arm-kernel/20200923105206.7988-1-faiz_abbas@ti.com/
->>>>
->>>> Faiz Abbas (8):
->>>>   arm64: dts: ti: k3-j7200-main: Add gpio nodes in main domain
->>>>   arm64: dts: ti: k3-j7200: Add gpio nodes in wakeup domain
->>>>   arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio
->>>>     modules
->>>>   arm64: dts: ti: k3-j721e-main: Add output tap delay values
->>>>   arm64: dts: ti: k3-j721e-common-proc-board: Add support SD card UHS
->>>>     modes
->>>>   arm64: dts: ti: k3-j7200-common-proc-board: Add support SD card UHS
->>>>     modes
->>>
->>> Split these up please!
->>
->> Into SD card UHS and gpio series?
->>
->>>>   arm64: defconfig: Enable OMAP I2C driver
->>>>   arm64: defconfig: Enable DAVINCI_GPIO driver
->>>>
->>>
->>> defconfig patches can be posted independent of dts patches, they go to
->>> different branches.
->>
->> I was trying to follow Arnd's advice here:
->> https://lore.kernel.org/linux-arm-kernel/CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com/
->>
->> He says that defconfig patches can be sent at the same time as dts updates and maintainers can send those
->> as separate pull requests.
-> 
-> BTW, [1] your patches 7/8 and 8/8 never hit the mailing list, So, I am
-> commenting on the defconfig patches without actually seeing the patches,
-> and solely based on $subject in the cover letter.
-
-This is weird. They are there in my patches/ folder and I always do a "git send-email patches/* ..."
-
-Not sure why they didn't get sent. My last send-email command does have all the patches being sent:
-
-https://pastebin.ubuntu.com/p/VNWsrMcBZd/
-
-> 
-> The reason for my comment was that I think defconfig series could go
-> independent of the remaining series into 5.10, since they are not
-> related specifically to this series, they are probably needed even for
-> am654 and j721e nodes that already exist and was a miss that we didn't
-> enable. Tying that to this specific series didn't make sense to me.
-
-You're right that they are not tied to the series.
-
-> 
-> But either way, we are way past rc7. I don't have enough time for
-> these patches to bake in -next to make it to 5.10 window. So, lets try
-> reposting this after rc1 tag is done so that I can send the defconfig
-> (separately for 5.10 window) and the dts staged towards 5.11 (and no,
-> I don't consider the dts patches as fixes - they are enabling the next
-> level of functionality).
-> 
-
-Ok. I'll send only the defconfig patches in a new series and repost v2 of this at rc1.
-
-Thanks,
-Fai
+Aah, I mixed up high-order pages and compound pages. Sorry for the noise.
