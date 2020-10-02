@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6108D2817F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EDB2817F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388106AbgJBQb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:31:29 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:39715 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387768AbgJBQb3 (ORCPT
+        id S2388156AbgJBQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387768AbgJBQcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:31:29 -0400
-Received: by mail-ed1-f66.google.com with SMTP id g3so2273844edu.6;
-        Fri, 02 Oct 2020 09:31:27 -0700 (PDT)
+        Fri, 2 Oct 2020 12:32:04 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B25BC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:32:03 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id ly6so1546197ejb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vLLPjfNvFj7pR8od0hNiiSOWfDNa8LYk1h1kkUXgiLI=;
+        b=jTb6EUMh+OlIVxa0PimfuLDmy32yYPGXpiPQNOPMPTKpXMlOXqvdBOwJsEqs3UHr0n
+         FdHKQYQv8p0C8SbBAXcaTSo9M0hnVFKkc8wQNxABPUydB4w7Ith5G/R/1rKuD3Tk1HAJ
+         hjw43tlAuO2zw4gzr2fgq/4Noz+d1eJpnnmpZytHQDEV1Uu4q8ZEF9aeB4dUzi1EZnpe
+         sK0bQgEvhw/vmExBNToYiS3Sdty9YXTeMR+qVqdMZ+RVygI7ANh5YS9F8JQ8pxwczwFs
+         1SmX7VUV1rahd5NYGXEdiw6EgVJ+PfpzOBReLLCb6besxYeXIsBPzaQegvBk5pFRLdEt
+         wfgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ob6yBTxTvpF+NmnLYuQkF0QwiwVMT5Xln9UbGMFpmVs=;
-        b=nBNb3eNIVPv4tQ+oXXLQ2k6Woyx/ZRhGJDg7iOFcO036aUHj5+yr6YSChcyiDIquDl
-         Cs23ybLz3WRgW+LMaRu0oKPyjB7VdG49AaxJgGzN6O120bc+X+Z3BKHlL7zJ6pzwBVEP
-         QnYOxdRVkKJ5aqJrpD4wkHDhnS0FGyy8/EkTsnzV4axKFdwW0rCyYiSC3oGYDa89coS3
-         AUunjyWsY/3GcJfqsEH5V8XwexvV7EPJZHFDZxerun4Okf38l0Jifj/YPwVw9m+pqCam
-         refC3SJwqulf7c50oC5AEhLwWGxpdILrtyThxV78izOd0mWyO5tdvgrlqFPb1gHPQrhi
-         hBjQ==
-X-Gm-Message-State: AOAM532yH+aue5suJt0BjvmCeSVA5Zx1oIbLFJgSto4fq4oIfeDJAODx
-        VlhPLX3caspBcUzhgXYfthVpBjp0N31/HA==
-X-Google-Smtp-Source: ABdhPJxj/04SdAVL8johRyiS8Accn/yYhhz15vdyCNEshtRGEwl4D9CZVuhofzWTRmFnHuib6CKwCA==
-X-Received: by 2002:a50:ccc6:: with SMTP id b6mr3219690edj.329.1601656287360;
-        Fri, 02 Oct 2020 09:31:27 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id e1sm1118204edm.11.2020.10.02.09.31.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 02 Oct 2020 09:31:26 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 18:31:24 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] watchdog: cadence: Simplify with dev_err_probe()
-Message-ID: <20201002163124.GB6464@kozik-lap>
-References: <20200901153141.18960-1-krzk@kernel.org>
- <20200901154952.GA106798@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vLLPjfNvFj7pR8od0hNiiSOWfDNa8LYk1h1kkUXgiLI=;
+        b=j0RtqFnjFAgjuwmpceGhg33P2Jo4siKUaUg5inR6/LbHqf0qHWONKNgEsmx27ccbbB
+         18qffekevfSqxhXiPV7ehWwpjQtf4V8WhimmwzY1yJ3FYMHf+NE3QTsy2alvSQ+HfXnp
+         mdXSvxV2g/du/zMitmS9hqHKYzgU9ry/xkZ+PEvMYhkpz8m7nlAfTP3xbTFNXPP/YVgJ
+         R5Us14mKrF2DaCo4dgw1yLnU4r0bwH8/2Xga27McUoHoqHn0GbEIBd6qi7EnP7O7bnRZ
+         D5qUn0GtVCdzQZ+muzjupBb7z14RnN7cYykl24o2C1bDIl5syDGQxt7RtzFZciA0b7Qs
+         df0w==
+X-Gm-Message-State: AOAM5326GJNatqPFe3ILyCYsIHcursDE4BQdCku/NjWQbxhTHGmZkSMB
+        ASm/vI1alu2pVvqLSIq7+s9q/yIousPkluqGt5OtOw==
+X-Google-Smtp-Source: ABdhPJzvIGZTSYXeDVvGycc/ET+O0eXN5kjaAPIg+hkk+PtA7S7pK0p+VHcosY6vL17tFeqld+x05+aclFHZCM+hktc=
+X-Received: by 2002:a17:906:3399:: with SMTP id v25mr3079580eja.51.1601656322242;
+ Fri, 02 Oct 2020 09:32:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200901154952.GA106798@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
+In-Reply-To: <20200922165535.1356622-1-maxime.chevallier@bootlin.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Fri, 2 Oct 2020 13:31:50 -0300
+Message-ID: <CAAEAJfCBi3AE23hbHB19FFNpmELp2hh3BU+qrdtmgBFJzv9A_g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] media: rockchip: Introduce driver for Rockchip's
+ camera interface
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 08:49:52AM -0700, Guenter Roeck wrote:
-> On Tue, Sep 01, 2020 at 05:31:39PM +0200, Krzysztof Kozlowski wrote:
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe().  Less code and the error value gets printed.
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Hi Maxime,
 
-Thanks for the review. Who could pick up these patches?
+On Tue, 22 Sep 2020 at 13:55, Maxime Chevallier
+<maxime.chevallier@bootlin.com> wrote:
+>
+> Hi everyone,
+>
+> This is the third iteration of the series introducing a driver for the
+> PX30 camera interface.
+>
+> This was previously known as the "cif" driver in other iterations, but
+> was renamed to "vip" following Ezequiel's advices to match the datasheet
+> name.
+>
+> This is based on a BSP driver, and I'm not fully familiar with the media
+> and V4L2 frameworks, so I guess some review is still needed.
+>
+> This new series adds some stability fixes, and introduces the
+> double-buffering frame handling, giving better performances.
+>
+> Thanks to everyone who reviewed the first two iterations,
+>
+> Maxime
+>
+> Maxime Chevallier (3):
+>   media: dt-bindings: media: Document Rockchip VIP bindings
+>   media: rockchip: Introduce driver for Rockhip's camera interface
 
-Best regards,
-Krzysztof
+I can't find this "v3 2/3 media: rockchip: Introduce driver for
+Rockhip's camera interface" patch in my mailbox. Perhaps it was too
+large and got filtered?
+Or maybe it's an issue on my side?
+
+Cheers,
+Ezequiel
