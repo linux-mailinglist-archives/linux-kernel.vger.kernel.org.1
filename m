@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BA7280E60
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B08280E62
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgJBH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47796 "EHLO mail.kernel.org"
+        id S1726300AbgJBH7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:59:36 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51791 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgJBH6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:58:35 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725968AbgJBH7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:59:35 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B73C4206A5;
-        Fri,  2 Oct 2020 07:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601625513;
-        bh=VC5t7PYyhQ3yPcf8lwkEP8Aq1I28TaT7zlaw1h6RBQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iLeBRUFcZ40SPhOzyBOIzhK52CPt5FGDeNSRgEi4qZAJ8M8TEVNB6c96A/uj4jcKe
-         iFK2zJLEFMHg3VFLF7n55f9pULbUpzbkuLv31a/UIwoLijroTPPkhNxEhlrWO5OdrM
-         dwi6oVXKTpvNZrVn4ixQQiWB8ICKXewvmfWaMASc=
-Date:   Fri, 2 Oct 2020 09:58:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20201002075832.GA1184016@kroah.com>
-References: <20200929121953.2817843-1-poeschel@lemonage.de>
- <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
- <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
- <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
- <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
- <20201001112449.GA2364834@kroah.com>
- <20201001135009.2dpgojasd3fm5phh@lem-wkst-02.lemonage>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C2j7n02Q7z9sSC;
+        Fri,  2 Oct 2020 17:59:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601625573;
+        bh=OkRahBuUgOJ+bPRpFw5pqVSDAYrGe4TbxIqbLavU76g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Zzo+yPbjZpOtIwXGdeQwoVvDqciTsmluz+FdmnJYFEnfdA7EvMpf8gAh/U5eABLzE
+         xERAmVmjTlP4nJrN1Bclo1hH37ZvuZgQNJx67lYfeeFl/hFPdfscdWlinNJyavvlWC
+         WM1ibG4scqzqhP4SUoh6aKBSeUwYFlIjQ1YaluX5Dc43iEFwrSA4qDw/yXyx015DB0
+         pdBobNhw6kD/OhBwc+d/tLLCw/K9sHnaS2qhH6gIh38HSAJSgwvBOulV91pU6YbfN3
+         DxL4M8I6XdXNKJKwl05VWWaiQLVMGVhZlH8IcnF/t/90qQ/I8WpCpINoL6ePXRhTpz
+         Zv2hn7z8ps+6Q==
+Date:   Fri, 2 Oct 2020 17:59:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next <linux-next@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH] selftests/vm: fix: make check_config.sh executable
+Message-ID: <20201002175931.5317ef64@canb.auug.org.au>
+In-Reply-To: <20201002064811.435769-1-jhubbard@nvidia.com>
+References: <20201002064811.435769-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201001135009.2dpgojasd3fm5phh@lem-wkst-02.lemonage>
+Content-Type: multipart/signed; boundary="Sig_/xtO5/x_LCXVCRm_BYvugP.k";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 03:50:09PM +0200, Lars Poeschel wrote:
-> On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
-> > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
-> > > > Hello,
-> > > > 
-> > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
-> > > > Cc:.
-> > > > 
-> > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
-> > > > > thank you for your review!
-> > > > > 
-> > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
-> > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
-> > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > > > > 
-> > > > > > > This adds a class to exported pwm devices.
-> > > > > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > > > > 
-> > > > > > I wonder what is your use-case here. This for sure also has a place to
-> > > > > > be mentioned in the commit log. I suspect there is a better way to
-> > > > > > accomplish you way.
-> > > > > 
-> > > > > Use-case is to be able to use a pwm from a non-root userspace process.
-> > > > > I use udev rules to adjust permissions.
-> > > > 
-> > > > Hmm, how do you trigger the export? Without being aware of all the
-> > > > details in the sysfs code I would expect that the exported stuff is
-> > > > available instantly once the write used to export the PWM is completed.
-> > > > So changing the permissions can be done directly after triggering the
-> > > > export in the same process.
-> > > 
-> > > The export is triggered through the userspace process itself. Why can it
-> > > do this ? Because there is another udev rule, that changes permissions
-> > > when a pwmchip appears.
-> > > Then I'd like to have the second udev rule, that changes permissions on
-> > > the freshly exported pwm. The userspace process can't do this.
-> > > You are right I could propably do everything from within udev: If a
-> > > pwmchip appears, export certain pwms and right away change their
-> > > permissions. It does not also not feel right. It'd require knowledge
-> > > from the userspace application to be mapped to udev.
-> > 
-> > The way the kernel code is now, yes, you will not have any way to
-> > trigger it by userspace as the kernel is creating a "raw" struct device
-> > that isn't assigned to anything.  That is what needs to be fixed here.
-> 
-> I did a first try with our approach.
-> I set the class of the child to its parent class. This does work and
-> create the directories right under /sys/pwm but because the child now
-> also inherits the dev_groups from the parent its directory also contain
-> export, unexport and npwm files, that don't apply for pwm's as soon a I
-> register the device to driver core.
-> 
-> Did we miss something or is there a way to avoid that ? I had a look at
-> device_add and saw that as soon as a class it set it's dev_groups get
-> exported through device_add_attrs.
+--Sig_/xtO5/x_LCXVCRm_BYvugP.k
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ah, you need to tweak that group to only show up for a specific "type"
-of device.  There is a is_visable callback for a group that should be
-used for this, and you can check the type of device being affected here,
-try messing with that.  And make sure you set a new type for the new
-devices you are creating.
+Hi John,
 
-I know that's vague, if you need more help I can work on it next week.
+On Thu, 1 Oct 2020 23:48:11 -0700 John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs
+> dependency") created the new check_config.sh file without the execute
+> bits set. This is a problem because the Makefile runs it with "./", so
+> now "make" is failing in that directory.
+>=20
+> The posted patch [1] does seem to have it as an executable file, so I'm
+> not sure how this happened. But in any case, make check_config.sh
+> executable again, so that "make" in selftests/vm works once again.
 
-> > > > Out of interest: What do you use the pwm for? Isn't there a suitable
-> > > > kernel driver that can do the required stuff? Compared to the kernel-API
-> > > > the sysfs interface isn't atomic. Is this an annoyance?
-> > > 
-> > > Use-case is generating a voltage from the pwm. This voltage is used to
-> > > signal different states and does not change very often. This is
-> > > absolutely not annoying that this is not atomic. We just change the duty
-> > > cycle on the fly. Everything else is configured one time at startup.
-> > > I'd call what I need pwm-dac. I could not find a ready to use driver.
-> > > Maybe I could misuse some kernel driver for this. Maybe I could use
-> > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
-> > > there is even a userspace facing part for this, but this is not
-> > > devicetree ready.
-> > > ...and the worst, please don't blame me: The application is java, so
-> > > ioctl is a problem.
-> > 
-> > I thought java could do ioctls, otherwise how would it ever be able to
-> > talk to serial ports?
-> 
-> It is not impossible but it is horrible. java itself can access the
-> ports through normal file I/O, but it can not set control lines or
-> baudrate or anything. You need some C-code for this, that is not part of
-> the java vm itself and has to be called through something called JNI -
-> java native interface.
+The correct fix is to make sure that the Makefile runs it explicitly
+with a shell because is such a patch is applied with patch(1), the
+execute bit will not be preserved.
 
-Ah, ok, yeah, that's not ok, sorry to hear you are stuck with Java :(
+See e.g. in the top level Makefile:
 
-greg k-h
+	$(CONFIG_SHELL) $(srctree)/scripts/gen_autoksyms.sh $@
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xtO5/x_LCXVCRm_BYvugP.k
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl923eMACgkQAVBC80lX
+0Gy/vAgAkrfjf16OkbBuUzkb+lkFNt8sQhXlaysO4C7GjbSbzoyCkTJav+xGbrk2
+JyQobQe7CkNKgh25sHxL1Mo2ZOoDhydqdzgt22q0iu6Df1j5fqmhK/3qROpT+Jsj
+i+L4gmdqNQ9uMO9hiX/FBRkCaDCTmjaC+VoBgHYFvqDD2210aOrwYWmokUWh30Mx
+5LYY1Z3pfvPwJJEs9DftBGbW1IwgcP/Pqz+DNcizWWA0dJZt2xz4xBFpf9PmbLY6
+GEYBrh6dFOQJTgU+GGnTcgzkhhQxnEjHfDa/ATp0m/7ij4ejwueP1ikqxkUGaYsX
+Zl03iFomQqEcOtoznce1ewRnfR36fQ==
+=1EHW
+-----END PGP SIGNATURE-----
+
+--Sig_/xtO5/x_LCXVCRm_BYvugP.k--
