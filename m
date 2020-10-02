@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FB0281AC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C276E281ACE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388209AbgJBSXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S2388275AbgJBSZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387602AbgJBSXu (ORCPT
+        with ESMTP id S1726215AbgJBSZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:23:50 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFA0C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:23:48 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so1842730pfd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:23:48 -0700 (PDT)
+        Fri, 2 Oct 2020 14:25:16 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D88C0613D0;
+        Fri,  2 Oct 2020 11:25:14 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so1824013pfp.11;
+        Fri, 02 Oct 2020 11:25:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=dLt24jZaXpKoPfrpAQsTNoIii0wynpAMSCaMsOeaq/8=;
-        b=Irswezj4+vTXLAGewGL2mUj0idT6ulXfb+ykyqeUCPq7sCA/aOBGuVzlRafWNEi1jL
-         AhctfN4YLXT5o/AMzF/42Yfz0u+HXCrQXjM88bUXqvzqj1h9VeiXdpE8+bqcZhx3iPPn
-         kAA4w46fJBE+Fs7Hylbxe7OcSDx7sK1aY6d1qQqcE5ytSZh7puRMFSPpeH5pIDQS1nbY
-         VlTbvf49Tj53TuKeIrKX3gE3z2V8PC3f1qFbu6VtkKJUHqojbBLTWqxWmC/OFOuFKapy
-         HIHpj6z5OcmWohPx20bCjgXy2dCC9WrNupkThuKx8lVmTPxHehGBSv6Dp5wpPoAT+cFQ
-         5Upg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GbpVtDGCEyDNfEPlp0W69stECiimKW/FhnrQFUDEppM=;
+        b=AqIYwn3miaGQ+Jkk+hYVeI9yKUay3vDZjhZA4ulKLQoPNNydR+JBlxLBBK/inx9R/C
+         LtRKWB5OG4Ur5g9Qe2Bzn6Q1QkBWFtPSjFyTsbZ9GHP67V9T06ZxgdR43b8f3BCAyGhv
+         rpoUGSUlUhM2UEmJJ5jNMBjTmWJbAD7ic3Xu2JphmeNUuCDD/Bidv0AIdRhx4xy8JwzC
+         RjJtj8PQ9lPv/fOwREiMISXPcRt8o5NDN5RQysIU4Z5N8lVSXI4+IAbZdnbfLYF4OR2t
+         c8kcDPiyeO01LwzqMz95QIJLETRrUc+1MxvjTfQYgZIiIpKTEufkbHs/9t68jhP7vpdD
+         DgYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=dLt24jZaXpKoPfrpAQsTNoIii0wynpAMSCaMsOeaq/8=;
-        b=djJAWQaNvQgRjaLWItk2tWwxllSEeFvSuI//MUIvVjYEIz0STU0AUUgIG0tJn1km1M
-         flRDWLyD7p0a42S6XBz/Upb5H47XIBIkvmepXXqzydMTrWp0oWDN65OpRDI5B5TQS4yj
-         YWJTZkAOjNL9Cxlk+pHX6KLrWXLMa5snnja2goIi4CefoVfB14HyaXougYn+GvJ78jcz
-         yO5s00SRNppvv9jYtgQw7UApm54kIcmM9sR2Z8KGm12PdNRfVgM5Fc4IAhLsqY3/QtcN
-         7m8eEgMGB4tJKeT18veHXl5jWt9dLilsMUOrwwbck8NgbaJp/3uE2POvegvmW5LcygEo
-         nl+A==
-X-Gm-Message-State: AOAM531ArW1KD1yK7PdPFO4gp2q++CHGAtVzWaFdkV6B1LlO8Dg5aKJj
-        HNe/PRsEeqstcSn0FxuwTW+W/Q==
-X-Google-Smtp-Source: ABdhPJw+m163+8+A3NNIguhVHp83jAAmQeDChZRqJPzFkbCuCqkvLTCPyC93EbyZCnoE8aNRIPdUWg==
-X-Received: by 2002:a63:30b:: with SMTP id 11mr1533550pgd.253.1601663027882;
-        Fri, 02 Oct 2020 11:23:47 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id e10sm2385564pgb.45.2020.10.02.11.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 11:23:47 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, kishon@ti.com,
-        balbi@kernel.org, martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] usb: dwc-meson-g12a: Add support for USB on S400 board
-In-Reply-To: <30e2c174-c94b-f42a-1dd4-ae05c317d618@baylibre.com>
-References: <20200917065949.3476-1-narmstrong@baylibre.com> <30e2c174-c94b-f42a-1dd4-ae05c317d618@baylibre.com>
-Date:   Fri, 02 Oct 2020 11:23:46 -0700
-Message-ID: <7hpn60mqq5.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GbpVtDGCEyDNfEPlp0W69stECiimKW/FhnrQFUDEppM=;
+        b=W6fSobVM/YmQx+j3HbzcAh4MlWFJEnH5XDYCSyrdMoXo3lQmHV29mok/rZgmD6E+1N
+         hLHVMM6lci7RjFh++xL5ybATLD9q/qB2LPnRjCLJW0u7o/0a86pzgRI6zhJ0EpZx2ASr
+         AVSGKWKyV816IS1+ur7mjWyZT1Ls9PWzzHoTVBRmZQj/75zWaU5BN+beCDzU6pIgQkvw
+         nQRv/BWQhtkgo+3+xOHd5Oq80ebP1cRtuKROtNtcQQG7wMlgF5EfyEyaA/ON7A8F51c2
+         o4/Fm9cIcCk8bKthvave0R4jYLf4uPDX6LhKhMPPObEQlmhZVblq3ioZI3Bd8m93eYoP
+         EhvA==
+X-Gm-Message-State: AOAM530VbhVOvuikFsSXI/0vgMeCHc/Qoi4UiwTzpdh+aJbpIfK9AmKu
+        eP+7zFIIDRUi9yaCLtG9STQI+VJYPFb/mF3CSV920eyD4CZ2ng==
+X-Google-Smtp-Source: ABdhPJyif/p/Pbn0ODio9g2AdTRUDfuH9fvp71NdIy0MeM6epspjWhKRVrlqdKxrBfcVVAfKiBJtGTR2Bp44KDpbexc=
+X-Received: by 2002:a63:ec4c:: with SMTP id r12mr3289889pgj.74.1601663114294;
+ Fri, 02 Oct 2020 11:25:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
+ <20201001222829.15977-4-Sergey.Semin@baikalelectronics.ru>
+ <20201002102246.GX3956970@smile.fi.intel.com> <20201002174725.rpwdgfo6xzxafqhs@mobilestation>
+In-Reply-To: <20201002174725.rpwdgfo6xzxafqhs@mobilestation>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 2 Oct 2020 21:24:55 +0300
+Message-ID: <CAHp75VeO9NGAU_zH99wqS9F9mXANNWaep=j_Pi6YAz_hsCxR2g@mail.gmail.com>
+Subject: Re: [PATCH v3 03/21] spi: dw: Detach SPI device specific CR0 config method
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+On Fri, Oct 2, 2020 at 8:47 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
+> On Fri, Oct 02, 2020 at 01:22:46PM +0300, Andy Shevchenko wrote:
+> > On Fri, Oct 02, 2020 at 01:28:11AM +0300, Serge Semin wrote:
 
-> Hi Kevin,
+> > > +   /*
+> > > +    * Update CR0 data each time the setup callback is invoked since
+> > > +    * the device parameters could have been changed, for instance, by
+> > > +    * the MMC SPI driver or something else.
+> > > +    */
+> > > +   chip->cr0 = dw_spi_get_cr0(dws, spi);
+> >
 >
-> On 17/09/2020 08:59, Neil Armstrong wrote:
->> The Amlogic AXG is close to the GXL Glue but with a single OTG PHY.
->> 
->> It needs the same init sequence as GXL & GXM, but it seems it doesn't need
->> the host disconnect bit.
->> 
->> The Glue driver reuses the already implemented GXL & GXM work.
->> 
->> The USB2 PHY driver needs a slight tweak to keep the OTG detection working.
->> 
->> Changes since v1 at [1]:
->> - s/close from/close to/g
->> - collected review tags
->> - added small comment about phy management in patch 3
->> - removed status = "okay" in patch 4
->> - removed invalid phy-supply of phy1 in patch 5
->> 
->> [1] http://lore.kernel.org/r/20200909160409.8678-1-narmstrong@baylibre.com
->> 
->> Neil Armstrong (5):
->>   phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up even in Host mode
->>   dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG
->>     Families USB Glue Bindings
->>   usb: dwc-meson-g12a: Add support for USB on AXG SoCs
->>   arm64: dts: meson-axg: add USB nodes
->>   arm64: dts: meson-axg-s400: enable USB OTG
+> > I would rather name it prepare or alike. 'get' assumes getting value or
+> > something like that.
 >
-> Can you pick the DT patches ?
+> This seems reasonable. What verb do you think would be better: prepare,
+> calc, assemble, construct, make, compute, collect, compose, form, compile, etc ?
+> Personally prepare or calc or assemble are the best candidates. What do you
+> think?
 
-Yes, queued up.
+prepare is good enough if you agree on it.
 
-Since we're already at -rc7, this may not make it until v5.11.
 
-Kevin
+-- 
+With Best Regards,
+Andy Shevchenko
