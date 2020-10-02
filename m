@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC050280DDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3587E280DC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgJBHGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:06:25 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:37413 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJBHGY (ORCPT
+        id S1726081AbgJBHBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgJBHBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:06:24 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 03:06:24 EDT
-Received: from localhost ([178.19.226.45]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MCJzI-1kEveq3PzG-009N3V; Fri, 02 Oct 2020 09:01:14 +0200
-Date:   Fri, 2 Oct 2020 09:01:14 +0200
-From:   Bastian Bittorf <bb@npl.de>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Linux 5.9-rc7 / VmallocTotal wrongly reported | Patch OK
-Message-ID: <20201002070114.do3xmia7sbsnrx6h@hp-nas.internet>
-References: <20201001065104.apevlkqrs6nid3r5@hp-nas.internet>
- <CAHk-=wixd9kUup4o1d1y9Wg9WoRt6_mN7kM5sPX=_nrgrkZzFg@mail.gmail.com>
- <20201001195610.GC2706729@carbon.DHCP.thefacebook.com>
- <CAHk-=whwbrbZbdqpXVd9LOG=J04BEVZcT+vT=nXry=XP1JWqYA@mail.gmail.com>
- <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
+        Fri, 2 Oct 2020 03:01:39 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE83EC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 00:01:38 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so520020wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 00:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=aIY+IDzICGVgAmDulZ9BdwLCyG0fzaPB1TGzf7MSUwE=;
+        b=X1f5XE7ut411XXg2WdP6zDISf6h0Utz7a/CKTBREV3CDjcoLDru4bGrQ/QHXOlS9k7
+         Cn0C8KgdtZiYvUrvMUwgbp+SVkz0RG5wBydPClQl2nQBNmIXZexyhIqaiWm8mDWmUAte
+         3/SITEFFGcHiPVrgFxIKkvVSZwH8lhYmRlEgmhQrPlaAoriOC+YqzFlXKuwXhAgf7ahc
+         Os/oPgO5g/JzEYhpCiFjNCbqQ7BGUcUvcLvVoTJg3x/OxmH7YRM7QthCqnzH+M7G+GhC
+         iB7YpknoyIh5cEkY9OptbBVBI7RQUgER9oFbLhpJmTkfTbiIOMnDT9XruNP80T0TVx2P
+         is9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=aIY+IDzICGVgAmDulZ9BdwLCyG0fzaPB1TGzf7MSUwE=;
+        b=BYehYeFAShnTsJ6k3kge9v1Jl5dZ2rPncEBEmgCEl8bIP9sIPbGiDj/2j6fr3Wvd76
+         6EXFHjwFxpGpV/Y95WhazoTP0MTwvCWM3cViEmAP9raBXSRkId0szDtD+4GeZI4QvAjs
+         KjhT5nNtkaH4K8HYCB3w9YLlbdBZKiLgmCXXhAPnAowUyxQHNDHunUXGT2w0a6XSFYil
+         nhR0WYGNe14K3FpHRHnncVZzQRrf/QJ2GE0U0H+Y5cucamV6zWlYKYmIlWTRdtR9mTtg
+         CUlB4s6bHoUg1DrJBMlCCNJN3sP676Mbborpi+5cK63A/9p23ICu5eVt3XrIjUgd8SKg
+         0NQw==
+X-Gm-Message-State: AOAM532jfy/CIsbI30RhYNe/YxDk1mnlinHBvPt1H7QqdPUNckVUIYAh
+        kFRpjVaRSUpqRxK/5olKQ0x+J1dNOzrXeg==
+X-Google-Smtp-Source: ABdhPJzhM/FUD/Nr6ynJ3U6oOeCOR6mw+KpVdIuGPROgWNHWPaBV8jILF9yIsNl/d0uB7UjjSFaHTQ==
+X-Received: by 2002:a05:600c:22c5:: with SMTP id 5mr1159532wmg.34.1601622097238;
+        Fri, 02 Oct 2020 00:01:37 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id v4sm661245wmg.35.2020.10.02.00.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 00:01:36 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 08:01:34 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Brunner <Michael.Brunner@kontron.com>
+Cc:     "mibru@gmx.de" <mibru@gmx.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mfd: kempld-core: Mark kempld-acpi_table as
+ __maybe_unused
+Message-ID: <20201002070134.GR6148@dell>
+References: <37c55c13f9042dde06fd67c829b06765286d0580.camel@kontron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
-User-Agent: NeoMutt/20180716-942-b29a2a
-X-Provags-ID: V03:K1:NGgDvJ4n7LguwDte1GnQ2AKEdedg2BBPuwrBuPsWUxelDMLXw34
- fic3muZIbZ9D00kOBrlIH4KDupo90da9YW1GPnrFH4ZTJKSebZtCew7Sxac2Jx8DBvg7IK9
- eQpKKgnLy6h+Mt3UFn1wJdyQiVzEGWqmm8JA9EFhfy1Qs6d/cYRVqmkuiMZ9L0m7PEGqx5K
- vp9MJVrCdfk0Q+Ye0y9aQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IF1vpbaN9ZI=:q4hw5kQU6GUqllvsPEjLM9
- DYbVvCzYbfTIihb7AejIde3YSW30FnG0y0YcCYFnkNYGa+gUxHijYatmFQ6Af6/hijgyTX8JT
- XIRHtBcSAGLEmEcB8Kn6Tmw3ZZ9ORC1bYJSOFK0uolxdedd21y1vdBfg3ih0UO7CiPL7R+FAJ
- 0rwMYByhrdW5CKhku4cs0NMx0cqRnf+Up5BzsY6e728AvvVh6YPW4NqruRN+JP7/UTfq1y78S
- HBAptjd/Gp2hCb75ND6t27wr/+GZqSNFjA+tRyBty/F6l26MGP+0XnY62T5GYy1AziPHDTStt
- bvXv9BnUxqKvIbwzEtC+hPk4fmPB/7cK/9uHiIfLbK+xbLIGoHinX07dPe/fJrYwSdxU8HMZS
- pf9nvWPqJNU8juOvXrnrmY+bXRyQIz71C9mv5TchLZsSViiAlFNVBHLJOGbo5GXBvCyAZs3hP
- MjJblPkSziZCo6ecKuy1L477AQhcNhCVVn9Y3U+b2kZOV0htjukrtsnWVkyUPJPc2AC9itpEe
- BitiRoRnGKBWQbv2lnJyXZ4eu/OdFO9TgI3Dbx5tRQMQ7soH7Q+uGEh6Oo8TrA4BVZMu/GqwQ
- iWjD7wYFTOQK94m04n0pcrruL6EL8/W8UlzBcNIava6PTeDQY287Pvuvr5hu7KlW39LinoMRS
- vpVTjlMrmFALnBscXMfV5hfxKuC9B85o8rp5vaBP+KABdaWm5IcRovpKP8lkJRLtfe+RqmJ0Y
- vnpoQQPNqlXZpq83fO/0zqz2h3LUFX7wgZaGHI+Rb2EFcGCMJmDz6Jf9IfDispgPhGfFCMqI8
- fTWGNRnX/xU/jCI6XBIa0X3wlk9EmGDMYHC/WX2N3idboObtlyLn3x97HYeU21czwt3wneq
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <37c55c13f9042dde06fd67c829b06765286d0580.camel@kontron.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:39:31PM -0700, Roman Gushchin wrote:
-> > # Processor type and features
-> > #
-> > # CONFIG_ZONE_DMA is not set
-> > # CONFIG_SMP is not set
+On Thu, 01 Oct 2020, Michael Brunner wrote:
+
+> The Intel 0-DAY CI Kernel Test Service reports an unused variable
+> warning when compiling with clang for PowerPC:
 > 
-> Yes, here is the deal.
+> >> drivers/mfd/kempld-core.c:556:36: warning: unused variable 'kempld_acpi_table' [-Wunused-const-variable]
+>    static const struct acpi_device_id kempld_acpi_table[] = {
 > 
-> The SMP-version of __mod_node_page_state() converts a passed value from bytes
-> to pages, but the non-SMP doesn't.
+> The issue can be fixed by marking kempld_acpi_table as __maybe_unused.
 > 
-> Thanks!
+> Fixes: e8299c7313af ("[PATCH] mfd: Add ACPI support to Kontron PLD driver")
 > 
-> --
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
+> ---
+>  drivers/mfd/kempld-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> From 3d0233b37340c78012b991d3570b92f91cf5ebd2 Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Thu, 1 Oct 2020 13:07:49 -0700
-> Subject: [PATCH] mm: memcg/slab: fix slab statistics in !SMP configuration
+> diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
+> index 1dfe556df038..273481dfaad4 100644
+> --- a/drivers/mfd/kempld-core.c
+> +++ b/drivers/mfd/kempld-core.c
+> @@ -553,7 +553,7 @@ static int kempld_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static const struct acpi_device_id kempld_acpi_table[] = {
+> +static const struct acpi_device_id __maybe_unused kempld_acpi_table[] = {
+>  	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
+>  	{}
+>  };
 
+This is not the right fix.  Better just to compile it out completely
+in these circumstances.  I already have a fix for this in soak.
 
-I manually applied your patch and
-this fixes to issue on my side too:
-
-/ # free
-              total        used        free      shared  buff/cache available
-Mem:         122176        2484      114848           0        4844
-113228
-Swap:             0           0           0
-
-/ # uname -a
-Linux (none) 5.9.0-rc7 #1 Fri Oct 2 08:50:59 CEST 2020 x86_64 GNU/Linux
-/ #
-
-Thanks a lot and sorry for the delay (my bisecting was too slow),
-bye Bastian Bittorf
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
