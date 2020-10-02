@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D8328149B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E4328149E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbgJBOCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:02:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48886 "EHLO mail.kernel.org"
+        id S2387857AbgJBOEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgJBOCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:02:35 -0400
+        id S1726017AbgJBOEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:04:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6335D206CD;
-        Fri,  2 Oct 2020 14:02:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17608206CD;
+        Fri,  2 Oct 2020 14:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601647355;
-        bh=7mcTQgDWOtJnBVSbqdjsF917iDbLlax02nmVJNarDGc=;
+        s=default; t=1601647469;
+        bh=nRsUJILRzB7DvNcjyX0rSrBNDy8ql/F29/KcDQ+iIAY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sW++Yg9WhnPHK3hiOfg6ugibvA5KBRUa4bTSQqM/2jFPntVet/W4HmT4y3Ob/6xTN
-         BPoDcS9HdCedWycnvZhDXoM+x6pzRUB29m6x5jmE8hbpBqAZVcK5Ff/jh+VZd2ZOT9
-         29rLfivzZPY7q67012thrjkfNoL8Me/mSMdoruFA=
-Date:   Fri, 2 Oct 2020 16:02:33 +0200
+        b=fmECrPZcwXD87uiuzOt1FUO+xaTec5RPtqCpNvOt5JKLUGxq2UM1T3esa1L0HW+ol
+         JSMYBkHHm44ytfveBwhm6eGlgk7SvWVUi//4TN3C2TfHEjITW6qvZ4pSXsfRyw3BXb
+         LIWnho0K29s1ZNTXKHz5yXYigqZ0P0qGOrwC4jBo=
+Date:   Fri, 2 Oct 2020 16:04:28 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jiri Slaby <jslaby@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v3 2/2] tty/sysrq: Add configurable handler to execute a
- compound action
-Message-ID: <20201002140233.GB3475053@kroah.com>
-References: <20200818112825.6445-1-andrzej.p@collabora.com>
- <20200818112825.6445-3-andrzej.p@collabora.com>
- <20201002125429.GA3350322@kroah.com>
- <db7fe4ed-19a4-3303-a544-eb789badb8a1@collabora.com>
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     Torsten Duwe <duwe@lst.de>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201002140428.GC3475053@kroah.com>
+References: <20200921075857.4424-1-nstange@suse.de>
+ <20201002123836.GA14807@lst.de>
+ <CY4PR0401MB365298FA8C0C53EAF2D66705C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <db7fe4ed-19a4-3303-a544-eb789badb8a1@collabora.com>
+In-Reply-To: <CY4PR0401MB365298FA8C0C53EAF2D66705C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:42:52PM +0200, Andrzej Pietrasiewicz wrote:
-> Hi,
-> 
-> W dniu 02.10.2020 o 14:54, Greg Kroah-Hartman pisze:
-> > On Tue, Aug 18, 2020 at 01:28:25PM +0200, Andrzej Pietrasiewicz wrote:
-> > > Userland might want to execute e.g. 'w' (show blocked tasks), followed
-> > > by 's' (sync), followed by 1000 ms delay and then followed by 'c' (crash)
-> > > upon a single magic SysRq. Or one might want to execute the famous "Raising
-> > > Elephants Is So Utterly Boring" action. This patch adds a configurable
-> > > handler, triggered with 'C', for this exact purpose. The user specifies the
-> > > composition of the compound action using syntax similar to getopt, where
-> > > each letter corresponds to an individual action and a colon followed by a
-> > > number corresponds to a delay of that many milliseconds, e.g.:
-> > > 
-> > > ws:1000c
-> > > 
-> > > or
-> > > 
-> > > r:100eis:1000ub
-> > 
-> > A macro language for sysrq commands, who would have thought...
-> > 
-> > Anyway, _why_ would userland want to do something so crazy as this?
-> > What is the use-case here?
-> > 
-> 
-> A use-case is Chromebooks which do want to execute 'w', 's',
-> wait 1000ms and then 'c' under one key combination. Having that supported
-> upstream brings us one little step closer to those machines running
-> upstream kernel.
+On Fri, Oct 02, 2020 at 01:35:18PM +0000, Van Leeuwen, Pascal wrote:
+> ** This message and any attachments are for the sole use of the intended recipient(s). It may contain information that is confidential and privileged. If you are not the intended recipient of this message, you are prohibited from printing, copying, forwarding or saving it. Please delete the message and attachments and notify the sender immediately. **
 
-Who is causing that to "execute"?  Some daemon/program?
+As per my legal department requests, this is now ignored and deleted on
+my system...
 
-> Another argument for such a "macro language" is when a machine's system
-> keeps degrading over time, possibly degrading (relatively) fast.
-> "Raising Elephants Is So Utterly Boring" consists of 6 actions, each
-> of which requires pressing several keys. The user might be unable
-> to complete all the 6 steps, while a "macro" requires user's involvement
-> for carrying out just one step.
-
-So you want to "preload" some commands ahead of time, for when you get
-in trouble?
-
-These should just be debugging / last resort types of things, how
-regular are they being used in your systems?
-
-thanks,
+Hint, it's not a valid footer for public mailing lists...
 
 greg k-h
