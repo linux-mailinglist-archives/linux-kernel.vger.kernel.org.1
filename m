@@ -2,179 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50783280D87
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0574280D85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgJBGgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:36:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14916 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBGgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:36:06 -0400
-IronPort-SDR: UNZ3GynhKkAvUYkJmduLzt3xt/cnliKCtUj21AmR3lqlpTHTTzs/xglZBvyyCGkENtePJoeZmT
- 2h2n/fMyEjMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="163007528"
-X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
-   d="scan'208";a="163007528"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 23:36:02 -0700
-IronPort-SDR: wxevtzfYTb66fJENTqXAVRtHmeJ0z5+GgXGNH8i6KFtqt5jP+SHL7DuHXBuqogszYMShoVgDtl
- ZHwTXWoijPQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
-   d="scan'208";a="352275621"
-Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 01 Oct 2020 23:35:59 -0700
-Received: from kbuild by de448af6ea1b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kOEff-0000s8-16; Fri, 02 Oct 2020 06:35:59 +0000
-Date:   Fri, 02 Oct 2020 14:35:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/platform] BUILD SUCCESS
- a0947081af2ac9549e6ba19877456730713bde23
-Message-ID: <5f76ca1a.HmqDd6Z2WdjgxI0E%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726173AbgJBGgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgJBGgC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 02:36:02 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053FFC0613D0;
+        Thu,  1 Oct 2020 23:36:02 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gm14so245466pjb.2;
+        Thu, 01 Oct 2020 23:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=QLv+s4aQZnO25bRLQQ0YtqBKhSbu43FQOvF08k6VhKU=;
+        b=QA2icjrFrzcnJXgrnaxsSDmBT2ig0yfsexzxXfKKU5UVxsd7JpeQ2svg29iNoT621I
+         ZD9QtusLqJ3ODzVMq8Txwm3y6j69H6CRFX3ZIjWI+WmpLgHWC1jeWEcH7vWilPzmbvbF
+         CYBj/kjQdmPvEtXwfNYeahkhCZ6aUsZZ3losSHi/ePePp+lN72fZQEQUvzmpD1200xpI
+         ry8itehk+z2PLRG5obnCtG8pOIfc9xgAWYLzVZ0OWI6IPqqxOYhQSjNlVmFYW9BeejnL
+         OedxKJNtYQGGWUNA5skLedA9ACzen6uevFglnTq49dQ+repk0jFpfWlsWwTQWmylMc1Y
+         rvww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QLv+s4aQZnO25bRLQQ0YtqBKhSbu43FQOvF08k6VhKU=;
+        b=D5GgA31dw9VYvG6T1wQDipdbWFn84tbP4RjraG9CBMkJiwgdryrePW5ycniLP3B28e
+         3/5XnulRk+0DvanT+Ws1xyIlaCQi2WD0h8fA+l8JdXOOdny0OolcemeP85p7xp0JrobV
+         bGK4SK7ZSK22DJR6k2Ah1xT5wmjxEJCoM0319fH5GbOEo81DelPfGAeTLWAGaX7pvvf9
+         Mv6N04AfWMy9o9IWSP/z17T3xRaj1HdNrPfy7l7DP7LlBZ1AatYryGzEt6btNtZFcO0P
+         S2ggWeWcESiXFd4ZAkj9Q3eW3mCMQHlluDx9twxJXC8qz6ihrJuC/riZolR3UYYKAIJB
+         r/Pw==
+X-Gm-Message-State: AOAM5323usi+3BK+8z7VMeuskm3Skjfypashj8CUtfYcZo4ZrbGeTdFl
+        EUH21f9nM7hxcmixj4QsjA==
+X-Google-Smtp-Source: ABdhPJya7Va6AMgOvmi0MZDomfdwTDXoXeOLF5Zil833ReFbFPJhM6NZkrRgwvaXHKH7EUE4uN4c1A==
+X-Received: by 2002:a17:90a:ea08:: with SMTP id w8mr1201059pjy.124.1601620561600;
+        Thu, 01 Oct 2020 23:36:01 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.140.181])
+        by smtp.gmail.com with ESMTPSA id r16sm532212pjo.19.2020.10.01.23.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 23:36:00 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Satya Tangirala <satyat@google.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hankinsea@gmail.com, shipujin.t@gmail.com
+Subject: [PATCH v2] scsi: ufs: fix missing brace warning for old compilers
+Date:   Fri,  2 Oct 2020 14:35:38 +0800
+Message-Id: <20201002063538.1250-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
-branch HEAD: a0947081af2ac9549e6ba19877456730713bde23  x86/uv/time: Use a flexible array in struct uv_rtc_timer_head
+For older versions of gcc, the array = {0}; will cause warnings:
 
-elapsed time: 722m
+drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_crypto_keyslot_program':
+drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: missing braces around initializer [-Wmissing-braces]
+  union ufs_crypto_cfg_entry cfg = { 0 };
+        ^
+drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]
+drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_clear_keyslot':
+drivers/scsi/ufs/ufshcd-crypto.c:103:8: warning: missing braces around initializer [-Wmissing-braces]
+  union ufs_crypto_cfg_entry cfg = { 0 };
+        ^
+2 warnings generated
 
-configs tested: 115
-configs skipped: 62
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          landisk_defconfig
-sh                             sh03_defconfig
-arm64                            alldefconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     rainier_defconfig
-m68k                        mvme147_defconfig
-m68k                          hp300_defconfig
-arm                          gemini_defconfig
-arc                      axs103_smp_defconfig
-csky                             alldefconfig
-sh                            shmin_defconfig
-powerpc                        cell_defconfig
-arm                           efm32_defconfig
-arm                   milbeaut_m10v_defconfig
-h8300                            alldefconfig
-arm                           viper_defconfig
-i386                             alldefconfig
-parisc                              defconfig
-powerpc                    klondike_defconfig
-xtensa                              defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                 mpc85xx_cds_defconfig
-h8300                     edosk2674_defconfig
-sh                                  defconfig
-arm                           omap1_defconfig
-mips                   sb1250_swarm_defconfig
-nios2                               defconfig
-riscv                            alldefconfig
-arm                         palmz72_defconfig
-xtensa                  audio_kc705_defconfig
-powerpc                     ksi8560_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                      ppc6xx_defconfig
-s390                             alldefconfig
-arm                          pxa910_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a015-20200930
-x86_64               randconfig-a013-20200930
-x86_64               randconfig-a012-20200930
-x86_64               randconfig-a016-20200930
-x86_64               randconfig-a014-20200930
-x86_64               randconfig-a011-20200930
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-i386                 randconfig-a014-20201001
-i386                 randconfig-a015-20201001
-i386                 randconfig-a013-20201001
-i386                 randconfig-a016-20201001
-i386                 randconfig-a011-20201001
-i386                 randconfig-a012-20201001
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a001-20200930
-x86_64               randconfig-a005-20200930
-x86_64               randconfig-a003-20200930
-x86_64               randconfig-a004-20200930
-x86_64               randconfig-a002-20200930
-x86_64               randconfig-a006-20200930
-
+Fixes: 70297a8ac7a7 ("scsi: ufs: UFS crypto API")
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/scsi/ufs/ufshcd-crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
+index d2edbd960ebf..07310b12a5dc 100644
+--- a/drivers/scsi/ufs/ufshcd-crypto.c
++++ b/drivers/scsi/ufs/ufshcd-crypto.c
+@@ -59,7 +59,7 @@ static int ufshcd_crypto_keyslot_program(struct blk_keyslot_manager *ksm,
+ 	u8 data_unit_mask = key->crypto_cfg.data_unit_size / 512;
+ 	int i;
+ 	int cap_idx = -1;
+-	union ufs_crypto_cfg_entry cfg = { 0 };
++	union ufs_crypto_cfg_entry cfg = {};
+ 	int err;
+ 
+ 	BUILD_BUG_ON(UFS_CRYPTO_KEY_SIZE_INVALID != 0);
+@@ -100,7 +100,7 @@ static int ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
+ 	 * Clear the crypto cfg on the device. Clearing CFGE
+ 	 * might not be sufficient, so just clear the entire cfg.
+ 	 */
+-	union ufs_crypto_cfg_entry cfg = { 0 };
++	union ufs_crypto_cfg_entry cfg = {};
+ 
+ 	return ufshcd_program_key(hba, &cfg, slot);
+ }
+-- 
+2.18.1
+
