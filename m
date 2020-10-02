@@ -2,159 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E13280F70
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822F4280F73
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgJBJEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgJBJEx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:04:53 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F947C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:04:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k18so902836wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qFbZVEFOo9elK0nsgeUP///LqF9DZa97QUZx/Et/nCQ=;
-        b=eoDYuhXS4JXmAa8VaGf28tPEEvCrCfFFL5oNJ8c2sq3ZxLvCo/wJko+AQjUTxctibx
-         d/4Ze8SUgEz1x5F/tKz1bAZ0G9Y9KZ/IGBdeUTtNeWabgBJFkGhOd4ksLZTczM/BkR7y
-         kZVmS04orPgCzeRl1BB2igsDgz0+sTAcEwHv/qc1Y+XjWjJVnR9wDRyN4mKwgzPlcapy
-         uFGgOFBGiPGzs7qfrLk96sWC4ml1Sk7+hPBqqCjdBdoebUQ4uxOOCIGIo9XRyKP5xw0r
-         C5VEbni8QUd3ZglNfISRyiG2ejQnIFPajEWRv5O7tLKg0Qt5xqfwajmSq90VS1TgqJ0x
-         cfTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qFbZVEFOo9elK0nsgeUP///LqF9DZa97QUZx/Et/nCQ=;
-        b=OSHz0jidGjPCk3DFlgFnYZOczQdeH4FOgBiJakafJVPwPLZ0V2uHmIJgkKUnOZqc10
-         H3llQapJ59AzT7K9dyQovaFO8SJXeHwZxL+91vHBBHyyUih0njvgIq7kpLuCInAFyU+b
-         gh3gU82HtxCneCg4i8Rkv0glDQPTevwJXkD8Vo8cZ2LSXbcuu70JKUBj7K+89DI4T4Xu
-         Id0+U4JuwIR1z6lgyeh5hH8NimBtGfZ47SkYN8GBmUIYNbASAaj2uQCvZRnrMbq1dJU1
-         KzRw/q0R3H8ZYNP4uLQfIYhtZEj9OQful7aNfpz+hFMIiFWc4r0eXf9XfNlNnjpoaYuX
-         DHPQ==
-X-Gm-Message-State: AOAM530yjcNuwzq9eFdSPVpVJrUPKJwNUplMR8hnpG6uU1iYiT+yTOQN
-        U/dbe4jhNbA51wfkKTHZkRU=
-X-Google-Smtp-Source: ABdhPJxdJUJFUkdUk83/VZEqiiRbaw+nZR16/sLO/3+w3JdtUO61nqVxdUrwv69Anzp3QXIIOHhOSA==
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr1673883wml.176.1601629492205;
-        Fri, 02 Oct 2020 02:04:52 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id g12sm991740wro.89.2020.10.02.02.04.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 02:04:51 -0700 (PDT)
-Subject: Re: [PATCH v2 08/12] soc: mediatek: pm-domains: Add subsystem clocks
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
-        drinkcat@chromium.org, hsinyi@chromium.org, weiyi.lu@mediatek.com,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
- <20201001160154.3587848-9-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d6d132ba-1ce1-f537-57ba-4b6bed784b48@gmail.com>
-Date:   Fri, 2 Oct 2020 11:04:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387666AbgJBJFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:05:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51324 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726029AbgJBJFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:05:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601629508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NLWsHd/XYO6vX/kTuPru1/vkApAYvvP2ucBNJ3kKVJc=;
+        b=nBaClv4gbAC5DRD/cBtVyI8bqQREp2ba72exdgoEbhBJpsfwpn/ZoB3oPxLsMABwnqlpRu
+        HzEBZxVHxXQrmsKtRjP0XMUiPs1bX615oSEwHpwz9Nb/lecPKLCOrIUClTK6lUaxeOxGqW
+        i/MSW4kEL6K8x/sZh3QhX/3UrPsQ7qE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4F805AC82;
+        Fri,  2 Oct 2020 09:05:08 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 11:05:07 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201002090507.GB4555@dhcp22.suse.cz>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
+ <20201002071123.GB20872@dhcp22.suse.cz>
+ <20201002085014.GC3227@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <20201001160154.3587848-9-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002085014.GC3227@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 02-10-20 09:50:14, Mel Gorman wrote:
+> On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
+> > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
+> > > > 
+> > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
+> > > > the allocator (different from what you posted in previous version) so that it
+> > > > only looks at the flag after it tries to allocate from pcplist and finds out
+> > > > it's empty. So, no inventing of new page allocator entry points or checks such
+> > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+> > > > affect existing fast paths.
+> > > >
+> > > OK. Now i see. Please have a look below at the patch, so we fully understand
+> > > each other. If that is something that is close to your view or not:
+> > > 
+> > > <snip>
+> > > t a/include/linux/gfp.h b/include/linux/gfp.h
+> > > index c603237e006c..7e613560a502 100644
+> > > --- a/include/linux/gfp.h
+> > > +++ b/include/linux/gfp.h
+> > > @@ -39,8 +39,9 @@ struct vm_area_struct;
+> > >  #define ___GFP_HARDWALL                0x100000u
+> > >  #define ___GFP_THISNODE                0x200000u
+> > >  #define ___GFP_ACCOUNT         0x400000u
+> > > +#define ___GFP_NO_LOCKS                0x800000u
+> > 
+> > Even if a new gfp flag gains a sufficient traction and support I am
+> > _strongly_ opposed against consuming another flag for that. Bit space is
+> > limited. 
+> 
+> That is definitely true. I'm not happy with the GFP flag at all, the
+> comment is at best a damage limiting move. It still would be better for
+> a memory pool to be reserved and sized for critical allocations.
 
+Completely agreed. The only existing usecase is so special cased that a
+dedicated pool is not only easier to maintain but it should be also much
+better tuned for the specific workload. Something not really feasible
+with the allocator.
 
-On 01/10/2020 18:01, Enric Balletbo i Serra wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
+> > Besides that we certainly do not want to allow craziness like
+> > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
 > 
-> For the bus protection operations, some subsystem clocks need to be enabled
-> before releasing the protection. This patch identifies the subsystem clocks
-> by it's name.
-> 
-> Suggested-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> [Adapted the patch to the mtk-pm-domains driver]
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
-> Changes in v2:
-> - Use dev_err_probe if getting clocks fails, so an error is not printed
->    if is deferred.
-> 
->   drivers/soc/mediatek/mtk-pm-domains.c | 89 ++++++++++++++++++++++-----
->   1 file changed, 75 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-> index e0a52d489fea..2075072f16da 100644
-> --- a/drivers/soc/mediatek/mtk-pm-domains.c
-> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-[...]
->   
-> +	for (i = 0; i < pd->num_subsys_clks; i++) {
-> +		struct clk *clk = of_clk_get(node, i + clk_ind);
-> +
-> +		if (IS_ERR(clk)) {
-> +			ret = PTR_ERR(clk);
-> +			dev_err_probe(scpsys->dev, PTR_ERR(clk),
-> +				      "%pOFn: failed to get clk at index %d: %d\n",
-> +				      node, i + clk_ind, ret);
-> +			goto err_put_subsys_clocks;
-> +		}
-> +
-> +		pd->subsys_clks[i].clk = clk;
-> +	}
-> +
-> +	ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
-> +	if (ret)
-> +		goto err_put_subsys_clocks;
-> +
+> That would deserve to be taken to a dumpster and set on fire. The flag
+> combination could be checked in the allocator but the allocator path fast
+> paths are bad enough already.
 
-Not sure if it really matters, but logically we should prepare the basic clocks 
-before we prepare the subsystem clocks. And fix the error handling accordingly.
+If a new allocation/gfp mode is absolutely necessary then I believe that
+the most reasoanble way forward would be
+#define GFP_NO_LOCK	((__force gfp_t)0)
 
-Regards,
-Matthias
+and explicitly document it as a final flag to use without any further
+modifiers. Yeah there are some that could be used potentially - e.g. zone
+specifiers, __GFP_ZERO and likely few others. But support for those can
+be added when there is an actual and reasonable demand.
 
->   	ret = clk_bulk_prepare(pd->num_clks, pd->clks);
->   	if (ret)
-> -		goto err_put_clocks;
-> +		goto err_unprepare_subsys_clocks;
->   
->   	/*
->   	 * Initially turn on all domains to make the domains usable
-> @@ -462,6 +513,12 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
->   
->   err_unprepare_clocks:
->   	clk_bulk_unprepare(pd->num_clks, pd->clks);
-> +err_unprepare_subsys_clocks:
-> +	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
-> +err_put_subsys_clocks:
-> +	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
-> +	devm_kfree(scpsys->dev, pd->subsys_clks);
-> +	pd->num_subsys_clks = 0;
->   err_put_clocks:
->   	clk_bulk_put(pd->num_clks, pd->clks);
->   	devm_kfree(scpsys->dev, pd->clks);
-> @@ -541,6 +598,10 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
->   	clk_bulk_unprepare(pd->num_clks, pd->clks);
->   	clk_bulk_put(pd->num_clks, pd->clks);
->   	pd->num_clks = 0;
-> +
-> +	clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
-> +	clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
-> +	pd->num_subsys_clks = 0;
->   }
->   
->   static void scpsys_domain_cleanup(struct scpsys *scpsys)
-> 
+I would also strongly argue against implementation alowing to fully
+consume pcp free pages.
+-- 
+Michal Hocko
+SUSE Labs
