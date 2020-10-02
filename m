@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C3C281966
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED534281975
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388074AbgJBRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
+        id S2388370AbgJBRii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726215AbgJBRh5 (ORCPT
+        with ESMTP id S2388344AbgJBRih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:37:57 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547F1C0613D0;
-        Fri,  2 Oct 2020 10:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=to+vK9pP2dLguamTHaczaBybq3kiyFTh/VeqEu6seGE=; b=0v7YjrRvVixifVEoCgtySQpeGD
-        Drk8eBf6oWg8XNIRsgxvG89pt718BNgZVvVQ2q4D8lpnbz9LxHprroh6h22ouE//Ec/8ApgnVU/QQ
-        Zbsa7aL9AlHmw/t3ityWKMEIjyRn2e96Rsuf6Wix6OjBc2WBA4oK+YFAggU6MR6JZZ770kIhZIP2a
-        q1pR0WVT4TrMZXZ28BJVJdwE2StKO+mUUhoA6UuIt5ka5C+d5IY2tOGdP5nod8BgOy9yyBc5khRmD
-        tn2nQYR4hrmAd2yEjbzKSYtEHb1AleKmVyHKGpltvj6X4+Zu7mKxGwxu6h/q7fxWv1SfN9oIUBa2A
-        deYoazIg==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOP0A-0005nF-Pl; Fri, 02 Oct 2020 17:37:51 +0000
-Subject: Re: linux tooling mailing list
-To:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Nick Desaulniers <ndesaulniers@google.com>, nickc@redhat.com,
-        maskray@google.com, linux@rasmusvillemoes.dk,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org, postmaster@vger.kernel.org,
-        peterz@infradead.org, behanw@converseincode.com
-References: <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
- <20200930173719.GE2628@hirez.programming.kicks-ass.net>
- <CAKwvOdk+Rp0QGJmX07XxD8L7WVgco98LHFTu-R_2R22+UMVerQ@mail.gmail.com>
- <20200930.152652.1530458864962753844.davem@davemloft.net>
- <CA+icZUXjYTJO4cC1EAhbdqnd19HjAwyFM+iSTW37xJM5dFHQuA@mail.gmail.com>
- <20201002172238.GT28786@gate.crashing.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4cf8e2ba-3120-7f25-a9a2-1707d3f88276@infradead.org>
-Date:   Fri, 2 Oct 2020 10:37:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 2 Oct 2020 13:38:37 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34077C0613AF
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:38:36 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id x2so1239981pjk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=49NcK3Fme0jYUKwd2j3ovAlb1goyRmSbkHCdODdIeDc=;
+        b=B2AcK2G2Zh3IWqw0qnXXSEyovKhS81QCGmrhMZ3ce/zFAH8Sg5udPHdnENJ50X13Ny
+         mEJHMqIwsp/h8jMADbLs/i5ewGbAbYqXGdprV6QTunJ845w4WHhNz8T8QGab64x5e6+Q
+         YLHO8obovOngL6OSrlrGgaARlZ7WxNMPSsEac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=49NcK3Fme0jYUKwd2j3ovAlb1goyRmSbkHCdODdIeDc=;
+        b=W57PlULLR9Z0pP1ZF9icA943aeuJnaZrRX5+HV6DYtAsnb5cuGmIN+P2VH66YZ2GGW
+         7wKAPLh/+Ijg1oV1yyXKX4DXGVlYQr+CQdR7UP0N4BhMIUVg5U9TjGQJ3pZFJzlwPIz9
+         V7YYJkjrOnxXHKKy+v9bw9Dk1H2O44haieJgNQAisDJqReK+5u3XUjPjJhcNKUwXcwCx
+         n4rgrFGFJ8CnSv7K/ZT8F5SUj3kgi4JySw5YE/jp7A74ZefSX0DbPyk3JUBlLGyP+CZX
+         tujFOAdhZaGHwNl2CZ8E14jHS6AVQvMpDxcxTUklWqKkvHftZVP9bdd45BMdmrCgHJwH
+         u/mA==
+X-Gm-Message-State: AOAM533cpO8KDLAnjwrJ+tg9iFCZ67G7l7b+rvo8OEYm02qa15CVeYMe
+        jQ+hLvYQxK/h5MrSLDI+WimYqA==
+X-Google-Smtp-Source: ABdhPJzd49fqaj3jNCPJ5+x9jDSGu4Py3vop91Y7k3rEOOPzUXlaVdJLNBBHCW5hBUb3EGuK0nLHtQ==
+X-Received: by 2002:a17:90a:71c2:: with SMTP id m2mr4004540pjs.34.1601660315767;
+        Fri, 02 Oct 2020 10:38:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q65sm2660305pfq.219.2020.10.02.10.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 10:38:33 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Jessica Yu <jeyu@kernel.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/16] Introduce partial kernel_read_file() support
+Date:   Fri,  2 Oct 2020 10:38:12 -0700
+Message-Id: <20201002173828.2099543-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201002172238.GT28786@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 10:22 AM, Segher Boessenkool wrote:
-> On Fri, Oct 02, 2020 at 02:01:13PM +0200, Sedat Dilek wrote:
->> On Thu, Oct 1, 2020 at 12:26 AM David Miller <davem@davemloft.net> wrote:
->>> From: Nick Desaulniers <ndesaulniers@google.com>
->>> Date: Wed, 30 Sep 2020 12:29:38 -0700
->>>> linux-toolchains@vger.kernel.org
->>>
->>> Created.
->>
->> I am subscribed, too.
->>
->> Will there be a(n)...?
->>
->> * archive (for example marc.info)
-> 
-> A lore archive would be good?
+v5:
+- add more reviews (thank you!)
+- add "description" string to post_load_data API (mimi)
+- drop bug fix that got taken already
+v4: https://lore.kernel.org/lkml/20200729175845.1745471-1-keescook@chromium.org/
+v3: https://lore.kernel.org/lkml/20200724213640.389191-1-keescook@chromium.org/
+v2: lost to the ether
+v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
 
-That has already been requested.
+Hi,
 
-> 
->> * patchwork url
-> 
-> We do not have any repositories associated with this list, and there
-> won't be many patches anyway, so patchwork will only be useful as a kind
-> of mail archive.  I can ask to set one up though, if people want that?
-> 
-> 
-> Segher
-> 
+Here's my tree for adding partial read support in kernel_read_file(),
+which fixes a number of issues along the way. It's got Scott's firmware
+and IMA patches ported and everything tests cleanly for me (even with
+CONFIG_IMA_APPRAISE=y), and now appears to pass 0day. :)
 
+The intention is for this to go via Greg's tree since Scott's driver
+code will depend on it.
+
+Thanks,
+
+-Kees
+
+Kees Cook (12):
+  fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
+  fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
+  fs/kernel_read_file: Split into separate source file
+  fs/kernel_read_file: Remove redundant size argument
+  fs/kernel_read_file: Switch buffer size arg to size_t
+  fs/kernel_read_file: Add file_size output argument
+  LSM: Introduce kernel_post_load_data() hook
+  firmware_loader: Use security_post_load_data()
+  module: Call security_kernel_post_load_data()
+  LSM: Add "contents" flag to kernel_read_file hook
+  fs/kernel_file_read: Add "offset" arg for partial reads
+  firmware: Store opt_flags in fw_priv
+
+Scott Branden (4):
+  fs/kernel_read_file: Split into separate include file
+  IMA: Add support for file reads without contents
+  firmware: Add request_partial_firmware_into_buf()
+  test_firmware: Test partial read support
+
+ drivers/base/firmware_loader/fallback.c       |  19 +-
+ drivers/base/firmware_loader/fallback.h       |   5 +-
+ .../base/firmware_loader/fallback_platform.c  |  12 +-
+ drivers/base/firmware_loader/firmware.h       |   7 +-
+ drivers/base/firmware_loader/main.c           | 135 ++++++++++---
+ fs/Makefile                                   |   3 +-
+ fs/exec.c                                     | 132 +-----------
+ fs/kernel_read_file.c                         | 189 ++++++++++++++++++
+ include/linux/firmware.h                      |  12 ++
+ include/linux/fs.h                            |  39 ----
+ include/linux/ima.h                           |  20 +-
+ include/linux/kernel_read_file.h              |  55 +++++
+ include/linux/lsm_hook_defs.h                 |   6 +-
+ include/linux/lsm_hooks.h                     |  13 ++
+ include/linux/security.h                      |  21 +-
+ kernel/kexec.c                                |   2 +-
+ kernel/kexec_file.c                           |  19 +-
+ kernel/module.c                               |  24 ++-
+ lib/test_firmware.c                           | 154 ++++++++++++--
+ security/integrity/digsig.c                   |   8 +-
+ security/integrity/ima/ima_fs.c               |  10 +-
+ security/integrity/ima/ima_main.c             |  73 +++++--
+ security/integrity/ima/ima_policy.c           |   1 +
+ security/loadpin/loadpin.c                    |  17 +-
+ security/security.c                           |  28 ++-
+ security/selinux/hooks.c                      |   8 +-
+ .../selftests/firmware/fw_filesystem.sh       |  91 +++++++++
+ 27 files changed, 807 insertions(+), 296 deletions(-)
+ create mode 100644 fs/kernel_read_file.c
+ create mode 100644 include/linux/kernel_read_file.h
 
 -- 
-~Randy
+2.25.1
 
