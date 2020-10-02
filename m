@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACFD28173D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47383281740
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388081AbgJBP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:56:54 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:50006 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387869AbgJBP4y (ORCPT
+        id S2388097AbgJBP50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBP5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:56:54 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kONQS-006hA3-Ex; Fri, 02 Oct 2020 09:56:52 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kONQR-0002tx-7y; Fri, 02 Oct 2020 09:56:52 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     syzbot <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, christian@brauner.io,
-        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
-        oleg@redhat.com, syzkaller-bugs@googlegroups.com,
-        Tejun Heo <tj@kernel.org>
-References: <000000000000da06e405b0b20f1e@google.com>
-Date:   Fri, 02 Oct 2020 10:56:08 -0500
-In-Reply-To: <000000000000da06e405b0b20f1e@google.com> (syzbot's message of
-        "Fri, 02 Oct 2020 08:48:20 -0700")
-Message-ID: <87zh54bp0n.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 2 Oct 2020 11:57:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20966C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:57:25 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w5so2359745wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RKAvB3+WMKNN79UahsqcncMsVNqOcgEb3CYVYKIldnE=;
+        b=avZDU7go3+yv2IeEagTPM8GH/4BJn08wqf5PQiplnVADu+OAvfUcqmRM1af3wCvl+u
+         RFO+xnZ8SUVbzCHkhjKXkZRtfQTiSQU9AtLUK4ZL3ePXVt8v7zC2Yl3mmc07FaJ2vViy
+         GzroUTM1aHOB6qAlZpGSgBAwsdUHsPVAq43hfKmoNvDrtcDMnwviGJkWEPim3xt0mlO6
+         POEMXBQD10jxyvHgVOQ50LlCv9hSQhnGMGVAfHQ7l5zQZ9Zqw44YKhjZ2rXog0hiBNKi
+         WJKEljWSN3mkOzpn3P9G8oCaAeEQ10F8YeNaegkg930nU8gpVYGuEJsfSc+0YAjzvFNi
+         dezg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RKAvB3+WMKNN79UahsqcncMsVNqOcgEb3CYVYKIldnE=;
+        b=OcFi+JufJSrW8jvfTFJBxOHsB/aniSzljtGBbg2fgc6NuAu1Xf1TjREt0HrJurpjIV
+         T6M3HfoMenZUNwwZN6Aj4Jvn4hAUFF/8/Ad0kA4Cw1FzHwFPN1ZV1Im8sxccdK/SzXkz
+         KVNL5sIejgGH0dMvYNIQ93U/a+hQ5e8uDVnhwNC/x3I9SbgoxjuuMW3WVyt7d3Wmik6l
+         iYQkU/TFsaQwN4LPH7Ejv1QcQiskTzOFJ3d5pAdLUH+zcsqW6Xk1WlTQDVBce3awN9DQ
+         ZTifwBqtAO4pp5htveaOGl/WDCod5zWSa1MbDYDUTzlQL0AdfwzOoGNkZ+q0mAwTIjV2
+         0uGA==
+X-Gm-Message-State: AOAM5319qLkGQlSTvJrt32raTJgjd7sG4VgK6J1ZiDT1km5MWXShPCoy
+        KDatJpkZ2CXbVaDbqEF7/xu5iSxXkcPT491YKAGBIQ==
+X-Google-Smtp-Source: ABdhPJxwrWnm+dIu+CTA7AHImJjo0wrCfg7Coce7eyfVsTucN19FAy0Kl9BsdVtITTMsbzxPFLnGj/dMkoXGrlM33Yg=
+X-Received: by 2002:adf:fa02:: with SMTP id m2mr3765016wrr.273.1601654243794;
+ Fri, 02 Oct 2020 08:57:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kONQR-0002tx-7y;;;mid=<87zh54bp0n.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX196hOFya/wySqHa6u192rm/IRZtAuTnIvg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,SORTED_RECIPS,T_TM2_M_HEADER_IN_MSG
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4991]
-        *  2.5 SORTED_RECIPS Recipient list is sorted by address
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;syzbot
-        <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 778 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 10 (1.3%), b_tie_ro: 9 (1.2%), parse: 0.90 (0.1%),
-         extract_message_metadata: 20 (2.6%), get_uri_detail_list: 4.1 (0.5%),
-        tests_pri_-1000: 15 (2.0%), tests_pri_-950: 1.19 (0.2%),
-        tests_pri_-900: 1.00 (0.1%), tests_pri_-90: 297 (38.2%), check_bayes:
-        293 (37.6%), b_tokenize: 12 (1.5%), b_tok_get_all: 9 (1.1%),
-        b_comp_prob: 3.3 (0.4%), b_tok_touch_all: 265 (34.0%), b_finish: 0.83
-        (0.1%), tests_pri_0: 421 (54.1%), check_dkim_signature: 0.55 (0.1%),
-        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.70 (0.1%), tests_pri_10:
-        2.1 (0.3%), tests_pri_500: 6 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: WARNING in get_signal
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <cfce2276d172d3d9c4d34d966b58fd47f77c4e46.1599120059.git-series.maxime@cerno.tech>
+ <20200929221526.GA1370981@ubuntu-m3-large-x86> <20200930140758.gummt3umouva3wyu@gilmour.lan>
+ <20200930163823.GA237050@ubuntu-m3-large-x86> <cacbaef2-4221-50d8-3c5d-efab9f1a9c04@i2se.com>
+ <20201001064843.dlewcu3b7dvqanyy@gilmour.lan> <20201001085402.t6mzzwzplviunhoc@gilmour.lan>
+ <CAAvKZ65WqQqH-9JVdb5M6HcKbR3yQdvZha8n9UXXCfciYRq4aA@mail.gmail.com> <20201002151954.wazqc5riesdomlpx@gilmour.lan>
+In-Reply-To: <20201002151954.wazqc5riesdomlpx@gilmour.lan>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 2 Oct 2020 16:57:05 +0100
+Message-ID: <CAPY8ntCkY9F0e=hOyg=rs5G2a=iEbukWgmr0adXrwJQPm=uY6A@mail.gmail.com>
+Subject: Re: [PATCH v5 80/80] ARM: dts: bcm2711: Enable the display pipeline
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Tim Gover <tim.gover@raspberrypi.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com> writes:
+Hi Maxime
 
-> Hello,
+On Fri, 2 Oct 2020 at 16:19, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> syzbot found the following issue on:
-
-So this is:
-
-static void do_jobctl_trap(void)
-{
-	struct signal_struct *signal = current->signal;
-	int signr = current->jobctl & JOBCTL_STOP_SIGMASK;
-
-	if (current->ptrace & PT_SEIZED) {
-		if (!signal->group_stop_count &&
-		    !(signal->flags & SIGNAL_STOP_STOPPED))
-			signr = SIGTRAP;
-		WARN_ON_ONCE(!signr);
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-		ptrace_do_notify(signr, signr | (PTRACE_EVENT_STOP << 8),
-				 CLD_STOPPED);
-	} else {
-		WARN_ON_ONCE(!signr);
-		ptrace_stop(signr, CLD_STOPPED, 0, NULL);
-		current->exit_code = 0;
-	}
-}
-
-I have the state of this paged out of my head at the moment.
-
-Oleg or Tejun do you remember what is supposed to keep signr from being
-NULL?
-
-
-It looks like this code was introduced in commit 73ddff2bee15 ("job
-control: introduce JOBCTL_TRAP_STOP and use it for group stop trap").
-
-Eric
-
-
-> HEAD commit:    fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=116865bd900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3485e3773f7da290eecc
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1211120b900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16474c67900000
+> Hi Tim,
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com
+> On Thu, Oct 01, 2020 at 11:15:46AM +0100, Tim Gover wrote:
+> > hdmi_enable_4k60=1 causes the firmware to select 3.3 GHz for the PLLC
+> > VCO to support a core-frequency of 550 MHz which is the minimum
+> > frequency required by the HVS at 4Kp60. The side effect is that if the
+> > display clock requirements are lower than 4Kp60 then you will see
+> > different core frequencies selected by DVFS.
+> >
+> > If enable_uart=1 and the mini-uart is selected (default unless
+> > bluetooth is disabled) then the firmware will pin the core-frequency
+> > to either core_freq max (500 or 550). Although, I think there is a way
+> > of pinning it to a lower fixed frequency.
+> >
+> > The table in overclocking.md defines options for setting the maximum
+> > core frequency but unless core_freq_min is specified DVFS will
+> > automatically pick the lowest idle frequency required by the display
+> > resolution.
 >
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 6899 at kernel/signal.c:2431 do_jobctl_trap kernel/signal.c:2431 [inline]
-> WARNING: CPU: 1 PID: 6899 at kernel/signal.c:2431 get_signal+0x1b5c/0x1f00 kernel/signal.c:2621
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 1 PID: 6899 Comm: syz-executor116 Not tainted 5.9.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  panic+0x382/0x7fb kernel/panic.c:231
->  __warn.cold+0x20/0x4b kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:do_jobctl_trap kernel/signal.c:2431 [inline]
-> RIP: 0010:get_signal+0x1b5c/0x1f00 kernel/signal.c:2621
-> Code: 00 48 c7 c2 40 da 8a 88 be d1 09 00 00 48 c7 c7 a0 da 8a 88 c6 05 09 8c 09 0a 01 e8 43 97 11 00 e9 42 f5 ff ff e8 14 78 2b 00 <0f> 0b 41 bc 00 80 00 00 e9 49 f9 ff ff 4c 89 ef e8 bf 4d 6c 00 e9
-> RSP: 0018:ffffc90005537ce8 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: 0000000100000000 RCX: ffffffff814abfc3
-> RDX: ffff88809315c580 RSI: ffffffff814ac67c RDI: 0000000000000005
-> RBP: 0000000000000000 R08: 0000000000000001 R09: ffff88809315ca0f
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000008000
-> R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
->  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
->  exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
->  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
->  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
->  ret_from_fork+0x15/0x30 arch/x86/entry/entry_64.S:287
-> RIP: 0033:0x446809
-> Code: e8 5c b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fbb8cdd1db8 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-> RAX: 0000000000000000 RBX: 00000000006dbc28 RCX: 0000000000446809
-> RDX: 9999999999999999 RSI: 0000000000000000 RDI: 000000000007a900
-> RBP: 00000000006dbc20 R08: ffffffffffffffff R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-> R13: 00007ffeca1e9fef R14: 00007fbb8cdd29c0 R15: 20c49ba5e353f7cf
-> Shutting down cpus with NMI
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> I'm wondering if there's some way to detect this from Linux? I guess it
+> would be nice to be able to at least detect a broken config to warn /
+> prevent an user that their situation is not going to be reliable / work
+> really well (like if they have a 4k display without hdmi_enable_4kp60
+> set, or the issue we're discussing here)
+
+The main filter in the firmware is the parameter
+hdmi_pixel_freq_limit. That can either be set manually from
+config.txt, or defaults appropriately based on hdmi_enable_4kp60.
+Under firmware_kms [1] I read back those values to use as a filter
+within crtc_mode_valid[2].
+I can't think of a nice way of exposing that without the vc4 driver
+gaining a DT link to the firmware, and that starts to get ugly.
+
+  Dave
+
+[1] https://github.com/raspberrypi/linux/blob/rpi-5.9.y/drivers/gpu/drm/vc4/vc4_firmware_kms.c#L1859
+[2] https://github.com/raspberrypi/linux/blob/rpi-5.9.y/drivers/gpu/drm/vc4/vc4_firmware_kms.c#L1077
