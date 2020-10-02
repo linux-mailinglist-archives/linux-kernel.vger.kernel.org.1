@@ -2,328 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C8528129F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184B1281283
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387887AbgJBM1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:27:41 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37848 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgJBM1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:27:36 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F34642A2;
-        Fri,  2 Oct 2020 14:27:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1601641652;
-        bh=j93LpcQgyeDpuXdfvvJSW8hLghgVN4tBveDKw/MRz/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CLRrp2dt5LKAINgGy50PzLTlddTXc+slVHmDzvaSq1NkqsPCn8Trq3EqULwMr/iuW
-         gSRjO9cF7UjGAPUmB8JScG9cWLr63qOEluKhdAADk5voO8gixs49gtBlX+5m06vPMe
-         pSo658uWoc0eS0r1XVWDxCMhAtAPCNzfU6MA3kEk=
-Date:   Fri, 2 Oct 2020 15:26:54 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Ben Gamari <ben@smart-cactus.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: OpRegion conflicts for Skylake LPSS
-Message-ID: <20201002122654.GA3933@pendragon.ideasonboard.com>
-References: <87lh41nqqq.fsf@smart-cactus.org>
- <20160426155437.GA10202@lahna.fi.intel.com>
- <87eg9snkiw.fsf@smart-cactus.org>
- <87r3dona7g.fsf@smart-cactus.org>
- <20160429074227.GJ32610@lahna.fi.intel.com>
- <8737q24std.fsf@smart-cactus.org>
- <20160502103501.GP32610@lahna.fi.intel.com>
- <20201001221023.GA12766@pendragon.ideasonboard.com>
- <20201002103512.GZ3956970@smile.fi.intel.com>
+        id S2387879AbgJBMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:24:57 -0400
+Received: from mail-eopbgr770078.outbound.protection.outlook.com ([40.107.77.78]:65191
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733260AbgJBMYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:24:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cntq5P7DFgvzdiSj3k7yrxxK26XtBdDVW+cRsEoySxdyeFNFSA4pXv7Dlv5PT3gV2vN5ZPpYfNw6yloUx+BfrzbKiM1xcCtO6asbPtNXyTPi24F13/lv0cd7kM+cVAYMbxibu0QdxAuJnS8KvuZzo6yZbyfWWG7QsFx0JjBKcLidWXYNN03lxBojYPt5IOANE+xjk4bzKw2mWmE1pXqH58UkgJ8x1j/8boSczK+MzVlXbe4zvVCQ4Zc9aNeCjqVOC86BHfWosQBjqbb2Os9j+2z23rQAFKJwrpvI39Vn91FizkGDbfsnDY7pCZiaKOrcLWRlsvorFJX6tu4bXEwMeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4xAMjgU4/Jb+5YynW/R6bSmnTNyy0QnHfpYcyjB58zA=;
+ b=Vamw4ghgyYrmsxRVIUKUDouN2mTBYDfxOesaWOzVp/Q5UL9B6D1Zu7lGMfbDRo0OFPAOeKGho46znnmeYPkn/tixbuxaDmz2VphSFReL4Re+Hr6ASW4WF3E2phUZG4CPFDfLhgXbJEVvjRb72MVkXgG9SujrEFT5KgMF/z2gev/cNAZhxD9YrXIuhRb7kZDPB17qDikhxajAWv5Y5HUHBIHcFHcmuxJmn/8C82uwtQdPe1J0hmBBrD0AHzuztVKiNRv+M15CUreKtFHQ0X18Sw1kXpBH8Z/VI2qMBH4i0GO+yU5ggRFqMxv5ZYvq+V+IhegDFlPr6TlG4xr87rOHHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4xAMjgU4/Jb+5YynW/R6bSmnTNyy0QnHfpYcyjB58zA=;
+ b=U8f9wL8Uos1fc9SqvZ2VjlZPGusEYbrSqu+VTpcwEOqZ6Lw5LPiGfy3DTxMRWxt5HJOBgKKHW8Ewu/NsaqnqItO2XlW/tUfC6YSyhxiCEQzztMeE/yzZ43aWvQXKd/j8FJ5kkjgNVKggSIkwzCZW3veVCjcEdXC3RGwWJtARHmQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
+ DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.32; Fri, 2 Oct 2020 12:24:47 +0000
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3433.039; Fri, 2 Oct 2020
+ 12:24:47 +0000
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, robin.murphy@arm.com,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH v2 00/13] iommu/amd: Add Generic IO Page Table Framework Support
+Date:   Fri,  2 Oct 2020 12:28:17 +0000
+Message-Id: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SN6PR05CA0010.namprd05.prod.outlook.com
+ (2603:10b6:805:de::23) To DM5PR12MB1163.namprd12.prod.outlook.com
+ (2603:10b6:3:7a::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201002103512.GZ3956970@smile.fi.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN6PR05CA0010.namprd05.prod.outlook.com (2603:10b6:805:de::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13 via Frontend Transport; Fri, 2 Oct 2020 12:24:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3459bcdb-5cc4-4ee0-d3f5-08d866ce26ab
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1163:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1163345D82063D554A798863F3310@DM5PR12MB1163.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EYCuJ/3B1Dt/fSnJLuGgNKTO0r9uWCq53WX5PVBY2VTSbmSfEqVEeS4slzI8uplR8eOjelnmjCXV2hqbrBS0XRxIxu+fDQPrOO+j45vw4piGCHUwYz8detULxH59POcTwTFVRJ0/P+YecI7rl+4KqK98cR52dTxRJrYPnNo3y4IGZxOJI/2c9AZ57LhTEpCDCAdpUCIKYNdkVE9mgCiwC78PMEugjeZKU1/71ySbOpYiqcU9zxnPp+BC5ZUz108zJ3sF/f8dkYGd4p7GT2cfBvSM62jhskPNYDrs1XruqJl1EndabmS7IvGSQohW9YOLKhusENWy4PWaDoJ4d5QSfg5/Lsjz7rsG72v2hojMe98v25lDJO+/YrW/sEHuUJWKLZMs6h/KhaDfPzIjSvveqsvLxMXFUTMQkw/ks+ZO7yudNcXXtvHQ03q2LHcV3t2DOfCvF3q90RiZ+TfYF8s0Ug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(66556008)(52116002)(66946007)(83080400001)(66476007)(7696005)(5660300002)(8936002)(4326008)(6666004)(1076003)(26005)(6486002)(16526019)(186003)(44832011)(316002)(2616005)(36756003)(956004)(478600001)(83380400001)(8676002)(2906002)(86362001)(41533002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: AyitTRIa/l1MnEmZXL1EjQn2fE1/Ec3GAnsH9sKzvxX8c3f/ybuIJzaSH7e2B6UxtBd3xo0094U6UQ4e5+RN8F+xGNzTWRYrWSa0BPdsG+szpatDBWUnrxl6fQt8XFvgKIbJhe2kVvz0GS8hfeFdn35Zp0W9gWpEAYPAcYuN2MWDJNPu41+iivfPnyd2suadqlJzFqJResqv4ElpnB1sXeOVtVrT9uj4/QmV5gfDocbfjf1ZpljsxOy78s9djga2ZAxqUPBUIwLpsQ+ghkpJgIhASJglb23IH1vQIOyTSUObDIjdFLM8sIx9lMih0sluCwZrCzPflc3VtXVepSfxU29/PQtImVKYP7ZIopSBnIH0BTJU3Aj9hwzAJ97g48QnygHqFKgKtpgJqxhjQDV9v9KidrO1sTFUdQPUI30sT/c/WWmhFzF8vV2G32yBTO7ZAvo6FFSsVipdixJDPWnRuVgvAjG/jCBV/u5+6MAbmaSu2g0vuFaFA9na1MdhHqHPnfUj+/+0iRQPdgjbrB48tPwVfDZccartLcXA8ZONvIHqVrbALoUnRDWfok/HKLLbICcqcgCxqK50NJuOhMKwf2tduSdcg+YFTXv+aXVMJ8xfxVB0KFTT4YqJA2Fpuog/w736JxR/GWXWey8PZtL2dg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3459bcdb-5cc4-4ee0-d3f5-08d866ce26ab
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 12:24:47.4015
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wjjfmfXmimdBqUlaq75P0kryBndQV1kJ+7LPmCb4A/SX7Wtmvy2oko8lNCLsOf0hJh+CpGV4cIpgYEk6L05sjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+The framework allows callable implementation of IO page table.
+This allows AMD IOMMU driver to switch between different types
+of AMD IOMMU page tables (e.g. v1 vs. v2).
 
-On Fri, Oct 02, 2020 at 01:35:12PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 02, 2020 at 01:10:23AM +0300, Laurent Pinchart wrote:
-> > Hi Mika,
-> > 
-> > Reviving an old thread.
-> 
-> Very old :-)
-> 
-> > On Mon, May 02, 2016 at 01:35:01PM +0300, Mika Westerberg wrote:
-> > > On Sun, May 01, 2016 at 12:47:58AM +0200, Ben Gamari wrote:
-> > > > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > > > > On Fri, Apr 29, 2016 at 09:30:27AM +0200, Ben Gamari wrote:
-> > > > >> Ben Gamari <ben@smart-cactus.org> writes:
-> > > > >> 
-> > > > >> > [ Unknown signature status ]
-> > > > >> > Mika Westerberg <mika.westerberg@linux.intel.com> writes:
-> > > > >> >
-> > > > >> >> On Tue, Apr 26, 2016 at 02:44:13AM +0200, Ben Gamari wrote:
-> > > > >> >>> 
-> > > > >> > snip
-> > > > >> >
-> > > > >> >>> It looks very much like these are describing the same device. Perhaps
-> > > > >> >>> the lpss driver should be binding to this ACPI node? Or perhaps this is
-> > > > >> >>> a firmware issue? Any guidance would be greatly appreciated.
-> > > > >> >>
-> > > > >> >> Can you send me full acpidump of that machine?
-> > > > >> >
-> > > > >> > It can be found at
-> > > > >> > https://github.com/bgamari/dell-e7470-dsdt/blob/master/acpi.log.
-> > > > >> >
-> > > > >> Did this provide any insight? Let me know if more information would be
-> > > > >> helpful.
-> > > > >
-> > > > > Sorry about the delay.
-> > > >
-> > > > No worries.
-> > > > 
-> > > > > The GEXP device is most probably a GPIO expander that is connected to
-> > > > > one of the I2C buses. And it indeed looks to use directly the I2C host
-> > > > > controller registers so kernel rightfully complains about that.
-> > > > >
-> > > > > Are you able to run Windows on that machine? If yes, it would be nice to
-> > > > > know if the INT3446 I2C device is shown in the device manager.
-> > > >
-> > > > I had the original SSD that came with the machine with the original
-> > > > Windows 7 installation intact. I popped it in and found no such device.
-> > > > I then updated to Windows 10 (albeit still booting with the legacy BIOS,
-> > > > not EFI) and found that once again there is no such device shown in
-> > > > device manager.
-> > > 
-> > > That's what I would expect. ACPI spec says that if there is an OpRegion
-> > > touching the same registers than PCI device the OS should not load any
-> > > driver for that device. I guess this is exactly what Windows does.
-> > > 
-> > > Linux does it also but it in addition it issues a scary warning which
-> > > might get users thinking there is something wrong with their system.
-> > 
-> > I'm trying to get camera sensors detected on a Microsoft Surface Go 2
-> > machine (ACPI dumps available at
-> > https://github.com/linux-surface/acpidumps/tree/master/surface_go_2).
-> > The CPU is an Intel Pentium Gold 4425Y, based on Kaby Lake-Y. The DSDT
-> > has been carefully designed, with great care to make it as useless as
-> > possible, so I'm experiencing a few issues.
-> 
-> I think Sakari has a laptop with PCA953x driver in ASL (AML). I remember it had
-> some issues.
+This series refactors the current implementation of AMD IOMMU v1 page table
+to adopt the framework. There should be no functional change.
+Subsequent series will introduce support for the AMD IOMMU v2 page table.
 
-What a surprise, isn't it ? :-)
+Thanks,
+Suravee
 
-> > One of the camera sensors is connected to I2C4, backed by an LPSS I2C
-> > controller.
-> > 
-> > 00:19.2 Signal processing controller: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #4 (rev 21)
-> >         Subsystem: QUANTA Computer Inc Sunrise Point-LP Serial IO I2C Controller
-> >         Flags: fast devsel, IRQ 34
-> >         Memory at b1648000 (64-bit, non-prefetchable) [size=4K]
-> >         Capabilities: [80] Power Management version 3
-> >         Capabilities: [90] Vendor Specific Information: Len=14 <?>
-> >         Kernel modules: intel_lpss_pci
-> > 
-> > Unfortunately the driver fails to probe due to the same issue reported
-> > by Ben:
-> > 
-> > [    2.060237] intel-lpss 0000:00:19.2: enabling device (0000 -> 0002)
-> > [    2.060483] ACPI Warning: SystemMemory range 0x00000000B1648000-0x00000000B16481FF conflicts with OpRegion 0x00000000B1648000-0x00000000B1648207 (\_SB.PCI0.GEXP.BAR0) (20200528/utaddress-213)
-> > [    2.060489] ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
-> > [    2.060726] intel-lpss: probe of 0000:00:19.2 failed with error -16
-> > 
-> > I've checked the GEXP device in the DSDT, and it includes an LPSS I2C
-> > host controller driver in AML, using an OpRegion that covers the I2C
-> > controller registers.
-> > 
-> > Adding acpi_enforce_resources=lax to the kernel command line allows the
-> > I2C controller to be probed, but that's hardly a good solution, as two
-> > drivers (one in the DSDT, one in the kernel) that poke the same hardware
-> > is calling for trouble.
-> > 
-> > I've noticed that Windows maps the devices to different addresses than
-> > Linux. On Windows, the I2C controllers are at
-> > 
-> > I2C0 (8086:9d60): 0xfe40f000 - 0xfe40ffff (IRQ 16)
-> > I2C1 (8086:9d61): 0xfe40e000 - 0xfe40efff (IRQ 17)
-> > I2C2 (8086:96d2): 0xfe40d000 - 0xfe40dfff (IRQ 18)
-> > I2C3 (8086:96d3): 0xfe40c000 - 0xfe40cfff (IRQ 19)
-> > I2C4 (8086:96d4): 0xfe409000 - 0xfe409fff (IRQ 34)
-> > 
-> > while on Linux they're at
-> > 
-> > I2C0 (8086:9d60): 0xb1642000 - 0xb1642fff (IRQ 16)
-> > I2C1 (8086:9d61): 0xb1643000 - 0xb1643fff (IRQ 17)
-> > I2C2 (8086:96d2): 0xb1644000 - 0xb1644fff (IRQ 18)
-> > I2C3 (8086:96d3): 0xb1645000 - 0xb1645fff (IRQ 19)
-> > I2C4 (8086:96d4): 0xb1648000 - 0xb1648fff (IRQ 34)
-> 
-> Addresses are defined by BIOS/Linux PCI core. Basically it sounds like the
-> addresses from the BIOS are changed by OS. Can you enable PCI early dump in
-> Linux and look at what the BIOS assignments there?
+Change from V1 (https://lkml.org/lkml/2020/9/23/251)
+  - Do not specify struct io_pgtable_cfg.coherent_walk, since it is
+    not currently used. (per Robin)
+  - Remove unused struct iommu_flush_ops.  (patch 2/13)
+  - Move amd_iommu_setup_io_pgtable_ops to iommu.c instead of io_pgtable.c
+    patch 13/13)
 
-For the record if anyone wonders how to do so, that's pci=earlydump on
-the kernel command line.
+Suravee Suthikulpanit (13):
+  iommu/amd: Re-define amd_iommu_domain_encode_pgtable as inline
+  iommu/amd: Prepare for generic IO page table framework
+  iommu/amd: Move pt_root to to struct amd_io_pgtable
+  iommu/amd: Convert to using amd_io_pgtable
+  iommu/amd: Declare functions as extern
+  iommu/amd: Move IO page table related functions
+  iommu/amd: Restructure code for freeing page table
+  iommu/amd: Remove amd_iommu_domain_get_pgtable
+  iommu/amd: Rename variables to be consistent with struct
+    io_pgtable_ops
+  iommu/amd: Refactor fetch_pte to use struct amd_io_pgtable
+  iommu/amd: Introduce iommu_v1_iova_to_phys
+  iommu/amd: Introduce iommu_v1_map_page and iommu_v1_unmap_page
+  iommu/amd: Adopt IO page table framework
 
-[    0.843745] pci 0000:00:19.2: [8086:9d64] type 00 class 0x118000
-[    0.843747] pci 0000:00:19.2: config space:
-[    0.844637] 00000000: 86 80 64 9d 00 00 10 00 21 00 80 11 10 00 80 00
-[    0.844638] 00000010: 04 80 64 b1 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844639] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 2d 15 37 12
-[    0.844640] 00000030: 00 00 00 00 80 00 00 00 00 00 00 00 ff 03 00 00
-[    0.844641] 00000040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844641] 00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844642] 00000060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844643] 00000070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844644] 00000080: 01 90 03 00 0b 00 00 00 00 00 00 00 00 00 00 00
-[    0.844645] 00000090: 09 00 14 f0 10 00 40 01 01 21 00 00 c1 24 00 00
-[    0.844645] 000000a0: 00 08 0f 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844646] 000000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844647] 000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844648] 000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844649] 000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    0.844649] 000000f0: 00 00 00 00 00 00 00 00 b3 0f 41 08 00 00 00 00
-[    0.844920] pci 0000:00:19.2: reg 0x10: [mem 0xb1648000-0xb1648fff 64bit]
-
-So I think Windows remaps the PCI BAR, Linux doesn't.
-
-> Also you may check it in EFI shell.
-
-The firmware doesn't provide one by default on this machine.
-
-> In any case I don't think it should affect the system, but if the ASL
-> has hard coded addresses for hardware, it's a very bad one and must be avoided.
-
-        Device (GEXP)
-        {
-            Name (_ADR, One)  // _ADR: Address
-            Name (_STA, 0x0B)  // _STA: Status
-            OperationRegion (BAR0, SystemMemory, SB04, 0x0208)
-	    ...
-
-SB04 is a field in an operation region defined as
-
-    Name (PNVB, 0x8CF70018)
-    Name (PNVL, 0x0287)
-    OperationRegion (PNVA, SystemMemory, PNVB, PNVL)
-
-# acpidbg -b 'evaluate SB04'
-Evaluating \SB04
-Evaluation of \SB04 returned object 00000000207ad9ad, external buffer length 18
- [Integer] = 00000000B1648000
-
-Do I correctly understand that the GEXP.BAR0 operation region address is
-set to a value provided by the firmware, and then never changes ? If the
-OperationRegion of the GEXP can't be remapped, it will be left accessing
-a PCI device (he LPSS) that have been moved after the PCI BAR has been
-remapped by Windows, right ? I wonder if this means that these AML code
-paths are not triggered after boot time, or if something else is put in
-place to handle the conflict.
-
-My goal is to figure out how to operate this safely in Linux.
-acpi_enforce_resources=lax is good enough for "operate", but doesn't
-seem it matches the "safely" requirement.
-
-> > Interestingly, the I2C4 object contains the following in the DSDT:
-> > 
-> >             If ((SMD4 != 0x02))
-> >             {
-> >                 Name (_HID, "INT3446")  // _HID: Hardware ID
-> >                 Method (_HRV, 0, NotSerialized)  // _HRV: Hardware Revision
-> >                 {
-> >                     Return (LHRV (SB14))
-> >                 }
-> > 
-> >                 Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> >                 {
-> >                     Return (LCRS (SMD4, SB04, SIR4))
-> >                 }
-> > 
-> >                 Method (_STA, 0, NotSerialized)  // _STA: Status
-> >                 {
-> >                     Return (LSTA (SMD4))
-> >                 }
-> >             }
-> > 
-> >             If ((SMD4 == 0x02))
-> >             {
-> >                 Name (_ADR, 0x00190002)  // _ADR: Address
-> >                 Method (_DSM, 4, Serialized)  // _DSM: Device-Specific Method
-> >                 {
-> >                     If (PCIC (Arg0))
-> >                     {
-> >                         Return (PCID (Arg0, Arg1, Arg2, Arg3))
-> >                     }
-> > 
-> >                     Return (Buffer (One)
-> >                     {
-> >                          0x00                                             // .
-> >                     })
-> >                 }
-> >             }
-> > 
-> > I've evaluated SMD4 with acpidbg and it's equal to 2. I thought it might
-> > be set to a different value in windows, but the hardware IDs reported by
-> > the device manager all refer to the PCI device, not the ACPI device, so
-> > I don't think that's a lead.
-> 
-> This is basically a switch in the reference BIOS how to enumerate LPSS devices,
-> if you don't have such a knob in BIOS menus, I think it's no way to change it.
-
-The firmware menu is very simple, it's a MS machine, designed for
-Windows exclusively, so there are very few options (secure boot can
-still be disabled though).
-
-> > I really wonder how this is supposed to be handled, would the device
-> > really be designed to work in such an unsafe way ? Does Windows remap
-> > the BAR due to the conflict with the GEXP, rendering the GEXP
-> > non-operational after boot ? I have tried to locate the GEXP in the
-> > device manager in Windows, but with its _STA method returning 0x0b, it
-> > seems not to be visible.
-> 
-> Obviously it's designed for Windows (sic!) for a very certain driver which can
-> have all possible ugliness in the world. When people are living by the terms of
-> 20 years old world and doing things in the same way we won't have situation any
-> better.
-> 
-> > > > >> Also, is there a way to simply allow the driver subsystem to allow
-> > > > >> probing to proceed despite this resource conflict so that I can resume
-> > > > >> debugging my original input device issue?
-> > > > >
-> > > > > Try to pass "acpi_enforce_resources=lax" in the kernel command line.
-> > > > 
-> > > > Thanks, indeed this allows the driver to load. Unfortunately it didn't
-> > > > take long to encounter further issues.
-> > > > 
-> > > > The motivation for all of this is to get the touchpad into I2C mode, since
-> > > > currently it is merely exposed as a simple PS/2 device. Unfortunately it
-> > > > seems that even Windows 10 doesn't use the touchpad's I2C mode (although
-> > > > I suppose it's possible that this is guarded on UEFI boot; moreover
-> > > > Windows appears to have proper support for configurating this touchpad
-> > > > in PS/2 mode, which is unfortunately an ALPS devices).
-> > > > 
-> > > > Looking at the DSDT it seems that enabling the I2C interface may require
-> > > > the help of the embedded controller, the state of which is exposed in
-> > > > the DSDT through a mysteriously-named SDS1 field. It looks like this
-> > > > field could take on a number of values which identify a variety of
-> > > > different touchpads. Given that it looks like GPIO pin states may be
-> > > > determined by the value of this field I'm a bit reluctant to go fiddling
-> > > > around with it. 
-> > > > 
-> > > > I do wish that firmware weren't such a nightmare.
-> > > 
-> > > +1
+ drivers/iommu/amd/Kconfig           |   1 +
+ drivers/iommu/amd/Makefile          |   2 +-
+ drivers/iommu/amd/amd_iommu.h       |  22 +
+ drivers/iommu/amd/amd_iommu_types.h |  40 +-
+ drivers/iommu/amd/io_pgtable.c      | 534 +++++++++++++++++++++++
+ drivers/iommu/amd/iommu.c           | 644 +++-------------------------
+ drivers/iommu/io-pgtable.c          |   3 +
+ include/linux/io-pgtable.h          |   2 +
+ 8 files changed, 656 insertions(+), 592 deletions(-)
+ create mode 100644 drivers/iommu/amd/io_pgtable.c
 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
