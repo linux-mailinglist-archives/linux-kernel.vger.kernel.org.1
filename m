@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408D92811E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F91C2811E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387803AbgJBMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:00:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgJBMAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:00:55 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDE09206C9;
-        Fri,  2 Oct 2020 12:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601640055;
-        bh=Sr90evd9gcNYgaoF17OoqAbGXM9qXNWcrxXuzdz7v40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UhoNDI0F1WeWxvof9iTBiHlzUYB7yl/wCXUVMZBInL8gGWKaUvARFAAeoUmiPqv9H
-         wAW/p2Vb4fKSS6SlDpPFTz/XLBbMN2rambZGagb8Y6o+AW8NYxJiW0mL5+KtExfc+z
-         o8WFSJOo0aabEfkwCmiyM5HJdDbuHM5WCWb8j5Hs=
-Received: by pali.im (Postfix)
-        id 541DBE79; Fri,  2 Oct 2020 14:00:52 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 14:00:52 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
-Message-ID: <20201002120052.jouqx6ap4wrskozs@pali>
-References: <20200902144344.16684-1-pali@kernel.org>
+        id S2387805AbgJBMB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJBMB0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:01:26 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C1C0613D0;
+        Fri,  2 Oct 2020 05:01:25 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id u25so1088016otq.6;
+        Fri, 02 Oct 2020 05:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ibilTAtq7c7ViJ+NUjN/YiXyYNav9cZNhWApxQvHAD4=;
+        b=oRCA71AdVYnUOTVk48MNBj1jb/RIQeaF9OwWEIFdwtbCq3sKZS5O7TwTucjI4nFqId
+         TZioI3D5vkqWOrsC3jCDQtujEQlYRKZp13wW7VLj+G8oQgxabkALkRHgA7UByl6J2Bgl
+         TD0DYG7L6ilSumfNFs/9ybbrL6f0llB3grYDmqBzbKCbFvk1m6lnkBbIr6RBO0nJjmFW
+         VUYZNqhXc8N67IcH3CU7Vb05SXn/f0OxlQKG4XqhNLi0pwGkv6Epa19TyDw0ZKmhYY8a
+         +qTu4BYKoSdxZYtJotsVDZh8KbWCySxkKvAYA4PhezLP5tkEsbnO8g2vkBDcPgLWvt5r
+         6EHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ibilTAtq7c7ViJ+NUjN/YiXyYNav9cZNhWApxQvHAD4=;
+        b=MvaGlqJtLSitFI4yvAkIBwhLenI4vlcuxm7Sp5U7s7AkCyt693YN4OCHT48lLCQggC
+         m49D998TG/xw27Kjjo0Gscui9ln85ar8eKdDKMPA2At+dDnRdWUEGbmpm8PZjiYAOeI9
+         7hlWg+toqWlOrpCc9WHo9IHltGefJ3I9eOrb/uW6/0gc0o7g7pxh1q/jK8euzhiXcQLt
+         eR4dO1Vs9wuQ9f898PscUEBsT8gTyiOnYB41xrRsy4ZONho5GSnf+BOMUuj8zi1zEQy4
+         9AYIRA3qxkm215VJRBS40f28syx28XxWFCgv2IS/3UNNrIFBfEUh+Pnfsb9FiLcWTDnL
+         wcaw==
+X-Gm-Message-State: AOAM530anbU+OLIseuEqhJRfAuojMsY+HW3gW+zn1aHunYZlqYBIvK8r
+        SjKHeFoskPctboG9fPH+rFWJ/+HbHeUZMkLr0Ss=
+X-Google-Smtp-Source: ABdhPJx1r/kWpxsSsRe5Yh1mrr5jY9D0ECBN3nz+u5bagOSxvJeIuiT8smS1e3kp6v6rNvmb6kD/q3bNE4a/bGhs5ak=
+X-Received: by 2002:a9d:67c3:: with SMTP id c3mr1522386otn.9.1601640085321;
+ Fri, 02 Oct 2020 05:01:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200902144344.16684-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+References: <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
+ <20200930173719.GE2628@hirez.programming.kicks-ass.net> <CAKwvOdk+Rp0QGJmX07XxD8L7WVgco98LHFTu-R_2R22+UMVerQ@mail.gmail.com>
+ <20200930.152652.1530458864962753844.davem@davemloft.net>
+In-Reply-To: <20200930.152652.1530458864962753844.davem@davemloft.net>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 2 Oct 2020 14:01:13 +0200
+Message-ID: <CA+icZUXjYTJO4cC1EAhbdqnd19HjAwyFM+iSTW37xJM5dFHQuA@mail.gmail.com>
+Subject: Re: linux tooling mailing list
+To:     David Miller <davem@davemloft.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, nickc@redhat.com,
+        maskray@google.com, segher@kernel.crashing.org,
+        linux@rasmusvillemoes.dk,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kernel@vger.kernel.org, postmaster@vger.kernel.org,
+        peterz@infradead.org, behanw@converseincode.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 02 September 2020 16:43:42 Pali Rohár wrote:
-> This patch series fixes regression introduced in commit 366697018c9a
-> ("PCI: aardvark: Add PHY support") which caused aardvark driver
-> initialization failure on EspressoBin board with factory version of
-> Arm Trusted Firmware provided by Marvell.
-> 
-> Second patch depends on the first patch, so please add appropriate
-> Fixes/Cc:stable@ tags to have both patches correctly backported to
-> stable kernels.
-> 
-> I have tested both patches with Marvell ATF firmware ebin-17.10-uart.zip
-> and with upstream ATF+uboot and aardvark was initialized successfully.
-> Without this patch series on ebin-17.10-uart.zip aardvark initialization
-> failed.
+On Thu, Oct 1, 2020 at 12:26 AM David Miller <davem@davemloft.net> wrote:
+>
+> From: Nick Desaulniers <ndesaulniers@google.com>
+> Date: Wed, 30 Sep 2020 12:29:38 -0700
+>
+> > linux-toolchains@vger.kernel.org
+>
+> Created.
+>
 
-Lorenzo or Bjorn, could you review this patch series? I would like to
-see this regression fixed in stable kernels.
+I am subscribed, too.
 
-> Pali Rohár (2):
->   phy: marvell: comphy: Convert internal SMCC firmware return codes to
->     errno
->   PCI: aardvark: Fix initialization with old Marvell's Arm Trusted
->     Firmware
-> 
->  drivers/pci/controller/pci-aardvark.c        |  4 +++-
->  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
->  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
->  3 files changed, 25 insertions(+), 7 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
+Will there be a(n)...?
+
+* archive (for example marc.info)
+* patchwork url
+
+- Sedat -
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/1170
