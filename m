@@ -2,51 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4572C2818ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4228281C4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388244AbgJBRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
+        id S1725768AbgJBTwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:52:49 -0400
+Received: from m12-13.163.com ([220.181.12.13]:38330 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgJBRPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:15:16 -0400
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601658915;
-        bh=2gOw3rFZ0CEbfGZohi7BOoFCnK+ojgeKb24AibqNMbw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=D6lMdS7+DoASzODjoms90StZeNk5uGOiBZFDU/8C3MZJlPirVUh+J903Uo5HcTzTI
-         s2pxZZJB9+cUnGLaT3VGrJWcnjNb++7iHyMCdKX+Liog4IMFsgq/vmVML6Kly1YKVy
-         nheYTiSq8z3uF9m/spMRfLTwDlAGb8saRg5jNun8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-c32d6fbf-32dd-45ed-90f1-ffbb7e455aaa@palmerdabbelt-glaptop1>
-References: <mhng-c32d6fbf-32dd-45ed-90f1-ffbb7e455aaa@palmerdabbelt-glaptop1>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <mhng-c32d6fbf-32dd-45ed-90f1-ffbb7e455aaa@palmerdabbelt-glaptop1>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-rc8
-X-PR-Tracked-Commit-Id: aa9887608e77b835d51f05a54940380391cd4e21
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: db23baa28eb1f93df1fc175a419e7ffe5b6f1582
-Message-Id: <160165891570.31225.15852894813234950380.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Oct 2020 17:15:15 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S1725283AbgJBTws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:52:48 -0400
+X-Greylist: delayed 6344 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 15:52:46 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=nd9oP
+        Av+PVdHTui16lO4giEVC1V0YqToMfMakyliwMQ=; b=ijqMYkJgCWfmFay1I1Kz1
+        HEXxHn8T8isObsQYDAMfmwm0Zgp1rTpoWpgR74Y7h2v2HJedbphh7Jt59DdmbBzQ
+        evXGg2oLdQlTbRSBjvpf2poaqh06xRH2lKjkn++g4y+fhlqIebDfsfcIW66dh47/
+        Y2lhaIY2tdMm4Kx2nc5yBI=
+Received: from localhost.localdomain (unknown [114.247.184.147])
+        by smtp9 (Coremail) with SMTP id DcCowACnCGi_YHdf7MZNJQ--.43537S2;
+        Sat, 03 Oct 2020 01:17:51 +0800 (CST)
+From:   "longguang.yue" <bigclouds@163.com>
+Cc:     ja@ssi.bg, kuba@kernel.org, wensong@linux-vs.org,
+        horms@verge.net.au, pablo@netfilter.org, kadlec@netfilter.org,
+        fw@strlen.de, davem@davemloft.net, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, yuelongguang@gmail.com,
+        "longguang.yue" <bigclouds@163.com>
+Subject: [PATCH v4] ipvs: Add traffic statistic up even it is VS/DR or VS/TUN mode
+Date:   Sat,  3 Oct 2020 01:17:32 +0800
+Message-Id: <20201002171732.74552-1-bigclouds@163.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+In-Reply-To: <alpine.LFD.2.23.451.2009302019180.5709@ja.home.ssi.bg>
+References: <alpine.LFD.2.23.451.2009302019180.5709@ja.home.ssi.bg>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowACnCGi_YHdf7MZNJQ--.43537S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxGr4DCw1kZF48ZFW3Ar4rAFb_yoW5Kw1Dp3
+        WUKa93XrW8GFy3t3WxJr97ur1fCr1kJ3Zrur4Yk34Sy3Z8JF15XFsY9FyYyFW5CrsYqa43
+        tw4Fqw45Cw1DJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UmhFsUUUUU=
+X-Originating-IP: [114.247.184.147]
+X-CM-SenderInfo: peljuzprxg2qqrwthudrp/1tbiVB+xQ1UMOY-1YAAAsD
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 02 Oct 2020 09:07:27 -0700 (PDT):
+It's ipvs's duty to do traffic statistic if packets get hit,
+no matter what mode it is.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.9-rc8
+Changes in v1: support DR/TUN mode statistic
+Changes in v2: ip_vs_conn_out_get handles DR/TUN mode's conn
+Changes in v3: fix checkpatch
+Changes in v4: restructure and optimise this feature
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/db23baa28eb1f93df1fc175a419e7ffe5b6f1582
+Signed-off-by: longguang.yue <bigclouds@163.com>
+---
+ net/netfilter/ipvs/ip_vs_conn.c | 18 +++++++++++++++---
+ net/netfilter/ipvs/ip_vs_core.c | 24 +++++++++++++++++-------
+ 2 files changed, 32 insertions(+), 10 deletions(-)
 
-Thank you!
-
+diff --git a/net/netfilter/ipvs/ip_vs_conn.c b/net/netfilter/ipvs/ip_vs_conn.c
+index a90b8eac16ac..af08ca2d9174 100644
+--- a/net/netfilter/ipvs/ip_vs_conn.c
++++ b/net/netfilter/ipvs/ip_vs_conn.c
+@@ -401,6 +401,8 @@ struct ip_vs_conn *ip_vs_ct_in_get(const struct ip_vs_conn_param *p)
+ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
+ {
+ 	unsigned int hash;
++	__be16 sport;
++	const union nf_inet_addr *saddr;
+ 	struct ip_vs_conn *cp, *ret=NULL;
+ 
+ 	/*
+@@ -411,10 +413,20 @@ struct ip_vs_conn *ip_vs_conn_out_get(const struct ip_vs_conn_param *p)
+ 	rcu_read_lock();
+ 
+ 	hlist_for_each_entry_rcu(cp, &ip_vs_conn_tab[hash], c_list) {
+-		if (p->vport == cp->cport && p->cport == cp->dport &&
+-		    cp->af == p->af &&
++		if (p->vport != cp->cport)
++			continue;
++
++		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ) {
++			sport = cp->vport;
++			saddr = &cp->vaddr;
++		} else {
++			sport = cp->dport;
++			saddr = &cp->daddr;
++		}
++
++		if (p->cport == sport && cp->af == p->af &&
+ 		    ip_vs_addr_equal(p->af, p->vaddr, &cp->caddr) &&
+-		    ip_vs_addr_equal(p->af, p->caddr, &cp->daddr) &&
++		    ip_vs_addr_equal(p->af, p->caddr, saddr) &&
+ 		    p->protocol == cp->protocol &&
+ 		    cp->ipvs == p->ipvs) {
+ 			if (!__ip_vs_conn_get(cp))
+diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+index e3668a6e54e4..315289aecad7 100644
+--- a/net/netfilter/ipvs/ip_vs_core.c
++++ b/net/netfilter/ipvs/ip_vs_core.c
+@@ -911,6 +911,10 @@ static int handle_response_icmp(int af, struct sk_buff *skb,
+ 		ip_vs_update_conntrack(skb, cp, 0);
+ 
+ ignore_cp:
++	ip_vs_out_stats(cp, skb);
++	skb->ipvs_property = 1;
++	if (!(cp->flags & IP_VS_CONN_F_NFCT))
++		ip_vs_notrack(skb);
+ 	verdict = NF_ACCEPT;
+ 
+ out:
+@@ -1276,6 +1280,9 @@ handle_response(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+ {
+ 	struct ip_vs_protocol *pp = pd->pp;
+ 
++	if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
++		goto ignore_cp;
++
+ 	IP_VS_DBG_PKT(11, af, pp, skb, iph->off, "Outgoing packet");
+ 
+ 	if (skb_ensure_writable(skb, iph->len))
+@@ -1328,6 +1335,16 @@ handle_response(int af, struct sk_buff *skb, struct ip_vs_proto_data *pd,
+ 	LeaveFunction(11);
+ 	return NF_ACCEPT;
+ 
++ignore_cp:
++	ip_vs_out_stats(cp, skb);
++	skb->ipvs_property = 1;
++	if (!(cp->flags & IP_VS_CONN_F_NFCT))
++		ip_vs_notrack(skb);
++	__ip_vs_conn_put(cp);
++
++	LeaveFunction(11);
++	return NF_ACCEPT;
++
+ drop:
+ 	ip_vs_conn_put(cp);
+ 	kfree_skb(skb);
+@@ -1413,8 +1430,6 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
+ 			     ipvs, af, skb, &iph);
+ 
+ 	if (likely(cp)) {
+-		if (IP_VS_FWD_METHOD(cp) != IP_VS_CONN_F_MASQ)
+-			goto ignore_cp;
+ 		return handle_response(af, skb, pd, cp, &iph, hooknum);
+ 	}
+ 
+@@ -1475,14 +1490,9 @@ ip_vs_out(struct netns_ipvs *ipvs, unsigned int hooknum, struct sk_buff *skb, in
+ 		}
+ 	}
+ 
+-out:
+ 	IP_VS_DBG_PKT(12, af, pp, skb, iph.off,
+ 		      "ip_vs_out: packet continues traversal as normal");
+ 	return NF_ACCEPT;
+-
+-ignore_cp:
+-	__ip_vs_conn_put(cp);
+-	goto out;
+ }
+ 
+ /*
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.20.1 (Apple Git-117)
+
+
