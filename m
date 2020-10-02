@@ -2,94 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527D22816EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0D328170B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388015AbgJBPnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:43:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387777AbgJBPnY (ORCPT
+        id S2387950AbgJBPsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388026AbgJBPsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:43:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601653403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4n/vvpNwLnfm6WZ1RtB9x/PAi54sYaqURdYPn6d7brA=;
-        b=iARMHiBS+OAuwlUfsU6NdWXoDA4ByBaoxP5LCW9eim2+af/VKfr+gfC1PbUieykcLkwiYm
-        cayD4eWXmFKN7zl0gk6s3mGqWhaZ3GAkt1Ioa+7DlqZF2SCBoYuSfHsQZbY6twnSR51W3A
-        jzBqS0Eir4xuvoNvI+20flWJce3DGZU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-iiZI2-hePA-Sn87Iz7wFpw-1; Fri, 02 Oct 2020 11:43:19 -0400
-X-MC-Unique: iiZI2-hePA-Sn87Iz7wFpw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B300A186DD37;
-        Fri,  2 Oct 2020 15:43:17 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BDFE19C78;
-        Fri,  2 Oct 2020 15:43:14 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     x86@kernel.org
-Cc:     kvm@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/kvm: Update the comment about asynchronous page fault in exc_page_fault()
-Date:   Fri,  2 Oct 2020 17:43:13 +0200
-Message-Id: <20201002154313.1505327-1-vkuznets@redhat.com>
+        Fri, 2 Oct 2020 11:48:12 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E30C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:48:10 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id e23so854975vsk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T1VBeMl6lnk6uGVYC4UMbcUFzllZv34qpogDPSQOP7M=;
+        b=NOBFHu51EDHrcub6xy7AvFiSRurn1fHm20p6heYCzLvQA4DiSWLmItq04o64PqKZJL
+         ON7UOtMwm7wOsHDwKznnfPF3yO5akXtBqmhN2CLd4iY6ZkbJCnZj4n4pPLQQJutstBul
+         NQGnGObIukRPoeNo1cN9Buh0HQPiZDPQomocE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T1VBeMl6lnk6uGVYC4UMbcUFzllZv34qpogDPSQOP7M=;
+        b=dNCgET0P8T8+8txXgGJdLD5uvAFUhZPHZxF+5C0IJjnq1hIfuAUICPMZOcAsnhoV2s
+         cOJjKjjNuGpIZA//Au+EebxSEqFqH8kIDk0VLrRcnKxvsWWf1yB3uW0T02dwD07YXTU7
+         qa2ft47OqRAKKcB63vaShFAJAiJ0SGQ+VZuH0ds0USVY3G6UZFGdp50QxjmP5Et/eY69
+         5SYosp5varWbhhjOf5E9Jr3T8Y2g4LoxgP+wdqvr87jWT2KqT18r7HaW6FJH5Br9GTi4
+         DZa9IpandSnF0zbBZvBdm/bLy7+TOCfN0OuEEHr67ogIhcCD5z70Qw4mNW8eeYIyR3En
+         EfaA==
+X-Gm-Message-State: AOAM531SPR43VriLebTT4QuknZyPbF9gh2XjRA/D8ryHxs8SEt7eAb5j
+        TVD4GD2rm4oLFW4aJplcp4nzey1zAk9S+Q==
+X-Google-Smtp-Source: ABdhPJxOpmRGctMEJ8kU/uXC1qTbuq2JNvJ0+cchWCgFHoo3vUe2H52AmE+KzsnBNmKgDHF4bmnrww==
+X-Received: by 2002:a67:ea4e:: with SMTP id r14mr1748908vso.47.1601653689191;
+        Fri, 02 Oct 2020 08:48:09 -0700 (PDT)
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com. [209.85.221.182])
+        by smtp.gmail.com with ESMTPSA id v76sm307384vke.2.2020.10.02.08.48.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 08:48:08 -0700 (PDT)
+Received: by mail-vk1-f182.google.com with SMTP id n7so384766vkq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:48:07 -0700 (PDT)
+X-Received: by 2002:a1f:a905:: with SMTP id s5mr1631052vke.9.1601653687217;
+ Fri, 02 Oct 2020 08:48:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201002114426.31277-1-lukasz.luba@arm.com> <20201002114426.31277-4-lukasz.luba@arm.com>
+ <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com> <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
+In-Reply-To: <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 2 Oct 2020 08:47:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
+Message-ID: <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
+ with abstract scale
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM was switched to interrupt-based mechanism for 'page ready' event
-delivery in Linux-5.8 (see commit 2635b5c4a0e4 ("KVM: x86: interrupt based
-APF 'page ready' event delivery")) and #PF (ab)use for 'page ready' event
-delivery was removed. Linux guest switched to this new mechanism
-exclusively in 5.9 (see commit b1d405751cd5 ("KVM: x86: Switch KVM guest to
-using interrupts for page ready APF delivery")) so it is not possible to
-get older KVM (APF mechanism won't be enabled). Update the comment in
-exc_page_fault() to reflect the new reality.
+Hi,
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/mm/fault.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Doug,
+>
+> On 10/2/20 3:31 PM, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Update the documentation for the binding 'sustainable-power' and allow
+> >> to provide values in an abstract scale. It is required when the cooling
+> >> devices use an abstract scale for their power values.
+> >>
+> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> >>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+> >>   1 file changed, 9 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >> index 3ec9cc87ec50..4d8f2e37d1e6 100644
+> >> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >> @@ -99,10 +99,15 @@ patternProperties:
+> >>         sustainable-power:
+> >>           $ref: /schemas/types.yaml#/definitions/uint32
+> >>           description:
+> >> -          An estimate of the sustainable power (in mW) that this thermal zone
+> >> -          can dissipate at the desired control temperature. For reference, the
+> >> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
+> >> -          10-inch tablet is around 4500mW.
+> >> +          An estimate of the sustainable power (in mW or in an abstract scale)
+> >> +         that this thermal zone can dissipate at the desired control
+> >> +         temperature. For reference, the sustainable power of a 4-inch phone
+> >> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
+> >> +
+> >> +         It is possible to express the sustainable power in an abstract
+> >> +         scale. This is the case when the related cooling devices use also
+> >> +         abstract scale to express their power usage. The scale must be
+> >> +         consistent.
+> >
+> > Two thoughts:
+> >
+> > 1. If we're going to allow "sustainable-power" to be in abstract
+> > scale, why not allow "dynamic-power-coefficient" to be in abstract
+> > scale too?  I assume that the whole reason against that originally was
+> > the idea of device tree purity, but if we're allowing the abstract
+> > scale here then there seems no reason not to allow it for
+> > "dynamic-power-coefficient".
+>
+> With this binding it's a bit more tricky.
+> I also have to discuss a few things internally. This requirement of
+> uW/MHz/V^2 makes the code easier also for potential drivers
+> like GPU (which are going to register the devfreq cooling with EM).
+>
+> Let me think about it, but for now I would just update these bits.
+> These are required to proper IPA operation, the dyn.-pow.-coef. is a
+> nice to have and possible next step.
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 6e3e8a124903..3cf77592ac54 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1446,11 +1446,14 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- 	prefetchw(&current->mm->mmap_lock);
- 
- 	/*
--	 * KVM has two types of events that are, logically, interrupts, but
--	 * are unfortunately delivered using the #PF vector.  These events are
--	 * "you just accessed valid memory, but the host doesn't have it right
--	 * now, so I'll put you to sleep if you continue" and "that memory
--	 * you tried to access earlier is available now."
-+	 * KVM uses #PF vector to deliver 'page not present' events to guests
-+	 * (asynchronous page fault mechanism). The event happens when a
-+	 * userspace task is trying to access some valid (from guest's point of
-+	 * view) memory which is not currently mapped by the host (e.g. the
-+	 * memory is swapped out). Note, the corresponding "page ready" event
-+	 * which is injected when the memory becomes available, is delived via
-+	 * an interrupt mechanism and not a #PF exception
-+	 * (see arch/x86/kernel/kvm.c: sysvec_kvm_asyncpf_interrupt()).
- 	 *
- 	 * We are relying on the interrupted context being sane (valid RSP,
- 	 * relevant locks not held, etc.), which is fine as long as the
--- 
-2.25.4
+I guess the problem is that Rajendra is currently planning to remove
+all the "dynamic-power-coefficient" values from device tree right now
+and move them to the source code because the numbers we currently have
+in the device tree _are_ in abstract scale and thus violate the
+bindings.  Moving this to source code won't help us get to more real
+power numbers (since it'll still be abstract scale), it'll just be
+pure churn.  If we're OK with the abstract scale in general then we
+should allow it everywhere and not add churn for no reason.
 
+
+> > 2. Is it worth adding some type of indication of what type of units
+> > "sustainable-power" is represented in?  Maybe even a made up unit so
+> > that you could tell the difference between made up units in the same
+> > system?  I'd envision something like:
+> >
+> > sustainable-power-units = "qualcomm,sc7180-bogoWatts"
+> >
+> > ...and on the dynamic-power-coefficient side, the same:
+> >
+> > dynamic-power-coefficient-units = "qualcomm,sc7180-bogoWatts"
+> >
+> > One could imagine someone even later (after devices are widely
+> > distributed) figuring out translations between these bogoWatts numbers
+> > and real Watts if someone could come up with a case where it matters.
+>
+> To figure this out we don't need a new binding.
+> I think a simple comment in the DT would be enough for this, even e.g.:
+>
+> sustainable-power = <100> /* bogoWatts */
+
+There are some important differences:
+
+a) Your comment is gone when the device tree is compiled.  If we
+actually add a string to the device tree then, in theory, we can add
+conversions in code (without touching the device tree) down the road.
+
+b) I believe there can be more than one abstract scale present in a
+single device tree, at least in theory.  Adding a string allows you to
+know if you're comparing apples to apples or apples to organges.
+
+
+> Thank you for your comments.
+> BTW, I haven't put your 'Reviewed-by' because I have added this
+> sustainable-power new stuff in patch 1/3. I will grateful if you
+> have a look on that.
+
+I can if needed, but I'd kinda like to get the above resolved first
+since it feels like it could have an effect on the other patches?
+
+
+-Doug
