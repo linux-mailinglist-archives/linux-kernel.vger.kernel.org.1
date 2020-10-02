@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B5C280C4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD66A280C50
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387513AbgJBCik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 22:38:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727780AbgJBCik (ORCPT
+        id S2387560AbgJBCma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 22:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387485AbgJBCma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 22:38:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601606318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cxlJZv7250vMcqPC75U7W1SFNvc/Tb2JnKg+PXp0UTA=;
-        b=bL9OwdYzX85ajE3HtRD6JQ43+znGCqqkCDjFgdNeHZQtiMjngpltwpbnMQIN+eIYgpsBTH
-        Q1IaVM6HUuxkMnDKAiCHBQ7gLi7wZIocNOiqI1A4tcCMO5Y0EjzZwr0PZ+KG6WpY6s6BhJ
-        vwdX9dn9h9gkcliwq8pDtbdSTWVPFrA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-1hUTvxLqMkSdmAJGzjDrFw-1; Thu, 01 Oct 2020 22:38:35 -0400
-X-MC-Unique: 1hUTvxLqMkSdmAJGzjDrFw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0ED971074660;
-        Fri,  2 Oct 2020 02:38:34 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-79.pek2.redhat.com [10.72.12.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B7995D9D3;
-        Fri,  2 Oct 2020 02:38:26 +0000 (UTC)
-Subject: Re: [PATCH v3 1/1] kdump: append uts_namespace.name offset to
- VMCOREINFO
-To:     Alexander Egorenkov <egorenar@linux.ibm.com>, dyoung@redhat.com,
-        bhe@redhat.com, vgoyal@redhat.com
-Cc:     ebiederm@xmission.com, akpm@linux-foundation.org,
-        ktkhai@virtuozzo.com, keescook@chromium.org,
-        christian.brauner@ubuntu.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200930102328.396488-1-egorenar@linux.ibm.com>
-From:   lijiang <lijiang@redhat.com>
-Message-ID: <60526b10-35eb-b6ba-b08d-70ebfe5d07b5@redhat.com>
-Date:   Fri, 2 Oct 2020 10:38:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 1 Oct 2020 22:42:30 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71474C0613D0;
+        Thu,  1 Oct 2020 19:42:28 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id l126so216266pfd.5;
+        Thu, 01 Oct 2020 19:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=100c9rxitQt5qbuJCo9yvdI7R1bkchG5uqsRfefrRjc=;
+        b=bwSJuVmqqhUdLU3EgwINxXhEBjetEmncvdOjqvMr+3zn5lxZUDDHaWrSUNGpFEbqcD
+         Bb0heppEbof/uN4zgAPE1CGnrT03XoiFOOt3Tew0CpaLblKYbuiPZLueNb0wEVTKlKft
+         C8JLXgeTF+N4TMP7OpjSlJnnD3HauxFC+6fsdxJsangNEOe6mppsSw6P9KUR0m4FPa04
+         jGUkdQ3KgX3aLUePvGc8R5ew8toPZyFfTjxNMzCBvWT8DPsoVGCK6kIzVOZ10k9U5bvT
+         JFttAQmgAdv+YOlOFs41nzZ6sw3lc8SiTfsd3M/wIT4GROa0TACL3snEKI+mOof2L07j
+         8wbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=100c9rxitQt5qbuJCo9yvdI7R1bkchG5uqsRfefrRjc=;
+        b=XGOLv8giWC7zrxB8wWIsznEP8mFBbXTPkUqHt5tEDXoW1E3MjPx0UXzyHj84vBGa4T
+         V3MZs9Kt4qSvYfMAIGXYAqaQEpXZHyKyQ8uOvpjFGlZo7I6Tzvt2BOzMwjPD1wI9i8Qx
+         tl3hxKwbNDHV+5ZmG0pKwl4Zzl8sUQt3+C7kmbTFvVHOGjV5x0BCd/Kih+YzsphfcFum
+         xj6fhpRmUKA5Ez3hZnsiAdDxzVtuP8mfFuur+4BSqTTLXVEc++a3JrCuBahWLR7z95xN
+         i08705fJHIBJPRy2PU+DQBAEfubWp1wdlnT1WRyRQi/wWTd5jEpk6iWsGN+c5w8TydLB
+         BaKw==
+X-Gm-Message-State: AOAM5306geReCLFmQj3ZYKr7FRRf/OAEDi8rlNQRsVKSqNHB1qznim6Q
+        UCNPacX3PU10tHg3EcxvFWmu8JY9c1cUWg==
+X-Google-Smtp-Source: ABdhPJxTdYpt0UJc3g+7PO37jhiSdt2MqfKw2f/WR2+NaWSG22vssHL0z3hMcdw01br66nEB1Pfm3g==
+X-Received: by 2002:a63:161e:: with SMTP id w30mr8517363pgl.255.1601606547430;
+        Thu, 01 Oct 2020 19:42:27 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gt11sm150185pjb.48.2020.10.01.19.42.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 19:42:26 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        vladimir.oltean@nxp.com, olteanv@gmail.com
+Subject: [PATCH net-next 0/4] net: dsa: Improve dsa_untag_bridge_pvid()
+Date:   Thu,  1 Oct 2020 19:42:11 -0700
+Message-Id: <20201002024215.660240-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200930102328.396488-1-egorenar@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Alexander
+Hi David, Jakub,
 
-在 2020年09月30日 18:23, Alexander Egorenkov 写道:
-> The offset of the field 'init_uts_ns.name' has changed
-> since commit 9a56493f6942 ("uts: Use generic ns_common::count").
-> 
-> Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
-> 
-> Make the offset of the field 'uts_namespace.name' available
-> in VMCOREINFO because tools like 'crash-utility' and
-> 'makedumpfile' must be able to read it from crash dumps.
-> 
-> Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-> ---
-> 
-> v2 -> v3:
->  * Added documentation to vmcoreinfo.rst
->  * Use the short form of the commit reference
-> 
-> v1 -> v2:
->  * Improved commit message
->  * Added link to the discussion of the uts namespace changes
-> 
->  Documentation/admin-guide/kdump/vmcoreinfo.rst | 6 ++++++
->  kernel/crash_core.c                            | 1 +
->  2 files changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> index e44a6c01f336..3861a25faae1 100644
-> --- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> +++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> @@ -39,6 +39,12 @@ call.
->  User-space tools can get the kernel name, host name, kernel release
->  number, kernel version, architecture name and OS type from it.
->  
-> +(uts_namespace, name)
-> +---------------------
-> +
-> +Offset of the name's member. Crash Utility and Makedumpfile get
-> +the start address of the init_uts_ns.name from this.
-> +
+This patch series is based on the recent discussions with Vladimir:
 
-Thank you for the update. The v3 looks good to me.
+https://lore.kernel.org/netdev/20201001030623.343535-1-f.fainelli@gmail.com/
 
->  node_online_map
->  ---------------
->  
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 106e4500fd53..173fdc261882 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
->  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
->  
->  	VMCOREINFO_SYMBOL(init_uts_ns);
-> +	VMCOREINFO_OFFSET(uts_namespace, name);
->  	VMCOREINFO_SYMBOL(node_online_map);
->  #ifdef CONFIG_MMU
->  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
-> 
+the simplest way forward was to call dsa_untag_bridge_pvid() after
+eth_type_trans() has been set which guarantees that skb->protocol is set
+to a correct value and this allows us to utilize
+__vlan_find_dev_deep_rcu() properly without playing or using the bridge
+master as a net_device reference.
+
+Florian Fainelli (4):
+  net: dsa: Call dsa_untag_bridge_pvid() from dsa_switch_rcv()
+  net: dsa: b53: Set untag_bridge_pvid
+  net: dsa: Obtain VLAN protocol from skb->protocol
+  net: dsa: Utilize __vlan_find_dev_deep_rcu()
+
+ drivers/net/dsa/b53/b53_common.c |  1 +
+ include/net/dsa.h                |  8 ++++++++
+ net/dsa/dsa.c                    |  9 +++++++++
+ net/dsa/dsa_priv.h               | 14 ++++----------
+ net/dsa/tag_brcm.c               | 15 ++-------------
+ 5 files changed, 24 insertions(+), 23 deletions(-)
+
+-- 
+2.25.1
 
