@@ -2,143 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C23281EF5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B93281EF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgJBXPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 19:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S1725772AbgJBXPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 19:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgJBXPF (ORCPT
+        with ESMTP id S1725446AbgJBXPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 19:15:05 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E10C0613E2
+        Fri, 2 Oct 2020 19:15:03 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F1C0613E2
         for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 16:15:03 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b12so3797295lfp.9
+Received: by mail-io1-xd41.google.com with SMTP id m17so3306382ioo.1
         for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 16:15:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=joelfernandes.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=X7v0IguEkfr1cOBmK+SE8+7CIjedoZmEtVTfp5z8yVo=;
-        b=FKIIGNm4cuXzs5quW9CEsjwrBj/6hqBDlLAbYlhfvbbn90YZfqbXxeZnjcqGYHc2+P
-         DmWhmHUaOnPKYLk5zeuEaxW74SuTqmoumQLo54K2124c58ju5tkmCzv5A856Ncmtf2pu
-         89vVhrcPGWaAoE7eOd9ckQ+014uVKwEoEbb54=
+        bh=YfdsfR+vxnsAijYLXa6tOfA8KqdB4WmlnZuQhX/Ct4U=;
+        b=saZdfCSzMzpYeJMISnJ7OJgpgSkR3+dgqgr4x7aqFlkgmCFEB5WQMLMXbvty5IZrfL
+         oGcm1OkS3ioUuJSCsT6K3mKOgLMbujc0eMb/GgU34MS2ynpi0gTY74sS2EGavQ4LW9sv
+         hS7nfUFrE/cHESWXEEih7Al6VHHM86PkPAX/Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=X7v0IguEkfr1cOBmK+SE8+7CIjedoZmEtVTfp5z8yVo=;
-        b=eTQ9/u93zsMBTNDXM8wYH80hGvLHeKpCe2QHrgya8++5f7sc48r+OX9OO/qYk+QnWt
-         BSeZ+oKkRgdjFRaYt3lA2dbv7m1/TV0ltuFOdL5HsGMoezc6XfXUSr45S0JLEVTow5AS
-         793hERVGWlQoVTkBZPilO7m+NVtx6ndxBHWgItfpMCFsS5PKsONqeGcjKF4yRPJzQLZ9
-         apJpJz4EE36w3AELLmYS8pVrSSJ8Wt7hpWJp+QKlV9A3t38hsaPWHE943Kr5cBl6esGf
-         /cN50ADN3M31v/K7lLE5rtqAnEyJwbssqagxJMasNWDERsf8e87CPnOcfu4ygKqzUr3h
-         Ltdw==
-X-Gm-Message-State: AOAM5319Xya0vjzIwZPTmurVt3F8AJ/sivNCF/Y7aYCSYRm0Fy1jnkBP
-        oxivHNmP5Zpu5xEyB37GwXPnBCipatvaag==
-X-Google-Smtp-Source: ABdhPJxftm4rdqPWqkfyZDKyIsi8YFxLkb0uwcEFV+s7wDA8I2kSKEQ63ytEAoFcu0OEBl1HYwfvgA==
-X-Received: by 2002:ac2:4db7:: with SMTP id h23mr1528061lfe.459.1601680501666;
-        Fri, 02 Oct 2020 16:15:01 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id a7sm759563lfl.56.2020.10.02.16.15.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 16:15:00 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id k25so2478094ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 16:15:00 -0700 (PDT)
-X-Received: by 2002:a2e:b4fc:: with SMTP id s28mr1247909ljm.305.1601680500013;
- Fri, 02 Oct 2020 16:15:00 -0700 (PDT)
+        bh=YfdsfR+vxnsAijYLXa6tOfA8KqdB4WmlnZuQhX/Ct4U=;
+        b=sVU9Bk1aVP8Uf2WDgdkOciKJ9hN6expid55CrVL7811yKdLWlweFOlXUVe7SNPB/Fc
+         /blHjkrFlPHCpg/X3FfLuBfoqMlyfOwWi2b/gu/TJqf6cFzkZYVKxiY6ZplezKGEsAVe
+         wMAaH81WcjOjC7f5DC/oDlpbKsHNKNK9Mqs4dZRFJZDkxHfuQzgIqEnJHtgP0R7QPXIJ
+         1HWvEE4b248vFs2RAmE92HV8t38iWe9ODznIN/w5ktr+2g0ygsHTODI9Iwl6ghj9yAFv
+         aa9iGHiYsePlfjyo8RvDpKcIfkOsDKtMOFuSvusKNkW+qXmA2+RGp63s8f8WYmknZTVs
+         eTMA==
+X-Gm-Message-State: AOAM533k4wcHBa5oheoOWV/lQVdgz+bXkqaGCw+ZBa88Mn0Ei0AXrwkw
+        geUHyaGY8B3NzXpGue+ks3WMGYQhBDCyMoIonRoubQ==
+X-Google-Smtp-Source: ABdhPJzI3tVlu8aSdAJm7W9AygkHAmLMflTi68aK8h4yRkfUXN/4nhsLC04yylzq/scPxqwON/RaPiy4CQkoxK+Fepw=
+X-Received: by 2002:a5d:80d6:: with SMTP id h22mr3677082ior.154.1601680502289;
+ Fri, 02 Oct 2020 16:15:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200929205807.2360405-1-evgreen@chromium.org>
- <20200929135741.1.I8b447ca96abfbef5f298d77350e6c9d1d18d00f6@changeid> <CAD=FV=V3+V0uBiC_whvWEnv1TSkXt-MfnK+34Kir_kfTymejSA@mail.gmail.com>
-In-Reply-To: <CAD=FV=V3+V0uBiC_whvWEnv1TSkXt-MfnK+34Kir_kfTymejSA@mail.gmail.com>
-From:   Evan Green <evgreen@chromium.org>
-Date:   Fri, 2 Oct 2020 16:14:23 -0700
-X-Gmail-Original-Message-ID: <CAE=gft6GAYePE6eCPi4PxNoJvc1K=KYCN5U_PvTRNnLdpKmLyg@mail.gmail.com>
-Message-ID: <CAE=gft6GAYePE6eCPi4PxNoJvc1K=KYCN5U_PvTRNnLdpKmLyg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: nvmem: Add qcom,sc7180-qfprom compatible string
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200929192928.3749502-1-joel@joelfernandes.org>
+ <20200929192928.3749502-2-joel@joelfernandes.org> <20200929193248.GA3749988@google.com>
+ <20201002193412.GJ29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20201002193412.GJ29330@paulmck-ThinkPad-P72>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 2 Oct 2020 19:14:49 -0400
+Message-ID: <CAEXW_YR=2K_E24k9BNXwEhuNCawaH8kQUPtMrx-xkmd+hjVzMA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] docs: Update RCU's hotplug requirements with a bit
+ about design
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 3:20 PM Doug Anderson <dianders@chromium.org> wrote:
+On Fri, Oct 2, 2020 at 3:34 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> Hi,
+> On Tue, Sep 29, 2020 at 03:32:48PM -0400, Joel Fernandes wrote:
+> > Hi Paul,
+> >
+> > On Tue, Sep 29, 2020 at 03:29:28PM -0400, Joel Fernandes (Google) wrote:
+> > > RCU's hotplug design will help understand the requirements an RCU
+> > > implementation needs to fullfill, such as dead-lock avoidance.
+> > >
+> > > The rcu_barrier() section of the "Hotplug CPU" section already talks
+> > > about deadlocks, however the description of what else can deadlock other
+> > > than rcu_barrier is rather incomplete.
+> > >
+> > > This commit therefore continues the section by describing how RCU's
+> > > design handles CPU hotplug in a deadlock-free way.
+> > >
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > ---
+> > >  .../RCU/Design/Requirements/Requirements.rst  | 30 +++++++++++++++++--
+> > >  1 file changed, 28 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> > > index 1ae79a10a8de..e0413aa989dd 100644
+> > > --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> > > +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> > > @@ -1929,8 +1929,10 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
+> > >  to allow the various kernel subsystems (including RCU) to respond
+> > >  appropriately to a given CPU-hotplug operation. Most RCU operations may
+> > >  be invoked from CPU-hotplug notifiers, including even synchronous
+> > > -grace-period operations such as ``synchronize_rcu()`` and
+> > > -``synchronize_rcu_expedited()``.
+> > > +grace-period operations such as. However, the synchronous variants
+> > > +(``synchronize_rcu()`` and ``synchronize_rcu_expedited()``) should not
+> > > +from notifiers that execute via ``stop_machine()`` -- specifically those
+> >
+> > The "should not from notifiers" should be "should not be used from
+> > notifiers" here. Sorry and hope you can fix it up.
 >
-> On Tue, Sep 29, 2020 at 1:58 PM Evan Green <evgreen@chromium.org> wrote:
-> >
-> > Add an SoC-specific compatible string so that data can be attached
-> > to it in the driver.
-> >
-> > Signed-off-by: Evan Green <evgreen@chromium.org>
-> > ---
-> >
-> >  Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > index 59aca6d22ff9b..b16c8e6a8c23d 100644
-> > --- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > +++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-> > @@ -14,7 +14,9 @@ allOf:
-> >
-> >  properties:
-> >    compatible:
-> > -    const: qcom,qfprom
-> > +    enum:
-> > +      - qcom,qfprom
-> > +      - qcom,sc7180-qfprom
->
-> You don't want either/or.  You want both.  At the time Srinivas didn't
-> see the point of having the SoC-specific compatible string here, but
-> now that we have a reason for it maybe he'll be convinced?  IMO you
-> essentially want:
->
->     items:
->       - enum:
->           - qcom,apq8064-qfprom
->           - qcom,apq8084-qfprom
->           - qcom,msm8974-qfprom
->           - qcom,msm8916-qfprom
->           - qcom,msm8996-qfprom
->           - qcom,msm8998-qfprom
->           - qcom,qcs404-qfprom
->           - qcom,sc7180-qfprom
->           - qcom,sdm845-qfprom
->       - const: qcom,qfprom
->
-> For some context:
-> <https://lore.kernel.org/r/CAD=FV=WjvAWVmq3fTh=_f2p1Dv+sXg1RV-CqZr8KRgHe8_wT0w@mail.gmail.com/>
+> Thank you, and queued for further review.  How does the below look
+> for a general fixup?
 
-That makes sense, thanks Doug.
+Looks great, thanks!
 
-Srini, do you want me to go fix up all the various device trees to add
-the soc-compatible string, or just sc7180? (Also, don't forget about
-my other question about whether you still want the keepout stuff in
-the core at the cost of added complexity).
+ -Joel
 
--Evan
+
 
 >
-> -Doug
+>                                                 Thanx, Paul
 >
+> ------------------------------------------------------------------------
 >
-> >
-> >    reg:
-> >      # If the QFPROM is read-only OS image then only the corrected region
-> > --
-> > 2.26.2
-> >
+> commit a93716177eeac726037828b28e6b1a45e828688a
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Tue Sep 29 15:29:28 2020 -0400
+>
+>     docs: Update RCU's hotplug requirements with a bit about design
+>
+>     The rcu_barrier() section of the "Hotplug CPU" section discusses
+>     deadlocks, however the description of deadlocks other than those involving
+>     rcu_barrier() is rather incomplete.
+>
+>     This commit therefore continues the section by describing how RCU's
+>     design handles CPU hotplug in a deadlock-free way.
+>
+>     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 1ae79a1..98557fe 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -1929,16 +1929,45 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
+>  to allow the various kernel subsystems (including RCU) to respond
+>  appropriately to a given CPU-hotplug operation. Most RCU operations may
+>  be invoked from CPU-hotplug notifiers, including even synchronous
+> -grace-period operations such as ``synchronize_rcu()`` and
+> -``synchronize_rcu_expedited()``.
+> -
+> -However, all-callback-wait operations such as ``rcu_barrier()`` are also
+> -not supported, due to the fact that there are phases of CPU-hotplug
+> -operations where the outgoing CPU's callbacks will not be invoked until
+> -after the CPU-hotplug operation ends, which could also result in
+> -deadlock. Furthermore, ``rcu_barrier()`` blocks CPU-hotplug operations
+> -during its execution, which results in another type of deadlock when
+> -invoked from a CPU-hotplug notifier.
+> +grace-period operations such as (``synchronize_rcu()`` and
+> +``synchronize_rcu_expedited()``).  However, these synchronous operations
+> +do block and therefore cannot be invoked from notifiers that execute via
+> +``stop_machine()``, specifically those between the ``CPUHP_AP_OFFLINE``
+> +and ``CPUHP_AP_ONLINE`` states.
+> +
+> +In addition, all-callback-wait operations such as ``rcu_barrier()`` may
+> +not be invoked from any CPU-hotplug notifier.  This restriction is due
+> +to the fact that there are phases of CPU-hotplug operations where the
+> +outgoing CPU's callbacks will not be invoked until after the CPU-hotplug
+> +operation ends, which could also result in deadlock. Furthermore,
+> +``rcu_barrier()`` blocks CPU-hotplug operations during its execution,
+> +which results in another type of deadlock when invoked from a CPU-hotplug
+> +notifier.
+> +
+> +Finally, RCU must avoid deadlocks due to interaction between hotplug,
+> +timers and grace period processing. It does so by maintaining its own set
+> +of books that duplicate the centrally maintained ``cpu_online_mask``,
+> +and also by reporting quiescent states explictly when a CPU goes
+> +offline.  This explicit reporting of quiescent states avoids any need
+> +for the force-quiescent-state loop (FQS) to report quiescent states for
+> +offline CPUs.  However, as a debugging measure, the FQS loop does splat
+> +if offline CPUs block an RCU grace period for too long.
+> +
+> +An offline CPU's quiescent state will be reported either:
+> +1.  As the CPU goes offline using RCU's hotplug notifier (``rcu_report_dead()``).
+> +2.  When grace period initialization (``rcu_gp_init()``) detects a
+> +    race either with CPU offlining or with a task unblocking on a leaf
+> +    ``rcu_node`` structure whose CPUs are all offline.
+> +
+> +The CPU-online path (``rcu_cpu_starting()``) should never need to report
+> +a quiescent state for an offline CPU.  However, as a debugging measure,
+> +it does emit a warning if a quiescent state was not already reported
+> +for that CPU.
+> +
+> +During the checking/modification of RCU's hotplug bookkeeping, the
+> +corresponding CPU's leaf node lock is held. This avoids race conditions
+> +between RCU's hotplug notifier hooks, the grace period initialization
+> +code, and the FQS loop, all of which refer to or modify this bookkeeping.
+>
+>  Scheduler and RCU
+>  ~~~~~~~~~~~~~~~~~
