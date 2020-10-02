@@ -2,174 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539B1281C1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51477281C1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388437AbgJBTeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387806AbgJBTeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:34:14 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A7CB20758;
-        Fri,  2 Oct 2020 19:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601667253;
-        bh=In5JbTWYeiRev+GIO/kfK+LZm4s3FAyuDAim/oahzDI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fcIkQQTVNZLNfACcV35+XzG2jQe0yqzDg/oCQb1adalSIFxRrBvz2aa7IzqVXu3e8
-         xuNItn0sEdIjj7zsIYY9tqNdizs56VxCLFwTgUjaxIwsDFJzN+rOUaZFMEY3Pta8nQ
-         UOuPpcU0RLyTAAb8lcdpkEJLv+w3I7LVqTLcxlec=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id EA38B35230A9; Fri,  2 Oct 2020 12:34:12 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 12:34:12 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-doc@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Randy Dunlap <rdunlap@infradead.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 2/2] docs: Update RCU's hotplug requirements with a bit
- about design
-Message-ID: <20201002193412.GJ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200929192928.3749502-1-joel@joelfernandes.org>
- <20200929192928.3749502-2-joel@joelfernandes.org>
- <20200929193248.GA3749988@google.com>
+        id S2388317AbgJBTjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:39:15 -0400
+Received: from smtprelay0143.hostedemail.com ([216.40.44.143]:44564 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725991AbgJBTjO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:39:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id CB712100E7B43;
+        Fri,  2 Oct 2020 19:39:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:4250:4321:4362:5007:6117:6690:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12295:12297:12438:12555:12679:12740:12895:13141:13146:13161:13229:13230:13894:14181:14659:14721:21080:21451:21611:21627:21740:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: bed23_4009da8271a6
+X-Filterd-Recvd-Size: 3290
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  2 Oct 2020 19:39:12 +0000 (UTC)
+Message-ID: <c87ecc94d62fb18ff48d4fb12d1c27013612b2c9.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Fix false positive on empty block comment
+ lines
+From:   Joe Perches <joe@perches.com>
+To:     =?UTF-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Bart=C5=82omiej_?= =?UTF-8?Q?=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Date:   Fri, 02 Oct 2020 12:39:11 -0700
+In-Reply-To: <20201002191525.18942-1-l.stelmach@samsung.com>
+References: <CGME20201002191546eucas1p13545280767220c473c19d1071c87d107@eucas1p1.samsung.com>
+         <20201002191525.18942-1-l.stelmach@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929193248.GA3749988@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 03:32:48PM -0400, Joel Fernandes wrote:
-> Hi Paul,
+On Fri, 2020-10-02 at 21:15 +0200, Łukasz Stelmach wrote:
+> To avoid false positives in presence of SPDX-License-Identifier in
+> networking files it is required to increase the leeway for empty block
+> comment lines by one line.
+
+Thanks.
+
+An example in the commit description would be nice.
+
+The intent here is to avoid the below error so the
+second line of a networking file can be an initial blank
+
+/*
+
+$ ./scripts/checkpatch.pl -f drivers/net/Space.c
+WARNING: networking block comments don't use an empty /* line, use /* Comment...
+#3: FILE: drivers/net/Space.c:3:
++/*
++ * INET		An implementation of the TCP/IP protocol suite for the LINUX
+
+total: 0 errors, 1 warnings, 0 checks, 155 lines checked
+
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+> ---
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On Tue, Sep 29, 2020 at 03:29:28PM -0400, Joel Fernandes (Google) wrote:
-> > RCU's hotplug design will help understand the requirements an RCU
-> > implementation needs to fullfill, such as dead-lock avoidance.
-> > 
-> > The rcu_barrier() section of the "Hotplug CPU" section already talks
-> > about deadlocks, however the description of what else can deadlock other
-> > than rcu_barrier is rather incomplete.
-> > 
-> > This commit therefore continues the section by describing how RCU's
-> > design handles CPU hotplug in a deadlock-free way.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  .../RCU/Design/Requirements/Requirements.rst  | 30 +++++++++++++++++--
-> >  1 file changed, 28 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > index 1ae79a10a8de..e0413aa989dd 100644
-> > --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> > +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > @@ -1929,8 +1929,10 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
-> >  to allow the various kernel subsystems (including RCU) to respond
-> >  appropriately to a given CPU-hotplug operation. Most RCU operations may
-> >  be invoked from CPU-hotplug notifiers, including even synchronous
-> > -grace-period operations such as ``synchronize_rcu()`` and
-> > -``synchronize_rcu_expedited()``.
-> > +grace-period operations such as. However, the synchronous variants
-> > +(``synchronize_rcu()`` and ``synchronize_rcu_expedited()``) should not
-> > +from notifiers that execute via ``stop_machine()`` -- specifically those
-> 
-> The "should not from notifiers" should be "should not be used from
-> notifiers" here. Sorry and hope you can fix it up.
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index a213cdb82ab0..60e10da4cccb 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3460,7 +3460,7 @@ sub process {
+>  		if ($realfile =~ m@^(drivers/net/|net/)@ &&
+>  		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
+>  		    $rawline =~ /^\+[ \t]*\*/ &&
+> -		    $realline > 2) {
+> +		    $realline > 3) {
+>  			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
+>  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+>  		}
 
-Thank you, and queued for further review.  How does the below look
-for a general fixup?
+Maybe add a comment in the code too:
 
-						Thanx, Paul
+---
+ scripts/checkpatch.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-------------------------------------------------------------------------
-
-commit a93716177eeac726037828b28e6b1a45e828688a
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Tue Sep 29 15:29:28 2020 -0400
-
-    docs: Update RCU's hotplug requirements with a bit about design
-    
-    The rcu_barrier() section of the "Hotplug CPU" section discusses
-    deadlocks, however the description of deadlocks other than those involving
-    rcu_barrier() is rather incomplete.
-    
-    This commit therefore continues the section by describing how RCU's
-    design handles CPU hotplug in a deadlock-free way.
-    
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 1ae79a1..98557fe 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -1929,16 +1929,45 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
- to allow the various kernel subsystems (including RCU) to respond
- appropriately to a given CPU-hotplug operation. Most RCU operations may
- be invoked from CPU-hotplug notifiers, including even synchronous
--grace-period operations such as ``synchronize_rcu()`` and
--``synchronize_rcu_expedited()``.
--
--However, all-callback-wait operations such as ``rcu_barrier()`` are also
--not supported, due to the fact that there are phases of CPU-hotplug
--operations where the outgoing CPU's callbacks will not be invoked until
--after the CPU-hotplug operation ends, which could also result in
--deadlock. Furthermore, ``rcu_barrier()`` blocks CPU-hotplug operations
--during its execution, which results in another type of deadlock when
--invoked from a CPU-hotplug notifier.
-+grace-period operations such as (``synchronize_rcu()`` and
-+``synchronize_rcu_expedited()``).  However, these synchronous operations
-+do block and therefore cannot be invoked from notifiers that execute via
-+``stop_machine()``, specifically those between the ``CPUHP_AP_OFFLINE``
-+and ``CPUHP_AP_ONLINE`` states.
-+
-+In addition, all-callback-wait operations such as ``rcu_barrier()`` may
-+not be invoked from any CPU-hotplug notifier.  This restriction is due
-+to the fact that there are phases of CPU-hotplug operations where the
-+outgoing CPU's callbacks will not be invoked until after the CPU-hotplug
-+operation ends, which could also result in deadlock. Furthermore,
-+``rcu_barrier()`` blocks CPU-hotplug operations during its execution,
-+which results in another type of deadlock when invoked from a CPU-hotplug
-+notifier.
-+
-+Finally, RCU must avoid deadlocks due to interaction between hotplug,
-+timers and grace period processing. It does so by maintaining its own set
-+of books that duplicate the centrally maintained ``cpu_online_mask``,
-+and also by reporting quiescent states explictly when a CPU goes
-+offline.  This explicit reporting of quiescent states avoids any need
-+for the force-quiescent-state loop (FQS) to report quiescent states for
-+offline CPUs.  However, as a debugging measure, the FQS loop does splat
-+if offline CPUs block an RCU grace period for too long.
-+
-+An offline CPU's quiescent state will be reported either:
-+1.  As the CPU goes offline using RCU's hotplug notifier (``rcu_report_dead()``).
-+2.  When grace period initialization (``rcu_gp_init()``) detects a
-+    race either with CPU offlining or with a task unblocking on a leaf
-+    ``rcu_node`` structure whose CPUs are all offline.
-+
-+The CPU-online path (``rcu_cpu_starting()``) should never need to report
-+a quiescent state for an offline CPU.  However, as a debugging measure,
-+it does emit a warning if a quiescent state was not already reported
-+for that CPU.
-+
-+During the checking/modification of RCU's hotplug bookkeeping, the
-+corresponding CPU's leaf node lock is held. This avoids race conditions
-+between RCU's hotplug notifier hooks, the grace period initialization
-+code, and the FQS loop, all of which refer to or modify this bookkeeping.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index a213cdb82ab0..632c543b108d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3457,10 +3457,11 @@ sub process {
  
- Scheduler and RCU
- ~~~~~~~~~~~~~~~~~
+ # Block comment styles
+ # Networking with an initial /*
++# allow an initial blank /* at the top of the file with or without an SPDX line
+ 		if ($realfile =~ m@^(drivers/net/|net/)@ &&
+ 		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
+ 		    $rawline =~ /^\+[ \t]*\*/ &&
+-		    $realline > 2) {
++		    $realline > 3) {
+ 			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
+ 			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
+ 		}
+
+
