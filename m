@@ -2,51 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16115281511
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A734E281516
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388018AbgJBO2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:28:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51827 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBO2Z (ORCPT
+        id S2388098AbgJBO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:29:21 -0400
+Received: from lan.nucleusys.com ([92.247.61.126]:33252 "EHLO
+        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726017AbgJBO3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:28:25 -0400
-Received: from ip-109-40-130-93.web.vodafone.de ([109.40.130.93] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kOM2h-0007bA-Bs; Fri, 02 Oct 2020 14:28:16 +0000
-Date:   Fri, 2 Oct 2020 16:28:08 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 -next] binder: simplify the return expression of
- binder_mmap
-Message-ID: <20201002142808.jxxtgfppj5e2v4f5@wittgenstein>
-References: <20200927123538.GA292831@kroah.com>
- <20200929015216.1829946-1-liushixin2@huawei.com>
+        Fri, 2 Oct 2020 10:29:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=U+46LdM6PcDOkzQb5JDU0b6k7u6FWkT7DMAIIJ4jYqA=; b=Aw5vGkll/h+gwLv9n0jja96gT1
+        UJ6NwKXEuQQ6w0Ti7GrZtrtXb0iz7YGLmNe5yGAE5k02mxXqk7/7yThcWdcr84YLZOEA9KrnSLNUK
+        DJLZtGNWhcvs+hgMbWiznzrw3tztBR+nHzb8+0Qrt7yTmkwFPbVaSfa6Bz1BP7kUIbJ4=;
+Received: from [94.26.108.4] (helo=carbon)
+        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <petkan@nucleusys.com>)
+        id 1kOM3S-00015G-U7; Fri, 02 Oct 2020 17:29:03 +0300
+Date:   Fri, 2 Oct 2020 17:29:01 +0300
+From:   Petko Manolov <petkan@nucleusys.com>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Greg KH <greg@kroah.com>, David Miller <davem@davemloft.net>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        kuba@kernel.org, linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: usb: rtl8150: prevent set_ethernet_addr from
+ setting uninit address
+Message-ID: <20201002142901.GA3901@carbon>
+Mail-Followup-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Greg KH <greg@kroah.com>, David Miller <davem@davemloft.net>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        kuba@kernel.org, linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201001073221.239618-1-anant.thazhemadam@gmail.com>
+ <20201001.191522.1749084221364678705.davem@davemloft.net>
+ <83804e93-8f59-4d35-ec61-e9b5e6f00323@gmail.com>
+ <20201002115453.GA3338729@kroah.com>
+ <a19aa514-14a9-8c92-d41a-0b9e17daa8e3@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929015216.1829946-1-liushixin2@huawei.com>
+In-Reply-To: <a19aa514-14a9-8c92-d41a-0b9e17daa8e3@gmail.com>
+X-Spam-Score: -1.0 (-)
+X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On 20-10-02 17:35:25, Anant Thazhemadam wrote: > > Yes, this
+    clears things up for me. I'll see to it that this gets done in a v3. If set_ethernet_addr()
+    fail, don't return error, but use eth_hw_addr_random() instead to set random
+    MAC address and continue with the probing. 
+ Content analysis details:   (-1.0 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:52:16AM +0800, Liu Shixin wrote:
-> Simplify the return expression.
+On 20-10-02 17:35:25, Anant Thazhemadam wrote:
 > 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
+> Yes, this clears things up for me. I'll see to it that this gets done in a v3.
 
-Thanks!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+If set_ethernet_addr() fail, don't return error, but use eth_hw_addr_random() 
+instead to set random MAC address and continue with the probing.
+
+You can take a look here:
+https://lore.kernel.org/netdev/20201002075604.44335-1-petko.manolov@konsulko.com/
+
+
+cheers,
+Petko
