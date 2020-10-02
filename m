@@ -2,438 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720B7281D00
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E92281D0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgJBUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:36:51 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:41146 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJBUgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:36:51 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kORnF-00HJwv-Op; Fri, 02 Oct 2020 22:36:41 +0200
-Date:   Fri, 2 Oct 2020 22:36:41 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, jim.cromie@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2 2/4] net: ax88796c: ASIX AX88796C SPI Ethernet Adapter
- Driver
-Message-ID: <20201002203641.GI3996795@lunn.ch>
-References: <20201002192210.19967-1-l.stelmach@samsung.com>
- <CGME20201002192216eucas1p16f54584cf50fff56edc278102a66509e@eucas1p1.samsung.com>
- <20201002192210.19967-3-l.stelmach@samsung.com>
+        id S1725747AbgJBUmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBUmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:42:17 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221BFC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:42:16 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id e2so1235127vsr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PyTBFVa3qeZA7kgpm5KMRvZPLGIjXaEZxCGTPzBm8AM=;
+        b=WulWpA1VQK5XnHxFm6BjaZBFSyC5nWp45+BE2BA1U+iQCLy45rOVwBwCNohf/ZSV+f
+         qCW7JmmisW/jA113crFSXVFLFwfsCJNRsfn1vbwz2J2aTIvj2fmdlUv9zF/MFFwkPKMK
+         T8aruwThdjnWsBObai0IHqsXB30sj6jxY6QmY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PyTBFVa3qeZA7kgpm5KMRvZPLGIjXaEZxCGTPzBm8AM=;
+        b=GbVnUdxN919GSKYA9AEHjyyLz68TqhXx57KOpfQ09NA7rZuZBrcZLvrYKgcvHo5Idz
+         b4xKNZvbBW0QNuIq5tip1gS5dB9asO4v80DChyOTZfBMvNe35pXUAH0kwAVzpkIsG8Av
+         WlhmD5rJ2OoC89JYx9d+EZhYQnJTOcTHbMLyJUhRnLybLOgxGgrqhGWAwH7oZjzec9rD
+         xmglC0EKMefjGa12dscp/jZDficeg6sy5VqiWkrEx59XpgCEd64tmm4RBd2iCHby1Gfk
+         4ccQVI8j1Mo/uTCwI3AsKaGTrx7yqN5k6/l+t2YBR9In1+i7w8xAgpWyf2y5mBxFvSea
+         ezVA==
+X-Gm-Message-State: AOAM530cPGpKgQr04rGB+1eYaFcTvhmkSl0P/VGnO7jsBu3bfF3R9Hlp
+        vOggGzAJI4I99l/KWNi9dYD07yo2AvNjSA==
+X-Google-Smtp-Source: ABdhPJybPQn67jms/7vfnDwSFzKkUODmW8mGTKzugHYH41F2VOr6Dls1420rXELtW0F+YwHxeO6ywg==
+X-Received: by 2002:a67:504:: with SMTP id 4mr2481603vsf.23.1601671334383;
+        Fri, 02 Oct 2020 13:42:14 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id h27sm427619vko.38.2020.10.02.13.42.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 13:42:12 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id n26so730939uao.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:42:12 -0700 (PDT)
+X-Received: by 2002:ab0:4542:: with SMTP id r60mr2415711uar.90.1601671332224;
+ Fri, 02 Oct 2020 13:42:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002192210.19967-3-l.stelmach@samsung.com>
+References: <20200930223532.77755-1-bjorn.andersson@linaro.org> <20200930223532.77755-2-bjorn.andersson@linaro.org>
+In-Reply-To: <20200930223532.77755-2-bjorn.andersson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 2 Oct 2020 13:42:00 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Unu-PH_RThi3xRF1HUADN2PqcVAOin0O0yo0gcGRWCDQ@mail.gmail.com>
+Message-ID: <CAD=FV=Unu-PH_RThi3xRF1HUADN2PqcVAOin0O0yo0gcGRWCDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: drm/bridge: ti-sn65dsi86: Replace #pwm-cells
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static u32 ax88796c_get_link(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +
-> +	mutex_lock(&ax_local->spi_lock);
-> +
-> +	phy_read_status(ndev->phydev);
-> +
-> +	mutex_unlock(&ax_local->spi_lock);
+Hi,
 
-Why do you take this mutux before calling phy_read_status()? The
-phylib core will not be taking this mutex when it calls into the PHY
-driver. This applies to all the calls you have with phy_
-
-There should not be any need to call phy_read_status(). phylib will do
-this once per second, or after any interrupt from the PHY. so just use
-
-     phydev->link
-
-> +static void
-> +ax88796c_get_regs(struct net_device *ndev, struct ethtool_regs *regs, void *_p)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	u16 *p = _p;
-> +	int offset, i;
-> +
-> +	memset(p, 0, AX88796C_REGDUMP_LEN);
-> +
-> +	for (offset = 0; offset < AX88796C_REGDUMP_LEN; offset += 2) {
-> +		if (!test_bit(offset / 2, ax88796c_no_regs_mask))
-> +			*p = AX_READ(&ax_local->ax_spi, offset);
-> +		p++;
-> +	}
-> +
-> +	for (i = 0; i < AX88796C_PHY_REGDUMP_LEN / 2; i++) {
-> +		*p = phy_read(ax_local->phydev, i);
-> +		p++;
-
-Depending on the PHY, that can be dangerous. phylib could be busy
-doing things with the PHY. It could be looking at a different page for
-example.
-
-miitool(1) can give you the same functionally without the MAC driver
-doing anything, other than forwarding the IOCTL call on.
-
-> +int ax88796c_mdio_read(struct mii_bus *mdiobus, int phy_id, int loc)
-> +{
-> +	struct ax88796c_device *ax_local = mdiobus->priv;
-> +	int ret;
-> +
-> +	AX_WRITE(&ax_local->ax_spi, MDIOCR_RADDR(loc)
-> +			| MDIOCR_FADDR(phy_id) | MDIOCR_READ, P2_MDIOCR);
-> +
-> +	ret = read_poll_timeout(AX_READ, ret,
-> +				(ret != 0),
-> +				0, jiffies_to_usecs(HZ / 100), false,
-> +				&ax_local->ax_spi, P2_MDIOCR);
-> +	if (ret)
-> +		return -EBUSY;
-
-Return whatever read_poll_timeout() returned. It is probably
--ETIMEDOUT, but it could also be -EIO for example.
-
-> +ax88796c_mdio_write(struct mii_bus *mdiobus, int phy_id, int loc, u16 val)
-> +{
-> +	struct ax88796c_device *ax_local = mdiobus->priv;
-> +	int ret;
-> +
-> +	AX_WRITE(&ax_local->ax_spi, val, P2_MDIODR);
-> +
-> +	AX_WRITE(&ax_local->ax_spi,
-> +		 MDIOCR_RADDR(loc) | MDIOCR_FADDR(phy_id)
-> +		 | MDIOCR_WRITE, P2_MDIOCR);
-> +
-> +	ret = read_poll_timeout(AX_READ, ret,
-> +				((ret & MDIOCR_VALID) != 0), 0,
-> +				jiffies_to_usecs(HZ / 100), false,
-> +				&ax_local->ax_spi, P2_MDIOCR);
-> +	if (ret)
-> +		return -EIO;
-> +
-> +	if (loc == MII_ADVERTISE) {
-> +		AX_WRITE(&ax_local->ax_spi, (BMCR_FULLDPLX | BMCR_ANRESTART |
-> +			  BMCR_ANENABLE | BMCR_SPEED100), P2_MDIODR);
-> +		AX_WRITE(&ax_local->ax_spi, (MDIOCR_RADDR(MII_BMCR) |
-> +			  MDIOCR_FADDR(phy_id) | MDIOCR_WRITE),
-> +			  P2_MDIOCR);
+On Wed, Sep 30, 2020 at 3:40 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 >
+> While the signal on GPIO4 to drive the backlight controller indeed is
+> pulse width modulated its purpose is specifically to control the
+> brightness of a backlight.
 
-What is this doing?
+I'm a bit on the fence about this.  I guess you're doing this because
+it avoids some -EPROBE_DEFER cycles in Linux?  It does seem to have a
+few downsides, though.
 
-> +		ret = read_poll_timeout(AX_READ, ret,
-> +					((ret & MDIOCR_VALID) != 0), 0,
-> +					jiffies_to_usecs(HZ / 100), false,
-> +					&ax_local->ax_spi, P2_MDIOCR);
-> +		if (ret)
-> +			return -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
+1. It means a bit of re-inventing the wheel.  It's not a very big
+wheel, though, I'll give you.  ...but it's still something.
 
-> +static char *no_regs_list = "80018001,e1918001,8001a001,fc0d0000";
-> +unsigned long ax88796c_no_regs_mask[AX88796C_REGDUMP_LEN / (sizeof(unsigned long) * 8)];
-> +
-> +module_param(comp, int, 0444);
-> +MODULE_PARM_DESC(comp, "0=Non-Compression Mode, 1=Compression Mode");
-> +
-> +module_param(msg_enable, int, 0444);
-> +MODULE_PARM_DESC(msg_enable, "Message mask (see linux/netdevice.h for bitmap)");
+2. I'm not sure why you'd want to, but in theory one could use this
+PWM for some other purposes.  It really is just a generic PWM.  Your
+change prevents that.
 
-No module parameters allowed, not in netdev.
 
-> +static int ax88796c_reload_eeprom(struct ax88796c_device *ax_local)
-> +{
-> +	int ret;
-> +
-> +	AX_WRITE(&ax_local->ax_spi, EECR_RELOAD, P3_EECR);
-> +
-> +	ret = read_poll_timeout(AX_READ, ret,
-> +				(ret & PSR_DEV_READY),
-> +				0, jiffies_to_usecs(2 * HZ / 1000), false,
-> +				&ax_local->ax_spi, P0_PSR);
-> +	if (ret) {
-> +		dev_err(&ax_local->spi->dev,
-> +			"timeout waiting for reload eeprom\n");
-> +		return -1;
 
-return ret not EINVAL which is -1
+> Drop the #pwm-cells and instead expose a new property to configure the
+> granularity of the backlight PWM signal.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> index f8622bd0f61e..e380218b4646 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> @@ -66,9 +66,12 @@ properties:
+>        1-based to match the datasheet.  See ../../gpio/gpio.txt for more
+>        information.
+>
+> -  '#pwm-cells':
+> -    const: 1
+> -    description: See ../../pwm/pwm.yaml for description of the cell formats.
+> +  ti,backlight-scale:
+> +    description:
+> +      The granularity of brightness for the PWM signal provided on GPIO4, if
+> +      this property is specified.
+> +    minimum: 0
+> +    maximum: 65535
 
-> +static int ax88796c_set_mac_address(struct net_device *ndev, void *p)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	struct sockaddr *addr = p;
-> +
-> +	if (!is_valid_ether_addr(addr->sa_data))
-> +		return -EADDRNOTAVAIL;
+A few issues here:
 
-It would be better to just use eth_mac_addr().
+1. Maybe call this "num-steps" instead of backlight-scale.  That's
+essentially what it is, right?  Saying how many discrete steps you're
+allowing in your backlight?
 
-> +static int
-> +ax88796c_check_free_pages(struct ax88796c_device *ax_local, u8 need_pages)
-> +{
-> +	u8 free_pages;
-> +	u16 tmp;
-> +
-> +	free_pages = AX_READ(&ax_local->ax_spi, P0_TFBFCR) & TX_FREEBUF_MASK;
-> +	if (free_pages < need_pages) {
-> +		/* schedule free page interrupt */
-> +		tmp = AX_READ(&ax_local->ax_spi, P0_TFBFCR)
-> +				& TFBFCR_SCHE_FREE_PAGE;
-> +		AX_WRITE(&ax_local->ax_spi, tmp | TFBFCR_TX_PAGE_SET |
-> +				TFBFCR_SET_FREE_PAGE(need_pages),
-> +				P0_TFBFCR);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct sk_buff *
-> +ax88796c_tx_fixup(struct net_device *ndev, struct sk_buff_head *q)
-> +{
-> +	if (netif_msg_pktdata(ax_local)) {
-> +		char pfx[IFNAMSIZ + 7];
-> +
-> +		snprintf(pfx, sizeof(pfx), "%s:     ", ndev->name);
-> +
-> +		netdev_info(ndev, "TX packet len %d, total len %d, seq %d\n",
-> +			    pkt_len, tx_skb->len, seq_num);
-> +
-> +		netdev_info(ndev, "  SPI Header:\n");
-> +		print_hex_dump(KERN_INFO, pfx, DUMP_PREFIX_OFFSET, 16, 1,
-> +			       tx_skb->data, 4, 0);
-> +
-> +		netdev_info(ndev, "  TX SOP:\n");
-> +		print_hex_dump(KERN_INFO, pfx, DUMP_PREFIX_OFFSET, 16, 1,
-> +			       tx_skb->data + 4, TX_OVERHEAD, 0);
-> +
-> +		netdev_info(ndev, "  TX packet:\n");
-> +		print_hex_dump(KERN_INFO, pfx, DUMP_PREFIX_OFFSET, 16, 1,
-> +			       tx_skb->data + 4 + TX_OVERHEAD,
-> +			       tx_skb->len - TX_EOP_SIZE - 4 - TX_OVERHEAD, 0);
-> +
-> +		netdev_info(ndev, "  TX EOP:\n");
-> +		print_hex_dump(KERN_INFO, pfx, DUMP_PREFIX_OFFSET, 16, 1,
-> +			       tx_skb->data + tx_skb->len - 4, 4, 0);
-> +	}
+2. IMO you need the PWM frequency specified, since it can actually
+matter.  NOTE: once you have the PWM frequency specified, you could
+imagine automatically figuring out what "num-steps" was.  Really you'd
+want it to be the largest possible value you could achieve with your
+hardware at the specified frequency.  There's no advantage (is there?)
+of providing fewer steps to the backlight client.
 
-I expect others are going to ask you to remove this.
+3. Some backlights are specified inverted.  It looks like this maps
+nicely to the bridge chip, which has a bit for it.  Probably nice to
+expose this?
 
-> +static void ax88796c_handle_link_change(struct net_device *ndev)
-> +{
-> +	if (net_ratelimit())
-> +		phy_print_status(ndev->phydev);
-> +}
-> +
-> +void ax88796c_phy_init(struct ax88796c_device *ax_local)
-> +{
-> +	/* Enable PHY auto-polling */
-> +	AX_WRITE(&ax_local->ax_spi,
-> +		 PCR_PHYID(0x10) | PCR_POLL_EN |
-> +		 PCR_POLL_FLOWCTRL | PCR_POLL_BMCR, P2_PCR);
+Of course, if we were just exposing the PWM directly to Linux we could
+just use the PWM backlight driver and it'd all magically work.  ;-)
 
-Auto-polling of the PHY is generally a bad idea. The hardware is not
-going to respect the phydev->lock mutex, for example. Disable this,
-and add a proper ax88796c_handle_link_change().
 
-> +static int
-> +ax88796c_open(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +	int ret;
-> +	unsigned long irq_flag = IRQF_SHARED;
-> +
-> +	mutex_lock(&ax_local->spi_lock);
-> +
-> +	ret = ax88796c_soft_reset(ax_local);
-> +	if (ret < 0)
-> +		return -ENODEV;
-> +
-> +	ret = request_irq(ndev->irq, ax88796c_interrupt,
-> +			  irq_flag, ndev->name, ndev);
-
-Maybe look at using request_threaded_irq(). You can then remove your
-work queue, and do the work in the thread_fn.
-
-> +	if (ret) {
-> +		netdev_err(ndev, "unable to get IRQ %d (errno=%d).\n",
-> +			   ndev->irq, ret);
-> +		return -ENXIO;
-
-return ret;
-
-In general, never change a return code unless you have a really good
-reason why. And if you do have a reason, document it.
-
-> +static int
-> +ax88796c_close(struct net_device *ndev)
-> +{
-> +	struct ax88796c_device *ax_local = to_ax88796c_device(ndev);
-> +
-> +	netif_stop_queue(ndev);
-> +
-> +	free_irq(ndev->irq, ndev);
-> +
-> +	phy_stop(ndev->phydev);
-> +
-> +	mutex_lock(&ax_local->spi_lock);
-> +
-> +	AX_WRITE(&ax_local->ax_spi, IMR_MASKALL, P0_IMR);
-> +	ax88796c_free_skb_queue(&ax_local->tx_wait_q);
-> +
-> +	ax88796c_soft_reset(ax_local);
-> +
-> +	mutex_unlock(&ax_local->spi_lock);
-> +	netif_carrier_off(ndev);
-
-phy_stop() will do that for you.
-
-> +static int ax88796c_probe(struct spi_device *spi)
-> +{
-
-> +	ax_local->mdiobus->priv = ax_local;
-> +	ax_local->mdiobus->read = ax88796c_mdio_read;
-> +	ax_local->mdiobus->write = ax88796c_mdio_write;
-> +	ax_local->mdiobus->name = "ax88976c-mdiobus";
-> +	ax_local->mdiobus->phy_mask = ~(1 << 0x10);
-
-BIT(0x10);
-
-> +
-> +	ret = devm_register_netdev(&spi->dev, ndev);
-> +	if (ret) {
-> +		dev_err(&spi->dev, "failed to register a network device\n");
-> +		destroy_workqueue(ax_local->ax_work_queue);
-> +		goto err;
-> +	}
-
-The device is not live. If this is being used for NFS root, the kernel
-will start using it. So what sort of mess will it get into, if there
-is no PHY yet? Nothing important should happen after register_netdev().
-
-> +
-> +	ax_local->phydev = phy_find_first(ax_local->mdiobus);
-> +	if (!ax_local->phydev) {
-> +		dev_err(&spi->dev, "no PHY found\n");
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-> +
-> +	ax_local->phydev->irq = PHY_IGNORE_INTERRUPT;
-> +	phy_connect_direct(ax_local->ndev, ax_local->phydev,
-> +			   ax88796c_handle_link_change,
-> +			   PHY_INTERFACE_MODE_MII);
-> +
-> +	netif_info(ax_local, probe, ndev, "%s %s registered\n",
-> +		   dev_driver_string(&spi->dev),
-> +		   dev_name(&spi->dev));
-> +	phy_attached_info(ax_local->phydev);
-> +
-> +	ret = 0;
-> +err:
-> +	return ret;
-> +}
-> +
-> +static int ax88796c_remove(struct spi_device *spi)
-> +{
-> +	struct ax88796c_device *ax_local = dev_get_drvdata(&spi->dev);
-> +	struct net_device *ndev = ax_local->ndev;
-
-You might want to disconnect the PHY.
-
-> +
-> +	netif_info(ax_local, probe, ndev, "removing network device %s %s\n",
-> +		   dev_driver_string(&spi->dev),
-> +		   dev_name(&spi->dev));
-> +
-> +	destroy_workqueue(ax_local->ax_work_queue);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id ax88796c_dt_ids[] = {
-> +	{ .compatible = "asix,ax88796c" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, ax88796c_dt_ids);
-> +
-> +static const struct spi_device_id asix_id[] = {
-> +	{ "ax88796c", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, asix_id);
-> +
-> +static struct spi_driver ax88796c_spi_driver = {
-> +	.driver = {
-> +		.name = DRV_NAME,
-> +#ifdef CONFIG_USE_OF
-> +		.of_match_table = of_match_ptr(ax88796c_dt_ids),
-> +#endif
-
-I don't think you need the #ifdef.
-
-> +#ifndef _AX88796C_MAIN_H
-> +#define _AX88796C_MAIN_H
-> +
-> +#include <linux/netdevice.h>
-> +#include <linux/mii.h>
-> +
-> +#include "ax88796c_spi.h"
-> +
-> +/* These identify the driver base version and may not be removed. */
-> +#define DRV_NAME	"ax88796c"
-> +#define ADP_NAME	"ASIX AX88796C SPI Ethernet Adapter"
-> +#define DRV_VERSION	"1.2.0"
-
-DRV_VERSION are pretty pointless. Not sure you use it anyway. Please
-remove.
-
-> +	unsigned long		capabilities;
-> +		#define AX_CAP_DMA		1
-> +		#define AX_CAP_COMP		2
-> +		#define AX_CAP_BIDIR		4
-
-BIT(0), BIT(1), BIT(2)...
-
-> +struct skb_data;
-> +
-> +struct skb_data {
-> +	enum skb_state state;
-> +	struct net_device *ndev;
-> +	struct sk_buff *skb;
-> +	size_t len;
-> +	dma_addr_t phy_addr;
-> +};
-
-A forward definition, followed by the real definition?
-
-> +	#define FER_IPALM		(1 << 0)
-> +	#define FER_DCRC		(1 << 1)
-> +	#define FER_RH3M		(1 << 2)
-> +	#define FER_HEADERSWAP		(1 << 7)
-> +	#define FER_WSWAP		(1 << 8)
-> +	#define FER_BSWAP		(1 << 9)
-> +	#define FER_INTHI		(1 << 10)
-> +	#define FER_INTLO		(0 << 10)
-> +	#define FER_IRQ_PULL		(1 << 11)
-> +	#define FER_RXEN		(1 << 14)
-> +	#define FER_TXEN		(1 << 15)
-
-Isn't checkpatch giving warnings and suggesting BIT?
-
-      Andrew
+-Doug
