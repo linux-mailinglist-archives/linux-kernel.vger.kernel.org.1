@@ -2,135 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CB4281A27
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B035281A25
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388353AbgJBRwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388337AbgJBRw2 (ORCPT
+        id S2388333AbgJBRw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:52:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726017AbgJBRw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:52:28 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3504DC0613E4
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:52:28 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id v60so1739781ybi.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lW22Qzd9PGiP/2qzJ0inuLN63Dw7cetpUVChJaty2gE=;
-        b=Hrn+Czu+Upto30ahHpqz77XC0AVbryq8MDWS/Cg35v6e3+jm93XxMW799+oo0wmJCX
-         mMXHudebFmP8Ys+9w/RQcPL2f7Mnerj3jbyFp39ZwzbpbQE1w9F3wldwtqRqjU7NFCl5
-         DXY7Fpi9XYkfpBnirOpPnGDsydsDjA/wUrp9tqJoR4VEgWXIW8BnE1IFn0tUNE0dYY3u
-         KBLk/lWz4ZJ9bIQPBTjtRV0ygVvrkbXa9VWbhIV0G+8a0IkdILlriUf7qDpDEIHsrO5g
-         7lOOgb1hg4imG+RF8Ji9cqGBdhkknr3GVqfkmxdR+nREoCNPAFqg5UdDt8J+8Svgc4V2
-         kRJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lW22Qzd9PGiP/2qzJ0inuLN63Dw7cetpUVChJaty2gE=;
-        b=ZA7Mn7i0SPw1GEYSR2lfqdvWbgZf7XiIxR0Y6dr3O83kwjKjq3YIn14md/XJqfD67H
-         8VX5n1Rlwtb9z86HhL8XjXE7Ij0XpfvSOMmkxuo1lL9afJvWvpg2KS06Fea0hhujg5hp
-         koKUOAgxQGS+0/Y/jjRqTxdMEvLayjMYAiEIrWUATSRTuG39sq/pKzJUujuVrIiXGBuZ
-         dnWv0lg+w3YH9UaGhUSWGB7pD+dk9a6Ije2gpGF3XSduRHtCuWGQ/bz2IKk2+ZJS8wRe
-         Enjvzu+cTbeeNWJFl23wsWSc4CytB3ibBviVEDZ58hAAjGiGuC3kytlj5lSeHMkevhWF
-         57QQ==
-X-Gm-Message-State: AOAM532uJLMgJzutVKAXCiPWrxT9xhl1bYXeG28VOxAPo1QHIQvqTMaZ
-        Xx6fBZiB5ELuWRnIia5clsPFtrTdrxccTsACQmv6kQ==
-X-Google-Smtp-Source: ABdhPJy4XhKvg/fcRsKDUtj8ituzDGpU4LofV1mA+byx9rafxRXok/qNPb40BvV5nKhx2JlN6+fH0sxc/b6LCow6y+k=
-X-Received: by 2002:a25:8041:: with SMTP id a1mr4363493ybn.412.1601661147077;
- Fri, 02 Oct 2020 10:52:27 -0700 (PDT)
+        Fri, 2 Oct 2020 13:52:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601661145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=UYhZcO1NLSMAx4sk89Nhzce3JSq4NgIfHV17KuBrZ9s=;
+        b=heIwSkRfg1Z4nzVYlizNa6HHaG5ZGbtAf64Sb3sNoxiKDpf8FYeNTX4+mStEhAfN095yT9
+        LKffguVp+8OYgutDIYBhFGeOLTdqZRYm/uN7A89PSipJhOQ/62NPGpfAIn6YkYPdItRacH
+        Ee5w3UgB6PoZ22mLdOwRrB6XCJ+Y+hs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-ZCci1aZmPEW9Wajk-4B_Fg-1; Fri, 02 Oct 2020 13:52:22 -0400
+X-MC-Unique: ZCci1aZmPEW9Wajk-4B_Fg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D007802B5E;
+        Fri,  2 Oct 2020 17:52:21 +0000 (UTC)
+Received: from [10.36.113.228] (ovpn-113-228.ams2.redhat.com [10.36.113.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 107A37367D;
+        Fri,  2 Oct 2020 17:52:19 +0000 (UTC)
+Subject: Re: [PATCH] mm: optionally disable brk()
+To:     Topi Miettinen <toiwoton@gmail.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201002171921.3053-1-toiwoton@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
+Date:   Fri, 2 Oct 2020 19:52:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
- <20201001225952.3676755-1-saravanak@google.com> <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
-In-Reply-To: <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 2 Oct 2020 10:51:51 -0700
-Message-ID: <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
-Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
- init_machine() path
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201002171921.3053-1-toiwoton@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
-> > adding all top level devices") optimized the fwnode parsing when all top
-> > level devices are added, it missed out optimizing this for platform
-> > where the top level devices are added through the init_machine() path.
-> >
-> > This commit does the optimization for all paths by simply moving the
-> > fw_devlink_pause/resume() inside of_platform_default_populate().
-> >
-> > Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/of/platform.c | 19 +++++++++++++++----
-> >  1 file changed, 15 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > index 071f04da32c8..79972e49b539 100644
-> > --- a/drivers/of/platform.c
-> > +++ b/drivers/of/platform.c
-> > @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
-> >                                  const struct of_dev_auxdata *lookup,
-> >                                  struct device *parent)
-> >  {
-> > -       return of_platform_populate(root, of_default_bus_match_table, lookup,
-> > -                                   parent);
-> > +       int ret;
-> > +
-> > +       /*
-> > +        * fw_devlink_pause/resume() are only safe to be called around top
-> > +        * level device addition due to locking constraints.
-> > +        */
-> > +       if (!root)
-> > +               fw_devlink_pause();
-> > +
-> > +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
-> > +                                  parent);
->
-> of_platform_default_populate() vs. of_platform_populate() is just a
-> different match table. I don't think the behavior should otherwise be
-> different.
->
-> There's also of_platform_probe() which has slightly different matching
-> behavior. It should not behave differently either with respect to
-> devlinks.
+On 02.10.20 19:19, Topi Miettinen wrote:
+> The brk() system call allows to change data segment size (heap). This
+> is mainly used by glibc for memory allocation, but it can use mmap()
+> and that results in more randomized memory mappings since the heap is
+> always located at fixed offset to program while mmap()ed memory is
+> randomized.
 
-So I'm trying to do this only when the top level devices are added for
-the first time. of_platform_default_populate() seems to be the most
-common path. For other cases, I think we just need to call
-fw_devlink_pause/resume() wherever the top level devices are added for
-the first time. As I said in the other email, we can't add
-fw_devlink_pause/resume() by default to of_platform_populate().
+Want to take more Unix out of Linux?
 
-Do you have other ideas for achieving "call fw_devlink_pause/resume()
-only when top level devices are added for the first time"?
+Honestly, why care about disabling? User space can happily use mmap() if
+it prefers.
 
--Saravana
+
+-- 
+Thanks,
+
+David / dhildenb
+
