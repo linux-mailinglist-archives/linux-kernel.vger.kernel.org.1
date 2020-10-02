@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C5D281757
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B5F281782
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388022AbgJBQB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBQB7 (ORCPT
+        id S2388115AbgJBQKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:10:22 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:23505 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBQKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:01:59 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E18EC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vHBmcqwNTnF0b6ZUSt9U0ET07tREwzNbDSKV+WbLxn4=; b=agc7kUOAO6up5LCA5nFGwvhSmk
-        yTfuiklLPEU/quw1eYc+j3hHEfW1OXzjL9bEPygdoIgZUHmC0+Wm0Ml6nKAX7okacG8xUuMzHA2bg
-        AEHJ64Ady2DHQOFyjsVFYZzPvmppC8ChtJNQjR4ItWHkz/aIyotmid9mk2iXvZ8REeTUjlU9jxHtt
-        GTApTTCr2BCZBdfFIXgrDVhxsVm5sdH3XAfuTAU8GtspBLrVzlLBJG8wCpBpcLJkA1XpXTpGqdOGW
-        IXz/QVsLM+6DVFZoTduC7i6JYgyUZCHglS/BsVOdJ4BBUTwY4qoUrguqybjW0BysyvoWsoz0vP8mY
-        O9SvfJtg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kONV8-0007aX-To; Fri, 02 Oct 2020 16:01:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C3373056DE;
-        Fri,  2 Oct 2020 18:01:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 69CA2203A8F62; Fri,  2 Oct 2020 18:01:39 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 18:01:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Mark Simmons <msimmons@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/deadline: Unthrottle PI boosted threads while
- enqueuing
-Message-ID: <20201002160139.GB2628@hirez.programming.kicks-ass.net>
-References: <5076e003450835ec74e6fa5917d02c4fa41687e6.1600170294.git.bristot@redhat.com>
- <20200918060026.GC261845@localhost.localdomain>
- <f4316f5a-eccd-ec96-3f7b-85900f5f3124@redhat.com>
+        Fri, 2 Oct 2020 12:10:22 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 12:10:21 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601655021; x=1633191021;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0xm80mI835j7RsnCf27YVapcCw5rmNqJqXj1F/aXJDg=;
+  b=wI6GKhyqVsG1dFAxqG5bAsdJVmdLur23avUBNrqDHn6TZWLgDzzd6kmP
+   Z432zZ4m8Qr8jbrrr2JKECVMX2zKbi5Bwj2gtNoSXANue+S43ma3FcB4m
+   tircAsJdBWAhgk0+WO/ZHaXPThz3xzM568i1v74pTYZK0hKKHXna7vkyc
+   6IM+fv/7y3Ll+l7w5Fz6Emi1MKP6xbD38/Y6Gu2U7o8VuDp5vzWHT4zb0
+   SZIu8ON316eEW4sDKoTMuG3+maciz/K8MvTUqK9x2NO8QrzEUyUpck+xP
+   BS+NFlzE/9mxxpAyLjaRCFhaIrjEz+4VtN9MmR/5302pt4gyFGFtc2MXD
+   w==;
+IronPort-SDR: ERktlbb9SHgHSVs1WBh0+wVf8cBcyCqMHlQ0klUWs2eYzPAhkilLDtnZI034NRrW9SYYQ4y/SF
+ TBt+4s0vOUCoF5b4iAub8CAdJeF3LMSgCGhCflj+y1KckMaVv/gZBLSs2WmVc58cyh3/TqQkXH
+ Btow4/O+EkpNSg0nOIOalDBdDP4fM/TsYK+FIfb/683JBP/fxGXObqLI650Ts7AjwLadhu+s60
+ iWqR7T1NuXSHaJz0MBE7xdmY2NnPhp7ejDVlFqG3q+dq4fomyPqB35UrgOLkvtpTTyRNxT4CC9
+ +EA=
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="91238271"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Oct 2020 09:03:15 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 2 Oct 2020 09:03:14 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 2 Oct 2020 09:02:32 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH 0/2] Add driver for Microchip S/PDIF RX
+Date:   Fri, 2 Oct 2020 19:03:03 +0300
+Message-ID: <20201002160305.815523-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4316f5a-eccd-ec96-3f7b-85900f5f3124@redhat.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 05:57:52PM +0200, Daniel Bristot de Oliveira wrote:
-> On 9/18/20 8:00 AM, Juri Lelli wrote:
-> > Hi Daniel,
-> > 
-> > On 16/09/20 09:06, Daniel Bristot de Oliveira wrote:
-> >> stress-ng has a test (stress-ng --cyclic) that creates a set of threads
-> >> under SCHED_DEADLINE with the following parameters:
-> >>
-> >>     dl_runtime   =  10000 (10 us)
-> >>     dl_deadline  = 100000 (100 us)
-> >>     dl_period    = 100000 (100 us)
-> >>
-> >> These parameters are very aggressive. When using a system without HRTICK
-> >> set, these threads can easily execute longer than the dl_runtime because
-> >> the throttling happens with 1/HZ resolution.
-> >>
-> >> During the main part of the test, the system works just fine because
-> >> the workload does not try to run over the 10 us. The problem happens at
-> >> the end of the test, on the exit() path. During exit(), the threads need
-> >> to do some cleanups that require real-time mutex locks, mainly those
-> >> related to memory management, resulting in this scenario:
-> >>
-> >> Note: locks are rt_mutexes...
-> >>  ------------------------------------------------------------------------
-> >>     TASK A:		TASK B:				TASK C:
-> >>     activation
-> >> 							activation
-> >> 			activation
-> >>
-> >>     lock(a): OK!	lock(b): OK!
-> >>     			<overrun runtime>
-> >>     			lock(a)
-> >>     			-> block (task A owns it)
-> >> 			  -> self notice/set throttled
-> >>  +--<			  -> arm replenished timer
-> >>  |    			switch-out
-> >>  |    							lock(b)
-> >>  |    							-> <C prio > B prio>
-> >>  |    							-> boost TASK B
-> >>  |  unlock(a)						switch-out
-> >>  |  -> handle lock a to B
-> >>  |    -> wakeup(B)
-> >>  |      -> B is throttled:
-> >>  |        -> do not enqueue
-> >>  |     switch-out
-> >>  |
-> >>  |
-> >>  +---------------------> replenishment timer
-> >> 			-> TASK B is boosted:
-> >> 			  -> do not enqueue
-> >>  ------------------------------------------------------------------------
-> >>
-> >> BOOM: TASK B is runnable but !enqueued, holding TASK C: the system
-> >> crashes with hung task C.
-> >>
-> >> This problem is avoided by removing the throttle state from the boosted
-> >> thread while boosting it (by TASK A in the example above), allowing it to
-> >> be queued and run boosted.
-> >>
-> >> The next replenishment will take care of the runtime overrun, pushing
-> >> the deadline further away. See the "while (dl_se->runtime <= 0)" on
-> >> replenish_dl_entity() for more information.
-> >>
-> >> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> >> Reported-by: Mark Simmons <msimmons@redhat.com>
-> >> Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
-> >> Tested-by: Mark Simmons <msimmons@redhat.com>
-> >> Cc: Ingo Molnar <mingo@redhat.com>
-> >> Cc: Peter Zijlstra <peterz@infradead.org>
-> >> Cc: Juri Lelli <juri.lelli@redhat.com>
-> >> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> >> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> >> Cc: Steven Rostedt <rostedt@goodmis.org>
-> >> Cc: Ben Segall <bsegall@google.com>
-> >> Cc: Mel Gorman <mgorman@suse.de>
-> >> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> >> Cc: linux-kernel@vger.kernel.org
-> >>
-> >> ---
-> > 
-> > Thanks for this fix.
-> > 
-> > Acked-by: Juri Lelli <juri.lelli@redhat.com>
-> 
-> This is a gentle ping... [we are facing this bug in practice :-(].
+The Sony/Philips Digital Interface Receiver (SPDIFRX) is a serial port
+compliant with the IEC-60958 standard. Among its caracteristics, we
+mention the following:
+ - SPDIF/AES-EBU Compatible Serial Port
+ - 32 Samples FIFO
+ - Data Width Configurable to 24 bits, 20 bits or 16 bits
+ - Packed and Unpacked Data Support for System Memory Optimization
+ - Line State Events Report and Source of Interrupt
+ - Line Error Rate Report
+ - Full Memory Map of 192 bits for Channel 1 and Channel 2 Status and
+   User Data
+ - First 32-bit Status A, Status B Change Report and Source of Interrupt
+ - Line Digital Filter
+ - Register Write Protection
+ - Abnormal Software Access and Internal Sequencer Integrity Check Reports
 
-Sorry, queued now.
+This interface is available in Microchip's SAMA7G5 SoC.
+
+Codrin Ciubotariu (2):
+  dt-bindings: sound: add DT bindings for Microchip S/PDIF RX Controller
+  ASoC: mchp-spdifrx: add driver for SPDIF RX
+
+ .../bindings/sound/mchp,spdifrx.yaml          |  73 ++
+ sound/soc/atmel/Kconfig                       |  13 +
+ sound/soc/atmel/Makefile                      |   2 +
+ sound/soc/atmel/mchp-spdifrx.c                | 954 ++++++++++++++++++
+ 4 files changed, 1042 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml
+ create mode 100644 sound/soc/atmel/mchp-spdifrx.c
+
+-- 
+2.25.1
+
