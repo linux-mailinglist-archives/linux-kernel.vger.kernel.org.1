@@ -2,146 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A2D28131E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFC0281323
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387809AbgJBMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgJBMsi (ORCPT
+        id S2387844AbgJBMtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:49:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40178 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgJBMtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:48:38 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BE7C0613D0;
-        Fri,  2 Oct 2020 05:48:38 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id u24so726176pgi.1;
-        Fri, 02 Oct 2020 05:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RAIUPEHTeHS2U3+oSG9KsAR+ktrkLYIx+qWMYCIy9n4=;
-        b=pDiADnxeBlW00Qq4p1x38xVCA2IAxrvhBBqq7PjoGlfS/UW4KbPrm2PZ0NiRlWxYtK
-         asEOblO5qJLuHcyicxrc3tQSf/ovxhKsy+cWV7F9CzeZrD9RaAc4HKNUn0jZmbU62L/V
-         byWKtx6C+lzEAN7NV8FeGnkYCQGDvZRkxqufVjJWOaV6Sq5zALqbcSZHwI8dnmp+DaXe
-         1rO1ZD2jfieTrLyLmV79xOoasLTcyoQxYT2qmUYFRS7H8twXyzdxNU2W3X6vlmK0kcke
-         Wt9UrSZQJgFrUZLpDwjagpEsmOf55b2XMzGUrdxGToM6WQJ4jiZ25YOohO59PATj/grF
-         dD2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RAIUPEHTeHS2U3+oSG9KsAR+ktrkLYIx+qWMYCIy9n4=;
-        b=N6gmZzRnRRV33B2Y8tq/ROGIl49sir7nwpfj5PRrSlYtHJEYebB4sbhQLrOAK6TFwP
-         w8KBZ9CBj1y24HaSyhAuJdClaiCBiWUKeJaHBvhgBpPCWU05AQnEuy+gntLQpq3Kd+ht
-         pwmcQoNQuDJhA2btW0mm058T8KU9EaUNgmZaf+3DUYdthsD9L1HFM/vKUrAJAHAIJz4k
-         8P2OsgYylD2MfwON+I3MXK/f9ANqkvxbgiDCbrW8KcPxSzhL0wclNxl2Fy57kWPPlu+/
-         Joz0ZJ5g25Y0/FvkYAV8YScA7dRVhbzi2kT27f2IwMokW16caf/76Jdc9PmnF1AAG/vI
-         heZg==
-X-Gm-Message-State: AOAM531gjuUfL21ep1CGbTH1wGABe/EXduYDaACMl1bixRh3JPY+qCB2
-        /fy2d2mqlsyPxU2ihlICMRBtku6Rk9Fw7aLGf7U=
-X-Google-Smtp-Source: ABdhPJyQ2uudnQNegCeg41YZTs74edYoNeI0AADnzK8v5X5z2sm/0vQAll9kw4Rj6kU4iPDUTgkOZlowdc+7HS+MhDY=
-X-Received: by 2002:a63:4c1d:: with SMTP id z29mr2069434pga.203.1601642917546;
- Fri, 02 Oct 2020 05:48:37 -0700 (PDT)
+        Fri, 2 Oct 2020 08:49:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092CnQPq101968;
+        Fri, 2 Oct 2020 07:49:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601642966;
+        bh=DIr+K1xQCW/Rcaq19mKmaMXxG7mGcseJhQmSdu1WAWI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=DXSzVbQDyfM72ndqghi1FvtbKPlcBukuyIJdB5dpcmEntQn9AOVzoron4GXOg+S2I
+         80BqBE71q68pqboHioWBQmbr0foeqvzDVIa68f8qnGvp9rhYO01SFz6LzXQE8ibK0L
+         /KYwBUkNEU3UOt7HK//pXP8IGkm3xbw+odQ+Z8J0=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092CnQeq050504
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 2 Oct 2020 07:49:26 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 07:49:26 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 2 Oct 2020 07:49:26 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092CnQ36123431;
+        Fri, 2 Oct 2020 07:49:26 -0500
+Date:   Fri, 2 Oct 2020 07:49:26 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Faiz Abbas <faiz_abbas@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
+        <robh+dt@kernel.org>, <t-kristo@ti.com>
+Subject: Re: [PATCH 0/8] Add support for UHS modes in TI's J721e and J7200
+ boards
+Message-ID: <20201002124926.rr5dk5hhygavgqs3@akan>
+References: <20201001190541.6364-1-faiz_abbas@ti.com>
+ <20201001191302.dlp2tzbvkk35vzgd@akan>
+ <2a7ceab9-37ec-9117-1d98-9f307b4b5390@ti.com>
 MIME-Version: 1.0
-References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it> <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
- <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com>
- <feb8567c830748c483c8c66dd4717003@asem.it> <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
- <22753b53cd7d4dfba4ef3610f71cc462@asem.it> <20200930130113.GQ3956970@smile.fi.intel.com>
- <2c26adae711145639d0b982a354aff3c@asem.it> <CAHp75Vcq1WOcMNoKpOSpCD1mFSyvYsaX-h7KHTaAOPe=6S4e0A@mail.gmail.com>
- <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com> <757023db21e642a3a4b6d33428c191cc@asem.it>
-In-Reply-To: <757023db21e642a3a4b6d33428c191cc@asem.it>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 2 Oct 2020 15:48:18 +0300
-Message-ID: <CAHp75Vf-hJ78LmXF8PqOeF-CfWEYqYzMiGCEGaEfnMqxmtiwiw@mail.gmail.com>
-Subject: Re: How to use an ACPI declared GPIO in a userspace ...
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2a7ceab9-37ec-9117-1d98-9f307b4b5390@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 1:02 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
+On 10:14-20201002, Faiz Abbas wrote:
+> Hi Nishanth,
+> 
+> On 02/10/20 12:43 am, Nishanth Menon wrote:
+> > On 00:35-20201002, Faiz Abbas wrote:
+> >> The following patches add support for UHS modes for TI's j721e and j7200
+> >> boards.
+> >>
+> >> Patches 1-3 add support for gpios to j7200-evm
+> >>
+> >> Patches 4-6 add support for voltage regulators for required by the
+> >> SD card in both devices as well as enable UHS modes at 1.8V
+> >>
+> >> Patches 5-6 add some required configs to the arm64 defconfig.
+> >>
+> >> This series depends on driver patches adding tuning support here:
+> >> https://lore.kernel.org/linux-arm-kernel/20200923105206.7988-1-faiz_abbas@ti.com/
+> >>
+> >> Faiz Abbas (8):
+> >>   arm64: dts: ti: k3-j7200-main: Add gpio nodes in main domain
+> >>   arm64: dts: ti: k3-j7200: Add gpio nodes in wakeup domain
+> >>   arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio
+> >>     modules
+> >>   arm64: dts: ti: k3-j721e-main: Add output tap delay values
+> >>   arm64: dts: ti: k3-j721e-common-proc-board: Add support SD card UHS
+> >>     modes
+> >>   arm64: dts: ti: k3-j7200-common-proc-board: Add support SD card UHS
+> >>     modes
+> > 
+> > Split these up please!
+> 
+> Into SD card UHS and gpio series?
+> 
+> >>   arm64: defconfig: Enable OMAP I2C driver
+> >>   arm64: defconfig: Enable DAVINCI_GPIO driver
+> >>
+> > 
+> > defconfig patches can be posted independent of dts patches, they go to
+> > different branches.
+> 
+> I was trying to follow Arnd's advice here:
+> https://lore.kernel.org/linux-arm-kernel/CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com/
+> 
+> He says that defconfig patches can be sent at the same time as dts updates and maintainers can send those
+> as separate pull requests.
 
-> > > > My SSDT table is:
-> > >
-> > > ^^^^ See the difference? I can't help here.
->
-> This is the DSDT table related to the GPIO controller of my board:
->
-> Device (GPO1)
->         {
->             Name (_ADR, Zero)  // _ADR: Address
->             Name (_HID, "INT3452")  // _HID: Hardware ID
->             Name (_CID, "INT3452")  // _CID: Compatible ID
->             Name (_DDN, "General Purpose Input/Output (GPIO) Controller - Northwest")  // _DDN: DOS Device Name
->             Name (_UID, 0x02)  // _UID: Unique ID
->             Name (RBUF, ResourceTemplate ()
->             {
->                 Memory32Fixed (ReadWrite,
->                     0x00000000,         // Address Base
->                     0x00004000,         // Address Length
->                     _Y08)
->                 Interrupt (ResourceConsumer, Level, ActiveLow, Shared, ,, )
->                 {
->                     0x0000000E,
->                 }
->             })
->             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
->             {
->                 CreateDWordField (RBUF, \_SB.GPO1._Y08._BAS, B0BA)  // _BAS: Base Address
->                 CreateDWordField (RBUF, \_SB.GPO1._Y08._LEN, B0LN)  // _LEN: Length
->                 B0BA = GP1A /* \GP1A */
->                 B0LN = GP1L /* \GP1L */
->                 Return (RBUF) /* \_SB_.GPO1.RBUF */
->             }
->
->             Method (_STA, 0, NotSerialized)  // _STA: Status
->             {
->                 If ((OSYS < 0x07DC))
->                 {
->                     Return (Zero)
->                 }
->
->                 Return (0x0F)
->             }
->         }
+BTW, [1] your patches 7/8 and 8/8 never hit the mailing list, So, I am
+commenting on the defconfig patches without actually seeing the patches,
+and solely based on $subject in the cover letter.
 
-So, what about adding the following
+The reason for my comment was that I think defconfig series could go
+independent of the remaining series into 5.10, since they are not
+related specifically to this series, they are probably needed even for
+am654 and j721e nodes that already exist and was a miss that we didn't
+enable. Tying that to this specific series didn't make sense to me.
 
-DefinitionBlock ("linename.aml", "SSDT", 5, "", "LINENAME", 1)
-{
-  External (_SB_.GPO1, DeviceObj)
-  Scope (\_SB.GPO1)
-  {
-      Name (_DSD, Package () {
-          ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-          Package () {
-              Package () {
-                  "gpio-line-names",
-                  Package () {
-                      "Line0",
-                      "Line1",
-                      "Line2",
-                      ...
-                  }
-              },
-          }
-      })
-  }
-}
+But either way, we are way past rc7. I don't have enough time for
+these patches to bake in -next to make it to 5.10 window. So, lets try
+reposting this after rc1 tag is done so that I can send the defconfig
+(separately for 5.10 window) and the dts staged towards 5.11 (and no,
+I don't consider the dts patches as fixes - they are enabling the next
+level of functionality).
 
-?
-
-(Replace '...' with meaningful line names or drop for now, but in any
-case you need to provide as much names as lines of such GPIO
-controller)
+[1] https://lore.kernel.org/linux-arm-kernel/20201001190541.6364-7-faiz_abbas@ti.com/
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
