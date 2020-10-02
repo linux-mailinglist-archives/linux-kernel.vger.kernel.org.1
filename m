@@ -2,219 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562FA281003
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E69281009
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387644AbgJBJmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:42:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:10501 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBJmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:42:19 -0400
-IronPort-SDR: uyT9ADpgZg5ZCHh374nNLTM93gORyHQJ4e+EbuYpi10iEXtHxKzsfaw4RX7UWgqIXDbiI2xISl
- UU1FgVYdO91g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="160356303"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="160356303"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 02:42:14 -0700
-IronPort-SDR: bgesIRywDgEq0OASez3CEpJDJWPwXFgg92RIpILMNdpzXrtWDHRzPHSJpT37zukQNwVfwzEPEw
- yhTCBj26lvHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="341944623"
-Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 02 Oct 2020 02:42:12 -0700
-Received: from kbuild by de448af6ea1b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kOHZr-0000vr-Gn; Fri, 02 Oct 2020 09:42:11 +0000
-Date:   Fri, 02 Oct 2020 17:41:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/hid-hyperv] BUILD SUCCESS
- 63f90c49db5f2766f8856c0cd3bcbe7aa7a13b91
-Message-ID: <5f76f5d1.14oKOYuYy5Fm9e5G%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2387668AbgJBJoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBJoh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:44:37 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FA7C0613D0;
+        Fri,  2 Oct 2020 02:44:37 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x23so981265wmi.3;
+        Fri, 02 Oct 2020 02:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ctBjra5BgJEgRcesJor017cXG+iy3ZaHuadjYJsluL0=;
+        b=m3rVIo3F9L8s9lKdHf1ujK4ZEdago0ADY6m5qxTbeD5l3C4avfQ81wWdgDuP5FetH0
+         rq4ffb/k80nx7P6NMS7eX5yWN+8e0fDRyqpfBmXBJpA9ztFjaR9zKPVt2rFAJmtMpCTs
+         d+2Gll5CliG3pA0FmePdOKWC7YBloSxlFt68BVsZ3P9cEUgBUWJTouxbo5YAKsVLqGMx
+         SK3tRr1jG9BkjL5YRcLqtYnCi6dKZcAG5cwAdcE1VemWLdwMUkAdDsEQz0utyn9ykjN+
+         A/ypY5BGpYp3LJqcQIWU50Y6mHxsMl663PHRGufm0MzjvUcsmLesZO20wsPDUiJJaFfS
+         uZag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ctBjra5BgJEgRcesJor017cXG+iy3ZaHuadjYJsluL0=;
+        b=sah6qWo4rVqx14ddI2DoQxNa1jbl9Uby53WGdRU3dVavTgZi3IhLWvIkegLksBjRwr
+         acsL7tKccEEhGQhFV7mYSBgyJbQxCm+5PCXImwj3zAqhaNH+ON+2WB+yKrcbpOuVKDT6
+         Jhb8CTN24JgGFzaHt0MQyONsAcbZbWO2uU/xo40VgisaA/CV6uxcHPQmiQyC7y8VHoxs
+         YB9C+9FCXYhc6GlDYh0cnJBVMTWq5aW8pq51HXcF18Vba1kUjIP/MT0ANmZEsBGyU6WC
+         lXpRSPmnESq4wAC1moa8bm37JoaUOicV86zpJ4b0Qw7TNziS03D5ruFkLbJl9hD+0b3S
+         3l8Q==
+X-Gm-Message-State: AOAM5306GVCJdX77q/kp7F0SVjhpgtPhK9yLbNibHfOjhUwNLss5v+QN
+        p6DVwF+VuC4BTQUjBIQtjWg=
+X-Google-Smtp-Source: ABdhPJxAJlbKc4+NHc6gcTuByOz0Y8QbGfjUTOT/ojCYE2TGIWIvX77hAYZO95tNrMRtNmwWW53mRg==
+X-Received: by 2002:a1c:6341:: with SMTP id x62mr1901135wmb.70.1601631876171;
+        Fri, 02 Oct 2020 02:44:36 -0700 (PDT)
+Received: from localhost.localdomain ([170.253.60.68])
+        by smtp.googlemail.com with ESMTPSA id 70sm1236745wme.15.2020.10.02.02.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 02:44:35 -0700 (PDT)
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     mtk.manpages@gmail.com, eggert@cs.ucla.edu, David.Laight@ACULAB.COM
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        linux-man@vger.kernel.org, gcc-patches@gcc.gnu.org,
+        libc-alpha@sourceware.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] system_data_types.7: void *: Add info about generic function parameters and return value
+Date:   Fri,  2 Oct 2020 11:43:16 +0200
+Message-Id: <20201002094315.17832-1-colomar.6.4.3@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/hid-hyperv
-branch HEAD: 63f90c49db5f2766f8856c0cd3bcbe7aa7a13b91  HID: hyperv: Replace one-element arrays with flexible-array members
-
-elapsed time: 725m
-
-configs tested: 155
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          landisk_defconfig
-sh                             sh03_defconfig
-arm64                            alldefconfig
-powerpc                     rainier_defconfig
-m68k                        mvme147_defconfig
-arm                          gemini_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                          malta_defconfig
-riscv                             allnoconfig
-arm                              alldefconfig
-m68k                          hp300_defconfig
-arc                      axs103_smp_defconfig
-csky                             alldefconfig
-sh                            shmin_defconfig
-powerpc                        cell_defconfig
-riscv                    nommu_k210_defconfig
-sh                          rsk7203_defconfig
-mips                malta_kvm_guest_defconfig
-um                           x86_64_defconfig
-sh                           se7724_defconfig
-xtensa                    smp_lx200_defconfig
-arm                     am200epdkit_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                     cu1830-neo_defconfig
-arm                            mmp2_defconfig
-powerpc                    gamecube_defconfig
-mips                          ath79_defconfig
-arm                          simpad_defconfig
-arm                           h3600_defconfig
-sparc64                          alldefconfig
-arm                        cerfcube_defconfig
-powerpc                      ppc40x_defconfig
-s390                       zfcpdump_defconfig
-powerpc                       ppc64_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     taishan_defconfig
-arm                           spitz_defconfig
-h8300                               defconfig
-sh                   sh7770_generic_defconfig
-sparc                       sparc32_defconfig
-mips                          ath25_defconfig
-powerpc                           allnoconfig
-arc                          axs101_defconfig
-sh                ecovec24-romimage_defconfig
-alpha                               defconfig
-mips                     decstation_defconfig
-m68k                             allmodconfig
-arm                             rpc_defconfig
-arc                     nsimosci_hs_defconfig
-arm                           efm32_defconfig
-arm                   milbeaut_m10v_defconfig
-h8300                            alldefconfig
-arm                           viper_defconfig
-h8300                     edosk2674_defconfig
-sh                                  defconfig
-arm                           omap1_defconfig
-mips                   sb1250_swarm_defconfig
-arm                         axm55xx_defconfig
-m68k                        m5307c3_defconfig
-powerpc                 mpc832x_mds_defconfig
-xtensa                  audio_kc705_defconfig
-microblaze                      mmu_defconfig
-powerpc                          allmodconfig
-arm                    vt8500_v6_v7_defconfig
-c6x                        evmc6678_defconfig
-nios2                               defconfig
-riscv                            alldefconfig
-arm                         palmz72_defconfig
-powerpc                     ksi8560_defconfig
-sh                        sh7785lcr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-i386                 randconfig-a003-20200930
-i386                 randconfig-a002-20200930
-i386                 randconfig-a006-20200930
-i386                 randconfig-a005-20200930
-i386                 randconfig-a004-20200930
-i386                 randconfig-a001-20200930
-x86_64               randconfig-a015-20200930
-x86_64               randconfig-a013-20200930
-x86_64               randconfig-a012-20200930
-x86_64               randconfig-a016-20200930
-x86_64               randconfig-a014-20200930
-x86_64               randconfig-a011-20200930
-i386                 randconfig-a011-20200930
-i386                 randconfig-a015-20200930
-i386                 randconfig-a012-20200930
-i386                 randconfig-a014-20200930
-i386                 randconfig-a016-20200930
-i386                 randconfig-a013-20200930
-i386                 randconfig-a014-20201002
-i386                 randconfig-a013-20201002
-i386                 randconfig-a015-20201002
-i386                 randconfig-a016-20201002
-i386                 randconfig-a011-20201002
-i386                 randconfig-a012-20201002
-x86_64               randconfig-a004-20201002
-x86_64               randconfig-a001-20201002
-x86_64               randconfig-a002-20201002
-x86_64               randconfig-a005-20201002
-x86_64               randconfig-a003-20201002
-x86_64               randconfig-a006-20201002
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20201002
-x86_64               randconfig-a015-20201002
-x86_64               randconfig-a014-20201002
-x86_64               randconfig-a013-20201002
-x86_64               randconfig-a011-20201002
-x86_64               randconfig-a016-20201002
-x86_64               randconfig-a001-20200930
-x86_64               randconfig-a005-20200930
-x86_64               randconfig-a003-20200930
-x86_64               randconfig-a004-20200930
-x86_64               randconfig-a002-20200930
-x86_64               randconfig-a006-20200930
-
+Reported-by: Paul Eggert <eggert@cs.ucla.edu>
+Reported-by: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Paul and David,
+Thanks for your input!
+
+Alex
+
+
+ man7/system_data_types.7 | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/man7/system_data_types.7 b/man7/system_data_types.7
+index aab64e002..6451782db 100644
+--- a/man7/system_data_types.7
++++ b/man7/system_data_types.7
+@@ -1903,6 +1903,16 @@ and back.
+ .PP
+ Conversions from and to any other pointer type are done implicitly,
+ not requiring casts at all.
++Note that this feature prevents any kind of type checking:
++the programmer should be careful not to cast a
++.I void *
++value to a type incompatible to that of the underlying data,
++because that would result in undefined behavior.
++.PP
++This type is useful in function parameters and return value
++to allow passing values of any type.
++The function will usually use some mechanism to know
++of which type the underlying data passed to the function really is.
+ .PP
+ A value of this type can't be dereferenced,
+ as it would give a value of type
+@@ -1926,6 +1936,12 @@ values.
+ Conforming to:
+ C99 and later; POSIX.1-2001 and later.
+ .PP
++See also:
++.BR malloc (3),
++.BR memcmp (3),
++.BR memcpy (3),
++.BR memset (3)
++.PP
+ See also the
+ .I intptr_t
+ and
+-- 
+2.28.0
+
