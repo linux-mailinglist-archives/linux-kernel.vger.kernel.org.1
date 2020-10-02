@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1632810DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936FA2810DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgJBLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:01:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:60560 "EHLO foss.arm.com"
+        id S2387661AbgJBLBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:01:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:60582 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbgJBLBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:01:04 -0400
+        id S1725953AbgJBLBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 07:01:10 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2386E1042;
-        Fri,  2 Oct 2020 04:01:03 -0700 (PDT)
-Received: from bogus (unknown [10.57.48.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B05B83F73B;
-        Fri,  2 Oct 2020 04:01:00 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 12:00:57 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Message-ID: <20201002110057.GF906@bogus>
-References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
- <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
- <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <BYAPR11MB301522E94B9516558A23F758B8310@BYAPR11MB3015.namprd11.prod.outlook.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A73451063;
+        Fri,  2 Oct 2020 04:01:09 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D8C93F73B;
+        Fri,  2 Oct 2020 04:01:08 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 12:01:06 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, timmurray@google.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+Message-ID: <20201002110105.e56qrvzoqfioi4hs@e107158-lin.cambridge.arm.com>
+References: <20200930211723.3028059-1-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <BYAPR11MB301522E94B9516558A23F758B8310@BYAPR11MB3015.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200930211723.3028059-1-robdclark@gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:22:46AM +0000, Zulkifli, Muhammad Husaini wrote:
-> Hi Sudeep,
+On 09/30/20 14:17, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> >-----Original Message-----
-> >From: Michal Simek <michal.simek@xilinx.com>
-> >Sent: Friday, October 2, 2020 4:23 PM
-> >To: Sudeep Holla <sudeep.holla@arm.com>; Zulkifli, Muhammad Husaini
-> ><muhammad.husaini.zulkifli@intel.com>
-> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; michal.simek@xilinx.com;
-> >ulf.hansson@linaro.org; linux-mmc@vger.kernel.org; linux-arm-
-> >kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Raja Subramanian,
-> >Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>; arnd@arndb.de; Wan
-> >Mohamad, Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-> >Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
-> >Firmware Service call
-> >
-> >Hi Sudeep,
-> >
-> >On 01. 10. 20 17:35, Sudeep Holla wrote:
-> >> On Thu, Oct 01, 2020 at 10:21:48PM +0800,
-> >muhammad.husaini.zulkifli@intel.com wrote:
-> >>> From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-> >>>
-> >>> Add generic firmware driver for Keem Bay SOC to support Arm Trusted
-> >>> Firmware Services call.
-> >>>
-> >>> Signed-off-by: Muhammad Husaini Zulkifli
-> >>> <muhammad.husaini.zulkifli@intel.com>
-> >>> ---
-> >>>  drivers/firmware/Kconfig                   |   1 +
-> >>>  drivers/firmware/Makefile                  |   1 +
-> >>>  drivers/firmware/intel/Kconfig             |  14 +++
-> >>>  drivers/firmware/intel/Makefile            |   4 +
-> >>>  drivers/firmware/intel/keembay_smc.c       | 119 +++++++++++++++++++++
-> >>>  include/linux/firmware/intel/keembay_smc.h |  27 +++++
-> >>>  6 files changed, 166 insertions(+)
-> >>>  create mode 100644 drivers/firmware/intel/Kconfig  create mode
-> >>> 100644 drivers/firmware/intel/Makefile  create mode 100644
-> >>> drivers/firmware/intel/keembay_smc.c
-> >>>  create mode 100644 include/linux/firmware/intel/keembay_smc.h
-> >>>
-> >>> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-> >>> index fbd785dd0513..41de77d2720e 100644
-> >>> --- a/drivers/firmware/Kconfig
-> >>> +++ b/drivers/firmware/Kconfig
-> >>> @@ -305,5 +305,6 @@ source "drivers/firmware/psci/Kconfig"
-> >>>  source "drivers/firmware/smccc/Kconfig"
-> >>>  source "drivers/firmware/tegra/Kconfig"
-> >>>  source "drivers/firmware/xilinx/Kconfig"
-> >>> +source "drivers/firmware/intel/Kconfig"
-> >>>
-> >>>  endmenu
-> >>> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> >>> index 99510be9f5ed..00f295ab9860 100644
-> >>> --- a/drivers/firmware/Makefile
-> >>> +++ b/drivers/firmware/Makefile
-> >>> @@ -33,3 +33,4 @@ obj-y				+= psci/
-> >>>  obj-y				+= smccc/
-> >>>  obj-y				+= tegra/
-> >>>  obj-y				+= xilinx/
-> >>> +obj-y				+= intel/
-> >>> diff --git a/drivers/firmware/intel/Kconfig
-> >>> b/drivers/firmware/intel/Kconfig new file mode 100644 index
-> >>> 000000000000..b2b7a4e5410b
-> >>> --- /dev/null
-> >>> +++ b/drivers/firmware/intel/Kconfig
-> >>> @@ -0,0 +1,14 @@
-> >>> +# SPDX-License-Identifier: GPL-2.0-only menu "Intel Firmware
-> >>> +Drivers"
-> >>> +
-> >>> +config KEEMBAY_FIRMWARE
-> >>> +	bool "Enable Keem Bay firmware interface support"
-> >>> +	depends on HAVE_ARM_SMCCC
-> >>
-> >> What is the version of SMCCC implemented ?
-> Our current Arm Trusted Firmware framework supports v1.1.
-> Does it mean I should use HAVE_ARM_SMCCC_DISCOVERY?
+> The android userspace treats the display pipeline as a realtime problem.
+> And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> that I found.)
+> 
+> But this presents a problem with using workqueues for non-blocking
+> atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> preempt the worker.  Which is not really the outcome you want.. once
+> the required fences are scheduled, you want to push the atomic commit
+> down to hw ASAP.
 
-Yes, HAVE_ARM_SMCCC_DISCOVERY is right dependency and allows you to
-get smccc version via arm_smccc_get_version which may be useful in
-future.
+For me thees 2 properties
 
-> Not really clear about this. As for HAVE_ARM_SMCCC will include 
-> support for the SMC and HVC.
->
+	1. Run ASAP
+	2. Finish the work un-interrupted
 
-Yes, but for sake of correctness I prefer HAVE_ARM_SMCCC_DISCOVERY.
+Scream the workers need to be SCHED_FIFO by default. CFS can't give you these
+guarantees.
 
--- 
-Regards,
-Sudeep
+IMO using sched_set_fifo() for these workers is the right thing.
+
+> 
+> But the decision of whether commit_work should be RT or not really
+> depends on what userspace is doing.  For a pure CFS userspace display
+> pipeline, commit_work() should remain SCHED_NORMAL.
+
+I'm not sure I agree with this. I think it's better to characterize tasks based
+on their properties/requirements rather than what the rest of the userspace is
+using.
+
+I do appreciate that maybe some of these tasks have varying requirements during
+their life time. e.g: they have RT property during specific critical section
+but otherwise are CFS tasks. I think the UI thread in Android behaves like
+that.
+
+It's worth IMO trying that approach I pointed out earlier to see if making RT
+try to pick an idle CPU rather than preempt CFS helps. Not sure if it'd be
+accepted but IMHO it's a better direction to consider and discuss.
+
+Or maybe you can wrap userspace pipeline critical section lock such that any
+task holding it will automatically be promoted to SCHED_FIFO and then demoted
+to CFS once it releases it.
+
+Haven't worked with display pipelines before, so hopefully this makes sense :-)
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> To handle this, convert non-blocking commit_work() to use per-CRTC
+> kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+> used to avoid serializing commits when userspace is using a per-CRTC
+> update loop.  And the last patch exposes the task id to userspace as
+> a CRTC property, so that userspace can adjust the priority and sched
+> policy to fit it's needs.
+> 
+> 
+> v2: Drop client cap and in-kernel setting of priority/policy in
+>     favor of exposing the kworker tid to userspace so that user-
+>     space can set priority/policy.
+> 
+> Rob Clark (3):
+>   drm/crtc: Introduce per-crtc kworker
+>   drm/atomic: Use kthread worker for nonblocking commits
+>   drm: Expose CRTC's kworker task id
+> 
+>  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++++----
+>  drivers/gpu/drm/drm_crtc.c          | 14 +++++++++++++
+>  drivers/gpu/drm/drm_mode_config.c   | 14 +++++++++++++
+>  drivers/gpu/drm/drm_mode_object.c   |  4 ++++
+>  include/drm/drm_atomic.h            | 31 +++++++++++++++++++++++++++++
+>  include/drm/drm_crtc.h              |  8 ++++++++
+>  include/drm/drm_mode_config.h       |  9 +++++++++
+>  include/drm/drm_property.h          |  9 +++++++++
+>  8 files changed, 98 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
