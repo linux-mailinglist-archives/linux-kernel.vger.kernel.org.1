@@ -2,161 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837452817B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFDD2817B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388118AbgJBQTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:19:18 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:27196 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgJBQTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:19:17 -0400
-Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7753020000>; Sat, 03 Oct 2020 00:19:14 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 16:19:10 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 16:19:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K6hPXdODBseL26BhbRZS3p+D48l26Z4dnxkphJQza7gLyRqzZy7yvHP9hRjyeBrPZt/vO/fq1Ua4VK1E0t+eyuI9NlECgVetrM6+I4mj7kFnC5HJOYkLypT08CmSD9E/40B35g/VzoGXJXiZ3U6i2ENzCyAJm7fJFDvs8WWrxwOzhiV4P8olnvBzfDUpaL3ypla9AfAujnPBinvONbHJF//8bm1TEuQ7kojXI8FWiOVJ1KaXS+tjoSzb2YQ5aycnmJDmuYcb0JhEGoUuPBPC2lltuMd7jsF2x5Wqm9FxYEMM9/fa0usoiHba8MhpvTrKEXM5G53jgGAa0Ya21EaP9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cfhCU4BqWl744V0A8uhrBWr2Km5jVCXnZBEZss7cHLA=;
- b=l19EYNn+Y9AyRksOLMKLW6U3WE8ZN0dKH/OZ0LThbX9IcM+Pp1GKaZ+SRP8K+EuUT9C3hKp36A/v5zynUeEcmTzpqoKlcIhs8jLZ5qBKlM88HqQ9pw4GeRq+e7skRuYitlurNRQuBlJOcSgzmrEr+717dkd3/tQFdJW1NS3iuI/tFToQMQqYEYHObTqzeTJtoCIaWKFntCZ6Aho70QOcJHNYuaw1MeMBqTVaHXGMMpw6kSAzMQpbuCiPRnLSGJXsxYwBxUtBMLi1subpnt9LwU0cX+l4vms/6z7psQQ9qZSH8iPj8lsANit1hMX/ZkmFV2UfFu5Q7+V5wFZEpeY++Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2858.namprd12.prod.outlook.com (2603:10b6:5:182::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Fri, 2 Oct
- 2020 16:19:07 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
- 16:19:07 +0000
-Date:   Fri, 2 Oct 2020 13:19:05 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Daniel Vetter" <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        "Jani Nikula" <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Roland Scheidegger" <sroland@vmware.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>
-Subject: Re: [PATCH rdma-next v4 1/4] lib/scatterlist: Add support in dynamic
- allocation of SG table from pages
-Message-ID: <20201002161905.GJ816047@nvidia.com>
-References: <20200927064647.3106737-1-leon@kernel.org>
- <20200927064647.3106737-2-leon@kernel.org>
- <20201002150227.GA1350139@nvidia.com>
- <ba152cb1-db38-0d70-08a8-ba3c052b5b4e@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ba152cb1-db38-0d70-08a8-ba3c052b5b4e@nvidia.com>
-X-ClientProxiedBy: BL0PR01CA0026.prod.exchangelabs.com (2603:10b6:208:71::39)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        id S2388087AbgJBQUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:20:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58237 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726386AbgJBQUS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:20:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601655616;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qbg2ZB8Tj8uINky/kbffAXyE83kY0z9BaKEEMl4D6xg=;
+        b=gPtO7IREOiQYWmXnIE36xMRDuiDpQE1cMi6Ao3+mPbOPP8ymcv8wGtlRLjLZDmdjuz5rxf
+        9ArF2IP/NvHvvxfYNAS4sHkVpHl6oubbNssh4854CM+VDQRy76f8DVq0jmPdft6bHxQEdS
+        0VKlb2K5gJskapwgtKlrAVCpvzdd6ww=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-GcFFDOn3MHmryeMOzKjB-g-1; Fri, 02 Oct 2020 12:20:13 -0400
+X-MC-Unique: GcFFDOn3MHmryeMOzKjB-g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9232710BBEDD;
+        Fri,  2 Oct 2020 16:20:10 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.194.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F35A60C47;
+        Fri,  2 Oct 2020 16:20:05 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 18:20:03 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        qemu-devel@nongnu.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        kvmarm@lists.cs.columbia.edu, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] arm64: kvm: Introduce MTE VCPU feature
+Message-ID: <20201002162003.u2yn3kqj6b4busbj@kamzik.brq.redhat.com>
+References: <20200925093607.3051-1-steven.price@arm.com>
+ <20200925093607.3051-3-steven.price@arm.com>
+ <20201002143050.zamkpmqysy6k5ngl@kamzik.brq.redhat.com>
+ <8b617aef-2bff-8af0-df47-f9f863ab6fa0@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR01CA0026.prod.exchangelabs.com (2603:10b6:208:71::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Fri, 2 Oct 2020 16:19:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kONlx-006214-3p; Fri, 02 Oct 2020 13:19:05 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601655554; bh=cfhCU4BqWl744V0A8uhrBWr2Km5jVCXnZBEZss7cHLA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=PcBb27SoY/4CZPJ4JoKHJ9MWxRMmFox9A2SURHGQeBMWtluouFUSnzApay5O0AzTR
-         h8RJ3Pu4eUDB+0d3KBPeTvvyx3rC7FCiioe03QSaVGjG8c8PAVtC2lbT62TSA1rJaN
-         pDIIK3pg7Hy6MLuVgKolOzW1uBVAapFWBGHP0l1AteVCfN2lOiqOaw15IkEQnDHNsa
-         Dg1XbyZLZtgHR1Z/oea9GdZPYygJ1eml1MsctroehJT9QH0Cv/C4GAhFbOj3rBIn5T
-         Jp86zoW2g+YYmEQrIUWDvuTNMm5IrmUaUNusbKs13fw61AgEIyvqVVEZ5VMo3jDY+t
-         1NficvusmJByw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b617aef-2bff-8af0-df47-f9f863ab6fa0@arm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:11:33PM +0300, Maor Gottlieb wrote:
-> 
-> On 10/2/2020 6:02 PM, Jason Gunthorpe wrote:
-> > On Sun, Sep 27, 2020 at 09:46:44AM +0300, Leon Romanovsky wrote:
-> > > +struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
-> > > +		struct page **pages, unsigned int n_pages, unsigned int offset,
-> > > +		unsigned long size, unsigned int max_segment,
-> > > +		struct scatterlist *prv, unsigned int left_pages,
-> > > +		gfp_t gfp_mask)
-> > >   {
-> > > -	unsigned int chunks, cur_page, seg_len, i;
-> > > +	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
-> > > +	struct scatterlist *s = prv;
-> > > +	unsigned int table_size;
-> > > +	unsigned int tmp_nents;
-> > >   	int ret;
-> > > -	struct scatterlist *s;
-> > > 
-> > >   	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
-> > > -		return -EINVAL;
-> > > +		return ERR_PTR(-EINVAL);
-> > > +	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
-> > > +		return ERR_PTR(-EOPNOTSUPP);
-> > > +
-> > > +	tmp_nents = prv ? sgt->nents : 0;
-> > > +
-> > > +	if (prv &&
-> > > +	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
-> > This calculation of the end doesn't consider sg->offset
-> 
-> Right, should be fixed.
+On Fri, Oct 02, 2020 at 04:30:47PM +0100, Steven Price wrote:
+> On 02/10/2020 15:30, Andrew Jones wrote:
+> > On Fri, Sep 25, 2020 at 10:36:07AM +0100, Steven Price wrote:
+> > > +	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
 > > 
-> > > +	    page_to_pfn(pages[0]))
-> > > +		prv_len = prv->length;
-> > > 
-> > >   	/* compute number of contiguous chunks */
-> > >   	chunks = 1;
-> > > @@ -410,13 +461,17 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
-> > >   		}
-> > >   	}
-> > > 
-> > > -	ret = sg_alloc_table(sgt, chunks, gfp_mask);
-> > > -	if (unlikely(ret))
-> > > -		return ret;
-> > > +	if (!prv) {
-> > > +		/* Only the last allocation could be less than the maximum */
-> > > +		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
-> > > +		ret = sg_alloc_table(sgt, table_size, gfp_mask);
-> > > +		if (unlikely(ret))
-> > > +			return ERR_PTR(ret);
+> > 'system_supports_mte() && kvm->arch.mte_enabled' is redundant, but I
+> > assume system_supports_mte() is there to improve the efficiency of the
+> > branch, as it's using cpus_have_const_cap().
+> 
+> system_supports_mte() compiles to 0 when MTE support isn't built in, so this
+> code can be removed by the compiler,
+
+I know. That's what I meant by "improve the efficiency of the branch"
+
+
+> whereas with kvm->arch.mte_enabled I
+> doubt the compiler can deduce that it is never set.
+> 
+> > Maybe a helper like
+> > 
+> >   static inline bool kvm_arm_mte_enabled(struct kvm *kvm)
+> >   {
+> >     return system_supports_mte() && kvm->arch.mte_enabled;
+> >   }
+> > 
+> > would allow both the more efficient branch and look less confusing
+> > where it gets used.
+> 
+> I wasn't sure it was worth having a helper since this was the only place
+> checking this condition. It's also a bit tricky putting this in a logical
+> header file, kvm_host.h doesn't work because struct kvm hasn't been defined
+> by then.
+
+OK, but I feel like we're setting ourselves up to revisit these types of
+conditions again when our memories fade or when new developers see them
+for the first time and ask.
+
+Thanks,
+drew
+
+> 
+> Steve
+> 
+> > > +		/*
+> > > +		 * VM will be able to see the page's tags, so we must ensure
+> > > +		 * they have been initialised.
+> > > +		 */
+> > > +		struct page *page = pfn_to_page(pfn);
+> > > +		long i, nr_pages = compound_nr(page);
+> > > +
+> > > +		/* if PG_mte_tagged is set, tags have already been initialised */
+> > > +		for (i = 0; i < nr_pages; i++, page++) {
+> > > +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> > > +				mte_clear_page_tags(page_address(page));
+> > > +		}
 > > > +	}
-> > This is basically redundant right? Now that get_next_sg() can allocate
-> > SGs it can just build them one by one, no need to preallocate.
+> > > +
+> > >   	if (writable)
+> > >   		kvm_set_pfn_dirty(pfn);
+> > > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > > index a655f172b5ad..5010a47152b4 100644
+> > > --- a/arch/arm64/kvm/sys_regs.c
+> > > +++ b/arch/arm64/kvm/sys_regs.c
+> > > @@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
+> > >   			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
+> > >   		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
+> > >   	} else if (id == SYS_ID_AA64PFR1_EL1) {
+> > > -		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
+> > > +		if (!vcpu->kvm->arch.mte_enabled)
+> > > +			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
+> > >   	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
+> > >   		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
+> > >   			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
+> > > @@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+> > >   static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+> > >   				   const struct sys_reg_desc *rd)
+> > >   {
+> > > +	if (vcpu->kvm->arch.mte_enabled)
+> > > +		return 0;
+> > > +
+> > >   	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
+> > >   }
+> > > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > > index f6d86033c4fa..87678ed82ab4 100644
+> > > --- a/include/uapi/linux/kvm.h
+> > > +++ b/include/uapi/linux/kvm.h
+> > > @@ -1035,6 +1035,7 @@ struct kvm_ppc_resize_hpt {
+> > >   #define KVM_CAP_LAST_CPU 184
+> > >   #define KVM_CAP_SMALLER_MAXPHYADDR 185
+> > >   #define KVM_CAP_S390_DIAG318 186
+> > > +#define KVM_CAP_ARM_MTE 188
+> > >   #ifdef KVM_CAP_IRQ_ROUTING
+> > > -- 
+> > > 2.20.1
+> > > 
+> > > 
 > > 
-> > Actually all the changes the the allocation seem like overkill, just
-> > allocate a single new array directly in get_next_sg() whenever it
-> > needs.
+> > Besides the helper suggestion nit
+> > 
+> > Reviewed-by: Andrew Jones <drjones@redhat.com>
+> > 
 > 
-> No, only the last allocation could be less than maximum. (as written in the
-> comment).
+> 
 
-The point is that get_next_sg is fully redundent with
-sg_alloc_table() because it is always used in cases when prv is
-set. There is zero reason to call sg_alloc_table here in the one case
-where prv is not set.
-
-Further this cleans up the spagehtti goto in the middle of the for
-loop and avoids allocating an extra chunk if the page list fully fits
-in prv.
-
-Given how much smaller it is I think you should look more carefully.
-
-Jason
