@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17614281A66
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25131281A73
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbgJBSEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:04:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40218 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgJBSEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:04:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601661859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l9pbAMGnZ/2sPsbUySEmQCGXBz2G/URu0iXROtPzXBA=;
-        b=HCaqNSbjqVPtz4EGxpOBwMDCGy2inFmoM/2LpMzEd7n/Wu+ZYRJ7P2O7HjXI+HLlI8cvZd
-        oaXCQJOWmf5M0EtlybvW3T1UBS3BqQObRRlbCLsZQ7FI4LRfrf9DDseCIWnF+UfKsWz7LH
-        IIjgdvMJEF1gvfNKaZKJwJY0ahTn0pc=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-VCq2Q1b0O8SD1S5Ioqfw-Q-1; Fri, 02 Oct 2020 14:04:17 -0400
-X-MC-Unique: VCq2Q1b0O8SD1S5Ioqfw-Q-1
-Received: by mail-qv1-f69.google.com with SMTP id r16so1305755qvn.18
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:04:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l9pbAMGnZ/2sPsbUySEmQCGXBz2G/URu0iXROtPzXBA=;
-        b=XMaPp3u4QIintmb3oQ50NdVH8Sp5mlAnM6eaPQae60LeDgVeEZimKajX5x7NjJRJol
-         CTYbBvMytz4zg6ROLkQHedicphslYeNSmJS6jRn+1BOqv/2UdXFftCbcyr1Amhqx828O
-         kGLHTbj+YW2Sjtzlo2gbFoq0jdHH96cO6jJtgBA+oZOuU3F6F90DbzkhaE5Cayk3tw1i
-         JfKyJZ4oYNYrwer+Pe1xBbyHvNjt1sp4iXokRhjrrLTXcArz/3I4c1SsBJC+RIoFK9g3
-         cNvK1OIn7IxEFm+hEm3OLEZJtJa10pFnUDXC3BipNz13xm3Xv1zboKkRsocY58Ad6ZJS
-         FRog==
-X-Gm-Message-State: AOAM531JokKfvcRPrcuUaN9vMeOWq0xBqEseXAjd1ETsJzQm53iCqd51
-        OuQ7rSqP/kdA9XzHeuLSiFF0kFGK8zUTPWty2SuHzO7edRD6HTS04F+6RqIOHlmxAfPBxje7rZp
-        TJLcoyVv/YaNzaDC7UyE2FcCF
-X-Received: by 2002:aed:2b63:: with SMTP id p90mr3475731qtd.71.1601661856684;
-        Fri, 02 Oct 2020 11:04:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylJOl0sGwOBRIBnzqiSHxiC6y0cjtp/qSGOEnDKnnqlH1xQk8vhJBoMZQOxX7mpOTY21K8sA==
-X-Received: by 2002:aed:2b63:: with SMTP id p90mr3475706qtd.71.1601661856390;
-        Fri, 02 Oct 2020 11:04:16 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
-        by smtp.gmail.com with ESMTPSA id t64sm1530965qkd.69.2020.10.02.11.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 11:04:15 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 14:04:14 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH] mm: Remove src/dst mm parameter in copy_page_range()
-Message-ID: <20201002180414.GD5473@xz-x1>
-References: <20200930204950.6668-1-peterx@redhat.com>
- <20201002114312.GI9916@ziepe.ca>
- <20201002171429.GB5473@xz-x1>
- <20201002172858.GK9916@ziepe.ca>
+        id S2388378AbgJBSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBSFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:05:31 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 903BD206DD;
+        Fri,  2 Oct 2020 18:05:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601661931;
+        bh=K98AP66VVpH1sW1F+yuwy7UvFoxzrQ3z5eMj19KgSYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qvDSd+47gVYYokPvzqNTa7CSC30B++lr99Jdav8wlM5KOdQXYtT06x6vUfOlSQkm/
+         n7LwyKlj3q8R+YIl6R2A+SFA/2+/Oi8VlPLS4Cn3BACyVv5M/YZGgMex35RP8b4uHh
+         g2J9kknn48cpGPEgy7kr5pjpStA82ksE/6JDOoI8=
+Date:   Fri, 2 Oct 2020 19:04:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     David Collins <collinsd@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
+Message-ID: <20201002180430.GG5527@sirena.org.uk>
+References: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
+ <160151084091.310579.3876905878885019200@swboyd.mtv.corp.google.com>
+ <20201001174326.GT6715@sirena.org.uk>
+ <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
+ <7c45b147-f1d2-4b32-9e51-71c5d2cb576f@codeaurora.org>
+ <20201002160324.GE5527@sirena.org.uk>
+ <160166091282.310579.8553391053258607173@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eVzOFob/8UvintSX"
 Content-Disposition: inline
-In-Reply-To: <20201002172858.GK9916@ziepe.ca>
+In-Reply-To: <160166091282.310579.8553391053258607173@swboyd.mtv.corp.google.com>
+X-Cookie: Words must be weighed, not counted.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:28:58PM -0300, Jason Gunthorpe wrote:
-> On Fri, Oct 02, 2020 at 01:14:29PM -0400, Peter Xu wrote:
-> > On Fri, Oct 02, 2020 at 08:43:12AM -0300, Jason Gunthorpe wrote:
-> > > > -static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> > > > -		   pmd_t *dst_pmd, pmd_t *src_pmd, struct vm_area_struct *vma,
-> > > > -		   struct vm_area_struct *new,
-> > > > +static int copy_pte_range(pmd_t *dst_pmd, pmd_t *src_pmd,
-> > > > +		   struct vm_area_struct *vma, struct vm_area_struct *new,
-> > > >  		   unsigned long addr, unsigned long end)
-> > > 
-> > > I link this, my only minor quibble is the mixing of dst/src and new
-> > > language, and then reversing the order in each place. Would read
-> > > better to be consistent:
-> > > 
-> > >   copy_pte_range(dst_vma, dst_pmd, src_vma, src_pmd, addr, end)
-> > 
-> > I have no strong opinion on the ordering, but I agree the names are clearer.
-> > Considering normally we put the same type of parameters to be together, how
-> > about:
-> > 
-> >   copy_pte_range(dst_vma, src_vma, dst_pmd, src_pmd, addr, end)
-> 
-> I was looking at the order of (dst_pmd, src_pmd, src_vma, dest_vma)
-> 
-> Whichever, just have some logic to it :)
 
-Oh, sure. :)
+--eVzOFob/8UvintSX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Peter Xu
+On Fri, Oct 02, 2020 at 10:48:32AM -0700, Stephen Boyd wrote:
+> Quoting Mark Brown (2020-10-02 09:03:24)
 
+> > ...and doing this in the dev_name() should help other diagnostic users
+> > (like dev_printk() for example).
+
+> Don't thinks like dev_printk() prefix the bus name? See
+> dev_driver_string()? So I agree that having the bus name is useful, but
+> confused why there are testing scripts and things on top of regmap
+> debugfs
+
+Not that I've ever noticed, eg on the console.
+
+> Put another way, why not introduce something similar to i2c-dev where
+> userspace can read/write registers for devices on the SPMI bus?
+> Otherwise I presume the test scripts inside Qualcomm are just reading
+> registers out of regmap?
+
+I know some other vendors use the regmap debugfs for their diagnostic
+tools (obviously not with SPMI).  It's generally so they can get the
+benefit of the cache, it's a combination of allowing the state to be
+inspected while the driver has the device powered down and for devices
+on slower buses being much more performant.
+
+--eVzOFob/8UvintSX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93a64ACgkQJNaLcl1U
+h9BaWAf/cFdBtjH6GQY9ZqGf9hPnOUU0nn9nOZGmbmyOE9nWblV57YRMn+RfN/KU
+rpdN/51JdNRZBtCh6lQC4llsK41K6EGf/xiscHLcl2iz+8733AuSiEM3nwa9uq7Z
+Bfb/w3SN1TrVV2XYeBdEgYDFCDlpCRjfdNr4MMvRtsVmb2gUpRLL7SOk8D4rvj2t
+QD93bgb13uCfQRHR5z21r+Uzz4rL4Fkhh1Ip+POrTjbuuZPPsdgSzquyk0/0VsoD
+04YJxq072QvA5r42XK3HeAIl0bItvR68F/OXXdW46isM4ybE8gJ/MZLtEgFRMa+m
+2T/vXwIWUYK20s/aBxAg1lLphd+PAQ==
+=te6r
+-----END PGP SIGNATURE-----
+
+--eVzOFob/8UvintSX--
