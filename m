@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A867C280DD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20158280DD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726164AbgJBHDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:03:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40138 "EHLO mx2.suse.de"
+        id S1726194AbgJBHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:04:37 -0400
+Received: from mga05.intel.com ([192.55.52.43]:7176 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBHDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:03:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601622214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+4u/qRf9+kmqLyGtcPDIuQ13T83PRssmDQWjttbaB8g=;
-        b=CtrW5dsO9U4JusMQ9BY4WwzEJiEyix+lp6gWqHhhJctMaDT6LSuhVp4HmtV0b16QTqP9GW
-        Oz7jfYbV8zH/FZIjI9ufUe9OHvQmJYIMR7csydO3ZwwLXitYJTf/U3iMEqDrTslQjhmtJz
-        df9/UaOsoF0qOKqhVQdDIIw5aS2rB4U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CD644B1D0;
-        Fri,  2 Oct 2020 07:03:34 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 09:03:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Sebastiaan Meijer <meijersebastiaan@gmail.com>
-Cc:     akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de, riel@surriel.com,
-        willy@infradead.org
-Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
-Message-ID: <20201002070333.GA21871@dhcp22.suse.cz>
-References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
- <20201001123032.GC22560@dhcp22.suse.cz>
- <CANuy=CK-s=tEb57Kw+N8O2OGx1MXyUB=o-RDH-S=kYerb65dOw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANuy=CK-s=tEb57Kw+N8O2OGx1MXyUB=o-RDH-S=kYerb65dOw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725948AbgJBHEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:04:36 -0400
+IronPort-SDR: CrUY5BW27JmOR1hIEHYhkzv9XTQKc5xLhd71+0nymlIP/vyZZdzxNLoCsFBaJxGfh1IiMhy9c0
+ 0GWwAi1OdIyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="247670838"
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="247670838"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 00:04:34 -0700
+IronPort-SDR: CqtDPQA2IJwfAuHcwRxr6bL6aK47Eih2VhqXdNMX7BnFRUyi7DTEX9bl5ytC/rF5XgAW2IT3zX
+ IdwBfMCDqvfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="339881518"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Oct 2020 00:04:31 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rtanwar@maxlinear.com, Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v4 0/2] Add hwmon driver for Moortec PVT controller
+Date:   Fri,  2 Oct 2020 15:04:25 +0800
+Message-Id: <cover.1601621983.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 01-10-20 18:18:10, Sebastiaan Meijer wrote:
-> (Apologies for messing up the mailing list thread, Gmail had fooled me into
-> believing that it properly picked up the thread)
-> 
-> On Thu, 1 Oct 2020 at 14:30, Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
-> > > > yes it shows the bottleneck but it is quite artificial. Read data is
-> > > > usually processed and/or written back and that changes the picture a
-> > > > lot.
-> > > Apologies for reviving an ancient thread (and apologies in advance for my lack
-> > > of knowledge on how mailing lists work), but I'd like to offer up another
-> > > reason why merging this might be a good idea.
-> > >
-> > > From what I understand, zswap runs its compression on the same kswapd thread,
-> > > limiting it to a single thread for compression. Given enough processing power,
-> > > zswap can get great throughput using heavier compression algorithms like zstd,
-> > > but this is currently greatly limited by the lack of threading.
-> >
-> > Isn't this a problem of the zswap implementation rather than general
-> > kswapd reclaim? Why zswap doesn't do the same as normal swap out in a
-> > context outside of the reclaim?
-> 
-> I wouldn't be able to tell you, the documentation on zswap is fairly limited
-> from what I've found.
+Patch 1 adds DT bindings schema in YAML format.
+Patch 2 adds driver for MR75203 PVT controller.
 
-I would recommend you to talk to zswap maintainers. Describing your
-problem and suggesting to offload the heavy lifting into a separate
-context like the standard swap IO does. You are not the only one to hit
-this problem
-http://lkml.kernel.org/r/CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com.
-Ccing Shakeel on such an email might help you to give more usecases.
+v4:
+- Fix a spelling mistake in comments.
+- Add return value error checking for all regmap_reads/writes.
+- Remove unnecessary else statement and a validation check.
 
-> > My recollection of the particular patch is dimm but I do remember it
-> > tried to add more kswapd threads which would just paper over the problem
-> > you are seein rather than solve it.
-> 
-> Yeah, that's exactly what it does, just adding more kswap threads.
+v3:
+- Resolve make dt_binding_check errors.
+- Add vendor prefix and type reference for one property in yaml schema.
+- Update new property name in the driver.
 
-Which is far from trivial because it has its side effects on the over
-system balanc. See my reply to the original request and the follow up
-discussion. I am not saying this is impossible to achieve and tune
-properly but it is certainly non trivial and it would require a really
-strong justification.
+v2:
+- Address below review concerns from Andy Shevchenko
+ * Add more info in comments for clamp_val usage for clk sys cycles.
+ * Add mod_devicetable.h & property.h and remove of.h
+ * Remove unnecessary additional mutex lock from driver. Rely on regmap's
+   internal lock.
+ * Use units in timeout macros.
+ * Use HZ_PER_MHZ instead of direct values.
+ * Use devm_platform_ioremap_resource_byname() instead of separate calls.
+ * Use device property read API instead of OF API.
+- Address below review concerns from Guenter Roeck
+ * Improve commit message - add hardware monitoring driver.
+ * Remove unnecessary platform_set_drvdata. Instead add driver data in
+   function args at one place where it is used. Fix a issue related to it.
+ * Remove unnecessary NULL assignment.
+- Address below review concerns from Philipp Zabel
+ * Switch to devm_reset_control_get_exclusive().
+ * Move reset_deassert at the last after clk_enable in probe.
+- Resolve make dt_binding_check error.
+- Add MODULE_LICENSE
+
+v1:
+- Initial version.
+
+
+
+Rahul Tanwar (2):
+  Add DT bindings schema for PVT controller
+  Add hardware monitoring driver for Moortec MR75203 PVT controller
+
+ .../devicetree/bindings/hwmon/moortec,mr75203.yaml |  71 +++
+ drivers/hwmon/Kconfig                              |  10 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/mr75203.c                            | 651 +++++++++++++++++++++
+ 4 files changed, 733 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/moortec,mr75203.yaml
+ create mode 100644 drivers/hwmon/mr75203.c
+
 -- 
-Michal Hocko
-SUSE Labs
+2.11.0
+
