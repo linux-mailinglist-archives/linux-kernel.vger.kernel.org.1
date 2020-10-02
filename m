@@ -2,150 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636CE2817C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8592817C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388187AbgJBQWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S2388190AbgJBQXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJBQWh (ORCPT
+        with ESMTP id S1726386AbgJBQXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:22:37 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743F2C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:22:37 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id e6so1381065qtg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=bMnBZVJZ0gP6yWIahq+ggDCPy47CsnYvJiYw0n333nM=;
-        b=Z2BhCB0ionBjY9f7rJg975U+QnCTCPpylLVtNijw2nkc9jOX0nWeWzaScP/MiSCHxb
-         VlNw+IBd6+iMm5/zsKLjJhp4Av/TRf3MlDYx51iPzzIF3DYfrx3bJCSrtH9C//COkKxc
-         xSYhR8fO9b21qmYKgflHjxUWg6wu/GpUAhEGJPmZeDcdY7rbfDAfRXb8euzLbp12Zh88
-         edKzBO0V9SHioyYGqGPIsn7hVLnsZnoCKmyX8mkVd22fnpHi1uxrWXuN4V+FYJ+VfUUh
-         jHc4fZgacTCxZJu3LoVwWYVB64D6hIAt2jp6nQ4THkRgwkXaDAkjk/QHsk/CbqUR/Y1b
-         Hr2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=bMnBZVJZ0gP6yWIahq+ggDCPy47CsnYvJiYw0n333nM=;
-        b=mtnTWm+2hrf7iysI/4PZOMk2YhABCQdNveCHegi4SMIe8lIOsczw2jL+rSlP1SWJgb
-         QJZ1H7cJtHuVIIUCcPGxQivrO6ahpePW49Hcun1IS+5MV4mXKUNwBJZ+5elxoDN+HLCD
-         C0qdoNBEmraIJ/oRkcQqnRfp0HjCXsqhPeOnZBRVyeB3fOZv7p+zfuL0OwgrPay7zYUL
-         zBo5FtPAwWa4NX5H4Q/8SYXrubeppvHmwb4KGx8pcEBmBwEIXFYMX+c8UMtcg5bkJDH+
-         ZtM+YJ6yZjUFcun5s8d+1G6pRUcGhCiumBWnkABG08+qnd5c+RVUWzkruO2HSQZ7ejBc
-         yV1A==
-X-Gm-Message-State: AOAM530pPf6jJLhMDxUPxS99z/bXreKxKytAMnF9905qWW/o3CgbBAc4
-        yK+/uRtjDTKM2xCbw7OKJ8/OWjcHR9vInA7wJA==
-X-Google-Smtp-Source: ABdhPJwWzjZJWRiWHzB7SAUtAP2b0hza2Y8k4Vz+cdfMrWfqG4bkLxAOeDCVeFU+z7OT3ayRXnDmDOceZZsYYAHZbg==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:ad4:4527:: with SMTP id
- l7mr3023885qvu.2.1601655756530; Fri, 02 Oct 2020 09:22:36 -0700 (PDT)
-Date:   Fri,  2 Oct 2020 16:20:51 +0000
-In-Reply-To: <20201002162101.665549-1-kaleshsingh@google.com>
-Message-Id: <20201002162101.665549-7-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20201002162101.665549-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v2 6/6] x86: mremap speedup - Enable HAVE_MOVE_PUD
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
-        lokeshgidra@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Jia He <justin.he@arm.com>, John Hubbard <jhubbard@nvidia.com>,
-        Zi Yan <ziy@nvidia.com>, Dave Hansen <dave.hansen@intel.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Fri, 2 Oct 2020 12:23:12 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55454C0613D0;
+        Fri,  2 Oct 2020 09:23:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=z4MGYJtuhPd38PKWjqnG9wYyjqiUQeeeO69PRxHNyoE=; b=GPeQ9mHO7kiEN8voDAzztyd60g
+        JwT/Y6l0mSaLVTYSkILFcPYMROO5417qY8Z4kr5kWqKQagdM59Fux/Aanx43I/hf7eWEmJ1o9mLcM
+        dABKEpU8k5YrRUF6w/54d5l9ci7BosaU7VJXNglQnFD6nNAKs8+66FKUsTyrr5/glCyo=;
+Received: from p200300ccff0a30001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:3000:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kONpo-0004HK-SZ; Fri, 02 Oct 2020 18:23:05 +0200
+Date:   Fri, 2 Oct 2020 18:23:03 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv1] power: supply: document current direction
+Message-ID: <20201002182303.51db1289@aktux>
+In-Reply-To: <20200827140248.37749-1-sebastian.reichel@collabora.com>
+References: <20200827140248.37749-1-sebastian.reichel@collabora.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HAVE_MOVE_PUD enables remapping pages at the PUD level if both the
-source and destination addresses are PUD-aligned.
+On Thu, 27 Aug 2020 16:02:48 +0200
+Sebastian Reichel <sebastian.reichel@collabora.com> wrote:
 
-With HAVE_MOVE_PUD enabled it can be inferred that there is approximately
-a 13x improvement in performance on x86. (See data below).
+> Currently the sign for CURRENT_NOW and CURRENT_AVG is a bit
+> of a mess. There are basically 3 different ways battery fuel
+> gauges report the current:
+> 
+> 1. uses negative values for discharging and positive values
+>    for charging
+> 2. uses positive values for discharging and negative values
+>    for discharging (opposit of 1)
+> 3. only uses positive values
+> 
+> As a result userspace currently cannot use the sign at all in
+> a generic way. Let's solve the issue by documenting a canonical
+> way for reporting the data and ensure new drivers follow this
+> way. Then existing drivers can be fixed on a case-by-case basis.
+> 
+> The 'negative value = battery discharging' has been choosen,
+> since there are only very few drivers doing it the other way
+> around.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
 
-------- Test Results ---------
+would be nice if this comes in, so that is it clearly specified.
 
-The following results were obtained using a 5.4 kernel, by remapping
-a PUD-aligned, 1GB sized region to a PUD-aligned destination.
-The results from 10 iterations of the test are given below:
-
-Total mremap times for 1GB data on x86. All times are in nanoseconds.
-
-Control        HAVE_MOVE_PUD
-
-180394         15089
-235728         14056
-238931         25741
-187330         13838
-241742         14187
-177925         14778
-182758         14728
-160872         14418
-205813         15107
-245722         13998
-
-205721.5       15594    <-- Mean time in nanoseconds
-
-A 1GB mremap completion time drops from ~205 microseconds
-to ~15 microseconds on x86. (~13x speed up).
-
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..ff6e2755cab8 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -198,6 +198,7 @@ config X86
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_MOVE_PMD
-+	select HAVE_MOVE_PUD
- 	select HAVE_NMI
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES
--- 
-2.28.0.806.g8561365e88-goog
-
+Regards,
+Andreas
