@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30372814BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73572814C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388003AbgJBOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJBOMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:12:50 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2388032AbgJBONY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:13:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387908AbgJBONX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:13:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601648002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8R1XgQI7k4cK5q1LMAze0lbj0we9wkSuLhijnQjdY4=;
+        b=b+3b8K7u2drGN0KmGLzAYxNJ9Ag53zLPy+A1ccgWOLpNj2EpMwsOdYLGu+AAdIfoRy886u
+        FAp6EM6ol6Unj1vQc9VDi8iL5QbmJewK+21Hcp2FbUrKZoojTTpWaSO8ZL2kgkNfIGSnO+
+        6f3YN28IozZPhIQJNxuMN77TVkH/dcI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-KaOFE74rOgejG5g4BEKn6g-1; Fri, 02 Oct 2020 10:13:18 -0400
+X-MC-Unique: KaOFE74rOgejG5g4BEKn6g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4411C206DB;
-        Fri,  2 Oct 2020 14:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601647970;
-        bh=lqNTdTkNdsQHcWQ/ycuvV9kZSZGTlIJnGnt90RDqrbc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=usUyOsupMwL4xMxZfBJFg8t60KKwuUfnFAwSuT6FAfPylsUSQLmCNYfbQawOzfIFQ
-         SsGAbLj/NyS1ZVD1+OwPxiqVE95X+ragy7GFkzcnhLrVJ7MYOhEvItErsv94nNC3Ez
-         Ryw0XZvryq1L6yJDMEf9xMB8XHSbYFpI7SyxphQU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 097BD3522838; Fri,  2 Oct 2020 07:12:50 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 07:12:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        mgorman@techsingularity.net, torvalds@linux-foundation.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
- is preemptible
-Message-ID: <20201002141250.GH29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
- <20200928233102.24265-14-paulmck@kernel.org>
- <20200929120756.GC2277@dhcp22.suse.cz>
- <20200930015327.GX29330@paulmck-ThinkPad-P72>
- <20200930084139.GN2277@dhcp22.suse.cz>
- <20200930232154.GA29330@paulmck-ThinkPad-P72>
- <20201001090220.GA22560@dhcp22.suse.cz>
- <20201001162709.GD29330@paulmck-ThinkPad-P72>
- <20201002065746.GA20872@dhcp22.suse.cz>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C952801ADA;
+        Fri,  2 Oct 2020 14:13:16 +0000 (UTC)
+Received: from treble (ovpn-114-202.rdu2.redhat.com [10.10.114.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3550E81C5B;
+        Fri,  2 Oct 2020 14:13:07 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 09:13:03 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, jthierry@redhat.com
+Subject: Re: [PATCH v4 04/29] objtool: Add a pass for generating __mcount_loc
+Message-ID: <20201002141303.hyl72to37wudoi66@treble>
+References: <20200929214631.3516445-1-samitolvanen@google.com>
+ <20200929214631.3516445-5-samitolvanen@google.com>
+ <alpine.LSU.2.21.2010011504340.6689@pobox.suse.cz>
+ <20201001133612.GQ2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201002065746.GA20872@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201001133612.GQ2628@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 08:57:46AM +0200, Michal Hocko wrote:
-> On Thu 01-10-20 09:27:09, Paul E. McKenney wrote:
-> [...]
-> > commit ea5c19d21233b5e8d3d06c0d4ecd6be9f2829dc3
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Oct 1 09:24:40 2020 -0700
-> > 
-> >     kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
-> >     
-> >     This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
-> >     carried out by the single-argument variant of kvfree_rcu(), thus avoiding
-> >     this can-sleep code path from dipping into the emergency reserves.
-> >     
-> >     Suggested-by: Michal Hocko <mhocko@suse.com>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Thu, Oct 01, 2020 at 03:36:12PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 01, 2020 at 03:17:07PM +0200, Miroslav Benes wrote:
 > 
-> LGTM. At least for this one I feel competent to give you
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thank you very much!  I will apply this on the next rebase later today,
-Pacific Time.
-
-						Thanx, Paul
-
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 242f0f0..6132452 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3364,7 +3364,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
-> >  {
-> >  	struct kvfree_rcu_bulk_data *bnode;
-> >  	bool can_alloc_page = preemptible();
-> > -	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
-> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC
-> > +			       : GFP_ATOMIC) | __GFP_NOWARN;
-> >  	int idx;
-> >  
-> >  	*krcp = krc_this_cpu_lock(flags);
+> > I also wonder about making 'mcount' command separate from 'check'. Similar 
+> > to what is 'orc' now. But that could be done later.
 > 
-> -- 
-> Michal Hocko
-> SUSE Labs
+> I'm not convinced more commands make sense. That only begets us the
+> problem of having to run multiple commands.
+
+Agreed, it gets hairy when we need to combine things.  I think "orc" as
+a separate subcommand was a mistake.
+
+We should change to something like
+
+  objtool run [--check] [--orc] [--mcount]
+  objtool dump [--orc] [--mcount]
+
+-- 
+Josh
+
