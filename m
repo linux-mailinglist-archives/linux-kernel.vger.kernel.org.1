@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3AE280D9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC17280DA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgJBGsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:48:13 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17874 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJBGsN (ORCPT
+        id S1726204AbgJBGtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgJBGtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:48:13 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f76ccc50000>; Thu, 01 Oct 2020 23:46:29 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 06:48:12 +0000
-Received: from sandstorm.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 2 Oct 2020 06:48:12 +0000
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Linux Next <linux-next@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH] selftests/vm: fix: make check_config.sh executable
-Date:   Thu, 1 Oct 2020 23:48:11 -0700
-Message-ID: <20201002064811.435769-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
+        Fri, 2 Oct 2020 02:49:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F2BC0613D0;
+        Thu,  1 Oct 2020 23:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=F0HxCM48zlkqvSK9HVb3prVdbtr0XoJkMcMZ8q5cNvA=; b=KDDxxvWM+qd+VQy/Z9mnWYLcrp
+        VPcBmyOR0oC8nWvEYSkDW2MLWZ7ZsnvBDbhUPxXsUP7NiB3KZEPdJgXdtfJQI/d+tF5UbJR4W+SIq
+        clptew4ZQQo8cacoEUinGzP4g4x4Y5oaz9/JtjccY5fesqA8GDnOOx377W0WwIuqUD4sSbYNkEnBe
+        h+O5gx9IDFJvsVPyX7/3QEnZXiuHEYlaH+8SgPbpOY5B+vftVpHvQkm6k78TG54crxU4xHqQgdpCt
+        yg6HpDXyGGYupQltDce++CaqvL7dchYJ/fsCUegBIg3GpqScn3s3Ff069AXOZ+ragf9ss4ZcGko/X
+        vuD2YdAw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOEsL-0007XM-Ky; Fri, 02 Oct 2020 06:49:05 +0000
+Date:   Fri, 2 Oct 2020 07:49:05 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     linux-riscv@lists.infradead.org, kernel-team@android.com,
+        kernel test robot <lkp@intel.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        smueller@chronox.de
+Subject: get_cycles from modular code in jitterentropy, was Re: [PATCH]
+ clocksource: clint: Export clint_time_val for modules
+Message-ID: <20201002064905.GA27115@infradead.org>
+References: <20200930065617.934638-1-palmerdabbelt@google.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601621189; bh=YxVI9lNPw6FH2PZxFouloQcRzoKxiMmyEXc7wrpbuJQ=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=Z3AyhWXZ2oH7XePndDjhqsSYxssrS2nU5h9mErdEXbV0/5qDdTQYacp7AnXgBJneC
-         9ybJDAzUNXETcfQhre5r0LcsnLtWta+bnJXc6bd9mevvvIy23NYp5ZNmxnwGrD/oyg
-         A8X1gmqDcoZNGi2X+EM37hJWPn1NZTS+/4AZyI670cIcG5qolh0x2FSWgslx7ng84d
-         gvQ0LXcADLiBbbsQGfX9D3HvDWV3Wl2MqR5sDv08tUuaQOM4r/DQSDbaSIG9va6fw2
-         fONlkzLmRhDV9wU1y3UhPNL9jaL6LP3NVgeUfhwJvXITuoE3q5r+NaTXSo+EaQTlsm
-         altdnvWrfwA2w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930065617.934638-1-palmerdabbelt@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs
-dependency") created the new check_config.sh file without the execute
-bits set. This is a problem because the Makefile runs it with "./", so
-now "make" is failing in that directory.
+On Tue, Sep 29, 2020 at 11:56:18PM -0700, Palmer Dabbelt wrote:
+> clint_time_val will soon be used by the RISC-V implementation of
+> random_get_entropy(), which is a static inline function that may be used by
+> modules (at least CRYPTO_JITTERENTROPY=m).
 
-The posted patch [1] does seem to have it as an executable file, so I'm
-not sure how this happened. But in any case, make check_config.sh
-executable again, so that "make" in selftests/vm works once again.
+At very least this needs to be an EXPORT_SYMBOL_GPL.  But I really don't
+think modules have any business using get_cycles, so I'd much rather
+fix CRYPTO_JITTERENTROPY to be required to be build in.
 
-[1] https://lore.kernel.org/linux-doc/20200929212747.251804-9-jhubbard@nvid=
-ia.com/
-
-Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlb=
-fs dependency")
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
-
-Hi,
-
-This applies to today's 20201001) linux-next. I forgot if this needs to
-be a separate patch or if it can be fixed up in Andrew's tree.
-
-thanks,
-John Hubbard
-NVIDIA
-
-
- tools/testing/selftests/vm/check_config.sh | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- mode change 100644 =3D> 100755 tools/testing/selftests/vm/check_config.sh
-
-diff --git a/tools/testing/selftests/vm/check_config.sh b/tools/testing/sel=
-ftests/vm/check_config.sh
-old mode 100644
-new mode 100755
---=20
-2.28.0
-
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>  drivers/clocksource/timer-clint.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> index d17367dee02c..6cfe2ab73eb0 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -38,6 +38,7 @@ static unsigned int clint_timer_irq;
+>  
+>  #ifdef CONFIG_RISCV_M_MODE
+>  u64 __iomem *clint_time_val;
+> +EXPORT_SYMBOL(clint_time_val);
+>  #endif
+>  
+>  static void clint_send_ipi(const struct cpumask *target)
+> -- 
+> 2.28.0.709.gb0816b6eb0-goog
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+---end quoted text---
