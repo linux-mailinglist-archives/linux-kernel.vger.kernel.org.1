@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F3228167D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907F281694
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388214AbgJBPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S2388281AbgJBP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBPYA (ORCPT
+        with ESMTP id S1726017AbgJBP2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:24:00 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB1AC0613D0;
-        Fri,  2 Oct 2020 08:23:59 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so2345542lff.1;
-        Fri, 02 Oct 2020 08:23:59 -0700 (PDT)
+        Fri, 2 Oct 2020 11:28:18 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5D5C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:28:17 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i26so2529456ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MSrh6TVrP5tjbZRP3wOawqsedCy4/6jgDlznJFjxZpA=;
-        b=Egnu4kM8pdngjG2biRwFBsznwAhlJVKkhvbUMpB86EGAGiE1k/p/+c2246lApinAG5
-         LKvZtO7JJMcoW7zVcQiujJjwDdQEdIF9/Et/TPnwNOnoq0//E76nLjdIoR7KisA0BuLo
-         IHRwOoAb0s/jyuAHUD6E5cJtgiRU4B9r4FHYrIAhwlaU3nxzXAjgZmKC0uUkpZFMxQk2
-         K9UMl/EFpZKgdAuGIz9vmXMWhxPnAma7tU3q8pFA8G9HFBZYh7qHxt5joiphRu2JiPAP
-         0K8BTEOoS/II2xLr/e+VkCoep2UyGycFepbr6eGtS0Lr8OG0rST1nzJdKHlEZLS3ZvHh
-         IThg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qLBFqOLPIIeVNrecDqmKe5pDCo6M469dtuJMB6uozXY=;
+        b=1VfqE7IhuhjWt2NxSpY15JryJ4J2/wHwj6pro6Ab90rqqm8/jnAVHYuhYtDTCzQj27
+         qCVkiPCKG0thGXfpo43leTkloWXb4f+aSyC/GcOJlqBMlYqh+AGg849MK067CQU5ldCf
+         y7tpVFmABANjpGYnFo5WLqmYQ41qC+ME8ppKzuX3BRgQSNWxZ0GJ9CEMFB40/B1wXST9
+         n23jsNHX38mqMVu5SbLFKT0BduDAckW26cEGXunyhSdVex7tpB2jYLTevLOdJEkx6aFp
+         ZszJ9hK9yZsFo8UmiOMKW5ggGe40u1a3gIBFv2GPKBSZ3yIKQdfnYDCIHMrxaA9ZVlK3
+         xXNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MSrh6TVrP5tjbZRP3wOawqsedCy4/6jgDlznJFjxZpA=;
-        b=HfWLRJcOOJfFGGfHzEM+5oTympM6AdafTObiZ7JUMJxbGjAnL8/uwhg5PadIbzyuky
-         OVLRnKIn8dn02+pLaGSBa/afNfOtzGO0bqI3FZR6mhdjjSofhLGZwxmU/nndvSZ0RPH7
-         ahZZfWWcpUO7PKmNgzP9Lcvtw/rvlgc2+rgIl2otRKonJfB75KkCZ9gskYDfUn+/z2mP
-         W7+98iEyJ6j8Y5sz5TAbSyiXfcQwNS9TbQFMn/uiRXDy6HRQWWbV/kGSpu0wAmfhHCGW
-         baqrT4CYlJT7AxGX6t154rE0wTeQYRkzCho2l8e5o4BhTJuiiTFZLK0tPPxI+KLUi20q
-         Kqsw==
-X-Gm-Message-State: AOAM532zWAV7OZf2YU06hBe50ly85LMJSWR//xjo2f9k7ZwnRN1BZ4Y6
-        NHah1KUGmrJRjDaG4u5i6DTnuFh2+io=
-X-Google-Smtp-Source: ABdhPJz6W46BSYbtAIlIOTal4LqY8k9XMcth11LIarEEiXpeTlM8dq7+/UWZgY6PHKg4GIdDun+fEQ==
-X-Received: by 2002:a19:915d:: with SMTP id y29mr1163560lfj.371.1601652237604;
-        Fri, 02 Oct 2020 08:23:57 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id g26sm268538ljl.116.2020.10.02.08.23.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 08:23:56 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <99d322d0-efb5-8a34-ee83-b907b785ced3@gmail.com>
-Date:   Fri, 2 Oct 2020 18:23:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qLBFqOLPIIeVNrecDqmKe5pDCo6M469dtuJMB6uozXY=;
+        b=K5mty3CJxn5TFAKeXIWcQWesQkXNd/zanYvoyBzaN+RDDYsodIkmYa3gnS2c+2kGF/
+         FMkgSNW+cpAJuBvKRhy1IXiIwP4DnOUFoUJMYmATKPZu3cYnlocEbo39JluahqEkkE+i
+         fN16VYhQxTjEx3oNfJOrpjrDZIdVZWzEICXciCkAqtOA7CgpoYL+lKmPFf7qE5dsKwu+
+         qL9oUXy/uvLQqKYh6dYY5Q1yaEd2wN9oCbRH2z13ICOTmOBjhhQ4lw1LoF8XbpSGolRV
+         0Wr2xUnIP1r15AbskTwd0RVAsL4pclHPtw2GUE62ZhyHO/N1Y6Yw3nbF263LqqPP8tX8
+         tkGw==
+X-Gm-Message-State: AOAM532Cg0vWUzIT65RMj/v+AOSP0bK+n1uH32Jl2TkfBwRm9vN4Y6FR
+        cg5FtUkZaPu7ayzb6cYcJMWf7BwyoU2NdHkpgWxRmw==
+X-Google-Smtp-Source: ABdhPJyvVLldlJNq+Qx04LRovUfTW9uBVrkIrXj2nd3NucyIIBNdVg8NpMeAvgfX8qFLTRRUYxH+2khsTnKfRz5NXLI=
+X-Received: by 2002:a17:906:d159:: with SMTP id br25mr2948371ejb.155.1601652496574;
+ Fri, 02 Oct 2020 08:28:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002060807.32138-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1601616399.git.mchehab+huawei@kernel.org> <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+In-Reply-To: <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 2 Oct 2020 17:28:05 +0200
+Message-ID: <CAMpxmJV8jkktBuHB=1r=twm2QhxT+DaB0DaCJ=0A3sBi2huQgg@mail.gmail.com>
+Subject: Re: [PATCH 6/6] docs: gpio: add a new document to its index.rst
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 09:08, Nicolin Chen пишет:
-> Then when a client gets probed, of_iommu_configure() in
-> iommu core will search DTB for swgroup ID and call ->of_xlate()
-> to prepare an fwspec, similar to tegra_smmu_probe_device() and
-> tegra_smmu_configure(). Then it'll call tegra_smmu_probe_device()
-> again, and this time we shall return smmu->iommu pointer properly.
+On Fri, Oct 2, 2020 at 7:49 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> There's now a new ReST file. Add it to the index.rst file.
+>
+> Fixes: ce7a2f77f976 ("docs: gpio: Add GPIO Aggregator documentation")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/admin-guide/gpio/index.rst | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/admin-guide/gpio/index.rst b/Documentation/admin-guide/gpio/index.rst
+> index ef2838638e96..7db367572f30 100644
+> --- a/Documentation/admin-guide/gpio/index.rst
+> +++ b/Documentation/admin-guide/gpio/index.rst
+> @@ -9,6 +9,7 @@ gpio
+>
+>      gpio-aggregator
+>      sysfs
+> +    gpio-mockup
+>
+>  .. only::  subproject and html
+>
+> --
+> 2.26.2
+>
 
-I don't quite see where IOMMU core calls of_xlate().
+Good catch, thanks!
 
-Have tried to at least boot-test this patch?
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
