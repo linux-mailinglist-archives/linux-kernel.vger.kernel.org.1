@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A869281E81
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782CE281E83
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbgJBWjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:39:22 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10697 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJBWjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:39:21 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f77ac0c0001>; Fri, 02 Oct 2020 15:39:08 -0700
-Received: from [10.2.58.214] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 22:39:19 +0000
-Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
- <20201002175303.390363-2-daniel.vetter@ffwll.ch>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <cb56763e-4fda-a783-03ae-7f749ec55981@nvidia.com>
-Date:   Fri, 2 Oct 2020 15:39:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725783AbgJBWkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:40:09 -0400
+Received: from mga09.intel.com ([134.134.136.24]:51644 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgJBWkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:40:09 -0400
+IronPort-SDR: pV0GxcszSHj5uUfUgqWDZ4EQQFv/tJ2q8bHe61Bh8c9sO3/3QMLKI7m0PpobnhifL7ZLS42PF2
+ 0e9iao2Jlzaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="163961872"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="163961872"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 15:40:08 -0700
+IronPort-SDR: mdv3XnXbH0zvuSB5fIe3s+fd8K6hoMYOoqDDkdkuUICnq+Ut6ehbiSuJ2I7frtSleGUR7k0iR3
+ qaL4RkHEMSOA==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="340153457"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 15:40:07 -0700
+Date:   Fri, 2 Oct 2020 15:40:06 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Robert Richter <rric@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, kernel@collabora.com
+Subject: Re: [PATCH v2 7/9] x86: Use current USER_CS to setup correct context
+ on vmx entry
+Message-ID: <20201002224005.GF24460@linux.intel.com>
+References: <20201001205819.27879-1-krisman@collabora.com>
+ <20201001205819.27879-8-krisman@collabora.com>
+ <CALCETrW74MjC2-MRkRrp3uGOhapH_1zG5GCBkPsLFXs+jPXNOg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002175303.390363-2-daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601678348; bh=qTcrCkJDzdT8SfyK7qNOOJqSlCcdoBOSPBld3HipaxE=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=CkmG7p3e1gAyMtXXHaHX1wOW1NQeTx5EUso+tbSgFhrSp+8QrJgqKgpGph1U/WlJ9
-         qjs7wfNjzCdFazLpm35kI8ryUb4HAhQGO1YhRDZHuawuF1n/XklWptr0Oh+AMQAUjy
-         jneLP0a9LWrTfebX3/q5vKRWI7xVqEgLJba7x3/ynwdacCPjlPBn92WcwSu6Cw0YiT
-         eKgU9+6RSW0XQZenBoBjewsXMxc+aP2u4J0XqZOj1Y5gz6t/S5sXbW56buv0moU6ab
-         JNDEx6uK4fFAQ92xLXRbzenGuHOo4jN8MNmfnLJi/k09pKguinMXh3euJYAOLgkYOa
-         zfT3EJXtIkeRQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrW74MjC2-MRkRrp3uGOhapH_1zG5GCBkPsLFXs+jPXNOg@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 10:53 AM, Daniel Vetter wrote:
-> For $reasons I've stumbled over this code and I'm not sure the change
-> to the new gup functions in 55a650c35fea ("mm/gup: frame_vector:
-> convert get_user_pages() --> pin_user_pages()") was entirely correct.
->=20
-> This here is used for long term buffers (not just quick I/O) like
-> RDMA, and John notes this in his patch. But I thought the rule for
-> these is that they need to add FOLL_LONGTERM, which John's patch
-> didn't do.
+On Thu, Oct 01, 2020 at 02:52:32PM -0700, Andy Lutomirski wrote:
+> On Thu, Oct 1, 2020 at 1:59 PM Gabriel Krisman Bertazi
+> <krisman@collabora.com> wrote:
+> >
+> > vmx_prepare_switch_to_guest shouldn't use is_64bit_mm, which has a
+> > very specific use in uprobes.  Use the user_64bit_mode helper instead.
+> > This reduces the usage of is_64bit_mm, which is awkward, since it relies
+> > on the personality at load time, which is fine for uprobes, but doesn't
+> > seem fine here.
+> >
+> > I tested this by running VMs with 64 and 32 bits payloads from 64/32
+> > programs.
+> >
+> > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 7b2a068f08c1..b5aafd9e5f5d 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -1172,7 +1172,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
+> >         savesegment(es, host_state->es_sel);
+> >
+> >         gs_base = cpu_kernelmode_gs_base(cpu);
+> > -       if (likely(is_64bit_mm(current->mm))) {
+> > +       if (likely(user_64bit_mode(current_pt_regs()))) {
+> >                 current_save_fsgs();
+> >                 fs_sel = current->thread.fsindex;
+> >                 gs_sel = current->thread.gsindex;
+> 
+> I disagree with this one.  This whole code path is nonsense.  Can you
+> just remove the condition entirely and use the 64-bit path
+> unconditionally?
 
-Yep. The earlier gup --> pup conversion patches were intended to not
-have any noticeable behavior changes, and FOLL_LONGTERM, with it's
-special cases and such, added some risk that I wasn't ready to take
-on yet. Also, FOLL_LONGTERM rules are only *recently* getting firmed
-up. So there was some doubt at least in my mind, about which sites
-should have it.
+I finally came back to this one with fresh eyes.  I've read through the code
+a bajllion times and typed up half a dozen responses.  I think, finally, I
+understand what's broken.
 
-But now that we're here, I think it's really good that you've brought
-this up. It's definitely time to add FOLL_LONGTERM wherever it's missing.
+I believe your original assertion that the bug was misdiagnosed is correct
+(can't link because LKML wasn't in the loop).  I'm pretty sure your analysis
+that KVM's handling of things works mostly by coincidence is also correct.
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+The coincidence is that "real" VMMs all use arch_prctl(), and
+do_arch_prctl_64() ensures thread.{fs,gs}base are accurate.  save_base_legacy()
+detects sel==0 and intentionally does nothing, knowing the the base is already
+accurate.
 
->=20
-> There is already a dax specific check (added in b7f0554a56f2 ("mm:
-> fail get_vaddr_frames() for filesystem-dax mappings")), so this seems
-> like the prudent thing to do.
->=20
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> ---
-> Hi all,
->=20
-> I stumbled over this and figured typing this patch can't hurt. Really
-> just to maybe learn a few things about how gup/pup is supposed to be
-> used (we have a bit of that in drivers/gpu), this here isn't really
-> ralated to anything I'm doing.
->=20
-> I'm also wondering whether the explicit dax check should be removed,
-> since FOLL_LONGTERM should take care of that already.
-> -Daniel
-> ---
->   mm/frame_vector.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-> index 5d34c9047e9c..3507e09cb3ff 100644
-> --- a/mm/frame_vector.c
-> +++ b/mm/frame_vector.c
-> @@ -35,7 +35,7 @@ int get_vaddr_frames(unsigned long start, unsigned int =
-nr_frames,
->   {
->   	struct mm_struct *mm =3D current->mm;
->   	struct vm_area_struct *vma;
-> -	unsigned int gup_flags =3D FOLL_WRITE | FOLL_FORCE;
-> +	unsigned int gup_flags =3D FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM;
->   	int ret =3D 0;
->   	int err;
->   	int locked;
->=20
+Userspaces that don't use arch_prctl(), in the bug report case a 32-bit compat
+test, may or may not have accurate thread.{fs,gs}base values.  This is
+especially true if sel!=0 as save_base_legacy() explicitly zeros the base in
+this case, as load_seg_legacy() will restore the seg on the backend.
 
+KVM on the other hand assumes thread.{fs,gs}base are always fresh.  When that
+didn't hold true for userspace that didn't use arch_prctl(), the fix of
+detecting a !64-bit mm just so happened to work because all 64-bit VMMs use
+arch_prctl().
+
+It's tempting to just open code this and use RD{FS,GS}BASE when possible,
+i.e. avoid any guesswork.  Maybe with a module param that userspace can set
+to tell KVM it doesn't do anything fancy with FS/GS base (will userspace still
+use arch_prctl() even if FSGSABSE is available?).
+
+        savesegment(fs, fs_sel);
+        savesegment(gs, gs_sel);
+	if (use_current_fsgs_base) {
+		fs_base = current->thread.fsbase;
+		vmx->msr_host_kernel_gs_base = current->thread.gsbase;
+	} else if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
+                fs_base = rdfsbase()
+                vmx->msr_host_kernel_gs_base = __rdgsbase_inactive();
+        } else {
+                fs_base = read_msr(MSR_FS_BASE);
+                vmx->msr_host_kernel_gs_base = read_msr(MSR_KERNEL_GS_BASE);
+        }
+
+I'll revisit this on Monday and run a patch by Paolo.
