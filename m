@@ -2,125 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11A4280E75
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431C3280E8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgJBIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:06:31 -0400
-Received: from outbound-smtp36.blacknight.com ([46.22.139.219]:47789 "EHLO
-        outbound-smtp36.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726238AbgJBIGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:06:30 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp36.blacknight.com (Postfix) with ESMTPS id B7B1B190C
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:06:27 +0100 (IST)
-Received: (qmail 20516 invoked from network); 2 Oct 2020 08:06:27 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Oct 2020 08:06:27 -0000
-Date:   Fri, 2 Oct 2020 09:06:24 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201002080624.GB3227@techsingularity.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
+        id S1726251AbgJBIKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:10:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60314 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725961AbgJBIKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 04:10:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601626252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ohDDELRfBZ5fnVMTOVRtcfOH/3QcEOCGj4lb5+R6z9o=;
+        b=hLFJAuYkibo3WCmxlXfl5Nnf7erkZKdfm21uustbsSQbLATOOaTdPDDrksB56pwfXg0mIE
+        14vO/C1R80r6UepkkEnYr3W4abdXT5zDEelBtuU/kJrC9nDS4MMHPy3pIdmJ3Tz3loHefi
+        aQrMDLL4QUmUFXiIMMc1Mv4A/jBjbd8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 15F86B22E;
+        Fri,  2 Oct 2020 08:10:52 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 10:10:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
+Message-ID: <20201002081023.GA4555@dhcp22.suse.cz>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
+ <20200930115505.GT2277@dhcp22.suse.cz>
+ <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
+ <20201002073205.GC20872@dhcp22.suse.cz>
+ <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001192626.GA29606@pc636>
+In-Reply-To: <9a7600e2-044a-50ca-acde-bf647932c751@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:26:26PM +0200, Uladzislau Rezki wrote:
+On Fri 02-10-20 09:50:02, David Hildenbrand wrote:
+> >>> - huge page sizes controllable by the userspace?
+> >>
+> >> It might be good to allow advanced users to choose the page sizes, so they
+> >> have better control of their applications.
 > > 
-> > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > the allocator (different from what you posted in previous version) so that it
-> > only looks at the flag after it tries to allocate from pcplist and finds out
-> > it's empty. So, no inventing of new page allocator entry points or checks such
-> > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > affect existing fast paths.
-> >
-> OK. Now i see. Please have a look below at the patch, so we fully understand
-> each other. If that is something that is close to your view or not:
+> > Could you elaborate more? Those advanced users can use hugetlb, right?
+> > They get a very good control over page size and pool preallocation etc.
+> > So they can get what they need - assuming there is enough memory.
+> > 
 > 
-> <snip>
-> t a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..7e613560a502 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -39,8 +39,9 @@ struct vm_area_struct;
->  #define ___GFP_HARDWALL                0x100000u
->  #define ___GFP_THISNODE                0x200000u
->  #define ___GFP_ACCOUNT         0x400000u
-> +#define ___GFP_NO_LOCKS                0x800000u
->  #ifdef CONFIG_LOCKDEP
-> -#define ___GFP_NOLOCKDEP       0x800000u
-> +#define ___GFP_NOLOCKDEP       0x1000000u
->  #else
->  #define ___GFP_NOLOCKDEP       0
->  #endif
-> @@ -215,16 +216,22 @@ struct vm_area_struct;
->   * %__GFP_COMP address compound page metadata.
->   *
->   * %__GFP_ZERO returns a zeroed page on success.
-> + *
-> + * %__GFP_NO_LOCKS order-0 allocation without sleepable-locks.
-> + * It obtains a page from the per-cpu-list and considered as
-> + * lock-less. No other actions are performed, thus it returns
-> + * NULL if per-cpu-list is empty.
->   */
->  #define __GFP_NOWARN   ((__force gfp_t)___GFP_NOWARN)
->  #define __GFP_COMP     ((__force gfp_t)___GFP_COMP)
->  #define __GFP_ZERO     ((__force gfp_t)___GFP_ZERO)
-> +#define __GFP_NO_LOCKS ((__force gfp_t)___GFP_NO_LOCKS)
-> 
+> I am still not convinced that 1G THP (TGP :) ) are really what we want
+> to support. I can understand that there are some use cases that might
+> benefit from it, especially:
 
-I'm not a fan of the GFP flag approach simply because we've had cases
-before where GFP flags were used in inappropriate contexts like
-__GFP_MEMALLOC which led to a surprising amount of bugs, particularly
-from out-of-tree drivers but also in-tree drivers. Of course, there
-are limited GFP flags available too but at least the comment should
-be as robust as possible. Maybe something like
+Well, I would say that internal support for larger huge pages (e.g. 1GB)
+that can transparently split under memory pressure is a useful
+funtionality. I cannot really judge how complex that would be
+consideting that 2MB THP have turned out to be quite a pain but
+situation has settled over time. Maybe our current code base is prepared
+for that much better.
 
- * %__GFP_NO_LOCKS attempts order-0 allocation without sleepable-locks. It
- * attempts to obtain a page without acquiring any spinlocks. This
- * should only be used in a context where the holder holds a
- * raw_spin_lock that cannot be released for the allocation request.
- * This may be necessary in PREEMPT_RT kernels where a
- * raw_spin_lock is held which does not sleep tries to acquire a
- * spin_lock that can sleep with PREEMPT_RT. This should not be
- * confused with GFP_ATOMIC contexts. Like atomic allocation
- * requests, there is no guarantee a page will be returned and
- * the caller must be able to deal with allocation failures.
- * The risk of allocation failure is higher than using GFP_ATOMIC.
-
-It's verbose but it would be hard to misinterpret. I think we're
-going to go through a period of time before people get familiar
-with PREEMPT_RT-related hazards as various comments that were
-true are going to be misleading for a while.
-
-For anyone reviewing, any use of __GFP_NO_LOCKS should meet a high
-standard where there is no alternative except to use the flags. i.e. a
-higher standard "but I'm an important driver".
-
+Exposing that interface to the userspace is a different story of course.
+I do agree that we likely do not want to be very explicit about that.
+E.g. an interface for address space defragmentation without any more
+specifics sounds like a useful feature to me. It will be up to the
+kernel to decide which huge pages to use.
 -- 
-Mel Gorman
+Michal Hocko
 SUSE Labs
