@@ -2,124 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E661281B6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED59281B83
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388404AbgJBTPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:15:50 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:39573 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgJBTPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:15:49 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201002191548euoutp0259efca115550121ef3da6b69625230c3~6QuA9K4DZ0075300753euoutp02D
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 19:15:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201002191548euoutp0259efca115550121ef3da6b69625230c3~6QuA9K4DZ0075300753euoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601666148;
-        bh=MtoSHjC2XjoWoOZrgZW6Bv3cm9lONexqqG1ENgBgQus=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Mz+9VuZD4G2RMaAlGzSrUNfJaC7Kfxos6pCoPXmLzEwU63vRquEUHWgoBaTi+WGr3
-         jKxzg/j7mYOSausX6/iaieebx53JluZaR1899lHXXNLVsuWjaZ7WxYnF95oYPXfLch
-         JC34g7oy4ZAkJjHty68kpHFRGo57Gc+xXFZn73RA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201002191547eucas1p2bfedc5838bfbb049b3e2b829c0934dca~6QuAH0CVk1293512935eucas1p2Z;
-        Fri,  2 Oct 2020 19:15:47 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 62.27.06318.36C777F5; Fri,  2
-        Oct 2020 20:15:47 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201002191546eucas1p13545280767220c473c19d1071c87d107~6Qt-GFgY91179911799eucas1p1H;
-        Fri,  2 Oct 2020 19:15:46 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201002191546eusmtrp157747baecd4cd11720b9c671cf98c4ed~6Qt-FaF_x1763417634eusmtrp1k;
-        Fri,  2 Oct 2020 19:15:46 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-66-5f777c63d9ae
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6A.2F.06314.26C777F5; Fri,  2
-        Oct 2020 20:15:46 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201002191546eusmtip1bc7cf1718d1a229fcd9e836b93381973~6Qt_7FHKz0871608716eusmtip1o;
-        Fri,  2 Oct 2020 19:15:46 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH] checkpatch: Fix false positive on empty block comment lines
-Date:   Fri,  2 Oct 2020 21:15:25 +0200
-Message-Id: <20201002191525.18942-1-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
+        id S2388394AbgJBTVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388351AbgJBTVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:21:52 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22362206DD;
+        Fri,  2 Oct 2020 19:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601666511;
+        bh=L4m1QJWBqKGzyrw/xVJmG3tj2xwKO6e7HGpDzISiC74=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BbILnrR4o3jxGxwLlp/CfPGAV1vMdoFLx0WtSwsaJAdnQ6a6HyTbNvVrZFjsQkwA1
+         r83xWrA44SgQ3OzDPHJk/beEVGrH5x2Kv0YGutYJ9CM1eWUKewIxUyGGTdtQEjrEiX
+         Z2q9P5yIXBpXvLx8ow7xWZbKUT/8rB6UZK0lsOws=
+Received: by mail-ot1-f53.google.com with SMTP id c2so2459053otp.7;
+        Fri, 02 Oct 2020 12:21:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532drHdCQak6d3iAdlhUc3nCgXnY64Hf+ZbRnRhotkgqG7/pb2C4
+        qr2bZupdDmZk7d0e4H/fPmhGF9bLdN4Bhb3AEZw=
+X-Google-Smtp-Source: ABdhPJwPTuuKRRs/1VwnEQiU3DRy6PM2jXlhvsHksNAjczi2LGkB2x4u0P+7zSB7fV7ebzj/Iq+1SJ3c4T8wtSFFSqc=
+X-Received: by 2002:a9d:335:: with SMTP id 50mr2674457otv.90.1601666510446;
+ Fri, 02 Oct 2020 12:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMKsWRmVeSWpSXmKPExsWy7djPc7rJNeXxBu93Slp8WKthsXHGelaL
-        2fcfs1jcPLSC0eLyrjlsFmuP3GV3YPOY1dDL5vFl1TVmj74tqxg9Pm+SC2CJ4rJJSc3JLEst
-        0rdL4Mo4fXgGW8Edtopts6YyNjCuYu1i5OSQEDCReDVjO5DNxSEksIJRYsL7xWwQzhdGiYtb
-        pjJDOJ8ZJb7fO8kC03JqSRMjRGI5o0THqXdQ/c8ZJZbtucIMUsUm4CjRv/QEUIKDQ0QgVeL3
-        Q0OQGmaBfYwSO+9NAasRFvCReHrgJRuIzSKgKvH6+wowm1fAWmLC9wZGiG3yEu3Lt0PFBSVO
-        znwCdgW/gJbEmqbrYDYzUE3z1tlgp0oItLNLfGy8DNXsInFv8l6os4UlXh3fwg5hy0icntzD
-        AnKchEC9xORJZhC9PYwS2+b8gKq3lrhz7hcbSA2zgKbE+l36EGFHiaMftjJDtPJJ3HgrCHEC
-        n8SkbdOhwrwSHW1CENUqEuv690ANlJLofbUC6jAPiY2z+1gmMCrOQvLYLCTPzELYu4CReRWj
-        eGppcW56arFxXmq5XnFibnFpXrpecn7uJkZgUjn97/jXHYz7/iQdYhTgYFTi4eUwKI8XYk0s
-        K67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe40UvY4UE0hNLUrNTUwtS
-        i2CyTBycUg2My196cR3SsF/1W/HTowwhmTjXPawTTl/pvC1bsaFC9tbV65UiAixNB+Yuj0s9
-        Geg/w6ymvf6sMYuXzIk9id0OiyK2bPhZ0MF62cJggd7Xa3vjBeRmTvfXncJ/vyF2SeWJ2C3f
-        ze7/Z5IxFbYKlOC44zXr0+evk7zbvDTmVOn/ZQ2qySuyNT2qxFKckWioxVxUnAgAEOgUKCYD
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42I5/e/4Xd2kmvJ4g3O7BS0+rNWw2DhjPavF
-        7PuPWSxuHlrBaHF51xw2i7VH7rI7sHnMauhl8/iy6hqzR9+WVYwenzfJBbBE6dkU5ZeWpCpk
-        5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GWcPjyDreAOW8W2WVMZ
-        GxhXsXYxcnJICJhInFrSxNjFyMUhJLCUUeLB7V6mLkYOoISUxMq56RA1whJ/rnWxQdQ8ZZTo
-        37mQGSTBJuAo0b/0BNggEYF0ia2LzoEVMQvsY5TYf3QxO0hCWMBH4umBl2wgNouAqsTr7yvA
-        bF4Ba4kJ3xsYITbIS7Qv3w4VF5Q4OfMJC8gRzALqEuvnCYGE+QW0JNY0XWcBsZmBypu3zmae
-        wCgwC0nHLISOWUiqFjAyr2IUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiMiW3Hfm7ewXhpY/Ah
-        RgEORiUe3gSj8ngh1sSy4srcQ4wSHMxKIrxOZ0/HCfGmJFZWpRblxxeV5qQWH2I0BXpnIrOU
-        aHI+MF7zSuINTQ3NLSwNzY3Njc0slMR5OwQOxggJpCeWpGanphakFsH0MXFwSjUwTuS6V9nr
-        fejg9UvbBHeLvz7ov7+p4PZjn+A7gVYn5a+qFe/Vqbiweml5xY6bTIrX0zhDk069cVl8YZ5/
-        p9IzFx4psbu77boeLsjsTOA7mDYzrNpb/3Hj7wzVFVbnsrqUN5q8ua2wM2+eL0t1SGbbtamL
-        np9oyF66JTP1ibuhsb+DibHFltlZSizFGYmGWsxFxYkADsGynp8CAAA=
-X-CMS-MailID: 20201002191546eucas1p13545280767220c473c19d1071c87d107
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201002191546eucas1p13545280767220c473c19d1071c87d107
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201002191546eucas1p13545280767220c473c19d1071c87d107
-References: <CGME20201002191546eucas1p13545280767220c473c19d1071c87d107@eucas1p1.samsung.com>
+References: <20201002171112.22738-1-xypron.glpk@gmx.de> <CAMj1kXHsGcAX-DqfcpgxzZY3M+JzY-Ef9OdJ+JdysNnx1fK6zg@mail.gmail.com>
+ <9899cc58-c856-38ca-3a89-4b545c973a4f@gmx.de>
+In-Reply-To: <9899cc58-c856-38ca-3a89-4b545c973a4f@gmx.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 2 Oct 2020 21:21:39 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGBGb5yU0XH3oBJfTUDiFzhqa8ihyYo=n_qyj1VcCs5zA@mail.gmail.com>
+Message-ID: <CAMj1kXGBGb5yU0XH3oBJfTUDiFzhqa8ihyYo=n_qyj1VcCs5zA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] docs: admin-guide: fdt and initrd load in EFI stub
+To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Fran=C3=A7ois_Ozog?= <francois.ozog@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid false positives in presence of SPDX-License-Identifier in
-networking files it is required to increase the leeway for empty block
-comment lines by one line.
+On Fri, 2 Oct 2020 at 21:14, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+>
+> On 10/2/20 7:21 PM, Ard Biesheuvel wrote:
+> > Hi Heinrich,
+> >
+> > Thanks for documenting this.
+> >
+> >
+> > On Fri, 2 Oct 2020 at 19:11, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+> >>
+> >> Describe how a device tree and an initial RAM disk can be passed to the EFI
+> >> Boot Stub.
+> >>
+> >> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> >> ---
+> >>  Documentation/admin-guide/efi-stub.rst | 35 ++++++++++++++++++++++++++
+> >>  1 file changed, 35 insertions(+)
+> >>
+> >> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-guide/efi-stub.rst
+> >> index 833edb0d0bc4..86f50a33884c 100644
+> >> --- a/Documentation/admin-guide/efi-stub.rst
+> >> +++ b/Documentation/admin-guide/efi-stub.rst
+> >> @@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the system partition, and it
+> >>  may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
+> >>  should be copied but not necessarily renamed.
+> >>
+> >> +Passing an initial RAM disk to the EFI Boot Stub
+> >> +------------------------------------------------
+> >> +
+> >> +The following means sorted by decreasing priority can be used to provide an
+> >> +initial RAM disk to the EFI Boot Stub:
+> >> +
+> >> +* The firmware may provide a UEFI Load File 2 Protocol. The stub will try to
+> >> +  load the RAM disk by calling the LoadFile() service of the protocol using
+> >> +  a vendor device path with the vendor GUID
+> >> +  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
+> >> +* Next the EFI stub will try to load the file indicated by the "initrd=" command
+> >> +  line parameter.
+> >> +* The prior boot stage may pass the location of the initial RAM disk via the
+> >> +  "linux,initrd-start" and "linux,initrd-end" properties of the "/chosen" node
+> >> +  of the device-tree.
+> >> +
+> >
+> > On x86, the boot_params struct is used to pass the address and size of
+> > the initrd in memory. Maybe include that for completeness?
+>
+> On x86 boot_params is set in function efi_pe_entry() after loading the
+> file indicated by the initrd= command line.
+>
+> boot_params is not accessible by a caller of the EFI stub but is a
+> structure used at the interface between EFI stub and main kernel. This
+> interface is not in the scope of the admin-guide.
+>
 
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ I don't see the difference between dt for arm and boot_params for
+x86. Both can be provided by the bootloader, and will be created from
+scratch by the efi stub if not. They both carry the command line and
+address and size of the initrd, and the efi stub will load  the initrd
+and update this Information, or pass it on unmodified if the
+bootloader already loaded the initrd into memory.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a213cdb82ab0..60e10da4cccb 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3460,7 +3460,7 @@ sub process {
- 		if ($realfile =~ m@^(drivers/net/|net/)@ &&
- 		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
- 		    $rawline =~ /^\+[ \t]*\*/ &&
--		    $realline > 2) {
-+		    $realline > 3) {
- 			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
- 			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
- 		}
--- 
-2.26.2
 
+
+> The main Linux entry point is already described in
+> Documentation/x86/boot.rst and ./Documentation/x86/zero-page.rst.
+>
+> We can add Sphinx style documentation for function efi_pe_entry()
+> mentioning that it fills in boot_params.
+> drivers/firmware/efi/libstub/x86-stub.c then can be added to
+> Documentation/driver-api/firmware/efi/index.rst in an x86 chapter. But
+> these will be separate patches.
+>
+> Best regards
+>
+> Heinrich
+>
+> >
+> >> +The first two items are inhibited by the "noinitrd" command line parameter.
+> >> +
+> >
+> > Interesting. Are you saying noinitrd is ignored by the kernel itself?
+> >
+> > Looking at the code, it might only work for preventing the load of old
+> > style initrd ramdisks, whereas initramfs images are handled
+> > separately.
+> >
+> > This is something that we should probably fix one way or the other.
+> >
+> >
+> >> +Passing a device-tree to the EFI Boot Stub
+> >> +------------------------------------------
+> >> +
+> >> +A device-tree can be passed to the EFI Boot Stub in decreasing priority using
+> >> +
+> >> +* command line option dtb=
+> >> +* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c69aae0.
+> >> +
+> >> +The command line option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y
+> >> +and secure boot is disabled.
+> >>
+> >>  Passing kernel parameters from the EFI shell
+> >>  --------------------------------------------
+> >> @@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzImage.efi, e.g.::
+> >>
+> >>         fs0:> bzImage.efi console=ttyS0 root=/dev/sda4
+> >>
+> >> +The "noinitrd" option
+> >> +---------------------
+> >> +
+> >> +The "noinitrd" option stops the EFI stub from loading an initial RAM disk.
+> >>
+> >>  The "initrd=" option
+> >>  --------------------
+> >> @@ -98,3 +130,6 @@ CONFIGURATION TABLE.
+> >>
+> >>  "dtb=" is processed in the same manner as the "initrd=" option that is
+> >>  described above.
+> >> +
+> >> +This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y and secure
+> >> +boot is disabled.
+> >> --
+> >> 2.28.0
+> >>
+>
