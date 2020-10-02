@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609E628148D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D09128148F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387412AbgJBOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:00:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBOAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:00:23 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 756C6206CD;
-        Fri,  2 Oct 2020 14:00:20 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 15:00:18 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 27/39] arm64: kasan: Enable in-kernel MTE
-Message-ID: <20201002140017.GF7034@gaia>
-References: <cover.1601593784.git.andreyknvl@google.com>
- <e8d5ed9bc12086670cbde30d390de32730d0371f.1601593784.git.andreyknvl@google.com>
+        id S2387922AbgJBOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBOAt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:00:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DF0C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CUDGsfaX06RV82lRVdfunkb9Yk0TwCX6+kZd1kTshAQ=; b=SbK0nYmPxa1e4eYN/337RPAU/6
+        Zi933T8DX436+uLM5QIy3XFcYxzc6NRdPhln+IwhSJ4FW2sa2SB0HYpJoGcsVgH4Mv2sAukCge/+W
+        b+jwTuKpJiGxQKdVcSX57y2xBCWcetkbMy7nDy9mYN60KMC2fKlk6svRGKCSUfMs7CDJVXvq/exZH
+        ddLlgLu92q/O2REzhz5Pwb2DHQnnPM3DxibKoHH1dTZbyRLxE0m7jqtP6P9GNVSeBDi2iIXz3LbPL
+        pwUoKdFDML2Kfto6bcTDe/XEz62FkTxLHFao/r5MpBavVmfvELx/qJbR1PxIl8Sszp4kGvr81Xd1A
+        +M5fghZQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOLc2-0001FE-L6; Fri, 02 Oct 2020 14:00:42 +0000
+Date:   Fri, 2 Oct 2020 15:00:42 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Sebastiaan Meijer <meijersebastiaan@gmail.com>,
+        akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@suse.de
+Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
+Message-ID: <20201002140042.GB20115@casper.infradead.org>
+References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
+ <20201001123032.GC22560@dhcp22.suse.cz>
+ <CANuy=CK-s=tEb57Kw+N8O2OGx1MXyUB=o-RDH-S=kYerb65dOw@mail.gmail.com>
+ <20201002070333.GA21871@dhcp22.suse.cz>
+ <656725362af9bd757a281f0799a0bb9c9b2487bd.camel@surriel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8d5ed9bc12086670cbde30d390de32730d0371f.1601593784.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <656725362af9bd757a281f0799a0bb9c9b2487bd.camel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:10:28AM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 23c326a06b2d..6c1a6621d769 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -40,9 +40,15 @@
->  #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
->  
->  #ifdef CONFIG_KASAN_SW_TAGS
-> -#define TCR_KASAN_FLAGS TCR_TBI1
-> +#define TCR_KASAN_SW_FLAGS TCR_TBI1
->  #else
-> -#define TCR_KASAN_FLAGS 0
-> +#define TCR_KASAN_SW_FLAGS 0
-> +#endif
-> +
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1
-> +#else
-> +#define TCR_KASAN_HW_FLAGS 0
->  #endif
->  
->  /*
-> @@ -427,6 +433,10 @@ SYM_FUNC_START(__cpu_setup)
->  	 */
->  	mov_q	x5, MAIR_EL1_SET
->  #ifdef CONFIG_ARM64_MTE
-> +	mte_tcr	.req	x20
-> +
-> +	mov	mte_tcr, #0
-> +
->  	/*
->  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
->  	 * (ID_AA64PFR1_EL1[11:8] > 1).
-> @@ -447,6 +457,9 @@ SYM_FUNC_START(__cpu_setup)
->  	/* clear any pending tag check faults in TFSR*_EL1 */
->  	msr_s	SYS_TFSR_EL1, xzr
->  	msr_s	SYS_TFSRE0_EL1, xzr
-> +
-> +	/* set the TCR_EL1 bits */
-> +	mov_q	mte_tcr, TCR_KASAN_HW_FLAGS
->  1:
->  #endif
->  	msr	mair_el1, x5
-> @@ -456,7 +469,11 @@ SYM_FUNC_START(__cpu_setup)
->  	 */
->  	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
->  			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
-> -			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
-> +			TCR_TBI0 | TCR_A1 | TCR_KASAN_SW_FLAGS
-> +#ifdef CONFIG_ARM64_MTE
-> +	orr	x10, x10, mte_tcr
-> +	.unreq	mte_tcr
-> +#endif
+On Fri, Oct 02, 2020 at 09:53:05AM -0400, Rik van Riel wrote:
+> On Fri, 2020-10-02 at 09:03 +0200, Michal Hocko wrote:
+> > On Thu 01-10-20 18:18:10, Sebastiaan Meijer wrote:
+> > > (Apologies for messing up the mailing list thread, Gmail had fooled
+> > > me into
+> > > believing that it properly picked up the thread)
+> > > 
+> > > On Thu, 1 Oct 2020 at 14:30, Michal Hocko <mhocko@suse.com> wrote:
+> > > > On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
+> > > > > > yes it shows the bottleneck but it is quite artificial. Read
+> > > > > > data is
+> > > > > > usually processed and/or written back and that changes the
+> > > > > > picture a
+> > > > > > lot.
+> > > > > Apologies for reviving an ancient thread (and apologies in
+> > > > > advance for my lack
+> > > > > of knowledge on how mailing lists work), but I'd like to offer
+> > > > > up another
+> > > > > reason why merging this might be a good idea.
+> > > > > 
+> > > > > From what I understand, zswap runs its compression on the same
+> > > > > kswapd thread,
+> > > > > limiting it to a single thread for compression. Given enough
+> > > > > processing power,
+> > > > > zswap can get great throughput using heavier compression
+> > > > > algorithms like zstd,
+> > > > > but this is currently greatly limited by the lack of threading.
+> > > > 
+> > > > Isn't this a problem of the zswap implementation rather than
+> > > > general
+> > > > kswapd reclaim? Why zswap doesn't do the same as normal swap out
+> > > > in a
+> > > > context outside of the reclaim?
+> 
+> On systems with lots of very fast IO devices, we have
+> also seen kswapd take 100% CPU time without any zswap
+> in use.
+> 
+> This seems like a generic issue, though zswap does
+> manage to bring it out on lower end systems.
 
-Don't we miss the TBI1 bit here? I think the v3 version of this patch
-was better.
+Then, given Mel's observation about contention on the LRU lock, what's
+the solution?  Partition the LRU list?  Batch removals from the LRU list
+by kswapd and hand off to per-?node?cpu? worker threads?
 
--- 
-Catalin
+Rik, if you have access to one of those systems, I'd be interested to know
+whether using file THPs would help with your workload.  Tracking only
+one THP instead of, say, 16 regular size pages is going to reduce the
+amount of time taken to pull things off the LRU list.
