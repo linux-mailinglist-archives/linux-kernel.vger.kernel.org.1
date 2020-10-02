@@ -2,92 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401F82815CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160A22815D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388221AbgJBOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgJBOwE (ORCPT
+        id S2388276AbgJBOw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:52:28 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:49007 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726017AbgJBOw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:52:04 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEC3C0613D0;
-        Fri,  2 Oct 2020 07:52:03 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w11so2216463lfn.2;
-        Fri, 02 Oct 2020 07:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cFiu94si6MLOrMmlNSPY2MN6ADJKMSBfebqq1SCmYCM=;
-        b=p7HE9TVwD2q0fm2z18cHPxGP+a8ISNnzlYr+yR/x090A/zGwcNY5ZW9flfsG16aj98
-         BnTp1gR014Gb3zDdg0lieJgOQ5GA6woCADJrSFqeFRiiTd+i7YGkJQcHezPyfydDEPaA
-         0kh8AsyND1uv/1Y/rmjqHprWiC7cZaKvfqdioxLeuvh+ZileKopxodwjucv1LCKxCkGc
-         KzShaALH5U2KiCE3l6cItae2tqBt5q+rdmtOpoEbsYG3cOOy5Qj1oX9gvJ+6a6ZrNocp
-         /ooo9OVwoK59vZQgoDnRD8TRWjOy/yhnbMGZCgZJiRD0g5vLLKXYBs2vNwjo2ipWjWcO
-         lghQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cFiu94si6MLOrMmlNSPY2MN6ADJKMSBfebqq1SCmYCM=;
-        b=OWZ0+60kqjCsjrsE8VPzkOJBt1A/GxQ+Kmbp+ftDeTpLuvuty2UYuMVr55ssBdXT4b
-         55PDWre1ANcSSCYpHfYpys8NXBnSPNy8XEfFtLIOnMVIKMv2yIh3cekyWgv4pyXdH3+P
-         RAbLYAroa2oZ/hZZlZPNDOjuki4leDa9fPEM8/72GFxfB1zuDfbhxQeg2CUKnWo8f3wq
-         ayZP0f0ifsx71cO+s4WUBBf+dXBsVQJ1C+VP0knV4Tu7cZwJnLc/ynH/hryxnYNwk2vD
-         ZosAfOTSNquQcBzabDLOw/TdhXDGlK71HFP4FPQ3pvXXeBuiVeu3eetM73GAySqGjxdH
-         4OvQ==
-X-Gm-Message-State: AOAM531jMaZIph0cl1uFZUxL+YsAdtlBw7lDjEpk88iO/BvqVUo1XKUW
-        pgzTl1cehIq5yXHXYFBBrWO3p5M5CPo=
-X-Google-Smtp-Source: ABdhPJx/9txQPQLd4WiPCXriCCAjKKTfo2dbLn4ocnWSslz5gzwVhdj4WmsQmM19m6/YSyg2AWu93Q==
-X-Received: by 2002:a05:6512:3692:: with SMTP id d18mr937803lfs.62.1601650322015;
-        Fri, 02 Oct 2020 07:52:02 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id m4sm256309ljb.58.2020.10.02.07.52.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 07:52:01 -0700 (PDT)
-Subject: Re: [PATCH v4 1/3] iommu/tegra-smmu: Use fwspec in
- tegra_smmu_(de)attach_dev
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-2-nicoleotsuka@gmail.com>
- <75ad716f-aa2f-743a-7d9a-7083eda03672@gmail.com>
-Message-ID: <cb90ebab-9800-c9b4-6fb7-3d53875195a0@gmail.com>
-Date:   Fri, 2 Oct 2020 17:52:00 +0300
+        Fri, 2 Oct 2020 10:52:27 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id OMQ1kdsh4THgxOMQ4k0oLI; Fri, 02 Oct 2020 16:52:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1601650345; bh=7SQdLI9RLWDgphwU5BJR71yHqC52xpliXGyUq7cICW8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=t6tHImy//rqEsSmA8wKD/57QPCuIJHmgKMD8RmV4yZlaerGRXlhHC3nCtqtn0JENx
+         VUAilB5A2CpY56429d5GI4sLfZpeQr49nwJYVaIvIp095hrMrbmo0PoUe0h/sra3oR
+         RN5RH1JAb9VhWUKgyEnnTw1RFwp6x4BNyenGDkN0cXK7BRoiZ9UNARMeyOejXy5zuz
+         jVb/W1QDciq3WKiUtGVaAqOO4X/XtVAlnYYFpkj0xAxQR5FfBdyv0YQs0wnVDNQGgz
+         8uEZVAbriYLqQlWahKaCP/c9rVlKex7GxP0jUCQo75cSuY+Zcf7FfaERBHSws7p4Oc
+         8/cNQVBid2tXg==
+Subject: Re: media/master bisection:
+ v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT on
+ qemu_arm-virt-gicv3
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        kernelci-results@groups.io, kernelci@groups.io
+References: <5f72d499.1c69fb81.81d5b.6937@mx.google.com>
+ <ebd6520a-85c3-c955-ee16-88e0c6995855@collabora.com>
+ <43e028e9-f0ea-90a9-6a64-388a6bac1c8c@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <0803d197-4485-59cc-71c6-0aa804283647@xs4all.nl>
+Date:   Fri, 2 Oct 2020 16:52:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <75ad716f-aa2f-743a-7d9a-7083eda03672@gmail.com>
+In-Reply-To: <43e028e9-f0ea-90a9-6a64-388a6bac1c8c@collabora.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBWY25rdDt4tTYjVwrmOXIJmQqyaIEWGSMl1i5xoy+ND8mxhI98HaXkNSlb6B27kzmgWPV1AU/kJ7qyxYGe8VMUfj/mkvOaqjK2DHAtl6P/YMnBnP/DA
+ jIApftlbGEw5UEMrTlJBr9SwXmJCtXU2nX84+QdQvNE7JFCbIruYLwSTQNUlB5a43BQ5R1cOW+dNYZC2MOXj5BW3oF0VFcf2femgFdcNQQ+5SbnM7wXpjxo9
+ XPMpIVfJBQmMjapYWeHaVsCDylpKmQ0dZpfq4XWHEntLJpkIS86EcJ0tQENCshS9/JePBPUCdOkF60StBa4JUFrOMsPn+Abd6Zi3m2uESypm9Pc6nKoLeRyH
+ /NOibo6UTdlaCndwcp1O+HwoSS48VBZi+pSTq5qWQzyEF4at9pd1WJjQF4x0za70SWLxsz7O
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 17:22, Dmitry Osipenko пишет:
-> 02.10.2020 09:08, Nicolin Chen пишет:
->>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
->>  				 struct device *dev)
->>  {
->> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
->>  	struct tegra_smmu_as *as = to_smmu_as(domain);
->> -	struct device_node *np = dev->of_node;
->> -	struct of_phandle_args args;
->>  	unsigned int index = 0;
->>  	int err = 0;
+On 02/10/2020 16:37, Guillaume Tucker wrote:
+> On 30/09/2020 09:05, Guillaume Tucker wrote:
+>> Please see the bisection report below about a regression in
+>> v4l2-compliance on vivid.
+>>
+>> Reports aren't automatically sent to the public while we're
+>> trialing new bisection features on kernelci.org but this one
+>> looks valid.
+>>
+>>
+>> The full results for v4l2-compliance on vivid for
+>> v5.9-rc4-471-gc0c8db7bc953 show 22 individual test case
+>> regressions which might all be due to a single issue:
+>>
+>>   https://kernelci.org/test/plan/id/5f728c108b008d61f4bf9db7/
+>>
+>> For comparison, this is the results from the previous revision in
+>> the media tree:
+>>
+>>   https://kernelci.org/test/plan/id/5f6b44ddea4abb1888bf9db4/
+>>
+>> Also worth noting is that the v4l2-compliance test suite was
+>> updated on Friday 25th, in-between the revisions mentioned above.
+>> So the issue might have been present earlier but not detected.
 > 
-> Looks like there is no need to initialize 'index' and 'err' variables
-> anymore.
+> Turns out, it needed yet another update.  The failures were all
+> due to the fact that the v4l2-compliance version being used on
+> kernelci.org was lagging by a few days behind the media/master
+> branch.
+> 
+> It's a pretty rare issue, but it would be nice to have a way to
+> avoid that.  On the KernelCI side of things, we should start
+> monitoring tests and rebuild them automatically rather than on a
+> fixed weekly basis.  On the kernel side of things, it would help
+> if the tests were updated _before_ the changes were applied to
+> the branch as otherwise there would still be a window for this
+> kind of issue to occur.
+
+Typically v4l-utils can't be updated until the kernel changes
+are merged in the media_tree master. Usually I update v4l-utils
+right after the kernel patches are merged, but occasionally I am
+late. Although looking at when the patches were merged, there was
+only 2 hours between the CSC kernel patches and the CSC v4l-utils
+patches.
+
+Note that my daily build and regression test always updates v4l-utils
+before starting the regression tests.
+
+> 
+> Generally speaking, what do you think would be the best way to
+> fit the KernelCI v4l2-compliance test cycles into the media
+> subsystem workflow?
+
+Perhaps kernelci should also trigger when v4l2-compliance was changed
+in the v4l-utils repository? You might still have some tests failing
+between merging the kernel patches and merging the corresponding v4l2-compliance
+patches, but at least it should automatically fix itself once it detects
+that v4l2-compliance was updated.
+
+Regards,
+
+	Hans
+
+> 
+> Best wishes,
+> Guillaume
+> 
+> 
+>> On 29/09/2020 07:30, KernelCI bot wrote:
+>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>> * This automated bisection report was sent to you on the basis  *
+>>> * that you may be involved with the breaking commit it has      *
+>>> * found.  No manual investigation has been done to verify it,   *
+>>> * and the root cause of the problem may be somewhere else.      *
+>>> *                                                               *
+>>> * If you do send a fix, please include this trailer:            *
+>>> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+>>> *                                                               *
+>>> * Hope this helps!                                              *
+>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>
+>>> media/master bisection: v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT on qemu_arm-virt-gicv3
+>>>
+>>> Summary:
+>>>   Start:      c0c8db7bc953 media: MAINTAINERS: remove Maxime Jourdan as maintainer of Amlogic VDEC
+>>>   Plain log:  https://storage.kernelci.org/media/master/v5.9-rc4-471-gc0c8db7bc953/arm/multi_v7_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_arm-virt-gicv3.txt
+>>>   HTML log:   https://storage.kernelci.org/media/master/v5.9-rc4-471-gc0c8db7bc953/arm/multi_v7_defconfig+virtualvideo/gcc-8/lab-collabora/v4l2-compliance-vivid-qemu_arm-virt-gicv3.html
+>>>   Result:     2f491463497a media: vivid: Add support to the CSC API
+>>>
+>>> Checks:
+>>>   revert:     PASS
+>>>   verify:     PASS
+>>>
+>>> Parameters:
+>>>   Tree:       media
+>>>   URL:        https://git.linuxtv.org/media_tree.git
+>>>   Branch:     master
+>>>   Target:     qemu_arm-virt-gicv3
+>>>   CPU arch:   arm
+>>>   Lab:        lab-collabora
+>>>   Compiler:   gcc-8
+>>>   Config:     multi_v7_defconfig+virtualvideo
+>>>   Test case:  v4l2-compliance-vivid.Format-ioctls-Input-3.VIDIOC_TRY_FMT
+>>>
+>>> Breaking commit found:
+>>>
+>>> -------------------------------------------------------------------------------
+>>> commit 2f491463497ad43bc06968a334747c6b6b20fc74
+>>> Author: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>>> Date:   Thu Aug 27 21:46:09 2020 +0200
+>>>
+>>>     media: vivid: Add support to the CSC API
+>>>     
+>>>     The CSC API (Colorspace conversion) allows userspace to try
+>>>     to configure the colorspace, transfer function, Y'CbCr/HSV encoding
+>>>     and the quantization for capture devices. This patch adds support
+>>>     to the CSC API in vivid.
+>>>     Using the CSC API, userspace is allowed to do the following:
+>>>     
+>>>     - Set the colorspace.
+>>>     - Set the xfer_func.
+>>>     - Set the ycbcr_enc function for YUV formats.
+>>>     - Set the hsv_enc function for HSV formats
+>>>     - Set the quantization for YUV and RGB formats.
+>>>     
+>>>     Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>>>     Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>>>     Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>
+>>> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+>>> index e94beef008c8..eadf28ab1e39 100644
+>>> --- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+>>> +++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+>>> @@ -560,6 +560,7 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
+>>>  	unsigned factor = 1;
+>>>  	unsigned w, h;
+>>>  	unsigned p;
+>>> +	bool user_set_csc = !!(mp->flags & V4L2_PIX_FMT_FLAG_SET_CSC);
+>>>  
+>>>  	fmt = vivid_get_format(dev, mp->pixelformat);
+>>>  	if (!fmt) {
+>>> @@ -633,13 +634,30 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
+>>>  			(fmt->bit_depth[p] / fmt->vdownsampling[p])) /
+>>>  			(fmt->bit_depth[0] / fmt->vdownsampling[0]);
+>>>  
+>>> -	mp->colorspace = vivid_colorspace_cap(dev);
+>>> -	if (fmt->color_enc == TGP_COLOR_ENC_HSV)
+>>> -		mp->hsv_enc = vivid_hsv_enc_cap(dev);
+>>> -	else
+>>> +	if (!user_set_csc || !v4l2_is_colorspace_valid(mp->colorspace))
+>>> +		mp->colorspace = vivid_colorspace_cap(dev);
+>>> +
+>>> +	if (!user_set_csc || !v4l2_is_xfer_func_valid(mp->xfer_func))
+>>> +		mp->xfer_func = vivid_xfer_func_cap(dev);
+>>> +
+>>> +	if (fmt->color_enc == TGP_COLOR_ENC_HSV) {
+>>> +		if (!user_set_csc || !v4l2_is_hsv_enc_valid(mp->hsv_enc))
+>>> +			mp->hsv_enc = vivid_hsv_enc_cap(dev);
+>>> +	} else if (fmt->color_enc == TGP_COLOR_ENC_YCBCR) {
+>>> +		if (!user_set_csc || !v4l2_is_ycbcr_enc_valid(mp->ycbcr_enc))
+>>> +			mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
+>>> +	} else {
+>>>  		mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
+>>> -	mp->xfer_func = vivid_xfer_func_cap(dev);
+>>> -	mp->quantization = vivid_quantization_cap(dev);
+>>> +	}
+>>> +
+>>> +	if (fmt->color_enc == TGP_COLOR_ENC_YCBCR ||
+>>> +	    fmt->color_enc == TGP_COLOR_ENC_RGB) {
+>>> +		if (!user_set_csc || !v4l2_is_quant_valid(mp->quantization))
+>>> +			mp->quantization = vivid_quantization_cap(dev);
+>>> +	} else {
+>>> +		mp->quantization = vivid_quantization_cap(dev);
+>>> +	}
+>>> +
+>>>  	memset(mp->reserved, 0, sizeof(mp->reserved));
+>>>  	return 0;
+>>>  }
+>>> @@ -769,6 +787,14 @@ int vivid_s_fmt_vid_cap(struct file *file, void *priv,
+>>>  	if (vivid_is_sdtv_cap(dev))
+>>>  		dev->tv_field_cap = mp->field;
+>>>  	tpg_update_mv_step(&dev->tpg);
+>>> +	dev->tpg.colorspace = mp->colorspace;
+>>> +	dev->tpg.xfer_func = mp->xfer_func;
+>>> +	if (dev->fmt_cap->color_enc == TGP_COLOR_ENC_YCBCR)
+>>> +		dev->tpg.ycbcr_enc = mp->ycbcr_enc;
+>>> +	else
+>>> +		dev->tpg.hsv_enc = mp->hsv_enc;
+>>> +	dev->tpg.quantization = mp->quantization;
+>>> +
+>>>  	return 0;
+>>>  }
+>>>  
+>>> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-common.c b/drivers/media/test-drivers/vivid/vivid-vid-common.c
+>>> index 76b0be670ebb..19701fe72030 100644
+>>> --- a/drivers/media/test-drivers/vivid/vivid-vid-common.c
+>>> +++ b/drivers/media/test-drivers/vivid/vivid-vid-common.c
+>>> @@ -920,6 +920,31 @@ int vivid_enum_fmt_vid(struct file *file, void  *priv,
+>>>  	fmt = &vivid_formats[f->index];
+>>>  
+>>>  	f->pixelformat = fmt->fourcc;
+>>> +
+>>> +	if (f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE &&
+>>> +	    f->type != V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+>>> +		return 0;
+>>> +	/*
+>>> +	 * For capture devices, we support the CSC API.
+>>> +	 * We allow userspace to:
+>>> +	 * 1. set the colorspace
+>>> +	 * 2. set the xfer_func
+>>> +	 * 3. set the ycbcr_enc on YUV formats
+>>> +	 * 4. set the hsv_enc on HSV formats
+>>> +	 * 5. set the quantization on YUV and RGB formats
+>>> +	 */
+>>> +	f->flags |= V4L2_FMT_FLAG_CSC_COLORSPACE;
+>>> +	f->flags |= V4L2_FMT_FLAG_CSC_XFER_FUNC;
+>>> +
+>>> +	if (fmt->color_enc == TGP_COLOR_ENC_YCBCR) {
+>>> +		f->flags |= V4L2_FMT_FLAG_CSC_YCBCR_ENC;
+>>> +		f->flags |= V4L2_FMT_FLAG_CSC_QUANTIZATION;
+>>> +	} else if (fmt->color_enc == TGP_COLOR_ENC_HSV) {
+>>> +		f->flags |= V4L2_FMT_FLAG_CSC_HSV_ENC;
+>>> +	} else if (fmt->color_enc == TGP_COLOR_ENC_RGB) {
+>>> +		f->flags |= V4L2_FMT_FLAG_CSC_QUANTIZATION;
+>>> +	}
+>>> +
+>>>  	return 0;
+>>>  }
+>>>  
+>>> diff --git a/include/media/v4l2-common.h b/include/media/v4l2-common.h
+>>> index 150ee16ebd81..a3083529b698 100644
+>>> --- a/include/media/v4l2-common.h
+>>> +++ b/include/media/v4l2-common.h
+>>> @@ -539,4 +539,33 @@ static inline void v4l2_buffer_set_timestamp(struct v4l2_buffer *buf,
+>>>  	buf->timestamp.tv_usec = ts.tv_nsec / NSEC_PER_USEC;
+>>>  }
+>>>  
+>>> +static inline bool v4l2_is_colorspace_valid(__u32 colorspace)
+>>> +{
+>>> +	return colorspace > V4L2_COLORSPACE_DEFAULT &&
+>>> +	       colorspace <= V4L2_COLORSPACE_DCI_P3;
+>>> +}
+>>> +
+>>> +static inline bool v4l2_is_xfer_func_valid(__u32 xfer_func)
+>>> +{
+>>> +	return xfer_func > V4L2_XFER_FUNC_DEFAULT &&
+>>> +	       xfer_func <= V4L2_XFER_FUNC_SMPTE2084;
+>>> +}
+>>> +
+>>> +static inline bool v4l2_is_ycbcr_enc_valid(__u8 ycbcr_enc)
+>>> +{
+>>> +	return ycbcr_enc > V4L2_YCBCR_ENC_DEFAULT &&
+>>> +	       ycbcr_enc <= V4L2_YCBCR_ENC_SMPTE240M;
+>>> +}
+>>> +
+>>> +static inline bool v4l2_is_hsv_enc_valid(__u8 hsv_enc)
+>>> +{
+>>> +	return hsv_enc == V4L2_HSV_ENC_180 || hsv_enc == V4L2_HSV_ENC_256;
+>>> +}
+>>> +
+>>> +static inline bool v4l2_is_quant_valid(__u8 quantization)
+>>> +{
+>>> +	return quantization == V4L2_QUANTIZATION_FULL_RANGE ||
+>>> +	       quantization == V4L2_QUANTIZATION_LIM_RANGE;
+>>> +}
+>>> +
+>>>  #endif /* V4L2_COMMON_H_ */
+>>> -------------------------------------------------------------------------------
+>>>
+>>>
+>>> Git bisection log:
+>>>
+>>> -------------------------------------------------------------------------------
+>>> git bisect start
+>>> # good: [01cc2ec6ea044731e939e5e47f7e115b86f49465] media: atomisp: cleanup __printf() atributes on printk messages
+>>> git bisect good 01cc2ec6ea044731e939e5e47f7e115b86f49465
+>>> # bad: [c0c8db7bc95397f32fe60ff8b07c746a69fb22de] media: MAINTAINERS: remove Maxime Jourdan as maintainer of Amlogic VDEC
+>>> git bisect bad c0c8db7bc95397f32fe60ff8b07c746a69fb22de
+>>> # bad: [aaffa0126a111d65f4028c503c76192d4cc93277] media: rcar-vin: Fix a reference count leak.
+>>> git bisect bad aaffa0126a111d65f4028c503c76192d4cc93277
+>>> # bad: [25d8cf786d34b5167f2c01e092eeedcb0ae58628] media: staging: rkisp1: rsz: set flags to 0 in enum_mbus_code cb
+>>> git bisect bad 25d8cf786d34b5167f2c01e092eeedcb0ae58628
+>>> # good: [327296920f9dedfc6ba4ef8f5a686c9667c65f38] media: mtk-vcodec: venc: set OUTPUT buffers field to V4L2_FIELD_NONE
+>>> git bisect good 327296920f9dedfc6ba4ef8f5a686c9667c65f38
+>>> # good: [21d387b8d372f859d9e87fdcc7c3b4a432737f4d] media: mx2_emmaprp: Fix memleak in emmaprp_probe
+>>> git bisect good 21d387b8d372f859d9e87fdcc7c3b4a432737f4d
+>>> # good: [b38c73ca1c213bbf8a872b334a6bb835becfaba5] media: v4l2: add support for colorspace conversion API (CSC) for video capture
+>>> git bisect good b38c73ca1c213bbf8a872b334a6bb835becfaba5
+>>> # bad: [62aacfa9bf93f94f6949338e0c7a2ed4c4bd2c2a] media: v4l2: extend the CSC API to subdevice.
+>>> git bisect bad 62aacfa9bf93f94f6949338e0c7a2ed4c4bd2c2a
+>>> # bad: [2f491463497ad43bc06968a334747c6b6b20fc74] media: vivid: Add support to the CSC API
+>>> git bisect bad 2f491463497ad43bc06968a334747c6b6b20fc74
+>>> # first bad commit: [2f491463497ad43bc06968a334747c6b6b20fc74] media: vivid: Add support to the CSC API
+>>> -------------------------------------------------------------------------------
+>>>
+>>>
+>>> -=-=-=-=-=-=-=-=-=-=-=-
+>>> Groups.io Links: You receive all messages sent to this group.
+>>> View/Reply Online (#1739): https://groups.io/g/kernelci-results/message/1739
+>>> Mute This Topic: https://groups.io/mt/77191137/924702
+>>> Group Owner: kernelci-results+owner@groups.io
+>>> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+>>> -=-=-=-=-=-=-=-=-=-=-=-
+>>>
+>>>
+>>
 > 
 
-Same for tegra_smmu_detach_dev().
