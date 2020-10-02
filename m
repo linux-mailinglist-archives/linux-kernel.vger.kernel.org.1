@@ -2,174 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117FF28102B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E97328102F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387735AbgJBJ4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:56:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:59220 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBJz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:55:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8AA51042;
-        Fri,  2 Oct 2020 02:55:58 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4C9C23F73B;
-        Fri,  2 Oct 2020 02:55:57 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com
-Cc:     morten.rasmussen@arm.com, valentin.schneider@arm.com,
-        souvik.chakravarty@arm.com, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, ionela.voinescu@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: implement CPPC FFH support using AMUs
-Date:   Fri,  2 Oct 2020 10:55:32 +0100
-Message-Id: <20201002095532.6445-4-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002095532.6445-1-ionela.voinescu@arm.com>
-References: <20201002095532.6445-1-ionela.voinescu@arm.com>
+        id S2387751AbgJBJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:56:57 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37836 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBJ44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:56:56 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0929uq3a047437;
+        Fri, 2 Oct 2020 04:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601632612;
+        bh=8U7u+CSKT6oRTEF1mtbv60uAh2qzO1YSp7paUVcrpuw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=aLu+Gplof0HMoNkdwnwFp7DffTr2xO0fCJTBWj/y+40a3tm0PLv+84EOq/Axm8yBX
+         GJlcX/sV+KeYbf26s/y/lHcNf+Bt02reMjUETzstalcYG+rVu1t/edIa+iNpWc4hmv
+         aSsbvv68/WYfHiFbdsrjObVUdxJUjP0BBgp0zdKM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0929uqs8114020
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 2 Oct 2020 04:56:52 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 04:56:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 2 Oct 2020 04:56:51 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0929un2c088325;
+        Fri, 2 Oct 2020 04:56:49 -0500
+Subject: Re: [PATCH net-next 0/8] net: ethernet: ti: am65-cpsw: add multi port
+ support in mac-only mode
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Murali Karicheri <m-karicheri2@ti.com>
+References: <20201001105258.2139-1-grygorii.strashko@ti.com>
+ <20201001160847.3b5d91f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <c758885c-6834-e689-2356-81291e4628e8@ti.com>
+Date:   Fri, 2 Oct 2020 12:56:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201001160847.3b5d91f1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Activity Monitors (AMUs) are present, two of the counters can be used
-to implement support for CPPC's (Collaborative Processor Performance
-Control) delivered and reference performance monitoring functionality
-using FFH (Functional Fixed Hardware).
 
-Given that counters for a certain CPU can only be read from that CPU,
-while FFH operations can be called from any CPU for any of the CPUs, use
-smp_call_function_single() to provide the requested values.
 
-Therefore, depending on the register addresses, the following values
-are returned:
- - 0x0 (DeliveredPerformanceCounterRegister): AMU core counter
- - 0x1 (ReferencePerformanceCounterRegister): AMU constant counter
+On 02/10/2020 02:08, Jakub Kicinski wrote:
+> On Thu, 1 Oct 2020 13:52:50 +0300 Grygorii Strashko wrote:
+>> This series adds multi-port support in mac-only mode (multi MAC mode) to TI
+>> AM65x CPSW driver in preparation for enabling support for multi-port devices,
+>> like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
+>>
+>> The multi MAC mode is implemented by configuring every enabled port in "mac-only"
+>> mode (all ingress packets are sent only to the Host port and egress packets
+>> directed to target Ext. Port) and creating separate net_device for
+>> every enabled Ext. port.
+> 
+> Do I get it right that you select the mode based on platform? Can the
+> other mode still be supported on these platforms?
+> 
+> Is this a transition to normal DSA mode where ports always have netdevs?
+> 
 
-The use of Activity Monitors is hidden behind the generic
-{read,store}_{corecnt,constcnt}() functions.
+The idea here is to start in multi mac mode by default, as we still have pretty high demand for this.
+Then, and we are working on it, the switchdev mode is going to be introduces (not DSA).
+The switch between modes will happen by using devlink option -
+the approach is similar to what was used for Sitara CPSW cpsw_new.c driver [1].
 
-Read functionality for these two registers represents the only current
-FFH support for CPPC. Read operations for other register values or write
-operation for all registers are unsupported. Therefore, keep CPPC's FFH
-unsupported if no CPUs have valid AMU frequency counters. For this
-purpose, the get_cpu_with_amu_feat() is introduced.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/cpufeature.h |  6 ++++
- arch/arm64/kernel/cpufeature.c      |  5 +++
- arch/arm64/kernel/topology.c        | 54 +++++++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
-
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 42187f424e11..9f4bdd2b26bf 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -741,9 +741,15 @@ static inline bool cpu_has_hw_af(void)
- }
- 
- #ifdef CONFIG_ARM64_AMU_EXTN
-+/* Get a cpu that supports the Activity Monitors Unit (AMU) */
-+extern int get_cpu_with_amu_feat(void);
- /* Check whether the cpu supports the Activity Monitors Unit (AMU) */
- extern bool cpu_has_amu_feat(int cpu);
- #else
-+static inline int get_cpu_with_amu_feat(void)
-+{
-+	return nr_cpu_ids;
-+}
- static inline bool cpu_has_amu_feat(int cpu)
- {
- 	return false;
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 26f76c277ca3..114710820aa3 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1525,6 +1525,11 @@ bool cpu_has_amu_feat(int cpu)
- 	return cpumask_test_cpu(cpu, &amu_cpus);
- }
- 
-+int get_cpu_with_amu_feat(void)
-+{
-+	return cpumask_any(&amu_cpus);
-+}
-+
- static void cpu_amu_enable(struct arm64_cpu_capabilities const *cap)
- {
- 	if (has_cpuid_feature(cap, SCOPE_LOCAL_CPU)) {
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 764fdb0f947b..7d25087deaa5 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -154,6 +154,9 @@ void update_freq_counters_refs(void)
- 
- static inline bool freq_counters_valid(int cpu)
- {
-+	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
-+		return false;
-+
- 	if (!cpu_has_amu_feat(cpu)) {
- 		pr_debug("CPU%d: counters are not supported.\n", cpu);
- 		return false;
-@@ -330,3 +333,54 @@ void topology_scale_freq_tick(void)
- 	this_cpu_write(arch_core_cycles_prev, core_cnt);
- 	this_cpu_write(arch_const_cycles_prev, const_cnt);
- }
-+
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+#include <acpi/cppc_acpi.h>
-+
-+static inline
-+int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
-+{
-+	if (!cpu_has_amu_feat(cpu))
-+		return -EOPNOTSUPP;
-+
-+	smp_call_function_single(cpu, func, val, 1);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Refer to drivers/acpi/cppc_acpi.c for the description of the functions
-+ * below.
-+ */
-+bool cpc_ffh_supported(void)
-+{
-+	return freq_counters_valid(get_cpu_with_amu_feat());
-+}
-+
-+int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
-+{
-+	int ret = -EOPNOTSUPP;
-+
-+	switch ((u64)reg->address) {
-+	case 0x0:
-+		ret = counters_read_on_cpu(cpu, store_corecnt, val);
-+		break;
-+	case 0x1:
-+		ret = counters_read_on_cpu(cpu, store_constcnt, val);
-+		break;
-+	}
-+
-+	if (!ret) {
-+		*val &= GENMASK_ULL(reg->bit_offset + reg->bit_width - 1,
-+				    reg->bit_offset);
-+		*val >>= reg->bit_offset;
-+	}
-+
-+	return ret;
-+}
-+
-+int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif /* CONFIG_ACPI_CPPC_LIB */
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/ethernet/ti/cpsw_new.c
 -- 
-2.17.1
-
+Best regards,
+grygorii
