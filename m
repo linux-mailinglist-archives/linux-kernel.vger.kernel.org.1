@@ -2,61 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0874A280C1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D600280C2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387528AbgJBBuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 21:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        id S2387516AbgJBBzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 21:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgJBBuX (ORCPT
+        with ESMTP id S1727780AbgJBBzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 21:50:23 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274C6C0613D0;
-        Thu,  1 Oct 2020 18:50:23 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B075D128616E5;
-        Thu,  1 Oct 2020 18:33:34 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 18:50:21 -0700 (PDT)
-Message-Id: <20201001.185021.757329080393673415.davem@davemloft.net>
-To:     willy.liu@realtek.com
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryankao@realtek.com
-Subject: Re: [PATCH net v1] net: phy: realtek: Modify 2.5G PHY name to
- RTL8226
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1601448538-18004-1-git-send-email-willy.liu@realtek.com>
-References: <1601448538-18004-1-git-send-email-willy.liu@realtek.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 01 Oct 2020 18:33:35 -0700 (PDT)
+        Thu, 1 Oct 2020 21:55:38 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A2EC0613D0;
+        Thu,  1 Oct 2020 18:55:38 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m5so969803lfp.7;
+        Thu, 01 Oct 2020 18:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d/jfnZjmPSZbXLzxLJUrhHvktSEChDG0ruelVh2We8c=;
+        b=LdI/iOqzsh13yR+VtuzO5yEQdwQy024GjCcCbyf+w2DbfWV7HQ+NR8DVHD23jb4u7x
+         9aPYdNB0OzUjhYJHpUTiHpZaY0w2JyH8B7vu/CdpuGunG6i1bET8xz4DekLksx3I+2xJ
+         55RTXzVIYJDwfSPL9+TpkRhXvnxlRHSWuoN+lM/0o/f8VqpT53dNetC4KMIwyk7ErCQz
+         t/NMlDDH2MrTBCijVpD6LQZM1A/pii8sAwK3tALZ008ZeQck9ilF0f292vq0UNmHqsxy
+         BB/GiJlHA7Bafhs5aUdiPGF62skA84mp6hlmfTViyM7MPTCbWl2jeMMFvNew1HXDynFZ
+         D6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d/jfnZjmPSZbXLzxLJUrhHvktSEChDG0ruelVh2We8c=;
+        b=TH0eTEIilIz1YPHse4jxgATAGXs2yXqjXNb9IsuOhPeTNjx8Qs+rxZB6EbFruNncUh
+         UM0A87O8yXqf4G4bbkBCuMgvh2DeDS1TrEm9RHN7j9/Sa57B4QwnNLFLdvQnW5vLz+gO
+         H+fQagQzMwsHrHdkqXSzxpRMNQRquXxT1fDPe8Xu7nS4vpArj3NhHdBWCjWxbqABe7UU
+         Gg3lqIWHwUibveqw+IKp9Aix8O6oRkhTR90SPEYZyJKgoZRV7/lmTXIRYibhWW2s335R
+         h4UtY0zoXh2EYpQ+BVCfw90VKvL3tF/ImgEOt4ReLGGOZQEWhjQscj+G1PmB/ozQrhbV
+         3w0A==
+X-Gm-Message-State: AOAM532MxbVTkByfdwjTIzhU9oVwi5+QzB2gyfkfMxTfj49Yo/K5Y7bH
+        F9Db//QM6A3b+PtvaxTNrRQ63PZC99A=
+X-Google-Smtp-Source: ABdhPJxfEc+BUt81l+JJuVcWI5Lb0o0GFy5kc1x+mWl7WPZIkagzwp+mAGXufL5S8bLXzD9Sn03dzw==
+X-Received: by 2002:a19:52:: with SMTP id 79mr979lfa.222.1601603736179;
+        Thu, 01 Oct 2020 18:55:36 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id j7sm7661lfb.41.2020.10.01.18.55.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 18:55:35 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
+ .attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, joro@8bytes.org,
+        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200930203618.GC2110@Asurada-Nvidia>
+ <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
+ <20200930213244.GA10573@Asurada-Nvidia>
+ <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
+ <20201001012630.GA28240@Asurada-Nvidia>
+ <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
+ <20201001024850.GA28456@Asurada-Nvidia> <20201001102316.GF3919720@ulmo>
+ <20201001110425.GB1272@Asurada>
+ <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
+ <20201002010751.GA26971@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1b621b9d-cdc3-c7aa-2fa2-d728ae2bbc5d@gmail.com>
+Date:   Fri, 2 Oct 2020 04:55:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201002010751.GA26971@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Liu <willy.liu@realtek.com>
-Date: Wed, 30 Sep 2020 14:48:58 +0800
-
-> Realtek single-chip Ethernet PHY solutions can be separated as below:
-> 10M/100Mbps: RTL8201X
-> 1Gbps: RTL8211X
-> 2.5Gbps: RTL8226/RTL8221X
-> RTL8226 is the first version for realtek that compatible 2.5Gbps single PHY.
-> Since RTL8226 is single port only, realtek changes its name to RTL8221B from
-> the second version.
-> PHY ID for RTL8226 is 0x001cc800 and RTL8226B/RTL8221B is 0x001cc840.
+02.10.2020 04:07, Nicolin Chen пишет:
+> On Thu, Oct 01, 2020 at 11:33:38PM +0300, Dmitry Osipenko wrote:
+>>>>> If we can't come to an agreement on globalizing mc pointer, would
+>>>>> it be possible to pass tegra_mc_driver through tegra_smmu_probe()
+>>>>> so we can continue to use driver_find_device_by_fwnode() as v1?
+>>>>>
+>>>>> v1: https://lkml.org/lkml/2020/9/26/68
+>>>>
+>>>> tegra_smmu_probe() already takes a struct tegra_mc *. Did you mean
+>>>> tegra_smmu_probe_device()? I don't think we can do that because it isn't
+>>>
+>>> I was saying to have a global parent_driver pointer: similar to
+>>> my v1, yet rather than "extern" the tegra_mc_driver, we pass it
+>>> through egra_smmu_probe() and store it in a static global value
+>>> so as to call tegra_smmu_get_by_fwnode() in ->probe_device().
+>>>
+>>> Though I agree that creating a global device pointer (mc) might
+>>> be controversial, yet having a global parent_driver pointer may
+>>> not be against the rule, considering that it is common in iommu
+>>> drivers to call driver_find_device_by_fwnode in probe_device().
+>>
+>> You don't need the global pointer if you have SMMU OF node.
+>>
+>> You could also get driver pointer from mc->dev->driver.
+>>
+>> But I don't think you need to do this at all. The probe_device() could
+>> be invoked only for the tegra_smmu_ops and then seems you could use
+>> dev_iommu_priv_set() in tegra_smmu_of_xlate(), like sun50i-iommu driver
+>> does.
 > 
-> RTL8125 is not a single PHY solution, it integrates PHY/MAC/PCIE bus
-> controller and embedded memory.
-> 
-> Signed-off-by: Willy Liu <willy.liu@realtek.com>
+> Getting iommu device pointer using driver_find_device_by_fwnode()
+> is a common practice in ->probe_device() of other iommu drivers.
 
-Applied to net-next as this is just renaming rather than a functional
-change.
+Please give me a full list of the IOMMU drivers which use this method.
+
+> But this requires a device_driver pointer that tegra-smmu doesn't
+> have. So passing tegra_mc_driver through tegra_smmu_probe() will
+> address it.
+> 
+
+If you're borrowing code and ideas from other drivers, then at least
+please borrow them from a modern good-looking drivers. And I already
+pointed out that following cargo cult is not always a good idea.
+
+ARM-SMMU isn't a modern driver and it has legacy code. You shouldn't
+copy it blindly. The sun50i-iommu driver was added half year ago, you
+may use it as a reference.
+
+Always consult the IOMMU core code. If you're too unsure about
+something, then maybe better to start a new thread and ask Joerg about
+the best modern practices that IOMMU drivers should use.
