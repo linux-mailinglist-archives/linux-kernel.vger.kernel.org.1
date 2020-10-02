@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67108281DE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C023281DE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgJBVyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57096 "EHLO mail.kernel.org"
+        id S1725839AbgJBVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:54:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgJBVyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:54:15 -0400
-Subject: Re: [GIT PULL] PCI fixes for v5.9
+        id S1725777AbgJBVyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:54:16 -0400
+Subject: Re: [GIT PULL] pin control fixes for v5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601675654;
-        bh=Sedu4Ol4Dx2hlL9u19V1g53nGqB7sE7TdbvwP8ClP0U=;
+        s=default; t=1601675656;
+        bh=/Vw9E0a50ZIjvEkAjRiinAnML2NW/Z/qzob/ILpG3Ls=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=121ZF9EkqjiJX07IkIYxgRdQcSAxx5E/kLj1JvL1+4crocuy+xc3sAqHyRD1ukMys
-         +2zd6fwLYV0UPnAW7BAFE7vgmJvVltpmVwURjRqVPS2TOEoXNR7oH94nDUuU9/txNK
-         VeYCahl8FJvIFrLIqS2XEVq6KASGdjNi78IN+dRY=
+        b=GYAFTgbVsrtCOP6NIQZjd0UqcWj/ZHCOluJCFzOOgxS+lIUcvfZayw2QPZNLdMN3x
+         CF9g+11EvafiO7vTmD5XKyCPUqRH/12k8FSNFxzdU2dBiofOpS27spOmhu1GjHidCB
+         Tv40/FZKPF2jwr/AM70jnkzD4QOWMt8J26nFA5a8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201002192340.GA2820115@bjorn-Precision-5520>
-References: <20201002192340.GA2820115@bjorn-Precision-5520>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201002192340.GA2820115@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.9-fixes-2
-X-PR-Tracked-Commit-Id: 76a6b0b90d532ed9bb9f6069aa12859c185e5b99
+In-Reply-To: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
+References: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdZ=EC589q1WpdkzCcswfLRUcVe25Uuht-vqywEn16R7Tg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.9-2
+X-PR-Tracked-Commit-Id: 39c4dbe4cc363accd676162c24b264f44c581490
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d9c3a688a01e7dd0a33cf3ddb7b206cf867b615
-Message-Id: <160167565446.8763.4518696998898472595.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Oct 2020 21:54:14 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+X-PR-Merge-Commit-Id: d3d45f8220d60a0b2aaaacf8fb2be4e6ffd9008e
+Message-Id: <160167565612.8763.6452165041366614261.pr-tracker-bot@kernel.org>
+Date:   Fri, 02 Oct 2020 21:54:16 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Samuel Dionne-Riel <samuel@dionne-riel.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Oct 2020 14:23:40 -0500:
+The pull request you sent on Fri, 2 Oct 2020 23:45:39 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.9-fixes-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.9-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d9c3a688a01e7dd0a33cf3ddb7b206cf867b615
+https://git.kernel.org/torvalds/c/d3d45f8220d60a0b2aaaacf8fb2be4e6ffd9008e
 
 Thank you!
 
