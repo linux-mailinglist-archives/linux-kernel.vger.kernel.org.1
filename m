@@ -2,115 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CB32819D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146AA2819DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388547AbgJBRkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388431AbgJBRj4 (ORCPT
+        id S2388564AbgJBRkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:40:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42104 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388324AbgJBRkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:39:56 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01543C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:39:56 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id w141so1999652oia.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lp+ijFDMry/YfM3bsfdMuX5+VO1ZJC8qC7RSZxuxAQA=;
-        b=s4cZ2Kb1gYyCmUkt5f1hPb7TmPF66FQYU6yIuBI0+JWital4kySGPB4DjnKx/WtAl7
-         xY/o+k0HxKWC4gpace14zLRECeE75w7Ce3rvVjcLxaqzZt05HW0HQdFq/JTebUTH3JaB
-         cEhIgMoijnqESClPu2krERbJJnCWp85t1oHdfd36CNegEIORZa4ElLn5Bp77Z7kLpT0D
-         YVs36NFe4zWWSq6ugJVyJuFRT8dkZgp9nh5xBFD3PrxTq6YOgzG3zQ2o4KT9fIDyMmCx
-         Y+N7QvE295N14fsCNJyiQIFUJ6tXAhfa9sCdmk66Jmp0BOczgsgBdAnHssN1E9u+rXr0
-         9h9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lp+ijFDMry/YfM3bsfdMuX5+VO1ZJC8qC7RSZxuxAQA=;
-        b=TfgIwM7miVvtnYt3Zej59xNwQozVF3+Up1vUZdRuFWD+cZPL+OVzZd+gkSI1TehgXt
-         x7HMp9GD0MS5o/yRGPsni6MI3XLs7D/rcgNjDsMyDXYg7kCCzHNfaTV5YhBlj2t0d9Hm
-         GFapICDPyzOWG4rB6gtq/O1J9xuCJISXa7uIcJa6P8IWKJbQ0iOLvJxfjy0oJGjUnCBw
-         bj6gzzPQ/RuFB7l5u7ArcQjwm7TuY6AwH7GrEGp4WVR7kccO0T8BISfnX/KyQ27UFKMR
-         huS8HcNzTdVBUr/Tz6u0TvwvOGXnKcY3c3/n698LDYwsBi8ZXYrzYeG8oqvIh6aDAR0w
-         v0/w==
-X-Gm-Message-State: AOAM531O8ahXHJgdZc0nOQeTdF/AfU1+jvV1HGA7F2az8E9afefVeMhz
-        eMd0dxtC2Xz7K+Zz1Dh+OCMVZZfQlycRu1cIm4CQkA==
-X-Google-Smtp-Source: ABdhPJxu17GvNUQlcDx+v0FLO7qmNEsKrj99gLGETVGgTp45jKL1FOSO3MY/x9+RMPKIsZ5Ao/uMalNQ+DYBK0+NTeM=
-X-Received: by 2002:aca:750c:: with SMTP id q12mr1905895oic.154.1601660395383;
- Fri, 02 Oct 2020 10:39:55 -0700 (PDT)
+        Fri, 2 Oct 2020 13:40:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601660421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RtXH0OcyQAkcz+LrpjE+jUzr0vxjdhPEUONl6mC7nc0=;
+        b=L1qWSn1Q61kN+rd3dtRgccpTnTmWuP03ClHSOLwm1ZmB2m8h/eTmT0+4/xpJwgEUAotn9W
+        +TMOJJcEuBWEsBD+SussUt1hcfft4W0wU3uNWpW25xaiFNraxA+cgZ+UHdf0xzz0KbKtej
+        lCBkvU1emr7h6NyqZBJBU/sJomtaBuk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-TcYKqeZ9MMe0t3AY1QC2CQ-1; Fri, 02 Oct 2020 13:40:19 -0400
+X-MC-Unique: TcYKqeZ9MMe0t3AY1QC2CQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECAB110866A5;
+        Fri,  2 Oct 2020 17:40:17 +0000 (UTC)
+Received: from hpe-dl360pgen9-01.klab.eng.bos.redhat.com (hpe-dl360pgen9-01.klab.eng.bos.redhat.com [10.16.160.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B488A1002C0D;
+        Fri,  2 Oct 2020 17:40:10 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] bonding: rename bond components
+Date:   Fri,  2 Oct 2020 13:39:55 -0400
+Message-Id: <20201002174001.3012643-1-jarod@redhat.com>
 MIME-Version: 1.0
-References: <20200909195640.3127341-1-robert.marko@sartura.hr> <20200909195640.3127341-2-robert.marko@sartura.hr>
-In-Reply-To: <20200909195640.3127341-2-robert.marko@sartura.hr>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 2 Oct 2020 19:39:44 +0200
-Message-ID: <CA+HBbNH6rBM6naA9iTAq2JO1tC9D81+7f-Q5XxhYVF-vYoo+oQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] arm: dts: qcom: ipq4019: add more labels
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 9:56 PM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> Lets add labels to more commonly used nodes for easier modification in board DTS files.
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
-> ---
-> Changes since v1:
-> * Drop include that does not exist
->
->  arch/arm/boot/dts/qcom-ipq4019.dtsi | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> index 3d056aada8d1..7bf1da916f25 100644
-> --- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> +++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> @@ -190,7 +190,7 @@ gcc: clock-controller@1800000 {
->                         reg = <0x1800000 0x60000>;
->                 };
->
-> -               rng@22000 {
-> +               prng: rng@22000 {
->                         compatible = "qcom,prng";
->                         reg = <0x22000 0x140>;
->                         clocks = <&gcc GCC_PRNG_AHB_CLK>;
-> @@ -310,7 +310,7 @@ cryptobam: dma@8e04000 {
->                         status = "disabled";
->                 };
->
-> -               crypto@8e3a000 {
-> +               crypto: crypto@8e3a000 {
->                         compatible = "qcom,crypto-v5.1";
->                         reg = <0x08e3a000 0x6000>;
->                         clocks = <&gcc GCC_CRYPTO_AHB_CLK>,
-> @@ -396,7 +396,7 @@ blsp1_uart2: serial@78b0000 {
->                         dma-names = "rx", "tx";
->                 };
->
-> -               watchdog@b017000 {
-> +               watchdog: watchdog@b017000 {
->                         compatible = "qcom,kpss-wdt", "qcom,kpss-wdt-ipq4019";
->                         reg = <0xb017000 0x40>;
->                         clocks = <&sleep_clk>;
-> --
-> 2.26.2
->
+The bonding driver's use of master and slave, while largely understood
+in technical circles, poses a barrier for inclusion to some potential
+members of the development and user community, due to the historical
+context of masters and slaves, particularly in the United States. This
+is a first full pass at replacing those phrases with more socially
+inclusive ones, opting for bond to replace master and port to
+replace slave, which is congruent with the bridge and team drivers.
 
-Hi,
-Is there an issue with the patch preventing the review?
+There are a few problems with this change. First up, "port" is used in
+the bonding 802.3ad code, so the first step here is to rename port to
+ad_port, so we can reuse port. Second, we have the issue of not wanting
+to break any existing userspace, which I believe this patchset
+accomplishes, while also adding alternate interfaces using the new
+terminology. This set also includes a Kconfig option that will let
+people make the conscious decision to break userspace and no longer
+expose the original master/slave interfaces, once their userspace is
+able to cope with their removal.
 
-Regards,
-Robert
+Lastly, we do still have the issue of ease of backporting fixes to
+-stable trees. I've not had a huge amount of time to spend on it, but
+brief forays into coccinelle didn't really pay off (since it's meant to
+operate on code, not patches), and the best solution I can come up with
+is providing a shell script someone could run over git-format-patch
+output before git-am'ing the result to a -stable tree, though scripting
+these changes in the first place turned out to be not the best thing to
+do anyway, due to subtle cases where use of master or slave can NOT yet
+be replaced, so a large amount of work was done by hand, inspection,
+trial and error, which is why this set is a lot longer in coming than
+I'd originally hoped. I don't expect -stable backports to be horrible to
+figure out one way or another though, and I don't believe that a bit of
+inconvenience on that front is enough to warrant not making these
+changes.
+
+See here for further details on Red Hat's commitment to this work:
+https://www.redhat.com/en/blog/making-open-source-more-inclusive-eradicating-problematic-language
+
+As far as testing goes, I've manually operated on various bonds while
+working on this code, and have run it through multiple lnst test runs,
+which exercises the existing sysfs interfaces fairly extensively. As far
+as I can tell, there is no breakage of existing interfaces with this
+set, unless the user consciously opts to do so via Kconfig.
+
+v2: legacy module parameters are retained this time, and we're trying
+out bond/port instead of aggregator/link in place of master/slave. The
+procfs interface legacy output is also duplicated or dropped, depending
+on Kconfig, rather than being replaced.
+
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Davis <tadavis@lbl.gov>
+Cc: netdev@vger.kernel.org
+
+Jarod Wilson (6):
+  bonding: rename 802.3ad's struct port to ad_port
+  bonding: replace use of the term master where possible
+  bonding: rename slave to port where possible
+  bonding: rename bonding_sysfs_slave.c to _port.c
+  bonding: update Documentation for port/bond terminology
+  bonding: make Kconfig toggle to disable legacy interfaces
+
+ .clang-format                                 |    4 +-
+ Documentation/networking/bonding.rst          |  440 ++--
+ drivers/infiniband/core/cma.c                 |    2 +-
+ drivers/infiniband/core/lag.c                 |    2 +-
+ drivers/infiniband/core/roce_gid_mgmt.c       |   10 +-
+ drivers/infiniband/hw/mlx4/main.c             |    2 +-
+ drivers/net/Kconfig                           |   12 +
+ drivers/net/bonding/Makefile                  |    2 +-
+ drivers/net/bonding/bond_3ad.c                | 1701 ++++++------
+ drivers/net/bonding/bond_alb.c                |  689 ++---
+ drivers/net/bonding/bond_debugfs.c            |    2 +-
+ drivers/net/bonding/bond_main.c               | 2339 +++++++++--------
+ drivers/net/bonding/bond_netlink.c            |  114 +-
+ drivers/net/bonding/bond_options.c            |  258 +-
+ drivers/net/bonding/bond_procfs.c             |  102 +-
+ drivers/net/bonding/bond_sysfs.c              |  242 +-
+ drivers/net/bonding/bond_sysfs_port.c         |  187 ++
+ drivers/net/bonding/bond_sysfs_slave.c        |  176 --
+ .../ethernet/chelsio/cxgb3/cxgb3_offload.c    |    2 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |   14 +-
+ .../ethernet/mellanox/mlx5/core/en/rep/bond.c |    4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |    2 +-
+ .../ethernet/netronome/nfp/flower/lag_conf.c  |    2 +-
+ .../ethernet/qlogic/netxen/netxen_nic_main.c  |   12 +-
+ include/linux/netdevice.h                     |   22 +-
+ include/net/bond_3ad.h                        |   42 +-
+ include/net/bond_alb.h                        |   74 +-
+ include/net/bond_options.h                    |   18 +-
+ include/net/bonding.h                         |  362 +--
+ include/net/lag.h                             |    2 +-
+ 30 files changed, 3512 insertions(+), 3328 deletions(-)
+ create mode 100644 drivers/net/bonding/bond_sysfs_port.c
+ delete mode 100644 drivers/net/bonding/bond_sysfs_slave.c
+
+-- 
+2.27.0
+
