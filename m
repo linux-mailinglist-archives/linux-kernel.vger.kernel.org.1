@@ -2,93 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230832814F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7025C2814F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388084AbgJBOWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        id S2388086AbgJBOXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBOWo (ORCPT
+        with ESMTP id S2387688AbgJBOXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:22:44 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAE5C0613D0;
-        Fri,  2 Oct 2020 07:22:44 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y11so2079132lfl.5;
-        Fri, 02 Oct 2020 07:22:43 -0700 (PDT)
+        Fri, 2 Oct 2020 10:23:12 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09569C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:23:12 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j22so1310888qtj.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:23:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8PpHqO+OTs0E0egHq3QrOMDpgYOfO6HQTLXz2o3ta2Y=;
-        b=Na/t7KEirUUI/kEktEVwqr6PJ1OPUtBlWi1T6fDHlbeuagh7zkbMYg2gBAEbHR066D
-         2wLzUfdHaxkh1qZYZUeHXhX5zd+B1Bn5YFk82T/bzDTOm2LPUh4ejZvOiGB/T1onl+Vg
-         Ay0tUiebdAgCO9IQ3fYzICBDXecxFODJ5NybRf8v6KiASsjGrZ88JTGblZMYC7xPX1iU
-         O0utZmj3tnpjuIiZX6YeJ/gZGfN8rMehTnLqKK1G8NdUaZrBjUShcnIeeDn8KRpw283g
-         dHVGF+fiWdsQBGjPx0gIW6I9nCe99S7k98t/VEhaq0cI/urkP4xMFNl2WNoGew0jVN32
-         zWvA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CAgelpYpJihRsjmlp4EjmhmaunlYd8C4mVKtF8jDi3w=;
+        b=RKfZWi+RUXInTmQ3BLHhXRQmW4buor7BLC4IxwXfU0Vqf9mByJNzip/dve4hOmvzk6
+         EaPUIEdyK1G1ywRnCXUSs6nvcfZgwNa9fxlrgjhNf6Lx1tOsZrRqjN9/KaNIfA3BeviP
+         YAVkCBrNlInA7HUts3canKehhdEDbAXhYkd/3n/HlYQAaC0a6m+AKB7qz+rs84ZfK7A3
+         ea3Shr+TAS/DiGKVASkTi14XB182x/nbUVybsej3xjWJgec9CX3W/cxbq374DFY9JlTT
+         3dnQFEJNiGdMLbJxX3RuO43mIUOn+sDon5zqHf5EDY4guonk1AnckfPwU4PkR4lsqbpu
+         n4Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8PpHqO+OTs0E0egHq3QrOMDpgYOfO6HQTLXz2o3ta2Y=;
-        b=if8FGjj4kQOU9lmVOEU1Re+wnmJR/8huKaJuPVrZqGsDjrmVdnSR3Ca2jWb3hnBjL9
-         m+12WShg39A6RCQq2vJJTVzsVq6GqhYaFqN1ehUqJbxE5BqGLtWFri1YGuu+EvP9JZu6
-         uaMi767QMRYPn08YYzCM1T04g7wW+T0L8PHpjleKDRqNS/uiUkq+2Z/z/wUKlvs+XOIu
-         r5MkAJ5tVv7LD6QS7xQOxo8hPsUpp0y3hrwCn33+3PfUcPcSIEp9hxg17kdD2QZpiUIb
-         13OV7tqWAARUXZs8yXRqXdDJk78nZ+f+SOPIwlmEO1bHy9KEU19h5HubnWX83cQfqSbu
-         P/vA==
-X-Gm-Message-State: AOAM531zqNLFg94eCTaEpuLzkTEiHosZK7mlXKteMzrXlF0Li4KUSD/G
-        70B05WkTJaljUMLP7z7Fo5Ki0xCxfvU=
-X-Google-Smtp-Source: ABdhPJzROLRfb/tKFALlhopua1rVZr0C+e1zGBUzkVUxywn6lViZMGoxABsTqgJnKBejrlcFzN8QDg==
-X-Received: by 2002:a19:84ca:: with SMTP id g193mr960092lfd.85.1601648562338;
-        Fri, 02 Oct 2020 07:22:42 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id k21sm251450ljb.43.2020.10.02.07.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 07:22:41 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
-Date:   Fri, 2 Oct 2020 17:22:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CAgelpYpJihRsjmlp4EjmhmaunlYd8C4mVKtF8jDi3w=;
+        b=JEwgZ2Wh/qqvzyWBvVsju4jJq0DFH8wDVVRlQTRtHhRH8o3GSEOZl8dWGPB9EKY6eB
+         88mSAUPZxNR5xs6gAMb6DaLYf7vsgm/VQSDtQn0IaJcrObc4vLjx7P5fyG6HNrPcf+bn
+         5Bk9dOGy4INVMXKchlauHBe6aC0Crmfv2JCdnaY02RGUWZo9OagdvbWtrzIkTpuXWAXE
+         x+fx+HaQfNkkcMX+nwSGRU8r0tL/+f9Q4HxTmx/cRmHCgw1VmppeEt6vcxMPAASy38hs
+         AD1tKIdoKwbXaHg/Yu+i6KqwfCF96GMKUWR5hGZJyrlBDi6BE6w10mbTH8VUmm6O6xF+
+         f3Aw==
+X-Gm-Message-State: AOAM5334M3h4AK3WmwbpyK6u1Jpelmu0J7TWoeGoM+5jwu0RZwo3gOUB
+        Dgt7+FDgB2VElngVWVSd6X6A1df4WhRdrtHOzNV20A==
+X-Google-Smtp-Source: ABdhPJxhXvszZ3go98nq7QHOuHf3kr4I/tA2aQd/4OmU/YkV5N0hrqi5M/eM2IoMPwR8MVkfDwfA94y9edqNJufG7i4=
+X-Received: by 2002:ac8:4806:: with SMTP id g6mr2529805qtq.380.1601648590888;
+ Fri, 02 Oct 2020 07:23:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002060807.32138-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-2-elver@google.com>
+ <CAG48ez3+_K6YXoXgKBkB8AMeSQj++Mxi5u2OT--B+mJgE7Cyfg@mail.gmail.com> <CAG48ez1MQks2na23g_q4=ADrjMYjRjiw+9k_Wp9hwGovFzZ01A@mail.gmail.com>
+In-Reply-To: <CAG48ez1MQks2na23g_q4=ADrjMYjRjiw+9k_Wp9hwGovFzZ01A@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 2 Oct 2020 16:22:59 +0200
+Message-ID: <CACT4Y+a3hLF1ph1fw7xVz1bQDNKL8W0s6pXe7aKm9wTNrJH3=w@mail.gmail.com>
+Subject: Re: [PATCH v4 01/11] mm: add Kernel Electric-Fence infrastructure
+To:     Jann Horn <jannh@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jonathan.Cameron@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 09:08, Nicolin Chen пишет:
->  static int tegra_smmu_of_xlate(struct device *dev,
->  			       struct of_phandle_args *args)
->  {
-> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
-> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
->  	u32 id = args->args[0];
->  
-> +	of_node_put(args->np);
-> +
-> +	if (!mc || !mc->smmu)
-> +		return -EPROBE_DEFER;
+On Fri, Oct 2, 2020 at 9:54 AM Jann Horn <jannh@google.com> wrote:
+>
+> On Fri, Oct 2, 2020 at 8:33 AM Jann Horn <jannh@google.com> wrote:
+> > On Tue, Sep 29, 2020 at 3:38 PM Marco Elver <elver@google.com> wrote:
+> > > This adds the Kernel Electric-Fence (KFENCE) infrastructure. KFENCE is a
+> > > low-overhead sampling-based memory safety error detector of heap
+> > > use-after-free, invalid-free, and out-of-bounds access errors.
+> > >
+> > > KFENCE is designed to be enabled in production kernels, and has near
+> > > zero performance overhead. Compared to KASAN, KFENCE trades performance
+> > > for precision. The main motivation behind KFENCE's design, is that with
+> > > enough total uptime KFENCE will detect bugs in code paths not typically
+> > > exercised by non-production test workloads. One way to quickly achieve a
+> > > large enough total uptime is when the tool is deployed across a large
+> > > fleet of machines.
+> [...]
+> > > +/*
+> > > + * The pool of pages used for guard pages and objects. If supported, allocated
+> > > + * statically, so that is_kfence_address() avoids a pointer load, and simply
+> > > + * compares against a constant address. Assume that if KFENCE is compiled into
+> > > + * the kernel, it is usually enabled, and the space is to be allocated one way
+> > > + * or another.
+> > > + */
+> >
+> > If this actually brings a performance win, the proper way to do this
+> > would probably be to implement this as generic kernel infrastructure
+> > that makes the compiler emit large-offset relocations (either through
+> > compiler support or using inline asm statements that move an immediate
+> > into a register output and register the location in a special section,
+> > kinda like how e.g. static keys work) and patches them at boot time,
+> > or something like that - there are other places in the kernel where
+> > very hot code uses global pointers that are only ever written once
+> > during boot, e.g. the dentry cache of the VFS and the futex hash
+> > table. Those are probably far hotter than the kfence code.
+> >
+> > While I understand that that goes beyond the scope of this project, it
+> > might be something to work on going forward - this kind of
+> > special-case logic that turns the kernel data section into heap memory
+> > would not be needed if we had that kind of infrastructure.
+>
+> After thinking about it a bit more, I'm not even convinced that this
+> is a net positive in terms of overall performance - while it allows
+> you to avoid one level of indirection in some parts of kfence, that
+> kfence code by design only runs pretty infrequently. And to enable
+> this indirection avoidance, your x86 arch_kfence_initialize_pool() is
+> shattering potentially unrelated hugepages in the kernel data section,
+> which might increase the TLB pressure (and therefore the number of
+> memory loads that have to fall back to slow page walks) in code that
+> is much hotter than yours.
+>
+> And if this indirection is a real performance problem, that problem
+> would be many times worse in the VFS and the futex subsystem, so
+> developing a more generic framework for doing this cleanly would be
+> far more important than designing special-case code to allow kfence to
+> do this.
+>
+> And from what I've seen, a non-trivial chunk of the code in this
+> series, especially the arch/ parts, is only necessary to enable this
+> microoptimization.
+>
+> Do you have performance numbers or a description of why you believe
+> that this part of kfence is exceptionally performance-sensitive? If
+> not, it might be a good idea to remove this optimization, at least for
+> the initial version of this code. (And even if the optimization is
+> worthwhile, it might be a better idea to go for the generic version
+> immediately.)
 
-platform_get_drvdata(NULL) will crash.
+This check is very hot, it happens on every free. For every freed
+object we need to understand if it belongs to KFENCE or not.
 
-> +	dev_iommu_priv_set(dev, mc->smmu);
-
-I think put_device(mc->dev) is missed here, doesn't it?
-
-Why sun50i-iommu driver doesn't have this error-checking? Is it really
-needed at all?
+The generic framework for this already exists -- you simply create a
+global variable ;)
+KFENCE needs the range to be covered by struct page's and that's what
+creates problems for arm64. But I would assume most other users don't
+need that.
