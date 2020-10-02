@@ -2,429 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596EF2819EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEEA2819FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388399AbgJBRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S2388141AbgJBRot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgJBRlM (ORCPT
+        with ESMTP id S1726017AbgJBRot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:41:12 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291E6C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:41:12 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id m7so2018562oie.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:41:12 -0700 (PDT)
+        Fri, 2 Oct 2020 13:44:49 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7AFC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:44:48 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u4so1857042ljd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=G5plTR1yFLz1FScdzv2h84cURs+vvah1GNw3UpqFWR0=;
-        b=vKh6wUILmBZcXsrZPzWbcyb92tx/EcKcz8zDBNVETZoRTPcyhLrILl8akKPF/uVrUe
-         w1bolPwsi4x4HtFEZdOSvtUN3tt5ttqxReplTmB2hSHLbDRspV1hebN8g6OUL04kGDYt
-         vc099PXxsZCEmT49d3un0ep6N0Mbs5/WUH9MttZn+F+dk5EAe3z535i6/EfAOl9VCKSK
-         JsazPWy4QbyhZSaq5se+7Z0KtOnkc1y16PbRh+SOJw1BMNw9/sfdOres7T2L1kuR/LZ6
-         2dt/yTSHqbWlpoA1SK55q1RyX8mgBuPJ15p+IEAHW9M/6aKdaYMYPk66Ku6uWIkxQ80b
-         3lyA==
+        bh=d98XeALx0jpZHa3k7E1jf9qNoDRB0A1nKFjz/K+o3Oc=;
+        b=hl0PuFaoCAMYj8GG2Pfudjx+2xWIyYM9u8C0Qdhem4qPxdVN52uCOBMZr+AlpJ6RO/
+         ipSBRwR2iybCGpME/uDGHDNjW1tSQeQNJ5s9JnnASrNUSYKfu65jvz9TAwA+F5Y5sLiI
+         pNXkx5CP960QQ0z0dbv4LFfwNZkQIWPTE3pkA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=G5plTR1yFLz1FScdzv2h84cURs+vvah1GNw3UpqFWR0=;
-        b=j1yNv8E3C2IU8sppBojMYXrWvqHnMJi4YZ8sZ+NMuNTenweusY8uY/mSkwJrIlDjuo
-         O5yaZEiMOq639z3WjADhAqWnQEexvd6e7LhGa0+k0BSBRlaf1qunrrpgF4zU/RCMLiNC
-         u5Uq5LfDSpXTfjvrM9rI05F9+C/4abp/RDcDGbcT45XzqByNu8s8DfO++jbZTztstYg7
-         ScnHaH4tMTn36NAWEScNPrZ/X7TQlEuTUVLOpB3x47RNQfWbQ/8cvA/Z5dkSVm4779Jp
-         Kga3S9gCTMdcGTGiuskEYUaSX5Q6kUBAqWDc4XrNnmJ9HSDqLZmIA10u6CSzh0PRJerF
-         tjDA==
-X-Gm-Message-State: AOAM530WYoDk7lcMkIyfIyDYBTgbt46lVGI4vWcf5hQaXfk7VylQIjbL
-        Lm+nsOh2zO/zw4ZikfJSG27z4XOVoDHifSaDNF+Hug==
-X-Google-Smtp-Source: ABdhPJzsUwL78Y4dwiR1pRxSlUJIyTedY19qy8s6lQbGMiIH3jY6M6U5eBQDR6pRLF3opHkH1IGZTO6aYvKvrUJCQBA=
-X-Received: by 2002:aca:bbd7:: with SMTP id l206mr1869243oif.173.1601660471445;
- Fri, 02 Oct 2020 10:41:11 -0700 (PDT)
+        bh=d98XeALx0jpZHa3k7E1jf9qNoDRB0A1nKFjz/K+o3Oc=;
+        b=qpWvHHfzioqJYeL0Yp1m5JO6wOSpTy2ZzgAayPU7Ji3AJ4ilj3t0KDOhbYGNrZnj8G
+         xP+EY2YK9Pl9Dm6huMC6DwXL37855TmkcgfL4xEGY8Y7kTNCiWZ7g52xO2/FfgzQHL6i
+         TUSBdCaYxW7xEOTIh5r9yYdfRQ1A3mXvcOneGkRKa1kceJRSeeRJPzzYFFHVcsfItifx
+         dxG16pdaIphew2MNMM+ixjL6O7UZ8tJLaAOBYasiSIP5K5yuE6+hzOOOMv13Uk8KoD+2
+         WgUkuT3Gd1zelD4UjeH7yWxJGdcGSZF3Y9poxkQlWYC9+1iNdIkRgBV0CI20UPfoWipd
+         43ug==
+X-Gm-Message-State: AOAM5317jEprvS3iLmT+34uPu3JDCzslZSoTUuKDnkEE0xEEdppxQAai
+        Bat2jnc3EgyWRxi6BEnGXgL/NkIAqeT5KQ==
+X-Google-Smtp-Source: ABdhPJyQKBZbQuPYyM4JeaEDCDuwAJir7xveukZfRUeYypyC1CaCl4PVSgDAiaaSGE0Kj5geWuq0BQ==
+X-Received: by 2002:a05:651c:554:: with SMTP id q20mr1115396ljp.348.1601660686894;
+        Fri, 02 Oct 2020 10:44:46 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id u2sm428766lff.255.2020.10.02.10.44.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 10:44:46 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id b12so2848505lfp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:44:45 -0700 (PDT)
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr1368289lfg.344.1601660685616;
+ Fri, 02 Oct 2020 10:44:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909195640.3127341-1-robert.marko@sartura.hr> <20200909195640.3127341-5-robert.marko@sartura.hr>
-In-Reply-To: <20200909195640.3127341-5-robert.marko@sartura.hr>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 2 Oct 2020 19:41:00 +0200
-Message-ID: <CA+HBbNEkmYMi5KutwrBVh3uqzjdEmHrbJnPbH43C9B-Kq1MBNA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] arm: dts: add 8devices Habanero DVK
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Luka Perkov <luka.perkov@sartura.hr>
+References: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20201002172025.GJ3421308@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 2 Oct 2020 10:44:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiHFbAaqS0h_D-9d1=Yc-iq96wE-hrrqOfptGNUZx-GRg@mail.gmail.com>
+Message-ID: <CAHk-=wiHFbAaqS0h_D-9d1=Yc-iq96wE-hrrqOfptGNUZx-GRg@mail.gmail.com>
+Subject: Re: [git pull] epoll fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 9:56 PM Robert Marko <robert.marko@sartura.hr> wrote:
+On Fri, Oct 2, 2020 at 10:20 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
 >
-> 8devices Habanero DVK is a dual-band SoM development kit based on Qualcomm
-> IPQ4019 + QCA8075 platform.
->
-> Specs are:
-> CPU: QCA IPQ4019
-> RAM: DDR3L 512MB
-> Storage: 32MB SPI-NOR and optional Parallel SLC NAND(Some boards ship with it and some without)
-> WLAN1: 2.4 GHz built into IPQ4019 (802.11n) 2x2
-> WLAN2: 5 GHz built into IPO4019 (802.11ac Wawe-2) 2x2
-> Ethernet: 5x Gbit LAN (QCA 8075)
-> USB: 1x USB 2.0 and 1x USB 3.0 (Both built into IPQ4019)
-> MicroSD slot (Uses SD controller built into IPQ4019)
-> SDIO3.0/EMMC slot (Uses the same SD controller)
-> Mini PCI-E Gen 2.0 slot (Built into IPQ4019)
-> 5x LEDs (4 GPIO controllable)
-> 2x Pushbutton (1 is connected to GPIO, other to SoC reset)
-> LCD ZIF socket (Uses the LCD controller built into IPQ4019 which has no driver support)
-> 1x UART 115200 rate on J18
->
-> 2x breakout development headers
-> 12V DC Jack for power
-> DIP switch for bootstrap configuration
->
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
-> ---
-> Changes since v1:
-> * Drop include that does not exist
->
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/qcom-ipq4019-habanero-dvk.dts    | 304 ++++++++++++++++++
->  2 files changed, 305 insertions(+)
->  create mode 100644 arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 246d82fc5fcd..004262e0d699 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -898,6 +898,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->         qcom-ipq4019-ap.dk04.1-c3.dtb \
->         qcom-ipq4019-ap.dk07.1-c1.dtb \
->         qcom-ipq4019-ap.dk07.1-c2.dtb \
-> +       qcom-ipq4019-habanero-dvk.dtb \
->         qcom-ipq8064-ap148.dtb \
->         qcom-ipq8064-rb3011.dtb \
->         qcom-msm8660-surf.dtb \
-> diff --git a/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-> new file mode 100644
-> index 000000000000..fe054adda0a7
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-> @@ -0,0 +1,304 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/* Copyright (c) 2019, Robert Marko <robimarko@gmail.com> */
-> +
-> +#include "qcom-ipq4019.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +
-> +/ {
-> +       model = "8devices Habanero DVK";
-> +       compatible = "8dev,habanero-dvk";
-> +
-> +       keys {
-> +               compatible = "gpio-keys";
-> +
-> +               reset {
-> +                       label = "reset";
-> +                       gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-> +                       linux,code = <KEY_RESTART>;
-> +               };
-> +       };
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +
-> +               led_status: status {
-> +                       label = "habanero-dvk:green:status";
-> +                       gpios = <&tlmm 37 GPIO_ACTIVE_HIGH>;
-> +                       panic-indicator;
-> +               };
-> +
-> +               led_upgrade: upgrade {
-> +                       label = "habanero-dvk:green:upgrade";
-> +                       gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               wlan2g {
-> +                       label = "habanero-dvk:green:wlan2g";
-> +                       gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
-> +                       linux,default-trigger = "phy0tpt";
-> +               };
-> +
-> +               wlan5g {
-> +                       label = "habanero-dvk:green:wlan5g";
-> +                       gpios = <&tlmm 48 GPIO_ACTIVE_HIGH>;
-> +                       linux,default-trigger = "phy1tpt";
-> +               };
-> +       };
-> +};
-> +
-> +&vqmmc {
-> +       status = "okay";
-> +};
-> +
-> +&sdhci {
-> +       status = "okay";
-> +
-> +       pinctrl-0 = <&sd_pins>;
-> +       pinctrl-names = "default";
-> +       cd-gpios = <&tlmm 22 GPIO_ACTIVE_LOW>;
-> +       vqmmc-supply = <&vqmmc>;
-> +};
-> +
-> +&qpic_bam {
-> +       status = "okay";
-> +};
-> +
-> +&tlmm {
-> +       mdio_pins: mdio_pinmux {
-> +               mux_1 {
-> +                       pins = "gpio6";
-> +                       function = "mdio";
-> +                       bias-pull-up;
-> +               };
-> +
-> +               mux_2 {
-> +                       pins = "gpio7";
-> +                       function = "mdc";
-> +                       bias-pull-up;
-> +               };
-> +       };
-> +
-> +       serial_pins: serial_pinmux {
-> +               mux {
-> +                       pins = "gpio16", "gpio17";
-> +                       function = "blsp_uart0";
-> +                       bias-disable;
-> +               };
-> +       };
-> +
-> +       spi_0_pins: spi_0_pinmux {
-> +               pinmux {
-> +                       function = "blsp_spi0";
-> +                       pins = "gpio13", "gpio14", "gpio15";
-> +                       drive-strength = <12>;
-> +                       bias-disable;
-> +               };
-> +
-> +               pinmux_cs {
-> +                       function = "gpio";
-> +                       pins = "gpio12";
-> +                       drive-strength = <2>;
-> +                       bias-disable;
-> +                       output-high;
-> +               };
-> +       };
-> +
-> +       nand_pins: nand_pins {
-> +               pullups {
-> +                       pins =  "gpio52", "gpio53", "gpio58", "gpio59";
-> +                       function = "qpic";
-> +                       bias-pull-up;
-> +               };
-> +
-> +               pulldowns {
-> +                       pins = "gpio54", "gpio55", "gpio56", "gpio57",
-> +                               "gpio60", "gpio62", "gpio63", "gpio64",
-> +                               "gpio65", "gpio66", "gpio67", "gpio68",
-> +                               "gpio69";
-> +                       function = "qpic";
-> +                       bias-pull-down;
-> +               };
-> +       };
-> +
-> +       sd_pins: sd_pins {
-> +               pinmux {
-> +                       function = "sdio";
-> +                       pins = "gpio23", "gpio24", "gpio25", "gpio26",
-> +                               "gpio28", "gpio29", "gpio30", "gpio31";
-> +                       drive-strength = <10>;
-> +               };
-> +
-> +               pinmux_sd_clk {
-> +                       function = "sdio";
-> +                       pins = "gpio27";
-> +                       drive-strength = <16>;
-> +               };
-> +
-> +               pinmux_sd7 {
-> +                       function = "sdio";
-> +                       pins = "gpio32";
-> +                       drive-strength = <10>;
-> +                       bias-disable;
-> +               };
-> +       };
-> +};
-> +
-> +&watchdog {
-> +       status = "okay";
-> +};
-> +
-> +&prng {
-> +       status = "okay";
-> +};
-> +
-> +&blsp_dma {
-> +       status = "okay";
-> +};
-> +
-> +&blsp1_spi1 {
-> +       status = "okay";
-> +
-> +       pinctrl-0 = <&spi_0_pins>;
-> +       pinctrl-names = "default";
-> +       cs-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
-> +
-> +       flash@0 {
-> +               compatible = "jedec,spi-nor";
-> +               spi-max-frequency = <24000000>;
-> +               reg = <0>;
-> +
-> +               partitions {
-> +                       compatible = "fixed-partitions";
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +
-> +                       partition@0 {
-> +                               label = "SBL1";
-> +                               reg = <0x00000000 0x00040000>;
-> +                               read-only;
-> +                       };
-> +                       partition@40000 {
-> +                               label = "MIBIB";
-> +                               reg = <0x00040000 0x00020000>;
-> +                               read-only;
-> +                       };
-> +                       partition@60000 {
-> +                               label = "QSEE";
-> +                               reg = <0x00060000 0x00060000>;
-> +                               read-only;
-> +                       };
-> +                       partition@c0000 {
-> +                               label = "CDT";
-> +                               reg = <0x000c0000 0x00010000>;
-> +                               read-only;
-> +                       };
-> +                       partition@d0000 {
-> +                               label = "DDRPARAMS";
-> +                               reg = <0x000d0000 0x00010000>;
-> +                               read-only;
-> +                       };
-> +                       partition@e0000 {
-> +                               label = "APPSBLENV"; /* uboot env */
-> +                               reg = <0x000e0000 0x00010000>;
-> +                               read-only;
-> +                       };
-> +                       partition@f0000 {
-> +                               label = "APPSBL"; /* uboot */
-> +                               reg = <0x000f0000 0x00080000>;
-> +                               read-only;
-> +                       };
-> +                       partition@170000 {
-> +                               label = "ART";
-> +                               reg = <0x00170000 0x00010000>;
-> +                               read-only;
-> +                       };
-> +                       partition@180000 {
-> +                               label = "cfg";
-> +                               reg = <0x00180000 0x00040000>;
-> +                       };
-> +                       partition@1c0000 {
-> +                               label = "firmware";
-> +                               compatible = "denx,fit";
-> +                               reg = <0x001c0000 0x01e40000>;
-> +                       };
-> +               };
-> +       };
-> +};
-> +
-> +/* Some DVK boards ship without NAND */
-> +&nand {
-> +       status = "okay";
-> +
-> +       pinctrl-0 = <&nand_pins>;
-> +       pinctrl-names = "default";
-> +};
-> +
-> +&blsp1_uart1 {
-> +       status = "okay";
-> +
-> +       pinctrl-0 = <&serial_pins>;
-> +       pinctrl-names = "default";
-> +};
-> +
-> +&cryptobam {
-> +       status = "okay";
-> +};
-> +
-> +&crypto {
-> +       status = "okay";
-> +};
-> +
-> +&mdio {
-> +       status = "okay";
-> +
-> +       pinctrl-0 = <&mdio_pins>;
-> +       pinctrl-names = "default";
-> +};
-> +
-> +&pcie0 {
-> +       status = "okay";
-> +
-> +       perst-gpio = <&tlmm 38 GPIO_ACTIVE_LOW>;
-> +       wake-gpio = <&tlmm 50 GPIO_ACTIVE_LOW>;
-> +
-> +       /* Free slot for use */
-> +       bridge@0,0 {
-> +               reg = <0x00000000 0 0 0 0>;
-> +               #address-cells = <3>;
-> +               #size-cells = <2>;
-> +               ranges;
-> +       };
-> +};
-> +
-> +&wifi0 {
-> +       status = "okay";
-> +
-> +       qcom,ath10k-calibration-variant = "8devices-Habanero";
-> +};
-> +
-> +&wifi1 {
-> +       status = "okay";
-> +
-> +       qcom,ath10k-calibration-variant = "8devices-Habanero";
-> +};
-> +
-> +&usb3_ss_phy {
-> +       status = "okay";
-> +};
-> +
-> +&usb3_hs_phy {
-> +       status = "okay";
-> +};
-> +
-> +&usb3 {
-> +       status = "okay";
-> +};
-> +
-> +&usb2_hs_phy {
-> +       status = "okay";
-> +};
-> +
-> +&usb2 {
-> +       status = "okay";
-> +};
-> --
-> 2.26.2
->
+>         Several race fixes in epoll.
 
-Hi,
-Is there an issue with the patch preventing the review?
+Fudge. I screwed up the commit message due to a cut-and-paste error
+(don't ask - sometimes google chrome and gnome-terminal seem to stop
+agreeing about the normal X paste buffer)
 
-Regards,
-Robert
+And I extra stupidly pushed the thing out after the build succeeded,
+not having noticed how I screwed up the trivial commit message.
+
+I've force-updated the public sites, and I really hope nobody pulled
+in that (very short) time when my tree had a bogus commit message.
+
+(In case anybody cares, the commit message said "SEQCNT_MUTEX_ZERO"
+instead of "Several race fixes in epoll" because that's what I had
+looked at in another terminal. So it was a very WTF message)
+
+I think this was only the second time I had a forced push to fix some
+stupidity of mine. So it's not exactly _common_, but it's
+embarrassing.
+
+                    Linus
