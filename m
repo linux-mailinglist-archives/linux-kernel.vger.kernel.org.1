@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6449D281641
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EAE28163A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388216AbgJBPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:13:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:38760 "EHLO foss.arm.com"
+        id S2388078AbgJBPMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388176AbgJBPNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:13:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD3B41396;
-        Fri,  2 Oct 2020 08:13:00 -0700 (PDT)
-Received: from [10.57.50.3] (unknown [10.57.50.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9ABC3F73B;
-        Fri,  2 Oct 2020 08:12:57 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
- with abstract scale
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <20201002114426.31277-4-lukasz.luba@arm.com>
- <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com>
-Date:   Fri, 2 Oct 2020 16:12:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726017AbgJBPMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:12:16 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D7EC206CA;
+        Fri,  2 Oct 2020 15:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601651534;
+        bh=dfS3hUtPj+62nOaD8ZISFxx2RrbIO5cTDVZpKj0K2sY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bvS8ENUJvIS83nogxkOB2809owzEzxCuRopX/nbXImTp4wvwoRvmmQ24dXyR92t43
+         VMZCulyYO0mfUK8fgu5WtU2MnNsVW9vIE6+22jdsZWlriACuIdHj6bW279qr4HfsBJ
+         tt4uFH4LdCU1lUw5pSlUZBg3pbtA9XdtudYLXVo8=
+Date:   Fri, 2 Oct 2020 17:13:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     Torsten Duwe <duwe@lst.de>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201002151300.GC5212@kroah.com>
+References: <20200921075857.4424-1-nstange@suse.de>
+ <20201002123836.GA14807@lst.de>
+ <CY4PR0401MB365298FA8C0C53EAF2D66705C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20201002140428.GC3475053@kroah.com>
+ <CY4PR0401MB365240353B6AB3B2045C9F89C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CY4PR0401MB365240353B6AB3B2045C9F89C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-
-On 10/2/20 3:31 PM, Doug Anderson wrote:
-> Hi,
+On Fri, Oct 02, 2020 at 02:34:44PM +0000, Van Leeuwen, Pascal wrote:
 > 
-> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Update the documentation for the binding 'sustainable-power' and allow
->> to provide values in an abstract scale. It is required when the cooling
->> devices use an abstract scale for their power values.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->> index 3ec9cc87ec50..4d8f2e37d1e6 100644
->> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
->> @@ -99,10 +99,15 @@ patternProperties:
->>         sustainable-power:
->>           $ref: /schemas/types.yaml#/definitions/uint32
->>           description:
->> -          An estimate of the sustainable power (in mW) that this thermal zone
->> -          can dissipate at the desired control temperature. For reference, the
->> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
->> -          10-inch tablet is around 4500mW.
->> +          An estimate of the sustainable power (in mW or in an abstract scale)
->> +         that this thermal zone can dissipate at the desired control
->> +         temperature. For reference, the sustainable power of a 4-inch phone
->> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
->> +
->> +         It is possible to express the sustainable power in an abstract
->> +         scale. This is the case when the related cooling devices use also
->> +         abstract scale to express their power usage. The scale must be
->> +         consistent.
 > 
-> Two thoughts:
 > 
-> 1. If we're going to allow "sustainable-power" to be in abstract
-> scale, why not allow "dynamic-power-coefficient" to be in abstract
-> scale too?  I assume that the whole reason against that originally was
-> the idea of device tree purity, but if we're allowing the abstract
-> scale here then there seems no reason not to allow it for
-> "dynamic-power-coefficient".
+> > -----Original Message-----
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Sent: Friday, October 2, 2020 4:04 PM
+> > To: Van Leeuwen, Pascal <pvanleeuwen@rambus.com>
+> > Cc: Torsten Duwe <duwe@lst.de>; Theodore Y. Ts'o <tytso@mit.edu>; linux-crypto@vger.kernel.org; Nicolai Stange
+> > <nstange@suse.de>; LKML <linux-kernel@vger.kernel.org>; Arnd Bergmann <arnd@arndb.de>; Eric W. Biederman
+> > <ebiederm@xmission.com>; Alexander E. Patrakov <patrakov@gmail.com>; Ahmed S. Darwish <darwish.07@gmail.com>; Willy
+> > Tarreau <w@1wt.eu>; Matthew Garrett <mjg59@srcf.ucam.org>; Vito Caputo <vcaputo@pengaru.com>; Andreas Dilger
+> > <adilger.kernel@dilger.ca>; Jan Kara <jack@suse.cz>; Ray Strode <rstrode@redhat.com>; William Jon McCann <mccann@jhu.edu>;
+> > zhangjs <zachary@baishancloud.com>; Andy Lutomirski <luto@kernel.org>; Florian Weimer <fweimer@redhat.com>; Lennart
+> > Poettering <mzxreary@0pointer.de>; Peter Matthias <matthias.peter@bsi.bund.de>; Marcelo Henrique Cerri
+> > <marcelo.cerri@canonical.com>; Neil Horman <nhorman@redhat.com>; Randy Dunlap <rdunlap@infradead.org>; Julia Lawall
+> > <julia.lawall@inria.fr>; Dan Carpenter <dan.carpenter@oracle.com>; Andy Lavr <andy.lavr@gmail.com>; Eric Biggers
+> > <ebiggers@kernel.org>; Jason A. Donenfeld <Jason@zx2c4.com>; Stephan Müller <smueller@chronox.de>; Petr Tesarik
+> > <ptesarik@suse.cz>
+> > Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST SP800-90B compliance
+> >
+> > <<< External Email >>>
+> > On Fri, Oct 02, 2020 at 01:35:18PM +0000, Van Leeuwen, Pascal wrote:
+> > > ** This message and any attachments are for the sole use of the intended recipient(s). It may contain information that is
+> > confidential and privileged. If you are not the intended recipient of this message, you are prohibited from printing, copying,
+> > forwarding or saving it. Please delete the message and attachments and notify the sender immediately. **
+> >
+> > As per my legal department requests, this is now ignored and deleted on
+> > my system...
+> >
+> > Hint, it's not a valid footer for public mailing lists...
+> >
+> > greg k-h
+> It's automatically added by our company mail server ... not something I can control at all :-(
 
-With this binding it's a bit more tricky.
-I also have to discuss a few things internally. This requirement of
-uW/MHz/V^2 makes the code easier also for potential drivers
-like GPU (which are going to register the devfreq cooling with EM).
+Then your company can not contribute in Linux kernel development, as
+this is obviously not allowed by such a footer.
 
-Let me think about it, but for now I would just update these bits.
-These are required to proper IPA operation, the dyn.-pow.-coef. is a
-nice to have and possible next step.
+Please work with your IT and legal department to fix this.
 
-> 
-> 2. Is it worth adding some type of indication of what type of units
-> "sustainable-power" is represented in?  Maybe even a made up unit so
-> that you could tell the difference between made up units in the same
-> system?  I'd envision something like:
-> 
-> sustainable-power-units = "qualcomm,sc7180-bogoWatts"
-> 
-> ...and on the dynamic-power-coefficient side, the same:
-> 
-> dynamic-power-coefficient-units = "qualcomm,sc7180-bogoWatts"
-> 
-> One could imagine someone even later (after devices are widely
-> distributed) figuring out translations between these bogoWatts numbers
-> and real Watts if someone could come up with a case where it matters.
+thanks,
 
-To figure this out we don't need a new binding.
-I think a simple comment in the DT would be enough for this, even e.g.:
-
-sustainable-power = <100> /* bogoWatts */
-
-
-Thank you for your comments.
-BTW, I haven't put your 'Reviewed-by' because I have added this
-sustainable-power new stuff in patch 1/3. I will grateful if you
-have a look on that.
-
-Regards,
-Lukasz
+greg k-h
