@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFE8281CC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7E3281CD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725825AbgJBURm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:17:42 -0400
-Received: from mga07.intel.com ([134.134.136.100]:14522 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbgJBURf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:17:35 -0400
-IronPort-SDR: jANedMYXm+jQXwtKpLBjXrYN0rurv5cCM8CisQZT3ahIhLvXQKuzIGhcALRW6fCHR/BYeXYPWs
- U1a2Wn3ktfvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="227197753"
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="227197753"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 13:17:33 -0700
-IronPort-SDR: ZKdw9NOqU9qw70x/kHYhCUkvzh66of7qE2GeNN7sZh4TvnshK9r6n1KJZFGq6xPaqvwc9wivj1
- R14akpLdK+cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="385960870"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga001.jf.intel.com with ESMTP; 02 Oct 2020 13:17:33 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        linux-edac@vger.kernel.org
-Subject: [PATCH 3/3] x86/mce: include type of core when reporting a machine check error
-Date:   Fri,  2 Oct 2020 13:19:31 -0700
-Message-Id: <20201002201931.2826-4-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+        id S1725777AbgJBUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBUU3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:20:29 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83929C0613D0;
+        Fri,  2 Oct 2020 13:20:27 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id a2so2045697ybj.2;
+        Fri, 02 Oct 2020 13:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZjYnH8NMd9EvKTTZ3QWx8KfiPBRRSNu4BBCpFrxwX6U=;
+        b=jglmkFc7yMnmRm2kf3IEajZwdq/N5wMlZqj1wcr/RoBp7JeOLUhQFSswNRX9+m3SL0
+         FT1ga/PQYnhCSW32/8M/6POIYCpcb46e1xvKi0CVB6DtcHPniQObCSe1Zd3qQIZKJlcz
+         x/r2Tk0DnAcYwf59jzV8p1acVAc9QmoQPkj02DpCjuHPn0lwIBOvnGPjmEFhZBQpixfW
+         W7aulzdcnyOmvETDek2MHUyuvrjEdVWfkh813gnNVWB9BTuLr9gqH50ObVZaUqyY2Q+i
+         tYi7LF7jsqNikZtjl5swV27lHf9vMWmTUYq2vheBqdg0ox1AzcDXfse6keDcy2GF1DkP
+         JzJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZjYnH8NMd9EvKTTZ3QWx8KfiPBRRSNu4BBCpFrxwX6U=;
+        b=S7S0eR4RMpNqSX5Lpnxi36mCkrfoEtDbBL2r2DvPKr9LGllZRatEyjDEYIFlf94K4t
+         +12GOTz0nsBYCUAEtoYBolL1EBHI872spC87WP+h+v5ut3w+tubrlkRSSE4zrky7xlkg
+         2wwDWfs6Sw8fUQRWjCpM4xwphNYkRsK1eKh2M2SXfOVXoM9Xij0dyxYeMZ93yxmQo6YG
+         fseu18AFQ2nxtRRl+GhXoQ7TB672eCC4wHWbymjor5EFfQA1Zp7snqv1vf3UIUdmpzMS
+         7lk/3Qt4/Vly5mH7+viPYUouws6RRTLZWC09TyXdMsTRbHLJs3m/I+aTI7ENBOgcb5i9
+         CIgQ==
+X-Gm-Message-State: AOAM530KL65uibBqFVoCTtDJPxttZ/tqpkkizHwAbN69DCJO+X89XpUl
+        L1cAU3xhb+O+naNc5MZp9/SbXvJSf4Z9sYtuy/Q=
+X-Google-Smtp-Source: ABdhPJwzt36OP4Lp8Ish2l0V38vFOreqRh7WQEtDvB8x4bQ+GzXB/7cHtAZN64Qxg0IYfpcCW7l6T34e6u4n9Ckfn3U=
+X-Received: by 2002:a05:6902:4ae:: with SMTP id r14mr5197035ybs.22.1601670026875;
+ Fri, 02 Oct 2020 13:20:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201002174001.3012643-1-jarod@redhat.com> <20201002174001.3012643-4-jarod@redhat.com>
+In-Reply-To: <20201002174001.3012643-4-jarod@redhat.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 2 Oct 2020 22:20:13 +0200
+Message-ID: <CANiq72=WDR028qoM0du_ZKr0FSVv+X5BsZJJUw_Hf51dE6MD6w@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/6] bonding: rename slave to port where possible
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hybrid parts, each type of core reports different types of machine check
-errors as the machine check error blocks are tied to different parts of the
-hardware. Furthermore, errors may be different across micro-architecture
-versions. Thus, in order to decode errors, userspace tools need to know the
-type of core as well as the native model ID of the CPU which reported the
-error.
+Hi Jarod,
 
-This extra information is only included in the error report only when
-running on hybrid parts. This conserves the existing behavior when running
-on non-hybrid parts. Hence, legacy userspace tools running on new kernels
-and hybrid hardware can still understand the format of the reported error
-format.
+On Fri, Oct 2, 2020 at 7:44 PM Jarod Wilson <jarod@redhat.com> wrote:
+>
+>  .clang-format                                 |    4 +->  #ifdef CONFIG_NET_POLL_CONTROLLER
 
-Cc: "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc: linux-edac@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
- arch/x86/include/uapi/asm/mce.h | 1 +
- arch/x86/kernel/cpu/mce/core.c  | 7 +++++++
- 2 files changed, 8 insertions(+)
+Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
 
-diff --git a/arch/x86/include/uapi/asm/mce.h b/arch/x86/include/uapi/asm/mce.h
-index db9adc081c5a..e730572186d6 100644
---- a/arch/x86/include/uapi/asm/mce.h
-+++ b/arch/x86/include/uapi/asm/mce.h
-@@ -36,6 +36,7 @@ struct mce {
- 	__u64 ppin;		/* Protected Processor Inventory Number */
- 	__u32 microcode;	/* Microcode revision */
- 	__u64 kflags;		/* Internal kernel use */
-+	__u32 hybrid_info;	/* Type and native model ID in hybrid parts */
- };
- 
- #define MCE_GET_RECORD_LEN   _IOR('M', 1, int)
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index a6ff407dec71..ecac8d9b6070 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -143,6 +143,9 @@ noinstr void mce_setup(struct mce *m)
- 	m->apicid = cpu_data(m->extcpu).initial_apicid;
- 	m->mcgcap = __rdmsr(MSR_IA32_MCG_CAP);
- 
-+	if (this_cpu_has(X86_FEATURE_HYBRID_CPU))
-+		m->hybrid_info = cpuid_eax(0x1a);
-+
- 	if (this_cpu_has(X86_FEATURE_INTEL_PPIN))
- 		m->ppin = __rdmsr(MSR_PPIN);
- 	else if (this_cpu_has(X86_FEATURE_AMD_PPIN))
-@@ -264,6 +267,10 @@ static void __print_mce(struct mce *m)
- 	pr_emerg(HW_ERR "PROCESSOR %u:%x TIME %llu SOCKET %u APIC %x microcode %x\n",
- 		m->cpuvendor, m->cpuid, m->time, m->socketid, m->apicid,
- 		m->microcode);
-+
-+	if (this_cpu_has(X86_FEATURE_HYBRID_CPU))
-+		pr_emerg(HW_ERR "HYBRID_TYPE %x HYBRID_NATIVE_MODEL_ID %x\n",
-+			 m->hybrid_info >> 24, m->hybrid_info & 0xffffff);
- }
- 
- static void print_mce(struct mce *m)
--- 
-2.17.1
-
+Cheers,
+Miguel
