@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F14280BED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EC7280BEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387538AbgJBBZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 21:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S2387551AbgJBBZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 21:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgJBBZC (ORCPT
+        with ESMTP id S1727780AbgJBBZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 21:25:02 -0400
+        Thu, 1 Oct 2020 21:25:06 -0400
 Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FB0C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 18:25:00 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id i26so515340ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 18:25:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE85C0613D0
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 18:25:06 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id u21so578087eja.2
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 18:25:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:in-reply-to:references:mime-version:date:message-id:subject:to
          :cc;
-        bh=JjWjRnD7VtTkrBKw9Z9yp/8Qca9PZwmKfr/gYPt5B7c=;
-        b=MZ9iRIkR8sIxQPQeE2/FGCed+EjZ1SjnC22wlYVAy8q1L/mFYR0wDdMATSQjng4gdN
-         Ak9UzylXFa9OzJmYIvjNwxLK21f2FkWTGbunq/qlXGBfgmZ3zYslxLSHRE/TxyOrWdMi
-         Get48mIpPUmEMAJS7DUon9czQO2lMuPXJOVuKNRru4kgFQPb50E61ACGsPxORi1R6EFW
-         RW2fxrM4gIexAPu+Ztou84pAchVRPu7s2IOXsZndSjqlVxoeoJJ5RmBWbDOT/GWVT194
-         883Gyvu7vcgmVVjzGe9ywt/Tb3RhLIey8XM8v6Uxttm3617h4wN5FLQICvWi+U04nXjy
-         FJNg==
+        bh=Kqs8a9E5uPOTBp74swyiiF8zCX3R3DCtjj7F/Xz7M0M=;
+        b=YrpQKZP4LvvC42rx/oChM9+PWWxB9yCHXQgbCQcYI7Nnbzt0fKSh60i+aejNgAmbXc
+         SvsUMZkpxiy7JKwBIbiJwHpUDUdfddKsvGighKIy6yzGdTfWxkZkGNRXR5Re952f5Ga/
+         Hl4Qe+15bcmgSHq1Wc6O/o1IxAlgmEVoUKoYuVH5+XmiT8T7fxocJlF6WN41M4lpGwUn
+         ong/8Gi5OPDs2/zQ6e0jGFJlvTbk+zDls+z+59WjWoHkqMFhS7Mo/mAyK9WM3rL9yVEn
+         LB0hnLToPsKOXZxi5YGzacuMeLRJCt0RaIOPu9f8QVIOU9oaqXKzbXRKLQC45H/wHh+z
+         8emA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:in-reply-to:references:mime-version:date
          :message-id:subject:to:cc;
-        bh=JjWjRnD7VtTkrBKw9Z9yp/8Qca9PZwmKfr/gYPt5B7c=;
-        b=ti/pL3ZfI59UjTnUWl6r85zQhLaY86OrHz1uLkCgFM6x74e6wvcgAKsXN+bjNsa8Ud
-         a4fi4Bb6G8PfXVhMnqLV2uiJCP7WMPvGx+SJPJWxn/tKUv6pc4ftu2Kqbwc4wDwspbCt
-         DXGw9/IM77dncLHbUhyWYiSTszIb+laW2BhfjJxoSN1M5gPgYqaazIne0YUEHNau2Bu9
-         gd5VC7BXJhubl2doMWXfxL4gEGeUmyA0VlUcgTpqE5hns4DVkFjC66J0V9OHdRh7lgFd
-         h+utHuz7BU0OUAKPN1nvg/Yzgb1YsnAXVZBerFYQWTslXewc7TTzKsvVp4Bke3MIDpLc
-         PRNQ==
-X-Gm-Message-State: AOAM533By8FS7qdHJKNWveaYFDH/kXpEiXnjosQA0RLO6opczDK78u2H
-        JW0t5hvDI+y7StSFCmA287o3+LESU2AyPZeuwCxaTg==
-X-Google-Smtp-Source: ABdhPJzNkr9JFa9Bj7OSKfyQ4dsgUA+6GfgW6WiqWaZ+qISi5o991nBt3a1CagiU1mNR40UmVdanrBbNQntb7NXy0JQ=
-X-Received: by 2002:a17:906:394:: with SMTP id b20mr9670379eja.513.1601601899361;
- Thu, 01 Oct 2020 18:24:59 -0700 (PDT)
+        bh=Kqs8a9E5uPOTBp74swyiiF8zCX3R3DCtjj7F/Xz7M0M=;
+        b=qHmA4xYD2htId7NRI4ov7U5DYG5qBS+IcD+hb48uTyVB6ezOS45Me5t4s98bHDYBmq
+         T9y1hIA7OfOXSCxwtFKC3U7liQYICtORWLbv56T/FKvvx1BMv7pfhv5HkpRvSdZ5yGnT
+         mzX2PJQCFkPcy7GzEtDzo+oOJ1CXfMliLA2tiJUMzmi5/4XGCgOcUeqwT8Q9G/XgOD2z
+         16uF7+yc30jQOSp3PtX4lmx9CCxD3rG+i1JXgmgqlEswbOWNsuNslclj0J7MJI9PXbsv
+         YvNU8FqvAL7eIxiBb3LYtR+UyETYNZfxNzmFQrv1wyRu97WE43/9yvBZpFf6qrNtu2Vd
+         OiUA==
+X-Gm-Message-State: AOAM531rNycXZ9Xz8l0UMNrbRhCLd3elr52U6KoihvK9SXcRyMmXhk5e
+        Kj33pMXlIHjG5FEdosdTiULkrZjOQd4FwEes7DNxVQ==
+X-Google-Smtp-Source: ABdhPJzVu3SoEuRQ33jBZmzhi/XuwzQ/9eJHcY97azL852GtwzhzffTrBq6YxHopboXK4kUbi1LzATXGMeGFDdIdU9w=
+X-Received: by 2002:a17:906:fcae:: with SMTP id qw14mr4739966ejb.537.1601601904679;
+ Thu, 01 Oct 2020 18:25:04 -0700 (PDT)
 Received: from 913411032810 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 1 Oct 2020 21:24:58 -0400
+ HTTPREST; Thu, 1 Oct 2020 21:25:04 -0400
 From:   Jann Horn <jannh@google.com>
 X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
 In-Reply-To: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
 References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
 MIME-Version: 1.0
-Date:   Thu, 1 Oct 2020 21:24:58 -0400
-Message-ID: <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
-Subject: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside lock
- of live mm
+Date:   Thu, 1 Oct 2020 21:25:04 -0400
+Message-ID: <CAG48ez1rCScOo7jC2ReC7QTLNFGnpB8UvNbeiiN3pXCWbNvW+g@mail.gmail.com>
+Subject: [PATCH 2/2] exec: Broadly lock nascent mm until setup_arg_pages()
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         "Eric W . Biederman" <ebiederm@xmission.com>,
@@ -71,152 +70,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until now, the mmap lock of the nascent mm was ordered inside the mmap lock
-of the old mm (in dup_mmap() and in UML's activate_mm()).
-A following patch will change the exec path to very broadly lock the
-nascent mm, but fine-grained locking should still work at the same time for
-the new mm.
-To do this in a way that lockdep is happy about, let's turn around the lock
-ordering in both places that currently nest the locks.
-Since SINGLE_DEPTH_NESTING is normally used for the inner nesting layer,
-make up our own lock subclass MMAP_LOCK_SUBCLASS_NASCENT and use that
-instead.
+While AFAIK there currently is nothing that can modify the VMA tree of a
+new mm until userspace has started running under the mm, we should properly
+lock the mm here anyway, both to keep lockdep happy when adding locking
+assertions and to be safe in the future in case someone e.g. decides to
+permit VMA-tree-mutating operations in process_madvise_behavior_valid().
 
-The added locking calls in exec_mmap() are temporary; the following patch
-will move the locking out of exec_mmap().
+The goal of this patch is to broadly lock the nascent mm in the exec path,
+from around the time it is created all the way to the end of
+setup_arg_pages() (because setup_arg_pages() accesses bprm->vma).
+As long as the mm is write-locked, keep it around in bprm->mm, even after
+it has been installed on the task (with an extra reference on the mm, to
+reduce complexity in free_bprm()).
+After setup_arg_pages(), we have to unlock the mm so that APIs such as
+copy_to_user() will work in the following binfmt-specific setup code.
 
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Suggested-by: Michel Lespinasse <walken@google.com>
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
- arch/um/include/asm/mmu_context.h |  3 +--
- fs/exec.c                         |  4 ++++
- include/linux/mmap_lock.h         | 23 +++++++++++++++++++++--
- kernel/fork.c                     |  7 ++-----
- 4 files changed, 28 insertions(+), 9 deletions(-)
+ fs/exec.c               | 68 ++++++++++++++++++++---------------------
+ include/linux/binfmts.h |  2 +-
+ 2 files changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/arch/um/include/asm/mmu_context.h
-b/arch/um/include/asm/mmu_context.h
-index 17ddd4edf875..c13bc5150607 100644
---- a/arch/um/include/asm/mmu_context.h
-+++ b/arch/um/include/asm/mmu_context.h
-@@ -48,9 +48,8 @@ static inline void activate_mm(struct mm_struct
-*old, struct mm_struct *new)
- 	 * when the new ->mm is used for the first time.
- 	 */
- 	__switch_mm(&new->context.id);
--	mmap_write_lock_nested(new, SINGLE_DEPTH_NESTING);
-+	mmap_assert_write_locked(new);
- 	uml_setup_stubs(new);
--	mmap_write_unlock(new);
- }
-
- static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 diff --git a/fs/exec.c b/fs/exec.c
-index a91003e28eaa..229dbc7aa61a 100644
+index 229dbc7aa61a..fe11d77e397a 100644
 --- a/fs/exec.c
 +++ b/fs/exec.c
-@@ -1114,6 +1114,8 @@ static int exec_mmap(struct mm_struct *mm)
+@@ -254,11 +254,6 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
+ 		return -ENOMEM;
+ 	vma_set_anonymous(vma);
+
+-	if (mmap_write_lock_killable(mm)) {
+-		err = -EINTR;
+-		goto err_free;
+-	}
+-
+ 	/*
+ 	 * Place the stack at the largest stack address the architecture
+ 	 * supports. Later, we'll move this to an appropriate place. We don't
+@@ -276,12 +271,9 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
+ 		goto err;
+
+ 	mm->stack_vm = mm->total_vm = 1;
+-	mmap_write_unlock(mm);
+ 	bprm->p = vma->vm_end - sizeof(void *);
+ 	return 0;
+ err:
+-	mmap_write_unlock(mm);
+-err_free:
+ 	bprm->vma = NULL;
+ 	vm_area_free(vma);
+ 	return err;
+@@ -364,9 +356,9 @@ static int bprm_mm_init(struct linux_binprm *bprm)
+ 	struct mm_struct *mm = NULL;
+
+ 	bprm->mm = mm = mm_alloc();
+-	err = -ENOMEM;
+ 	if (!mm)
+-		goto err;
++		return -ENOMEM;
++	mmap_write_lock_nascent(mm);
+
+ 	/* Save current stack limit for all calculations made during exec. */
+ 	task_lock(current->group_leader);
+@@ -374,17 +366,12 @@ static int bprm_mm_init(struct linux_binprm *bprm)
+ 	task_unlock(current->group_leader);
+
+ 	err = __bprm_mm_init(bprm);
+-	if (err)
+-		goto err;
+-
+-	return 0;
+-
+-err:
+-	if (mm) {
+-		bprm->mm = NULL;
+-		mmdrop(mm);
+-	}
++	if (!err)
++		return 0;
+
++	bprm->mm = NULL;
++	mmap_write_unlock(mm);
++	mmdrop(mm);
+ 	return err;
+ }
+
+@@ -735,6 +722,7 @@ static int shift_arg_pages(struct vm_area_struct
+*vma, unsigned long shift)
+ /*
+  * Finalizes the stack vm_area_struct. The flags and permissions are updated,
+  * the stack is optionally relocated, and some extra space is added.
++ * At the end of this, the mm_struct will be unlocked on success.
+  */
+ int setup_arg_pages(struct linux_binprm *bprm,
+ 		    unsigned long stack_top,
+@@ -787,9 +775,6 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 		bprm->loader -= stack_shift;
+ 	bprm->exec -= stack_shift;
+
+-	if (mmap_write_lock_killable(mm))
+-		return -EINTR;
+-
+ 	vm_flags = VM_STACK_FLAGS;
+
+ 	/*
+@@ -807,7 +792,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	ret = mprotect_fixup(vma, &prev, vma->vm_start, vma->vm_end,
+ 			vm_flags);
+ 	if (ret)
+-		goto out_unlock;
++		return ret;
+ 	BUG_ON(prev != vma);
+
+ 	if (unlikely(vm_flags & VM_EXEC)) {
+@@ -819,7 +804,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	if (stack_shift) {
+ 		ret = shift_arg_pages(vma, stack_shift);
+ 		if (ret)
+-			goto out_unlock;
++			return ret;
+ 	}
+
+ 	/* mprotect_fixup is overkill to remove the temporary stack flags */
+@@ -846,11 +831,17 @@ int setup_arg_pages(struct linux_binprm *bprm,
+ 	current->mm->start_stack = bprm->p;
+ 	ret = expand_stack(vma, stack_base);
+ 	if (ret)
+-		ret = -EFAULT;
++		return -EFAULT;
+
+-out_unlock:
++	/*
++	 * From this point on, anything that wants to poke around in the
++	 * mm_struct must lock it by itself.
++	 */
++	bprm->vma = NULL;
+ 	mmap_write_unlock(mm);
+-	return ret;
++	mmput(mm);
++	bprm->mm = NULL;
++	return 0;
+ }
+ EXPORT_SYMBOL(setup_arg_pages);
+
+@@ -1114,8 +1105,6 @@ static int exec_mmap(struct mm_struct *mm)
  	if (ret)
  		return ret;
 
-+	mmap_write_lock_nascent(mm);
-+
+-	mmap_write_lock_nascent(mm);
+-
  	if (old_mm) {
  		/*
  		 * Make sure that if there is a core dump in progress
-@@ -1125,6 +1127,7 @@ static int exec_mmap(struct mm_struct *mm)
+@@ -1127,11 +1116,12 @@ static int exec_mmap(struct mm_struct *mm)
  		if (unlikely(old_mm->core_state)) {
  			mmap_read_unlock(old_mm);
  			mutex_unlock(&tsk->signal->exec_update_mutex);
-+			mmap_write_unlock(mm);
+-			mmap_write_unlock(mm);
  			return -EINTR;
  		}
  	}
-@@ -1138,6 +1141,7 @@ static int exec_mmap(struct mm_struct *mm)
+
++	/* bprm->mm stays refcounted, current->mm takes an extra reference */
++	mmget(mm);
+ 	task_lock(tsk);
+ 	active_mm = tsk->active_mm;
+ 	membarrier_exec_mmap(mm);
+@@ -1141,7 +1131,6 @@ static int exec_mmap(struct mm_struct *mm)
  	tsk->mm->vmacache_seqnum = 0;
  	vmacache_flush(tsk);
  	task_unlock(tsk);
-+	mmap_write_unlock(mm);
+-	mmap_write_unlock(mm);
  	if (old_mm) {
  		mmap_read_unlock(old_mm);
  		BUG_ON(active_mm != old_mm);
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 0707671851a8..24de1fe99ee4 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -3,6 +3,18 @@
+@@ -1397,8 +1386,6 @@ int begin_new_exec(struct linux_binprm * bprm)
+ 	if (retval)
+ 		goto out;
 
- #include <linux/mmdebug.h>
-
-+/*
-+ * Lock subclasses for the mmap_lock.
-+ *
-+ * MMAP_LOCK_SUBCLASS_NASCENT is for core kernel code that wants to lock an mm
-+ * that is still being constructed and wants to be able to access the active mm
-+ * normally at the same time. It nests outside MMAP_LOCK_SUBCLASS_NORMAL.
-+ */
-+enum {
-+	MMAP_LOCK_SUBCLASS_NORMAL = 0,
-+	MMAP_LOCK_SUBCLASS_NASCENT
-+};
+-	bprm->mm = NULL;
+-
+ #ifdef CONFIG_POSIX_TIMERS
+ 	exit_itimers(me->signal);
+ 	flush_itimer_signals();
+@@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
+ 	me->mm->task_size = TASK_SIZE;
+ 	mutex_unlock(&me->signal->exec_update_mutex);
+ 	mutex_unlock(&me->signal->cred_guard_mutex);
 +
- #define MMAP_LOCK_INITIALIZER(name) \
- 	.mmap_lock = __RWSEM_INITIALIZER((name).mmap_lock),
-
-@@ -16,9 +28,16 @@ static inline void mmap_write_lock(struct mm_struct *mm)
- 	down_write(&mm->mmap_lock);
++#ifndef CONFIG_MMU
++	/*
++	 * On MMU, setup_arg_pages() wants to access bprm->vma after this point,
++	 * so we can't drop the mmap lock yet.
++	 * On !MMU, we have neither setup_arg_pages() nor bprm->vma, so we
++	 * should drop the lock here.
++	 */
++	mmap_write_unlock(bprm->mm);
++	mmput(bprm->mm);
++	bprm->mm = NULL;
++#endif
  }
+ EXPORT_SYMBOL(setup_new_exec);
 
--static inline void mmap_write_lock_nested(struct mm_struct *mm, int subclass)
-+/*
-+ * Lock an mm_struct that is still being set up (during fork or exec).
-+ * This nests outside the mmap locks of live mm_struct instances.
-+ * No interruptible/killable versions exist because at the points where you're
-+ * supposed to use this helper, the mm isn't visible to anything else, so we
-+ * expect the mmap_lock to be uncontended.
-+ */
-+static inline void mmap_write_lock_nascent(struct mm_struct *mm)
+@@ -1581,6 +1580,7 @@ static void free_bprm(struct linux_binprm *bprm)
  {
--	down_write_nested(&mm->mmap_lock, subclass);
-+	down_write_nested(&mm->mmap_lock, MMAP_LOCK_SUBCLASS_NASCENT);
- }
-
- static inline int mmap_write_lock_killable(struct mm_struct *mm)
-diff --git a/kernel/fork.c b/kernel/fork.c
-index da8d360fb032..db67eb4ac7bd 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -474,6 +474,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	unsigned long charge;
- 	LIST_HEAD(uf);
-
-+	mmap_write_lock_nascent(mm);
- 	uprobe_start_dup_mmap();
- 	if (mmap_write_lock_killable(oldmm)) {
- 		retval = -EINTR;
-@@ -481,10 +482,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	if (bprm->mm) {
+ 		acct_arg_size(bprm, 0);
++		mmap_write_unlock(bprm->mm);
+ 		mmput(bprm->mm);
  	}
- 	flush_cache_dup_mm(oldmm);
- 	uprobe_dup_mmap(oldmm, mm);
--	/*
--	 * Not linked in yet - no deadlock potential:
--	 */
--	mmap_write_lock_nested(mm, SINGLE_DEPTH_NESTING);
-
- 	/* No ordering required: file already has been exposed. */
- 	RCU_INIT_POINTER(mm->exe_file, get_mm_exe_file(oldmm));
-@@ -600,12 +597,12 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
- 	/* a new mm has just been created */
- 	retval = arch_dup_mmap(oldmm, mm);
- out:
--	mmap_write_unlock(mm);
- 	flush_tlb_mm(oldmm);
- 	mmap_write_unlock(oldmm);
- 	dup_userfaultfd_complete(&uf);
- fail_uprobe_end:
- 	uprobe_end_dup_mmap();
-+	mmap_write_unlock(mm);
- 	return retval;
- fail_nomem_anon_vma_fork:
- 	mpol_put(vma_policy(tmp));
+ 	free_arg_pages(bprm);
+diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+index 0571701ab1c5..3bf06212fbae 100644
+--- a/include/linux/binfmts.h
++++ b/include/linux/binfmts.h
+@@ -22,7 +22,7 @@ struct linux_binprm {
+ # define MAX_ARG_PAGES	32
+ 	struct page *page[MAX_ARG_PAGES];
+ #endif
+-	struct mm_struct *mm;
++	struct mm_struct *mm; /* nascent mm, write-locked */
+ 	unsigned long p; /* current top of mem */
+ 	unsigned long argmin; /* rlimit marker for copy_strings() */
+ 	unsigned int
 -- 
 2.28.0.806.g8561365e88-goog
