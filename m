@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C5B2817CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0752817D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388223AbgJBQXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:23:43 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:20885 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgJBQXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:23:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601655821; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uEPu1FRcUu9u8HJMWtnVjI5EIS8OxL5zgVv90u9nEAI=;
- b=bfiFHhWHOYjQ+eVmwNfZsCpsITgESC220OqiOtZ13ai9f8k0q1i69Tyb5Xd95kUEpA4I4mKg
- yqm4HuzXoL+v6gMMbdRSNjV9cS1x6FnKMFqUODOY/vpDeOLqy4VAw+ApHl6g2FI1oMiKX+Bi
- 8sNZXHJW3u82DoSO90iRHLJ+UMM=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f77540a42f9861fb1d39017 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 16:23:38
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 02FB0C433FF; Fri,  2 Oct 2020 16:23:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8E1FC433FE;
-        Fri,  2 Oct 2020 16:23:37 +0000 (UTC)
+        id S2388204AbgJBQYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:24:01 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:43485 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBQYA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:24:00 -0400
+Received: by mail-ed1-f66.google.com with SMTP id dn5so2244793edb.10;
+        Fri, 02 Oct 2020 09:23:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+MzJdC7AJYBNKP850flRQBqAg39526c7mEcoDXa1vc8=;
+        b=W6AYcQXSj6ucI27Iry7nUl8m0KcdwMhvYJ3h3OtGNItARH9rlTLv2szvaLrDzvQISu
+         O10V0pJNX5pcLteJqlLURROHmMrLQQbiXoLvaXKBRfeNr2RXdo6rT/hFNarMEjrgIXlD
+         dGUHGkeulcE+y698KGQsa9ZsTtgB/YiHUAicDbPqv0kMm+xSofeE+iF/VLJ/LHOtg22y
+         Ys/FkIj0RXlnV+/Ikwa3dkbt4vVNPhsOQMSBSUfnAjW2Dflj8cXxsKmJi7cKGVtOz/Jp
+         34HoRDbzmQrTHGVPH76D4T7qsx84zhyqpmD1BybxzRK2HmA3xZb1znsAjq87hmii9oe0
+         /oCg==
+X-Gm-Message-State: AOAM532Aqnd+tKaCxWlsyVLIQb613WpO6ANOhksefNlMAng6fmyYJLTv
+        2QOYhdtv95N4owtmVQyJp8w=
+X-Google-Smtp-Source: ABdhPJwX7D85xx3iEoq/pMeJv9+pxrsyzjqmdtd89l7+FvbLqYa2SJikvg/hGqBR4vKxrCoYrmqIbg==
+X-Received: by 2002:aa7:d15a:: with SMTP id r26mr3222326edo.181.1601655837011;
+        Fri, 02 Oct 2020 09:23:57 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id i7sm1604495ejo.22.2020.10.02.09.23.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 02 Oct 2020 09:23:56 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 18:23:53 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Sangwon Jee <jeesw@melfas.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3 01/27] Input: Simplify with dev_err_probe()
+Message-ID: <20201002162353.GA5870@kozik-lap>
+References: <20200827185829.30096-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 02 Oct 2020 21:53:37 +0530
-From:   pintu@codeaurora.org
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/util.c: Add error logs for commitment overflow
-In-Reply-To: <20201002121726.GF4555@dhcp22.suse.cz>
-References: <1601639861-32171-1-git-send-email-pintu@codeaurora.org>
- <20201002121726.GF4555@dhcp22.suse.cz>
-Message-ID: <adaf346febe6bb6fbdcedb8709e35bcb@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200827185829.30096-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-02 17:47, Michal Hocko wrote:
-
->> __vm_enough_memory: commitment overflow: ppid:150, pid:164, 
->> pages:62451
->> fork failed[count:0]: Cannot allocate memory
+On Thu, Aug 27, 2020 at 08:58:02PM +0200, Krzysztof Kozlowski wrote:
+> Hi,
 > 
-> While I understand that fork failing due to overrcomit heuristic is non
-> intuitive and I have seen people scratching heads due to this in the
-> past I am not convinced this is a right approach to tackle the problem.
-
-Dear Michal,
-First, thank you so much for your review and comments.
-I totally agree with you.
-
-> First off, referencing pids is not really going to help much if process
-> is short lived.
-
-Yes, I agree with you.
-But I think this is most important mainly for short lived processes 
-itself.
-Because, when this situation occurs, no one knows who could be the 
-culprit.
-However, user keeps dumping "ps" or "top" in background to reproduce 
-once again.
-At this time, we can easily match the pid, process-name (at least in 
-most cases).
-
-> Secondly, __vm_enough_memory is about any address space
-> allocation. Why would you be interested in parent when doing mmap?
+> Changes since v2:
+> 1. Add review tags,
+> 2. Fixes after review (see individual patches).
+> 3. Two new patches - 26 and 27.
+> 
 > 
 
-Yes agree, we can remove ppid from here.
-I thought it might be useful at least in case of fork (or short lived 
-process).
+Hi Dmitry,
 
-> Last but not least _once is questionable as well. The first instance
-> might happen early during the system lifetime and you will not learn
-> about future failures so the overall point of debuggability is 
-> seriously
-> inhibited.
+Any comments here? Some of these nicely simplify the code or remove some
+lines.
+
+Best regards,
+Krzysztof
+
+> Best regards,
+> Krzysztof
 > 
-> Maybe what you want is to report higher up the call chain (fork?) and
-> have it ratelimited rather than _once? Or maybe just try to live with
-> the confusing situation?
 > 
-
-Okay agree. I can change to pr_err_ratelimited.
-In-fact, initially I thought to use ratelimited itself but then I 
-thought
-just once also should be fine at least.
-
-
-Thanks,
-Pintu
+> 
+> Krzysztof Kozlowski (27):
+>   Input: gpio_keys_polled - Simplify with dev_err_probe()
+>   Input: gpio-vibra - Simplify with dev_err_probe()
+>   Input: pwm-beeper - Simplify with dev_err_probe()
+>   Input: pwm-vibra - Simplify with dev_err_probe()
+>   Input: rotary_encoder - Simplify with dev_err_probe()
+>   Input: elan_i2c - Simplify with dev_err_probe()
+>   Input: bu21013_ts - Simplify with dev_err_probe()
+>   Input: bu21029_ts - Simplify with dev_err_probe()
+>   Input: chipone_icn8318 - Simplify with dev_err_probe()
+>   Input: cy8ctma140 - Simplify with dev_err_probe()
+>   Input: edf-ft5x06 - Simplify with dev_err_probe()
+>   Input: ektf2127 - Simplify with dev_err_probe()
+>   Input: elants_i2c - Simplify with dev_err_probe()
+>   Input: goodix - Simplify with dev_err_probe()
+>   Input: melfas_mip4 - Simplify with dev_err_probe()
+>   Input: pixcir_i2c_ts - Simplify with dev_err_probe()
+>   Input: raydium_i2c_ts - Simplify with dev_err_probe()
+>   Input: resistive-adc-touch - Simplify with dev_err_probe()
+>   Input: silead - Simplify with dev_err_probe()
+>   Input: sis_i2c - Simplify with dev_err_probe()
+>   Input: surface3_spi - Simplify with dev_err_probe()
+>   Input: sx8643 - Simplify with dev_err_probe()
+>   Input: bcm-keypad - Simplify with dev_err_probe()
+>   gpio: Add devm_fwnode_gpiod_get_optional() helpers
+>   Input: gpio_keys - Simplify with dev_err_probe()
+>   Input: bu21013_ts - Use local 'client->dev' variable in probe()
+>   Input: bu21029_ts - Use local 'client->dev' variable in probe()
+> 
+>  drivers/gpio/gpiolib-devres.c                 | 71 ++++++++++++++++++
+>  drivers/input/keyboard/bcm-keypad.c           | 14 ++--
+>  drivers/input/keyboard/gpio_keys.c            | 25 +++----
+>  drivers/input/keyboard/gpio_keys_polled.c     |  8 +--
+>  drivers/input/misc/gpio-vibra.c               | 20 ++----
+>  drivers/input/misc/pwm-beeper.c               | 19 ++---
+>  drivers/input/misc/pwm-vibra.c                | 20 ++----
+>  drivers/input/misc/rotary_encoder.c           |  8 +--
+>  drivers/input/mouse/elan_i2c_core.c           |  9 +--
+>  drivers/input/touchscreen/bu21013_ts.c        | 72 ++++++++-----------
+>  drivers/input/touchscreen/bu21029_ts.c        | 53 ++++++--------
+>  drivers/input/touchscreen/chipone_icn8318.c   |  8 +--
+>  drivers/input/touchscreen/cy8ctma140.c        |  8 +--
+>  drivers/input/touchscreen/edt-ft5x06.c        | 10 +--
+>  drivers/input/touchscreen/ektf2127.c          |  8 +--
+>  drivers/input/touchscreen/elants_i2c.c        | 22 ++----
+>  drivers/input/touchscreen/goodix.c            | 40 +++--------
+>  drivers/input/touchscreen/melfas_mip4.c       |  9 +--
+>  drivers/input/touchscreen/pixcir_i2c_ts.c     | 38 ++++------
+>  drivers/input/touchscreen/raydium_i2c_ts.c    | 30 +++-----
+>  .../input/touchscreen/resistive-adc-touch.c   |  8 +--
+>  drivers/input/touchscreen/silead.c            |  8 +--
+>  drivers/input/touchscreen/sis_i2c.c           | 20 ++----
+>  drivers/input/touchscreen/surface3_spi.c      | 13 +---
+>  drivers/input/touchscreen/sx8654.c            | 10 +--
+>  include/linux/gpio/consumer.h                 | 30 ++++++++
+>  26 files changed, 253 insertions(+), 328 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
