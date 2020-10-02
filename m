@@ -2,180 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A036281316
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9755428131A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387895AbgJBMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgJBMqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:46:19 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17FC6206CD;
-        Fri,  2 Oct 2020 12:46:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601642777;
-        bh=fa8+43VJW2CwRdhfgbeNrekJyH+rurDoEBlBYSP/trc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2VEvdYSLvOPfnBqOn4Q6cikgVNV1LQbv90343MmGSySe7NW8IBMDkVme5w3nwPo7q
-         p4Ki3cwQH32pVivcjB33LzoCCexBqmXNkZpdDpXq/BnW4UHOhdCvGCpzZTa4LA9s+O
-         jCWB41vHzizZAhhZMJPLc3uebduLtGInPTtWceNI=
-Date:   Fri, 2 Oct 2020 14:46:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     poeschel@lemonage.de
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        id S2387787AbgJBMsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgJBMsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:48:10 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AABC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 05:48:10 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id d20so1138129qka.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 05:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qqs8ifS6kGN7LaOJsBRoUbMeD52hvAgPJsDQbcB16Ww=;
+        b=teN6lt9dYbTfeK4iHJe5EwHYYiMp8qbujal8f2CalekS8vb2pw+hAbarMaC3Dyy9/g
+         ZfIA6rxZ9+yK1ffdf1KM9aXD59XN5OfD6qRSiLddDtflDi4Ns2xS4ysacecYmjOd7o/Y
+         yxEz9yyXAVHbarO0UEK5GcYkbh6LYgtCsMFINrC1goIVzmQcfcXJ0TdsTCOQ04mn42DW
+         /AlRtZTPtEqGBYUA1DQfKR//S00/OvShWyJNcVZIzaLAcz9/Wc+28PbrogAtHRSlGAAI
+         sQsJAebzVERb8ad8PnaY3cuZPZc9FzzPw7D1bDFLlaueXV9yx3ZzezN5CqLgQgId8xb4
+         aB8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qqs8ifS6kGN7LaOJsBRoUbMeD52hvAgPJsDQbcB16Ww=;
+        b=n6WzT97SEJ9MW41Aeh1xiY7/5dGcc1paRRUyFjAaC4qNqbev/GoRPiN6YWywWCADQy
+         Wq4/SSXRba5VHthUo+AvtYq7XcY7HV+MGFeM/j56kq0ee7PZ2iuQnKbzNATf+L9tzzsE
+         E6IVPIY8XgRwHN2aAnD0PHTqA5sCpIsMEm4GTbC2GXbujcqn1RavvWoqOBWK7LL3MEv5
+         VH4DmRSwiQ3hYQR/ny8CQQxWxmjRAWWMDXNe7Dlm/x+laMQSkRFmtK2kk3XcLfvsK3ED
+         mWYiL6GZOW8KC6wBvrvAVGtOL3bakmfOhRAh6TumD1hScAhgfVQ7KKGfLlseLbjSSQ9P
+         6SSg==
+X-Gm-Message-State: AOAM5332Svi437Scea++MEX8WUVQNNuY6PXhllLTxp3e63wNl+xZqQBr
+        VuJn9O5YECMIxpc9GdId80goNGgWqsI+Nzt6
+X-Google-Smtp-Source: ABdhPJyQ2dJDmsq+UUaIzuzIq5vMU2J1btgFAxj6GOPoha5mgRKT6bHemLD/hK/dXSldsS3NSojT2A==
+X-Received: by 2002:a05:620a:13f9:: with SMTP id h25mr1764964qkl.283.1601642888962;
+        Fri, 02 Oct 2020 05:48:08 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id j25sm921577qtr.83.2020.10.02.05.48.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 05:48:08 -0700 (PDT)
+Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
+ cache maintenance
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] pwm: sysfs: Set class on pwm devices
-Message-ID: <20201002124616.GB3348424@kroah.com>
-References: <20201002123048.3073128-1-poeschel@lemonage.de>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-3-jonathan@marek.ca>
+ <20201002075321.GA7547@infradead.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+Date:   Fri, 2 Oct 2020 08:46:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002123048.3073128-1-poeschel@lemonage.de>
+In-Reply-To: <20201002075321.GA7547@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:30:47PM +0200, poeschel@lemonage.de wrote:
-> From: Lars Poeschel <poeschel@lemonage.de>
+On 10/2/20 3:53 AM, Christoph Hellwig wrote:
+>> @@ -8,6 +8,7 @@
+>>   #include <linux/shmem_fs.h>
+>>   #include <linux/dma-buf.h>
+>>   #include <linux/pfn_t.h>
+>> +#include <linux/dma-noncoherent.h>
 > 
-> This adds a class to exported pwm devices.
-> Exporting a pwm through sysfs did not yield udev events. The
-> dev_uevent_filter function does filter-out devices without a bus or
-> class.
-> This was already addressed in commit
-> commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
-> but this did cause problems and the commit got reverted with
-> commit c289d6625237 ("Revert "pwm: Set class for exported channels in
-> sysfs"")
-> Problem with the previous approach was, that there is a clash if we have
-> multiple pwmchips:
-> 	echo 0 > pwmchip0/export
-> 	echo 0 > pwmchip1/export
-> would both export /sys/class/pwm/pwm0 .
+> NAK, dma-noncoherent.h is not for driver use.  And will in fact go
+> away in 5.10.
 > 
-> Now this patch changes the sysfs interface. We do include the pwmchip
-> number into the pwm directory that gets exported.
-> With the example above we get:
-> 	/sys/class/pwm/pwm-0-0
-> 	/sys/class/pwm/pwm-1-0
-> We maintain ABI backward compatibility through symlinks.
-> 	/sys/class/pwm/pwmchip0/pwm0
-> 	/sys/class/pwm/pwmchip1/pwm0
-> are now symbolic links to the new names.
+
+Not actually used, so can be removed.
+
+>>   
+>>   #include <drm/drm_prime.h>
+>>   
+>> @@ -808,6 +809,20 @@ int msm_gem_cpu_fini(struct drm_gem_object *obj)
+>>   	return 0;
+>>   }
+>>   
+>> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
+>> +		size_t range_start, size_t range_end)
+>> +{
+>> +	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+>> +
+>> +	/* TODO: sync only the required range, and don't invalidate on clean */
+>> +
+>> +	if (flags & MSM_GEM_SYNC_CACHE_CLEAN)
+>> +		sync_for_device(msm_obj);
+>> +
+>> +	if (flags & MSM_GEM_SYNC_CACHE_INVALIDATE)
+>> +		sync_for_cpu(msm_obj);
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
-> ---
->  drivers/pwm/sysfs.c | 57 +++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 47 insertions(+), 10 deletions(-)
+> And make to these ones as well.  They are complete abuses of the DMA
+> API, and while we had to live with that for now to not cause regressions
+> they absoutely must not be exposed in a userspace ABI like this.
 > 
-> diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-> index 449dbc0f49ed..c708da17a857 100644
-> --- a/drivers/pwm/sysfs.c
-> +++ b/drivers/pwm/sysfs.c
-> @@ -240,8 +240,10 @@ static void pwm_export_release(struct device *child)
->  
->  static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
->  {
-> +	struct pwm_chip *chip = dev_get_drvdata(parent);
->  	struct pwm_export *export;
->  	char *pwm_prop[2];
-> +	char *link_name;
->  	int ret;
->  
->  	if (test_and_set_bit(PWMF_EXPORTED, &pwm->flags))
-> @@ -256,25 +258,39 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
->  	export->pwm = pwm;
->  	mutex_init(&export->lock);
->  
-> +	export->child.class = parent->class;
->  	export->child.release = pwm_export_release;
->  	export->child.parent = parent;
->  	export->child.devt = MKDEV(0, 0);
->  	export->child.groups = pwm_groups;
-> -	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
-> +	dev_set_name(&export->child, "pwm-%u-%u", chip->base, pwm->hwpwm);
->  
->  	ret = device_register(&export->child);
-> -	if (ret) {
-> -		clear_bit(PWMF_EXPORTED, &pwm->flags);
-> -		put_device(&export->child);
-> -		export = NULL;
-> -		return ret;
-> +	if (ret)
-> +		goto error;
-> +
-> +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
-> +	if (link_name == NULL) {
-> +		ret = -ENOMEM;
-> +		goto dev_unregister;
->  	}
-> -	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=pwm%u", pwm->hwpwm);
-> +
-> +	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=%s",
-> +			export->child.kobj.name);
->  	pwm_prop[1] = NULL;
->  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
 
-Do you still need to do this by hand?  Why can't this uevent field
-belong to the class and have it create this for you automatically when
-the device is added?
+How do you propose that cached non-coherent memory be implemented? It is 
+a useful feature for userspace.
 
->  	kfree(pwm_prop[0]);
->  
-> -	return 0;
-> +	ret = sysfs_create_link(&parent->kobj, &export->child.kobj, link_name);
-
-You create the link _after_ you told userspace it was there, you raced
-and lost :(
-
-
-
-> +	return ret;
-> +
-> +dev_unregister:
-> +	device_unregister(&export->child);
-> +error:
-> +	clear_bit(PWMF_EXPORTED, &pwm->flags);
-> +	put_device(&export->child);
-> +	export = NULL;
-> +	return ret;
->  }
->  
->  static int pwm_unexport_match(struct device *child, void *data)
-> @@ -286,6 +302,7 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
->  {
->  	struct device *child;
->  	char *pwm_prop[2];
-> +	char *link_name;
->  
->  	if (!test_and_clear_bit(PWMF_EXPORTED, &pwm->flags))
->  		return -ENODEV;
-> @@ -294,7 +311,11 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
->  	if (!child)
->  		return -ENODEV;
->  
-> -	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=pwm%u", pwm->hwpwm);
-> +	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
-> +	if (link_name)
-> +		sysfs_delete_link(&parent->kobj, &child->kobj, link_name);
-> +
-> +	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=%s", child->kobj.name);
->  	pwm_prop[1] = NULL;
->  	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
-
-Same uevent question here.
-
-Otherwise, this looks good, nice work in figuring out the is_visable
-stuff and everything.
-
-thanks,
-
-greg k-h
