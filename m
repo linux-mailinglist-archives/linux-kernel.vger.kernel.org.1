@@ -2,208 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCCF281778
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CDA281775
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388053AbgJBQIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733260AbgJBQIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:08:43 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F05C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:08:41 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id d18so536927uav.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+xu/Uk9wb4/SRX/lNOg251KFRQf7KzG5P3wRuNCk78Q=;
-        b=a3BhqywDHcthMTGATAxbl3NdAD83stTIBlQ2FfQ5ezFmBlhdJvMt0IZndBwDKvAmc8
-         m+njQ9M9skhmu9Q/AVESIG77rI8bC3IK0wnCXevl9VVVWrYn3rpllhfvcm+gW9GJJj8J
-         xyRSvc901uFfOxXZfBSXUGKak3C+AmMBhUi5k8Drd2CrZwMk7O+tPHNydC6bfHTcC3dw
-         fRSzIi96ECelYHaGgttb+oHit6lsATIJzcNO/nYihWqoxu8BxtY4PnIhFP7dwqUCsOue
-         DBH466z6r4OG/3+B3AHF8j/iKMdojiqmAcjVIlSIAK5myL3TxprvK7eP34QlWAiIWg7o
-         HraQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+xu/Uk9wb4/SRX/lNOg251KFRQf7KzG5P3wRuNCk78Q=;
-        b=S+kl0dllVh2yzyrerrdiFEFpIoqN9W+B8p82jNyJJiYacwXia7bizQHGKgtK+f/d2S
-         Q1ESCmyut6xuBjtfJiKkASdoa1IienPSEUNi/VNcvkiQjEXcz/2ZnoKRDKPMqmir3ErY
-         v8+g78NOV7X9ZoBn27wSF4OCqS11uemLU1KQlRqHw0hc3uJwcnY6iUEGNUOWDdJMl7NS
-         kJckkjkK/h4v+QpgrJD3V8qDuJEqf4ccAA9aRRAgz0HMVYpicF8gutycKsD2UH/S7qYb
-         7r3aB9Jg1DzDrUjriudV9Waaveo2KkLT49dKF1RiZXVErcB05TkV0bFkFRzeYOS1Io+N
-         CbLg==
-X-Gm-Message-State: AOAM533dFpT4ePJgAhOoah+c1PROZqvkgE688GXc+ByLsFgcvHAVCCtf
-        ohmpSYTynFgKvyR1iJkim2Edya6vwphwEvZTl/jVVw==
-X-Google-Smtp-Source: ABdhPJygv1guoMmOlqYRQxvkcv9hBfbPNVn1KMr3qe8rFpypjiJPn3b/GKYn1BpK1Fr1JuCtbnaxJj09Zqlzs4FZwWo=
-X-Received: by 2002:ab0:768:: with SMTP id h95mr1573232uah.23.1601654916896;
- Fri, 02 Oct 2020 09:08:36 -0700 (PDT)
+        id S2387983AbgJBQIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733260AbgJBQIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:08:30 -0400
+Received: from [192.168.1.74] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52A32206FA;
+        Fri,  2 Oct 2020 16:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601654909;
+        bh=e+lHvHZKEvcifClxl+8tPEAdY7A3K/44PBL/+/xeXRo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CoZ7r6sXBNsJ64TKf9bQ4lMf/IJp008DyMzHkFU0lDghcsroxj1LwAsOeU/rP+BQM
+         7v7xMwTYX1eGkQ8AiJ8t7LoM0oDIZBkXpauh06nvcdNsvBpVPyX8sxGOZXSbX5r+hp
+         BPgiiYzV0RPlYXriAS+WOh7LTgLRSWIBw4gYMFTs=
+Subject: Re: [PATCH v6 4/5] PCI: only return true when dev io state is really
+ changed
+To:     Ethan Zhao <haifeng.zhao@intel.com>, bhelgaas@google.com,
+        oohall@gmail.com, ruscur@russell.cc, lukas@wunner.de,
+        andriy.shevchenko@linux.intel.com, stuart.w.hayes@gmail.com,
+        mr.nuke.me@gmail.com, mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com,
+        xerces.zhao@gmail.com
+References: <20200930070537.30982-1-haifeng.zhao@intel.com>
+ <20200930070537.30982-5-haifeng.zhao@intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <52e9ba48-2789-31b8-b80c-23854190c4d4@kernel.org>
+Date:   Fri, 2 Oct 2020 12:08:27 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-3-badhri@google.com>
- <20201002133952.GA3411859@kroah.com> <20201002134041.GA3412330@kroah.com>
-In-Reply-To: <20201002134041.GA3412330@kroah.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Fri, 2 Oct 2020 09:08:00 -0700
-Message-ID: <CAPTae5LBeY1qifPmGce+6Cu2hjVx=QZazk53Y=n6RPPRAuozLA@mail.gmail.com>
-Subject: Re: [PATCH v9 02/15] usb: typec: tcpci: Add set_vbus tcpci callback
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200930070537.30982-5-haifeng.zhao@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 9/30/2020 3:05 AM, Ethan Zhao wrote:
+> When uncorrectable error happens, AER driver and DPC driver interrupt
+> handlers likely call
+> 
+>    pcie_do_recovery()
+>    ->pci_walk_bus()
+>      ->report_frozen_detected()
+> 
+> with pci_channel_io_frozen the same time.
 
-Yes I tested it on usb-next before sending it out.
+We need some more data on this. If DPC is supported by HW, errors
+should be triggered by DPC not AER.
 
-  630 |  tcpci->tcpc.enable_frs =3D tcpci_enable_frs;
+If I remember right, there is a register that tells which AER errors
+should be handled by DPC.
 
-In https://patchwork.kernel.org/project/linux-usb/list/?series=3D356837
-i.e v9 version of this series,
-Patch 7 i.e. https://patchwork.kernel.org/patch/11804847/ is where the
-above line is added.
-
-I restested in combinations [1]  [2] [3] [4]. All of them were clear
-cherry-picks. I didnt any merge conflicts.
-
-Maybe you are applying patches in a different order ?
-If so can you post the git log for me to apply in the same order and test ?
-
-Or Do you want me to rebase on top of usb-testing ?
-I didnt see any merge conflicts though.
-
-Thanks,
-Badhri
-
-
-[1] usb-testing all patches in series
-https://patchwork.kernel.org/project/linux-usb/list/?series=3D356837
-07684bb88ed4 (HEAD -> usb-testing) usb: typec: tcpci_maxim: Enable
-auto discharge disconnect
-1c97f5e32ba6 usb: typec: tcpci: Implement Auto discharge disconnect callbac=
-ks
-1b829a062e6e usb: typec: tcpm: Implement enabling Auto Discharge
-disconnect support
-7ba4edfd9155 usb: typec: tcpm: Parse frs type-c current from device tree
-01d47f2e98ba usb: typec: tcpci_max77759: Fix vbus stuck on upon
-diconnecting sink
-9e8ed3d8809c usb: typec: tcpci: frs sourcing vbus callback
-8804a3f75563 usb: typec: tcpm: frs sourcing vbus callback
-69fe6c1c7648 usb: typec: tcpci_maxim: Add support for Sink FRS
-0a22d446c026 usb: typec: tcpci: Implement callbacks for FRS
-93c622006aa6 usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)
-14672081f2fd dt-bindings: connector: Add property to set initial
-current cap for FRS
-58372bd1d8e8 usb: typec: tcpci_maxim: Chip level TCPC driver
-c16b09eaf60f dt-bindings: usb: Maxim type-c controller device tree
-binding document
-32d66c0449e1 usb: typec: tcpci: Add set_vbus tcpci callback
-85e90e5054d6 usb: typec: tcpci: Add a getter method to retrieve
-tcpm_port reference
-97b65223c18f (origin/usb-testing) USB: core: remove polling for
-/sys/kernel/debug/usb/devices
-da0cb6310094 usb: typec: add support for STUSB160x Type-C controller family
-
-[2] usb-testing: till patch4 in series
-https://patchwork.kernel.org/project/linux-usb/list/?series=3D356837
-58372bd1d8e8 (HEAD -> usb-testing) usb: typec: tcpci_maxim: Chip level
-TCPC driver
-c16b09eaf60f dt-bindings: usb: Maxim type-c controller device tree
-binding document
-32d66c0449e1 usb: typec: tcpci: Add set_vbus tcpci callback
-85e90e5054d6 usb: typec: tcpci: Add a getter method to retrieve
-tcpm_port reference
-97b65223c18f (origin/usb-testing) USB: core: remove polling for
-/sys/kernel/debug/usb/devices
-da0cb6310094 usb: typec: add support for STUSB160x Type-C controller family
-
-[3] usb-next all patches in series
-https://patchwork.kernel.org/project/linux-usb/list/?series=3D356837
-62b5171538da (HEAD -> usb-next) usb: typec: tcpci_maxim: Enable auto
-discharge disconnect
-ea8987805ba6 usb: typec: tcpci: Implement Auto discharge disconnect callbac=
-ks
-af9a12b19352 usb: typec: tcpm: Implement enabling Auto Discharge
-disconnect support
-33aec604a529 usb: typec: tcpm: Parse frs type-c current from device tree
-31df45f3df20 usb: typec: tcpci_max77759: Fix vbus stuck on upon
-diconnecting sink
-0945795f170d usb: typec: tcpci: frs sourcing vbus callback
-c49080982064 usb: typec: tcpm: frs sourcing vbus callback
-67a3ff254cc1 usb: typec: tcpci_maxim: Add support for Sink FRS
-299582bbf78f usb: typec: tcpci: Implement callbacks for FRS
-bb4eb3fb65df usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)
-5aad64e80460 dt-bindings: connector: Add property to set initial
-current cap for FRS
-6c59a16ddee2 usb: typec: tcpci_maxim: Chip level TCPC driver
-172274d3e327 dt-bindings: usb: Maxim type-c controller device tree
-binding document
-bdba308a7164 usb: typec: tcpci: Add set_vbus tcpci callback
-66b7b0d83399 usb: typec: tcpci: Add a getter method to retrieve
-tcpm_port reference
-59ee364bafb2 (origin/usb-next) Merge tag 'thunderbolt-for-v5.10-rc1'
-of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt
-into usb-next
-bf1c67449833 USB: cdc-acm: clean up no-union-descriptor handling
-
-[4] usb-next till patch4 in series
-https://patchwork.kernel.org/project/linux-usb/list/?series=3D356837
-6c59a16ddee2 (HEAD -> usb-next) usb: typec: tcpci_maxim: Chip level TCPC dr=
-iver
-172274d3e327 dt-bindings: usb: Maxim type-c controller device tree
-binding document
-bdba308a7164 usb: typec: tcpci: Add set_vbus tcpci callback
-66b7b0d83399 usb: typec: tcpci: Add a getter method to retrieve
-tcpm_port reference
-59ee364bafb2 (origin/usb-next) Merge tag 'thunderbolt-for-v5.10-rc1'
-of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt
-into usb-next
-bf1c67449833 USB: cdc-acm: clean up no-union-descriptor handling
-
-
-On Fri, Oct 2, 2020 at 6:40 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Oct 02, 2020 at 03:39:52PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Sep 28, 2020 at 07:39:51PM -0700, Badhri Jagan Sridharan wrote:
-> > > set_vbus callback allows TCPC which are TCPCI based, however,
-> > > does not support turning on sink and source mode through
-> > > Command.SinkVbus and Command.SourceVbusDefaultVoltage.
-> > >
-> > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >
-> > This patch breaks the build, are you sure you tested it?
->
-> Sorry, not this patch, patch 4:
->
-> drivers/usb/typec/tcpm/tcpci.c: In function =E2=80=98tcpci_register_port=
-=E2=80=99:
-> drivers/usb/typec/tcpm/tcpci.c:630:13: error: =E2=80=98struct tcpc_dev=E2=
-=80=99 has no member named =E2=80=98enable_frs=E2=80=99
->   630 |  tcpci->tcpc.enable_frs =3D tcpci_enable_frs;
->       |             ^
->
->
-> thanks,
->
-> greg k-h
