@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39355281E69
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E38281E72
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725791AbgJBWeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJBWem (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:34:42 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E20C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 15:34:42 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id k6so3239300ior.2
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 15:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=SNgn8x1LkfWdEu78urJXFZ286D0Tvx+PX/T+D1sl55U=;
-        b=IgmqgaillHjRBupgPlS/rSxa5A4fvBoOAPxR/09Buwozw/CJXgOMLlVlyu9fV5DRxD
-         4FMLLkHTmDZbD7GeVCUjqksK9Cy57YLEJGijS1eUWscNukBe4lR9lkxStIYg80iLqFA9
-         npnoG63y8xTf7DkRnuZ8Y/2Mgc0hiKPuuQTDw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=SNgn8x1LkfWdEu78urJXFZ286D0Tvx+PX/T+D1sl55U=;
-        b=dbhO7FlRyB2R1BtWnmSfNh9WNtBE3YP1Ng8oFH4fxh4cXQJcNRJaF1P9c6vMTK39Uo
-         PxvsKS4YExjpPzzAxPvmVJ77Wqc6DuNEXiCqkFPIyoKbBFghtP8m1Z+TrpSddlp2zj/F
-         wFW8QtWxjQnviUSNuEP2OmpMPVDCqCjvVXfrATaf+SUhp07kj+SDYwQTU5FetLs7pUzu
-         /lk3Ofp2ZY/nCj5CMAjEFvAQLBPgql5GxONo248nxIPfBM9tTLy5+At8ssYO1KqhVkzG
-         mOnqU9dzF4vMkteWIyKqPNoGoT3bynvnVJWZWolQDG/ky+R7VQzn7HZzhELTgc8z9AEW
-         27ww==
-X-Gm-Message-State: AOAM530tl4oH0IweF4YTd0YPTxpgQdDE3qvVrZueWa/LLboifi64sp9o
-        +qJM1EfUdk8/4vFDL45cLCHVGA==
-X-Google-Smtp-Source: ABdhPJwukQiQGLC2KjOLkywVvqlG84GArIKDCLqoPt6By4T5ltR9BkuCqpbnNN815yJFlbhwBJUcGw==
-X-Received: by 2002:a02:6cd0:: with SMTP id w199mr3937328jab.121.1601678081920;
-        Fri, 02 Oct 2020 15:34:41 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t2sm1454893ilf.75.2020.10.02.15.34.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 15:34:41 -0700 (PDT)
-To:     idryomov@gmail.com, dongsheng.yang@easystack.cn, axboe@kernel.dk
-Cc:     ceph-devel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: drivers/block/rbd.c: atomic_inc_return_safe() &
- atomic_dec_return_safe()
-Message-ID: <ce2dbec5-00f8-831b-3138-cc4f3b8fdb51@linuxfoundation.org>
-Date:   Fri, 2 Oct 2020 16:34:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1725805AbgJBWhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:37:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19237 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgJBWhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:37:15 -0400
+IronPort-SDR: JeHEowA+U/sIFgLlmCYOatzqV+6hqz7qvoB6kH+0HKQHcYBJK7NtKFNfFXPTHAb+l53+WW/4Qk
+ 9h2X9cmJpeQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160415294"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="160415294"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 15:37:12 -0700
+IronPort-SDR: LLUcT0V5OpeuBqtmi4nDRoY/o/AXYVYk+inBwJfgnWy0bOqD4NBCBDToyhdYpPAjsjzBdOg8Mu
+ PDiJPkjSaXmw==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="510808738"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.254.5.53])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 15:37:11 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v2 0/7] Intel FPGA Security Manager Class Driver
+Date:   Fri,  2 Oct 2020 15:36:54 -0700
+Message-Id: <20201002223701.1317-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All,
+The Intel FPGA Security Manager class driver provides a common
+API for user-space tools to manage updates for secure Intel FPGA
+devices. Device drivers that instantiate the Intel Security
+Manager class driver will interact with a HW secure update
+engine in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
 
-I came across these atomic_inc_return_safe() & atomic_dec_return_safe()
-functions that hold the counters at safe values.
+A significant difference between the FPGA Manager and the Intel FPGA 
+Security Manager is that the FPGA Manager does a live update (Partial
+Reconfiguration) to a device whereas the Intel FPGA Security Manager
+updates the FLASH images for the Static Region and the BMC so that
+they will be loaded the next time the FPGA card boots. Security is
+enforced by hardware and firmware. The security manager interacts
+with the firmware to initiate an update, pass in the necessary data,
+and collect status on the update.
 
-atomic_inc_return_safe()
+The n3000bmc-secure driver is the first driver to use the Intel FPG
+Security Manager. This driver was previously submittied in the same
+patch set, but has been split out in to a separate patch set for V2.
+Follow-on Intel devices will also make use of this common API for
+secure updates.
 
-If the counter is already 0 it will not be incremented.
-If the counter is already at its maximum value returns
--EINVAL without updating it.
+In addition to managing secure updates of the FPGA and BMC images,
+the Intel FPGA Security Manager update process may also used to
+program root entry hashes and cancellation keys for the FPGA static
+region, the FPGA partial reconfiguration region, and the BMC.
 
-atomic_dec_return_safe()
+Secure updates make use of the request_firmware framework, which
+requires that image files are accessible under /lib/firmware. A request
+for a secure update returns immediately, while the update itself
+proceeds in the context of a kernel worker thread. Sysfs files provide
+a means for monitoring the progress of a secure update and for
+retrieving error information in the event of a failure.
 
-Decrement the counter.  Return the resulting value, or -EINVAL
+The API consists of sysfs nodes and supports the following functions:
 
-These two routines are static and only used in rbd.c.
+(1) Instantiate and monitor a secure update
+(2) Display security information including: Root Entry Hashes (REH),
+    Cancelled Code Signing Keys (CSK), and flash update counts for
+    both BMC and FPGA images.
 
-Can these become part of atomic_t ops?
+Changelog v1 -> v2:
+  - Separated out the MAX10 BMC Security Engine to be submitted in
+    a separate patch-set.
+  - Bumped documentation dates and versions
+  - Split ifpga_sec_mgr_register() into create() and register() functions
+  - Added devm_ifpga_sec_mgr_create()
+  - Added Documentation/fpga/ifpga-sec-mgr.rst 
+  - Changed progress state "read_file" to "reading"
+  - Added sec_error() function (similar to sec_progress())
+  - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+  - Removed typedefs for imgr ops
+  - Removed explicit value assignments in enums
+  - Other minor code cleanup per review comments 
 
-thanks,
--- Shuah
+Russ Weight (7):
+  fpga: sec-mgr: intel fpga security manager class driver
+  fpga: sec-mgr: enable secure updates
+  fpga: sec-mgr: expose sec-mgr update status
+  fpga: sec-mgr: expose sec-mgr update errors
+  fpga: sec-mgr: expose sec-mgr update size
+  fpga: sec-mgr: enable cancel of secure update
+  fpga: sec-mgr: expose hardware error info
+
+ .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 143 ++++
+ Documentation/fpga/ifpga-sec-mgr.rst          |  50 ++
+ Documentation/fpga/index.rst                  |   1 +
+ MAINTAINERS                                   |   9 +
+ drivers/fpga/Kconfig                          |   9 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/ifpga-sec-mgr.c                  | 781 ++++++++++++++++++
+ include/linux/fpga/ifpga-sec-mgr.h            | 137 +++
+ 8 files changed, 1133 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
+ create mode 100644 Documentation/fpga/ifpga-sec-mgr.rst
+ create mode 100644 drivers/fpga/ifpga-sec-mgr.c
+ create mode 100644 include/linux/fpga/ifpga-sec-mgr.h
+
+-- 
+2.17.1
+
