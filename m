@@ -2,102 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3E3281842
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C99D28183C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388222AbgJBQr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:47:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:56670 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388163AbgJBQrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388188AbgJBQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388134AbgJBQrR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Oct 2020 12:47:17 -0400
-IronPort-SDR: Dcq2GnRugQboeaJHGud0NCBSho/kd2SmwWR+hcpSbj3CucPPN2zmQfKqo4hIa9Hs4MZFA+Yhmp
- JbQDC7JKjnXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="181151202"
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="181151202"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 09:47:15 -0700
-IronPort-SDR: QIXtnXIiO8sq5DQteA9UDuZY5NUF6shW++CcOMghdLJOhZwNmogwl0IZZ/CPBogwpyYMcBRahV
- YrozH8IdqJ9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="342027071"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga008.jf.intel.com with SMTP; 02 Oct 2020 09:47:12 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Oct 2020 19:47:12 +0300
-Date:   Fri, 2 Oct 2020 19:47:12 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, Lyude Paul <lyude@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [LKP] Re: [drm/dp] 6509ca051a: PANIC:double_fault
-Message-ID: <20201002164712.GD6112@intel.com>
-References: <20200924143049.GJ28663@shao2-debian>
- <20200924164203.GL6112@intel.com>
- <90f391ac-e65c-c172-8fcb-ee1fe71de09a@intel.com>
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A9CC0613E7
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:47:17 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id m17so2243211ioo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Li4M3GK5y6x0SzTfqjxLLA9AT+ROiUGVRcFqRzm5Djg=;
+        b=a1gXL5toNpXLmacnL7yhtJtYu+HmO+zq2HSfVRcyZ9z5aGYPOUMcOsxSjRxLjTiwhj
+         zJBgESeE1qI3ToOAsK8MZWwKmHt51a3nMoD6FLDGupRKEjHEktpPC4yX8sNz7w/nKYtr
+         hL0t3LhSNNDXOlNOrlInWA796iaMFGVw4FjQQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Li4M3GK5y6x0SzTfqjxLLA9AT+ROiUGVRcFqRzm5Djg=;
+        b=eV+YD1l31nlzguWvwKJcJ4Lmy87Gs3W4TNoA6y6lTCct0V7EimvWoWqvA7Bpwm+rK1
+         njvbbOeab+4gfhezjpYJXsZgIDfvtKWlcmn5BK9nM8EymzYkfoJJHKJxoOm6Sr6E5BHI
+         c9yyjvoIo4YobBvDl6rDbmcZoI6WirQbnNz0UgaaHeXAwRA7ogPKHAQ7Lnu0AOkPoywi
+         fIFtoP1GvB/13m85ekUUgUsfJ9uW/wLQiel6fmIEP7FExpqNLljrmlggG0nMyfOlLkoz
+         P1HQd9HDiRpCgHYaiebxqf3m5fWiJnwisgwwq51g+3f9YQ3uHIb0ahMQuJsErAmmDHtd
+         0Fdg==
+X-Gm-Message-State: AOAM530lalBCTEV5M6DFLv2B0UgIS7/qAm4DVhScClFdGZzJC1EWXcJc
+        UXNbqDQXRAiOMRkJp7C32bp5RQ==
+X-Google-Smtp-Source: ABdhPJzrfRpNIYzV2uFrhJdCHt/QTSYBKDnpK2pS6zKI5Da6BP91uaqOQt3S2LEYZ+yKmaDKjo66AQ==
+X-Received: by 2002:a05:6638:10e9:: with SMTP id g9mr2960820jae.139.1601657236070;
+        Fri, 02 Oct 2020 09:47:16 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h2sm932771ioj.5.2020.10.02.09.47.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 09:47:15 -0700 (PDT)
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+To:     Joe Perches <joe@perches.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-iio@vger.kernel.org,
+        drbd-dev@tron.linbit.com,
+        =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        David Lechner <david@lechnology.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-clk@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
+ <20200929124108.GY4282@kadam>
+ <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
+ <5f0d2b20f5088281363bb4a35c5652a2c087f159.camel@perches.com>
+ <cd75e2d1-9923-b725-78cd-fd5611431584@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <81b94c3a-43d6-c9f5-0bc0-43bf65b3d5fc@linuxfoundation.org>
+Date:   Fri, 2 Oct 2020 10:47:13 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <cd75e2d1-9923-b725-78cd-fd5611431584@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <90f391ac-e65c-c172-8fcb-ee1fe71de09a@intel.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 01:26:09PM +0800, Rong Chen wrote:
+On 9/29/20 7:42 AM, Shuah Khan wrote:
+> On 9/29/20 7:34 AM, Joe Perches wrote:
+>> On Tue, 2020-09-29 at 14:47 +0200, Julia Lawall wrote:
+>>> On Tue, 29 Sep 2020, Dan Carpenter wrote:
+>>>> The times where commas are used deliberately to replace curly braces 
+>>>> are
+>>>> just evil.  Either way the code is cleaner with semi-colons.
+>>>
+>>> I also found exaamples like the following to be particularly unforunate:
+>>>
+>>>                                  fprintf(stderr,
+>>>                                          "page_nr %lu wrong count %Lu 
+>>> %Lu\n",
+>>>                                         page_nr, count,
+>>>                                         count_verify[page_nr]), exit(1);
+>>>
+>>> The exit is very hard to see, unless you know to look for it.
+>>
+>> I sent that patch last month.
+>> https://patchwork.kernel.org/patch/11734877/
+>>
 > 
+> I see what happened. This patch touches lib, cpupower, and selftests.
+> Guess lost in the limbo of who takes it.
 > 
-> On 9/25/20 12:42 AM, Ville Syrj�l� wrote:
-> > On Thu, Sep 24, 2020 at 10:30:49PM +0800, kernel test robot wrote:
-> >> Greeting,
-> >>
-> >> FYI, we noticed the following commit (built with gcc-9):
-> >>
-> >> commit: 6509ca051abf4ff60d63732badcb2173a715f741 ("drm/dp: Add drm_dp_downstream_{min,max}_tmds_clock()")
-> > That doesn't really do anything on its own. So can't see how it would
-> > make anything blow up.
+>   tools/lib/subcmd/help.c                    |  10 +-
+>   tools/power/cpupower/utils/cpufreq-set.c   |  14 +-
+>   tools/testing/selftests/vm/gup_benchmark.c |  18 +-
+>   tools/testing/selftests/vm/userfaultfd.c   | 296 +++++++++++++--------
+>   4 files changed, 210 insertions(+), 128 deletions(-)
 > 
-> Hi Ville,
+> I can take it through one of my trees.
 > 
-> The issue is 100% reproducible, could you try the reproduce steps:
-> 
-> To reproduce:
-> 
->          # build kernel
-> 	cd linux
-> 	cp config-5.9.0-rc4-00881-g6509ca051abf4 .config
-> 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
 
-Managed to find some Ubuntu machine where that would run.
+Rafael, Andrew,
 
-$ time ./bin/lkp qemu -k ~/bzImage ~/job-script
-...
-[    0.000000] Linux version 5.9.0-rc4-00027-g6509ca051abf (...) (gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.33.1 p2) 2.33.1) #2 SMP PREEMPT Fri Oct 2 19:24:28 EEST 2020
-...
-[   12.717392] Applicom driver: $Id: ac.c,v 1.30 2000/03/22 16:03:57 dwmw2 Exp $
-[   12.718889] ac.o: No PCI boards found.
-[   12.719696] ac.o: For an ISA board you must supply memory and irq parameters.
-[   12.721269] toshiba: not a supported Toshiba laptop
-[   12.722779] random: get_random_u32 called from arch_rnd+0x1c/0x40 with crng_init=0
-[   12.722784] random: get_random_u32 called from randomize_stack_top+0x35/0x50 with crng_init=0
-[   12.722787] random: get_random_u32 called from arch_align_stack+0x35/0x50 with crng_init=0
-...
-real	11m35,352s
-user	13m40,549s
-sys	0m13,071s
-$ echo $?
-0
+This patch is now applied to
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git 
+fixes branch.
 
--- 
-Ville Syrj�l�
-Intel
+This spans pm, kselftest-mm tests and tools/lib and has been
+in limbo for a few weeks for that reason.
+
+I decided to take this through kselftest tree to avoid having
+Joe split the patches.
+
+thanks,
+-- Shuah
+
+
+
+
