@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6222A281662
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71872281665
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388165AbgJBPS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:18:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44978 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgJBPS7 (ORCPT
+        id S2388196AbgJBPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBPTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:18:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601651938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z6EUHBkqVW4A4asmEIKfV9etkeKueHKWkFuO9+VAbxk=;
-        b=EX000Tc6LUzQSyXiiN3lyjLZdvUu2n9mk11573pEZ7huUsBXSBe2qf9F3F6bqfVVb0c+xm
-        S+ngX7jh8EHepFcpNPKOGpn6w1ul7wfbtwqOoj3pCNzTzPeavtMsdAo7hnjfZt4JF1C1gK
-        snNdpBePCnLwVR4XRA27dDXW70WnZiU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-pY_T4ZhEP9e783VyIblwTQ-1; Fri, 02 Oct 2020 11:18:56 -0400
-X-MC-Unique: pY_T4ZhEP9e783VyIblwTQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D737C104D40D;
-        Fri,  2 Oct 2020 15:18:49 +0000 (UTC)
-Received: from treble (ovpn-114-202.rdu2.redhat.com [10.10.114.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D4FD973699;
-        Fri,  2 Oct 2020 15:18:44 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 10:18:41 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/4] objtool: x86 instruction decoder and big
- endian cross compiles
-Message-ID: <20201002151841.4ojt45mtcpkylvdq@treble>
-References: <cover.thread-6ec90b.your-ad-here.call-01601502173-ext-7769@work.hours>
- <patch-2.thread-6ec90b.git-f1af53789d02.your-ad-here.call-01601502173-ext-7769@work.hours>
+        Fri, 2 Oct 2020 11:19:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E746FC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:19:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so2265124wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LKNths/LPQbAs0cdB5bW5xnTf55TpFYTO0PPt8yn7hM=;
+        b=HmtgrxraewM+QiIP5fF3kDfxH+EmFXsFA+9vQWpXPUnmkEM0HtsW9+VTFWmAcdO9ND
+         G/KAiTsCOQ9nGgYR5+kgU8dxn8FQ3yYel6OyOHGVrKcQksJew5YNQ5fSMG4d0GYguB2P
+         /PUnEHPYURpy7YGupOiGQvkHX4wQGcD4OLb42VLLXZNeiK5o4rOzcVRFLlUIZDhtvupk
+         pVAJICVVwgTSRqIiqqZg4YqdjditXgjaRtxhsfpuMYtb2cncgSUQinPd7BvCyqfn1dEI
+         op56BMgRzIfTXJfwwoPBJJVNbW/qtXmvlozQNgt1CrR3al8yECelmI9/GxOvY4yKEXpH
+         FFPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LKNths/LPQbAs0cdB5bW5xnTf55TpFYTO0PPt8yn7hM=;
+        b=Kia8i9hyPAYyoF1kF6gSV7BYv5vtP47YceoqauvT5IKZwwo2psLGcxqPb6AfUiwSU6
+         RlDCaoV0V3r7ZQRm3snCbAffS0u05loECfIRQOc8yCNNWf1zWvQGmlMflfgZL1rd7jwV
+         TOFJkEufqesZmdG3qXh9cdC7uL8c3004Ok++iDrUz9LXYvSqw+HtG/FhnFhGzA/hAXkW
+         CaC2o2zVPmSG5mWYU5n2vXpuP+vOVvm1UGFNZrFkrgnj+5S4ss6vr9rZJeeYlRwE23xc
+         RhvBsMoodzlgQfCYWGHvRk9iEo+Q7oJgwNu7dklyKm/YTwG+F0Ilvh53YZ1TvjElVk1i
+         njig==
+X-Gm-Message-State: AOAM531ykpfc/+q8+FZUrnDFWewrdvqgo4SNfFLQM/lx4MCpZuChJpLW
+        IVGRQOdqJLluFzhlA9caqEVKBA==
+X-Google-Smtp-Source: ABdhPJx3IBbQHwBSSzG6L4x/26S6UraQ0pRj1kDGMlBA3/UoTNvnCSqve7suFeszzrKl5zrRYzxPtQ==
+X-Received: by 2002:adf:dcc7:: with SMTP id x7mr3722324wrm.203.1601651984611;
+        Fri, 02 Oct 2020 08:19:44 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id y6sm2080079wrn.41.2020.10.02.08.19.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 08:19:44 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 17:19:43 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 02/16] devlink: Add reload action option to
+ devlink reload command
+Message-ID: <20201002151943.GB3159@nanopsycho.orion>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-3-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <patch-2.thread-6ec90b.git-f1af53789d02.your-ad-here.call-01601502173-ext-7769@work.hours>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <1601560759-11030-3-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 12:17:25AM +0200, Vasily Gorbik wrote:
-> From: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> 
-> Currently objtool seems to be the only tool from build tools needed
-> which breaks x86 cross compilation on big endian systems. Make the x86
-> instruction decoder of the objtool usable on big endian machines.
-> 
-> Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Thu, Oct 01, 2020 at 03:59:05PM CEST, moshe@mellanox.com wrote:
 
-Since this changes the decoder (which is shared with the kernel), please
-prefix the subject with "x86/insn:" instead of "objtool".
+[...]
 
-This patch is a bit ugly, but I don't necessarily have a better idea.
 
-Masami?
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index 1c286e9a3590..ddba63bce7ad 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -1077,10 +1077,11 @@ struct devlink_ops {
+> 	 * implemementation.
+> 	 */
+> 	u32 supported_flash_update_params;
+>+	unsigned long reload_actions;
+> 	int (*reload_down)(struct devlink *devlink, bool netns_change,
+>-			   struct netlink_ext_ack *extack);
+>-	int (*reload_up)(struct devlink *devlink,
+>-			 struct netlink_ext_ack *extack);
+>+			   enum devlink_reload_action action, struct netlink_ext_ack *extack);
+>+	int (*reload_up)(struct devlink *devlink, enum devlink_reload_action action,
+>+			 struct netlink_ext_ack *extack, unsigned long *actions_performed);
 
--- 
-Josh
+Nit. Could you please push extack to be the last arg here? It is common
+to have extack as the last arg + action and actions_performed are going
+to be side by side.
 
+Otherwise the patch looks fine.
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
