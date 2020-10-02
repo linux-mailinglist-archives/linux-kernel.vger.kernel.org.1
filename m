@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA2528262E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638E72816A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725866AbgJCT3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJCT3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:29:23 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A204AC0613E7
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:29:22 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y2so6071428lfy.10
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6apILh/pOBmMJaPWqV+iIu8fFhBDqWAm6/FGBYx5eqA=;
-        b=o1B64Sz5ZHFWERP/mq911Y4fSS4n2fyjhUtxwee9c5J/yiJ4ynyKHSL0CRxxnfUest
-         n3sFQtymgXePC/V3j/DskZ725ur7LFjHihkDAs35AOXQprHRx8ZLoxAMlZxteGIjGCF8
-         9H/HxFxWFYDuT13gIBBV+l+HslDIdN3Scwa/4PHZmhZ6dhoOoMZyUp/jQj5LZ52KslAw
-         X3HASNGQOkAq2BqBxDtBgwu4VRdVG4nydnEuUsKu1+YhQSniN+b5jePtJ/n2QwW2Bh3z
-         u2fp4L5zp/47y/Iw9afSwP9alSArrbUDg6sSAvtHyOlvP4chmx/90BsXvXcooDJUuxI1
-         jrNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6apILh/pOBmMJaPWqV+iIu8fFhBDqWAm6/FGBYx5eqA=;
-        b=YvVp+R4JJ/K9QDDAVVq9N5sWrDxy/o9K/TkqxBjW/KIA3mBcJPAu0+C2RWoBW64SwG
-         UUawbvj0a/tAOvDKfI3OTcDOzPAMFrCsmrDGK9pATsLqqHF1RMYy8P8kOKlyu7ZdS98U
-         IrAJOBf6AXm9T3766oe+shh8YEqXKR++mEnNlOXfRQEDw/mbvg32xswRM+HOtk0xMww8
-         pTAcxW6E/FFKhbb8bWy5bKtn13Wjo8u0EYY7SEKtwXxruMjGratNoClS4xRbi4KWnd51
-         iSEe1xr6xokj4xE7LzEx52HZoh2C4CUo+nEvGyx4RiosuDzh5LyITTuCSpBHIhCygnr9
-         LkmQ==
-X-Gm-Message-State: AOAM533fzrgvXlBloPmePXatyvXHxw38fwlLF6b/pfukHwDDxIQ4hrYw
-        dgmvjbBM5NRBermwCa/KgL8TNg==
-X-Google-Smtp-Source: ABdhPJyOe1QQXBpLdw5uNxP+eiD7p47Cr/n0DtPXX7KSdg7+Ulmgo5tIiP8wiubrO4P3eYbzBvkicg==
-X-Received: by 2002:ac2:5291:: with SMTP id q17mr2583609lfm.3.1601753360279;
-        Sat, 03 Oct 2020 12:29:20 -0700 (PDT)
-Received: from localhost (h85-30-9-151.cust.a3fiber.se. [85.30.9.151])
-        by smtp.gmail.com with ESMTPSA id l188sm1836722lfd.127.2020.10.03.12.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 12:29:18 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 12:50:26 -0700
-From:   Olof Johansson <olof@lixom.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, arm@kernel.org, soc@kernel.org,
-        Kukjin Kim <kgene@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL 4/5] ARM: samsung: mach/soc for v5.10
-Message-ID: <20200926195026.GA2230@lx2k>
-References: <20200920160705.9651-1-krzk@kernel.org>
- <20200920160705.9651-5-krzk@kernel.org>
+        id S2388349AbgJBPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:31:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34436 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387990AbgJBPb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:31:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601652717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=rYdY+SvDQe9ZTpqrFD5hOVBkZqgE/qo9AF1sRrTlM2I=;
+        b=OGdyVc6ybZl2vxu5UQJGx/wSEalchdBO3uXPEUUpNn5PyMR+ZqNdQlXcuPoeMI8Ugt0VpP
+        W1Nq5DVWiCn0dDB/ROv0XOfYXrdk+nmQYddJSdwo/k952UY8e7uO39JQ318Wpp87LJZwfu
+        BTJ+dUeB/AIXadTeGtB6ydsb2KxZnw4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2367AD18;
+        Fri,  2 Oct 2020 15:31:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EC5D8DA781; Fri,  2 Oct 2020 17:30:36 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.9-rc8
+Date:   Fri,  2 Oct 2020 17:30:36 +0200
+Message-Id: <cover.1601650060.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920160705.9651-5-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Sun, Sep 20, 2020 at 06:07:04PM +0200, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> This will conflict around renamed/moved files:
-> 
-> 1. arch/arm/mach-s3c/s3c24xx.c:
->    Merge both changes to new location, so:
-> =======
->  +#include "s3c24xx.h"
->  +#include "fb-core-s3c24xx.h"
->  +#include "nand-core-s3c24xx.h"
->  +#include "spi-core-s3c24xx.h"
->   
-> - static struct map_desc s3c2416_iodesc[] __initdata = {
-> + static struct map_desc s3c2416_iodesc[] __initdata __maybe_unused = {
-> =======
-> 
-> 2. drivers/soc/samsung/Kconfig
->    Add DEBUG_LL && MMU to SAMSUNG_PM_DEBUG section, so:
-> 
-> =======
->   config EXYNOS_PM_DOMAINS
->   	bool "Exynos PM domains" if COMPILE_TEST
->  -	depends on PM_GENERIC_DOMAINS || COMPILE_TEST
->  +	depends on (ARCH_EXYNOS && PM_GENERIC_DOMAINS) || COMPILE_TEST
->  +
->  +config SAMSUNG_PM_DEBUG
->  +	bool "Samsung PM Suspend debug"
->  +	depends on PM && DEBUG_KERNEL
->  +	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
->  +	depends on DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
-> ++	depends on DEBUG_LL && MMU
->  +	help
->  +	  Say Y here if you want verbose debugging from the PM Suspend and
->  +	  Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
->  +	  for more information.
->  +
-> =======
+two more fixes. One is for a lockdep warning/lockup (also caught by
+syzbot), that one has been seen in practice.  Regarding the other syzbot
+reports mentioned last time, they don't seem to be urgent and reliably
+reproducible so they'll be fixed later.
 
-I don't mind doing this conflict resolution, and will merge it now,
-but next time you can just base this branch on the cleanup branch.
+The second fix is for a potential corruption when device replace
+finishes and the in-memory state of trim is not copied to the new
+device.
 
+Please pull, thanks.
 
--Olof
+----------------------------------------------------------------
+The following changes since commit b5ddcffa37778244d5e786fe32f778edf2bfc93e:
+
+  btrfs: fix put of uninitialized kobject after seed device delete (2020-09-22 15:57:52 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc7-tag
+
+for you to fetch changes up to 4c8f353272dd1262013873990c0fafd0e3c8f274:
+
+  btrfs: fix filesystem corruption after a device replace (2020-09-30 19:40:51 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (1):
+      btrfs: fix filesystem corruption after a device replace
+
+Josef Bacik (2):
+      btrfs: move btrfs_scratch_superblocks into btrfs_dev_replace_finishing
+      btrfs: move btrfs_rm_dev_replace_free_srcdev outside of all locks
+
+ fs/btrfs/dev-replace.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/volumes.c     | 13 +++++--------
+ fs/btrfs/volumes.h     |  3 +++
+ 3 files changed, 52 insertions(+), 10 deletions(-)
