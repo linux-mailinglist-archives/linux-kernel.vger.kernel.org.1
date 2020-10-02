@@ -2,122 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE9D280DA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C84280DA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgJBGtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgJBGtw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:49:52 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DD7C0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:49:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x14so477196wrl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 23:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UoynpyD6AhgXUB6wR1FXtYWnjMZi4vEwFI3CCNbPh/Q=;
-        b=tWXguv2ZF0F5qwrOvcenJ2zOdlhvSJCtiTfazpgPgCUff7y5mZjhcy91c4+YFMJQFs
-         r30J/sQBFQQGHuHftJQldSaD1Up2mzT5VYE143b1Ny7JTtZJUGmGRtB0eeFhZFsWSSdU
-         VFXK+kxDZyob7WTGnDZTD4K08nvWYRegljwj0VAAt0sO3RX03Eq4TXbnh3B97nhZ2GFf
-         zS6u77rCgEG6WPXLkmco018F6NTrS+yeUvgX+DEoEUnSpTy0y9rIJojPpxm4Z9GIcm9s
-         tTOGdi/sEB0xMeuLFLtonRmCGZQjCDvx3uQvR8AN2QBfh2cZjeNQ87gbgOcuO3tdeYkY
-         g/YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UoynpyD6AhgXUB6wR1FXtYWnjMZi4vEwFI3CCNbPh/Q=;
-        b=dhODXhbYtzaksp0gb0ZuI7mr51m88A1lLKiL/f/2J97Xgzsun0CntrK4M+m4BCwrO1
-         iweTILqbG7pBJeGabcqDLTyUR+4FRIVuseGbZ7VwAGFKn/C8fX+LJQ6SXv1vbuvr4w86
-         axwU2gqM6aQTiLOsKhnu0Dvpb6TEYXI14TZeGY9Mrxo8mVlSuNIyyM9al6fUYHaTUZCF
-         ipSDRcC5qdJ/BNoFts71mCqZEVWXoMzpMr9ogIaAMaLj3qmTvDtfJaluaB8oZBoXrlmc
-         JERrGGjybAD7fggQSPyYlNmOnMCYOsj1jujOHdLw8AO+p/0tP9PnXKqHfygIK+o4MV+6
-         oIyw==
-X-Gm-Message-State: AOAM531+Xx/lX2UlxN63947NLbYe05deJSaBsBoPmWMT8yN7/wnM5vsw
-        +ZN7nQ8Gyz+t/Zt2h/iC80M+bAjzJefsVg==
-X-Google-Smtp-Source: ABdhPJwXKvamwY1YeQU9ErKMKhnd33q+LPxo4LI6im24/u+dR6YSHPEn41d7IqdD7pAJjfPLnHbrvQ==
-X-Received: by 2002:adf:fe42:: with SMTP id m2mr1161269wrs.367.1601621390382;
-        Thu, 01 Oct 2020 23:49:50 -0700 (PDT)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id v204sm660429wmg.20.2020.10.01.23.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 23:49:49 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 07:49:48 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Oct 1 (drivers/mfd/simple-mfd-i2c.o)
-Message-ID: <20201002064948.GQ6148@dell>
-References: <20201001213929.241c1006@canb.auug.org.au>
- <0dca758e-1b61-a4cd-db12-2e2060f7cf60@infradead.org>
- <20201002063203.GP6148@dell>
- <5974d448-a704-fd74-704c-b902b0ac9a8f@infradead.org>
+        id S1726227AbgJBGuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:50:19 -0400
+Received: from verein.lst.de ([213.95.11.211]:51231 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbgJBGuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 02:50:18 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C736F68B02; Fri,  2 Oct 2020 08:50:15 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 08:50:15 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 2/2] PM/hibernate: remove the bogus call to get_gendisk
+ in software_resume
+Message-ID: <20201002065015.GA9691@lst.de>
+References: <20200925161447.1486883-1-hch@lst.de> <20200925161447.1486883-3-hch@lst.de> <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5974d448-a704-fd74-704c-b902b0ac9a8f@infradead.org>
+In-Reply-To: <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Oct 2020, Randy Dunlap wrote:
-
-> On 10/1/20 11:32 PM, Lee Jones wrote:
-> > On Thu, 01 Oct 2020, Randy Dunlap wrote:
-> > 
-> >> On 10/1/20 4:39 AM, Stephen Rothwell wrote:
-> >>> Hi all,
-> >>>
-> >>> Changes since 20200930:
-> >>>
-> >>
-> >> on x86_64:
-> >>
-> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
-> >> simple-mfd-i2c.c:(.text+0x48): undefined reference to `__devm_regmap_init_i2c'
-> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_init':
-> >> simple-mfd-i2c.c:(.init.text+0x14): undefined reference to `i2c_register_driver'
-> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_exit':
-> >> simple-mfd-i2c.c:(.exit.text+0xd): undefined reference to `i2c_del_driver'
-> >>
-> >>
-> >> CONFIG_I2C=m
-> >> CONFIG_MFD_SIMPLE_MFD_I2C=y
-> >> CONFIG_MFD_SL28CPLD=y
-> >>
-> >>
-> >> Is linux-next missing the source code for CONFIG_MFD_SL28CPLD?
-> > 
-> > There isn't any associated source code.  It's a virtual symbol.
-> > 
-> >> The build error is caused by:
-> >>
-> >> config MFD_SL28CPLD
-> >> 	tristate "Kontron sl28cpld Board Management Controller"
-> >> 	select MFD_SIMPLE_MFD_I2C
-> >>
-> >> that "select" when "depends on I2C" is absent/missing.
-> > 
-> > Okay, so CONFIG_MFD_SIMPLE_MFD_I2C needs to depend on I2C too?  I made
-> > the assumption that 'select REGMAP_I2C' would do the right thing.
+On Wed, Sep 30, 2020 at 05:45:27PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Sep 25, 2020 at 6:15 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > get_gendisk grabs a reference on the disk and file operation, so this
+> > code will leak both of them while having absolutely no use for the
+> > gendisk itself.
+> >
+> > This effectively reverts commit 2df83fa4bce421f
+> > ("PM / Hibernate: Use get_gendisk to verify partition if resume_file is integer format")
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> "select" never follows any dependency chains, so Yes, the other symbol
-> needs to depend on I2C also.
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Makes sense.  Will fix, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Can you pick it up through the PM tree?  The big rework in this area
+I have planned won't land before 5.11 anyway.
