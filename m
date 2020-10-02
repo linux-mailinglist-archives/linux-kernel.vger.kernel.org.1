@@ -2,256 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2C9280BB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D438A280BC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387463AbgJBAdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 20:33:09 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39360 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgJBAdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 20:33:08 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601598786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ToFPZC5R052RWCcQF5hx9E1/n42Xsp/juzEFhQsvn/o=;
-        b=ydRiITxOsP6uCeFfr9tuE6Y8SJbLrh7UMWa1fxWRHQXa5ywKPwKJQMEF9RToTfJrldpia6
-        ncjZd2Vjm7994KuIyYdTD351jb4or0aKNnCYioJ7DVpjloQi9NNAHfNhFfR2aPcq72Piqk
-        g5V2NlHJpifFx4r11q9vS8V1qBAqVmTII5AJOpX9qMjh9pc9xAbnnWSO+yh5wR7Rom3Bup
-        GRvx8FPmRfyAEKOk14+7UnmjBIdWzoIE7c1FMv12M2ZMOYE+8gXnaP/UDF5A4MyQdY8np0
-        bCjHfghhfYL0/hfsGWyY/9EKU/+fSUcJCcep6bV7PZtul2SC0APd4XnjUGebqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601598786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ToFPZC5R052RWCcQF5hx9E1/n42Xsp/juzEFhQsvn/o=;
-        b=q5AWawBlll32dWXXTHGWLeTsjGOquGQI9CVFpgOS2NvTgsFiK8D2FULcPNjhzb/18XsMXx
-        cijsbhNj8M26KrAg==
-To:     Erez Geva <erez.geva.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Simon Sudler <simon.sudler@siemens.com>,
-        Andreas Meisinger <andreas.meisinger@siemens.com>,
-        Andreas Bucher <andreas.bucher@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andreas Zirkler <andreas.zirkler@siemens.com>,
-        Ermin Sakic <ermin.sakic@siemens.com>,
-        An Ninh Nguyen <anninh.nguyen@siemens.com>,
-        Michael Saenger <michael.saenger@siemens.com>,
-        Bernd Maehringer <bernd.maehringer@siemens.com>,
-        Gisela Greinert <gisela.greinert@siemens.com>,
-        Erez Geva <erez.geva.ext@siemens.com>,
-        Erez Geva <ErezGeva2@gmail.com>
-Subject: Re: [PATCH 7/7] TC-ETF support PTP clocks
-In-Reply-To: <20201001205141.8885-8-erez.geva.ext@siemens.com>
-References: <20201001205141.8885-1-erez.geva.ext@siemens.com> <20201001205141.8885-8-erez.geva.ext@siemens.com>
-Date:   Fri, 02 Oct 2020 02:33:05 +0200
-Message-ID: <87a6x5eabi.fsf@nanos.tec.linutronix.de>
+        id S2387504AbgJBApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 20:45:07 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:44792 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387430AbgJBApG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 20:45:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601599505; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=tIPTDeHw77fjXshMc7iSNtvBryZjsLxbooevavI8i74=; b=Z4oLddha5FtOlrqqrzz1+c+zotImxvN6dUck4/7vQJJiYmkbImG7FylW6D/qFac1IBXV5+/Y
+ adGFZkxzbKy7YLuQqTdJyjJ9DRiG5yCqzBCDRFvO2mHnJ+78yX+D0KBsFS+t+Lzn0xsvEKJ6
+ denEzzltj4lrX/JIjugSWtOMQYE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f767811726b122f31eae16f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 00:45:05
+ GMT
+Sender: collinsd=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 50022C433CA; Fri,  2 Oct 2020 00:45:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.46.160.165] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: collinsd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA208C433C8;
+        Fri,  2 Oct 2020 00:45:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA208C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
+Subject: Re: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
+To:     Stephen Boyd <sboyd@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
+ <160151084091.310579.3876905878885019200@swboyd.mtv.corp.google.com>
+ <20201001174326.GT6715@sirena.org.uk>
+ <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
+From:   David Collins <collinsd@codeaurora.org>
+Message-ID: <7c45b147-f1d2-4b32-9e51-71c5d2cb576f@codeaurora.org>
+Date:   Thu, 1 Oct 2020 17:45:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01 2020 at 22:51, Erez Geva wrote:
+On 10/1/20 11:51 AM, Stephen Boyd wrote:
+> Quoting Mark Brown (2020-10-01 10:43:26)
+>> On Wed, Sep 30, 2020 at 05:07:20PM -0700, Stephen Boyd wrote:
+>>> Quoting David Collins (2020-09-22 15:04:18)
+>>
+>>>> This helps to disambiguate SPMI device regmaps from I2C ones
+>>>> at /sys/kernel/debug/regmap since I2C devices use a very
+>>>> similar naming scheme: 0-0000.
+>>
+>>> Can regmap debugfs prepend the bus name on the node made in debugfs?
+>>> Does it do that already?
+>>
+>> It doesn't do that.  I have to say that given the use of dev_name() in
+>> logging it does feel like it'd be useful to have distinct names for
+>> grepping if we're running into collisions, IIRC the reason I went with
+>> dev_name() was that it's a commonly used human readable handle for
+>> diagnostic infrastrucuture so it makes it easier to follow things around.
+> 
+> To me the dev_name() usage seems fine. Maybe David has some real reason
+> to change this though?
+> 
+> In general I don't think userspace cares what the SPMI device name is,
+> i.e. the device name isn't used for dev nodes because SPMI doesn't
+> support ioctls or read/write APIs on the bus. That could be a nice
+> feature addition though, to support something like i2c-dev.
+> 
+> Changing it so that regmap debugfs is less likely to collide looks
+> weird. It doesn't actually collide anyway, so it seems like we're adding
+> spmi prefix to make it easier to find in debugfs?
 
->   - Add support for using a POSIX dynamic clock with
->     Traffic control Earliest TxTime First (ETF) Qdisc.
+Yes, that is correct.  There isn't a collision since I2C uses 0-0000 and
+SPMI uses 0-00 naming scheme.  However, those names are very similar and
+it is hard for a user to tell which is which inside
+/sys/kernel/debug/regmap without a deep understanding of the I2C and SPMI
+code.
 
-....
-
-> --- a/include/uapi/linux/net_tstamp.h
-> +++ b/include/uapi/linux/net_tstamp.h
-> @@ -167,6 +167,11 @@ enum txtime_flags {
->  	SOF_TXTIME_FLAGS_MASK = (SOF_TXTIME_FLAGS_LAST - 1) |
->  				 SOF_TXTIME_FLAGS_LAST
->  };
-> +/*
-> + * Clock ID to use with POSIX clocks
-> + * The ID must be u8 to fit in (struct sock)->sk_clockid
-> + */
-> +#define SOF_TXTIME_POSIX_CLOCK_ID (0x77)
-
-Random number with a random name. 
-  
->  struct sock_txtime {
->  	__kernel_clockid_t	clockid;/* reference clockid */
-> diff --git a/net/sched/sch_etf.c b/net/sched/sch_etf.c
-> index c0de4c6f9299..8e3e0a61fa58 100644
-> --- a/net/sched/sch_etf.c
-> +++ b/net/sched/sch_etf.c
-> @@ -15,6 +15,7 @@
->  #include <linux/rbtree.h>
->  #include <linux/skbuff.h>
->  #include <linux/posix-timers.h>
-> +#include <linux/posix-clock.h>
->  #include <net/netlink.h>
->  #include <net/sch_generic.h>
->  #include <net/pkt_sched.h>
-> @@ -40,19 +41,40 @@ struct etf_sched_data {
->  	struct rb_root_cached head;
->  	struct qdisc_watchdog watchdog;
->  	ktime_t (*get_time)(void);
-> +#ifdef CONFIG_POSIX_TIMERS
-> +	struct posix_clock *pclock; /* pointer to a posix clock */
-
-Tail comments suck because they disturb the reading flow and this
-comment has absolute zero value.
-
-Comments are required to explain things which are not obvious...
-
-> +#endif /* CONFIG_POSIX_TIMERS */
-
-Also this #ifdeffery is bonkers. How is TSN supposed to work without
-POSIX_TIMERS in the first place?
-
->  static const struct nla_policy etf_policy[TCA_ETF_MAX + 1] = {
->  	[TCA_ETF_PARMS]	= { .len = sizeof(struct tc_etf_qopt) },
->  };
->  
-> +static inline ktime_t get_now(struct Qdisc *sch, struct etf_sched_data *q)
-> +{
-> +#ifdef CONFIG_POSIX_TIMERS
-> +	if (IS_ERR_OR_NULL(q->get_time)) {
-> +		struct timespec64 ts;
-> +		int err = posix_clock_gettime(q->pclock, &ts);
-> +
-> +		if (err) {
-> +			pr_warn("Clock is disabled (%d) for queue %d\n",
-> +				err, q->queue);
-> +			return 0;
-
-That's really useful error handling.
-
-> +		}
-> +		return timespec64_to_ktime(ts);
-> +	}
-> +#endif /* CONFIG_POSIX_TIMERS */
-> +	return q->get_time();
-> +}
-> +
->  static inline int validate_input_params(struct tc_etf_qopt *qopt,
->  					struct netlink_ext_ack *extack)
->  {
->  	/* Check if params comply to the following rules:
->  	 *	* Clockid and delta must be valid.
->  	 *
-> -	 *	* Dynamic clockids are not supported.
-> +	 *	* Dynamic CPU clockids are not supported.
->  	 *
->  	 *	* Delta must be a positive or zero integer.
->  	 *
-> @@ -60,11 +82,22 @@ static inline int validate_input_params(struct tc_etf_qopt *qopt,
->  	 * expect that system clocks have been synchronized to PHC.
->  	 */
->  	if (qopt->clockid < 0) {
-> +#ifdef CONFIG_POSIX_TIMERS
-> +		/**
-> +		 * Use of PTP clock through a posix clock.
-> +		 * The TC application must open the posix clock device file
-> +		 * and use the dynamic clockid from the file description.
-
-What? How is the code which calls into this guaranteed to have a valid
-file descriptor open for a particular dynamic posix clock?
-
-> +		 */
-> +		if (!is_clockid_fd_clock(qopt->clockid)) {
-> +			NL_SET_ERR_MSG(extack,
-> +				       "Dynamic CPU clockids are not supported");
-> +			return -EOPNOTSUPP;
-> +		}
-> +#else /* CONFIG_POSIX_TIMERS */
->  		NL_SET_ERR_MSG(extack, "Dynamic clockids are not supported");
->  		return -ENOTSUPP;
-> -	}
-> -
-> -	if (qopt->clockid != CLOCK_TAI) {
-> +#endif /* CONFIG_POSIX_TIMERS */
-> +	} else if (qopt->clockid != CLOCK_TAI) {
->  		NL_SET_ERR_MSG(extack, "Invalid clockid. CLOCK_TAI must be used");
->  		return -EINVAL;
->  	}
-> @@ -103,7 +136,7 @@ static bool is_packet_valid(struct Qdisc *sch, struct etf_sched_data *q,
->  		return false;
->  
->  skip:
-> -	now = q->get_time();
-> +	now = get_now(sch, q);
-
-Yuck.
-
-is_packet_valid() is invoked via:
-
-    __dev_queue_xmit()
-      __dev_xmit_skb()
-         etf_enqueue_timesortedlist()
-           is_packet_valid()
-
-__dev_queue_xmit() does
-
-       rcu_read_lock_bh();
-
-and your get_now() does
-
-    posix_clock_gettime()
-       	down_read(&clk->rwsem);
-
- ----> FAIL
-
-down_read() might sleep and cannot be called from a BH disabled
-region. This clearly has never been tested with any mandatory debug
-option enabled. Why am I not surprised?
-
-Aside of accessing PCH clock being slow at hell this cannot ever work
-and there is no way to make it work in any consistent form.
-
-If you have several NICs on several PCH domains then all of these
-domains should have one thing in common: CLOCK_TAI and the frequency.
-
-If that's not the case then the overall system design is just broken,
-but yes I'm aware of the fact that some industries decided to have their
-own definition of time and frequency just because they can.
-
-Handling different starting points of the domains interpretation of
-"TAI" is doable because that's just an offset, but having different
-frequencies is a nightmare.
-
-So if such a trainwreck is a valid use case which needs to be supported
-then just duct taping it into the code is not going to fly.
-
-The only way to make this work is to sit down and actually design a
-mechanism which allows to correlate the various notions of PCH time with
-the systems CLOCK_TAI, i.e. providing offset and frequency correction.
-
-Also you want to explain how user space applications should deal with
-these different time domains in a sane way.
+The SPMI regmap debugfs files are used extensively for testing and debug
+purposes internally at Qualcomm and by our customers.  It would be helpful
+if the more verbose naming scheme were accepted upstream to avoid
+confusion and broken test scripts.
 
 Thanks,
+David
 
-        tglx
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
