@@ -2,107 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE333281A10
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D80281A3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388298AbgJBRsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBRsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:48:51 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D61EC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:48:50 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k25so2425448ioh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=wwHs4GL4cPKtYEmgUAWXGIjajFNzzeAQGOe82nZJvDY=;
-        b=lwS52s5o7a5JYw5/tmMSL7zEVBJUshzHp2KjlHiDn3KFI/TOi8NfTMVgCqwXUvbJmX
-         bGxH0pG+nz7OsOPVw0DwxtCqggm7NHwm5zpBxa0O0PJDJXXNkHWyFk9h12ZMitD6CT2v
-         N8DCeclCfCeWk2gcpOJA3W5I0pmjrffmkSrbXkrBT056n2QWSQPfSQoGJ2V6bF07h/wp
-         ZE7ytf3jawIZ9rxDi797nqqKDhQzJTW5P2VsdwDGfr25MsExa6lAM/3oRPxjPQZrxMVt
-         emWoCOIVcL2ioq9gKUx17h8Lfvmj5YsoKr8syQfCc+rHfKcys+JqFA/lSOUCkECGLRFP
-         Gedw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=wwHs4GL4cPKtYEmgUAWXGIjajFNzzeAQGOe82nZJvDY=;
-        b=gtnpytL0gRpkux6IomlwCdtBaPJyIRjFhH5yLVfjxh0oBIjkUyF2cinYVc6p2j8ojM
-         Nokj2OpR9Ef0EHkQeJ9P0Tvje0GsPoJQlur4RDPe1NkdxMZ+Lt5tYiZ4J1O6I5xdCBSu
-         3uktCGmuDn5GQq9iyhml+npwVordp4keHKjKSFOy/Z0rzemgvBgAFxBm9j6kiRMXw+Th
-         vSkce4s9n7HPi0PbfF76hRlrmzV5UQ7rPMTUxz5vhOe4KKgpCHbY912vl3O0Q3Wwb1DS
-         x63y0EuSLYPhXwQhom6uGbXgv/KjKy8ly3grJB7J8OMq/mXGPspcu2HNLprkWSemA+6K
-         uVDw==
-X-Gm-Message-State: AOAM530vIqaQayIBttB1oBMYb3mheF1bSdjFeir0WjrSlwnz5F8FyVGD
-        ePOM36VaZU+zhTkF2qrG50R2GKuK9wYefQ==
-X-Google-Smtp-Source: ABdhPJwrScYznco9bTGhKLudt4SEG2zHhZ+gYbPkSWKhUuY1UWBO1K9V4sOjQeDxqxo0wehGhrDm0A==
-X-Received: by 2002:a5d:8e0a:: with SMTP id e10mr2886385iod.169.1601660929540;
-        Fri, 02 Oct 2020 10:48:49 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id i27sm1156102ill.12.2020.10.02.10.48.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 10:48:49 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] io_uring fixes for 5.9-rc
-Message-ID: <06ed71bb-ed17-9621-d461-e189ce217d28@kernel.dk>
-Date:   Fri, 2 Oct 2020 11:48:48 -0600
+        id S2388352AbgJBRzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:55:50 -0400
+Received: from mout.gmx.net ([212.227.17.21]:56939 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726096AbgJBRzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:55:50 -0400
+X-Greylist: delayed 305 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 13:55:48 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601661347;
+        bh=eL7JBhoz2JAsNQSLXLYFbl1LIBlnoiLRV7VFXGdcSh8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=V41u6yxajc7EQVyp3OOC23a8iT6HOGkTlqv0uIIc/0KpTuwpcdO+H/QaGsmXSZVHW
+         DjeZCJ3RLjSLNVIq+Mnk2tp9tYoDKyzarOT8ybdG1Qb4jGYtJ6/kmhi7ubuOocDhzJ
+         YIQPGpuMkp/UFlb6dnqCp5MB6Ta3yM3L554Qztbc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.123.70] ([178.202.41.107]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MxDou-1kdskl2AJc-00xcR4; Fri, 02
+ Oct 2020 19:50:35 +0200
+Subject: Re: [PATCH 1/1] docs: admin-guide: fdt and initrd load in EFI stub
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Fran=c3=a7ois_Ozog?= <francois.ozog@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+References: <20201002171112.22738-1-xypron.glpk@gmx.de>
+ <CAMj1kXHsGcAX-DqfcpgxzZY3M+JzY-Ef9OdJ+JdysNnx1fK6zg@mail.gmail.com>
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+Autocrypt: addr=xypron.glpk@gmx.de; prefer-encrypt=mutual; keydata=
+ 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 Eg==
+Message-ID: <e272840e-d097-0476-1827-ea948cdfad63@gmx.de>
+Date:   Fri, 2 Oct 2020 19:50:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <CAMj1kXHsGcAX-DqfcpgxzZY3M+JzY-Ef9OdJ+JdysNnx1fK6zg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rMYBeFJ6gKllVZl69fPnc4RDZH7lOvdbzwihXS6AWamAWUvSMEh
+ A5o0rltp/6TNN0K3RdOA/C8iMzJImCxlMmyABNlcuL5gGfMhYQTaOtW6VyLrbaJj1L0k8lg
+ 8qcEToKi8fBROiRk6+3N3CgzwEjrx/LCORVVDel/ZEaKlmmKX9vaIu9wy15Intbpvco7NzJ
+ Cti/79uBsIzn8OrqvucvA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:APT0gqF5AtA=:94YK69IYJi901UJOjz1721
+ Dn6BDFNUr8okpeojJOBL4ymdoDNLOkfFJiEFCC2MPWHrMta28iTMOnBxpC8q8rKsj1TAAJ6F+
+ 8ZVi6yIZYAMgBDfDFst8rqRjL0OpuSu4BG3XQ9+rC21mQ5nbRwsJvk7oSuF6G+V1tgwaiKIgj
+ 6pps7qp88T/IbOSyNhs+W7YDV/M2UCdEl8l5ND5eut/WnXBWMXM9cSn9K9ZlGm3ZNqQ9W2zSf
+ N7Vx10nmk7GygEn3XUpfDrulJ/XQuodNTZvxlBiL4sIo/J854GeUwqeBWHxEUBKSWIW76x8ZW
+ H5z6djIDVJ0/dKvQmX4MKXNA/EqB/KEDPgW+wiXHnEZQMy2ht+ECR3DXjNjpfLrI4M/m8WXN0
+ ywyKm+GoaqQjJm7FhRLUNo0/Rgy6jK82kgc+vO3QYmlbGKPb5Lb6XY1uiDWjDVvzGRRlsMslF
+ Erj45UQT5C/i3Kb6t+RHrJKGzuA1bNUBy+umnJ6N7S71/502gxrG1V6RqW0ikFmwPDG71r/JM
+ XcGMgpHD3dijxEc+yDXLyP44GKe4EoeBmKpAhnlKQ+gt/MHTuCUUu4TqBhXurMQpHnrr+jpB4
+ Ntf6BQXKRJaLU3cGlFaOP+FHKxsSKkjHbYdnnQNsjggjlZsbTPr6jlm3BXTYNTiWkui6EBmR5
+ o/79x2TLZETLvSbhQBWl+LV26Yz4MOkA+fuEM1/AD3Ma0HmAGxd8/roonmCtRfWZq/MBh4D4D
+ zMsLCwhFLILOfGcIRDC0yaSHxAhuI42wTqMWbRFKaUCJgYfzyNrQGtqW504J+io0/k03SfvpT
+ EgU5thtp6lVJJk/hYHx2XYaWy5O5ux/dMJ0OuA9xMqu4gwFZwZcOxbU4syZzzP9KPubRWiEV4
+ jnQqTsCjDOv5jzngNEE2VXWGW4EawR2M+3DmzDptxr3D3SaqzIUE4RQE2ZsM8XhUrmxiv3/Xn
+ HuWW3LjXaDyDYAihYhBLf5Od4TGxzMEIB0HXkE36LCndunTDUi4k1a7OCRIXOS+W//L4jEKVz
+ i4qEA6a96YY/UftjlBMkE5jQOUToV/8xsWnH2CWbGjIs7rDEpP0r244yb1b5+r97f8jrDj3H6
+ Asqc29nrpZOLRwC/KifWUxOy2CSkmtYpriBeyGBjgXjVXrwiNo5kElcZ1WLXmILLcUNz1Zzpa
+ Ttd0rAawRWqteEqAACK5aD/DX5i8fxw8h8jZwKYp8MxETgDJBE3gfsv29Y90/JoLKgs8xO1h5
+ kp9qkxzTA6cmXbwzT8PGxfB+8teDW7TYdMezAag==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 02.10.20 19:21, Ard Biesheuvel wrote:
+> Hi Heinrich,
+>
+> Thanks for documenting this.
+>
+>
+> On Fri, 2 Oct 2020 at 19:11, Heinrich Schuchardt <xypron.glpk@gmx.de> wr=
+ote:
+>>
+>> Describe how a device tree and an initial RAM disk can be passed to the=
+ EFI
+>> Boot Stub.
+>>
+>> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+>> ---
+>>  Documentation/admin-guide/efi-stub.rst | 35 ++++++++++++++++++++++++++
+>>  1 file changed, 35 insertions(+)
+>>
+>> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/adm=
+in-guide/efi-stub.rst
+>> index 833edb0d0bc4..86f50a33884c 100644
+>> --- a/Documentation/admin-guide/efi-stub.rst
+>> +++ b/Documentation/admin-guide/efi-stub.rst
+>> @@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the system =
+partition, and it
+>>  may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
+>>  should be copied but not necessarily renamed.
+>>
+>> +Passing an initial RAM disk to the EFI Boot Stub
+>> +------------------------------------------------
+>> +
+>> +The following means sorted by decreasing priority can be used to provi=
+de an
+>> +initial RAM disk to the EFI Boot Stub:
+>> +
+>> +* The firmware may provide a UEFI Load File 2 Protocol. The stub will =
+try to
+>> +  load the RAM disk by calling the LoadFile() service of the protocol =
+using
+>> +  a vendor device path with the vendor GUID
+>> +  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
+>> +* Next the EFI stub will try to load the file indicated by the "initrd=
+=3D" command
+>> +  line parameter.
+>> +* The prior boot stage may pass the location of the initial RAM disk v=
+ia the
+>> +  "linux,initrd-start" and "linux,initrd-end" properties of the "/chos=
+en" node
+>> +  of the device-tree.
+>> +
+>
+> On x86, the boot_params struct is used to pass the address and size of
+> the initrd in memory. Maybe include that for completeness?
 
-- Fix for async buffered reads if read-ahead is fully disabled (Hao)
+Sure we should add it. But I will just wait for more review comments.
 
-- double poll match fix
+>
+>> +The first two items are inhibited by the "noinitrd" command line param=
+eter.
+>> +
+>
+> Interesting. Are you saying noinitrd is ignored by the kernel itself?
+>
+> Looking at the code, it might only work for preventing the load of old
+> style initrd ramdisks, whereas initramfs images are handled
+> separately.
+>
+> This is something that we should probably fix one way or the other.
+>
 
-- ->show_fdinfo() potential ABBA deadlock complaint fix
+initrd_load() seems to depend on the value and will not create /dev/ram
+if "noinitrd" is set.
+init/do_mounts_initrd.o is compiled for ARMv8.
 
-Please pull!
+But my ARMv8 Odroid C2 boots fine via U-Boot->GRUB->EFI stub->Linux with:
 
+[  +0.000000] Kernel command line: BOOT_IMAGE=3D/vmlinuz-5.9.0-rc6-arm64+
+root=3DUUID=3D.. ro earlycon=3Dmeson,0xc81004c0,115200n8 noinitrd
 
-The following changes since commit f38c7e3abfba9a9e180b34f642254c43782e7ffe:
+So I assume initrd_load() is either not called or at least not needed
+for the FDT case.
 
-  io_uring: ensure async buffered read-retry is setup properly (2020-09-25 15:39:13 -0600)
+Best regards
 
-are available in the Git repository at:
+Heinrich
 
-  git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-10-02
-
-for you to fetch changes up to c8d317aa1887b40b188ec3aaa6e9e524333caed1:
-
-  io_uring: fix async buffered reads when readahead is disabled (2020-09-29 07:54:00 -0600)
-
-----------------------------------------------------------------
-io_uring-5.9-2020-10-02
-
-----------------------------------------------------------------
-Hao Xu (1):
-      io_uring: fix async buffered reads when readahead is disabled
-
-Jens Axboe (2):
-      io_uring: always delete double poll wait entry on match
-      io_uring: fix potential ABBA deadlock in ->show_fdinfo()
-
- fs/io_uring.c | 23 ++++++++++++++++++-----
- mm/filemap.c  |  6 +++++-
- 2 files changed, 23 insertions(+), 6 deletions(-)
-
--- 
-Jens Axboe
+>
+>> +Passing a device-tree to the EFI Boot Stub
+>> +------------------------------------------
+>> +
+>> +A device-tree can be passed to the EFI Boot Stub in decreasing priorit=
+y using
+>> +
+>> +* command line option dtb=3D
+>> +* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c6=
+9aae0.
+>> +
+>> +The command line option is only available if CONFIG_EFI_ARMSTUB_DTB_LO=
+ADER=3Dy
+>> +and secure boot is disabled.
+>>
+>>  Passing kernel parameters from the EFI shell
+>>  --------------------------------------------
+>> @@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzImage.=
+efi, e.g.::
+>>
+>>         fs0:> bzImage.efi console=3DttyS0 root=3D/dev/sda4
+>>
+>> +The "noinitrd" option
+>> +---------------------
+>> +
+>> +The "noinitrd" option stops the EFI stub from loading an initial RAM d=
+isk.
+>>
+>>  The "initrd=3D" option
+>>  --------------------
+>> @@ -98,3 +130,6 @@ CONFIGURATION TABLE.
+>>
+>>  "dtb=3D" is processed in the same manner as the "initrd=3D" option tha=
+t is
+>>  described above.
+>> +
+>> +This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=3Dy and=
+ secure
+>> +boot is disabled.
+>> --
+>> 2.28.0
+>>
 
