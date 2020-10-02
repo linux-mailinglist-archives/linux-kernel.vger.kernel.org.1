@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA902816C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3EE2816BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387989AbgJBPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:38:24 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:40049 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBPiU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387964AbgJBPiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 2 Oct 2020 11:38:20 -0400
-Received: by mail-io1-f78.google.com with SMTP id f8so1301489iow.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:38:18 -0700 (PDT)
+Received: from mail-il1-f207.google.com ([209.85.166.207]:42160 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387692AbgJBPiT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:38:19 -0400
+Received: by mail-il1-f207.google.com with SMTP id 18so1429435ilt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:38:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yJXYmujX0Sq1pREornVMz/1riL7fnyzKq1XdUIFnDf8=;
-        b=b3fg77ZzWVP8A96P8yBwj7zlEcsOYibXmqutJc1gz+AM043H4CatiGMkNrBUNZSV+D
-         /XAr5cm5Ht+BIXEdBepHDKIwIrP3I9FhZp0nSLDcWcAg54KkrXfFN2l22mXFWss21OPb
-         xDsq0eGhGw1RdrMjBqy7gROsBqq4V3AavceuBne3qVnEsJrr8Qy8rT46DekeXee0Kfjq
-         0ODovxcBaMSFhZlGGETJvMHt5icjYtvQOkJK5CaF3ef2vhfH+LAdlSEJ2GaSCKtH3GfF
-         IlatnN/Ft0havpNOKALJfPZYRKxIhb82T1oYc553S4gJMO1fjDMElFzIQ5bKjj4PXT8u
-         TrFw==
-X-Gm-Message-State: AOAM5335miHm3gCM/Xx2MhWRdbvnXlMCpAXPcjveZvalxJNExP20z+I8
-        rG8VJ4P6BBNCff4TA5Do4YlXf2cbLA2TmAVdF8BNEOuHSNTU
-X-Google-Smtp-Source: ABdhPJw7ZAbG8FaVmdvAzfoe82gtJAKcu1UCvedDwGtuyZuVDzuvf5q0LREyTZJUR2oM7hTnzzkRo0UzbpgVw2tkBEI6lfrdmvIs
+        bh=PE5cBLSWtFQkLHdR6wGzlq+rKO5hHx9Bm3+Pczm/w3M=;
+        b=YEwttgQaPP42DUadSPhZDaodiChyY3XVaAeeD4oCRJfN+fpR2eP6oznp7lDRzA+aXC
+         mulPm+/+RNMChro2ZEK9xygK5JBAj9wQHsoN5xxKHqcTqD0DVVOYvfiuB/A28lFXmUBp
+         vjbz/qwbkmfdUjuCCieOBBDCqLLQaLT6zvhQpKXSpFUAuDLUl7aF1YODJ+wAmrc8Fgcs
+         elQfJn9gE2EsA+0Z3tkXF0Ge4ZkSK9NVy07zUiYjKPlvgLqPTn13S5ZS4iP0R7PGc+s7
+         c6/xxFekp99vij4LpdTJOnWglYmmFYpCHI0hMILfdHl0p7y0qifOaSfB1c7PGC7U5CGY
+         2dXA==
+X-Gm-Message-State: AOAM5312K7MDWjSyfyDuCzOBCMO4dxu23z6D92nD0SGsM+Qly4vIXOSp
+        EQXVbYaBrNVBDUp4ZRQ+5woKMup0aVmw4UM79IRhGa/5uL8r
+X-Google-Smtp-Source: ABdhPJzfnKMduYiT0ZQ8SenI2VNULXq37MlUlg779YihyNkxKSLdyFyv8J1RzNk28gsqjwGpG5S8RtnOGVBTTOcnwbfGJFPXzMCj
 MIME-Version: 1.0
-X-Received: by 2002:a92:d389:: with SMTP id o9mr2362727ilo.52.1601653098549;
+X-Received: by 2002:a5e:9319:: with SMTP id k25mr2429079iom.153.1601653098822;
  Fri, 02 Oct 2020 08:38:18 -0700 (PDT)
 Date:   Fri, 02 Oct 2020 08:38:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fe183705b0b1eb20@google.com>
-Subject: KASAN: use-after-free Read in tipc_mcast_xmit (2)
-From:   syzbot <syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, lucien.xin@gmail.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Message-ID: <00000000000002468205b0b1ece8@google.com>
+Subject: WARNING in kvfree
+From:   syzbot <syzbot+e8b76e1215d7b7214060@syzkaller.appspotmail.com>
+To:     bfields@fieldses.org, chuck.lever@oracle.com,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,136 +48,56 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a59cf619 Merge branch 'Fix-bugs-in-Octeontx2-netdev-driver'
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=163c2467900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=99a7c78965c75e07
-dashboard link: https://syzkaller.appspot.com/bug?extid=e96a7ba46281824cc46a
+HEAD commit:    60e72093 Merge tag 'clk-fixes-for-linus' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=169943a7900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8b76e1215d7b7214060
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ada44d900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14007467900000
+userspace arch: i386
 
-The issue was bisected to:
-
-commit ff48b6222e65ebdba5a403ef1deba6214e749193
-Author: Xin Long <lucien.xin@gmail.com>
-Date:   Sun Sep 13 11:37:31 2020 +0000
-
-    tipc: use skb_unshare() instead in tipc_buf_append()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125402b3900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=115402b3900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=165402b3900000
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e96a7ba46281824cc46a@syzkaller.appspotmail.com
-Fixes: ff48b6222e65 ("tipc: use skb_unshare() instead in tipc_buf_append()")
+Reported-by: syzbot+e8b76e1215d7b7214060@syzkaller.appspotmail.com
 
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004028a0
-R13: 0000000000402930 R14: 0000000000000000 R15: 0000000000000000
-tipc: Failed do clone local mcast rcv buffer
-==================================================================
-BUG: KASAN: use-after-free in __skb_unlink include/linux/skbuff.h:2063 [inline]
-BUG: KASAN: use-after-free in __skb_dequeue include/linux/skbuff.h:2082 [inline]
-BUG: KASAN: use-after-free in __skb_queue_purge include/linux/skbuff.h:2793 [inline]
-BUG: KASAN: use-after-free in tipc_mcast_xmit+0xfaa/0x1170 net/tipc/bcast.c:422
-Read of size 8 at addr ffff8880a73e2040 by task syz-executor657/6887
-
-CPU: 1 PID: 6887 Comm: syz-executor657 Not tainted 5.9.0-rc6-syzkaller #0
+------------[ cut here ]------------
+virt_to_cache: Object is not a Slab page!
+WARNING: CPU: 1 PID: 1161 at mm/slab.h:420 virt_to_cache mm/slab.h:420 [inline]
+WARNING: CPU: 1 PID: 1161 at mm/slab.h:420 kfree+0x29b/0x2b0 mm/slab.c:3752
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 1161 Comm: kworker/u4:9 Not tainted 5.9.0-rc7-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __skb_unlink include/linux/skbuff.h:2063 [inline]
- __skb_dequeue include/linux/skbuff.h:2082 [inline]
- __skb_queue_purge include/linux/skbuff.h:2793 [inline]
- tipc_mcast_xmit+0xfaa/0x1170 net/tipc/bcast.c:422
- tipc_sendmcast+0xaaf/0xef0 net/tipc/socket.c:865
- __tipc_sendmsg+0xee3/0x18a0 net/tipc/socket.c:1454
- tipc_sendmsg+0x4c/0x70 net/tipc/socket.c:1387
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4419d9
-Code: e8 cc ac 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe0cace4c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004419d9
-RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000004
-RBP: 000000000000f0ee R08: 0000000000000001 R09: 0000000000402930
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004028a0
-R13: 0000000000402930 R14: 0000000000000000 R15: 0000000000000000
-
-Allocated by task 6887:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:518 [inline]
- slab_alloc_node mm/slab.c:3254 [inline]
- kmem_cache_alloc_node+0x136/0x430 mm/slab.c:3574
- __alloc_skb+0x71/0x550 net/core/skbuff.c:198
- alloc_skb_fclone include/linux/skbuff.h:1144 [inline]
- tipc_buf_acquire+0x28/0xf0 net/tipc/msg.c:76
- tipc_msg_build+0x6b8/0x10c0 net/tipc/msg.c:428
- tipc_sendmcast+0x855/0xef0 net/tipc/socket.c:859
- __tipc_sendmsg+0xee3/0x18a0 net/tipc/socket.c:1454
- tipc_sendmsg+0x4c/0x70 net/tipc/socket.c:1387
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 6887:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kmem_cache_free.part.0+0x74/0x1e0 mm/slab.c:3693
- kfree_skbmem+0x166/0x1b0 net/core/skbuff.c:643
- kfree_skb+0x7d/0x100 include/linux/refcount.h:270
- tipc_buf_append+0x6dc/0xcf0 net/tipc/msg.c:198
- tipc_msg_reassemble+0x175/0x4f0 net/tipc/msg.c:790
- tipc_mcast_xmit+0x699/0x1170 net/tipc/bcast.c:386
- tipc_sendmcast+0xaaf/0xef0 net/tipc/socket.c:865
- __tipc_sendmsg+0xee3/0x18a0 net/tipc/socket.c:1454
- tipc_sendmsg+0x4c/0x70 net/tipc/socket.c:1387
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880a73e2040
- which belongs to the cache skbuff_fclone_cache of size 456
-The buggy address is located 0 bytes inside of
- 456-byte region [ffff8880a73e2040, ffff8880a73e2208)
-The buggy address belongs to the page:
-page:000000001368f319 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xa73e2
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffff8880a9050f50 ffffea00028ff188 ffff8880a903dc00
-raw: 0000000000000000 ffff8880a73e2040 0000000100000006 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a73e1f00: fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
- ffff8880a73e1f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff8880a73e2000: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-                                           ^
- ffff8880a73e2080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a73e2100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:virt_to_cache mm/slab.h:420 [inline]
+RIP: 0010:kfree+0x29b/0x2b0 mm/slab.c:3752
+Code: 05 91 b6 9d 09 01 e8 29 bf a5 ff e9 7a ff ff ff 48 c7 c6 80 70 96 88 48 c7 c7 70 c9 b2 89 c6 05 25 db 9d 09 01 e8 67 dd 8f ff <0f> 0b e9 bf fe ff ff 0f 0b 66 90 66 2e 0f 1f 84 00 00 00 00 00 41
+RSP: 0018:ffffc90016137b50 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000286 RCX: 0000000000000000
+RDX: ffff888061194000 RSI: ffffffff815f59d5 RDI: fffff52002c26f5c
+RBP: ffff888000400000 R08: 0000000000000001 R09: ffff8880ae520f8b
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000200
+R13: 000000000002bfa8 R14: ffff888000400000 R15: 0000000000000800
+ kvfree+0x42/0x50 mm/util.c:603
+ nfsd_reply_cache_shutdown+0x1a3/0x2c0 fs/nfsd/nfscache.c:214
+ nfsd_exit_net+0x15f/0x490 fs/nfsd/nfsctl.c:1507
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
+ cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
@@ -188,6 +107,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
