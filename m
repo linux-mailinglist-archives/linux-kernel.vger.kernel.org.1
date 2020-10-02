@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053DA2815CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401F82815CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388274AbgJBOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:51:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:38184 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgJBOv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:51:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D0071FB;
-        Fri,  2 Oct 2020 07:51:25 -0700 (PDT)
-Received: from bogus (unknown [10.57.48.110])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BDAF3F73B;
-        Fri,  2 Oct 2020 07:51:22 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 15:51:15 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     muhammad.husaini.zulkifli@intel.com, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lakshmi.bai.raja.subramanian@intel.com, arnd@arndb.de,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        wan.ahmad.zainie.wan.mohamad@intel.com
-Subject: Re: [PATCH v2 2/3] firmware: Keem Bay: Add support for Arm Trusted
- Firmware Service call
-Message-ID: <20201002145115.GA6520@bogus>
-References: <20201001142149.23445-1-muhammad.husaini.zulkifli@intel.com>
- <20201001142149.23445-3-muhammad.husaini.zulkifli@intel.com>
- <20201001153526.GD906@bogus>
- <ce2bcac9-8341-d7c1-0652-309ca4e9413c@xilinx.com>
- <20201002105840.GE906@bogus>
- <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
+        id S2388221AbgJBOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBOwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:52:04 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEC3C0613D0;
+        Fri,  2 Oct 2020 07:52:03 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id w11so2216463lfn.2;
+        Fri, 02 Oct 2020 07:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cFiu94si6MLOrMmlNSPY2MN6ADJKMSBfebqq1SCmYCM=;
+        b=p7HE9TVwD2q0fm2z18cHPxGP+a8ISNnzlYr+yR/x090A/zGwcNY5ZW9flfsG16aj98
+         BnTp1gR014Gb3zDdg0lieJgOQ5GA6woCADJrSFqeFRiiTd+i7YGkJQcHezPyfydDEPaA
+         0kh8AsyND1uv/1Y/rmjqHprWiC7cZaKvfqdioxLeuvh+ZileKopxodwjucv1LCKxCkGc
+         KzShaALH5U2KiCE3l6cItae2tqBt5q+rdmtOpoEbsYG3cOOy5Qj1oX9gvJ+6a6ZrNocp
+         /ooo9OVwoK59vZQgoDnRD8TRWjOy/yhnbMGZCgZJiRD0g5vLLKXYBs2vNwjo2ipWjWcO
+         lghQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cFiu94si6MLOrMmlNSPY2MN6ADJKMSBfebqq1SCmYCM=;
+        b=OWZ0+60kqjCsjrsE8VPzkOJBt1A/GxQ+Kmbp+ftDeTpLuvuty2UYuMVr55ssBdXT4b
+         55PDWre1ANcSSCYpHfYpys8NXBnSPNy8XEfFtLIOnMVIKMv2yIh3cekyWgv4pyXdH3+P
+         RAbLYAroa2oZ/hZZlZPNDOjuki4leDa9fPEM8/72GFxfB1zuDfbhxQeg2CUKnWo8f3wq
+         ayZP0f0ifsx71cO+s4WUBBf+dXBsVQJ1C+VP0knV4Tu7cZwJnLc/ynH/hryxnYNwk2vD
+         ZosAfOTSNquQcBzabDLOw/TdhXDGlK71HFP4FPQ3pvXXeBuiVeu3eetM73GAySqGjxdH
+         4OvQ==
+X-Gm-Message-State: AOAM531jMaZIph0cl1uFZUxL+YsAdtlBw7lDjEpk88iO/BvqVUo1XKUW
+        pgzTl1cehIq5yXHXYFBBrWO3p5M5CPo=
+X-Google-Smtp-Source: ABdhPJx/9txQPQLd4WiPCXriCCAjKKTfo2dbLn4ocnWSslz5gzwVhdj4WmsQmM19m6/YSyg2AWu93Q==
+X-Received: by 2002:a05:6512:3692:: with SMTP id d18mr937803lfs.62.1601650322015;
+        Fri, 02 Oct 2020 07:52:02 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id m4sm256309ljb.58.2020.10.02.07.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 07:52:01 -0700 (PDT)
+Subject: Re: [PATCH v4 1/3] iommu/tegra-smmu: Use fwspec in
+ tegra_smmu_(de)attach_dev
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-2-nicoleotsuka@gmail.com>
+ <75ad716f-aa2f-743a-7d9a-7083eda03672@gmail.com>
+Message-ID: <cb90ebab-9800-c9b4-6fb7-3d53875195a0@gmail.com>
+Date:   Fri, 2 Oct 2020 17:52:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <75ad716f-aa2f-743a-7d9a-7083eda03672@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1b714566-d6dd-ead1-322e-f92847b923f3@xilinx.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+02.10.2020 17:22, Dmitry Osipenko пишет:
+> 02.10.2020 09:08, Nicolin Chen пишет:
+>>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>>  				 struct device *dev)
+>>  {
+>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+>>  	struct tegra_smmu_as *as = to_smmu_as(domain);
+>> -	struct device_node *np = dev->of_node;
+>> -	struct of_phandle_args args;
+>>  	unsigned int index = 0;
+>>  	int err = 0;
+> 
+> Looks like there is no need to initialize 'index' and 'err' variables
+> anymore.
+> 
 
-On Fri, Oct 02, 2020 at 03:53:33PM +0200, Michal Simek wrote:
-> Hi Sudeep,
->
-> On 02. 10. 20 12:58, Sudeep Holla wrote:
-> > Hi Michal,
-> >
-> > On Fri, Oct 02, 2020 at 10:23:02AM +0200, Michal Simek wrote:
-> >> Hi Sudeep,
-> >>
-> >> On 01. 10. 20 17:35, Sudeep Holla wrote:
-> >
-> > [...]
-> >
-> >>>
-> >>> What are the other uses of this KEEMBAY_SIP_* ?
-> >>> For now I tend to move this to the driver making use of it using
-> >>> arm_smccc_1_1_invoke directly if possible. I don't see the need for this
-> >>> to be separate driver. But do let us know the features implemented in the
-> >>> firmware. If it is not v1.1+, reasons for not upgrading as you need v1.1
-> >>> for some CPU errata implementation.
-> >>
-> >> This driver has been created based on my request to move it out the mmc
-> >> driver. It looks quite hacky to have arm_smccc_res and call
-> >> arm_smccc_smc() also with some IDs where it is visible that the part of
-> >> ID is just based on any spec.
-> >
-> > OK, driver is fine but no dt-bindings as it is discoverable. It can
-> > also be just a wrapper library instead as it needs no explicit
-> > initialisation like drivers to setup.
->
-> I am fine with it. Do we have any example which we can point him to?
->
-
-You seem to have figured that out already with SOC_ID example.
-That was quick I must say 😄.
-
->
-> >
-> >> Also in v1 he is just calling SMC. But maybe there is going a need to
-> >> call HVC instead which is something what device driver shouldn't decide
-> >> that's why IMHO doing step via firmware driver is much better approach.
-> >
-> > Agreed and one must use arm_smccc_get_conduit or something similar. No
-> > additional bindings for each and ever platform and driver that uses SMCCC
-> > please.
-> >
-> >> Of course if there is a better/cleaner way how this should be done I am
-> >> happy to get more information about it.
-> >>
-> >
-> > Let me know what you think about my thoughts stated above.
->
->
-> I am fine with it. The key point is to have these sort it out because I
-> see that a lot of drivers just simply call that SMCs from drivers which
-> is IMHO wrong.
->
-
-Sure, sorry I didn't express my concern properly. I want to avoid dt bindings
-for these and use the SMCCC discovery we have in place already if possible.
-
-If this driver had consumers in the DT and it needs to be represented
-in DT, it is a different story and I agree for need for a driver there.
-But I don't see one in this usecase.
-
->
-> BTW: I see you have added soc id reading which you are saying is the
-> part of smcc v1.2 but I can't see any implementation in TF-A. Is this
-> spec publicly available?
->
-
-Spec is out[1], include/linux/arm-smccc.h points to the latest spec.
-TF-A does have implementation as I tested with it and even reported
-bug that I discovered when I tested with my patches that are now merged
-upstream. Are you referring to master of TF-A or last release version ?
-If latter, it had bug and may not be working. I may be wrong though, as
-I am just telling what was told to me couple of months back and things
-might have changed in TF-A land.
-
---
-Regards,
-Sudeep
-
-[1] https://developer.arm.com/documentation/den0028/latest
+Same for tegra_smmu_detach_dev().
