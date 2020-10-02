@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E43E28193B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49DF28193E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388169AbgJBR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S2388304AbgJBR3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBR26 (ORCPT
+        with ESMTP id S2388219AbgJBR3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:28:58 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8DAC0613D0;
-        Fri,  2 Oct 2020 10:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=feK8WlxbWzadA8OQDHYoxqGoR3FsSkq+H/fGH7x4bl8=; b=iZKk/p34OUO73OB8i1AJsLINlm
-        gQP/HEEBMYqlPpawjojtPdwcBvO9whovHcRmer7HVpAZOb1jkjPmUqNqOHC8084luMKmMBxVPmW7E
-        +8XCQhUKG5GJFNwBVqt29O7dMnfvJmH5mPxyRFih0ib39qZ3uLEM/1yAq9GH1wvGOr4rSTPKvwlMv
-        wmOXMvsM6gyCY/b8rZGB6nN+OjRTIr90ytwBRiTbzEa7ewuyb1IDgm0gaosJtfV3L+74p71uoNNHF
-        59iLe131ql+mUEz6+ZfixVXkqLvGhh5EY80hFZpS0NEkV6er9RoAykOoK4Kng4KTjIoQ0L0m4lrAr
-        gbrhcgew==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOOrW-0004ts-FS; Fri, 02 Oct 2020 17:28:54 +0000
-Subject: Re: [RFC PATCH v1 12/26] docs: reporting-bugs: tell users to disable
- DKMS et al.
-To:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <51574b968a9b78a5ce1056acdfa871d4a03d60c7.1601541165.git.linux@leemhuis.info>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c34bb102-613b-5713-4e96-aa99a3e3c6d2@infradead.org>
-Date:   Fri, 2 Oct 2020 10:28:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 2 Oct 2020 13:29:05 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95473C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:29:05 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m12so2139070otr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:29:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RQsg6ahWktyPvURwiyd1VgLtMh0Q43RTGiqOocC5R54=;
+        b=UO94HG6O0IX1kgvtQIyBLRmnKZ0ICSk8JVo/6rlaOMXI6yCPT+tEy43d5N5dN6RMUu
+         qHNIfX1buI6VYT5mzWWRXhrkrkj7bUZ+hUM/ua2NafAM7SWj08OhoQ7wQ1ueK+5IqAkM
+         sNCGxBatn9yvcPEuKxA+Pve+PTi6Vi1mFZnkwiSQYNmHbrRQ13vF8YFoSA0/Lgfpwmu1
+         zhVXPYiIUavX0O2QT2OgjblVpc713KBNN8kE+LdGbzN5mox0j1JgvbsndHaXkEfDAVVr
+         1I0Lcf8nmC2FfQBXdeV5JJ9t2sxYmmh/36bupWw2UhNHB3RgKF2i6VIxidXMdLy8dBEh
+         hrCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RQsg6ahWktyPvURwiyd1VgLtMh0Q43RTGiqOocC5R54=;
+        b=hU2z+eP5SBwO3R43dxxGz+/uky/E65g2MiD5rlZ3etjIZBr7rzHGnLejhbd81oY8Ov
+         AtGf16KvwaeKkd04MasmH4pJxi2daKTpUUWrhMyz5GtS0AHuX64dgC3vOt8oVZk6U29h
+         7mOaVCP3HHSj6tFK6gacBan4OcKuD0vgDlpgOXZ6gIK4jlBPX34m6OFHRu6E4cR1GhQP
+         Ox6bND9uqig107aawLE21O/P4cCabzkpnarHosm0+R0BfzxuD+G4hFbb15gsnIoMTUoM
+         NTAFP/LVRPaaz9vlRTcDOtDGQnJbkrDli5QFBcSSpFSPLgirUnW+C7ioneLtHpRJag+n
+         ln7Q==
+X-Gm-Message-State: AOAM533XisG2JTuQg2gYFRcpmidPI+QHSEjJGQZ6ZP0tRIuNNPzFWx3B
+        8fCxzupP/gJeILWLOxFR8o3dVZF9LoYc4vGq0c5ofA==
+X-Google-Smtp-Source: ABdhPJxL6pus8jowMU3LdrwfzIwO1FYffuY4IL2IunOFog16IDAVC1S+1qq0Dsb/eucmve/Nj9gINZs8R32PMNR28rI=
+X-Received: by 2002:a05:6830:2104:: with SMTP id i4mr2576095otc.266.1601659744837;
+ Fri, 02 Oct 2020 10:29:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <51574b968a9b78a5ce1056acdfa871d4a03d60c7.1601541165.git.linux@leemhuis.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200903141122.72908-1-mgamal@redhat.com> <1f42d8f084083cdf6933977eafbb31741080f7eb.camel@redhat.com>
+ <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
+ <ebcd39a5-364f-c4ac-f8c7-41057a3d84be@redhat.com> <2063b592f82f680edf61dad575f7c092d11d8ba3.camel@redhat.com>
+ <c385b225-77fb-cf2a-fba3-c70a9b6d541d@redhat.com>
+In-Reply-To: <c385b225-77fb-cf2a-fba3-c70a9b6d541d@redhat.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 2 Oct 2020 22:58:53 +0530
+Message-ID: <CA+G9fYvm1Ux7XmmXgpPHmLJ4WbRoPowbEfbub1HC2G4E-1r-1g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Qian Cai <cai@redhat.com>, Mohammed Gamal <mgamal@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
-> Tell users to disable solutions like DKMS to make sure the mainline
-> kernel they have to install later remains vanilla. The old text did not
-> do that, but back when it was written these solutions were not that
-> widespread.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
->  Documentation/admin-guide/reporting-bugs.rst | 21 ++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-> index 05de4e0259cb..d96b21512c03 100644
-> --- a/Documentation/admin-guide/reporting-bugs.rst
-> +++ b/Documentation/admin-guide/reporting-bugs.rst
-> @@ -562,6 +562,27 @@ or reinstall the operating system as well as everything you need to restore the
->  backup.
->  
->  
-> +Make sure your kernel doesn't get enhanced
-> +------------------------------------------
-> +
-> +    *Ensure your system does not enhance its kernels by building additional
-> +    kernel modules on-the-fly locally, which solutions like DKMS might be doing
-> +    without your knowledge.*
-> +
-> +Your kernel will stop being 'vanilla' as soon as it loads a kernel module not
-> +build from the sources used to compile the kernel image itself. That why you
+Hi Paolo,
 
-   built                                                           That is why you
+Thanks for the patch.
 
-> +need to ensure your Linux kernel stays vanilla by removing or disabling
-> +mechanisms like akmods and DKMS: those might build additional kernel modules
-> +automatically, for example when your boot into a newly installed Linux kernel
-> +the first time. Reboot after removing them and any modules they installed.
-> +
-> +Note, you might not be aware that your system is using one of these solutions:
-> +they often get set up silently when you install Nvidias proprietary graphics
+On Tue, 29 Sep 2020 at 20:17, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 29/09/20 15:39, Qian Cai wrote:
+> > On Tue, 2020-09-29 at 14:26 +0200, Paolo Bonzini wrote:
+> >> On 29/09/20 13:59, Qian Cai wrote:
+> >>> WARN_ON_ONCE(!allow_smaller_maxphyaddr);
+> >>>
+> >>> I noticed the origin patch did not have this WARN_ON_ONCE(), but the
+> >>> mainline
+> >>> commit b96e6506c2ea ("KVM: x86: VMX: Make smaller physical guest address
+> >>> space
+> >>> support user-configurable") does have it for some reasons.
+> >>
+> >> Because that part of the code should not be reached.  The exception
+> >> bitmap is set up with
+> >>
+> >>         if (!vmx_need_pf_intercept(vcpu))
+> >>                 eb &= ~(1u << PF_VECTOR);
+> >>
+> >> where
+> >>
+> >> static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+> >> {
+> >>         if (!enable_ept)
+> >>                 return true;
+> >>
+> >>         return allow_smaller_maxphyaddr &&
+> >>               cpuid_maxphyaddr(vcpu) < boot_cpu_data.x86_phys_bits;
+> >> }
+> >>
+> >> We shouldn't get here if "enable_ept && !allow_smaller_maxphyaddr",
+> >> which implies vmx_need_pf_intercept(vcpu) == false.  So the warning is
+> >> genuine; I've sent a patch.
+> >
+> > Care to provide a link to the patch? Just curious.
+> >
+>
+> Ok, I haven't sent it yet. :)  But here it is:
+>
+> commit 608e2791d7353e7d777bf32038ca3e7d548155a4 (HEAD -> kvm-master)
+> Author: Paolo Bonzini <pbonzini@redhat.com>
+> Date:   Tue Sep 29 08:31:32 2020 -0400
+>
+>     KVM: VMX: update PFEC_MASK/PFEC_MATCH together with PF intercept
+>
+>     The PFEC_MASK and PFEC_MATCH fields in the VMCS reverse the meaning of
+>     the #PF intercept bit in the exception bitmap when they do not match.
+>     This means that, if PFEC_MASK and/or PFEC_MATCH are set, the
+>     hypervisor can get a vmexit for #PF exceptions even when the
+>     corresponding bit is clear in the exception bitmap.
+>
+>     This is unexpected and is promptly reported as a WARN_ON_ONCE.
+>     To fix it, reset PFEC_MASK and PFEC_MATCH when the #PF intercept
+>     is disabled (as is common with enable_ept && !allow_smaller_maxphyaddr).
 
-                                                   Nvidia's
+I have tested this patch on an x86_64 machine and the reported issue is gone.
 
-> +driver, VirtualBox, or other Software that requires a some support from a module
-> +not part of the Linux kernel. Your package manager might thus force you to
-> +remove those, too.
-> +
-> +
->  .. ############################################################################
->  .. Temporary marker added while this document is rewritten. Sections above
->  .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
-> 
+>
+>     Reported-by: Qian Cai <cai@redhat.com>
+>     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
--- 
-~Randy
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index f0384e93548a..f4e9c310032a 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -794,6 +794,18 @@ void update_exception_bitmap(struct kvm_vcpu *vcpu)
+>          */
+>         if (is_guest_mode(vcpu))
+>                 eb |= get_vmcs12(vcpu)->exception_bitmap;
+> +        else {
+> +               /*
+> +                * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
+> +                * between guest and host.  In that case we only care about present
+> +                * faults.  For vmcs02, however, PFEC_MASK and PFEC_MATCH are set in
+> +                * prepare_vmcs02_rare.
+> +                */
+> +               bool selective_pf_trap = enable_ept && (eb & (1u << PF_VECTOR));
+> +               int mask = selective_pf_trap ? PFERR_PRESENT_MASK : 0;
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, mask);
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, mask);
+> +       }
+>
+>         vmcs_write32(EXCEPTION_BITMAP, eb);
+>  }
+> @@ -4355,16 +4367,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+>                 vmx->pt_desc.guest.output_mask = 0x7F;
+>                 vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
+>         }
+> -
+> -       /*
+> -        * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
+> -        * between guest and host.  In that case we only care about present
+> -        * faults.
+> -        */
+> -       if (enable_ept) {
+> -               vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, PFERR_PRESENT_MASK);
+> -               vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, PFERR_PRESENT_MASK);
+> -       }
+>  }
+>
+>  static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>
 
+test log link
+https://lkft.validation.linaro.org/scheduler/job/1813223
+
+- Naresh
