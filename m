@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F91C2811E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D02811E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387805AbgJBMB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBMB0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:01:26 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C1C0613D0;
-        Fri,  2 Oct 2020 05:01:25 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id u25so1088016otq.6;
-        Fri, 02 Oct 2020 05:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ibilTAtq7c7ViJ+NUjN/YiXyYNav9cZNhWApxQvHAD4=;
-        b=oRCA71AdVYnUOTVk48MNBj1jb/RIQeaF9OwWEIFdwtbCq3sKZS5O7TwTucjI4nFqId
-         TZioI3D5vkqWOrsC3jCDQtujEQlYRKZp13wW7VLj+G8oQgxabkALkRHgA7UByl6J2Bgl
-         TD0DYG7L6ilSumfNFs/9ybbrL6f0llB3grYDmqBzbKCbFvk1m6lnkBbIr6RBO0nJjmFW
-         VUYZNqhXc8N67IcH3CU7Vb05SXn/f0OxlQKG4XqhNLi0pwGkv6Epa19TyDw0ZKmhYY8a
-         +qTu4BYKoSdxZYtJotsVDZh8KbWCySxkKvAYA4PhezLP5tkEsbnO8g2vkBDcPgLWvt5r
-         6EHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ibilTAtq7c7ViJ+NUjN/YiXyYNav9cZNhWApxQvHAD4=;
-        b=MvaGlqJtLSitFI4yvAkIBwhLenI4vlcuxm7Sp5U7s7AkCyt693YN4OCHT48lLCQggC
-         m49D998TG/xw27Kjjo0Gscui9ln85ar8eKdDKMPA2At+dDnRdWUEGbmpm8PZjiYAOeI9
-         7hlWg+toqWlOrpCc9WHo9IHltGefJ3I9eOrb/uW6/0gc0o7g7pxh1q/jK8euzhiXcQLt
-         eR4dO1Vs9wuQ9f898PscUEBsT8gTyiOnYB41xrRsy4ZONho5GSnf+BOMUuj8zi1zEQy4
-         9AYIRA3qxkm215VJRBS40f28syx28XxWFCgv2IS/3UNNrIFBfEUh+Pnfsb9FiLcWTDnL
-         wcaw==
-X-Gm-Message-State: AOAM530anbU+OLIseuEqhJRfAuojMsY+HW3gW+zn1aHunYZlqYBIvK8r
-        SjKHeFoskPctboG9fPH+rFWJ/+HbHeUZMkLr0Ss=
-X-Google-Smtp-Source: ABdhPJx1r/kWpxsSsRe5Yh1mrr5jY9D0ECBN3nz+u5bagOSxvJeIuiT8smS1e3kp6v6rNvmb6kD/q3bNE4a/bGhs5ak=
-X-Received: by 2002:a9d:67c3:: with SMTP id c3mr1522386otn.9.1601640085321;
- Fri, 02 Oct 2020 05:01:25 -0700 (PDT)
+        id S2387821AbgJBMBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:01:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgJBMBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:01:34 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB624206A2;
+        Fri,  2 Oct 2020 12:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601640094;
+        bh=zbiiuyF5kjvD4Hk79n0s5rZqUD3LAi6erjiDnLetCJk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aJPgagblHWUFpqbxqUSneM6YdWH/dllJTLnhIWqtaZHi2cVY3vJfn/mBFe3245uIg
+         zjr9vP9lZbkdo27whBOhPtnRwyAX8hteZwNtTqqvcZ06RIWx/JyuMLKT7n8Pc+ml8v
+         +fHZtIIhTTAHAnYwE04mAFoMcR7edrtUvmq0UWiM=
+Date:   Fri, 2 Oct 2020 14:01:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     minyard@acm.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Corey Minyard <cminyard@mvista.com>
+Subject: Re: [PATCH] drivers:tty:pty: Fix a race causing data loss on close
+Message-ID: <20201002120133.GB3339665@kroah.com>
+References: <20201002021630.4892-1-minyard@acm.org>
 MIME-Version: 1.0
-References: <CAKwvOdmFm9-FPrqt42NsusWRbDzNx6NF1GeSJhz_9kaAGV8eOA@mail.gmail.com>
- <20200930173719.GE2628@hirez.programming.kicks-ass.net> <CAKwvOdk+Rp0QGJmX07XxD8L7WVgco98LHFTu-R_2R22+UMVerQ@mail.gmail.com>
- <20200930.152652.1530458864962753844.davem@davemloft.net>
-In-Reply-To: <20200930.152652.1530458864962753844.davem@davemloft.net>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 2 Oct 2020 14:01:13 +0200
-Message-ID: <CA+icZUXjYTJO4cC1EAhbdqnd19HjAwyFM+iSTW37xJM5dFHQuA@mail.gmail.com>
-Subject: Re: linux tooling mailing list
-To:     David Miller <davem@davemloft.net>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>, nickc@redhat.com,
-        maskray@google.com, segher@kernel.crashing.org,
-        linux@rasmusvillemoes.dk,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org, postmaster@vger.kernel.org,
-        peterz@infradead.org, behanw@converseincode.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002021630.4892-1-minyard@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 12:26 AM David Miller <davem@davemloft.net> wrote:
->
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> Date: Wed, 30 Sep 2020 12:29:38 -0700
->
-> > linux-toolchains@vger.kernel.org
->
-> Created.
->
+On Thu, Oct 01, 2020 at 09:16:30PM -0500, minyard@acm.org wrote:
+> From: Corey Minyard <cminyard@mvista.com>
+> 
+> If you write to a pty master an immediately close the pty master, the
+> receiver might get a chunk of data dropped, but then receive some later
+> data.  That's obviously something rather unexpected for a user.  It
+> certainly confused my test program.
+> 
+> It turns out that tty_vhangup() gets called from pty_close(), and that
+> causes the data on the slave side to be flushed, but due to races more
+> data can be copied into the slave side's buffer after that.  Consider
+> the following sequence:
+> 
+> thread1            thread2            thread3
+>                    write data into buffer,
+>                       n_tty buffer is filled
+>                    pty_close()
+>                     tty_vhangup()
+>                      tty_ldisc_hangup()
+>                       n_tty_flush_buffer()
+>                        reset_buffer_flags()
+> n_tty_read()
+>  up_read(&tty->termios_rwsem);
+>                         down_read(&tty->termios_rwsem);
+>                         clear n_tty buffer contents
+>                         up_read(&tty->termios_rwsem);
+>  tty_buffer_flush_work()
+>   schedules work calling
+>         flush_to_ldisc()
+>                                       flush_to_ldisc()
+>                                        receive_buf()
+>                                         tty_port_default_receive_buf()
+>                                          tty_ldisc_receive_buf()
+>                                           tty_ldisc_receive_buf()
+>                                            n_tty_receive_buf2()
+>                                             n_tty_receive_buf_common()
+>                                              down_read(&tty->termios_rwsem);
+>                                              __receive_buf()
+>                                               copies data into n_tty buffer
+>                                              up_read(&tty->termios_rwsem);
+>  down_read(&tty->termios_rwsem);
+>  copy buffer data to user
 
-I am subscribed, too.
+Your text got line-wrapped here for this explaination and it doesn't
+make much sense :(
 
-Will there be a(n)...?
+Can you resend this?
 
-* archive (for example marc.info)
-* patchwork url
+> This change checks to see if the tty is being hung up before copying
+> anything in n_tty_receive_buf_common().  It has to be done after the
+> tty->termios_rwsem semaphore is claimed, for reasons that should be
+> apparent from the sequence above.
 
-- Sedat -
+That kind of makes sense, but it's tricky, if you resend with the above
+fixed it might be more obvious...
 
-[1] https://github.com/ClangBuiltLinux/linux/issues/1170
+thanks,
+
+greg k-h
