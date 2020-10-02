@@ -2,140 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177CB280C80
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 05:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787FB280C85
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 05:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387556AbgJBD0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 23:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgJBD0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 23:26:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26952C0613D0;
-        Thu,  1 Oct 2020 20:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=yrCLPRBOEJ1Uv5fdSBy9H8UF8mXbPMcG1AE17Ac18tE=; b=JXLNg/m8lV6iDH65Me/ezi7/V1
-        fbWghPoc/HpPOk0BIsciUaWWDHvxGCoCnXC8y0my7eT0VrSA0JOBfrHSQQ3k/zablB94udRANDC1w
-        91upBfGeasebvd4c1ViPq0XAj+2I7kRh1LE3JGFObEsqXOlR9MNHaFA+1dJFgF607MJ0Q9j4ENdKe
-        sYVKPwe8B72Ry0qma98VB5eBPauTlBmSUkACQXQ5fd85qKgpd1dtyBtxd5onRl7T+EZ1aWmD4te/i
-        bRiGHty6J6GIZ+zHGNcQvDq3A/8ujutCz65qm5nuBcIARp0dttGjUwcNt1hzG/Y105VolSf+cBxnn
-        DsUv+oDg==;
-Received: from [2601:1c0:6280:3f0::863]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOBhn-00078j-Tt; Fri, 02 Oct 2020 03:26:00 +0000
-Subject: Re: [RFC PATCH v1 04/26] docs: reporting-bugs: step-by-step guide for
- issues in stable & longterm
-To:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <b81c54734a767f7da9ec68fae6b82ea0a8c96011.1601541165.git.linux@leemhuis.info>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b7ab110b-3f4d-382c-5802-5dd4291ea118@infradead.org>
-Date:   Thu, 1 Oct 2020 20:25:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2387589AbgJBDfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 23:35:19 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47272 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727780AbgJBDfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 23:35:18 -0400
+IronPort-SDR: ExnF6y2OqImAvZ99oGnJjrfJsqt/EQ7JxAK3+uA7yWr90CNOs0kbvFjDfHXtD7tOQNwKl9cjv0
+ 6909mvvPm0Mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="162137432"
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="162137432"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 20:35:17 -0700
+IronPort-SDR: ydJCHPtZOEhxB/pQLvQ1tmLhbJgI3d4sJZYwfN1syroDXFuEKRmKuePdCp70U+VFHgAmjZ+CyL
+ SW+f35zVm2GQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="506820568"
+Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 01 Oct 2020 20:35:15 -0700
+Received: from kbuild by de448af6ea1b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kOBql-0000q0-48; Fri, 02 Oct 2020 03:35:15 +0000
+Date:   Fri, 02 Oct 2020 11:34:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/debugobjects] BUILD SUCCESS
+ 88451f2cd3cec2abc30debdf129422d2699d1eba
+Message-ID: <5f769fd9.fIRQ/rTAQ8L0NnXW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <b81c54734a767f7da9ec68fae6b82ea0a8c96011.1601541165.git.linux@leemhuis.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
-> Handle stable and longterm kernels in a subsection, as dealing with them
-> directly in the main part of the step-by-step guide turned out to make
-> it messy and hard to follow: it looked a bit like code with a large
-> amount of if-then-else section to handle special cases, which made the
-> default code-flow hard to understand.
-> 
-> Yet again each step will later be repeated in a reference section and
-> described in more detail.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
->  Documentation/admin-guide/reporting-bugs.rst | 49 ++++++++++++++++++++
->  1 file changed, 49 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-> index 203df36af55f..e0a6f4328e87 100644
-> --- a/Documentation/admin-guide/reporting-bugs.rst
-> +++ b/Documentation/admin-guide/reporting-bugs.rst
-> @@ -156,6 +156,55 @@ After these preparations you'll now enter the main part:
->     yourself, if you don't get any help or if it is unsatisfying.
->  
->  
-> +Reporting issues only occurring in older kernel version lines
-> +-------------------------------------------------------------
-> +
-> +This section is for you, if you tried the latest mainline kernel as outlined
-> +above, but failed to reproduce your issue there; at the same time you want to
-> +see the issue fixed in older version lines or a vendor kernel that's regularly
-> +rebased on new stable or longterm releases. If that case follow these steps:
-> +
-> + * Prepare yourself for the possibility that going through the next few steps
-> +   might not get the issue solved in older releases: the fix might be too big or
-> +   risky to get backported there.
-> +
-> + * Check if the kernel developers still maintain the Linux kernel version line
-> +   you care about: go to `the front-page of kernel.org <https://kernel.org>`_
-> +   and make sure it mentions the latest release of the particular version line
-> +   without an '[EOL]' tag.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/debugobjects
+branch HEAD: 88451f2cd3cec2abc30debdf129422d2699d1eba  debugobjects: Free per CPU pool after CPU unplug
 
-Explain somewhere that EOL = End Of Life (in parens).
+elapsed time: 724m
 
-> +
-> + * Check the `archives of the Linux stable mailing list
-> +   <https://lore.kernel.org/stable/>`_  for existing reports.
-> +
-> + * Install the latest release from the particular version line as a vanilla
-> +   kernel. Ensure this kernel is not tainted and still shows the problem, as the
-> +   issue might have already been fixed there.
-> +
-> + * Search the Linux kernel version control system for the change that fixed
-> +   the issue in mainline, as its commit message might tell you if the fix is
-> +   scheduled for backporting already. If you don't find anything that way,
-> +   search the appropriate mailing lists for posts that discuss such an issue or
-> +   peer-review possible fixes. That might lead you to the commit with the fix
-> +   or tell you if it's unsuitable for backporting. If backporting was not
-> +   considered at all, join the newest discussion, asking if its in the cards.
+configs tested: 149
+configs skipped: 3
 
-                                                               it's
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +
-> + * Check if you're dealing with a regression that was never present in
-> +   mainline by installing the first release of the version line you care about.
-> +   If the issue doesn't show up with it, you basically need to report the issue
-> +   with this version like you would report a problem with mainline (see above).
-> +   This ideally includes a bisection followed by a search for existing reports
-> +   on the net; with the help of the subject and the two relevant commit-ids. If
-> +   that doesn't turn up anything, write the report; CC or forward the report to
-> +   the stable maintainers, the stable mailing list, and those that authored the
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          landisk_defconfig
+sh                             sh03_defconfig
+arm64                            alldefconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                     rainier_defconfig
+m68k                        mvme147_defconfig
+arm                          gemini_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          malta_defconfig
+arm                              alldefconfig
+riscv                             allnoconfig
+mips                malta_kvm_guest_defconfig
+um                           x86_64_defconfig
+sh                           se7724_defconfig
+xtensa                    smp_lx200_defconfig
+arm                     am200epdkit_defconfig
+powerpc                 mpc834x_mds_defconfig
+powerpc                      pcm030_defconfig
+ia64                        generic_defconfig
+arc                            hsdk_defconfig
+arm                             ezx_defconfig
+sh                             shx3_defconfig
+mips                     cu1830-neo_defconfig
+arm                            mmp2_defconfig
+powerpc                    gamecube_defconfig
+mips                          ath79_defconfig
+arm                          simpad_defconfig
+mips                  cavium_octeon_defconfig
+arm                             mxs_defconfig
+mips                             allyesconfig
+microblaze                          defconfig
+sh                           se7722_defconfig
+c6x                        evmc6457_defconfig
+sh                           se7751_defconfig
+mips                      malta_kvm_defconfig
+powerpc                     taishan_defconfig
+s390                       zfcpdump_defconfig
+powerpc                       ppc64_defconfig
+powerpc                      ppc6xx_defconfig
+arm                           spitz_defconfig
+h8300                               defconfig
+arm                           efm32_defconfig
+arm                   milbeaut_m10v_defconfig
+h8300                            alldefconfig
+arm                           viper_defconfig
+arm                       imx_v4_v5_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8313_rdb_defconfig
+m68k                       m5249evb_defconfig
+m68k                       bvme6000_defconfig
+arm                          imote2_defconfig
+arm                         axm55xx_defconfig
+m68k                        m5307c3_defconfig
+xtensa                  audio_kc705_defconfig
+microblaze                      mmu_defconfig
+powerpc                          allmodconfig
+nios2                               defconfig
+riscv                            alldefconfig
+arm                         palmz72_defconfig
+powerpc                     ksi8560_defconfig
+sh                        sh7785lcr_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200930
+i386                 randconfig-a002-20200930
+i386                 randconfig-a006-20200930
+i386                 randconfig-a005-20200930
+i386                 randconfig-a004-20200930
+i386                 randconfig-a001-20200930
+x86_64               randconfig-a015-20200930
+x86_64               randconfig-a013-20200930
+x86_64               randconfig-a012-20200930
+x86_64               randconfig-a016-20200930
+x86_64               randconfig-a014-20200930
+x86_64               randconfig-a011-20200930
+x86_64               randconfig-a012-20201001
+x86_64               randconfig-a015-20201001
+x86_64               randconfig-a014-20201001
+x86_64               randconfig-a013-20201001
+x86_64               randconfig-a011-20201001
+x86_64               randconfig-a016-20201001
+i386                 randconfig-a011-20200930
+i386                 randconfig-a015-20200930
+i386                 randconfig-a012-20200930
+i386                 randconfig-a014-20200930
+i386                 randconfig-a016-20200930
+i386                 randconfig-a013-20200930
+i386                 randconfig-a014-20201001
+i386                 randconfig-a015-20201001
+i386                 randconfig-a013-20201001
+i386                 randconfig-a016-20201001
+i386                 randconfig-a011-20201001
+i386                 randconfig-a012-20201001
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-                                                           those who (?)
+clang tested configs:
+x86_64               randconfig-a004-20201001
+x86_64               randconfig-a001-20201001
+x86_64               randconfig-a002-20201001
+x86_64               randconfig-a003-20201001
+x86_64               randconfig-a005-20201001
+x86_64               randconfig-a006-20201001
+x86_64               randconfig-a001-20200930
+x86_64               randconfig-a005-20200930
+x86_64               randconfig-a003-20200930
+x86_64               randconfig-a004-20200930
+x86_64               randconfig-a002-20200930
+x86_64               randconfig-a006-20200930
 
-> +   change. Include the shortened commit-id if you found the change that causes
-> +   it.
-> +
-> + * One of the former steps should lead to a solution. If that doesn't work out,
-> +   ask the maintainers for the subsystem that seems to be causing the issue for
-> +   advice; CC the mailing list for the particular subsystem as well as the
-> +   stable mailing list.
-> +
-> +
->  .. ############################################################################
->  .. Temporary marker added while this document is rewritten. Sections above
->  .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
-> 
-
-
--- 
-~Randy
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
