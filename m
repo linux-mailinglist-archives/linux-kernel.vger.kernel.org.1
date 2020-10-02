@@ -2,171 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A59F281743
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691E5281745
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388020AbgJBP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:58:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54302 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgJBP6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:58:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601654280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fow1rKoT5hjh0fNFBET8jAgxpaNLWzof7WSQoWO/K/E=;
-        b=KsnWvOqLacIjOjZNo72rLkRhmWZddvZpKu4gyEBq6bn3TDIHbJt/0Vuruv93Ly9P3tcZgZ
-        Q58VXiCwTef1LeFu7knYNExtPXlBcpQ1zZLXeVETT/QuhTtVEtbX0D5CrIkAQA2O2DERmK
-        kYIxoenb/gPWc8WKRf9cTO7OruM7mYw=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-wv9ENSdmMCOrk2pYfhVy3A-1; Fri, 02 Oct 2020 11:57:59 -0400
-X-MC-Unique: wv9ENSdmMCOrk2pYfhVy3A-1
-Received: by mail-qt1-f197.google.com with SMTP id g44so1314938qtb.15
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:57:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fow1rKoT5hjh0fNFBET8jAgxpaNLWzof7WSQoWO/K/E=;
-        b=C8lfF5COaLDpxCHGTEAV9EsViwbXjUn6rn6sPpY7tb1O0P/Fm5NsKCCvQL0ksI0iJZ
-         8b1p9i/N7NPM6FywKXTxmVXF02FZs5YDZhHcsTmQZeWa1qgG53PMJG9wh7iEOII2h1Q8
-         6ch9YBIDo5MeqHYS3GRprbBVl2KI5M6xxoQrxNs4+jfplMZAej3sIdKrjLI4XUOh5qp/
-         wcPwKALTpA/GQtThk/uP9pq4vuUCPDG+M+VAHiVPs5okzQiFEGKh8qhsM8BW0BB8zz2l
-         uo9/EzVHLVFuTGWIEwXCybL1HNofVBVMh0Jt1JbRml1wILSmiRf3YDuGI10ftFVRcp4p
-         6vwQ==
-X-Gm-Message-State: AOAM532jO7+ZFxDvF7UZHBBnsRfOq8qEbX7hdQzM5GLfsMy6mIH4HA8u
-        s1gpFV2BCvy3UzcC3V4KC6CjDsVnpLNVyVshjJ0//6MGVrVDGKi1sBTFwM8VxLnzUBikcI4Qw/A
-        TVh37c1O7mBMi0K2m/2+r821c
-X-Received: by 2002:ac8:1a43:: with SMTP id q3mr2958815qtk.41.1601654277165;
-        Fri, 02 Oct 2020 08:57:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzw5pnn7qdXl3emd/Wk2Og1Wcj3jG2wqYdWcuE9dTEtKjC8RWzDMeRGgU0i4V0ZnnV7AX2tTw==
-X-Received: by 2002:ac8:1a43:: with SMTP id q3mr2958789qtk.41.1601654276839;
-        Fri, 02 Oct 2020 08:57:56 -0700 (PDT)
-Received: from x1.bristot.me (host-87-17-196-109.retail.telecomitalia.it. [87.17.196.109])
-        by smtp.gmail.com with ESMTPSA id p30sm1272205qtd.89.2020.10.02.08.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 08:57:55 -0700 (PDT)
-Subject: Re: [PATCH] sched/deadline: Unthrottle PI boosted threads while
- enqueuing
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        id S2388110AbgJBP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:58:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3614 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBP6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:58:19 -0400
+IronPort-SDR: 1DFwx49py7rA88vLihJtYVFF5EPGV2+2smjlW8PBnOdYYBAa2B4igq/Ct83wI5zI7GCE+hqSxm
+ b+802xx1DxgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="142406480"
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="142406480"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 08:58:17 -0700
+IronPort-SDR: UIER8ztpir42d+P/skPtUqpAth+NDcVX4em72Mfu0y5X2uWzRo8um/fUiNf+rZfjUGFriSSsaT
+ qxiCFOSZqR+w==
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="295390005"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.143.131]) ([10.212.143.131])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 08:58:15 -0700
+Subject: Re: [PATCH v13 19/26] mm: Re-introduce do_mmap_pgoff()
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
         Peter Zijlstra <peterz@infradead.org>,
-        Mark Simmons <msimmons@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-References: <5076e003450835ec74e6fa5917d02c4fa41687e6.1600170294.git.bristot@redhat.com>
- <20200918060026.GC261845@localhost.localdomain>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <f4316f5a-eccd-ec96-3f7b-85900f5f3124@redhat.com>
-Date:   Fri, 2 Oct 2020 17:57:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+ <20200925145649.5438-20-yu-cheng.yu@intel.com>
+ <CAMn1gO4cxSt8-8qVbAei0jPErTtARdsEY4js6Fi=kzozAuE3yQ@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <00a409f0-1e2e-0bd7-83e7-f21a47878916@intel.com>
+Date:   Fri, 2 Oct 2020 08:58:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20200918060026.GC261845@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAMn1gO4cxSt8-8qVbAei0jPErTtARdsEY4js6Fi=kzozAuE3yQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/18/20 8:00 AM, Juri Lelli wrote:
-> Hi Daniel,
+On 10/1/2020 7:06 PM, Peter Collingbourne wrote:
+> On Fri, Sep 25, 2020 at 7:57 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>>
+>> There was no more caller passing vm_flags to do_mmap(), and vm_flags was
+>> removed from the function's input by:
+>>
+>>      commit 45e55300f114 ("mm: remove unnecessary wrapper function do_mmap_pgoff()").
+>>
+>> There is a new user now.  Shadow stack allocation passes VM_SHSTK to
+>> do_mmap().  Re-introduce the vm_flags and do_mmap_pgoff().
 > 
-> On 16/09/20 09:06, Daniel Bristot de Oliveira wrote:
->> stress-ng has a test (stress-ng --cyclic) that creates a set of threads
->> under SCHED_DEADLINE with the following parameters:
->>
->>     dl_runtime   =  10000 (10 us)
->>     dl_deadline  = 100000 (100 us)
->>     dl_period    = 100000 (100 us)
->>
->> These parameters are very aggressive. When using a system without HRTICK
->> set, these threads can easily execute longer than the dl_runtime because
->> the throttling happens with 1/HZ resolution.
->>
->> During the main part of the test, the system works just fine because
->> the workload does not try to run over the 10 us. The problem happens at
->> the end of the test, on the exit() path. During exit(), the threads need
->> to do some cleanups that require real-time mutex locks, mainly those
->> related to memory management, resulting in this scenario:
->>
->> Note: locks are rt_mutexes...
->>  ------------------------------------------------------------------------
->>     TASK A:		TASK B:				TASK C:
->>     activation
->> 							activation
->> 			activation
->>
->>     lock(a): OK!	lock(b): OK!
->>     			<overrun runtime>
->>     			lock(a)
->>     			-> block (task A owns it)
->> 			  -> self notice/set throttled
->>  +--<			  -> arm replenished timer
->>  |    			switch-out
->>  |    							lock(b)
->>  |    							-> <C prio > B prio>
->>  |    							-> boost TASK B
->>  |  unlock(a)						switch-out
->>  |  -> handle lock a to B
->>  |    -> wakeup(B)
->>  |      -> B is throttled:
->>  |        -> do not enqueue
->>  |     switch-out
->>  |
->>  |
->>  +---------------------> replenishment timer
->> 			-> TASK B is boosted:
->> 			  -> do not enqueue
->>  ------------------------------------------------------------------------
->>
->> BOOM: TASK B is runnable but !enqueued, holding TASK C: the system
->> crashes with hung task C.
->>
->> This problem is avoided by removing the throttle state from the boosted
->> thread while boosting it (by TASK A in the example above), allowing it to
->> be queued and run boosted.
->>
->> The next replenishment will take care of the runtime overrun, pushing
->> the deadline further away. See the "while (dl_se->runtime <= 0)" on
->> replenish_dl_entity() for more information.
->>
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
->> Reported-by: Mark Simmons <msimmons@redhat.com>
->> Reviewed-by: Juri Lelli <juri.lelli@redhat.com>
->> Tested-by: Mark Simmons <msimmons@redhat.com>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ben Segall <bsegall@google.com>
->> Cc: Mel Gorman <mgorman@suse.de>
->> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->> Cc: linux-kernel@vger.kernel.org
->>
->> ---
+> I would prefer to change the callers to pass the additional 0 argument
+> instead of bringing the wrapper function back, but if we're going to
+> bring it back then we should fix the naming (both functions take a
+> pgoff argument, so the previous name do_mmap_pgoff() was just plain
+> confusing).
 > 
-> Thanks for this fix.
+> Peter
 > 
-> Acked-by: Juri Lelli <juri.lelli@redhat.com>
 
-This is a gentle ping... [we are facing this bug in practice :-(].
+Thanks for your feedback.  Here is the updated patch.  I will re-send 
+the whole series later.
 
--- Daniel
+Yu-cheng
 
-> Best,
-> Juri
-> 
+======
+
+ From 6a9f1e6bcdb6e599a44d5f58cf4cebd28c4634a2 Mon Sep 17 00:00:00 2001
+From: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Date: Wed, 12 Aug 2020 14:01:58 -0700
+Subject: [PATCH 19/26] mm: Re-introduce do_mmap_pgoff()
+
+There was no more caller passing vm_flags to do_mmap(), and vm_flags was
+removed from the function's input by:
+
+     commit 45e55300f114 ("mm: remove unnecessary wrapper function 
+do_mmap_pgoff()").
+
+There is a new user now.  Shadow stack allocation passes VM_SHSTK to
+do_mmap().  Re-introduce vm_flags to do_mmap(), but without the old wrapper
+do_mmap_pgoff().  Instead, fix all callers of the wrapper by passing a zero
+vm_flags to do_mmap().
+
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: linux-mm@kvack.org
+---
+  fs/aio.c           |  2 +-
+  include/linux/mm.h |  3 ++-
+  ipc/shm.c          |  2 +-
+  mm/mmap.c          | 10 +++++-----
+  mm/nommu.c         |  4 ++--
+  mm/util.c          |  2 +-
+  6 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/fs/aio.c b/fs/aio.c
+index d5ec30385566..ca8c11665eea 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -527,7 +527,7 @@ static int aio_setup_ring(struct kioctx *ctx, 
+unsigned int nr_events)
+
+  	ctx->mmap_base = do_mmap(ctx->aio_ring_file, 0, ctx->mmap_size,
+  				 PROT_READ | PROT_WRITE,
+-				 MAP_SHARED, 0, &unused, NULL);
++				 MAP_SHARED, 0, 0, &unused, NULL);
+  	mmap_write_unlock(mm);
+  	if (IS_ERR((void *)ctx->mmap_base)) {
+  		ctx->mmap_size = 0;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index e09d13699bbe..e020eea33138 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2560,7 +2560,8 @@ extern unsigned long mmap_region(struct file 
+*file, unsigned long addr,
+  	struct list_head *uf);
+  extern unsigned long do_mmap(struct file *file, unsigned long addr,
+  	unsigned long len, unsigned long prot, unsigned long flags,
+-	unsigned long pgoff, unsigned long *populate, struct list_head *uf);
++	vm_flags_t vm_flags, unsigned long pgoff, unsigned long *populate,
++	struct list_head *uf);
+  extern int __do_munmap(struct mm_struct *, unsigned long, size_t,
+  		       struct list_head *uf, bool downgrade);
+  extern int do_munmap(struct mm_struct *, unsigned long, size_t,
+diff --git a/ipc/shm.c b/ipc/shm.c
+index e25c7c6106bc..91474258933d 100644
+--- a/ipc/shm.c
++++ b/ipc/shm.c
+@@ -1556,7 +1556,7 @@ long do_shmat(int shmid, char __user *shmaddr, int 
+shmflg,
+  			goto invalid;
+  	}
+
+-	addr = do_mmap(file, addr, size, prot, flags, 0, &populate, NULL);
++	addr = do_mmap(file, addr, size, prot, flags, 0, 0, &populate, NULL);
+  	*raddr = addr;
+  	err = 0;
+  	if (IS_ERR_VALUE(addr))
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 574b3f273462..fc04184d2eae 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1365,11 +1365,11 @@ static inline bool file_mmap_ok(struct file 
+*file, struct inode *inode,
+   */
+  unsigned long do_mmap(struct file *file, unsigned long addr,
+  			unsigned long len, unsigned long prot,
+-			unsigned long flags, unsigned long pgoff,
+-			unsigned long *populate, struct list_head *uf)
++			unsigned long flags, vm_flags_t vm_flags,
++			unsigned long pgoff, unsigned long *populate,
++			struct list_head *uf)
+  {
+  	struct mm_struct *mm = current->mm;
+-	vm_flags_t vm_flags;
+  	int pkey = 0;
+
+  	*populate = 0;
+@@ -1431,7 +1431,7 @@ unsigned long do_mmap(struct file *file, unsigned 
+long addr,
+  	 * to. we assume access permissions have been handled by the open
+  	 * of the memory object, so we don't do any here.
+  	 */
+-	vm_flags = calc_vm_prot_bits(prot, pkey) | calc_vm_flag_bits(flags) |
++	vm_flags |= calc_vm_prot_bits(prot, pkey) | calc_vm_flag_bits(flags) |
+  			mm->def_flags | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC;
+
+  	if (flags & MAP_LOCKED)
+@@ -3007,7 +3007,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, 
+start, unsigned long, size,
+
+  	file = get_file(vma->vm_file);
+  	ret = do_mmap(vma->vm_file, start, size,
+-			prot, flags, pgoff, &populate, NULL);
++			prot, flags, 0, pgoff, &populate, NULL);
+  	fput(file);
+  out:
+  	mmap_write_unlock(mm);
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 75a327149af1..f67d6bcdfc9f 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -1078,6 +1078,7 @@ unsigned long do_mmap(struct file *file,
+  			unsigned long len,
+  			unsigned long prot,
+  			unsigned long flags,
++			vm_flags_t vm_flags,
+  			unsigned long pgoff,
+  			unsigned long *populate,
+  			struct list_head *uf)
+@@ -1085,7 +1086,6 @@ unsigned long do_mmap(struct file *file,
+  	struct vm_area_struct *vma;
+  	struct vm_region *region;
+  	struct rb_node *rb;
+-	vm_flags_t vm_flags;
+  	unsigned long capabilities, result;
+  	int ret;
+
+@@ -1104,7 +1104,7 @@ unsigned long do_mmap(struct file *file,
+
+  	/* we've determined that we can make the mapping, now translate what we
+  	 * now know into VMA flags */
+-	vm_flags = determine_vm_flags(file, prot, flags, capabilities);
++	vm_flags |= determine_vm_flags(file, prot, flags, capabilities);
+
+  	/* we're going to need to record the mapping */
+  	region = kmem_cache_zalloc(vm_region_jar, GFP_KERNEL);
+diff --git a/mm/util.c b/mm/util.c
+index 5ef378a2a038..beb8b881c080 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -503,7 +503,7 @@ unsigned long vm_mmap_pgoff(struct file *file, 
+unsigned long addr,
+  	if (!ret) {
+  		if (mmap_write_lock_killable(mm))
+  			return -EINTR;
+-		ret = do_mmap(file, addr, len, prot, flag, pgoff, &populate,
++		ret = do_mmap(file, addr, len, prot, flag, 0, pgoff, &populate,
+  			      &uf);
+  		mmap_write_unlock(mm);
+  		userfaultfd_unmap_complete(mm, &uf);
+-- 
+2.21.0
 
