@@ -2,213 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0644D281BEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB14281BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388398AbgJBTZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:25:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34569 "EHLO
+        id S2388436AbgJBT04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:26:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37152 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726813AbgJBTZw (ORCPT
+        by vger.kernel.org with ESMTP id S1725991AbgJBT04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:25:52 -0400
+        Fri, 2 Oct 2020 15:26:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601666750;
+        s=mimecast20190719; t=1601666810;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GKcXJAdZypWupEdq8nxdfbsZbI5HmERi4UOtlb/nGmA=;
-        b=e9loXJY7cRwLJu/V5eGGKeU7lawvWffu8lEDrN6ifOPPZPzwxJE9ITha9R8eWtm2QCIAKx
-        toEBy0VdgAQjbDOfoiuZBIOprokZfBGY1vdv17F2cGjQD4BvNbuuCnHgsSk2HHnbxZeoz+
-        o8I7BMmTnouBsgzYwrQRiSLdazPyEYk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-tSy1kGNKNv22Jv9U1jvLng-1; Fri, 02 Oct 2020 15:25:46 -0400
-X-MC-Unique: tSy1kGNKNv22Jv9U1jvLng-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82A3A87308D;
-        Fri,  2 Oct 2020 19:25:44 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EF0725C1DA;
-        Fri,  2 Oct 2020 19:25:28 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 15:25:25 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        sgrubb@redhat.com, Ondrej Mosnacek <omosnace@redhat.com>,
-        dhowells@redhat.com, simo@redhat.com,
-        Eric Paris <eparis@parisplace.org>,
-        Serge Hallyn <serge@hallyn.com>, ebiederm@xmission.com,
-        nhorman@tuxdriver.com, Dan Walsh <dwalsh@redhat.com>,
-        mpatel@redhat.com
-Subject: Re: [PATCH ghak90 V9 06/13] audit: add contid support for signalling
- the audit daemon
-Message-ID: <20201002192525.GG2882171@madcap2.tricolour.ca>
-References: <cover.1593198710.git.rgb@redhat.com>
- <f01f38dbb3190191e5914874322342700aecb9e1.1593198710.git.rgb@redhat.com>
- <CAHC9VhRPm4=_dVkZCu9iD5u5ixJOUnGNZ2wM9CL4kWwqv3GRnA@mail.gmail.com>
- <20200729190025.mueangq3os3r7ew6@madcap2.tricolour.ca>
- <CAHC9VhQoSH7Lza517WNr+6LaS7i890JPQfvisV6thLmnu01QOw@mail.gmail.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6cF3SgzuvOIRZj3w94/msXN6CI56hZ4X2dxSFR9vd+k=;
+        b=Yp7+nVfhWc+/5tnUtm4PJnbJVe5rN5jVw5s8CCW7i3SamuYU352Dlh7TJMDD6WW6cdzZkx
+        bt3degXRJTcjndCj8otYz28p1+JP7u+omHdYltCxvS1IxSJ9X7dzTRWhDl+KkGR2TQi/16
+        fSk9EMC6mhjZOAvf7oSlzdEpt5xR8p0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-CchblOdTPuqG4SxS_qamjg-1; Fri, 02 Oct 2020 15:26:48 -0400
+X-MC-Unique: CchblOdTPuqG4SxS_qamjg-1
+Received: by mail-qt1-f197.google.com with SMTP id h31so1784031qtd.14
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 12:26:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6cF3SgzuvOIRZj3w94/msXN6CI56hZ4X2dxSFR9vd+k=;
+        b=Y7XQdQ/8FvE2TcQUirofhwYMg+oSWNp3gO+6qVjh5QiYHta0Da9Qjd3+3uvkZ5Nhte
+         DotX8lezSysR05zR52D2jZ7f/hmouGZREZ238v76pVP/9O6ONcacp8RDAfdeEJVdy5KM
+         rASwRBMyu906ToTsNjvsUUAc1Y0jDVrq/GCetZLKzpHHwc7T5HY9SpvM7EtfzRLn7tGp
+         FxwHNJZ2njK80vWhVTsr6ogzgIjNvUGEYgqUntkOS4ItihisnFUY0VFwUpmEyDvviIgi
+         mj82gKFgwkjVzYAkEOmKImomg/wdJEwHW3x0NCZA3/cOGIP75wPZG7f4DPqrAeNYl4jG
+         zZOw==
+X-Gm-Message-State: AOAM532HnOVjugoi5dRXyoAPYXMNAucecTMNS6mUHFmn+u+hzprREquF
+        PKl+H6dFg99tYWdCxxMq1OZMU+4XqL5uspgRJPPbQjPM92oqZKH3QJiuBnC8kDno3v87QSf+Ab+
+        d6SCFg969EvW+j2La8LbSbriS
+X-Received: by 2002:ac8:bc9:: with SMTP id p9mr3993657qti.50.1601666808318;
+        Fri, 02 Oct 2020 12:26:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlLlKbJozevapkbP1NSaJIub/Tra+6blf+F5KS20vS0EjxdmqJiwzSPiJYMOy9iovbujil3w==
+X-Received: by 2002:ac8:bc9:: with SMTP id p9mr3993626qti.50.1601666807905;
+        Fri, 02 Oct 2020 12:26:47 -0700 (PDT)
+Received: from localhost.localdomain (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
+        by smtp.gmail.com with ESMTPSA id t140sm1704842qke.125.2020.10.02.12.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 12:26:47 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, peterx@redhat.com,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2] mm: Remove src/dst mm parameter in copy_page_range()
+Date:   Fri,  2 Oct 2020 15:26:47 -0400
+Message-Id: <20201002192647.7161-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQoSH7Lza517WNr+6LaS7i890JPQfvisV6thLmnu01QOw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-21 14:48, Paul Moore wrote:
-> On Wed, Jul 29, 2020 at 3:00 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > On 2020-07-05 11:10, Paul Moore wrote:
-> > > On Sat, Jun 27, 2020 at 9:22 AM Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > >
-> > > > Add audit container identifier support to the action of signalling the
-> > > > audit daemon.
-> > > >
-> > > > Since this would need to add an element to the audit_sig_info struct,
-> > > > a new record type AUDIT_SIGNAL_INFO2 was created with a new
-> > > > audit_sig_info2 struct.  Corresponding support is required in the
-> > > > userspace code to reflect the new record request and reply type.
-> > > > An older userspace won't break since it won't know to request this
-> > > > record type.
-> > > >
-> > > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > > > ---
-> > > >  include/linux/audit.h       |  8 ++++
-> > > >  include/uapi/linux/audit.h  |  1 +
-> > > >  kernel/audit.c              | 95 ++++++++++++++++++++++++++++++++++++++++++++-
-> > > >  security/selinux/nlmsgtab.c |  1 +
-> > > >  4 files changed, 104 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/audit.h b/include/linux/audit.h
-> > > > index 5eeba0efffc2..89cf7c66abe6 100644
-> > > > --- a/include/linux/audit.h
-> > > > +++ b/include/linux/audit.h
-> > > > @@ -22,6 +22,13 @@ struct audit_sig_info {
-> > > >         char            ctx[];
-> > > >  };
-> > > >
-> > > > +struct audit_sig_info2 {
-> > > > +       uid_t           uid;
-> > > > +       pid_t           pid;
-> > > > +       u32             cid_len;
-> > > > +       char            data[];
-> > > > +};
-> > > > +
-> > > >  struct audit_buffer;
-> > > >  struct audit_context;
-> > > >  struct inode;
-> > > > @@ -105,6 +112,7 @@ struct audit_contobj {
-> > > >         u64                     id;
-> > > >         struct task_struct      *owner;
-> > > >         refcount_t              refcount;
-> > > > +       refcount_t              sigflag;
-> > > >         struct rcu_head         rcu;
-> > > >  };
-> > >
-> > > It seems like we need some protection in audit_set_contid() so that we
-> > > don't allow reuse of an audit container ID when "refcount == 0 &&
-> > > sigflag != 0", yes?
-> >
-> > We have it, see -ESHUTDOWN below.
-> 
-> That check in audit_set_contid() is checking ->refcount and not
-> ->sigflag; ->sigflag is more important in this context, yes?
+Both of the mm pointers are not needed after commit 7a4830c380f3 ("mm/fork:
+Pass new vma pointer into copy_page_range()").
 
-That contobj isn't findable until it is in the list with a positive
-refcount.  If that contobj still exists and the refcount is zero, refuse
-to increment it since it is dead.  The only reason it still exists is
-the sigflag must be non-zero due to the signal not having been collected
-yet or rcu hasn't released it yet after auditd exitted.
+Jason Gunthorpe also reported that the ordering of copy_page_range() is odd.
+Since working at it, reorder the parameters to be logical, by (1) always put
+the dst_* fields to be before src_* fields, and (2) keep the same type of
+parameters together.
 
-> > > > diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-> > > > index fd98460c983f..a56ad77069b9 100644
-> > > > --- a/include/uapi/linux/audit.h
-> > > > +++ b/include/uapi/linux/audit.h
-> > > > @@ -72,6 +72,7 @@
-> > > >  #define AUDIT_SET_FEATURE      1018    /* Turn an audit feature on or off */
-> > > >  #define AUDIT_GET_FEATURE      1019    /* Get which features are enabled */
-> > > >  #define AUDIT_CONTAINER_OP     1020    /* Define the container id and info */
-> > > > +#define AUDIT_SIGNAL_INFO2     1021    /* Get info auditd signal sender */
-> > > >
-> > > >  #define AUDIT_FIRST_USER_MSG   1100    /* Userspace messages mostly uninteresting to kernel */
-> > > >  #define AUDIT_USER_AVC         1107    /* We filter this differently */
-> > > > diff --git a/kernel/audit.c b/kernel/audit.c
-> > > > index a09f8f661234..54dd2cb69402 100644
-> > > > --- a/kernel/audit.c
-> > > > +++ b/kernel/audit.c
-> > > > @@ -126,6 +126,8 @@ struct auditd_connection {
-> > > >  kuid_t         audit_sig_uid = INVALID_UID;
-> > > >  pid_t          audit_sig_pid = -1;
-> > > >  u32            audit_sig_sid = 0;
-> > > > +static struct audit_contobj *audit_sig_cid;
-> > > > +static struct task_struct *audit_sig_atsk;
-> > >
-> > > This looks like a typo, or did you mean "atsk" for some reason?
-> >
-> > No, I meant atsk to refer specifically to the audit daemon task and not
-> > any other random one that is doing the signalling.  I can change it is
-> > there is a strong objection.
-> 
-> Esh, yeah, "atsk" looks too much like a typo ;)  At the very leask add
-> a 'd' in there, e.g. "adtsk", but something better than that would be
-> welcome.
+CC: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Andrew Morton <akpm@linux-foundation.org>
+Reported-by: Kirill A. Shutemov <kirill@shutemov.name>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+v2:
+- further reorder some parameters and line format [Jason]
+---
+ include/linux/mm.h |   4 +-
+ kernel/fork.c      |   2 +-
+ mm/memory.c        | 139 ++++++++++++++++++++++++---------------------
+ 3 files changed, 76 insertions(+), 69 deletions(-)
 
-Done.  I don't have a strong opinion.
-
-> > > > @@ -2532,6 +2620,11 @@ int audit_set_contid(struct task_struct *task, u64 contid)
-> > > >                         if (cont->id == contid) {
-> > > >                                 /* task injection to existing container */
-> > > >                                 if (current == cont->owner) {
-> > > > +                                       if (!refcount_read(&cont->refcount)) {
-> > > > +                                               rc = -ESHUTDOWN;
-> > >
-> > > Reuse -ENOTUNIQ; I'm not overly excited about providing a lot of
-> > > detail here as these are global system objects.  If you must have a
-> > > different errno (and I would prefer you didn't), use something like
-> > > -EBUSY.
-> >
-> > I don't understand the issue of "global system objects" since the only
-> > time this error would be issued is if its own contid were being reused
-> > but it hadn't cleaned up its own references yet by either issuing an
-> > AUDIT_SIGNAL_INFO* request or the targetted audit daemon hadn't cleaned
-> > up yet.  EBUSY could be confused with already having spawned threads or
-> > children, and ENOTUNIQ could indicate that another orchestrator/engine
-> > had stolen its desired contid after we released it and wanted to reuse
-> > it.
-> 
-> All the more reason for ENOTUNIQ.  The point is that the audit
-> container ID is not available for use, and since the IDs are shared
-> across the entire system I think we are better off having some
-> ambiquity here with errnos.
-
-Done.
-
-> > This gets me thinking about making reservations for preferred
-> > contids that are otherwise unavailable and making callbacks to indicate
-> > when they become available, but that seems undesirably complex right
-> > now.
-> 
-> That is definitely beyond the scope of this work, or rather *should*
-> be beyond the scope of this work.
-
-Good.
-
-> paul moore
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 16b799a0522c..a26e9f706b25 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1645,8 +1645,8 @@ struct mmu_notifier_range;
+ 
+ void free_pgd_range(struct mmu_gather *tlb, unsigned long addr,
+ 		unsigned long end, unsigned long floor, unsigned long ceiling);
+-int copy_page_range(struct mm_struct *dst, struct mm_struct *src,
+-		    struct vm_area_struct *vma, struct vm_area_struct *new);
++int
++copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma);
+ int follow_pte_pmd(struct mm_struct *mm, unsigned long address,
+ 		   struct mmu_notifier_range *range,
+ 		   pte_t **ptepp, pmd_t **pmdpp, spinlock_t **ptlp);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index da8d360fb032..a7671f5cb3e1 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -589,7 +589,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 
+ 		mm->map_count++;
+ 		if (!(tmp->vm_flags & VM_WIPEONFORK))
+-			retval = copy_page_range(mm, oldmm, mpnt, tmp);
++			retval = copy_page_range(tmp, mpnt);
+ 
+ 		if (tmp->vm_ops && tmp->vm_ops->open)
+ 			tmp->vm_ops->open(tmp);
+diff --git a/mm/memory.c b/mm/memory.c
+index fcfc4ca36eba..8ade87e8600a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -794,15 +794,15 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+  * lock.
+  */
+ static inline int
+-copy_present_page(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		pte_t *dst_pte, pte_t *src_pte,
+-		struct vm_area_struct *vma, struct vm_area_struct *new,
+-		unsigned long addr, int *rss, struct page **prealloc,
+-		pte_t pte, struct page *page)
++copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++		  pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
++		  struct page **prealloc, pte_t pte, struct page *page)
+ {
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
+ 	struct page *new_page;
+ 
+-	if (!is_cow_mapping(vma->vm_flags))
++	if (!is_cow_mapping(src_vma->vm_flags))
+ 		return 1;
+ 
+ 	/*
+@@ -865,15 +865,15 @@ copy_present_page(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	 * over and copy the page & arm it.
+ 	 */
+ 	*prealloc = NULL;
+-	copy_user_highpage(new_page, page, addr, vma);
++	copy_user_highpage(new_page, page, addr, src_vma);
+ 	__SetPageUptodate(new_page);
+-	page_add_new_anon_rmap(new_page, new, addr, false);
+-	lru_cache_add_inactive_or_unevictable(new_page, new);
++	page_add_new_anon_rmap(new_page, dst_vma, addr, false);
++	lru_cache_add_inactive_or_unevictable(new_page, dst_vma);
+ 	rss[mm_counter(new_page)]++;
+ 
+ 	/* All done, just insert the new page copy in the child */
+-	pte = mk_pte(new_page, new->vm_page_prot);
+-	pte = maybe_mkwrite(pte_mkdirty(pte), new);
++	pte = mk_pte(new_page, dst_vma->vm_page_prot);
++	pte = maybe_mkwrite(pte_mkdirty(pte), dst_vma);
+ 	set_pte_at(dst_mm, addr, dst_pte, pte);
+ 	return 0;
+ }
+@@ -883,24 +883,22 @@ copy_present_page(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+  * is required to copy this pte.
+  */
+ static inline int
+-copy_present_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
+-		struct vm_area_struct *new,
+-		unsigned long addr, int *rss, struct page **prealloc)
++copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
++		 struct page **prealloc)
+ {
+-	unsigned long vm_flags = vma->vm_flags;
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
++	unsigned long vm_flags = src_vma->vm_flags;
+ 	pte_t pte = *src_pte;
+ 	struct page *page;
+ 
+-	page = vm_normal_page(vma, addr, pte);
++	page = vm_normal_page(src_vma, addr, pte);
+ 	if (page) {
+ 		int retval;
+ 
+-		retval = copy_present_page(dst_mm, src_mm,
+-			dst_pte, src_pte,
+-			vma, new,
+-			addr, rss, prealloc,
+-			pte, page);
++		retval = copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
++					   addr, rss, prealloc, pte, page);
+ 		if (retval <= 0)
+ 			return retval;
+ 
+@@ -957,11 +955,13 @@ page_copy_prealloc(struct mm_struct *src_mm, struct vm_area_struct *vma,
+ 	return new_page;
+ }
+ 
+-static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		   pmd_t *dst_pmd, pmd_t *src_pmd, struct vm_area_struct *vma,
+-		   struct vm_area_struct *new,
+-		   unsigned long addr, unsigned long end)
++static int
++copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++	       pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
++	       unsigned long end)
+ {
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
+ 	pte_t *orig_src_pte, *orig_dst_pte;
+ 	pte_t *src_pte, *dst_pte;
+ 	spinlock_t *src_ptl, *dst_ptl;
+@@ -1004,15 +1004,15 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		if (unlikely(!pte_present(*src_pte))) {
+ 			entry.val = copy_nonpresent_pte(dst_mm, src_mm,
+ 							dst_pte, src_pte,
+-							vma, addr, rss);
++							src_vma, addr, rss);
+ 			if (entry.val)
+ 				break;
+ 			progress += 8;
+ 			continue;
+ 		}
+ 		/* copy_present_pte() will clear `*prealloc' if consumed */
+-		ret = copy_present_pte(dst_mm, src_mm, dst_pte, src_pte,
+-				       vma, new, addr, rss, &prealloc);
++		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
++				       addr, rss, &prealloc);
+ 		/*
+ 		 * If we need a pre-allocated page for this pte, drop the
+ 		 * locks, allocate, and try again.
+@@ -1047,7 +1047,7 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		entry.val = 0;
+ 	} else if (ret) {
+ 		WARN_ON_ONCE(ret != -EAGAIN);
+-		prealloc = page_copy_prealloc(src_mm, vma, addr);
++		prealloc = page_copy_prealloc(src_mm, src_vma, addr);
+ 		if (!prealloc)
+ 			return -ENOMEM;
+ 		/* We've captured and resolved the error. Reset, try again. */
+@@ -1061,11 +1061,13 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	return ret;
+ }
+ 
+-static inline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		pud_t *dst_pud, pud_t *src_pud, struct vm_area_struct *vma,
+-		struct vm_area_struct *new,
+-		unsigned long addr, unsigned long end)
++static inline int
++copy_pmd_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++	       pud_t *dst_pud, pud_t *src_pud, unsigned long addr,
++	       unsigned long end)
+ {
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
+ 	pmd_t *src_pmd, *dst_pmd;
+ 	unsigned long next;
+ 
+@@ -1078,9 +1080,9 @@ static inline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src
+ 		if (is_swap_pmd(*src_pmd) || pmd_trans_huge(*src_pmd)
+ 			|| pmd_devmap(*src_pmd)) {
+ 			int err;
+-			VM_BUG_ON_VMA(next-addr != HPAGE_PMD_SIZE, vma);
++			VM_BUG_ON_VMA(next-addr != HPAGE_PMD_SIZE, src_vma);
+ 			err = copy_huge_pmd(dst_mm, src_mm,
+-					    dst_pmd, src_pmd, addr, vma);
++					    dst_pmd, src_pmd, addr, src_vma);
+ 			if (err == -ENOMEM)
+ 				return -ENOMEM;
+ 			if (!err)
+@@ -1089,18 +1091,20 @@ static inline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src
+ 		}
+ 		if (pmd_none_or_clear_bad(src_pmd))
+ 			continue;
+-		if (copy_pte_range(dst_mm, src_mm, dst_pmd, src_pmd,
+-				   vma, new, addr, next))
++		if (copy_pte_range(dst_vma, src_vma, dst_pmd, src_pmd,
++				   addr, next))
+ 			return -ENOMEM;
+ 	} while (dst_pmd++, src_pmd++, addr = next, addr != end);
+ 	return 0;
+ }
+ 
+-static inline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		p4d_t *dst_p4d, p4d_t *src_p4d, struct vm_area_struct *vma,
+-		struct vm_area_struct *new,
+-		unsigned long addr, unsigned long end)
++static inline int
++copy_pud_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++	       p4d_t *dst_p4d, p4d_t *src_p4d, unsigned long addr,
++	       unsigned long end)
+ {
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
+ 	pud_t *src_pud, *dst_pud;
+ 	unsigned long next;
+ 
+@@ -1113,9 +1117,9 @@ static inline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src
+ 		if (pud_trans_huge(*src_pud) || pud_devmap(*src_pud)) {
+ 			int err;
+ 
+-			VM_BUG_ON_VMA(next-addr != HPAGE_PUD_SIZE, vma);
++			VM_BUG_ON_VMA(next-addr != HPAGE_PUD_SIZE, src_vma);
+ 			err = copy_huge_pud(dst_mm, src_mm,
+-					    dst_pud, src_pud, addr, vma);
++					    dst_pud, src_pud, addr, src_vma);
+ 			if (err == -ENOMEM)
+ 				return -ENOMEM;
+ 			if (!err)
+@@ -1124,18 +1128,19 @@ static inline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src
+ 		}
+ 		if (pud_none_or_clear_bad(src_pud))
+ 			continue;
+-		if (copy_pmd_range(dst_mm, src_mm, dst_pud, src_pud,
+-				   vma, new, addr, next))
++		if (copy_pmd_range(dst_vma, src_vma, dst_pud, src_pud,
++				   addr, next))
+ 			return -ENOMEM;
+ 	} while (dst_pud++, src_pud++, addr = next, addr != end);
+ 	return 0;
+ }
+ 
+-static inline int copy_p4d_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		pgd_t *dst_pgd, pgd_t *src_pgd, struct vm_area_struct *vma,
+-		struct vm_area_struct *new,
+-		unsigned long addr, unsigned long end)
++static inline int
++copy_p4d_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
++	       pgd_t *dst_pgd, pgd_t *src_pgd, unsigned long addr,
++	       unsigned long end)
+ {
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
+ 	p4d_t *src_p4d, *dst_p4d;
+ 	unsigned long next;
+ 
+@@ -1147,20 +1152,22 @@ static inline int copy_p4d_range(struct mm_struct *dst_mm, struct mm_struct *src
+ 		next = p4d_addr_end(addr, end);
+ 		if (p4d_none_or_clear_bad(src_p4d))
+ 			continue;
+-		if (copy_pud_range(dst_mm, src_mm, dst_p4d, src_p4d,
+-				   vma, new, addr, next))
++		if (copy_pud_range(dst_vma, src_vma, dst_p4d, src_p4d,
++				   addr, next))
+ 			return -ENOMEM;
+ 	} while (dst_p4d++, src_p4d++, addr = next, addr != end);
+ 	return 0;
+ }
+ 
+-int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+-		    struct vm_area_struct *vma, struct vm_area_struct *new)
++int
++copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ {
+ 	pgd_t *src_pgd, *dst_pgd;
+ 	unsigned long next;
+-	unsigned long addr = vma->vm_start;
+-	unsigned long end = vma->vm_end;
++	unsigned long addr = src_vma->vm_start;
++	unsigned long end = src_vma->vm_end;
++	struct mm_struct *dst_mm = dst_vma->vm_mm;
++	struct mm_struct *src_mm = src_vma->vm_mm;
+ 	struct mmu_notifier_range range;
+ 	bool is_cow;
+ 	int ret;
+@@ -1171,19 +1178,19 @@ int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	 * readonly mappings. The tradeoff is that copy_page_range is more
+ 	 * efficient than faulting.
+ 	 */
+-	if (!(vma->vm_flags & (VM_HUGETLB | VM_PFNMAP | VM_MIXEDMAP)) &&
+-			!vma->anon_vma)
++	if (!(src_vma->vm_flags & (VM_HUGETLB | VM_PFNMAP | VM_MIXEDMAP)) &&
++	    !src_vma->anon_vma)
+ 		return 0;
+ 
+-	if (is_vm_hugetlb_page(vma))
+-		return copy_hugetlb_page_range(dst_mm, src_mm, vma);
++	if (is_vm_hugetlb_page(src_vma))
++		return copy_hugetlb_page_range(dst_mm, src_mm, src_vma);
+ 
+-	if (unlikely(vma->vm_flags & VM_PFNMAP)) {
++	if (unlikely(src_vma->vm_flags & VM_PFNMAP)) {
+ 		/*
+ 		 * We do not free on error cases below as remove_vma
+ 		 * gets called on error from higher level routine
+ 		 */
+-		ret = track_pfn_copy(vma);
++		ret = track_pfn_copy(src_vma);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -1194,11 +1201,11 @@ int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 	 * parent mm. And a permission downgrade will only happen if
+ 	 * is_cow_mapping() returns true.
+ 	 */
+-	is_cow = is_cow_mapping(vma->vm_flags);
++	is_cow = is_cow_mapping(src_vma->vm_flags);
+ 
+ 	if (is_cow) {
+ 		mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
+-					0, vma, src_mm, addr, end);
++					0, src_vma, src_mm, addr, end);
+ 		mmu_notifier_invalidate_range_start(&range);
+ 	}
+ 
+@@ -1209,8 +1216,8 @@ int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		next = pgd_addr_end(addr, end);
+ 		if (pgd_none_or_clear_bad(src_pgd))
+ 			continue;
+-		if (unlikely(copy_p4d_range(dst_mm, src_mm, dst_pgd, src_pgd,
+-					    vma, new, addr, next))) {
++		if (unlikely(copy_p4d_range(dst_vma, src_vma, dst_pgd, src_pgd,
++					    addr, next))) {
+ 			ret = -ENOMEM;
+ 			break;
+ 		}
+-- 
+2.26.2
 
