@@ -2,171 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785CD28139E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165CE28139F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387907AbgJBNDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S2387913AbgJBND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgJBNDN (ORCPT
+        with ESMTP id S1726176AbgJBND1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:03:13 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D563FC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 06:03:13 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id y5so1246520otg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 06:03:13 -0700 (PDT)
+        Fri, 2 Oct 2020 09:03:27 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6A7C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 06:03:27 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 34so718198pgo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 06:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=lm0KG6Z6mYIW6FSScRaGeMbKbTSKVGePVnDUsykLTR8=;
-        b=kLHw+bcujd1ASBE918QEAQbZs+pSx0YOmLIHmHtT9NICWHQ/QRf+1yAA4YMzq5fSOs
-         j9QTtWHiUMSwkdqjSRUIzDir4l3zb6wYlCzBMLbDUi9vsxlKLx4iaLGJEaTwJN0RpCqk
-         3awCDie2ZT64oHZB9nYyC5GUNGQ53JiODNFyfCvE51lZxt2Xf2Fjcih1Qu5K3SdUEn+0
-         nlWzZRSC3Dby+cIgoK4toxzX6be2v/BIdhTzbFYpvUECehWZ99LoCOjwkv49ZPqIrgpI
-         cRvHocNb7sCSF1+V0Cbe18GrHeQiPjlncngjY5MxhQm9yzu+ZyS47OfM8z7I0KsH1kWw
-         NUNw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U4xZ5EYYns03kDlVvnSnxF9IyFS/XusvQnaTuU2Hepc=;
+        b=CbvuUoEnrk1PA5MQYsauC9+ISrkNCfTuIh4HG4IpQZ3HUdWQxzzI9pfIFhxSuCow8o
+         q5u7i8fu8geRhIcqVmMqZQH0WI3U/7bRrr84p0PU1sUEk6yLGEuy2Jkbo+xYSuzzU6Jx
+         C+yyOYYZ4Fly+cMwrODGS0fbrar991+/z2O2VgqAby6RKz90DeOGNjOyx6gjelMtwbA1
+         IfDXSLwkBdRvg3PRc2JUkhQgKWJhDKEkefhFjYHxN/gJEye0zMi9qJWrPN9ZwI1eS8qe
+         KGdSBWqgk5UrwAm0Sd91vcX+eQodnwpLWh6M3vs6COD4MobYMmUaBl/IMoq83AJ4U/6+
+         ZVhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=lm0KG6Z6mYIW6FSScRaGeMbKbTSKVGePVnDUsykLTR8=;
-        b=p3Uwvz8iVGXPZjUpe8FRu/cYDgqIJrIFocY4qSdP28aRYhSK45igCZ6Eatw+obPPw7
-         CN4KIh2KWA/8rAt2/o6uHGw4CCZIO14CirVZUORPgBfeCqnpyH4osgU7TPjKkD+t6RQt
-         /WhY38JeHzis4mKXDmF7F2sq3kaWtvQHk2O9nfAN4cWfPv9SFdhN8nydhUJ7wmQ+9ivz
-         eyMSaRDZSXOEZai5R1tfqOVPXRVlkcmm/wub5/OT8BAyfiJsCsrMbH95T+X87KJYNAOD
-         JOOzO9FKYqyV5051xnPjlGf2Naave928+tdoSSgf6xQG0bQTld8kUTQnwku66K8v8wuE
-         XH5Q==
-X-Gm-Message-State: AOAM530UadxDhC3gCuJoGEyQUMp/yT1TcYrudJZ4niT9LSHUn9rl9RLF
-        TNwec+cPlon4jE0q/zCzuw==
-X-Google-Smtp-Source: ABdhPJw1Z/vntyeLXMGvM+HJKNt37/e9ZAvGdu8/KT5pgp2SemWGJSEMvre433wcqC07yW7xuX1Pgg==
-X-Received: by 2002:a9d:6e91:: with SMTP id a17mr1596640otr.284.1601643793099;
-        Fri, 02 Oct 2020 06:03:13 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.170.156])
-        by smtp.gmail.com with ESMTPSA id s32sm316808otb.68.2020.10.02.06.03.11
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=U4xZ5EYYns03kDlVvnSnxF9IyFS/XusvQnaTuU2Hepc=;
+        b=P2ECVviczUI0X9Ulj1YsIrA5DT+Ttx6cbHAmiI2YY1CrFrotxMLa2cluGZRFr/2oHM
+         d3X80xVkp0XvEH4wyDxDi6/x6WwOSq1erQ/p8mmeZegOU47/U5GVavwsmVwh13Ro9fmM
+         rwf6l/Q6ahg9gtWHLthHNqSluG8gKYObqulaJsWR5AwKII8I0vK/uh+GDsSWP6wsrlmi
+         1jSv1/9sMb6pl4mrrwUoSc2gNk4YqCtljtVVB6WbnHXzgYA7xbL7cXGTfqR4qiZ7zAgP
+         PMUwTNQz+3NPXLY+uw63TBBzSTkWOt+YCDvem5oeTWXCIH3Bi99d1stnQDxGn8n1JDUf
+         ej2Q==
+X-Gm-Message-State: AOAM531hDYWgtkHM4A5LGhaG5pMe/3bFVWBIPGxHk6ip2YGYNTQ+5c5l
+        AUcmWaUxstswhaazLJtDHBQ=
+X-Google-Smtp-Source: ABdhPJz4aZBYJB5ajlDzO5OIl8xGFGXjXqzQUJNG/XjsTqisBpn7feYqLokrcbqhSfuzfqGV4siHYg==
+X-Received: by 2002:a63:4611:: with SMTP id t17mr2035104pga.225.1601643806815;
+        Fri, 02 Oct 2020 06:03:26 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id j19sm2001234pfi.51.2020.10.02.06.03.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 06:03:11 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from t560.minyard.net (unknown [IPv6:2001:470:b8f6:1b:6c36:50d1:1e73:2068])
-        by serve.minyard.net (Postfix) with ESMTPA id E553C18003B;
-        Fri,  2 Oct 2020 13:03:10 +0000 (UTC)
-From:   minyard@acm.org
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Corey Minyard <cminyard@mvista.com>
-Subject: [PATCH v2] drivers:tty:pty: Fix a race causing data loss on close
-Date:   Fri,  2 Oct 2020 08:03:04 -0500
-Message-Id: <20201002130304.16728-1-minyard@acm.org>
-X-Mailer: git-send-email 2.17.1
+        Fri, 02 Oct 2020 06:03:25 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Al Grant <al.grant@foss.arm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH] perf inject: Flush ordered events on FINISHED_ROUND
+Date:   Fri,  2 Oct 2020 22:03:17 +0900
+Message-Id: <20201002130317.1356440-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corey Minyard <cminyard@mvista.com>
+Currently perf inject just repipes the event without any flush.  It
+makes an issue that it changes the order of events processed.
 
-If you write to a pty master an immediately close the pty master, the
-receiver might get a chunk of data dropped, but then receive some later
-data.  That's obviously something rather unexpected for a user.  It
-certainly confused my test program.
+Normally we want to process events in time order, but events are
+recorded from several cpus and they weren't sorted with each other.
+So we put them into the ordered event queue, sorted by time, and flush
+them when we see a next FINISHED_ROUND event.
 
-It turns out that tty_vhangup() gets called from pty_close(), and that
-causes the data on the slave side to be flushed, but due to races more
-data can be copied into the slave side's buffer after that.  Consider
-the following sequence:
+But this is for events from kernel, user space events (like the
+FINISHED_ROUND) are processed without queueing.  So during the perf
+inject, it writes all the FINISHED_ROUND events directly while
+SAMPLE (and other) events are kept in the queue.  This makes the user
+space events are put before any kernel events.
 
-thread1          thread2         thread3
--------          -------         -------
- |                |-write data into buffer,
- |                | n_tty buffer is filled
- |                | along with other buffers
- |                |-pty_close()
- |                |--tty_vhangup()
- |                |---tty_ldisc_hangup()
- |                |----n_tty_flush_buffer()
- |                |-----reset_buffer_flags()
- |-n_tty_read()   |
- |--up_read(&tty->termios_rwsem);
- |                |------down_read(&tty->termios_rwsem)
- |                |------clear n_tty buffer contents
- |                |------up_read(&tty->termios_rwsem)
- |--tty_buffer_flush_work()       |
- |--schedules work calling        |
- |  flush_to_ldisc()              |
- |                                |-flush_to_ldisc()
- |                                |--receive_buf()
- |                                |---tty_port_default_receive_buf()
- |                                |----tty_ldisc_receive_buf()
- |                                |-----n_tty_receive_buf2()
- |                                |------n_tty_receive_buf_common()
- |                                |-------down_read(&tty->termios_rwsem)
- |                                |-------__receive_buf()
- |                                |-------copies data into n_tty buffer
- |                                |-------up_read(&tty->termios_rwsem)
- |--down_read(&tty->termios_rwsem)
- |--copy buffer data to user
+You can see that with the following command:
 
-From this sequence, you can see that thread2 writes to the buffer then
-only clears the part of the buffer in n_tty.  The n_tty receive buffer
-code then copies more data into the n_tty buffer.
+  $ perf record -a -o- sleep 1 | perf inject -b | perf script -i- --show-round-events
+  PERF_RECORD_FINISHED_ROUND
+  PERF_RECORD_FINISHED_ROUND
+  PERF_RECORD_FINISHED_ROUND
+  ...
 
-This change checks to see if the tty is being hung up before copying
-anything in n_tty_receive_buf_common().  It has to be done after the
-tty->termios_rwsem semaphore is claimed, for reasons that should be
-apparent from the sequence above.
+Omitting perf inject, you can see the events are placed in the middle
+of the data.
 
-Signed-off-by: Corey Minyard <cminyard@mvista.com>
+You might argue that the whole point of the FINISHED_ROUND event is to
+sort (kernel) events.  And after perf inject, all events are written
+in a proper time order so we don't care about the FINISHED_ROUND event
+anymore.
+
+But the problem is we don't know whether the input data is sorted or
+not (maybe we can add a feature bit for this?) so it should use an
+ordered event queue when processing the input like in perf report.
+
+Remember all the FINISHED_ROUND events now come before other events so
+the tool cannot know when it can flush the data so everything will be
+queued until it meets the end of the input.  Actually it's same for
+perf inject itself as it doesn't flush the queue.
+
+Below measures time and memory usage during the perf inject and
+report using ~190MB data file.
+
+Before:
+  perf inject:  11.09 s,  382148 KB
+  perf report:   8.05 s,  397440 KB
+
+After:
+  perf inject:  16.24 s,   83376 KB
+  perf report:   7.96 s,  216184 KB
+
+As you can see, it used 2x memory of the input size.  I guess it's
+because it needs to keep the copy for the whole input.  But I don't
+understand why processing time of perf inject increased..
+
+I'm not sure how it affects the auxtrace, but it should be fine IMHO.
+
+Cc: Al Grant <al.grant@foss.arm.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
+ tools/perf/builtin-inject.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes since v1: Added lines to make the sequence diagram clearer.
-
-I sent a program to reproduce this, I extended it to prove it wasn't the
-test program that caused the issue, and I've uploaded it to:
-  http://sourceforge.net/projects/ser2net/files/tmp/testpty.c
-if you want to run it.  It has a lot of comments that explain what is
-going on.
-
-This is not a very satisfying fix, though.  It works reliably, but it
-doesn't seem right to me.  My inclination was to remove the up and down
-semaphore around tty_buffer_flush_work() in n_tty_read(), as it just
-schedules some work, no need to unlock for that.  But that resulted
-in a deadlock elsewhere, so that up/down on the semaphore is there for
-another reason.
-
-The locking in the tty code is really hard to follow.  I believe this is
-actually a locking problem, but fixing it looks daunting to me.
-
-Another way to fix this that occurred just occurred to me would be to
-clear all the buffers in pty_close().
-
--corey
-
-
- drivers/tty/n_tty.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 1794d84e7bf6..1c33c26dc229 100644
---- a/drivers/tty/n_tty.c
-+++ b/drivers/tty/n_tty.c
-@@ -1704,6 +1704,9 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 6d2f410d773a..9fa78a9edfc5 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -79,6 +79,7 @@ static int perf_event__repipe_oe_synth(struct perf_tool *tool,
+ 				       union perf_event *event,
+ 				       struct ordered_events *oe __maybe_unused)
+ {
++	ordered_events__flush(oe, OE_FLUSH__ROUND);
+ 	return perf_event__repipe_synth(tool, event);
+ }
  
- 	down_read(&tty->termios_rwsem);
- 
-+	if (test_bit(TTY_HUPPING, &tty->flags))
-+		goto out_upsem;
-+
- 	do {
- 		/*
- 		 * When PARMRK is set, each input char may take up to 3 chars
-@@ -1760,6 +1763,7 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
- 	} else
- 		n_tty_check_throttle(tty);
- 
-+out_upsem:
- 	up_read(&tty->termios_rwsem);
- 
- 	return rcvd;
 -- 
-2.17.1
+2.28.0.806.g8561365e88-goog
 
