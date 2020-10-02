@@ -2,280 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAA4281D0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E55D281D10
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725770AbgJBUnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:43:02 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957C0C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:43:02 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id d18so732661uav.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oH2IuyJXkJ1EymE28KST/lfUbPTq/MguUoQDeaf9X/A=;
-        b=f4ddM9o0HoyR2qHPNs+JOjY3teqYwTHoazjRh97xTRWxJHHFB9odVE2FunznsuHQMJ
-         rZ0s/jT5xM/BKOu0D4YyFhbktO2Mpgz+ciHPDoxxkQRYfxKKOtdHenUSUyfTpUoevqVx
-         3PSbxF++REzZ/XFpL6Mx3n4Bwgl1x4E9bmkEU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oH2IuyJXkJ1EymE28KST/lfUbPTq/MguUoQDeaf9X/A=;
-        b=nUALSAneT0LOHR+4jKVLID3jq4BwP4sQP7J4py4YscsdD/idYGMb3rL4T2J7lYLela
-         OkkKe3B2R6rA+Kf+/VtNDb1lI+XahxUNhU5zCfzEnbBhLzP64C5yx4oRS2+fZJGL9K/Z
-         N3HFNc0yU5+au23AHDgZChL4IDMyTPqmrHmEzhWeA2quw/S67LgDJFj/GHCInTEAbXEd
-         WRPCD+EXY8zw0Z6/AcX6pSx5QQJgUZ3cmVSIYddUOHNNoUu9BIRkCyA2+D8PCLVH8EJw
-         FiYpP+bVJgGdd0tvRoK+r79Cgele7sYFsqCrRrrLDHipkhXPbMgyuNoT/ZX+kwqUQax4
-         pNEQ==
-X-Gm-Message-State: AOAM532R7EYU5OHOhTHjNZVGdImsgkLN372Jy8J9PcevZBjmSxIjpYAA
-        yFJXnKfFAUq50Z/AlAey+D15OGnWvH/PJg==
-X-Google-Smtp-Source: ABdhPJzMdZkmABec1EJYNIAwa0bNV165ihIfkPkvrHQKrlrtJcH+E9QURgawwAGpBlOrFDwoUt8/tA==
-X-Received: by 2002:ab0:35e9:: with SMTP id w9mr2335151uau.48.1601671381291;
-        Fri, 02 Oct 2020 13:43:01 -0700 (PDT)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id q2sm441931uap.12.2020.10.02.13.42.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 13:43:00 -0700 (PDT)
-Received: by mail-ua1-f41.google.com with SMTP id n2so727556uaw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:42:59 -0700 (PDT)
-X-Received: by 2002:ab0:29d7:: with SMTP id i23mr2429826uaq.121.1601671379400;
- Fri, 02 Oct 2020 13:42:59 -0700 (PDT)
+        id S1725787AbgJBUnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:43:31 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:41172 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgJBUnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:43:31 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kORtl-00HK49-7P; Fri, 02 Oct 2020 22:43:25 +0200
+Date:   Fri, 2 Oct 2020 22:43:25 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jarod Wilson <jarod@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 5/6] bonding: update Documentation for
+ port/bond terminology
+Message-ID: <20201002204325.GJ3996795@lunn.ch>
+References: <20201002174001.3012643-1-jarod@redhat.com>
+ <20201002174001.3012643-6-jarod@redhat.com>
+ <20201002180906.GG3996795@lunn.ch>
+ <CAKfmpSd00=ryeznA3ubfMCmeiFAeo-jQhvT3fAgwJqbDEL7w_w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200930223532.77755-1-bjorn.andersson@linaro.org> <20200930223532.77755-3-bjorn.andersson@linaro.org>
-In-Reply-To: <20200930223532.77755-3-bjorn.andersson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 2 Oct 2020 13:42:47 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XbEMi-xviVfJCY4U5ncSUU8-9_Q_VMHZn5uDAp1pNH+g@mail.gmail.com>
-Message-ID: <CAD=FV=XbEMi-xviVfJCY4U5ncSUU8-9_Q_VMHZn5uDAp1pNH+g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/bridge: ti-sn65dsi86: Expose backlight controls
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfmpSd00=ryeznA3ubfMCmeiFAeo-jQhvT3fAgwJqbDEL7w_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 02, 2020 at 04:17:34PM -0400, Jarod Wilson wrote:
+> On Fri, Oct 2, 2020 at 2:09 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > On Fri, Oct 02, 2020 at 01:40:00PM -0400, Jarod Wilson wrote:
+> > > Point users to the new interface names instead of the old ones, where
+> > > appropriate. Userspace bits referenced still include use of master/slave,
+> > > but those can't be altered until userspace changes too, ideally after
+> > > these changes propagate to the community at large.
+> > >
+> > > Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+> > > Cc: Veaceslav Falico <vfalico@gmail.com>
+> > > Cc: Andy Gospodarek <andy@greyhouse.net>
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Thomas Davis <tadavis@lbl.gov>
+> > > Cc: netdev@vger.kernel.org
+> > > Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> > > ---
+> > >  Documentation/networking/bonding.rst | 440 +++++++++++++--------------
+> > >  1 file changed, 220 insertions(+), 220 deletions(-)
+> > >
+> > > diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+> > > index adc314639085..f4c4f0fae83b 100644
+> > > --- a/Documentation/networking/bonding.rst
+> > > +++ b/Documentation/networking/bonding.rst
+> > > @@ -167,22 +167,22 @@ or, for backwards compatibility, the option value.  E.g.,
+> > >
+> > >  The parameters are as follows:
+> > >
+> > > -active_slave
+> > > +active_port
+> >
+> > Hi Jarod
+> >
+> > It is going to take quite a while before all distributions user space
+> > gets updated. So todays API is going to live on for a few
+> > years. People are going to be search the documentation using the terms
+> > their user space uses, which are going to be todays terms, not the new
+> > ones you are introducing here. For that to work, i think you are going
+> > to have to introduce a table listing todays names and the new names
+> > you are adding, so search engines have some chance of finding this
+> > document, and readers have some clue as to how to translate from what
+> > their user space is using to the terms used in the document.
+> 
+> Hm. Would a simple blurb describing the when the changes were made and
+> why at the top of bonding.rst be sufficient? And then would the rest
+> of the doc remain as-is (old master/slave language), or with
+> terminology conversions?
 
-On Wed, Sep 30, 2020 at 3:40 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> The TI SN65DSI86 can be configured to generate a PWM pulse on GPIO4,
-> to be used to drive a backlight driver.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  drivers/gpu/drm/bridge/Kconfig        |   1 +
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 143 +++++++++++++++++++++++++-
->  2 files changed, 140 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index 43271c21d3fc..eea310bd88e1 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -195,6 +195,7 @@ config DRM_TI_SN65DSI86
->         select REGMAP_I2C
->         select DRM_PANEL
->         select DRM_MIPI_DSI
-> +       select BACKLIGHT_CLASS_DEVICE
->         help
->           Texas Instruments SN65DSI86 DSI to eDP Bridge driver
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 5b6e19ecbc84..41e24d0dbd18 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -68,6 +68,7 @@
->  #define  SN_GPIO_MUX_OUTPUT                    1
->  #define  SN_GPIO_MUX_SPECIAL                   2
->  #define  SN_GPIO_MUX_MASK                      0x3
-> +#define  SN_GPIO_MUX_SHIFT(gpio)               ((gpio) * 2)
->  #define SN_AUX_WDATA_REG(x)                    (0x64 + (x))
->  #define SN_AUX_ADDR_19_16_REG                  0x74
->  #define SN_AUX_ADDR_15_8_REG                   0x75
-> @@ -86,6 +87,12 @@
->  #define SN_ML_TX_MODE_REG                      0x96
->  #define  ML_TX_MAIN_LINK_OFF                   0
->  #define  ML_TX_NORMAL_MODE                     BIT(0)
-> +#define SN_PWM_PRE_DIV_REG                     0xA0
-> +#define SN_BACKLIGHT_SCALE_REG                 0xA1
-> +#define SN_BACKLIGHT_REG                       0xA3
-> +#define SN_PWM_CTL_REG                         0xA5
-> +#define  SN_PWM_ENABLE                         BIT(1)
-> +#define  SN_PWM_INVERT                         BIT(0)
->  #define SN_AUX_CMD_STATUS_REG                  0xF4
->  #define  AUX_IRQ_STATUS_AUX_RPLY_TOUT          BIT(3)
->  #define  AUX_IRQ_STATUS_AUX_SHORT              BIT(5)
-> @@ -155,6 +162,8 @@ struct ti_sn_bridge {
->         struct gpio_chip                gchip;
->         DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
->  #endif
-> +       u32                             brightness;
-> +       u32                             max_brightness;
+I'm assuming you want to deprecate the old language? So i was
+expecting the language to change. I would expect some explanation of
+why the names have changed, and a table listing the old and new name.
+We cannot completely get away from the old names, because they are
+ABI, so we need to keep documenting them somehow.
 
-You missed adding to the docstring for brightness and max_brightness.
-
-Also: why do you need your own copy of these two values?  Couldn't you
-just store the "struct backlight_device *" that came back from
-"devm_backlight_device_register()" and then reference
-bl->props.brightness / bl->props.max_brightness?
-
-
->  };
->
->  static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
-> @@ -173,6 +182,18 @@ static const struct regmap_config ti_sn_bridge_regmap_config = {
->         .cache_type = REGCACHE_NONE,
->  };
->
-> +static void ti_sn_bridge_read_u16(struct ti_sn_bridge *pdata,
-> +                                 unsigned int reg, u16 *val)
-> +{
-> +       unsigned int high;
-> +       unsigned int low;
-> +
-> +       regmap_read(pdata->regmap, reg, &low);
-> +       regmap_read(pdata->regmap, reg + 1, &high);
-> +
-> +       *val = high << 8 | low;
-> +}
-
-Ideally you should be error checking your reads.  I know this driver
-isn't very good about error checking the regmap reads in general, but
-probably that should be fixed.  Certainly i2c-backed regmaps can have
-failures and you will then do your math on whatever uninitialized
-memory was on the stack.  That seems bad.
-
-Presumably you'll then want to return the error code from this
-function?  If for some reason you don't, your function should just
-return the val instead of passing by reference.
-
-
->  static void ti_sn_bridge_write_u16(struct ti_sn_bridge *pdata,
->                                    unsigned int reg, u16 val)
->  {
-> @@ -180,6 +201,50 @@ static void ti_sn_bridge_write_u16(struct ti_sn_bridge *pdata,
->         regmap_write(pdata->regmap, reg + 1, val >> 8);
->  }
->
-> +static int ti_sn_backlight_update(struct ti_sn_bridge *pdata)
-> +{
-> +       unsigned int pre_div;
-> +
-> +       if (!pdata->max_brightness)
-> +               return 0;
-> +
-> +       /* Enable PWM on GPIO4 */
-> +       regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> +                          SN_GPIO_MUX_MASK << SN_GPIO_MUX_SHIFT(4 - 1),
-> +                          SN_GPIO_MUX_SPECIAL << SN_GPIO_MUX_SHIFT(4 - 1));
-> +
-> +       if (pdata->brightness) {
-> +               /* Set max brightness */
-> +               ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_SCALE_REG, pdata->max_brightness);
-> +
-> +               /* Set brightness */
-> +               ti_sn_bridge_write_u16(pdata, SN_BACKLIGHT_REG, pdata->brightness);
-> +
-> +               /*
-> +                * The PWM frequency is derived from the refclk as:
-> +                * PWM_FREQ = REFCLK_FREQ / (PWM_PRE_DIV * BACKLIGHT_SCALE + 1)
-> +                *
-> +                * A hand wavy estimate based on 12MHz refclk and 500Hz desired
-> +                * PWM frequency gives us a pre_div resulting in a PWM
-> +                * frequency of between 500 and 1600Hz, depending on the actual
-> +                * refclk rate.
-> +                *
-> +                * One is added to avoid high BACKLIGHT_SCALE values to produce
-> +                * a pre_div of 0 - which cancels out the large BACKLIGHT_SCALE
-> +                * value.
-> +                */
-> +               pre_div = 12000000 / (500 * pdata->max_brightness) + 1;
-> +               regmap_write(pdata->regmap, SN_PWM_PRE_DIV_REG, pre_div);
-
-Different panels have different requirements for PWM frequency.  Some
-may also have different duty-cycle to brightness curves that differ
-based on the PWM frequency and it would be nice to make sure we know
-what frequency we're at rather than getting something random-ish.  It
-feels like you need to be less hand-wavy.  You should presumably
-specify the desired frequency in the device tree and then do the math.
-
-
-> +               /* Enable PWM */
-> +               regmap_update_bits(pdata->regmap, SN_PWM_CTL_REG, SN_PWM_ENABLE, SN_PWM_ENABLE);
-> +       } else {
-> +               regmap_update_bits(pdata->regmap, SN_PWM_CTL_REG, SN_PWM_ENABLE, 0);
-> +       }
-
-While technically it works OK to conflate brightness = 0 with
-backlight disabled (the PWM driver exposed by the Chrome OS EC does,
-at least), I believe the API in Linux does make a difference.  Why not
-match the Linux API.  If Linux says that the backlight should be at
-brightness 50 but should be off, set the brightness to 50 and turn the
-backlight off.  If it says set the brightness to 0 and turn it on,
-honor it.
-
-I believe (but haven't tested) one side effect of the way you're doing
-is is that:
-
-set_brightness(50)
-blank()
-unblank()
-get_brightness()
-
-...will return 0, not 50.  I believe (but haven't tested) that if you
-don't implement get_brightness() it would fix things,
-
-
-> +static int ti_sn_backlight_update_status(struct backlight_device *bl)
-> +{
-> +       struct ti_sn_bridge *pdata = bl_get_data(bl);
-> +       int brightness = bl->props.brightness;
-> +
-> +       if (bl->props.power != FB_BLANK_UNBLANK ||
-> +           bl->props.fb_blank != FB_BLANK_UNBLANK ||
-> +           bl->props.state & BL_CORE_FBBLANK) {
-
-backlight_is_blank() instead of open-coding?  ...or you somehow don't
-want the extra test for "BL_CORE_SUSPENDED" ?
-
-
-> +               pdata->brightness = 0;
-
-As per comments in ti_sn_backlight_update(), IMO you want to keep
-enabled / disabled state separate from brightness.
-
-
-> +       }
-> +
-> +       pdata->brightness = brightness;
-> +
-> +       return ti_sn_backlight_update(pdata);
-> +}
-
-Just to be neat and tidy, I'd expect something in the above would do a
-pm_runtime_get_sync() when the backlight first turns on and
-pm_runtime_put() when the backlight goes blank.  Right now you're
-relying on the fact that the backlight is usually turned on later in
-the sequence, but it shouldn't hurt to add an extra pm_runtime
-reference and means you're no longer relying on the implicitness.
+	Andrew
