@@ -2,192 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746AD2810CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9372810D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgJBKzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgJBKzb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:55:31 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91650C0613D0;
-        Fri,  2 Oct 2020 03:55:31 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id q123so999339pfb.0;
-        Fri, 02 Oct 2020 03:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=I3l3pW7Q2Q9okF2imcqI+zzuik+YfrLOZr205jkuH+8=;
-        b=odAo3zHgm1zZYT0pe5T8WJVP7L80LgED9ZRhTaVeHHY1rR0ItOX4c4TqvOA1VfvPwE
-         yl8BaawUJvMlFjHSvve2wbNgFGiL+OkRXIUC3JPQMFxoslWxxShskfBmNhx8aItG2cqp
-         KvBEJjCCw5B21ehOQ7ek0b0/y5x+zP2tuc+U/6jqsRPKbt9SP+zMAHxU0VwAVsLE6icB
-         lnZnWDFPKBR737aCJ7In0ssj+qNzgmjpPtXxFJVTdx+vRQyxvmz4KbBDEU5JlbZLQ+4u
-         YAVNuElr9s+tbnqdtBEf8Mp1tDai2Ss06qX6Iypcn77qvap5Pdtr+Sdivnt9ie1OxJLs
-         Eq1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=I3l3pW7Q2Q9okF2imcqI+zzuik+YfrLOZr205jkuH+8=;
-        b=EwTZB8k97nuO6lTKeHOhkBeQgeQ0+p3CKhmoAP7LawQZ71cuYSJ25cFdPcynhpzy6m
-         o72tktcRiYUll0OEDatit1Nyz8EreXQH7XE0vet4ok5MaC0+wIMBdLlI8VRAEzpv6yNo
-         WKASqj0r2exizR1LPRAOaFTTTFnhv9PL3pzdlTSYwprPe95KCJvGB1mpD6ZAfkjL5S2v
-         vIX+jLxRUf3oeNaZMmGzeetwimVWnnq065x2DhJAPccQLcn0PaGGLvMCPT/44YY8ashW
-         TOEq+azJI/xiiCt1ORXXxbuGqlIaq6cAG7mbp4/RCrNP2++krxJFlu8jJ8ouQq9Y2sNo
-         t5yQ==
-X-Gm-Message-State: AOAM531xbQKec7fJgTRDpcb9Ehe4hdbuNlEoDtvcne/u5jtnIDz+rzcX
-        n2pnrnUJ2YICtxsFQcXnzzVgLNCPGMTKZYWUEoQ=
-X-Google-Smtp-Source: ABdhPJwoHAzGsxNS1W+ppr9tgidop7dSUNJHWMP0mvnqAXpS9f9Mspru3pgObTSnaU5sA2OM3Ow6/w==
-X-Received: by 2002:a05:6a00:2387:b029:142:2501:3970 with SMTP id f7-20020a056a002387b029014225013970mr1971780pfc.53.1601636130257;
-        Fri, 02 Oct 2020 03:55:30 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.217.69])
-        by smtp.gmail.com with ESMTPSA id e11sm1462142pfl.58.2020.10.02.03.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 03:55:29 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees][PATCH v2] bluetooth: hci_h5: close serdev
- device and free hu in h5_close
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
- <33d8c103-0c24-3ad7-2a3c-ffeb625521ee@redhat.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <52301834-83de-45e3-ff93-27fb3f865c5a@gmail.com>
-Date:   Fri, 2 Oct 2020 16:25:25 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1733166AbgJBK5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbgJBK5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:57:19 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC47E20719;
+        Fri,  2 Oct 2020 10:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601636238;
+        bh=JVlU++9I4Eh+24MsneTU60GUpd1hguIowleYY8CRmD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RbQUjIKjWJODypWfcbcq6JRhJQuNy78gFmtqHId53ikILo8CeY5dxzxc2XhJlgxiN
+         Ylm3VWhwcFJZ72xujvAi++jVclt8MWi87q4Nc7Xw+/BOc3wuLkC5QHhIhe+9dmXeVj
+         Y86XpAmcshY3guTDf22/dF56WhoJNLxsjF1mXnIQ=
+Date:   Fri, 2 Oct 2020 11:57:12 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Wei Li <liwei391@huawei.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: Re: [PATCH v2] drivers/perf: Add support for ARMv8.3-SPE
+Message-ID: <20201002105711.GA20475@willie-the-truck>
+References: <20200930093136.30301-1-liwei391@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <33d8c103-0c24-3ad7-2a3c-ffeb625521ee@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930093136.30301-1-liwei391@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/20 3:52 pm, Hans de Goede wrote:
-> Hi,
->
-> On 10/1/20 9:43 PM, Anant Thazhemadam wrote:
->> When h5_close() gets called, the memory allocated for the hu gets
->> freed only if hu->serdev doesn't exist. This leads to a memory leak.
->> So when h5_close() is requested, close the serdev device instance and
->> free the memory allocated to the hu entirely instead.
->>
->> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
->> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->
-> So 2 comments to this:
->
-> 1. You claim this change fixes a memory-leak, but in the serdev case
-> the memory is allocated in h5_serdev_probe() like this:
->
->        h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
->
-> So its lifetime is tied to the lifetime of the driver being bound
-> to the serdev and it is automatically freed when the driver gets
-> unbound. If you had looked at where the h5 struct gets allocated
-> in h5_close()-s counterpart, h5_open() then you could have seen
-> this there:
->
->         if (hu->serdev) {
->                 h5 = serdev_device_get_drvdata(hu->serdev);
->         } else {
->                 h5 = kzalloc(sizeof(*h5), GFP_KERNEL);
->                 if (!h5)
->                         return -ENOMEM;
->         }
->
-> So it is very clear here, that the kzalloc only happens in the
-> if (!hu->serdev) which clearly makes the kfree() have the same
-> condition the right thing todo. In the hu->serdev the data which
-> was allocated by h5_serdev_probe() is used instead and no alloc
-> happens inside h5_open()
->
-> In general when looking at resource teardown you should also look
-> at where they are allocated in the mirror function
-> and the teardown should mirror the alloc code.
->
-> So the main change of your commit is wrong:
->
-> NACK.
->
->
-> 2. You are making multiple changes in a single commit here, I count at
-> least 3. When ever you are making multiple changes like this, you should really
-> split the commit up in 1 commit per change and explain in each commit
-> message why that change is being made (why it is necessary). Writing
-> commit messages like this also leads to you double-checking your own
-> work by carefully considering why you are making the changes.
->
-> So about the 3 different changes:
->
-> 2a) Make the kfree(h5) call unconditionally, which as mentioned above
-> is wrong.
->
-Hmm, I understand, thank you.
+On Wed, Sep 30, 2020 at 05:31:35PM +0800, Wei Li wrote:
+> Armv8.3 extends the SPE by adding:
+> - Alignment field in the Events packet, and filtering on this event
+>   using PMSEVFR_EL1.
+> - Support for the Scalable Vector Extension (SVE).
+> 
+> The main additions for SVE are:
+> - Recording the vector length for SVE operations in the Operation Type
+>   packet. It is not possible to filter on vector length.
+> - Incomplete predicate and empty predicate fields in the Events packet,
+>   and filtering on these events using PMSEVFR_EL1.
+> 
+> Update the check of pmsevfr for empty/partial predicated SVE and
+> alignment event in SPE driver. For adaption by the version of SPE,
+> expose 'pmsver' as cap attribute to userspace.
+> 
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+> v1 -> v2:
+>  - Rename 'pmuver' to 'pmsver', change it's type to 'u16' from 'int'.
+>    (Suggested by Will and Leo.)
+>  - Expose 'pmsver' as cap attribute through sysfs, instead of printing.
+>    (Suggested by Will.)
+> ---
+>  arch/arm64/include/asm/sysreg.h |  4 +++-
+>  drivers/perf/arm_spe_pmu.c      | 18 ++++++++++++++++--
+>  2 files changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 554a7e8ecb07..f4f9c1fc6398 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -281,7 +281,6 @@
+>  #define SYS_PMSFCR_EL1_ST_SHIFT		18
+>  
+>  #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+> -#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
+>  
+>  #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+>  #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
+> @@ -787,6 +786,9 @@
+>  #define ID_AA64DFR0_PMUVER_8_5		0x6
+>  #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
+>  
+> +#define ID_AA64DFR0_PMSVER_8_2		0x1
+> +#define ID_AA64DFR0_PMSVER_8_3		0x2
+> +
+>  #define ID_DFR0_PERFMON_SHIFT		24
+>  
+>  #define ID_DFR0_PERFMON_8_1		0x4
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index cc00915ad6d1..52e7869f5621 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -54,7 +54,7 @@ struct arm_spe_pmu {
+>  	struct hlist_node			hotplug_node;
+>  
+>  	int					irq; /* PPI */
+> -
+> +	u16					pmsver;
+>  	u16					min_period;
+>  	u16					counter_sz;
+>  
+> @@ -80,6 +80,15 @@ struct arm_spe_pmu {
+>  /* Keep track of our dynamic hotplug state */
+>  static enum cpuhp_state arm_spe_pmu_online;
+>  
+> +static u64 sys_pmsevfr_el1_mask[] = {
+> +	[ID_AA64DFR0_PMSVER_8_2] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
+> +		GENMASK_ULL(15, 12) | BIT_ULL(7) | BIT_ULL(5) | BIT_ULL(3) |
+> +		BIT_ULL(1),
+> +	[ID_AA64DFR0_PMSVER_8_3] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
+> +		GENMASK_ULL(18, 17) | GENMASK_ULL(15, 11) | BIT_ULL(7) |
+> +		BIT_ULL(5) | BIT_ULL(3) | BIT_ULL(1),
+> +};
 
-> 2b) Introduce a call to kfree_skb(h5->rx_skb); which is not mentioned in
-> the commit message at all.  This looks like it would actually be a sensible
-> change, at least in the "if (!hu->serdev)" case.  When using the serdev
-> interface then just freeing it will leave a dangling pointer, so it
-> would be better (for both the hu->serdev and the !hu->serdev cases)
-> to call h5_reset_rx() on close instead which does:
->
->         if (h5->rx_skb) {
->                 kfree_skb(h5->rx_skb);
->                 h5->rx_skb = NULL;
->         }
->
-This was the first thing I did! (and I tested and it works too)
-        https://syzkaller.appspot.com/text?tag=Patch&x=13acf917900000
+Ok, so I finally figured out what I don't like about this: it's the fact
+that the RES0 mask only ever reduces, but we have no way of ensuring that
+by construction with this approach. In other words, it's a bit brittle to
+keep all of these things defined entirely separately from one another.
 
-However, I was worried that doing so might mean freeing an skb
-that might be required somewhere by the serdev connection (which could
-possibly lead to a null ptr dereference), so I thought closing the connection
-altogether might be a better alternative.
+How about a small change so that we define things like:
 
-But now, since I've been told better, I'll submit a v3, that makes the more
-sensible change and doesn't close the serdev_device, with a much more
-informative commit message!
+#define SYS_PMSEVFR_EL1_RES0_8_2	SYS_PMSEVFR_EL1_RES0 &
+					~(...)
 
-I also found a similar implementation in mrvl_close() where the serdev_device
-was being closed and felt it might be the right way to go. But I now know that
-I shouldn't have overlooked the fact that the open functions for both differ.
-I'm sorry for this.
+#define SYS_PMSEVFR_EL1_RES0_8_3	SYS_PMSEVFR_EL1_RES0_8_2 &
+					~(...)
 
-Like you mentioned, I should've given more priority to the mirror function,
-and looked to see if even they were along the same lines, and I will be sure to
-keep that in mind.
+where the '...' parts identify the bits that are no longer RES0 for that
+version of the architecture?
 
-> 2c) Introduce a call to serdev_device_close(), without really explaining
-> why in the commit message. Again if you would have looked at the mirror
-> h5_close() function then you see no serdev_device_open() there.
-> Actually serdev_device_open() is not called anywhere in the hci_h5.c code.
->
-> Digging a little deeper (using grep) shows that hci_uart_register_device()
-> calls serdev_device_open() and hci_uart_register_device() gets called from:
-> h5_serdev_probe(), likewise hci_uart_unregister_device() calls
-> serdev_device_close() for us and that gets called from h5_serdev_remove(),
-> so there is no need to call serdev_device_close() from h5_close() and doing
-> so will actually break things, because then the serdev will be left closed
-> on a subsequent h5_open() call.
->
-> Regards,
->
-> Hans
->
-Thank you so much for this review, and for your time! :)
+What do you think?
 
-Thanks,
-Anant
+Will
