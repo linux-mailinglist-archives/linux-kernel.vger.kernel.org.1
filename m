@@ -2,107 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCD9281AE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C083281AE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388300AbgJBSal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:30:41 -0400
-Received: from mga11.intel.com ([192.55.52.93]:2785 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgJBSak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:30:40 -0400
-IronPort-SDR: 2SWHkPpRO0qtLCzvSrigKc4vmfWj5o6PXcIEDzutSdcByM1tH55Q0Vhl55dZXWchR2DTdq/COh
- duTOQxKYWdHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160374675"
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="160374675"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 11:30:39 -0700
-IronPort-SDR: QM5tdP9JMZkaiRHIVtAyo1ij9Ez69aiKRchDZCrY/iloWU+N+xL1DilhsSPgxh3re0gxZy0vAw
- DZU3g3/L20+Q==
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="313592886"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 11:30:39 -0700
-Date:   Fri, 2 Oct 2020 11:30:37 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-Message-ID: <20201002183036.GB24460@linux.intel.com>
-References: <20200720211359.GF502563@redhat.com>
- <20200929043700.GL31514@linux.intel.com>
- <20201001215508.GD3522@redhat.com>
- <20201001223320.GI7474@linux.intel.com>
- <20201002153854.GC3119@redhat.com>
+        id S2388303AbgJBSba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:31:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55376 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbgJBSba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:31:30 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 092IPGUU177987;
+        Fri, 2 Oct 2020 18:31:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=9gBQcuPz6m35wYXTPN7cEh5aSZK5ohuA7xTu1JKejGg=;
+ b=geaoa7EnzX6OI0Kld1LwXpyDkYQJjyuKYPlmwM9BAESb42XS2ui7Gnr7kZHpptWTuXGz
+ 06GSfQ+fsi+shNdyGhRz7UHPTr4sbtIkoXOpdCGP71KglVNu5vZjjbzdIThuWYkNsEJ8
+ eVsUr11SrUAgxqvZiMkFjLceAtC9tbjs7Fea5HUQSr/1VnWjqPkmWKPQ5BhfAKg+qcxr
+ DehVe6pkEjLzTW1AdCNdTWAGeH9lizzhClJa3gR8gUEhjchwU8eA8InbZpHoyHJETHu7
+ YWXbhw0Bhbj+ZwZS/58Vr98tnDZjrKtHCjaWXXGhEcSBRGn6v+p0ctMOwrmQKTpQ7axL IA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33sx9nma66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 02 Oct 2020 18:31:14 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 092IOtB0040175;
+        Fri, 2 Oct 2020 18:31:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33tfdxxpy8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 02 Oct 2020 18:31:14 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 092IVCkD012243;
+        Fri, 2 Oct 2020 18:31:12 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 11:31:11 -0700
+Subject: Re: [v5] mm: khugepaged: recalculate min_free_kbytes after memory
+ hotplug as expected by khugepaged
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <1601398153-5517-1-git-send-email-vijayb@linux.microsoft.com>
+ <2a380b84-4fee-fa4e-e862-8a8577961088@oracle.com>
+ <8cdb105c-2b7b-1997-ed82-22f4bb25638c@linux.microsoft.com>
+ <638ebb7a-72e3-a219-ee2b-55f1c028efad@oracle.com>
+ <20201002112516.GD4555@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <9bc3d446-ea25-6abf-bd9d-0c24009c8a19@oracle.com>
+Date:   Fri, 2 Oct 2020 11:31:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002153854.GC3119@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201002112516.GD4555@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010020134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
+ spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010020134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:38:54AM -0400, Vivek Goyal wrote:
-> On Thu, Oct 01, 2020 at 03:33:20PM -0700, Sean Christopherson wrote:
-> > Alternatively, what about adding a new KVM request type to handle this?
-> > E.g. when the APF comes back with -EFAULT, snapshot the GFN and make a
-> > request.  The vCPU then gets kicked and exits to userspace.  Before exiting
-> > to userspace, the request handler resets vcpu->arch.apf.error_gfn.  Bad GFNs
-> > simply get if error_gfn is "valid", i.e. there's a pending request.
+On 10/2/20 4:25 AM, Michal Hocko wrote:
+> On Wed 30-09-20 15:03:11, Mike Kravetz wrote:
+>> On 9/30/20 1:47 PM, Vijay Balakrishna wrote:
+>>> On 9/30/2020 11:20 AM, Mike Kravetz wrote:
+>>>> On 9/29/20 9:49 AM, Vijay Balakrishna wrote:
+>>>>
+>>>> Sorry for jumping in so late.  Should we use this as an opportunity to
+>>>> also fix up the messages logged when (re)calculating mfk?  They are wrong
+>>>> and could be quite confusing.
+>>>
+>>>
+>>> Sure.  Please share your thoughts regarding appropriate message.  Here is what I'm thinking
+>>>
+>>> pr_warn("min_free_kbytes is not updated to %d because current value %d is preferred\n", new_min_free_kbytes, min_free_kbytes);
+>>>
+>>> If above message is reasonable I can post a new revision (v6).
+>>
+>> Just considering the below example,
+>>
+>>>> For example consider the following sequence
+>>>> of operations and corresponding log messages produced.
+>>>>
+>>>> Freshly booted VM with 2 nodes and 8GB memory:
+>>>> # cat /proc/sys/vm/min_free_kbytes
+>>>> 90112
+>>>> # echo 90000 > /proc/sys/vm/min_free_kbytes
+>>>> # cat /proc/sys/vm/min_free_kbytes
+>>>> 90000
+>>>> # echo 0 > /sys/devices/system/node/node1/memory56/online
+>>>> [  135.099947] Offlined Pages 32768
+>>>> [  135.102362] min_free_kbytes is not updated to 11241 because user defined value 90000 is preferred
+>>
+>> I am not sure if there is any value in printing the above line.  Especially
+>> in this context as it becomes obsolete with the printing of the next line.
 > 
-> Sorry, I did not understand the above proposal. Can you please elaborate
-> a bit more. Part of it is that I don't know much about KVM requests.
-> Looking at the code it looks like that main loop is parsing if some
-> kvm request is pending and executing that action.
+> The original intention was to make it explicit that auto-tuning is
+> influenced by the user provided configuration.
 > 
-> Don't we want to make sure that we exit to user space when guest retries
-> error gfn access again.
-
-> In this case once we get -EFAULT, we will still inject page_ready into
-> guest. And then either same process or a different process might run. 
+>>>> [  135.109070] khugepaged: raising min_free_kbytes from 90000 to 90112 to help t
+>>>> ransparent hugepage allocations
+>>
+>> IMO, the above line is the only one that should be output as a result of the
+>> recalculation.
 > 
-> So when exactly code raises a kvm request. If I raise it right when
-> I get -EFAULT, then kvm will exit to user space upon next entry
-> time. But there is no guarantee guest vcpu is running the process which
-> actually accessed the error gfn. And that probably means that register
-> state of cpu does not mean much and one can not easily figure out
-> which task tried to access the bad memory and when.
+> Well, but khugepaged could be disabled and then the above might not get
+> printed. Sure the code could get reorganized and all that but is this
+> really worth that?
 > 
-> That's why we prepare a list of error gfn and only exit to user space
-> when error_gfn access is retried so that guest vcpu context is correct.
+>> I guess that brings up the question of 'should we continue to track the user
+>> defined value if we overwrite it?".  If we quit tracking it may help with the
+>> next message.
 > 
-> What am I missing?
+> Auto tuning and user provided override is quite tricky to get sensible.
+> Especially in the case here. Admin has provided an override but has the
+> potential memory hotplug been considered? Or to make it even more
+> complicated, consider that the hotplug happens without admin involvement
+> - e.g. memory gets hotremoved due to HW problems. Is the admin provided
+> value still meaningful? To be honest I do not have a good answer and I
+> am not sure we should care all that much until we see practical
+> problems.
 
-I don't think it's necessary to provide userspace with the register state of
-the guest task that hit the bad page.  Other than debugging, I don't see how
-userspace can do anything useful which such information.
+I am not insisting that this be cleaned up.  The change in this patch to
+ensure THP related calculations are performed during hotplug is the most
+important.
 
-Even if you want to inject an event of some form into the guest, having the
-correct context for the event itself is not required.  IMO it's perfectly
-reasonable for such an event to be asynchronous.
-
-IIUC, your end goal is to be able to gracefully handle DAX file truncation.
-Simply killing the guest task that hit the bad page isn't sufficient, as
-nothing prevents a future task from accessing the same bad page.  To fully
-handle the situation, the guest needs to remove the bad page from its memory
-pool.  Once the page is offlined, the guest kernel's error handling will
-kick in when a task accesses the bad page (or nothing ever touches the bad
-page again and everyone is happy).
-
-Note, I'm not necessarily suggesting that QEMU piggyback its #MC injection
-to handle this, but I suspect the resulting behavior will look quite similar,
-e.g. notify the virtiofs driver in the guest, which does some magic to take
-the offending region offline, and then guest tasks get SIGBUS or whatever.
-
-I also don't think it's KVM's responsibility to _directly_ handle such a
-scenario.  As I said in an earlier version, KVM can't possibly know _why_ a
-page fault came back with -EFAULT, only userspace can connect the dots of
-GPA -> HVA -> vm_area_struct -> file -> inject event.  KVM definitely should
-exit to userspace on the -EFAULT instead of hanging the guest, but that can
-be done via a new request, as suggested.
+I became aware of the logging issues when looking at a customer issue with
+an older kernel.  The min_free_kbytes setting was integral to the issue we
+were investigating, and it was unclear whether or not the customer had
+changed the value.  I knew the system log should contain evidence of manually
+setting min_free_kbytes.  However, there was no evidence in the log.  Turns
+out the customer did not change the value, but it did cause me to do a deep
+dive into the logging code.
+-- 
+Mike Kravetz
