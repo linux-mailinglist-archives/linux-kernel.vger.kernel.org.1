@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB26E2816E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B172816E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387896AbgJBPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJBPmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:42:07 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3CF02074B;
-        Fri,  2 Oct 2020 15:42:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601653327;
-        bh=v5iehWcOX0VLo1AP99P9bUun2tqq3LWKlFh9oC0pM6A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vlFOtcqOxfyc22WCafJBSQo1lA+ZbQIvpliVp5g+LacQS99cqT50bn3+vFDF+rpbf
-         9O0c5qNtP/fwlvgZ9oVP7lGlhLbedjAsUNUFgwBzyndZI4MgINYQI4itJqbXsFbSBC
-         77+q/QTtoD8VTqtvt7RQsUcbtA/ANEIvZN+tL8ic=
-Date:   Fri, 2 Oct 2020 16:41:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Olivier Moysan <olivier.moysan@st.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alexandre.torgue@st.com, arnaud.patard@rtp-net.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] ASoC: cs42l51: add soft dependency declaration
-Message-ID: <20201002154107.GC5527@sirena.org.uk>
-References: <20201002152904.16448-1-olivier.moysan@st.com>
+        id S2387977AbgJBPmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:42:46 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:46740 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387777AbgJBPmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:42:46 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d76 with ME
+        id b3iL230022lQRaH033iZfK; Fri, 02 Oct 2020 17:42:43 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 02 Oct 2020 17:42:43 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-usb@vger.kernel.org (open list:USB ACM DRIVER)
+Subject: [PATCH v3 0/7] can: add support for ETAS ES58X CAN USB
+Date:   Sat,  3 Oct 2020 00:41:44 +0900
+Message-Id: <20201002154219.4887-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
+References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MnLPg7ZWsaic7Fhd"
-Content-Disposition: inline
-In-Reply-To: <20201002152904.16448-1-olivier.moysan@st.com>
-X-Cookie: Words must be weighed, not counted.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The purpose of this patch series is to introduce a new CAN USB
+driver to support ETAS USB interfaces (ES58X series).
 
---MnLPg7ZWsaic7Fhd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+During development, issues in drivers/net/can/dev.c where discovered,
+the fix for those issues are included in this patch series.
 
-On Fri, Oct 02, 2020 at 05:29:04PM +0200, Olivier Moysan wrote:
-> When configured as module, CS42L51 codec driver uses two modules
-> snd-soc-cs42l51 and snd-soc-cs42l51-i2c.
-> Add soft dependency on snd-soc-cs42l51-i2c in snd-soc-cs42l51,
-> to allow smart module dependency solving.
+We also propose to add two helper functions in include/linux/can/dev.h
+which we think can benefit other drivers: get_can_len() and
+can_bit_time().
 
-Doesn't the userspace tooling usually manage to figure this out from
-symbol usage?
+The driver indirectly relies on https://lkml.org/lkml/2020/9/26/251
+([PATCH] can: raw: add missing error queue support) for the call to
+skb_tx_timestamp() to work but can still compile without it.
 
---MnLPg7ZWsaic7Fhd
-Content-Type: application/pgp-signature; name="signature.asc"
+*Side notes*: scripts/checkpatch.pl returns 4 'checks' findings in
+[PATCH 5/6]. All those findings are of type: "Macro argument reuse 'x'
+possible side-effects?".  Those arguments reuse are actually made by
+calling either __stringify() or sizeof_field() which are both
+pre-processor constant. Furthermore, those macro are never called with
+arguments sensible to side-effects. So no actual side effect would
+occur.
 
------BEGIN PGP SIGNATURE-----
+Changes in v3:
+  - Added one additional patch: [PATCH v3 2/7] can: dev: fix type of
+ get_can_dlc() and get_canfd_dlc() macros.
+  - Make get_can_len() return u8 and make the skb const in PATCH 3/7.
+  - Remove all the calls to likely() and unlikely() in PATCH 6/7.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93ShIACgkQJNaLcl1U
-h9AfMgf/bO5iRl+FHKAa69Dt5NyALR5rJ9EhOt2FrK6Ql/DPOjT4GJE2wWdt/fKD
-H9c2EU6rY0lAp4X7M5PNZJrq4gOcyWdGaHfIOfXBf2qiEzN3L6AvX6iA5oBi1s3O
-eECGQmaRqcwv/nSuoOnzpkoKyywBq9+o9lkHWu1jBg7uhYU1kjp4kJmifrl1aeFU
-QrxFCjLwGSjmNFfm7v3N/33M/aNRwvhyrG9ct+19u1GabgzXBQpLqVj/7Qf1R4Ab
-4Wx8zbP9UI9kW+NLwFewr2wDMP4+WC86biyvT8yU2RYGfxzU3l5U6GtawF+TDhpR
-yBPJ2eIvTmHz66uX7dvMIHlzF2V+GA==
-=ioD8
------END PGP SIGNATURE-----
+Changes in v2:
+  - Fixed -W1 warnings in PATCH 6/7 (v1 was tested with GCC -WExtra
+  but not with -W1).
+  - Added lsusb -v information in PATCH 7/7 and rephrased the comment.
+  - Take care to put everyone in CC of each of the patch of the series
+  (sorry for the mess in v1...)
 
---MnLPg7ZWsaic7Fhd--
+Vincent Mailhol (7):
+  can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ
+    context
+  can: dev: fix type of get_can_dlc() and get_canfd_dlc() macros
+  can: dev: add a helper function to get the correct length of Classical
+    frames
+  can: dev: __can_get_echo_skb(): fix the return length
+  can: dev: add a helper function to calculate the duration of one bit
+  can: usb: etas_es58X: add support for ETAS ES58X CAN USB interfaces
+  usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
+
+ drivers/net/can/dev.c                       |   26 +-
+ drivers/net/can/usb/Kconfig                 |    9 +
+ drivers/net/can/usb/Makefile                |    1 +
+ drivers/net/can/usb/etas_es58x/Makefile     |    3 +
+ drivers/net/can/usb/etas_es58x/es581_4.c    |  559 ++++
+ drivers/net/can/usb/etas_es58x/es581_4.h    |  237 ++
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2725 +++++++++++++++++++
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  700 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   |  648 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.h   |  243 ++
+ drivers/usb/class/cdc-acm.c                 |   11 +
+ include/linux/can/dev.h                     |   44 +-
+ 12 files changed, 5189 insertions(+), 17 deletions(-)
+ create mode 100644 drivers/net/can/usb/etas_es58x/Makefile
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.h
+
+-- 
+2.26.2
+
