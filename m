@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32F9281653
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E698281656
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388331AbgJBPO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBPOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:14:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423DEC0613D0;
-        Fri,  2 Oct 2020 08:14:52 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id q9so2044183wmj.2;
-        Fri, 02 Oct 2020 08:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PBP6z5DXc5+B6Aax/XZWoiuZJP1QI0X0/j3bu6pDZMc=;
-        b=S+qPrvco+57yq+xUItZ2S4BOsTFYwGPXuESFpfO1jtDZ506zlYy4lV3kguHQ75QrDO
-         TA+/WxyeU4o/U91duhbBeZByAuhaPL6HwplbjFcxzImtCQpcln0qFjbzrbVJnc0ov466
-         mkKYRtL9VJWnYtgRgLiNEtBN41AJjF824ZfBx98tjtBVsBB6Q7oIsqhkZkrfYL7V3Utd
-         6YmIfGlPnQNVMla9t6qE9BYTWEyHAUQd4934YkVjL5IHW9p5PuviFewL696u0ohVeyXh
-         Mobeh69eHtNxvP0iDqO6yQX9JsdN5lQlEUqZFLxPGBPn+7smPsDRZyA+tuASORZRfMU0
-         98GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PBP6z5DXc5+B6Aax/XZWoiuZJP1QI0X0/j3bu6pDZMc=;
-        b=IGjWwrxSGDonKBWDIDDMVhMLPy0j3AjLlW266FBJutMkDWf7TJUMjeAaQ41HGiZWkZ
-         aCjhlv/SUGQVKgWOUhXZ5dSOWd80JUN6tKkPVENDNrjJWhLHHVolgl07aYNxOUI3npYK
-         5qKt5wjifTzMfhpABLJhxf6z4jJNM7CvnlUxh8mh6LcoKprEgD0kWnfkRzb4P1vugyVp
-         JJ0jjyuUstvgU5LIFRoFyM1U2eoZdtrOya/3wA0kx46TToT821jROagz4A5vV7XS0eaj
-         TmWOfK12mfDt9TchvFaS3F6EQFtps4GlNs53e7uEpQCeZmthB0G825JrVUPw3rQW+jSr
-         TsJA==
-X-Gm-Message-State: AOAM5312ytLl4KTtJ5AuhaL5TFOP97GOETI/muIF8kSh/fCPJo9zV1A+
-        Coc9czPbRshpnJ7t4OTw0nw=
-X-Google-Smtp-Source: ABdhPJxR7k4Vwx8DluGGsRedcqH0pLoaoA/yQuivc0BjiiQpjhH8YM4DNOD1INdXU+r8XdQzv48pUw==
-X-Received: by 2002:a1c:65d7:: with SMTP id z206mr3549440wmb.165.1601651691025;
-        Fri, 02 Oct 2020 08:14:51 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id u127sm2312237wmu.48.2020.10.02.08.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 08:14:50 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        linux-man@vger.kernel.org, gcc-patches@gcc.gnu.org,
-        libc-alpha@sourceware.org, linux-kernel@vger.kernel.org,
-        eggert@cs.ucla.edu, jwakely.gcc@gmail.com, David.Laight@ACULAB.COM
-Subject: [PATCH v4 2/2] void.3: New link to system_data_types(7)
-Date:   Fri,  2 Oct 2020 17:14:20 +0200
-Message-Id: <20201002151419.32053-3-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
-References: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
+        id S2388197AbgJBPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:15:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:38860 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBPPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:15:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71AD21396;
+        Fri,  2 Oct 2020 08:15:53 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06A683F73B;
+        Fri,  2 Oct 2020 08:15:51 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 16:15:47 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
+Message-ID: <20201002151547.GA25740@e121166-lin.cambridge.arm.com>
+References: <20200902144344.16684-1-pali@kernel.org>
+ <20201002133713.GA24425@e121166-lin.cambridge.arm.com>
+ <20201002142616.dxgdneg2lqw4pxie@pali>
+ <20201002143851.GA25575@e121166-lin.cambridge.arm.com>
+ <20201002145237.r2troxmgbq2bf3ep@pali>
+ <20201002150300.GA25684@e121166-lin.cambridge.arm.com>
+ <20201002150701.bvatgxygq4rjssly@pali>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201002150701.bvatgxygq4rjssly@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- man3/void.3 | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 man3/void.3
+On Fri, Oct 02, 2020 at 05:07:01PM +0200, Pali Rohár wrote:
 
-diff --git a/man3/void.3 b/man3/void.3
-new file mode 100644
-index 000000000..db50c0f09
---- /dev/null
-+++ b/man3/void.3
-@@ -0,0 +1 @@
-+.so man7/system_data_types.7
--- 
-2.28.0
+[...]
 
+> > I will apply the stable tag and dependency, it should be fine.
+> 
+> Ok! I thought that according to stable-kernel-rules.html that dependent
+> commit could be added after stable email address separated with # char.
+> At least this is how I understood stable-kernel-rules.html and its
+> section:
+> 
+>   "Additionally, some patches submitted via Option 1 may have additional
+>    patch prerequisites which can be cherry-picked."
+
+That's what I did - pci/aardvark branch.
+
+Lorenzo
