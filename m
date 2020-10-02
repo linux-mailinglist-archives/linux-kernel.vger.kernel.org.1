@@ -2,92 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DDA280F81
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5637A280F87
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387587AbgJBJHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBJHo (ORCPT
+        id S2387633AbgJBJIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:08:35 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9002 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBJIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:07:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA7AC0613D0;
-        Fri,  2 Oct 2020 02:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aAAbxNegoG0OkRLdkHrUKEVk3WJTcefZ9uoKJBagbcQ=; b=Is53JiSI75kIUyBY7cS1XVXNGy
-        vcnb11qkmV1+lP+B9NJDFbDoAl3sln8dwUFS4vI2bFzddaNCp+7oJznrW2qsPeEWo2f7xEu+duoSA
-        7LktTOOVSg9ArSRL5Aj+L1PRbQjvuN81GMaXBBG15XSpScFw4/+mDpgC27gvy8y3Nd7DDjaSuu7OT
-        A233bwcpaDi8gvUmWWkUEUpzJHQtvpFVwW6y4Z6i2XtSp83s9vaub71axs27XMXQZ20y1j9UnFxNo
-        DVTNYv+JMwxnHj5TlCin3oTlIFH/FruijUpiyTMhqKRpZgXpJom+fcIRROCA4NMEWtN17eBDXWg3M
-        FKmdTrGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOH2K-0007M3-72; Fri, 02 Oct 2020 09:07:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 343843011E6;
-        Fri,  2 Oct 2020 11:07:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E38020104626; Fri,  2 Oct 2020 11:07:29 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 11:07:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201002090729.GU2628@hirez.programming.kicks-ass.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
+        Fri, 2 Oct 2020 05:08:35 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f76ee060000>; Fri, 02 Oct 2020 02:08:22 -0700
+Received: from [10.25.97.216] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
+ 2020 09:08:27 +0000
+Subject: Re: [PATCH v3 10/13] ASoC: tegra: Add audio graph based card driver
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-11-git-send-email-spujar@nvidia.com>
+ <87362xkxdv.wl-kuninori.morimoto.gx@renesas.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <25771697-fc85-b377-ae99-a5e0957ba02d@nvidia.com>
+Date:   Fri, 2 Oct 2020 14:38:24 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002085014.GC3227@techsingularity.net>
+In-Reply-To: <87362xkxdv.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601629702; bh=Kt+g9/UZmAGL50310mcza+eVE1I97Du/ixdvc4G5b90=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=CoU6Nc6E5XAEn7LDW3584duRTi+jbqtjHwa1bGmSK1fHiuF8illbTNO9rdhzOjBVc
+         MEqT+EhBJ291p14rpPWSDYbR9XIFtCoqGRFyamcUONcj2q5cSJCjNga/pXndfYxjOT
+         xDRszAmKPJoPCxcpINfX41gYBogY9CkpexNbSnTIyzUYacfoO9oTflLL8PwhS9A4ps
+         Uc7Ljz1YQpqoppZcK+yxp/tK9bx89ol0famGdtR/7g8nqDA9n73gsII6Pzdlhun+Sw
+         Tq18T6730YJjY8vyWwM7ymDA+tUNWqWbVzdI3gGhXWs5Kj5/FCbYZasxKKpvnPo9q4
+         uXZWexFlHkHiw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 09:50:14AM +0100, Mel Gorman wrote:
-> On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
 
-> > > +#define ___GFP_NO_LOCKS                0x800000u
-> > 
-> > Even if a new gfp flag gains a sufficient traction and support I am
-> > _strongly_ opposed against consuming another flag for that. Bit space is
-> > limited. 
-> 
-> That is definitely true. I'm not happy with the GFP flag at all, the
-> comment is at best a damage limiting move. It still would be better for
-> a memory pool to be reserved and sized for critical allocations.
+>> Add Tegra audio machine driver which is based on generic audio graph car=
+d
+>> driver. It re-uses most of the common stuff from audio graph driver and
+>> uses the same DT binding. Required Tegra specific customizations are don=
+e
+>> in the driver.
+> (snip)
+>> +static const struct snd_soc_ops tegra_audio_graph_ops =3D {
+>> +     .startup        =3D asoc_simple_startup,
+>> +     .shutdown       =3D asoc_simple_shutdown,
+>> +     .hw_params      =3D tegra_audio_graph_hw_params,
+>> +};
+> This is just an idea,
+> but can we use hooks here somehow ?
+>
+>          .ops_hook_pre
+>          .ops_hook_func
+>          .ops_hook_post
+>
+>          if (priv->ops_hook_pre->func)
+>                  priv->ops_hook_pre->func_pre(...);
+>
+>          if (priv->ops_hook_func->func)
+>                  priv->ops_hook_func->func(...); /* driver's function */
+>          else
+>                  graph_func(...);        /* audio-graph function */
+>
+>          if (priv->ops_hook_post->func)
+>                  priv->ops_hook_post->func(...);
 
-This is one of the reasons I did a separate allocation function. No GFP
-flag to leak into general usage.
+Right now I just required to populate some flags or structures and do=20
+not have any specific pre()/post() functions to be called. Can this be=20
+reserved for later?
 
-> > Besides that we certainly do not want to allow craziness like
-> > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> 
-> That would deserve to be taken to a dumpster and set on fire. The flag
-> combination could be checked in the allocator but the allocator path fast
-> paths are bad enough already.
+>
+>
+>> +static int tegra_audio_graph_probe(struct platform_device *pdev)
+>> +{
+>> +     struct asoc_simple_priv *priv;
+>> +     struct device *dev =3D &pdev->dev;
+>> +     struct snd_soc_card *card;
+>> +     struct link_info li;
+>> +     int err;
+>> +
+>> +     /* Allocate the private data and the DAI link array */
+>> +     priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+>> +     if (!priv)
+>> +             return -ENOMEM;
+>> +
+>> +     priv->data =3D (struct tegra_audio_graph_data *)
+>> +             devm_kzalloc(dev, sizeof(*priv->data), GFP_KERNEL);
+>> +     if (!priv->data)
+>> +             return -ENOMEM;
+>> +
+>> +     card =3D simple_priv_to_card(priv);
+>> +
+>> +     card->owner =3D THIS_MODULE;
+>> +     card->dev =3D dev;
+>> +     card->component_chaining =3D true;
+>> +     card->probe =3D tegra_audio_graph_card_probe;
+>> +
+>> +     priv->ops =3D &tegra_audio_graph_ops;
+>> +     priv->force_dpcm =3D 1;
+>> +
+>> +     memset(&li, 0, sizeof(li));
+>> +     graph_get_dais_count(priv, &li);
+>> +     if (!li.link || !li.dais)
+>> +             return -EINVAL;
+>> +
+>> +     err =3D asoc_simple_init_priv(priv, &li);
+>> +     if (err < 0)
+>> +             return err;
+>> +
+>> +     err =3D graph_parse_of(priv);
+>> +     if (err < 0) {
+>> +             if (err !=3D -EPROBE_DEFER)
+>> +                     dev_err(dev, "Parse error %d\n", err);
+>> +             goto cleanup;
+>> +     }
+>> +
+>> +     snd_soc_card_set_drvdata(card, priv);
+>> +
+>> +     asoc_simple_debug_info(priv);
+>> +
+>> +     err =3D devm_snd_soc_register_card(dev, card);
+>> +     if (err < 0)
+>> +             goto cleanup;
+>> +
+>> +     return 0;
+>> +
+>> +cleanup:
+>> +     asoc_simple_clean_reference(card);
+>> +
+>> +     return err;
+>> +}
 
-Isn't that what we have CONFIG_DEBUG_VM for?
+> These are almost same as graph_probe().
+> Maybe we can separate graph_probe() and export function ?
+
+Yes possible, I can move more stuff into graph_parse_of() which is=20
+already an exported function in the current series. This can be utilized=20
+by both generic audio graph and Tegra audio graph.
+
+Something like below,
+
+static int tegra_audio_graph_probe(struct platform_device *pdev)
+{
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct tegra_audio_priv *priv;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev =3D &pdev->d=
+ev;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct snd_soc_card *card;
+
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv =3D devm_kzalloc(dev, size=
+of(*priv), GFP_KERNEL);
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!priv)
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card =3D simple_priv_to_card(&p=
+riv->simple);
+
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->owner =3D THIS_MODULE;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->dev =3D dev;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->probe =3D tegra_audio_gra=
+ph_card_probe;
+
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* graph_parse_of() depends on =
+below */
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 card->component_chaining =3D 1;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->simple.ops =3D &tegra_aud=
+io_graph_ops;
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->simple.force_dpcm =3D 1;
+
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return graph_parse_of(&priv->si=
+mple);
+}
+
+Does this sound fine?
+
