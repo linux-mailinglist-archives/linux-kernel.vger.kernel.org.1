@@ -2,94 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8458281A09
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E22C281A13
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388258AbgJBRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:47:31 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:52228 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBRra (ORCPT
+        id S2388322AbgJBRtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387602AbgJBRs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:47:30 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 21549803017E;
-        Fri,  2 Oct 2020 17:47:28 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mPHAd0rBnzBP; Fri,  2 Oct 2020 20:47:26 +0300 (MSK)
-Date:   Fri, 2 Oct 2020 20:47:26 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 03/21] spi: dw: Detach SPI device specific CR0 config
- method
-Message-ID: <20201002174725.rpwdgfo6xzxafqhs@mobilestation>
-References: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
- <20201001222829.15977-4-Sergey.Semin@baikalelectronics.ru>
- <20201002102246.GX3956970@smile.fi.intel.com>
+        Fri, 2 Oct 2020 13:48:59 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F3AC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:48:59 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id k18so1763253ybh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QS77N6+CVhOOVc5MzAkxD23OY8NSVhkBewUyPpHdYlc=;
+        b=K7c10yve+m/Ym4Ka9KOtXjRc9l7h/9hkwYlCtP8U1y4i6VsUSwagmYsszDYzzPWyAP
+         doQk7cUQ9E4iFl5joVcME6pkx0+Pj0NsYO3HE/qyf6VtbK2Diua2nRDGfeOBwoWALiim
+         +Ebyf6fiS6NK0ZzNY7ZIsUiq/eTsSs7/ZOWOi3yFac6jJuSuHA4dSGIgkHWCbpBogq9q
+         eYFwMnw1+qz+fp/jKT6fALkj+dHmdwbAH14KNPVxicedjtSDsBGonfJnlK3l+dBoLnRC
+         PE82kdBmi+UIMhTe/CkBfifxDFqTUbuUX0IJm9YVYH55/UwM/DFQdEknfpHW3ogGenQe
+         rVPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QS77N6+CVhOOVc5MzAkxD23OY8NSVhkBewUyPpHdYlc=;
+        b=qthhrsFvnA8Fv5zCtQuWdmMI9uJ27vdJY4FvFjQ1E3HSY6y9FVR1yHo1OUwH3V8+/4
+         p4d4hAzEAzPVoTmm/zjxSB6yWujjS37qy5FbUk5alS+uNjMTDbsk1dA/hLjzwfNnLS4d
+         y2TPrdBwvRoeTFe2ixw5b/U6ppTF0GBIvK4mLQ22pzQmKHfyp7InkuqdMoVE5E4lZhvT
+         7YfVABcmtq1IWhDGsumnnNo/CjX4dkwPk8o9BgNR2z8BPmRF2iIPEflIkjgPXHcjc3R2
+         gbaLjQITSeGtvuhw6BXtmhBI6ear5FbFw6jviAmSnH+rYt55BQMcw+TifReM/R+LnXLd
+         rd5w==
+X-Gm-Message-State: AOAM532iP6bUX9lWETvv4okm1uwO26wGvaAhtWjz2JRk1WsKPrkSvzbg
+        7SGWuzBpyPUgs7JQ23HwyYCBQGNHA8+X8mvrLNUnrQ==
+X-Google-Smtp-Source: ABdhPJyK6MpLcp9s4wybIfKzU+/XBpBlE4yS0Lf4BV1uGhjLp79GVzaBk0S/XxweTFTrs7362+sisG6zJp8OI284NSw=
+X-Received: by 2002:a05:6902:725:: with SMTP id l5mr4087154ybt.346.1601660938079;
+ Fri, 02 Oct 2020 10:48:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201002102246.GX3956970@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com> <20201001231922.GG3722@pendragon.ideasonboard.com>
+ <17bdc3f0-d816-151a-fef2-88cd38fc8621@ti.com> <e0ef8816-11ea-3a1a-cac6-14b9f6c92bcf@ti.com>
+In-Reply-To: <e0ef8816-11ea-3a1a-cac6-14b9f6c92bcf@ti.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 2 Oct 2020 10:48:22 -0700
+Message-ID: <CAGETcx-wkZZQyfnkc59e2ECg_kho-O_c2ms4OOtM4=-Hd125+Q@mail.gmail.com>
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:22:46PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 02, 2020 at 01:28:11AM +0300, Serge Semin wrote:
-> > Indeed there is no point in detecting the SPI peripheral device parameters
-> > and initializing the CR0 register fields each time an SPI transfer is
-> > executed. Instead let's define a dedicated CR0 chip-data member, which
-> > will be initialized in accordance with the SPI device settings at the
-> > moment of setting it up.
-> > 
-> > By doing so we'll finally make the SPI device chip_data serving as it's
-> > supposed to - to preserve the SPI device specific DW SPI configuration.
-> > See spi-fsl-dspi.c, spi-pl022.c, spi-pxa2xx.c drivers for example of the
-> > way the chip data is utilized.
-> 
-> > +static void dw_spi_update_cr0(struct dw_spi *dws, struct spi_device *spi,
-> > +			      struct spi_transfer *transfer)
-> 
+On Fri, Oct 2, 2020 at 8:03 AM 'Grygorii Strashko' via kernel-team
+<kernel-team@android.com> wrote:
+>
+>
+>
+> On 02/10/2020 14:40, Grygorii Strashko wrote:
+> >
+> >
+> > On 02/10/2020 02:19, Laurent Pinchart wrote:
+> >> Hi Saravana,
+> >>
+> >> Thank you for the patch.
+> >>
+> >> On Thu, Oct 01, 2020 at 03:59:51PM -0700, Saravana Kannan wrote:
+> >>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+> >>> adding all top level devices") optimized the fwnode parsing when all top
+> >>> level devices are added, it missed out optimizing this for platform
+> >>> where the top level devices are added through the init_machine() path.
+> >>>
+> >>> This commit does the optimization for all paths by simply moving the
+> >>> fw_devlink_pause/resume() inside of_platform_default_populate().
+> >>
+> >> Based on v5.9-rc5, before the patch:
+> >>
+> >> [    0.652887] cpuidle: using governor menu
+> >> [   12.349476] No ATAGs?
+> >>
+> >> After the patch:
+> >>
+> >> [    0.650460] cpuidle: using governor menu
+> >> [   12.262101] No ATAGs?
+> >>
+> >> :-(
+> >
+> > This is kinda expected :( because omap2 arch doesn't call of_platform_default_populate()
+> >
+> > Call path:
+> > board-generic.c
+> >   DT_MACHINE_START()
+> >     .init_machine    = omap_generic_init,
+> >
+> >   omap_generic_init()
+> >     pdata_quirks_init(omap_dt_match_table);
+> >          of_platform_populate(NULL, omap_dt_match_table,
+> >                   omap_auxdata_lookup, NULL);
+> >
+> > Other affected platforms
+> > arm: mach-ux500
+> > some mips
+> > some powerpc
+> >
+> > there are also case when a lot of devices placed under bus node, in such case
+> >   of_platform_populate() calls from bus drivers will also suffer from this issue.
+> >
+> > I think one option could be to add some parameter to _populate() or introduce new api.
+> >
+> > By the way, is there option to disable this feature at all?
+> > Is there Kconfig option?
+> > Is there any reasons why such complex and time consuming code added to the kernel and not implemented on DTC level?
+> >
+> >
+> > Also, I've came with another diff, pls check.
+> >
+> > [    0.000000] Booting Linux on physical CPU 0x0
+> > [    0.000000] Linux version 5.9.0-rc6-01791-g9acba6b38757-dirty (grygorii@grygorii-XPS-13-9370) (arm-linux-gnueabihf-gcc (GNU Toolcha0
+> > [    0.000000] CPU: ARMv7 Processor [412fc0f2] revision 2 (ARMv7), cr=10c5387d
+> > [    0.000000] CPU: div instructions available: patching division code
+> > [    0.000000] CPU: PIPT / VIPT nonaliasing data cache, PIPT instruction cache
+> > [    0.000000] OF: fdt: Machine model: TI AM5718 IDK
+> > ...
+> > [    0.053443] cpuidle: using governor ladder
+> > [    0.053470] cpuidle: using governor menu
+> > [    0.089304] No ATAGs?
+> > ...
+> > [    3.092291] devtmpfs: mounted
+> > [    3.095804] Freeing unused kernel memory: 1024K
+> > [    3.100483] Run /sbin/init as init process
+> >
+> >
+> >
+> > ------ >< ---
+> > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > index 071f04da32c8..4521b26e7745 100644
+> > --- a/drivers/of/platform.c
+> > +++ b/drivers/of/platform.c
+> > @@ -514,6 +514,12 @@ static const struct of_device_id reserved_mem_matches[] = {
+> >          {}
+> >   };
+> >
+> > +static int __init of_platform_fw_devlink_pause(void)
+> > +{
+> > +       fw_devlink_pause();
+> > +}
+> > +core_initcall(of_platform_fw_devlink_pause);
+> > +
+> >   static int __init of_platform_default_populate_init(void)
+> >   {
+> >          struct device_node *node;
+> > @@ -538,9 +544,7 @@ static int __init of_platform_default_populate_init(void)
+> >          }
+> >
+> >          /* Populate everything else. */
+> > -       fw_devlink_pause();
+> >          of_platform_default_populate(NULL, NULL, NULL);
+> > -       fw_devlink_resume();
+> >
+> >          return 0;
+> >   }
+> > @@ -548,6 +552,7 @@ arch_initcall_sync(of_platform_default_populate_init);
+> >
+> >   static int __init of_platform_sync_state_init(void)
+> >   {
+> > +       fw_devlink_resume();
+>
+> ^ it seems has to be done earlier, like
+> +static int __init of_platform_fw_devlink_resume(void)
+> +{
+> +       fw_devlink_resume();
+> +       return 0;
+> +}
+> +device_initcall_sync(of_platform_fw_devlink_resume);
 
-> Yep, why not to place this in previous patch exactly here?
+This will mean no device will probe until device_initcall_sync().
+Unfortunately, I don't think we can make such a sweeping assumption.
 
-The previous patch is about introducing the DWC SSI capability. This one is
-about splitting the functionality up.
-
-> 
-> > +	/*
-> > +	 * Update CR0 data each time the setup callback is invoked since
-> > +	 * the device parameters could have been changed, for instance, by
-> > +	 * the MMC SPI driver or something else.
-> > +	 */
-> > +	chip->cr0 = dw_spi_get_cr0(dws, spi);
-> 
-
-> I would rather name it prepare or alike. 'get' assumes getting value or
-> something like that.
-
-This seems reasonable. What verb do you think would be better: prepare,
-calc, assemble, construct, make, compute, collect, compose, form, compile, etc ?
-Personally prepare or calc or assemble are the best candidates. What do you
-think?
-
--Sergey
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+-Saravana
