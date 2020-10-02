@@ -2,199 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D63B281605
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF73C281602
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388252AbgJBPEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:04:12 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39628 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBPEL (ORCPT
+        id S2388171AbgJBPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBPEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:04:11 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092F3uOF059943;
-        Fri, 2 Oct 2020 10:03:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601651036;
-        bh=00EmeBEsJXIW+I4V1YKyuovGpP0u20l2BkMznworpNU=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=lLGeoVfqeNI3kVh58Nc0c/m5l6fA3pyaPy7WAqEsZberBjuXAtySV4EamOfjvsQ2M
-         g9UdCC3CKq4spM1TtSEEhzBtVlIjOTSwuZ0jKQwZPFaSPlM4kAQV5YrscOQm4837XY
-         NPx3M9tjSG3MzpQzk3yup6irAn30fdrS3oZtx5Ks=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092F3u6e001694
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 10:03:56 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 10:03:55 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 10:03:55 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092F3oeb115201;
-        Fri, 2 Oct 2020 10:03:51 -0500
-Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
- init_machine() path
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Saravana Kannan <saravanak@google.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <geert+renesas@glider.be>, <gregkh@linuxfoundation.org>,
-        <linux-omap@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <peter.ujfalusi@ti.com>, <rjw@rjwysocki.net>,
-        <tomi.valkeinen@ti.com>, <tony@atomide.com>,
-        <ulf.hansson@linaro.org>, <kernel-team@android.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
- <20201001225952.3676755-1-saravanak@google.com>
- <20201001231922.GG3722@pendragon.ideasonboard.com>
- <17bdc3f0-d816-151a-fef2-88cd38fc8621@ti.com>
-Message-ID: <e0ef8816-11ea-3a1a-cac6-14b9f6c92bcf@ti.com>
-Date:   Fri, 2 Oct 2020 18:03:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 11:04:06 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6781CC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 08:04:06 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x69so1488541oia.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+OT/4n2wS86BoiTVC/dLrqPVRF45rG7BZbw8GfdvQDw=;
+        b=iV1InCDdPT45RkQ7sZ8mc6cT/xKxfIoMyV/vowBXBMoLl2m1kAnQKjipJuYCKiS88S
+         hBDeBCAbpAZ0fnoDZuqNhRkyfRzPW3Y//6yg3lzayB7E4YIGTQjEebwmGjyw0kyf8vX9
+         l73xb7h+VIbzzceJ6jNlB+i97Z0PjJWNUryfoF7sWqZRV31i1+Yr0nzDFYH5zVr7Bl54
+         e27PUL0USC6QXqyHS2aTmh5uIsL5njMMsLVrijQ85r+071niOiAdzonKapjz7tX2y+6Z
+         DilHLmIUs98MdrarrkMdJ+iJKI8dMMUUFVdTANajoNpkJ10hEmzODGB/M06HcP50p1DB
+         iaBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+OT/4n2wS86BoiTVC/dLrqPVRF45rG7BZbw8GfdvQDw=;
+        b=oCVF79A+VAS9F6TgKt4C01zMSFT8pBgQ+BNe32I086QPKN248VEKJ2ZftlB++wilbU
+         On1zWOJmFBPsE6OWJEKNRYkv/C/iKPA67tfHrBHgtGdypLwYOFzl/D81SN2GEROVdvTZ
+         woMVlY/S1xKEi8VLM3mmzUgm3SH1MxRxD+NkxJyxEfRYZgdZk31WjASWFV4WVWBogVhN
+         ZX8de1/Bk7WUT8+vlomTm+6cJQPoDJVdXM/y5xz5KthI44PLd1GwsQj+poSju4GmoOb/
+         Z22LdW2ojSjXGyMQDl3D2e0rIrryM0rvaud6C6UoG2/22dBLR0MRLrVVyQkbo+Rew4th
+         VyhQ==
+X-Gm-Message-State: AOAM533uJn8Xwzw45xM+HIFsYMT//wphRVlb+G6DIIdgDi2rqZDgzNx8
+        FUwEP4UlYNbGpy6pogPNjfVj8Gv2SoMiNlTrqp5Bgw==
+X-Google-Smtp-Source: ABdhPJwvgINkz+XJYCLwm568Iu1c+D20UBL6OzCbGUjPWGg1MtUjajtfVWBwinmo+yMWIZbIn4YgDoh9wciHQjF0cjs=
+X-Received: by 2002:a54:468f:: with SMTP id k15mr1518233oic.121.1601651045524;
+ Fri, 02 Oct 2020 08:04:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <17bdc3f0-d816-151a-fef2-88cd38fc8621@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200922074330.2549523-1-georgepope@google.com> <CA+DmFKDMZPef9+f4xPWMQ2mgdHPSUBmYZ3X=bS6s8XudetmW5g@mail.gmail.com>
+In-Reply-To: <CA+DmFKDMZPef9+f4xPWMQ2mgdHPSUBmYZ3X=bS6s8XudetmW5g@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 2 Oct 2020 17:03:54 +0200
+Message-ID: <CANpmjNP7ucEfdfuU_Ch7ukdF3HS5z0rPkG=pgrdK16S=--z-WA@mail.gmail.com>
+Subject: Re: [PATCH v3] ubsan: introducing CONFIG_UBSAN_LOCAL_BOUNDS for Clang
+To:     George Popescu <georgepope@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        David Brazdil <dbrazdil@google.com>,
+        George Popescu <georgepope@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2 Oct 2020 at 16:43, George Popescu <georgepope@google.com> wrote:
+>
+> Is this patch ready to be merged?
 
+Andrew already picked this up and it's in the -mm tree:
+https://lore.kernel.org/mm-commits/20200922170717.qhs0j%25akpm@linux-foundation.org/
 
-On 02/10/2020 14:40, Grygorii Strashko wrote:
-> 
-> 
-> On 02/10/2020 02:19, Laurent Pinchart wrote:
->> Hi Saravana,
->>
->> Thank you for the patch.
->>
->> On Thu, Oct 01, 2020 at 03:59:51PM -0700, Saravana Kannan wrote:
->>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
->>> adding all top level devices") optimized the fwnode parsing when all top
->>> level devices are added, it missed out optimizing this for platform
->>> where the top level devices are added through the init_machine() path.
->>>
->>> This commit does the optimization for all paths by simply moving the
->>> fw_devlink_pause/resume() inside of_platform_default_populate().
->>
->> Based on v5.9-rc5, before the patch:
->>
->> [    0.652887] cpuidle: using governor menu
->> [   12.349476] No ATAGs?
->>
->> After the patch:
->>
->> [    0.650460] cpuidle: using governor menu
->> [   12.262101] No ATAGs?
->>
->> :-(
-> 
-> This is kinda expected :( because omap2 arch doesn't call of_platform_default_populate()
-> 
-> Call path:
-> board-generic.c
->   DT_MACHINE_START()
->     .init_machine    = omap_generic_init,
-> 
->   omap_generic_init()
->     pdata_quirks_init(omap_dt_match_table);
->          of_platform_populate(NULL, omap_dt_match_table,
->                   omap_auxdata_lookup, NULL);
-> 
-> Other affected platforms
-> arm: mach-ux500
-> some mips
-> some powerpc
-> 
-> there are also case when a lot of devices placed under bus node, in such case
->   of_platform_populate() calls from bus drivers will also suffer from this issue.
-> 
-> I think one option could be to add some parameter to _populate() or introduce new api.
-> 
-> By the way, is there option to disable this feature at all?
-> Is there Kconfig option?
-> Is there any reasons why such complex and time consuming code added to the kernel and not implemented on DTC level?
-> 
-> 
-> Also, I've came with another diff, pls check.
-> 
-> [    0.000000] Booting Linux on physical CPU 0x0
-> [    0.000000] Linux version 5.9.0-rc6-01791-g9acba6b38757-dirty (grygorii@grygorii-XPS-13-9370) (arm-linux-gnueabihf-gcc (GNU Toolcha0
-> [    0.000000] CPU: ARMv7 Processor [412fc0f2] revision 2 (ARMv7), cr=10c5387d
-> [    0.000000] CPU: div instructions available: patching division code
-> [    0.000000] CPU: PIPT / VIPT nonaliasing data cache, PIPT instruction cache
-> [    0.000000] OF: fdt: Machine model: TI AM5718 IDK
-> ...
-> [    0.053443] cpuidle: using governor ladder
-> [    0.053470] cpuidle: using governor menu
-> [    0.089304] No ATAGs?
-> ...
-> [    3.092291] devtmpfs: mounted
-> [    3.095804] Freeing unused kernel memory: 1024K
-> [    3.100483] Run /sbin/init as init process
-> 
-> 
-> 
-> ------ >< ---
-> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> index 071f04da32c8..4521b26e7745 100644
-> --- a/drivers/of/platform.c
-> +++ b/drivers/of/platform.c
-> @@ -514,6 +514,12 @@ static const struct of_device_id reserved_mem_matches[] = {
->          {}
->   };
-> 
-> +static int __init of_platform_fw_devlink_pause(void)
-> +{
-> +       fw_devlink_pause();
-> +}
-> +core_initcall(of_platform_fw_devlink_pause);
-> +
->   static int __init of_platform_default_populate_init(void)
->   {
->          struct device_node *node;
-> @@ -538,9 +544,7 @@ static int __init of_platform_default_populate_init(void)
->          }
-> 
->          /* Populate everything else. */
-> -       fw_devlink_pause();
->          of_platform_default_populate(NULL, NULL, NULL);
-> -       fw_devlink_resume();
-> 
->          return 0;
->   }
-> @@ -548,6 +552,7 @@ arch_initcall_sync(of_platform_default_populate_init);
-> 
->   static int __init of_platform_sync_state_init(void)
->   {
-> +       fw_devlink_resume();
+You have to wait for the next merge window, which will likely start in
+1.5 weeks (or, on Monday, but unlikely:
+https://lwn.net/Articles/832733/).
 
-^ it seems has to be done earlier, like
-+static int __init of_platform_fw_devlink_resume(void)
-+{
-+       fw_devlink_resume();
-+       return 0;
-+}
-+device_initcall_sync(of_platform_fw_devlink_resume);
+Thanks,
+-- Marco
 
-
->          device_links_supplier_sync_state_resume();
->          return 0;
->   }
-> 
-> 
-> 
-
--- 
-Best regards,
-grygorii
+> Best regards,
+> George
+>
+>
+> On Tue, Sep 22, 2020 at 10:43 AM George-Aurelian Popescu
+> <georgepope@google.com> wrote:
+> >
+> > From: George Popescu <georgepope@android.com>
+> >
+> > When the kernel is compiled with Clang, -fsanitize=bounds expands to
+> > -fsanitize=array-bounds and -fsanitize=local-bounds.
+> >
+> > Enabling -fsanitize=local-bounds with Clang has the unfortunate
+> > side-effect of inserting traps; this goes back to its original intent,
+> > which was as a hardening and not a debugging feature [1]. The same feature
+> > made its way into -fsanitize=bounds, but the traps remained. For that
+> > reason, -fsanitize=bounds was split into 'array-bounds' and
+> > 'local-bounds' [2].
+> >
+> > Since 'local-bounds' doesn't behave like a normal sanitizer, enable
+> > it with Clang only if trapping behaviour was requested by
+> > CONFIG_UBSAN_TRAP=y.
+> >
+> > Add the UBSAN_BOUNDS_LOCAL config to Kconfig.ubsan to enable the
+> > 'local-bounds' option by default when UBSAN_TRAP is enabled.
+> >
+> > [1] http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
+> > [2] http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
+> >
+> > Suggested-by: Marco Elver <elver@google.com>
+> > Reviewed-by: David Brazdil <dbrazdil@google.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: George Popescu <georgepope@android.com>
+> >
+> > ---
+> > v2: changed the name of the config, in Kconfig, to UBSAN_LOCAL_BOUNDS
+> > ---
+> > v3: added Reviewed-by tag
+> > ---
+> >  lib/Kconfig.ubsan      | 14 ++++++++++++++
+> >  scripts/Makefile.ubsan | 10 +++++++++-
+> >  2 files changed, 23 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+> > index 774315de555a..58f8d03d037b 100644
+> > --- a/lib/Kconfig.ubsan
+> > +++ b/lib/Kconfig.ubsan
+> > @@ -47,6 +47,20 @@ config UBSAN_BOUNDS
+> >           to the {str,mem}*cpy() family of functions (that is addressed
+> >           by CONFIG_FORTIFY_SOURCE).
+> >
+> > +config UBSAN_LOCAL_BOUNDS
+> > +       bool "Perform array local bounds checking"
+> > +       depends on UBSAN_TRAP
+> > +       depends on CC_IS_CLANG
+> > +       depends on !UBSAN_KCOV_BROKEN
+> > +       help
+> > +         This option enables -fsanitize=local-bounds which traps when an
+> > +         exception/error is detected. Therefore, it should be enabled only
+> > +         if trapping is expected.
+> > +         Enabling this option detects errors due to accesses through a
+> > +         pointer that is derived from an object of a statically-known size,
+> > +         where an added offset (which may not be known statically) is
+> > +         out-of-bounds.
+> > +
+> >  config UBSAN_MISC
+> >         bool "Enable all other Undefined Behavior sanity checks"
+> >         default UBSAN
+> > diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
+> > index 27348029b2b8..4e3fff0745e8 100644
+> > --- a/scripts/Makefile.ubsan
+> > +++ b/scripts/Makefile.ubsan
+> > @@ -4,7 +4,15 @@ ifdef CONFIG_UBSAN_ALIGNMENT
+> >  endif
+> >
+> >  ifdef CONFIG_UBSAN_BOUNDS
+> > -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> > +      ifdef CONFIG_CC_IS_CLANG
+> > +            CFLAGS_UBSAN += -fsanitize=array-bounds
+> > +      else
+> > +            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
+> > +      endif
+> > +endif
+> > +
+> > +ifdef CONFIG_UBSAN_LOCAL_BOUNDS
+> > +      CFLAGS_UBSAN += -fsanitize=local-bounds
+> >  endif
+> >
+> >  ifdef CONFIG_UBSAN_MISC
+> > --
+> > 2.28.0.681.g6f77f65b4e-goog
+> >
