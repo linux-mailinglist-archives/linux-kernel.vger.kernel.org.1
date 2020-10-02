@@ -2,268 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D3F2812B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E9D28126B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387853AbgJBMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:30:28 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2947 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726090AbgJBMa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:30:28 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id B99506BA6F7C194C561B;
-        Fri,  2 Oct 2020 13:30:26 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.84.119) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 2 Oct 2020 13:30:26 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <linux-edac@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
-        <tony.luck@intel.com>, <rjw@rjwysocki.net>, <james.morse@arm.com>,
-        <lenb@kernel.org>
-CC:     <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 5/7] RAS/CEC: Add support for errors count check on short time period
-Date:   Fri, 2 Oct 2020 13:22:33 +0100
-Message-ID: <20201002122235.1280-6-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201002122235.1280-1-shiju.jose@huawei.com>
-References: <20201002122235.1280-1-shiju.jose@huawei.com>
+        id S2387988AbgJBMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:23:33 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:54924 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387802AbgJBMWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:22:54 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201002122251euoutp0133ee48a17926d4b32b9542c5d260fd90~6LFeKpd580520905209euoutp01x
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:22:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201002122251euoutp0133ee48a17926d4b32b9542c5d260fd90~6LFeKpd580520905209euoutp01x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1601641372;
+        bh=p2pv26AUz3sdJjPIGSfGwPfSHH+cfHEZoyM3/33Kj9w=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=G++yily7En9IbJOYcRMMJJY9PBrSQFDViy2hX0ZSN0ErV+lrha27LH7gjUzVeiLRJ
+         zyjGTJqHMDIdUueacLGe/qVD7f35bCWl9P7iSXuoWuBai64IeqPQXjWWxtHz/jod6Q
+         6qogzkLzWzLgvQfOpbph9OUEGPadkoO5bWxb9IIk=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201002122251eucas1p1c6de2006586529cb6ffe4aa4939d5933~6LFdwZ9N00997709977eucas1p16;
+        Fri,  2 Oct 2020 12:22:51 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id EF.32.06456.B9B177F5; Fri,  2
+        Oct 2020 13:22:51 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201002122251eucas1p1a8977c163d7a291829e7cac212d26862~6LFdeAUWY0997709977eucas1p15;
+        Fri,  2 Oct 2020 12:22:51 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201002122251eusmtrp13108e0b553244bbf3a2bc4cdda5520aa~6LFddRxLi1383613836eusmtrp10;
+        Fri,  2 Oct 2020 12:22:51 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-8f-5f771b9b1b8b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 3C.B0.06017.B9B177F5; Fri,  2
+        Oct 2020 13:22:51 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201002122251eusmtip237723a5be5e592bda03c0c6f388c71f4~6LFdTShGG1143811438eusmtip2P;
+        Fri,  2 Oct 2020 12:22:51 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?Bart=C5=82omiej=20=C5=BBo=C5=82nierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v3 0/9] Some fixes for spi-s3c64xx
+Date:   Fri,  2 Oct 2020 14:22:34 +0200
+Message-Id: <20201002122243.26849-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.84.119]
-X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
-X-CFilter-Loop: Reflected
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djP87qzpcvjDW7+lLNY/OM5k8XGGetZ
+        LaY+fMJm0f/4NbPF+fMb2C1uHlrBaLHp8TVWi8u75rBZzDi/j8mi8eNNdou1R+6yW6za9YfR
+        gcfj+pJPzB47Z91l99i0qpPNY/OSeo++LasYPT5vkgtgi+KySUnNySxLLdK3S+DK2P9hPVPB
+        XN6K2987WRoYn3J1MXJySAiYSGw/+pyli5GLQ0hgBaPEvmX7mSCcL4wSs3qOMEI4nxkl1m/c
+        yAzTcuzDOzaIxHJGiUvbWqCqnjNKHJi8FKyKTcBRon/pCVaQhIjAdiaJiZ/Pg21hFjjKKLH5
+        wVUWkCphASOJ1xsXA1VxcLAIqEqsuRgCEuYVsJaY+OYiI8Q6eYn25dvZIOKCEidnPgFr5RfQ
+        kljTdB3MZgaqad46mxlkvoTAKXaJB+87oW51kfh++TMrhC0s8er4FnYIW0bi9OQeFpC9EgL1
+        EpMnmUH09jBKbJvzgwWixlrizrlfbCA1zAKaEut36UOEHSVePG5ih2jlk7jxVhDiBD6JSdum
+        M0OEeSU62oQgqlUk1vXvgRooJdH7agXUVx4St99fZpnAqDgLyWOzkDwzC2HvAkbmVYziqaXF
+        uempxYZ5qeV6xYm5xaV56XrJ+bmbGIFp6vS/4592MH69lHSIUYCDUYmHN+NQabwQa2JZcWXu
+        IUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzFKc7AoifMaL3oZKySQnliSmp2aWpBaBJNl
+        4uCUamAM97dhnSzzJ9/uxTTmiqy0Rr8PdpZsi0un9h8K9lnwgXHacZ4ym9PHy86t3/ex8KnF
+        5iPJn/hD7O7+yCnI+7Jy72nBWwtWLT73eslbebFPd+9wp9cz/fEy2M2hIv1h5sKTB8qdPsuy
+        LEn7ZujJkDBJVm7Pjl0bqqvuTLKKuj5PfeXcIk0vq19zlViKMxINtZiLihMB9NpGW08DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsVy+t/xe7qzpcvjDSa0cFss/vGcyWLjjPWs
+        FlMfPmGz6H/8mtni/PkN7BY3D61gtNj0+BqrxeVdc9gsZpzfx2TR+PEmu8XaI3fZLVbt+sPo
+        wONxfcknZo+ds+6ye2xa1cnmsXlJvUffllWMHp83yQWwRenZFOWXlqQqZOQXl9gqRRtaGOkZ
+        WlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehl7P+wnqlgLm/F7e+dLA2MT7m6GDk5JARM
+        JI59eMfWxcjFISSwlFFixaYWxi5GDqCElMTKuekQNcISf651QdU8ZZT43tHNCpJgE3CU6F96
+        ghUkISKwn0ni0oX7LCAOs8BhRonL69YxgVQJCxhJvN64mBVkKouAqsSaiyEgYV4Ba4mJby4y
+        QmyQl2hfvp0NIi4ocXLmExaQcmYBdYn184RAwvwCWhJrmq6zgNjMQOXNW2czT2AUmIWkYxZC
+        xywkVQsYmVcxiqSWFuem5xYb6RUn5haX5qXrJefnbmIExti2Yz+37GDsehd8iFGAg1GJh1fg
+        QGm8EGtiWXFl7iFGCQ5mJRFep7On44R4UxIrq1KL8uOLSnNSiw8xmgJ9M5FZSjQ5Hxj/eSXx
+        hqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGO0japdWzm4/277X1e+H
+        y7G+b9vfXnscbdtrK++w8BZ3zdHnm3iPXhDY/dB/PsONr01bGgo75gRyis55xWIhfjpnZaBO
+        EX9EyRQ23+y/C7QbNl48uKbvOpfk78zTz469XOq0tn9x118XnhtJkTwMeybHr54S//lT4dzw
+        ZzP/f6jgKj/hzFJqKKHEUpyRaKjFXFScCADJrd6lxwIAAA==
+X-CMS-MailID: 20201002122251eucas1p1a8977c163d7a291829e7cac212d26862
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201002122251eucas1p1a8977c163d7a291829e7cac212d26862
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201002122251eucas1p1a8977c163d7a291829e7cac212d26862
+References: <CGME20201002122251eucas1p1a8977c163d7a291829e7cac212d26862@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some types of elements, for example CPU core, should be isolated
-when the corrected errors reported too often. This is used for the
-early fault prediction and would help to prevent serious faults
-by taking corrective actions.
-Modify CEC to support for the errors count check on short
-time period. Implementation details is added in the file.
+This is a series of fixes created during porting a device driver (these
+patches will be released soon too) for an SPI device to the current kernel.
 
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
----
- drivers/ras/cec.c | 125 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 109 insertions(+), 16 deletions(-)
+The two most important are
 
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index f869e7a270b8..ca52917d514c 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -119,6 +119,23 @@ static struct ce_array {
- 					 * shift for element id.
- 					 */
- 
-+	struct delayed_work work;	/*
-+					 * delayed work.
-+					 */
-+
-+	bool short_period;		/* Indicates threshold check for the error count
-+					 * over short time period.
-+					 */
-+
-+	u8 time_slot;			/*
-+					 * time slot's number within the decay interval.
-+					 */
-+
-+	union {
-+		struct mutex	mutex;
-+		spinlock_t	spin_lock;
-+	};
-+
- 	union {
- 		struct {
- 			__u32	disabled : 1,	/* cmdline disabled */
-@@ -128,7 +145,6 @@ static struct ce_array {
- 	};
- } ce_arr;
- 
--static DEFINE_MUTEX(ce_mutex);
- static u64 dfs_pfn;
- 
- /* Amount of errors after which we offline */
-@@ -138,9 +154,35 @@ static u64 action_threshold = COUNT_MASK;
- #define CEC_DECAY_DEFAULT_INTERVAL	24 * 60 * 60	/* 24 hrs */
- #define CEC_DECAY_MIN_INTERVAL		 1 * 60 * 60	/* 1h */
- #define CEC_DECAY_MAX_INTERVAL	   30 *	24 * 60 * 60	/* one month */
--static struct delayed_work cec_work;
- static u64 decay_interval = CEC_DECAY_DEFAULT_INTERVAL;
- 
-+/* Definitions for elements (for example CPU) for which
-+ * error count on shrot time period is checked with threshold.
-+ *
-+ * An element such as a CPU core may need to isolate when large number of
-+ * correctable errors are reported on that element too often. When the
-+ * CEs count is exceeded the threshold value in a short time period.
-+ *
-+ * The decay interval is divided into a number of time slots. The CE collector
-+ * calculates the average error count at the end of each decay interval. Then
-+ * the average count would be subtracted from the total count in each following
-+ * time slots. The work function for the decay interval would be set  for the
-+ * reduced time period = decay interval/ number of time slots. When the new
-+ * CE count for a cpu is added, the element would be offlined when the sum of
-+ * the most recent CEs counts exceeded the CE threshold value.
-+ */
-+
-+/*
-+ * u64: [ 63 ELEM ID 23 | ELEM_STATUS_BIT 22 | 21 AVG_COUNT_BITS 12 | 11 DECAY_BITS 10 | 9 COUNT_BITS 0]
-+ */
-+
-+/* Number of time slots in the decay interval */
-+#define RAS_CEC_NUM_TIME_SLOTS	10
-+
-+#define AVG_COUNT_SHIFT	(DECAY_BITS + COUNT_BITS)
-+#define ELEM_STATUS_BIT	BIT(22)	/* Indicates an element offlined by CEC */
-+#define ELEM_ID_SHIFT	(1 + AVG_COUNT_SHIFT + COUNT_BITS)
-+
- /*
-  * Decrement decay value. We're using DECAY_BITS bits to denote decay of an
-  * element in the array. On insertion and any access, it gets reset to max.
-@@ -177,11 +219,62 @@ static void cec_mod_work(struct delayed_work *dwork, unsigned long interval)
- 
- static void cec_work_fn(struct work_struct *work)
- {
--	mutex_lock(&ce_mutex);
--	do_spring_cleaning(&ce_arr);
--	mutex_unlock(&ce_mutex);
-+	struct ce_array *ca;
-+	unsigned long flags;
-+	u64 avg_count;
-+	int i, time_slots = 1;
-+	struct delayed_work *d_work = container_of(work, struct delayed_work, work);
-+
-+	if (!d_work)
-+		return;
-+
-+	ca = container_of(d_work, struct ce_array, work);
-+	if (!ca->array || ca->disabled)
-+		return;
- 
--	cec_mod_work(&cec_work, decay_interval);
-+	if (!ca->short_period) {
-+		mutex_lock(&ca->mutex);
-+		do_spring_cleaning(ca);
-+		mutex_unlock(&ca->mutex);
-+	} else {
-+		time_slots = RAS_CEC_NUM_TIME_SLOTS;
-+		spin_lock_irqsave(&ca->spin_lock, flags);
-+		ca->time_slot = (ca->time_slot + 1) % RAS_CEC_NUM_TIME_SLOTS;
-+
-+		for (i = 0; i < ca->n; i++) {
-+			if (ca->array[i] & ELEM_STATUS_BIT)
-+				continue;
-+
-+			/* clear old errors count approximately by subtracting the avg count
-+			 * from the total errors count.
-+			 */
-+			avg_count = (ca->array[i] >> AVG_COUNT_SHIFT) & COUNT_MASK;
-+			ca->array[i] -= avg_count;
-+		}
-+
-+		if (ca->time_slot) {
-+			spin_unlock_irqrestore(&ca->spin_lock, flags);
-+			goto exit;
-+		}
-+
-+		for (i = 0; i < ca->n; i++) {
-+			if (ca->array[i] & ELEM_STATUS_BIT)
-+				continue;
-+
-+			/* calculate average error count for the completed time period */
-+			avg_count = COUNT(ca->array[i]) / RAS_CEC_NUM_TIME_SLOTS;
-+			ca->array[i] -= (COUNT(ca->array[i]) % RAS_CEC_NUM_TIME_SLOTS);
-+			/* store average error count */
-+			ca->array[i] &= ~(COUNT_MASK << AVG_COUNT_SHIFT);
-+			ca->array[i] |= (avg_count << AVG_COUNT_SHIFT);
-+		}
-+
-+		do_spring_cleaning(ca);
-+		spin_unlock_irqrestore(&ca->spin_lock, flags);
-+	}
-+
-+exit:
-+	cec_mod_work(&ca->work, decay_interval/time_slots);
- }
- 
- /*
-@@ -279,9 +372,9 @@ static u64 __maybe_unused del_lru_elem(void)
- 	if (!ca->n)
- 		return 0;
- 
--	mutex_lock(&ce_mutex);
-+	mutex_lock(&ca->mutex);
- 	pfn = del_lru_elem_unlocked(ca);
--	mutex_unlock(&ce_mutex);
-+	mutex_unlock(&ca->mutex);
- 
- 	return pfn;
- }
-@@ -328,7 +421,7 @@ static int cec_add_elem(u64 pfn)
- 	if (!ce_arr.array || ce_arr.disabled)
- 		return -ENODEV;
- 
--	mutex_lock(&ce_mutex);
-+	mutex_lock(&ca->mutex);
- 
- 	ca->ces_entered++;
- 
-@@ -386,7 +479,7 @@ static int cec_add_elem(u64 pfn)
- 	WARN_ON_ONCE(sanity_check(ca));
- 
- unlock:
--	mutex_unlock(&ce_mutex);
-+	mutex_unlock(&ca->mutex);
- 
- 	return ret;
- }
-@@ -420,7 +513,7 @@ static int decay_interval_set(void *data, u64 val)
- 	*(u64 *)data   = val;
- 	decay_interval = val;
- 
--	cec_mod_work(&cec_work, decay_interval);
-+	cec_mod_work(&ce_arr.work, decay_interval);
- 
- 	return 0;
- }
-@@ -446,7 +539,7 @@ static int array_dump(struct seq_file *m, void *v)
- 	struct ce_array *ca = &ce_arr;
- 	int i;
- 
--	mutex_lock(&ce_mutex);
-+	mutex_lock(&ca->mutex);
- 
- 	seq_printf(m, "{ n: %d\n", ca->n);
- 	for (i = 0; i < ca->n; i++) {
-@@ -468,7 +561,7 @@ static int array_dump(struct seq_file *m, void *v)
- 
- 	seq_printf(m, "Action threshold: %lld\n", action_threshold);
- 
--	mutex_unlock(&ce_mutex);
-+	mutex_unlock(&ca->mutex);
- 
- 	return 0;
- }
-@@ -583,9 +676,9 @@ static void __init cec_init(void)
- 
- #if defined(CONFIG_X86_MCE)
- 	ce_arr.id_shift = PAGE_SHIFT;
--	INIT_DELAYED_WORK(&cec_work, cec_work_fn);
--	schedule_delayed_work(&cec_work, CEC_DECAY_DEFAULT_INTERVAL);
--
-+	mutex_init(&ce_arr.mutex);
-+	INIT_DELAYED_WORK(&ce_arr.work, cec_work_fn);
-+	schedule_delayed_work(&ce_arr.work, CEC_DECAY_DEFAULT_INTERVAL);
- 	mce_register_decode_chain(&cec_nb);
- #endif
- 
+  spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and s3c64xx_enable_datapath()
+  spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for Exynos3250
+
+Without them DMA transfers larger than 512 bytes from the SPI controller
+would fail.
+
+Łukasz Stelmach (9):
+  spi: spi-s3c64xx: swap s3c64xx_spi_set_cs() and
+    s3c64xx_enable_datapath()
+  spi: spi-s3s64xx: Add S3C64XX_SPI_QUIRK_CS_AUTO for Exynos3250
+  spi: spi-s3c64xx: Check return values
+  spi: spi-s3c64xx: Report more information when errors occur
+  spi: spi-s3c64xx: Rename S3C64XX_SPI_SLAVE_* to S3C64XX_SPI_CS_*
+  spi: spi-s3c64xx: Fix doc comment for struct s3c64xx_spi_driver_data
+  spi: spi-s3c64xx: Ensure cur_speed holds actual clock value
+  spi: spi-s3c64xx: Increase transfer timeout
+  spi: spi-s3c64xx: Turn on interrupts upon resume
+
+ drivers/spi/spi-s3c64xx.c | 111 +++++++++++++++++++++++++++-----------
+ 1 file changed, 79 insertions(+), 32 deletions(-)
+
+Changes in v3:
+  - added Reviewed-by and Suggested-by tags to commit messages
+  - added information about non-CMU case in the commit message
+    of (Ensure cur_speed holds actual clock value)
+
+Changes in v2:
+  - added missing commit descriptions
+  - added spi: spi-s3c64xx: Ensure cur_speed holds actual clock value
+  - implemented error propagation in
+      spi: spi-s3c64xx: Check return values
+  - rebased onto v5.9-rc1 which contains
+      spi: spi-s3c64xx: Add missing entries for structs 's3c64xx_spi_dma_data' and 's3c64xx_spi_dma_data'
 -- 
-2.17.1
-
+2.26.2
 
