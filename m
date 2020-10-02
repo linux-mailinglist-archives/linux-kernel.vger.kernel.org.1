@@ -2,72 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2EF280F69
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AAC280F6C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbgJBJC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBJC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:02:57 -0400
-Received: from coco.lan (ip5f5ad59f.dynamic.kabel-deutschland.de [95.90.213.159])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D703205F4;
-        Fri,  2 Oct 2020 09:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601629376;
-        bh=q3ZsyOwYHRvtoOzzzbVMlQ7DB4n703Yb+gNdOEACMic=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qq4zBYg0uK3s8DoZcHdoH9NLeMYyAS1MUm+kxQTtOtTXhN7QRjkqdnmko/XCdtvZB
-         ALjLw0Z1kxqu6YX+PMMrVk4pLU0hqFt1WO2S/aUUFWX2M6pJDqcoeRUqcFn/9JAuRL
-         VXObPs4Hr0IQ79uNsUBDDn8XewA39Cvq0B2ye3uc=
-Date:   Fri, 2 Oct 2020 11:02:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Balbir Singh <sblbir@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] docs: i2c: index.rst: add
- slave-testunit-backend.rst
-Message-ID: <20201002110251.26265b0d@coco.lan>
-In-Reply-To: <20201002075404.GA2495@ninjato>
-References: <cover.1601616399.git.mchehab+huawei@kernel.org>
-        <2ac6bd9d96cc4ff248d1c2e26a99f51a785eb271.1601616399.git.mchehab+huawei@kernel.org>
-        <20201002075404.GA2495@ninjato>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726443AbgJBJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBJD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:03:58 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC307C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:03:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q9so850581wmj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GMl7/j88Iz46F6Y+1lgqEhwx+ihDL4dLgjSpHmIIUds=;
+        b=jzmQ0yzEa0SE3WP4cm6xCn0WqgA8A1gFiJvg8siOK/8IWedstvxznXYW3EVrrk7lV+
+         tzAmBI7SUmo/Q990g6cvSwfpV6+iN/4SukyDDZj1i0AVj2Q06LgDdbQT3ePzYWeR8NrU
+         bux5rT8OH2tP7kNkforH0GzYte4gL5xI4gfMhz34NAtcidGTjA0AeXUZKiM50VRYHjdZ
+         rX2TlOTcW+ZyX50+xFu5lvgjawrCbEFlKQeaUO6ULozadmhBKj2uEhJz8u0AGr/GvPPt
+         /aWc+je5PIT5hh5ceTMmyGWef+nlBUztHFylE03CJ2qaj1sshRvFwuOVB8xkWfrRHXgu
+         ZrlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GMl7/j88Iz46F6Y+1lgqEhwx+ihDL4dLgjSpHmIIUds=;
+        b=AX6UZ2nK6Cf/52yvW28PQ6haUZ7iVCwybxO4gEkMyqj7uKerg1/fiiQYcajGY5k0+B
+         Ta2XkWW0JlAmYoEuUlgKRTJPqGmJv2PcxsW5igIn9v0jhQ8o2bxYQME/jTz+7l3miesu
+         LUNAHOx7Y/FznunAdfRzC9LrMd8iMqlETQrLx4NK6Ab0lpSyiFBcruVYbeiy/PsTjhyI
+         tnfXIhkvncNYzMg0OfYPmUJyuBRIfLuDYZeeLTW2uGBImQrHFEJ3KyBHgAQeUcGb28bs
+         GadSadm4opY8Zuuxk4ByzfU8qpIjrnkkr9uVan1Gj0a7nE2pg5XeRrghfe05UE18DByp
+         d8ng==
+X-Gm-Message-State: AOAM53397dbZwwycX7RCWBi5uCyALBMrM/HlhfD/2yTkSTOSz1FAJimG
+        Pzd4PiuZauqm1gKV50kbxCOK5g==
+X-Google-Smtp-Source: ABdhPJw70LY1kPIFBdESXYlJH3qP4DzeHZ24QPyztH1Z1PJV2Quya6u6e4iMNs8CAmj2Hb0gu07YNw==
+X-Received: by 2002:a1c:b7d7:: with SMTP id h206mr1773289wmf.159.1601629436439;
+        Fri, 02 Oct 2020 02:03:56 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id f12sm955863wmf.26.2020.10.02.02.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 02:03:55 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 10:03:53 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v2 00/29] [Set 1,2,3] Rid W=1 warnings in Wireless
+Message-ID: <20201002090353.GS6148@dell>
+References: <20200910065431.657636-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910065431.657636-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 2 Oct 2020 09:54:04 +0200
-Wolfram Sang <wsa@kernel.org> escreveu:
+On Thu, 10 Sep 2020, Lee Jones wrote:
 
-> Hi Mauro,
+> This is a rebased/re-worked set of patches which have been
+> previously posted to the mailing list(s).
 > 
-> > index 8a2ad3845191..9b8df313902c 100644
-> > --- a/Documentation/i2c/index.rst
-> > +++ b/Documentation/i2c/index.rst
-> > @@ -38,6 +38,7 @@ Debugging
-> >  
-> >     gpio-fault-injection
-> >     i2c-stub
-> > +   slave-testunit-backend  
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> Yeah, it is missing, but this is the wrong paragraph to add it. For
-> consistency, I'd like to create a seperate patch to fix it and merge it
-> via I2C. Do you mind dropping this hunk?
+> There are quite a few W=1 warnings in the Wireless.  My plan
+> is to work through all of them over the next few weeks.
+> Hopefully it won't be too long before drivers/net/wireless
+> builds clean with W=1 enabled.
+> 
+> Lee Jones (29):
+>   iwlwifi: dvm: Demote non-compliant kernel-doc headers
+>   iwlwifi: rs: Demote non-compliant kernel-doc headers
+>   iwlwifi: dvm: tx: Demote non-compliant kernel-doc headers
+>   iwlwifi: dvm: lib: Demote non-compliant kernel-doc headers
+>   iwlwifi: calib: Demote seemingly unintentional kerneldoc header
+>   wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
+>   iwlwifi: dvm: sta: Demote a bunch of nonconformant kernel-doc headers
+>   iwlwifi: mvm: ops: Remove unused static struct 'iwl_mvm_debug_names'
+>   iwlwifi: dvm: Demote a couple of nonconformant kernel-doc headers
+>   iwlwifi: mvm: utils: Fix some doc-rot
+>   iwlwifi: dvm: scan: Demote a few nonconformant kernel-doc headers
+>   iwlwifi: dvm: rxon: Demote non-conformant kernel-doc headers
+>   iwlwifi: mvm: tx: Demote misuse of kernel-doc headers
+>   iwlwifi: dvm: devices: Fix function documentation formatting issues
+>   iwlwifi: iwl-drv: Provide descriptions debugfs dentries
+>   wil6210: wmi: Fix formatting and demote non-conforming function
+>     headers
+>   wil6210: interrupt: Demote comment header which is clearly not
+>     kernel-doc
+>   wil6210: txrx: Demote obvious abuse of kernel-doc
+>   wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
+>   wil6210: pmc: Demote a few nonconformant kernel-doc function headers
+>   wil6210: wil_platform: Demote kernel-doc header to standard comment
+>     block
+>   wil6210: wmi: Correct misnamed function parameter 'ptr_'
+>   ath6kl: wmi: Remove unused variable 'rate'
+>   ath9k: ar9002_initvals: Remove unused array
+>     'ar9280PciePhy_clkreq_off_L1_9280'
+>   ath9k: ar9001_initvals: Remove unused array 'ar5416Bank6_9100'
+>   ath9k: ar5008_initvals: Remove unused table entirely
+>   ath9k: ar5008_initvals: Move ar5416Bank{0,1,2,3,7} to where they are
+>     used
+>   brcmsmac: phytbl_lcn: Remove unused array 'dot11lcn_gain_tbl_rev1'
+>   brcmsmac: phy_lcn: Remove unused variable
+>     'lcnphy_rx_iqcomp_table_rev0'
 
-Yeah, sure!
+What's happening with all of these iwlwifi patches?
 
-> I'd credit you with
-> Reported-by, of course.
+Looks like they are still not applied.
 
-Thanks,
-Mauro
+BTW, there should be another week of development left, as indicated by
+Linus during -rc6.  Looks like there will be an -rc8 after all.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
