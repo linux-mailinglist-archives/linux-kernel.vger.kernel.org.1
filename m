@@ -2,160 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8922280FF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94CF281002
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387629AbgJBJfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbgJBJfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:35:13 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAB7C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:35:13 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g4so1035839wrs.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BpK88C7pHVfm7Xd/YUZRAsUp3EAae6LbRjsv8dXA5cw=;
-        b=gQQEDT2273zbnMI2K24GO8wWvlqW3PZ1C69DxD3QXe13a8vepyBWPq91HKvGAUtIGb
-         TfIFxI8tFBj49Vq+1JGBekM/EcVXfEe59Xz7jBfiqoy5W908ZY36o7Lo3BEIdoGFl+9G
-         Ka+rpz38Ga5EZEKxwD2urFUg/D1mRPbHLczHM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=BpK88C7pHVfm7Xd/YUZRAsUp3EAae6LbRjsv8dXA5cw=;
-        b=fdeYbkaaELL0DBR13HSfZHyaNQ1fT1PBmAWRCnhk9Zaib5rZnsqA4565jOZKnYkgOz
-         GuyOV6cU7gZ2OnH50y9hma4nIdHbfMQSSLucFCd9hL+ZBIQ/ZwIvardRRWrW/4177khm
-         X5KQSv/iiPhrqV3JEkZmoxwM4oi5r9OMNBUVLL6AuNH3+MGkFxmsxnlEEaUnYICDa7R0
-         0qE1ceRpohagAMdKatbW8DLC+w/9SiSaMxmwuU8uuWhTDwWiwtJ1ES0VAUAJ+zvt4T/e
-         gK4rGWyptwXKlBXQYzU/9E8qq+1d6o3TPrrELiXn2fZ7VLF2rUIK/cL5DSJvePASOonV
-         Bzgg==
-X-Gm-Message-State: AOAM531D38s88oC944AK59qOFlTALl20HeGQvs+mUJZQkoMO+uOokhCm
-        wUM7+rDxQ1M1eJv7Mg7gm0IQYA==
-X-Google-Smtp-Source: ABdhPJykrhwgDQ+Cfh4cqZgcNZxoClfD6BLD+KFpVIbHeTXbxtjIEdx893xAoQyqCspb1vNoEtkdFA==
-X-Received: by 2002:adf:8285:: with SMTP id 5mr1892288wrc.97.1601631312192;
-        Fri, 02 Oct 2020 02:35:12 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u66sm1121105wme.12.2020.10.02.02.35.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 02:35:10 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 11:35:08 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        gpain@baylibre.com, stephane.leprovost@mediatek.com,
-        jstephan@baylibre.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        mturquette@baylibre.com, bjorn.andersson@linaro.org,
-        christian.koenig@amd.com, linux-media@vger.kernel.org
-Subject: Re: [RFC PATCH 0/4] Add a RPMsg driver to support AI Processing Unit
- (APU)
-Message-ID: <20201002093508.GF438822@phenom.ffwll.local>
-Mail-Followup-To: Alexandre Bailon <abailon@baylibre.com>,
-        linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        gpain@baylibre.com, stephane.leprovost@mediatek.com,
-        jstephan@baylibre.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        mturquette@baylibre.com, bjorn.andersson@linaro.org,
-        christian.koenig@amd.com, linux-media@vger.kernel.org
-References: <20200930115350.5272-1-abailon@baylibre.com>
- <20201001084856.GC438822@phenom.ffwll.local>
- <8e4bb739-c3b3-d790-e8e3-dd5df2d6f869@baylibre.com>
+        id S1726398AbgJBJmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:42:18 -0400
+Received: from mga14.intel.com ([192.55.52.115]:18231 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJBJmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:42:18 -0400
+IronPort-SDR: hNVOUPnY1O+GkGv6Sl6JWp87VNmPVZ+bWL7KMvx9z1nRYQ2L1cq7gCKCxJtGqXY8JAZiN/vr0O
+ AroItOuraM+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="162191410"
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="162191410"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 02:42:13 -0700
+IronPort-SDR: 8CzjP854QtaMnAx0h+nUTj2wd4tJGMjseChHy62wH8EC6l0/oWYIidJl7ur9FAgvGZyah9rOp5
+ 0F/seoqvbymA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="515852512"
+Received: from lkp-server02.sh.intel.com (HELO de448af6ea1b) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Oct 2020 02:42:12 -0700
+Received: from kbuild by de448af6ea1b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kOHZr-0000vu-Ih; Fri, 02 Oct 2020 09:42:11 +0000
+Date:   Fri, 02 Oct 2020 17:41:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/block/scsi_ioctl] BUILD SUCCESS
+ dda6248343d5c5502dfb754555c8d1892a469e5c
+Message-ID: <5f76f5d0.qJ4t/HWuRzSW7bTa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e4bb739-c3b3-d790-e8e3-dd5df2d6f869@baylibre.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 07:28:27PM +0200, Alexandre Bailon wrote:
-> Hi Daniel,
-> 
-> On 10/1/20 10:48 AM, Daniel Vetter wrote:
-> > On Wed, Sep 30, 2020 at 01:53:46PM +0200, Alexandre Bailon wrote:
-> > > This adds a RPMsg driver that implements communication between the CPU and an
-> > > APU.
-> > > This uses VirtIO buffer to exchange messages but for sharing data, this uses
-> > > a dmabuf, mapped to be shared between CPU (userspace) and APU.
-> > > The driver is relatively generic, and should work with any SoC implementing
-> > > hardware accelerator for AI if they use support remoteproc and VirtIO.
-> > > 
-> > > For the people interested by the firmware or userspace library,
-> > > the sources are available here:
-> > > https://github.com/BayLibre/open-amp/tree/v2020.01-mtk/apps/examples/apu
-> > Since this has open userspace (from a very cursory look), and smells very
-> > much like an acceleration driver, and seems to use dma-buf for memory
-> > management: Why is this not just a drm driver?
-> 
-> I have never though to DRM since for me it was only a RPMsg driver.
-> I don't know well DRM. Could you tell me how you would do it so I could have
-> a look ?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/block/scsi_ioctl
+branch HEAD: dda6248343d5c5502dfb754555c8d1892a469e5c  block: scsi_ioctl: Avoid the use of one-element arrays
 
-Well internally it would still be an rpmsg driver ... I'm assuming that's
-kinda similar to how most gpu drivers sit on top of a pci_device or a
-platform_device, it's just a means to get at your "device"?
+elapsed time: 725m
 
-The part I'm talking about here is the userspace api. You're creating an
-entirely new chardev interface, which at least from a quick look seems to
-be based on dma-buf buffers and used to submit commands to your device to
-do some kind of computing/processing. That's exactly what drivers/gpu/drm
-does (if you ignore the display/modeset side of things) - at the kernel
-level gpus have nothing to do with graphics, but all with handling buffer
-objects and throwing workloads at some kind of accelerator thing.
+configs tested: 124
+configs skipped: 3
 
-Of course that's just my guess of what's going on, after scrolling through
-your driver and userspace a bit, I might be completely off. But if my
-guess is roughly right, then your driver is internally an rpmsg
-driver, but towards userspace it should be a drm driver.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Cheers, Daniel
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          gemini_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          malta_defconfig
+arm                              alldefconfig
+riscv                             allnoconfig
+m68k                          hp300_defconfig
+arc                      axs103_smp_defconfig
+csky                             alldefconfig
+sh                            shmin_defconfig
+powerpc                        cell_defconfig
+mips                malta_kvm_guest_defconfig
+um                           x86_64_defconfig
+sh                           se7724_defconfig
+xtensa                    smp_lx200_defconfig
+arm                     am200epdkit_defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                     cu1830-neo_defconfig
+arm                            mmp2_defconfig
+powerpc                    gamecube_defconfig
+mips                          ath79_defconfig
+arm                          simpad_defconfig
+arm                           h3600_defconfig
+sparc64                          alldefconfig
+arm                        cerfcube_defconfig
+powerpc                      ppc40x_defconfig
+s390                       zfcpdump_defconfig
+powerpc                       ppc64_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     taishan_defconfig
+arm                           spitz_defconfig
+h8300                               defconfig
+arc                          axs101_defconfig
+riscv                    nommu_k210_defconfig
+sh                ecovec24-romimage_defconfig
+alpha                               defconfig
+mips                          ath25_defconfig
+arm                           efm32_defconfig
+arm                   milbeaut_m10v_defconfig
+h8300                            alldefconfig
+arm                           viper_defconfig
+h8300                     edosk2674_defconfig
+sh                                  defconfig
+arm                           omap1_defconfig
+mips                   sb1250_swarm_defconfig
+arm                         axm55xx_defconfig
+m68k                        m5307c3_defconfig
+powerpc                 mpc832x_mds_defconfig
+xtensa                  audio_kc705_defconfig
+microblaze                      mmu_defconfig
+powerpc                          allmodconfig
+nios2                               defconfig
+riscv                            alldefconfig
+arm                         palmz72_defconfig
+powerpc                     ksi8560_defconfig
+sh                        sh7785lcr_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200930
+i386                 randconfig-a002-20200930
+i386                 randconfig-a006-20200930
+i386                 randconfig-a005-20200930
+i386                 randconfig-a004-20200930
+i386                 randconfig-a001-20200930
+x86_64               randconfig-a015-20200930
+x86_64               randconfig-a013-20200930
+x86_64               randconfig-a012-20200930
+x86_64               randconfig-a016-20200930
+x86_64               randconfig-a014-20200930
+x86_64               randconfig-a011-20200930
+i386                 randconfig-a011-20200930
+i386                 randconfig-a015-20200930
+i386                 randconfig-a012-20200930
+i386                 randconfig-a014-20200930
+i386                 randconfig-a016-20200930
+i386                 randconfig-a013-20200930
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> 
-> Thanks,
-> Alexandre
-> 
-> > -Daniel
-> > 
-> > > Alexandre Bailon (3):
-> > >    Add a RPMSG driver for the APU in the mt8183
-> > >    rpmsg: apu_rpmsg: update the way to store IOMMU mapping
-> > >    rpmsg: apu_rpmsg: Add an IOCTL to request IOMMU mapping
-> > > 
-> > > Julien STEPHAN (1):
-> > >    rpmsg: apu_rpmsg: Add support for async apu request
-> > > 
-> > >   drivers/rpmsg/Kconfig          |   9 +
-> > >   drivers/rpmsg/Makefile         |   1 +
-> > >   drivers/rpmsg/apu_rpmsg.c      | 752 +++++++++++++++++++++++++++++++++
-> > >   drivers/rpmsg/apu_rpmsg.h      |  52 +++
-> > >   include/uapi/linux/apu_rpmsg.h |  47 +++
-> > >   5 files changed, 861 insertions(+)
-> > >   create mode 100644 drivers/rpmsg/apu_rpmsg.c
-> > >   create mode 100644 drivers/rpmsg/apu_rpmsg.h
-> > >   create mode 100644 include/uapi/linux/apu_rpmsg.h
-> > > 
-> > > -- 
-> > > 2.26.2
-> > > 
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+clang tested configs:
+x86_64               randconfig-a001-20200930
+x86_64               randconfig-a005-20200930
+x86_64               randconfig-a003-20200930
+x86_64               randconfig-a004-20200930
+x86_64               randconfig-a002-20200930
+x86_64               randconfig-a006-20200930
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
