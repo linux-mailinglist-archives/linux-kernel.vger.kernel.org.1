@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D09128148F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788C1281491
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387922AbgJBOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBOAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:00:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DF0C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CUDGsfaX06RV82lRVdfunkb9Yk0TwCX6+kZd1kTshAQ=; b=SbK0nYmPxa1e4eYN/337RPAU/6
-        Zi933T8DX436+uLM5QIy3XFcYxzc6NRdPhln+IwhSJ4FW2sa2SB0HYpJoGcsVgH4Mv2sAukCge/+W
-        b+jwTuKpJiGxQKdVcSX57y2xBCWcetkbMy7nDy9mYN60KMC2fKlk6svRGKCSUfMs7CDJVXvq/exZH
-        ddLlgLu92q/O2REzhz5Pwb2DHQnnPM3DxibKoHH1dTZbyRLxE0m7jqtP6P9GNVSeBDi2iIXz3LbPL
-        pwUoKdFDML2Kfto6bcTDe/XEz62FkTxLHFao/r5MpBavVmfvELx/qJbR1PxIl8Sszp4kGvr81Xd1A
-        +M5fghZQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOLc2-0001FE-L6; Fri, 02 Oct 2020 14:00:42 +0000
-Date:   Fri, 2 Oct 2020 15:00:42 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Sebastiaan Meijer <meijersebastiaan@gmail.com>,
-        akpm@linux-foundation.org, buddy.lumpkin@oracle.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de
-Subject: Re: [RFC PATCH 1/1] vmscan: Support multiple kswapd threads per node
-Message-ID: <20201002140042.GB20115@casper.infradead.org>
-References: <CANuy=C+JH7sZbMToWNNyWcKANbwSx5KLaiRBLHXBz6EU=JCABA@mail.gmail.com>
- <20201001123032.GC22560@dhcp22.suse.cz>
- <CANuy=CK-s=tEb57Kw+N8O2OGx1MXyUB=o-RDH-S=kYerb65dOw@mail.gmail.com>
- <20201002070333.GA21871@dhcp22.suse.cz>
- <656725362af9bd757a281f0799a0bb9c9b2487bd.camel@surriel.com>
+        id S2387982AbgJBOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBOBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:01:00 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07282206CD;
+        Fri,  2 Oct 2020 14:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601647259;
+        bh=rZ44DDCqLqF+ItGzh+HCjnIlsvgMjNd13iwS73Wc8BM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OkD2Jcn4IL1JDZ4MTf3xPpV2eyD3WRBTryj+6MivDF+unoG88ATQiijwc4dt8lfqr
+         9tGx7d+ZoUOaNMM54DmPzaqks8x8JMif1mtxDq3iltdUUOJOIL0JTxDkTyKSaa1omP
+         PsljVgMRVugIoOTJTBhRk+VrT01R0yVutM1pbcaU=
+Date:   Fri, 2 Oct 2020 16:00:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, glider@google.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Subject: Re: KMSAN: kernel-infoleak in scsi_cmd_ioctl
+Message-ID: <20201002140058.GA3475053@kroah.com>
+References: <000000000000a24fa705ae29dc6c@google.com>
+ <20201002134944.GA8205@PWN>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <656725362af9bd757a281f0799a0bb9c9b2487bd.camel@surriel.com>
+In-Reply-To: <20201002134944.GA8205@PWN>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 09:53:05AM -0400, Rik van Riel wrote:
-> On Fri, 2020-10-02 at 09:03 +0200, Michal Hocko wrote:
-> > On Thu 01-10-20 18:18:10, Sebastiaan Meijer wrote:
-> > > (Apologies for messing up the mailing list thread, Gmail had fooled
-> > > me into
-> > > believing that it properly picked up the thread)
-> > > 
-> > > On Thu, 1 Oct 2020 at 14:30, Michal Hocko <mhocko@suse.com> wrote:
-> > > > On Wed 30-09-20 21:27:12, Sebastiaan Meijer wrote:
-> > > > > > yes it shows the bottleneck but it is quite artificial. Read
-> > > > > > data is
-> > > > > > usually processed and/or written back and that changes the
-> > > > > > picture a
-> > > > > > lot.
-> > > > > Apologies for reviving an ancient thread (and apologies in
-> > > > > advance for my lack
-> > > > > of knowledge on how mailing lists work), but I'd like to offer
-> > > > > up another
-> > > > > reason why merging this might be a good idea.
-> > > > > 
-> > > > > From what I understand, zswap runs its compression on the same
-> > > > > kswapd thread,
-> > > > > limiting it to a single thread for compression. Given enough
-> > > > > processing power,
-> > > > > zswap can get great throughput using heavier compression
-> > > > > algorithms like zstd,
-> > > > > but this is currently greatly limited by the lack of threading.
-> > > > 
-> > > > Isn't this a problem of the zswap implementation rather than
-> > > > general
-> > > > kswapd reclaim? Why zswap doesn't do the same as normal swap out
-> > > > in a
-> > > > context outside of the reclaim?
+On Fri, Oct 02, 2020 at 09:49:44AM -0400, Peilin Ye wrote:
+> On Mon, Aug 31, 2020 at 03:28:22AM -0700, syzbot wrote:
+> > BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+> > CPU: 1 PID: 12272 Comm: syz-executor.3 Not tainted 5.8.0-rc5-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x21c/0x280 lib/dump_stack.c:118
+> >  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+> >  kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
+> >  kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+> >  instrument_copy_to_user include/linux/instrumented.h:91 [inline]
+> >  _copy_to_user+0x18e/0x260 lib/usercopy.c:33
+> >  scsi_put_cdrom_generic_arg include/linux/uaccess.h:170 [inline]
 > 
-> On systems with lots of very fast IO devices, we have
-> also seen kswapd take 100% CPU time without any zswap
-> in use.
+> + Cc: Greg Kroah-Hartman
+> + Cc: Anant Thazhemadam
 > 
-> This seems like a generic issue, though zswap does
-> manage to bring it out on lower end systems.
+> Hi all,
+> 
+> In looking at the report, I guess this patch should fix the issue, there's
+> a 3-byte hole in `struct compat_cdrom_generic_command`:
+> 
+> [PATCH v3] block/scsi-ioctl: Prevent kernel-infoleak in scsi_put_cdrom_generic_arg()
+> https://lore.kernel.org/lkml/20200909095057.1214104-1-yepeilin.cs@gmail.com/
+> 
+> But I cannot verify it, since syzbot doesn't have a reproducer for it.
+> The patch adds a 3-byte padding field to `struct
+> compat_cdrom_generic_command`. It hasn't been accepted yet.
 
-Then, given Mel's observation about contention on the LRU lock, what's
-the solution?  Partition the LRU list?  Batch removals from the LRU list
-by kswapd and hand off to per-?node?cpu? worker threads?
+Please resend it, it looks like it hasn't been taken yet :(
 
-Rik, if you have access to one of those systems, I'd be interested to know
-whether using file THPs would help with your workload.  Tracking only
-one THP instead of, say, 16 regular size pages is going to reduce the
-amount of time taken to pull things off the LRU list.
+thanks,
+
+greg k-h
