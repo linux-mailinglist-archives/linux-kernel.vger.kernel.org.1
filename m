@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515EF281DAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE188281DB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725710AbgJBVc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJBVc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:32:28 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1B43206DB;
-        Fri,  2 Oct 2020 21:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601674347;
-        bh=BXnB7D0dGvSDenDoY22oXd0SzTll4rH2ewFNsGCrSQA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LR7U+bEt/2/CNKafgRz9yu9mA1CtUmFoFJ3bsUQ4A+2jE3r+O/Mim0orfIExLNY0u
-         wq+A4QhtpDPSXKtSVPIjuNbaoB3Zkq7YCYuT37VAZVOdg7S76w8uOrrqNDzxj//szF
-         UFpZxz8cXufw1DsTb8hN5+RY0UAv7vVBxlQbPgME=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: f2fs_get_meta_page_nofail should not be failed
-Date:   Fri,  2 Oct 2020 14:32:26 -0700
-Message-Id: <20201002213226.2862930-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
+        id S1725775AbgJBVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJBVei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:34:38 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD36C0613D0;
+        Fri,  2 Oct 2020 14:34:38 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id v60so2146706ybi.10;
+        Fri, 02 Oct 2020 14:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K7r5m3tkpGosvDOLsPsFAxv4/KP2aIslKzF4+30ISEA=;
+        b=QTRbgb1CVaW6Bc+gFPjgxzLqSk9S0LCsg428otJCFxH3GsT0KBk1w48xu6cs8KsNga
+         qkfAoGckwCHqQgw7ZLbzJX/y1m4IWvX9Xi6PLV2F392sm0Y8nqyavAQ58IMX01GLW5LL
+         OHE5G3tLm/9G6WYJrqqgEIJESK4tZr23bx/wSsP7b1x4tiPTNmOMgnKgC4fg4c3+YF8M
+         5M2h84Yl+SuFwNyWdOHdq1ZlyAn2LmsaSoqAqMO1tMcjFTgSZQV49+dV2PYZn/rQkMjL
+         LyX6Jp45XHiDSlPlGzal/ROxekY5+PDUqOlxEt/jJ3ipWPf+gPQDWX9B18R8G8L7fS4Y
+         Sekg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K7r5m3tkpGosvDOLsPsFAxv4/KP2aIslKzF4+30ISEA=;
+        b=XsL1MLjO51ri8tcv/iQM8NUffu88r8oavqGAdCN4qC8MwHm1VpeFF5EVX5a5PoMEy7
+         cxbv1lGEahK535rAKe2ztoAJEfTFf4CuqTncZ/DKhxQPkQbmSSYpt2JpYqvJBaevYV2M
+         y9mKvzVifbDGu3z73TzZtVUhaWE1fMYBn4U/mplHIfss+NCnzKEpSmwTWddCmfVqLL/q
+         lLi9qN6oDeDrv/+x8kGOVRTC+jOxcpNqRZDHPNMwhw9iRoqTZmLCA2SX7Lzz23wBGZAv
+         LcBj6iHZTJrMVUgKqA/tuNUuBP56VQZ4tal/0LnwczcAl4Q6E+sb3i13Nk07/FRl4/vr
+         HFYA==
+X-Gm-Message-State: AOAM530hl7zJoXOwDuNSuwbx/EvN7NoR06jzTc2b+LZy4DeAdGTCOSrD
+        /HpziGGD9waN25GH5lq8Xuw3juT/JZoLH8kpl7M=
+X-Google-Smtp-Source: ABdhPJxY2w05rKf8JxYi13IJTdM+neAhcheCc9/vDDZ9EYyNBuu2QSi+RfAroGe1tIiBdmGnzCi2QGx6CWVT3nN7S9s=
+X-Received: by 2002:a25:cb45:: with SMTP id b66mr5324771ybg.25.1601674477440;
+ Fri, 02 Oct 2020 14:34:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201002165656.16744-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201002165656.16744-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201002211236.GW26842@paasikivi.fi.intel.com>
+In-Reply-To: <20201002211236.GW26842@paasikivi.fi.intel.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 2 Oct 2020 22:34:11 +0100
+Message-ID: <CA+V-a8vmyDpt88uVd6FxDcTmXiLOV8-neRNk0OO9Pv7Cj5czww@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] media: i2c: ov772x: Parse endpoint properties
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise, f2fs can break the the consistency.
-(e.g., BUG_ON in f2fs_get_sum_page)
+Hi Sakari,
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/checkpoint.c | 9 +++------
- fs/f2fs/f2fs.h       | 2 --
- 2 files changed, 3 insertions(+), 8 deletions(-)
+Thank you for the review.
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index f18386d30f031..7bb3a741a8f16 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -110,15 +110,12 @@ struct page *f2fs_get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index)
- struct page *f2fs_get_meta_page_nofail(struct f2fs_sb_info *sbi, pgoff_t index)
- {
- 	struct page *page;
--	int count = 0;
--
- retry:
- 	page = __get_meta_page(sbi, index, true);
- 	if (IS_ERR(page)) {
--		if (PTR_ERR(page) == -EIO &&
--				++count <= DEFAULT_RETRY_IO_COUNT)
--			goto retry;
--		f2fs_stop_checkpoint(sbi, false);
-+		f2fs_flush_merged_writes(sbi);
-+		congestion_wait(BLK_RW_ASYNC, DEFAULT_IO_TIMEOUT);
-+		goto retry;
- 	}
- 	return page;
- }
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 9d58fd5dae139..d905edb42c327 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -595,8 +595,6 @@ enum {
- 					 */
- };
- 
--#define DEFAULT_RETRY_IO_COUNT	8	/* maximum retry read IO count */
--
- /* congestion wait timeout value, default: 20ms */
- #define	DEFAULT_IO_TIMEOUT	(msecs_to_jiffies(20))
- 
--- 
-2.28.0.806.g8561365e88-goog
+On Fri, Oct 2, 2020 at 10:12 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, Oct 02, 2020 at 05:56:54PM +0100, Lad Prabhakar wrote:
+> > Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> > to determine the bus type and store it in the driver structure.
+> >
+> > Set bus_type to V4L2_MBUS_PARALLEL as it's the only supported one
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  drivers/media/i2c/ov772x.c | 33 +++++++++++++++++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> >
+> > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > index 2cc6a678069a..b56f8d7609e6 100644
+> > --- a/drivers/media/i2c/ov772x.c
+> > +++ b/drivers/media/i2c/ov772x.c
+> > @@ -31,6 +31,7 @@
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> >  #include <media/v4l2-event.h>
+> > +#include <media/v4l2-fwnode.h>
+> >  #include <media/v4l2-image-sizes.h>
+> >  #include <media/v4l2-subdev.h>
+> >
+> > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> >  #ifdef CONFIG_MEDIA_CONTROLLER
+> >       struct media_pad pad;
+> >  #endif
+> > +     enum v4l2_mbus_type               bus_type;
+> >  };
+> >
+> >  /*
+> > @@ -1348,6 +1350,33 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> >       .pad    = &ov772x_subdev_pad_ops,
+> >  };
+> >
+> > +static int ov772x_parse_dt(struct i2c_client *client,
+> > +                        struct ov772x_priv *priv)
+> > +{
+> > +     struct v4l2_fwnode_endpoint bus_cfg = { .bus_type = V4L2_MBUS_PARALLEL };
+>
+> This one gets over 80.
+>
+Argh I need to adjust my checkpatch script
 
+> > +     struct fwnode_handle *ep;
+> > +     int ret;
+> > +
+> > +     ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > +                                         NULL);
+>
+> And this needs no newline.
+>
+Agreed.
+
+Cheers,
+Prabhakar
