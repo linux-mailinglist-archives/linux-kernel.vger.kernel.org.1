@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0200281DFF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16482281E03
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgJBWEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:04:50 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7051 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJBWEt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:04:49 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f77a3f40000>; Fri, 02 Oct 2020 15:04:36 -0700
-Received: from [10.2.58.214] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 22:04:48 +0000
-Subject: Re: [PATCH v2 2/2] selftests/vm: fix run_vmtest.sh: restore
- executable bits, and "s" in name
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next <linux-next@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20201002084049.556824-1-jhubbard@nvidia.com>
- <20201002084049.556824-3-jhubbard@nvidia.com>
- <20201002145945.c5abb5f57dbeac30351b7757@linux-foundation.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <9c41820b-05d5-8e62-2ef2-ab82d5e02f06@nvidia.com>
-Date:   Fri, 2 Oct 2020 15:04:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201002145945.c5abb5f57dbeac30351b7757@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+        id S1725782AbgJBWFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:05:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgJBWFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:05:22 -0400
+Received: from X1 (c-76-21-107-111.hsd1.ca.comcast.net [76.21.107.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD27C20719;
+        Fri,  2 Oct 2020 22:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601676322;
+        bh=A/PUNC/h74mMFqFuFyQBZzOM4+GqXQWYyk2J9FTBXHU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gDd85F52dSGYlWT7WLjb6cPPYCWvYOjIS1DAhkHOAS81iXNE3o1e1VQntR7DqkM0x
+         ud10WxaijIbe9zMe/BQYIddIVa2H5Eaib8MiYft0L1YO+xxfhMCf8rfHr/TC2PhIjq
+         wcTv0vTS+IYJxrh6oaonopzTcGeq75KcRrd8cQNE=
+Date:   Fri, 2 Oct 2020 15:05:20 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        Sri Jayaramappa <sjayaram@akamai.com>
+Subject: Re: [PATCH 1/1] selftests/vm: 8x compaction_test speedup
+Message-Id: <20201002150520.2ea3db53d88f8d10ba8348c9@linux-foundation.org>
+In-Reply-To: <20201002080621.551044-2-jhubbard@nvidia.com>
+References: <20201002080621.551044-1-jhubbard@nvidia.com>
+        <20201002080621.551044-2-jhubbard@nvidia.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601676276; bh=tsVL+aYK5H/xpBAIEurPJopgRTkiLvAbf0cAHKTbOVY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=goSevYuqzGKTKFDYTjm0H1Dh3EAUWuicHgP/aF5RHge52TmeUwv6AFDidhwf237hR
-         AAvBqnV5sErsPmUJd7FJiCG7hykSdsE2NLpG4yY8gP0sCZTocQl1Ydw8g7ydFn1S/9
-         GFEQLalCW8IG6EK0zaEuMlAMstmROPscLN3w4TciV6/ufqrwsDN7cQW/R1fh9vrED0
-         u2CmBdea6dwjHfKUAk675BNqXYvU57JrFYZq1QCteBIFH+a730omJIKaXDWF4msUir
-         NLduV6M2amMzR52e1XvogLy/2WYB8OR9182X3MAZUbayadMYpUVnxkW9BJxexLw1xu
-         Ad2IfHL32hCSQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 2:59 PM, Andrew Morton wrote:
-> On Fri, 2 Oct 2020 01:40:49 -0700 John Hubbard <jhubbard@nvidia.com> wrote:
-> 
->> commit cb2ab76685d7 ("selftests/vm: rename run_vmtests -->
->> run_vmtests.sh") changed the name of run_vmtests to run_vmtest.sh, but
->> inadvertently dropped the executable bits.
-> 
-> We cannot depend on the x bit.  Because downloading linux-foo.patch.gz
-> and installing it with patch(1) is a supported way of obtaining Linux.
-> And patch(1) loses the x bit.
+On Fri, 2 Oct 2020 01:06:21 -0700 John Hubbard <jhubbard@nvidia.com> wrote:
 
-OK. I was just hoping that, within our processes here, there's still some
-way to get something committed that does have the bit set. Because it's a
-nice touch to be able to do
-
-./run_vmtests.sh
-
-Not a big deal of course.
-
+> This patch reduces the running time for compaction_test from about 27
+> sec, to 3.3 sec, which is about an 8x speedup.
 > 
-> If $(CONFIG_SHELL) is unavailable then invoking the script with
-> "/bin/sh foo.sh" should do the trick.
+> These numbers are for an Intel x86_64 system with 32 GB of DRAM.
+> 
+> The compaction_test.c program was spending most of its time doing
+> mmap(), 1 MB at a time, on about 25 GB of memory.
+> 
+> Instead, do the mmaps 100 MB at a time. (Going past 100 MB doesn't make
+> things go much faster, because other parts of the program are using the
+> remaining time.)
 
-OK, I'll use that for the Makefile.
+Seems nice.  It's been 5 years, but hopefully Sri is still at Akamai?
 
+> --- a/tools/testing/selftests/vm/compaction_test.c
+> +++ b/tools/testing/selftests/vm/compaction_test.c
+> @@ -18,7 +18,8 @@
+>  
+>  #include "../kselftest.h"
+>  
+> -#define MAP_SIZE 1048576
+> +#define MAP_SIZE_MB	100
+> +#define MAP_SIZE	(MAP_SIZE_MB * 1024 * 1024)
+>  
+>  struct map_list {
+>  	void *map;
+> @@ -165,7 +166,7 @@ int main(int argc, char **argv)
+>  	void *map = NULL;
+>  	unsigned long mem_free = 0;
+>  	unsigned long hugepage_size = 0;
+> -	unsigned long mem_fragmentable = 0;
+> +	long mem_fragmentable_MB = 0;
+>  
+>  	if (prereq() != 0) {
+>  		printf("Either the sysctl compact_unevictable_allowed is not\n"
+> @@ -190,9 +191,9 @@ int main(int argc, char **argv)
+>  		return -1;
+>  	}
+>  
+> -	mem_fragmentable = mem_free * 0.8 / 1024;
+> +	mem_fragmentable_MB = mem_free * 0.8 / 1024;
+>  
+> -	while (mem_fragmentable > 0) {
+> +	while (mem_fragmentable_MB > 0) {
+>  		map = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
+>  			   MAP_ANONYMOUS | MAP_PRIVATE | MAP_LOCKED, -1, 0);
+>  		if (map == MAP_FAILED)
+> @@ -213,7 +214,7 @@ int main(int argc, char **argv)
+>  		for (i = 0; i < MAP_SIZE; i += page_size)
+>  			*(unsigned long *)(map + i) = (unsigned long)map + i;
+>  
+> -		mem_fragmentable--;
+> +		mem_fragmentable_MB -= MAP_SIZE_MB;
+>  	}
+>  
+>  	for (entry = list; entry != NULL; entry = entry->next) {
+> -- 
+> 2.28.0
 > 
->> Somehow the name is missing an "s", too. Fix both of these problems by
->> renaming, and restoring the executable bits.
-> 
-> But that's what your patch did!
-> 
-> tools/testing/selftests/vm/{run_vmtests => run_vmtest.sh} | 0
-> 
-> Here: https://lkml.kernel.org/r/20200929212747.251804-4-jhubbard@nvidia.com
-> 
-
-Yes, the dropped "s" is my mistake!
-
-> 
-> So all confused.  I'll drop this version - please redo and resend when
-> convenient?
-> 
-
-Coming up, sorry about the mess here!
-
-thanks,
--- 
-John Hubbard
-NVIDIA
