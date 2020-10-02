@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107CE2814B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CE32814B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387998AbgJBOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:11:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387777AbgJBOLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:11:00 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7543C206DB;
-        Fri,  2 Oct 2020 14:10:57 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 15:10:55 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 30/39] arm64: kasan: Enable TBI EL1
-Message-ID: <20201002141054.GH7034@gaia>
-References: <cover.1601593784.git.andreyknvl@google.com>
- <bcd566b9e00a28698d12a403f02dc89fcfd03558.1601593784.git.andreyknvl@google.com>
+        id S2388024AbgJBOLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:11:44 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:44754 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJBOLo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:11:44 -0400
+Received: by mail-oo1-f66.google.com with SMTP id 4so360331ooh.11;
+        Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gesR1T7BjDx7faU3zrJze9mnQNTvk17XfofPixkh6R8=;
+        b=QW8OOsrdMU3X1mmWnuPD1RPNM1RSkCRFqhJD//qTq0SyAXJ8Hhumtw9ErobE+i4eWC
+         LLflRUs+NkycEgZ/Y3iKa0ck8w4Rb6lJdE02LhBgnsT4QSNvoZKXP/QZ1gcwAsR/TlEG
+         tOxO6YhLUzMfORdHGvhk1wh0E/zvj/7TslSF4XqgArrcH3xA+t4gGPuxUCoH4Wa/bkYL
+         kqMHSCYtmuH9Ez/5S9GwIa9zetXLPUH2HDk01ycfQmP5flKFrAIfvd/Mi416jAvzANFk
+         cdlLSq7v+JDhxEcjyvJbNsz7lcXxUcE4kgKJnAgRHkxhCTmJA6CaNNK2X5+wJU7zwLL/
+         lQUA==
+X-Gm-Message-State: AOAM530vxyF1ujhCm9/hqMFKRGSLG1OakTCfiOxPvKJIv5ck1wLU8S5N
+        eMb+5baVWyUhZTLcI2N/vGWd7hZraP4qxSeqtxdD2B2M
+X-Google-Smtp-Source: ABdhPJyOChhrOxMlaFI5j/v7n2WWIa9JJ6DsWupxqoyuqq9cx0MDNFvfbr/1n5VWiIB1HK6C3AQJgvKcYqwj5k3CjaE=
+X-Received: by 2002:a4a:e946:: with SMTP id v6mr2068079ood.38.1601647903052;
+ Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bcd566b9e00a28698d12a403f02dc89fcfd03558.1601593784.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200925161447.1486883-1-hch@lst.de> <20200925161447.1486883-3-hch@lst.de>
+ <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com> <20201002065015.GA9691@lst.de>
+In-Reply-To: <20201002065015.GA9691@lst.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 2 Oct 2020 16:11:30 +0200
+Message-ID: <CAJZ5v0hN7S0Tg8UTQCTLSsZw-n+9pHQBjvscWcBC4gpA5jPCuQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PM/hibernate: remove the bogus call to get_gendisk in software_resume
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:10:31AM +0200, Andrey Konovalov wrote:
-> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> 
-> Hardware tag-based KASAN relies on Memory Tagging Extension (MTE) that is
-> built on top of the Top Byte Ignore (TBI) feature.
-> 
-> Enable in-kernel TBI when CONFIG_KASAN_HW_TAGS is turned on by enabling
-> the TCR_TBI1 bit in proc.S.
-> 
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
-> Change-Id: I91944903bc9c9c9044f0d50e74bcd6b9971d21ff
-> ---
->  arch/arm64/mm/proc.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 6c1a6621d769..7c3304fb15d9 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -46,7 +46,7 @@
->  #endif
->  
->  #ifdef CONFIG_KASAN_HW_TAGS
-> -#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1
-> +#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1
->  #else
->  #define TCR_KASAN_HW_FLAGS 0
->  #endif
+On Fri, Oct 2, 2020 at 8:50 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Sep 30, 2020 at 05:45:27PM +0200, Rafael J. Wysocki wrote:
+> > On Fri, Sep 25, 2020 at 6:15 PM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > get_gendisk grabs a reference on the disk and file operation, so this
+> > > code will leak both of them while having absolutely no use for the
+> > > gendisk itself.
+> > >
+> > > This effectively reverts commit 2df83fa4bce421f
+> > > ("PM / Hibernate: Use get_gendisk to verify partition if resume_file is integer format")
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> Can you pick it up through the PM tree?  The big rework in this area
+> I have planned won't land before 5.11 anyway.
 
-Please merge this patch with the one one introducing TCR_KASAN_HW_FLAGS,
-no need to have both around. You can add my Reviewed-by on that one.
-
--- 
-Catalin
+Will do, thanks!
