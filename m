@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CE32814B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30372814BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388024AbgJBOLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:11:44 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:44754 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBOLo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:11:44 -0400
-Received: by mail-oo1-f66.google.com with SMTP id 4so360331ooh.11;
-        Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gesR1T7BjDx7faU3zrJze9mnQNTvk17XfofPixkh6R8=;
-        b=QW8OOsrdMU3X1mmWnuPD1RPNM1RSkCRFqhJD//qTq0SyAXJ8Hhumtw9ErobE+i4eWC
-         LLflRUs+NkycEgZ/Y3iKa0ck8w4Rb6lJdE02LhBgnsT4QSNvoZKXP/QZ1gcwAsR/TlEG
-         tOxO6YhLUzMfORdHGvhk1wh0E/zvj/7TslSF4XqgArrcH3xA+t4gGPuxUCoH4Wa/bkYL
-         kqMHSCYtmuH9Ez/5S9GwIa9zetXLPUH2HDk01ycfQmP5flKFrAIfvd/Mi416jAvzANFk
-         cdlLSq7v+JDhxEcjyvJbNsz7lcXxUcE4kgKJnAgRHkxhCTmJA6CaNNK2X5+wJU7zwLL/
-         lQUA==
-X-Gm-Message-State: AOAM530vxyF1ujhCm9/hqMFKRGSLG1OakTCfiOxPvKJIv5ck1wLU8S5N
-        eMb+5baVWyUhZTLcI2N/vGWd7hZraP4qxSeqtxdD2B2M
-X-Google-Smtp-Source: ABdhPJyOChhrOxMlaFI5j/v7n2WWIa9JJ6DsWupxqoyuqq9cx0MDNFvfbr/1n5VWiIB1HK6C3AQJgvKcYqwj5k3CjaE=
-X-Received: by 2002:a4a:e946:: with SMTP id v6mr2068079ood.38.1601647903052;
- Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
+        id S2388003AbgJBOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:12:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgJBOMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:12:50 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4411C206DB;
+        Fri,  2 Oct 2020 14:12:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601647970;
+        bh=lqNTdTkNdsQHcWQ/ycuvV9kZSZGTlIJnGnt90RDqrbc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=usUyOsupMwL4xMxZfBJFg8t60KKwuUfnFAwSuT6FAfPylsUSQLmCNYfbQawOzfIFQ
+         SsGAbLj/NyS1ZVD1+OwPxiqVE95X+ragy7GFkzcnhLrVJ7MYOhEvItErsv94nNC3Ez
+         Ryw0XZvryq1L6yJDMEf9xMB8XHSbYFpI7SyxphQU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 097BD3522838; Fri,  2 Oct 2020 07:12:50 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 07:12:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        mgorman@techsingularity.net, torvalds@linux-foundation.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 14/15] rcu/tree: Allocate a page when caller
+ is preemptible
+Message-ID: <20201002141250.GH29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200928233041.GA23230@paulmck-ThinkPad-P72>
+ <20200928233102.24265-14-paulmck@kernel.org>
+ <20200929120756.GC2277@dhcp22.suse.cz>
+ <20200930015327.GX29330@paulmck-ThinkPad-P72>
+ <20200930084139.GN2277@dhcp22.suse.cz>
+ <20200930232154.GA29330@paulmck-ThinkPad-P72>
+ <20201001090220.GA22560@dhcp22.suse.cz>
+ <20201001162709.GD29330@paulmck-ThinkPad-P72>
+ <20201002065746.GA20872@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20200925161447.1486883-1-hch@lst.de> <20200925161447.1486883-3-hch@lst.de>
- <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com> <20201002065015.GA9691@lst.de>
-In-Reply-To: <20201002065015.GA9691@lst.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 2 Oct 2020 16:11:30 +0200
-Message-ID: <CAJZ5v0hN7S0Tg8UTQCTLSsZw-n+9pHQBjvscWcBC4gpA5jPCuQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM/hibernate: remove the bogus call to get_gendisk in software_resume
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002065746.GA20872@dhcp22.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 8:50 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Sep 30, 2020 at 05:45:27PM +0200, Rafael J. Wysocki wrote:
-> > On Fri, Sep 25, 2020 at 6:15 PM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > get_gendisk grabs a reference on the disk and file operation, so this
-> > > code will leak both of them while having absolutely no use for the
-> > > gendisk itself.
-> > >
-> > > This effectively reverts commit 2df83fa4bce421f
-> > > ("PM / Hibernate: Use get_gendisk to verify partition if resume_file is integer format")
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> >
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Can you pick it up through the PM tree?  The big rework in this area
-> I have planned won't land before 5.11 anyway.
+On Fri, Oct 02, 2020 at 08:57:46AM +0200, Michal Hocko wrote:
+> On Thu 01-10-20 09:27:09, Paul E. McKenney wrote:
+> [...]
+> > commit ea5c19d21233b5e8d3d06c0d4ecd6be9f2829dc3
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu Oct 1 09:24:40 2020 -0700
+> > 
+> >     kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+> >     
+> >     This commit applies the __GFP_NOMEMALLOC gfp flag to memory allocations
+> >     carried out by the single-argument variant of kvfree_rcu(), thus avoiding
+> >     this can-sleep code path from dipping into the emergency reserves.
+> >     
+> >     Suggested-by: Michal Hocko <mhocko@suse.com>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> LGTM. At least for this one I feel competent to give you
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Will do, thanks!
+Thank you very much!  I will apply this on the next rebase later today,
+Pacific Time.
+
+						Thanx, Paul
+
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 242f0f0..6132452 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3364,7 +3364,8 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
+> >  {
+> >  	struct kvfree_rcu_bulk_data *bnode;
+> >  	bool can_alloc_page = preemptible();
+> > -	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL : GFP_ATOMIC) | __GFP_NOWARN;
+> > +	gfp_t gfp = (can_sleep ? GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC
+> > +			       : GFP_ATOMIC) | __GFP_NOWARN;
+> >  	int idx;
+> >  
+> >  	*krcp = krc_this_cpu_lock(flags);
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
