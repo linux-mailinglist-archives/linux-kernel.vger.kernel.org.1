@@ -2,197 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B93281EF2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C599281FDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725772AbgJBXPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 19:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJBXPD (ORCPT
+        id S1725763AbgJCAs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 20:48:56 -0400
+Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:6834 "EHLO
+        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725283AbgJCAs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 19:15:03 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F1C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 16:15:03 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id m17so3306382ioo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 16:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YfdsfR+vxnsAijYLXa6tOfA8KqdB4WmlnZuQhX/Ct4U=;
-        b=saZdfCSzMzpYeJMISnJ7OJgpgSkR3+dgqgr4x7aqFlkgmCFEB5WQMLMXbvty5IZrfL
-         oGcm1OkS3ioUuJSCsT6K3mKOgLMbujc0eMb/GgU34MS2ynpi0gTY74sS2EGavQ4LW9sv
-         hS7nfUFrE/cHESWXEEih7Al6VHHM86PkPAX/Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YfdsfR+vxnsAijYLXa6tOfA8KqdB4WmlnZuQhX/Ct4U=;
-        b=sVU9Bk1aVP8Uf2WDgdkOciKJ9hN6expid55CrVL7811yKdLWlweFOlXUVe7SNPB/Fc
-         /blHjkrFlPHCpg/X3FfLuBfoqMlyfOwWi2b/gu/TJqf6cFzkZYVKxiY6ZplezKGEsAVe
-         wMAaH81WcjOjC7f5DC/oDlpbKsHNKNK9Mqs4dZRFJZDkxHfuQzgIqEnJHtgP0R7QPXIJ
-         1HWvEE4b248vFs2RAmE92HV8t38iWe9ODznIN/w5ktr+2g0ygsHTODI9Iwl6ghj9yAFv
-         aa9iGHiYsePlfjyo8RvDpKcIfkOsDKtMOFuSvusKNkW+qXmA2+RGp63s8f8WYmknZTVs
-         eTMA==
-X-Gm-Message-State: AOAM533k4wcHBa5oheoOWV/lQVdgz+bXkqaGCw+ZBa88Mn0Ei0AXrwkw
-        geUHyaGY8B3NzXpGue+ks3WMGYQhBDCyMoIonRoubQ==
-X-Google-Smtp-Source: ABdhPJzI3tVlu8aSdAJm7W9AygkHAmLMflTi68aK8h4yRkfUXN/4nhsLC04yylzq/scPxqwON/RaPiy4CQkoxK+Fepw=
-X-Received: by 2002:a5d:80d6:: with SMTP id h22mr3677082ior.154.1601680502289;
- Fri, 02 Oct 2020 16:15:02 -0700 (PDT)
+        Fri, 2 Oct 2020 20:48:56 -0400
+X-Greylist: delayed 4942 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 20:48:55 EDT
+Received: from pps.filterd (m0122333.ppops.net [127.0.0.1])
+        by mx0a-00190b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 092NNn6u026132;
+        Sat, 3 Oct 2020 00:25:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=jan2016.eng;
+ bh=QkGqoqC57AUJwO3z6/p3ypBKSby7UUfX4Z/QC16CsrM=;
+ b=kufoFTR1IjDsPgi+CLGpSP2IqkKL7HKcnqeKaAWRjcQgQA75iJs6BDJg6YPuqv+q2Nlb
+ R++l+58+5i9AsF+9tf7WXjOZgZtjcxxNRqijyVJZsmOP/6FY2GqfZ3Kob5cjUf/dXCQO
+ 77IfRCch6Hpw/5tjF6ZLeu+Q92Ap9JG3L1Z7JHRH88ikq70/vvdx4uIAO4aLKRLyDbF4
+ O6Y61abD0mprQbEuEjgjF/mf7KsSijuf9hPJ6YRt5hwBsBbrO5zF1N65aUrnlWQqeky3
+ lm2zFO5jayEgLk+2dnAOeqfKJxTwx/raQ2L098YP/wUUH23GVpWa6xBkch60Mkb0+sOA 0w== 
+Received: from prod-mail-ppoint5 (prod-mail-ppoint5.akamai.com [184.51.33.60] (may be forged))
+        by mx0a-00190b01.pphosted.com with ESMTP id 33svwjvheg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 03 Oct 2020 00:25:27 +0100
+Received: from pps.filterd (prod-mail-ppoint5.akamai.com [127.0.0.1])
+        by prod-mail-ppoint5.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 092N23PV009413;
+        Fri, 2 Oct 2020 16:25:26 -0700
+Received: from email.msg.corp.akamai.com ([172.27.123.30])
+        by prod-mail-ppoint5.akamai.com with ESMTP id 33t3mb359m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 02 Oct 2020 16:25:26 -0700
+Received: from usma1ex-dag1mb6.msg.corp.akamai.com (172.27.123.65) by
+ usma1ex-dag1mb2.msg.corp.akamai.com (172.27.123.102) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 2 Oct 2020 19:25:25 -0400
+Received: from usma1ex-dag1mb6.msg.corp.akamai.com ([172.27.123.65]) by
+ usma1ex-dag1mb6.msg.corp.akamai.com ([172.27.123.65]) with mapi id
+ 15.00.1497.006; Fri, 2 Oct 2020 19:25:25 -0400
+From:   "Jayaramappa, Srilakshmi" <sjayaram@akamai.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>
+CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 1/1] selftests/vm: 8x compaction_test speedup
+Thread-Topic: [PATCH 1/1] selftests/vm: 8x compaction_test speedup
+Thread-Index: AQHWmQghQfWhsaODLEKsEX7Nj7R8+6mE9IyA
+Date:   Fri, 2 Oct 2020 23:25:25 +0000
+Message-ID: <050F889A-AE47-47E4-8334-0D6FC7170721@akamai.com>
+References: <20201002080621.551044-1-jhubbard@nvidia.com>
+ <20201002080621.551044-2-jhubbard@nvidia.com>
+ <20201002150520.2ea3db53d88f8d10ba8348c9@linux-foundation.org>
+In-Reply-To: <20201002150520.2ea3db53d88f8d10ba8348c9@linux-foundation.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Microsoft-MacOutlook/16.41.20091302
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.19.112.71]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6AFFAE2D00926F479C7BED904B92EF2D@akamai.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200929192928.3749502-1-joel@joelfernandes.org>
- <20200929192928.3749502-2-joel@joelfernandes.org> <20200929193248.GA3749988@google.com>
- <20201002193412.GJ29330@paulmck-ThinkPad-P72>
-In-Reply-To: <20201002193412.GJ29330@paulmck-ThinkPad-P72>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 2 Oct 2020 19:14:49 -0400
-Message-ID: <CAEXW_YR=2K_E24k9BNXwEhuNCawaH8kQUPtMrx-xkmd+hjVzMA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] docs: Update RCU's hotplug requirements with a bit
- about design
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        rcu <rcu@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-02_14:2020-10-02,2020-10-02 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=791 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010020174
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-02_14:2020-10-02,2020-10-02 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 3:34 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Tue, Sep 29, 2020 at 03:32:48PM -0400, Joel Fernandes wrote:
-> > Hi Paul,
-> >
-> > On Tue, Sep 29, 2020 at 03:29:28PM -0400, Joel Fernandes (Google) wrote:
-> > > RCU's hotplug design will help understand the requirements an RCU
-> > > implementation needs to fullfill, such as dead-lock avoidance.
-> > >
-> > > The rcu_barrier() section of the "Hotplug CPU" section already talks
-> > > about deadlocks, however the description of what else can deadlock other
-> > > than rcu_barrier is rather incomplete.
-> > >
-> > > This commit therefore continues the section by describing how RCU's
-> > > design handles CPU hotplug in a deadlock-free way.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  .../RCU/Design/Requirements/Requirements.rst  | 30 +++++++++++++++++--
-> > >  1 file changed, 28 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > index 1ae79a10a8de..e0413aa989dd 100644
-> > > --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > @@ -1929,8 +1929,10 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
-> > >  to allow the various kernel subsystems (including RCU) to respond
-> > >  appropriately to a given CPU-hotplug operation. Most RCU operations may
-> > >  be invoked from CPU-hotplug notifiers, including even synchronous
-> > > -grace-period operations such as ``synchronize_rcu()`` and
-> > > -``synchronize_rcu_expedited()``.
-> > > +grace-period operations such as. However, the synchronous variants
-> > > +(``synchronize_rcu()`` and ``synchronize_rcu_expedited()``) should not
-> > > +from notifiers that execute via ``stop_machine()`` -- specifically those
-> >
-> > The "should not from notifiers" should be "should not be used from
-> > notifiers" here. Sorry and hope you can fix it up.
->
-> Thank you, and queued for further review.  How does the below look
-> for a general fixup?
-
-Looks great, thanks!
-
- -Joel
-
-
-
->
->                                                 Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit a93716177eeac726037828b28e6b1a45e828688a
-> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Date:   Tue Sep 29 15:29:28 2020 -0400
->
->     docs: Update RCU's hotplug requirements with a bit about design
->
->     The rcu_barrier() section of the "Hotplug CPU" section discusses
->     deadlocks, however the description of deadlocks other than those involving
->     rcu_barrier() is rather incomplete.
->
->     This commit therefore continues the section by describing how RCU's
->     design handles CPU hotplug in a deadlock-free way.
->
->     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> index 1ae79a1..98557fe 100644
-> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> @@ -1929,16 +1929,45 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
->  to allow the various kernel subsystems (including RCU) to respond
->  appropriately to a given CPU-hotplug operation. Most RCU operations may
->  be invoked from CPU-hotplug notifiers, including even synchronous
-> -grace-period operations such as ``synchronize_rcu()`` and
-> -``synchronize_rcu_expedited()``.
-> -
-> -However, all-callback-wait operations such as ``rcu_barrier()`` are also
-> -not supported, due to the fact that there are phases of CPU-hotplug
-> -operations where the outgoing CPU's callbacks will not be invoked until
-> -after the CPU-hotplug operation ends, which could also result in
-> -deadlock. Furthermore, ``rcu_barrier()`` blocks CPU-hotplug operations
-> -during its execution, which results in another type of deadlock when
-> -invoked from a CPU-hotplug notifier.
-> +grace-period operations such as (``synchronize_rcu()`` and
-> +``synchronize_rcu_expedited()``).  However, these synchronous operations
-> +do block and therefore cannot be invoked from notifiers that execute via
-> +``stop_machine()``, specifically those between the ``CPUHP_AP_OFFLINE``
-> +and ``CPUHP_AP_ONLINE`` states.
-> +
-> +In addition, all-callback-wait operations such as ``rcu_barrier()`` may
-> +not be invoked from any CPU-hotplug notifier.  This restriction is due
-> +to the fact that there are phases of CPU-hotplug operations where the
-> +outgoing CPU's callbacks will not be invoked until after the CPU-hotplug
-> +operation ends, which could also result in deadlock. Furthermore,
-> +``rcu_barrier()`` blocks CPU-hotplug operations during its execution,
-> +which results in another type of deadlock when invoked from a CPU-hotplug
-> +notifier.
-> +
-> +Finally, RCU must avoid deadlocks due to interaction between hotplug,
-> +timers and grace period processing. It does so by maintaining its own set
-> +of books that duplicate the centrally maintained ``cpu_online_mask``,
-> +and also by reporting quiescent states explictly when a CPU goes
-> +offline.  This explicit reporting of quiescent states avoids any need
-> +for the force-quiescent-state loop (FQS) to report quiescent states for
-> +offline CPUs.  However, as a debugging measure, the FQS loop does splat
-> +if offline CPUs block an RCU grace period for too long.
-> +
-> +An offline CPU's quiescent state will be reported either:
-> +1.  As the CPU goes offline using RCU's hotplug notifier (``rcu_report_dead()``).
-> +2.  When grace period initialization (``rcu_gp_init()``) detects a
-> +    race either with CPU offlining or with a task unblocking on a leaf
-> +    ``rcu_node`` structure whose CPUs are all offline.
-> +
-> +The CPU-online path (``rcu_cpu_starting()``) should never need to report
-> +a quiescent state for an offline CPU.  However, as a debugging measure,
-> +it does emit a warning if a quiescent state was not already reported
-> +for that CPU.
-> +
-> +During the checking/modification of RCU's hotplug bookkeeping, the
-> +corresponding CPU's leaf node lock is held. This avoids race conditions
-> +between RCU's hotplug notifier hooks, the grace period initialization
-> +code, and the FQS loop, all of which refer to or modify this bookkeeping.
->
->  Scheduler and RCU
->  ~~~~~~~~~~~~~~~~~
+DQrvu79PbiAxMC8yLzIwLCA2OjA1IFBNLCAiQW5kcmV3IE1vcnRvbiIgPGFrcG1AbGludXgtZm91
+bmRhdGlvbi5vcmc+IHdyb3RlOg0KDQogICAgT24gRnJpLCAyIE9jdCAyMDIwIDAxOjA2OjIxIC0w
+NzAwIEpvaG4gSHViYmFyZCA8amh1YmJhcmRAbnZpZGlhLmNvbT4gd3JvdGU6DQoNCiAgICA+IFRo
+aXMgcGF0Y2ggcmVkdWNlcyB0aGUgcnVubmluZyB0aW1lIGZvciBjb21wYWN0aW9uX3Rlc3QgZnJv
+bSBhYm91dCAyNw0KICAgID4gc2VjLCB0byAzLjMgc2VjLCB3aGljaCBpcyBhYm91dCBhbiA4eCBz
+cGVlZHVwLg0KICAgID4gDQogICAgPiBUaGVzZSBudW1iZXJzIGFyZSBmb3IgYW4gSW50ZWwgeDg2
+XzY0IHN5c3RlbSB3aXRoIDMyIEdCIG9mIERSQU0uDQogICAgPiANCiAgICA+IFRoZSBjb21wYWN0
+aW9uX3Rlc3QuYyBwcm9ncmFtIHdhcyBzcGVuZGluZyBtb3N0IG9mIGl0cyB0aW1lIGRvaW5nDQog
+ICAgPiBtbWFwKCksIDEgTUIgYXQgYSB0aW1lLCBvbiBhYm91dCAyNSBHQiBvZiBtZW1vcnkuDQog
+ICAgPiANCiAgICA+IEluc3RlYWQsIGRvIHRoZSBtbWFwcyAxMDAgTUIgYXQgYSB0aW1lLiAoR29p
+bmcgcGFzdCAxMDAgTUIgZG9lc24ndCBtYWtlDQogICAgPiB0aGluZ3MgZ28gbXVjaCBmYXN0ZXIs
+IGJlY2F1c2Ugb3RoZXIgcGFydHMgb2YgdGhlIHByb2dyYW0gYXJlIHVzaW5nIHRoZQ0KICAgID4g
+cmVtYWluaW5nIHRpbWUuKQ0KDQogICAgU2VlbXMgbmljZS4gIEl0J3MgYmVlbiA1IHllYXJzLCBi
+dXQgaG9wZWZ1bGx5IFNyaSBpcyBzdGlsbCBhdCBBa2FtYWk/DQoNCiAgICBMb29rcyBnb29kIHRv
+IG1lLg0KDQogICAgVGhhbmtzDQogICAgLVNyaQ0KDQoNCg==
