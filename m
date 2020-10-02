@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1BA281834
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE23228183B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388160AbgJBQqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:46:04 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40542 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388134AbgJBQqD (ORCPT
+        id S2388201AbgJBQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:47:20 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:32835 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388054AbgJBQrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:46:03 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092GjvdC061230;
-        Fri, 2 Oct 2020 11:45:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601657157;
-        bh=7wsF0JKqL8idU3kM6urN4BRyE1IhjYIBY3uaqqrXEyQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HCPPx/I+hHen21xX+u7c3oLAcfoZjj6qs4eKxLf5fs4ZO71f+3RHe8SDZMQUpHdl4
-         xUuv5BjQYYHNU9vesS+e4oyPs1KEW7zHIMS2i2b5DAsX0HGBAt2d0g04AzWiQBORlz
-         0FCt9xYL9lyz0VPxuNapmZV9QplTZT8VI9voGgoM=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092GjvsL064605
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 11:45:57 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 11:45:57 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 11:45:57 -0500
-Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092GjaKa042820;
-        Fri, 2 Oct 2020 11:45:51 -0500
-From:   Faiz Abbas <faiz_abbas@ti.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <will@kernel.org>, <catalin.marinas@arm.com>, <nm@ti.com>,
-        <t-kristo@ti.com>, <faiz_abbas@ti.com>
-Subject: [PATCH 2/2] arm64: defconfig: Enable DAVINCI_GPIO driver
-Date:   Fri, 2 Oct 2020 22:15:35 +0530
-Message-ID: <20201002164535.9920-3-faiz_abbas@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002164535.9920-1-faiz_abbas@ti.com>
-References: <20201002164535.9920-1-faiz_abbas@ti.com>
+        Fri, 2 Oct 2020 12:47:17 -0400
+Received: by mail-oo1-f67.google.com with SMTP id m25so500095oou.0;
+        Fri, 02 Oct 2020 09:47:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=9RK7VejWgItG0CTHowBvgms6hSYrpd2XFIs5Wdvgz48=;
+        b=X8+z9HuSIrmjD2fDSzwwILD09eamC88GXBgXiB0sTSsZYKyUQxIERbGVwLNg+DQ25g
+         KM7WtO2qAB28SXnIvGgn+o+0TsLco3Ccm5O/EKYjisbQdt/MstTtwSK4nF8/19fpnZmO
+         wxGWwzo3ozgjl0zlWeOFQd38AB8WUqJR/up40jLRMYB1ZH+yKAGLsmOIbBI6blb7GY33
+         EB42TA7MqOW9NNGaMOWcP7gjBuuLff1waBQ7RSoHaTYJJlxoiApNQXS1Q1Ex3xXFI2ws
+         HiUL3hlVaT+HpDqe7JMmoBur4ahKmmLgKjpev+uXeAQOtp687qcuOvTF5F2r3ASlS15R
+         LdRw==
+X-Gm-Message-State: AOAM533ckPCW5RNQ8w7DOFegmAHJn66OC8xcbrX9vT6/s12Vfba7+EBW
+        H0aERDK25TglPMKFBRpXpy5CGjnaJ667JTM8tH7QaE34slY=
+X-Google-Smtp-Source: ABdhPJxLeAUmx01jVxMKnoqCSGd/TQIbdKVlvHV2UFONW3hTLdZVb4Pd12LYsXyfQmAApb5FBJKD5I9g4TtcC4eKlwA=
+X-Received: by 2002:a4a:e946:: with SMTP id v6mr2561193ood.38.1601657236708;
+ Fri, 02 Oct 2020 09:47:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 2 Oct 2020 18:47:05 +0200
+Message-ID: <CAJZ5v0jppvMLqbSu20gx6dL=bZWv6_ZbDRYW6Djg3V1oTJyWAA@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v5.9-rc8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for devices compatible with TI's davinci gpio controllers.
+Hi Linus,
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Please pull from the tag
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 0d5b81264fa1..c4b657644e33 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -497,6 +497,7 @@ CONFIG_PINCTRL_SDM845=y
- CONFIG_PINCTRL_SM8150=y
- CONFIG_PINCTRL_SM8250=y
- CONFIG_GPIO_ALTERA=m
-+CONFIG_GPIO_DAVINCI=y
- CONFIG_GPIO_DWAPB=y
- CONFIG_GPIO_MB86S7X=y
- CONFIG_GPIO_MPC8XXX=y
--- 
-2.17.1
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.9-rc8
 
+with top-most commit 7bbe8f2a7e7e819c050212a4bc984f03dc85af9d
+
+ Merge branch 'pm-cpufreq'
+
+on top of commit a1b8638ba1320e6684aa98233c15255eb803fac7
+
+ Linux 5.9-rc7
+
+to receive power management fixes for 5.9-rc8.
+
+These fix one more issue related to the recent RCU-lockdep
+changes, a typo in documentation and add a missing return
+statement to intel_pstate.
+
+Specifics:
+
+ - Fix up RCU usage for cpuidle on the ARM imx6q platform (Ulf
+   Hansson).
+
+ - Fix typo in the PM documentation (Yoann Congal).
+
+ - Add return statement that is missing after recent changes
+   in the intel_pstate driver (Zhang Rui).
+
+Thanks!
+
+
+---------------
+
+Ulf Hansson (1):
+      ARM: imx6q: Fixup RCU usage for cpuidle
+
+Yoann Congal (1):
+      Documentation: PM: Fix a reStructuredText syntax error
+
+Zhang Rui (1):
+      cpufreq: intel_pstate: Fix missing return statement
+
+---------------
+
+ Documentation/admin-guide/pm/cpuidle.rst | 2 +-
+ arch/arm/mach-imx/cpuidle-imx6q.c        | 4 +++-
+ drivers/cpufreq/intel_pstate.c           | 1 +
+ 3 files changed, 5 insertions(+), 2 deletions(-)
