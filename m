@@ -2,249 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C118281D30
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070DB281D34
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725767AbgJBUzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgJBUzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:55:31 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A1242065D;
-        Fri,  2 Oct 2020 20:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601672130;
-        bh=vn2dtzloDflamPSOR08Sc0E+h1XUXfZWBcTlMtsslCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VOkV36aitWp9zX/k/mj9ecGsl4PqTirYwgJz8IS3L99FpkIXJxlih8A3LNu169t5Y
-         +WCOjWviLyoXgvNItcdjeh2ZJEbbprKz51IRu/0PIuIpdW8p3Ep+ZZvr4FAR3MIrmX
-         H79xlsvGDRi+ybsEU/vM+J1YjPXlnETiGaarPr2M=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 68219403AC; Fri,  2 Oct 2020 17:55:27 -0300 (-03)
-Date:   Fri, 2 Oct 2020 17:55:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCHv2 1/9] perf tools: Add build id shell test
-Message-ID: <20201002205527.GA7581@kernel.org>
-References: <20200930171512.3986425-1-jolsa@kernel.org>
- <20200930171512.3986425-2-jolsa@kernel.org>
- <20201001190530.GD3999500@krava>
- <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
- <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
+        id S1725789AbgJBU4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:56:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45304 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBU4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:56:17 -0400
+Date:   Fri, 02 Oct 2020 20:56:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601672174;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0+D252fCaVDFkg/+i1pA3cU4JJHbiR0kItfJgaoxDU=;
+        b=0yq9mmmeddgM0NdKKCHu0oL7/oVGuGS0c248a0XOFFeEm7zJtNI3D0mwdjOQ/EinsjoTld
+        v04dckAyfJuj4s6aXppeeJusoBxoi5mCIim+fn2WqHVBxMHyAzYmUZTaCLMpWCRvhfD8Wr
+        sOrBspA4y6OmN4a4Y1FQOeiOMUiALLwHz68M4xeqa5pHuLI2Y6WM93fkHU/MuJRN7SSZOp
+        uLL12zgKMQfxNPJ7RcQY7VqYEb0bjeo1Msz86+SOBLjwAz2rKOdb/soWUDRZ+YQF3jnsvT
+        IcFq+ntEqF0I7nUt98ZN0eX6zFIELc7400BLpXrW13xjv0cPT7WUS1RNnckEuw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601672174;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0+D252fCaVDFkg/+i1pA3cU4JJHbiR0kItfJgaoxDU=;
+        b=4mLXvKNfjdAfg5MqeAKGAILbVDuSI0rvUXPuBuqzfT75vKpgG8MHx8FIKyv3IBnzJli7bL
+        38/P+g0bQAfKL2Cg==
+From:   "tip-bot2 for Heinrich Schuchardt" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] Documentation/x86: Fix incorrect references to
+ zero-page.txt
+Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201002190623.7489-1-xypron.glpk@gmx.de>
+References: <20201002190623.7489-1-xypron.glpk@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Message-ID: <160167217377.7002.573244513258205543.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Oct 02, 2020 at 10:34:51AM -0700, Ian Rogers escreveu:
-> On Fri, Oct 2, 2020 at 6:07 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Jiri,
-> >
-> > On Fri, Oct 2, 2020 at 4:05 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > Adding test for build id cache that adds binary
-> > > with sha1 and md5 build ids and verifies it's
-> > > added properly.
-> > >
-> > > The test updates build id cache with perf record
-> > > and perf buildid-cache -a.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > > v2 changes:
-> > >   - detect perf build directory when checking for build-ex* binaries
-> > >
-> > >  tools/perf/Makefile.perf          |  14 +++++
-> > >  tools/perf/tests/shell/buildid.sh | 101 ++++++++++++++++++++++++++++++
-> > >  2 files changed, 115 insertions(+)
-> > >  create mode 100755 tools/perf/tests/shell/buildid.sh
-> > >
-> > > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > > index 920d8afb9238..b2aeefa64e92 100644
-> > > --- a/tools/perf/Makefile.perf
-> > > +++ b/tools/perf/Makefile.perf
-> > > @@ -126,6 +126,8 @@ include ../scripts/utilities.mak
-> > >  #
-> > >  # Define NO_LIBDEBUGINFOD if you do not want support debuginfod
-> > >  #
-> > > +# Define NO_BUILDID_EX if you do not want buildid-ex-* binaries
-> > > +#
-> > >
-> > >  # As per kernel Makefile, avoid funny character set dependencies
-> > >  unexport LC_ALL
-> > > @@ -349,6 +351,11 @@ ifndef NO_PERF_READ_VDSOX32
-> > >  PROGRAMS += $(OUTPUT)perf-read-vdsox32
-> > >  endif
-> > >
-> > > +ifndef NO_BUILDID_EX
-> > > +PROGRAMS += $(OUTPUT)buildid-ex-sha1
-> > > +PROGRAMS += $(OUTPUT)buildid-ex-md5
-> > > +endif
-> > > +
-> > >  LIBJVMTI = libperf-jvmti.so
-> > >
-> > >  ifndef NO_JVMTI
-> > > @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
-> > >         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
-> > >  endif
-> > >
-> > > +ifndef NO_BUILDID_EX
-> > > +$(OUTPUT)buildid-ex-sha1:
-> > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
-> > > +$(OUTPUT)buildid-ex-md5:
-> > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
-> > > +endif
-> >
-> > Can we just build them in the test shell script instead?
-> >
-> > Thanks
-> > Namhyung
-> 
-> That'd mean perf test having a dependency on a compiler :-/ That said
-> there are some existing dependencies for BPF compilers.
+The following commit has been merged into the x86/urgent branch of tip:
 
-If doing it in the test shell script ends up being advantageous, we
-could skip the test if a suitable compiler isn't available.
+Commit-ID:     0c7689830e907668288a1a1da84dca66dbdb4728
+Gitweb:        https://git.kernel.org/tip/0c7689830e907668288a1a1da84dca66dbdb4728
+Author:        Heinrich Schuchardt <xypron.glpk@gmx.de>
+AuthorDate:    Fri, 02 Oct 2020 21:06:23 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 02 Oct 2020 22:49:29 +02:00
 
-- Arnaldo
+Documentation/x86: Fix incorrect references to zero-page.txt
+
+The file zero-page.txt does not exit. Add links to zero-page.rst
+instead.
+
+ [ bp: Massage a bit. ]
+
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201002190623.7489-1-xypron.glpk@gmx.de
+---
+ Documentation/x86/boot.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/x86/boot.rst b/Documentation/x86/boot.rst
+index 7fafc7a..abb9fc1 100644
+--- a/Documentation/x86/boot.rst
++++ b/Documentation/x86/boot.rst
+@@ -1342,8 +1342,8 @@ follow::
  
-> Thanks,
-> Ian
-> 
-> >
-> > > +
-> > >  ifndef NO_JVMTI
-> > >  LIBJVMTI_IN := $(OUTPUT)jvmti/jvmti-in.o
-> > >
-> > > diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-> > > new file mode 100755
-> > > index 000000000000..dd9f9c306c34
-> > > --- /dev/null
-> > > +++ b/tools/perf/tests/shell/buildid.sh
-> > > @@ -0,0 +1,101 @@
-> > > +#!/bin/sh
-> > > +# build id cache operations
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +ex_md5=buildid-ex-md5
-> > > +ex_sha1=buildid-ex-sha1
-> > > +
-> > > +# skip if there are no test binaries
-> > > +if [ ! -x buildid-ex-sha1 -a ! -x buildid-ex-md5 ]; then
-> > > +       ex_dir=$(dirname `which perf`)
-> > > +       ex_md5=${ex_dir}/buildid-ex-md5
-> > > +       ex_sha1=${ex_dir}/buildid-ex-sha1
-> > > +
-> > > +       if [ ! -x ${ex_sha1} -a ! -x ${ex_md5} ]; then
-> > > +               echo "failed: no test binaries"
-> > > +               exit 2
-> > > +       fi
-> > > +fi
-> > > +
-> > > +echo "test binaries: ${ex_sha1} ${ex_md5}"
-> > > +
-> > > +# skip if there's no readelf
-> > > +if [ ! -x `which readelf` ]; then
-> > > +       echo "failed: no readelf, install binutils"
-> > > +       exit 2
-> > > +fi
-> > > +
-> > > +check()
-> > > +{
-> > > +       id=`readelf -n $1 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
-> > > +
-> > > +       echo "build id: ${id}"
-> > > +
-> > > +       link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
-> > > +       echo "link: ${link}"
-> > > +
-> > > +       if [ ! -h $link ]; then
-> > > +               echo "failed: link ${link} does not exist"
-> > > +               exit 1
-> > > +       fi
-> > > +
-> > > +       file=${build_id_dir}/.build-id/${id:0:2}/`readlink ${link}`/elf
-> > > +       echo "file: ${file}"
-> > > +
-> > > +       if [ ! -x $file ]; then
-> > > +               echo "failed: file ${file} does not exist"
-> > > +               exit 1
-> > > +       fi
-> > > +
-> > > +       diff ${file} ${1}
-> > > +       if [ $? -ne 0 ]; then
-> > > +               echo "failed: ${file} do not match"
-> > > +               exit 1
-> > > +       fi
-> > > +
-> > > +       echo "OK for ${1}"
-> > > +}
-> > > +
-> > > +test_add()
-> > > +{
-> > > +       build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
-> > > +       perf="perf --buildid-dir ${build_id_dir}"
-> > > +
-> > > +       ${perf} buildid-cache -v -a ${1}
-> > > +       if [ $? -ne 0 ]; then
-> > > +               echo "failed: add ${1} to build id cache"
-> > > +               exit 1
-> > > +       fi
-> > > +
-> > > +       check ${1}
-> > > +
-> > > +       rm -rf ${build_id_dir}
-> > > +}
-> > > +
-> > > +test_record()
-> > > +{
-> > > +       data=$(mktemp /tmp/perf.data.XXX)
-> > > +       build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
-> > > +       perf="perf --buildid-dir ${build_id_dir}"
-> > > +
-> > > +       ${perf} record --buildid-all -o ${data} ${1}
-> > > +       if [ $? -ne 0 ]; then
-> > > +               echo "failed: record ${1}"
-> > > +               exit 1
-> > > +       fi
-> > > +
-> > > +       check ${1}
-> > > +
-> > > +       rm -rf ${build_id_dir}
-> > > +       rm -rf ${data}
-> > > +}
-> > > +
-> > > +# add binaries manual via perf buildid-cache -a
-> > > +test_add ${ex_sha1}
-> > > +test_add ${ex_md5}
-> > > +
-> > > +# add binaries via perf record post processing
-> > > +test_record ${ex_sha1}
-> > > +test_record ${ex_md5}
-> > > +
-> > > +exit ${err}
-> > > --
-> > > 2.26.2
-> > >
-
--- 
-
-- Arnaldo
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+-also fill the additional fields of the struct boot_params as that
+-described in zero-page.txt.
++also fill the additional fields of the struct boot_params as
++described in chapter :doc:`zero-page`.
+ 
+ After setting up the struct boot_params, the boot loader can load the
+ 32/64-bit kernel in the same way as that of 16-bit boot protocol.
+@@ -1379,7 +1379,7 @@ can be calculated as follows::
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+ also fill the additional fields of the struct boot_params as described
+-in zero-page.txt.
++in chapter :doc:`zero-page`.
+ 
+ After setting up the struct boot_params, the boot loader can load
+ 64-bit kernel in the same way as that of 16-bit boot protocol, but
