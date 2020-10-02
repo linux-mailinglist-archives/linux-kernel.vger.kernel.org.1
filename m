@@ -2,131 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD23C281614
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C80281617
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388241AbgJBPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388169AbgJBPHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:07:04 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D124A206CA;
-        Fri,  2 Oct 2020 15:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601651224;
-        bh=lPmxsNvPQckyNK0W5rno7Rz65VQ55u3DSvZaGGDIQ3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jqwpMUkbAPxWWqZPnN19bUyl6xtu4tDndxoJMXMqIT4zRw3YoX8kHwiXHVwNjzNno
-         6rFQb3T9uswM2UzXd594nS5rNh8tA+qd7teIfcCD2TJ0hG0+iZGDiu8AATD3woj7E2
-         nnmPQEuV4HRdyiahRI9E+/jMUzLjECoVca/r4REo=
-Received: by pali.im (Postfix)
-        id 4327FE79; Fri,  2 Oct 2020 17:07:01 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 17:07:01 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
-Message-ID: <20201002150701.bvatgxygq4rjssly@pali>
-References: <20200902144344.16684-1-pali@kernel.org>
- <20201002133713.GA24425@e121166-lin.cambridge.arm.com>
- <20201002142616.dxgdneg2lqw4pxie@pali>
- <20201002143851.GA25575@e121166-lin.cambridge.arm.com>
- <20201002145237.r2troxmgbq2bf3ep@pali>
- <20201002150300.GA25684@e121166-lin.cambridge.arm.com>
+        id S2388285AbgJBPHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:07:21 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9820 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBPHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:07:20 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f77421a0000>; Fri, 02 Oct 2020 08:07:06 -0700
+Received: from [10.21.180.145] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
+ 2020 15:07:09 +0000
+Subject: Re: [PATCH net-next 04/16] devlink: Add reload stats
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Moshe Shemesh <moshe@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-5-git-send-email-moshe@mellanox.com>
+ <20201001142521.0c9ac25c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <df68d59b-8885-d685-ab53-2c5d8f7b56e4@nvidia.com>
+Date:   Fri, 2 Oct 2020 18:07:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002150300.GA25684@e121166-lin.cambridge.arm.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201001142521.0c9ac25c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601651226; bh=NuVgA+fbMDuI47xZ3QpLWjwdo2NcD5S+6qV110A/d8U=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=JBT+6Iv1LsjO6Jrl+HuWdow632b2hC+8vpN86Ed0h28nzu7uehjEpQbZZBeKXufyY
+         ua3gFVQTEkAfVNB2q7SgGkl0diEEPaX2pfxTVu0m8BbStojTQIskQgvxxZVhdGpEbS
+         BkWTu8tfRtnU2/WBPMrcPzo7M+ma0FDDqgPTSSY8KsAWZwBGasqvezhrUPOntzIHJr
+         XgF+1YuUAep+sZdZ6KRy9vpCvIwKg58xP36J1w4owmfzZogciRj82U8EQjjt7M0oh0
+         Tsm0TGceClLZHHOHjqUXF0ngGtkr6GSUpic9pSsay7pnCJSHyj4oxbZJaOwhvKyefW
+         w/GnKItt1r6wQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 02 October 2020 16:03:09 Lorenzo Pieralisi wrote:
-> On Fri, Oct 02, 2020 at 04:52:37PM +0200, Pali Rohár wrote:
-> > On Friday 02 October 2020 15:38:51 Lorenzo Pieralisi wrote:
-> > > On Fri, Oct 02, 2020 at 04:26:16PM +0200, Pali Rohár wrote:
-> > > > On Friday 02 October 2020 14:37:13 Lorenzo Pieralisi wrote:
-> > > > > On Wed, Sep 02, 2020 at 04:43:42PM +0200, Pali Rohár wrote:
-> > > > > > This patch series fixes regression introduced in commit 366697018c9a
-> > > > > > ("PCI: aardvark: Add PHY support") which caused aardvark driver
-> > > > > > initialization failure on EspressoBin board with factory version of
-> > > > > > Arm Trusted Firmware provided by Marvell.
-> > > > > > 
-> > > > > > Second patch depends on the first patch, so please add appropriate
-> > > > > > Fixes/Cc:stable@ tags to have both patches correctly backported to
-> > > > > > stable kernels.
-> > > > > > 
-> > > > > > I have tested both patches with Marvell ATF firmware ebin-17.10-uart.zip
-> > > > > > and with upstream ATF+uboot and aardvark was initialized successfully.
-> > > > > > Without this patch series on ebin-17.10-uart.zip aardvark initialization
-> > > > > > failed.
-> > > > > > 
-> > > > > > Pali Rohár (2):
-> > > > > >   phy: marvell: comphy: Convert internal SMCC firmware return codes to
-> > > > > >     errno
-> > > > > >   PCI: aardvark: Fix initialization with old Marvell's Arm Trusted
-> > > > > >     Firmware
-> > > > > > 
-> > > > > >  drivers/pci/controller/pci-aardvark.c        |  4 +++-
-> > > > > >  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
-> > > > > >  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
-> > > > > >  3 files changed, 25 insertions(+), 7 deletions(-)
-> > > > > 
-> > > > > Applied to pci/aardvark (both patches), thanks.
-> > > > 
-> > > > Ok! For second patch would be needed to put CC:stable line with
-> > > > specifying prerequisite of first patch as written in document:
-> > > > 
-> > > > https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > > > 
-> > > > If I understood it correctly, second patch needs following line:
-> > > > 
-> > > > Cc: <stable@vger.kernel.org> # <commit_id_of_first_path>: comphy: errno return codes
-> > > > 
-> > > > where <commit_id_of_first_path> is commit id of PATCH 1/2.
-> > > > 
-> > > > (correct me if I'm wrong)
-> > > > 
-> > > > Now when first commit has commit id, could you update second commit to
-> > > > include this information about prerequisite?
-> > > 
-> > > No I can't because they will be merged at the same time.
-> > 
-> > And it is a problem? Git commit id of first patch would not be changed,
-> > so referencing to it is now possible from second commit (unless you do
-> > rebasing).
-> > 
-> > > What we can do is mark the second patch for stable
-> > 
-> > This is done by adding "Cc: <stable@vger.kernel.org>" line to second
-> > patch which I suggested, right?
-> 
-> I will apply the stable tag and dependency, it should be fine.
 
-Ok! I thought that according to stable-kernel-rules.html that dependent
-commit could be added after stable email address separated with # char.
-At least this is how I understood stable-kernel-rules.html and its
-section:
+On 10/2/2020 12:25 AM, Jakub Kicinski wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Thu,  1 Oct 2020 16:59:07 +0300 Moshe Shemesh wrote:
+>> Add reload stats to hold the history per reload action type and limit.
+>>
+>> For example, the number of times fw_activate has been performed on this
+>> device since the driver module was added or if the firmware activation
+>> was performed with or without reset.
+>>
+>> Add devlink notification on stats update.
+>>
+>> Expose devlink reload stats to the user through devlink dev get command.
+>>
+>> Examples:
+>> $ devlink dev show
+>> pci/0000:82:00.0:
+>>    stats:
+>>        reload_stats:
+>>          driver_reinit 2
+>>          fw_activate 1
+>>          fw_activate_no_reset 0
+>> pci/0000:82:00.1:
+>>    stats:
+>>        reload_stats:
+>>          driver_reinit 1
+>>          fw_activate 0
+>>          fw_activate_no_reset 0
+>>
+>> $ devlink dev show -jp
+>> {
+>>      "dev": {
+>>          "pci/0000:82:00.0": {
+>>              "stats": {
+>>                  "reload_stats": [ {
+>>                          "driver_reinit": 2
+>>                      },{
+>>                          "fw_activate": 1
+>>                      },{
+>>                          "fw_activate_no_reset": 0
+>>                      } ]
+>>              }
+>>          },
+>>          "pci/0000:82:00.1": {
+>>              "stats": {
+>>                  "reload_stats": [ {
+>>                          "driver_reinit": 1
+>>                      },{
+>>                          "fw_activate": 0
+>>                      },{
+>>                          "fw_activate_no_reset": 0
+>>                      } ]
+> This will be a question to the user space part but IDK why every stat
+> is in a separate object?
+>
+> Instead of doing an array of objects -> [ {}, {}, {} ]
+> make "reload_stats" itself an object.
 
-  "Additionally, some patches submitted via Option 1 may have additional
-   patch prerequisites which can be cherry-picked."
 
-> Please ensure you follow up stable updates especially in case patches
-> don't backport properly (ie please try).
+I first thought that there should be an array of stats, looking at it 
+again, as long as each stat contains just sting and value, object of 
+pairs will perfectly fit. I will change it.
 
-No problem, I can monitor emails about backporting these patches.
+>>              }
+>>          }
+>>      }
+>> }
+>>
+>> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+> Minor nits, looks good overall:
+>
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+>
+>> diff --git a/net/core/devlink.c b/net/core/devlink.c
+>> index 6de7d6aa6ed1..05516f1e4c3e 100644
+>> --- a/net/core/devlink.c
+>> +++ b/net/core/devlink.c
+>> @@ -500,10 +500,68 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
+>>        return test_bit(limit, &devlink->ops->reload_limits);
+>>   }
+>>
+>> +static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
+>> +                                enum devlink_reload_limit limit, u32 value)
+>> +{
+>> +     struct nlattr *reload_stats_entry;
+>> +
+>> +     reload_stats_entry = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS_ENTRY);
+>> +     if (!reload_stats_entry)
+>> +             return -EMSGSIZE;
+>> +
+>> +     if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action))
+>> +             goto nla_put_failure;
+>> +     if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_LIMIT, limit))
+>> +             goto nla_put_failure;
+>> +     if (nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
+>> +             goto nla_put_failure;
+> nit: it's common to combine such expressions into:
+>
+> if (nla_put...() ||
+>      nla_put...() ||
+>      nla_put...())
+>      goto ...;
 
-> Lorenzo
+
+Ack.
+
+>> +     nla_nest_end(msg, reload_stats_entry);
+>> +     return 0;
+>> +
+>> +nla_put_failure:
+>> +     nla_nest_cancel(msg, reload_stats_entry);
+>> +     return -EMSGSIZE;
+>> +}
+>> +
+>> +static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
+>> +{
+>> +     struct nlattr *reload_stats_attr;
+>> +     int i, j, stat_idx;
+>> +     u32 value;
+>> +
+>> +     reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>> +
+>> +     if (!reload_stats_attr)
+>> +             return -EMSGSIZE;
+>> +
+>> +     for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
+>> +             if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+> Why check this? It can't be supported.
+Show stats of the actions with unspecified limit.
+>> +                 !devlink_reload_limit_is_supported(devlink, j))
+>> +                     continue;
+>> +             for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
+>> +                     if (!devlink_reload_action_is_supported(devlink, i) ||
+>> +                         devlink_reload_combination_is_invalid(i, j))
+> Again, devlink instance would not have been registered with invalid
+> combinations, right?
+
+
+It does register actions and register limits, there can be invalid 
+combination, but devlink will block it before it gets to the driver.
+
+>> +                             continue;
+>> +
+>> +                     stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
+>> +                     value = devlink->reload_stats[stat_idx];
+>> +                     if (devlink_reload_stat_put(msg, i, j, value))
+>> +                             goto nla_put_failure;
+>> +             }
+>> +     }
+>> +     nla_nest_end(msg, reload_stats_attr);
+>> +     return 0;
+>> +
+>> +nla_put_failure:
+>> +     nla_nest_cancel(msg, reload_stats_attr);
+>> +     return -EMSGSIZE;
+>> +}
+>
+>> @@ -3004,6 +3072,34 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+>>   }
+>>   EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+>>
+>> +static void
+>> +__devlink_reload_stats_update(struct devlink *devlink, u32 *reload_stats,
+>> +                           enum devlink_reload_limit limit, unsigned long actions_performed)
+>> +     for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
+> nit: for_each_set_bit
+Ack.
+>> +             if (!test_bit(action, &actions_performed))
+>> +                     continue;
+>> +             stat_idx = limit * __DEVLINK_RELOAD_ACTION_MAX + action;
+>> +             reload_stats[stat_idx]++;
+>> +     }
+>> +     devlink_notify(devlink, DEVLINK_CMD_NEW);
+>> +}
