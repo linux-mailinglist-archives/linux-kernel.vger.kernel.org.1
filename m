@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71332810BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB212810C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387496AbgJBKtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBKtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:49:21 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB11C0613D0;
-        Fri,  2 Oct 2020 03:49:20 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v8so1042751iom.6;
-        Fri, 02 Oct 2020 03:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y7KPKP7p/PqqwBahTdy6N1A9YW0I11vmbu6jK2YtETo=;
-        b=mMFnVyzpteyYEG2drBH9/DG5hd+xd4LQQe5ZOpOOODDlC1pyFJJtyrMI47BJq6CK8h
-         Jo0LCcbbNPQpFfRbhyGHVgR8DPOLdnh1l28sDLEUKl66VqWz+WGf0BK03E/QS+boVq5u
-         vNvzPIW9hk+Ln4TGDpWq71oRUQpBjMx480ngcsNDVLn0jNDBBLTp+QO/AKVlo2dpgzWy
-         Kebh+kWKkpmPQO/fQEFDM48g1uL42VkN8iAezCqy2cNHKg8NdWblIsbstkFLBUriovQy
-         KAE7QHSFYMgGY4YgzZsmvAemHmjndjbk/hs6BM8sxO8A0sK/s2GJMbLDk3b212qNak9/
-         t0pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y7KPKP7p/PqqwBahTdy6N1A9YW0I11vmbu6jK2YtETo=;
-        b=jD67bNd+QepgmSHfOwyrDqXplJ/W4IaEqstG1ENNVO/gI3D1V0a5GPL9P+itlSRE7Y
-         zPpQPztoyHQ5FEcsCNBDiYQjd/pW2rCE4HpSj0xythrCM2hrvgrjcjEbrVlderDxcHXM
-         cawPkKEKPAES4j7yhko+JlUAKsWVGhwgjBMR3cuMLkWImxktUwZ7FYn5/JKcP+K1cQuM
-         H8Eh1NgTE0M8y45d3MHkqd1e3Yq3PSqV6yWILERpI7UEh1d4CvgOdpLp9leYI76hQPp1
-         oQuGqvMCeVN6WfvEV8fRPPBrRyGQPLtjPopdxnk1bZgnqG1nhTXs2n6fBoGD1SuI773t
-         CjYA==
-X-Gm-Message-State: AOAM532gVt79xkqR5LF94cJpQB03ADaBb09jmQD3xr1jybN0lb/dOE3i
-        CPSfnDJhxd0uKGCZE045ulU5bGJ8z8bsJkQ4UOzETdtw
-X-Google-Smtp-Source: ABdhPJx349vqLpVGHE/lDqiH+7sz10baae/2W3jVoGayF0faxEuUtK1SFYtlQpYsbOx4d25ywfaHVaxTYn2dzYhnOlA=
-X-Received: by 2002:a02:6cd0:: with SMTP id w199mr1480958jab.121.1601635759704;
- Fri, 02 Oct 2020 03:49:19 -0700 (PDT)
+        id S2387545AbgJBKxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725920AbgJBKxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:53:07 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED1C520874;
+        Fri,  2 Oct 2020 10:53:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601635986;
+        bh=WUSRRX+XBvVTYHzBDRPQz4PtaU7zhX11OBofs03lu7w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yvX1A3cLWsjS1cWSyIRSg+WJmwZtSfrDcvyV/NeaKNl7GPsIy0voCxFZ/rOk4Gpmn
+         2KaO/nUo6AwHYxAo8duM5tiz9TubUPDXXY5lD8rnJHuHCrD3KuX85XjN3soizDcz8B
+         jOf84bE2XRGR0Trvh3UMgzg0dT6cjmceAFfHiP3o=
+Received: by mail-ej1-f53.google.com with SMTP id qp15so1340345ejb.3;
+        Fri, 02 Oct 2020 03:53:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531uTpfRhMMc+fyakJH6fjIgtpx0vsvhK0xfgJKCC4B/ZYBuPTAC
+        MlIgMtYN4QKyeHjuqKKzXmT9MLkU/ep84CiL9zA=
+X-Google-Smtp-Source: ABdhPJz2njtnLuaxs13sg4hhwWj46P8QK/G+8vH63FlRpE0n16xuRCvITpEi9m8uB+qnlenWJGhPhUHCNrXOYo6xhlo=
+X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1573436ejd.119.1601635984516;
+ Fri, 02 Oct 2020 03:53:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com> <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
- <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
-In-Reply-To: <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
-From:   Jonathan Wakely <jwakely.gcc@gmail.com>
-Date:   Fri, 2 Oct 2020 11:49:08 +0100
-Message-ID: <CAH6eHdSLbaqTyXaPnBxnR4n+WVHJCBDF=C9RXa6To1rSuv0D4w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] system_data_types.7: Add 'void *'
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-Cc:     Paul Eggert <eggert@cs.ucla.edu>, linux-man@vger.kernel.org,
-        GNU C Library <libc-alpha@sourceware.org>,
-        mtk.manpages@gmail.com,
+References: <20200930234637.7573-1-post@lespocky.de> <20200930234637.7573-3-post@lespocky.de>
+ <CAJKOXPe7Tg+5ESsdPGks_Aqj+zQH4-asC839FseWp0OCJbT4Mw@mail.gmail.com> <9895379.VNsV0mSTfq@ada>
+In-Reply-To: <9895379.VNsV0mSTfq@ada>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 2 Oct 2020 12:52:52 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcTstvUuy-CnJbOGxiONLx2V2hfpnR0H4gS=4v+C1udtQ@mail.gmail.com>
+Message-ID: <CAJKOXPcTstvUuy-CnJbOGxiONLx2V2hfpnR0H4gS=4v+C1udtQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/7] dt-bindings: leds: Convert pwm to yaml
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     linux-leds@vger.kernel.org, Alexander Dahl <post@lespocky.de>,
+        devicetree@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 09:28, Alejandro Colomar via Gcc <gcc@gcc.gnu.org> wrote:
-> However, it might be good that someone starts a page called
-> 'type_qualifiers(7)' or something like that.
+On Fri, 2 Oct 2020 at 12:46, Alexander Dahl <ada@thorsis.com> wrote:
+>
+> Hei hei,
+>
+> Am Freitag, 2. Oktober 2020, 11:31:09 CEST schrieb Krzysztof Kozlowski:
+> > On Thu, 1 Oct 2020 at 01:52, Alexander Dahl <post@lespocky.de> wrote:
+> > > The example was adapted in the following ways:
+> > >
+> > > - make use of the now supported 'function' and 'color' properties
+> > > - remove pwm nodes, those are documented elsewhere
+> > > - tweake node names to be matched by new dtschema rules
+> >
+> > tweak? or align?
+>
+> Depends on if schema actually checks it (child nodes) or if it's just DT
+> policy (parent node).  I'll reword in v7.
+>
+> > > License was discussed with the original author.
+> >
+> > Since you relicense their work, you need an ack or signed off from
+> > every author. You cannot just say "I discussed" and post it. That way
+> > I could pretend (lie) I talked to Linus and try to relicense Linux to
+> > BSD...
+>
+> I know.  Peter promised to give his Ack publicly on the list back when I
+> worked on v2 or v3, so he is in Cc since then, but apparently he did not yet
+> post it. ;-)
+>
+> > You need acks/SoB from Peter and Russel.
+>
+> Well, I should add Russel in v7, too, then.
 
-Who is this for? Who is trying to learn C from man pages? Should
-somebody stop them?
+Yes, please.
+
+For the patch itself:
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
