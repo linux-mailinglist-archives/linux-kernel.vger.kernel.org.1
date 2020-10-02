@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649E92819CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E21D2819AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388527AbgJBRjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
+        id S2388482AbgJBRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388355AbgJBRii (ORCPT
+        with ESMTP id S2388377AbgJBRik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:38:38 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB89C0613E3
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:38:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so1227711pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:38:37 -0700 (PDT)
+        Fri, 2 Oct 2020 13:38:40 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F5FC0613A6
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:38:40 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id p21so1309770pju.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8Hp+7iC/qpDxM5Z+ih9Obdekn7D1QoZOPNj787JbbJI=;
-        b=VpU7xchNgw6cw9oGZU5/CcpnqfEzBAL4Dvzshosnb4RzP+PA9ABf1JrbQKjbHsZTim
-         OrtlcKNnqYHuSSeJxhZTnYYKv3w9PPfnzGqG/LqeB+xUpxHhmSJOlWulOuZFMAKFvXfW
-         7XcxuZK1TsW8mfDaTioIGtzU2mT6QC/K3m2CQ=
+        bh=UZNhkp+Ex7uixUZwdnKtRZuboVANPTY0Sz5Zyi22yrg=;
+        b=ZXP+q7PnzQa6LfR5IqDwOiL+3aiyalH+lzrSji6XGSuLCygmO87wN8h/T1+VwRCrXo
+         7l7zYzj8s9k1eycRAjGu0x2I4aY3HHR7HGBZU3XvySusni+7g+k1sm0CcCgX7Grls47g
+         +/qsf06fs6BW7V8Nkk5YDWMp6ANViowBcWYDM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8Hp+7iC/qpDxM5Z+ih9Obdekn7D1QoZOPNj787JbbJI=;
-        b=FaT0ob78hkW8Nwo5GjrXkqg6Ty0B1rGRBRVqYoDX7oOrHY9pfDoa5N1mOUj396Um5m
-         UaQ9xuhTYbaw+cI9kOS935xZNVq+O2GBmQHy64OWN+7iDZkfRkOGozXzMJ9o612xdgRS
-         62rBHebjkr0IMgakhSAfyF7m4rAz1hOgP+Puc/weK0feQSpwVxvxZJrmQJ9GRTJU4QSY
-         5GVhI9iy5dslc2l6yEaxRi7cjt+BZl3n5lWVJmYtDbn/2jtZl5BUdjmR7hhcE4zdSwh+
-         f7TREUi0bhJQJylhKv3AesMCqY6br8Z8Bk7Yw96/8pxWZV1/Z03Pslbc9lnYX2wEfnEd
-         7ueg==
-X-Gm-Message-State: AOAM533NhzFdOn7GOLtq3UEjS5agtf8Cm/zk4PVZiSbXVP8vuw4Pklap
-        b0v2t+Mh851dfEGDT+JeD7LpIA==
-X-Google-Smtp-Source: ABdhPJy/BntAQKEnY5lvIusq1+xqLOvqEevT1O9eAGCzO9CsbBGzxwSBnuHX0A5VWfaOdB3pDAq2wg==
-X-Received: by 2002:a62:52ce:0:b029:13e:50c8:499b with SMTP id g197-20020a6252ce0000b029013e50c8499bmr3969231pfb.14.1601660317504;
-        Fri, 02 Oct 2020 10:38:37 -0700 (PDT)
+        bh=UZNhkp+Ex7uixUZwdnKtRZuboVANPTY0Sz5Zyi22yrg=;
+        b=OXj//+58fZzkIoh0g/e6V7MgQj0vvQXDrxY48thch1CT1W8WGsLeBeAIEp6ntPX3bU
+         o1YRK3xwvGOxeWUIQjWhadq9C3sh9XuKe1yK07o0rc2kaR7i4t4ygtDkeGQ6eaHk3YQJ
+         sR3Dnb584d18t5SuxoI+qQnYass5m2L81IP3tvt0cXWiMAvdajtaexIlPadujowALgFB
+         NOY9AWv0G00nw70RW74/T3YRfy31ccW/I4xECXi8PEDpcFvhAyTqtD226DlSItyt7rMM
+         hF8crjyV5EZdDj4S29PixFaNsgZgrqrg9Zhnld04FLfuV4p1bQQpUmvjfDUZGiun5abd
+         Pflg==
+X-Gm-Message-State: AOAM532HFp/pH3WXbVSRri/jISNe7EaHmfQbGrxc2DwZLs0guvqLHuFI
+        k2ZmugO050uTwnoqSicNMj7/9Q==
+X-Google-Smtp-Source: ABdhPJyor6I0OBDlhptSmA2CTw2A2FOz16orpOA1LJDZY8gyfQKIOZ86O1WsL37+jRrDp43R8+pnlA==
+X-Received: by 2002:a17:90a:1b45:: with SMTP id q63mr2160961pjq.21.1601660319816;
+        Fri, 02 Oct 2020 10:38:39 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a2sm2826330pfr.104.2020.10.02.10.38.34
+        by smtp.gmail.com with ESMTPSA id z7sm2747869pfj.75.2020.10.02.10.38.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 02 Oct 2020 10:38:36 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -58,9 +58,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-security-module@vger.kernel.org,
         linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 06/16] fs/kernel_read_file: Switch buffer size arg to size_t
-Date:   Fri,  2 Oct 2020 10:38:18 -0700
-Message-Id: <20201002173828.2099543-7-keescook@chromium.org>
+Subject: [PATCH v5 07/16] fs/kernel_read_file: Add file_size output argument
+Date:   Fri,  2 Oct 2020 10:38:19 -0700
+Message-Id: <20201002173828.2099543-8-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201002173828.2099543-1-keescook@chromium.org>
 References: <20201002173828.2099543-1-keescook@chromium.org>
@@ -70,12 +70,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for further refactoring of kernel_read_file*(), rename
-the "max_size" argument to the more accurate "buf_size", and correct
-its type to size_t. Add kerndoc to explain the specifics of how the
-arguments will be used. Note that with buf_size now size_t, it can no
-longer be negative (and was never called with a negative value). Adjust
-callers to use it as a "maximum size" when *buf is NULL.
+In preparation for adding partial read support, add an optional output
+argument to kernel_read_file*() that reports the file size so callers
+can reason more easily about their reading progress.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
@@ -83,158 +80,193 @@ Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 Reviewed-by: James Morris <jamorris@linux.microsoft.com>
 Acked-by: Scott Branden <scott.branden@broadcom.com>
 ---
- fs/kernel_read_file.c            | 34 +++++++++++++++++++++++---------
- include/linux/kernel_read_file.h |  8 ++++----
- security/integrity/digsig.c      |  2 +-
- security/integrity/ima/ima_fs.c  |  2 +-
- 4 files changed, 31 insertions(+), 15 deletions(-)
+ drivers/base/firmware_loader/main.c |  1 +
+ fs/kernel_read_file.c               | 19 +++++++++++++------
+ include/linux/kernel_read_file.h    |  4 ++++
+ kernel/kexec_file.c                 |  4 ++--
+ kernel/module.c                     |  2 +-
+ security/integrity/digsig.c         |  2 +-
+ security/integrity/ima/ima_fs.c     |  2 +-
+ 7 files changed, 23 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+index 6df1bdcfeb9d..d9a180148c4b 100644
+--- a/drivers/base/firmware_loader/main.c
++++ b/drivers/base/firmware_loader/main.c
+@@ -500,6 +500,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
+ 
+ 		/* load firmware files from the mount namespace of init */
+ 		rc = kernel_read_file_from_path_initns(path, &buffer, msize,
++						       NULL,
+ 						       READING_FIRMWARE);
+ 		if (rc < 0) {
+ 			if (rc != -ENOENT)
 diff --git a/fs/kernel_read_file.c b/fs/kernel_read_file.c
-index dc28a8def597..e21a76001fff 100644
+index e21a76001fff..2e29c38eb4df 100644
 --- a/fs/kernel_read_file.c
 +++ b/fs/kernel_read_file.c
-@@ -5,15 +5,31 @@
- #include <linux/security.h>
- #include <linux/vmalloc.h>
- 
-+/**
-+ * kernel_read_file() - read file contents into a kernel buffer
-+ *
-+ * @file	file to read from
-+ * @buf		pointer to a "void *" buffer for reading into (if
-+ *		*@buf is NULL, a buffer will be allocated, and
-+ *		@buf_size will be ignored)
-+ * @buf_size	size of buf, if already allocated. If @buf not
-+ *		allocated, this is the largest size to allocate.
-+ * @id		the kernel_read_file_id identifying the type of
-+ *		file contents being read (for LSMs to examine)
-+ *
-+ * Returns number of bytes read (no single read will be bigger
-+ * than INT_MAX), or negative on error.
-+ *
-+ */
+@@ -14,6 +14,8 @@
+  *		@buf_size will be ignored)
+  * @buf_size	size of buf, if already allocated. If @buf not
+  *		allocated, this is the largest size to allocate.
++ * @file_size	if non-NULL, the full size of @file will be
++ *		written here.
+  * @id		the kernel_read_file_id identifying the type of
+  *		file contents being read (for LSMs to examine)
+  *
+@@ -22,7 +24,8 @@
+  *
+  */
  int kernel_read_file(struct file *file, void **buf,
--		     loff_t max_size, enum kernel_read_file_id id)
-+		     size_t buf_size, enum kernel_read_file_id id)
+-		     size_t buf_size, enum kernel_read_file_id id)
++		     size_t buf_size, size_t *file_size,
++		     enum kernel_read_file_id id)
  {
  	loff_t i_size, pos;
  	ssize_t bytes = 0;
- 	void *allocated = NULL;
- 	int ret;
- 
--	if (!S_ISREG(file_inode(file)->i_mode) || max_size < 0)
-+	if (!S_ISREG(file_inode(file)->i_mode))
- 		return -EINVAL;
- 
- 	ret = deny_write_access(file);
-@@ -29,7 +45,7 @@ int kernel_read_file(struct file *file, void **buf,
- 		ret = -EINVAL;
- 		goto out;
- 	}
--	if (i_size > INT_MAX || (max_size > 0 && i_size > max_size)) {
-+	if (i_size > INT_MAX || i_size > buf_size) {
+@@ -49,6 +52,8 @@ int kernel_read_file(struct file *file, void **buf,
  		ret = -EFBIG;
  		goto out;
  	}
-@@ -75,7 +91,7 @@ int kernel_read_file(struct file *file, void **buf,
++	if (file_size)
++		*file_size = i_size;
+ 
+ 	if (!*buf)
+ 		*buf = allocated = vmalloc(i_size);
+@@ -91,7 +96,8 @@ int kernel_read_file(struct file *file, void **buf,
  EXPORT_SYMBOL_GPL(kernel_read_file);
  
  int kernel_read_file_from_path(const char *path, void **buf,
--			       loff_t max_size, enum kernel_read_file_id id)
-+			       size_t buf_size, enum kernel_read_file_id id)
+-			       size_t buf_size, enum kernel_read_file_id id)
++			       size_t buf_size, size_t *file_size,
++			       enum kernel_read_file_id id)
  {
  	struct file *file;
  	int ret;
-@@ -87,14 +103,14 @@ int kernel_read_file_from_path(const char *path, void **buf,
+@@ -103,14 +109,14 @@ int kernel_read_file_from_path(const char *path, void **buf,
  	if (IS_ERR(file))
  		return PTR_ERR(file);
  
--	ret = kernel_read_file(file, buf, max_size, id);
-+	ret = kernel_read_file(file, buf, buf_size, id);
+-	ret = kernel_read_file(file, buf, buf_size, id);
++	ret = kernel_read_file(file, buf, buf_size, file_size, id);
  	fput(file);
  	return ret;
  }
  EXPORT_SYMBOL_GPL(kernel_read_file_from_path);
  
  int kernel_read_file_from_path_initns(const char *path, void **buf,
--				      loff_t max_size,
-+				      size_t buf_size,
+-				      size_t buf_size,
++				      size_t buf_size, size_t *file_size,
  				      enum kernel_read_file_id id)
  {
  	struct file *file;
-@@ -113,13 +129,13 @@ int kernel_read_file_from_path_initns(const char *path, void **buf,
+@@ -129,13 +135,14 @@ int kernel_read_file_from_path_initns(const char *path, void **buf,
  	if (IS_ERR(file))
  		return PTR_ERR(file);
  
--	ret = kernel_read_file(file, buf, max_size, id);
-+	ret = kernel_read_file(file, buf, buf_size, id);
+-	ret = kernel_read_file(file, buf, buf_size, id);
++	ret = kernel_read_file(file, buf, buf_size, file_size, id);
  	fput(file);
  	return ret;
  }
  EXPORT_SYMBOL_GPL(kernel_read_file_from_path_initns);
  
--int kernel_read_file_from_fd(int fd, void **buf, loff_t max_size,
-+int kernel_read_file_from_fd(int fd, void **buf, size_t buf_size,
+ int kernel_read_file_from_fd(int fd, void **buf, size_t buf_size,
++			     size_t *file_size,
  			     enum kernel_read_file_id id)
  {
  	struct fd f = fdget(fd);
-@@ -128,7 +144,7 @@ int kernel_read_file_from_fd(int fd, void **buf, loff_t max_size,
+@@ -144,7 +151,7 @@ int kernel_read_file_from_fd(int fd, void **buf, size_t buf_size,
  	if (!f.file)
  		goto out;
  
--	ret = kernel_read_file(f.file, buf, max_size, id);
-+	ret = kernel_read_file(f.file, buf, buf_size, id);
+-	ret = kernel_read_file(f.file, buf, buf_size, id);
++	ret = kernel_read_file(f.file, buf, buf_size, file_size, id);
  out:
  	fdput(f);
  	return ret;
 diff --git a/include/linux/kernel_read_file.h b/include/linux/kernel_read_file.h
-index 0ca0bdbed1bd..910039e7593e 100644
+index 910039e7593e..023293eaf948 100644
 --- a/include/linux/kernel_read_file.h
 +++ b/include/linux/kernel_read_file.h
-@@ -36,16 +36,16 @@ static inline const char *kernel_read_file_id_str(enum kernel_read_file_id id)
- }
+@@ -37,15 +37,19 @@ static inline const char *kernel_read_file_id_str(enum kernel_read_file_id id)
  
  int kernel_read_file(struct file *file,
--		     void **buf, loff_t max_size,
-+		     void **buf, size_t buf_size,
+ 		     void **buf, size_t buf_size,
++		     size_t *file_size,
  		     enum kernel_read_file_id id);
  int kernel_read_file_from_path(const char *path,
--			       void **buf, loff_t max_size,
-+			       void **buf, size_t buf_size,
+ 			       void **buf, size_t buf_size,
++			       size_t *file_size,
  			       enum kernel_read_file_id id);
  int kernel_read_file_from_path_initns(const char *path,
--				      void **buf, loff_t max_size,
-+				      void **buf, size_t buf_size,
+ 				      void **buf, size_t buf_size,
++				      size_t *file_size,
  				      enum kernel_read_file_id id);
  int kernel_read_file_from_fd(int fd,
--			     void **buf, loff_t max_size,
-+			     void **buf, size_t buf_size,
+ 			     void **buf, size_t buf_size,
++			     size_t *file_size,
  			     enum kernel_read_file_id id);
  
  #endif /* _LINUX_KERNEL_READ_FILE_H */
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index b20cfde8a01d..ee51c1028658 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -222,7 +222,7 @@ kimage_file_prepare_segments(struct kimage *image, int kernel_fd, int initrd_fd,
+ 	void *ldata;
+ 
+ 	ret = kernel_read_file_from_fd(kernel_fd, &image->kernel_buf,
+-				       INT_MAX, READING_KEXEC_IMAGE);
++				       INT_MAX, NULL, READING_KEXEC_IMAGE);
+ 	if (ret < 0)
+ 		return ret;
+ 	image->kernel_buf_len = ret;
+@@ -242,7 +242,7 @@ kimage_file_prepare_segments(struct kimage *image, int kernel_fd, int initrd_fd,
+ 	/* It is possible that there no initramfs is being loaded */
+ 	if (!(flags & KEXEC_FILE_NO_INITRAMFS)) {
+ 		ret = kernel_read_file_from_fd(initrd_fd, &image->initrd_buf,
+-					       INT_MAX,
++					       INT_MAX, NULL,
+ 					       READING_KEXEC_INITRAMFS);
+ 		if (ret < 0)
+ 			goto out;
+diff --git a/kernel/module.c b/kernel/module.c
+index 9faa6322f17b..0f11eaed047e 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -4048,7 +4048,7 @@ SYSCALL_DEFINE3(finit_module, int, fd, const char __user *, uargs, int, flags)
+ 		      |MODULE_INIT_IGNORE_VERMAGIC))
+ 		return -EINVAL;
+ 
+-	err = kernel_read_file_from_fd(fd, &hdr, INT_MAX,
++	err = kernel_read_file_from_fd(fd, &hdr, INT_MAX, NULL,
+ 				       READING_MODULE);
+ 	if (err < 0)
+ 		return err;
 diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-index 97661ffabc4e..04f779c4f5ed 100644
+index 04f779c4f5ed..8a523dfd7fd7 100644
 --- a/security/integrity/digsig.c
 +++ b/security/integrity/digsig.c
 @@ -175,7 +175,7 @@ int __init integrity_load_x509(const unsigned int id, const char *path)
  	int rc;
  	key_perm_t perm;
  
--	rc = kernel_read_file_from_path(path, &data, 0,
-+	rc = kernel_read_file_from_path(path, &data, INT_MAX,
+-	rc = kernel_read_file_from_path(path, &data, INT_MAX,
++	rc = kernel_read_file_from_path(path, &data, INT_MAX, NULL,
  					READING_X509_CERTIFICATE);
  	if (rc < 0) {
  		pr_err("Unable to open file: %s (%d)", path, rc);
 diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
-index 602f52717757..692b83e82edf 100644
+index 692b83e82edf..5fc56ccb6678 100644
 --- a/security/integrity/ima/ima_fs.c
 +++ b/security/integrity/ima/ima_fs.c
 @@ -284,7 +284,7 @@ static ssize_t ima_read_policy(char *path)
  	datap = path;
  	strsep(&datap, "\n");
  
--	rc = kernel_read_file_from_path(path, &data, 0, READING_POLICY);
-+	rc = kernel_read_file_from_path(path, &data, INT_MAX, READING_POLICY);
+-	rc = kernel_read_file_from_path(path, &data, INT_MAX, READING_POLICY);
++	rc = kernel_read_file_from_path(path, &data, INT_MAX, NULL, READING_POLICY);
  	if (rc < 0) {
  		pr_err("Unable to open file: %s (%d)", path, rc);
  		return rc;
