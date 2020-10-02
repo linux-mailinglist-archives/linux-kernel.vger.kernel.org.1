@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D07281DA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA9D281DA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgJBVY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S1725871AbgJBVZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBVY4 (ORCPT
+        with ESMTP id S1725283AbgJBVZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:24:56 -0400
-Received: from mail-ua1-x961.google.com (mail-ua1-x961.google.com [IPv6:2607:f8b0:4864:20::961])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3B5C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:24:56 -0700 (PDT)
-Received: by mail-ua1-x961.google.com with SMTP id n26so757110uao.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:24:56 -0700 (PDT)
+        Fri, 2 Oct 2020 17:25:02 -0400
+Received: from mail-ua1-x964.google.com (mail-ua1-x964.google.com [IPv6:2607:f8b0:4864:20::964])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AF7C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:25:02 -0700 (PDT)
+Received: by mail-ua1-x964.google.com with SMTP id v5so754095uau.10
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=zzfQbC+4d0K3uSz/QthMD7HB+J/E52DFj8mFz8hIh5s=;
-        b=Ms2u0aONgRYe5/9Bo5nHU5ZnBHVxP/4GrwiF2BRXobNMs/ixguXkSHr8bUUfEsgSIW
-         SO31HAePzK3L519Byag9bnq/BP6CXWM6xmTa8V1YMYmIKjf2lZSx6FtU7+GRbB1tT7Bq
-         K3JAJ0/y8rNDTGXKT8BJeJZu1T8BjAjXT5V+Q=
+        bh=zxV7JMbzDHRej+Q8zv2eiFV/d9I724MJyBi3jk5rkW4=;
+        b=GXlLKzrnQkAZsYt0nbs7fXRQitQs7v7klQjlLoZEWmIIoqgt47NC+3R2mwc+xjJaC7
+         fAJc78Pa7GEjCEfBlBa1/2P0I5hkL+sduwq8iONd1QhcqZvobXFSG0M0geOFTHail4ij
+         mVOVdNDA3es25uFJqkVd3cgYiCbBASUAFFkmE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=zzfQbC+4d0K3uSz/QthMD7HB+J/E52DFj8mFz8hIh5s=;
-        b=C7g7ymf2G9ieT9WfxHVkLaBnUrkkloPtbj+dZehThE3p6gPMwbNfZB2p3z29E+Pb21
-         L+ywDs5rksUcUHzwdlIYzmiFQAS5imSHdPo+IaHQFIo6zrNHyyaZsji/RtiNlHpivaD4
-         UhLX11/fTx7JFyEMfD6N5jSu8qzKO6MadzUbZS55YvAGmCDy6JVG9qfsvlIoNIJt0FDl
-         6OW/osZuasfLtA4HH9XwlUO0T+hOnjJgQTY/iwyBtRK9uYg9ivLDWnRHYwkx0KzgdPPj
-         FY62cue7JW7m8pvuMAtsYiskagnzuk8HkZXpSVazVR9LfECDuksb9rZfbG6isrXHUwRS
-         Ko6g==
-X-Gm-Message-State: AOAM530ruhvLqaV2xn0kbGBM1EeJIkI0qU2u3AEPGriwQHQf9GAAgqWw
-        Pk+T8S+8fULvwz0Zn375SOcibGeEPIX5fZzsSBqeNO6skTQK
-X-Google-Smtp-Source: ABdhPJw84icNZnlZ/9cJ83+GCi3JSDDGOqPUcj28/CUgyMM4HOu1MDUuq50rfC2WSOkN6jnqlqvCp4MjXZur
-X-Received: by 2002:ab0:5b86:: with SMTP id y6mr2628262uae.101.1601673895632;
-        Fri, 02 Oct 2020 14:24:55 -0700 (PDT)
+        bh=zxV7JMbzDHRej+Q8zv2eiFV/d9I724MJyBi3jk5rkW4=;
+        b=gjKCf0FrmQfGhe9vbDIz+i862oB+AEa2N0sQBacPWElKknDJa14WTAELmUnJ3h8xD7
+         uvUAGp0AR+qT3kNO4EQQ9LdIkbkQXmANtv4Rk5kmw3E+u67RuVZhMGC9DxoB+nVpKglE
+         gg29NXCH/UzsMFHI+NgmXkXpDYkrDj3idz2IFsbz5uEMKr9ale/w6eG8+lgM/Zyiyr4D
+         bpfRVnY4oo80PGxYKTb/7YFB9Y5kGgxQXKtcpqcuFB70Iyi9Kw4RWpfaYIh49NjCANfW
+         cHAE9Xy1ZC6OrFW1YXXU+5IR0ZT1KVEUMnMzfTU0tk2oFrR05V8yfo6zguBeqG9SlBd7
+         CVpw==
+X-Gm-Message-State: AOAM530VsGCCr2j770XVHFghH8+WwCDpimlOTyS/JL62xKArpXAPPeb4
+        5kvuCYnlc7UOJ6yi8Vz2e4XtinSYtrt0pjdskSda8N8dbX9S
+X-Google-Smtp-Source: ABdhPJxC2nOTqn1rRmG1bMpiIcNFic38dXQttr+lCic2TTBroP+p8e5BVibYvhXbuoXlBkrxzfccrEq7MbhD
+X-Received: by 2002:ab0:5e8:: with SMTP id e95mr2463587uae.57.1601673901249;
+        Fri, 02 Oct 2020 14:25:01 -0700 (PDT)
 Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp-relay.gmail.com with ESMTPS id x2sm327292vsn.4.2020.10.02.14.24.50
+        by smtp-relay.gmail.com with ESMTPS id x2sm327292vsn.4.2020.10.02.14.24.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 14:24:55 -0700 (PDT)
+        Fri, 02 Oct 2020 14:25:01 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 From:   Scott Branden <scott.branden@broadcom.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ To:     Arnd Bergmann <arnd@arndb.de>,
 Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com,
         Olof Johansson <olof@lixom.net>
-Subject: [PATCH v6 10/14] misc: bcm-vk: reset_pid support
-Date:   Fri,  2 Oct 2020 14:23:23 -0700
-Message-Id: <20201002212327.18393-11-scott.branden@broadcom.com>
+Subject: [PATCH v6 11/14] misc: bcm-vk: add BCM_VK_QSTATS
+Date:   Fri,  2 Oct 2020 14:23:24 -0700
+Message-Id: <20201002212327.18393-12-scott.branden@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201002212327.18393-1-scott.branden@broadcom.com>
 References: <20201002212327.18393-1-scott.branden@broadcom.com>
@@ -63,338 +63,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reset support via ioctl.
-Kill user processes that are open when VK card is reset.
-If a particular PID has issued the reset request do not kill that process
-as it issued the ioctl.
+Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
+queue statistics.
+
+These statistics keep track of max, abs_max, and average for the
+messages queues.
 
 Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
 Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 ---
- drivers/misc/bcm-vk/bcm_vk.h     |   1 +
- drivers/misc/bcm-vk/bcm_vk_dev.c | 158 +++++++++++++++++++++++++++++--
- drivers/misc/bcm-vk/bcm_vk_msg.c |  40 +++++++-
- 3 files changed, 191 insertions(+), 8 deletions(-)
+ drivers/misc/bcm-vk/Kconfig      | 14 +++++++++
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  9 ++++++
+ drivers/misc/bcm-vk/bcm_vk_msg.c | 52 +++++++++++++++++++++++++++++++-
+ drivers/misc/bcm-vk/bcm_vk_msg.h | 12 ++++++++
+ 4 files changed, 86 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-index 775d892f13f8..ff8cb33d9882 100644
---- a/drivers/misc/bcm-vk/bcm_vk.h
-+++ b/drivers/misc/bcm-vk/bcm_vk.h
-@@ -462,6 +462,7 @@ irqreturn_t bcm_vk_msgq_irqhandler(int irq, void *dev_id);
- irqreturn_t bcm_vk_notf_irqhandler(int irq, void *dev_id);
- int bcm_vk_msg_init(struct bcm_vk *vk);
- void bcm_vk_msg_remove(struct bcm_vk *vk);
-+void bcm_vk_drain_msg_on_reset(struct bcm_vk *vk);
- int bcm_vk_sync_msgq(struct bcm_vk *vk, bool force_sync);
- void bcm_vk_blk_drv_access(struct bcm_vk *vk);
- s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk);
+diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
+index 2272e47655ed..a3a020b19e3b 100644
+--- a/drivers/misc/bcm-vk/Kconfig
++++ b/drivers/misc/bcm-vk/Kconfig
+@@ -13,3 +13,17 @@ config BCM_VK
+ 	  accelerators via /dev/bcm-vk.N devices.
+ 
+ 	  If unsure, say N.
++
++if BCM_VK
++
++config BCM_VK_QSTATS
++	bool "VK Queue Statistics"
++	help
++	  Turn on to enable Queue Statistics.
++	  These are useful for debugging purposes.
++	  Some performance loss by enabling this debug config.
++	  For properly operating PCIe hardware no need to enable this.
++
++	  If unsure, say N.
++
++endif
 diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
-index 4727d7617153..718badb53100 100644
+index 718badb53100..6c2370723e0a 100644
 --- a/drivers/misc/bcm-vk/bcm_vk_dev.c
 +++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -478,7 +478,9 @@ void bcm_vk_blk_drv_access(struct bcm_vk *vk)
- 	int i;
+@@ -1097,6 +1097,15 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
+ 	vkwrite32(vk, 0, BAR_0, BAR_INTF_VER);
+ 	memset(&vk->host_alert, 0, sizeof(vk->host_alert));
+ 	memset(&vk->peer_alert, 0, sizeof(vk->peer_alert));
++#if defined(CONFIG_BCM_VK_QSTATS)
++	/* clear qstats */
++	for (i = 0; i < VK_MSGQ_MAX_NR; i++) {
++		memset(&vk->to_v_msg_chan.qstats[i].qcnts, 0,
++		       sizeof(vk->to_v_msg_chan.qstats[i].qcnts));
++		memset(&vk->to_h_msg_chan.qstats[i].qcnts, 0,
++		       sizeof(vk->to_h_msg_chan.qstats[i].qcnts));
++	}
++#endif
+ 	/* clear 4096 bits of bitmap */
+ 	bitmap_clear(vk->bmap, 0, VK_MSG_ID_BITMAP_SIZE);
  
- 	/*
--	 * kill all the apps
-+	 * kill all the apps except for the process that is resetting.
-+	 * If not called during reset, reset_pid will be 0, and all will be
-+	 * killed.
- 	 */
- 	spin_lock(&vk->ctx_lock);
- 
-@@ -489,10 +491,12 @@ void bcm_vk_blk_drv_access(struct bcm_vk *vk)
- 		struct bcm_vk_ctx *ctx;
- 
- 		list_for_each_entry(ctx, &vk->pid_ht[i].head, node) {
--			dev_dbg(&vk->pdev->dev,
--				"Send kill signal to pid %d\n",
--				ctx->pid);
--			kill_pid(find_vpid(ctx->pid), SIGKILL, 1);
-+			if (ctx->pid != vk->reset_pid) {
-+				dev_dbg(&vk->pdev->dev,
-+					"Send kill signal to pid %d\n",
-+					ctx->pid);
-+				kill_pid(find_vpid(ctx->pid), SIGKILL, 1);
-+			}
- 		}
- 	}
- 	spin_unlock(&vk->ctx_lock);
-@@ -975,6 +979,49 @@ static long bcm_vk_load_image(struct bcm_vk *vk,
- 	return ret;
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+index e31d41400199..6ba0a7a94dcc 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_msg.c
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -91,6 +91,44 @@ u32 msgq_avail_space(const struct bcm_vk_msgq __iomem *msgq,
+ 	return (qinfo->q_size - msgq_occupied(msgq, qinfo) - 1);
  }
  
-+static int bcm_vk_reset_successful(struct bcm_vk *vk)
++#if defined(CONFIG_BCM_VK_QSTATS)
++
++/* Use default value of 20000 rd/wr per update */
++#if !defined(BCM_VK_QSTATS_ACC_CNT)
++#define BCM_VK_QSTATS_ACC_CNT 20000
++#endif
++
++static void bcm_vk_update_qstats(struct bcm_vk *vk,
++				 const char *tag,
++				 struct bcm_vk_qstats *qstats,
++				 u32 occupancy)
 +{
-+	struct device *dev = &vk->pdev->dev;
-+	u32 fw_status, reset_reason;
-+	int ret = -EAGAIN;
++	struct bcm_vk_qs_cnts *qcnts = &qstats->qcnts;
 +
-+	/*
-+	 * Reset could be triggered when the card in several state:
-+	 *   i)   in bootROM
-+	 *   ii)  after boot1
-+	 *   iii) boot2 running
-+	 *
-+	 * i) & ii) - no status bits will be updated.  If vkboot1
-+	 * runs automatically after reset, it  will update the reason
-+	 * to be unknown reason
-+	 * iii) - reboot reason match + deinit done.
-+	 */
-+	fw_status = vkread32(vk, BAR_0, VK_BAR_FWSTS);
-+	/* immediate exit if interface goes down */
-+	if (BCM_VK_INTF_IS_DOWN(fw_status)) {
-+		dev_err(dev, "PCIe Intf Down!\n");
-+		goto reset_exit;
++	if (occupancy > qcnts->max_occ) {
++		qcnts->max_occ = occupancy;
++		if (occupancy > qcnts->max_abs)
++			qcnts->max_abs = occupancy;
 +	}
 +
-+	reset_reason = (fw_status & VK_FWSTS_RESET_REASON_MASK);
-+	if ((reset_reason == VK_FWSTS_RESET_MBOX_DB) ||
-+	    (reset_reason == VK_FWSTS_RESET_UNKNOWN))
-+		ret = 0;
++	qcnts->acc_sum += occupancy;
++	if (++qcnts->cnt >= BCM_VK_QSTATS_ACC_CNT) {
++		/* log average and clear counters */
++		dev_dbg(&vk->pdev->dev,
++			"%s[%d]: Max: [%3d/%3d] Acc %d num %d, Aver %d\n",
++			tag, qstats->q_num,
++			qcnts->max_occ, qcnts->max_abs,
++			qcnts->acc_sum,
++			qcnts->cnt,
++			qcnts->acc_sum / qcnts->cnt);
 +
-+	/*
-+	 * if some of the deinit bits are set, but done
-+	 * bit is not, this is a failure if triggered while boot2 is running
-+	 */
-+	if ((fw_status & VK_FWSTS_DEINIT_TRIGGERED) &&
-+	    !(fw_status & VK_FWSTS_RESET_DONE))
-+		ret = -EAGAIN;
-+
-+reset_exit:
-+	dev_dbg(dev, "FW status = 0x%x ret %d\n", fw_status, ret);
-+
-+	return ret;
++		qcnts->cnt = 0;
++		qcnts->max_occ = 0;
++		qcnts->acc_sum = 0;
++	}
 +}
++#endif
 +
- static void bcm_to_v_reset_doorbell(struct bcm_vk *vk, u32 db_val)
- {
- 	vkwrite32(vk, db_val, BAR_0, VK_BAR0_RESET_DB_BASE);
-@@ -984,7 +1031,11 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
- {
- 	u32 i;
- 	u32 value, boot_status;
-+	bool is_stdalone, is_boot2;
+ /* number of retries when enqueue message fails before returning EAGAIN */
+ #define BCM_VK_H2VK_ENQ_RETRY 10
+ #define BCM_VK_H2VK_ENQ_RETRY_DELAY_MS 50
+@@ -495,8 +533,12 @@ static int bcm_vk_msg_chan_init(struct bcm_vk_msg_chan *chan)
  
-+	/* clean up before pressing the door bell */
-+	bcm_vk_drain_msg_on_reset(vk);
-+	vkwrite32(vk, 0, BAR_1, VK_BAR1_MSGQ_DEF_RDY);
- 	/* make tag '\0' terminated */
- 	vkwrite32(vk, 0, BAR_1, VK_BAR1_BOOT1_VER_TAG);
- 
-@@ -995,6 +1046,11 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
- 	for (i = 0; i < VK_BAR1_SOTP_REVID_MAX; i++)
- 		vkwrite32(vk, 0, BAR_1, VK_BAR1_SOTP_REVID_ADDR(i));
- 
-+	memset(&vk->card_info, 0, sizeof(vk->card_info));
-+	memset(&vk->peerlog_info, 0, sizeof(vk->peerlog_info));
-+	memset(&vk->proc_mon_info, 0, sizeof(vk->proc_mon_info));
-+	memset(&vk->alert_cnts, 0, sizeof(vk->alert_cnts));
-+
- 	/*
- 	 * When boot request fails, the CODE_PUSH_OFFSET stays persistent.
- 	 * Allowing us to debug the failure. When we call reset,
-@@ -1015,17 +1071,103 @@ static int bcm_vk_trigger_reset(struct bcm_vk *vk)
- 	}
- 	vkwrite32(vk, value, BAR_0, BAR_CODEPUSH_SBL);
- 
-+	/* special reset handling */
-+	is_stdalone = boot_status & BOOT_STDALONE_RUNNING;
-+	is_boot2 = (boot_status & BOOT_STATE_MASK) == BOOT2_RUNNING;
-+	if (vk->peer_alert.flags & ERR_LOG_RAMDUMP) {
-+		/*
-+		 * if card is in ramdump mode, it is hitting an error.  Don't
-+		 * reset the reboot reason as it will contain valid info that
-+		 * is important - simply use special reset
-+		 */
-+		vkwrite32(vk, VK_BAR0_RESET_RAMPDUMP, BAR_0, VK_BAR_FWSTS);
-+		return VK_BAR0_RESET_RAMPDUMP;
-+	} else if (is_stdalone && !is_boot2) {
-+		dev_info(&vk->pdev->dev, "Hard reset on Standalone mode");
-+		bcm_to_v_reset_doorbell(vk, VK_BAR0_RESET_DB_HARD);
-+		return VK_BAR0_RESET_DB_HARD;
+ 	mutex_init(&chan->msgq_mutex);
+ 	spin_lock_init(&chan->pendq_lock);
+-	for (i = 0; i < VK_MSGQ_MAX_NR; i++)
++	for (i = 0; i < VK_MSGQ_MAX_NR; i++) {
+ 		INIT_LIST_HEAD(&chan->pendq[i]);
++#if defined(CONFIG_BCM_VK_QSTATS)
++		chan->qstats[i].q_num = i;
++#endif
 +	}
-+
- 	/* reset fw_status with proper reason, and press db */
- 	vkwrite32(vk, VK_FWSTS_RESET_MBOX_DB, BAR_0, VK_BAR_FWSTS);
- 	bcm_to_v_reset_doorbell(vk, VK_BAR0_RESET_DB_SOFT);
- 
--	/* clear other necessary registers records */
-+	/* clear other necessary registers and alert records */
- 	vkwrite32(vk, 0, BAR_0, BAR_OS_UPTIME);
- 	vkwrite32(vk, 0, BAR_0, BAR_INTF_VER);
-+	memset(&vk->host_alert, 0, sizeof(vk->host_alert));
-+	memset(&vk->peer_alert, 0, sizeof(vk->peer_alert));
-+	/* clear 4096 bits of bitmap */
-+	bitmap_clear(vk->bmap, 0, VK_MSG_ID_BITMAP_SIZE);
  
  	return 0;
  }
+@@ -605,6 +647,10 @@ static int bcm_to_v_msg_enqueue(struct bcm_vk *vk, struct bcm_vk_wkent *entry)
  
-+static long bcm_vk_reset(struct bcm_vk *vk, struct vk_reset __user *arg)
-+{
-+	struct device *dev = &vk->pdev->dev;
-+	struct vk_reset reset;
-+	int ret = 0;
-+	u32 ramdump_reset;
-+	int special_reset;
-+
-+	if (copy_from_user(&reset, arg, sizeof(struct vk_reset)))
-+		return -EFAULT;
-+
-+	/* check if any download is in-progress, if so return error */
-+	if (test_and_set_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload) != 0) {
-+		dev_err(dev, "Download operation pending - skip reset.\n");
-+		return -EPERM;
-+	}
-+
-+	ramdump_reset = vk->peer_alert.flags & ERR_LOG_RAMDUMP;
-+	dev_info(dev, "Issue Reset %s\n",
-+		 ramdump_reset ? "in ramdump mode" : "");
-+
-+	/*
-+	 * The following is the sequence of reset:
-+	 * - send card level graceful shut down
-+	 * - wait enough time for VK to handle its business, stopping DMA etc
-+	 * - kill host apps
-+	 * - Trigger interrupt with DB
-+	 */
-+	bcm_vk_send_shutdown_msg(vk, VK_SHUTDOWN_GRACEFUL, 0, 0);
-+
-+	spin_lock(&vk->ctx_lock);
-+	if (!vk->reset_pid) {
-+		vk->reset_pid = task_pid_nr(current);
-+	} else {
-+		dev_err(dev, "Reset already launched by process pid %d\n",
-+			vk->reset_pid);
-+		ret = -EACCES;
-+	}
-+	spin_unlock(&vk->ctx_lock);
-+	if (ret)
-+		goto err_exit;
-+
-+	bcm_vk_blk_drv_access(vk);
-+	special_reset = bcm_vk_trigger_reset(vk);
-+
-+	/*
-+	 * Wait enough time for card os to deinit
-+	 * and populate the reset reason.
-+	 */
-+	msleep(BCM_VK_DEINIT_TIME_MS);
-+
-+	if (special_reset) {
-+		/* if it is special ramdump reset, return the type to user */
-+		reset.arg2 = special_reset;
-+		if (copy_to_user(arg, &reset, sizeof(reset)))
-+			ret = -EFAULT;
-+	} else {
-+		ret = bcm_vk_reset_successful(vk);
-+	}
-+
-+err_exit:
-+	clear_bit(BCM_VK_WQ_DWNLD_PEND, vk->wq_offload);
-+	return ret;
-+}
-+
- static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	long ret = -EINVAL;
-@@ -1044,6 +1186,10 @@ static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		ret = bcm_vk_load_image(vk, argp);
- 		break;
+ 	avail = msgq_avail_space(msgq, qinfo);
  
-+	case VK_IOCTL_RESET:
-+		ret = bcm_vk_reset(vk, argp);
-+		break;
++#if defined(CONFIG_BCM_VK_QSTATS)
++	bcm_vk_update_qstats(vk, "to_v", &chan->qstats[q_num],
++			     qinfo->q_size - avail);
++#endif
+ 	/* if not enough space, return EAGAIN and let app handles it */
+ 	retry = 0;
+ 	while ((avail < entry->to_v_blks) &&
+@@ -818,6 +864,10 @@ s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk)
+ 				goto idx_err;
+ 			}
+ 
++#if defined(CONFIG_BCM_VK_QSTATS)
++			bcm_vk_update_qstats(vk, "to_h", &chan->qstats[q_num],
++					     msgq_occupied(msgq, qinfo));
++#endif
+ 			num_blks = src_size + 1;
+ 			data = kzalloc(num_blks * VK_MSGQ_BLK_SIZE, GFP_KERNEL);
+ 			if (data) {
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.h b/drivers/misc/bcm-vk/bcm_vk_msg.h
+index 637c5d662eb7..d00d9707bd01 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_msg.h
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.h
+@@ -125,6 +125,14 @@ struct bcm_vk_qs_cnts {
+ 	u32 max_abs; /* the abs max since reset */
+ };
+ 
++#if defined(CONFIG_BCM_VK_QSTATS)
++/* stats structure */
++struct bcm_vk_qstats {
++	u32 q_num;
++	struct bcm_vk_qs_cnts qcnts;
++};
++#endif
 +
- 	default:
- 		break;
- 	}
-diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
-index 3f2876484b7a..e31d41400199 100644
---- a/drivers/misc/bcm-vk/bcm_vk_msg.c
-+++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
-@@ -204,6 +204,15 @@ static struct bcm_vk_ctx *bcm_vk_get_ctx(struct bcm_vk *vk, const pid_t pid)
+ /* control channel structure for either to_v or to_h communication */
+ struct bcm_vk_msg_chan {
+ 	u32 q_nr;
+@@ -138,6 +146,10 @@ struct bcm_vk_msg_chan {
+ 	struct list_head pendq[VK_MSGQ_MAX_NR];
+ 	/* static queue info from the sync */
+ 	struct bcm_vk_sync_qinfo sync_qinfo[VK_MSGQ_MAX_NR];
++#if defined(CONFIG_BCM_VK_QSTATS)
++	/* qstats */
++	struct bcm_vk_qstats qstats[VK_MSGQ_MAX_NR];
++#endif
+ };
  
- 	spin_lock(&vk->ctx_lock);
- 
-+	/* check if it is in reset, if so, don't allow */
-+	if (vk->reset_pid) {
-+		dev_err(&vk->pdev->dev,
-+			"No context allowed during reset by pid %d\n",
-+			vk->reset_pid);
-+
-+		goto in_reset_exit;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(vk->ctx); i++) {
- 		if (!vk->ctx[i].in_use) {
- 			vk->ctx[i].in_use = true;
-@@ -232,6 +241,7 @@ static struct bcm_vk_ctx *bcm_vk_get_ctx(struct bcm_vk *vk, const pid_t pid)
- 	init_waitqueue_head(&ctx->rd_wq);
- 
- all_in_use_exit:
-+in_reset_exit:
- 	spin_unlock(&vk->ctx_lock);
- 
- 	return ctx;
-@@ -376,6 +386,12 @@ static void bcm_vk_drain_all_pend(struct device *dev,
- 			 num, ctx->idx);
- }
- 
-+void bcm_vk_drain_msg_on_reset(struct bcm_vk *vk)
-+{
-+	bcm_vk_drain_all_pend(&vk->pdev->dev, &vk->to_v_msg_chan, NULL);
-+	bcm_vk_drain_all_pend(&vk->pdev->dev, &vk->to_h_msg_chan, NULL);
-+}
-+
- /*
-  * Function to sync up the messages queue info that is provided by BAR1
-  */
-@@ -700,13 +716,22 @@ static int bcm_vk_handle_last_sess(struct bcm_vk *vk, const pid_t pid,
- 
- 	/*
- 	 * don't send down or do anything if message queue is not initialized
-+	 * and if it is the reset session, clear it.
- 	 */
--	if (!bcm_vk_drv_access_ok(vk))
-+	if (!bcm_vk_drv_access_ok(vk)) {
-+		if (vk->reset_pid == pid)
-+			vk->reset_pid = 0;
- 		return -EPERM;
-+	}
- 
- 	dev_dbg(dev, "No more sessions, shut down pid %d\n", pid);
- 
--	rc = bcm_vk_send_shutdown_msg(vk, VK_SHUTDOWN_PID, pid, q_num);
-+	/* only need to do it if it is not the reset process */
-+	if (vk->reset_pid != pid)
-+		rc = bcm_vk_send_shutdown_msg(vk, VK_SHUTDOWN_PID, pid, q_num);
-+	else
-+		/* put reset_pid to 0 if it is exiting last session */
-+		vk->reset_pid = 0;
- 
- 	return rc;
- }
-@@ -1110,6 +1135,17 @@ ssize_t bcm_vk_write(struct file *p_file,
- 		int dir;
- 		struct _vk_data *data;
- 
-+		/*
-+		 * check if we are in reset, if so, no buffer transfer is
-+		 * allowed and return error.
-+		 */
-+		if (vk->reset_pid) {
-+			dev_dbg(dev, "No Transfer allowed during reset, pid %d.\n",
-+				ctx->pid);
-+			rc = -EACCES;
-+			goto write_free_msgid;
-+		}
-+
- 		num_planes = entry->to_v_msg[0].cmd & VK_CMD_PLANES_MASK;
- 		if ((entry->to_v_msg[0].cmd & VK_CMD_MASK) == VK_CMD_DOWNLOAD)
- 			dir = DMA_FROM_DEVICE;
+ /* total number of supported ctx, 32 ctx each for 5 components */
 -- 
 2.17.1
 
