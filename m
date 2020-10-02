@@ -2,96 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B3A281155
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF07281158
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387578AbgJBLjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgJBLjr (ORCPT
+        id S2387778AbgJBLkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:40:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48522 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgJBLkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:39:47 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62574C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 04:39:47 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id j10so559424qvk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 04:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q4iK1I/SnNAoc+7Y+E8xiOO2Lt6oZM4orbJzQinvTvs=;
-        b=kQh4ocMexmYDSbQ5KWrwdjVrKH3hcwpgq8aAUpOrtz7LIAcY6z1nGDvzWxWXPyDX8G
-         FNL8V9YmTeOLHsW4KqHlaFqTBorTQEIVM5rjcvrCBxtpU/WqYFPDhZ17jkYT4056IZkC
-         Ow8D8qF/wZkTtz3xkSXJxrmh3YgIZE/gwpsn8heaiVL0SjoZm3P7J1XGBzqD9qW5kfgL
-         XD7c1Ua9PBS/kzHnTlh3D2Aqkjp603UN1PRCkxf0IrLUx5Z7KyIWTBh4xOmBKVV54cs+
-         XjXd6QOgu4CqIJNgMTnIvYNtyZX0IL4DHocziXzl9kwGI44vH9rajDP3SRFIOaaAag+V
-         r5/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q4iK1I/SnNAoc+7Y+E8xiOO2Lt6oZM4orbJzQinvTvs=;
-        b=GCwueyVXmlAOUbS2X0YgeO9lWi21Id2IS+c9I2+Wz1rlP8xM7xZXVq+y6Deguuw1i+
-         UTioQZkpff5OtsVpemQ7/PZvH9/F1SjHwN6vshXAcH23daj/2RxMlPPK580EzZNHxA1K
-         jrX2bEltV6FdchbYjdNktpawouxVzZqwMpEIqTH8vtxl9BydddWWxsyIrPTOUNBh6Ag3
-         CcJrN1zvMBy5kUpvlh9OxxwRQoJXXM0p6vGZayUB0ugHeknIGQ+pCu3lw7GCourL4P6i
-         2iouyKSP+sDQhpu7ghTWW4wLfkrpD4wm4gakdpHFRmj4CpUlwO8FnxatoBqW/TLHss7d
-         vVhg==
-X-Gm-Message-State: AOAM5334kiMaKhPOciL9o9NG2Wdanrx6tT7+DnUrqIBWIIPbcsyJpx96
-        hmyiaobsQESUfBuCYNo3nFQJ0A==
-X-Google-Smtp-Source: ABdhPJyj4/OCeK99T3cxyXoCe9rfZhXRSkt6RP3645TYyjAREoTemtw4nsP/mTiWY/lLuXpZi11ULA==
-X-Received: by 2002:a0c:dd81:: with SMTP id v1mr1742177qvk.62.1601638786662;
-        Fri, 02 Oct 2020 04:39:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id h40sm827396qte.59.2020.10.02.04.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 04:39:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kOJPd-005Yy6-0U; Fri, 02 Oct 2020 08:39:45 -0300
-Date:   Fri, 2 Oct 2020 08:39:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michel Lespinasse <walken@google.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
- lock of live mm
-Message-ID: <20201002113944.GH9916@ziepe.ca>
-References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
- <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
- <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
+        Fri, 2 Oct 2020 07:40:36 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092BeLjs113512;
+        Fri, 2 Oct 2020 06:40:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601638821;
+        bh=V/zyiQmILGFog3Ufk5QRTr8xqX1k4K9HSSdOm6QJWRQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RzlO48V+Ja0l7Vp+twsqZJm985HIpMMJolOLivp+Kbm3lLhA/1QSXOWXGfL6BLJ9K
+         DvDHLk7mNH3E3opwd6n2xy3H+fnJVjItCJPDde1uYSL62pnEA0AHY06jn23fzj7+sH
+         64xOkvWY53IJ2SVSTfL4mU/HZy8MnKpHiAEXDHb8=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092BeLta128973
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 2 Oct 2020 06:40:21 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 06:40:20 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 2 Oct 2020 06:40:20 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092BeFU1049422;
+        Fri, 2 Oct 2020 06:40:16 -0500
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Saravana Kannan <saravanak@google.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        <geert+renesas@glider.be>, <gregkh@linuxfoundation.org>,
+        <linux-omap@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <peter.ujfalusi@ti.com>, <rjw@rjwysocki.net>,
+        <tomi.valkeinen@ti.com>, <tony@atomide.com>,
+        <ulf.hansson@linaro.org>, <kernel-team@android.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com>
+ <20201001231922.GG3722@pendragon.ideasonboard.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <17bdc3f0-d816-151a-fef2-88cd38fc8621@ti.com>
+Date:   Fri, 2 Oct 2020 14:40:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
+In-Reply-To: <20201001231922.GG3722@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:17:49AM -0700, Michel Lespinasse wrote:
-> Also FYI I was going to play with these patches a bit to help answer
-> these questions on my own, but wasn't able to easily apply them as
-> they came lightly mangled (whitespace issues) when I saved them.
 
-Me too
 
-It seems OK, you've created sort of a SINGLE_DEPTH_NESTING but in
-reverse - instead of marking the child of the nest it marks the
-parent.
+On 02/10/2020 02:19, Laurent Pinchart wrote:
+> Hi Saravana,
+> 
+> Thank you for the patch.
+> 
+> On Thu, Oct 01, 2020 at 03:59:51PM -0700, Saravana Kannan wrote:
+>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+>> adding all top level devices") optimized the fwnode parsing when all top
+>> level devices are added, it missed out optimizing this for platform
+>> where the top level devices are added through the init_machine() path.
+>>
+>> This commit does the optimization for all paths by simply moving the
+>> fw_devlink_pause/resume() inside of_platform_default_populate().
+> 
+> Based on v5.9-rc5, before the patch:
+> 
+> [    0.652887] cpuidle: using governor menu
+> [   12.349476] No ATAGs?
+> 
+> After the patch:
+> 
+> [    0.650460] cpuidle: using governor menu
+> [   12.262101] No ATAGs?
+> 
+> :-(
 
-It would be nice to add a note in the commit message where the nesting
-happens on this path.
+This is kinda expected :( because omap2 arch doesn't call of_platform_default_populate()
 
-Thanks,
-Jason
+Call path:
+board-generic.c
+  DT_MACHINE_START()
+    .init_machine	= omap_generic_init,
+
+  omap_generic_init()
+    pdata_quirks_init(omap_dt_match_table);
+		of_platform_populate(NULL, omap_dt_match_table,
+			     omap_auxdata_lookup, NULL);
+
+Other affected platforms
+arm: mach-ux500
+some mips
+some powerpc
+
+there are also case when a lot of devices placed under bus node, in such case
+  of_platform_populate() calls from bus drivers will also suffer from this issue.
+
+I think one option could be to add some parameter to _populate() or introduce new api.
+
+By the way, is there option to disable this feature at all?
+Is there Kconfig option?
+Is there any reasons why such complex and time consuming code added to the kernel and not implemented on DTC level?
+
+
+Also, I've came with another diff, pls check.
+
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 5.9.0-rc6-01791-g9acba6b38757-dirty (grygorii@grygorii-XPS-13-9370) (arm-linux-gnueabihf-gcc (GNU Toolcha0
+[    0.000000] CPU: ARMv7 Processor [412fc0f2] revision 2 (ARMv7), cr=10c5387d
+[    0.000000] CPU: div instructions available: patching division code
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, PIPT instruction cache
+[    0.000000] OF: fdt: Machine model: TI AM5718 IDK
+...
+[    0.053443] cpuidle: using governor ladder
+[    0.053470] cpuidle: using governor menu
+[    0.089304] No ATAGs?
+...
+[    3.092291] devtmpfs: mounted
+[    3.095804] Freeing unused kernel memory: 1024K
+[    3.100483] Run /sbin/init as init process
+
+
+
+------ >< ---
+diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+index 071f04da32c8..4521b26e7745 100644
+--- a/drivers/of/platform.c
++++ b/drivers/of/platform.c
+@@ -514,6 +514,12 @@ static const struct of_device_id reserved_mem_matches[] = {
+         {}
+  };
+  
++static int __init of_platform_fw_devlink_pause(void)
++{
++       fw_devlink_pause();
++}
++core_initcall(of_platform_fw_devlink_pause);
++
+  static int __init of_platform_default_populate_init(void)
+  {
+         struct device_node *node;
+@@ -538,9 +544,7 @@ static int __init of_platform_default_populate_init(void)
+         }
+  
+         /* Populate everything else. */
+-       fw_devlink_pause();
+         of_platform_default_populate(NULL, NULL, NULL);
+-       fw_devlink_resume();
+  
+         return 0;
+  }
+@@ -548,6 +552,7 @@ arch_initcall_sync(of_platform_default_populate_init);
+  
+  static int __init of_platform_sync_state_init(void)
+  {
++       fw_devlink_resume();
+         device_links_supplier_sync_state_resume();
+         return 0;
+  }
+
+
+
+-- 
+Best regards,
+grygorii
