@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2743281F2B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F14281F20
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725681AbgJBXjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 19:39:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53746 "EHLO mga05.intel.com"
+        id S1725772AbgJBXg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 19:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgJBXjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 19:39:52 -0400
-IronPort-SDR: CRMK1g0voJTNPlR63RKVQlMtC8CvxUtMuuMEfsmwKlqq085/+iDfgkxBSMkeFUW42uYtQawzsN
- UYkxFQI1vYsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="247850581"
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="247850581"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 16:39:50 -0700
-IronPort-SDR: uGlsOMjW08igrL9io/X7cVHfNeTw0Gr2xT2d3o6xM/qhSgkFsGu1TUetCHA0kOagRDU2BoSNqF
- 1ffa9cmvl6yw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="295501013"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Oct 2020 16:39:50 -0700
-Date:   Fri, 2 Oct 2020 16:41:52 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH 2/3] x86/cpu: Describe hybrid CPUs in cpuinfo_x86
-Message-ID: <20201002234152.GA3698@ranerica-svr.sc.intel.com>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
- <20201002201931.2826-3-ricardo.neri-calderon@linux.intel.com>
- <20201002203452.GE17436@zn.tnic>
- <20201002210231.GA3222@ranerica-svr.sc.intel.com>
- <20201002210306.GF17436@zn.tnic>
+        id S1725283AbgJBXg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 19:36:29 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EFBD206B7;
+        Fri,  2 Oct 2020 23:36:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601681788;
+        bh=iOVObYJsM+EFNqUv+ULTp5M07bWQLZYcS5493ovJNM4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VhJb/GwO/mAoRHW9/eBJv4/NvJiJX94JViRvsHucqBIgoPhRJjxsMM51Q9/yYoSYm
+         CbefN5tC9q9a7mTBdA/BhW9lu+8gyo8mDhTRv0Vh2Euz1DmowE6LkwSNkoA6sahnjT
+         /eIh+XhXj6eIS5MNieK40/WwquhUCt/B3VZrcMVM=
+Date:   Fri, 2 Oct 2020 18:42:17 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] bpf: verifier: Use fallthrough pseudo-keyword
+Message-ID: <20201002234217.GA12280@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002210306.GF17436@zn.tnic>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 11:03:06PM +0200, Borislav Petkov wrote:
-> On Fri, Oct 02, 2020 at 02:02:31PM -0700, Ricardo Neri wrote:
-> > What about patches 1 and 3? Should I resubmit the series with only
-> > those?
-> 
-> Why would you need to resubmit? They're good to go as is, AFAICT.
+Replace /* fallthrough */ comments with the new pseudo-keyword macro
+fallthrough[1].
 
-Thanks for clarifying Boris. Just wanted to check if there was any
-action required from me regarding patches 1 & 3.
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Thanks and BR,
-Ricardo
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ kernel/bpf/verifier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 015a1c074b6b..fcef04b80b66 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2667,7 +2667,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (t == BPF_WRITE)
+ 			return false;
+-		/* fallthrough */
++		fallthrough;
+ 
+ 	/* Program types with direct read + write access go here! */
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+@@ -5432,7 +5432,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		/* smin_val represents the known value */
+ 		if (known && smin_val == 0 && opcode == BPF_ADD)
+ 			break;
+-		/* fall-through */
++		fallthrough;
+ 	case PTR_TO_PACKET_END:
+ 	case PTR_TO_SOCKET:
+ 	case PTR_TO_SOCKET_OR_NULL:
+-- 
+2.27.0
+
