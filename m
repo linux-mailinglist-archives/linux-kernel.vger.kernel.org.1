@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA85281046
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DD6281042
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387604AbgJBKGM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Oct 2020 06:06:12 -0400
-Received: from mx3.uni-regensburg.de ([194.94.157.148]:40426 "EHLO
-        mx3.uni-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBKGM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:06:12 -0400
-X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 06:06:11 EDT
-Received: from mx3.uni-regensburg.de (localhost [127.0.0.1])
-        by localhost (Postfix) with SMTP id AB9F96000054
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:00:05 +0200 (CEST)
-Received: from gwsmtp.uni-regensburg.de (gwsmtp1.uni-regensburg.de [132.199.5.51])
-        by mx3.uni-regensburg.de (Postfix) with ESMTP id 90528600004D
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:00:05 +0200 (CEST)
-Received: from uni-regensburg-smtp1-MTA by gwsmtp.uni-regensburg.de
-        with Novell_GroupWise; Fri, 02 Oct 2020 12:00:05 +0200
-Message-Id: <5F76FA24020000A10003BB47@gwsmtp.uni-regensburg.de>
-X-Mailer: Novell GroupWise Internet Agent 18.2.1 
-Date:   Fri, 02 Oct 2020 12:00:04 +0200
-From:   "Ulrich Windl" <Ulrich.Windl@rz.uni-regensburg.de>
-To:     <linux-kernel@vger.kernel.org>
-Subject: FYI: PoC: Running 100000 processes in 5.3.18 (SLES15 SP2)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
+        id S2387672AbgJBKCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:02:25 -0400
+Received: from smtp.asem.it ([151.1.184.197]:53067 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJBKCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:02:25 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000519725.MSG 
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 12:02:20 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 12:02:19 +0200
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Fri, 2 Oct 2020 12:02:19 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: How to use an ACPI declared GPIO in a userspace ...
+Thread-Topic: How to use an ACPI declared GPIO in a userspace ...
+Thread-Index: AdaWdniTedAZ6+9wQdyYYgE5sQ27yP//4UoAgAAGTYD//91o0IAAJ14A//6Yg1CAAsA0gP//s0vAAA+m6wAAAI1qgP/9IPng
+Date:   Fri, 2 Oct 2020 10:02:19 +0000
+Message-ID: <757023db21e642a3a4b6d33428c191cc@asem.it>
+References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it>
+ <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
+ <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com>
+ <feb8567c830748c483c8c66dd4717003@asem.it>
+ <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+ <22753b53cd7d4dfba4ef3610f71cc462@asem.it>
+ <20200930130113.GQ3956970@smile.fi.intel.com>
+ <2c26adae711145639d0b982a354aff3c@asem.it>
+ <CAHp75Vcq1WOcMNoKpOSpCD1mFSyvYsaX-h7KHTaAOPe=6S4e0A@mail.gmail.com>
+ <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com>
+In-Reply-To: <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020E.5F76FAAC.0038,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Just in case someone is interested: As a Proof-of-Concept I started 100 thousand processes on a big machine (72 cores). It worked!
-However starting those too more than 30 minutes, and top needs more than 30 minutes to refresh ist display. Still, interactive input via SSH works nice, but any file-system access seems quite slow (my test processes just use CPU; the do no t do any I/O).
-
-Kernel messages while the processes were created:
-kernel: [65648.247688] perf: interrupt took too long (2516 > 2500), lowering kernel.perf_event_max_sample_rate to 79250
-kernel: [65997.263218] perf: interrupt took too long (3146 > 3145), lowering kernel.perf_event_max_sample_rate to 63500
-kernel: [66790.221057] perf: interrupt took too long (3938 > 3932), lowering kernel.perf_event_max_sample_rate to 50750
-kernel: [69884.371426] perf: interrupt took too long (4925 > 4922), lowering kernel.perf_event_max_sample_rate to 40500
-
-Last top output (more than 30 late):
-top - 11:16:19 up 19:19,  3 users,  load average: 64164.56, 62997.24, 55597.09
-Tasks: 101432 total, 60249 running, 41183 sleeping,   0 stopped,   0 zombie
-%Cpu(s): 98.0 us,  2.0 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
-MiB Mem : 772127.6+total, 755924.2+free, 14253.01+used, 1950.363 buff/cache
-MiB Swap: 773120.0+total, 772958.1+free,  161.816 used. 754248.8+avail Mem
-...
-
-That's a load, isn't it? ;-)
-
- # cat /proc/uptime
-72084.21 9356423.41
-# cat /proc/loadavg
-64188.31 64188.81 63636.08 64228/102328 134935
-
-Regards,
-Ulrich
-
-
-
-
+SGkgQW5keSwNCg0Kc29ycnkgZm9yIHRoZSBkZWxheSENCg0KPiA+ID4gTXkgU1NEVCB0YWJsZSBp
+czoNCj4gPg0KPiA+IF5eXl4gU2VlIHRoZSBkaWZmZXJlbmNlPyBJIGNhbid0IGhlbHAgaGVyZS4N
+Cg0KVGhpcyBpcyB0aGUgRFNEVCB0YWJsZSByZWxhdGVkIHRvIHRoZSBHUElPIGNvbnRyb2xsZXIg
+b2YgbXkgYm9hcmQ6DQoNCkRldmljZSAoR1BPMSkNCiAgICAgICAgew0KICAgICAgICAgICAgTmFt
+ZSAoX0FEUiwgWmVybykgIC8vIF9BRFI6IEFkZHJlc3MNCiAgICAgICAgICAgIE5hbWUgKF9ISUQs
+ICJJTlQzNDUyIikgIC8vIF9ISUQ6IEhhcmR3YXJlIElEDQogICAgICAgICAgICBOYW1lIChfQ0lE
+LCAiSU5UMzQ1MiIpICAvLyBfQ0lEOiBDb21wYXRpYmxlIElEDQogICAgICAgICAgICBOYW1lIChf
+REROLCAiR2VuZXJhbCBQdXJwb3NlIElucHV0L091dHB1dCAoR1BJTykgQ29udHJvbGxlciAtIE5v
+cnRod2VzdCIpICAvLyBfREROOiBET1MgRGV2aWNlIE5hbWUNCiAgICAgICAgICAgIE5hbWUgKF9V
+SUQsIDB4MDIpICAvLyBfVUlEOiBVbmlxdWUgSUQNCiAgICAgICAgICAgIE5hbWUgKFJCVUYsIFJl
+c291cmNlVGVtcGxhdGUgKCkNCiAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICBNZW1vcnkz
+MkZpeGVkIChSZWFkV3JpdGUsDQogICAgICAgICAgICAgICAgICAgIDB4MDAwMDAwMDAsICAgICAg
+ICAgLy8gQWRkcmVzcyBCYXNlDQogICAgICAgICAgICAgICAgICAgIDB4MDAwMDQwMDAsICAgICAg
+ICAgLy8gQWRkcmVzcyBMZW5ndGgNCiAgICAgICAgICAgICAgICAgICAgX1kwOCkNCiAgICAgICAg
+ICAgICAgICBJbnRlcnJ1cHQgKFJlc291cmNlQ29uc3VtZXIsIExldmVsLCBBY3RpdmVMb3csIFNo
+YXJlZCwgLCwgKQ0KICAgICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgICAgMHgwMDAw
+MDAwRSwNCiAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICB9KQ0KICAgICAgICAgICAgTWV0
+aG9kIChfQ1JTLCAwLCBOb3RTZXJpYWxpemVkKSAgLy8gX0NSUzogQ3VycmVudCBSZXNvdXJjZSBT
+ZXR0aW5ncw0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgIENyZWF0ZURXb3JkRmllbGQg
+KFJCVUYsIFxfU0IuR1BPMS5fWTA4Ll9CQVMsIEIwQkEpICAvLyBfQkFTOiBCYXNlIEFkZHJlc3MN
+CiAgICAgICAgICAgICAgICBDcmVhdGVEV29yZEZpZWxkIChSQlVGLCBcX1NCLkdQTzEuX1kwOC5f
+TEVOLCBCMExOKSAgLy8gX0xFTjogTGVuZ3RoDQogICAgICAgICAgICAgICAgQjBCQSA9IEdQMUEg
+LyogXEdQMUEgKi8NCiAgICAgICAgICAgICAgICBCMExOID0gR1AxTCAvKiBcR1AxTCAqLw0KICAg
+ICAgICAgICAgICAgIFJldHVybiAoUkJVRikgLyogXF9TQl8uR1BPMS5SQlVGICovDQogICAgICAg
+ICAgICB9DQoNCiAgICAgICAgICAgIE1ldGhvZCAoX1NUQSwgMCwgTm90U2VyaWFsaXplZCkgIC8v
+IF9TVEE6IFN0YXR1cw0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgIElmICgoT1NZUyA8
+IDB4MDdEQykpDQogICAgICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICAgICBSZXR1cm4g
+KFplcm8pDQogICAgICAgICAgICAgICAgfQ0KDQogICAgICAgICAgICAgICAgUmV0dXJuICgweDBG
+KQ0KICAgICAgICAgICAgfQ0KICAgICAgICB9DQoNCiANCj4gLS0NCj4gV2l0aCBCZXN0IFJlZ2Fy
+ZHMsDQo+IEFuZHkgU2hldmNoZW5rbw0KDQpCZXN0IHJlZ2FyZHMsDQoNCkZsYXZpbw0K
