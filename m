@@ -2,66 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07175281C06
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A1B281C07
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387602AbgJBT2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:28:09 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:36262 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388321AbgJBT2I (ORCPT
+        id S2388486AbgJBT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:28:14 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:38496 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388321AbgJBT2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:28:08 -0400
-Received: from localhost.localdomain ([92.140.225.106])
-        by mwinf5d73 with ME
-        id b7U22300E2JMhn8037U3Ne; Fri, 02 Oct 2020 21:28:06 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 02 Oct 2020 21:28:06 +0200
-X-ME-IP: 92.140.225.106
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, dmurphy@ti.com, robh@kernel.org,
-        grandmaster@al2klimov.de
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: tlv320adcx140: Fix a typo in a comment
-Date:   Fri,  2 Oct 2020 21:28:01 +0200
-Message-Id: <20201002192801.639743-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Fri, 2 Oct 2020 15:28:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 3541B8EE18B;
+        Fri,  2 Oct 2020 12:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1601666889;
+        bh=3pL9EYAVcTAbBFDIrqOl8kEYMnykySS3oUFcjqGIHlY=;
+        h=Subject:From:To:Cc:Date:From;
+        b=q2SoCNwNORD/hj4ZDO5aKWp1qkaQZ62yaCyu703I6KtRaHB9T7v5OQQeVjxhZAeiT
+         9u+DQ2iuBhp/KVXOHj78jMYmRLs4iJS8XpcylpijeyjGvMoqiU1l5BnH19PijuA7iO
+         wYK1CidqbOHeIAQnCeMFfg+LgkNz6wPfh52qaEsk=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id B8kwV0lblIKq; Fri,  2 Oct 2020 12:28:08 -0700 (PDT)
+Received: from jarvis (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C7EDF8EE012;
+        Fri,  2 Oct 2020 12:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1601666888;
+        bh=3pL9EYAVcTAbBFDIrqOl8kEYMnykySS3oUFcjqGIHlY=;
+        h=Subject:From:To:Cc:Date:From;
+        b=mkLHtMCBYYSBlY3NteBr+Z8kSEw2WvEfgiVmwMDsXcATatrvJIJtpoZVBrQuu0uMU
+         nKsJ5TMMxl2sSiAVyKK/nvREPLg136cI9FwcsNwiM15v9/dhsrVUa38q6QOms1ivKV
+         vHAfsBtN6GnNZNOdLbCJnua3EPhTMUvFIkgPPYLU=
+Message-ID: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.9-rc7
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 02 Oct 2020 12:28:04 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is likely that this header file is about the TLV320ADCX140. (0 and 4
-swapped)
-While at it fix a missing "H" in a comment related to the include guard.
+   Two patches in driver frameworks.  The iscsi one corrects a bug
+   induced by a BPF change to network locking and the other is a
+   regression we introduced.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The patch is available here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Mark Mielke (1):
+      scsi: iscsi: iscsi_tcp: Avoid holding spinlock while calling getpeername()
+
+Sudhakar Panneerselvam (1):
+      scsi: target: Fix lun lookup for TARGET_SCF_LOOKUP_LUN_FROM_TAG case
+
+And the diffstat:
+
+ drivers/scsi/iscsi_tcp.c               | 22 +++++++++++++++-------
+ drivers/target/target_core_transport.c |  3 ++-
+ 2 files changed, 17 insertions(+), 8 deletions(-)
+
+With full diffs below.
+
+James
+
 ---
- sound/soc/codecs/tlv320adcx140.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index eedbc1d7221f..cafcbc0dd5fd 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--// TLV320ADCX104 Sound driver
-+// TLV320ADCX140 Sound driver
- // Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com/
+diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
+index b5dd1caae5e9..d10efb66cf19 100644
+--- a/drivers/scsi/iscsi_tcp.c
++++ b/drivers/scsi/iscsi_tcp.c
+@@ -736,6 +736,7 @@ static int iscsi_sw_tcp_conn_get_param(struct iscsi_cls_conn *cls_conn,
+ 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
+ 	struct iscsi_sw_tcp_conn *tcp_sw_conn = tcp_conn->dd_data;
+ 	struct sockaddr_in6 addr;
++	struct socket *sock;
+ 	int rc;
  
- #ifndef _TLV320ADCX140_H
-@@ -145,4 +145,4 @@
- #define ADCX140_GPO_CFG_MAX		4
- #define ADCX140_GPO_DRV_MAX		5
+ 	switch(param) {
+@@ -747,13 +748,17 @@ static int iscsi_sw_tcp_conn_get_param(struct iscsi_cls_conn *cls_conn,
+ 			spin_unlock_bh(&conn->session->frwd_lock);
+ 			return -ENOTCONN;
+ 		}
++		sock = tcp_sw_conn->sock;
++		sock_hold(sock->sk);
++		spin_unlock_bh(&conn->session->frwd_lock);
++
+ 		if (param == ISCSI_PARAM_LOCAL_PORT)
+-			rc = kernel_getsockname(tcp_sw_conn->sock,
++			rc = kernel_getsockname(sock,
+ 						(struct sockaddr *)&addr);
+ 		else
+-			rc = kernel_getpeername(tcp_sw_conn->sock,
++			rc = kernel_getpeername(sock,
+ 						(struct sockaddr *)&addr);
+-		spin_unlock_bh(&conn->session->frwd_lock);
++		sock_put(sock->sk);
+ 		if (rc < 0)
+ 			return rc;
  
--#endif /* _TLV320ADCX140_ */
-+#endif /* _TLV320ADCX140_H */
--- 
-2.25.1
+@@ -775,6 +780,7 @@ static int iscsi_sw_tcp_host_get_param(struct Scsi_Host *shost,
+ 	struct iscsi_tcp_conn *tcp_conn;
+ 	struct iscsi_sw_tcp_conn *tcp_sw_conn;
+ 	struct sockaddr_in6 addr;
++	struct socket *sock;
+ 	int rc;
+ 
+ 	switch (param) {
+@@ -789,16 +795,18 @@ static int iscsi_sw_tcp_host_get_param(struct Scsi_Host *shost,
+ 			return -ENOTCONN;
+ 		}
+ 		tcp_conn = conn->dd_data;
+-
+ 		tcp_sw_conn = tcp_conn->dd_data;
+-		if (!tcp_sw_conn->sock) {
++		sock = tcp_sw_conn->sock;
++		if (!sock) {
+ 			spin_unlock_bh(&session->frwd_lock);
+ 			return -ENOTCONN;
+ 		}
++		sock_hold(sock->sk);
++		spin_unlock_bh(&session->frwd_lock);
+ 
+-		rc = kernel_getsockname(tcp_sw_conn->sock,
++		rc = kernel_getsockname(sock,
+ 					(struct sockaddr *)&addr);
+-		spin_unlock_bh(&session->frwd_lock);
++		sock_put(sock->sk);
+ 		if (rc < 0)
+ 			return rc;
+ 
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 9fb0be0aa620..8dd289214dd8 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -1840,7 +1840,8 @@ int target_submit_tmr(struct se_cmd *se_cmd, struct se_session *se_sess,
+ 	 * out unpacked_lun for the original se_cmd.
+ 	 */
+ 	if (tm_type == TMR_ABORT_TASK && (flags & TARGET_SCF_LOOKUP_LUN_FROM_TAG)) {
+-		if (!target_lookup_lun_from_tag(se_sess, tag, &unpacked_lun))
++		if (!target_lookup_lun_from_tag(se_sess, tag,
++						&se_cmd->orig_fe_lun))
+ 			goto failure;
+ 	}
+ 
 
