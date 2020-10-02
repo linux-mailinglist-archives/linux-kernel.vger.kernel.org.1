@@ -2,301 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2D62819F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90F82819E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388593AbgJBRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:41:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41511 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388491AbgJBRlg (ORCPT
+        id S2388557AbgJBRkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388351AbgJBRkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:41:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601660494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/7vjx4YQggU5P4+9tDYCKqR6WKcqIg5SqfaCkwhvzos=;
-        b=dATggcoI6I6OgFEQn9d+VlNkMlwpg0pEJ/NT4EKA/3B48OXJcoUhw+gh+RsyrMdMTbHayJ
-        oXCkacVC3d7bw/bDtMPG6heeIz4Nf+dJSCUdqfufXRUOxwH4y7/VddRRj31TgyzRE8sQKx
-        XaArxzia7gFjmaySUUnS3swKftDdT94=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304--go0TehuOVuZF_E4HJmLqg-1; Fri, 02 Oct 2020 13:41:32 -0400
-X-MC-Unique: -go0TehuOVuZF_E4HJmLqg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AA0857244;
-        Fri,  2 Oct 2020 17:41:23 +0000 (UTC)
-Received: from hpe-dl360pgen9-01.klab.eng.bos.redhat.com (hpe-dl360pgen9-01.klab.eng.bos.redhat.com [10.16.160.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B0F7D1002382;
-        Fri,  2 Oct 2020 17:41:20 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: [PATCH net-next v2 6/6] bonding: make Kconfig toggle to disable legacy interfaces
-Date:   Fri,  2 Oct 2020 13:40:01 -0400
-Message-Id: <20201002174001.3012643-7-jarod@redhat.com>
-In-Reply-To: <20201002174001.3012643-1-jarod@redhat.com>
-References: <20201002174001.3012643-1-jarod@redhat.com>
+        Fri, 2 Oct 2020 13:40:22 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CD4C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:40:22 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id u25so2137933otq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7NUkifEV1bhFFoZX6sZmhO/Ng2luVSAeAzdDFiyTr6A=;
+        b=EujSBRrd3OW6W4bp0dBRgRrJ+ohNLYl3TWSGvmvmuKEqX/N8vr7P+9gSmYVshttaxm
+         D8VGcEY9iQhBkB8LBHbBuqw8oCAeo/g8UBb5AG4q6c4mjdho5BOx2l3//rX1y8ztb9Qy
+         W7uZOhCRzEHVlIPnkcyVTIUAM/WCdtir9RAMV/Bi9wjibbDisKx+pmwyKOC7QhUfWoky
+         mroQQdnovC0QDd0ekEW/Qf48vDVPdrwFaoAS+zNAfmczyzGfe6ccI+wUy5YkZ0SjHI+c
+         EGtBWJ8e4d+5hMSAFT8M7lriN2dVKfV6KxwrH04QUY0KI2BECWjH80ZiAeWU5thF+Quj
+         K/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7NUkifEV1bhFFoZX6sZmhO/Ng2luVSAeAzdDFiyTr6A=;
+        b=cEQ2es24Kd9QxEJH6mhfRBkoskDhHenON8lwALf8ZNIRyEzoduCJFM75vj1lGQGuqT
+         YdDLaMTkQ56B1+Wh8T1BBoCqAZAzZ2Ja7fyEtpF17ElvDkFJ1aDdYnmaK+GRVEiDytuX
+         LF6WKw3y1aWsA1uI4u9qG8j5tMEpwmzQdp3vFBw+vQ3JKEMB18rp2eF3jI+IFQc+UZRk
+         kl9NYLB5Yk4jn3V8qWyOITZSTuS6nvGq3l6V+uknJGZPjoEWkrSbijBYj12fda4MOkx+
+         EqzW+0QQgsRpnFQGpxz+G+criKxTAweiOHIDRj+KnnaWAsgSoIyFk3q3fgTI1LLkAUY8
+         1LSA==
+X-Gm-Message-State: AOAM532YBpGIFOZxYMyw9iPLUXaEOuniUv6OJnvPUSXcot1U/b1mnwpg
+        eq6ehVXUpcGa1m1segG52nxWxdsA2OrUpMYd5662mrYjOyCKHcrz
+X-Google-Smtp-Source: ABdhPJxBSQyfCkOHiRtO7Ki+DmDGyOIEbYuiriFOyrBZwh+MSnwiagKMFyKnTB/6psGbBti6VQgwFAXigT6+k4UoI6Y=
+X-Received: by 2002:a9d:38e:: with SMTP id f14mr2567263otf.94.1601660422113;
+ Fri, 02 Oct 2020 10:40:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200909195640.3127341-1-robert.marko@sartura.hr> <20200909195640.3127341-4-robert.marko@sartura.hr>
+In-Reply-To: <20200909195640.3127341-4-robert.marko@sartura.hr>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Fri, 2 Oct 2020 19:40:11 +0200
+Message-ID: <CA+HBbNEshfW17yy-dZy1brbeSDNaudHzRbjxp0C+1W7DFiFnmQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] arm: dts: add Alfa Network AP120C-AC
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        robh+dt@kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Luka Perkov <luka.perkov@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, enable retaining all user-facing API that includes the use of
-master and slave, but add a Kconfig knob that allows those that wish to
-remove it entirely do so in one shot.
+On Wed, Sep 9, 2020 at 9:56 PM Robert Marko <robert.marko@sartura.hr> wrote:
+>
+> ALFA Network AP120C-AC is a dual-band ceiling AP, based on Qualcomm
+> IPQ4018 + QCA8075 platform.
+>
+> Specification:
+>
+> - Qualcomm IPQ4018 (717 MHz)
+> - 256 MB of RAM (DDR3)
+> - 16 MB (SPI NOR) + 128 or 512 MB (SPI NAND) of flash
+> - 2x Gbps Ethernet, with 802.3af PoE support in one port
+> - 2T2R 2.4/5 GHz (IPQ4018), with ext. FEMs (QFE1952, QFE1922)
+> - 3x U.FL connectors
+> - 1x 1.8 dBi (Bluetooth) and 2x 3/5 dBi dual-band (Wi-Fi) antennas
+> - Atmel/Microchip AT97SC3205T TPM module (I2C bus)
+> - TI CC2540 Bluetooth LE module (USB 2.0 bus)
+> - 1x button (reset)
+> - 1x USB 2.0
+> - DC jack for main power input (12 V)
+> - UART header available on PCB (2.0 mm pitch)
+>
+> This adds DTS for both the generic and custom Bit edition for Sartura.
+>
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> ---
+> Changes since v1:
+> * Drop include that does not exist
+>
+>  arch/arm/boot/dts/Makefile                    |   2 +
+>  .../boot/dts/qcom-ipq4018-ap120c-ac-bit.dts   |  28 ++
+>  arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts  |  27 ++
+>  arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi | 254 ++++++++++++++++++
+>  4 files changed, 311 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dts
+>  create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts
+>  create mode 100644 arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi
+>
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 9b474208057d..246d82fc5fcd 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -890,6 +890,8 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+>         qcom-apq8074-dragonboard.dtb \
+>         qcom-apq8084-ifc6540.dtb \
+>         qcom-apq8084-mtp.dtb \
+> +       qcom-ipq4018-ap120c-ac.dtb \
+> +       qcom-ipq4018-ap120c-ac-bit.dtb \
+>         qcom-ipq4018-jalapeno.dtb \
+>         qcom-ipq4019-ap.dk01.1-c1.dtb \
+>         qcom-ipq4019-ap.dk04.1-c1.dtb \
+> diff --git a/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dts b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dts
+> new file mode 100644
+> index 000000000000..028ac8e24797
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac-bit.dts
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +
+> +#include "qcom-ipq4018-ap120c-ac.dtsi"
+> +
+> +/ {
+> +       model = "ALFA Network AP120C-AC Bit";
+> +
+> +       leds {
+> +               compatible = "gpio-leds";
+> +
+> +               power {
+> +                       label = "ap120c-ac:green:power";
+> +                       gpios = <&tlmm 5 GPIO_ACTIVE_LOW>;
+> +                       default-state = "on";
+> +               };
+> +
+> +               wlan {
+> +                       label = "ap120c-ac:green:wlan";
+> +                       gpios = <&tlmm 3 GPIO_ACTIVE_HIGH>;
+> +               };
+> +
+> +               support {
+> +                       label = "ap120c-ac:green:support";
+> +                       gpios = <&tlmm 2 GPIO_ACTIVE_HIGH>;
+> +                       panic-indicator;
+> +               };
+> +       };
+> +};
+> diff --git a/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts
+> new file mode 100644
+> index 000000000000..b7916fc26d68
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dts
+> @@ -0,0 +1,27 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +
+> +#include "qcom-ipq4018-ap120c-ac.dtsi"
+> +
+> +/ {
+> +       leds {
+> +               compatible = "gpio-leds";
+> +
+> +               status: status {
+> +                       label = "ap120c-ac:blue:status";
+> +                       gpios = <&tlmm 5 GPIO_ACTIVE_LOW>;
+> +                       default-state = "keep";
+> +               };
+> +
+> +               wlan2g {
+> +                       label = "ap120c-ac:green:wlan2g";
+> +                       gpios = <&tlmm 3 GPIO_ACTIVE_HIGH>;
+> +                       linux,default-trigger = "phy0tpt";
+> +               };
+> +
+> +               wlan5g {
+> +                       label = "ap120c-ac:red:wlan5g";
+> +                       gpios = <&tlmm 2 GPIO_ACTIVE_HIGH>;
+> +                       linux,default-trigger = "phy1tpt";
+> +               };
+> +       };
+> +};
+> diff --git a/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi
+> new file mode 100644
+> index 000000000000..1f3b1ce82108
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom-ipq4018-ap120c-ac.dtsi
+> @@ -0,0 +1,254 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +
+> +#include "qcom-ipq4019.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +
+> +/ {
+> +       model = "ALFA Network AP120C-AC";
+> +       compatible = "alfa-network,ap120c-ac";
+> +
+> +       keys {
+> +               compatible = "gpio-keys";
+> +
+> +               reset {
+> +                       label = "reset";
+> +                       gpios = <&tlmm 63 GPIO_ACTIVE_LOW>;
+> +                       linux,code = <KEY_RESTART>;
+> +               };
+> +       };
+> +};
+> +
+> +&tlmm {
+> +       i2c0_pins: i2c0_pinmux {
+> +               mux_i2c {
+> +                       function = "blsp_i2c0";
+> +                       pins = "gpio58", "gpio59";
+> +                       drive-strength = <16>;
+> +                       bias-disable;
+> +               };
+> +       };
+> +
+> +       mdio_pins: mdio_pinmux {
+> +               mux_mdio {
+> +                       pins = "gpio53";
+> +                       function = "mdio";
+> +                       bias-pull-up;
+> +               };
+> +
+> +               mux_mdc {
+> +                       pins = "gpio52";
+> +                       function = "mdc";
+> +                       bias-pull-up;
+> +               };
+> +       };
+> +
+> +       serial0_pins: serial0_pinmux {
+> +               mux_uart {
+> +                       pins = "gpio60", "gpio61";
+> +                       function = "blsp_uart0";
+> +                       bias-disable;
+> +               };
+> +       };
+> +
+> +       spi0_pins: spi0_pinmux {
+> +               mux_spi {
+> +                       function = "blsp_spi0";
+> +                       pins = "gpio55", "gpio56", "gpio57";
+> +                       drive-strength = <12>;
+> +                       bias-disable;
+> +               };
+> +
+> +               mux_cs {
+> +                       function = "gpio";
+> +                       pins = "gpio54", "gpio4";
+> +                       drive-strength = <2>;
+> +                       bias-disable;
+> +                       output-high;
+> +               };
+> +       };
+> +
+> +       usb-power {
+> +               line-name = "USB-power";
+> +               gpios = <1 GPIO_ACTIVE_HIGH>;
+> +               gpio-hog;
+> +               output-high;
+> +       };
+> +};
+> +
+> +&watchdog {
+> +       status = "okay";
+> +};
+> +
+> +&prng {
+> +       status = "okay";
+> +};
+> +
+> +&blsp_dma {
+> +       status = "okay";
+> +};
+> +
+> +&blsp1_i2c3 {
+> +       status = "okay";
+> +
+> +       pinctrl-0 = <&i2c0_pins>;
+> +       pinctrl-names = "default";
+> +
+> +       tpm@29 {
+> +               compatible = "atmel,at97sc3204t";
+> +               reg = <0x29>;
+> +       };
+> +};
+> +
+> +&blsp1_spi1 {
+> +       status = "okay";
+> +
+> +       pinctrl-0 = <&spi0_pins>;
+> +       pinctrl-names = "default";
+> +       cs-gpios = <&tlmm 54 GPIO_ACTIVE_HIGH>, <&tlmm 4 GPIO_ACTIVE_HIGH>;
+> +
+> +       flash@0 {
+> +               compatible = "jedec,spi-nor";
+> +               reg = <0>;
+> +               spi-max-frequency = <24000000>;
+> +
+> +               partitions {
+> +                       compatible = "fixed-partitions";
+> +                       #address-cells = <1>;
+> +                       #size-cells = <1>;
+> +
+> +                       partition@0 {
+> +                               label = "SBL1";
+> +                               reg = <0x00000000 0x00040000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@40000 {
+> +                               label = "MIBIB";
+> +                               reg = <0x00040000 0x00020000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@60000 {
+> +                               label = "QSEE";
+> +                               reg = <0x00060000 0x00060000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@c0000 {
+> +                               label = "CDT";
+> +                               reg = <0x000c0000 0x00010000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@d0000 {
+> +                               label = "DDRPARAMS";
+> +                               reg = <0x000d0000 0x00010000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@e0000 {
+> +                               label = "u-boot-env";
+> +                               reg = <0x000e0000 0x00010000>;
+> +                       };
+> +
+> +                       partition@f0000 {
+> +                               label = "u-boot";
+> +                               reg = <0x000f0000 0x00080000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@170000 {
+> +                               label = "ART";
+> +                               reg = <0x00170000 0x00010000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@180000 {
+> +                               label = "priv_data1";
+> +                               reg = <0x00180000 0x00010000>;
+> +                               read-only;
+> +                       };
+> +
+> +                       partition@190000 {
+> +                               label = "priv_data2";
+> +                               reg = <0x00190000 0x00010000>;
+> +                               read-only;
+> +                       };
+> +               };
+> +       };
+> +
+> +       nand@1 {
+> +               compatible = "spi-nand";
+> +               reg = <1>;
+> +               spi-max-frequency = <40000000>;
+> +
+> +               partitions {
+> +                       compatible = "fixed-partitions";
+> +                       #address-cells = <1>;
+> +                       #size-cells = <1>;
+> +
+> +                       partition@0 {
+> +                               label = "ubi1";
+> +                               reg = <0x00000000 0x04000000>;
+> +                       };
+> +
+> +                       partition@4000000 {
+> +                               label = "ubi2";
+> +                               reg = <0x04000000 0x04000000>;
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&blsp1_uart1 {
+> +       status = "okay";
+> +
+> +       pinctrl-0 = <&serial0_pins>;
+> +       pinctrl-names = "default";
+> +};
+> +
+> +&cryptobam {
+> +       status = "okay";
+> +};
+> +
+> +&crypto {
+> +       status = "okay";
+> +};
+> +
+> +&mdio {
+> +       status = "okay";
+> +
+> +       pinctrl-0 = <&mdio_pins>;
+> +       pinctrl-names = "default";
+> +};
+> +
+> +&wifi0 {
+> +       status = "okay";
+> +};
+> +
+> +&wifi1 {
+> +       status = "okay";
+> +       qcom,ath10k-calibration-variant = "ALFA-Network-AP120C-AC";
+> +};
+> +
+> +&usb3_hs_phy {
+> +       status = "okay";
+> +};
+> +
+> +&usb3 {
+> +       status = "okay";
+> +
+> +       dwc3@8a00000 {
+> +               phys = <&usb3_hs_phy>;
+> +               phy-names = "usb2-phy";
+> +       };
+> +};
+> +
+> +&usb2_hs_phy {
+> +       status = "okay";
+> +};
+> +
+> +&usb2 {
+> +       status = "okay";
+> +};
+> --
+> 2.26.2
+>
 
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Cc: Veaceslav Falico <vfalico@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Thomas Davis <tadavis@lbl.gov>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
----
- drivers/net/Kconfig                   | 12 ++++++++++++
- drivers/net/bonding/bond_main.c       |  4 ++--
- drivers/net/bonding/bond_options.c    |  4 ++--
- drivers/net/bonding/bond_procfs.c     |  8 ++++++++
- drivers/net/bonding/bond_sysfs.c      | 14 ++++++++++----
- drivers/net/bonding/bond_sysfs_port.c |  6 ++++--
- 6 files changed, 38 insertions(+), 10 deletions(-)
+Hi,
+Is there an issue with the patch preventing the review?
 
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index c3dbe64e628e..1a13894820cb 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -56,6 +56,18 @@ config BONDING
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called bonding.
- 
-+config BONDING_LEGACY_INTERFACES
-+	default y
-+	bool "Maintain legacy bonding interface names"
-+	help
-+	  The bonding driver historically made use of the terms "master" and
-+	  "slave" to describe it's component members. This has since been
-+	  changed to "bond" and "port" as part of a broader effort to remove
-+	  the use of socially problematic language from the kernel. However,
-+	  removing all such cases requires breaking long-standing user-facing
-+	  interfaces in /proc and /sys, which will not be done, unless you
-+	  opt out of them here, by selecting 'N'.
-+
- config DUMMY
- 	tristate "Dummy net driver support"
- 	help
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index b8a351d85da4..226d5fb76221 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -194,7 +194,7 @@ module_param(lp_interval, uint, 0);
- MODULE_PARM_DESC(lp_interval, "The number of seconds between instances where "
- 			      "the bonding driver sends learning packets to "
- 			      "each port's peer switch. The default is 1.");
--/* legacy compatability module parameters */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- module_param_named(all_slaves_active, apa, int, 0644);
- MODULE_PARM_DESC(all_slaves_active, "Keep all frames received on an interface "
- 				     "by setting active flag for all slaves; "
-@@ -205,7 +205,7 @@ MODULE_PARM_DESC(packets_per_slave, "Packets to send per slave in balance-rr "
- 				    "mode; 0 for a random slave, 1 packet per "
- 				    "slave (default), >1 packets per slave. "
- 				    "(Legacy compat synonym for packets_per_port).");
--/* end legacy compatability module parameters */
-+#endif
- 
- /*----------------------------- Global variables ----------------------------*/
- 
-diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
-index 8e4050c2b08e..630079ba5452 100644
---- a/drivers/net/bonding/bond_options.c
-+++ b/drivers/net/bonding/bond_options.c
-@@ -434,7 +434,7 @@ static const struct bond_option bond_opts[BOND_OPT_LAST] = {
- 		.values = bond_intmax_tbl,
- 		.set = bond_option_peer_notif_delay_set
- 	},
--/* legacy sysfs interfaces */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	[BOND_OPT_PACKETS_PER_SLAVE] = {
- 		.id = BOND_OPT_PACKETS_PER_SLAVE,
- 		.name = "packets_per_slave",
-@@ -467,7 +467,7 @@ static const struct bond_option bond_opts[BOND_OPT_LAST] = {
- 		.flags = BOND_OPTFLAG_RAWVAL,
- 		.set = bond_option_ports_set
- 	},
--/* end legacy sysfs interfaces */
-+#endif
- };
- 
- /* Searches for an option by name */
-diff --git a/drivers/net/bonding/bond_procfs.c b/drivers/net/bonding/bond_procfs.c
-index 2e65472e3c58..8e4a03d86329 100644
---- a/drivers/net/bonding/bond_procfs.c
-+++ b/drivers/net/bonding/bond_procfs.c
-@@ -86,8 +86,10 @@ static void bond_info_show_bond_dev(struct seq_file *seq)
- 		primary = rcu_dereference(bond->primary_port);
- 		seq_printf(seq, "Primary Port: %s",
- 			   primary ? primary->dev->name : "None");
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 		seq_printf(seq, "Primary Slave: %s",
- 			   primary ? primary->dev->name : "None");
-+#endif
- 		if (primary) {
- 			optval = bond_opt_get_val(BOND_OPT_PRIMARY_RESELECT,
- 						  bond->params.primary_reselect);
-@@ -97,8 +99,10 @@ static void bond_info_show_bond_dev(struct seq_file *seq)
- 
- 		seq_printf(seq, "\nCurrently Active Port: %s\n",
- 			   (curr) ? curr->dev->name : "None");
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 		seq_printf(seq, "Currently Active Slave: %s\n",
- 			   (curr) ? curr->dev->name : "None");
-+#endif
- 	}
- 
- 	seq_printf(seq, "MII Status: %s\n", netif_carrier_ok(bond->dev) ?
-@@ -176,7 +180,9 @@ static void bond_info_show_port(struct seq_file *seq,
- 	struct bonding *bond = PDE_DATA(file_inode(seq->file));
- 
- 	seq_printf(seq, "\nPort Interface: %s\n", port->dev->name);
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	seq_printf(seq, "Slave Interface: %s\n", port->dev->name);
-+#endif
- 	seq_printf(seq, "MII Status: %s\n", bond_port_link_status(port->link));
- 	if (port->speed == SPEED_UNKNOWN)
- 		seq_printf(seq, "Speed: %s\n", "Unknown");
-@@ -194,7 +200,9 @@ static void bond_info_show_port(struct seq_file *seq,
- 	seq_printf(seq, "Permanent HW addr: %*phC\n",
- 		   port->dev->addr_len, port->perm_hwaddr);
- 	seq_printf(seq, "Port queue ID: %d\n", port->queue_id);
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	seq_printf(seq, "Slave queue ID: %d\n", port->queue_id);
-+#endif
- 
- 	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
- 		const struct ad_port *ad_port = &PORT_AD_INFO(port)->ad_port;
-diff --git a/drivers/net/bonding/bond_sysfs.c b/drivers/net/bonding/bond_sysfs.c
-index 1c2f44a76f31..1911027ea2e1 100644
---- a/drivers/net/bonding/bond_sysfs.c
-+++ b/drivers/net/bonding/bond_sysfs.c
-@@ -150,6 +150,7 @@ static const struct class_attribute class_attr_bonding_devs = {
- 	.store = bonding_store_bonds,
- };
- 
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- /* "show" function for the bond_masters attribute.
-  * The class parameter is ignored.
-  */
-@@ -187,6 +188,7 @@ static const struct class_attribute class_attr_bonding_masters = {
- 	.show = bonding_show_bonds_legacy,
- 	.store = bonding_store_bonds_legacy,
- };
-+#endif
- 
- /* Generic "store" method for bonding sysfs option setting */
- static ssize_t bonding_sysfs_store_option(struct device *d,
-@@ -771,7 +773,7 @@ static ssize_t bonding_show_ad_user_port_key(struct device *d,
- static DEVICE_ATTR(ad_user_port_key, 0644,
- 		   bonding_show_ad_user_port_key, bonding_sysfs_store_option);
- 
--/* legacy sysfs interfaces */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- static DEVICE_ATTR(slaves, 0644, bonding_show_ports,
- 		   bonding_sysfs_store_option);
- static DEVICE_ATTR(active_slave, 0644,
-@@ -780,7 +782,7 @@ static DEVICE_ATTR(all_slaves_active, 0644,
- 		   bonding_show_ports_active, bonding_sysfs_store_option);
- static DEVICE_ATTR(packets_per_slave, 0644,
- 		   bonding_show_packets_per_port, bonding_sysfs_store_option);
--/* end legacy sysfs interfaces */
-+#endif
- 
- static struct attribute *per_bond_attrs[] = {
- 	&dev_attr_ports.attr,
-@@ -819,12 +821,12 @@ static struct attribute *per_bond_attrs[] = {
- 	&dev_attr_ad_actor_sys_prio.attr,
- 	&dev_attr_ad_actor_system.attr,
- 	&dev_attr_ad_user_port_key.attr,
--/* legacy sysfs interfaces */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	&dev_attr_slaves.attr,
- 	&dev_attr_active_slave.attr,
- 	&dev_attr_all_slaves_active.attr,
- 	&dev_attr_packets_per_slave.attr,
--/* end legacy sysfs interfaces */
-+#endif
- 	NULL,
- };
- 
-@@ -871,6 +873,7 @@ int bond_create_sysfs(struct bond_net *bn)
- 		return ret;
- 	}
- 
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	bn->class_attr_bonding_masters = class_attr_bonding_masters;
- 	sysfs_attr_init(&bn->class_attr_bonding_masters.attr);
- 
-@@ -884,6 +887,7 @@ int bond_create_sysfs(struct bond_net *bn)
- 			       class_attr_bonding_masters.attr.name);
- 		ret = 0;
- 	}
-+#endif
- 
- 	return ret;
- 
-@@ -893,7 +897,9 @@ int bond_create_sysfs(struct bond_net *bn)
- void bond_destroy_sysfs(struct bond_net *bn)
- {
- 	netdev_class_remove_file_ns(&bn->class_attr_bonding_devs, bn->net);
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	netdev_class_remove_file_ns(&bn->class_attr_bonding_masters, bn->net);
-+#endif
- }
- 
- /* Initialize sysfs for each bond.  This sets up and registers
-diff --git a/drivers/net/bonding/bond_sysfs_port.c b/drivers/net/bonding/bond_sysfs_port.c
-index 0d427b407fcb..81fbe3deeb3e 100644
---- a/drivers/net/bonding/bond_sysfs_port.c
-+++ b/drivers/net/bonding/bond_sysfs_port.c
-@@ -152,11 +152,12 @@ int bond_sysfs_port_add(struct bond_port *port)
- 	if (err)
- 		goto err_kobject_put;
- 
--	/* legacy sysfs interface */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	err = sysfs_create_link(&(port->dev->dev.kobj), &port->kobj,
- 				"bonding_slave");
- 	if (err)
- 		goto err_kobject_put;
-+#endif
- 
- 	for (a = port_attrs; *a; ++a) {
- 		err = sysfs_create_file(&port->kobj, &((*a)->attr));
-@@ -178,8 +179,9 @@ void bond_sysfs_port_del(struct bond_port *port)
- 	for (a = port_attrs; *a; ++a)
- 		sysfs_remove_file(&port->kobj, &((*a)->attr));
- 
--	/* legacy sysfs interface */
-+#ifdef CONFIG_BONDING_LEGACY_INTERFACES
- 	sysfs_remove_link(&(port->dev->dev.kobj), "bonding_slave");
-+#endif
- 
- 	kobject_put(&port->kobj);
- }
--- 
-2.27.0
-
+Regards,
+Robert
