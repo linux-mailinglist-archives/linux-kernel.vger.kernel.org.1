@@ -2,160 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40804281500
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD80281501
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388107AbgJBOXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        id S2388109AbgJBOYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBOXe (ORCPT
+        with ESMTP id S1726090AbgJBOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:23:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDB5C0613D0;
-        Fri,  2 Oct 2020 07:23:34 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o20so1318369pfp.11;
-        Fri, 02 Oct 2020 07:23:34 -0700 (PDT)
+        Fri, 2 Oct 2020 10:24:09 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B27C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:24:09 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id w12so1481502qki.6
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:24:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OjNQvI2ijIO/M2pfT2smqs+ynvGtDPzeT8cJRRsXgHA=;
-        b=XQgyxL8NJ6EiknRfuDKYULLI52Ibs2uLUiO6B6vlyBB+ov5yWWDoKMk1wvbfEhqziB
-         cjY7Yv6hyXrGj9EbqxQM8bFCRQ9UHhuFuwQc/WDIhQOMElOsiUaKfVpK+H1J5GxIfhQJ
-         W01i0uNznz0D96s0WOyNlnAOtHl+U70MpfaFFdpO34u6TwH8lqtpMIhbeUE8dYltT57i
-         UwLjaFz6nTl0SQ4fA8bu7nP9GxRHbraFpFtm+ZjcabA5R6IIYcSqU3V7QZ9XmXEDt1gC
-         9zUp0/D4n7NwevTNapoSi57vEk8Ms6o3lws3V3eSl1IWMy+VYhziNL6MALzJyNzKasFK
-         9aMg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J6aAVCPaMvKSHOZjnjEf6/gbikFRYlnB3sj1/Tf0Wm0=;
+        b=tZEYQ2oiZPhVz0jxDWbJSFolyVeR1WXMHqMWkqBm4CC21X68tD3whGHoER1ydI+9rN
+         RC53o8XjkPPaCJV81P5x1wvk+Sv0noq1kwwbWmizk6nVyRHxqDkeGxtkjQeTDIHmdsif
+         uIqHYeNLVsujCrIJsM4IM29P0kNyKBbtBf/O7jZ2xYIo1KKOVjyxhgxVVbzrMTXpBCfz
+         SkeLUWU6XlfNW4Bgd+pASbn21mhPKCqZk0fWZUtvtazY3g/ld4s1noL7/1gls/YefNbo
+         +DCuYMVde8SOoCb1XEKCty0rGezCgAJzZtaPJ+urg2sQ+XkJjh+Juo5GQGE9aw+2EODo
+         3CeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OjNQvI2ijIO/M2pfT2smqs+ynvGtDPzeT8cJRRsXgHA=;
-        b=GJ/NMj7iIbn700XwMe5ou55FovI/GMnd2w3OI1PuvNaFT3wurA1TgHZ8YCVVAPgjHz
-         FHS4cfk8vMGb0KjHOs8FQmpBasMFty7xTwmafu4IT4oFL/D2cUlHhIFV8CXIuY4UgwgG
-         1NmJFn9kI8zGuB249HGM1cJfAgYJgGe/WJDbZtSMegOBg4KtNNbPi8eHPbkM9XfVQLYn
-         VUb0T+4YyD06kMIG/QuP/6+9a2BrVXrGB0q1b8aFAADQChrFcmK+3LFiOoGqh0lVhaDl
-         QwXbn5otXthkJL2yCXgduvUIUT/IsGv71orLHyc44UpecOowG5+lnjkEObI4/LZoR8ky
-         PklA==
-X-Gm-Message-State: AOAM530bOPkEpirx+RqpVGXkPfBkedo/C8lqFNnP4P1d28Qt4D6YE7ao
-        beP+KtnkOb5rbhHkiWT3rg==
-X-Google-Smtp-Source: ABdhPJxV0D5CAPrY5aLgnnIaonU6JK0L9yfh1hftGF3Vuyfk6tWfcImIpm0lhbKAf6hbESmEjhP2Zw==
-X-Received: by 2002:aa7:8d15:0:b029:142:2501:39fe with SMTP id j21-20020aa78d150000b0290142250139femr2979520pfe.77.1601648613591;
-        Fri, 02 Oct 2020 07:23:33 -0700 (PDT)
-Received: from localhost.localdomain ([161.117.41.183])
-        by smtp.gmail.com with ESMTPSA id gi20sm1786628pjb.28.2020.10.02.07.23.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J6aAVCPaMvKSHOZjnjEf6/gbikFRYlnB3sj1/Tf0Wm0=;
+        b=IFG6DUq7LlR4H2mbc9U4pQwKea5cr1gtV0I6QwcKG/Zgncg3KMjPXrkL5/HF1Rfzz8
+         l0vGF/bYupkj9yml30wTPhFEVljEUbCTLQSuxdQcN2leqCWbpF14BCHJmn0ow4Fpc/ZA
+         FkiV+fm8QJCJYQSBeKxPswuwabUQbbWjd6+kXkeDGw5fD/tgCA/0+GAsjK5q0oYG+iQ+
+         MV2zCnexS3gXZnwvachw33fCb5Kbuq/PO+8ucq2aP7bwDySFDx5FqP5M7XfAvUnNP7lM
+         5fMXjCaCQuKHNSM/hkH1Oqo4e9jV6db8s4NvB0cjsf30hU4ezZju/0GnzVHJg7Kg6sA7
+         yZzA==
+X-Gm-Message-State: AOAM531gFWkQrkTauCurbp/cuqCA4nida0Q3rdSCYAe5hMW0iK8vRAv6
+        QD/tC88B9pMuB/5ohBLLoYDzyA==
+X-Google-Smtp-Source: ABdhPJyRuEXfi/Ldsn3i78m/8J1WyOXKLYmIY0cIc1CstIXxKppiLlcAewJ2ISLpYUnLTRHe5FyHLw==
+X-Received: by 2002:a05:620a:656:: with SMTP id a22mr2259439qka.63.1601648648098;
+        Fri, 02 Oct 2020 07:24:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:d668])
+        by smtp.gmail.com with ESMTPSA id y30sm1176545qth.7.2020.10.02.07.24.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 07:23:32 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        glider@google.com, Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-block@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] block/scsi-ioctl: Fix kernel-infoleak in scsi_put_cdrom_generic_arg()
-Date:   Fri,  2 Oct 2020 10:22:23 -0400
-Message-Id: <20201002142223.9482-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <000000000000a24fa705ae29dc6c@google.com>
-References: <000000000000a24fa705ae29dc6c@google.com>
+        Fri, 02 Oct 2020 07:24:07 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 10:22:25 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 1/4] mm: memcontrol: use helpers to access page's
+ memcg data
+Message-ID: <20201002142225.GB525590@cmpxchg.org>
+References: <20201001002710.748166-1-guro@fb.com>
+ <20201001002710.748166-2-guro@fb.com>
+ <20201001134638.GE469663@cmpxchg.org>
+ <20201001182739.GA2706729@carbon.DHCP.thefacebook.com>
+ <20201001185950.GB500308@cmpxchg.org>
+ <20201001205143.GE2706729@carbon.DHCP.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001205143.GE2706729@carbon.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-scsi_put_cdrom_generic_arg() is copying uninitialized stack memory to
-userspace, since the compiler may leave a 3-byte hole in the middle of
-`cgc32`. Fix it by adding a padding field to `struct
-compat_cdrom_generic_command`.
+On Thu, Oct 01, 2020 at 01:51:43PM -0700, Roman Gushchin wrote:
+> On Thu, Oct 01, 2020 at 02:59:50PM -0400, Johannes Weiner wrote:
+> > On Thu, Oct 01, 2020 at 11:27:39AM -0700, Roman Gushchin wrote:
+> > > On Thu, Oct 01, 2020 at 09:46:38AM -0400, Johannes Weiner wrote:
+> > > > On Wed, Sep 30, 2020 at 05:27:07PM -0700, Roman Gushchin wrote:
+> > > > > +/*
+> > > > > + * set_page_memcg - associate a page with a memory cgroup
+> > > > > + * @page: a pointer to the page struct
+> > > > > + * @memcg: a pointer to the memory cgroup
+> > > > > + *
+> > > > > + * Associates a page with a memory cgroup.
+> > > > > + */
+> > > > > +static inline void set_page_memcg(struct page *page, struct mem_cgroup *memcg)
+> > > > > +{
+> > > > > +	VM_BUG_ON_PAGE(PageSlab(page), page);
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Please, refer to page_memcg()'s description for the page and memcg
+> > > > > +	 * binding stability requirements.
+> > > > > +	 */
+> > > > > +	page->memcg_data = (unsigned long)memcg;
+> > > > > +}
+> > > > 
+> > > > Please delete and inline this as per previous feedback, thanks.
+> > > 
+> > > Why it's better?
+> > > It's ok for set_page_memcg(), but obviously worse for set_page_objcgs():
+> > > it was nice to have all bit magic in one place, in few helper functions.
+> > > And now it spills into several places. What's the win?
+> > 
+> > set_page_objcgs() is a worthwhile abstraction because it includes the
+> > synchronization primitives that make it safe to use wrt
+> > page_objcgs(). They encapsulate the cmpxchg and the READ_ONCE().
+> > 
+> > set_page_memcg() doesn't do any synchronization and relies fully on
+> > the contextual locking. The name implies that it includes things to
+> > make it safe wrt page_memcg(), which isn't true at all. It's a long
+> > and misleading name for '='.
+> > 
+> > Btw, I really don't mind having this discussion, but please don't send
+> > revisions that silently ignore feedback you don't agree with.
+> 
+> I'm not ignoring: I thought you was looking to remove clear_page_* functions,
+> but it wasn't clear you want eliminate set_page_memcg() function. Please, when
+> you asking for some "style" changes, please, provide some rationale, it's way
+> less obvious than you think, what exactly you don't like in the proposed version.
 
-Cc: stable@vger.kernel.org
-Fixes: f3ee6e63a9df ("compat_ioctl: move CDROM_SEND_PACKET handling into scsi")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Reported-by: syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-v3: https://lore.kernel.org/lkml/20200909095057.1214104-1-yepeilin.cs@gmail.com/
+https://lore.kernel.org/lkml/20200930210124.GB469663@cmpxchg.org/
+mentions and provides a rationale for inlining the setting and
+clearing (unnecessary abstraction/encapsulation).
 
-Changes in v4:
-    - Change "Prevent" in the title to "Fix", and improve the commit
-      message, since syzbot has reported it as a "real" bug.
-    - Add syzbot Reported-by: tag.
+This is a code base shared by many different developers. It's routine
+to be asked for style changes that make the new code blend in with its
+surroundings, follow precedents and use idiomatic constructs, or avoid
+anti-patterns that are known to cause maintenance burden or make it
+harder to hack or debug the code.
 
-Changes in v3:
-    - Improve commit message. scsi_put_cdrom_generic_arg() does not
-      *always* leak kernel information. It is compiler dependent.
-      Reference: https://www.nccgroup.com/us/about-us/newsroom-and-events/blog/2019/october/padding-the-struct-how-a-compiler-optimization-can-disclose-stack-memory/
-    - Base the patch against mainline 5.9-rc4.
-
-Change in v2:
-    - Add a padding field to `struct compat_cdrom_generic_command`,
-      instead of doing memset() on `cgc32`. (Suggested by Jens Axboe
-      <axboe@kernel.dk>)
-
-$ # before
-$ pahole -C "compat_cdrom_generic_command" !$
-pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
-struct compat_cdrom_generic_command {
-	unsigned char              cmd[12];              /*     0    12 */
-	compat_caddr_t             buffer;               /*    12     4 */
-	compat_uint_t              buflen;               /*    16     4 */
-	compat_int_t               stat;                 /*    20     4 */
-	compat_caddr_t             sense;                /*    24     4 */
-	unsigned char              data_direction;       /*    28     1 */
-
-	/* XXX 3 bytes hole, try to pack */
-
-	compat_int_t               quiet;                /*    32     4 */
-	compat_int_t               timeout;              /*    36     4 */
-	compat_caddr_t             reserved[1];          /*    40     4 */
-
-	/* size: 44, cachelines: 1, members: 9 */
-	/* sum members: 41, holes: 1, sum holes: 3 */
-	/* last cacheline: 44 bytes */
-};
-$ # after
-$ pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
-struct compat_cdrom_generic_command {
-	unsigned char              cmd[12];              /*     0    12 */
-	compat_caddr_t             buffer;               /*    12     4 */
-	compat_uint_t              buflen;               /*    16     4 */
-	compat_int_t               stat;                 /*    20     4 */
-	compat_caddr_t             sense;                /*    24     4 */
-	unsigned char              data_direction;       /*    28     1 */
-	unsigned char              pad[3];               /*    29     3 */
-	compat_int_t               quiet;                /*    32     4 */
-	compat_int_t               timeout;              /*    36     4 */
-	compat_caddr_t             reserved[1];          /*    40     4 */
-
-	/* size: 44, cachelines: 1, members: 10 */
-	/* last cacheline: 44 bytes */
-};
-$ _
-
- block/scsi_ioctl.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/block/scsi_ioctl.c b/block/scsi_ioctl.c
-index ef722f04f88a..72108404718f 100644
---- a/block/scsi_ioctl.c
-+++ b/block/scsi_ioctl.c
-@@ -651,6 +651,7 @@ struct compat_cdrom_generic_command {
- 	compat_int_t	stat;
- 	compat_caddr_t	sense;
- 	unsigned char	data_direction;
-+	unsigned char	pad[3];
- 	compat_int_t	quiet;
- 	compat_int_t	timeout;
- 	compat_caddr_t	reserved[1];
--- 
-2.25.1
-
+If I'm being too terse and something isn't clear, please just ask for
+clarification.
