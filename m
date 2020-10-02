@@ -2,61 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB37280D95
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22B3280D9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgJBGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:44:07 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:48450 "EHLO fornost.hmeau.com"
+        id S1726127AbgJBGpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:45:11 -0400
+Received: from verein.lst.de ([213.95.11.211]:51214 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBGoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:44:07 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kOEn8-0000zj-8Z; Fri, 02 Oct 2020 16:43:43 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 02 Oct 2020 16:43:41 +1000
-Date:   Fri, 2 Oct 2020 16:43:41 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] crypto: sun8i-ss@: fix memory leak on pointer d
-Message-ID: <20201002064341.GA2826@gondor.apana.org.au>
-References: <20200929133819.156092-1-colin.king@canonical.com>
+        id S1725968AbgJBGpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 02:45:11 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A2DCC68B02; Fri,  2 Oct 2020 08:45:06 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 08:45:05 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
+        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
+ RDMA map queue code
+Message-ID: <20201002064505.GA9593@lst.de>
+References: <20200929091358.421086-1-leon@kernel.org> <20200929091358.421086-2-leon@kernel.org> <20200929102046.GA14445@lst.de> <20200929103549.GE3094@unreal> <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929133819.156092-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 02:38:19PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the error return path on a failed dma_mapping_error call
-> is not kfree'ing memory allocated to d. Add an extra error exit label
-> to end of the function where the kfree and return occurs to fix this
-> issue.
-> 
-> Addresses-Coverity: ("Resource leak")
-> Fixes: ac2614d721de ("crypto: sun8i-ss - Add support for the PRNG")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, Sep 29, 2020 at 11:24:49AM -0700, Sagi Grimberg wrote:
+> Yes, basically usage of managed affinity caused people to report
+> regressions not being able to change irq affinity from procfs.
 
-This patch is already in the queue:
+Well, why would they change it?  The whole point of the infrastructure
+is that there is a single sane affinity setting for a given setup. Now
+that setting needed some refinement from the original series (e.g. the
+current series about only using housekeeping cpus if cpu isolation is
+in use).  But allowing random users to modify affinity is just a receipe
+for a trainwreck.
 
-	https://patchwork.kernel.org/patch/11804435/
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+So I think we need to bring this back ASAP, as doing affinity right
+out of the box is an absolute requirement for sane performance without
+all the benchmarketing deep magic.
