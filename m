@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3E2281048
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD14728104D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387719AbgJBKGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:06:33 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33308 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBKGc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:06:32 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092A6RPU085459;
-        Fri, 2 Oct 2020 05:06:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601633187;
-        bh=xBCGG8uSnuwgHbQccQCfe/sl8mZ7XEzoHyACYS52sj0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=PV71i67yQPdfMOxmof/v+w2EFQB40MUadDaoHjSuZXyRKxo5kwIdezpSHa9IAomc+
-         oBL1T1ycF6bIXTfCM3FqJgdyH8Fz24vBlapbBYG0sYJnrJKQO4WkpU3UtmnGO1nbZ4
-         qteN95HaeLjxOXQ5fUQRBUm19HVMGIQy0L3OH2nU=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092A6Rgo004194
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 05:06:27 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 05:06:27 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 05:06:27 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092A6PBk106642;
-        Fri, 2 Oct 2020 05:06:25 -0500
-Subject: Re: [PATCH] usb: cdns3: platform_get_irq_byname_optional instead
- platform_get_irq_byname
-To:     Pawel Laszczak <pawell@cadence.com>,
-        "balbi@kernel.org" <balbi@kernel.org>
-CC:     "peter.chen@nxp.org" <peter.chen@nxp.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>
-References: <20200930065758.23740-1-pawell@cadence.com>
- <722fa58e-604b-bc34-d404-caf7939bb176@ti.com>
- <DM6PR07MB5529095F1B656C5065CBA8B4DD310@DM6PR07MB5529.namprd07.prod.outlook.com>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <b73f6bb7-8e5e-d5f9-5adf-f6b10bdb5fb6@ti.com>
-Date:   Fri, 2 Oct 2020 13:06:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387740AbgJBKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:06:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgJBKGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:06:45 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B5202065D;
+        Fri,  2 Oct 2020 10:06:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601633204;
+        bh=UJnxaC4M1lOTDgzs586QRSYYhrDCyDplqGq8e17l78E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zK6KwWMfGx+COYeTiW7XydYPT01P72wNhoDo1SEhefHyCZ2dCm5+bFatWiMRR3iyG
+         pV7fqxOJPOW+mEONS9qBxxAEg/5+9PT+UdMukVhcUctmHwSVNjY1+32RMDdRWy6r9m
+         KaGUN9J4TqtYuUjQJ6SSBLyjrSliBPEQN5WSsiOQ=
+Received: by mail-ed1-f54.google.com with SMTP id 33so1039877edq.13;
+        Fri, 02 Oct 2020 03:06:44 -0700 (PDT)
+X-Gm-Message-State: AOAM532nPoDVjsF2o87zJ6CHXawD5rFczMpZFvF81KWFF1jeBQyw5U82
+        8vdtcDt1+pMYMLozG9HsZbbbgfMKIV/ZkOm+HaQ=
+X-Google-Smtp-Source: ABdhPJyMUEsiLReOne5kMxnk5FpY37kPG9ggO9a1YAGcyv6YS7ZODs7IzG6QmWx9MLtvVFTrSOvy1Y7+WgappyP9AWU=
+X-Received: by 2002:a50:a452:: with SMTP id v18mr350430edb.143.1601633202677;
+ Fri, 02 Oct 2020 03:06:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM6PR07MB5529095F1B656C5065CBA8B4DD310@DM6PR07MB5529.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200930234637.7573-1-post@lespocky.de> <20200930234637.7573-6-post@lespocky.de>
+ <CAJKOXPfBKnESpRkSDZp5CB3T-t95DXg2dNKQnNNXv6Q_ywck2w@mail.gmail.com> <4533120.poq1GmoeVQ@ada>
+In-Reply-To: <4533120.poq1GmoeVQ@ada>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 2 Oct 2020 12:06:30 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPd3um-RvcmjexhYbpnbwcd6yKRYdCV1fnmjKoLguVOLKQ@mail.gmail.com>
+Message-ID: <CAJKOXPd3um-RvcmjexhYbpnbwcd6yKRYdCV1fnmjKoLguVOLKQ@mail.gmail.com>
+Subject: Re: [PATCH v6 5/7] ARM: dts: Fix schema warnings for pwm-leds
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     linux-leds@vger.kernel.org, Alexander Dahl <post@lespocky.de>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pawel,
+On Fri, 2 Oct 2020 at 11:28, Alexander Dahl <ada@thorsis.com> wrote:
+>
+> Hello Krzysztof,
+>
+> Am Freitag, 2. Oktober 2020, 11:12:50 CEST schrieb Krzysztof Kozlowski:
+> > On Thu, 1 Oct 2020 at 01:53, Alexander Dahl <post@lespocky.de> wrote:
+> > > The node names for devices using the pwm-leds driver follow a certain
+> > > naming scheme (now).
+> > >
+> > > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> > > ---
+> > >
+> > > Notes:
+> > >     v6:
+> > >       * added this patch to series
+> > >
+> > >  arch/arm/boot/dts/at91-kizbox.dts             | 10 +++----
+> > >  arch/arm/boot/dts/at91-kizbox2-common.dtsi    |  8 +++---
+> > >  arch/arm/boot/dts/at91-kizbox3-hs.dts         | 16 ++++++------
+> > >  arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 10 +++----
+> > >  arch/arm/boot/dts/at91-kizboxmini-common.dtsi |  8 +++---
+> > >  arch/arm/boot/dts/at91sam9m10g45ek.dts        | 10 +++----
+> > >  arch/arm/boot/dts/at91sam9rlek.dts            | 10 +++----
+> > >  .../boot/dts/berlin2cd-google-chromecast.dts  |  6 ++---
+> > >  arch/arm/boot/dts/exynos5422-odroidhc1.dts    |  4 +--
+> > >  arch/arm/boot/dts/exynos5422-odroidxu4.dts    |  4 +--
+> >
+> > Somehow you did not CC the maintainers... please use
+> > scripts/get_maintainers.pl to obtain list of addresses.
+>
+> Well, that will be a huge list of Cc then.  What is the policy?  Everybody
+> gets the whole series or different list of receivers per patch?
 
-On 02/10/2020 12:08, Pawel Laszczak wrote:
-> Roger,
-> 
->>
->> On 30/09/2020 09:57, Pawel Laszczak wrote:
->>> To avoid duplicate error information patch replaces platform_get_irq_byname
->>> into platform_get_irq_byname_optional.
->>
->> What is duplicate error information?
-> 
-> The function platform_get_irq_byname print:
-> " dev_err(&dev->dev, "IRQ %s not found\n", name);" if error occurred.
-> 
-> In core.c we have the another error message below invoking this function.
-> e.g
-> 	if (cdns->dev_irq < 0)
-> 		dev_err(dev, "couldn't get peripheral irq\n");
-> 
-> So, it's looks like one dev_err is  redundant.
+With git send email and get_maintainers.pl you can simplify it:
+1. Send cover letter to everyone (could be skipped and instead send to
+mailing lists and then link included under --- in each patch).
+2. Send automatically each patch only to maintainers, with adjusted
+in-reply-to to the cover letter already sent. Something like: git
+send-email --cc-cmd "scripts/get_maintainer.pl --no-git --no-roles
+--no-rolestats".
 
-If we want all 3 IRQs to be valid irrespective of dr_mode then we should
-use platform_get_irq_byname() and error out in probe if (ret < 0 && ret != -EPROBE_DEFER).
+Probably 1+2 could be even one command if you put manually lists as Cc
+in the cover letter.
 
-We can get rid of the irq check and duplicate error message in other places.
-
-cheers,
--roger
-
-> 
->>
->>>
->>> A change was suggested during reviewing CDNSP driver by Chunfeng Yun.
->>>
->>> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
->>> ---
->>>    drivers/usb/cdns3/core.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
->>> index a0f73d4711ae..a3f6dc44cf3a 100644
->>> --- a/drivers/usb/cdns3/core.c
->>> +++ b/drivers/usb/cdns3/core.c
->>> @@ -465,7 +465,7 @@ static int cdns3_probe(struct platform_device *pdev)
->>>
->>>    	cdns->xhci_res[1] = *res;
->>>
->>> -	cdns->dev_irq = platform_get_irq_byname(pdev, "peripheral");
->>> +	cdns->dev_irq = platform_get_irq_byname_optional(pdev, "peripheral");
->>
->> As per DT binding document, these are mandatory properties
-> 
-> I think that name platform_get_irq_byname_optional is little confusing.
-> Function descriptions show that both are almost identical:
-> /**
->   * platform_get_irq_byname_optional - get an optional IRQ for a device by name
->   * @dev: platform device
->   * @name: IRQ name
->   *
->   * Get an optional IRQ by name like platform_get_irq_byname(). Except that it
->   * does not print an error message if an IRQ can not be obtained.
->   *
->   * Return: non-zero IRQ number on success, negative error number on failure.
->   */
-> 
->>
->>   - interrupts: Interrupts used by cdns3 controller:
->>          "host" - interrupt used by XHCI driver.
->>          "peripheral" - interrupt used by device driver
->>          "otg" - interrupt used by DRD/OTG  part of driver
->>
->> for dr_mode == "otg" -> all 3 are mandatory.
->> for dr_mode == "host" -> "otg" and "peripheral" IRQs are not required.
->> for dr_mode == "periphearal" -> "otg" and "host" IRQs are not required.
->>
->>>    	if (cdns->dev_irq == -EPROBE_DEFER)
->>>    		return cdns->dev_irq;
->>>
->>> @@ -477,7 +477,7 @@ static int cdns3_probe(struct platform_device *pdev)
->>>    		return PTR_ERR(regs);
->>>    	cdns->dev_regs	= regs;
->>>
->>> -	cdns->otg_irq = platform_get_irq_byname(pdev, "otg");
->>> +	cdns->otg_irq = platform_get_irq_byname_optional(pdev, "otg");
->>>    	if (cdns->otg_irq == -EPROBE_DEFER)
->>>    		return cdns->otg_irq;
->>>
->>>
->>
-> 
-> Regards,
-> Pawel
-> 
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Best regards,
+Krzysztof
