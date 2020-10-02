@@ -2,178 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95E32819BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993112819BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388507AbgJBRjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
+        id S2388526AbgJBRjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388377AbgJBRj0 (ORCPT
+        with ESMTP id S2388447AbgJBRjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:39:26 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6616C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:39:26 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x69so1976508oia.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:39:26 -0700 (PDT)
+        Fri, 2 Oct 2020 13:39:33 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 180E3C0613E3
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:39:33 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id v5so602001uau.10
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:39:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ule5Qp5lbMfHaY0RAIOheId/VOYyQUNSqQkCu9QXrwc=;
-        b=RsWduYJjPDsmhfA0N6SiS3A8cjjci69TyMJnXNuoBlVAYGeLjfUovB54bB8YifmQZS
-         dd8DlhE+poY1vwJakTA+OYdTXlBT7KkeYppgqBfB9Mpxwlbht2gFq1dCD7Th4zSOhGLk
-         bskGAhBZAhXgouEyLgnFwoHjpDD2mhOq1mS/riwWL9HBBH0v0R4ED+hcVJWit24fk0Ud
-         FQELFzw90RXsZudKVJZOvesHZ04cp7heu6AXnUv8aM8qeehi3+uuqERVdFe14FwVgR15
-         /iz6qtcA+qEx4a4XTzQiEX0tp11FHj0qwre/TuyLqUDSIJnE2prIy+EKutzY+ONdk5Cr
-         zLog==
+        bh=4yhMH5PEf+rCZZkZGdh40aYy4T1Wm9iOOW+zJXjnuHk=;
+        b=dfvoSI1Uq+qVVIYibol1p3/Reagu21mMHqIADjWFIOsoUGyn+8szMRTS8DnDgxQmLD
+         NSw61VJCHeyy6Jud7s8ZIWx22pLBVFjDABiv74XtNri+Kb1auGwlI0D1j/YYY6QPRiKP
+         cAkckBuqIFDhYMVi7qq9Fmnzs8h57IsYNEZyU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ule5Qp5lbMfHaY0RAIOheId/VOYyQUNSqQkCu9QXrwc=;
-        b=Fb8L0+GguDwZm8ZCyzdMBEnugkQPYWGGB2K/kAF7R1nG5s/T5NR9yxbmt/+dfJURKq
-         d7ZwX/416sEqffiyV75dNnYJqrAJyO4d/0FO7gxuYoS6/KtYk6Jy6eXMEe2L0OuvJgfH
-         xB132BLTJTbMzDJGQjwmm5t5ymIhwp9c0nmaZDPIrq/A91oPg21IuMkDwPy1blZ9k3p6
-         Kw8ATEO2UQmc5ewfHWMNE2pej211e2mrnm2L84RKqcQjMSKVUDdWrZU/VOHtoufhniWC
-         KWjMMvcCrA4OBc2qBJMw9b7WUsPX4rLtOFt4DOX1Wk+E3Lbxwe5eXt0H8JObcbsdPh/l
-         cxrg==
-X-Gm-Message-State: AOAM532Bwqh3wIDSUlQJJ8p+AS0vngxR9rq1UIWQWI2RWikyVk0xoguM
-        K6R5R0xG5awoVpoWfZC/gdkH9IQ0iWbxDZhJyC9BAg==
-X-Google-Smtp-Source: ABdhPJwg690Zdw18KeyjOlJrSIrZ5ZOPOR0vqBIuTeFXQjz9ruDkmCVvKFVkZ0TfN7KQGYrUwpI2zAYPrT/nycSfelc=
-X-Received: by 2002:aca:4ac2:: with SMTP id x185mr1866012oia.96.1601660366046;
- Fri, 02 Oct 2020 10:39:26 -0700 (PDT)
+        bh=4yhMH5PEf+rCZZkZGdh40aYy4T1Wm9iOOW+zJXjnuHk=;
+        b=ivjPsItJlPItd5HmPlpezhE5AwxyWJcEMkDLOrioSVqVf8E2ov743tiNx96NuQgBFp
+         ZYwt0RmVXm0K65ov8ZQprNkF8EbeiD03B0onvfol56VvT9wxEDIkOs90OztJ8s2Q0sTW
+         H/q8cPE+aehAW9VmpkVWMLY3mbwDjGmXoBOGVBH2gEQbZnYOxxhUyS4CDI3kBEPP+UBU
+         33md7Q9HOI51JfN/aZV6A7NphA0cNrRUevKg3cf7Xoyik9Hy7MVVC0wm0vb5LA6t8MUF
+         28BdrCqUNM0/JPh67vGcvzZnsub2tmDUzNvmqhrj4RzocFU2d6KxKdRNx+4lor3TQDfW
+         AYAQ==
+X-Gm-Message-State: AOAM533/2sPd7iW8cnbJjIFcj7aS/YOCmZSGneOxQXV1GPaERu3cLl07
+        QcX1QQc/cN8u/y0yx7BZN1uN53XZ7CYoSQ==
+X-Google-Smtp-Source: ABdhPJxYpVskbY80IncJvrbAyuL3M7MS49y9bJKZk1RNy19EHMDIH8TqEq2VAVFjg3oS0a8GAr9r7w==
+X-Received: by 2002:ab0:4226:: with SMTP id i35mr1936043uai.17.1601660371575;
+        Fri, 02 Oct 2020 10:39:31 -0700 (PDT)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id i67sm346021vkg.55.2020.10.02.10.39.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 10:39:30 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id 91so73604uas.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:39:30 -0700 (PDT)
+X-Received: by 2002:ab0:4542:: with SMTP id r60mr1965910uar.90.1601660369709;
+ Fri, 02 Oct 2020 10:39:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909163831.1894142-1-robert.marko@sartura.hr>
-In-Reply-To: <20200909163831.1894142-1-robert.marko@sartura.hr>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 2 Oct 2020 19:39:15 +0200
-Message-ID: <CA+HBbNGZmeejTPszL1jf_01wZP6xZqRyZUa15XpO+y6JCw3ajg@mail.gmail.com>
-Subject: Re: [PATCH v8] ARM: dts: qcom: ipq4019: add USB devicetree nodes
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        robh+dt@kernel.org, linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Vinod Koul <vkoul@kernel.org>
+References: <20201002114426.31277-1-lukasz.luba@arm.com> <20201002114426.31277-4-lukasz.luba@arm.com>
+ <CAD=FV=UbNP5-G1z95F37Fmv8=n0JPSSwnPQO_K==WpAc4vAHWQ@mail.gmail.com>
+ <e9b6fc5a-45d3-168d-db38-6c068da26f6b@arm.com> <CAD=FV=Xkg1zpsMW5rERbibnjrgY6opZi8Z9DUFkWebb7NHtU5w@mail.gmail.com>
+ <bc5d21c1-ea84-9132-2e52-ae84fbb0515a@arm.com>
+In-Reply-To: <bc5d21c1-ea84-9132-2e52-ae84fbb0515a@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 2 Oct 2020 10:39:17 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
+Message-ID: <CAD=FV=VfA8AB3BZk8Ykkhigv9eGijzu4zuA6KdXk0K5UG0yCCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: thermal: update sustainable-power
+ with abstract scale
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-doc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        amitk@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar.Eggemann@arm.com, Quentin Perret <qperret@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 6:38 PM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> From: John Crispin <john@phrozen.org>
->
-> Since we now have driver for the USB PHY, and USB controller is already supported by the DWC3 driver lets add the necessary nodes to DTSI.
->
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> ---
-> Changes from v7 to v8:
-> * Add labels for usb2 and usb3 nodes
-> Changes from v6 to v7:
-> * Remove changes to qcom-ipq4019-ap.dk01.1.dtsi
-> It has slipped in unwanted, we only want to add
-> nodes to the DTSI.
->
->  arch/arm/boot/dts/qcom-ipq4019.dtsi | 74 +++++++++++++++++++++++++++++
->  1 file changed, 74 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> index 74d8e2c8e4b3..4a973253024a 100644
-> --- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> +++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> @@ -605,5 +605,79 @@ ethphy4: ethernet-phy@4 {
->                                 reg = <4>;
->                         };
->                 };
-> +
-> +               usb3_ss_phy: ssphy@9a000 {
-> +                       compatible = "qcom,usb-ss-ipq4019-phy";
-> +                       #phy-cells = <0>;
-> +                       reg = <0x9a000 0x800>;
-> +                       reg-names = "phy_base";
-> +                       resets = <&gcc USB3_UNIPHY_PHY_ARES>;
-> +                       reset-names = "por_rst";
-> +                       status = "disabled";
-> +               };
-> +
-> +               usb3_hs_phy: hsphy@a6000 {
-> +                       compatible = "qcom,usb-hs-ipq4019-phy";
-> +                       #phy-cells = <0>;
-> +                       reg = <0xa6000 0x40>;
-> +                       reg-names = "phy_base";
-> +                       resets = <&gcc USB3_HSPHY_POR_ARES>, <&gcc USB3_HSPHY_S_ARES>;
-> +                       reset-names = "por_rst", "srif_rst";
-> +                       status = "disabled";
-> +               };
-> +
-> +               usb3: usb3@8af8800 {
-> +                       compatible = "qcom,dwc3";
-> +                       reg = <0x8af8800 0x100>;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +                       clocks = <&gcc GCC_USB3_MASTER_CLK>,
-> +                                <&gcc GCC_USB3_SLEEP_CLK>,
-> +                                <&gcc GCC_USB3_MOCK_UTMI_CLK>;
-> +                       clock-names = "master", "sleep", "mock_utmi";
-> +                       ranges;
-> +                       status = "disabled";
-> +
-> +                       dwc3@8a00000 {
-> +                               compatible = "snps,dwc3";
-> +                               reg = <0x8a00000 0xf8000>;
-> +                               interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_HIGH>;
-> +                               phys = <&usb3_hs_phy>, <&usb3_ss_phy>;
-> +                               phy-names = "usb2-phy", "usb3-phy";
-> +                               dr_mode = "host";
-> +                       };
-> +               };
-> +
-> +               usb2_hs_phy: hsphy@a8000 {
-> +                       compatible = "qcom,usb-hs-ipq4019-phy";
-> +                       #phy-cells = <0>;
-> +                       reg = <0xa8000 0x40>;
-> +                       reg-names = "phy_base";
-> +                       resets = <&gcc USB2_HSPHY_POR_ARES>, <&gcc USB2_HSPHY_S_ARES>;
-> +                       reset-names = "por_rst", "srif_rst";
-> +                       status = "disabled";
-> +               };
-> +
-> +               usb2: usb2@60f8800 {
-> +                       compatible = "qcom,dwc3";
-> +                       reg = <0x60f8800 0x100>;
-> +                       #address-cells = <1>;
-> +                       #size-cells = <1>;
-> +                       clocks = <&gcc GCC_USB2_MASTER_CLK>,
-> +                                <&gcc GCC_USB2_SLEEP_CLK>,
-> +                                <&gcc GCC_USB2_MOCK_UTMI_CLK>;
-> +                       clock-names = "master", "sleep", "mock_utmi";
-> +                       ranges;
-> +                       status = "disabled";
-> +
-> +                       dwc3@6000000 {
-> +                               compatible = "snps,dwc3";
-> +                               reg = <0x6000000 0xf8000>;
-> +                               interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
-> +                               phys = <&usb2_hs_phy>;
-> +                               phy-names = "usb2-phy";
-> +                               dr_mode = "host";
-> +                       };
-> +               };
->         };
->  };
-> --
-> 2.26.2
->
-
 Hi,
-Is there an issue with the patch preventing the review?
 
-Regards,
-Robert
+On Fri, Oct 2, 2020 at 9:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> On 10/2/20 4:47 PM, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Fri, Oct 2, 2020 at 8:13 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> Hi Doug,
+> >>
+> >> On 10/2/20 3:31 PM, Doug Anderson wrote:
+> >>> Hi,
+> >>>
+> >>> On Fri, Oct 2, 2020 at 4:45 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>>>
+> >>>> Update the documentation for the binding 'sustainable-power' and allow
+> >>>> to provide values in an abstract scale. It is required when the cooling
+> >>>> devices use an abstract scale for their power values.
+> >>>>
+> >>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >>>> ---
+> >>>>    .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+> >>>>    1 file changed, 9 insertions(+), 4 deletions(-)
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >>>> index 3ec9cc87ec50..4d8f2e37d1e6 100644
+> >>>> --- a/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >>>> +++ b/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+> >>>> @@ -99,10 +99,15 @@ patternProperties:
+> >>>>          sustainable-power:
+> >>>>            $ref: /schemas/types.yaml#/definitions/uint32
+> >>>>            description:
+> >>>> -          An estimate of the sustainable power (in mW) that this thermal zone
+> >>>> -          can dissipate at the desired control temperature. For reference, the
+> >>>> -          sustainable power of a 4-inch phone is typically 2000mW, while on a
+> >>>> -          10-inch tablet is around 4500mW.
+> >>>> +          An estimate of the sustainable power (in mW or in an abstract scale)
+> >>>> +         that this thermal zone can dissipate at the desired control
+> >>>> +         temperature. For reference, the sustainable power of a 4-inch phone
+> >>>> +         is typically 2000mW, while on a 10-inch tablet is around 4500mW.
+> >>>> +
+> >>>> +         It is possible to express the sustainable power in an abstract
+> >>>> +         scale. This is the case when the related cooling devices use also
+> >>>> +         abstract scale to express their power usage. The scale must be
+> >>>> +         consistent.
+> >>>
+> >>> Two thoughts:
+> >>>
+> >>> 1. If we're going to allow "sustainable-power" to be in abstract
+> >>> scale, why not allow "dynamic-power-coefficient" to be in abstract
+> >>> scale too?  I assume that the whole reason against that originally was
+> >>> the idea of device tree purity, but if we're allowing the abstract
+> >>> scale here then there seems no reason not to allow it for
+> >>> "dynamic-power-coefficient".
+> >>
+> >> With this binding it's a bit more tricky.
+> >> I also have to discuss a few things internally. This requirement of
+> >> uW/MHz/V^2 makes the code easier also for potential drivers
+> >> like GPU (which are going to register the devfreq cooling with EM).
+> >>
+> >> Let me think about it, but for now I would just update these bits.
+> >> These are required to proper IPA operation, the dyn.-pow.-coef. is a
+> >> nice to have and possible next step.
+> >
+> > I guess the problem is that Rajendra is currently planning to remove
+> > all the "dynamic-power-coefficient" values from device tree right now
+> > and move them to the source code because the numbers we currently have
+> > in the device tree _are_ in abstract scale and thus violate the
+> > bindings.  Moving this to source code won't help us get to more real
+> > power numbers (since it'll still be abstract scale), it'll just be
+> > pure churn.  If we're OK with the abstract scale in general then we
+> > should allow it everywhere and not add churn for no reason.
+>
+> IIUC he is still going to use the Energy Model, but with different
+> registration function. We have such a driver: scmi-cpufreq.c, which
+> uses em_dev_register_perf_domain(). He can still use EM, EAS, IPA
+> not violating anything.
+
+Right.  He's going to take the exact same "abstract scale" numbers
+that he has today and take them out of device tree and put them in the
+cpufreq driver.  Doing so magically makes it so that he's not
+violating anything since "abstract scale" is not currently allowed in
+device tree but is allowed in the cpufreq driver.  I'm not saying that
+he's doing anything wrong, I'm just saying that it's pointless churn.
+If we're OK with "abstract scale" in one place in the device tree we
+should be OK with it everywhere in the device tree.  Then Rajendra
+wouldn't need his patch at all and he could leave his numbers in the
+device tree.
+
+
+> The real problem that we want to address is with sustainable-power in
+> IPA. It is used in power budget calculation and if the devices operate
+> in abstract scale, then there is an issue.
+> There are two options to get that value:
+> 1. from DT, which can have optimized value, stored by OEM engineer
+> 2. from IPA estimation code, which just calculates it as a sum of
+> minimum OPP power for each cooling device.
+>
+> The 2nd option might not be the best for a platform, so vendor/OEM
+> engineer might want to provide a better value in DT -> 1st option.
+> This is currently against the binding description and I have to fix it.
+
+Right, things are already broken today because a SoC vendor could
+(without violating any rules) provide their SoC core
+"dynamic-power-coefficient" in "abstract scale" in code and there
+would be no way to for a board to (without violating DT bindings)
+specify a "sustainable-power".  ...so, in that sense, your patch does
+provide a benefit even if we don't make any changes to the rules for
+"sustainable-power".  All I'm saying is that if these new rules for
+allowing an abstract scale for "sustainable-power" in the device tree
+are OK that it should _also_ be OK to add new rules to allow an
+abstract scale for "dynamic-power-coefficient".
+
+
+> >>> 2. Is it worth adding some type of indication of what type of units
+> >>> "sustainable-power" is represented in?  Maybe even a made up unit so
+> >>> that you could tell the difference between made up units in the same
+> >>> system?  I'd envision something like:
+> >>>
+> >>> sustainable-power-units = "qualcomm,sc7180-bogoWatts"
+> >>>
+> >>> ...and on the dynamic-power-coefficient side, the same:
+> >>>
+> >>> dynamic-power-coefficient-units = "qualcomm,sc7180-bogoWatts"
+> >>>
+> >>> One could imagine someone even later (after devices are widely
+> >>> distributed) figuring out translations between these bogoWatts numbers
+> >>> and real Watts if someone could come up with a case where it matters.
+> >>
+> >> To figure this out we don't need a new binding.
+> >> I think a simple comment in the DT would be enough for this, even e.g.:
+> >>
+> >> sustainable-power = <100> /* bogoWatts */
+> >
+> > There are some important differences:
+> >
+> > a) Your comment is gone when the device tree is compiled.  If we
+> > actually add a string to the device tree then, in theory, we can add
+> > conversions in code (without touching the device tree) down the road.
+>
+> We don't need code and binding with a bogoscale. It is up to the
+> platform integrator to make sure the scale in consistent in all devices.
+> Comment in DT is good enough.
+
+One other nice thing about having the units is that the device tree is
+supposed to be more of a "pure" thing, less sullied about what's
+convenient and more about a real description of a thing.  Presumably
+that's why "abstract scale" wasn't allowed originally?  In any case,
+giving quantifiable units to the number somehow makes it feel less
+made up because it's possible to come up with a way to convert it back
+to real units.
+
+
+> > b) I believe there can be more than one abstract scale present in a
+> > single device tree, at least in theory.  Adding a string allows you to
+> > know if you're comparing apples to apples or apples to organges.
+>
+> IMHO DT is not the place for such abstractions, but Rob might correct me
+> here.
+
+Yup, seems like we're blocked waiting for Rob to chime in unless
+someone else has the authority to make the call about how to deal with
+"abstract scale" numbers in the device tree.
+
+-Doug
