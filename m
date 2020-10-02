@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDAB2817A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98E62817A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388004AbgJBQSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:18:36 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:54358 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388028AbgJBQSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:18:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601655511; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=whNc0k6iZS9jVhUtXaRh3qR5AHdDHKShvRvwUbV8CQI=;
- b=wQem5jmEEYwIIAJywwM//EGjbxPw+QcG4KREsv6tDpOdMY0JU3/DkUrs5uOQp8KBo1ygXRos
- +aw9d55TG8eLg4n7/R6dFc23+PcpY0nqfLpHALZAPTXXnj1ec/CX2RsJaQ+eR6kNZ8tcN9Vx
- CmDf9YYN/IE1r+FcZHS7rFef4u4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f7752c4bfed2afaa6ff3b7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 16:18:12
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 000BFC433FF; Fri,  2 Oct 2020 16:18:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 72C0FC433CA;
-        Fri,  2 Oct 2020 16:18:11 +0000 (UTC)
+        id S2388002AbgJBQSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBQSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:18:18 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267F8C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:18:17 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id q5so1770262ilj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eyG5D3V3TaPLgQB2Q8WgTq5oOe5Zz/FFFkte/PznoVM=;
+        b=ht42Mv1xJeYy5NIkco+QvVZEaZmsJjsSCNAuILdVWjsstOU4FQ9kG7/sMx1tA1f4Yu
+         1lhXMZYO0muMBX1XV52IOKY5FEmBlMm7T7TKlfOvW6B70PKYTWtYf78OiU9gu1LaPW/r
+         dV3Hbckrjh27CNH4AszoG5JyKREritHFpYoSN80Hlr/fVSuXdqLZgvWRr6fyNVROaGhK
+         mKiHKrbaVUXsU470+d54XLQVMwPbOMk8D85UkILFGHjk29ZdxkoaGlC1uVp6UkMT1OhP
+         CyvJ5x/usi+8MLG6dD+lGUjI5DaIzmKS/sspzAJKC3WZVcJ0Q5y/EWtXE8BG6UJqsZYJ
+         kplg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eyG5D3V3TaPLgQB2Q8WgTq5oOe5Zz/FFFkte/PznoVM=;
+        b=Sf6mQewkCFJRL0ucZNFqcToHldLyW7JoQ1qLI+n9sOW4hdJN7hyudmyI0QRRfQfj8r
+         YaEVkWhUAkDS39OLJBTye44lecT+P4cknBcFklzvyyd6xZtX3SINw68EmpEFskPMgmZj
+         yHYX19p7/1DUdI1jYgH4rBodw6mv6hJRnTEqkQVlhyr8DVG/3HXf1U9OSaDpy5uStJwX
+         Znu1/t11QUsByDdG11brte27EwDGS2DpXR6mjl6E7t3d9ME7O2f0Z/FGHtAwSc9u7QwJ
+         nhpWK4ZA82T4stKd263oYeY/YoFyitefnldcYZPOAIq261Zg09MK93cEgqIyBGL33GxB
+         wiBg==
+X-Gm-Message-State: AOAM531LkYWtNlkHyRqTAoVvj6dz6g5FLRcIIKlJ3DyrSnrvyhbAC+cs
+        5xaSSbIyKdJ1X2wnXII0QB13yHOV2PdETw==
+X-Google-Smtp-Source: ABdhPJxD5jsh4jHft20v0ciBnF9lral7z7r2u/FOLHN2GM2hh2A4Wb2HG+1XRHE4xPfEHuh6z6ke5Q==
+X-Received: by 2002:a92:1bd6:: with SMTP id f83mr625441ill.274.1601655496359;
+        Fri, 02 Oct 2020 09:18:16 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t4sm877765iob.48.2020.10.02.09.18.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 09:18:15 -0700 (PDT)
+Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org
+References: <20201001194208.1153522-1-axboe@kernel.dk>
+ <20201001194208.1153522-4-axboe@kernel.dk>
+ <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de>
+ <20201002153849.GC29066@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <19d2f8cc-320f-a4d1-79e3-fbdef3b44540@kernel.dk>
+Date:   Fri, 2 Oct 2020 10:18:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201002153849.GC29066@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 02 Oct 2020 21:48:11 +0530
-From:   pintu@codeaurora.org
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm/util.c: Add error logs for commitment overflow
-In-Reply-To: <20201002121137.GY20115@casper.infradead.org>
-References: <1601639861-32171-1-git-send-email-pintu@codeaurora.org>
- <20201002121137.GY20115@casper.infradead.org>
-Message-ID: <783f85abc401aa9dbe7623819f9683fb@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-02 17:41, Matthew Wilcox wrote:
-
+On 10/2/20 9:38 AM, Oleg Nesterov wrote:
+> On 10/02, Thomas Gleixner wrote:
+>>
+>> I think it's fundamentaly wrong that we have several places and several
+>> flags which handle task_work_run() instead of having exactly one place
+>> and one flag.
 > 
-> I don't think the __func__ is particularly useful information.  I would
-> also expect the name of the process to be more interesting than the 
-> PID.
-> And why is the ppid useful?
-> 
+> Damn yes, agreed.
 
-Dear Matthew, First, thank you so much for your review and comments.
-I totally agree with you.
-Yes, initially I included process-name but later removed it to shrink 
-some lines.
-I thought just pid should be enough to figure out the culprit process 
-from dumps.
-Okay, I agree __func__ can also be removed.
-ppid, I thought might be useful, so I included it. Okay I will remove 
-that too.
+As mentioned in the other reply, this is actually a nice step towards
+NOT having that be the case. Right now we have TWA_RESUME, which uses
+TIF_NOTIFY_RESUME. Once all archs support TIF_NOTIFY_SIGNAL, then we can
+totally drop TWA_NOTIFY resume, and use use TWA_SIGNAL as the default
+for notify == true task_work users. And we can drop task_work noticing
+and running in the signal handling as well, leaving us with only having
+tracehook_notify_signal() running the task_work.
 
-> Wouldn't this message be more useful?
-> 
-> fork: Would overcommit system (pid:162 name:./consume-and-fork.out)
-> 
+-- 
+Jens Axboe
 
-Okay, yes I think this should be sufficient.
-But I think printing pages also should be good to indicate the users to 
-lack
-information about this commitment.
-
-> ie put it in dup_mmap() and use current->comm
-
-Sorry, this part about dup_mmap(), I could not understand.
-
-
-Thanks,
-Pintu
