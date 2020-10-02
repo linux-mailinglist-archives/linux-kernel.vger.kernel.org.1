@@ -2,85 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33A228177E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FFC281780
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388093AbgJBQJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:09:29 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:37951 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387807AbgJBQJ2 (ORCPT
+        id S2388083AbgJBQJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:09:55 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59722 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBQJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:09:28 -0400
-Received: by mail-ed1-f65.google.com with SMTP id c8so2209507edv.5;
-        Fri, 02 Oct 2020 09:09:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5FyqpnE1NitYRE4MXiFKcXlz9HII2gU2Y9I2GLKfofw=;
-        b=FVXtrjHgzlqGWE02yF7MZIZ3LPC4E+lNy7iwQllk1KTqNTB0t6YbQqiXHPdYVp8lre
-         x39ju+4cUSA6yzU6GdGehGgy2AHw2CZUF8V1jDuneopO8CUz5Zn+/lMB08KoWnNSJq1q
-         kQqGGdIzf16xpv80SC5zHohgm9UwBAbGBl3h+Bjtd3dBw/7VDWb1y4m4lsQtkONg//Ea
-         /xbAzBDPAsjPIWsbXBTpgJaJZX4vk786qXVjJBpic+zNfjW4q3CPKQd3LaNn9HsTCjt6
-         MEjpQvJZ5Ry5SftgghezK6a4YsAOsvFt8HDgsP4RQl+rJV8RG2bq+2dmaD6ZweiBlaun
-         ZHHg==
-X-Gm-Message-State: AOAM530kS31tKoxffvxdznSeDjo2DhrnzeJB95aj3UzDv110esoQI1DY
-        3Bp9GDkZXvvbowZBRe1eW7o=
-X-Google-Smtp-Source: ABdhPJzyQ466nllNLijPl8MyvJDDlJ3t+z6Fn527zLluK2eGj5ZooDjyIw5XNhnfnmOyWeCz6NqWTg==
-X-Received: by 2002:aa7:c387:: with SMTP id k7mr3026582edq.242.1601654966696;
-        Fri, 02 Oct 2020 09:09:26 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.194])
-        by smtp.googlemail.com with ESMTPSA id b6sm1453915eds.46.2020.10.02.09.09.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 02 Oct 2020 09:09:25 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 18:09:22 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Khuong Dinh <khuong@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arm@kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] arm64: dts: apm: drop unused reg-io-width from DW
- APB GPIO controller
-Message-ID: <20201002160922.GA4542@kozik-lap>
-References: <20200917165040.22908-1-krzk@kernel.org>
+        Fri, 2 Oct 2020 12:09:55 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092G9pRN047766;
+        Fri, 2 Oct 2020 11:09:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601654991;
+        bh=9xTA5+qh/F+xiW0/+hAkPCcePW2qVrOrlKz6iokDxDk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Bw2x/kduHCG1sD/TEX34leq45a8x94VRRnmb0qE4raG6ZUYPBtUB489UPUgE/E8gi
+         BqvCgz0GffMF/UomYKNl4SkOQ5yGT7lsnk1xhS+Foj1KrenUyBjDbaDMqSkYZt8CCq
+         Ofki5wc+Ewx8S04QBALC6e6jjmsEwngwHKiAbkyg=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092G9p2M104454
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 2 Oct 2020 11:09:51 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 11:09:50 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 2 Oct 2020 11:09:50 -0500
+Received: from [10.250.232.88] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092G9hwS109185;
+        Fri, 2 Oct 2020 11:09:45 -0500
+Subject: Re: [PATCH 0/8] Add support for UHS modes in TI's J721e and J7200
+ boards
+To:     Nishanth Menon <nm@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <will@kernel.org>,
+        <robh+dt@kernel.org>, <t-kristo@ti.com>
+References: <20201001190541.6364-1-faiz_abbas@ti.com>
+ <20201001191302.dlp2tzbvkk35vzgd@akan>
+ <2a7ceab9-37ec-9117-1d98-9f307b4b5390@ti.com>
+ <20201002124926.rr5dk5hhygavgqs3@akan>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <00746c65-d240-e7e9-810d-b6e33655cc57@ti.com>
+Date:   Fri, 2 Oct 2020 21:39:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200917165040.22908-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201002124926.rr5dk5hhygavgqs3@akan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 06:50:39PM +0200, Krzysztof Kozlowski wrote:
-> The Synopsys DesignWare APB GPIO controller driver does not parse
-> reg-io-width and dtschema does not allow it so drop it to fix dtschema
-> warnings like:
-> 
->   arch/arm64/boot/dts/apm/apm-mustang.dt.yaml: gpio@1c024000:
->     'reg-io-width' does not match any of the regexes: '^gpio-(port|controller)@[0-9a-f]+$', 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
+Hi Nishanth,
 
-Dear Arnd and Olof,
+On 02/10/20 6:19 pm, Nishanth Menon wrote:
+> On 10:14-20201002, Faiz Abbas wrote:
+>> Hi Nishanth,
+>>
+>> On 02/10/20 12:43 am, Nishanth Menon wrote:
+>>> On 00:35-20201002, Faiz Abbas wrote:
+>>>> The following patches add support for UHS modes for TI's j721e and j7200
+>>>> boards.
+>>>>
+>>>> Patches 1-3 add support for gpios to j7200-evm
+>>>>
+>>>> Patches 4-6 add support for voltage regulators for required by the
+>>>> SD card in both devices as well as enable UHS modes at 1.8V
+>>>>
+>>>> Patches 5-6 add some required configs to the arm64 defconfig.
+>>>>
+>>>> This series depends on driver patches adding tuning support here:
+>>>> https://lore.kernel.org/linux-arm-kernel/20200923105206.7988-1-faiz_abbas@ti.com/
+>>>>
+>>>> Faiz Abbas (8):
+>>>>   arm64: dts: ti: k3-j7200-main: Add gpio nodes in main domain
+>>>>   arm64: dts: ti: k3-j7200: Add gpio nodes in wakeup domain
+>>>>   arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio
+>>>>     modules
+>>>>   arm64: dts: ti: k3-j721e-main: Add output tap delay values
+>>>>   arm64: dts: ti: k3-j721e-common-proc-board: Add support SD card UHS
+>>>>     modes
+>>>>   arm64: dts: ti: k3-j7200-common-proc-board: Add support SD card UHS
+>>>>     modes
+>>>
+>>> Split these up please!
+>>
+>> Into SD card UHS and gpio series?
+>>
+>>>>   arm64: defconfig: Enable OMAP I2C driver
+>>>>   arm64: defconfig: Enable DAVINCI_GPIO driver
+>>>>
+>>>
+>>> defconfig patches can be posted independent of dts patches, they go to
+>>> different branches.
+>>
+>> I was trying to follow Arnd's advice here:
+>> https://lore.kernel.org/linux-arm-kernel/CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com/
+>>
+>> He says that defconfig patches can be sent at the same time as dts updates and maintainers can send those
+>> as separate pull requests.
+> 
+> BTW, [1] your patches 7/8 and 8/8 never hit the mailing list, So, I am
+> commenting on the defconfig patches without actually seeing the patches,
+> and solely based on $subject in the cover letter.
 
-There is no response from APM maintainer, so maybe you could apply these
-two patches directly? Optionally I could take it and send to you via
-pull-request.
+This is weird. They are there in my patches/ folder and I always do a "git send-email patches/* ..."
 
-Best regards,
-Krzysztof
+Not sure why they didn't get sent. My last send-email command does have all the patches being sent:
 
+https://pastebin.ubuntu.com/p/VNWsrMcBZd/
 
 > 
-> Changes since v1:
-> 1. New patch
-> ---
->  arch/arm64/boot/dts/apm/apm-shadowcat.dtsi | 1 -
->  arch/arm64/boot/dts/apm/apm-storm.dtsi     | 1 -
->  2 files changed, 2 deletions(-)
+> The reason for my comment was that I think defconfig series could go
+> independent of the remaining series into 5.10, since they are not
+> related specifically to this series, they are probably needed even for
+> am654 and j721e nodes that already exist and was a miss that we didn't
+> enable. Tying that to this specific series didn't make sense to me.
+
+You're right that they are not tied to the series.
+
 > 
+> But either way, we are way past rc7. I don't have enough time for
+> these patches to bake in -next to make it to 5.10 window. So, lets try
+> reposting this after rc1 tag is done so that I can send the defconfig
+> (separately for 5.10 window) and the dts staged towards 5.11 (and no,
+> I don't consider the dts patches as fixes - they are enabling the next
+> level of functionality).
+> 
+
+Ok. I'll send only the defconfig patches in a new series and repost v2 of this at rc1.
+
+Thanks,
+Fai
