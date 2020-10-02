@@ -2,417 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5AE281CBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651D3281CC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgJBUO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S1725772AbgJBURO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUO1 (ORCPT
+        with ESMTP id S1725446AbgJBURN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:14:27 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23176C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:14:26 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id v8so2881157iom.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:14:26 -0700 (PDT)
+        Fri, 2 Oct 2020 16:17:13 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A98FC0613D0;
+        Fri,  2 Oct 2020 13:17:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z1so3082912wrt.3;
+        Fri, 02 Oct 2020 13:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WbkMzy7VmsaQRlC/1UTKy9t6TA3Vnaiwkxq3useYutY=;
-        b=n2E5NOYpEwDuGQKrrLJUjZGPqTw/VnWqLE6RjF6xgOgm9VyU5W3kisnKsEKZYrrxM1
-         VQnOPPhg1cYv2fLUaMPIx2ElpiGVczJ5/6i7U6WMRh3z45Dn1ZdnCBl8BdeW1ewOI0o6
-         mNxQ/nQz2CvcOVNb1R31Geuw2t8lLqnyo7rW2tgDC2tiMTtDrMNwNlwtk2634TdnIDm3
-         I3d2GLNsp3JuwvYHSuFKEhuRhzjjkmW2ESTIkTKfYKgfoP1wjvfmw8/VYWHVS1cEKD7s
-         c7V35nc0Uyl7RokvtjsRhfn+59BZjOqG5tighogKQJeBt9WCs/Br7EF4m6QroSaQL2/C
-         uAkQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v3O9WdsNLJVkgSoGDOH52JrLXl2wjpYEbzt5PhqJt+U=;
+        b=kZ2FLydQyJOeChz2+eQqxX1EvGjWsn7aK57kZBT7uLeaRvAo4YGypf08XVVgAcrIpB
+         ci6XrP4OVAlNTE5eb+d/oudhPenqgsX43Hj9mv3+sjlphL5gPPYmU5x6rwlZCFYX491e
+         Z8mEAKHjWR96UIqvXr4FGFPtdEJbtaR+qtS2YkQI5eKiwgx3bqoyXg54KOWkfenC2YMf
+         jkw9NNdYbuiQCKW3WXaYHWB8DZMZ3uU0g4gxQAUucKsYgGMkQMJ/s+EquU+9kquaU2hc
+         JOIrz6HUvJXZz27ylqSbBBxX1Syb9v8V4WPcfNGC5bTVBWQ8Z9CZTTfS1BNhH+B8e3Ac
+         M5jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WbkMzy7VmsaQRlC/1UTKy9t6TA3Vnaiwkxq3useYutY=;
-        b=XsdQeMOl1nWc/QtawZyTxmj3Q8vEXihly/z1j2jB1l8f0cW69KHQn3rkZcTnWIEY2X
-         cARq77AcuTHcKmN43z/vA3nQ0i+Se9QkiZqa7PWORyTwodyPuFI3BiOHX77d1bYxZaVX
-         pX4y7/tNRYUasl5KllDjIx2Z0ljWvRs25i+5mK9WEvChRToVV/RJFIFZglcUJOLGCNOj
-         gZo+olJjS43H1ki9LOv6lCGmgv1Kq937aGmn9g5f1n/ke5DravsRg094emmC4ZARPFJI
-         c5PbkDaBzyUBFp/S47dj24XltorcIsJXiYRPoV+6KadM/iAEKVLb3St7rYCVY2cN2gzG
-         NBtw==
-X-Gm-Message-State: AOAM531d4SeBcZpX3tuwCg2QZ7GUYicYD6jy1N/Yg9ruzlPAgNWD13eQ
-        RrZu60F4lite9/dJRQepYaZobif8nbgAbw==
-X-Google-Smtp-Source: ABdhPJw9OiNS5tOs5BpCVSTSNBA0hiZOBa+aszKcVp0EYMdgKuZs+cbUsyhAzlLO240C8GcXIDY3jg==
-X-Received: by 2002:a5e:9b11:: with SMTP id j17mr3212665iok.176.1601669665256;
-        Fri, 02 Oct 2020 13:14:25 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a7sm1278093ilh.46.2020.10.02.13.14.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 13:14:24 -0700 (PDT)
-Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org
-References: <20201001194208.1153522-1-axboe@kernel.dk>
- <20201001194208.1153522-4-axboe@kernel.dk>
- <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de>
- <4c9dbcc4-cae7-c7ad-8066-31d49239750a@kernel.dk>
- <87y2kocukv.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a4e6f8a3-f33e-ed96-1c9b-fa222cde2320@kernel.dk>
-Date:   Fri, 2 Oct 2020 14:14:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v3O9WdsNLJVkgSoGDOH52JrLXl2wjpYEbzt5PhqJt+U=;
+        b=diz3r9i4renKDRvOyNWoNhDrTVbIcXVq1E+itIyRFBzzIBs8O2/aZJh3RYHJBtGG8q
+         fxrINK/H84IDzCyaVvUMWtC612xvUgZCWuSJ3AvUngIumoSuuZkY4Cc9teg7tqwW4PpJ
+         IWyQebShjH2Qrpuz44EjuKvgnTlAl50teDEb4rl11iOc840WWZo/bkzY3YlNeANhELqC
+         GMe9veMQFgH3+41OI96tP1krEfOyR+fLbjfE98zPzsEkmkj+JzaTEwoDxENFOuamRYdB
+         GIKiAtdoSF2BtGK/7Ykhm+qDlvFxmpoFsKSTcmbwK/uokKOSvABEMeJidXvtnVx6ZYk4
+         +o9A==
+X-Gm-Message-State: AOAM530BF9Mxg/ef9g5u5CNSHbhaC6k0uWei7iYXZ0MAV5SMkLeL6kH+
+        +5BpwbDZ4fCIcrX+c+Xiya7vjIqDqyyAZrOKn2E=
+X-Google-Smtp-Source: ABdhPJxDiEQEtoaAOw9HKt+VxBNfpYEIgQgCD70lGzkeo1gpZ4TBeouF9MBOGhLTV31M695d1Ih5aVELkR7gjWFwa3Y=
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr5079040wrc.360.1601669832211;
+ Fri, 02 Oct 2020 13:17:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87y2kocukv.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1601583511-15138-1-git-send-email-si-wei.liu@oracle.com>
+In-Reply-To: <1601583511-15138-1-git-send-email-si-wei.liu@oracle.com>
+From:   Si-Wei Liu <siwliu.kernel@gmail.com>
+Date:   Fri, 2 Oct 2020 13:17:00 -0700
+Message-ID: <CAPWQSg1y8uvpiwxxp_ONGFs8GeuOY09q3AShfLCmhv77ePma-Q@mail.gmail.com>
+Subject: Re: [PATCH] vdpa/mlx5: should keep avail_index despite device status
+To:     elic@nvidia.com, mst@redhat.com, jasowang@redhat.com,
+        netdev@vger.kernel.org
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Si-Wei Liu <si-wei.liu@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 1:10 PM, Thomas Gleixner wrote:
-> On Fri, Oct 02 2020 at 09:52, Jens Axboe wrote:
->> On 10/2/20 9:31 AM, Thomas Gleixner wrote:
->>>> This way task_work_run() doesn't need to clear TIF_NOTIFY_SIGNAL and it can
->>>> have more users.
->>>
->>> I think it's fundamentaly wrong that we have several places and several
->>> flags which handle task_work_run() instead of having exactly one place
->>> and one flag.
->>
->> I don't disagree with that. I know it's not happening in this series, but
->> if we to the TIF_NOTIFY_SIGNAL route and get all archs supporting that,
->> then we can kill the signal and notify resume part of running task_work.
->> And that leaves us with exactly one place that runs it.
->>
->> So we can potentially improve the current situation in that regard.
-> 
-> I'll think about it over the weekend.
++ Eli.
 
-Thanks, I appreciate it!
-
-Just to drive the point home, we'd end up with something like the below.
-Which also enables me to remove a nasty sighand->lock deadlock
-workaround in io_uring.
-
-Not in this patch, but the io_uring cqring_wait() call can also be
-removed. Outside of the core calling it in tracehook_notify_signal(),
-the only callers are then the case where kthreads are used with
-task_work.
-
-
- fs/io_uring.c                  | 41 ++++++++++++----------------------
- include/linux/sched/jobctl.h   |  4 +---
- include/linux/task_work.h      |  4 +---
- include/linux/tracehook.h      |  9 --------
- kernel/signal.c                | 22 ------------------
- kernel/task_work.c             | 40 +++------------------------------
- kernel/time/posix-cpu-timers.c |  2 +-
- 7 files changed, 20 insertions(+), 102 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 2a67552a9c2f..3a5f4a7bd369 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1597,12 +1597,12 @@ static void __io_free_req(struct io_kiocb *req)
- 		int ret;
- 
- 		init_task_work(&req->task_work, io_req_task_file_table_put);
--		ret = task_work_add(req->task, &req->task_work, TWA_RESUME);
-+		ret = task_work_add(req->task, &req->task_work, true);
- 		if (unlikely(ret)) {
- 			struct task_struct *tsk;
- 
- 			tsk = io_wq_get_task(req->ctx->io_wq);
--			task_work_add(tsk, &req->task_work, 0);
-+			task_work_add(tsk, &req->task_work, false);
- 		}
- 	}
- }
-@@ -1746,25 +1746,21 @@ static struct io_kiocb *io_req_find_next(struct io_kiocb *req)
- 	return __io_req_find_next(req);
- }
- 
--static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb,
--				bool twa_signal_ok)
-+static int io_req_task_work_add(struct io_kiocb *req, struct callback_head *cb)
- {
- 	struct task_struct *tsk = req->task;
- 	struct io_ring_ctx *ctx = req->ctx;
--	int ret, notify;
-+	bool notify = false;
-+	int ret;
- 
- 	if (tsk->flags & PF_EXITING)
- 		return -ESRCH;
- 
- 	/*
--	 * SQPOLL kernel thread doesn't need notification, just a wakeup. For
--	 * all other cases, use TWA_SIGNAL unconditionally to ensure we're
--	 * processing task_work. There's no reliable way to tell if TWA_RESUME
--	 * will do the job.
-+	 * SQPOLL kernel thread doesn't need notification, just a wakeup.
- 	 */
--	notify = 0;
--	if (!(ctx->flags & IORING_SETUP_SQPOLL) && twa_signal_ok)
--		notify = TWA_SIGNAL;
-+	if (!(ctx->flags & IORING_SETUP_SQPOLL))
-+		notify = true;
- 
- 	ret = task_work_add(tsk, cb, notify);
- 	if (!ret)
-@@ -1825,13 +1821,13 @@ static void io_req_task_queue(struct io_kiocb *req)
- 	init_task_work(&req->task_work, io_req_task_submit);
- 	percpu_ref_get(&req->ctx->refs);
- 
--	ret = io_req_task_work_add(req, &req->task_work, true);
-+	ret = io_req_task_work_add(req, &req->task_work);
- 	if (unlikely(ret)) {
- 		struct task_struct *tsk;
- 
- 		init_task_work(&req->task_work, io_req_task_cancel);
- 		tsk = io_wq_get_task(req->ctx->io_wq);
--		task_work_add(tsk, &req->task_work, 0);
-+		task_work_add(tsk, &req->task_work, false);
- 		wake_up_process(tsk);
- 	}
- }
-@@ -3056,14 +3052,14 @@ static int io_async_buf_func(struct wait_queue_entry *wait, unsigned mode,
- 
- 	/* submit ref gets dropped, acquire a new one */
- 	refcount_inc(&req->refs);
--	ret = io_req_task_work_add(req, &req->task_work, true);
-+	ret = io_req_task_work_add(req, &req->task_work);
- 	if (unlikely(ret)) {
- 		struct task_struct *tsk;
- 
- 		/* queue just for cancelation */
- 		init_task_work(&req->task_work, io_req_task_cancel);
- 		tsk = io_wq_get_task(req->ctx->io_wq);
--		task_work_add(tsk, &req->task_work, 0);
-+		task_work_add(tsk, &req->task_work, false);
- 		wake_up_process(tsk);
- 	}
- 	return 1;
-@@ -4598,7 +4594,6 @@ struct io_poll_table {
- static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
- 			   __poll_t mask, task_work_func_t func)
- {
--	bool twa_signal_ok;
- 	int ret;
- 
- 	/* for instances that support it check for an event match first: */
-@@ -4613,27 +4608,19 @@ static int __io_async_wake(struct io_kiocb *req, struct io_poll_iocb *poll,
- 	init_task_work(&req->task_work, func);
- 	percpu_ref_get(&req->ctx->refs);
- 
--	/*
--	 * If we using the signalfd wait_queue_head for this wakeup, then
--	 * it's not safe to use TWA_SIGNAL as we could be recursing on the
--	 * tsk->sighand->siglock on doing the wakeup. Should not be needed
--	 * either, as the normal wakeup will suffice.
--	 */
--	twa_signal_ok = (poll->head != &req->task->sighand->signalfd_wqh);
--
- 	/*
- 	 * If this fails, then the task is exiting. When a task exits, the
- 	 * work gets canceled, so just cancel this request as well instead
- 	 * of executing it. We can't safely execute it anyway, as we may not
- 	 * have the needed state needed for it anyway.
- 	 */
--	ret = io_req_task_work_add(req, &req->task_work, twa_signal_ok);
-+	ret = io_req_task_work_add(req, &req->task_work);
- 	if (unlikely(ret)) {
- 		struct task_struct *tsk;
- 
- 		WRITE_ONCE(poll->canceled, true);
- 		tsk = io_wq_get_task(req->ctx->io_wq);
--		task_work_add(tsk, &req->task_work, 0);
-+		task_work_add(tsk, &req->task_work, false);
- 		wake_up_process(tsk);
- 	}
- 	return 1;
-diff --git a/include/linux/sched/jobctl.h b/include/linux/sched/jobctl.h
-index d2b4204ba4d3..fa067de9f1a9 100644
---- a/include/linux/sched/jobctl.h
-+++ b/include/linux/sched/jobctl.h
-@@ -19,7 +19,6 @@ struct task_struct;
- #define JOBCTL_TRAPPING_BIT	21	/* switching to TRACED */
- #define JOBCTL_LISTENING_BIT	22	/* ptracer is listening for events */
- #define JOBCTL_TRAP_FREEZE_BIT	23	/* trap for cgroup freezer */
--#define JOBCTL_TASK_WORK_BIT	24	/* set by TWA_SIGNAL */
- 
- #define JOBCTL_STOP_DEQUEUED	(1UL << JOBCTL_STOP_DEQUEUED_BIT)
- #define JOBCTL_STOP_PENDING	(1UL << JOBCTL_STOP_PENDING_BIT)
-@@ -29,10 +28,9 @@ struct task_struct;
- #define JOBCTL_TRAPPING		(1UL << JOBCTL_TRAPPING_BIT)
- #define JOBCTL_LISTENING	(1UL << JOBCTL_LISTENING_BIT)
- #define JOBCTL_TRAP_FREEZE	(1UL << JOBCTL_TRAP_FREEZE_BIT)
--#define JOBCTL_TASK_WORK	(1UL << JOBCTL_TASK_WORK_BIT)
- 
- #define JOBCTL_TRAP_MASK	(JOBCTL_TRAP_STOP | JOBCTL_TRAP_NOTIFY)
--#define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK | JOBCTL_TASK_WORK)
-+#define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
- 
- extern bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask);
- extern void task_clear_jobctl_trapping(struct task_struct *task);
-diff --git a/include/linux/task_work.h b/include/linux/task_work.h
-index 0fb93aafa478..a221bd5f746c 100644
---- a/include/linux/task_work.h
-+++ b/include/linux/task_work.h
-@@ -13,9 +13,7 @@ init_task_work(struct callback_head *twork, task_work_func_t func)
- 	twork->func = func;
- }
- 
--#define TWA_RESUME	1
--#define TWA_SIGNAL	2
--int task_work_add(struct task_struct *task, struct callback_head *twork, int);
-+int task_work_add(struct task_struct *task, struct callback_head *twork, bool);
- 
- struct callback_head *task_work_cancel(struct task_struct *, task_work_func_t);
- void task_work_run(void);
-diff --git a/include/linux/tracehook.h b/include/linux/tracehook.h
-index 7ec0e94c5250..3a4a35ae87d1 100644
---- a/include/linux/tracehook.h
-+++ b/include/linux/tracehook.h
-@@ -178,15 +178,6 @@ static inline void set_notify_resume(struct task_struct *task)
-  */
- static inline void tracehook_notify_resume(struct pt_regs *regs)
- {
--	/*
--	 * The caller just cleared TIF_NOTIFY_RESUME. This barrier
--	 * pairs with task_work_add()->set_notify_resume() after
--	 * hlist_add_head(task->task_works);
--	 */
--	smp_mb__after_atomic();
--	if (unlikely(current->task_works))
--		task_work_run();
--
- #ifdef CONFIG_KEYS_REQUEST_CACHE
- 	if (unlikely(current->cached_requested_key)) {
- 		key_put(current->cached_requested_key);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ad52141ab0d2..d44fa9141cef 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2271,8 +2271,6 @@ static void ptrace_do_notify(int signr, int exit_code, int why)
- void ptrace_notify(int exit_code)
- {
- 	BUG_ON((exit_code & (0x7f | ~0xffff)) != SIGTRAP);
--	if (unlikely(current->task_works))
--		task_work_run();
- 
- 	spin_lock_irq(&current->sighand->siglock);
- 	ptrace_do_notify(SIGTRAP, exit_code, CLD_TRAPPED);
-@@ -2541,26 +2539,6 @@ bool get_signal(struct ksignal *ksig)
- 
- relock:
- 	spin_lock_irq(&sighand->siglock);
--	/*
--	 * Make sure we can safely read ->jobctl() in task_work add. As Oleg
--	 * states:
--	 *
--	 * It pairs with mb (implied by cmpxchg) before READ_ONCE. So we
--	 * roughly have
--	 *
--	 *	task_work_add:				get_signal:
--	 *	STORE(task->task_works, new_work);	STORE(task->jobctl);
--	 *	mb();					mb();
--	 *	LOAD(task->jobctl);			LOAD(task->task_works);
--	 *
--	 * and we can rely on STORE-MB-LOAD [ in task_work_add].
--	 */
--	smp_store_mb(current->jobctl, current->jobctl & ~JOBCTL_TASK_WORK);
--	if (unlikely(current->task_works)) {
--		spin_unlock_irq(&sighand->siglock);
--		task_work_run();
--		goto relock;
--	}
- 
- 	/*
- 	 * Every stopped thread goes here after wakeup. Check to see if
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 95604e57af46..e68f5831a078 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -5,34 +5,6 @@
- 
- static struct callback_head work_exited; /* all we need is ->next == NULL */
- 
--/*
-- * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
-- * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
-- * shared for threads, and can cause contention on sighand->lock. Even for
-- * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
-- * or IRQ disabling is involved for notification (or running) purposes.
-- */
--static void task_work_notify_signal(struct task_struct *task)
--{
--#ifdef TIF_NOTIFY_SIGNAL
--	set_notify_signal(task);
--#else
--	unsigned long flags;
--
--	/*
--	 * Only grab the sighand lock if we don't already have some
--	 * task_work pending. This pairs with the smp_store_mb()
--	 * in get_signal(), see comment there.
--	 */
--	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
--	    lock_task_sighand(task, &flags)) {
--		task->jobctl |= JOBCTL_TASK_WORK;
--		signal_wake_up(task, 0);
--		unlock_task_sighand(task, &flags);
--	}
--#endif
--}
--
- /**
-  * task_work_add - ask the @task to execute @work->func()
-  * @task: the task which should run the callback
-@@ -53,7 +25,7 @@ static void task_work_notify_signal(struct task_struct *task)
-  * 0 if succeeds or -ESRCH.
-  */
- int
--task_work_add(struct task_struct *task, struct callback_head *work, int notify)
-+task_work_add(struct task_struct *task, struct callback_head *work, bool notify)
- {
- 	struct callback_head *head;
- 
-@@ -64,14 +36,8 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
- 		work->next = head;
- 	} while (cmpxchg(&task->task_works, head, work) != head);
- 
--	switch (notify) {
--	case TWA_RESUME:
--		set_notify_resume(task);
--		break;
--	case TWA_SIGNAL:
--		task_work_notify_signal(task);
--		break;
--	}
-+	if (notify)
-+		set_notify_signal(task);
- 
- 	return 0;
- }
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index a71758e34e45..51080a1ed11f 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -1128,7 +1128,7 @@ static inline void __run_posix_cpu_timers(struct task_struct *tsk)
- 
- 	/* Schedule task work to actually expire the timers */
- 	tsk->posix_cputimers_work.scheduled = true;
--	task_work_add(tsk, &tsk->posix_cputimers_work.work, TWA_RESUME);
-+	task_work_add(tsk, &tsk->posix_cputimers_work.work, true);
- }
- 
- static inline bool posix_cpu_timers_enable_work(struct task_struct *tsk,
-
--- 
-Jens Axboe
-
+On Thu, Oct 1, 2020 at 2:02 PM Si-Wei Liu <si-wei.liu@oracle.com> wrote:
+>
+> A VM with mlx5 vDPA has below warnings while being reset:
+>
+> vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
+> vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
+>
+> We should allow userspace emulating the virtio device be
+> able to get to vq's avail_index, regardless of vDPA device
+> status. Save the index that was last seen when virtq was
+> stopped, so that userspace doesn't complain.
+>
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 70676a6..74264e59 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1133,15 +1133,17 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>         if (!mvq->initialized)
+>                 return;
+>
+> -       if (query_virtqueue(ndev, mvq, &attr)) {
+> -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
+> -               return;
+> -       }
+>         if (mvq->fw_state != MLX5_VIRTIO_NET_Q_OBJECT_STATE_RDY)
+>                 return;
+>
+>         if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
+>                 mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
+> +
+> +       if (query_virtqueue(ndev, mvq, &attr)) {
+> +               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
+> +               return;
+> +       }
+> +       mvq->avail_idx = attr.available_index;
+>  }
+>
+>  static void suspend_vqs(struct mlx5_vdpa_net *ndev)
+> @@ -1411,8 +1413,14 @@ static int mlx5_vdpa_get_vq_state(struct vdpa_device *vdev, u16 idx, struct vdpa
+>         struct mlx5_virtq_attr attr;
+>         int err;
+>
+> -       if (!mvq->initialized)
+> -               return -EAGAIN;
+> +       /* If the virtq object was destroyed, use the value saved at
+> +        * the last minute of suspend_vq. This caters for userspace
+> +        * that cares about emulating the index after vq is stopped.
+> +        */
+> +       if (!mvq->initialized) {
+> +               state->avail_index = mvq->avail_idx;
+> +               return 0;
+> +       }
+>
+>         err = query_virtqueue(ndev, mvq, &attr);
+>         if (err) {
+> --
+> 1.8.3.1
+>
