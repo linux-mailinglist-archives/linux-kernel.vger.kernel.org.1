@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2B5280F0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E84C280F0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387628AbgJBIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56572 "EHLO
+        id S2387642AbgJBIhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgJBIf2 (ORCPT
+        with ESMTP id S1725961AbgJBIhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:35:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE10C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 01:35:26 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t17so801368wmi.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 01:35:26 -0700 (PDT)
+        Fri, 2 Oct 2020 04:37:07 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A038C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 01:37:07 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so842612wrm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 01:37:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ICZkcERGPwITMiBHpXHw7j+8+AV94Q7APOnZgsUkBfo=;
-        b=IMxU52erZh/xiOPhbLBpcxqKwtRZfXjweyO+UtYR4IJNnIe1f9eFihMm5Jcn41x3Gx
-         RhJ4rWOXXvNiyZKuABKa9c9V8R8dy5RNWdm/ukovw/gG6hVed/YCL2hfKOgltUX8wNEn
-         /LKdlaHs4z1D6ZkZ4ADpT5ebZcXyOZSBcRwQRORKBuq/6yl9f5fizWUYktEY7jT9wujV
-         /cu/swC2jtq5/PH7/QXl3Bjzbid8DeWouQ6O4SyO4DXX0Xo5sldFGtC9xUC2MPfikbID
-         PghylftdsKzOXWJEpwYXGUyIKCf0zra68EIEIUx+odRQKMhnZiTL9DzrpoadO6gMu8Qr
-         OASg==
+        bh=WwjcMdmTq96Xqd3GHnyCJp3ca/GopivNTI/Crp8LOuA=;
+        b=O1bNQfPf9FYf8MkwuSAj21sPehzaTMnQw4U1k7zIwmtwuL3viB0AAwqHYgjcb7yjqv
+         nabv4NgugcjnQL/XZoGWEV/fSnGr4rC4HeKcxYAVdFqsjXqKzJA5isDQ1rWImhIa39i+
+         sb4rloLZkqxrYRqK01+Ku7NggAzekIs5An4ULBkpGt2d239LRG3LknPqx/S0ggyoEp3o
+         H70j1YCfV9m+hURY6ZVKGRuGyds/F9OySY9NL54uA+oVQfwB3sol9Gs5JNa9bTork4LU
+         78S4qjgdZP6VMT02sHY8L52wYfq7PqRfsSYGDqFCUna7rqqMLKhwOO/YWMTkzhbgo3LD
+         MRMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ICZkcERGPwITMiBHpXHw7j+8+AV94Q7APOnZgsUkBfo=;
-        b=BrL3itz2aQV6brLOIUIZAe2tbJeRP7k+LLeKgT074hEDLifqN7NmW/L+E8CnIYEoFh
-         OI1y9dgB5VQ2BoLrGw/gMrrPxdFRMc8BhKvtHyfLV0dLnPANHVOIA8usnx6tqIHymHqI
-         MPfCSb7Ktz9tguvIWTgSQDzq6DaqgZN8IUtFWf+SUJTOXnr2xAYdieBkJByAUk+bGibX
-         EkQs02rv4Updb8kBJJQWgQK3P5YXi6Mm9c3w2Vn6PirK+JgThjWl9buV25ha8YC+F3Jl
-         ambdzaH7LeW9x7TkP6bU4t5TF0HX6DcSYY71aBlalcmv/SduJ10PHxVDfCJ1wGFKwYTG
-         cveA==
-X-Gm-Message-State: AOAM530RLvW3CfgL3zit7iVLhHeyZE5hAWMlCjQhDFGdpuFrd0N8pC4f
-        xYtrG1OzEB5ZvQ+Y9O9fhzs2Ng==
-X-Google-Smtp-Source: ABdhPJyMXtkyJ9bmiNJZpb0GmN7b7aS3RFVcJ34mtyHwB5dqIXA9urSnyPVveYwF67X++jrg2uInuw==
-X-Received: by 2002:a7b:c208:: with SMTP id x8mr1598984wmi.30.1601627725544;
-        Fri, 02 Oct 2020 01:35:25 -0700 (PDT)
+        bh=WwjcMdmTq96Xqd3GHnyCJp3ca/GopivNTI/Crp8LOuA=;
+        b=XrFytGekegdad99NHzcpacF11Dkd0zWX6nMilufmpCdJslLS58cU0wD2g9ZfYApTRp
+         +jcogo6vKuPio3+FbdGdnjigMX/6XAp+YTM38fBjGHt6q0WjMQWfi/QeD05XAyDiw8Me
+         zWskL+As7I0MRwpL8SJsao47m1OfDLBkK+VibymRWQM0f9w5ync3sgKRJMjQvTcytdnZ
+         L3mLdBJDYIOucXUP/CH9Xw4i1ThFnkc94vu8S0LKalaSOvkS6PbVfYbpXqUzCDV5K6WH
+         8yGYcj3s4Luxsx30dz3/chAo9rt8aUDSySrS8On7BIxhSw1q3i4J56KJeJqARrctEdm2
+         hfRg==
+X-Gm-Message-State: AOAM530pvw9MYkZqRGejkPYj6VTvWGEozclfJCGS9EnxJ5lJXhuCD6P4
+        YiGvjj4BHPk7Nx1QrHLdgazsxg==
+X-Google-Smtp-Source: ABdhPJwb4kffluMBzNW9jUtXTgdS15XCBC5lZqo+qXtd8VLjB5fecUj6ozK0ZaVMVlkQIU3OPC5v9w==
+X-Received: by 2002:adf:f7ca:: with SMTP id a10mr1662515wrq.321.1601627826062;
+        Fri, 02 Oct 2020 01:37:06 -0700 (PDT)
 Received: from dell.default ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id g12sm892386wro.89.2020.10.02.01.35.24
+        by smtp.gmail.com with ESMTPSA id u127sm1002753wmu.48.2020.10.02.01.37.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 01:35:24 -0700 (PDT)
+        Fri, 02 Oct 2020 01:37:05 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 1/1] mfd: sl28cpld: Depend on I2C
-Date:   Fri,  2 Oct 2020 09:35:00 +0100
-Message-Id: <20201002083500.796843-1-lee.jones@linaro.org>
+        Michael.Brunner@kontron.com
+Subject: [PATCH 1/1] mfd: kempld-core: Fix unused variable 'kempld_acpi_table' when !ACPI
+Date:   Fri,  2 Oct 2020 09:36:54 +0100
+Message-Id: <20201002083654.797146-1-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,33 +62,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following randconfig build error:
+ drivers/mfd/kempld-core.c:556:36: warning: unused variable 'kempld_acpi_table' [-Wunused-const-variable]
 
- ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
- simple-mfd-i2c.c:(.text+0x48): undefined reference to `__devm_regmap_init_i2c'
- ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_init':
- simple-mfd-i2c.c:(.init.text+0x14): undefined reference to `i2c_register_driver'
- ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_exit':
- simple-mfd-i2c.c:(.exit.text+0xd): undefined reference to `i2c_del_driver'
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/kempld-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdf8cb962027b..8b99a13669bfc 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1188,6 +1188,7 @@ config MFD_SIMPLE_MFD_I2C
+diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
+index 1dfe556df0385..2c9295953c11e 100644
+--- a/drivers/mfd/kempld-core.c
++++ b/drivers/mfd/kempld-core.c
+@@ -553,11 +553,13 @@ static int kempld_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- config MFD_SL28CPLD
- 	tristate "Kontron sl28cpld Board Management Controller"
-+	depends on I2C
- 	select MFD_SIMPLE_MFD_I2C
- 	help
- 	  Say yes here to enable support for the Kontron sl28cpld board
++#ifdef CONFIG_ACPI
+ static const struct acpi_device_id kempld_acpi_table[] = {
+ 	{ "KEM0001", (kernel_ulong_t)&kempld_platform_data_generic },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, kempld_acpi_table);
++#endif
+ 
+ static struct platform_driver kempld_driver = {
+ 	.driver		= {
 -- 
 2.25.1
 
