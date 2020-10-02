@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08D0281D2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14F281D31
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgJBUxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUxt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:53:49 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121D6C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:53:49 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id y13so2996036iow.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EMlZtDSCazODTZpCvnwVrtAIuDpmFexo2dGZiSThtRQ=;
-        b=lK+TuASA8wS5wwFzSWB1/JFG8CsKbIAC0qL9RnpN50/8XpsmayepLgunk/nsufbMVs
-         nQbNfvLEA3QqNMX5WAqDXI0KlioBkePEoapSAQNNPOEs4cMxD0MlEm9AnvdY3PvSK7gG
-         FVC5lIoFlKj3a6zpBwZ83LKJiwdk2eoKGb1dMPiDbWMHbnPnK85kUGHSyYbPudAin6FH
-         YlDp+j10jB7Vc3lIzWpe4ZCDySruK91nlaDgn1HJJ7rNBicBx/exwNq6yJee94P3jSrF
-         x+NUyoJQprpAQXa4BLTp/jLWYyqBOp5mbU5x7VqmRr/ebGPNWA7mE96kGt8yomKYF6ry
-         38vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EMlZtDSCazODTZpCvnwVrtAIuDpmFexo2dGZiSThtRQ=;
-        b=QTRKT7C966MxGOm2LZkyB6kcKnHH93BAbhQXPxsCB9nk9duvbHMklnY19FWXdzyux1
-         YNofAHY+2MYugzE5Uo5CqKX5TeAiwQBnJt5aMLvauJl+/QebBhvB4EJeyRThhjgjp6Td
-         6EGeeFy23xjriMH+avz+H44XyiPAdQJAdy6AH1imseaCw63OpzpBKw4nWaZO3FksgMBU
-         GnSZZzBslQfUrLMrEDS1wxDC88jT0tyRX0J3XgjxQqzeinpTNtFnLBGdFEvOEgmGW0Rb
-         Vqu/h5iIo/5YIp0BtSwqZ3w18Xo6UoXEnXuU0F9pw9S0QDkCZxWfpNJyKGBj9VTG9bC1
-         /A3w==
-X-Gm-Message-State: AOAM531dfR0nz7G0ds1qWUzpcTLrbjvHGlTbneXnHWaMOgTp2+OZOgSv
-        cAkh2yjL+t/eU3Z2TVgPsVEYIBjiKzBjwA==
-X-Google-Smtp-Source: ABdhPJyKFIG6LsYP9hYPo5YmGLJdHj7QUoUTE4D7yEHwDg/QE078YislAC1NdnVmn9Wjpevy/TpbvQ==
-X-Received: by 2002:a5d:8e14:: with SMTP id e20mr3269850iod.119.1601672028385;
-        Fri, 02 Oct 2020 13:53:48 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c4sm1380949ilg.25.2020.10.02.13.53.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 13:53:47 -0700 (PDT)
-Subject: Re: [PATCH] ahci: qoriq: enable acpi support in qoriq ahci driver
-To:     andy.tang@nxp.com
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Udit Kumar <udit.kumar@nxp.com>
-References: <20200817082204.13523-1-andy.tang@nxp.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <79f76fbe-4b64-bef2-fcb4-45f9f14570ae@kernel.dk>
-Date:   Fri, 2 Oct 2020 14:53:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725769AbgJBU4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:56:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgJBU4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:56:15 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F8052065D;
+        Fri,  2 Oct 2020 20:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601672175;
+        bh=s7RDbJSRahvKFYJrNcA14JYV8asj/ImPRRlYyNwGmdw=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=QwQHKB9uOQvGJ47KHmqTkJBTMyvi8BxbXZr7QHXhil+R1t0eITcOIYCs+uFTUHkzU
+         8I8RD43wGq9d83nVXCrpdBIjVsrF/giMN4Ve3m0GK42/lJNirD+ElQ0/YdhjXuciF7
+         KPO4gOsLm4Dy8jgGZiMOWI3ERcDG7zTp7AmKoKb8=
+Date:   Fri, 02 Oct 2020 21:55:15 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     lgirdwood@gmail.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        tiwai@suse.com, perex@perex.cz
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20201002165908.637809-1-christophe.jaillet@wanadoo.fr>
+References: <20201002165908.637809-1-christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: wm8523: Fix a typo in a comment
+Message-Id: <160167211500.21762.1306114025374461159.b4-ty@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200817082204.13523-1-andy.tang@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/20 2:22 AM, andy.tang@nxp.com wrote:
-> From: Yuantian Tang <andy.tang@nxp.com>
-> 
-> This patch enables ACPI support in qoriq ahci driver.
+On Fri, 2 Oct 2020 18:59:08 +0200, Christophe JAILLET wrote:
+> It is likely that this header file is about the WM8523.
 
-Applied, thanks.
+Applied to
 
--- 
-Jens Axboe
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: wm8523: Fix a typo in a comment
+      commit: 98bd2b506a309faca2f5a8388dadfc983123e14a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
