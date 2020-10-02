@@ -2,145 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C99D28183C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C128828184A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388188AbgJBQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S1726569AbgJBQtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388134AbgJBQrR (ORCPT
+        with ESMTP id S1725991AbgJBQtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:47:17 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A9CC0613E7
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:47:17 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id m17so2243211ioo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:47:17 -0700 (PDT)
+        Fri, 2 Oct 2020 12:49:39 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D77EC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:49:38 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id z23so2859607ejr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 09:49:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Li4M3GK5y6x0SzTfqjxLLA9AT+ROiUGVRcFqRzm5Djg=;
-        b=a1gXL5toNpXLmacnL7yhtJtYu+HmO+zq2HSfVRcyZ9z5aGYPOUMcOsxSjRxLjTiwhj
-         zJBgESeE1qI3ToOAsK8MZWwKmHt51a3nMoD6FLDGupRKEjHEktpPC4yX8sNz7w/nKYtr
-         hL0t3LhSNNDXOlNOrlInWA796iaMFGVw4FjQQ=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jt0mTKD7biJvR9C/s8GFzCkzqMneNgtMalWKvcqcZ30=;
+        b=EdjwouQlpw+idcJObMj1jPU1XGKGGQ0BEVqaE7YHdOSPuhnSOUbNgFMamRCgjLp/0q
+         H44qtdpsxizB7fJjt3tx7nr24WboyDOF5FTSPnmlMU4kH8JDOKH2gw+i8sEJ+zPKb0gM
+         JgN+3UndIwmk96JBb3avGZ2zk+iGphGgWbERjPJWWjpSkl45bq5Jb3ZJiuqv2Czx3Wz6
+         WWcfOHD/W0plTO7SW3ZxLg8T8lkwzC3FXlG6h7MhCcZfpjzNUUGBgnR6I/2TjdDVHEBO
+         Zqp6rV7udmQnZ0BuoYxqW2q8sZdb0EEE3MvLXx4qLjLtNfcl8fiOGW17JgrKroxGeWb7
+         jnwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Li4M3GK5y6x0SzTfqjxLLA9AT+ROiUGVRcFqRzm5Djg=;
-        b=eV+YD1l31nlzguWvwKJcJ4Lmy87Gs3W4TNoA6y6lTCct0V7EimvWoWqvA7Bpwm+rK1
-         njvbbOeab+4gfhezjpYJXsZgIDfvtKWlcmn5BK9nM8EymzYkfoJJHKJxoOm6Sr6E5BHI
-         c9yyjvoIo4YobBvDl6rDbmcZoI6WirQbnNz0UgaaHeXAwRA7ogPKHAQ7Lnu0AOkPoywi
-         fIFtoP1GvB/13m85ekUUgUsfJ9uW/wLQiel6fmIEP7FExpqNLljrmlggG0nMyfOlLkoz
-         P1HQd9HDiRpCgHYaiebxqf3m5fWiJnwisgwwq51g+3f9YQ3uHIb0ahMQuJsErAmmDHtd
-         0Fdg==
-X-Gm-Message-State: AOAM530lalBCTEV5M6DFLv2B0UgIS7/qAm4DVhScClFdGZzJC1EWXcJc
-        UXNbqDQXRAiOMRkJp7C32bp5RQ==
-X-Google-Smtp-Source: ABdhPJzrfRpNIYzV2uFrhJdCHt/QTSYBKDnpK2pS6zKI5Da6BP91uaqOQt3S2LEYZ+yKmaDKjo66AQ==
-X-Received: by 2002:a05:6638:10e9:: with SMTP id g9mr2960820jae.139.1601657236070;
-        Fri, 02 Oct 2020 09:47:16 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h2sm932771ioj.5.2020.10.02.09.47.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 09:47:15 -0700 (PDT)
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-To:     Joe Perches <joe@perches.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-iio@vger.kernel.org,
-        drbd-dev@tron.linbit.com,
-        =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        David Lechner <david@lechnology.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jerome Brunet <jbrunet@baylibre.com>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
- <CAMj1kXGh+CzuXkAnqsoMO2A3T1p=D6uFOV347Ym5+VFn5U1gWg@mail.gmail.com>
- <20200929124108.GY4282@kadam>
- <alpine.DEB.2.22.394.2009291445050.2808@hadrien>
- <5f0d2b20f5088281363bb4a35c5652a2c087f159.camel@perches.com>
- <cd75e2d1-9923-b725-78cd-fd5611431584@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <81b94c3a-43d6-c9f5-0bc0-43bf65b3d5fc@linuxfoundation.org>
-Date:   Fri, 2 Oct 2020 10:47:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=jt0mTKD7biJvR9C/s8GFzCkzqMneNgtMalWKvcqcZ30=;
+        b=T0nB2UO0wGFCcQNtIW6mwRUMf1MorPl3xZjjPFwlAvDvHnbzwCNXbAC1IPepnrgBeX
+         wRSdnCsDeZZLM4mq2gEBwY66ZMdvXjrBulbXSMoR5s0qoEHtKnD5JqYaKQGu4indXK84
+         xnhnJ+8SEFURpPfENu8rBqVJdFDwEtxvognISyC0MpZMpwTqgXASmJaa8NaVGLig/3Gu
+         X46KwNxAnZYx3X0ZCgAoP11+7Nkh3KHLcHyku6JDQx56WGRNLjcaofuG1wvB8U9Kxp5j
+         ZUNcZoVhsd9pS13nwr7YfU8SIxOrqqNKRZMyw4LcjGPgc+fn8xWo9SfHp2Zkxb+zLBNS
+         yyKA==
+X-Gm-Message-State: AOAM530hovnnCYTsq02tR10aGDEXA9cJ36LIRSjlZrYo7r4rX9aIBl6H
+        7FvJ9OIE6bDWOLfLa/XSr7zqgw==
+X-Google-Smtp-Source: ABdhPJzYKdYeTdWqSU8vWwnYGHuNNzK8lAmxh4xAjC4EFgh1Og8vu0MicZjCYnSgGajWJjpOHDvogA==
+X-Received: by 2002:a17:906:1dd0:: with SMTP id v16mr3135410ejh.309.1601657376897;
+        Fri, 02 Oct 2020 09:49:36 -0700 (PDT)
+Received: from starbuck.lan (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.googlemail.com with ESMTPSA id r27sm1586429edx.33.2020.10.02.09.49.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 09:49:36 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Brad Harper <bjharper@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH] mmc: meson-gx: remove IRQF_ONESHOT
+Date:   Fri,  2 Oct 2020 18:49:15 +0200
+Message-Id: <20201002164915.938217-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <cd75e2d1-9923-b725-78cd-fd5611431584@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/20 7:42 AM, Shuah Khan wrote:
-> On 9/29/20 7:34 AM, Joe Perches wrote:
->> On Tue, 2020-09-29 at 14:47 +0200, Julia Lawall wrote:
->>> On Tue, 29 Sep 2020, Dan Carpenter wrote:
->>>> The times where commas are used deliberately to replace curly braces 
->>>> are
->>>> just evil.  Either way the code is cleaner with semi-colons.
->>>
->>> I also found exaamples like the following to be particularly unforunate:
->>>
->>>                                  fprintf(stderr,
->>>                                          "page_nr %lu wrong count %Lu 
->>> %Lu\n",
->>>                                         page_nr, count,
->>>                                         count_verify[page_nr]), exit(1);
->>>
->>> The exit is very hard to see, unless you know to look for it.
->>
->> I sent that patch last month.
->> https://patchwork.kernel.org/patch/11734877/
->>
-> 
-> I see what happened. This patch touches lib, cpupower, and selftests.
-> Guess lost in the limbo of who takes it.
-> 
->   tools/lib/subcmd/help.c                    |  10 +-
->   tools/power/cpupower/utils/cpufreq-set.c   |  14 +-
->   tools/testing/selftests/vm/gup_benchmark.c |  18 +-
->   tools/testing/selftests/vm/userfaultfd.c   | 296 +++++++++++++--------
->   4 files changed, 210 insertions(+), 128 deletions(-)
-> 
-> I can take it through one of my trees.
-> 
+IRQF_ONESHOT was added to this driver to make sure the irq was not enabled
+again until the thread part of the irq had finished doing its job.
 
-Rafael, Andrew,
+Doing so upsets RT because, under RT, the hardirq part of the irq handler
+is not migrated to a thread if the irq is claimed with IRQF_ONESHOT.
+In this case, it has been reported to eventually trigger a deadlock with
+the led subsystem.
 
-This patch is now applied to
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git 
-fixes branch.
+Preventing RT from doing this migration was certainly not the intent, the
+description of IRQF_ONESHOT does not really reflect this constraint:
 
-This spans pm, kselftest-mm tests and tools/lib and has been
-in limbo for a few weeks for that reason.
+ > IRQF_ONESHOT - Interrupt is not reenabled after the hardirq handler finished.
+ >              Used by threaded interrupts which need to keep the
+ >              irq line disabled until the threaded handler has been run.
 
-I decided to take this through kselftest tree to avoid having
-Joe split the patches.
+This is exactly what this driver was trying to acheive so I'm still a bit
+confused whether this is a driver or an RT issue.
 
-thanks,
--- Shuah
+Anyway, this can be solved driver side by manually disabling the IRQs
+instead of the relying on the IRQF_ONESHOT. IRQF_ONESHOT may then be removed
+while still making sure the irq won't trigger until the threaded part of
+the handler is done.
 
+Fixes: eb4d81127746 ("mmc: meson-gx: correct irq flag")
+Reported-by: Brad Harper <bjharper@gmail.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/mmc/host/meson-gx-mmc.c | 47 ++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
-
+diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+index 08a3b1c05acb..effc356db904 100644
+--- a/drivers/mmc/host/meson-gx-mmc.c
++++ b/drivers/mmc/host/meson-gx-mmc.c
+@@ -101,8 +101,7 @@
+ #define   IRQ_RESP_STATUS BIT(14)
+ #define   IRQ_SDIO BIT(15)
+ #define   IRQ_EN_MASK \
+-	(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN | IRQ_RESP_STATUS |\
+-	 IRQ_SDIO)
++	(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN)
+ 
+ #define SD_EMMC_CMD_CFG 0x50
+ #define SD_EMMC_CMD_ARG 0x54
+@@ -170,6 +169,7 @@ struct meson_host {
+ 	dma_addr_t descs_dma_addr;
+ 
+ 	int irq;
++	u32 irq_en;
+ 
+ 	bool vqmmc_enabled;
+ };
+@@ -842,22 +842,24 @@ static irqreturn_t meson_mmc_irq(int irq, void *dev_id)
+ 	struct meson_host *host = dev_id;
+ 	struct mmc_command *cmd;
+ 	struct mmc_data *data;
+-	u32 irq_en, status, raw_status;
++	u32  status, raw_status;
+ 	irqreturn_t ret = IRQ_NONE;
+ 
+-	irq_en = readl(host->regs + SD_EMMC_IRQ_EN);
++	/* Disable irqs */
++	writel(0, host->regs + SD_EMMC_IRQ_EN);
++
+ 	raw_status = readl(host->regs + SD_EMMC_STATUS);
+-	status = raw_status & irq_en;
++	status = raw_status & host->irq_en;
+ 
+ 	if (!status) {
+ 		dev_dbg(host->dev,
+ 			"Unexpected IRQ! irq_en 0x%08x - status 0x%08x\n",
+-			 irq_en, raw_status);
+-		return IRQ_NONE;
++			 host->irq_en, raw_status);
++		goto none;
+ 	}
+ 
+ 	if (WARN_ON(!host) || WARN_ON(!host->cmd))
+-		return IRQ_NONE;
++		goto none;
+ 
+ 	/* ack all raised interrupts */
+ 	writel(status, host->regs + SD_EMMC_STATUS);
+@@ -908,6 +910,11 @@ static irqreturn_t meson_mmc_irq(int irq, void *dev_id)
+ 	if (ret == IRQ_HANDLED)
+ 		meson_mmc_request_done(host->mmc, cmd->mrq);
+ 
++none:
++	/* Enable the irq again if the thread will not run */
++	if (ret != IRQ_WAKE_THREAD)
++		writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
++
+ 	return ret;
+ }
+ 
+@@ -934,15 +941,17 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+ 	struct mmc_command *next_cmd, *cmd = host->cmd;
+ 	struct mmc_data *data;
+ 	unsigned int xfer_bytes;
++	int ret = IRQ_HANDLED;
+ 
+-	if (WARN_ON(!cmd))
+-		return IRQ_NONE;
++	if (WARN_ON(!cmd)) {
++		ret = IRQ_NONE;
++		goto out;
++	}
+ 
+ 	if (cmd->error) {
+ 		meson_mmc_wait_desc_stop(host);
+ 		meson_mmc_request_done(host->mmc, cmd->mrq);
+-
+-		return IRQ_HANDLED;
++		goto out;
+ 	}
+ 
+ 	data = cmd->data;
+@@ -959,7 +968,10 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+ 	else
+ 		meson_mmc_request_done(host->mmc, cmd->mrq);
+ 
+-	return IRQ_HANDLED;
++out:
++	/* Re-enable the irqs */
++	writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
++	return ret;
+ }
+ 
+ /*
+@@ -1133,13 +1145,12 @@ static int meson_mmc_probe(struct platform_device *pdev)
+ 
+ 	/* clear, ack and enable interrupts */
+ 	writel(0, host->regs + SD_EMMC_IRQ_EN);
+-	writel(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN,
+-	       host->regs + SD_EMMC_STATUS);
+-	writel(IRQ_CRC_ERR | IRQ_TIMEOUTS | IRQ_END_OF_CHAIN,
+-	       host->regs + SD_EMMC_IRQ_EN);
++	host->irq_en = IRQ_EN_MASK;
++	writel(host->irq_en, host->regs + SD_EMMC_STATUS);
++	writel(host->irq_en, host->regs + SD_EMMC_IRQ_EN);
+ 
+ 	ret = request_threaded_irq(host->irq, meson_mmc_irq,
+-				   meson_mmc_irq_thread, IRQF_ONESHOT,
++				   meson_mmc_irq_thread, 0,
+ 				   dev_name(&pdev->dev), host);
+ 	if (ret)
+ 		goto err_init_clk;
+-- 
+2.25.4
 
