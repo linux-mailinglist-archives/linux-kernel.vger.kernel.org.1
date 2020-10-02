@@ -2,98 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A0D281906
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF58B28190A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388235AbgJBRSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:18:54 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:52172 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBRSy (ORCPT
+        id S2388233AbgJBRTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBRTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:18:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1B787803017F;
-        Fri,  2 Oct 2020 17:18:51 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PCURxKfZ5pJw; Fri,  2 Oct 2020 20:18:50 +0300 (MSK)
-Date:   Fri, 2 Oct 2020 20:18:49 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 02/21] spi: dw: Add DWC SSI capability
-Message-ID: <20201002171849.jhio6nz6r6jigrf3@mobilestation>
-References: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
- <20201001222829.15977-3-Sergey.Semin@baikalelectronics.ru>
- <20201002101929.GW3956970@smile.fi.intel.com>
+        Fri, 2 Oct 2020 13:19:32 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DFAC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:19:32 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id z17so2753219lfi.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f11Np4EabR5kyo8frCO/ZNHz5Z8j1seV9AzKGqNc86k=;
+        b=Q/Q4/e7p8AVkLKqFMUwWuG6tUqSA2klNHBX1Fw5WjuZ8L3rFNisQ9IsKOih+d/8wtg
+         Fl4Hdtumi06e1+TDaavddHoE6LOj7dyR87ZUOAzWOFvL2SODPLQyLRShhr3HsU0gBEy9
+         HWt11koNZgYPaFh1izrBBFR50NohWsnhVo+UAeMo0BMHps4UkX4O/Goe/Yvi2MQO6DkC
+         IScMDHymx6kUiEhF10x7IVODm7IM9yLPVIuG3QIXEhMDNnkR0PbYYWiSyvDdakLGey5k
+         +JbZmzyKD+JBL8grQjho2bfIgxNrDfsMLwtwWlgsfNR9KrsLrL286QvcpcFSUWOOKwea
+         jNBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f11Np4EabR5kyo8frCO/ZNHz5Z8j1seV9AzKGqNc86k=;
+        b=uKKv5Q4R8/dSIZG3UfoavCEHTNJnZqcUeYeTBkE+9OU/rIctQ9q6TRStSoKi0gGSTe
+         MgzGlsibYZNtueKiN1VgAiJsl25fNORVO8bAcli59CYGv67Ob+qyPZDnniWH5FR/+rBW
+         jqlXh62oE1jwVnVGZa05sC90M7Yuaof3M7C5ApKZgOXZRGrqhLfj1r1mHKYIayyvCIfN
+         M6jvyjzl9rHA1PthmlwaOqm+NFm8uuhwSqV5HD5bT24UrND7SB+SROqg2n3x/kcleBDk
+         ezBx+lfp2pNuy4rT1BLt/x+s/4gAmC7rP6iZnOAQo4fbF5fBW2mji9aqGHqygQztAcTF
+         b20A==
+X-Gm-Message-State: AOAM533eQvI2vv8zn3kF9j7sNGCi0Q3DfhxbB3LFAAoTaCsm4JXFv9PR
+        hPDEDmollY1PhBOqq95OODedAzUAS4E=
+X-Google-Smtp-Source: ABdhPJzHtmKRCFkSaQLI/UXyy6dZxCBOVWzX5T5QEeqdtDZczqa16aYvFi+BYVgk4EZDG6GCEfJgjA==
+X-Received: by 2002:ac2:4d10:: with SMTP id r16mr1135238lfi.58.1601659170679;
+        Fri, 02 Oct 2020 10:19:30 -0700 (PDT)
+Received: from localhost.localdomain (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id m204sm409012lfd.307.2020.10.02.10.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 10:19:30 -0700 (PDT)
+From:   Topi Miettinen <toiwoton@gmail.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Topi Miettinen <toiwoton@gmail.com>
+Subject: [PATCH] mm: optionally disable brk()
+Date:   Fri,  2 Oct 2020 20:19:21 +0300
+Message-Id: <20201002171921.3053-1-toiwoton@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201002101929.GW3956970@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:19:29PM +0300, Andy Shevchenko wrote:
-> On Fri, Oct 02, 2020 at 01:28:10AM +0300, Serge Semin wrote:
-> > Currently DWC SSI core is supported by means of setting up the
-> > core-specific update_cr0() callback. It isn't suitable for multiple
-> > reasons. First of all having exported several methods doing the same thing
-> > but for different chips makes the code harder to maintain. Secondly the
-> > spi-dw-core driver exports the methods, then the spi-dw-mmio driver sets
-> > the private data callback with one of them so to be called by the core
-> > driver again. That makes the code logic too complicated. Thirdly using
-> > callbacks for just updating the CR0 register is problematic, since in case
-> > if the register needed to be updated from different parts of the code,
-> > we'd have to create another callback (for instance the SPI device-specific
-> > parameters don't need to be calculated each time the SPI transfer is
-> > submitted, so it's better to pre-calculate the CR0 data at the SPI-device
-> > setup stage).
-> > 
-> > So keeping all the above in mind let's discard the update_cr0() callbacks,
-> > define a generic and static dw_spi_update_cr0() method and create the
-> > DW_SPI_CAP_DWC_SSI capability, which when enabled would activate the
-> > alternative CR0 register layout.
-> > 
-> > While at it add the comments to the code path of the normal DW APB SSI
-> > controller setup to make the dw_spi_update_cr0() method looking coherent.
-> 
+The brk() system call allows to change data segment size (heap). This
+is mainly used by glibc for memory allocation, but it can use mmap()
+and that results in more randomized memory mappings since the heap is
+always located at fixed offset to program while mmap()ed memory is
+randomized.
 
-> What the point to increase indentation level and produce additional churn?
-> Can't you simply leave functions, unexport them, and call in one conditional of
-> whatever new function is called?
+Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+---
+ init/Kconfig    | 15 +++++++++++++++
+ kernel/sys_ni.c |  2 ++
+ mm/mmap.c       |  2 ++
+ 3 files changed, 19 insertions(+)
 
-I forgot to mention that in the commit log, there is another reason why it's
-better to create a generic dw_spi_update_cr0() instead of doing what you suggest.
-As it will be seen from the following up patches, the dw_spi_update_cr0() function
-(to be more precise it's successor, but anyway) will be used from the SPI memory
-ops implementation. So if-else-ing here and there isn't a good idea for
-maintainability. For the same reason of the maintainability it's better to have a
-generic method which reflects all the config peculiarities, so in case of any
-changes they would be not be forgotten to be introduced for both DWC SSI and DW
-APB SSI parts of the setup procedures. As I see it that overbeats the additional
-indentation level drawback.
+diff --git a/init/Kconfig b/init/Kconfig
+index c5ea2e694f6a..53735ac305d8 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1851,6 +1851,20 @@ config SLUB_MEMCG_SYSFS_ON
+ 	  controlled by slub_memcg_sysfs boot parameter and this
+ 	  config option determines the parameter's default value.
+ 
++config BRK_SYSCALL
++	bool "Enable brk() system call" if EXPERT
++	default y
++	help
++	  Enable the brk() system call that allows to change data
++	  segment size (heap). This is mainly used by glibc for memory
++	  allocation, but it can use mmap() and that results in more
++	  randomized memory mappings since the heap is always located
++	  at fixed offset to program while mmap()ed memory is
++	  randomized.
++
++	  If unsure, say Y for maximum compatibility.
++
++if BRK_SYSCALL
+ config COMPAT_BRK
+ 	bool "Disable heap randomization"
+ 	default y
+@@ -1862,6 +1876,7 @@ config COMPAT_BRK
+ 	  /proc/sys/kernel/randomize_va_space to 2 or 3.
+ 
+ 	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
++endif # BRK_SYSCALL
+ 
+ choice
+ 	prompt "Choose SLAB allocator"
+diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+index 4d59775ea79c..3ffa5c4002e1 100644
+--- a/kernel/sys_ni.c
++++ b/kernel/sys_ni.c
+@@ -299,6 +299,8 @@ COND_SYSCALL(recvmmsg_time32);
+ COND_SYSCALL_COMPAT(recvmmsg_time32);
+ COND_SYSCALL_COMPAT(recvmmsg_time64);
+ 
++COND_SYSCALL(brk);
++
+ /*
+  * Architecture specific syscalls: see further below
+  */
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 489368f43af1..653be2c8982a 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -188,6 +188,7 @@ static struct vm_area_struct *remove_vma(struct vm_area_struct *vma)
+ 
+ static int do_brk_flags(unsigned long addr, unsigned long request, unsigned long flags,
+ 		struct list_head *uf);
++#ifdef CONFIG_BRK_SYSCALL
+ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ {
+ 	unsigned long retval;
+@@ -286,6 +287,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ 	mmap_write_unlock(mm);
+ 	return retval;
+ }
++#endif
+ 
+ static inline unsigned long vma_compute_gap(struct vm_area_struct *vma)
+ {
+-- 
+2.28.0
 
--Sergey
-
-> 
-> I have an impression that split of the series is done in a way that first
-> patches in the series are not optimized to what is done in the last patches in
-> the series.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
