@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7519E280C30
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BC5280C33
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387558AbgJBCAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 22:00:22 -0400
-Received: from ozlabs.org ([203.11.71.1]:42449 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgJBCAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 22:00:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C2Y9H3hQKz9sSG;
-        Fri,  2 Oct 2020 12:00:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601604019;
-        bh=JJU/m7iI6vnJda2OoX/uTcHMjyjyAn9guGzBAmlcufw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NtH+Bd/rBWVaYnlBxCTcKgk5XuLXXD79RNrTCknWBrHn2ajTPndPiaK1jmiAhwQTn
-         sNh9Z7b+I7EhpjX8xAXcfmn/kRq9477rpWv7JCmjrlwdnHbHNPjmxEaLXH0Ecvg5r8
-         DYHXvbMa3G4FddSoRcmr+sHQrSalNhDGAbfsqTFy6COchQHPrKztgBxvXtIR84wvf/
-         GNAfrOKxjW+nm7NuWUUay6OeabrlGd2xVCF0hVWPascaChmmhmhm1PsMYRNUAmzUqY
-         +51E+0Mf+xvpguywkCMDpJEAIXkK4j/HivYihIjK9z7gtG+SFLxWFRp0Ddp5E+BoVU
-         Lad2T1E7AJo1w==
-Date:   Fri, 2 Oct 2020 12:00:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, vadym.kochan@plvision.eu,
-        ap420073@gmail.com, linux-next@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20201002120018.1aa3c0f6@canb.auug.org.au>
-In-Reply-To: <20201001.184013.1373555560291108341.davem@davemloft.net>
-References: <20200929130446.0c2630d2@canb.auug.org.au>
-        <20201001.184013.1373555560291108341.davem@davemloft.net>
+        id S2387543AbgJBCD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 22:03:29 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:40256 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727780AbgJBCD3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 22:03:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AA7EF528;
+        Fri,  2 Oct 2020 04:03:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601604206;
+        bh=Ife6AOKSz1yLDqr0XawviHdGiWNIv1jH0uvLYdRZtlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lasWYSqLneJlsXBLxscVGuOD/XNXH+Abh0TitNhRJdc+M9p4lK/eXlP0MKvND++Wn
+         XrdLdEpD/heMImgxZdenzPuJIKjICNVTNi3EuqkF+CATSwJsAunxYECt/ycxVt72I7
+         T6Vc+Dow77WLuyfYJ+Sg6TmH/3RQKPRftsiLb528=
+Date:   Fri, 2 Oct 2020 05:02:49 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Kalyani Akula <kalyani.akula@xilinx.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Nava kishore Manne <nava.manne@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: zynqmp: Fix pcie ranges description
+Message-ID: <20201002020249.GU3722@pendragon.ideasonboard.com>
+References: <f59a63d8cb941592de6d2dee8afa6f120b2e40c8.1601379794.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mkjmDzZTlS+AR_CZfZ/1Dsf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f59a63d8cb941592de6d2dee8afa6f120b2e40c8.1601379794.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mkjmDzZTlS+AR_CZfZ/1Dsf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Michal,
 
-Hi Dave,
+Thank you for the patch.
 
-On Thu, 01 Oct 2020 18:40:13 -0700 (PDT) David Miller <davem@davemloft.net>=
- wrote:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 29 Sep 2020 13:04:46 +1000
->=20
-> > Caused by commit
-> >=20
-> >   eff7423365a6 ("net: core: introduce struct netdev_nested_priv for nes=
-ted interface infrastructure")
-> >=20
-> > interacting with commit
-> >=20
-> >   e1189d9a5fbe ("net: marvell: prestera: Add Switchdev driver implement=
-ation")
-> >=20
-> > also in the net-next tree. =20
->=20
-> I would argue against that "also" as the first commit is only in the
-> 'net' tree right now. :-)
+On Tue, Sep 29, 2020 at 01:43:22PM +0200, Michal Simek wrote:
+> DT schema is checking tuples which should be properly separated. The patch
+> is doing this separation to avoid the following warning:
+> ..yaml: axi: pcie@fd0e0000:ranges: [[33554432, 0, 3758096384, 0,
+> 3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0]] is not valid under
+> any of the given schemas (Possible causes of the failure):
+> ...dt.yaml: axi: pcie@fd0e0000:ranges: True was expected
+> ...dt.yaml: axi: pcie@fd0e0000:ranges:0: [33554432, 0, 3758096384, 0,
+> 3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0] is too long
 
-Sorry, my mistake.  I was wondering why your testing did not seem to be
-affected.
+I would keep the error message unwrapped as it's a bit confusing to
+read, even if it exceeds the normal 72 columns limit of commit messaged.
 
-> This is simply something I'll have to resolve the next time net is merged
-> into net-next.
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-Absolutely, no problem.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
---=20
-Cheers,
-Stephen Rothwell
+> ---
+> 
+> I have seen one conversation about it but don't have link which I can point
+> to.
+> ---
+>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> index 771f60e0346d..98073f3223e5 100644
+> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
+> @@ -542,8 +542,8 @@ pcie: pcie@fd0e0000 {
+>  			      <0x0 0xfd480000 0x0 0x1000>,
+>  			      <0x80 0x00000000 0x0 0x1000000>;
+>  			reg-names = "breg", "pcireg", "cfg";
+> -			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000	/* non-prefetchable memory */
+> -				  0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
+> +			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000>,/* non-prefetchable memory */
+> +				 <0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
+>  			bus-range = <0x00 0xff>;
+>  			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
+>  			interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc 0x1>,
 
---Sig_/mkjmDzZTlS+AR_CZfZ/1Dsf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+Regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl92ibIACgkQAVBC80lX
-0GxGHQf/UpWz/P9C5wlbk0Qua0KmG9dmTNPHDQi/qZ6KVADYQYn53P5fVQo2CSSh
-juKMQa3tJTYSn3euNOupLKILn98asxzQpkl3X1MX60n2yI4uysocZMAIw8DJ6bCF
-uB305I5lpCBLvCbWbRmUduxZERf8pb9BTcaX0tiesZFTC59c3cj8OuUfXaH1T3j+
-9oPL0qCYPpSJSM8iQqBEmI89oJgO4RFBU6Ieh98RVN111xEklGqhC8ngOhBdy7DK
-5q6h30i+miHrsD2uOIz893MWT5kHmkgvrlZkiZKUzQCjMTDWwnhb5hm/deJQCLGK
-kofqZ35EM9YuuLEa6iwxFthSJGQ64g==
-=Jfgd
------END PGP SIGNATURE-----
-
---Sig_/mkjmDzZTlS+AR_CZfZ/1Dsf--
+Laurent Pinchart
