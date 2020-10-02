@@ -2,117 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC18280DEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D8280DEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387542AbgJBHLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJBHL3 (ORCPT
+        id S1726075AbgJBHP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:15:26 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:38911 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgJBHP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:11:29 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ECFC0613D0;
-        Fri,  2 Oct 2020 00:11:28 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id j136so552009wmj.2;
-        Fri, 02 Oct 2020 00:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l/AslFcI8o0tIrBRAfurd9q83mHu1ImdAYZFQ7SBMck=;
-        b=J/cJnSdnnm0K3mV2PTCGEBTi1lofC2iZq70FUtde1Hza28OCY1enutx2mZ5VfOiyJa
-         TbavxFH4a8TVQFiB5FgnPdKyKGC6zwLl8NRjtxGKN1KchMQXGi2lX15Kw68CPgblMt2U
-         2KnYm3aGn9tR3PPV6U/n9ekuebZ6hRc+SJu9SkUgTsQR5B5sFCpfhsnQRNbBPbzGqk0l
-         CUDq1siUaDcdUUIrayNrxInva20WYdA2WyTrgY9y2ys7HUWNrC3pDgeVWP55kksQhMU3
-         ih8HDpTQjKYpWZa2yQsYx+0TNurvLr0Dyvad1hVnS5DZATe3H7WhM+RMX/JHEO/OSzBQ
-         HLIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l/AslFcI8o0tIrBRAfurd9q83mHu1ImdAYZFQ7SBMck=;
-        b=WwRaATx3T/INtCyFkrOYm9bao1AiyIS4CiLZLlakA5kKaoD7QE9/hkg4uCaeJ58xq9
-         +TmNxgeSSG4DFt389wedIYRLXZc14SPJuotjayXYf9PWo4QS0IuS4W6xWqsxIbE8y9Fh
-         VgiSzSkluPKJO++e4LUqP9OFn7/9JEyjwk8RJBV6VgM8eTgPYYmcgK5qlpDiEfFWgFKw
-         wfD5LwoRvjWP7ej3glJNsw1y4A/oyvDwgiMFKT/dLzAohUjyKsiqRP6EkLaRKpYxjuoJ
-         37s2dUBGKPB3CoQERQqpp1uVZCjsqLAdEyhHTFc/6ATuzpHUsPZ0nM2kr4TY1znP0d/y
-         RKzg==
-X-Gm-Message-State: AOAM5303g16qs9pAEnabiyiZ5qn68vAv4fpSeezIhNGeZETcP5zthBPO
-        KCyCvrphywmFYdBQ1VdDchU=
-X-Google-Smtp-Source: ABdhPJwyvwxJtDY4aUnKoug3IveaE7MWK3ZSR6SvTGzqrruMA1ENCGgT0YL5LI2l9eIjEr/hNj/pwQ==
-X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr1234143wmh.73.1601622687477;
-        Fri, 02 Oct 2020 00:11:27 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id e13sm669646wre.60.2020.10.02.00.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 00:11:26 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 09:11:25 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] crypto: sun8i-ss - Fix memory leak in
- sun8i_ss_prng_generate()
-Message-ID: <20201002071125.GA15586@Red>
-References: <20200928175945.GA11320@embeddedor>
+        Fri, 2 Oct 2020 03:15:26 -0400
+X-Originating-IP: 91.224.148.103
+Received: from localhost.localdomain (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id EFA5B1BF217;
+        Fri,  2 Oct 2020 07:15:20 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-mtd@lists.infradead.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        open list <linux-kernel@vger.kernel.org>,
+        =?utf-8?q?=C3=81lvaro_Fern=C3=A1n?= =?utf-8?q?dez_Rojas?= 
+        <noltari@gmail.com>, Jonas Gorski <jonas.gorski@gmail.com>
+Subject: Re: [PATCH] mtd: parsers: bcm63xx: Do not make it modular
+Date:   Fri,  2 Oct 2020 09:15:19 +0200
+Message-Id: <20201002071519.26282-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200929172726.30469-1-f.fainelli@gmail.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928175945.GA11320@embeddedor>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b597cc75f7fe76708bc6ab3f0e09bbff6f09ae4a
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:59:45PM -0500, Gustavo A. R. Silva wrote:
-> Set _err_ to the return error code -EFAULT before jumping to the new
-> label err_d, so resources for _d_ can be released before returning
-> from function sun8i_ss_prng_generate().
+On Tue, 2020-09-29 at 17:27:21 UTC, Florian Fainelli wrote:
+> With commit 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE
+> detection"), we generate a reference to fw_arg3 which is the fourth
+> firmware/command line argument on MIPS platforms. That symbol is not
+> exported and would cause a linking failure.
 > 
-> Addresses-Coverity-ID: 1497459 ("Resource leak")
-> Fixes: ac2614d721de ("crypto: sun8i-ss - Add support for the PRNG")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> The parser is typically necessary to boot a BCM63xx-based system anyway
+> so having it be part of the kernel image makes sense, therefore make it
+> 'bool' instead of 'tristate'.
 > 
-> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-> index 08a1473b2145..0573f6289e8b 100644
-> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
-> @@ -103,7 +103,8 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
->  	dma_iv = dma_map_single(ss->dev, ctx->seed, ctx->slen, DMA_TO_DEVICE);
->  	if (dma_mapping_error(ss->dev, dma_iv)) {
->  		dev_err(ss->dev, "Cannot DMA MAP IV\n");
-> -		return -EFAULT;
-> +		err = -EFAULT;
-> +		goto err_d;
->  	}
->  
->  	dma_dst = dma_map_single(ss->dev, d, todo, DMA_FROM_DEVICE);
-> @@ -160,7 +161,7 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
->  	dma_unmap_single(ss->dev, dma_dst, todo, DMA_FROM_DEVICE);
->  err_iv:
->  	dma_unmap_single(ss->dev, dma_iv, ctx->slen, DMA_TO_DEVICE);
-> -
-> +err_d:
->  	if (!err) {
->  		memcpy(dst, d, dlen);
->  		/* Update seed */
-> -- 
-> 2.27.0
-> 
+> Fixes: 91e81150d388 ("mtd: parsers: bcm63xx: simplify CFE detection")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Hello
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-The label could be better placed just before the kfree.
-In error case, there are no need to memzero the not used "d".
-
-But a patch with it, was already sent to the ML.
-Anyway if you fix it, you could add "Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>"
-
-Regards
+Miquel
