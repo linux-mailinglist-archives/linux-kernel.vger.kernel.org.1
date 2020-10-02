@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7312818F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FBE2818F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388238AbgJBRPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
+        id S2388359AbgJBRPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388181AbgJBRPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:15:15 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.9-rc8
+        id S2388195AbgJBRPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:15:16 -0400
+Subject: Re: [GIT PULL] Power management fixes for v5.9-rc8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601658915;
-        bh=/xqQeskoEGId2eDkzvcqQ0L15X/8YEXOztIEY1EMWwY=;
+        bh=MdOs8rfzL8ofy2RvSAwtghYM4Dhu0UuMWOHpgUvDSS0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=bCAKxULOEOuc2XcYhBiEYsjNBKu6/Z6y5QS/47Q5UwdfrBCH2ftOQSVBXfx2B7gPv
-         Mm8D6nX0PByaov198uNDEu3MeH9hgY7M47UwkkrPLYgH6wTc9q+RN68Y/J1DT+xTMm
-         NVd87ScAFyNlGJIEyv6zFRff5hVeVvqSz1Ma8qFU=
+        b=ydg/ejgIaiTTGTjtH3Q7/aWx4VUE/+FHjagC68Sua8hSaqogfXE/RWrbTx1P9Oghk
+         8JLTm6tHomB1EEL+yrKNZSTEMq1ZsxHF83BJVQOFcGEFBUzn2MjIk7iXjRBrqiB2IJ
+         +xaKCyWrqlzvseRTq/uakDHRaRmlK/BvEaodkzoY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1601650060.git.dsterba@suse.com>
-References: <cover.1601650060.git.dsterba@suse.com>
+In-Reply-To: <CAJZ5v0jppvMLqbSu20gx6dL=bZWv6_ZbDRYW6Djg3V1oTJyWAA@mail.gmail.com>
+References: <CAJZ5v0jppvMLqbSu20gx6dL=bZWv6_ZbDRYW6Djg3V1oTJyWAA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1601650060.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc7-tag
-X-PR-Tracked-Commit-Id: 4c8f353272dd1262013873990c0fafd0e3c8f274
+X-PR-Tracked-Message-Id: <CAJZ5v0jppvMLqbSu20gx6dL=bZWv6_ZbDRYW6Djg3V1oTJyWAA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.9-rc8
+X-PR-Tracked-Commit-Id: 7bbe8f2a7e7e819c050212a4bc984f03dc85af9d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4e3b9ce271b4b54d2293a3916d22e4ddc0c89aab
-Message-Id: <160165891553.31225.16441597036192185427.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: c5130911033149c18bf84fa094c8e5def26ec8d0
+Message-Id: <160165891586.31225.18104820035652557781.pr-tracker-bot@kernel.org>
 Date:   Fri, 02 Oct 2020 17:15:15 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  2 Oct 2020 17:30:36 +0200:
+The pull request you sent on Fri, 2 Oct 2020 18:47:05 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc7-tag
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.9-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4e3b9ce271b4b54d2293a3916d22e4ddc0c89aab
+https://git.kernel.org/torvalds/c/c5130911033149c18bf84fa094c8e5def26ec8d0
 
 Thank you!
 
