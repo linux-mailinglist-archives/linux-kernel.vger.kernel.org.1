@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1321C2815D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5A92815DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388232AbgJBOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388115AbgJBOwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:52:40 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FB0420665;
-        Fri,  2 Oct 2020 14:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601650359;
-        bh=WC1IjM1NrErdHcH0fVBRGfxgPcBe7vNjf2anh374AFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vTYaPqHred/cj03AawPeF3+9zWYJ5ZNM6inWBRZq7yYimHIMiGgHQu8cziuSnfEfh
-         MwrQgOz0rbSFExYil8gi90Mg84Wb4NH11qfdSC2FI2IeKu/q7nSF5q+1pbv25SQ0Fj
-         egGRUqEQ7YNEFyKPghs6OHamVonJ0knxrMCkaiWg=
-Received: by pali.im (Postfix)
-        id 91909E79; Fri,  2 Oct 2020 16:52:37 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 16:52:37 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
-Message-ID: <20201002145237.r2troxmgbq2bf3ep@pali>
-References: <20200902144344.16684-1-pali@kernel.org>
- <20201002133713.GA24425@e121166-lin.cambridge.arm.com>
- <20201002142616.dxgdneg2lqw4pxie@pali>
- <20201002143851.GA25575@e121166-lin.cambridge.arm.com>
+        id S2388100AbgJBOzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgJBOzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:55:20 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54846C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:55:19 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i26so2372921ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:subject:in-reply-to:date:message-id
+         :mime-version;
+        bh=pDks6p78EBD7ss15qrLLTZCcCpPLA2YETzRFSCodWyo=;
+        b=q/NornTt2eh3x4yoPtr/QjxWUZ2YMcknK7dAxDB+N5RmzQA4dWhmZyWx5jVdcCuG8E
+         Yglw1CIOPe/A8+I5xu85MEFyzft7kKBfuTGQyopZPaTnltBYnqhAn8lNM1+9THbJkn9q
+         JMR07CI+5Xl3TwCFT99/ikUuNKDQcuPa9AfEeStfjPTrjqSTVYDO7fj1u8iY7bZSg9oU
+         sA9/47NW0gggg+6zu3DM074irN83HJDylN6I2UVFpnRQnK4HD8YMcpDkgr/NFRUN9RDF
+         UaolQPYhm1V61C1X+X4jBGSRLRQQxqdCX0UtmgijuNAW6vm7OIxEKrTh2oY1VjNaXv0s
+         aA3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=pDks6p78EBD7ss15qrLLTZCcCpPLA2YETzRFSCodWyo=;
+        b=aEkLPzjGnot864chnFKgO1F+Y/f1UiL+OJjLF2V2TU8PcOFJA4OHBu3DuKtjF+cpTV
+         iSONc6MMaWJ2dLOZ+QD7wXvV8Vkq6akJR4jwa49Y5VRV4HpC3Mv0mkR/pOZ88OvSyYKG
+         KrS2I+AanFpkkYzqTQ1Hn2RO2Aa1jP7lgJpMkcHT/atjTQkfnMUgGoE+wbjXWTzkDuzk
+         AvQaEE1IVvFjHtarbr173bACIktW+LWaGQ0AN3btBBxBir+Jpid8Hthhy1pUCv9Y6FKJ
+         nNNFuViOk5xROmhvI4uA+lqlFilG0k3tdxaGv/B2Z1Ay3ywlrTX0+vatSr4YPalaC3if
+         e4eg==
+X-Gm-Message-State: AOAM530+skYuFqpCZZq+nBLgKXwfEmy3ZWfTsJmDX+/FIo7Z5zGdzKg/
+        chMIpk8HHMwBT2XNUJc0BTAwWg==
+X-Google-Smtp-Source: ABdhPJxeWoIW2hk98lm8JxgeH6OqwPbzwaF2nR6YfVrAzo27GB7rxcfU1hjQOZwHmbzvboDD1SmiBg==
+X-Received: by 2002:a17:906:a256:: with SMTP id bi22mr2629106ejb.375.1601650517967;
+        Fri, 02 Oct 2020 07:55:17 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id p17sm1397771edw.10.2020.10.02.07.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 07:55:17 -0700 (PDT)
+References: <20201002143141.14870-1-christianshewitt@gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] arm64: dts: meson: add more GX soundcards
+In-reply-to: <20201002143141.14870-1-christianshewitt@gmail.com>
+Date:   Fri, 02 Oct 2020 16:55:16 +0200
+Message-ID: <1jy2koisob.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002143851.GA25575@e121166-lin.cambridge.arm.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 02 October 2020 15:38:51 Lorenzo Pieralisi wrote:
-> On Fri, Oct 02, 2020 at 04:26:16PM +0200, Pali Rohár wrote:
-> > On Friday 02 October 2020 14:37:13 Lorenzo Pieralisi wrote:
-> > > On Wed, Sep 02, 2020 at 04:43:42PM +0200, Pali Rohár wrote:
-> > > > This patch series fixes regression introduced in commit 366697018c9a
-> > > > ("PCI: aardvark: Add PHY support") which caused aardvark driver
-> > > > initialization failure on EspressoBin board with factory version of
-> > > > Arm Trusted Firmware provided by Marvell.
-> > > > 
-> > > > Second patch depends on the first patch, so please add appropriate
-> > > > Fixes/Cc:stable@ tags to have both patches correctly backported to
-> > > > stable kernels.
-> > > > 
-> > > > I have tested both patches with Marvell ATF firmware ebin-17.10-uart.zip
-> > > > and with upstream ATF+uboot and aardvark was initialized successfully.
-> > > > Without this patch series on ebin-17.10-uart.zip aardvark initialization
-> > > > failed.
-> > > > 
-> > > > Pali Rohár (2):
-> > > >   phy: marvell: comphy: Convert internal SMCC firmware return codes to
-> > > >     errno
-> > > >   PCI: aardvark: Fix initialization with old Marvell's Arm Trusted
-> > > >     Firmware
-> > > > 
-> > > >  drivers/pci/controller/pci-aardvark.c        |  4 +++-
-> > > >  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
-> > > >  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
-> > > >  3 files changed, 25 insertions(+), 7 deletions(-)
-> > > 
-> > > Applied to pci/aardvark (both patches), thanks.
-> > 
-> > Ok! For second patch would be needed to put CC:stable line with
-> > specifying prerequisite of first patch as written in document:
-> > 
-> > https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > 
-> > If I understood it correctly, second patch needs following line:
-> > 
-> > Cc: <stable@vger.kernel.org> # <commit_id_of_first_path>: comphy: errno return codes
-> > 
-> > where <commit_id_of_first_path> is commit id of PATCH 1/2.
-> > 
-> > (correct me if I'm wrong)
-> > 
-> > Now when first commit has commit id, could you update second commit to
-> > include this information about prerequisite?
-> 
-> No I can't because they will be merged at the same time.
 
-And it is a problem? Git commit id of first patch would not be changed,
-so referencing to it is now possible from second commit (unless you do
-rebasing).
+On Fri 02 Oct 2020 at 16:31, Christian Hewitt <christianshewitt@gmail.com> wrote:
 
-> What we can do is mark the second patch for stable
+> This series adds basic support for LPCM audio over HDMI and S/PDIF
+> interfaces to GXBB/GXL/GXM devices without support. I'm sure audio
+> support can be extended in places (some devices have internal DACs
+> and headphone hardware) but this gets the basics working.
+>
+> I have personally tested with the khadas-vim2, odroid-c2, and both
+> wetek devices as I have them, and there are positive forum reports
+> from users with vega-s95 and some no-name P20X box devices.
 
-This is done by adding "Cc: <stable@vger.kernel.org>" line to second
-patch which I suggested, right?
+It is fine to add what you have tested but I'm not confortable adding
+untested stuff which will later give the false idea that they are
+supposed to work.
 
-> and during the stable review
-> ask to pull patch (1). Or better you shall send both patches to stable
-> kernels when they hit Linus' tree.
-> 
-> Lorenzo
+Amplifiers and codec may require different settings and ressources
+(such as GPIO and regulators) to actually operate properly.
+
+As far the p200 and p201, like the g12 u200, those are reference design
+with various sound card possibilities which usually don't apply to end
+products.
+
+For example the p200 is missing both input and output codecs, the sound
+amplifier and, as it stands, is likely to be muted.
+
+>
+> Changes from v1
+> - Drop nexbox-a1 and rbox-pro changes - the regulator changes are
+> needed to get the dts to compile, but I do not have schematics to
+> validate the changes or the hardware to test with.
+>
+> Christian Hewitt (10):
+>   arm64: dts: meson: add audio playback to a95x
+>   arm64: dts: meson: add audio playback to khadas-vim2
+>   arm64: dts: meson: add audio playback to nanopi-k2
+>   arm64: dts: meson: add audio playback to odroid-c2
+>   arm64: dts: meson: add audio playback to p201
+>   arm64: dts: meson: add audio playback to p200
+>   arm64: dts: meson: add audio playback to p212-s905x dtsi
+>   arm64: dts: meson: add audio playback to vega-s95 dtsi
+>   arm64: dts: meson: add audio playback to wetek-hub
+>   arm64: dts: meson: add audio playback to wetek-play2
+>
+>  .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++++
+>  .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-p200.dts      | 61 +++++++++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-p201.dts      | 40 ++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-vega-s95.dtsi | 61 +++++++++++++++++++
+>  .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++++
+>  .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
+>  .../dts/amlogic/meson-gxl-s905x-p212.dtsi     | 40 ++++++++++++
+>  .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 ++++++++++++-
+>  10 files changed, 464 insertions(+), 3 deletions(-)
+
