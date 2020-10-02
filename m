@@ -2,139 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ACD281A3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B306281A42
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388324AbgJBRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:55:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51946 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726096AbgJBRzZ (ORCPT
+        id S2388361AbgJBR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgJBR4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:55:25 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 092HmcRt012325;
-        Fri, 2 Oct 2020 10:55:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=8taaSQsiwnMFnmks5LX1aMKeJdKpy3vnkzuKa9oK2Bk=;
- b=YIKfGhWyncAx7pbUg7+/OC4DJvitIYB1658YvdOOBya2asosG2R2OzGHTw6J2mpS81QC
- Jp5qZxLnXKL5dXS5Fax0IoHciP0AQbSbhLFWJeIW5xZkvxOupqeD4aioUUcGhTU+cMNi
- LVDHsQnb71VmvSNGFwjWmN+9Y3xRJRyKnlQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33vpwcxq7q-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 02 Oct 2020 10:55:15 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 2 Oct 2020 10:55:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ja9YoMmn9FX5gK9nDm0sXDtWYgF0L/f7u2HwwrDkiM/d+zRskGzH7lWVwSrpScqV3IYiynGZlyUo/DdL5kitNZYZ/R8aqRSwdR0FE9ioQDqjsm4cULUn9+I/ldLmquIAuz9FNBkJfIR8Nzxk0QF7dN7nqyj3bzXlgQr47xg1LDTHXWIs3swcyJoz+04iSvBY55QtLBuyUPBCG3XFLlpBVIB6KJYhwu5eKpWuPHglDFOLhC4KN9kVD0YMfp27ImAg9lrYbgv026a82XBdHckyR8WuoBo2zgy1N+76w+bW3eLAgjC+hG+/hh1XRPpDlFMfXLnFG5BfcGQMv5u6avu4oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8taaSQsiwnMFnmks5LX1aMKeJdKpy3vnkzuKa9oK2Bk=;
- b=Jna71oPP/Y2Wo3KBwnJ5GUCXkt+BF+3EscrVyPebRrdI7Mb5yenU+GkH6Loako0sO7E0QwLSTfvfkq8p19G3Fzy1H/jV3XdkZBSbxa5hWRyWU+yeWw9oGn20QGoo7L9RRBIt5CRulupd7/fD3Z4ViIelgaqPNb3aqMN9SjCtNVI3SDOXrOclGTanlKpI9VZmTRjpfS6EifRZGskrHU58eUFrYaquYzZN9dI51aghoLDTe0UdveSBDMgqCDbXaCI5riLFfkUNMnM/Dhsfql1Vxxry2Qrq29TjAypwvQqnoRZYVogYYvycMVwzxqfLQ+gf2NI5psWVZQ7NUyBBvRp/5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8taaSQsiwnMFnmks5LX1aMKeJdKpy3vnkzuKa9oK2Bk=;
- b=ecYOPkFg1lB3PPpAD12ze15f3fSJaQo1+Rb3sAl8ysbw0AeoZlzD106lcsvhYq6jscgP90yUB55uMfLEpfVFuDA4mS4HGJpjosfPwWCLqZmLBObp7aoT589P0mk2CnDFIE/IcX8nE0qYHglbyAuf4M5hbQj2fjvK5isAaVx8fL4=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SN6PR1501MB4144.namprd15.prod.outlook.com
- (2603:10b6:805:e8::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Fri, 2 Oct
- 2020 17:55:12 +0000
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3433.032; Fri, 2 Oct 2020
- 17:55:12 +0000
-Date:   Fri, 2 Oct 2020 10:55:06 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Philip Li <philip.li@intel.com>
-CC:     kernel test robot <lkp@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        <kbuild-all@lists.01.org>, LKML <linux-kernel@vger.kernel.org>,
-        Bastian Bittorf <bb@npl.de>, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [kbuild-all] Re: [PATCH] mm: memcg/slab: fix slab statistics in
- !SMP configuration
-Message-ID: <20201002175506.GB2954069@carbon.dhcp.thefacebook.com>
-References: <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
- <202010020814.M5nb692Y-lkp@intel.com>
- <20201002005559.GF2706729@carbon.DHCP.thefacebook.com>
- <20201002053405.GA30771@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002053405.GA30771@intel.com>
-X-Originating-IP: [2620:10d:c090:400::5:96ed]
-X-ClientProxiedBy: MWHPR14CA0058.namprd14.prod.outlook.com
- (2603:10b6:300:81::20) To SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14)
+        Fri, 2 Oct 2020 13:56:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133D1C0613D0;
+        Fri,  2 Oct 2020 10:56:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id c18so2710449wrm.9;
+        Fri, 02 Oct 2020 10:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sDykvbK2l7LUktA/NiMrsHi3eOeHsUBTt6WtvcVHsDY=;
+        b=N09JTUu/Nt/0qMN2ji4tbfluL0VPw+AisuR7aO/LSn6OudL9k7y+z5Y/nB/RjjcCXG
+         xwmY3Ap7gvJRtWu3GpC4ma9lEaakLD9ibRJBaT7WBPhKtMfLuaLzLZyCdPCmjBQ1Udlq
+         WbYcPkJt206ljql2riZk5u/u3cPmGMur/9jqHbST9PwMjpOKyBC1Q8edydLHHPFo2DGA
+         Z8cw2OuGUjGpYFjiCLmMzSPDLQTUGJ7aekyUPYPQiiSHqXRtwDaKRQLG+k/s6xWkS1IQ
+         eWp7NsTFey2DvsYd2Y+eATr+usG3hdjY938vQxlgBoe2ez98J517TkLFuSxok/jPT3qC
+         FBGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sDykvbK2l7LUktA/NiMrsHi3eOeHsUBTt6WtvcVHsDY=;
+        b=GjP1+iHLHgd0VnFLGuFkbkqO1GEpKSnOZ7N8GjAje/4nzAolRMVxVzBTgLSDRjkJ03
+         +kX9Q11/U5XbAB1RxMbyx8WDs6AOX9Exo4KTRY1ntA5fySnWz3yjBICXqEGcRz7bYTCM
+         ATQqY+XI/2l9OK6SAqNuRx/Gd9Fl2/4mW+0pOcyAalzAuk2prE4mP0jA9br3fyr54STp
+         Ombh5GnlbnVaoawkSV/7FAWm/Wp6n7oU6JQi+/1RLQcTnfIceYi/QPX4F1msYNswm/Dz
+         mXI/CZtBnzf0CzqnuG0w7sv6leDzonXM8TNi6Yjdk5zWR+fVBnIlLUJsY1plptejDL+8
+         l3dg==
+X-Gm-Message-State: AOAM533nLOD0NY8gNzZs9LzTiF4YFR1nEMdPrlOoH1B0AiARGEBYtWWf
+        Y4HwUce0cBMFy/RPLpw3sGMVbwG7pugzfOMYgG4=
+X-Google-Smtp-Source: ABdhPJyqabUahTC2c5mExHpmCMP/sNSLrS9tVQAZfc0UEeGsTQko60PRoh5s/bXkHSz9NQFWOqyqC7RU2RS3SuTsaCA=
+X-Received: by 2002:a5d:4a0c:: with SMTP id m12mr4380696wrq.83.1601661364614;
+ Fri, 02 Oct 2020 10:56:04 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:96ed) by MWHPR14CA0058.namprd14.prod.outlook.com (2603:10b6:300:81::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Fri, 2 Oct 2020 17:55:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 11e23ea4-1865-4980-8ec9-08d866fc4f34
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB4144:
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB4144B18A7110F496CD6F065DBE310@SN6PR1501MB4144.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EzgSPtrbZ4dt8qqiSMjeAX7dTzl3xg1kofukIsrGMR4r0Xoi7Gn2f0IqqG+oRY2P2D1j46F6hSWhi9s8/hFJO06QAtfsHeD3j1Ss6VOEN2Txg8elQEaVXACdtLBc87sFzNgaahTkhq1QcIU2EGdl4E61FVsZt3zYKJRAbCmWlVYqia2/dxhX9aCUv4jHL27LUZGwC1J1vN7B7q/VHjJm9fi/+Xfi+9JRmmPdxJrXyG2/njJC77sAd2Ms6761LMrjgLrpeOL8xKOr54G4XHw0ZxT9bbszKk+AvLVkeRdl1Dkn7oe8vBeMvJ/6VYf1HptvxK4JcZBI7cFnJb9sWZPDiw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(39860400002)(136003)(366004)(316002)(54906003)(86362001)(5660300002)(7696005)(6916009)(478600001)(33656002)(4744005)(66476007)(66556008)(66946007)(52116002)(6666004)(1076003)(16526019)(6506007)(186003)(8936002)(4326008)(7416002)(2906002)(55016002)(8676002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: h/q5VH6l/0eNNWxQi5yUZ1pw6DgFAXW3Vx/K8t4Y2/3NpO5m+lvmu3bO0Qhf4LldjggVApd1VoUKVY1qyy9S8ZTaE4gvlcNr8Hl6Iq/IUJtLApvEZEVsadYcYirisCIbneBDqj/Gy8O91KXINWschUR0Bi0eM8oZo2TnBsi9bzPMeHRW7IZT2qJ7hyiHg/KqysYzKvFITQOF+KKF582PhDhn2uG+dAGwLnyRDJd9hdY/0Sp+ELQB6Ph+Nr4jLfbqb73U3w1C87sCZ+6k1mjl0HkardGgmQcuixSPbZ/jP9FalU24XCKQv+/EsnAQQ9slqpaNAn7vhpwOoyhybzS4mjyUXP093fxIoyqN1ZB8viYn0VsbQJsHCrLPVsdO764JRVHflV6RQvIG3XJq0NHA9y1BO9uBsNqqHCXza06+J7R0qepAWLs+oIl5ZyHyIBR3RVc3bCNngbRtBJFbcJ0mbDgphk5jOKLnf+jQBci0hFEzCyjIHyHwM0u2mVXu+c/6mlyeISP2beZ08CfKgypJ9xshsl+4MiaP3SCubEBtPPCqbSP8A+IClvvjlCe+VnBkZ/LCJe1qD9k+vojHx3kO9ktvP7HQ2kadujDDcCnVefrQxQEevsz7xRbWDi7VXm+zqS16h8DXdtU+7y+6Ua5zlJ3TEOagU4Z+eV57cEuIi2Q=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11e23ea4-1865-4980-8ec9-08d866fc4f34
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 17:55:12.1460
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HbYLtpUbvY2jOaj3oq+P8vKpSReqj1OpAXa3OZEnbL42l64RaoKe6pjcukhJZMyF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4144
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_11:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 suspectscore=1
- clxscore=1011 malwarescore=0 mlxlogscore=939 spamscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020131
-X-FB-Internal: deliver
+References: <20200930211723.3028059-1-robdclark@gmail.com> <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
+ <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
+ <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
+ <20201002105256.GA6112@intel.com> <20201002110544.GB6112@intel.com>
+In-Reply-To: <20201002110544.GB6112@intel.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 2 Oct 2020 10:55:52 -0700
+Message-ID: <CAF6AEGv+UnZJoBj_ELRVr4sQeMs52vAgyw2g+wtabLPBrYDKvw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>, Qais Yousef <qais.yousef@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:34:06PM +0800, Philip Li wrote:
-> On Thu, Oct 01, 2020 at 05:55:59PM -0700, Roman Gushchin wrote:
-> > On Fri, Oct 02, 2020 at 08:08:40AM +0800, kbuild test robot wrote:
-> > > Hi Roman,
-> > > 
-> > > Thank you for the patch! Yet something to improve:
-> > > 
-> > > [auto build test ERROR on mmotm/master]
-> > 
-> > It's a bogus error, the patch was applied onto mmotm/master, which doesn't
-> > contain necessary slab controller patches.
-> sorry for the wrong report, and thanks for the input, we will check
-> this to see whether we can find an appropriate base for this case.
+On Fri, Oct 2, 2020 at 4:05 AM Ville Syrj=C3=A4l=C3=A4
+<ville.syrjala@linux.intel.com> wrote:
+>
+> On Fri, Oct 02, 2020 at 01:52:56PM +0300, Ville Syrj=C3=A4l=C3=A4 wrote:
+> > On Thu, Oct 01, 2020 at 05:25:55PM +0200, Daniel Vetter wrote:
+> > > On Thu, Oct 1, 2020 at 5:15 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > On Thu, Oct 1, 2020 at 12:25 AM Daniel Vetter <daniel@ffwll.ch> wro=
+te:
+> > > > >
+> > > > > On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> =
+wrote:
+> > > > > >
+> > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > The android userspace treats the display pipeline as a realtime=
+ problem.
+> > > > > > And arguably, if your goal is to not miss frame deadlines (ie. =
+vblank),
+> > > > > > it is.  (See https://lwn.net/Articles/809545/ for the best expl=
+aination
+> > > > > > that I found.)
+> > > > > >
+> > > > > > But this presents a problem with using workqueues for non-block=
+ing
+> > > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s=
+) can
+> > > > > > preempt the worker.  Which is not really the outcome you want..=
+ once
+> > > > > > the required fences are scheduled, you want to push the atomic =
+commit
+> > > > > > down to hw ASAP.
+> > > > > >
+> > > > > > But the decision of whether commit_work should be RT or not rea=
+lly
+> > > > > > depends on what userspace is doing.  For a pure CFS userspace d=
+isplay
+> > > > > > pipeline, commit_work() should remain SCHED_NORMAL.
+> > > > > >
+> > > > > > To handle this, convert non-blocking commit_work() to use per-C=
+RTC
+> > > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC worker=
+s are
+> > > > > > used to avoid serializing commits when userspace is using a per=
+-CRTC
+> > > > > > update loop.  And the last patch exposes the task id to userspa=
+ce as
+> > > > > > a CRTC property, so that userspace can adjust the priority and =
+sched
+> > > > > > policy to fit it's needs.
+> > > > > >
+> > > > > >
+> > > > > > v2: Drop client cap and in-kernel setting of priority/policy in
+> > > > > >     favor of exposing the kworker tid to userspace so that user=
+-
+> > > > > >     space can set priority/policy.
+> > > > >
+> > > > > Yeah I think this looks more reasonable. Still a bit irky interfa=
+ce,
+> > > > > so I'd like to get some kworker/rt ack on this. Other opens:
+> > > > > - needs userspace, the usual drill
+> > > >
+> > > > fwiw, right now the userspace is "modetest + chrt".. *probably* the
+> > > > userspace will become a standalone helper or daemon, mostly because
+> > > > the chrome gpu-process sandbox does not allow setting SCHED_FIFO.  =
+I'm
+> > > > still entertaining the possibility of switching between rt and cfs
+> > > > depending on what is in the foreground (ie. only do rt for android
+> > > > apps).
+> > > >
+> > > > > - we need this also for vblank workers, otherwise this wont work =
+for
+> > > > > drivers needing those because of another priority inversion.
+> > > >
+> > > > I have a thought on that, see below..
+> > >
+> > > Hm, not seeing anything about vblank worker below?
+> > >
+> > > > > - we probably want some indication of whether this actually does
+> > > > > something useful, not all drivers use atomic commit helpers. Not =
+sure
+> > > > > how to do that.
+> > > >
+> > > > I'm leaning towards converting the other drivers over to use the
+> > > > per-crtc kwork, and then dropping the 'commit_work` from atomic sta=
+te.
+> > > > I can add a patch to that, but figured I could postpone that churn
+> > > > until there is some by-in on this whole idea.
+> > >
+> > > i915 has its own commit code, it's not even using the current commit
+> > > helpers (nor the commit_work). Not sure how much other fun there is.
+> >
+> > I don't think we want per-crtc threads for this in i915. Seems
+> > to me easier to guarantee atomicity across multiple crtcs if
+> > we just commit them from the same thread.
+>
+> Oh, and we may have to commit things in a very specific order
+> to guarantee the hw doesn't fall over, so yeah definitely per-crtc
+> thread is a no go.
 
-I wonder if you can look at the "Fixes" tag if the patch contains one?
+If I'm understanding the i915 code, this is only the case for modeset
+commits?  I suppose we could achieve the same result by just deciding
+to pick the kthread of the first CRTC for modeset commits.  I'm not
+really so much concerned about parallelism for modeset.
 
-> Meanwhile, you can give a try to use --base option when git format patch, which
-> helps us to have more clue when looking for base info.
+> I don't even understand the serialization argument. If the commits
+> are truly independent then why isn't the unbound wq enough to avoid
+> the serialization? It should just spin up a new thread for each commit
+> no?
 
-Will do.
+The problem with wq is prioritization and SCHED_FIFO userspace
+components stomping on the feet of commit_work.  That is the entire
+motivation of this series in the first place, so no we cannot use
+unbound wq.
 
-Thanks!
+BR,
+-R
