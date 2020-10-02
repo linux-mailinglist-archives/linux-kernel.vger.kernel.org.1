@@ -2,204 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A8F281AEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE77281AF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388034AbgJBSgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:36:10 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36698 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBSgK (ORCPT
+        id S2388270AbgJBSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:36:35 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55099 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726215AbgJBSge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:36:10 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 092IZtGh100976;
-        Fri, 2 Oct 2020 13:35:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601663755;
-        bh=Q/b213DN9pBG8z9P9f7LUhk6lPocLe7B6VcQLRWIdks=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VzvxoywLNUA8MtX6cuP4S5nxPIvKc9NrKOf2UagtGDr1A+g6+vhTBpf+LVDFmdXox
-         UAtL/lNSNJac2oZk+EnEELRX2c5Cyv2lE471hBe5scPa1kXnIOwDZ4bJTS7iFnkP/r
-         EhpeyBj0qnSjJaWZSfVum1lTl3Bxe7wFp9OSoHJ4=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 092IZtA1104544
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 13:35:55 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 13:35:55 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 13:35:55 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 092IZom0128432;
-        Fri, 2 Oct 2020 13:35:51 -0500
-Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
- init_machine() path
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Saravana Kannan <saravanak@google.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Fri, 2 Oct 2020 14:36:34 -0400
+Received: (qmail 296712 invoked by uid 1000); 2 Oct 2020 14:36:33 -0400
+Date:   Fri, 2 Oct 2020 14:36:33 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
- <20201001225952.3676755-1-saravanak@google.com>
- <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
- <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
- <20201002175423.GE3933@pendragon.ideasonboard.com>
- <CAGETcx-7nJaU6pDo_KL-nKmCaxv57C5aaXq-pvo4XiN=N0K5Jg@mail.gmail.com>
- <20201002182712.GF3933@pendragon.ideasonboard.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <11018e7e-a6a1-2df6-5639-821a7c0cb68b@ti.com>
-Date:   Fri, 2 Oct 2020 21:35:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
+ onboard USB hubs
+Message-ID: <20201002183633.GA296334@rowland.harvard.edu>
+References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200929201701.GA1080459@bogus>
+ <20200929220912.GF1621304@google.com>
+ <20200930013229.GB194665@rowland.harvard.edu>
+ <20200930124915.GA1826870@google.com>
+ <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
+ <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
+ <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
+ <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002182712.GF3933@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Saravana,
-
-On 02/10/2020 21:27, Laurent Pinchart wrote:
-> Hi Saravana,
+On Fri, Oct 02, 2020 at 10:08:17AM -0700, Doug Anderson wrote:
+> As a more similar example of single device that is listed in more than
+> one location in the device tree, we can also look at embedded SDIO
+> BT/WiFi combo cards.  This single device often provides WiFi under an
+> SDIO bus and BT under a serial / USB bus.  I'm not 100% sure there are
+> actually cases were the same board provides device tree data to both
+> at the same time, but "brcm,bcm43540-bt" is an example of providing
+> data to the Bluetooth (connected over serial port) and
+> "brcm,bcm4329-fmac" to the WiFi (connected over the SDIO bus).  Of
+> course WiFi/BT cheat in that the control logic is represented by the
+> SDIO power sequencing stuff...
 > 
-> On Fri, Oct 02, 2020 at 10:58:55AM -0700, Saravana Kannan wrote:
->> On Fri, Oct 2, 2020 at 10:55 AM Laurent Pinchart wrote:
->>> On Fri, Oct 02, 2020 at 10:51:51AM -0700, Saravana Kannan wrote:
->>>> On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
->>>>> On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
->>>>>>
->>>>>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
->>>>>> adding all top level devices") optimized the fwnode parsing when all top
->>>>>> level devices are added, it missed out optimizing this for platform
->>>>>> where the top level devices are added through the init_machine() path.
->>>>>>
->>>>>> This commit does the optimization for all paths by simply moving the
->>>>>> fw_devlink_pause/resume() inside of_platform_default_populate().
->>>>>>
->>>>>> Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
->>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
->>>>>> ---
->>>>>>   drivers/of/platform.c | 19 +++++++++++++++----
->>>>>>   1 file changed, 15 insertions(+), 4 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
->>>>>> index 071f04da32c8..79972e49b539 100644
->>>>>> --- a/drivers/of/platform.c
->>>>>> +++ b/drivers/of/platform.c
->>>>>> @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
->>>>>>                                   const struct of_dev_auxdata *lookup,
->>>>>>                                   struct device *parent)
->>>>>>   {
->>>>>> -       return of_platform_populate(root, of_default_bus_match_table, lookup,
->>>>>> -                                   parent);
->>>>>> +       int ret;
->>>>>> +
->>>>>> +       /*
->>>>>> +        * fw_devlink_pause/resume() are only safe to be called around top
->>>>>> +        * level device addition due to locking constraints.
->>>>>> +        */
->>>>>> +       if (!root)
->>>>>> +               fw_devlink_pause();
->>>>>> +
->>>>>> +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
->>>>>> +                                  parent);
->>>>>
->>>>> of_platform_default_populate() vs. of_platform_populate() is just a
->>>>> different match table. I don't think the behavior should otherwise be
->>>>> different.
->>>>>
->>>>> There's also of_platform_probe() which has slightly different matching
->>>>> behavior. It should not behave differently either with respect to
->>>>> devlinks.
->>>>
->>>> So I'm trying to do this only when the top level devices are added for
->>>> the first time. of_platform_default_populate() seems to be the most
->>>> common path. For other cases, I think we just need to call
->>>> fw_devlink_pause/resume() wherever the top level devices are added for
->>>> the first time. As I said in the other email, we can't add
->>>> fw_devlink_pause/resume() by default to of_platform_populate().
->>>>
->>>> Do you have other ideas for achieving "call fw_devlink_pause/resume()
->>>> only when top level devices are added for the first time"?
->>>
->>> I'm not an expert in this domain, but before investigating it, would you
->>> be able to share a hack patch that implements this (in the most simple
->>> way) to check if it actually fixes the delays I experience on my system
->>> ?
->>
->> So I take it the patch I sent out didn't work for you? Can you tell me
->> what machine/DT you are using?
 > 
-> I've replied to the patch:
+> Back to our case, though.  I guess the issue here is that we're the
+> child of more than one bus.  Let's first pretend that the i2c lines of
+> this hub are actually hooked up and establish how that would look
+> first.  Then we can think about how it looks if this same device isn't
+> hooked up via i2c.  In this case, it sounds as if you still don't want
+> the device split among two nodes.  So I guess you'd prefer something
+> like:
 > 
-> Based on v5.9-rc5, before the patch:
+> i2c {
+>   usb-hub@xx {
+>     reg = <xx>;
+>     compatible = "realtek,rts5411", "onboard-usb-hub";
+>     vdd-supply = <&pp3300_hub>;
+>     usb-devices = <&usb_controller 1>;
+>   };
+> };
 > 
-> [    0.652887] cpuidle: using governor menu
-> [   12.349476] No ATAGs?
+> ...and then you wouldn't have anything under the USB controller
+> itself.  Is that correct?  So even though there are existing bindings
+> saying that a USB device should be listed via VID/PID, the desire to
+> represent this as a single node overrides that, right?  (NOTE: this is
+> similar to what Matthias proposed in his response except that I've
+> added an index so that we don't need _anything_ under the controller).
 > 
-> After the patch:
+> Having this primarily listed under the i2c bus makes sense because the
+> control logic for the hub is hooked up via i2c.  Having the power
+> supply associated with it also makes some amount of sense since it's a
+> control signal.  It's also convenient that i2c devices have their
+> probe called _before_ we try to detect if they're there because it's
+> common that i2c devices need power applied first.
 > 
-> [    0.650460] cpuidle: using governor menu
-> [   12.262101] No ATAGs?
+> Now, just because we don't have the i2c bus hooked up doesn't change
+> the fact that there is control logic.  We also certainly wouldn't want
+> two ways of describing this same hub: one way if the i2c is hooked up
+> and one way if it's not hooked up.  To me this means that the we
+> should be describing this hub as a top-level node if i2c isn't hooked
+> up, just like we do with "smsc,usb3503a"
 > 
-> I'm using an AM57xx EVM, whose DT is not upstream, but it's essentially
-> a am57xx-beagle-x15-revb1.dts (it includes that DTS) with a few
-> additional nodes for GPIO keys, LCD panel, backlight and touchscreen.
+> Said another way, we have these points:
 > 
+> a) The control logic for this bus could be hooked up to an i2c bus.
+> 
+> b) If the control logic is hooked up to an i2c bus it feels like
+> that's where the device's primary node should be placed, not under the
+> USB controller.
+> 
+> c) To keep the i2c and non-i2c case as similar as possible, if the i2c
+> bus isn't hooked up the hub's primary node should be a top-level node,
+> not under the USB controller.
+> 
+> 
+> NOTE ALSO: the fact that we might want to list this hub under an i2c
+> controller also seems like it's a good argument against putting this
+> logic in the xhci-platform driver?
 
-hope you are receiving my mails as I've provided you with all required information already [1]
+More and more we are going to see devices that are attached to multiple 
+buses.  In this case, one for power control and another for 
+commands/data.  If DT doesn't already have a canonical way of handling 
+such situations, it needs to develop one soon.
 
-with below diff:
-[    4.177231] Freeing unused kernel memory: 1024K
-[    4.181892] Run /sbin/init as init process
+One can make a case that there should be multiple device nodes in this 
+situation, somehow referring to each other so that the system knows they 
+all describe the same device.  Maybe one "primary" node for the device 
+and the others acting kind of like symbolic links.
 
-The best time with [2] is
-[    3.100483] Run /sbin/init as init process
+Regardless of how the situation is represented in DT, there remains the 
+issue of where (i.e., in which driver module) the appropriate code 
+belongs.  This goes far beyond USB.  In general, what happens when one 
+sort of device normally isn't hooked up through a power regulator, so 
+its driver doesn't have any code to enable a regulator, but then some 
+system does exactly that?
 
-Still 1 sec lose.
+Even worse, what if the device is on a discoverable bus, so the driver 
+doesn't get invoked at all until the device is discovered, but on the 
+new system it can't be discovered until the regulator is enabled?
 
-Pls understand an issue - requirements here are like 500ms boot with can, Ethernet, camera and display on ;(
-
-[1] https://lore.kernel.org/patchwork/patch/1316134/#1511276
-[2] https://lore.kernel.org/patchwork/patch/1316134/#1511435
-
-diff --git a/arch/arm/mach-omap2/pdata-quirks.c b/arch/arm/mach-omap2/pdata-quirks.c
-index 2a4fe3e68b82..ac1ab8928190 100644
---- a/arch/arm/mach-omap2/pdata-quirks.c
-+++ b/arch/arm/mach-omap2/pdata-quirks.c
-@@ -591,7 +591,9 @@ void __init pdata_quirks_init(const struct of_device_id *omap_dt_match_table)
-         if (of_machine_is_compatible("ti,omap3"))
-                 omap3_mcbsp_init();
-         pdata_quirks_check(auxdata_quirks);
-+       fw_devlink_pause();
-         of_platform_populate(NULL, omap_dt_match_table,
-                              omap_auxdata_lookup, NULL);
-+       fw_devlink_resume();
-         pdata_quirks_check(pdata_quirks);
-  }
-
-
--- 
-Best regards,
-grygorii
+Alan Stern
