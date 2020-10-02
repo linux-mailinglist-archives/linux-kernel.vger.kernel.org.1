@@ -2,183 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119BB2818D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969D22818D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388194AbgJBRId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S2388208AbgJBRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388008AbgJBRIc (ORCPT
+        with ESMTP id S1733260AbgJBRIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:08:32 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036A6C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:08:32 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id 91so50266uas.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbIvQOosZgo3R2BZJc8GACD4WYs5J2seBOEgLzJ9hBM=;
-        b=CZpsJgYy8Zu1oH8utkKUY6fcC7xmaRZvupW4XBuX1ERHa99qsoAgCEsacauygHGyOw
-         a0sRG5fZlNs27aC1wNw//vRECILHOTEvvJja90QWG6g5CHF6BT5msQEGWa+NZiA1tFNb
-         AiiJsTtFWWGUwe6oIWGmSlzioRe6qjG8nLib0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbIvQOosZgo3R2BZJc8GACD4WYs5J2seBOEgLzJ9hBM=;
-        b=o3VEuclIfxSykTV37JhuKKzI0THG4dscpJjVyUUgohW5f8KU4u9KbeI2l1ksdn485l
-         Z8lKCwadHYruNk7CEMZisbH8MgjdGG+SRS5R5ldG4EuBe999+7trQ0h/gTwIB0/XYWed
-         YrXDc8urNbeYiZagxIFYyujvvafktg/u1ZJzVXk0bc35WP/fZOU3lgRmIkNHJ9F6khZY
-         8rYAKDNVwCzc5njnymHFbHdsb9JXuTkKxPQ1kCsJoddO3i5cizYDtvWk8yeWb/7ohTot
-         O5AC/YwH7nyvOpQboZ4owvhlkTFa/iyPktiFTfuJExnKaZ1oyOgjRuuJCoNckyIQuQ4A
-         LwiQ==
-X-Gm-Message-State: AOAM533qR+7bPGdDB3tyt90mfaln17PZct4JpYbuLBdsX0T3rjUmJUb5
-        tgPzPls3MQUHaWi6Yec7mzEXgmefvkoIcg==
-X-Google-Smtp-Source: ABdhPJyW+RQ1PZccxm0i6tu0+kJqJnFPzoaDAZk6NwfHOomKWzFGktMm4kgpVH5fKkDaholihPCaqg==
-X-Received: by 2002:ab0:208a:: with SMTP id r10mr1847020uak.56.1601658510808;
-        Fri, 02 Oct 2020 10:08:30 -0700 (PDT)
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
-        by smtp.gmail.com with ESMTPSA id a64sm338579vkh.3.2020.10.02.10.08.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 10:08:29 -0700 (PDT)
-Received: by mail-vs1-f49.google.com with SMTP id 7so956199vsp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:08:29 -0700 (PDT)
-X-Received: by 2002:a67:f4c2:: with SMTP id s2mr1917881vsn.4.1601658509277;
- Fri, 02 Oct 2020 10:08:29 -0700 (PDT)
+        Fri, 2 Oct 2020 13:08:24 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1726C0613D0;
+        Fri,  2 Oct 2020 10:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Ca8sKDCw0GHjZBhcGIIj3L8CqwOb97DQ3AjGP71wsRg=; b=Uy7vywT3YdKEfwIHdRjlWzGj8r
+        5acepEv+e/R3YyxjVPM//7PqryrPI5ejKkQIruJYL6PNzNMck0cMhbu+Ain7vJPMNlBhbhhMUb3e2
+        X7xE5v9+lQin7WW5HME2RJqjE/1cVO3iSstIQ156iUcsEjfQeHrTWWGbv++5ZoagWV43rjWuoosWe
+        vUqgkEXAo9/40kbLE+qm22yUN8GIiZyxNvHVnLvM5oNtt5X82TzhdWfwimL/H3b22ryh4e+TsDgmU
+        z/d5rwTY/SEqGxJ34NQUNh1myHxa9uCwaPFruOgIFZAqF8lfbbg57USNXTe4qe5D9lX+rrVcOpjC9
+        LjyMnNZA==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOOXd-0003Pa-4g; Fri, 02 Oct 2020 17:08:21 +0000
+Subject: Re: [RFC PATCH v1 08/26] docs: reporting-bugs: make readers check the
+ taint flag
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <eed27c4faa31d98bd37db18ba2ae90f1767c7102.1601541165.git.linux@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8129d3a7-3649-b9cc-1615-402f12ee370a@infradead.org>
+Date:   Fri, 2 Oct 2020 10:08:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200929201701.GA1080459@bogus> <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu> <20200930124915.GA1826870@google.com>
- <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com> <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 2 Oct 2020 10:08:17 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
-Message-ID: <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Rob Herring <robh@kernel.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <eed27c4faa31d98bd37db18ba2ae90f1767c7102.1601541165.git.linux@leemhuis.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
+> Tell users early in the process to check the taint flag, as that will
+> prevent them from investing time into a report that might be worthless.
+> That way users for example will notice that the issue they face is in
+> fact caused by an add-on kernel module or and Oops that happened
+> earlier.
+> 
+> This approach has a downside: users will later have to check the flag
+> again with the mainline kernel the guide tells them to install. But that
+> is an acceptable trade-off here, as checking only takes a few seconds
+> and can easily prevent wasting time in useless testing and debugging.
+> 
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> ---
+> 
+> = RFC =
+> 
+> Should "disable DKMS" come before this step? But then the backup step right
+> before that one would need to be moved as well, as disabling DKMS can mix things
+> up.
+> ---
+>  Documentation/admin-guide/reporting-bugs.rst  | 59 +++++++++++++++++++
+>  Documentation/admin-guide/tainted-kernels.rst |  2 +
+>  2 files changed, 61 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
+> index 430a0c3ee0ad..61b6592ddf74 100644
+> --- a/Documentation/admin-guide/reporting-bugs.rst
+> +++ b/Documentation/admin-guide/reporting-bugs.rst
+> @@ -311,6 +311,65 @@ fatal error where the kernels stop itself) with a 'Oops' (a recoverable error),
+>  as the kernel remains running after an 'Oops'.
+>  
+>  
+> +Check 'taint' flag
+> +------------------
+> +
+> +    *Check if your kernel was 'tainted' when the issue occurred, as the event
+> +    that made the kernel set this flag might be causing the issue you face.*
+> +
+> +The kernel marks itself with a 'taint' flag when something happens that might
+> +lead to follow-up errors that look totally unrelated. The issue you face might
+> +be such an error if your kernel is tainted. That's why it's in your interest to
+> +rule this out early before investing more time into this process. This is the
+> +only reason why this step is here, as this process later will tell you to
+> +install the latest mainline kernel and check its taint flag, as that's the
+> +kernel the report will be mainly about.
+> +
+> +On a running system is easy to check if the kernel tainted itself: it's not
+> +tainted if ``cat /proc/sys/kernel/tainted`` returns '0'. Checking that file is
+> +impossible in some situations, that's why the kernel also mentions the taint
 
-On Wed, Sep 30, 2020 at 1:20 PM Rob Herring <robh@kernel.org> wrote:
->
-> > > > Datasheets from different manufacturers refer to these ICs as "USB hub
-> > > > controller". Calling the node "usb-hub-controller" would indeed help to
-> > > > distinguish it from the USB hub devices and represent existing hardware.
-> > > > And the USB device could have a "hub-controller" property, which also
-> > > > would be clearer than the current "hub" property.
-> > >
-> > > There aren't 2 (or 3) devices here. There's a single USB device (a
-> > > hub) and the DT representation should reflect that.
-> >
-> > That's not completely true, though, is it?
->
-> I was referring to the hub. I only see 1 datasheet, 1 IC and 1 block
-> diagram... Lots of devices have more than one interface though usually
-> not different speeds of the same thing.
+                      situations;
 
-Right, there is certainly more than one way to look at it and the way
-to look at it is based on how it's most convenient, I guess.  I mean,
-an SoC often has 1 (very long) datasheet, 1 IC, and 1 block diagram
-too...
+> +status when it reports an internal problem (a 'kernel bug'), a recoverable
+> +error (a 'kernel Oops') or a non-recoverable error before halting operation (a
+> +'kernel panic'). Look near the top of the error messages printed when one of
+> +these occurs and search for a line starting with 'CPU:'. It should end with
+> +'Not tainted' if the kernel was not tainted beforehand; it was tainted if you
+> +see 'Tainted:' followed by a few spaces and some letters.
+> +
+> +If your kernel is tainted study
 
-As a more similar example of single device that is listed in more than
-one location in the device tree, we can also look at embedded SDIO
-BT/WiFi combo cards.  This single device often provides WiFi under an
-SDIO bus and BT under a serial / USB bus.  I'm not 100% sure there are
-actually cases were the same board provides device tree data to both
-at the same time, but "brcm,bcm43540-bt" is an example of providing
-data to the Bluetooth (connected over serial port) and
-"brcm,bcm4329-fmac" to the WiFi (connected over the SDIO bus).  Of
-course WiFi/BT cheat in that the control logic is represented by the
-SDIO power sequencing stuff...
+                     tainted, study
 
+> +:ref:`Documentation/admin-guide/tainted-kernels.rst <taintedkernels>` to find
+> +out why and try to eliminate the reason. Often it's because a recoverable error
+> +(a 'kernel Oops') occurred and the kernel tainted itself, as the kernel knows
+> +it might misbehave in strange ways after that point. In that case check your
+> +kernel or system log and look for a section that starts with this::
+> +
+> +       Oops: 0000 [#1] SMP
+> +
+> +That's the first Oops since boot-up, as the '#1' between the brackets shows.
+> +Every Oops and any other problem that happen after that point might be a
+> +follow-up problem to that first Oops, even if they look totally unrelated. Try
+> +to rule this out by getting rid of that Oops and reproducing the issue
+> +afterwards. Sometimes simply restarting will be enough, sometimes a change to
+> +the configuration followed by a reboot can eliminate the Oops. But don't invest
+> +too much time into this at this point of the process, as the cause for the Oops
+> +might already be fixed in the newer Linux kernel version you are going to
+> +install later in this process.
+> +
+> +Quite a few kernels are also tainted because an unsuitable kernel modules was
 
-Back to our case, though.  I guess the issue here is that we're the
-child of more than one bus.  Let's first pretend that the i2c lines of
-this hub are actually hooked up and establish how that would look
-first.  Then we can think about how it looks if this same device isn't
-hooked up via i2c.  In this case, it sounds as if you still don't want
-the device split among two nodes.  So I guess you'd prefer something
-like:
+                                                                     module
 
-i2c {
-  usb-hub@xx {
-    reg = <xx>;
-    compatible = "realtek,rts5411", "onboard-usb-hub";
-    vdd-supply = <&pp3300_hub>;
-    usb-devices = <&usb_controller 1>;
-  };
-};
+> +loaded. This for example is the case if you use Nvidias proprietary graphics
 
-...and then you wouldn't have anything under the USB controller
-itself.  Is that correct?  So even though there are existing bindings
-saying that a USB device should be listed via VID/PID, the desire to
-represent this as a single node overrides that, right?  (NOTE: this is
-similar to what Matthias proposed in his response except that I've
-added an index so that we don't need _anything_ under the controller).
+                                                   Nvidia's
 
-Having this primarily listed under the i2c bus makes sense because the
-control logic for the hub is hooked up via i2c.  Having the power
-supply associated with it also makes some amount of sense since it's a
-control signal.  It's also convenient that i2c devices have their
-probe called _before_ we try to detect if they're there because it's
-common that i2c devices need power applied first.
+> +driver, VirtualBox, or other software that installs its own kernel modules: you
+> +will have to remove these modules and reboot the system, as they might in fact
+> +be causing the issue you face.
 
-Now, just because we don't have the i2c bus hooked up doesn't change
-the fact that there is control logic.  We also certainly wouldn't want
-two ways of describing this same hub: one way if the i2c is hooked up
-and one way if it's not hooked up.  To me this means that the we
-should be describing this hub as a top-level node if i2c isn't hooked
-up, just like we do with "smsc,usb3503a"
+You will need to reboot the system and try to reproduce the issue without loading
+any of these proprietary modules.
 
-Said another way, we have these points:
+> +
+> +The kernel also taints itself when it's loading a module that resists in the
 
-a) The control logic for this bus could be hooked up to an i2c bus.
+                                                                 resides
 
-b) If the control logic is hooked up to an i2c bus it feels like
-that's where the device's primary node should be placed, not under the
-USB controller.
+> +staging tree of the Linux kernel source. That's a special area for code (mostly
+> +drivers) that does not yet fulfill the normal Linux kernel quality standards.
+> +When you report an issue with such a module it's obviously okay if the kernel is
+> +tainted, just make sure the module in question is the only reason for the taint.
 
-c) To keep the i2c and non-i2c case as similar as possible, if the i2c
-bus isn't hooked up the hub's primary node should be a top-level node,
-not under the USB controller.
+   tainted;
+
+> +If the issue happens in an unrelated area reboot and temporary block the module
+
+                                                        temporarily
+
+> +from being loaded by specifying ``foo.blacklist=1`` as kernel parameter (replace
+> +'foo' with the name of the module in question).
+> +
+> +
+>  .. ############################################################################
+>  .. Temporary marker added while this document is rewritten. Sections above
+>  .. are new and dual-licensed under GPLv2+ and CC-BY 4.0, those below are old.
+> diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
+> index abf804719890..2900f477f42f 100644
+> --- a/Documentation/admin-guide/tainted-kernels.rst
+> +++ b/Documentation/admin-guide/tainted-kernels.rst
+> @@ -1,3 +1,5 @@
+> +.. _taintedkernels:
+> +
+>  Tainted kernels
+>  ---------------
+>  
+> 
 
 
-NOTE ALSO: the fact that we might want to list this hub under an i2c
-controller also seems like it's a good argument against putting this
-logic in the xhci-platform driver?
+-- 
+~Randy
 
-
-I _think_ the above representation would be OK with Rob (right?) and I
-think it'd be pretty easy to adapt Matthias's existing code to work
-with it.  We'd have to make sure we were careful that things worked in
-either probe ordering (in case the firmware happened to leave the
-power rail on sometimes and the USB devices started probing before the
-hub driver did), but it feels like it should be possible, right?
-
-
- -Doug
