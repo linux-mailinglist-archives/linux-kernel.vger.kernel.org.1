@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26506281ADF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCD9281AE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388288AbgJBS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387692AbgJBS3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:29:36 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC278C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:29:35 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id y14so1318606pgf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=sfHqLZf2nv9SkEaSma+fmeDrDPHstMI9otrw857K/6g=;
-        b=csQSw6MRVPHQeqxqB/KwBhjwUrG0QqBbH8d8WC5gdVk08R4lh/91tBrbrelyQrc2E6
-         VJsnSVuzqiCc6Ow+ETOxkvMp7ltI4ruJ6gV0XcwyyDubiBajsUpfFDnBAAss4H3Lh2xk
-         3YIiFFRjS4YqwgpoReBprCdkYRfUsVrH2FoFfHOrxbFNq9g9Av6an55aQVt85GJDBQR+
-         VLMn6rS8xKo0++sVDwiCytVsmyjAUH1zY0sKUJBSxeARERKZlHDk+kYJFKvgeT1Y5lKK
-         P6kTe+10uzqyItQUY6OTL56PKGBuMasoAQzRkHlrl1kr8Tuej3+5HhIFqUbPZnFpWZXV
-         KgMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=sfHqLZf2nv9SkEaSma+fmeDrDPHstMI9otrw857K/6g=;
-        b=iBmROxt61i8kQGjfv8hrC4pHi+dmIYcDeimpilGATqAhTMLQqB0vjrSb7ohX7HSBjc
-         fzjIFYhMXsaqdRSJOfoGppO9C2x7+zeuIjovsehYrOsCqjAfHxIJwQK/xzHasiJx6IXX
-         l+hhHIuPItqxtiHLFUNVeFXGfskhF2trmqhE1Ec540mQ74nXwf/eDJrOuP1IWH/lpPhl
-         UbPHnd+bKsyhEVvtu2v7EqJSuNxRg42JCqj3s/caiPNEQ0Ijs7sHGwTqOHMzyIxZpGvy
-         XEssFHUhgkddEngSvTJRdWzTU8cxOMDQmrrj1Mo/SJo/o/5htzzYdZ43+amr05P1De+g
-         +wlQ==
-X-Gm-Message-State: AOAM531BLWPhPR6qiOdISKlA/TjAMV3uOiXgRE00aKznD0UkZRJ07wey
-        jmCjVvFOAaOwEuLeYIOZ/XC2wg==
-X-Google-Smtp-Source: ABdhPJxgJ98K+Rw0bnjUuIFWMdd7exfZq0mIY+TYb59j5UER1wmonXlgj69iPqZXPcg0D0fi70RzSg==
-X-Received: by 2002:a63:4854:: with SMTP id x20mr3555150pgk.220.1601663374957;
-        Fri, 02 Oct 2020 11:29:34 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id m13sm2497574pfk.103.2020.10.02.11.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 11:29:34 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Graichen <thomas.graichen@gmail.com>
-Subject: Re: [PATCH RESEND v1] ARM: dts: meson8: remove two invalid interrupt lines from the GPU node
-In-Reply-To: <CAFBinCCrbVzK8A0s-=Q++n4yUFO6+Wm_Ayh_vdxkATJh7oSx1A@mail.gmail.com>
-References: <20200815181957.408649-1-martin.blumenstingl@googlemail.com> <159830380185.24712.3464811968459073992.b4-ty@baylibre.com> <CAFBinCCrbVzK8A0s-=Q++n4yUFO6+Wm_Ayh_vdxkATJh7oSx1A@mail.gmail.com>
-Date:   Fri, 02 Oct 2020 11:29:33 -0700
-Message-ID: <7hlfgomqgi.fsf@baylibre.com>
+        id S2388300AbgJBSal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:30:41 -0400
+Received: from mga11.intel.com ([192.55.52.93]:2785 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgJBSak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:30:40 -0400
+IronPort-SDR: 2SWHkPpRO0qtLCzvSrigKc4vmfWj5o6PXcIEDzutSdcByM1tH55Q0Vhl55dZXWchR2DTdq/COh
+ duTOQxKYWdHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160374675"
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="160374675"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 11:30:39 -0700
+IronPort-SDR: QM5tdP9JMZkaiRHIVtAyo1ij9Ez69aiKRchDZCrY/iloWU+N+xL1DilhsSPgxh3re0gxZy0vAw
+ DZU3g3/L20+Q==
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="313592886"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 11:30:39 -0700
+Date:   Fri, 2 Oct 2020 11:30:37 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>, vkuznets@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
+Message-ID: <20201002183036.GB24460@linux.intel.com>
+References: <20200720211359.GF502563@redhat.com>
+ <20200929043700.GL31514@linux.intel.com>
+ <20201001215508.GD3522@redhat.com>
+ <20201001223320.GI7474@linux.intel.com>
+ <20201002153854.GC3119@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002153854.GC3119@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> writes:
+On Fri, Oct 02, 2020 at 11:38:54AM -0400, Vivek Goyal wrote:
+> On Thu, Oct 01, 2020 at 03:33:20PM -0700, Sean Christopherson wrote:
+> > Alternatively, what about adding a new KVM request type to handle this?
+> > E.g. when the APF comes back with -EFAULT, snapshot the GFN and make a
+> > request.  The vCPU then gets kicked and exits to userspace.  Before exiting
+> > to userspace, the request handler resets vcpu->arch.apf.error_gfn.  Bad GFNs
+> > simply get if error_gfn is "valid", i.e. there's a pending request.
+> 
+> Sorry, I did not understand the above proposal. Can you please elaborate
+> a bit more. Part of it is that I don't know much about KVM requests.
+> Looking at the code it looks like that main loop is parsing if some
+> kvm request is pending and executing that action.
+> 
+> Don't we want to make sure that we exit to user space when guest retries
+> error gfn access again.
 
-> Hi Kevin,
->
-> On Mon, Aug 24, 2020 at 11:16 PM Kevin Hilman <khilman@baylibre.com> wrote:
-> [...]
->> Applied, thanks!
->>
->> [1/1] ARM: dts: meson8: remove two invalid interrupt lines from the GPU node
->>       commit: b468412409c0e5752ad3396b147cac563ff8dd3b
-> this one still seems to be sitting in the v5.9/fixes branch
-> I don't see a reason to rush this, so can you please queue it up for
-> v5.10/fixes?
+> In this case once we get -EFAULT, we will still inject page_ready into
+> guest. And then either same process or a different process might run. 
+> 
+> So when exactly code raises a kvm request. If I raise it right when
+> I get -EFAULT, then kvm will exit to user space upon next entry
+> time. But there is no guarantee guest vcpu is running the process which
+> actually accessed the error gfn. And that probably means that register
+> state of cpu does not mean much and one can not easily figure out
+> which task tried to access the bad memory and when.
+> 
+> That's why we prepare a list of error gfn and only exit to user space
+> when error_gfn access is retried so that guest vcpu context is correct.
+> 
+> What am I missing?
 
-Yes, sorry this one slipped through the cracks.
+I don't think it's necessary to provide userspace with the register state of
+the guest task that hit the bad page.  Other than debugging, I don't see how
+userspace can do anything useful which such information.
 
-Kevin
+Even if you want to inject an event of some form into the guest, having the
+correct context for the event itself is not required.  IMO it's perfectly
+reasonable for such an event to be asynchronous.
+
+IIUC, your end goal is to be able to gracefully handle DAX file truncation.
+Simply killing the guest task that hit the bad page isn't sufficient, as
+nothing prevents a future task from accessing the same bad page.  To fully
+handle the situation, the guest needs to remove the bad page from its memory
+pool.  Once the page is offlined, the guest kernel's error handling will
+kick in when a task accesses the bad page (or nothing ever touches the bad
+page again and everyone is happy).
+
+Note, I'm not necessarily suggesting that QEMU piggyback its #MC injection
+to handle this, but I suspect the resulting behavior will look quite similar,
+e.g. notify the virtiofs driver in the guest, which does some magic to take
+the offending region offline, and then guest tasks get SIGBUS or whatever.
+
+I also don't think it's KVM's responsibility to _directly_ handle such a
+scenario.  As I said in an earlier version, KVM can't possibly know _why_ a
+page fault came back with -EFAULT, only userspace can connect the dots of
+GPA -> HVA -> vm_area_struct -> file -> inject event.  KVM definitely should
+exit to userspace on the -EFAULT instead of hanging the guest, but that can
+be done via a new request, as suggested.
