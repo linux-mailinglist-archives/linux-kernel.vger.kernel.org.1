@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE0528103C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA85281046
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387720AbgJBJ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBJ7L (ORCPT
+        id S2387604AbgJBKGM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Oct 2020 06:06:12 -0400
+Received: from mx3.uni-regensburg.de ([194.94.157.148]:40426 "EHLO
+        mx3.uni-regensburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBKGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:59:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0EAC0613D0;
-        Fri,  2 Oct 2020 02:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+qVSAF9QF5Wn9XzbJ1v3TpJKGzqIp+0Y4N7lccEcZNY=; b=XHqr/9rV2rJsIThsPn5As2WrRz
-        DVEa6LNlad/o7oLyeoPINbVx5XiLg3zZ3m1XWtcClNhcLvTWy0APIzcsBtw5d27ZW8zyfq/XuPb9v
-        ToeTTQ+wCLfaMZI6BPRq/VrzM3A13+fYruZhSfSnu+SnRdNNKy8H+drvT6SQfoZtX+vEF3IQ+6qfG
-        QiMa8wbdyrnwhCLcR0gF2U8wj6hXZ28KZY1Z3v/FkIAcWmqEGQFggUOEXMHrZa2S2VRaNUGE5ZSzp
-        snqh3Ii4ECojsW0oNGEc1kbbnJGLNPBxXL0BdXkt10RyakDC17iAS99h9l2KW7oYitYhJ63gBqjAu
-        +Pn6bkZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOHq7-0002BC-OL; Fri, 02 Oct 2020 09:59:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8DDD23006D0;
-        Fri,  2 Oct 2020 11:58:58 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7BF0920839A41; Fri,  2 Oct 2020 11:58:58 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 11:58:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201002095858.GN2611@hirez.programming.kicks-ass.net>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090729.GU2628@hirez.programming.kicks-ass.net>
- <20201002094502.GD3227@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Fri, 2 Oct 2020 06:06:12 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 06:06:11 EDT
+Received: from mx3.uni-regensburg.de (localhost [127.0.0.1])
+        by localhost (Postfix) with SMTP id AB9F96000054
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:00:05 +0200 (CEST)
+Received: from gwsmtp.uni-regensburg.de (gwsmtp1.uni-regensburg.de [132.199.5.51])
+        by mx3.uni-regensburg.de (Postfix) with ESMTP id 90528600004D
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:00:05 +0200 (CEST)
+Received: from uni-regensburg-smtp1-MTA by gwsmtp.uni-regensburg.de
+        with Novell_GroupWise; Fri, 02 Oct 2020 12:00:05 +0200
+Message-Id: <5F76FA24020000A10003BB47@gwsmtp.uni-regensburg.de>
+X-Mailer: Novell GroupWise Internet Agent 18.2.1 
+Date:   Fri, 02 Oct 2020 12:00:04 +0200
+From:   "Ulrich Windl" <Ulrich.Windl@rz.uni-regensburg.de>
+To:     <linux-kernel@vger.kernel.org>
+Subject: FYI: PoC: Running 100000 processes in 5.3.18 (SLES15 SP2)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Content-Disposition: inline
-In-Reply-To: <20201002094502.GD3227@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:45:02AM +0100, Mel Gorman wrote:
-> On Fri, Oct 02, 2020 at 11:07:29AM +0200, Peter Zijlstra wrote:
-> > On Fri, Oct 02, 2020 at 09:50:14AM +0100, Mel Gorman wrote:
-> > > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > 
-> > > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > > 
-> > > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > > limited. 
-> > > 
-> > > That is definitely true. I'm not happy with the GFP flag at all, the
-> > > comment is at best a damage limiting move. It still would be better for
-> > > a memory pool to be reserved and sized for critical allocations.
-> > 
-> > This is one of the reasons I did a separate allocation function. No GFP
-> > flag to leak into general usage.
-> > 
-> 
-> Even a specific function with a hint that "this is for RCU only" will
-> not prevent abuse.
+Hi!
 
-Not exporting it for modules helps, but yes.
+Just in case someone is interested: As a Proof-of-Concept I started 100 thousand processes on a big machine (72 cores). It worked!
+However starting those too more than 30 minutes, and top needs more than 30 minutes to refresh ist display. Still, interactive input via SSH works nice, but any file-system access seems quite slow (my test processes just use CPU; the do no t do any I/O).
 
-> > > > Besides that we certainly do not want to allow craziness like
-> > > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > > 
-> > > That would deserve to be taken to a dumpster and set on fire. The flag
-> > > combination could be checked in the allocator but the allocator path fast
-> > > paths are bad enough already.
-> > 
-> > Isn't that what we have CONFIG_DEBUG_VM for?
-> 
-> It's enabled by default by enough distros that adding too many checks
-> is potentially painful. Granted it would be missed by most benchmarking
-> which tend to control allocations from userspace but a lot of performance
-> problems I see are the "death by a thousand cuts" variety.
+Kernel messages while the processes were created:
+kernel: [65648.247688] perf: interrupt took too long (2516 > 2500), lowering kernel.perf_event_max_sample_rate to 79250
+kernel: [65997.263218] perf: interrupt took too long (3146 > 3145), lowering kernel.perf_event_max_sample_rate to 63500
+kernel: [66790.221057] perf: interrupt took too long (3938 > 3932), lowering kernel.perf_event_max_sample_rate to 50750
+kernel: [69884.371426] perf: interrupt took too long (4925 > 4922), lowering kernel.perf_event_max_sample_rate to 40500
 
-Oh quite agreed, aka death by accounting. But if people are enabling
-DEBUG options in production kernels, there's something wrong, no?
+Last top output (more than 30 late):
+top - 11:16:19 up 19:19,  3 users,  load average: 64164.56, 62997.24, 55597.09
+Tasks: 101432 total, 60249 running, 41183 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 98.0 us,  2.0 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem : 772127.6+total, 755924.2+free, 14253.01+used, 1950.363 buff/cache
+MiB Swap: 773120.0+total, 772958.1+free,  161.816 used. 754248.8+avail Mem
+...
 
-Should we now go add CONFIG_REALLY_DEBUG_STAY_AWAY_ALREADY options?
+That's a load, isn't it? ;-)
+
+ # cat /proc/uptime
+72084.21 9356423.41
+# cat /proc/loadavg
+64188.31 64188.81 63636.08 64228/102328 134935
+
+Regards,
+Ulrich
+
+
+
+
