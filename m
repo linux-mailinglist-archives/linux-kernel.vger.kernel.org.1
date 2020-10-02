@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC989280DE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC18280DEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgJBHL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:11:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBHLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:11:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601622684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CIUDRMv6oCpat1m7gSDcNYYd2XmvpMkcwYlQlsCJ1pI=;
-        b=SqC3XLQcMGZ9Sb9YZP0PRZTA34Gr2lF5MTEwILmKEZDIxkZQV8o3nNG6/OxH0z6kptk4wf
-        w5jE2PNxvkB5nnVNvyRYsvDFRIVWTgZw/+3VPuBLeyd0znhxKLWFpXaWZGCRuY+AD7FDu+
-        mi88kOYCZ+LaVtK3zIR0tAuzyhgb0h4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 15038B317;
-        Fri,  2 Oct 2020 07:11:24 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 09:11:23 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201002071123.GB20872@dhcp22.suse.cz>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
+        id S2387542AbgJBHLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgJBHL3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:11:29 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ECFC0613D0;
+        Fri,  2 Oct 2020 00:11:28 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id j136so552009wmj.2;
+        Fri, 02 Oct 2020 00:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l/AslFcI8o0tIrBRAfurd9q83mHu1ImdAYZFQ7SBMck=;
+        b=J/cJnSdnnm0K3mV2PTCGEBTi1lofC2iZq70FUtde1Hza28OCY1enutx2mZ5VfOiyJa
+         TbavxFH4a8TVQFiB5FgnPdKyKGC6zwLl8NRjtxGKN1KchMQXGi2lX15Kw68CPgblMt2U
+         2KnYm3aGn9tR3PPV6U/n9ekuebZ6hRc+SJu9SkUgTsQR5B5sFCpfhsnQRNbBPbzGqk0l
+         CUDq1siUaDcdUUIrayNrxInva20WYdA2WyTrgY9y2ys7HUWNrC3pDgeVWP55kksQhMU3
+         ih8HDpTQjKYpWZa2yQsYx+0TNurvLr0Dyvad1hVnS5DZATe3H7WhM+RMX/JHEO/OSzBQ
+         HLIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l/AslFcI8o0tIrBRAfurd9q83mHu1ImdAYZFQ7SBMck=;
+        b=WwRaATx3T/INtCyFkrOYm9bao1AiyIS4CiLZLlakA5kKaoD7QE9/hkg4uCaeJ58xq9
+         +TmNxgeSSG4DFt389wedIYRLXZc14SPJuotjayXYf9PWo4QS0IuS4W6xWqsxIbE8y9Fh
+         VgiSzSkluPKJO++e4LUqP9OFn7/9JEyjwk8RJBV6VgM8eTgPYYmcgK5qlpDiEfFWgFKw
+         wfD5LwoRvjWP7ej3glJNsw1y4A/oyvDwgiMFKT/dLzAohUjyKsiqRP6EkLaRKpYxjuoJ
+         37s2dUBGKPB3CoQERQqpp1uVZCjsqLAdEyhHTFc/6ATuzpHUsPZ0nM2kr4TY1znP0d/y
+         RKzg==
+X-Gm-Message-State: AOAM5303g16qs9pAEnabiyiZ5qn68vAv4fpSeezIhNGeZETcP5zthBPO
+        KCyCvrphywmFYdBQ1VdDchU=
+X-Google-Smtp-Source: ABdhPJwyvwxJtDY4aUnKoug3IveaE7MWK3ZSR6SvTGzqrruMA1ENCGgT0YL5LI2l9eIjEr/hNj/pwQ==
+X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr1234143wmh.73.1601622687477;
+        Fri, 02 Oct 2020 00:11:27 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id e13sm669646wre.60.2020.10.02.00.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 00:11:26 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 09:11:25 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] crypto: sun8i-ss - Fix memory leak in
+ sun8i_ss_prng_generate()
+Message-ID: <20201002071125.GA15586@Red>
+References: <20200928175945.GA11320@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001192626.GA29606@pc636>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200928175945.GA11320@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > 
-> > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > the allocator (different from what you posted in previous version) so that it
-> > only looks at the flag after it tries to allocate from pcplist and finds out
-> > it's empty. So, no inventing of new page allocator entry points or checks such
-> > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > affect existing fast paths.
-> >
-> OK. Now i see. Please have a look below at the patch, so we fully understand
-> each other. If that is something that is close to your view or not:
+On Mon, Sep 28, 2020 at 12:59:45PM -0500, Gustavo A. R. Silva wrote:
+> Set _err_ to the return error code -EFAULT before jumping to the new
+> label err_d, so resources for _d_ can be released before returning
+> from function sun8i_ss_prng_generate().
 > 
-> <snip>
-> t a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..7e613560a502 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -39,8 +39,9 @@ struct vm_area_struct;
->  #define ___GFP_HARDWALL                0x100000u
->  #define ___GFP_THISNODE                0x200000u
->  #define ___GFP_ACCOUNT         0x400000u
-> +#define ___GFP_NO_LOCKS                0x800000u
+> Addresses-Coverity-ID: 1497459 ("Resource leak")
+> Fixes: ac2614d721de ("crypto: sun8i-ss - Add support for the PRNG")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+> index 08a1473b2145..0573f6289e8b 100644
+> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-prng.c
+> @@ -103,7 +103,8 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
+>  	dma_iv = dma_map_single(ss->dev, ctx->seed, ctx->slen, DMA_TO_DEVICE);
+>  	if (dma_mapping_error(ss->dev, dma_iv)) {
+>  		dev_err(ss->dev, "Cannot DMA MAP IV\n");
+> -		return -EFAULT;
+> +		err = -EFAULT;
+> +		goto err_d;
+>  	}
+>  
+>  	dma_dst = dma_map_single(ss->dev, d, todo, DMA_FROM_DEVICE);
+> @@ -160,7 +161,7 @@ int sun8i_ss_prng_generate(struct crypto_rng *tfm, const u8 *src,
+>  	dma_unmap_single(ss->dev, dma_dst, todo, DMA_FROM_DEVICE);
+>  err_iv:
+>  	dma_unmap_single(ss->dev, dma_iv, ctx->slen, DMA_TO_DEVICE);
+> -
+> +err_d:
+>  	if (!err) {
+>  		memcpy(dst, d, dlen);
+>  		/* Update seed */
+> -- 
+> 2.27.0
+> 
 
-Even if a new gfp flag gains a sufficient traction and support I am
-_strongly_ opposed against consuming another flag for that. Bit space is
-limited.  Besides that we certainly do not want to allow craziness like
-__GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
--- 
-Michal Hocko
-SUSE Labs
+Hello
+
+The label could be better placed just before the kfree.
+In error case, there are no need to memzero the not used "d".
+
+But a patch with it, was already sent to the ML.
+Anyway if you fix it, you could add "Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>"
+
+Regards
