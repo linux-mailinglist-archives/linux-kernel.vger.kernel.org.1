@@ -2,263 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4BC281E0D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26DA281E10
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgJBWJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:09:29 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:32716 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgJBWJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:09:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601676567; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=0j4dQZY0u2LJ/facFzkTgdQ/39lsQWG5m0bKxRloVQ4=; b=SAZV/bR8dFPNCA0fHN/1tThu9MT2Z14eYy6VzqNSIa/FPA4QRi+By3wEEKg0bDwa+TbgDwEx
- 3AAS+jsbXcog9yopBdE8GH3j7DLQ6uMMiJ9sFDvMwhAj/WU+S4SAcvnax1yEUlTgdo1XfTAD
- w67flttJnDWY2kSFp9Td/OUPu6k=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f77a517ad37af35ecdebce1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 22:09:27
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F3C43C433FE; Fri,  2 Oct 2020 22:09:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        T_FILL_THIS_FORM_SHORT,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FB1DC433C8;
-        Fri,  2 Oct 2020 22:09:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5FB1DC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: fixes wrong connection state caused by failure of link train
-Date:   Fri,  2 Oct 2020 15:09:19 -0700
-Message-Id: <20201002220919.17245-1-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1725710AbgJBWLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJBWLQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:11:16 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84542C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 15:11:14 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id x2so1740420pjk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 15:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WqR15+53sxuwPJNhG7UG5UWNC8ykbQrWL0dbrlfLd84=;
+        b=wBnJYdX3j0KvI3E9/Rv3G3+tTnUPNT62rSqh1h9uJYdXfWkoXgtnBi3r2c0RgQZBaj
+         hXYD4KXVAkb3TtIecQSUfK8E+rOaJeIcpGnhbOHnRRkoROoDQ6QsKYfs820F/lJtrJu4
+         wOW1c++5z3HL/lHdozDnipsC5a25lC1yIxwn0mq7w+rB9E8ph6gtmTgNvkTUErKL6dyM
+         nF65kKXd92+bGYcJVHIwGkM8hD0ASRv0F2EtOvaDvWY277owNjtVgv+Xzoo/ML95+MrY
+         lUYg2AeoJTWKjQ+xoVn8WWF0MLzKcqUJdkoK9hy3gUsPpTi9uyYxLX8qJEpkiGJb1Xjo
+         W8pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WqR15+53sxuwPJNhG7UG5UWNC8ykbQrWL0dbrlfLd84=;
+        b=nFAPAKmmT5DhRnhsvW/OsdKawsINxmEU6fSHLOwZzLN39Bej3aD+6HTT6xAyTMm1j1
+         +4bx12Jfnrqnzuh1+My9/IWbidgEBJFF47f9dB/Zmg9dR48oM9iYVkhMd+Uv6TFyluku
+         bTMG7ZO8Oqb/649B5MSeJtPoBj9M9QpRxeuQq+xj2A18q+foBLxFxYu25XcKzk6gqyGJ
+         gR0lZfPxDqLoDaWQaVTyDbzqfrtOjTHVP3JNzidIfqqvijOw1g1EiDsFzE9jao0y1SXX
+         2jHmFgLaTc23hI+EQwnAzXFIPJicJxiEl49Ie9rWS8KB2sTSWS6BH8KFloePh3H6uqge
+         bWcg==
+X-Gm-Message-State: AOAM530hrvBzMlR8ab1+64qLl0m3OQuRMk+Fr7iF1Vcz8NBagO9jOY7u
+        0huobg0JITCLSk4c0c7+JbW+vc6C0or6gS4WWpfU4w==
+X-Google-Smtp-Source: ABdhPJwgYFqygj8pPearJixSMqQnrivMy1i6q8vhwcRD1rwnPwoIp+QW6IC/yzGak0d5S1vN5XbAKzgnknx/iVB5i5M=
+X-Received: by 2002:a17:90b:a53:: with SMTP id gw19mr4889507pjb.53.1601676673868;
+ Fri, 02 Oct 2020 15:11:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201002162101.665549-1-kaleshsingh@google.com>
+ <20201002162101.665549-5-kaleshsingh@google.com> <20201002165202.qjthgret34qvh43d@black.fi.intel.com>
+In-Reply-To: <20201002165202.qjthgret34qvh43d@black.fi.intel.com>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Fri, 2 Oct 2020 18:11:01 -0400
+Message-ID: <CAC_TJvcd2NqhD9B3G8q9cEm1Sj=C-24MgQ5418ZEcR8+jNOOjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] arm64: Add set_pud_at() function
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Steven Price <steven.price@arm.com>,
+        Jia He <justin.he@arm.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        SeongJae Park <sjpark@amazon.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Connection state is set incorrectly happen at either failure of link train
-or cable plugged in while suspended. This patch fixes these problems.
-This patch also replace ST_SUSPEND_PENDING with ST_DISPLAY_OFF.
-
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 52 ++++++++++++++---------------
- drivers/gpu/drm/msm/dp/dp_panel.c   |  5 +++
- 2 files changed, 31 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 431dff9de797..898c6cc1643a 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -45,7 +45,7 @@ enum {
- 	ST_CONNECT_PENDING,
- 	ST_CONNECTED,
- 	ST_DISCONNECT_PENDING,
--	ST_SUSPEND_PENDING,
-+	ST_DISPLAY_OFF,
- 	ST_SUSPENDED,
- };
- 
-@@ -340,8 +340,6 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
- 	}
- 
- 	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
--
--
- end:
- 	return rc;
- }
-@@ -489,7 +487,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 	mutex_lock(&dp->event_mutex);
- 
- 	state =  atomic_read(&dp->hpd_state);
--	if (state == ST_SUSPEND_PENDING) {
-+	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -511,14 +509,14 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 	hpd->hpd_high = 1;
- 
- 	ret = dp_display_usbpd_configure_cb(&dp->pdev->dev);
--	if (ret) {	/* failed */
-+	if (ret) {	/* link train failed */
- 		hpd->hpd_high = 0;
- 		atomic_set(&dp->hpd_state, ST_DISCONNECTED);
-+	} else {
-+		/* start sentinel checking in case of missing uevent */
-+		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
- 	}
- 
--	/* start sanity checking */
--	dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
--
- 	mutex_unlock(&dp->event_mutex);
- 
- 	/* uevent will complete connection part */
-@@ -563,10 +561,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	mutex_lock(&dp->event_mutex);
- 
- 	state = atomic_read(&dp->hpd_state);
--	if (state == ST_SUSPEND_PENDING) {
--		mutex_unlock(&dp->event_mutex);
--		return 0;
--	}
- 
- 	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
- 		mutex_unlock(&dp->event_mutex);
-@@ -594,7 +588,7 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	 */
- 	dp_display_usbpd_disconnect_cb(&dp->pdev->dev);
- 
--	/* start sanity checking */
-+	/* start sentinel checking in case of missing uevent */
- 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
- 
- 	/* signal the disconnect event early to ensure proper teardown */
-@@ -634,7 +628,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 
- 	/* irq_hpd can happen at either connected or disconnected state */
- 	state =  atomic_read(&dp->hpd_state);
--	if (state == ST_SUSPEND_PENDING) {
-+	if (state == ST_DISPLAY_OFF) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -1067,7 +1061,7 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
- 		}
- 
- 		if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
--			/* delete connect pending event first */
-+			/* delete sentinel connect pending checking */
- 			dp_del_event(dp, EV_CONNECT_PENDING_TIMEOUT);
- 			dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
- 		}
-@@ -1186,19 +1180,19 @@ static int dp_pm_resume(struct device *dev)
- 
- 	dp = container_of(dp_display, struct dp_display_private, dp_display);
- 
-+	/* start from dis connection state */
-+	atomic_set(&dp->hpd_state, ST_DISCONNECTED);
-+
- 	dp_display_host_init(dp);
- 
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
- 	status = dp_catalog_hpd_get_state_status(dp->catalog);
- 
--	if (status) {
-+	if (status)
- 		dp->dp_display.is_connected = true;
--	} else {
-+	else
- 		dp->dp_display.is_connected = false;
--		/* make sure next resume host_init be called */
--		dp->core_initialized = false;
--	}
- 
- 	return 0;
- }
-@@ -1214,6 +1208,9 @@ static int dp_pm_suspend(struct device *dev)
- 	if (dp_display->power_on == true)
- 		dp_display_disable(dp, 0);
- 
-+	/* host_init will be called at pm_resume */
-+	dp->core_initialized = false;
-+
- 	atomic_set(&dp->hpd_state, ST_SUSPENDED);
- 
- 	return 0;
-@@ -1343,6 +1340,9 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- 
- 	mutex_lock(&dp_display->event_mutex);
- 
-+	/* delete sentinel checking */
-+	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
-+
- 	rc = dp_display_set_mode(dp, &dp_display->dp_mode);
- 	if (rc) {
- 		DRM_ERROR("Failed to perform a mode set, rc=%d\n", rc);
-@@ -1368,9 +1368,8 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- 		dp_display_unprepare(dp);
- 	}
- 
--	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
--
--	if (state == ST_SUSPEND_PENDING)
-+	/* manual kick off plug event to train link */
-+	if (state == ST_DISPLAY_OFF)
- 		dp_add_event(dp_display, EV_IRQ_HPD_INT, 0, 0);
- 
- 	/* completed connection */
-@@ -1402,20 +1401,21 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
- 
- 	mutex_lock(&dp_display->event_mutex);
- 
-+	/* delete sentinel checking */
-+	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
-+
- 	dp_display_disable(dp_display, 0);
- 
- 	rc = dp_display_unprepare(dp);
- 	if (rc)
- 		DRM_ERROR("DP display unprepare failed, rc=%d\n", rc);
- 
--	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
--
- 	state =  atomic_read(&dp_display->hpd_state);
- 	if (state == ST_DISCONNECT_PENDING) {
- 		/* completed disconnection */
- 		atomic_set(&dp_display->hpd_state, ST_DISCONNECTED);
- 	} else {
--		atomic_set(&dp_display->hpd_state, ST_SUSPEND_PENDING);
-+		atomic_set(&dp_display->hpd_state, ST_DISPLAY_OFF);
- 	}
- 
- 	mutex_unlock(&dp_display->event_mutex);
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index 18cec4fc5e0b..1b7a20dc2d8e 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -196,6 +196,11 @@ int dp_panel_read_sink_caps(struct dp_panel *dp_panel,
- 					      &panel->aux->ddc);
- 	if (!dp_panel->edid) {
- 		DRM_ERROR("panel edid read failed\n");
-+		/* check edid read fail is due to unplug */
-+		if (!dp_catalog_hpd_get_state_status(panel->catalog)) {
-+			rc = -ETIMEDOUT;
-+			goto end;
-+		}
- 
- 		/* fail safe edid */
- 		mutex_lock(&connector->dev->mode_config.mutex);
-
-base-commit: 6fa6fd6a3e2cb76f7d54220daa1266a94c13bc4d
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+On Fri, Oct 2, 2020 at 12:52 PM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> On Fri, Oct 02, 2020 at 04:20:49PM +0000, Kalesh Singh wrote:
+> > set_pud_at() is used in move_normal_pud() for remapping
+> > pages at the PUD level.
+> >
+> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+> > ---
+> >  arch/arm64/include/asm/pgtable.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> > index d5d3fbe73953..8848125e3024 100644
+> > --- a/arch/arm64/include/asm/pgtable.h
+> > +++ b/arch/arm64/include/asm/pgtable.h
+> > @@ -415,6 +415,7 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+> >  #define pfn_pud(pfn,prot)    __pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+> >
+> >  #define set_pmd_at(mm, addr, pmdp, pmd)      set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd))
+> > +#define set_pud_at(mm, addr, pudp, pud)      set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud))
+> >
+> >  #define __p4d_to_phys(p4d)   __pte_to_phys(p4d_pte(p4d))
+> >  #define __phys_to_p4d_val(phys)      __phys_to_pte_val(phys)
+>
+> Just fold it into the next patch.
+Sounds good. I'll update in the next version. Thanks
+>
+> --
+>  Kirill A. Shutemov
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
