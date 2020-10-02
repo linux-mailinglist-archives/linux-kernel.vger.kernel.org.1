@@ -2,114 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9559281E3D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B776281E3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725818AbgJBWXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:23:45 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:56531 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725797AbgJBWXk (ORCPT
+        id S1725824AbgJBWYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJBWYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:23:40 -0400
-X-IronPort-AV: E=Sophos;i="5.77,329,1596466800"; 
-   d="scan'208";a="58790192"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 03 Oct 2020 07:23:39 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id B9E6540062C6;
-        Sat,  3 Oct 2020 07:23:37 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v8 3/3] media: i2c: ov772x: Add test pattern control
-Date:   Fri,  2 Oct 2020 23:23:23 +0100
-Message-Id: <20201002222323.21736-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002222323.21736-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20201002222323.21736-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 2 Oct 2020 18:24:17 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8149DC0613D0;
+        Fri,  2 Oct 2020 15:24:17 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0C18611E480FB;
+        Fri,  2 Oct 2020 15:07:28 -0700 (PDT)
+Date:   Fri, 02 Oct 2020 15:24:15 -0700 (PDT)
+Message-Id: <20201002.152415.783748911596137274.davem@davemloft.net>
+To:     muryo@foxmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuznet@ms2.inr.ac.ru, kuba@kernel.org
+Subject: Re: Why ping latency is smaller with shorter send interval?
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <tencent_2AB240953B1EC86706967C25A6279EB60509@qq.com>
+References: <tencent_2AB240953B1EC86706967C25A6279EB60509@qq.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 02 Oct 2020 15:07:29 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for test pattern control supported by the sensor.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
----
- drivers/media/i2c/ov772x.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Can you please not send the same posting to the mailing list
+three times, from three different email addresses?
 
-diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-index 86e542b77ee5..d94cf2d39c2a 100644
---- a/drivers/media/i2c/ov772x.c
-+++ b/drivers/media/i2c/ov772x.c
-@@ -227,7 +227,7 @@
- 
- /* COM3 */
- #define SWAP_MASK       (SWAP_RGB | SWAP_YUV | SWAP_ML)
--#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG)
-+#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG | SCOLOR_TEST)
- 
- #define VFLIP_IMG       0x80	/* Vertical flip image ON/OFF selection */
- #define HFLIP_IMG       0x40	/* Horizontal mirror image ON/OFF selection */
-@@ -425,6 +425,7 @@ struct ov772x_priv {
- 	const struct ov772x_win_size     *win;
- 	struct v4l2_ctrl		 *vflip_ctrl;
- 	struct v4l2_ctrl		 *hflip_ctrl;
-+	unsigned int			  test_pattern;
- 	/* band_filter = COM8[5] ? 256 - BDBASE : 0 */
- 	struct v4l2_ctrl		 *band_filter_ctrl;
- 	unsigned int			  fps;
-@@ -540,6 +541,11 @@ static const struct ov772x_win_size ov772x_win_sizes[] = {
- 	},
- };
- 
-+static const char * const ov772x_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bar Type 1",
-+};
-+
- /*
-  * frame rate settings lists
-  */
-@@ -810,6 +816,9 @@ static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- 		}
- 
- 		return ret;
-+	case V4L2_CID_TEST_PATTERN:
-+		priv->test_pattern = ctrl->val;
-+		return 0;
- 	}
- 
- 	return -EINVAL;
-@@ -1108,6 +1117,8 @@ static int ov772x_set_params(struct ov772x_priv *priv,
- 		val ^= VFLIP_IMG;
- 	if (priv->hflip_ctrl->val)
- 		val ^= HFLIP_IMG;
-+	if (priv->test_pattern)
-+		val |= SCOLOR_TEST;
- 
- 	ret = regmap_update_bits(priv->regmap, COM3, SWAP_MASK | IMG_MASK, val);
- 	if (ret < 0)
-@@ -1444,6 +1455,10 @@ static int ov772x_probe(struct i2c_client *client)
- 	priv->band_filter_ctrl = v4l2_ctrl_new_std(&priv->hdl, &ov772x_ctrl_ops,
- 						   V4L2_CID_BAND_STOP_FILTER,
- 						   0, 256, 1, 0);
-+	v4l2_ctrl_new_std_menu_items(&priv->hdl, &ov772x_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(ov772x_test_pattern_menu) - 1,
-+				     0, 0, ov772x_test_pattern_menu);
- 	priv->subdev.ctrl_handler = &priv->hdl;
- 	if (priv->hdl.error) {
- 		ret = priv->hdl.error;
--- 
-2.17.1
-
+Once is enough, thank you.
