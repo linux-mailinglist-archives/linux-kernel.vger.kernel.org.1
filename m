@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928FF28108B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A95281090
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387733AbgJBKY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:24:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:18469 "EHLO mga06.intel.com"
+        id S2387741AbgJBK0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:26:21 -0400
+Received: from smtp.asem.it ([151.1.184.197]:58127 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726329AbgJBKY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:24:59 -0400
-IronPort-SDR: jd6KA0dtsfYl2gFNyn7LTppSlQCy/Vj3+jEbcyEbyVG3uRY39hsQhfMfyZkfseai74bBQj6eBo
- BNn16g2RFr1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="224574311"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="224574311"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:24:53 -0700
-IronPort-SDR: cvPO6Dln90oEmE8FVxe90ZjMXh+ldvSeD4RSw528/WCozuFm2q2UFsGrTJy3lFQgRKusks+o8W
- usMR+Gq8Ka5A==
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="416399919"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:24:49 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1kOIF2-003Phw-54; Fri, 02 Oct 2020 13:24:44 +0300
-Date:   Fri, 2 Oct 2020 13:24:44 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/21] spi: dw: Add full Baikal-T1 SPI Controllers
- support
-Message-ID: <20201002102444.GY3956970@smile.fi.intel.com>
-References: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
+        id S1726181AbgJBK0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:26:20 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000519847.MSG 
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 12:26:14 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
+ 2020 12:26:12 +0200
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Fri, 2 Oct 2020 12:26:12 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: How to use an ACPI declared GPIO in a userspace ...
+Thread-Topic: How to use an ACPI declared GPIO in a userspace ...
+Thread-Index: AdaWdniTedAZ6+9wQdyYYgE5sQ27yP//4UoAgAAGTYD//91o0IAAJ14A//6Yg1CAAsA0gP//s0vAAA+m6wAAAI1qgP/9IHKw
+Date:   Fri, 2 Oct 2020 10:26:11 +0000
+Message-ID: <8b6adbc45d134da7b0fd1f9044a37cf6@asem.it>
+References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it>
+ <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
+ <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com>
+ <feb8567c830748c483c8c66dd4717003@asem.it>
+ <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+ <22753b53cd7d4dfba4ef3610f71cc462@asem.it>
+ <20200930130113.GQ3956970@smile.fi.intel.com>
+ <2c26adae711145639d0b982a354aff3c@asem.it>
+ <CAHp75Vcq1WOcMNoKpOSpCD1mFSyvYsaX-h7KHTaAOPe=6S4e0A@mail.gmail.com>
+ <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com>
+In-Reply-To: <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020E.5F770044.0078,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:28:08AM +0300, Serge Semin wrote:
-> Originally I intended to merge a dedicated Baikal-T1 System Boot SPI
-> Controller driver into the kernel and leave the DW APB SSI driver
-> untouched. But after a long discussion (see the link at the bottom of the
-> letter) Mark and Andy persuaded me to integrate what we developed there
-> into the DW APB SSI core driver to be useful for another controllers,
-> which may have got the same peculiarities/problems as ours:
-> - No IRQ.
-> - No DMA.
-> - No GPIO CS, so a native CS is utilized.
-> - small Tx/Rx FIFO depth.
-> - Automatic CS assertion/de-assertion.
-> - Slow system bus.
-> All of them have been fixed in the framework of this patchset in some
-> extent at least for the SPI memory operations. As I expected it wasn't
-> that easy and the integration took that many patches as you can see from
-> the subject. Though some of them are mere cleanups or weakly related with
-> the subject fixes, but we just couldn't leave the code as is at some
-> places since we were working with the DW APB SSI driver anyway. Here is
-> what we did to fix the original DW APB SSI driver, to make it less messy.
-
-Maybe it's time to put your name into MAINTAINERS for this driver?
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+SGkgQW5keSwNCg0Kd2l0aCBteSBjdXN0b20gU1NEVCB0YWJsZToNCg0KRGVmaW5pdGlvbkJsb2Nr
+ICgiZ3Bpb19idXR0b24uYW1sIiwgIlNTRFQiLCA1LCAiQVNFTXNwIiwgIkdQSU9fQlROIiwgMSkN
+CnsNCglFeHRlcm5hbCAoX1NCXy5HUE8xLCBEZXZpY2VPYmopDQoJU2NvcGUgKFxfU0IuR1BPMSkN
+Cgl7DQoJCURldmljZSAoQlROUykNCgkJew0KCQkJTmFtZSAoX0hJRCwgIkFTRU0wMDA1IikJCS8v
+IF9ISUQ6IEhhcmR3YXJlIElEIFBSUDAwMDENCgkJCU5hbWUgKF9VSUQsIFplcm8pICAgICAgICAg
+ICAgIC8vIF9VSUQ6IFVuaXF1ZSBJRA0KCQkJTmFtZSAoX0RETiwgIkRETiAtIFNXIFJlYWRhYmxl
+IEJ1dHRvbiIpICAvLyBfREROOiBET1MgRGV2aWNlIE5hbWUNCgkJCU5hbWUgKF9TVFIsIFVuaWNv
+ZGUgKCJTVFIgLSBTVyBSZWFkYWJsZSBCdXR0b24iKSkgIC8vIF9TVFI6IERlc2NyaXB0aW9uIFN0
+cmluZw0KDQoJCQlOYW1lIChfQ1JTLCBSZXNvdXJjZVRlbXBsYXRlICgpCSAvLyBfQ1JTOiBDdXJy
+ZW50IFJlc291cmNlIFNldHRpbmdzDQoJCQl7DQoJCQkJR3Bpb0lvICgNCgkJCQkJU2hhcmVkLCAg
+ICAgICAgICAgICAgICAgIC8vIE5vdCBzaGFyZWQNCgkJCQkJUHVsbE5vbmUsICAgICAgICAgICAg
+ICAgIC8vIE5vIG5lZWQgZm9yIHB1bGxzDQoJCQkJCTAsICAgICAgICAgICAgICAgICAgICAgICAv
+LyBEZWJvdW5jZSB0aW1lb3V0DQoJCQkJCTAsICAgICAgICAgICAgICAgICAgICAgICAvLyBEcml2
+ZSBzdHJlbmd0aA0KCQkJCQlJb1Jlc3RyaWN0aW9uSW5wdXRPbmx5LCAgLy8gT25seSB1c2VkIGFz
+IGlucHV0DQoJCQkJCSJcXF9TQi5HUE8xIiwgICAgICAgICAgICAvLyBHUElPIGNvbnRyb2xsZXIN
+CgkJCQkJMCwgUmVzb3VyY2VDb25zdW1lciwgLCApIC8vIE11c3QgYmUgMA0KCQkJCQl7DQoJCQkJ
+CQkyNSwgICAgICAgICAgICAgICAgLy8gR1BJTyBudW1iZXIgMjUNCgkJCQkJfQ0KCQkJfSkNCgkJ
+fQ0KCX0NCn0NCg0KSSdtIGFibGUgdG8gc2VlIHRoZSBHUElPIGluOg0KDQovc3lzL2J1cy9wbGF0
+Zm9ybS9kZXZpY2VzL0FTRU0wMDA1OjAwL2Zpcm13YXJlX25vZGU6DQoNCi1yLS1yLS1yLS0gICAg
+MSByb290ICAgICByb290ICAgICAgICAgIDQwOTYgT2N0ICAyIDEyOjEwIGRlc2NyaXB0aW9uDQot
+ci0tci0tci0tICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAgICA0MDk2IE9jdCAgMiAxMjoxMCBo
+aWQNCi1yLS1yLS1yLS0gICAgMSByb290ICAgICByb290ICAgICAgICAgIDQwOTYgT2N0ICAyIDEy
+OjEwIG1vZGFsaWFzDQotci0tci0tci0tICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAgICA0MDk2
+IE9jdCAgMiAxMjoxMCBwYXRoDQpscnd4cnd4cnd4ICAgIDEgcm9vdCAgICAgcm9vdCAgICAgICAg
+ICAgICAwIE9jdCAgMiAxMjoxMCBwaHlzaWNhbF9ub2RlIC0+IC4uLy4uLy4uLy4uL3BsYXRmb3Jt
+L0lOVDM0NTI6MDEvQVNFTTAwMDU6MDANCmRyd3hyLXhyLXggICAgMiByb290ICAgICByb290ICAg
+ICAgICAgICAgIDAgT2N0ICAyIDEyOjEwIHBvd2VyDQpscnd4cnd4cnd4ICAgIDEgcm9vdCAgICAg
+cm9vdCAgICAgICAgICAgICAwIE9jdCAgMiAxMjoxMCBzdWJzeXN0ZW0gLT4gLi4vLi4vLi4vLi4v
+Li4vYnVzL2FjcGkNCi1ydy1yLS1yLS0gICAgMSByb290ICAgICByb290ICAgICAgICAgIDQwOTYg
+T2N0ICAyIDEyOjEwIHVldmVudA0KLXItLXItLXItLSAgICAxIHJvb3QgICAgIHJvb3QgICAgICAg
+ICAgNDA5NiBPY3QgIDIgMTI6MTAgdWlkDQoNCmFuZCBzbyBJIGNhbiBzZWUgc29tZSB1c2VmdWwg
+aW5mbzoNCg0KIyBjYXQgZGVzY3JpcHRpb24NClNUUiAtIFNXIFJlYWRhYmxlIEJ1dHRvbg0KIyBj
+YXQgaGlkDQpBU0VNMDAwNQ0KIyBjYXQgbW9kYWxpYXMNCmFjcGk6QVNFTTAwMDU6DQpibXh4eHgt
+eDg2LTY0Oi9zeXMvYnVzL3BsYXRmb3JtL2RldmljZXMvQVNFTTAwMDU6MDAvZmlybXdhcmVfbm9k
+ZSMgY2F0IHBhdGgNClxfU0JfLkdQTzEuQlROUw0KDQpTbywgZnJvbSB1c2Vyc3BhY2UsIEkgY2Fu
+IGRpc2NvdmVyIHRoZSBHUElPIGNvbnRyb2xsZXIgL2Rldi9ncGlvY2hpcDEsDQpidXQgSSBkb24n
+dCBrbm93IGhvdyB0byBkaXNjb3ZlciB0aGUgR1BJTyBudW1iZXIgKDI1IGluIHRoaXMgY2FzZSku
+DQpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbiBhYm91dCBob3cgdG8gZGlzY292ZXIgdGhpcyBH
+UElPIG51bWJlcj8NCg0KVGhhbmtzIQ0KDQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiBB
+bmR5IFNoZXZjaGVua28NCg0KQmVzdCByZWdhcmRzLA0KRmxhdmlvDQo=
