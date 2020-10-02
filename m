@@ -2,97 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB212810C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8D82810C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387545AbgJBKxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 06:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38644 "EHLO mail.kernel.org"
+        id S1726229AbgJBKxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:53:05 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46105 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgJBKxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:53:07 -0400
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED1C520874;
-        Fri,  2 Oct 2020 10:53:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601635986;
-        bh=WUSRRX+XBvVTYHzBDRPQz4PtaU7zhX11OBofs03lu7w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yvX1A3cLWsjS1cWSyIRSg+WJmwZtSfrDcvyV/NeaKNl7GPsIy0voCxFZ/rOk4Gpmn
-         2KaO/nUo6AwHYxAo8duM5tiz9TubUPDXXY5lD8rnJHuHCrD3KuX85XjN3soizDcz8B
-         jOf84bE2XRGR0Trvh3UMgzg0dT6cjmceAFfHiP3o=
-Received: by mail-ej1-f53.google.com with SMTP id qp15so1340345ejb.3;
-        Fri, 02 Oct 2020 03:53:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531uTpfRhMMc+fyakJH6fjIgtpx0vsvhK0xfgJKCC4B/ZYBuPTAC
-        MlIgMtYN4QKyeHjuqKKzXmT9MLkU/ep84CiL9zA=
-X-Google-Smtp-Source: ABdhPJz2njtnLuaxs13sg4hhwWj46P8QK/G+8vH63FlRpE0n16xuRCvITpEi9m8uB+qnlenWJGhPhUHCNrXOYo6xhlo=
-X-Received: by 2002:a17:906:1984:: with SMTP id g4mr1573436ejd.119.1601635984516;
- Fri, 02 Oct 2020 03:53:04 -0700 (PDT)
+        id S1725920AbgJBKxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:53:04 -0400
+IronPort-SDR: YNYGQpnZZdN2YHMWX4iOU3gXSNFgr/LlKFEyv1ugzu20Exn4qKvxartK4GsOYGBgeiWHDYNd8G
+ UigH0NSCVNew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150596680"
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="150596680"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:53:00 -0700
+IronPort-SDR: TM74QLTI5cdBqpKv0TCqC0vAyU2FX88JBwZrLhi+Xly0YDFBX7F6sGC4t56FbuW1tMBupzlJMz
+ ZD8QHXpaEZ/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="351555501"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 02 Oct 2020 03:52:56 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Oct 2020 13:52:56 +0300
+Date:   Fri, 2 Oct 2020 13:52:56 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>, Qais Yousef <qais.yousef@arm.com>
+Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
+Message-ID: <20201002105256.GA6112@intel.com>
+References: <20200930211723.3028059-1-robdclark@gmail.com>
+ <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
+ <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
+ <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200930234637.7573-1-post@lespocky.de> <20200930234637.7573-3-post@lespocky.de>
- <CAJKOXPe7Tg+5ESsdPGks_Aqj+zQH4-asC839FseWp0OCJbT4Mw@mail.gmail.com> <9895379.VNsV0mSTfq@ada>
-In-Reply-To: <9895379.VNsV0mSTfq@ada>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 2 Oct 2020 12:52:52 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcTstvUuy-CnJbOGxiONLx2V2hfpnR0H4gS=4v+C1udtQ@mail.gmail.com>
-Message-ID: <CAJKOXPcTstvUuy-CnJbOGxiONLx2V2hfpnR0H4gS=4v+C1udtQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/7] dt-bindings: leds: Convert pwm to yaml
-To:     Alexander Dahl <ada@thorsis.com>
-Cc:     linux-leds@vger.kernel.org, Alexander Dahl <post@lespocky.de>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 12:46, Alexander Dahl <ada@thorsis.com> wrote:
->
-> Hei hei,
->
-> Am Freitag, 2. Oktober 2020, 11:31:09 CEST schrieb Krzysztof Kozlowski:
-> > On Thu, 1 Oct 2020 at 01:52, Alexander Dahl <post@lespocky.de> wrote:
-> > > The example was adapted in the following ways:
+On Thu, Oct 01, 2020 at 05:25:55PM +0200, Daniel Vetter wrote:
+> On Thu, Oct 1, 2020 at 5:15 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Thu, Oct 1, 2020 at 12:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 > > >
-> > > - make use of the now supported 'function' and 'color' properties
-> > > - remove pwm nodes, those are documented elsewhere
-> > > - tweake node names to be matched by new dtschema rules
+> > > On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > From: Rob Clark <robdclark@chromium.org>
+> > > >
+> > > > The android userspace treats the display pipeline as a realtime problem.
+> > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
+> > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
+> > > > that I found.)
+> > > >
+> > > > But this presents a problem with using workqueues for non-blocking
+> > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
+> > > > preempt the worker.  Which is not really the outcome you want.. once
+> > > > the required fences are scheduled, you want to push the atomic commit
+> > > > down to hw ASAP.
+> > > >
+> > > > But the decision of whether commit_work should be RT or not really
+> > > > depends on what userspace is doing.  For a pure CFS userspace display
+> > > > pipeline, commit_work() should remain SCHED_NORMAL.
+> > > >
+> > > > To handle this, convert non-blocking commit_work() to use per-CRTC
+> > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
+> > > > used to avoid serializing commits when userspace is using a per-CRTC
+> > > > update loop.  And the last patch exposes the task id to userspace as
+> > > > a CRTC property, so that userspace can adjust the priority and sched
+> > > > policy to fit it's needs.
+> > > >
+> > > >
+> > > > v2: Drop client cap and in-kernel setting of priority/policy in
+> > > >     favor of exposing the kworker tid to userspace so that user-
+> > > >     space can set priority/policy.
+> > >
+> > > Yeah I think this looks more reasonable. Still a bit irky interface,
+> > > so I'd like to get some kworker/rt ack on this. Other opens:
+> > > - needs userspace, the usual drill
 > >
-> > tweak? or align?
->
-> Depends on if schema actually checks it (child nodes) or if it's just DT
-> policy (parent node).  I'll reword in v7.
->
-> > > License was discussed with the original author.
+> > fwiw, right now the userspace is "modetest + chrt".. *probably* the
+> > userspace will become a standalone helper or daemon, mostly because
+> > the chrome gpu-process sandbox does not allow setting SCHED_FIFO.  I'm
+> > still entertaining the possibility of switching between rt and cfs
+> > depending on what is in the foreground (ie. only do rt for android
+> > apps).
 > >
-> > Since you relicense their work, you need an ack or signed off from
-> > every author. You cannot just say "I discussed" and post it. That way
-> > I could pretend (lie) I talked to Linus and try to relicense Linux to
-> > BSD...
->
-> I know.  Peter promised to give his Ack publicly on the list back when I
-> worked on v2 or v3, so he is in Cc since then, but apparently he did not yet
-> post it. ;-)
->
-> > You need acks/SoB from Peter and Russel.
->
-> Well, I should add Russel in v7, too, then.
+> > > - we need this also for vblank workers, otherwise this wont work for
+> > > drivers needing those because of another priority inversion.
+> >
+> > I have a thought on that, see below..
+> 
+> Hm, not seeing anything about vblank worker below?
+> 
+> > > - we probably want some indication of whether this actually does
+> > > something useful, not all drivers use atomic commit helpers. Not sure
+> > > how to do that.
+> >
+> > I'm leaning towards converting the other drivers over to use the
+> > per-crtc kwork, and then dropping the 'commit_work` from atomic state.
+> > I can add a patch to that, but figured I could postpone that churn
+> > until there is some by-in on this whole idea.
+> 
+> i915 has its own commit code, it's not even using the current commit
+> helpers (nor the commit_work). Not sure how much other fun there is.
 
-Yes, please.
+I don't think we want per-crtc threads for this in i915. Seems
+to me easier to guarantee atomicity across multiple crtcs if
+we just commit them from the same thread.
 
-For the patch itself:
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+-- 
+Ville Syrjälä
+Intel
