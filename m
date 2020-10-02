@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE11F2811DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408D92811E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387780AbgJBL7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:59:21 -0400
-Received: from mga12.intel.com ([192.55.52.136]:50536 "EHLO mga12.intel.com"
+        id S2387803AbgJBMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgJBL7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:59:20 -0400
-IronPort-SDR: 5Sl38pFbgqRpdwXM4jgB+eEmscRBCRGuWRmwKLKB/PNKgfslCV3VJeGNzSCVDyTNoM9kwh27+n
- w8UzF7PN4atQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="142365981"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="142365981"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 04:59:17 -0700
-IronPort-SDR: OtNiM2HO2Z1S5KtTbtVc5cavGbgWoRWySKGU2DCpD77OVe0Lf/vd46XtwcUK/2V8m0hld57YT/
- RCyoSYnCtHXQ==
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="508270379"
-Received: from yili1-mobl.ccr.corp.intel.com (HELO [10.254.208.108]) ([10.254.208.108])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 04:59:15 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        id S1725964AbgJBMAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:00:55 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDE09206C9;
+        Fri,  2 Oct 2020 12:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601640055;
+        bh=Sr90evd9gcNYgaoF17OoqAbGXM9qXNWcrxXuzdz7v40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UhoNDI0F1WeWxvof9iTBiHlzUYB7yl/wCXUVMZBInL8gGWKaUvARFAAeoUmiPqv9H
+         wAW/p2Vb4fKSS6SlDpPFTz/XLBbMN2rambZGagb8Y6o+AW8NYxJiW0mL5+KtExfc+z
+         o8WFSJOo0aabEfkwCmiyM5HJdDbuHM5WCWb8j5Hs=
+Received: by pali.im (Postfix)
+        id 541DBE79; Fri,  2 Oct 2020 14:00:52 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 14:00:52 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
- api
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
- <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
- <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
- <20201001121701.GB30426@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <5a9d7412-3d7a-f4f7-e3b9-c295718448aa@linux.intel.com>
-Date:   Fri, 2 Oct 2020 19:59:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
+Message-ID: <20201002120052.jouqx6ap4wrskozs@pali>
+References: <20200902144344.16684-1-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201001121701.GB30426@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902144344.16684-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
-
-On 2020/10/1 20:17, Joerg Roedel wrote:
-> Hi Baolu,
+On Wednesday 02 September 2020 16:43:42 Pali Rohár wrote:
+> This patch series fixes regression introduced in commit 366697018c9a
+> ("PCI: aardvark: Add PHY support") which caused aardvark driver
+> initialization failure on EspressoBin board with factory version of
+> Arm Trusted Firmware provided by Marvell.
 > 
-> On Tue, Sep 29, 2020 at 08:11:35AM +0800, Lu Baolu wrote:
->> I have no preference. It depends on which patch goes first. Let the
->> maintainers help here.
+> Second patch depends on the first patch, so please add appropriate
+> Fixes/Cc:stable@ tags to have both patches correctly backported to
+> stable kernels.
 > 
-> No preference on my side, except that it is too late for this now to
-> make it into v5.10. Besides that I let the decission up to you when this
-> is ready. Just send me a pull-request when it should get into the
-> iommu-tree.
+> I have tested both patches with Marvell ATF firmware ebin-17.10-uart.zip
+> and with upstream ATF+uboot and aardvark was initialized successfully.
+> Without this patch series on ebin-17.10-uart.zip aardvark initialization
+> failed.
 
-Sure.
+Lorenzo or Bjorn, could you review this patch series? I would like to
+see this regression fixed in stable kernels.
 
-Best regards,
-baolu
-
+> Pali Rohár (2):
+>   phy: marvell: comphy: Convert internal SMCC firmware return codes to
+>     errno
+>   PCI: aardvark: Fix initialization with old Marvell's Arm Trusted
+>     Firmware
 > 
-> Regards,
+>  drivers/pci/controller/pci-aardvark.c        |  4 +++-
+>  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
+>  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
+>  3 files changed, 25 insertions(+), 7 deletions(-)
 > 
-> 	Joerg
+> -- 
+> 2.20.1
 > 
