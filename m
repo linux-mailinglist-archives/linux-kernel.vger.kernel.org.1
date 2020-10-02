@@ -2,216 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C878281941
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DBE28194A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388346AbgJBR3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388335AbgJBR3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:29:15 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1B84206C3;
-        Fri,  2 Oct 2020 17:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601659755;
-        bh=CtllLYMk0Gz+Iiir55pP+3jQFilH0kKCtSY4Szn/EEA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ldGDJ4HmbhFANa0MZrBQWZQE1uYa2eGB08xJF0BmHFRQqrvT0IsCmttxDmnXAiQr+
-         hwBthftkYplzuAb0C6IYYsRJ1d/veddsSs3F8vPbhXyETTgU4Z94BD7UuVnOGKiMX7
-         M1cingYGoc7OZ5TCyr1nQcO4J5kI1hzKCojpQEZw=
-Date:   Fri, 2 Oct 2020 12:29:13 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ethan Zhao <haifeng.zhao@intel.com>
-Cc:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
-        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
-        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
-        mika.westerberg@linux.intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@linux.intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, xerces.zhao@gmail.com,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v6 4/5] PCI: only return true when dev io state is really
- changed
-Message-ID: <20201002172913.GA2809822@bjorn-Precision-5520>
+        id S2388305AbgJBRbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:31:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726096AbgJBRbC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:31:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601659861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TxOHOh0IIejZk+BuR1OyBgwvkUAEztBJORaBCqWyOAI=;
+        b=gAlF4Fb9O5p+bwmkrO3IQWzUsbDWwBUIIKUgIbfPUEOA9oIyL+m9zqL9PwIqFWNG/DgtPO
+        z7gKvzm1WyO9P1hY6sRNfnnBJKGYQOpJW0YKn3wZrXugURbV7VB0NOmuGGFEYSiDZ3Xwhi
+        NL6nHfS6lkZyX7hIMF0xhxdUfdB8KH8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-KpUOSyQiMe2jUtxZppKYww-1; Fri, 02 Oct 2020 13:31:00 -0400
+X-MC-Unique: KpUOSyQiMe2jUtxZppKYww-1
+Received: by mail-wm1-f71.google.com with SMTP id d197so747972wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:30:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TxOHOh0IIejZk+BuR1OyBgwvkUAEztBJORaBCqWyOAI=;
+        b=gV/ga6kg2gnCQ8OwyE0VCZbLTg03DpHk1bihyepNe1llKT7jr7lNbc118+sbZ/HDDP
+         pm8jyJ2EfRM31CgcDuS17lv96GPuyicd+bJA3AP7ZWd3P6k/dmno56kYy84HFVnvCEnq
+         U9H33AX5czdTjUPQMHfq4Wk2ZGmUe4KFZ/pkBrGkOPZPLBRXYODfNnlHwP8PROOFhE3q
+         YKL/fb8lMjddZg2tUq4w7OHFQIedrzovNDpsT3VACWqCEOlKqJroaqxRlq4cWXTLH1UP
+         k/OycLGYsx0Qm2M4TCZVxapdzuQxKwL2os96GkJlLgSbrDGS55PCBBvfUb/1yn6oP7BY
+         Lh7g==
+X-Gm-Message-State: AOAM533TQ1sXMb2WiyH7s2Lyf7WN2l8+u8bzLLADaqFdRxqfJ5ScZ2HV
+        lMUg0Et3lPb6c4x/xPL+Zab3I4w0GxVWY1xOtmAXiBV1fu1cFupE/HPQHg/9rlPU1dGpPP8AHOW
+        SFVbXZaQM/SQXhKw5iWWcVfxZ
+X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr4244461wmh.73.1601659858189;
+        Fri, 02 Oct 2020 10:30:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxM8WopKn+E/7ZEMfQTo4iJ+AulaHlScB3Vysd80PrpI/qioSdeZTkZO1byHJi2o6MFioQsA==
+X-Received: by 2002:a7b:c0c1:: with SMTP id s1mr4244432wmh.73.1601659857933;
+        Fri, 02 Oct 2020 10:30:57 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:47e0:e742:75ba:b84d? ([2001:b07:6468:f312:47e0:e742:75ba:b84d])
+        by smtp.gmail.com with ESMTPSA id o194sm2808207wme.24.2020.10.02.10.30.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 10:30:57 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Qian Cai <cai@redhat.com>, Mohammed Gamal <mgamal@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkft-triage@lists.linaro.org
+References: <20200903141122.72908-1-mgamal@redhat.com>
+ <1f42d8f084083cdf6933977eafbb31741080f7eb.camel@redhat.com>
+ <e1dee0fd2b4be9d8ea183d3cf6d601cf9566fde9.camel@redhat.com>
+ <ebcd39a5-364f-c4ac-f8c7-41057a3d84be@redhat.com>
+ <2063b592f82f680edf61dad575f7c092d11d8ba3.camel@redhat.com>
+ <c385b225-77fb-cf2a-fba3-c70a9b6d541d@redhat.com>
+ <CA+G9fYvm1Ux7XmmXgpPHmLJ4WbRoPowbEfbub1HC2G4E-1r-1g@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <68a67f54-af5c-8b33-6b87-a67ccbbfc155@redhat.com>
+Date:   Fri, 2 Oct 2020 19:30:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930070537.30982-5-haifeng.zhao@intel.com>
+In-Reply-To: <CA+G9fYvm1Ux7XmmXgpPHmLJ4WbRoPowbEfbub1HC2G4E-1r-1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Sinan]
-
-On Wed, Sep 30, 2020 at 03:05:36AM -0400, Ethan Zhao wrote:
-> When uncorrectable error happens, AER driver and DPC driver interrupt
-> handlers likely call
+On 02/10/20 19:28, Naresh Kamboju wrote:
+>>
+>> commit 608e2791d7353e7d777bf32038ca3e7d548155a4 (HEAD -> kvm-master)
+>> Author: Paolo Bonzini <pbonzini@redhat.com>
+>> Date:   Tue Sep 29 08:31:32 2020 -0400
+>>
+>>     KVM: VMX: update PFEC_MASK/PFEC_MATCH together with PF intercept
+>>
+>>     The PFEC_MASK and PFEC_MATCH fields in the VMCS reverse the meaning of
+>>     the #PF intercept bit in the exception bitmap when they do not match.
+>>     This means that, if PFEC_MASK and/or PFEC_MATCH are set, the
+>>     hypervisor can get a vmexit for #PF exceptions even when the
+>>     corresponding bit is clear in the exception bitmap.
+>>
+>>     This is unexpected and is promptly reported as a WARN_ON_ONCE.
+>>     To fix it, reset PFEC_MASK and PFEC_MATCH when the #PF intercept
+>>     is disabled (as is common with enable_ept && !allow_smaller_maxphyaddr).
+> I have tested this patch on an x86_64 machine and the reported issue is gone.
 > 
->    pcie_do_recovery()
->    ->pci_walk_bus()
->      ->report_frozen_detected()
-> 
-> with pci_channel_io_frozen the same time.
->    If pci_dev_set_io_state() return true even if the original state is
-> pci_channel_io_frozen, that will cause AER or DPC handler re-enter
-> the error detecting and recovery procedure one after another.
->    The result is the recovery flow mixed between AER and DPC.
-> So simplify the pci_dev_set_io_state() function to only return true
-> when dev->error_state is changed.
-> 
-> Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
-> Tested-by: Wen Jin <wen.jin@intel.com>
-> Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
-> Reviewed-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
-> Changnes:
->  v2: revise description and code according to suggestion from Andy.
->  v3: change code to simpler.
->  v4: no change.
->  v5: no change.
->  v6: no change.
-> 
->  drivers/pci/pci.h | 37 +++++--------------------------------
->  1 file changed, 5 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 455b32187abd..f2beeaeda321 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -359,39 +359,12 @@ struct pci_sriov {
->  static inline bool pci_dev_set_io_state(struct pci_dev *dev,
->  					pci_channel_state_t new)
->  {
-> -	bool changed = false;
-> -
->  	device_lock_assert(&dev->dev);
-> -	switch (new) {
-> -	case pci_channel_io_perm_failure:
-> -		switch (dev->error_state) {
-> -		case pci_channel_io_frozen:
-> -		case pci_channel_io_normal:
-> -		case pci_channel_io_perm_failure:
-> -			changed = true;
-> -			break;
-> -		}
-> -		break;
-> -	case pci_channel_io_frozen:
-> -		switch (dev->error_state) {
-> -		case pci_channel_io_frozen:
-> -		case pci_channel_io_normal:
-> -			changed = true;
-> -			break;
-> -		}
-> -		break;
-> -	case pci_channel_io_normal:
-> -		switch (dev->error_state) {
-> -		case pci_channel_io_frozen:
-> -		case pci_channel_io_normal:
-> -			changed = true;
-> -			break;
-> -		}
-> -		break;
-> -	}
-> -	if (changed)
-> -		dev->error_state = new;
-> -	return changed;
-> +	if (dev->error_state == new)
-> +		return false;
-> +
-> +	dev->error_state = new;
-> +	return true;
->  }
 
-IIUC this changes the behavior of the function, but it's difficult to
-analyze because it does a lot of simplification at the same time.
+Thanks, the issue with my disk is gone too so it'll get to Linus in time
+for rc8.
 
-Please consider the following, which is intended to simplify the
-function while preserving the behavior (but please verify; it's been a
-long time since I looked at this).  Then maybe see how your patch
-could be done on top of this?
+Paolo
 
-Alternatively, come up with your own simplification patch + the
-functionality change.
-
-
-commit 983d9b1f8177 ("PCI/ERR: Simplify pci_dev_set_io_state()")
-Author: Bjorn Helgaas <bhelgaas@google.com>
-Date:   Tue May 19 12:28:57 2020 -0500
-
-    PCI/ERR: Simplify pci_dev_set_io_state()
-    
-    Truth table:
-    
-                                  requested new state
-      current          ------------------------------------------
-      state            normal         frozen         perm_failure
-      ------------  +  -------------  -------------  ------------
-      normal        |  normal         frozen         perm_failure
-      frozen        |  normal         frozen         perm_failure
-      perm_failure  |  perm_failure*  perm_failure*  perm_failure
-    
-      * "not changed", returns false
-    
-    No functional change intended.
-    
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 6d3f75867106..81408552f7c9 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -358,39 +358,21 @@ struct pci_sriov {
- static inline bool pci_dev_set_io_state(struct pci_dev *dev,
- 					pci_channel_state_t new)
- {
--	bool changed = false;
--
- 	device_lock_assert(&dev->dev);
--	switch (new) {
--	case pci_channel_io_perm_failure:
--		switch (dev->error_state) {
--		case pci_channel_io_frozen:
--		case pci_channel_io_normal:
--		case pci_channel_io_perm_failure:
--			changed = true;
--			break;
--		}
--		break;
--	case pci_channel_io_frozen:
--		switch (dev->error_state) {
--		case pci_channel_io_frozen:
--		case pci_channel_io_normal:
--			changed = true;
--			break;
--		}
--		break;
--	case pci_channel_io_normal:
--		switch (dev->error_state) {
--		case pci_channel_io_frozen:
--		case pci_channel_io_normal:
--			changed = true;
--			break;
--		}
--		break;
-+
-+	/* Can always put a device in perm_failure state */
-+	if (new == pci_channel_io_perm_failure) {
-+		dev->error_state == pci_channel_io_perm_failure;
-+		return true;
- 	}
--	if (changed)
--		dev->error_state = new;
--	return changed;
-+
-+	/* If already in perm_failure, can't set to normal or frozen */
-+	if (dev->error_state == pci_channel_io_perm_failure)
-+		return false;
-+
-+	/* Can always change normal to frozen or vice versa */
-+	dev->error_state = new;
-+	return true;
- }
- 
- static inline int pci_dev_set_disconnected(struct pci_dev *dev, void *unused)
