@@ -2,53 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D899281DE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFAE281DEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgJBVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:54:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
+        id S1725730AbgJBV61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:58:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13725 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgJBVyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:54:18 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601675657;
-        bh=Oae/0q5EzDwaXRlROT4j61wW2juiOq8Wo+2CtbtFKLs=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=YHHuTnfYxoUWmcbEhPROi0uXgswQU6dlALTaBuWLWKkt2lqQVYB5YJ1phOVU8ahWk
-         Ya6RVV1KeJwHjuH8FbbiMV9YZAEzsBE6r4nwZKIDbXfLCLH3qWiworK+Uy8R4kqEUE
-         OMfUXQwrh2rm/ddv+8/3WNvI6ahTBPAobWLr6s7o=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
-References: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: bcf3a2953d36bbfb9bd44ccb3db0897d935cc485
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cb6f55af1fb28655c9f3843bc12c0a48856c1d09
-Message-Id: <160167565743.8763.5887435040064383804.pr-tracker-bot@kernel.org>
-Date:   Fri, 02 Oct 2020 21:54:17 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S1725283AbgJBV61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:58:27 -0400
+IronPort-SDR: Yi6D8GjMoC7sTJUlAKx0r3BC/V2b6YRihdaldQMyBMw4+hSlUBJoMcYbf4FdFQTOAxzKSfoM2C
+ 1PCdLYpqvNag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="224704898"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="224704898"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 14:58:26 -0700
+IronPort-SDR: tx148VFM842kG7SSXEdAPUW0dSndg1y91OuwbNeTKyFUR/VrgNBVWqqi90ugE68TuHramjNamT
+ 17axtRbNXxXg==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="458761596"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 14:58:24 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 975FE205EA; Sat,  3 Oct 2020 00:58:21 +0300 (EEST)
+Date:   Sat, 3 Oct 2020 00:58:21 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v7 3/3] media: i2c: ov772x: Add test pattern control
+Message-ID: <20201002215820.GZ26842@paasikivi.fi.intel.com>
+References: <20201002165656.16744-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201002165656.16744-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201002211311.GX26842@paasikivi.fi.intel.com>
+ <CA+V-a8v3cLOe=vRSdPd91VGRxEwbrgmRrvYdfBPRNVPMvsQ0gw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8v3cLOe=vRSdPd91VGRxEwbrgmRrvYdfBPRNVPMvsQ0gw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 02 Oct 2020 12:28:04 -0700:
+On Fri, Oct 02, 2020 at 10:32:05PM +0100, Lad, Prabhakar wrote:
+> Hi Sakari,
+> 
+> Thank you for the review.
+> 
+> On Fri, Oct 2, 2020 at 10:13 PM Sakari Ailus
+> <sakari.ailus@linux.intel.com> wrote:
+> >
+> > On Fri, Oct 02, 2020 at 05:56:56PM +0100, Lad Prabhakar wrote:
+> > > Add support for test pattern control supported by the sensor.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+> > > ---
+> > >  drivers/media/i2c/ov772x.c | 17 ++++++++++++++++-
+> > >  1 file changed, 16 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > > index 6b46ad493bf7..b7e10c34ef59 100644
+> > > --- a/drivers/media/i2c/ov772x.c
+> > > +++ b/drivers/media/i2c/ov772x.c
+> > > @@ -227,7 +227,7 @@
+> > >
+> > >  /* COM3 */
+> > >  #define SWAP_MASK       (SWAP_RGB | SWAP_YUV | SWAP_ML)
+> > > -#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG)
+> > > +#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG | SCOLOR_TEST)
+> > >
+> > >  #define VFLIP_IMG       0x80 /* Vertical flip image ON/OFF selection */
+> > >  #define HFLIP_IMG       0x40 /* Horizontal mirror image ON/OFF selection */
+> > > @@ -425,6 +425,7 @@ struct ov772x_priv {
+> > >       const struct ov772x_win_size     *win;
+> > >       struct v4l2_ctrl                 *vflip_ctrl;
+> > >       struct v4l2_ctrl                 *hflip_ctrl;
+> > > +     unsigned int                      test_pattern;
+> >
+> > Alignment.
+> >
+> > You can get away with one or possibly two but three is too many in such a
+> > small number of lines. :-)
+> >
+> It's aligned as per structure members (non pointers)
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+What a weird practice. Oh well. Keep as-is then.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cb6f55af1fb28655c9f3843bc12c0a48856c1d09
-
-Thank you!
+checkpatch.pl no longer seems to complain about lines over 80. That keeps
+the number of warnings lower but may lead to unintentional long lines when
+you don't need them.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Sakari Ailus
