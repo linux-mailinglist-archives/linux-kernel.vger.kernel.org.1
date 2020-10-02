@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D771B28174F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B1A281754
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387945AbgJBQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBQAn (ORCPT
+        id S2388016AbgJBQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:01:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58500 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726090AbgJBQBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:00:43 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D84C0613D0;
-        Fri,  2 Oct 2020 09:00:42 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b12so2461098lfp.9;
-        Fri, 02 Oct 2020 09:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dhAnoeBmyK6BcDynuK2zNHQZ6hj5tN6P0kpEIveLp7o=;
-        b=nXu+ildLgsM+jM4sHHMNh0wFhYRfaWZHOdLXwZqCOlY2OZHI/Dm+eJ5/CYCwVG1kkO
-         cYSVGx++koKfLEFTUKyzRiMc+I8PK8AwieXpXgVRMlQHzCa5lCkhFsoQxv5diGNFmGqv
-         YQkcDhpNom+wSzGwwuK82ux7g/5CY91Qr5RqOnplESiTEiNxOMpJKrOL3f1UNoXrBugh
-         U09J6ogbQmK6SB66V7OVywERPMovoTvsJtKO+1qpBcWqNktXct1E5MGwp34pb3aRn1HU
-         3N1S99scbj3lx0gLgLSrk2SgXvoYVTEGwSWhvRSIdkgKqo6seBUJKg4Ws908X5hHR2y7
-         ZEpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dhAnoeBmyK6BcDynuK2zNHQZ6hj5tN6P0kpEIveLp7o=;
-        b=IjOTbqD5A1j0Lgo1PwZU0j37RZuMRATD9UUKlqeU0KyS+W9B56U+BULZtWHzm+ffOe
-         KfNKffbAcnJUl/HPLqNUYJsPwcboAbIjM7OjYZplxK7eru2c2ZQsf/6TJFle2Z7vGztu
-         9hYGJANSkQ3GJb62oJeVXHmhTcmWM6xirkyL5FtPMPgG2Jjky2hslBkFr74VX74sRpQ/
-         EbuZRZbLrcCb8Zj5cOrdyMiSm3YfTqiLkAFK31ONxdZ2f+DCCF//0Lce0sRmeL3glZ+q
-         pYZlCji047VHB6E1GxxwDQFnVfYYNly/rbM9Lh7Si33k+3Mv+a5ccEWlOyw/SfT0u8dz
-         7j8Q==
-X-Gm-Message-State: AOAM533Tydccl7gChgUY5yMx5yqGMfVMw0UFjirpZaAicmXTvouw1PzZ
-        Lgt5AbjkzBEadDG3g7Gyy9dFePLEDc8=
-X-Google-Smtp-Source: ABdhPJyKXMN6R1NYll2+WowzuwnckGYlpVU9Os1T9IYfDnZEzGs+9eU0RcBb7JTcu3S3Hz75KsG2+w==
-X-Received: by 2002:ac2:5e2b:: with SMTP id o11mr1137547lfg.24.1601654441028;
-        Fri, 02 Oct 2020 09:00:41 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id x15sm276743ljd.93.2020.10.02.09.00.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 09:00:40 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, Maxime Ripard <maxime@cerno.tech>
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Fri, 2 Oct 2020 12:01:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601654484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Jor+fjjZlrkYFKsnf/j6ujMU3fQARqQ9kGgIywfWC4=;
+        b=ibySHBnY9Qu3Qwz2LxjSS4A/USz2ju7TGV/jEzKJa87mvwolDUTjnoiMIzVD99Hn+TPIom
+        h2llCy62IveFbzORsoQ4LDp6zl6tZVSlJPX4NUlhjmi7y60VOB1UU5L+1i9pq4JBcxxU5x
+        8Bn0dCaQ5urE11+LUikjqbFzhx0SDkE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-zisXQFNnM7ymFS_9xFuHoA-1; Fri, 02 Oct 2020 12:01:22 -0400
+X-MC-Unique: zisXQFNnM7ymFS_9xFuHoA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 157ED1054F8E;
+        Fri,  2 Oct 2020 16:01:21 +0000 (UTC)
+Received: from treble (ovpn-114-202.rdu2.redhat.com [10.10.114.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4275F73683;
+        Fri,  2 Oct 2020 16:01:17 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 11:01:14 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Julien Thierry <jthierry@redhat.com>,
         linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
- <99d322d0-efb5-8a34-ee83-b907b785ced3@gmail.com>
-Message-ID: <3ecfe9ae-fa32-8384-c912-4e17ff5fede7@gmail.com>
-Date:   Fri, 2 Oct 2020 19:00:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [RFC PATCH v3 4/4] objtool: fix x86 orc generation on big endian
+ cross compiles
+Message-ID: <20201002160114.7yb7z7aeijhchpwl@treble>
+References: <cover.thread-6ec90b.your-ad-here.call-01601502173-ext-7769@work.hours>
+ <patch-4.thread-6ec90b.git-6ec90b880ce6.your-ad-here.call-01601502173-ext-7769@work.hours>
 MIME-Version: 1.0
-In-Reply-To: <99d322d0-efb5-8a34-ee83-b907b785ced3@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <patch-4.thread-6ec90b.git-6ec90b880ce6.your-ad-here.call-01601502173-ext-7769@work.hours>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 18:23, Dmitry Osipenko пишет:
-> 02.10.2020 09:08, Nicolin Chen пишет:
->> Then when a client gets probed, of_iommu_configure() in
->> iommu core will search DTB for swgroup ID and call ->of_xlate()
->> to prepare an fwspec, similar to tegra_smmu_probe_device() and
->> tegra_smmu_configure(). Then it'll call tegra_smmu_probe_device()
->> again, and this time we shall return smmu->iommu pointer properly.
-> 
-> I don't quite see where IOMMU core calls of_xlate().
-> 
-> Have tried to at least boot-test this patch?
-> 
+On Thu, Oct 01, 2020 at 12:17:32AM +0200, Vasily Gorbik wrote:
+> +++ b/tools/objtool/arch/x86/special.c
+> @@ -9,7 +9,7 @@
+>  
+>  void arch_handle_alternative(unsigned short feature, struct special_alt *alt)
+>  {
+> -	switch (feature) {
+> +	switch (le16_to_cpu(feature)) {
 
-I don't see how it ever could work because of_xlate() is only invoked from:
+It might be cleaner for the endian conversion to be done when the
+'feature' value is first read.
 
-fsl_mc_dma_configure()->of_dma_configure_id()->of_iommu_configure()
+		feature = *(unsigned short *)(sec->data->d_buf + offset +
+					      entry->feature);
 
-Looks like the tegra_smmu_configure() is still needed.
 
-I don't know how sun50i driver could work to be honest. Seems IOMMU is
-broken on sun50i, but maybe I'm missing something.
+>  	case X86_FEATURE_SMAP:
+>  		/*
+>  		 * If UACCESS validation is enabled; force that alternative;
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index 2df9f769412e..f20a4be2fb22 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -1370,7 +1370,7 @@ static int read_unwind_hints(struct objtool_file *file)
+>  		cfa = &insn->cfi.cfa;
+>  
+>  		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
+> -			insn->ret_offset = hint->sp_offset;
+> +			insn->ret_offset = le16_to_cpu(hint->sp_offset);
 
-I added Maxime Ripard to this thread, who is the author of the
-sun50i-iommu driver.
+Since this is common code, we might not always be able to assume the
+value is little endian.  Could you make a more generic conversion macro
+which -- when the target ELF file's endianness doesn't match the host
+CPU's -- does a byte swap?  For example:
+
+	insn->ret_offset = bswap_if_needed(hint->sp_offset);
+
+The macro could detect the type size, and would also know the
+host/target endianness, and could swap accordingly.  It could then be
+called for all such multi-byte reads.
+
+-- 
+Josh
+
