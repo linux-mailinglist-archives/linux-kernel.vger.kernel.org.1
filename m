@@ -2,194 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30B32810DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E9C2810E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgJBLDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgJBLDH (ORCPT
+        id S2387595AbgJBLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:04:34 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:35113 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgJBLEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:03:07 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91ECC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 04:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=krvsfsMusA6skiBDCbI7ny36B3e7HL+7rrL6WuPgsJk=; b=trgu0XGZ/Da+lKicGTmTuOeidT
-        rJeCsOSGPTtSbNzUR3X6kWhlcp6CSOi/SlwQRpmoL+vy5Hh2yac/KATPYCjH85lbuol0P1oqhaJaW
-        bkNEPFWI+CYUXCLeWjfdNicJyQrHb5QayPtbzaSPfpbM+A8qQ7uU3VEA+mi9QYkVJ2LioqSPe5/LM
-        IqSsaP0R7nxa8Ffh5tg9waiJhCQOfOolP1neb2OfXaj2EBINYXYg5dNxJd/4z5SQIWVJqljb7tIj9
-        HH8jasO62es7Efefe4CudkdddjFC8p5gC0PAPrcPhX2364qyGbTkPGNC0xquS27hKvvjnNau0o+hx
-        P8GIlF7w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOIq5-0007te-KN; Fri, 02 Oct 2020 11:03:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 107B23006D0;
-        Fri,  2 Oct 2020 13:02:58 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C68272148A62C; Fri,  2 Oct 2020 13:02:58 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 13:02:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kim.phillips@amd.com
-Subject: Re: [PATCH] perf/x86/intel: Fix n_metric for the canceled group
-Message-ID: <20201002110258.GV2628@hirez.programming.kicks-ass.net>
-References: <20200930142935.13482-1-kan.liang@linux.intel.com>
+        Fri, 2 Oct 2020 07:04:31 -0400
+Received: by mail-ej1-f67.google.com with SMTP id u21so1388023eja.2;
+        Fri, 02 Oct 2020 04:04:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=56tAhYBdNf3KNX8Oab3+P5svy0t0kpZJMlSJZcWZN34=;
+        b=k1bXMpe8vUGzf2FOQwS2IVHjzb0fnEWgv9h/s3IlamGTJ8BxDXB+XPUBCI5lCHv0Nb
+         OtGchFCPB2OFvzS+hrieBbwNnq8jHAIZNPH13nyaeoni7EWLh2H9mnCPMc7+wdg5V08t
+         /Vywq78WUHGa09VhbgwzGdlIU3jm2jZhEhEXHcc/1E5ndFQLKdyeC1ZzdrlAKDaJgZEj
+         nVkkgZa9NCtYKiMYg7Yj9xp7T43MFH9SNG/KuAJjvxwE8PJbDzjteR2Z+C6kVbqtvFiU
+         VUsxfZYciH7w/PZpCkOtPcHgNuy+IcpLGkfMgM3m9yDgvd5sE5gjbu5WJCZvIuilM4tp
+         Bruw==
+X-Gm-Message-State: AOAM531oQRlgmKGweKNsXsqOR0U+ygbcLmvBdgnA4cBA93yC+w224aSR
+        E6aUvZoYUJvo6k06+u9bKAg=
+X-Google-Smtp-Source: ABdhPJz8JVKuuqO6jwLTNtxzltCz4QZ0ABVNv87BKmR6ouVGmjyGL9JMc7xLOHcn7riQZyRBrmknaQ==
+X-Received: by 2002:a17:906:a4e:: with SMTP id x14mr1659945ejf.112.1601636666973;
+        Fri, 02 Oct 2020 04:04:26 -0700 (PDT)
+Received: from pi3 ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id g11sm936712edj.85.2020.10.02.04.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 04:04:26 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 13:04:23 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 02/24] dt-bindings: memory: mediatek: Convert SMI to
+ DT schema
+Message-ID: <20201002110423.GB6888@pi3>
+References: <20200930070647.10188-1-yong.wu@mediatek.com>
+ <20200930070647.10188-3-yong.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200930142935.13482-1-kan.liang@linux.intel.com>
+In-Reply-To: <20200930070647.10188-3-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 07:29:35AM -0700, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
+On Wed, Sep 30, 2020 at 03:06:25PM +0800, Yong Wu wrote:
+> Convert MediaTek SMI to DT schema.
 > 
-> When a group that has TopDown members is failed to be scheduled, any
-> later TopDown groups will not return valid values.
-> 
-> Here is an example.
-> 
-> A background perf that occupies all the GP counters and the fixed
-> counter 1.
->  $perf stat -e "{cycles,cycles,cycles,cycles,cycles,cycles,cycles,
->                  cycles,cycles}:D" -a
-> 
-> A user monitors a TopDown group. It works well, because the fixed
-> counter 3 and the PERF_METRICS are available.
->  $perf stat -x, --topdown -- ./workload
->    retiring,bad speculation,frontend bound,backend bound,
->    18.0,16.1,40.4,25.5,
-> 
-> Then the user tries to monitor a group that has TopDown members.
-> Because of the cycles event, the group is failed to be scheduled.
->  $perf stat -x, -e '{slots,topdown-retiring,topdown-be-bound,
->                      topdown-fe-bound,topdown-bad-spec,cycles}'
->                      -- ./workload
->     <not counted>,,slots,0,0.00,,
->     <not counted>,,topdown-retiring,0,0.00,,
->     <not counted>,,topdown-be-bound,0,0.00,,
->     <not counted>,,topdown-fe-bound,0,0.00,,
->     <not counted>,,topdown-bad-spec,0,0.00,,
->     <not counted>,,cycles,0,0.00,,
-> 
-> The user tries to monitor a TopDown group again. It doesn't work anymore.
->  $perf stat -x, --topdown -- ./workload
-> 
->     ,,,,,
-> 
-> In a txn, cancel_txn() is to truncate the event_list for a canceled
-> group and update the number of events added in this transaction.
-> However, the number of TopDown events added in this transaction is not
-> updated. The kernel will probably fail to add new Topdown events.
-> 
-> Check if the canceled group has Topdown events. If so, subtract the
-> TopDown events from n_metric accordingly.
-> 
-> Fixes: 7b2c05a15d29 ("perf/x86/intel: Generic support for hardware TopDown metrics")
-> Reported-by: Andi Kleen <ak@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 > ---
->  arch/x86/events/core.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  .../mediatek,smi-common.txt                   |  49 ---------
+>  .../mediatek,smi-common.yaml                  | 100 ++++++++++++++++++
+>  .../memory-controllers/mediatek,smi-larb.txt  |  49 ---------
+>  .../memory-controllers/mediatek,smi-larb.yaml |  91 ++++++++++++++++
+>  4 files changed, 191 insertions(+), 98 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
 > 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 0f3d01562ded..4cb3ccbe2d62 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -2017,6 +2017,7 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
->  {
->  	unsigned int txn_flags;
->  	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +	int i;
->  
->  	WARN_ON_ONCE(!cpuc->txn_flags);	/* no txn in flight */
->  
-> @@ -2031,6 +2032,15 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
->  	 */
->  	__this_cpu_sub(cpu_hw_events.n_added, __this_cpu_read(cpu_hw_events.n_txn));
->  	__this_cpu_sub(cpu_hw_events.n_events, __this_cpu_read(cpu_hw_events.n_txn));
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
+> deleted file mode 100644
+> index b64573680b42..000000000000
+> --- a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.txt
+> +++ /dev/null
+> @@ -1,49 +0,0 @@
+> -SMI (Smart Multimedia Interface) Common
+> -
+> -The hardware block diagram please check bindings/iommu/mediatek,iommu.txt
+> -
+> -Mediatek SMI have two generations of HW architecture, here is the list
+> -which generation the SoCs use:
+> -generation 1: mt2701 and mt7623.
+> -generation 2: mt2712, mt6779, mt8173 and mt8183.
+> -
+> -There's slight differences between the two SMI, for generation 2, the
+> -register which control the iommu port is at each larb's register base. But
+> -for generation 1, the register is at smi ao base(smi always on register
+> -base). Besides that, the smi async clock should be prepared and enabled for
+> -SMI generation 1 to transform the smi clock into emi clock domain, but that is
+> -not needed for SMI generation 2.
+> -
+> -Required properties:
+> -- compatible : must be one of :
+> -	"mediatek,mt2701-smi-common"
+> -	"mediatek,mt2712-smi-common"
+> -	"mediatek,mt6779-smi-common"
+> -	"mediatek,mt7623-smi-common", "mediatek,mt2701-smi-common"
+> -	"mediatek,mt8173-smi-common"
+> -	"mediatek,mt8183-smi-common"
+> -- reg : the register and size of the SMI block.
+> -- power-domains : a phandle to the power domain of this local arbiter.
+> -- clocks : Must contain an entry for each entry in clock-names.
+> -- clock-names : must contain 3 entries for generation 1 smi HW and 2 entries
+> -  for generation 2 smi HW as follows:
+> -  - "apb" : Advanced Peripheral Bus clock, It's the clock for setting
+> -	    the register.
+> -  - "smi" : It's the clock for transfer data and command.
+> -	    They may be the same if both source clocks are the same.
+> -  - "async" : asynchronous clock, it help transform the smi clock into the emi
+> -	      clock domain, this clock is only needed by generation 1 smi HW.
+> -  and these 2 option clocks for generation 2 smi HW:
+> -  - "gals0": the path0 clock of GALS(Global Async Local Sync).
+> -  - "gals1": the path1 clock of GALS(Global Async Local Sync).
+> -  Here is the list which has this GALS: mt6779 and mt8183.
+> -
+> -Example:
+> -	smi_common: smi@14022000 {
+> -		compatible = "mediatek,mt8173-smi-common";
+> -		reg = <0 0x14022000 0 0x1000>;
+> -		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+> -		clocks = <&mmsys CLK_MM_SMI_COMMON>,
+> -			 <&mmsys CLK_MM_SMI_COMMON>;
+> -		clock-names = "apb", "smi";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
+> new file mode 100644
+> index 000000000000..76ecc7205438
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-common.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+
+You relicense existing GPLv2 work. Please CC all contributors and
+collect their acks/SoB.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/memory-controllers/mediatek,smi-common.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	/* Subtract Topdown events in the canceled group from n_metric */
-> +	if (x86_pmu.intel_cap.perf_metrics && cpuc->n_metric) {
-> +		for (i = 0; i < cpuc->n_txn; i++) {
-> +			if (is_metric_event(cpuc->event_list[i + cpuc->n_events]))
-> +				__this_cpu_dec(cpu_hw_events.n_metric);
-> +		}
-> +		WARN_ON_ONCE(__this_cpu_read(cpu_hw_events.n_metric) < 0);
-> +	}
->  	perf_pmu_enable(pmu);
->  }
+> +title: SMI (Smart Multimedia Interface) Common
+> +
+> +maintainers:
+> +  - Yong Wu <yong.wu@mediatek.com>
+> +
+> +description: |+
+> +  The hardware block diagram please check bindings/iommu/mediatek,iommu.yaml
+> +
+> +  MediaTek SMI have two generations of HW architecture, here is the list
+> +  which generation the SoCs use:
+> +  generation 1: mt2701 and mt7623.
+> +  generation 2: mt2712, mt6779, mt8173 and mt8183.
+> +
+> +  There's slight differences between the two SMI, for generation 2, the
+> +  register which control the iommu port is at each larb's register base. But
+> +  for generation 1, the register is at smi ao base(smi always on register
+> +  base). Besides that, the smi async clock should be prepared and enabled for
+> +  SMI generation 1 to transform the smi clock into emi clock domain, but that is
+> +  not needed for SMI generation 2.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt2701-smi-common
+> +          - mediatek,mt2712-smi-common
+> +          - mediatek,mt6779-smi-common
+> +          - mediatek,mt8173-smi-common
+> +          - mediatek,mt8183-smi-common
+> +
+> +      - description: for mt7623
+> +        items:
+> +          - const: mediatek,mt7623-smi-common
+> +          - const: mediatek,mt2701-smi-common
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: |
+> +      apb and smi are mandatory. the async is only for generation 1 smi HW.
+> +      gals(global async local sync) also is optional, here is the list which
+> +      require gals: mt6779 and mt8183.
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - description: apb is Advanced Peripheral Bus clock, It's the clock for
+> +          setting the register.
+> +      - description: smi is the clock for transfer data and command.
+> +      - description: async is asynchronous clock, it help transform the smi clock
+> +          into the emi clock domain.
+> +      - description: gals0 is the path0 clock of gals.
+> +      - description: gals1 is the path1 clock of gals.
 
+You put here five items, but max are four. Does it really work as
+intended?
 
-Urgh, I'd much rather we add n_txn_metric. But also, while looking at
-this, don't we have the same problem with n_pair ?
+> +
+> +  clock-names:
+> +    oneOf:
+> +      - items:
+> +          - const: apb
+> +          - const: smi
+> +      - items:
+> +          - const: apb
+> +          - const: smi
+> +          - const: async
+> +      - items:
+> +          - const: apb
+> +          - const: smi
+> +          - const: gals0
+> +          - const: gals1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/power/mt8173-power.h>
+> +
+> +    smi_common: smi@14022000 {
+> +            compatible = "mediatek,mt8173-smi-common";
+> +            reg = <0x14022000 0x1000>;
+> +            power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+> +            clocks = <&mmsys CLK_MM_SMI_COMMON>,
+> +                     <&mmsys CLK_MM_SMI_COMMON>;
+> +            clock-names = "apb", "smi";
+> +    };
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+> deleted file mode 100644
+> index 8f19dfe7d80e..000000000000
+> --- a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
+> +++ /dev/null
+> @@ -1,49 +0,0 @@
+> -SMI (Smart Multimedia Interface) Local Arbiter
+> -
+> -The hardware block diagram please check bindings/iommu/mediatek,iommu.txt
+> -
+> -Required properties:
+> -- compatible : must be one of :
+> -		"mediatek,mt2701-smi-larb"
+> -		"mediatek,mt2712-smi-larb"
+> -		"mediatek,mt6779-smi-larb"
+> -		"mediatek,mt7623-smi-larb", "mediatek,mt2701-smi-larb"
+> -		"mediatek,mt8173-smi-larb"
+> -		"mediatek,mt8183-smi-larb"
+> -- reg : the register and size of this local arbiter.
+> -- mediatek,smi : a phandle to the smi_common node.
+> -- power-domains : a phandle to the power domain of this local arbiter.
+> -- clocks : Must contain an entry for each entry in clock-names.
+> -- clock-names: must contain 2 entries, as follows:
+> -  - "apb" : Advanced Peripheral Bus clock, It's the clock for setting
+> -	    the register.
+> -  - "smi" : It's the clock for transfer data and command.
+> -  and this optional clock name:
+> -  - "gals": the clock for GALS(Global Async Local Sync).
+> -  Here is the list which has this GALS: mt8183.
+> -
+> -Required property for mt2701, mt2712, mt6779 and mt7623:
+> -- mediatek,larb-id :the hardware id of this larb.
+> -
+> -Example:
+> -	larb1: larb@16010000 {
+> -		compatible = "mediatek,mt8173-smi-larb";
+> -		reg = <0 0x16010000 0 0x1000>;
+> -		mediatek,smi = <&smi_common>;
+> -		power-domains = <&scpsys MT8173_POWER_DOMAIN_VDEC>;
+> -		clocks = <&vdecsys CLK_VDEC_CKEN>,
+> -			 <&vdecsys CLK_VDEC_LARB_CKEN>;
+> -		clock-names = "apb", "smi";
+> -	};
+> -
+> -Example for mt2701:
+> -	larb0: larb@14010000 {
+> -		compatible = "mediatek,mt2701-smi-larb";
+> -		reg = <0 0x14010000 0 0x1000>;
+> -		mediatek,smi = <&smi_common>;
+> -		mediatek,larb-id = <0>;
+> -		clocks = <&mmsys CLK_MM_SMI_LARB0>,
+> -			 <&mmsys CLK_MM_SMI_LARB0>;
+> -		clock-names = "apb", "smi";
+> -		power-domains = <&scpsys MT2701_POWER_DOMAIN_DISP>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> new file mode 100644
+> index 000000000000..50793a0e6759
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
+> @@ -0,0 +1,91 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 
-Something like this perhaps...
+The same - you need to collect licensing change agreements.
 
----
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 757e49755e7c..9b7792c0b6fb 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1066,6 +1066,7 @@ static int add_nr_metric_event(struct cpu_hw_events *cpuc,
- 		if (cpuc->n_metric == INTEL_TD_METRIC_NUM)
- 			return -EINVAL;
- 		cpuc->n_metric++;
-+		cpuc->n_txn_metric++;
- 	}
- 
- 	return 0;
-@@ -1089,8 +1090,10 @@ static int collect_event(struct cpu_hw_events *cpuc, struct perf_event *event,
- 		return -EINVAL;
- 
- 	cpuc->event_list[n] = event;
--	if (is_counter_pair(&event->hw))
-+	if (is_counter_pair(&event->hw)) {
- 		cpuc->n_pair++;
-+		cpuc->n_txn_pair++;
-+	}
- 
- 	return 0;
- }
-@@ -2062,6 +2065,8 @@ static void x86_pmu_start_txn(struct pmu *pmu, unsigned int txn_flags)
- 
- 	perf_pmu_disable(pmu);
- 	__this_cpu_write(cpu_hw_events.n_txn, 0);
-+	__this_cpu_write(cpu_hw_events.n_txn_metric, 0);
-+	__this_cpu_write(cpu_hw_events.n_txn_pair, 0);
- }
- 
- /*
-@@ -2087,6 +2092,8 @@ static void x86_pmu_cancel_txn(struct pmu *pmu)
- 	 */
- 	__this_cpu_sub(cpu_hw_events.n_added, __this_cpu_read(cpu_hw_events.n_txn));
- 	__this_cpu_sub(cpu_hw_events.n_events, __this_cpu_read(cpu_hw_events.n_txn));
-+	__this_cpu_sub(cpu_hw_events.n_metric, __this_cpu_read(cpu_hw_events.n_txn_metric));
-+	__this_cpu_sub(cpu_hw_events.n_pair, __this_cpu_read(cpu_hw_events.n_txn_pair));
- 	perf_pmu_enable(pmu);
- }
- 
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 345442410a4d..6348105b6d30 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -235,6 +235,8 @@ struct cpu_hw_events {
- 					     they've never been enabled yet */
- 	int			n_txn;    /* the # last events in the below arrays;
- 					     added in the current transaction */
-+	int			n_txn_metric;
-+	int			n_txn_pair;
- 	int			assign[X86_PMC_IDX_MAX]; /* event to counter assignment */
- 	u64			tags[X86_PMC_IDX_MAX];
- 
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/memory-controllers/mediatek,smi-larb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SMI (Smart Multimedia Interface) Local Arbiter
+> +
+> +maintainers:
+> +  - Yong Wu <yong.wu@mediatek.com>
+> +
+> +description: |+
+> +  The hardware block diagram please check bindings/iommu/mediatek,iommu.yaml
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt2701-smi-larb
+> +          - mediatek,mt2712-smi-larb
+> +          - mediatek,mt6779-smi-larb
+> +          - mediatek,mt8173-smi-larb
+> +          - mediatek,mt8183-smi-larb
+> +
+> +      - description: for mt7623
+> +        items:
+> +          - const: mediatek,mt7623-smi-larb
+> +          - const: mediatek,mt2701-smi-larb
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: |
+> +      apb and smi are mandatory. gals(global async local sync) is optional,
+> +      here is the list which require gals: mt8183.
+> +    minItems: 2
+> +    maxItems: 3
+> +    items:
+> +       - description: apb is Advanced Peripheral Bus clock, It's the clock for
+> +           setting the register.
+> +       - description: smi is the clock for transfer data and command.
+> +       - description: the clock for gals.
+> +
+> +  clock-names:
+> +    oneOf:
+> +      - items:
+> +         - const: apb
+> +         - const: smi
+> +      - items:
+> +         - const: apb
+> +         - const: smi
+> +         - const: gals
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  mediatek,smi:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: a phandle to the smi_common node.
+> +
+> +  mediatek,larb-id:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 15
+> +    description: the hardware id of this larb.
+> +      Required property for mt2701, mt2712, mt6779 and mt7623.
+
+You need if-then-required for this. See
+Documentation/devicetree/bindings/example-schema.yaml for example.
+
+Best regards,
+Krzysztof
