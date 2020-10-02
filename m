@@ -2,220 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958E72813D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5602813E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387873AbgJBNPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387767AbgJBNPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:15:55 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649C0C0613D0;
-        Fri,  2 Oct 2020 06:15:55 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y74so1450014iof.12;
-        Fri, 02 Oct 2020 06:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NV9+yrJq+JbCr6cFYFd6SzA3+a52bQ0Cmy5QJDHiFvU=;
-        b=itIlg738Y5xIaieU692HUBFF9lhBPxXt9di1Vf2sK41x0wWb6U6QH5BYo0bwkYsx/A
-         KANxg7AHYiX2jPcZ0PSh9uL19ETw6UQXs0c7U7PmLlYeRVesZ3mk9d26yLeIss/HZYpB
-         VqiG2B9ITR4OiWuuIFdPKgdL4ojk6E2gAho7G+FA7hpigx+RbPJVg8XWBsCRe38tdh7K
-         tlYK09GWkGYcERNxC91x0xYlAwp7tYt4GwNZCgHTSF4P+VgeIRKXzbKjpxYpFnQ1U2HP
-         V4kZvNFQ1ZxmuJ2F69nkqaUF4DaF+7ThmkziWkgveEJqNPJayAKDrZeZWK79ngwyX0vI
-         9BKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NV9+yrJq+JbCr6cFYFd6SzA3+a52bQ0Cmy5QJDHiFvU=;
-        b=b1o7Wp+TQHmrNBk5sNvoHRMzvDwmjnBH5/0Ou9eoxtPtW45JfPUFT89hhkNl63Ms7r
-         ThE9fAtV3nJsJCPOlz/54p55zoRHaiuqoZJgqOLlV7ICJZVkA9rN8DUeJTi5h/CRUgwv
-         lHO+L+V6V0c9t30+rWqrqTFLgcD2yCUXxU3q0gslmtTi6XEUsgZ9BwwAFZo2G8u/aqF5
-         2nBhBIKyXYBDcRYlq0080fz10oTuAHfmMYKrmgO1hBF17zZ+vs5Tg5nhblXuX0jTgrPz
-         N0DEJzJseJn/Yu52voQSHSej4FBnavoGer0nkZy53YrYtBlLJRyB6I1dn9i9Ousx7Rsp
-         rqZQ==
-X-Gm-Message-State: AOAM530OPqryXm9pjKOxsqSz/D1I0pl7ET64P9PJvvmLAEf785fLwneW
-        3Qp0AxJXKYGF2jk2O4l8gZPlvxZA6aIKgBks20ogrJrL
-X-Google-Smtp-Source: ABdhPJwnNOqEg0c0RLPVInz9CgNB2jGjdrykkIa9igU9sNmuqp7vWpk5J62LSsNldqh8FpRt80vyDEDHZzM8eWUauIY=
-X-Received: by 2002:a02:e47:: with SMTP id 68mr2161854jae.78.1601644554674;
- Fri, 02 Oct 2020 06:15:54 -0700 (PDT)
+        id S2387911AbgJBNRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:17:09 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42337 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733260AbgJBNRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 09:17:09 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 092DFt0G003851;
+        Fri, 2 Oct 2020 15:15:55 +0200
+Date:   Fri, 2 Oct 2020 15:15:55 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Torsten Duwe <duwe@lst.de>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201002131555.GD3783@1wt.eu>
+References: <20200921075857.4424-1-nstange@suse.de>
+ <20201002123836.GA14807@lst.de>
 MIME-Version: 1.0
-References: <20201002121645.23646-1-colomar.6.4.3@gmail.com> <20201002121645.23646-2-colomar.6.4.3@gmail.com>
-In-Reply-To: <20201002121645.23646-2-colomar.6.4.3@gmail.com>
-From:   Jonathan Wakely <jwakely.gcc@gmail.com>
-Date:   Fri, 2 Oct 2020 14:15:43 +0100
-Message-ID: <CAH6eHdQD+4g4ne9akZ5TDbhfq9TR0JSSBQ5H+W+Fab=5dy7O+g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] system_data_types.7: Add 'void *'
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        gcc-patches <gcc-patches@gcc.gnu.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        linux-kernel@vger.kernel.org, eggert@cs.ucla.edu,
-        David.Laight@aculab.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002123836.GA14807@lst.de>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 13:17, Alejandro Colomar <colomar.6.4.3@gmail.com> wrote:
->
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->
-> system_data_types.7: void *: Add info about generic function parameters and return value
->
-> Reported-by: Paul Eggert <eggert@cs.ucla.edu>
-> Reported-by: David Laight <David.Laight@ACULAB.COM>
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->
-> system_data_types.7: void *: Add info about pointer artihmetic
->
-> Reported-by: Paul Eggert <eggert@cs.ucla.edu>
-> Reported-by: David Laight <David.Laight@ACULAB.COM>
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->
-> system_data_types.7: void *: Add Versions notes
->
-> Compatibility between function pointers and void * hasn't always been so.
-> Document when that was added to POSIX.
->
-> Reported-by: Michael Kerrisk <mtk.manpages@gmail.com>
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
-> ---
->  man7/system_data_types.7 | 80 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 78 insertions(+), 2 deletions(-)
->
-> diff --git a/man7/system_data_types.7 b/man7/system_data_types.7
-> index c82d3b388..277e05b12 100644
-> --- a/man7/system_data_types.7
-> +++ b/man7/system_data_types.7
-> @@ -679,7 +679,6 @@ See also the
->  .I uintptr_t
->  and
->  .I void *
-> -.\" TODO: Document void *
->  types in this page.
->  .RE
->  .\"------------------------------------- lconv ------------------------/
-> @@ -1780,7 +1779,6 @@ See also the
->  .I intptr_t
->  and
->  .I void *
-> -.\" TODO: Document void *
->  types in this page.
->  .RE
->  .\"------------------------------------- va_list ----------------------/
-> @@ -1814,6 +1812,84 @@ See also:
->  .BR va_copy (3),
->  .BR va_end (3)
->  .RE
-> +.\"------------------------------------- void * -----------------------/
-> +.TP
-> +.I void *
-> +.RS
-> +According to the C language standard,
-> +a pointer to any object type may be converted to a pointer to
-> +.I void
-> +and back.
-> +POSIX further requires that any pointer,
-> +including pointers to functions,
-> +may be converted to a pointer to
-> +.I void
-> +and back.
-> +.PP
-> +Conversions from and to any other pointer type are done implicitly,
-> +not requiring casts at all.
-> +Note that this feature prevents any kind of type checking:
-> +the programmer should be careful not to cast a
-> +.I void *
-> +value to a type incompatible to that of the underlying data,
-> +because that would result in undefined behavior.
-> +.PP
-> +This type is useful in function parameters and return value
-> +to allow passing values of any type.
-> +The function will usually use some mechanism to know
-> +of which type the underlying data passed to the function really is.
+On Fri, Oct 02, 2020 at 02:38:36PM +0200, Torsten Duwe wrote:
+> Almost two weeks passed and these are the "relevant" replies:
+> 
+> Jason personally does not like FIPS, and is afraid of
+> "subpar crypto". Albeit this patch set strictly isn't about
+> crypto at all; the crypto subsystem is in the unlucky position
+> to just depend on a good entropy source.
+> 
+> Greg claims that Linux (kernel) isn't about choice, which is clearly
+> wrong.
 
-This sentence seems clunky.
+I think there's a small misunderstanding here, my understanding is
+that for quite a while, the possibilities offered by the various
+random subsystems or their proposed derivative used to range from
+"you have to choose between a fast system that may be vulnerable
+to some attacks, a system that might not be vulnerable to certain
+attacks but might not always boot, or a slow system not vulnerable
+to certain attacks". Greg's point seems to be that if we add an
+option, it means it's yet another tradeoff between these possibilities
+and that someone will still not be happy at the end of the chain. If
+the proposed solution covers everything at once (performance,
+reliability, unpredictability), then there probably is no more reason
+for keeping alternate solutions at all, hence there's no need to give
+the user the choice between multiple options when only one is known
+to always be valid. At least that's how I see it and it makes sense
+to me.
 
-How about "The function will typically use some mechanism to know the
-real type of the data being passed via a pointer to void."
+> And this is all ???
 
-An example of "some mechanism" might be useful, though I don't have
-one to offer.
+Possibly a lot of people got used to seeing the numerous versions
+and are less attentive to new series, it's possible that your message
+will wake everyone up.
 
-> +.PP
-> +A value of this type can't be dereferenced,
-> +as it would give a value of type
-> +.I void
-> +which is not possible.
-> +Likewise, pointer arithmetic is not possible with this type.
-> +However, in GNU C, poitner arithmetic is allowed
-
-Typo: pointer
-
-
-> +as an extension to the standard;
-> +this is done by treating the size of a
-> +.I void
-> +or of a function as 1.
-> +A consequence of this is that
-> +.I sizeof
-> +is also allowed on
-> +.I void
-> +and on function types, and returns 1.
-> +.PP
-> +The conversion specifier for
-> +.I void *
-> +for the
-> +.BR printf (3)
-> +and the
-> +.BR scanf (3)
-> +families of functions is
-> +.BR p ;
-> +resulting commonly in
-> +.B %p
-> +for printing
-> +.I void *
-> +values.
-
-What does "resulting commonly in %p for printing void * values" mean?
-
-Is this just explaining that the format specifier p is commonly used
-as "%p" (but sometimes as e.g. "%20p") ?
-I'm not sure the "resulting commonly ..." part adds anything of value,
-rather than just being confusing.
-
-> +.PP
-> +Versions:
-> +The POSIX requirement about compatibility between
-> +.I void *
-> +and function pointers was added in
-> +POSIX.1-2008 Technical Corrigendum 1 (2013).
-> +.PP
-> +Conforming to:
-> +C99 and later; POSIX.1-2001 and later.
-> +.PP
-> +See also:
-> +.BR malloc (3),
-> +.BR memcmp (3),
-> +.BR memcpy (3),
-> +.BR memset (3)
-> +.PP
-> +See also the
-> +.I intptr_t
-> +and
-> +.I uintptr_t
-> +types in this page.
-> +.RE
->  .\"--------------------------------------------------------------------/
->  .SH NOTES
->  The structures described in this manual page shall contain,
-> --
-> 2.28.0
->
+Regards,
+Willy
