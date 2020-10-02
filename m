@@ -2,84 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E02C281C16
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7BF281C09
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388422AbgJBTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgJBTdH (ORCPT
+        id S2388360AbgJBT3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:29:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725991AbgJBT3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:33:07 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE95C0613D0;
-        Fri,  2 Oct 2020 12:33:07 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x23so2699821wmi.3;
-        Fri, 02 Oct 2020 12:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PBP6z5DXc5+B6Aax/XZWoiuZJP1QI0X0/j3bu6pDZMc=;
-        b=nAxL9R+Vqh/LTob9gFOSFkzE+bMZrWtHVGdZ15h0I9w5P7H/J1QRMn1nBu/+6Ld1TM
-         DUDcBMVLjuenyNUu/OKupofNOkqsXsgzCnr+jiN/R5cHBpFRfAQQhZsMtcoM8uTD+GCA
-         AY1NgE9Qy0FUommdUkyOXf1QF1n8JoP2plNdwvIz3qPr2Z6+lyRYmGrlv6MqYvkJWV/3
-         3ZC3sT5mvGoWfh66hNFGbUriWv2DVTmF/wbQQtSK2QrEjZGO7kxZRfa+/skEMq8g1vEM
-         fQ7YU/8l2iKNyiFDymTgQcZVMrrhD8ELT0S/pwKrSCm/po88bw90OE4Eo8AT/rVdPaPl
-         ub9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PBP6z5DXc5+B6Aax/XZWoiuZJP1QI0X0/j3bu6pDZMc=;
-        b=pMQMvE6McC9ghm301291IBFv/g3c5kvwDkzgcqb/JKRFZcrLD+HV6qGdB9hTWMqmLA
-         qQKybqP2eAQIhxTmBs7jLt7pKLwOFzMIfmvANe7jqMk585yqDM4dGdnlWV3zJiTvrlQj
-         xU/PBeUR3mAiJ1c1uyXKMpRQRXTElnhe473dhd31BJzIaMsqveDIxLrdMGA+dZCc0ArB
-         CeOeVVvpms6X5t+8ZLBCNTFUiI8qWuRSJAF6nJEW4h4+JJqq1tagsFm1mCVn8igbWTYo
-         b+QFoQ2lzrR4mTInMFqwbr4KKnN00wJj7TMiC+w+XpcFo/gWYOGPpFRrfhMsmCmM0UNE
-         SQ1g==
-X-Gm-Message-State: AOAM531qMq2G0EaOiufJgLHfI10HYQbbcXOdnb+CCC8Ve/jJzsDgF32E
-        lRC0Mg2YsFUYBCdWkQB48AA=
-X-Google-Smtp-Source: ABdhPJy3uJp+1vLcX4PSAx3DRm7PZId8sunWw59/LNPdfcTz84VTBEmGt89V9VAOOEtAQ5r/iPgm7A==
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr4714335wme.49.1601667186144;
-        Fri, 02 Oct 2020 12:33:06 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id e19sm3384230wme.2.2020.10.02.12.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 12:33:05 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     mtk.manpages@gmail.com
-Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        linux-man@vger.kernel.org, gcc-patches@gcc.gnu.org,
-        libc-alpha@sourceware.org, eggert@cs.ucla.edu,
-        linux-kernel@vger.kernel.org, jwakely.gcc@gmail.com,
-        David.Laight@ACULAB.COM
-Subject: [PATCH v5 2/2] void.3: New link to system_data_types(7)
-Date:   Fri,  2 Oct 2020 21:28:16 +0200
-Message-Id: <20201002192814.14113-3-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201002151419.32053-1-colomar.6.4.3@gmail.com>
-References: <20201002151419.32053-1-colomar.6.4.3@gmail.com>
+        Fri, 2 Oct 2020 15:29:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601666994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UUF8r6P20KLuB/qZTy80TaYlmTrYZ31o4GL8SMne1Mc=;
+        b=S2pmYheCScYhbLNh++XN1USyPiXsQjkVnLRSeyuHYKt91spro2kRLkSL1NPHD+2EKj2SyH
+        WzAh8FrAUvvON7BrKfSiKb9oHtyW5kIsASNP6tsrggCYipSxGC7Me3Hnp/uhGlGJKyrgIH
+        eb725075iv6w2MqvybbK4HVlFEI5whc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-52-jZrE_AY5O5OsnuRt6N3Tiw-1; Fri, 02 Oct 2020 15:29:50 -0400
+X-MC-Unique: jZrE_AY5O5OsnuRt6N3Tiw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A07508030BE;
+        Fri,  2 Oct 2020 19:29:48 +0000 (UTC)
+Received: from krava (ovpn-114-211.ams2.redhat.com [10.36.114.211])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E1F6973677;
+        Fri,  2 Oct 2020 19:29:45 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 21:29:44 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCHv2 1/9] perf tools: Add build id shell test
+Message-ID: <20201002192944.GH3999500@krava>
+References: <20200930171512.3986425-1-jolsa@kernel.org>
+ <20200930171512.3986425-2-jolsa@kernel.org>
+ <20201001190530.GD3999500@krava>
+ <CAM9d7chyjSaqhjjT4myfs5p9ExH-3Rugme-OFaF8454yO4_s1w@mail.gmail.com>
+ <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fW=y4jJJfcY81wa8zjUXfOJrun=djT5ZL+6W826r4pERg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- man3/void.3 | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 man3/void.3
+On Fri, Oct 02, 2020 at 10:34:51AM -0700, Ian Rogers wrote:
 
-diff --git a/man3/void.3 b/man3/void.3
-new file mode 100644
-index 000000000..db50c0f09
---- /dev/null
-+++ b/man3/void.3
-@@ -0,0 +1 @@
-+.so man7/system_data_types.7
--- 
-2.28.0
+SNIP
+
+> > > +
+> > >  LIBJVMTI = libperf-jvmti.so
+> > >
+> > >  ifndef NO_JVMTI
+> > > @@ -756,6 +763,13 @@ $(OUTPUT)perf-read-vdsox32: perf-read-vdso.c util/find-map.c
+> > >         $(QUIET_CC)$(CC) -mx32 $(filter -static,$(LDFLAGS)) -Wall -Werror -o $@ perf-read-vdso.c
+> > >  endif
+> > >
+> > > +ifndef NO_BUILDID_EX
+> > > +$(OUTPUT)buildid-ex-sha1:
+> > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=sha1 -o $@ -x c -
+> > > +$(OUTPUT)buildid-ex-md5:
+> > > +       $(QUIET_LINK)echo 'int main(void) { return 0; }' | $(CC) -Wl,--build-id=md5 -o $@ -x c -
+> > > +endif
+> >
+> > Can we just build them in the test shell script instead?
+
+it would solve the build-directory/install-directory
+lookup search.. but it'd need to do detect compiler
+and depend on it as Ian said
+
+do you have some other reason to compile it in test?
+
+thanks,
+jirka
+
+> >
+> > Thanks
+> > Namhyung
+> 
+> That'd mean perf test having a dependency on a compiler :-/ That said
+> there are some existing dependencies for BPF compilers.
+
+> 
+> Thanks,
+> Ian
+
+SNIP
 
