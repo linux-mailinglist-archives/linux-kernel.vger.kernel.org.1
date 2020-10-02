@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D438A280BC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBA8280BC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387504AbgJBApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 20:45:07 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:44792 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387430AbgJBApG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 20:45:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601599505; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tIPTDeHw77fjXshMc7iSNtvBryZjsLxbooevavI8i74=; b=Z4oLddha5FtOlrqqrzz1+c+zotImxvN6dUck4/7vQJJiYmkbImG7FylW6D/qFac1IBXV5+/Y
- adGFZkxzbKy7YLuQqTdJyjJ9DRiG5yCqzBCDRFvO2mHnJ+78yX+D0KBsFS+t+Lzn0xsvEKJ6
- denEzzltj4lrX/JIjugSWtOMQYE=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f767811726b122f31eae16f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 00:45:05
- GMT
-Sender: collinsd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 50022C433CA; Fri,  2 Oct 2020 00:45:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.46.160.165] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: collinsd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA208C433C8;
-        Fri,  2 Oct 2020 00:45:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA208C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
-Subject: Re: [RESEND PATCH] spmi: prefix spmi bus device names with "spmi"
-To:     Stephen Boyd <sboyd@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1600812258-17722-1-git-send-email-collinsd@codeaurora.org>
- <160151084091.310579.3876905878885019200@swboyd.mtv.corp.google.com>
- <20201001174326.GT6715@sirena.org.uk>
- <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
-From:   David Collins <collinsd@codeaurora.org>
-Message-ID: <7c45b147-f1d2-4b32-9e51-71c5d2cb576f@codeaurora.org>
-Date:   Thu, 1 Oct 2020 17:45:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <160157827040.310579.12112194764912078296@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8
+        id S2387506AbgJBAuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 20:50:21 -0400
+Received: from mail-eopbgr20045.outbound.protection.outlook.com ([40.107.2.45]:16519
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733275AbgJBAuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 20:50:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hVTdg1dz5h18Ogx3F/d5BlbrHPscTg9HMseWfsGLfEngFYbTPd4BU27POd9oU3+aeFriTe3obmYBOpZfk1ljsoJjb1Ah7UKeN/18aeEhdBzhMOkLRRHlmwb4KhQM02NDOvNPCJgRJvjHZwsUkjfRC9tgXcy/zvqOWs/cNITBDKuCNuu3vBRfA8CpKHJFGXEBmM34BjJFCaQFwnjgAJOF5yQAKIhgr7sCReCmjFc+7lEszxpuI/uKaWlZ//mMmISv72lVb9bGU/OkTDWAKWwEozfreKtUluCNEon56ZnkfhFDn2kkhTwm6Fgdl/A2j6usxY04Bji79o+B/8oAGw4FXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sel3YY351kS7xH6iNnPEnOJxfxjwtWAd9znLidf9wis=;
+ b=RE3o/o3qe4VYVUzdSxJUKUB/dYsPigC5k39Pc9b4n8I5dJjRaNk96q8n8Xgy4EDw6CHc/3IqIglweIqdWMRgsf6qFVt3Ni25kkm+EMZ9bs5cYMCE7BVW0su1VqPHRHVcM3JKFHO8SrBC1wbO0knFkp8V5jSkhVuViKjxG89eRozHNO7KcA1RzP5e3KRMYmniuUBBIhhr2+ZjIdPh8/DIND/1ARkr4vYMHScdlOZSsWgsC4PyCC6RC4Dr08bQYzwXdbhNFPZjtUSVnvKDFtNkZ123FeYWerCgy/zvmnmbDfYyJug2OYH6mteJBy4Nqnh9kTFQc1RPLB/ljHn204zyig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sel3YY351kS7xH6iNnPEnOJxfxjwtWAd9znLidf9wis=;
+ b=g5NYXKHlBluEQBK3ry/9vKsAfLM4eY1vlT+acYwPP8SFPzva9mc/zb4yv41Lgl9XzXjdUGtsmr0oC6TxcqSLhQajssJsMF1G0OkM3vbk4bifW/29sIhtCQeGrOPdSOyB2oKtelqOYjak8sqF3jBoHPBEI5B0p5ufMmxI6d3zxZw=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB4816.eurprd04.prod.outlook.com (2603:10a6:803:5b::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Fri, 2 Oct
+ 2020 00:50:16 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3433.032; Fri, 2 Oct 2020
+ 00:50:16 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     David Miller <davem@davemloft.net>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Radu-andrei Bulie <radu-andrei.bulie@nxp.com>,
+        "fido_max@inbox.ru" <fido_max@inbox.ru>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [PATCH v3 devicetree 0/2] Add Seville Ethernet switch to T1040RDB
+Thread-Topic: [PATCH v3 devicetree 0/2] Add Seville Ethernet switch to
+ T1040RDB
+Thread-Index: AQHWl/WnnE50IayoQkG0H2c1fXcQZqmDLcmAgABOR4A=
+Date:   Fri, 2 Oct 2020 00:50:16 +0000
+Message-ID: <20201002005015.hxtsu7igdfd352zb@skbuf>
+References: <20201001132013.1866299-1-vladimir.oltean@nxp.com>
+ <20201001.131005.812058315852168053.davem@davemloft.net>
+In-Reply-To: <20201001.131005.812058315852168053.davem@davemloft.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.26.229.171]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1c81ea1b-c717-400e-9a21-08d8666d2139
+x-ms-traffictypediagnostic: VI1PR04MB4816:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4816CDF4E4CB0C2A67DF7902E0310@VI1PR04MB4816.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D6ucpyMGYVBHRy1MLTbl0CgiNXR3BQexZ+2Mn2FR+vTFAyIw3MUklx0r5wk4I3zqTiH0BoAuNct2VpMMj7rC9xCPndusL3zPFtqbkxQS+73W8i46MELpb0xfz2XTsMBA3+7fZfBAVK4phNbMWMPT7SE2VSsjEozYaZcOxZ7OUAlO1o006R0YKsKdDE/b2/G4XYWQ7vG/1oHJp9tUR2T1bSI3F8xKh/0+Wz5Zr4Q+sefdlULoNEuaz9W8xG3FryXVhnacCJBnDAaT2vO/HerSUWomlpGlYKb5eoOVpEOu3aUKbUgUeFdlc/EuJM9+LAUPcupQyDO5IcjWrDvc5NLjJyiVYRmdu1nEkQJWhIMags4UwMEQfXeOzA7KwAPqgmOz
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(346002)(39860400002)(136003)(396003)(366004)(6506007)(2906002)(4326008)(44832011)(6486002)(54906003)(4744005)(8936002)(8676002)(66446008)(66476007)(316002)(66556008)(64756008)(66946007)(76116006)(478600001)(1076003)(91956017)(83380400001)(71200400001)(86362001)(6916009)(5660300002)(6512007)(26005)(7416002)(9686003)(186003)(33716001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: i9JUU7Q/4lp7rIHxumPj1NBRGHjipUqHTMY6h+d4UXxzLOkQatza6UUnW2p47kNrnvgj1B9BPqNv9VM1vcHneErB7SLSnq8EllCVqokdW8a5ABz7AZWSuJQwrbF9L5MkyirUApNs1PE6n76BmgF7KgCk5tpkuGo9SBij5ofcGQ31YBxSpnq4mj5Io4/OY2wyma7fGogmKp+IgnIweD1y4JWtp5JwAmjVU4qQ4RgQC8ABOo6puSbeDDYbN10ZaQzki+5bSUp7FsY49duqA9Qz+rIsGwEH9tnM+D/ufaR/nDjHZTA2CDgeYKRm6rO+6zN2GYPmz/lswcCpSrghXOMF0OLszlaP9N1YRYvEhscAsgMqvfod7xN1UAyOknBNgMnDqoTsyUYkMt8i5hBWeXUo9wUZwsHZopB2VsTiuuK0fjZtHw3E37r0HtGzxH/j2HstKh055NrWBjRjUrIRYMfXvE4WgHaBHUT9+0j42RcEo4kws+vU27+A8mC6YeUfiqEKS0BExzUGiV/yoe3t2BfGolaHAUXMfwZ+E8figQG0belip+2/wBbQc3jcqIzs3JUZXJRY05fcdbY7ZljZPx6BGMXslTc505F5aH734fi9ApFt5VbRK+Qo9HAQG6SjT115vN4GTTqlxsSoqXb7JveQBA==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C84A2490DA0CB249994B0FE521FB6194@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c81ea1b-c717-400e-9a21-08d8666d2139
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2020 00:50:16.6747
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: O/ziGaoXZ8Uvx+waduTXaACg7V9xV7IhSt67FlUstTUNA2Ds98xtS4L0qU5fRKEXUdhuGev+BjdreFVurFEmEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4816
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 11:51 AM, Stephen Boyd wrote:
-> Quoting Mark Brown (2020-10-01 10:43:26)
->> On Wed, Sep 30, 2020 at 05:07:20PM -0700, Stephen Boyd wrote:
->>> Quoting David Collins (2020-09-22 15:04:18)
->>
->>>> This helps to disambiguate SPMI device regmaps from I2C ones
->>>> at /sys/kernel/debug/regmap since I2C devices use a very
->>>> similar naming scheme: 0-0000.
->>
->>> Can regmap debugfs prepend the bus name on the node made in debugfs?
->>> Does it do that already?
->>
->> It doesn't do that.  I have to say that given the use of dev_name() in
->> logging it does feel like it'd be useful to have distinct names for
->> grepping if we're running into collisions, IIRC the reason I went with
->> dev_name() was that it's a commonly used human readable handle for
->> diagnostic infrastrucuture so it makes it easier to follow things around.
-> 
-> To me the dev_name() usage seems fine. Maybe David has some real reason
-> to change this though?
-> 
-> In general I don't think userspace cares what the SPMI device name is,
-> i.e. the device name isn't used for dev nodes because SPMI doesn't
-> support ioctls or read/write APIs on the bus. That could be a nice
-> feature addition though, to support something like i2c-dev.
-> 
-> Changing it so that regmap debugfs is less likely to collide looks
-> weird. It doesn't actually collide anyway, so it seems like we're adding
-> spmi prefix to make it easier to find in debugfs?
+On Thu, Oct 01, 2020 at 01:10:05PM -0700, David Miller wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Date: Thu,  1 Oct 2020 16:20:11 +0300
+>=20
+> > Seville is a DSA switch that is embedded inside the T1040 SoC, and
+> > supported by the mscc_seville DSA driver inside drivers/net/dsa/ocelot.
+> >=20
+> > This series adds this switch to the SoC's dtsi files and to the T1040RD=
+B
+> > board file.
+>=20
+> I am assuming the devicetree folks will pick this series up.
+>=20
+> Thanks.
+>=20
 
-Yes, that is correct.  There isn't a collision since I2C uses 0-0000 and
-SPMI uses 0-00 naming scheme.  However, those names are very similar and
-it is hard for a user to tell which is which inside
-/sys/kernel/debug/regmap without a deep understanding of the I2C and SPMI
-code.
+I can also resend via net-next if that's easier (the last commit on
+arch/powerpc/boot/dts/fsl/t104*, as per today's linux-next, has been in
+2018, so there is no conflict).
 
-The SPMI regmap debugfs files are used extensively for testing and debug
-purposes internally at Qualcomm and by our customers.  It would be helpful
-if the more verbose naming scheme were accepted upstream to avoid
-confusion and broken test scripts.
-
-Thanks,
-David
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I need to resend anyway, due to an epic failure where I got the port
+numbering wrong...=
