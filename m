@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36743281CDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51E7281CE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725730AbgJBUVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUVn (ORCPT
+        id S1725780AbgJBUYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:24:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725497AbgJBUYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:21:43 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F414C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:21:43 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id h23so1509229pjv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QmkyIwIzJZpIkonY93V0qmv9p9tflahwJGcGGSuv9+E=;
-        b=rrD1P5O7APb3+Gu0r0gAfZ9ZDM5/V/JUeBgCmqAGYk4yvWkkE47FzAqWXrz04eOdoB
-         PThUUMnGwyqG6ums38vD+GaCgdk6BAmr+g9fBeIF1u0H8KP6KhF8O6Lkji/z3Oh/zWfK
-         8wnR094h0q6txl7CRf0R/cQS4iPf8wIxnYFwqReXrrgbrS1kt0pB7S1NEf+Pkhh6pmta
-         pacQkAjsUjdyHTAHxVrocMINIbBhTXfQIcfQxUlzPjmyzR2VvLqrL3ugcjRYQ0NNIPRt
-         jleZKQAEdE4y/76XkSiLwWXQlVXj3LiZNxqaibTA3oAEFxaj/9IuDx//HhCD14pcHj/9
-         glAw==
+        Fri, 2 Oct 2020 16:24:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601670240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1BtRx1BSPtmWbCbhAW/KtfQIVoEEo/4AK+T/10zLCAU=;
+        b=RQPEvWsRv/Xfy1+bBf0qcEzyKAG7FxeO2LzYBGEL/iLrDlvEgBhDFQ6Z68arj6UiVpAbI+
+        diq6yB4mlaskexifQK0IKCOQnR+dI6QTb4yu1zO8G36MCBhlnssax7PkovebVF1CdOgR0F
+        zXfQV/i1JoXXCEqYufjMtb0pmG88sks=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-30OjzX1nNoWtaJwnjMoE2Q-1; Fri, 02 Oct 2020 16:23:58 -0400
+X-MC-Unique: 30OjzX1nNoWtaJwnjMoE2Q-1
+Received: by mail-ot1-f70.google.com with SMTP id s3so1097310otp.18
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:23:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QmkyIwIzJZpIkonY93V0qmv9p9tflahwJGcGGSuv9+E=;
-        b=TYero7SFuaCCfC2NjsUudWbjPUQPeiRaTrFQ0e2uL1SqFaGRnw1KXh6De2UhCJRNiR
-         /L/sVFUsQtDcjLKIaxw2r+pPN+thJ429xDxDTXIDuDXDXOp/Dq89QeVeq7R8w5EdCJFp
-         yXNHGbgElQk6zfm9Xa09KLZlZaTnQfvGfgTIo85OqMNkwweHRnf9Zjannq1OYTsQj6DC
-         i+jX8waUFPZPJK78F6GllTeICCfqNB1mY7LN4oYfB7OC/oUagyoHnzkYGE4hGFVapot4
-         GRrjW7ExWs+S08Z3D6EumuElqH16ia5zFPvlgp4tahO/o8s9thZLb+Tzyc+LTR143TFV
-         iC/g==
-X-Gm-Message-State: AOAM530ItE976Fcb1FraR+VB3Bqo6iSZuQRqjPoN6UvOv7KO1VFnzbNc
-        h0lIxKavtP3e9Pq6urz68SU=
-X-Google-Smtp-Source: ABdhPJzpo8nb1R3LbTN3IBkwzzxZmrCnKi6lyyEPk+dMqcHrP2s1B0blu6sdI2E9x8ZsILd4VCmxMw==
-X-Received: by 2002:a17:90a:8c8d:: with SMTP id b13mr2373981pjo.208.1601670102585;
-        Fri, 02 Oct 2020 13:21:42 -0700 (PDT)
-Received: from [10.230.29.112] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k24sm2928388pfg.148.2020.10.02.13.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 13:21:41 -0700 (PDT)
-Subject: Re: [PATCH] phy: usb: Fix incorrect clearing of tca_drv_sel bit in
- SETUP reg for 7211
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-References: <20201002190115.48017-1-alcooperx@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <376da218-b185-c9d7-3b53-6c1b08fd4c47@gmail.com>
-Date:   Fri, 2 Oct 2020 13:21:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1BtRx1BSPtmWbCbhAW/KtfQIVoEEo/4AK+T/10zLCAU=;
+        b=WOUoN6kDMX31xU1UMMbYZV1z0/rq6vaH8OpHaxrXMEC646KpcapT2rPTZgefRUIe/P
+         s2/3odkVudx9JtqvWtX1vjuXvZ7qWPMDNXrtlSYIhDlPV33Y3BAXzMGuUfDfnkFp4zaU
+         w2q+3xmrVjwGAkzY1rslyaxgS9t1/u3AZ5Ed/PufYaGIlxzUjEP9Ac4AnKxKzXSZMBT/
+         dfuBdHoRMximcSsWNGFVl0tb2+1IdLs9zvYERCek641p9PawOn9m8kk3Vm1F42CuPHZl
+         7ZDmeFApz15B6YwAewxFvjn73ZHiMiALH4vjsDJ9My7nnnzUhNftvQ1ZZrlb+C3wNbtS
+         jb1g==
+X-Gm-Message-State: AOAM530L2a+BmTHJUc6+oiDXKFjZjuvSOR2s5tCkzYqtuCibiR0r0I1i
+        xd+CjnT54pf9TP0SSfoM9EjbtYY/WagB/VaN7zyq1KlHp/o84g6Wp6vudv7ov0upQfqIj8zVlGf
+        qRctMWDi8gg5wVpYPG47NXCMZM2c0n/dQ4asCpCYI
+X-Received: by 2002:a9d:6c4f:: with SMTP id g15mr2998952otq.277.1601670237881;
+        Fri, 02 Oct 2020 13:23:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1gWWCddrZxrj9sNrhg+fkQWj8i0BYmrOGqgsFgdmOfXtbeSMXzBC4l59z6AWV2YwQgZ+1j0OdmCfede0NrJ0=
+X-Received: by 2002:a9d:6c4f:: with SMTP id g15mr2998935otq.277.1601670237639;
+ Fri, 02 Oct 2020 13:23:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002190115.48017-1-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201002174001.3012643-1-jarod@redhat.com> <20201002174001.3012643-7-jarod@redhat.com>
+ <20201002121317.474c95f0@hermes.local>
+In-Reply-To: <20201002121317.474c95f0@hermes.local>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Fri, 2 Oct 2020 16:23:46 -0400
+Message-ID: <CAKfmpSc3-j2GtQtdskEb8BQvB6q_zJPcZc2GhG8t+M3yFxS4MQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 6/6] bonding: make Kconfig toggle to disable
+ legacy interfaces
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 2, 2020 at 3:13 PM Stephen Hemminger
+<stephen@networkplumber.org> wrote:
+>
+> On Fri,  2 Oct 2020 13:40:01 -0400
+> Jarod Wilson <jarod@redhat.com> wrote:
+>
+> > By default, enable retaining all user-facing API that includes the use of
+> > master and slave, but add a Kconfig knob that allows those that wish to
+> > remove it entirely do so in one shot.
+> >
+> > Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+> > Cc: Veaceslav Falico <vfalico@gmail.com>
+> > Cc: Andy Gospodarek <andy@greyhouse.net>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Thomas Davis <tadavis@lbl.gov>
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Jarod Wilson <jarod@redhat.com>
+> > ---
+> >  drivers/net/Kconfig                   | 12 ++++++++++++
+> >  drivers/net/bonding/bond_main.c       |  4 ++--
+> >  drivers/net/bonding/bond_options.c    |  4 ++--
+> >  drivers/net/bonding/bond_procfs.c     |  8 ++++++++
+> >  drivers/net/bonding/bond_sysfs.c      | 14 ++++++++++----
+> >  drivers/net/bonding/bond_sysfs_port.c |  6 ++++--
+> >  6 files changed, 38 insertions(+), 10 deletions(-)
+> >
+>
+> This is problematic. You are printing both old and new values.
+> Also every distribution will have to enable it.
+>
+> This looks like too much of change to users.
 
+I'd had a bit of feedback that people would rather see both, and be
+able to toggle off the old ones, rather than only having one or the
+other, depending on the toggle, so I thought I'd give this a try. I
+kind of liked the one or the other route, but I see the problems with
+that too.
 
-On 10/2/2020 12:01 PM, Al Cooper wrote:
-> The 7211a0 has a tca_drv_sel bit in the USB SETUP register that
-> should never be enabled. This feature is only used if there is a
-> USB Type-C PHY, and the 7211 does not have one. If the bit is
-> enabled, the VBUS signal will never be asserted. In the 7211a0,
-> the bit was incorrectly defaulted to on so the driver had to clear
-> the bit. In the 7211c0 the state was inverted so the driver should
-> no longer clear the bit. This hasn't been a problem because all
-> current 7211 boards don't use the VBUS signal, but there are some
-> future customer boards that may use it.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+For simplicity, I'm kind of liking the idea of just not updating the
+proc and sysfs interfaces, have a toggle entirely disable them, and
+work on enhancing userspace to only use netlink, but ... it's going to
+be a while before any such work makes its way to any already shipping
+distros. I don't have a satisfying answer here.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Florian
+Jarod Wilson
+jarod@redhat.com
+
