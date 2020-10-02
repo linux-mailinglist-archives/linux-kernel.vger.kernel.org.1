@@ -2,115 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AF2280DFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A0F280E0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgJBHVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgJBHVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:21:19 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88960C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 00:21:19 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j2so581235wrx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 00:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w4PVlPcr7dpTEG2yTeexZo3mfBgC1LUTIE3TVKKqTC0=;
-        b=IsAFPt3bvZYHfV+35NPHHU3k0vBqpZQJDx3q4QHSMyu8MkYuSqsoYTAQVpH5pHDiq4
-         7Ox0cVqXMR1M/KyJrcxTxUWxWmVvsvM+jkboUDoK96PuvSrMd4M39JfI2P5qpsTaGmAQ
-         W+IZZwGAh+8i2XECczaHk4P/G0zDn8/hPbT554DKt8b9sYjxNCug4gK5NBGOeuDROI86
-         huv4E8++P2ep9ndFj0QayT1DEdH7V3SuMvnI7hl6Q0iAxQSR8nGHW+TkW8kw7kvFyqCe
-         h6XGCFzI768Q7+bbhvkFo+5Aqs9U2ZcLvcXxya0LSu/kdLJL2pTbzK2prcjbYfkks4Kk
-         LZdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w4PVlPcr7dpTEG2yTeexZo3mfBgC1LUTIE3TVKKqTC0=;
-        b=KKudEsVrBOv9RbRjSk8MGWEld6ttYNXXWQi7s9HGCcwyFdFg98YRG95rCeiswxux8s
-         gu36gZVrH0ginx4b8z0EKZPp8dCUwk+BwjD2ZOgEua5PkL6aCQUczQ5KmangbhORrvnx
-         3eP0YIb2Dtw7LjajQWndZKgN7wYwWS4Liax2VP9R3xDXcIbbPSZgKOkzga4aHfCYIVKH
-         n/0+L/kXVnx5Qhkg9ApKndaowbOB31mIFt87lhn0dl6fjpaOxkg4VZ/bpwBa+9UUJG6H
-         NwoPq8bBzXmtzgCAn5x6r3C8+YMaf3mT+IxPHuqEedyCyXarh1AwZT8bHHnqA5vgfDWc
-         MYow==
-X-Gm-Message-State: AOAM532pNrR5PNYjbRRnBIiKAolQ456oFJ2LehQvSmy4fWvripYnVZPZ
-        1opJPmf2BibLF4t5Me7hkkfdkA==
-X-Google-Smtp-Source: ABdhPJwFbDdME2xRypUZW1NmvccNMBIbMBry74SzvCzSLK32Q1LWoYuaZIflqgo4RWeBsSympZu2fQ==
-X-Received: by 2002:adf:e74d:: with SMTP id c13mr1306972wrn.45.1601623278234;
-        Fri, 02 Oct 2020 00:21:18 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id m10sm756826wmi.9.2020.10.02.00.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 00:21:17 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 09:21:15 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH 3/3] media: zoran: fix mixed case on vars
-Message-ID: <20201002072115.GC15586@Red>
-References: <21fd8f12edb27d269eefdbea172aa3a80e2aa6ce.1601544491.git.mchehab+huawei@kernel.org>
- <5e09ed2cc5cacfac0653089fc976be3409f0fa9d.1601544491.git.mchehab+huawei@kernel.org>
+        id S1726042AbgJBHcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:32:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34080 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725961AbgJBHcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:32:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601623927;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2+4lGymTonwUKn49OsGa2hsWMCGqR/XylF0uFTOA2l4=;
+        b=sKboYHkMhjDKJ3drUFYX2m+oMS+TtE4WiL9ObDOu4w3wHcve5iEGkFSngHcBVQEudP18qU
+        9yftr2g9nZTqoVSbye8IRlzz4W/dsRyM6Rz7A+SbAxmgjt9x7+C0VUqZPb848Iax21Evhk
+        qsuz9k1T33AQ1B+FuKhEYUkvgVHntJ8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE162AC4D;
+        Fri,  2 Oct 2020 07:32:06 +0000 (UTC)
+Date:   Fri, 2 Oct 2020 09:32:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 00/30] 1GB PUD THP support on x86_64
+Message-ID: <20201002073205.GC20872@dhcp22.suse.cz>
+References: <20200928175428.4110504-1-zi.yan@sent.com>
+ <20200930115505.GT2277@dhcp22.suse.cz>
+ <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e09ed2cc5cacfac0653089fc976be3409f0fa9d.1601544491.git.mchehab+huawei@kernel.org>
+In-Reply-To: <73394A41-16D8-431C-9E48-B14D44F045F8@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:28:15AM +0200, Mauro Carvalho Chehab wrote:
-> Use this small script to replace CamelCase and wrong case
-> on vars:
+On Thu 01-10-20 11:14:14, Zi Yan wrote:
+> On 30 Sep 2020, at 7:55, Michal Hocko wrote:
 > 
-> <script>
-> FILES=$(find "$1" -type f|grep -e '.c$' -e '.h$')
-> CAMEL_VARS=$(cat tags|perl -ne 'print "$1\n" if (m/^(\w*[A-Z]\w*[a-z]\w*)\s/)')
-> for i in $CAMEL_VARS; do
->         new=$(perl -e '
->                 my $s = $ARGV[0];
->                 $s =~ s{([^a-zA-Z]?)([A-Z]*)([A-Z])([a-z]?)}{
->                         my $fc = pos($s)==0;
->                         my ($p0,$p1,$p2,$p3) = ($1,lc$2,lc$3,$4);
->                         my $t = $p0 || $fc ? $p0 : '_';
->                         $t .= $p3 ? $p1 ? "${p1}_$p2$p3" : "$p2$p3" : "$p1$p2";
->                         $t;
->                 }ge;
->                 print $s;' "$i")
->         for j in $FILES; do
->                 sed -E "s,\b$i\b,$new,g" -i $j
->         done
-> done
-> for i in $(git grep "#define zr" drivers/staging/media/zoran/*.[ch]|perl -ne 'print "$1\n" if (m/#define\s+(zr\S+)/)'); do j=$(echo $i|tr [a-z] [A-Z]); sed "s,\b$i\b,$j,g" -i drivers/staging/media/zoran/*.[ch]; done
-> </script>
+> > On Mon 28-09-20 13:53:58, Zi Yan wrote:
+> >> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >> Hi all,
+> >>
+> >> This patchset adds support for 1GB PUD THP on x86_64. It is on top of
+> >> v5.9-rc5-mmots-2020-09-18-21-23. It is also available at:
+> >> https://github.com/x-y-z/linux-1gb-thp/tree/1gb_thp_v5.9-rc5-mmots-2020-09-18-21-23
+> >>
+> >> Other than PUD THP, we had some discussion on generating THPs and contiguous
+> >> physical memory via a synchronous system call [0]. I am planning to send out a
+> >> separate patchset on it later, since I feel that it can be done independently of
+> >> PUD THP support.
+> >
+> > While the technical challenges for the kernel implementation can be
+> > discussed before the user API is decided I believe we cannot simply add
+> > something now and then decide about a proper interface. I have raised
+> > few basic questions we should should find answers for before the any
+> > interface is added. Let me copy them here for easier reference
+> Sure. Thank you for doing this.
 > 
-> This should solve almost all warnings reported by checkpatch.pl
-> in strict mode.
+> For this new interface, I think it should generate THPs out of populated
+> memory regions synchronously. It would be complement to khugepaged, which
+> generate THPs asynchronously on the background.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/staging/media/zoran/videocodec.h   |   2 +-
->  drivers/staging/media/zoran/zoran.h        |  30 +--
->  drivers/staging/media/zoran/zoran_card.c   |  52 ++---
->  drivers/staging/media/zoran/zoran_device.c | 242 ++++++++++-----------
->  drivers/staging/media/zoran/zoran_driver.c |  94 ++++----
->  drivers/staging/media/zoran/zr36016.c      |  14 +-
->  drivers/staging/media/zoran/zr36050.c      |   2 +-
->  drivers/staging/media/zoran/zr36057.h      | 122 +++++------
->  drivers/staging/media/zoran/zr36060.c      |  76 +++----
->  drivers/staging/media/zoran/zr36060.h      |  66 +++---
->  10 files changed, 350 insertions(+), 350 deletions(-)
+> > - THP allocation time - #PF and/or madvise context
+> I am not sure this is relevant, since the new interface is supposed to
+> operate on populated memory regions. For THP allocation, madvise and
+> the options from /sys/kernel/mm/transparent_hugepage/defrag should give
+> enough choices to users.
 
-Acked-by: Corentin Labbe <clabbe@baylibre.com>
+OK, so no #PF, this makes things easier.
 
-Thanks
+> > - lazy/sync instantiation
+> 
+> I would say the new interface only does sync instantiation. madvise has
+> provided the lazy instantiation option by adding MADV_HUGEPAGE to populated
+> memory regions and letting khugepaged generate THPs from them.
+
+OK
+
+> > - huge page sizes controllable by the userspace?
+> 
+> It might be good to allow advanced users to choose the page sizes, so they
+> have better control of their applications.
+
+Could you elaborate more? Those advanced users can use hugetlb, right?
+They get a very good control over page size and pool preallocation etc.
+So they can get what they need - assuming there is enough memory.
+
+> For normal users, we can provide
+> best-effort service. Different options can be provided for these two cases.
+
+Do we really need two sync mechanisms to compact physical memory? This
+adds an API complexity because it has to cover all possible huge pages
+and that can be a large set of sizes. We already have that choice for
+hugetlb mmap interface but that is needed to cover all existing setups.
+I would argue this doesn't make the API particurarly easy to use.
+
+> The new interface might want to inform user how many THPs are generated
+> after the call for them to decide what to do with the memory region.
+
+Why would that be useful? /proc/<pid>/smaps should give a good picture
+already, right?
+
+> > - aggressiveness - how hard to try
+> 
+> The new interface would try as hard as it can, since I assume users really
+> want THPs when they use this interface.
+> 
+> > - internal fragmentation - allow to create THPs on sparsely or unpopulated
+> >   ranges
+> 
+> The new interface would only operate on populated memory regions. MAP_POPULATE
+> like option can be added if necessary.
+
+OK, so initialy you do not want to populate more memory. How do you
+envision a future extension to provide such a functionality. A different
+API, modification to existing?
+
+> > - do we need some sort of access control or privilege check as some THPs
+> >   would be a really scarce (like those that require pre-reservation).
+> 
+> It seems too much to me. I suppose if we provide page size options to users
+> when generating THPs, users apps could coordinate themselves. BTW, do we have
+> access control for hugetlb pages? If yes, we could borrow their method.
+
+We do not. Well, there is a hugetlb cgroup controller but I am not sure
+this is the right method. A lack of hugetlb access controll is a serious
+shortcoming which has turned this interface into "only first class
+citizens" feature with a very closed coordination with an admin.
+-- 
+Michal Hocko
+SUSE Labs
