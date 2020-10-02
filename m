@@ -2,137 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2091280D1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 07:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B90280D1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 07:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgJBFiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 01:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgJBFiU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 01:38:20 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEE1C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 22:38:20 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id s14so326488pju.1
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 22:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xa3NGRE4EmU+gshR6rwAMIftLPd2DJTnRqHtGa9nIBw=;
-        b=dUcAQaVyKvDnf4aSGotN0wJ5i4EEDqmRPgPayl8YHc9YYwrLSObWBPgSYLrNCmxxNO
-         /oJ2b1uh+HzhN/71IDhzZpL2B6U3FroPJJyRcIL53C7A0aWQGr/6jKwqMso5jr9Nk5sj
-         LPZZK9+HR40fZ1hor/73Q0f+LDfvRORtd3TUGxurp+dn1aZyG7CxGU5dW6zTnREX2/pn
-         5jtYV4LcUlVsVZp02Pha4MraCEPKXI4MCIy0m2VKYhXKTFdB5Blzoi3vf7Cl0UQA/qkA
-         ZfGUeBM4c5MIL2/ClFDOH7Q90MO8fp1AMHkgxHWHYFrR50LysEp5vLGN2gbfKMg1fhxh
-         m45Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xa3NGRE4EmU+gshR6rwAMIftLPd2DJTnRqHtGa9nIBw=;
-        b=tnv3hPVbG2xS2gPYpUoWNadvckU1Zh31vZtL/BBw97oUnkWHk3ys/8Vyuoth62BlsN
-         xHtmvV8lTJnJVrhi8ImpfsXHWh0DfiS5UmvcHHFUXGR9dIhJNl8XfgHYjau35vGeGt7P
-         nvQjXvfXSvwspcyCYlXtD6gyGnwcNWt1wU2rd9GIsyQQ59no7pTdfvGSswjrVItvEuZm
-         wZjFOqg/W7BnBYuZKjJSDpXaFKXTR6J/rHq70SPfOQ+EH8okMXrpvUVrgCFud2QAxsTJ
-         xWwhpDvO2gvZ9n3zobUjQPrY5HdDTam1wucyRd8MHZiNCmdi7+5YpFkE+aI/XftK7vPa
-         rdVw==
-X-Gm-Message-State: AOAM530lSViqNtx/6iBZ7Ig8HWy7sNXRvbbIVoIFpqjJs+8UgerP4PZJ
-        7h3pSxOkU7XZYV5jsMWkzAUwc6Gs6QPPHA==
-X-Google-Smtp-Source: ABdhPJybBI94qyBUbFpH+VcPS71XBvnTPXFISyEXdXP+brVsBRxezB4oQepDoAU8GniWriGgXyufpQ==
-X-Received: by 2002:a17:90a:62c4:: with SMTP id k4mr954441pjs.174.1601617100275;
-        Thu, 01 Oct 2020 22:38:20 -0700 (PDT)
-Received: from ubuntu (1-171-243-75.dynamic-ip.hinet.net. [1.171.243.75])
-        by smtp.gmail.com with ESMTPSA id a1sm432744pfr.12.2020.10.01.22.38.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 22:38:19 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 13:38:12 +0800
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] sched/uclamp: release per-task uclamp control if
- user set to default value
-Message-ID: <20201002053812.GA176142@ubuntu>
-References: <20200928082643.133257-1-hsiang023167@gmail.com>
- <8272de8d-9868-d419-e2bb-d5e2c0614b63@arm.com>
+        id S1726025AbgJBFnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 01:43:05 -0400
+Received: from mga04.intel.com ([192.55.52.120]:26482 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgJBFnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 01:43:05 -0400
+IronPort-SDR: xbkfglkvbs/NHnKIVqQC1l3E9ih8qTzfKKbysxz4TbreY3DWSXunq6KhRzOqon6HUFdbETi3SE
+ dpsWba1oAgmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="160323883"
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="160323883"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 22:43:04 -0700
+IronPort-SDR: AxnjzFZxCJcGCJ01krNjA9yqQ3Hppk2xj3mUyAgZpP5mDuAFvTb/8OjbG0gLu34sSQgyjQ+huk
+ f/JH3NWh+Zvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,326,1596524400"; 
+   d="scan'208";a="416349376"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2020 22:43:01 -0700
+Date:   Fri, 2 Oct 2020 13:39:44 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     AngeloGioacchino Del Regno <kholk11@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>, Andy Gross <agross@kernel.org>,
+        kbuild-all@lists.01.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, marijns95@gmail.com,
+        konradybcio@gmail.com, martin.botka1@gmail.com,
+        MSM <linux-arm-msm@vger.kernel.org>, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] clk: qcom: Add SDM660 GPU Clock Controller (GPUCC)
+ driver
+Message-ID: <20201002053944.GD30771@intel.com>
+References: <20200926130306.13843-5-kholk11@gmail.com>
+ <202010010458.1600JqDl-lkp@intel.com>
+ <CAK7fi1Yvaj+Emad8GboLHSu6v-E81pX=GmCtmwm=utzQEtu2Cg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8272de8d-9868-d419-e2bb-d5e2c0614b63@arm.com>
+In-Reply-To: <CAK7fi1Yvaj+Emad8GboLHSu6v-E81pX=GmCtmwm=utzQEtu2Cg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 03:12:51PM +0200, Dietmar Eggemann wrote:
-Hi Dietmar,
+On Wed, Sep 30, 2020 at 11:58:50PM +0200, AngeloGioacchino Del Regno wrote:
+> The kernel test robot is wrong: this commit builds fine by
+Thanks for the info and sorry for the wrong report. Currently it is
+hard to detect the base in this case automatically, if possible, we
+recommend to use --base option when git format patch, this provides
+extra hint to us when looking for the base.
 
-> Hi Yun,
+> merging in the required patch series (464958) named
+> "Qualcomm clock fixes and preparation for SDM660"
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=464958
 > 
-> On 28/09/2020 10:26, Yun Hsiang wrote:
-> > If the user wants to release the util clamp and let cgroup to control it,
-> > we need a method to reset.
-> > 
-> > So if the user set the task uclamp to the default value (0 for UCLAMP_MIN
-> > and 1024 for UCLAMP_MAX), reset the user_defined flag to release control.
-> > 
-> > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
+> In that series there is a commit that generalizes the MSM8996-only
+> gfx3d clock ops and introduces the definition of clk_rcg2_gfx3d.
 > 
-> could you explain with a little bit more detail why you would need this
-> feature?
-> 
-> Currently we assume that once the per-task uclamp (user-defined) values
-> are set, you could only change the effective uclamp values of this task
-> by (1) moving it into another taskgroup or (2) changing the system
-> default uclamp values.
-> 
-
-Assume a module that controls group (such as top-app in android) uclamp and
-task A in the group.
-Once task A set uclamp, it will not be affected by the group setting.
-If task A doesn't want to control itself anymore,
-it can not go back to the initial state to let the module(group) control.
-But the other tasks in the group will be affected by the group.
-
-The policy might be
-1) if the task wants to control it's uclamp, use task uclamp value
-(but under group uclamp constraint)
-2) if the task doesn't want to control it's uclamp, use group uclamp value.
-
-If the policy is proper, we need a reset method for per-task uclamp.
-
+> Il giorno mer 30 set 2020 alle ore 22:46 kernel test robot
+> <lkp@intel.com> ha scritto:
+> >
+> > Hi,
+> >
+> > Thank you for the patch! Yet something to improve:
+> >
+> > [auto build test ERROR on clk/clk-next]
+> > [also build test ERROR on robh/for-next linux/master linus/master v5.9-rc7 next-20200930]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+> > config: m68k-allmodconfig (attached as .config)
+> > compiler: m68k-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/0551514b1ab723837163a8c4cd84d22831e38019
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review kholk11-gmail-com/SDM630-660-Multimedia-and-GPU-clock-controllers/20200926-210437
+> >         git checkout 0551514b1ab723837163a8c4cd84d22831e38019
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=m68k
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> > >> drivers/clk/qcom/gpucc-sdm660.c:106:15: error: variable 'gfx3d_clk_src' has initializer but incomplete type
+> >      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+> >          |               ^~~~~~~~~~~~~~
+> > >> drivers/clk/qcom/gpucc-sdm660.c:107:3: error: 'struct clk_rcg2_gfx3d' has no member named 'div'
+> >      107 |  .div = 2,
+> >          |   ^~~
+> >    drivers/clk/qcom/gpucc-sdm660.c:107:9: warning: excess elements in struct initializer
+> >      107 |  .div = 2,
+> >          |         ^
+> >    drivers/clk/qcom/gpucc-sdm660.c:107:9: note: (near initialization for 'gfx3d_clk_src')
+> > >> drivers/clk/qcom/gpucc-sdm660.c:108:3: error: 'struct clk_rcg2_gfx3d' has no member named 'rcg'
+> >      108 |  .rcg = {
+> >          |   ^~~
+> > >> drivers/clk/qcom/gpucc-sdm660.c:108:9: error: extra brace group at end of initializer
+> >      108 |  .rcg = {
+> >          |         ^
+> >    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
+> >    drivers/clk/qcom/gpucc-sdm660.c:108:9: warning: excess elements in struct initializer
+> >    drivers/clk/qcom/gpucc-sdm660.c:108:9: note: (near initialization for 'gfx3d_clk_src')
+> > >> drivers/clk/qcom/gpucc-sdm660.c:121:3: error: 'struct clk_rcg2_gfx3d' has no member named 'hws'
+> >      121 |  .hws = (struct clk_hw*[]){
+> >          |   ^~~
+> >    drivers/clk/qcom/gpucc-sdm660.c:121:9: warning: excess elements in struct initializer
+> >      121 |  .hws = (struct clk_hw*[]){
+> >          |         ^
+> >    drivers/clk/qcom/gpucc-sdm660.c:121:9: note: (near initialization for 'gfx3d_clk_src')
+> > >> drivers/clk/qcom/gpucc-sdm660.c:139:25: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
+> >      139 |     .hw = &gfx3d_clk_src.rcg.clkr.hw,
+> >          |                         ^
+> >    drivers/clk/qcom/gpucc-sdm660.c:257:45: error: 'NO_RET_PERIPH' undeclared here (not in a function)
+> >      257 |  .flags = CLAMP_IO | SW_RESET | AON_RESET | NO_RET_PERIPH,
+> >          |                                             ^~~~~~~~~~~~~
+> >    drivers/clk/qcom/gpucc-sdm660.c:277:34: error: invalid use of undefined type 'struct clk_rcg2_gfx3d'
+> >      277 |  [GFX3D_CLK_SRC] = &gfx3d_clk_src.rcg.clkr,
+> >          |                                  ^
+> > >> drivers/clk/qcom/gpucc-sdm660.c:106:30: error: storage size of 'gfx3d_clk_src' isn't known
+> >      106 | static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+> >          |                              ^~~~~~~~~~~~~
+> >
+> > vim +/gfx3d_clk_src +106 drivers/clk/qcom/gpucc-sdm660.c
+> >
+> >    105
+> >  > 106  static struct clk_rcg2_gfx3d gfx3d_clk_src = {
+> >  > 107          .div = 2,
+> >  > 108          .rcg = {
+> >    109                  .cmd_rcgr = 0x1070,
+> >    110                  .mnd_width = 0,
+> >    111                  .hid_width = 5,
+> >    112                  .parent_map = gpucc_parent_map_1,
+> >    113                  .clkr.hw.init = &(struct clk_init_data){
+> >    114                          .name = "gfx3d_clk_src",
+> >    115                          .parent_data = gpucc_parent_data_1,
+> >    116                          .num_parents = 4,
+> >    117                          .ops = &clk_gfx3d_ops,
+> >    118                          .flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+> >    119                  },
+> >    120          },
+> >  > 121          .hws = (struct clk_hw*[]){
+> >    122                  &gpucc_cxo_clk.clkr.hw,
+> >    123                  &gpu_pll0_pll_out_main.clkr.hw,
+> >    124                  &gpu_pll1_pll_out_main.clkr.hw,
+> >    125          }
+> >    126  };
+> >    127
+> >    128  static struct clk_branch gpucc_gfx3d_clk = {
+> >    129          .halt_reg = 0x1098,
+> >    130          .halt_check = BRANCH_HALT,
+> >    131          .hwcg_reg = 0x1098,
+> >    132          .hwcg_bit = 1,
+> >    133          .clkr = {
+> >    134                  .enable_reg = 0x1098,
+> >    135                  .enable_mask = BIT(0),
+> >    136                  .hw.init = &(struct clk_init_data){
+> >    137                          .name = "gpucc_gfx3d_clk",
+> >    138                          .parent_data = &(const struct clk_parent_data){
+> >  > 139                                  .hw = &gfx3d_clk_src.rcg.clkr.hw,
+> >    140                          },
+> >    141                          .num_parents = 1,
+> >    142                          .ops = &clk_branch2_ops,
+> >    143                          .flags = CLK_SET_RATE_PARENT,
+> >    144                  },
+> >    145          },
+> >    146  };
+> >    147
+> >
 > > ---
-> >  kernel/sched/core.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9a2fbf98fd6f..fa63d70d783a 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1187,6 +1187,7 @@ static void __setscheduler_uclamp(struct task_struct *p,
-> >  				  const struct sched_attr *attr)
-> >  {
-> >  	enum uclamp_id clamp_id;
-> > +	bool user_defined;
-> >  
-> >  	/*
-> >  	 * On scheduling class change, reset to default clamps for tasks
-> > @@ -1210,14 +1211,16 @@ static void __setscheduler_uclamp(struct task_struct *p,
-> >  	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> >  		return;
-> >  
-> > +	user_defined = attr->sched_util_min == 0 ? false : true;
-> >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> > -			      attr->sched_util_min, true);
-> > +			      attr->sched_util_min, user_defined);
-> >  	}
-> >  
-> > +	user_defined = attr->sched_util_max == 1024 ? false : true;
-> >  	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
-> > -			      attr->sched_util_max, true);
-> > +			      attr->sched_util_max, user_defined);
-> >  	}
-> >  }
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
