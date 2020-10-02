@@ -2,298 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EC7280BEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1F5280BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387551AbgJBBZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 21:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgJBBZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 21:25:06 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE85C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 18:25:06 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id u21so578087eja.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 18:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:in-reply-to:references:mime-version:date:message-id:subject:to
-         :cc;
-        bh=Kqs8a9E5uPOTBp74swyiiF8zCX3R3DCtjj7F/Xz7M0M=;
-        b=YrpQKZP4LvvC42rx/oChM9+PWWxB9yCHXQgbCQcYI7Nnbzt0fKSh60i+aejNgAmbXc
-         SvsUMZkpxiy7JKwBIbiJwHpUDUdfddKsvGighKIy6yzGdTfWxkZkGNRXR5Re952f5Ga/
-         Hl4Qe+15bcmgSHq1Wc6O/o1IxAlgmEVoUKoYuVH5+XmiT8T7fxocJlF6WN41M4lpGwUn
-         ong/8Gi5OPDs2/zQ6e0jGFJlvTbk+zDls+z+59WjWoHkqMFhS7Mo/mAyK9WM3rL9yVEn
-         LB0hnLToPsKOXZxi5YGzacuMeLRJCt0RaIOPu9f8QVIOU9oaqXKzbXRKLQC45H/wHh+z
-         8emA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:in-reply-to:references:mime-version:date
-         :message-id:subject:to:cc;
-        bh=Kqs8a9E5uPOTBp74swyiiF8zCX3R3DCtjj7F/Xz7M0M=;
-        b=qHmA4xYD2htId7NRI4ov7U5DYG5qBS+IcD+hb48uTyVB6ezOS45Me5t4s98bHDYBmq
-         T9y1hIA7OfOXSCxwtFKC3U7liQYICtORWLbv56T/FKvvx1BMv7pfhv5HkpRvSdZ5yGnT
-         mzX2PJQCFkPcy7GzEtDzo+oOJ1CXfMliLA2tiJUMzmi5/4XGCgOcUeqwT8Q9G/XgOD2z
-         16uF7+yc30jQOSp3PtX4lmx9CCxD3rG+i1JXgmgqlEswbOWNsuNslclj0J7MJI9PXbsv
-         YvNU8FqvAL7eIxiBb3LYtR+UyETYNZfxNzmFQrv1wyRu97WE43/9yvBZpFf6qrNtu2Vd
-         OiUA==
-X-Gm-Message-State: AOAM531rNycXZ9Xz8l0UMNrbRhCLd3elr52U6KoihvK9SXcRyMmXhk5e
-        Kj33pMXlIHjG5FEdosdTiULkrZjOQd4FwEes7DNxVQ==
-X-Google-Smtp-Source: ABdhPJzVu3SoEuRQ33jBZmzhi/XuwzQ/9eJHcY97azL852GtwzhzffTrBq6YxHopboXK4kUbi1LzATXGMeGFDdIdU9w=
-X-Received: by 2002:a17:906:fcae:: with SMTP id qw14mr4739966ejb.537.1601601904679;
- Thu, 01 Oct 2020 18:25:04 -0700 (PDT)
-Received: from 913411032810 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 1 Oct 2020 21:25:04 -0400
-From:   Jann Horn <jannh@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-In-Reply-To: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
-References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
+        id S2387524AbgJBB2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 21:28:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733260AbgJBB2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 21:28:00 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06AED207F7;
+        Fri,  2 Oct 2020 01:27:58 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 21:27:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH v2] tracepoint: Fix out of sync data passing by static
+ caller
+Message-ID: <20201001212757.339a5520@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date:   Thu, 1 Oct 2020 21:25:04 -0400
-Message-ID: <CAG48ez1rCScOo7jC2ReC7QTLNFGnpB8UvNbeiiN3pXCWbNvW+g@mail.gmail.com>
-Subject: [PATCH 2/2] exec: Broadly lock nascent mm until setup_arg_pages()
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While AFAIK there currently is nothing that can modify the VMA tree of a
-new mm until userspace has started running under the mm, we should properly
-lock the mm here anyway, both to keep lockdep happy when adding locking
-assertions and to be safe in the future in case someone e.g. decides to
-permit VMA-tree-mutating operations in process_madvise_behavior_valid().
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-The goal of this patch is to broadly lock the nascent mm in the exec path,
-from around the time it is created all the way to the end of
-setup_arg_pages() (because setup_arg_pages() accesses bprm->vma).
-As long as the mm is write-locked, keep it around in bprm->mm, even after
-it has been installed on the task (with an extra reference on the mm, to
-reduce complexity in free_bprm()).
-After setup_arg_pages(), we have to unlock the mm so that APIs such as
-copy_to_user() will work in the following binfmt-specific setup code.
+Naresh reported a bug discovered in linux-next that I can reliably
+trigger myself. It appears to be a side effect of the static calls. It
+happens when going from more than one tracepoint callback to a single
+one, and removing the first callback on the list. The list of
+tracepoint callbacks holds data and a function to call with the
+parameters of that tracepoint and a handler to the associated data.
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Suggested-by: Michel Lespinasse <walken@google.com>
-Signed-off-by: Jann Horn <jannh@google.com>
+ old_list:
+	0: func = foo; data = NULL;
+	1: func = bar; data = &bar_struct;
+
+ new_list:
+	0: func = bar; data = &bar_struct;
+
+
+	CPU 0				CPU 1
+	-----				-----
+   tp_funcs = old_list;
+   tp_static_caller = tp_interator
+
+   __DO_TRACE()
+ 
+    data = tp_funcs[0].data = NULL;
+
+				   tp_funcs = new_list;
+				   tracepoint_update_call()
+				      tp_static_caller = tp_funcs[0] = bar;
+    tp_static_caller(data)
+       bar(data)
+         x = data->item = NULL->item
+
+       BOOM!
+
+[ Update: The current code is actually worse, which is probably why it
+  is so easy to trigger. It does the tp_funcs = new_list *after* the
+  static_caller update! ]
+
+Funny, I was able to reliably trigger this bug, and always on the
+sched_switch tracepoint. Which does make sense, because the
+sched_switch tracepoint is a utility tracepoint that is attached to
+collect information about tasks when tracing is enabled (like mapping
+pids to comms). And most of these utility helpers do not have a data
+item attached. But the trace events that attach to tracepoints do have
+a data item that is used to find state and know what tracing buffer to
+write to.
+
+The race window is probably extended by any synchronization the text
+poke may do, which would cause the sched switch to be triggered at
+vulnerable times.
+
+I've seen this:
+
+ Testing event sched_migrate_task: OK
+ Testing event sched_switch:
+ BUG: kernel NULL pointer dereference, address: 0000000000000048
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] PREEMPT SMP PTI
+ CPU: 4 PID: 158 Comm: kworker/4:2 Not tainted 5.9.0-rc7-test-next-20201001+ #12
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+ Workqueue:  0x0 (events)
+ RIP: 0010:trace_event_raw_event_sched_switch+0x1d/0x160
+ Code: 75 c3 e9 4e ff ff ff e8 01 bd 9f 00 90 55 48 89 e5 41 57 49 89 cf 41 56 49 89 d6 41 55 41 89 f5 41 54 49 89 fc 53 48 83 ec 40 <48> 8b 5f 48 65 48 8b 04 25 28 00 00 00 48
+1 c0 f6 c7
+ RSP: 0018:ffffa93680487dc8 EFLAGS: 00010082
+ RAX: ffff98a053129bb0 RBX: ffff98a05ab2df98 RCX: ffff98a059a70000
+ RDX: ffff98a052ce5180 RSI: 0000000000000000 RDI: 0000000000000000
+ RBP: ffffa93680487e30 R08: 0000000000000000 R09: 0000000000000001
+ R10: ffff98a052ce5180 R11: 0000000000000000 R12: 0000000000000000
+ R13: 0000000000000000 R14: ffff98a052ce5180 R15: ffff98a059a70000
+ FS:  0000000000000000(0000) GS:ffff98a05ab00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000048 CR3: 000000003b612002 CR4: 00000000001706e0
+ Call Trace:
+  ? trace_event_raw_event_sched_move_numa+0x100/0x100
+  __schedule+0x5dd/0xa40
+  schedule+0x45/0xe0
+  worker_thread+0xc6/0x3a0
+  ? process_one_work+0x570/0x570
+  kthread+0x128/0x170
+  ? kthread_park+0x90/0x90
+  ret_from_fork+0x22/0x30
+
+And that's called directly by the static call to the sched_switch trace
+event callback (not the iterator), and it triggers with the data
+pointer passed as NULL.
+
+To solve this, add a tracepoint_synchronize_unregister() between
+changing tp_funcs and updating the static tracepoint, that does both a
+synchronize_rcu() and synchronize_srcu(). This will ensure that when
+the static call is updated to the single callback that it will be
+receiving the data that it registered with.
+
+Note, to avoid over calling the synchronization functions, it is only
+needed when going from the iterator back to a single caller, and if
+that single caller wasn't the first one on the list before the update.
+
+Link: https://lore.kernel.org/linux-next/CA+G9fYvPXVRO0NV7yL=FxCmFEMYkCwdz7R=9W+_votpT824YJA@mail.gmail.com
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- fs/exec.c               | 68 ++++++++++++++++++++---------------------
- include/linux/binfmts.h |  2 +-
- 2 files changed, 35 insertions(+), 35 deletions(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 229dbc7aa61a..fe11d77e397a 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -254,11 +254,6 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		return -ENOMEM;
- 	vma_set_anonymous(vma);
+Changes since v1:
 
--	if (mmap_write_lock_killable(mm)) {
--		err = -EINTR;
--		goto err_free;
--	}
--
- 	/*
- 	 * Place the stack at the largest stack address the architecture
- 	 * supports. Later, we'll move this to an appropriate place. We don't
-@@ -276,12 +271,9 @@ static int __bprm_mm_init(struct linux_binprm *bprm)
- 		goto err;
+  - Noticed that tp_funcs wasn't assigned first before the static update.
 
- 	mm->stack_vm = mm->total_vm = 1;
--	mmap_write_unlock(mm);
- 	bprm->p = vma->vm_end - sizeof(void *);
- 	return 0;
- err:
--	mmap_write_unlock(mm);
--err_free:
- 	bprm->vma = NULL;
- 	vm_area_free(vma);
- 	return err;
-@@ -364,9 +356,9 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	struct mm_struct *mm = NULL;
-
- 	bprm->mm = mm = mm_alloc();
--	err = -ENOMEM;
- 	if (!mm)
--		goto err;
-+		return -ENOMEM;
-+	mmap_write_lock_nascent(mm);
-
- 	/* Save current stack limit for all calculations made during exec. */
- 	task_lock(current->group_leader);
-@@ -374,17 +366,12 @@ static int bprm_mm_init(struct linux_binprm *bprm)
- 	task_unlock(current->group_leader);
-
- 	err = __bprm_mm_init(bprm);
--	if (err)
--		goto err;
--
--	return 0;
--
--err:
--	if (mm) {
--		bprm->mm = NULL;
--		mmdrop(mm);
--	}
-+	if (!err)
-+		return 0;
-
-+	bprm->mm = NULL;
-+	mmap_write_unlock(mm);
-+	mmdrop(mm);
- 	return err;
+diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+index 1b4be44d1d2b..3f659f855074 100644
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -221,7 +221,7 @@ static void *func_remove(struct tracepoint_func **funcs,
+ 	return old;
  }
-
-@@ -735,6 +722,7 @@ static int shift_arg_pages(struct vm_area_struct
-*vma, unsigned long shift)
- /*
-  * Finalizes the stack vm_area_struct. The flags and permissions are updated,
-  * the stack is optionally relocated, and some extra space is added.
-+ * At the end of this, the mm_struct will be unlocked on success.
-  */
- int setup_arg_pages(struct linux_binprm *bprm,
- 		    unsigned long stack_top,
-@@ -787,9 +775,6 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 		bprm->loader -= stack_shift;
- 	bprm->exec -= stack_shift;
-
--	if (mmap_write_lock_killable(mm))
--		return -EINTR;
--
- 	vm_flags = VM_STACK_FLAGS;
-
- 	/*
-@@ -807,7 +792,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	ret = mprotect_fixup(vma, &prev, vma->vm_start, vma->vm_end,
- 			vm_flags);
- 	if (ret)
--		goto out_unlock;
-+		return ret;
- 	BUG_ON(prev != vma);
-
- 	if (unlikely(vm_flags & VM_EXEC)) {
-@@ -819,7 +804,7 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	if (stack_shift) {
- 		ret = shift_arg_pages(vma, stack_shift);
- 		if (ret)
--			goto out_unlock;
-+			return ret;
- 	}
-
- 	/* mprotect_fixup is overkill to remove the temporary stack flags */
-@@ -846,11 +831,17 @@ int setup_arg_pages(struct linux_binprm *bprm,
- 	current->mm->start_stack = bprm->p;
- 	ret = expand_stack(vma, stack_base);
- 	if (ret)
--		ret = -EFAULT;
-+		return -EFAULT;
-
--out_unlock:
-+	/*
-+	 * From this point on, anything that wants to poke around in the
-+	 * mm_struct must lock it by itself.
-+	 */
-+	bprm->vma = NULL;
- 	mmap_write_unlock(mm);
--	return ret;
-+	mmput(mm);
-+	bprm->mm = NULL;
-+	return 0;
- }
- EXPORT_SYMBOL(setup_arg_pages);
-
-@@ -1114,8 +1105,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	if (ret)
- 		return ret;
-
--	mmap_write_lock_nascent(mm);
--
- 	if (old_mm) {
- 		/*
- 		 * Make sure that if there is a core dump in progress
-@@ -1127,11 +1116,12 @@ static int exec_mmap(struct mm_struct *mm)
- 		if (unlikely(old_mm->core_state)) {
- 			mmap_read_unlock(old_mm);
- 			mutex_unlock(&tsk->signal->exec_update_mutex);
--			mmap_write_unlock(mm);
- 			return -EINTR;
- 		}
- 	}
-
-+	/* bprm->mm stays refcounted, current->mm takes an extra reference */
-+	mmget(mm);
- 	task_lock(tsk);
- 	active_mm = tsk->active_mm;
- 	membarrier_exec_mmap(mm);
-@@ -1141,7 +1131,6 @@ static int exec_mmap(struct mm_struct *mm)
- 	tsk->mm->vmacache_seqnum = 0;
- 	vmacache_flush(tsk);
- 	task_unlock(tsk);
--	mmap_write_unlock(mm);
- 	if (old_mm) {
- 		mmap_read_unlock(old_mm);
- 		BUG_ON(active_mm != old_mm);
-@@ -1397,8 +1386,6 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	if (retval)
- 		goto out;
-
--	bprm->mm = NULL;
--
- #ifdef CONFIG_POSIX_TIMERS
- 	exit_itimers(me->signal);
- 	flush_itimer_signals();
-@@ -1545,6 +1532,18 @@ void setup_new_exec(struct linux_binprm * bprm)
- 	me->mm->task_size = TASK_SIZE;
- 	mutex_unlock(&me->signal->exec_update_mutex);
- 	mutex_unlock(&me->signal->cred_guard_mutex);
-+
-+#ifndef CONFIG_MMU
-+	/*
-+	 * On MMU, setup_arg_pages() wants to access bprm->vma after this point,
-+	 * so we can't drop the mmap lock yet.
-+	 * On !MMU, we have neither setup_arg_pages() nor bprm->vma, so we
-+	 * should drop the lock here.
-+	 */
-+	mmap_write_unlock(bprm->mm);
-+	mmput(bprm->mm);
-+	bprm->mm = NULL;
-+#endif
- }
- EXPORT_SYMBOL(setup_new_exec);
-
-@@ -1581,6 +1580,7 @@ static void free_bprm(struct linux_binprm *bprm)
+ 
+-static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func *tp_funcs)
++static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func *tp_funcs, bool sync)
  {
- 	if (bprm->mm) {
- 		acct_arg_size(bprm, 0);
-+		mmap_write_unlock(bprm->mm);
- 		mmput(bprm->mm);
+ 	void *func = tp->iterator;
+ 
+@@ -229,8 +229,17 @@ static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func
+ 	if (!tp->static_call_key)
+ 		return;
+ 
+-	if (!tp_funcs[1].func)
++	if (!tp_funcs[1].func) {
+ 		func = tp_funcs[0].func;
++		/*
++		 * If going from the iterator back to a single caller,
++		 * we need to synchronize with __DO_TRACE to make sure
++		 * that the data passed to the callback is the one that
++		 * belongs to that callback.
++		 */
++		if (sync)
++			tracepoint_synchronize_unregister();
++	}
+ 
+ 	__static_call_update(tp->static_call_key, tp->static_call_tramp, func);
+ }
+@@ -265,7 +274,7 @@ static int tracepoint_add_func(struct tracepoint *tp,
+ 	 * include/linux/tracepoint.h using rcu_dereference_sched().
+ 	 */
+ 	rcu_assign_pointer(tp->funcs, tp_funcs);
+-	tracepoint_update_call(tp, tp_funcs);
++	tracepoint_update_call(tp, tp_funcs, false);
+ 	static_key_enable(&tp->key);
+ 
+ 	release_probes(old);
+@@ -297,11 +306,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+ 			tp->unregfunc();
+ 
+ 		static_key_disable(&tp->key);
++		rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	} else {
+-		tracepoint_update_call(tp, tp_funcs);
++		rcu_assign_pointer(tp->funcs, tp_funcs);
++		tracepoint_update_call(tp, tp_funcs,
++				       tp_funcs[0].func != old[0].func);
  	}
- 	free_arg_pages(bprm);
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 0571701ab1c5..3bf06212fbae 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -22,7 +22,7 @@ struct linux_binprm {
- # define MAX_ARG_PAGES	32
- 	struct page *page[MAX_ARG_PAGES];
- #endif
--	struct mm_struct *mm;
-+	struct mm_struct *mm; /* nascent mm, write-locked */
- 	unsigned long p; /* current top of mem */
- 	unsigned long argmin; /* rlimit marker for copy_strings() */
- 	unsigned int
--- 
-2.28.0.806.g8561365e88-goog
+-
+-	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	release_probes(old);
+ 	return 0;
+ }
