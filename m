@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD14281401
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DB22813FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387903AbgJBN1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBN1k (ORCPT
+        id S2387845AbgJBN0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:26:40 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59040 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726090AbgJBN0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:27:40 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4A9C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 06:27:40 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id y11so1127891qtn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 06:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zrpmNv9TwKzBwkVfbm5DOPz5PI+5NOjhq3Gy3n1KaMg=;
-        b=Rd2A/Weuc+n5WsaDOpKuAiVOCTvh1UKrmHrmyJbGKoFiQz/LW/SvNo+v4+f7sKmCT7
-         Id4WyMVvSTH8unM3e+u6wRqu+AF7Dm/RP4LkDzDjqQJbAbiNJ1Ljx3+QLOLEBXDE2O7n
-         POdrPxccPfAYA4RXPI+x7zUMLyU6Hv5z4vfGuBxlP02x9Yo1xHD9EzDO7jfeaYzoabdY
-         FYI5+8R0g1e0DjA0n/KGkn3miYtkTq4lITpne0IdguBLjyg+h/EPDTeDxxNB+fPDkKxq
-         gjOwy6yjUA31e7yN6fx+JJG2iJ/L+re3SBOrNy4Ik3pC+VnnT/Xmv+K2nfxn4qNipul3
-         uxMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zrpmNv9TwKzBwkVfbm5DOPz5PI+5NOjhq3Gy3n1KaMg=;
-        b=f/Nw0nOcRtFZfa4+ohw38ePvWw46pvYJokDS2dDz+ENqVLdn/IoHQN9pEoCCSApErT
-         TG1XpQhvW7HEBUF/szSyZwWBvZHiX9AdmEauKelKEvLScyiAEvtT5HDm4pqGgjP//olI
-         QuBs34FB5IRmdI3DSoi/vdlk6vwbQSmh46PtHEwC7laO8q2Ls5XJbdb4KkfuEKX/cwXj
-         r8Be6bD+NGsR6e5ZPvTfROWleRsrsoqJtFleWb5BRe7tE0x0fAtsmnBplV1BDJkr7L2r
-         XfB704TEmbUVPN48RMdUumzVBMo+r1uEGuYcfU4iEmYhQ6u5+qK48HigkprVG75lZj8K
-         aoSQ==
-X-Gm-Message-State: AOAM530Rt9cPlWa+/0Vv/heq5kZT3xu68z5uIAFMlSoDZ9kgZ4LAUXVz
-        6o8DIKD4kdlmGhqIer1SxWknSQ==
-X-Google-Smtp-Source: ABdhPJwlVwM9MAnCLAE0xRO4pwEYKddVvRYLA8GvopEROKXDbMOwOrms04uggw9W2U/fDnQvNTYMaQ==
-X-Received: by 2002:ac8:7613:: with SMTP id t19mr2283473qtq.259.1601645259959;
-        Fri, 02 Oct 2020 06:27:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d668])
-        by smtp.gmail.com with ESMTPSA id g188sm1064288qkf.3.2020.10.02.06.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 06:27:39 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 09:25:57 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 4/4] mm: convert page kmemcg type to a page memcg flag
-Message-ID: <20201002132557.GA525590@cmpxchg.org>
-References: <20201001002710.748166-1-guro@fb.com>
- <20201001002710.748166-5-guro@fb.com>
- <20201001170036.GA29848@blackbook>
- <20201001172713.GA500308@cmpxchg.org>
- <20201002100350.GC24008@blackbody.suse.cz>
+        Fri, 2 Oct 2020 09:26:40 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-151-BQ346DrXNiO_-pdI0jz1dQ-1; Fri, 02 Oct 2020 14:26:36 +0100
+X-MC-Unique: BQ346DrXNiO_-pdI0jz1dQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 2 Oct 2020 14:26:35 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 2 Oct 2020 14:26:35 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jonathan Wakely' <jwakely.gcc@gmail.com>,
+        Alejandro Colomar <colomar.6.4.3@gmail.com>
+CC:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        gcc-patches <gcc-patches@gcc.gnu.org>,
+        "GNU C Library" <libc-alpha@sourceware.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "eggert@cs.ucla.edu" <eggert@cs.ucla.edu>
+Subject: RE: [PATCH 1/2] system_data_types.7: Add 'void *'
+Thread-Topic: [PATCH 1/2] system_data_types.7: Add 'void *'
+Thread-Index: AQHWmL4r/NIun6B3n0m5AaW7KwTTx6mESyQw
+Date:   Fri, 2 Oct 2020 13:26:35 +0000
+Message-ID: <46f6a94a518e468c82f19c5250878529@AcuMS.aculab.com>
+References: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
+ <20201002121645.23646-2-colomar.6.4.3@gmail.com>
+ <CAH6eHdQD+4g4ne9akZ5TDbhfq9TR0JSSBQ5H+W+Fab=5dy7O+g@mail.gmail.com>
+In-Reply-To: <CAH6eHdQD+4g4ne9akZ5TDbhfq9TR0JSSBQ5H+W+Fab=5dy7O+g@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002100350.GC24008@blackbody.suse.cz>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 12:03:50PM +0200, Michal Koutný wrote:
-> On Thu, Oct 01, 2020 at 01:27:13PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > I do think there is a bug, though: mem_cgroup_move_account() should
-> > use WRITE_ONCE() on page->mem_cgroup.
-> If this were a bug, wouldn't be the proper approach
-> rcu_assign_pointer()/rcu_dereference() pair?
+PiA+ICsuSSB2b2lkICoNCj4gPiArLlJTDQo+ID4gK0FjY29yZGluZyB0byB0aGUgQyBsYW5ndWFn
+ZSBzdGFuZGFyZCwNCj4gPiArYSBwb2ludGVyIHRvIGFueSBvYmplY3QgdHlwZSBtYXkgYmUgY29u
+dmVydGVkIHRvIGEgcG9pbnRlciB0bw0KPiA+ICsuSSB2b2lkDQo+ID4gK2FuZCBiYWNrLg0KPiA+
+ICtQT1NJWCBmdXJ0aGVyIHJlcXVpcmVzIHRoYXQgYW55IHBvaW50ZXIsDQo+ID4gK2luY2x1ZGlu
+ZyBwb2ludGVycyB0byBmdW5jdGlvbnMsDQo+ID4gK21heSBiZSBjb252ZXJ0ZWQgdG8gYSBwb2lu
+dGVyIHRvDQo+ID4gKy5JIHZvaWQNCj4gPiArYW5kIGJhY2suDQo+ID4gKy5QUA0KPiA+ICtDb252
+ZXJzaW9ucyBmcm9tIGFuZCB0byBhbnkgb3RoZXIgcG9pbnRlciB0eXBlIGFyZSBkb25lIGltcGxp
+Y2l0bHksDQo+ID4gK25vdCByZXF1aXJpbmcgY2FzdHMgYXQgYWxsLg0KPiA+ICtOb3RlIHRoYXQg
+dGhpcyBmZWF0dXJlIHByZXZlbnRzIGFueSBraW5kIG9mIHR5cGUgY2hlY2tpbmc6DQo+ID4gK3Ro
+ZSBwcm9ncmFtbWVyIHNob3VsZCBiZSBjYXJlZnVsIG5vdCB0byBjYXN0IGENCj4gPiArLkkgdm9p
+ZCAqDQo+ID4gK3ZhbHVlIHRvIGEgdHlwZSBpbmNvbXBhdGlibGUgdG8gdGhhdCBvZiB0aGUgdW5k
+ZXJseWluZyBkYXRhLA0KPiA+ICtiZWNhdXNlIHRoYXQgd291bGQgcmVzdWx0IGluIHVuZGVmaW5l
+ZCBiZWhhdmlvci4NCj4gPiArLlBQDQo+ID4gK1RoaXMgdHlwZSBpcyB1c2VmdWwgaW4gZnVuY3Rp
+b24gcGFyYW1ldGVycyBhbmQgcmV0dXJuIHZhbHVlDQo+ID4gK3RvIGFsbG93IHBhc3NpbmcgdmFs
+dWVzIG9mIGFueSB0eXBlLg0KPiA+ICtUaGUgZnVuY3Rpb24gd2lsbCB1c3VhbGx5IHVzZSBzb21l
+IG1lY2hhbmlzbSB0byBrbm93DQo+ID4gK29mIHdoaWNoIHR5cGUgdGhlIHVuZGVybHlpbmcgZGF0
+YSBwYXNzZWQgdG8gdGhlIGZ1bmN0aW9uIHJlYWxseSBpcy4NCj4gDQo+IFRoaXMgc2VudGVuY2Ug
+c2VlbXMgY2x1bmt5Lg0KPiANCj4gSG93IGFib3V0ICJUaGUgZnVuY3Rpb24gd2lsbCB0eXBpY2Fs
+bHkgdXNlIHNvbWUgbWVjaGFuaXNtIHRvIGtub3cgdGhlDQo+IHJlYWwgdHlwZSBvZiB0aGUgZGF0
+YSBiZWluZyBwYXNzZWQgdmlhIGEgcG9pbnRlciB0byB2b2lkLiINCj4gDQo+IEFuIGV4YW1wbGUg
+b2YgInNvbWUgbWVjaGFuaXNtIiBtaWdodCBiZSB1c2VmdWwsIHRob3VnaCBJIGRvbid0IGhhdmUN
+Cj4gb25lIHRvIG9mZmVyLg0KDQpJdCdzIGFsc28gYm9sbG9ja3MuDQoNClRoZXJlIGFyZSB0d28g
+bWFpbiBwbGFjZXMgJ3ZvaWQgKicgaXMgdXNlZDoNCjEpIGJ1ZmZlcnMgKGVnIGZ1bmN0aW9ucyBs
+aWtlIHJlYWQoKSBhbmQgd3JpdGUoKSkgd2hlbiB0aGUNCiAgIGFzc29jaWF0ZWQgYnl0ZSBsZW5n
+dGggaXMgYWxzbyBwYXNzZWQuDQogICBUaGlzIChzb3J0IG9mKSBpbmNsdWRlcyBtZW1vcnkgYWxs
+b2NhdGlvbiBmdW5jdGlvbnMuDQoyKSBQYXNzaW5nIGEgcGFyYW1ldGVyIGZvciBhIGNhbGxiYWNr
+IGZ1bmN0aW9uLg0KICAgSW4gdGhpcyBjYXNlIHRoZSBwb2ludGVyIGlzIGFsd2F5cyBjYXN0IGJh
+Y2sgdG8NCiAgIHRoZSBvcmlnaW5hbCB0eXBlIGJlZm9yZSBiZWluZyB1c2VkLg0KICAgDQpXaGF0
+IGl0IHNob3VsZG4ndCBiZSB1c2VkIGZvciBpcyBzdHJ1Y3R1cmVzIHlvdSBkb24ndA0Kd2FudCBv
+dGhlciBjb2RlIHRvIGxvb2sgaW5zaWRlIC0gdXNlIGluY29tcGxldGUgc3RydWN0cy4NCg0KCURh
+dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
+dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
+Mzg2IChXYWxlcykNCg==
 
-Yes, you're right.
-
-I'll double check these code paths and follow up with a patch if
-necessary.
