@@ -2,163 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DEC280F88
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AECE280F8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387632AbgJBJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:08:45 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:17252 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725993AbgJBJIp (ORCPT
+        id S1726517AbgJBJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBJJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:08:45 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09296nvL012077;
-        Fri, 2 Oct 2020 02:08:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=Dp/hjLiK+wAD1zl98fUPXu4CaIyODvgpLxnH+fWE4Ss=;
- b=XFyyZnjFCIiJSKQc/IT0LIN7NZ9o0cSuYmdm1+MzVDwTArh4PjdNzIRPj/iQyntMVhwu
- esaWBPenEgCVkp+iZwsNNEGDprh2axcrGOOY7mqeTMIjpstbO1HYGUwPnHBFaZPlxySi
- +uZkoO8ikWSjk+K9KW2zrezHjOqsgvPXAtWNySljRQEB0J0wT+/62f5/b2HPMLdC3oot
- yj1vrAFhWgX7nkqmtgz6Dyqa+zvBG1fDerfjo83JrJjnuVXfl+WSKwZbqZZJWNanIUZ7
- VkIv0jHXmMq63kez2FqqXzi/qf63b6nQjtAQBIugJKqUEozGEs8BFpElYnHseEqzxrTN 0g== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 33t26xy1v5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 02 Oct 2020 02:08:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UozoVunRN8T2YacofgOvLpSD6FPxcYiCuJi0Wtun/v//ubhz19iMf1aMNq2XB5F0IcL8WM3siHaztBFrwnVRdmCpqXQmUlJ1q4xqUnDLnmx7WFJ1V9G6GAQRMcZp/CKWurqjPrWlSVUlckbYcZqF5/n5BOgqe8y55OqA7yzN7DOalK3GpiBIFcTBEIOk6OxoAfs10eviGY6g96O/ZYnwc+u0LwF4F5FSMZm99qtHbJwLxajOvpNiAaPEokKJghCsxyfYjMrF8PQB7EuQjxHbn0g3F6wFUAEGBvPEcKdTmREael6lCGd+WceBP/n8DDOIZ5ZyZNj2YIahqIK9o4G6WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dp/hjLiK+wAD1zl98fUPXu4CaIyODvgpLxnH+fWE4Ss=;
- b=YCu+H6xL/e7HQsTAfiG+8Td+GctY+XZtxEIzDUTHJ3C+gAufoijT0H7pq67Nw47iqK0B9y9hpgzyVwqVagY1NCWCKyisYwLzzRWyWKHIJ5AFj5CecmT/5UvW1LFfnH+pgew8nfjuXzCl4PHKr3jnZkIHMztCInrMDSC1q3MElBq1Yc/0mN0FidiBQRHCmEX+vJZ7VkNcndMhAe4UAw9XpEoBqlGIe3DDqSNGdcYj+KKr183DysJ8/gYY/z489/a3szVEEKG4xkOizbrAQJEs3SjHgLqjGtpH7qLKDAT2n8QTHAtHoGBlPghLwM3AxQtQFG4wgyAa8FyAzLgvpU6w7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dp/hjLiK+wAD1zl98fUPXu4CaIyODvgpLxnH+fWE4Ss=;
- b=2WT99eQo8/AVzisQNuiC4l3hj92ctM2eIztW8t09PLmogA6atvlsohIl7zclonbsIzoM0uHClL3vvFAty9Uh4B9keCKHBgHvfErrPu+MmPsG7yVNrfOlxOHtLsF3sQ74mikZI1vto5Daw9Z0y+ZdsOL1qC7CBkPxC7vGWB0hKMg=
-Received: from DM6PR07MB5529.namprd07.prod.outlook.com (2603:10b6:5:7a::30) by
- DM6PR07MB5099.namprd07.prod.outlook.com (2603:10b6:5:4b::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.38; Fri, 2 Oct 2020 09:08:36 +0000
-Received: from DM6PR07MB5529.namprd07.prod.outlook.com
- ([fe80::2087:7f2b:5dc6:a960]) by DM6PR07MB5529.namprd07.prod.outlook.com
- ([fe80::2087:7f2b:5dc6:a960%6]) with mapi id 15.20.3433.037; Fri, 2 Oct 2020
- 09:08:35 +0000
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     Roger Quadros <rogerq@ti.com>,
-        "balbi@kernel.org" <balbi@kernel.org>
-CC:     "peter.chen@nxp.org" <peter.chen@nxp.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rahul Kumar <kurahul@cadence.com>
-Subject: RE: [PATCH] usb: cdns3: platform_get_irq_byname_optional instead
- platform_get_irq_byname
-Thread-Topic: [PATCH] usb: cdns3: platform_get_irq_byname_optional instead
- platform_get_irq_byname
-Thread-Index: AQHWlvch/Roy1G/8IkO8ykqpdGeiF6mEBTKAgAAA+RA=
-Date:   Fri, 2 Oct 2020 09:08:35 +0000
-Message-ID: <DM6PR07MB5529095F1B656C5065CBA8B4DD310@DM6PR07MB5529.namprd07.prod.outlook.com>
-References: <20200930065758.23740-1-pawell@cadence.com>
- <722fa58e-604b-bc34-d404-caf7939bb176@ti.com>
-In-Reply-To: <722fa58e-604b-bc34-d404-caf7939bb176@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctZDc5NjAwYjQtMDQ4ZS0xMWViLTg3NmItMWM0ZDcwMWRmYmE0XGFtZS10ZXN0XGQ3OTYwMGI1LTA0OGUtMTFlYi04NzZiLTFjNGQ3MDFkZmJhNGJvZHkudHh0IiBzej0iMjgwOCIgdD0iMTMyNDYxMDMzMTI0MzE5Njk2IiBoPSJWaFhSVkRXRHhILy8xeHBZTHZXWVlDWXJZZ009IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=cadence.com;
-x-originating-ip: [185.217.253.59]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: af1ccfde-9e66-4176-14d4-08d866b2be7f
-x-ms-traffictypediagnostic: DM6PR07MB5099:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR07MB5099018200FD7E5F5719790DDD310@DM6PR07MB5099.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rUeOondZnJn6DNPhx3+4lRXSU/m0UhDokeR/T7+e5zfqnHp8LEjMnu3MqCGyVxldKX7fHLnt5U4ep+LyFHSSrqmB92gzWNXtDy0ezCvGL4LxP9gSacCJJzjSBd3ijbdsmPwg/xx/eFYiw71xOhuL978vcM6Sqxqi7uQqaX9YLG64Xo5V0VFy1B6wLvdNs3zf7IsfrFjxDTcVlTO7nStThCpsjoWOj4HzFVhRybUd033+Vwgx0rEY7xh4UOCgpCLBH6Z9QBxgqjtyJ/j9gwayHxk+3/zBGB6T2lCgetMK3vYkdOORUi9hGUoK9i8ETJ5fBqQ3ARMyOaKqwyAeC/MJoee2J4JWZWgGQpSkGZ7THblCizufKKpUOuWxpECDMd5G
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR07MB5529.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(346002)(376002)(366004)(36092001)(110136005)(316002)(54906003)(52536014)(5660300002)(8676002)(186003)(26005)(2906002)(86362001)(107886003)(6506007)(66446008)(66556008)(66476007)(64756008)(55016002)(76116006)(66946007)(9686003)(478600001)(8936002)(33656002)(4326008)(83380400001)(7696005)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: KFfZMzx4nrXDv6XNE7DKn8yDkZb59OhvbBJRk8uoVmL89YQ6PL/5TfD6TQMCIwDpClcn8z6NvZypFjnMQS3OjeNECGbzTggtO174iAtYB2UzOAMdC8aN5OVGjJY3Y1TYdTsJ19AIxWZSL+c0/HM8rV6d8vobxz8Btl4UIYMvdJqS+tyBgydLPXKgZdDqDekYjMAZFMZgFyifrG7PUxfB8adT6cmaBqrgqexBX9IsAt3mzdkpSQLRwq9GO9Vgn3C01y2rwrD87kaQyyrsUWB6ca4ExCwHb2N77odBbJqwHXQ4taNP8sBVyLCV12mRpIIPb9VjdczgirP7uM3jktV7lST5/9UDXdr+9BgqtAYf2/0ov8kPU1LN0Of/tEOvPcEVLDeqW/qr2UqvaUJ43kNxF54Onrjlr2wdC8/679R0RTTN6V2V3j6NgdF86PuXCBsx8M2DbwkpwAf5RpeE/WTIcwxNo/ifgm5PPHkdB5t4O9YIHN49SjBopKIrJMgoiw/z/+lCcd8nnvpMkVeG0oahmTCzWrlUOazbKSVDlt6DoD5ZUE9UKgdD9sr6iWqM8P0ButMrNFKxPJoZTjWTwcJMJ6vBHhY9NW9ongQZQ2Ngp9pRubj+XXMexTdSkfa7/y0LBJAh46D2g/0Jw1xhNRBkLg==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 2 Oct 2020 05:09:36 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C053DC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 02:09:36 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id y25so175028oog.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 02:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=FfRCOyJ+EaFKOr3Aio0ATDsi4SO+lyczP5yA1MZQ5e0=;
+        b=j/WOA/G5nLeq0+z7X7XdOb9FeYv6+7RcT/uNKRuepLJCg+seMU9yWk1vcmt+C5r59C
+         kMz8uVU3wlrX4MazPR4SODyBIUcXkTZZLPzyJobZxTdwCP8FCFQNfUoF5gQOGSScPU+s
+         7NgpSO03/mMlvlnTNpwaEzvEUD2hUP6kOlyLgExUno5Hzko+/xRxDa0unGdNCQjDKYJe
+         jZ2djbgz20zzwlDpPy1JtNSk/1lenZ7j+MLK5Nk60o/SxUBBlo2H78wOcFaQkIiEzSCX
+         KnXWM1gfunkxsK7TRMv2vYL4BAMBqlO+JY3Q6kVkylx15gK+2984OW7Cp0xre2DeoGCw
+         gYTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=FfRCOyJ+EaFKOr3Aio0ATDsi4SO+lyczP5yA1MZQ5e0=;
+        b=qVsSw9zJqWVNwEqQRn01Wfm3bYPFg4+P+QgCiEyfBJFrn/MbuWF1/+1qajUAXfhnSj
+         WkxJfkezcSNovBSxz0dAk2QA208ay9CZxUYimvhggFPxt9/qzqMXmE8ydqL6yCZppuvl
+         pz/l93woE0qsTUUsIFwKoOm+6FP2B5WPZY+hY0WPqwYbjjZuwSDjtuObo0Jv5Tab6j7E
+         tJ5a70YeYRrBVqYQluB3Q2xOCRa2UajSobn4i+9C+ztbCkKHszGQY+qVMuZfu68JE5ZT
+         NPA6lbyGDPXGdA9JHyyAeR2m6BGS93lYsbNXSu45VjlyBSUGjh7XkSpTIkWYQl10ydvP
+         qVFw==
+X-Gm-Message-State: AOAM533eYjLF8KKmjrAHKPm79gRjxCgtsow9bQLgZDQGx4SOK2g4D0TT
+        dWSkXrt8vIkQrYgVEh/k5qRgHkkRrYU3rwjgkbym+g==
+X-Google-Smtp-Source: ABdhPJwoHf5y9qn43pRyYCZ4uhpEQ+4hPyozHUpFuwptzv6ycXJb1CUeH4MS6V90pjT4l2f9yOJSzu5gy1b8jT25ZwM=
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr1133578ooa.1.1601629775860;
+ Fri, 02 Oct 2020 02:09:35 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR07MB5529.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af1ccfde-9e66-4176-14d4-08d866b2be7f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2020 09:08:35.7817
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: th4cggtdHedjsEEbu+xiOcJ5KOZfsjP1+uWmUpWtn8SvTQoQqmVYGMxpTsAhRCFmPzKPrariMmVpkxYBmkXNVn1OVlnwglELHUzsWGrwyVQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB5099
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_05:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
- adultscore=0 priorityscore=1501 clxscore=1015 spamscore=0 phishscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 suspectscore=0 mlxlogscore=406
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020073
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 2 Oct 2020 14:39:24 +0530
+Message-ID: <CA+G9fYvE--g01a=eTs1Teo_AAZke34WvtOKxZ+7WhLnmkymQgA@mail.gmail.com>
+Subject: Internal error: Oops: __traceiter_rcu_dyntick and rcu_nmi_enter
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Um9nZXIsDQoNCj4NCj5PbiAzMC8wOS8yMDIwIDA5OjU3LCBQYXdlbCBMYXN6Y3phayB3cm90ZToN
-Cj4+IFRvIGF2b2lkIGR1cGxpY2F0ZSBlcnJvciBpbmZvcm1hdGlvbiBwYXRjaCByZXBsYWNlcyBw
-bGF0Zm9ybV9nZXRfaXJxX2J5bmFtZQ0KPj4gaW50byBwbGF0Zm9ybV9nZXRfaXJxX2J5bmFtZV9v
-cHRpb25hbC4NCj4NCj5XaGF0IGlzIGR1cGxpY2F0ZSBlcnJvciBpbmZvcm1hdGlvbj8NCg0KVGhl
-IGZ1bmN0aW9uIHBsYXRmb3JtX2dldF9pcnFfYnluYW1lIHByaW50Og0KIiBkZXZfZXJyKCZkZXYt
-PmRldiwgIklSUSAlcyBub3QgZm91bmRcbiIsIG5hbWUpOyIgaWYgZXJyb3Igb2NjdXJyZWQuIA0K
-DQpJbiBjb3JlLmMgd2UgaGF2ZSB0aGUgYW5vdGhlciBlcnJvciBtZXNzYWdlIGJlbG93IGludm9r
-aW5nIHRoaXMgZnVuY3Rpb24uDQplLmcgDQoJaWYgKGNkbnMtPmRldl9pcnEgPCAwKQ0KCQlkZXZf
-ZXJyKGRldiwgImNvdWxkbid0IGdldCBwZXJpcGhlcmFsIGlycVxuIik7DQoNClNvLCBpdCdzIGxv
-b2tzIGxpa2Ugb25lIGRldl9lcnIgaXMgIHJlZHVuZGFudC4NCg0KPg0KPj4NCj4+IEEgY2hhbmdl
-IHdhcyBzdWdnZXN0ZWQgZHVyaW5nIHJldmlld2luZyBDRE5TUCBkcml2ZXIgYnkgQ2h1bmZlbmcg
-WXVuLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IFBhd2VsIExhc3pjemFrIDxwYXdlbGxAY2FkZW5j
-ZS5jb20+DQo+PiAtLS0NCj4+ICAgZHJpdmVycy91c2IvY2RuczMvY29yZS5jIHwgNCArKy0tDQo+
-PiAgIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+Pg0K
-Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2NkbnMzL2NvcmUuYyBiL2RyaXZlcnMvdXNiL2Nk
-bnMzL2NvcmUuYw0KPj4gaW5kZXggYTBmNzNkNDcxMWFlLi5hM2Y2ZGM0NGNmM2EgMTAwNjQ0DQo+
-PiAtLS0gYS9kcml2ZXJzL3VzYi9jZG5zMy9jb3JlLmMNCj4+ICsrKyBiL2RyaXZlcnMvdXNiL2Nk
-bnMzL2NvcmUuYw0KPj4gQEAgLTQ2NSw3ICs0NjUsNyBAQCBzdGF0aWMgaW50IGNkbnMzX3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+Pg0KPj4gICAJY2Rucy0+eGhjaV9yZXNb
-MV0gPSAqcmVzOw0KPj4NCj4+IC0JY2Rucy0+ZGV2X2lycSA9IHBsYXRmb3JtX2dldF9pcnFfYnlu
-YW1lKHBkZXYsICJwZXJpcGhlcmFsIik7DQo+PiArCWNkbnMtPmRldl9pcnEgPSBwbGF0Zm9ybV9n
-ZXRfaXJxX2J5bmFtZV9vcHRpb25hbChwZGV2LCAicGVyaXBoZXJhbCIpOw0KPg0KPkFzIHBlciBE
-VCBiaW5kaW5nIGRvY3VtZW50LCB0aGVzZSBhcmUgbWFuZGF0b3J5IHByb3BlcnRpZXMNCg0KSSB0
-aGluayB0aGF0IG5hbWUgcGxhdGZvcm1fZ2V0X2lycV9ieW5hbWVfb3B0aW9uYWwgaXMgbGl0dGxl
-IGNvbmZ1c2luZy4gDQpGdW5jdGlvbiBkZXNjcmlwdGlvbnMgc2hvdyB0aGF0IGJvdGggYXJlIGFs
-bW9zdCBpZGVudGljYWw6DQovKioNCiAqIHBsYXRmb3JtX2dldF9pcnFfYnluYW1lX29wdGlvbmFs
-IC0gZ2V0IGFuIG9wdGlvbmFsIElSUSBmb3IgYSBkZXZpY2UgYnkgbmFtZQ0KICogQGRldjogcGxh
-dGZvcm0gZGV2aWNlDQogKiBAbmFtZTogSVJRIG5hbWUNCiAqDQogKiBHZXQgYW4gb3B0aW9uYWwg
-SVJRIGJ5IG5hbWUgbGlrZSBwbGF0Zm9ybV9nZXRfaXJxX2J5bmFtZSgpLiBFeGNlcHQgdGhhdCBp
-dA0KICogZG9lcyBub3QgcHJpbnQgYW4gZXJyb3IgbWVzc2FnZSBpZiBhbiBJUlEgY2FuIG5vdCBi
-ZSBvYnRhaW5lZC4NCiAqDQogKiBSZXR1cm46IG5vbi16ZXJvIElSUSBudW1iZXIgb24gc3VjY2Vz
-cywgbmVnYXRpdmUgZXJyb3IgbnVtYmVyIG9uIGZhaWx1cmUuDQogKi8NCg0KPg0KPiAgLSBpbnRl
-cnJ1cHRzOiBJbnRlcnJ1cHRzIHVzZWQgYnkgY2RuczMgY29udHJvbGxlcjoNCj4gICAgICAgICAi
-aG9zdCIgLSBpbnRlcnJ1cHQgdXNlZCBieSBYSENJIGRyaXZlci4NCj4gICAgICAgICAicGVyaXBo
-ZXJhbCIgLSBpbnRlcnJ1cHQgdXNlZCBieSBkZXZpY2UgZHJpdmVyDQo+ICAgICAgICAgIm90ZyIg
-LSBpbnRlcnJ1cHQgdXNlZCBieSBEUkQvT1RHICBwYXJ0IG9mIGRyaXZlcg0KPg0KPmZvciBkcl9t
-b2RlID09ICJvdGciIC0+IGFsbCAzIGFyZSBtYW5kYXRvcnkuDQo+Zm9yIGRyX21vZGUgPT0gImhv
-c3QiIC0+ICJvdGciIGFuZCAicGVyaXBoZXJhbCIgSVJRcyBhcmUgbm90IHJlcXVpcmVkLg0KPmZv
-ciBkcl9tb2RlID09ICJwZXJpcGhlYXJhbCIgLT4gIm90ZyIgYW5kICJob3N0IiBJUlFzIGFyZSBu
-b3QgcmVxdWlyZWQuDQo+DQo+PiAgIAlpZiAoY2Rucy0+ZGV2X2lycSA9PSAtRVBST0JFX0RFRkVS
-KQ0KPj4gICAJCXJldHVybiBjZG5zLT5kZXZfaXJxOw0KPj4NCj4+IEBAIC00NzcsNyArNDc3LDcg
-QEAgc3RhdGljIGludCBjZG5zM19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0K
-Pj4gICAJCXJldHVybiBQVFJfRVJSKHJlZ3MpOw0KPj4gICAJY2Rucy0+ZGV2X3JlZ3MJPSByZWdz
-Ow0KPj4NCj4+IC0JY2Rucy0+b3RnX2lycSA9IHBsYXRmb3JtX2dldF9pcnFfYnluYW1lKHBkZXYs
-ICJvdGciKTsNCj4+ICsJY2Rucy0+b3RnX2lycSA9IHBsYXRmb3JtX2dldF9pcnFfYnluYW1lX29w
-dGlvbmFsKHBkZXYsICJvdGciKTsNCj4+ICAgCWlmIChjZG5zLT5vdGdfaXJxID09IC1FUFJPQkVf
-REVGRVIpDQo+PiAgIAkJcmV0dXJuIGNkbnMtPm90Z19pcnE7DQo+Pg0KPj4NCj4NCg0KUmVnYXJk
-cywNClBhd2VsDQo=
+While running LTP tracing the following kernel warning was noticed on
+qemu_arm running linux next 20201001 kernel.
+I have not bisected this problem yet.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+steps to reproduce:
+# boot qemu arm with linux next 20201001 tag kernel and this command line
+
+/usr/bin/qemu-system-aarch64 -cpu host,aarch64=off -machine
+virt-2.10,accel=kvm -nographic -net
+nic,model=virtio,macaddr=BA:DD:AD:CC:09:02 -net tap -m 2048 -monitor
+none -kernel /kernel/zImage --append "console=ttyAMA0 root=/dev/vda
+rw" -hda /rootfs/rpb-console-image-lkft-am57xx-evm-20200723162735-41.rootfs.ext4
+-m 4096 -smp 2 -nographic
+
+# cd  /opt/ltp/
+# ./runltp -s tracing
+
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git commit: d39294091fee6b89d9c4a683bb19441b25098330
+  git describe: next-20201001
+  make_kernelversion: 5.9.0-rc7
+  kernel-config:
+https://builds.tuxbuild.com/hw-PTbFtm7XJ15ZoA5Agjw/kernel.config
+
+Test output log:
+--------------------
+ftrace_buffer_size_kb.sh: line 33: echo: write error: Cannot allocate memory
+ftrace_buffer_size_kb.sh: line 33: echo: write error: Cannot allocate memory
+[  118.092279] 8<--- cut here ---
+[  118.093743] Unable to handle kernel NULL pointer dereference at
+virtual address 00000000
+[  118.097204] pgd = 5cbbb903
+[  118.098406] [00000000] *pgd=00000000
+[  118.099886] Internal error: Oops: 5 [#1] SMP ARM
+[  118.102124] Modules linked in: crc32_arm_ce sha2_arm_ce sha256_arm
+sha1_arm_ce sha1_arm aes_arm_ce crypto_simd
+[  118.107642] CPU: 0 PID: 919 Comm: (agetty) Not tainted
+5.9.0-rc7-next-20201001 #1
+[  118.111384] Hardware name: Generic DT based system
+[  118.113677] PC is at __traceiter_rcu_dyntick+0x34/0x68
+[  118.116173] LR is at rcu_nmi_enter+0x158/0x17c
+[  118.118348] pc : [<c03cd414>]    lr : [<c12517c0>]    psr: 60000093
+[  118.121347] sp : eb333c20  ip : c03cd3f8  fp : eb333c4c
+[  118.123862] r10: eb333e18  r9 : c18da374  r8 : 005f67aa
+[  118.126722] r7 : 40000000  r6 : 40000002  r5 : ee4d5ec0  r4 : 00000000
+[  118.129822] r3 : 40000002  r2 : 40000000  r1 : c18da374  r0 : c1f30ca0
+[  118.132978] Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM
+Segment none
+[  118.136502] Control: 10c5383d  Table: 690a406a  DAC: 00000051
+[  118.139302] Process (agetty) (pid: 919, stack limit = 0x423671c1)
+[  118.142166] Stack: (0xeb333c20 to 0xeb334000)
+[  118.144241] 3c20: eb333ccc eb333c30 00000002 ee4d5ec0 eb332000
+00000000 c1d04f54 0000001f
+[  118.148079] 3c40: eb333c7c eb333c50 c12517c0 c03cd3ec 005f67aa
+c1cbac10 60000093 c0500464
+[  118.151904] 3c60: ffffe000 c1f31380 c0502384 00000001 eb333c8c
+eb333c80 c12517f4 c1251674
+[  118.155748] 3c80: eb333ca4 eb333c90 c03db214 c12517f0 c1cbac10
+c0500464 eb333ccc eb333ca8
+[  118.159746] 3ca0: c044bd08 c03db1f8 ebba56c0 00000dc0 c051d0cc
+60000013 ee4d9258 c1f9b28c
+[  118.163658] 3cc0: eb333cf4 eb333cd0 c0500464 c044bc00 ed9006c0
+00000000 00000000 00000dc0
+[  118.167535] 3ce0: c1d056e0 c1f9b28c eb333d3c eb333cf8 c0502384
+c0500408 ffffe000 687b39a1
+[  118.171412] 3d00: eb333d34 c1da6628 c051d0cc 0000f0f4 00020101
+c1da6628 eb27d180 00020101
+[  118.175257] 3d20: 00020101 000002c0 00000000 eb333e18 eb333d5c
+eb333d40 c051d0cc c0501ebc
+[  118.179074] 3d40: c1da6628 c1d04bc0 eb27d180 00020101 eb333d8c
+eb333d60 c051d570 c051d0a8
+[  118.182905] 3d60: 00000001 eb333e18 eb332000 eb332000 eb333ee8
+eb333ee8 eb333e18 ffffff9c
+[  118.187135] 3d80: eb333e14 eb333d90 c052d17c c051d514 c052e0e0
+00000403 eb333dcc eb333da8
+[  118.191102] 3da0: c0452290 c043b58c 40000013 eb332000 00000041
+eb332000 ed8e8000 00001000
+[  118.195036] 3dc0: eb333e14 eb333dd0 c04bc420 c0452218 ed805080
+687b39a1 ed8e8000 eb332000
+[  118.198974] 3de0: 00000003 687b39a1 00000000 eb332000 eb332000
+eb333ee8 00000001 eb333e18
+[  118.203347] 3e00: ffffff9c ffffff9c eb333ed4 eb333e18 c052f61c
+c052d13c ebe70800 e81167c0
+[  118.207566] 3e20: 00000000 00100000 eb333e94 eb333e38 c03131b4
+c044d940 ebe70800 00000003
+[  118.211702] 3e40: 00000003 00000000 c05404f0 c0541488 ebe70800
+00000000 eb333e5c 00100000
+[  118.215701] 3e60: eb333e94 687b39a1 c03131b4 00000003 ebe70800
+e81167c0 00000000 00100000
+[  118.219782] 3e80: 000a0101 00000100 eb333ec4 edbb3000 00000000
+c05404e4 ffffff9c eb332000
+[  118.223752] 3ea0: eb333f30 edbb3000 00000000 687b39a1 ffffff9c
+eb332000 00000003 edbb3000
+[  118.227999] 3ec0: 00000000 eb332000 eb333f2c eb333ed8 c0516c78
+c052f5ac eb333f0c eb333ee8
+[  118.231954] 3ee0: c035fa10 eb27dd70 00020101 687b0000 00000002
+00000100 00000001 687b39a1
+[  118.236161] 3f00: 00000142 00000000 00000000 000a0101 00000000
+eb332000 ffffff9c 00605738
+[  118.240218] 3f20: eb333f94 eb333f30 c0518374 c0516a70 000a0101
+00000000 00000000 00000000
+[  118.244210] 3f40: 00000000 00000000 000a0101 00000000 00000000
+00000000 00000000 00000000
+[  118.248508] 3f60: 00000000 687b39a1 00000142 00000000 00000000
+b6f25900 00000142 c0300284
+[  118.252549] 3f80: eb332000 00000142 eb333fa4 eb333f98 c05183fc
+c05182e8 00000000 eb333fa8
+[  118.256884] 3fa0: c03000c0 c05183ec 00000000 00000000 ffffff9c
+00605738 000a0101 00000000
+[  118.261036] 3fc0: 00000000 00000000 b6f25900 00000142 00605738
+00000000 00000001 befa7514
+[  118.265154] 3fe0: b6c15210 befa7440 b6db7380 b6bfe338 60000010
+ffffff9c 00000000 00000000
+[  118.269399] Backtrace:
+[  118.270680] [<c03cd3e0>] (__traceiter_rcu_dyntick) from
+[<c12517c0>] (rcu_nmi_enter+0x158/0x17c)
+[  118.275211]  r9:0000001f r8:c1d04f54 r7:00000000 r6:eb332000
+r5:ee4d5ec0 r4:00000002
+[  118.278994] [<c1251668>] (rcu_nmi_enter) from [<c12517f4>]
+(rcu_irq_enter+0x10/0x14)
+[  118.282731]  r9:00000001 r8:c0502384 r7:c1f31380 r6:ffffe000
+r5:c0500464 r4:60000093
+[  118.286527] [<c12517e4>] (rcu_irq_enter) from [<c03db214>]
+(rcu_irq_enter_irqson+0x28/0x44)
+[  118.290545] [<c03db1ec>] (rcu_irq_enter_irqson) from [<c044bd08>]
+(trace_hardirqs_on+0x114/0x1b0)
+[  118.294786]  r5:c0500464 r4:c1cbac10
+[  118.296529] [<c044bbf4>] (trace_hardirqs_on) from [<c0500464>]
+(__slab_alloc.constprop.0+0x68/0x6c)
+[  118.300895]  r9:c1f9b28c r8:ee4d9258 r7:60000013 r6:c051d0cc
+r5:00000dc0 r4:ebba56c0
+[  118.304648] [<c05003fc>] (__slab_alloc.constprop.0) from
+[<c0502384>] (kmem_cache_alloc+0x4d4/0x684)
+[  118.309048]  r9:c1f9b28c r8:c1d056e0 r7:00000dc0 r6:00000000
+r5:00000000 r4:ed9006c0
+[  118.312803] [<c0501eb0>] (kmem_cache_alloc) from [<c051d0cc>]
+(__alloc_file+0x30/0xd4)
+[  118.316606]  r10:eb333e18 r9:00000000 r8:000002c0 r7:00020101
+r6:00020101 r5:eb27d180
+[  118.320369]  r4:c1da6628
+[  118.321632] [<c051d09c>] (__alloc_file) from [<c051d570>]
+(alloc_empty_file+0x68/0x130)
+[  118.325452]  r7:00020101 r6:eb27d180 r5:c1d04bc0 r4:c1da6628
+[  118.328214] [<c051d508>] (alloc_empty_file) from [<c052d17c>]
+(path_openat+0x4c/0xe2c)
+[  118.332028]  r9:ffffff9c r8:eb333e18 r7:eb333ee8 r6:eb333ee8
+r5:eb332000 r4:eb332000
+[  118.335759] [<c052d130>] (path_openat) from [<c052f61c>]
+(do_filp_open+0x7c/0xe8)
+[  118.339432]  r10:ffffff9c r9:ffffff9c r8:eb333e18 r7:00000001
+r6:eb333ee8 r5:eb332000
+[  118.343198]  r4:eb332000
+[  118.344449] [<c052f5a0>] (do_filp_open) from [<c0516c78>]
+(do_sys_openat2+0x214/0x2d4)
+[  118.348303]  r8:eb332000 r7:00000000 r6:edbb3000 r5:00000003 r4:eb332000
+[  118.351537] [<c0516a64>] (do_sys_openat2) from [<c0518374>]
+(do_sys_open+0x98/0xd4)
+[  118.355219]  r10:00605738 r9:ffffff9c r8:eb332000 r7:00000000
+r6:000a0101 r5:00000000
+[  118.358972]  r4:00000000
+[  118.360235] [<c05182dc>] (do_sys_open) from [<c05183fc>]
+(sys_openat+0x1c/0x20)
+[  118.363722]  r10:00000142 r9:eb332000 r8:c0300284 r7:00000142
+r6:b6f25900 r5:00000000
+[  118.367455]  r4:00000000
+[  118.368707] [<c05183e0>] (sys_openat) from [<c03000c0>]
+(ret_fast_syscall+0x0/0x28)
+[  118.372366] Exception stack(0xeb333fa8 to 0xeb333ff0)
+[  118.374829] 3fa0:                   00000000 00000000 ffffff9c
+00605738 000a0101 00000000
+[  118.378763] 3fc0: 00000000 00000000 b6f25900 00000142 00605738
+00000000 00000001 befa7514
+[  118.382680] 3fe0: b6c15210 befa7440 b6db7380 b6bfe338
+[  118.385101] Code: e1a09001 e590415c e1a07002 e1a06003 (e5945000)
+[  118.388047] ---[ end trace d9dd2a672e7123ad ]---
+
+full test log
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201001/testrun/3260001/suite/linux-log-parser/test/check-kernel-trace-1809841/log
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
