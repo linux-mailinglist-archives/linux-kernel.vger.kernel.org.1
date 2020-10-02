@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5387280C05
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B87280C08
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387583AbgJBBgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 21:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387496AbgJBBgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 21:36:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE165C0613D0;
-        Thu,  1 Oct 2020 18:36:42 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 432DD1285CF4B;
-        Thu,  1 Oct 2020 18:19:54 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 18:36:37 -0700 (PDT)
-Message-Id: <20201001.183637.2225096830955902572.davem@davemloft.net>
-To:     xie.he.0141@gmail.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, khc@pm.waw.pl
-Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Correctly handle
- special skb->protocol values
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200928125643.396575-1-xie.he.0141@gmail.com>
-References: <20200928125643.396575-1-xie.he.0141@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 01 Oct 2020 18:19:54 -0700 (PDT)
+        id S2387430AbgJBBj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 21:39:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55694 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387483AbgJBBj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 21:39:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11E18B225;
+        Fri,  2 Oct 2020 01:39:28 +0000 (UTC)
+From:   Coly Li <colyli@suse.de>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Coly Li <colyli@suse.de>, Vicente Bergas <vicencb@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v4] mmc: core: don't set limits.discard_granularity as 0
+Date:   Fri,  2 Oct 2020 09:38:52 +0800
+Message-Id: <20201002013852.51968-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
-Date: Mon, 28 Sep 2020 05:56:43 -0700
+In mmc_queue_setup_discard() the mmc driver queue's discard_granularity
+might be set as 0 (when card->pref_erase > max_discard) while the mmc
+device still declares to support discard operation. This is buggy and
+triggered the following kernel warning message,
 
-> The fr_hard_header function is used to prepend the header to skbs before
-> transmission. It is used in 3 situations:
-> 1) When a control packet is generated internally in this driver;
-> 2) When a user sends an skb on an Ethernet-emulating PVC device;
-> 3) When a user sends an skb on a normal PVC device.
-> 
-> These 3 situations need to be handled differently by fr_hard_header.
-> Different headers should be prepended to the skb in different situations.
-> 
-> Currently fr_hard_header distinguishes these 3 situations using
-> skb->protocol. For situation 1 and 2, a special skb->protocol value
-> will be assigned before calling fr_hard_header, so that it can recognize
-> these 2 situations. All skb->protocol values other than these special ones
-> are treated by fr_hard_header as situation 3.
-> 
-> However, it is possible that in situation 3, the user sends an skb with
-> one of the special skb->protocol values. In this case, fr_hard_header
-> would incorrectly treat it as situation 1 or 2.
-> 
-> This patch tries to solve this issue by using skb->dev instead of
-> skb->protocol to distinguish between these 3 situations. For situation
-> 1, skb->dev would be NULL; for situation 2, skb->dev->type would be
-> ARPHRD_ETHER; and for situation 3, skb->dev->type would be ARPHRD_DLCI.
-> 
-> This way fr_hard_header would be able to distinguish these 3 situations
-> correctly regardless what skb->protocol value the user tries to use in
-> situation 3.
-> 
-> Cc: Krzysztof Halasa <khc@pm.waw.pl>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+WARNING: CPU: 0 PID: 135 at __blkdev_issue_discard+0x200/0x294
+CPU: 0 PID: 135 Comm: f2fs_discard-17 Not tainted 5.9.0-rc6 #1
+Hardware name: Google Kevin (DT)
+pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+pc : __blkdev_issue_discard+0x200/0x294
+lr : __blkdev_issue_discard+0x54/0x294
+sp : ffff800011dd3b10
+x29: ffff800011dd3b10 x28: 0000000000000000 x27: ffff800011dd3cc4 x26: ffff800011dd3e18 x25: 000000000004e69b x24: 0000000000000c40 x23: ffff0000f1deaaf0 x22: ffff0000f2849200 x21: 00000000002734d8 x20: 0000000000000008 x19: 0000000000000000 x18: 0000000000000000 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000 x14: 0000000000000394 x13: 0000000000000000 x12: 0000000000000000 x11: 0000000000000000 x10: 00000000000008b0 x9 : ffff800011dd3cb0 x8 : 000000000004e69b x7 : 0000000000000000 x6 : ffff0000f1926400 x5 : ffff0000f1940800 x4 : 0000000000000000 x3 : 0000000000000c40 x2 : 0000000000000008 x1 : 00000000002734d8 x0 : 0000000000000000 Call trace:
+__blkdev_issue_discard+0x200/0x294
+__submit_discard_cmd+0x128/0x374
+__issue_discard_cmd_orderly+0x188/0x244
+__issue_discard_cmd+0x2e8/0x33c
+issue_discard_thread+0xe8/0x2f0
+kthread+0x11c/0x120
+ret_from_fork+0x10/0x1c
+---[ end trace e4c8023d33dfe77a ]---
 
-Applied, thank you.
+This patch fixes the issue by setting discard_granularity as SECTOR_SIZE
+instead of 0 when (card->pref_erase > max_discard) is true. Now no more
+complain from __blkdev_issue_discard() for the improper value of discard
+granularity.
+
+This issue is exposed after commit b35fd7422c2f ("block: check queue's
+limits.discard_granularity in __blkdev_issue_discard()"), a "Fixes:" tag
+is also added for the commit to make sure people won't miss this patch
+after applying the change of __blkdev_issue_discard().
+
+Fixes: e056a1b5b67b ("mmc: queue: let host controllers specify maximum discard timeout")
+Fixes: b35fd7422c2f ("block: check queue's limits.discard_granularity in __blkdev_issue_discard()").
+Reported-and-tested-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+---
+Changelog,
+v4, update to Reported-and-tested-by tag for Vicente Bergas.
+v3, add Fixes tag for both commits.
+v2, change commit id of the Fixes tag.
+v1, initial version.
+
+ drivers/mmc/core/queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index 6c022ef0f84d..350d0cc4ee62 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -190,7 +190,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
+ 	q->limits.discard_granularity = card->pref_erase << 9;
+ 	/* granularity must not be greater than max. discard */
+ 	if (card->pref_erase > max_discard)
+-		q->limits.discard_granularity = 0;
++		q->limits.discard_granularity = SECTOR_SIZE;
+ 	if (mmc_can_secure_erase_trim(card))
+ 		blk_queue_flag_set(QUEUE_FLAG_SECERASE, q);
+ }
+-- 
+2.26.2
+
