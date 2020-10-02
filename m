@@ -2,161 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A1B281C07
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9F2281C12
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388486AbgJBT2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:28:14 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:38496 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388321AbgJBT2K (ORCPT
+        id S2388379AbgJBTct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgJBTct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:28:10 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 3541B8EE18B;
-        Fri,  2 Oct 2020 12:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1601666889;
-        bh=3pL9EYAVcTAbBFDIrqOl8kEYMnykySS3oUFcjqGIHlY=;
-        h=Subject:From:To:Cc:Date:From;
-        b=q2SoCNwNORD/hj4ZDO5aKWp1qkaQZ62yaCyu703I6KtRaHB9T7v5OQQeVjxhZAeiT
-         9u+DQ2iuBhp/KVXOHj78jMYmRLs4iJS8XpcylpijeyjGvMoqiU1l5BnH19PijuA7iO
-         wYK1CidqbOHeIAQnCeMFfg+LgkNz6wPfh52qaEsk=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B8kwV0lblIKq; Fri,  2 Oct 2020 12:28:08 -0700 (PDT)
-Received: from jarvis (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C7EDF8EE012;
-        Fri,  2 Oct 2020 12:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1601666888;
-        bh=3pL9EYAVcTAbBFDIrqOl8kEYMnykySS3oUFcjqGIHlY=;
-        h=Subject:From:To:Cc:Date:From;
-        b=mkLHtMCBYYSBlY3NteBr+Z8kSEw2WvEfgiVmwMDsXcATatrvJIJtpoZVBrQuu0uMU
-         nKsJ5TMMxl2sSiAVyKK/nvREPLg136cI9FwcsNwiM15v9/dhsrVUa38q6QOms1ivKV
-         vHAfsBtN6GnNZNOdLbCJnua3EPhTMUvFIkgPPYLU=
-Message-ID: <32aab084a6bf83b48b7e609c35e3822ee0f778df.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.9-rc7
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 02 Oct 2020 12:28:04 -0700
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 2 Oct 2020 15:32:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D537EC0613D0;
+        Fri,  2 Oct 2020 12:32:48 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id k15so2975608wrn.10;
+        Fri, 02 Oct 2020 12:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9WAVTTZWVXFPkge+R2T9ftB7ZAz6PRmo0VTImnGOdmU=;
+        b=dyV/Yas9vfNvx0fENJZp1fcbzGE4MkQ8GcLbGLFaIYE/Un7+libFFHK0+7HRV96BZ6
+         hhGquUP8gI0gSqcYWOPopkzYrMNVOcN5cduVytc2t6LDnC2YJLWmmyUCzDF0GNMQurAc
+         V/hAowH79P+gemS9pBxPKYUsLzOV2L2UXGdEK6hw1BdAV6cTkESj2m8h8XooCzm+wj/Z
+         soS9wTAMTPJ/evVlImQ1JyOG/0eeOaslzrFD3iyhM4WgadyOtKxBgeKB9krl8c4kNnbJ
+         kA/VP6O6OG6PpNrIukSoT14qqv0VMwwcX0hdUogUFrIpsKTo0+Dsoo/LjSS6jUNd1lhQ
+         OBJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9WAVTTZWVXFPkge+R2T9ftB7ZAz6PRmo0VTImnGOdmU=;
+        b=Safkwf7/8XHZ4SnQn0Q5HbmwcSvLokO8Ibni0gngaRGufXnXiST8aija9nCBldoh6E
+         wTleEcmBqIZ0yo01vUKGC9F23Xlu7NySDDVIABv9VexbpYGvX6SXo9Jm6JJXSHA72bUS
+         9U61bi1sk5FC8PFAw5C4oWZUOKEqWaDg+cXt3twX1EbV73JkYZFxT+QjLVkSIw/vGFsk
+         NjlGepwGO4k1fjNg+DXVyg1IjQzfKWul/LkB0HugnZodwMz5pBEJz1NhqUzYLha5Dmtd
+         sEdXI7soPmZFVpVEGz6E6aHHlQNuNhck9rqzOn1sQJCnMYhFSxs3JePHhqLgeyLa/maW
+         JLig==
+X-Gm-Message-State: AOAM532eBu70tYkKGYU31TskNJxRnvQcJ2i3Tfe2lLcCb7rcuUKb9udg
+        o353OvH8B7X7H4TrqEGrwZ6Fv4AYC1Y=
+X-Google-Smtp-Source: ABdhPJyfBT9pQo+SXX/SVRxX/51ZMMtCA1RJUScUOWnhvtrYzg/bRzDFelbWIbR8mn6HmKSq2i0djg==
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr4972404wrp.217.1601667167512;
+        Fri, 02 Oct 2020 12:32:47 -0700 (PDT)
+Received: from localhost.localdomain ([170.253.60.68])
+        by smtp.googlemail.com with ESMTPSA id e19sm3384230wme.2.2020.10.02.12.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 12:32:46 -0700 (PDT)
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        linux-man@vger.kernel.org, gcc-patches@gcc.gnu.org,
+        libc-alpha@sourceware.org, eggert@cs.ucla.edu,
+        linux-kernel@vger.kernel.org, jwakely.gcc@gmail.com,
+        David.Laight@ACULAB.COM
+Subject: [PATCH v5 0/2] Document 'void *'
+Date:   Fri,  2 Oct 2020 21:28:13 +0200
+Message-Id: <20201002192814.14113-1-colomar.6.4.3@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201002151419.32053-1-colomar.6.4.3@gmail.com>
+References: <20201002151419.32053-1-colomar.6.4.3@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-   Two patches in driver frameworks.  The iscsi one corrects a bug
-   induced by a BPF change to network locking and the other is a
-   regression we introduced.
+Hi Michael,
 
-The patch is available here:
+Here I added a wfix fixing some wording issues and a few typos
+spotted by Paul and Jonathan in the (many) threads.
+As previously, it is squashed into a single commit.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-The short changelog is:
+Thanks again for those who reviewed the patch!
 
-Mark Mielke (1):
-      scsi: iscsi: iscsi_tcp: Avoid holding spinlock while calling getpeername()
+BTW, for those who don't have a local repo of the man-pages,
+below you can see a rendered version of the patch.
 
-Sudhakar Panneerselvam (1):
-      scsi: target: Fix lun lookup for TARGET_SCF_LOOKUP_LUN_FROM_TAG case
+Thanks,
 
-And the diffstat:
+Alex
 
- drivers/scsi/iscsi_tcp.c               | 22 +++++++++++++++-------
- drivers/target/target_core_transport.c |  3 ++-
- 2 files changed, 17 insertions(+), 8 deletions(-)
+[[
+void *
+      According  to  the  C language standard, a pointer to any object
+      type may be converted to a pointer to void and back.  POSIX fur-
+      ther requires that any pointer, including pointers to functions,
+      may be converted to a pointer to void and back.
 
-With full diffs below.
+      Conversions from and to any other pointer type are done  implic-
+      itly,  not  requiring casts at all.  Note that this feature pre-
+      vents any kind of type checking: the programmer should be  care-
+      ful not to convert a void * value to a type incompatible to that
+      of the underlying data, because that would result  in  undefined
+      behavior.
 
-James
+      This  type  is useful in function parameters and return value to
+      allow passing values of any type.  The function  will  typically
+      use  some  mechanism  to  know  the  real type of the data being
+      passed via a pointer to void.
 
----
+      A value of this type can't be dereferenced, as it would  give  a
+      value  of  type  void, which is not possible.  Likewise, pointer
+      arithmetic is not possible with this type.  However, in  GNU  C,
+      pointer  arithmetic  is allowed as an extension to the standard;
+      this is done by treating the size of a void or of a function  as
+      1.  A consequence of this is that sizeof is also allowed on void
+      and on function types, and returns 1.
 
-diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
-index b5dd1caae5e9..d10efb66cf19 100644
---- a/drivers/scsi/iscsi_tcp.c
-+++ b/drivers/scsi/iscsi_tcp.c
-@@ -736,6 +736,7 @@ static int iscsi_sw_tcp_conn_get_param(struct iscsi_cls_conn *cls_conn,
- 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
- 	struct iscsi_sw_tcp_conn *tcp_sw_conn = tcp_conn->dd_data;
- 	struct sockaddr_in6 addr;
-+	struct socket *sock;
- 	int rc;
- 
- 	switch(param) {
-@@ -747,13 +748,17 @@ static int iscsi_sw_tcp_conn_get_param(struct iscsi_cls_conn *cls_conn,
- 			spin_unlock_bh(&conn->session->frwd_lock);
- 			return -ENOTCONN;
- 		}
-+		sock = tcp_sw_conn->sock;
-+		sock_hold(sock->sk);
-+		spin_unlock_bh(&conn->session->frwd_lock);
-+
- 		if (param == ISCSI_PARAM_LOCAL_PORT)
--			rc = kernel_getsockname(tcp_sw_conn->sock,
-+			rc = kernel_getsockname(sock,
- 						(struct sockaddr *)&addr);
- 		else
--			rc = kernel_getpeername(tcp_sw_conn->sock,
-+			rc = kernel_getpeername(sock,
- 						(struct sockaddr *)&addr);
--		spin_unlock_bh(&conn->session->frwd_lock);
-+		sock_put(sock->sk);
- 		if (rc < 0)
- 			return rc;
- 
-@@ -775,6 +780,7 @@ static int iscsi_sw_tcp_host_get_param(struct Scsi_Host *shost,
- 	struct iscsi_tcp_conn *tcp_conn;
- 	struct iscsi_sw_tcp_conn *tcp_sw_conn;
- 	struct sockaddr_in6 addr;
-+	struct socket *sock;
- 	int rc;
- 
- 	switch (param) {
-@@ -789,16 +795,18 @@ static int iscsi_sw_tcp_host_get_param(struct Scsi_Host *shost,
- 			return -ENOTCONN;
- 		}
- 		tcp_conn = conn->dd_data;
--
- 		tcp_sw_conn = tcp_conn->dd_data;
--		if (!tcp_sw_conn->sock) {
-+		sock = tcp_sw_conn->sock;
-+		if (!sock) {
- 			spin_unlock_bh(&session->frwd_lock);
- 			return -ENOTCONN;
- 		}
-+		sock_hold(sock->sk);
-+		spin_unlock_bh(&session->frwd_lock);
- 
--		rc = kernel_getsockname(tcp_sw_conn->sock,
-+		rc = kernel_getsockname(sock,
- 					(struct sockaddr *)&addr);
--		spin_unlock_bh(&session->frwd_lock);
-+		sock_put(sock->sk);
- 		if (rc < 0)
- 			return rc;
- 
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index 9fb0be0aa620..8dd289214dd8 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -1840,7 +1840,8 @@ int target_submit_tmr(struct se_cmd *se_cmd, struct se_session *se_sess,
- 	 * out unpacked_lun for the original se_cmd.
- 	 */
- 	if (tm_type == TMR_ABORT_TASK && (flags & TARGET_SCF_LOOKUP_LUN_FROM_TAG)) {
--		if (!target_lookup_lun_from_tag(se_sess, tag, &unpacked_lun))
-+		if (!target_lookup_lun_from_tag(se_sess, tag,
-+						&se_cmd->orig_fe_lun))
- 			goto failure;
- 	}
- 
+      The conversion specifier for void * for the  printf(3)  and  the
+      scanf(3) families of functions is p.
+
+      Versions: The POSIX requirement about compatibility between void
+      * and function pointers was added in POSIX.1-2008 Technical Cor-
+      rigendum 1 (2013).
+
+      Conforming to: C99 and later; POSIX.1-2001 and later.
+
+      See also: malloc(3), memcmp(3), memcpy(3), memset(3)
+
+      See also the intptr_t and uintptr_t types in this page.
+]]
+
+
+Alejandro Colomar (2):
+  system_data_types.7: Add 'void *'
+  void.3: New link to system_data_types(7)
+
+ man3/void.3              |  1 +
+ man7/system_data_types.7 | 76 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 75 insertions(+), 2 deletions(-)
+ create mode 100644 man3/void.3
+
+-- 
+2.28.0
 
