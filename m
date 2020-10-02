@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EC22814A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760CA2814A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388007AbgJBOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
+        id S2388011AbgJBOIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBOG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:06:57 -0400
-Received: from gaia (unknown [95.149.105.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726017AbgJBOIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:08:09 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1458C206DB;
-        Fri,  2 Oct 2020 14:06:54 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 15:06:52 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
- exit
-Message-ID: <20201002140652.GG7034@gaia>
-References: <cover.1601593784.git.andreyknvl@google.com>
- <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F14F207DE;
+        Fri,  2 Oct 2020 14:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601647688;
+        bh=+3VAWIyE736i8QJoJWyBkDl46THgUH5Y4ZYxc7rww6M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YS1CG4Oq4huZaIu8Ij+hCQ8yMeyS36kpM3ri/SpDmf7c/4ohOYavdzjqQINHrtMh8
+         S5TM/P/23W3g2UnzrPxSe2Cntf/zAVfCMhcH9eXkTdMJNNfMdIo/WYFPRCIjCth4PB
+         eR0N9LtyPPEpeKWJA/sR5JRvkpq+rlfyzILcDgr4=
+Received: by mail-ot1-f51.google.com with SMTP id m13so1437744otl.9;
+        Fri, 02 Oct 2020 07:08:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531bQPWfd7wgP9QFVIN1VvpxAL30hBz5JwGPdvepdcwGWXdfPvu0
+        4Mu3d4ctwv3QVkGCP+HNiTLUxBF0u44Jwbp5lg==
+X-Google-Smtp-Source: ABdhPJyhESEM7l1n2tIx5F0cvgikaOZ2/i+MUqha3K8do3Q2vmEsuhRy0a+dFZdN8iCN+3dCIkrbCldSgjZJebzgVBg=
+X-Received: by 2002:a9d:7998:: with SMTP id h24mr1914471otm.192.1601647687409;
+ Fri, 02 Oct 2020 07:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f2681fdff1aa1096df949cb8634a9be6bf4acc4.1601593784.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com>
+In-Reply-To: <20201001225952.3676755-1-saravanak@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 2 Oct 2020 09:07:55 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
+Message-ID: <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:10:30AM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 7c67ac6f08df..d1847f29f59b 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -23,6 +23,8 @@
->  #include <asm/ptrace.h>
->  #include <asm/sysreg.h>
->  
-> +u64 gcr_kernel_excl __ro_after_init;
-> +
->  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+> adding all top level devices") optimized the fwnode parsing when all top
+> level devices are added, it missed out optimizing this for platform
+> where the top level devices are added through the init_machine() path.
+>
+> This commit does the optimization for all paths by simply moving the
+> fw_devlink_pause/resume() inside of_platform_default_populate().
+>
+> Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/of/platform.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> index 071f04da32c8..79972e49b539 100644
+> --- a/drivers/of/platform.c
+> +++ b/drivers/of/platform.c
+> @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
+>                                  const struct of_dev_auxdata *lookup,
+>                                  struct device *parent)
 >  {
->  	pte_t old_pte = READ_ONCE(*ptep);
-> @@ -120,6 +122,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
->  	return ptr;
->  }
->  
-> +void mte_init_tags(u64 max_tag)
-> +{
-> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+> -       return of_platform_populate(root, of_default_bus_match_table, lookup,
+> -                                   parent);
+> +       int ret;
+> +
+> +       /*
+> +        * fw_devlink_pause/resume() are only safe to be called around top
+> +        * level device addition due to locking constraints.
+> +        */
+> +       if (!root)
+> +               fw_devlink_pause();
+> +
+> +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
+> +                                  parent);
 
-Nitpick: it's not obvious that MTE_TAG_MAX is a mask, so better write
-this as GENMASK(min(max_tag, MTE_TAG_MAX), 0).
+of_platform_default_populate() vs. of_platform_populate() is just a
+different match table. I don't think the behavior should otherwise be
+different.
 
-Otherwise it looks fine.
+There's also of_platform_probe() which has slightly different matching
+behavior. It should not behave differently either with respect to
+devlinks.
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Rob
