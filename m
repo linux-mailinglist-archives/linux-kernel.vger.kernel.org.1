@@ -2,131 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0251128179F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CA72817A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388091AbgJBQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgJBQQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:16:02 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93AFC0613D0;
-        Fri,  2 Oct 2020 09:16:01 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m13so1861046otl.9;
-        Fri, 02 Oct 2020 09:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zgX1Y61lwKmXwg6phLhqeeQJhLp0kcTvn9poeXISdLQ=;
-        b=oDfLUS95hwMnH8jsEnGP60kCAk4zBIe5VFqPlHaDy2qkqvxPlttBuZEACVs9lY2jYW
-         VAcldaeIZH48/0+diHOhfGSl1e9TikXG+Xw07T0xdN7jPcpX+UfVR9751xmSfz5nJ2gs
-         fXuzBkeAl6ZrOoLEvf2mop0EoElwOZViEh5tuS4wiZfTEera9B2LJZC2uE/O9exgkzXY
-         1iLE7g5pxHERmY/qmLPwhg/ZvxmQjKMAMpz637MHZDVSftGnpY/NAcwuRhD+4DgRyXMq
-         whycCfpuPatQ+X7GvVKvL/82lv0YzymHi0n8NHyi3L31TvBfRA8rHbNK++8bNxTgQYHB
-         Z3RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zgX1Y61lwKmXwg6phLhqeeQJhLp0kcTvn9poeXISdLQ=;
-        b=gpP8U28elgbna1WtMVboXUO81hxmqN17iVE4RXaNMjhfAsTrG3l0XaTtvGUN20VblH
-         YJ7rnOxaTTXpS7iY4CVYs9w1yF69ulw0AHn/IshPWTxokKlN1EZvn0fNzwqB4KQSLz+a
-         sgJFzAIe3EcR8cqffMdhQeTMaRpb9Pxdn6DsgzJVQcNF2rXlGbR/Uf485GAQxeL9qYen
-         skHKNOkm7dd6aRwICEbEEp83tE9fqvaPamLiRIl8o+bHkJfSaO77QR2g04urHvOhaz1E
-         eV58cJOS5Cx5MrVe2lj+cf1DFFzShMv+mj9IC/G++FneNJpBJ6+HZXj98PxK/TjPwGgT
-         bs+w==
-X-Gm-Message-State: AOAM5304vHRhi/XwKDDBwDGqGXf86+P/DOMBdkhGfAl0Jx2lOITtQu+j
-        P49Put93loGReduQAHvZcemGEkGiyas=
-X-Google-Smtp-Source: ABdhPJy6TzDf05pU7QIHZkPVm9E0kw1IbYD6c2XuOfusl/k4OKVZXHu3ep9hcioiSsR3uNwhcm5P+w==
-X-Received: by 2002:a9d:6a19:: with SMTP id g25mr2320636otn.267.1601655361364;
-        Fri, 02 Oct 2020 09:16:01 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s20sm529135oot.15.2020.10.02.09.16.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 02 Oct 2020 09:16:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 2 Oct 2020 09:15:59 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] hwmon: bt1-pvt: Wait for the completion with timeout
-Message-ID: <20201002161559.GA44651@roeck-us.net>
-References: <20200920110924.19741-1-Sergey.Semin@baikalelectronics.ru>
- <20200920110924.19741-4-Sergey.Semin@baikalelectronics.ru>
+        id S2387893AbgJBQSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJBQSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 12:18:08 -0400
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 183342085B;
+        Fri,  2 Oct 2020 16:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601655487;
+        bh=qKotbjg9kcKQ9kFUjGcF4Wc0HsTaB353+5mrYaSDDCQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KTqcRmGIxuBsugsYc3QNXyB43KgLKQ9zy7a0ZL2VLKTac+57x7+Da+cQjG5EWi9W5
+         5RjT/V3wWUwLHhRblDOh0yp1QEVbVh2jNWWOyaFL3bJ+FgSncjBolK/2wF6P9ZP8Al
+         Ga22xMjFzSc5fNnLr2MM9JAT+b9yEgFgZf1nBvwM=
+Received: by mail-ed1-f41.google.com with SMTP id dn5so2224469edb.10;
+        Fri, 02 Oct 2020 09:18:07 -0700 (PDT)
+X-Gm-Message-State: AOAM533O9fmXzY2gkzaMXJkZ2HzcIc2LWQF2zIV/EV2dkPOgdAKSfsIt
+        MoRDRK1d2VotZ+sqJ04402Do2SVkOnrrEO/jHg==
+X-Google-Smtp-Source: ABdhPJyafmj/u0SG8QNpaP1VvSH+STsRaizRRbacdoCZ2+w+W/LvGvkYpsx/bWsJ+8QEICEnsr4GD7tdYTR68Pb/FQk=
+X-Received: by 2002:a05:6402:d09:: with SMTP id eb9mr3131896edb.219.1601655485577;
+ Fri, 02 Oct 2020 09:18:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920110924.19741-4-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+ <1599028813.32069.1.camel@mtkswgap22> <1599640627.6370.3.camel@mtkswgap22>
+ <1600246737.14155.3.camel@mtkswgap22> <1600758789.19001.4.camel@mtkswgap22> <1601449808.7564.2.camel@mtkswgap22>
+In-Reply-To: <1601449808.7564.2.camel@mtkswgap22>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 3 Oct 2020 00:17:54 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__HA9W9jXSFTmZPxPeO_f1580ARDLcZO1hpX1p0a3+oUA@mail.gmail.com>
+Message-ID: <CAAOTY__HA9W9jXSFTmZPxPeO_f1580ARDLcZO1hpX1p0a3+oUA@mail.gmail.com>
+Subject: Re: [PATCH v7] Add MediaTek MT6779 devapc driver
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 02:09:23PM +0300, Serge Semin wrote:
-> If the PVT sensor is suddenly powered down while a caller is waiting for
-> the conversion completion, the request won't be finished and the task will
-> hang up on this procedure until the power is back up again. Let's call the
-> wait_for_completion_timeout() method instead to prevent that. The cached
-> timeout is exactly what we need to predict for how long conversion could
-> normally last.
-> 
-> Fixes: 87976ce2825d ("hwmon: Add Baikal-T1 PVT sensor driver")
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Hi, Neal:
 
-Applied.
+You may find Matthias in IRC [1], the channel name is #linux-mediatek
 
-Thanks,
-Guenter
+[1] https://webchat.freenode.net/
 
-> ---
->  drivers/hwmon/bt1-pvt.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/bt1-pvt.c b/drivers/hwmon/bt1-pvt.c
-> index 2600426a3b21..3e1d56585b91 100644
-> --- a/drivers/hwmon/bt1-pvt.c
-> +++ b/drivers/hwmon/bt1-pvt.c
-> @@ -477,6 +477,7 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
->  			 long *val)
->  {
->  	struct pvt_cache *cache = &pvt->cache[type];
-> +	unsigned long timeout;
->  	u32 data;
->  	int ret;
->  
-> @@ -500,7 +501,14 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
->  	pvt_update(pvt->regs + PVT_INTR_MASK, PVT_INTR_DVALID, 0);
->  	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, PVT_CTRL_EN);
->  
-> -	wait_for_completion(&cache->conversion);
-> +	/*
-> +	 * Wait with timeout since in case if the sensor is suddenly powered
-> +	 * down the request won't be completed and the caller will hang up on
-> +	 * this procedure until the power is back up again. Multiply the
-> +	 * timeout by the factor of two to prevent a false timeout.
-> +	 */
-> +	timeout = 2 * usecs_to_jiffies(ktime_to_us(pvt->timeout));
-> +	ret = wait_for_completion_timeout(&cache->conversion, timeout);
->  
->  	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, 0);
->  	pvt_update(pvt->regs + PVT_INTR_MASK, PVT_INTR_DVALID,
-> @@ -510,6 +518,9 @@ static int pvt_read_data(struct pvt_hwmon *pvt, enum pvt_sensor_type type,
->  
->  	mutex_unlock(&pvt->iface_mtx);
->  
-> +	if (!ret)
-> +		return -ETIMEDOUT;
-> +
->  	if (type == PVT_TEMP)
->  		*val = pvt_calc_poly(&poly_N_to_temp, data);
->  	else
+Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B49=E6=9C=8830=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=883:10=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi Matt,
+>
+> Hope this mail could find you well.
+> Is everything okay?
+> It would be glad if you could reply me no matter the review status.
+>
+> Thanks
+>
+> -Neal
+>
+> On Tue, 2020-09-22 at 15:13 +0800, Neal Liu wrote:
+> > Hi Matthias,
+> >
+> > We need this driver supported on main-line.
+> > Could you save your time for us to review it?
+> > Thanks
+> >
+> > -Neal
+> >
+> > On Wed, 2020-09-16 at 16:58 +0800, Neal Liu wrote:
+> > > Hi Rob, Matthias, Chun-Kuang,
+> > >
+> > > Sorry for pushing you so hard.
+> > > May I know is this patch set is comfortable to apply on latest kernel=
+?
+> > > Thanks
+> > >
+> > > -Neal
+> > >
+> > > On Wed, 2020-09-09 at 16:37 +0800, Neal Liu wrote:
+> > > > Hi Rob, Matthias, Chun-Kuang,
+> > > >
+> > > > Please kindly let me know your comments about this patch set.
+> > > > Thanks
+> > > >
+> > > > -Neal
+> > > >
+> > > > On Wed, 2020-09-02 at 14:40 +0800, Neal Liu wrote:
+> > > > > Hi Rob, Matthias, Chun-Kuang,
+> > > > >
+> > > > > Gentle ping for this patch set.
+> > > > > Thanks
+> > > > >
+> > > > > -Neal
+> > > > >
+> > > > > On Thu, 2020-08-27 at 11:06 +0800, Neal Liu wrote:
+> > > > > > These patch series introduce a MediaTek MT6779 devapc driver.
+> > > > > >
+> > > > > > MediaTek bus fabric provides TrustZone security support and dat=
+a protection to prevent slaves from being accessed by unexpected masters.
+> > > > > > The security violation is logged and sent to the processor for =
+further analysis or countermeasures.
+> > > > > >
+> > > > > > Any occurrence of security violation would raise an interrupt, =
+and it will be handled by mtk-devapc driver.
+> > > > > > The violation information is printed in order to find the murde=
+rer.
+> > > > > >
+> > > > > > changes since v6:
+> > > > > > - remove unnecessary mask/unmask module irq during ISR.
+> > > > > >
+> > > > > > changes since v5:
+> > > > > > - remove redundant write reg operation.
+> > > > > > - use static variable of vio_dbgs instead.
+> > > > > > - add stop_devapc() if driver is removed.
+> > > > > >
+> > > > > > changes since v4:
+> > > > > > - refactor data structure.
+> > > > > > - merge two simple functions into one.
+> > > > > > - refactor register setting to prevent too many function call o=
+verhead.
+> > > > > >
+> > > > > > changes since v3:
+> > > > > > - revise violation handling flow to make it more easily to unde=
+rstand
+> > > > > >   hardware behavior.
+> > > > > > - add more comments to understand how hardware works.
+> > > > > >
+> > > > > > changes since v2:
+> > > > > > - pass platform info through DT data.
+> > > > > > - remove unnecessary function.
+> > > > > > - remove slave_type because it always equals to 1 in current su=
+pport SoC.
+> > > > > > - use vio_idx_num instread of list all devices' index.
+> > > > > > - add more comments to describe hardware behavior.
+> > > > > >
+> > > > > > changes since v1:
+> > > > > > - move SoC specific part to DT data.
+> > > > > > - remove unnecessary boundary check.
+> > > > > > - remove unnecessary data type declaration.
+> > > > > > - use read_poll_timeout() instread of for loop polling.
+> > > > > > - revise coding style elegantly.
+> > > > > >
+> > > > > >
+> > > > > > *** BLURB HERE ***
+> > > > > >
+> > > > > > Neal Liu (2):
+> > > > > >   dt-bindings: devapc: add bindings for mtk-devapc
+> > > > > >   soc: mediatek: add mt6779 devapc driver
+> > > > > >
+> > > > > >  .../bindings/soc/mediatek/devapc.yaml         |  58 ++++
+> > > > > >  drivers/soc/mediatek/Kconfig                  |   9 +
+> > > > > >  drivers/soc/mediatek/Makefile                 |   1 +
+> > > > > >  drivers/soc/mediatek/mtk-devapc.c             | 305 ++++++++++=
+++++++++
+> > > > > >  4 files changed, 373 insertions(+)
+> > > > > >  create mode 100644 Documentation/devicetree/bindings/soc/media=
+tek/devapc.yaml
+> > > > > >  create mode 100644 drivers/soc/mediatek/mtk-devapc.c
+> > > > > >
+> > > > >
+> > > > >
+> > > >
+> > > >
+> > >
+> > >
+> >
+> >
+>
