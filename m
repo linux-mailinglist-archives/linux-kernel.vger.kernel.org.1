@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C355F2818E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4842818EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388121AbgJBROf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:14:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726096AbgJBROf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:14:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601658874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H9YNVR6BrU2NGxneUWWYLKFH1m7KwKMpGFjULgODVOM=;
-        b=QnVoVH9Vk8YJzaKCIDQn5kM/9ePRUkE80/BAILPqm1eNdx0u2Gq1xHFQFibQU+hDEUUlRT
-        s/7hTITQwkwbKLl8cnSdFrJfkwtF1ECXBPhEs5PlSRql4hKxmemUxEXqv3higO9TGlG7H1
-        CfgfQJN2pkko+HNywqsfTCXuC4O9F8A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-E0v9ozjlOISlwPyO1fyaPA-1; Fri, 02 Oct 2020 13:14:32 -0400
-X-MC-Unique: E0v9ozjlOISlwPyO1fyaPA-1
-Received: by mail-qk1-f199.google.com with SMTP id 16so1522292qky.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:14:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H9YNVR6BrU2NGxneUWWYLKFH1m7KwKMpGFjULgODVOM=;
-        b=FYLhgcVluBRC0pJuTCx6KcKiqBDrCtwm2+NeZCV07kqJVPxa1SpjIr7eTEvbqod5Ol
-         URDcFECwih7wOVZSkqj0JomJ0QU4yRmYG4PbCTnR2P26nkJFtfmtgGt0ACUqPY74qjYM
-         A5u/xX9/PE2k0efzG7GP5q8bsMfftLxhlaZ66j+RaiOVCk2r+87DCLkgRKbDHuFsXkpA
-         nEEC+ioM3le6gyEZRYo0JVB3xFvSz43bfOzucP391rDLQf6RavOrxX+DaOljoO7lZ4Cn
-         kjJP6Z9S5wXJMLRWEhr2J8o51X1+2OORBxXb6sUR2D2GCxaT3ChOxI3Hirr/vjowMYab
-         rAnQ==
-X-Gm-Message-State: AOAM53386s4LnZzVfztnhzJ0gOKNmRB7dd0tuo38I0yCwwQQrcuvtK+w
-        6iUT/c5miHh4eBmGMf8TIEP1Xq/pUfyaKrh8SRs3GExLgNQ87clciQXGyA9iLMicB8pcm0wl0Wf
-        trDgRSnwomcCjWs1wKwPTxgxF
-X-Received: by 2002:a05:620a:2082:: with SMTP id e2mr2899156qka.421.1601658871955;
-        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz91o8uz8PP283FAWSk1vB20zLLcd1fcgGHGqnN6wLniDiAftqBWCSKtKyZioCRYQC5Pw5w+Q==
-X-Received: by 2002:a05:620a:2082:: with SMTP id e2mr2899141qka.421.1601658871663;
-        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
-Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
-        by smtp.gmail.com with ESMTPSA id g14sm1461694qkk.38.2020.10.02.10.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 13:14:29 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH] mm: Remove src/dst mm parameter in copy_page_range()
-Message-ID: <20201002171429.GB5473@xz-x1>
-References: <20200930204950.6668-1-peterx@redhat.com>
- <20201002114312.GI9916@ziepe.ca>
+        id S2388296AbgJBRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:15:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388246AbgJBRPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:15:17 -0400
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF139221E8
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 17:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601658917;
+        bh=s7udygt1CSVMxxOampKOALpJgvQrS3aEcCihXqlqlcg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=M7B7nr137Eex0sRlGHrGJJFThN1B5IyaQ6ET1EP7ZtS91XZGiJNdNMt14KsWvrDdl
+         K60GAhwlBXIExhcKu8R0+NLS7NGp34MBqWidENJ2AobYPb1KOjpJ3W3g2afuwT0gUt
+         OOdYuI0Yv6T/2QIPymFU+wNqZWfB7RQPCQLiGI+I=
+Received: by mail-wr1-f41.google.com with SMTP id x14so2596306wrl.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:15:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530yJOdQbRo8Wdr3we8ZcMbYQL+D8nbJU472oZfx4rQQW+EiSPOY
+        ytqPXMjJBYmFGjzDTqngz7O3ikx9Ze0xnMd8rO0d8A==
+X-Google-Smtp-Source: ABdhPJxSeT1LG5BuIfj2lWUE/FaaIuRdO3qUd0fuuANd5iiyQhbNOnYWg2scwTOk6LtbOLBq8Wzv1BUhyOpC64hZLmM=
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr4104651wrw.75.1601658915437;
+ Fri, 02 Oct 2020 10:15:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201002114312.GI9916@ziepe.ca>
+References: <20201001203913.9125-1-chang.seok.bae@intel.com> <20201001203913.9125-23-chang.seok.bae@intel.com>
+In-Reply-To: <20201001203913.9125-23-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 2 Oct 2020 10:15:04 -0700
+X-Gmail-Original-Message-ID: <CALCETrVToTrLQEbmXugja_Aif8LcZ7kX8Shu0Gg-FOx6w0p48A@mail.gmail.com>
+Message-ID: <CALCETrVToTrLQEbmXugja_Aif8LcZ7kX8Shu0Gg-FOx6w0p48A@mail.gmail.com>
+Subject: Re: [RFC PATCH 22/22] x86/fpu/xstate: Introduce boot-parameters for
+ control some state component support
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 08:43:12AM -0300, Jason Gunthorpe wrote:
-> > -static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-> > -		   pmd_t *dst_pmd, pmd_t *src_pmd, struct vm_area_struct *vma,
-> > -		   struct vm_area_struct *new,
-> > +static int copy_pte_range(pmd_t *dst_pmd, pmd_t *src_pmd,
-> > +		   struct vm_area_struct *vma, struct vm_area_struct *new,
-> >  		   unsigned long addr, unsigned long end)
-> 
-> I link this, my only minor quibble is the mixing of dst/src and new
-> language, and then reversing the order in each place. Would read
-> better to be consistent:
-> 
->   copy_pte_range(dst_vma, dst_pmd, src_vma, src_pmd, addr, end)
+On Thu, Oct 1, 2020 at 1:43 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> "xstate.disable=0x6000" will disable AMX on a system that has AMX compiled
+> into XFEATURE_MASK_USER_SUPPORTED.
 
-I have no strong opinion on the ordering, but I agree the names are clearer.
-Considering normally we put the same type of parameters to be together, how
-about:
+Can we please use words for this?  Perhaps:
 
-  copy_pte_range(dst_vma, src_vma, dst_pmd, src_pmd, addr, end)
+xstate.disable=amx,zmm
 
-Thanks,
+and maybe add a list in /proc/cpuinfo or somewhere in /proc or /sys
+that shows all the currently enabled xsave states.
 
--- 
-Peter Xu
+>
+> "xstate.enable=0x6000" will enable AMX on a system that does NOT have AMX
+> compiled into XFEATURE_MASK_USER_SUPPORTED (assuming the kernel is new
+> enough to support this feature).
 
+This sounds like it will be quite confusing to anyone reading the
+kernel code to discover that a feature that is not "SUPPORTED" is
+nonetheless enabled.
