@@ -2,84 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58192815F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6702815FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388199AbgJBPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388016AbgJBPCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:02:22 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615F9C0613D0;
-        Fri,  2 Oct 2020 08:02:22 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u21so1443452ljl.6;
-        Fri, 02 Oct 2020 08:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ka6/K8mHHg9ZELEKZJRCDuBiuNpr2lVVW/5oVw+42YU=;
-        b=eDay96xuK97T4BkOacSyhPCI9JzHTkiEJd6IX+cevA6rjO1X2KA03bRFPyuF765F5x
-         o3aftheCQj1UBhsqfgcVgiRSy9aU7rKYUP7im1zsGUVgXtssIcdLQevbUex90jG/sO42
-         B19vVAzZ0y9RgAayIYaNwbE3tWT8VkER55kctULFIZrSBaIjLJwBe1mSzzjeq7U9gGDa
-         G09jaaccZxjMy2WSxJDNeDwnKDWXdjYQ1lQvYg7SayTy/e63R4EQ5/LXVbyKV7/up1zb
-         Q3dPzHlSr1jfv381FKITRhTebp3sC8atHLKdYU59cqjU6B/NuPdIpQm52Gtf/dXOwq4L
-         CLvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ka6/K8mHHg9ZELEKZJRCDuBiuNpr2lVVW/5oVw+42YU=;
-        b=mEURNAqb/7VwYE7MiKZGjYa6mN9Ew5XJAuFozArVQ/+8bMK2nQH1Ez3oisY+Ky1SSJ
-         5Ku9tUt/6TWlr02Tkn8ccuXVcERySG79kaQrPBmFc/JxuztdMNyljxe5TsL/h1GGYE3E
-         mhepP0/0cVK3Bq8xSS1oE6y66ZRxPk/P3Zqd/J0Ik2Bi3BSIaYPqNuliaxSqbG+nGNI3
-         72qp48VcQ7+dmcab/xYxIkbzc7VDr9yIhuyPogovWwo7eyN64hG4DK1chqAZDoR0hJDW
-         mtpmbDAFOIijMSKWar5WYHHFX5P2w7WDpY0uWC+YZX6jxLP3toSs9LAkdxvVKzoxlLK0
-         kHmg==
-X-Gm-Message-State: AOAM533qAUGLJdPunrTPNnPdHHEOFo4+KEUIwJJeGGXscuAKwVoVrWpT
-        LUn9Yj95qHZqfpaE+DfFfpVhVkZpX8U=
-X-Google-Smtp-Source: ABdhPJwOT67jY7lMUAS0fLLHRBVwgEk4tvyQGOTRnJAWl+2qEQbUHagbwWasPsBuUvDWZwsOqRYGqg==
-X-Received: by 2002:a2e:b5d0:: with SMTP id g16mr814724ljn.402.1601650940389;
-        Fri, 02 Oct 2020 08:02:20 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id u22sm338978lfl.160.2020.10.02.08.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 08:02:19 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
-Date:   Fri, 2 Oct 2020 18:02:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388217AbgJBPCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:02:37 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:52829 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388168AbgJBPCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:02:37 -0400
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7741090000>; Fri, 02 Oct 2020 23:02:33 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
+ 2020 15:02:31 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 2 Oct 2020 15:02:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T2dEVBSPb6F62h2fvVXdjxm3H5dnZJ8USu0pNffi5tLZOkFe/SGO1y7KwkaTW1700RXjj9Uw1g0/TWWDps+FtTxJWFZJEdlvagDsRxF57+gpqP/baTUQLLcxSz4hFca780NsBPZGz9CoFqjp2QwX93REPCAVpBFedsR1xIshSPLLJOfV2OFLZVZaZCCy24uHhgcMkwW5KP0H9w0Wnp8tYmGiL5Qqpph6QDmTeuNNHgd1/rkh0pJ1a6Ac0bkKDcsNRhJ/b220V+HYBF3LH2C7ziaYKCTO8rnyvl4B8BsBcSdbitt7u46YqQ5xETbplGaxMxIraa774t3Z90kx4amKCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gYhoD4eUWiVZW5V1o8Lr0aPyImgXJ34OhnHf+S2HlBY=;
+ b=bqTKCmMo4GvytYyqOVRJ8GIX9WnBBZlQ7QUKsXFhfWdjb8Qo5SXa+9zYp/GcBmORKvq+zxzSYq2uPAzk1fOeDDbbKFXKqEOmbeD0q55uq/XjwSIMpw7P5lsLMFya00UyyW6a3tpC8Sir2yN5CSngGZuddDFCJdfr6/VbYgZ8DIVUxuJ7LIIBkI9se0L+4hyc93aWvgaPw3/Q2Ike8AWuf8YB5VYzfXIMSpHcReeWg55T1zY4OG6wjakxrQ5ZEGC4RSks9GViEeTYgJuse/M1xZaJpdW4Y79CNVFFiem4m40Q0KSP/8QdEAigHC9vnquOHUmUB3vl02kuiwcnGWuXjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1145.namprd12.prod.outlook.com (2603:10b6:3:77::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Fri, 2 Oct
+ 2020 15:02:29 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
+ 15:02:29 +0000
+Date:   Fri, 2 Oct 2020 12:02:27 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        "VMware Graphics" <linux-graphics-maintainer@vmware.com>
+Subject: Re: [PATCH rdma-next v4 1/4] lib/scatterlist: Add support in dynamic
+ allocation of SG table from pages
+Message-ID: <20201002150227.GA1350139@nvidia.com>
+References: <20200927064647.3106737-1-leon@kernel.org>
+ <20200927064647.3106737-2-leon@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200927064647.3106737-2-leon@kernel.org>
+X-ClientProxiedBy: MN2PR12CA0011.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20201002060807.32138-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR12CA0011.namprd12.prod.outlook.com (2603:10b6:208:a8::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Fri, 2 Oct 2020 15:02:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kOMZo-005rzO-0W; Fri, 02 Oct 2020 12:02:28 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601650953; bh=gYhoD4eUWiVZW5V1o8Lr0aPyImgXJ34OhnHf+S2HlBY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=A+ibKMd1673+eRSi2IOjyjU5J8gPum2b2z2A67KGIleVRbsRLztActbguUCRCTmdy
+         CMrP9Fw4KB1QMHmzVZsL0xEUcpkT+DOhcy4mvHGrap5VyFSWGZmBE0CQkIZL+d6QqZ
+         xN6k3aZB7kI1P22gu9YwaxkV6DT5JsWHV1efOJWbyvBGOYJ7EUrp2tPmwCmhUrgid4
+         51tuRcdZ4Bl1dw0ED6xKNaUuubNZ2/6jrmVFaTioHH9Lmwp4Gmkb2eQ7blYxnvUZXQ
+         nog6B9u2wxVNjOMjO+6M7CeIVTmxs6O/OoUVdh8VageYhTBpbbaa+4nAWH6gzV7rgU
+         iFWQZI+IB523Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 09:08, Nicolin Chen пишет:
->  static int tegra_smmu_of_xlate(struct device *dev,
->  			       struct of_phandle_args *args)
+On Sun, Sep 27, 2020 at 09:46:44AM +0300, Leon Romanovsky wrote:
+> +struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
+> +		struct page **pages, unsigned int n_pages, unsigned int offset,
+> +		unsigned long size, unsigned int max_segment,
+> +		struct scatterlist *prv, unsigned int left_pages,
+> +		gfp_t gfp_mask)
 >  {
-> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
-> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
->  	u32 id = args->args[0];
->  
-> +	of_node_put(args->np);
+> -	unsigned int chunks, cur_page, seg_len, i;
+> +	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
+> +	struct scatterlist *s = prv;
+> +	unsigned int table_size;
+> +	unsigned int tmp_nents;
+>  	int ret;
+> -	struct scatterlist *s;
+> 
+>  	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
+> -		return -EINVAL;
+> +		return ERR_PTR(-EINVAL);
+> +	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
+> +		return ERR_PTR(-EOPNOTSUPP);
+> +
+> +	tmp_nents = prv ? sgt->nents : 0;
+> +
+> +	if (prv &&
+> +	    page_to_pfn(sg_page(prv)) + (prv->length >> PAGE_SHIFT) ==
 
-of_find_device_by_node() takes device reference and not the np
-reference. This is a bug, please remove of_node_put().
+This calculation of the end doesn't consider sg->offset
+
+> +	    page_to_pfn(pages[0]))
+> +		prv_len = prv->length;
+> 
+>  	/* compute number of contiguous chunks */
+>  	chunks = 1;
+> @@ -410,13 +461,17 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+>  		}
+>  	}
+> 
+> -	ret = sg_alloc_table(sgt, chunks, gfp_mask);
+> -	if (unlikely(ret))
+> -		return ret;
+> +	if (!prv) {
+> +		/* Only the last allocation could be less than the maximum */
+> +		table_size = left_pages ? SG_MAX_SINGLE_ALLOC : chunks;
+> +		ret = sg_alloc_table(sgt, table_size, gfp_mask);
+> +		if (unlikely(ret))
+> +			return ERR_PTR(ret);
+> +	}
+
+This is basically redundant right? Now that get_next_sg() can allocate
+SGs it can just build them one by one, no need to preallocate.
+
+Actually all the changes the the allocation seem like overkill, just
+allocate a single new array directly in get_next_sg() whenever it
+needs.
+
+Something like this:
+
+@@ -365,6 +372,37 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
+ }
+ EXPORT_SYMBOL(sg_alloc_table);
+ 
++static struct scatterlist *get_next_sg(struct sg_table *table,
++		struct scatterlist *cur, unsigned long needed_sges,
++		gfp_t gfp_mask)
++{
++	struct scatterlist *new_sg;
++	unsigned int alloc_size;
++
++	if (cur) {
++		struct scatterlist *next_sg = sg_next(cur);
++
++		/* Check if last entry should be keeped for chainning */
++		if (!sg_is_last(next_sg) || needed_sges == 1)
++			return next_sg;
++	}
++
++	alloc_size = min_t(unsigned long, needed_sges, SG_MAX_SINGLE_ALLOC);
++	new_sg = sg_kmalloc(alloc_size, gfp_mask);
++	if (!new_sg)
++		return ERR_PTR(-ENOMEM);
++	sg_init_table(new_sg, alloc_size);
++	if (cur) {
++		__sg_chain(cur, new_sg);
++		table->orig_nents += alloc_size - 1;
++	} else {
++		table->sgl = new_sg;
++		table->orig_nents = alloc_size;
++		table->nents = 0;
++	}
++	return new_sg;
++}
++
+ /**
+  * __sg_alloc_table_from_pages - Allocate and initialize an sg table from
+  *			         an array of pages
+@@ -374,29 +412,64 @@ EXPORT_SYMBOL(sg_alloc_table);
+  * @offset:      Offset from start of the first page to the start of a buffer
+  * @size:        Number of valid bytes in the buffer (after offset)
+  * @max_segment: Maximum size of a scatterlist node in bytes (page aligned)
++ * @prv:	 Last populated sge in sgt
++ * @left_pages:  Left pages caller have to set after this call
+  * @gfp_mask:	 GFP allocation mask
+  *
+- *  Description:
+- *    Allocate and initialize an sg table from a list of pages. Contiguous
+- *    ranges of the pages are squashed into a single scatterlist node up to the
+- *    maximum size specified in @max_segment. An user may provide an offset at a
+- *    start and a size of valid data in a buffer specified by the page array.
+- *    The returned sg table is released by sg_free_table.
++ * Description:
++ *    If @prv is NULL, allocate and initialize an sg table from a list of pages,
++ *    else reuse the scatterlist passed in at @prv.
++ *    Contiguous ranges of the pages are squashed into a single scatterlist
++ *    entry up to the maximum size specified in @max_segment.  A user may
++ *    provide an offset at a start and a size of valid data in a buffer
++ *    specified by the page array.
+  *
+  * Returns:
+- *   0 on success, negative error on failure
++ *   Last SGE in sgt on success, PTR_ERR on otherwise.
++ *   The allocation in @sgt must be released by sg_free_table.
++ *
++ * Notes:
++ *   If this function returns non-0 (eg failure), the caller must call
++ *   sg_free_table() to cleanup any leftover allocations.
+  */
+-int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+-				unsigned int n_pages, unsigned int offset,
+-				unsigned long size, unsigned int max_segment,
+-				gfp_t gfp_mask)
++struct scatterlist *__sg_alloc_table_from_pages(struct sg_table *sgt,
++		struct page **pages, unsigned int n_pages, unsigned int offset,
++		unsigned long size, unsigned int max_segment,
++		struct scatterlist *prv, unsigned int left_pages,
++		gfp_t gfp_mask)
+ {
+-	unsigned int chunks, cur_page, seg_len, i;
+-	int ret;
+-	struct scatterlist *s;
++	unsigned int chunks, cur_page, seg_len, i, prv_len = 0;
++	unsigned int added_nents = 0;
++	struct scatterlist *s = prv;
+ 
+ 	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
+-		return -EINVAL;
++		return ERR_PTR(-EINVAL);
++	if (IS_ENABLED(CONFIG_ARCH_NO_SG_CHAIN) && prv)
++		return ERR_PTR(-EOPNOTSUPP);
++
++	if (prv) {
++		unsigned long paddr = (page_to_pfn(sg_page(prv)) * PAGE_SIZE +
++				       prv->offset + prv->length) /
++				      PAGE_SIZE;
++
++		if (WARN_ON(offset))
++			return ERR_PTR(-EINVAL);
++
++		/* Merge contiguous pages into the last SG */
++		prv_len = prv->length;
++		while (n_pages && page_to_pfn(pages[0]) == paddr) {
++			if (prv->length + PAGE_SIZE > max_segment)
++				break;
++			prv->length += PAGE_SIZE;
++			paddr++;
++			pages++;
++			n_pages--;
++		}
++		if (!n_pages) {
++			sg_mark_end(sg_next(prv));
++			return prv;
++		}
++	}
+ 
+ 	/* compute number of contiguous chunks */
+ 	chunks = 1;
+@@ -410,13 +483,9 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+ 		}
+ 	}
+ 
+-	ret = sg_alloc_table(sgt, chunks, gfp_mask);
+-	if (unlikely(ret))
+-		return ret;
+-
+ 	/* merging chunks and putting them into the scatterlist */
+ 	cur_page = 0;
+-	for_each_sg(sgt->sgl, s, sgt->orig_nents, i) {
++	for (i = 0; i < chunks; i++) {
+ 		unsigned int j, chunk_size;
+ 
+ 		/* look for the end of the current chunk */
+@@ -429,15 +498,28 @@ int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+ 				break;
+ 		}
+ 
++		/* Pass how many chunks might be left */
++		s = get_next_sg(sgt, s, chunks - i + left_pages, gfp_mask);
++		if (IS_ERR(s)) {
++			/*
++			 * Adjust entry length to be as before function was
++			 * called.
++			 */
++			if (prv)
++				prv->length = prv_len;
++			return s;
++		}
+ 		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
+ 		sg_set_page(s, pages[cur_page],
+ 			    min_t(unsigned long, size, chunk_size), offset);
++		added_nents++;
+ 		size -= chunk_size;
+ 		offset = 0;
+ 		cur_page = j;
+ 	}
+-
+-	return 0;
++	sgt->nents += added_nents;
++	sg_mark_end(s);
++	return s;
+ }
+ EXPORT_SYMBOL(__sg_alloc_table_from_pages);
+ 
