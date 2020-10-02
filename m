@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB74280BE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026D1280BDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 03:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387501AbgJBBNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 21:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733275AbgJBBNo (ORCPT
+        id S2387568AbgJBBLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 21:11:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39046 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387430AbgJBBLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 21:13:44 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30923C0613D0;
-        Thu,  1 Oct 2020 18:13:44 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b17so42150pji.1;
-        Thu, 01 Oct 2020 18:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cyj5bDIyFJEfsZsMox4XldvwN5w3gjkgLZSeBDyADL0=;
-        b=VZuDSndO9n7HwRbuSpii2V7aBh35rBSo8cv4IVZ7C8HWKMHbFFR9nTIhXEKL7kWdHD
-         iNC+1BgH/LoZ6P/GuM3ZQdQxa+vw3Yw7dz52aY2m9nJqVfONyfee6/+OgM3LxGhJ8C1U
-         jdfgwF0SeNDbeNyio7znl0KM8vxNrSETZ2X0gNUmNMZnLgq8xiNvVyYREU59RJBuQQRn
-         pNlXu6PG2igAr0ANQdxSu9C3wfppiZZADUyn6+tRLdvJ6QdqaRUNZW4AoqNswg/2q+6n
-         zLHJJJhkl+Xaob5gh/hxq+udZ1boCCneH/ZgvN1QsvEulfF7bwsKnk9zDsBG5qPvxhGQ
-         teRQ==
+        Thu, 1 Oct 2020 21:11:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601601103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+fBTIK+DtEuLGceBYVu0Ja9YuYZ6ey8BaC6axIqLZaQ=;
+        b=MyZP5512iG28+EdU3Lxbujo9u+37Gc/NhG2ghGaV0F77w6eaQGBKo66sF57bqNVuAu34LG
+        EbA/sS6aBRCR1DXPcsJRvj7l2TlRTs8cjrvhqykxSvc4VZ4eUEn9mGlujqmAW0YstbHbP+
+        jeGUFtZMPSM/yAgJlvOHRdfZiIfE7GA=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-phDULCNTM_qwAJ7tGZyzCQ-1; Thu, 01 Oct 2020 21:11:41 -0400
+X-MC-Unique: phDULCNTM_qwAJ7tGZyzCQ-1
+Received: by mail-qv1-f71.google.com with SMTP id 99so417988qva.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 18:11:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cyj5bDIyFJEfsZsMox4XldvwN5w3gjkgLZSeBDyADL0=;
-        b=HS5Mup94XGmxdzGixsa9rebOtv57WV061yFgZblvzOE/IHvjIp3QHPLVQ262f1PRLM
-         1VH682th43deFVZjfVZ7X5MJyqExqTrA2u1f+bxmP4uXtgOOI3I7r0AYqLJE7iQV+Qkp
-         CEqawG7RGGNwFZe15EjehqhG7eta9zTUz3TnqH4T4OZVF3dTjApUBVatLeN9T8sUJQxi
-         FhvDINhd7fLW6FLeLOSeM3sLJNAH5yjCQ4TQZvsQ9efOa6BjDM9slpuNPe/7v7CUiEtD
-         bEOAsWaSVXRy/JFmzO8Z4Pu+74uHXed3Jtz2Dx4d2czUFFGYBDLVVoI0BuJNnuCsXC6C
-         IM7A==
-X-Gm-Message-State: AOAM533Ol8x87YiYEZXH1DnUtelbXDNev1d6e4/FoGItgMc0L544zhwY
-        CHEF+Omk2DkPOVBWsaeSxHwKz1/vJgw=
-X-Google-Smtp-Source: ABdhPJy1SQt9uw+QkCOsb9zaS5rHccdp+czF4vyWwr65WJMYUl078ivr6S9KMegcra/3a90mC1GJfw==
-X-Received: by 2002:a17:90a:ea0a:: with SMTP id w10mr69467pjy.165.1601601223488;
-        Thu, 01 Oct 2020 18:13:43 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a2sm7755053pfk.201.2020.10.01.18.13.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 01 Oct 2020 18:13:43 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 18:07:51 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, joro@8bytes.org,
-        krzk@kernel.org, vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] iommu/tegra-smmu: Rework .probe_device and
- .attach_dev
-Message-ID: <20201002010751.GA26971@Asurada-Nvidia>
-References: <20200930203618.GC2110@Asurada-Nvidia>
- <13746922-0253-cda7-e9ac-2bd20bf1a17f@gmail.com>
- <20200930213244.GA10573@Asurada-Nvidia>
- <5945a63e-79d8-e3ae-ab53-cee8c220ac7d@gmail.com>
- <20201001012630.GA28240@Asurada-Nvidia>
- <72b11925-5857-8ce5-d084-cab01ca1b396@gmail.com>
- <20201001024850.GA28456@Asurada-Nvidia>
- <20201001102316.GF3919720@ulmo>
- <20201001110425.GB1272@Asurada>
- <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=+fBTIK+DtEuLGceBYVu0Ja9YuYZ6ey8BaC6axIqLZaQ=;
+        b=p0zji+2VjvWCoDJkIFu7ZBcwDoQmkvCa5azF+7cqoXLF/NEnYOmcYMzm4sCwLIwMs4
+         bXzDvYllfsLxsbWgbVtWTqSCvzfmmksjElxggkbF2ZgmuOxSSsNjCP2EK4l8l+YBHuGL
+         zUi/gfKWqvp+fEN3k12W5ppKuDl2u1OA+PN00g8NyxLoQphqTYyRj6XpyeyLn5pEV2Cz
+         ujMbyUlzF0hpPKaJyX0JuIBxjtBf2eUK3BINtORKisKl98ibfX8YgIwn11+Bu8Bnqz7E
+         5riGrJNY9w7bMEUUxy7pdpr0wQA+yb4yDkJKwyC0aHie1TycKRoDU/yJdekPJangXAUY
+         dXTA==
+X-Gm-Message-State: AOAM532Py1aTDYAiE9amIqpYweQHHCjy8yFEXq5DfE8biS5OZZQKqFaj
+        4174hcOYgLM7QVVDgcJ2tvQhqLaVvPQDteDyZ07qJVFg/XAi6xwclgZbKL0Htp4CEfb5OLTHBKg
+        vlx/ICDuOzecW2i8f+poMjvMn
+X-Received: by 2002:a0c:efd2:: with SMTP id a18mr10770490qvt.54.1601601101516;
+        Thu, 01 Oct 2020 18:11:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHEAxmtXCBaCsYbMz7AQ6TzrqnNZn2V2MZfMf+fvEL2o95uluK/32VhnLH6xFRTh25U45PHw==
+X-Received: by 2002:a0c:efd2:: with SMTP id a18mr10770468qvt.54.1601601101244;
+        Thu, 01 Oct 2020 18:11:41 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
+        by smtp.gmail.com with ESMTPSA id f24sm48984qka.5.2020.10.01.18.11.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 18:11:40 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 21:11:39 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alexander Graf <graf@amazon.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 6/8] KVM: x86: VMX: Prevent MSR passthrough when MSR
+ access is denied
+Message-ID: <20201002011139.GA5473@xz-x1>
+References: <20200925143422.21718-1-graf@amazon.com>
+ <20200925143422.21718-7-graf@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b966844e-4289-3ff0-9512-852f8419a664@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200925143422.21718-7-graf@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:33:38PM +0300, Dmitry Osipenko wrote:
-> >>> If we can't come to an agreement on globalizing mc pointer, would
-> >>> it be possible to pass tegra_mc_driver through tegra_smmu_probe()
-> >>> so we can continue to use driver_find_device_by_fwnode() as v1?
-> >>>
-> >>> v1: https://lkml.org/lkml/2020/9/26/68
-> >>
-> >> tegra_smmu_probe() already takes a struct tegra_mc *. Did you mean
-> >> tegra_smmu_probe_device()? I don't think we can do that because it isn't
-> > 
-> > I was saying to have a global parent_driver pointer: similar to
-> > my v1, yet rather than "extern" the tegra_mc_driver, we pass it
-> > through egra_smmu_probe() and store it in a static global value
-> > so as to call tegra_smmu_get_by_fwnode() in ->probe_device().
-> > 
-> > Though I agree that creating a global device pointer (mc) might
-> > be controversial, yet having a global parent_driver pointer may
-> > not be against the rule, considering that it is common in iommu
-> > drivers to call driver_find_device_by_fwnode in probe_device().
-> 
-> You don't need the global pointer if you have SMMU OF node.
-> 
-> You could also get driver pointer from mc->dev->driver.
-> 
-> But I don't think you need to do this at all. The probe_device() could
-> be invoked only for the tegra_smmu_ops and then seems you could use
-> dev_iommu_priv_set() in tegra_smmu_of_xlate(), like sun50i-iommu driver
-> does.
+Hi,
 
-Getting iommu device pointer using driver_find_device_by_fwnode()
-is a common practice in ->probe_device() of other iommu drivers.
-But this requires a device_driver pointer that tegra-smmu doesn't
-have. So passing tegra_mc_driver through tegra_smmu_probe() will
-address it.
+I reported in the v13 cover letter of kvm dirty ring series that this patch
+seems to have been broken.  Today I tried to reproduce with a simplest vm, and
+after a closer look...
+
+On Fri, Sep 25, 2020 at 04:34:20PM +0200, Alexander Graf wrote:
+> @@ -3764,15 +3859,14 @@ static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
+>  	return mode;
+>  }
+>  
+> -static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu,
+> -					 unsigned long *msr_bitmap, u8 mode)
+> +static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
+>  {
+>  	int msr;
+>  
+> -	for (msr = 0x800; msr <= 0x8ff; msr += BITS_PER_LONG) {
+> -		unsigned word = msr / BITS_PER_LONG;
+> -		msr_bitmap[word] = (mode & MSR_BITMAP_MODE_X2APIC_APICV) ? 0 : ~0;
+> -		msr_bitmap[word + (0x800 / sizeof(long))] = ~0;
+> +	for (msr = 0x800; msr <= 0x8ff; msr++) {
+> +		bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
+> +
+> +		vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
+>  	}
+>  
+>  	if (mode & MSR_BITMAP_MODE_X2APIC) {
+
+... I think we may want below change to be squashed:
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index d160aad59697..7d3f2815b04d 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -3781,9 +3781,10 @@ static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
+        int msr;
+ 
+        for (msr = 0x800; msr <= 0x8ff; msr++) {
+-               bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
++               bool apicv = mode & MSR_BITMAP_MODE_X2APIC_APICV;
+ 
+-               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
++               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_R, !apicv);
++               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_W, true);
+        }
+ 
+        if (mode & MSR_BITMAP_MODE_X2APIC) {
+
+This fixes my problem the same as having this patch reverted.
+
+-- 
+Peter Xu
+
