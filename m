@@ -2,140 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE77281AF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1FD281AF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388270AbgJBSgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:36:35 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:55099 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726215AbgJBSge (ORCPT
+        id S2388008AbgJBSiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbgJBSiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:36:34 -0400
-Received: (qmail 296712 invoked by uid 1000); 2 Oct 2020 14:36:33 -0400
-Date:   Fri, 2 Oct 2020 14:36:33 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20201002183633.GA296334@rowland.harvard.edu>
-References: <20200928101326.v4.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200929201701.GA1080459@bogus>
- <20200929220912.GF1621304@google.com>
- <20200930013229.GB194665@rowland.harvard.edu>
- <20200930124915.GA1826870@google.com>
- <CAL_JsqLq9ZJm_CMiqWwbQhgGeu_ac_j43pvk4+xCFueSbyL4wA@mail.gmail.com>
- <CAD=FV=WcDzgcHNn1+gH+gq_WEwpD0XXdJGm2fBVpAB=3fVbzZA@mail.gmail.com>
- <CAL_Jsq+Zi+hCmUEiSmYw=pVK472=OW1ZjLnkH1NodWUm8FA5+g@mail.gmail.com>
- <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
+        Fri, 2 Oct 2020 14:38:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27ACC0613D0;
+        Fri,  2 Oct 2020 11:38:50 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y15so2730962wmi.0;
+        Fri, 02 Oct 2020 11:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=O7CTmsGhL7MIZaaII1HOO9sBm+Xkxu1dusidNhe5HHA=;
+        b=brm67+Ss0ORnAULu1Iq/DWbMgvD4zjSpY+KDQQ5H6eNnkF0diBTGG7KHAk4h++pfqL
+         jk6FM327eSqoic8cWZwf7BO0IB+kV1G+dqG3YKQvmOhY6bqbEiC1tQcKgr0og/FHG7V4
+         Lh7ZJuhHqiyVzrEv8g7S1e11YmfsxsbaPVfdl8nyJaXoMMFeIwxmIkt0KFdKvri9Ff/P
+         2Qb3gNhjDOY0vmAdNGL20XBJvpTShzCtxXwJ4Yme/bK0eD6dVBq9eRqktWekN4bm68lS
+         H28DwVY5MjWZO8jtQXaXabOkkgVL9E+B2iqA/S5bWO1xWYTNFRZI4J7Bndu8JJ/Nb37x
+         R1Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O7CTmsGhL7MIZaaII1HOO9sBm+Xkxu1dusidNhe5HHA=;
+        b=B/1tONa8GeDtyI+X6RpNceVgLiezuFs4HCRWeYjqkfa48LBvfyufW+nSJspKQFVUja
+         GBx4t1nu8yXZ+ISdkRCMy+BHAbnGYP76Qin8D1562SaxSuU/SEkBOn2yxGjflX2XEcvv
+         uga8FzKsCsRnvzj/2TmeX3jqLZFPN+U5Hn7CjBlDJktwXTsxrqJUODhj+nxVT14HoFtR
+         kOr42ZJNGmjPPJHPu35TBlHPrbUHaDRMlJCD1GggA3jp4+MzakUAQy+kwxaq7CRna2ut
+         YoYtWIRFf578hqgfmZOEtZeyC7roTmgsRCdgyHvsfx4uJBmK1vRRbsxfALYMKVN/Hneo
+         Arow==
+X-Gm-Message-State: AOAM530Hx//sl4VIdcVeAaAjivLKNs3NDCJT5GZjL5ByI93f7GSP4WyR
+        4S+GsR+8OhIz4tJjLy4wzAY=
+X-Google-Smtp-Source: ABdhPJwvSOdohluwOml1gsvvgfnRtlznCLuSPR8fOJf/IQmMY3vWAe+kyFQZpFBglxYN3TrGfhfHFQ==
+X-Received: by 2002:a05:600c:414a:: with SMTP id h10mr4441100wmm.79.1601663929238;
+        Fri, 02 Oct 2020 11:38:49 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id m3sm2607608wrs.83.2020.10.02.11.38.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 11:38:48 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] system_data_types.7: Add 'void *'
+To:     Paul Eggert <eggert@cs.ucla.edu>
+Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
+        gcc-patches@gcc.gnu.org, libc-alpha@sourceware.org,
+        linux-kernel@vger.kernel.org, jwakely.gcc@gmail.com,
+        David.Laight@ACULAB.COM
+References: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
+ <20201002151419.32053-2-colomar.6.4.3@gmail.com>
+ <3941e130-df05-778b-dc76-90cd58400192@cs.ucla.edu>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <d794a058-0506-7c3c-6f3e-518a788933af@gmail.com>
+Date:   Fri, 2 Oct 2020 20:38:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WJrvWBLk3oLpv6Q3uY4w7YeQBXVdkpn+SAS5dnxp9-=Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3941e130-df05-778b-dc76-90cd58400192@cs.ucla.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:08:17AM -0700, Doug Anderson wrote:
-> As a more similar example of single device that is listed in more than
-> one location in the device tree, we can also look at embedded SDIO
-> BT/WiFi combo cards.  This single device often provides WiFi under an
-> SDIO bus and BT under a serial / USB bus.  I'm not 100% sure there are
-> actually cases were the same board provides device tree data to both
-> at the same time, but "brcm,bcm43540-bt" is an example of providing
-> data to the Bluetooth (connected over serial port) and
-> "brcm,bcm4329-fmac" to the WiFi (connected over the SDIO bus).  Of
-> course WiFi/BT cheat in that the control logic is represented by the
-> SDIO power sequencing stuff...
-> 
-> 
-> Back to our case, though.  I guess the issue here is that we're the
-> child of more than one bus.  Let's first pretend that the i2c lines of
-> this hub are actually hooked up and establish how that would look
-> first.  Then we can think about how it looks if this same device isn't
-> hooked up via i2c.  In this case, it sounds as if you still don't want
-> the device split among two nodes.  So I guess you'd prefer something
-> like:
-> 
-> i2c {
->   usb-hub@xx {
->     reg = <xx>;
->     compatible = "realtek,rts5411", "onboard-usb-hub";
->     vdd-supply = <&pp3300_hub>;
->     usb-devices = <&usb_controller 1>;
->   };
-> };
-> 
-> ...and then you wouldn't have anything under the USB controller
-> itself.  Is that correct?  So even though there are existing bindings
-> saying that a USB device should be listed via VID/PID, the desire to
-> represent this as a single node overrides that, right?  (NOTE: this is
-> similar to what Matthias proposed in his response except that I've
-> added an index so that we don't need _anything_ under the controller).
-> 
-> Having this primarily listed under the i2c bus makes sense because the
-> control logic for the hub is hooked up via i2c.  Having the power
-> supply associated with it also makes some amount of sense since it's a
-> control signal.  It's also convenient that i2c devices have their
-> probe called _before_ we try to detect if they're there because it's
-> common that i2c devices need power applied first.
-> 
-> Now, just because we don't have the i2c bus hooked up doesn't change
-> the fact that there is control logic.  We also certainly wouldn't want
-> two ways of describing this same hub: one way if the i2c is hooked up
-> and one way if it's not hooked up.  To me this means that the we
-> should be describing this hub as a top-level node if i2c isn't hooked
-> up, just like we do with "smsc,usb3503a"
-> 
-> Said another way, we have these points:
-> 
-> a) The control logic for this bus could be hooked up to an i2c bus.
-> 
-> b) If the control logic is hooked up to an i2c bus it feels like
-> that's where the device's primary node should be placed, not under the
-> USB controller.
-> 
-> c) To keep the i2c and non-i2c case as similar as possible, if the i2c
-> bus isn't hooked up the hub's primary node should be a top-level node,
-> not under the USB controller.
-> 
-> 
-> NOTE ALSO: the fact that we might want to list this hub under an i2c
-> controller also seems like it's a good argument against putting this
-> logic in the xhci-platform driver?
+Hi Paul,
 
-More and more we are going to see devices that are attached to multiple 
-buses.  In this case, one for power control and another for 
-commands/data.  If DT doesn't already have a canonical way of handling 
-such situations, it needs to develop one soon.
+On 2020-10-02 18:53, Paul Eggert wrote:
+ > On 10/2/20 8:14 AM, Alejandro Colomar wrote:
+ >
+ >> +.I void *
+ >
+ > GNU style is a space between "void" and "*", so this should be '.I
+ > "void\ *"', both here and elsewhere. The backslash prevents a line break.
 
-One can make a case that there should be multiple device nodes in this 
-situation, somehow referring to each other so that the system knows they 
-all describe the same device.  Maybe one "primary" node for the device 
-and the others acting kind of like symbolic links.
+.I void *
 
-Regardless of how the situation is represented in DT, there remains the 
-issue of where (i.e., in which driver module) the appropriate code 
-belongs.  This goes far beyond USB.  In general, what happens when one 
-sort of device normally isn't hooked up through a power regulator, so 
-its driver doesn't have any code to enable a regulator, but then some 
-system does exactly that?
+renders with a space in between.
+I'll show you the rendered version at the end of this email.
 
-Even worse, what if the device is on a discoverable bus, so the driver 
-doesn't get invoked at all until the device is discovered, but on the 
-new system it can't be discovered until the regulator is enabled?
+ >
+ >> +Conversions from and to any other pointer type are done implicitly,
+ >> +not requiring casts at all.
+ >> +Note that this feature prevents any kind of type checking:
+ >> +the programmer should be careful not to cast a
+ >
+ > Change "cast" to "convert", since the point is that no cast is needed.
 
-Alan Stern
+Ok.
+
+ >
+ >> +.PP
+ >> +The conversion specifier for
+ >> +.I void *
+ >> +for the
+ >> +.BR printf (3)
+ >> +and the
+ >> +.BR scanf (3)
+ >> +families of functions is
+ >> +.BR p ;
+ >> +resulting commonly in
+ >> +.B %p
+ >> +for printing
+ >> +.I void *
+ >> +values.
+ >
+ > %p works with any object pointer type (or in POSIX, any pointer type),
+ > not just  void *.
+In theory, no (if otherwise, I'd like to know why):
+
+[[
+p
+     The argument shall be a pointer to void. The value of the pointer 
+is converted to a sequence of printable characters, in an 
+implementation-defined manner.
+]] POSIX.1-2008
+
+However, it's unlikely to cause any problems, I must admit.
+
+ >
+ > Should also mention "void const *", "void volatile *", etc.
+
+I already answered to this:
+https://lore.kernel.org/linux-man/CAH6eHdQhh46TjVc72meWFTWCi7iouAod0iC1zLRga+c-36G+ig@mail.gmail.com/T/#m6f657e988558a556cb70f7c056ef7a24e73dbe4a
+
+ > Plus it
+ > really should talk about plain "void", saying that it's a placeholder as
+ > a return value for functions, for casting away values, and as a keyword
+ > in C11 for functions with no parameters (though this is being changed in
+ > the next C version!). I sent comments about most of this stuff already.
+
+'void' is a completely different type from 'void *'.
+
+This patch is for 'void *'.
+
+If 'void' is documented,
+it'll be in a different entry (although in the same page),
+and therefore, that'll be for a different patch.
+
+Thanks,
+
+Alex
+
+__________________
+
+void *
+       According  to  the  C language standard, a pointer to any object
+       type may be converted to a pointer to void and back.  POSIX fur-
+       ther requires that any pointer, including pointers to functions,
+       may be converted to a pointer to void and back.
+
+       Conversions from and to any other pointer type are done  implic-
+       itly,  not  requiring casts at all.  Note that this feature pre-
+       vents any kind of type checking: the programmer should be  care-
+       ful not to cast a void * value to a type incompatible to that of
+       the underlying data, because that would result in undefined  be-
+       havior.
+
+       This  type  is useful in function parameters and return value to
+       allow passing values of any type.  The function will usually use
+       some  mechanism to know of which type the underlying data passed
+       to the function really is.
+
+       A value of this type can't be dereferenced, as it would  give  a
+       value  of  type  void  which is not possible.  Likewise, pointer
+       arithmetic is not possible with this type.  However, in  GNU  C,
+       poitner  arithmetic  is allowed as an extension to the standard;
+       this is done by treating the size of a void or of a function  as
+       1.  A consequence of this is that sizeof is also allowed on void
+       and on function types, and returns 1.
+
+       The conversion specifier for void * for the  printf(3)  and  the
+       scanf(3)  families  of  functions is p; resulting commonly in %p
+       for printing void * values.
+
+       Versions: The POSIX requirement about compatibility between void
+       * and function pointers was added in POSIX.1-2008 Technical Cor-
+       rigendum 1 (2013).
+
+       Conforming to: C99 and later; POSIX.1-2001 and later.
+
+       See also: malloc(3), memcmp(3), memcpy(3), memset(3)
+
+       See also the intptr_t and uintptr_t types in this page.
