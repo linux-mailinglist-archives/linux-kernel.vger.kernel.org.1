@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184B1281283
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B48C281282
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387879AbgJBMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:24:57 -0400
+        id S2387828AbgJBMYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:24:53 -0400
 Received: from mail-eopbgr770078.outbound.protection.outlook.com ([40.107.77.78]:65191
         "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733260AbgJBMYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:24:54 -0400
+        id S1726569AbgJBMYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:24:52 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cntq5P7DFgvzdiSj3k7yrxxK26XtBdDVW+cRsEoySxdyeFNFSA4pXv7Dlv5PT3gV2vN5ZPpYfNw6yloUx+BfrzbKiM1xcCtO6asbPtNXyTPi24F13/lv0cd7kM+cVAYMbxibu0QdxAuJnS8KvuZzo6yZbyfWWG7QsFx0JjBKcLidWXYNN03lxBojYPt5IOANE+xjk4bzKw2mWmE1pXqH58UkgJ8x1j/8boSczK+MzVlXbe4zvVCQ4Zc9aNeCjqVOC86BHfWosQBjqbb2Os9j+2z23rQAFKJwrpvI39Vn91FizkGDbfsnDY7pCZiaKOrcLWRlsvorFJX6tu4bXEwMeg==
+ b=FUu6YAejIfgLMzrzN8gT8EsMFD8yfrXCf+vSKbO9lO6582f1tO71gZ/8CBAYxqI5afcrRvhn24MoiEN5iGYVKda1giZWoV30tyI1DvA8uBEgVyr1dry6BzHViAxGDZu6AIjbjwWImYWCDboxqwCuuJYSGAaX454V1ByQFvu/ndY0xz3S6AE0E6BFu+81PxG/UtUHOZLFr3iH+XGJtTcCks105i+7UWjIrKvCtvIf3sXhJPDB87qnyAZicvw8eEvDX5XnJ6R3du2SYH696JRMJyKj0/Y5B81cngola2NGKiy1qqeg61gA0NKcLCdsyv2hwf+kLKSy7mA0TA1Evmjz2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4xAMjgU4/Jb+5YynW/R6bSmnTNyy0QnHfpYcyjB58zA=;
- b=Vamw4ghgyYrmsxRVIUKUDouN2mTBYDfxOesaWOzVp/Q5UL9B6D1Zu7lGMfbDRo0OFPAOeKGho46znnmeYPkn/tixbuxaDmz2VphSFReL4Re+Hr6ASW4WF3E2phUZG4CPFDfLhgXbJEVvjRb72MVkXgG9SujrEFT5KgMF/z2gev/cNAZhxD9YrXIuhRb7kZDPB17qDikhxajAWv5Y5HUHBIHcFHcmuxJmn/8C82uwtQdPe1J0hmBBrD0AHzuztVKiNRv+M15CUreKtFHQ0X18Sw1kXpBH8Z/VI2qMBH4i0GO+yU5ggRFqMxv5ZYvq+V+IhegDFlPr6TlG4xr87rOHHg==
+ bh=wNYfRxFr2lHj+6XUrW+YPfxDuN3vHBirnqdMyTJLQCE=;
+ b=gBr/wO3etjkXJhD5XgVeEnQmGzDrhZtOoeuAt8wuX2caOA/BF9m7ytq4RVaDYXRP5nuEVJiGHfhwQzNRcAikN27EZc2ewshZ3G3ubCnpYzp6BWy9UOlXUz6zLOSgFYo2JM4DigvtteN0hgXL9NTjZHWgC34a0nFAL33m7O3/+mQpKsPFDW3F+ab6rLvlU6exj86Dqp/3njzXmgREgAl2NVKKAAj5UXaXN6fJ7pM+8yQchQwaDFotkHnFTCJVONrr3Ua3sHt6upY7ZCj3pQigVMiwN6J2K3TqtX0ZLf6IIboPsdpjxNk37+lFBQJ9psZoVhrGkbIFJealvkcdz8NO0A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4xAMjgU4/Jb+5YynW/R6bSmnTNyy0QnHfpYcyjB58zA=;
- b=U8f9wL8Uos1fc9SqvZ2VjlZPGusEYbrSqu+VTpcwEOqZ6Lw5LPiGfy3DTxMRWxt5HJOBgKKHW8Ewu/NsaqnqItO2XlW/tUfC6YSyhxiCEQzztMeE/yzZ43aWvQXKd/j8FJ5kkjgNVKggSIkwzCZW3veVCjcEdXC3RGwWJtARHmQ=
+ bh=wNYfRxFr2lHj+6XUrW+YPfxDuN3vHBirnqdMyTJLQCE=;
+ b=fsNNVulfKurRvUPcOb3LdcZchAhfJAnVX78y9/Xv0E6bvhEJ1TceEJh09sQtxEh/3lqRbuHX1OCVKu5tZPpPu5bOA9kJb0pVLdYrbVi4xHMT3sIcz18uz8pXPOqCFxEq7V/+k0uMRP3VUDIh1QgaxUUSMGVKVWBsD7RcCl41PEA=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
  DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.32; Fri, 2 Oct 2020 12:24:47 +0000
+ 15.20.3433.32; Fri, 2 Oct 2020 12:24:49 +0000
 Received: from DM5PR12MB1163.namprd12.prod.outlook.com
  ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
  ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3433.039; Fri, 2 Oct 2020
- 12:24:47 +0000
+ 12:24:49 +0000
 From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
 Cc:     joro@8bytes.org, robin.murphy@arm.com,
         Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH v2 00/13] iommu/amd: Add Generic IO Page Table Framework Support
-Date:   Fri,  2 Oct 2020 12:28:17 +0000
-Message-Id: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
+Subject: [PATCH v2 01/13] iommu/amd: Re-define amd_iommu_domain_encode_pgtable as inline
+Date:   Fri,  2 Oct 2020 12:28:18 +0000
+Message-Id: <20201002122830.4051-2-suravee.suthikulpanit@amd.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
+References: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
 Content-Type: text/plain
 X-Originating-IP: [165.204.78.2]
 X-ClientProxiedBy: SN6PR05CA0010.namprd05.prod.outlook.com
@@ -52,79 +54,87 @@ X-ClientProxiedBy: SN6PR05CA0010.namprd05.prod.outlook.com
  (2603:10b6:3:7a::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN6PR05CA0010.namprd05.prod.outlook.com (2603:10b6:805:de::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13 via Frontend Transport; Fri, 2 Oct 2020 12:24:46 +0000
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN6PR05CA0010.namprd05.prod.outlook.com (2603:10b6:805:de::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.13 via Frontend Transport; Fri, 2 Oct 2020 12:24:47 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3459bcdb-5cc4-4ee0-d3f5-08d866ce26ab
+X-MS-Office365-Filtering-Correlation-Id: 0a7fc32c-1afa-409a-b872-08d866ce2745
 X-MS-TrafficTypeDiagnostic: DM5PR12MB1163:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1163345D82063D554A798863F3310@DM5PR12MB1163.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1163EA88067B251463355D49F3310@DM5PR12MB1163.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EYCuJ/3B1Dt/fSnJLuGgNKTO0r9uWCq53WX5PVBY2VTSbmSfEqVEeS4slzI8uplR8eOjelnmjCXV2hqbrBS0XRxIxu+fDQPrOO+j45vw4piGCHUwYz8detULxH59POcTwTFVRJ0/P+YecI7rl+4KqK98cR52dTxRJrYPnNo3y4IGZxOJI/2c9AZ57LhTEpCDCAdpUCIKYNdkVE9mgCiwC78PMEugjeZKU1/71ySbOpYiqcU9zxnPp+BC5ZUz108zJ3sF/f8dkYGd4p7GT2cfBvSM62jhskPNYDrs1XruqJl1EndabmS7IvGSQohW9YOLKhusENWy4PWaDoJ4d5QSfg5/Lsjz7rsG72v2hojMe98v25lDJO+/YrW/sEHuUJWKLZMs6h/KhaDfPzIjSvveqsvLxMXFUTMQkw/ks+ZO7yudNcXXtvHQ03q2LHcV3t2DOfCvF3q90RiZ+TfYF8s0Ug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(66556008)(52116002)(66946007)(83080400001)(66476007)(7696005)(5660300002)(8936002)(4326008)(6666004)(1076003)(26005)(6486002)(16526019)(186003)(44832011)(316002)(2616005)(36756003)(956004)(478600001)(83380400001)(8676002)(2906002)(86362001)(41533002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: AyitTRIa/l1MnEmZXL1EjQn2fE1/Ec3GAnsH9sKzvxX8c3f/ybuIJzaSH7e2B6UxtBd3xo0094U6UQ4e5+RN8F+xGNzTWRYrWSa0BPdsG+szpatDBWUnrxl6fQt8XFvgKIbJhe2kVvz0GS8hfeFdn35Zp0W9gWpEAYPAcYuN2MWDJNPu41+iivfPnyd2suadqlJzFqJResqv4ElpnB1sXeOVtVrT9uj4/QmV5gfDocbfjf1ZpljsxOy78s9djga2ZAxqUPBUIwLpsQ+ghkpJgIhASJglb23IH1vQIOyTSUObDIjdFLM8sIx9lMih0sluCwZrCzPflc3VtXVepSfxU29/PQtImVKYP7ZIopSBnIH0BTJU3Aj9hwzAJ97g48QnygHqFKgKtpgJqxhjQDV9v9KidrO1sTFUdQPUI30sT/c/WWmhFzF8vV2G32yBTO7ZAvo6FFSsVipdixJDPWnRuVgvAjG/jCBV/u5+6MAbmaSu2g0vuFaFA9na1MdhHqHPnfUj+/+0iRQPdgjbrB48tPwVfDZccartLcXA8ZONvIHqVrbALoUnRDWfok/HKLLbICcqcgCxqK50NJuOhMKwf2tduSdcg+YFTXv+aXVMJ8xfxVB0KFTT4YqJA2Fpuog/w736JxR/GWXWey8PZtL2dg==
+X-Microsoft-Antispam-Message-Info: 1OO7CM/ppsbdCqG11jY9Oa0IzaNTrQqh8EN6DITi4tIXxY0bz4ABmD7j5RfspUKkyN0cWVm6TMsIhIBQ+2MPEsC+A6Ve9sShTyuLuy2Jl534krkU0DXSHTcGsZhmXqv43Su2D6eroypxtOPGOzorivEXDITs3Q/ywNCkFR3Yl61UDvQrc4SDUfdnAh1i1Rsb8+9x8sFiPjbkJJ92cPegTFKQMVCPRMsVnMK7GnhPRg9Ms0nEiC22iqOe3Pz2eat4tdSVnSUkCHTMcBGY/11FIkq5jB7Xy7bKuOZOAmhOKCDNme6IW97z4NlJ9LoZ9cAw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(346002)(376002)(66556008)(52116002)(66946007)(66476007)(7696005)(5660300002)(8936002)(4326008)(6666004)(1076003)(26005)(6486002)(16526019)(186003)(44832011)(316002)(2616005)(36756003)(956004)(478600001)(83380400001)(8676002)(2906002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ND9UJAUQMrUlpA4sgxM3ME3ul0HZPhSk7GBEkHzzbOLDkajlPCDpSDmao6wfBkhzbFaZA+hVdjmNV43R17fVHI61Akc7wq1GXFyZjQxYgxibPp4IgqwxfXtdfzOeZjGu9BoKKxXMGe8/HygbnhD1+uBo4dYWHHfPQKWynVb6YsihTuWYhlfU1fpOx4AtaKkbEHL0f3Jc8u++OdCL11GjutAFTKSssXVy4HvFglSYC78zu+z6N9ATbJv3r5+am2a1Jvnv917oXjB0Jf8ifJybSSkuGFwQAdGlQzM2u02izd7+f1hJttDf67CPT3IcLwtZczJHnCPKAuD/KMnI1brGxUSswTYntkv3OatmnWPITnYuc/SlMw8UpBvlXyERsowyqX6pln0P1IcNpiCyjlTYZy1uMmXGnsmaD2dW7oOyO1XXMOwZuDlgFjZyuvrmvco7JE4yEceZNPKCFblFJfkk37lVDwpAGTpsod9/ey+5TZixWXqrMxco65ROFTsfC2EboNqYpLaB/zr9p5BrVnGYPGH4arr2/UJk+u++Ng/ZwNjH7I5PW4xjZHrl3Kh8yxnCCBHkbKHjWG3Bc6ZESFnmO9zNsXXhR+3tOHfUrEusUPQry/9tNkOAOtExIV4FWOomXRP0nNVD8XBvOmlVDUAIuA==
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3459bcdb-5cc4-4ee0-d3f5-08d866ce26ab
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a7fc32c-1afa-409a-b872-08d866ce2745
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 12:24:47.4015
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 12:24:48.3860
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wjjfmfXmimdBqUlaq75P0kryBndQV1kJ+7LPmCb4A/SX7Wtmvy2oko8lNCLsOf0hJh+CpGV4cIpgYEk6L05sjA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: rKt3uIZWX1clCn7S1lnhoYzYaIlyXFEeR8rkSuurroDbLiprsw3IskEbJ/D8RYvLHvz1/XAECoxWgVdBE9EVaQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The framework allows callable implementation of IO page table.
-This allows AMD IOMMU driver to switch between different types
-of AMD IOMMU page tables (e.g. v1 vs. v2).
+Move the function to header file to allow inclusion in other files.
 
-This series refactors the current implementation of AMD IOMMU v1 page table
-to adopt the framework. There should be no functional change.
-Subsequent series will introduce support for the AMD IOMMU v2 page table.
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+---
+ drivers/iommu/amd/amd_iommu.h | 13 +++++++++++++
+ drivers/iommu/amd/iommu.c     | 10 ----------
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
-Thanks,
-Suravee
-
-Change from V1 (https://lkml.org/lkml/2020/9/23/251)
-  - Do not specify struct io_pgtable_cfg.coherent_walk, since it is
-    not currently used. (per Robin)
-  - Remove unused struct iommu_flush_ops.  (patch 2/13)
-  - Move amd_iommu_setup_io_pgtable_ops to iommu.c instead of io_pgtable.c
-    patch 13/13)
-
-Suravee Suthikulpanit (13):
-  iommu/amd: Re-define amd_iommu_domain_encode_pgtable as inline
-  iommu/amd: Prepare for generic IO page table framework
-  iommu/amd: Move pt_root to to struct amd_io_pgtable
-  iommu/amd: Convert to using amd_io_pgtable
-  iommu/amd: Declare functions as extern
-  iommu/amd: Move IO page table related functions
-  iommu/amd: Restructure code for freeing page table
-  iommu/amd: Remove amd_iommu_domain_get_pgtable
-  iommu/amd: Rename variables to be consistent with struct
-    io_pgtable_ops
-  iommu/amd: Refactor fetch_pte to use struct amd_io_pgtable
-  iommu/amd: Introduce iommu_v1_iova_to_phys
-  iommu/amd: Introduce iommu_v1_map_page and iommu_v1_unmap_page
-  iommu/amd: Adopt IO page table framework
-
- drivers/iommu/amd/Kconfig           |   1 +
- drivers/iommu/amd/Makefile          |   2 +-
- drivers/iommu/amd/amd_iommu.h       |  22 +
- drivers/iommu/amd/amd_iommu_types.h |  40 +-
- drivers/iommu/amd/io_pgtable.c      | 534 +++++++++++++++++++++++
- drivers/iommu/amd/iommu.c           | 644 +++-------------------------
- drivers/iommu/io-pgtable.c          |   3 +
- include/linux/io-pgtable.h          |   2 +
- 8 files changed, 656 insertions(+), 592 deletions(-)
- create mode 100644 drivers/iommu/amd/io_pgtable.c
-
+diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
+index 57309716fd18..97cdb235ce69 100644
+--- a/drivers/iommu/amd/amd_iommu.h
++++ b/drivers/iommu/amd/amd_iommu.h
+@@ -93,6 +93,19 @@ static inline void *iommu_phys_to_virt(unsigned long paddr)
+ 	return phys_to_virt(__sme_clr(paddr));
+ }
+ 
++static inline
++void amd_iommu_domain_set_pt_root(struct protection_domain *domain, u64 root)
++{
++	atomic64_set(&domain->pt_root, root);
++}
++
++static inline
++void amd_iommu_domain_clr_pt_root(struct protection_domain *domain)
++{
++	amd_iommu_domain_set_pt_root(domain, 0);
++}
++
++
+ extern bool translation_pre_enabled(struct amd_iommu *iommu);
+ extern bool amd_iommu_is_attach_deferred(struct iommu_domain *domain,
+ 					 struct device *dev);
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index db4fb840c59c..e92b3f744292 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -162,16 +162,6 @@ static void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
+ 	pgtable->mode = pt_root & 7; /* lowest 3 bits encode pgtable mode */
+ }
+ 
+-static void amd_iommu_domain_set_pt_root(struct protection_domain *domain, u64 root)
+-{
+-	atomic64_set(&domain->pt_root, root);
+-}
+-
+-static void amd_iommu_domain_clr_pt_root(struct protection_domain *domain)
+-{
+-	amd_iommu_domain_set_pt_root(domain, 0);
+-}
+-
+ static void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
+ 					 u64 *root, int mode)
+ {
 -- 
 2.17.1
 
