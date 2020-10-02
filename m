@@ -2,111 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C64281470
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5927281476
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 15:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387767AbgJBNsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 09:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJBNsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:48:10 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC501206DB;
-        Fri,  2 Oct 2020 13:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601646488;
-        bh=On3C6AfBq5WmH6YaiAH/EGrBVGtl6dZcNpQ/eG3ByxI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJd81BsySM3V/uiUgereBBHUniSuHI6LNzwiRtqQvVwFhVvvvmQI7PbhFu//68h8J
-         KoWhasogTnpsuiJuRC523JF1soNGRrR1oZyMkcOJB8dR+xqeiIGYeUaVp9nW//AHGf
-         jC52MwoE8uH6tmzC2otG80LzL5HHEc68nlRYMAwI=
-Date:   Fri, 2 Oct 2020 15:48:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, Hridya Valsaraju <hridya@google.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v3 -next] binder: simplify the return expression of
- binder_mmap
-Message-ID: <20201002134807.GA3427371@kroah.com>
-References: <20200927123538.GA292831@kroah.com>
- <20200929015216.1829946-1-liushixin2@huawei.com>
+        id S2387836AbgJBNt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 09:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJBNt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 09:49:58 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BE2C0613D0;
+        Fri,  2 Oct 2020 06:49:55 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x22so1245752pfo.12;
+        Fri, 02 Oct 2020 06:49:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pd2E4pk015R2XdMt2k5oTuv87igGS+Moi+dfcF3aud4=;
+        b=fm6DfaJf6otXShorBJAUKni5EtrE+TSTYSmn0Oyq0izvTGDiRUl0Nz/T4S6Xft7DHi
+         TCAUe6dOLxbEzRzEkNDoD805LI4/4wTbIvcGenDhAOxrbI3F7frwXREjyUyP1E7KYBUa
+         0zxvUrNq27JoPDk4RLH0vjQHvcxdI0dnxOlwnf8JRdZqzqopaErhmw3rHq+2QECPDgJF
+         HmKSYLXBkIBHUu/3mZS1VcMM19Cuz01iwzDZ0pvdEyL8BvgavAwU/PiAYAeW24aO6rEU
+         tCtGwQM9tiAK6EAQqj7Ip43Qj5CI37UuTi6/m4yIFY24mdPl/YF+dQ/D4Bh6bqL11ANp
+         yaow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pd2E4pk015R2XdMt2k5oTuv87igGS+Moi+dfcF3aud4=;
+        b=JOZ1aUI1NUQpi5EKzp1SK2od3MyNREyKY/eOXGMUF3srG/KSK0/4ghxyX3biQhbp3Z
+         KTb4dSI83xbcfm8s6JkKImrOfQGD1XGBM+DScK8yujIADOqwp1Hwt1/DQ6DsopX8JApU
+         HKjl5sT0fyho4ikTnEOAv3/Ckry53LnDXIeBnHFmXzsz34eWtC3gTV0NuLUT8LVVT9xx
+         DCbwSr4fpwo06FJTfGhiFYG9DkpjGASXo61SKJ1rOJk7q7hpeXYByE17HrHSPQdTxPJ6
+         VTewOHLyxtOqy+8colUPvaOp6qR58oHW9q5wJa42ka+PntyY6TgGkWfcOl6oUWrNX5VE
+         n/UA==
+X-Gm-Message-State: AOAM530th12HLUrDq27R6KwTirV9Yb48Ue7VSC0r5EBA6jhBkbTEiKS7
+        CihMwJxX7bFu2YeBd2/Dgg==
+X-Google-Smtp-Source: ABdhPJwaSLwwvJEXpuTtS5g0uD2iW6wSVbjVjp+V+VQFgatBFf4x/OzktcviyT37nI7bHk3P2LQ8iQ==
+X-Received: by 2002:aa7:9ad6:0:b029:142:2501:3975 with SMTP id x22-20020aa79ad60000b029014225013975mr2757157pfp.58.1601646594794;
+        Fri, 02 Oct 2020 06:49:54 -0700 (PDT)
+Received: from PWN ([161.117.80.159])
+        by smtp.gmail.com with ESMTPSA id s4sm2013178pfu.107.2020.10.02.06.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 06:49:53 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 09:49:44 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, glider@google.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: KMSAN: kernel-infoleak in scsi_cmd_ioctl
+Message-ID: <20201002134944.GA8205@PWN>
+References: <000000000000a24fa705ae29dc6c@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929015216.1829946-1-liushixin2@huawei.com>
+In-Reply-To: <000000000000a24fa705ae29dc6c@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 09:52:16AM +0800, Liu Shixin wrote:
-> Simplify the return expression.
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
-> v3: Add the change description.
-> v2: Get rid of the "ret" and "failure string" variables.
-> v1: Simplify the return expression.
-> ---
->  drivers/android/binder.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index 37a505c41dec..49c0700816a5 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -5180,9 +5180,7 @@ static const struct vm_operations_struct binder_vm_ops = {
->  
->  static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
->  {
-> -	int ret;
->  	struct binder_proc *proc = filp->private_data;
-> -	const char *failure_string;
->  
->  	if (proc->tsk != current->group_leader)
->  		return -EINVAL;
-> @@ -5194,9 +5192,9 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
->  		     (unsigned long)pgprot_val(vma->vm_page_prot));
->  
->  	if (vma->vm_flags & FORBIDDEN_MMAP_FLAGS) {
-> -		ret = -EPERM;
-> -		failure_string = "bad vm_flags";
-> -		goto err_bad_arg;
-> +		pr_err("%s: %d %lx-%lx %s failed %d\n", __func__,
-> +		       proc->pid, vma->vm_start, vma->vm_end, "bad vm_flags", -EPERM);
-> +		return -EPERM;
->  	}
->  	vma->vm_flags |= VM_DONTCOPY | VM_MIXEDMAP;
->  	vma->vm_flags &= ~VM_MAYWRITE;
-> @@ -5204,15 +5202,7 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
->  	vma->vm_ops = &binder_vm_ops;
->  	vma->vm_private_data = proc;
->  
-> -	ret = binder_alloc_mmap_handler(&proc->alloc, vma);
-> -	if (ret)
-> -		return ret;
-> -	return 0;
-> -
-> -err_bad_arg:
-> -	pr_err("%s: %d %lx-%lx %s failed %d\n", __func__,
-> -	       proc->pid, vma->vm_start, vma->vm_end, failure_string, ret);
-> -	return ret;
-> +	return binder_alloc_mmap_handler(&proc->alloc, vma);
->  }
->  
->  static int binder_open(struct inode *nodp, struct file *filp)
-> -- 
-> 2.25.1
+On Mon, Aug 31, 2020 at 03:28:22AM -0700, syzbot wrote:
+> BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+> CPU: 1 PID: 12272 Comm: syz-executor.3 Not tainted 5.8.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x21c/0x280 lib/dump_stack.c:118
+>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+>  kmsan_internal_check_memory+0x238/0x3d0 mm/kmsan/kmsan.c:423
+>  kmsan_copy_to_user+0x81/0x90 mm/kmsan/kmsan_hooks.c:253
+>  instrument_copy_to_user include/linux/instrumented.h:91 [inline]
+>  _copy_to_user+0x18e/0x260 lib/usercopy.c:33
+>  scsi_put_cdrom_generic_arg include/linux/uaccess.h:170 [inline]
 
-Todd and other Binder maintainers, what do you think of this?
++ Cc: Greg Kroah-Hartman
++ Cc: Anant Thazhemadam
 
-thanks,
+Hi all,
 
-greg k-h
+In looking at the report, I guess this patch should fix the issue, there's
+a 3-byte hole in `struct compat_cdrom_generic_command`:
+
+[PATCH v3] block/scsi-ioctl: Prevent kernel-infoleak in scsi_put_cdrom_generic_arg()
+https://lore.kernel.org/lkml/20200909095057.1214104-1-yepeilin.cs@gmail.com/
+
+But I cannot verify it, since syzbot doesn't have a reproducer for it.
+The patch adds a 3-byte padding field to `struct
+compat_cdrom_generic_command`. It hasn't been accepted yet.
+
+> Local variable ----cgc32.i42.i@scsi_cmd_ioctl created at:
+>  scsi_put_cdrom_generic_arg block/scsi_ioctl.c:695 [inline]
+
+#ifdef CONFIG_COMPAT
+	if (in_compat_syscall()) {
+		struct compat_cdrom_generic_command
+		[...]
+
+$ # before
+$ pahole -C "compat_cdrom_generic_command" !$
+pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
+struct compat_cdrom_generic_command {
+	unsigned char              cmd[12];              /*     0    12 */
+	compat_caddr_t             buffer;               /*    12     4 */
+	compat_uint_t              buflen;               /*    16     4 */
+	compat_int_t               stat;                 /*    20     4 */
+	compat_caddr_t             sense;                /*    24     4 */
+	unsigned char              data_direction;       /*    28     1 */
+
+	/* XXX 3 bytes hole, try to pack */
+
+	compat_int_t               quiet;                /*    32     4 */
+	compat_int_t               timeout;              /*    36     4 */
+	compat_caddr_t             reserved[1];          /*    40     4 */
+
+	/* size: 44, cachelines: 1, members: 9 */
+	/* sum members: 41, holes: 1, sum holes: 3 */
+	/* last cacheline: 44 bytes */
+};
+$ # after
+$ pahole -C "compat_cdrom_generic_command" block/scsi_ioctl.o
+struct compat_cdrom_generic_command {
+	unsigned char              cmd[12];              /*     0    12 */
+	compat_caddr_t             buffer;               /*    12     4 */
+	compat_uint_t              buflen;               /*    16     4 */
+	compat_int_t               stat;                 /*    20     4 */
+	compat_caddr_t             sense;                /*    24     4 */
+	unsigned char              data_direction;       /*    28     1 */
+	unsigned char              pad[3];               /*    29     3 */
+	compat_int_t               quiet;                /*    32     4 */
+	compat_int_t               timeout;              /*    36     4 */
+	compat_caddr_t             reserved[1];          /*    40     4 */
+
+	/* size: 44, cachelines: 1, members: 10 */
+	/* last cacheline: 44 bytes */
+};
+$ _
+
+Thank you,
+Peilin Ye
+
