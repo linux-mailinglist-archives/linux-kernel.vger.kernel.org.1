@@ -2,84 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A734E281516
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA2B281515
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388098AbgJBO3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:29:21 -0400
-Received: from lan.nucleusys.com ([92.247.61.126]:33252 "EHLO
-        zztop.nucleusys.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726017AbgJBO3U (ORCPT
+        id S2388048AbgJBO3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:29:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42928 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBO3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:29:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nucleusys.com; s=x; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=U+46LdM6PcDOkzQb5JDU0b6k7u6FWkT7DMAIIJ4jYqA=; b=Aw5vGkll/h+gwLv9n0jja96gT1
-        UJ6NwKXEuQQ6w0Ti7GrZtrtXb0iz7YGLmNe5yGAE5k02mxXqk7/7yThcWdcr84YLZOEA9KrnSLNUK
-        DJLZtGNWhcvs+hgMbWiznzrw3tztBR+nHzb8+0Qrt7yTmkwFPbVaSfa6Bz1BP7kUIbJ4=;
-Received: from [94.26.108.4] (helo=carbon)
-        by zztop.nucleusys.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <petkan@nucleusys.com>)
-        id 1kOM3S-00015G-U7; Fri, 02 Oct 2020 17:29:03 +0300
-Date:   Fri, 2 Oct 2020 17:29:01 +0300
-From:   Petko Manolov <petkan@nucleusys.com>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Greg KH <greg@kroah.com>, David Miller <davem@davemloft.net>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        kuba@kernel.org, linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: usb: rtl8150: prevent set_ethernet_addr from
- setting uninit address
-Message-ID: <20201002142901.GA3901@carbon>
-Mail-Followup-To: Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Greg KH <greg@kroah.com>, David Miller <davem@davemloft.net>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        kuba@kernel.org, linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201001073221.239618-1-anant.thazhemadam@gmail.com>
- <20201001.191522.1749084221364678705.davem@davemloft.net>
- <83804e93-8f59-4d35-ec61-e9b5e6f00323@gmail.com>
- <20201002115453.GA3338729@kroah.com>
- <a19aa514-14a9-8c92-d41a-0b9e17daa8e3@gmail.com>
+        Fri, 2 Oct 2020 10:29:05 -0400
+Date:   Fri, 02 Oct 2020 14:29:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601648943;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kh6O6AmCAZzwzK8oZVqQ7DskeEEeI53l84FXZ/tMq1k=;
+        b=hIgV92eC359sZzi1iHCodRCBaXe+GLajrczPxx5oJAXEtQSPh6OXHjQUeGGvC2heNTE5z6
+        t1eB7Jeg2pBrI5Gr+JRyF626SrJuP/3aKMUKFBfASv9xudB3YFpX+9YoQYWQHJFKrivQiD
+        clolf2u2LRgGhWTYg67dXKmTG1/+plecBhkW/WJn4WgRIogb6Jn5KwmvmBKxN9i6cVq0++
+        lNCfqWnCPVpcTRmHB/ROVqguKpXBQXRvshTgQRyx0rkwe7rkXYqEay1m/VF6NWTfNKWcqJ
+        OGu5kgAPyrGS+2wa5eabgXM1kJc6eZ83qcH1UsVWjFK2zkhlIqooPpg6dhVFxg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601648943;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kh6O6AmCAZzwzK8oZVqQ7DskeEEeI53l84FXZ/tMq1k=;
+        b=i9PwQhCDtAe/GNe8CBHp3FtC4upWdHmdI3IWCzp/UzSBv8WN8Mvt7AuXXzwPXxmil0SoHS
+        d3uXnS6DPI19RSDA==
+From:   "tip-bot2 for Julia Lawall" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clocksource/drivers/armada-370-xp: Use semicolons
+ rather than commas to separate statements
+Cc:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1601233948-11629-17-git-send-email-Julia.Lawall@inria.fr>
+References: <1601233948-11629-17-git-send-email-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a19aa514-14a9-8c92-d41a-0b9e17daa8e3@gmail.com>
-X-Spam-Score: -1.0 (-)
-X-Spam-Report: Spam detection software, running on the system "zztop.nucleusys.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On 20-10-02 17:35:25, Anant Thazhemadam wrote: > > Yes, this
-    clears things up for me. I'll see to it that this gets done in a v3. If set_ethernet_addr()
-    fail, don't return error, but use eth_hw_addr_random() instead to set random
-    MAC address and continue with the probing. 
- Content analysis details:   (-1.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+Message-ID: <160164894233.7002.10700476113258729444.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-02 17:35:25, Anant Thazhemadam wrote:
-> 
-> Yes, this clears things up for me. I'll see to it that this gets done in a v3.
+The following commit has been merged into the timers/core branch of tip:
 
-If set_ethernet_addr() fail, don't return error, but use eth_hw_addr_random() 
-instead to set random MAC address and continue with the probing.
+Commit-ID:     1b80043ed21894eca888157145b955df02887995
+Gitweb:        https://git.kernel.org/tip/1b80043ed21894eca888157145b955df02887995
+Author:        Julia Lawall <Julia.Lawall@inria.fr>
+AuthorDate:    Sun, 27 Sep 2020 21:12:26 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 02 Oct 2020 16:27:28 +02:00
 
-You can take a look here:
-https://lore.kernel.org/netdev/20201002075604.44335-1-petko.manolov@konsulko.com/
+clocksource/drivers/armada-370-xp: Use semicolons rather than commas to separate statements
 
+Replace commas with semicolons.  What is done is essentially described by
+the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
 
-cheers,
-Petko
+// <smpl>
+@@ expression e1,e2; @@
+e1
+-,
++;
+e2
+... when any
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/1601233948-11629-17-git-send-email-Julia.Lawall@inria.fr
+---
+ drivers/clocksource/timer-armada-370-xp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clocksource/timer-armada-370-xp.c b/drivers/clocksource/timer-armada-370-xp.c
+index edf1a46..e3acc3c 100644
+--- a/drivers/clocksource/timer-armada-370-xp.c
++++ b/drivers/clocksource/timer-armada-370-xp.c
+@@ -181,12 +181,12 @@ static int armada_370_xp_timer_starting_cpu(unsigned int cpu)
+ 		clr = TIMER0_25MHZ;
+ 	local_timer_ctrl_clrset(clr, set);
+ 
+-	evt->name		= "armada_370_xp_per_cpu_tick",
++	evt->name		= "armada_370_xp_per_cpu_tick";
+ 	evt->features		= CLOCK_EVT_FEAT_ONESHOT |
+ 				  CLOCK_EVT_FEAT_PERIODIC;
+-	evt->shift		= 32,
+-	evt->rating		= 300,
+-	evt->set_next_event	= armada_370_xp_clkevt_next_event,
++	evt->shift		= 32;
++	evt->rating		= 300;
++	evt->set_next_event	= armada_370_xp_clkevt_next_event;
+ 	evt->set_state_shutdown	= armada_370_xp_clkevt_shutdown;
+ 	evt->set_state_periodic	= armada_370_xp_clkevt_set_periodic;
+ 	evt->set_state_oneshot	= armada_370_xp_clkevt_shutdown;
