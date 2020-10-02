@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3E7281B4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55890281B62
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388383AbgJBTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:01:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55787 "EHLO mga14.intel.com"
+        id S2388396AbgJBTMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:12:24 -0400
+Received: from mout.gmx.net ([212.227.15.15]:39473 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgJBTBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:01:49 -0400
-IronPort-SDR: +8s2b7G7hTPgt2T/cnAImsvxcMRP4NKHmczGgFamSfPJ4+GuAuQ01cmuV5QdrGnaz71kJDrOVr
- LhS0uFPBFv1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="162291709"
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="162291709"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 12:01:47 -0700
-IronPort-SDR: 7ZXFDPt2U2URGQibqNJARaRDhHITm0x8nIHE7g0b9a7MQ9j3/r01M6j1SxKbFYYJ5OPV1cy5f2
- 1tyUrjrrxIpg==
-X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
-   d="scan'208";a="352450628"
-Received: from ssing11-mobl.amr.corp.intel.com (HELO ellie) ([10.209.68.166])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 12:01:45 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Erez Geva <erez.geva.ext@siemens.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladis Dronov <vdronov@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
-        Vedang Patel <vedang.patel@intel.com>,
-        Simon Sudler <simon.sudler@siemens.com>,
-        Andreas Meisinger <andreas.meisinger@siemens.com>,
-        Andreas Bucher <andreas.bucher@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andreas Zirkler <andreas.zirkler@siemens.com>,
-        Ermin Sakic <ermin.sakic@siemens.com>,
-        An Ninh Nguyen <anninh.nguyen@siemens.com>,
-        Michael Saenger <michael.saenger@siemens.com>,
-        Bernd Maehringer <bernd.maehringer@siemens.com>,
-        Gisela Greinert <gisela.greinert@siemens.com>,
-        Erez Geva <erez.geva.ext@siemens.com>,
-        Erez Geva <ErezGeva2@gmail.com>
-Subject: Re: [PATCH 0/7] TC-ETF support PTP clocks series
-In-Reply-To: <20201001205141.8885-1-erez.geva.ext@siemens.com>
-References: <20201001205141.8885-1-erez.geva.ext@siemens.com>
-Date:   Fri, 02 Oct 2020 12:01:45 -0700
-Message-ID: <87eemg5u5i.fsf@intel.com>
+        id S1725991AbgJBTMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:12:24 -0400
+X-Greylist: delayed 320 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 15:12:23 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601665940;
+        bh=Qo+NFbpxT2mOiv4NL6hQq+Wa/wH05wcrAlFfPLL4Wws=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=CyFd+I+RnQgKqDEp8C9tRknx4VA9WPhA+C3H6E59bt8PX9Wd0HaQj3SyukIciCjkB
+         IQQBGid6bIidFKTpqhSQAzCBRrV/+/nLfgr5cgMmJZ2gK5jNad/6bACfOkw5IqQPS4
+         X2lggvuSfKMMx1ZM36YAuWxx+Fp82ShikEpqXrm0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([178.202.41.107]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MplXz-1klKax0J5x-00q9gb; Fri, 02
+ Oct 2020 21:06:30 +0200
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] Documentation/x86: incorrect reference zero-page.txt
+Date:   Fri,  2 Oct 2020 21:06:23 +0200
+Message-Id: <20201002190623.7489-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UshxEsPWn7K7HokVrHA3P88dbV1UW6P7NogprcntMKUl6OpJy9u
+ m7YT+8RPs42IK8ICGWw4ruH8twuT/z4l7NqiF6RPGFLGwP5gJo00Hh2c7cwWEsm1Hwpg5nO
+ 1b15WLZiMOD4r9aTApC6Xxo3MPgAYr8OIvm2ecLPanR0ZroQuqUArTjqUEJR15oktw+mle7
+ U8cs3sj+j0+Hv3yutaOdA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1rvfBlyx9r0=:jw2iCS5TBu4P4ZNQ1rYFLv
+ 6Uly99zQAufOGiOG9HqaAEvs9c1rC/6Wb+OcwXMzI5N0PWGBk3E2x2mL0SKBBF14Xdnwb8zQl
+ YnKWsqQYIEt5GRblgCdvFjWgg79DOT6pHrNHX2kMuNoZH9/svKAuiMkO65APz1BDpVP6kZk5D
+ +JGMB2/cIbjcDiMpO6ziabOrG7H7DmWqR49mx2ewrApBRFNYrL9SkTK0izKcgc1AJlDBjgsuZ
+ q2SzPE8ze0eUgn9McNK2fD0CoE9NpzU5ZVjQx6LT4z4HSPgzceFZw3HOlm+JGEArqVAg82IvV
+ kzodNd4C7tJmxxd7BMQL5Tww5Jhz/ciYlPQq/s+raPaw5Q+wEYuIWRUoSpU2QQn52Hffw25Z7
+ VlCzyF9u04KQZZ3x9ry/kNk4MDlcSFjkrxcheEaSuuOOniWLkmfLRrjcU4W4lDrWjRogPdapW
+ uPLsPpcLgtB9d6VJAsu7BK85z6SBM8EXA5tCVWkPOuWflbxROHIRH/g6pMRq2PQfSnmBPAsJX
+ Uv/pxVysxCikWvtOmMzc9ev/OEserQegWBDUej/8d1sxETQQnrCgfBqRJ4ll3JosYfwN+gbG5
+ TA6/ClYBkPWN8rbi7ba/ddHIGM/caq9wslAXH+b32dupO/VL1wQUkAMPykkQsVEM8J2jYLXmH
+ aKi0zqRp+USpmqbVnVmorp5b04ny89WEBPXc3lYMoKB8PhDRkYC5JkUFhoIoF26khCo3KHstt
+ DlsR1U4soCy0g4WL9vra0oewf4a9VsDyT6YlD8kd3VkJZGL8AiYk2ePCj7fQaiR8RoqQlRBL4
+ VDqpmNmNSQFMlDms6uGJJn+2/6Im+kmBRZDKVNMsatVIzp5rza9zeZQyAorvGkxdqNMOmkBQ4
+ WTYjN8ugI/hwe7Xl0MIc2lYsVDkXxD/QlAY8STS3gWVo2Z6w2C1f616RR8Co2RKQTtoT9Uo0d
+ WYeuMVwKKKdlWBxncalRD8gr4iAjUOpIx6zVUktId3st2gBcyyw+tReRE5LfDEphebUF2iMQq
+ L4BtkIPZHiF9S+1+BO558zfopWbYk/6sSCb9ro/qk6NmKgghYe+jBOO3I4DVveJJDfczKGNSi
+ 482xWwyqXPbSA/9h7Y1p57RDWmn8W2zuNX+ATFFCMwVJwwRM3Ty9ytzGhzKGGAGzWtAaZs4xH
+ JXgd8ZrPCCn4n2Z6rCxxJdPKsKIc5Hs0mX0Siwo+BdaXqa9fLHlr85EMeWDRPb1hbjtrOC5Ip
+ bGrEfav/GtiinAeViARvSii5sS/gUkfxqZOlS+Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erez,
+File zero-page.txt does not exit. Add links for zero-page.rst.
 
-Erez Geva <erez.geva.ext@siemens.com> writes:
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ Documentation/x86/boot.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> Add support for using PTP clock with
->  Traffic control Earliest TxTime First (ETF) Qdisc.
->
-> Why do we need ETF to use PTP clock?
-> Current ETF requires to synchronization the system clock
->  to the PTP Hardware clock (PHC) we want to send through.
-> But there are cases that we can not synchronize the system clock with
->  the desire NIC PHC.
-> 1. We use several NICs with several PTP domains that our device
->     is not allowed to be PTP master.
->    And we are not allowed to synchronize these PTP domains.
-> 2. We are using another clock source which we need for our system.
->    Yet our device is not allowed to be PTP master.
-> Regardless of the exact topology, as the Linux tradition is to allow
->  the user the freedom to choose, we propose a patch that will allow
->  the user to configure the TC-ETF with a PTP clock as well as
->  using the system clock.
-> * NOTE: we do encourage the users to synchronize the system clock with
->   a PTP clock.
->  As the ETF watchdog uses the system clock.
->  Synchronizing the system clock with a PTP clock will probably
->   reduce the frequency different of the PHC and the system clock.
->  As sequence, the user might be able to reduce the ETF delta time
->   and the packets latency cross the network.
->
-> Follow the decision to derive a dynamic clock ID from the file description
->  of an opened PTP clock device file.
-> We propose a simple way to use the dynamic clock ID with the ETF Qdisc.
-> We will submit a patch to the "tc" tool from the iproute2 project
->  once this patch is accepted.
->
+diff --git a/Documentation/x86/boot.rst b/Documentation/x86/boot.rst
+index 5325c71ca877..49c3ebe8a439 100644
+=2D-- a/Documentation/x86/boot.rst
++++ b/Documentation/x86/boot.rst
+@@ -1342,8 +1342,8 @@ follow::
 
-In addition to what Thomas said, I would like to add some thoughts
-(mostly re-wording some of Thomas' comments :-)).
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+-also fill the additional fields of the struct boot_params as that
+-described in zero-page.txt.
++also fill the additional fields of the struct boot_params as
++described in chapter :doc:`zero-page`.
 
-I think that there's an underlying problem/limitation that is the cause
-of the issue (or at least a step in the right direction) you are trying
-to solve: the issue is that PTP clocks can't be used as hrtimers.
+ After setting up the struct boot_params, the boot loader can load the
+ 32/64-bit kernel in the same way as that of 16-bit boot protocol.
+@@ -1379,7 +1379,7 @@ can be calculated as follows::
+ In addition to read/modify/write the setup header of the struct
+ boot_params as that of 16-bit boot protocol, the boot loader should
+ also fill the additional fields of the struct boot_params as described
+-in zero-page.txt.
++in chapter :doc:`zero-page`.
 
-I didn't spend a lot of time thinking about how to solve this (the only
-thing that comes to mind is having a timecounter, or similar, "software
-view" over the PHC clock).
+ After setting up the struct boot_params, the boot loader can load
+ 64-bit kernel in the same way as that of 16-bit boot protocol, but
+=2D-
+2.28.0
 
-Anyway, my feeling is that until this is solved, we would only be
-working around the problem, and creating even more hard to handle corner
-cases.
-
-
-Cheers,
--- 
-Vinicius
