@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F915281D41
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB1C281D4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725787AbgJBU7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S1725775AbgJBVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBU7H (ORCPT
+        with ESMTP id S1725283AbgJBVBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:59:07 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34240C0613D0;
-        Fri,  2 Oct 2020 13:59:07 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id o18so2501809ilg.0;
-        Fri, 02 Oct 2020 13:59:07 -0700 (PDT)
+        Fri, 2 Oct 2020 17:01:36 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E800AC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:01:35 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id q5so2504503ilj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XkEYe1/fNy+Pf7SIAfod53fKG7vqHvWMD5Ql6n+ejRA=;
-        b=Ij7PUtkJXXbHQuBf9b8ZOxPvaU1A4n3iWSWa3CFASIc7I4v8wyPm4Dupo2AuLqWE/w
-         y7POCNEBvYyDVb9dqHo7ls4kSRElaq2Wyo+FXtnQR3JeOfOI7ZC2dDGllAnD0D7+03/Z
-         jQv/4GTdmY9ehua0cjtW9uSpqctb/J7/XRt3Kg8GMt4uL+JeLuUTzYR14atNNX8Vdz+W
-         0XIPgJ/lI7OObl5sItq82k81rc10JdjlY/taAZL9qlqYLYNeWhoFhWYVRxgYJ3u8eGJ4
-         0CyEDwkz3fsXUDvujQTCe9e6yRSTHWkp66vpM+XILRSp/ZhBVUDOjIpNqJX4MYalH+gn
-         qG4Q==
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=0EgeC/OxuGrek2txihiSmap3MbhbavZ/3tORR9d+J8w=;
+        b=E7S1gwZRrc69yNZLUerKmIErkIvVFnHoj3SD/FYUzjDSXz0axcUKil7UeoSdEd36Du
+         ccMTE/O6ZMpPqcKN3AmleNx0C9+G2UdapKLC1srcId7hS7kg+JwQOCRL+E5CB3DZUGxu
+         na9RqGVxsCTvNXMIZwWY5VnynBV/WVqmMo/pM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XkEYe1/fNy+Pf7SIAfod53fKG7vqHvWMD5Ql6n+ejRA=;
-        b=Yb3n1KV6Cq5kKpZptZ+G/umGtQ17CWT5D/GFpuQ3sjKltoO4PPl6zNZd82XdHSthba
-         aErkV0LIt2MWbV2IHPG+mW3P2BsMO5j+pu3weKFjOfq6PsuDBqt930ldLU4NuCIfbS2T
-         35A6FhzBXYM9CpTRqTsBH6pnvlaY9GjLw9AmiK3X82Mg18962hflecMzsnQXU+61L40D
-         m3+pgV/HZbe6uB8qPP/j96s5tHuPq/0onvTG3+bDJzfZSZd7GrvMTYaCm42bsklItMIP
-         LnRJ7D/YaES2G/en+on6fxqR3h7J1aXxQgo1EAqsobQfb3ezK0h/oGeXnRHALDdePvWY
-         9q1A==
-X-Gm-Message-State: AOAM531HsbEMPDUo6xHyhqFGtVEDd5TAuRC2YcCmd8rlyOWr7fGCl2st
-        6RqWFJoMQLC8Hfe4+s1BRcFyvUj5nYcrdW8ibag=
-X-Google-Smtp-Source: ABdhPJxwldEJ93I2YYlI4aV0mGMs3+uEX9u8wY+YfRcK16cMXr4MrtvoeooObH0TWVAJOdlNaj0/+P/5Ow69DdAaFFg=
-X-Received: by 2002:a92:ba4d:: with SMTP id o74mr3331734ili.205.1601672346502;
- Fri, 02 Oct 2020 13:59:06 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=0EgeC/OxuGrek2txihiSmap3MbhbavZ/3tORR9d+J8w=;
+        b=aHkgIOK6ye/cEuDf7nSF7pP3LCwINJc6Z9PTNwR1aSQYBScYZ2R5SDEb5oXP3/5MM+
+         RFEWXG7nVjAIbYGsot2lLZOCV0x+Li3TMiwSKzphSlP8MLr6KVoIEC3nbyHtWNDV0mit
+         ZzcqebdsWTckNOP0lHBBPazzsslry7k5CEzrH1RE6QNlL3fh+ndwrJD469nVAD46Y8fA
+         L2BqJGPZDLFXZt4ViHfC5rJKOSjEp5VRSookacpMz4NrbGyT4j+w3ZR6Vi7s0gx2bqbd
+         XB/dmbs1ct4PkvfNxBphBmBfum/EEZlmNZZFinzjkQ1/38/h085Sqqkp1D4gkM1L97wQ
+         PhLg==
+X-Gm-Message-State: AOAM532td30rBK9lKPrNGrODswiM3+fsoaWYbFV9mZQtt192ZQxVMsWy
+        F1CHFGFeVanVYW2GEsgmpZBF/Q==
+X-Google-Smtp-Source: ABdhPJwH/+0yI2olAs2o17hTDrZwS2eXv8xXBlbua6zIn6xw456YIv/gW64/Cc4Y1QhUjGk8YbevhA==
+X-Received: by 2002:a92:9907:: with SMTP id p7mr3337726ili.200.1601672495127;
+        Fri, 02 Oct 2020 14:01:35 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m85sm1416332ill.64.2020.10.02.14.01.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 14:01:34 -0700 (PDT)
+To:     sudipm.mukherjee@gmail.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: drivers/char/ppdev -
+Message-ID: <110bee96-0c4b-21dd-9298-932970657801@linuxfoundation.org>
+Date:   Fri, 2 Oct 2020 15:01:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1593243079.git.syednwaris@gmail.com> <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
- <20200911225417.GA5286@shinobu> <CACRpkdah+k-EyhF8bNRkvw4bFDiai9dYo3ph9wsumo_v3U-U0g@mail.gmail.com>
- <20200929130743.GB4458@shinobu> <CAHp75VdtUr1KHD5bng4sHZqsR888gN_TJ-bN8oLsX8GpsM8wYw@mail.gmail.com>
- <CACRpkdY-SwOx9tGyvrZy_VZJgHyG4ipo27bPnTe==o8_b_CTfg@mail.gmail.com>
-In-Reply-To: <CACRpkdY-SwOx9tGyvrZy_VZJgHyG4ipo27bPnTe==o8_b_CTfg@mail.gmail.com>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Sat, 3 Oct 2020 02:28:55 +0530
-Message-ID: <CACG_h5or4anPqMRv5HOpe6CDOAWTY8rBot9G82p=9TABL1qCMQ@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] Introduce the for_each_set_clump macro
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Robert Richter <rrichter@marvell.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 2:59 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Sep 29, 2020 at 3:14 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->
-> > Linus, are you referencing to [3]? It was fixed in GENMASK()
-> > implementation some time ago.
-> > [3]: https://lore.kernel.org/lkml/202006171559.JSbGJXNw%25lkp@intel.com/
->
-> Yup.
->
-> I tried to apply the patches again now to test it but now patch 2
-> needs to be rebased.
->
-> Sorry for all the trouble!
->
-> Syed can you rebase the patch set on v5.9-rc1 and resend as v10?
+Hi Sudip,
 
-Sure Linus. I will send it as soon as possible.
+While looking at atomic_t usages and noticed a few potential
+problem the way struct pp_struct: atomic_t irqc field
 
-Thanks
-Syed Nayyar Waris
+- There is inconsistencies the lock hold in this driver.
+
+pp_do_mutex is help before pp_do_ioctl() is called.
+static int pp_do_ioctl()
+....
+
+pp_do_mutex
+        case PPCLRIRQ:
+                 ret = atomic_read(&pp->irqc);
+                 if (copy_to_user(argp, &ret, sizeof(ret)))
+                         return -EFAULT;
+                 atomic_sub(ret, &pp->irqc);
+                 return 0;
+
+This path seems safe as far as atomic_t overflow is concerned.
+
+However, pp_poll(), pp_irq(), and pp_open() etc. don't hold
+lock while pp_do_ioctl() path does.
+
+Something to look into to see if this is safe. I see this
+comment for pp_poll() /* No kernel lock held - fine */
+
+Anyway, please take a look and see if this is indeed a problem.
+
+thanks,
+-- Shuah
