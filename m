@@ -2,176 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED59281B83
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16171281BB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388394AbgJBTVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388351AbgJBTVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:21:52 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22362206DD;
-        Fri,  2 Oct 2020 19:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601666511;
-        bh=L4m1QJWBqKGzyrw/xVJmG3tj2xwKO6e7HGpDzISiC74=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BbILnrR4o3jxGxwLlp/CfPGAV1vMdoFLx0WtSwsaJAdnQ6a6HyTbNvVrZFjsQkwA1
-         r83xWrA44SgQ3OzDPHJk/beEVGrH5x2Kv0YGutYJ9CM1eWUKewIxUyGGTdtQEjrEiX
-         Z2q9P5yIXBpXvLx8ow7xWZbKUT/8rB6UZK0lsOws=
-Received: by mail-ot1-f53.google.com with SMTP id c2so2459053otp.7;
-        Fri, 02 Oct 2020 12:21:51 -0700 (PDT)
-X-Gm-Message-State: AOAM532drHdCQak6d3iAdlhUc3nCgXnY64Hf+ZbRnRhotkgqG7/pb2C4
-        qr2bZupdDmZk7d0e4H/fPmhGF9bLdN4Bhb3AEZw=
-X-Google-Smtp-Source: ABdhPJwPTuuKRRs/1VwnEQiU3DRy6PM2jXlhvsHksNAjczi2LGkB2x4u0P+7zSB7fV7ebzj/Iq+1SJ3c4T8wtSFFSqc=
-X-Received: by 2002:a9d:335:: with SMTP id 50mr2674457otv.90.1601666510446;
- Fri, 02 Oct 2020 12:21:50 -0700 (PDT)
+        id S2388453AbgJBTWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388451AbgJBTWS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:22:18 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FA9C0613D0;
+        Fri,  2 Oct 2020 12:22:15 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id g26so621628ooa.9;
+        Fri, 02 Oct 2020 12:22:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qtkiGjkyzPqhHXvj+x4KevVCs1UVs2TLajO5QFK46lc=;
+        b=pyCYGPD3z231H+FQCXNEMLBtwRoKmxKBpFEKm871TgQU8g0X8z2LzGq3oGkeS5tId6
+         2OjBG9lDxg08oGQpJZn5YUoFRjrDuVdqQVFb4w+hBOrxNG6DqBJwawSIiKC9egvCjB02
+         Xw0waBU/U8aGynIrCK89k3Jdpw7z3gEFzB4jasOXhXEyNbxDcZrLX7dRpFGKQoKw1Tws
+         aLL3JDgghZLFX8ZY8jZDZOeRMejsM+55Cdtpn64aGJMuNlg/C9MwjlV2q4dNBpKlf7yk
+         7CMS1H3Bkbl6Ac+k8YwG1V0D40n/6TqKugG/Uh9B1bMTgFcoERjMQ390o1uoJ6zqs1ZP
+         ObOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qtkiGjkyzPqhHXvj+x4KevVCs1UVs2TLajO5QFK46lc=;
+        b=IlKRih1aUtcUykxiNm2BBs0g4FhIG2XCowYqCpAmBRYlL2Pj8xSc7Y/+l2d6rE4taX
+         uwwFwDIWidpN3G585JF5lBD3PSkE+T8+sDt/yt0PHzFjzYwp0JYKDyIKvGHcRCXkCOKi
+         ULNPFo2hjchogUW43sNZCQPLs18VPKWCImgJh3CeQKzacg8sOgiLy3YskjgU5wh+0IRY
+         Fu2ox1mOr0lnL/X0QImD8A502xoC7n6VIKHbNPfpQ+eG9IsMUzCXFluo+f2BEYDQqSB2
+         u9oiO9OvRP5oHNhg6AOQYD1PyIlOh0g3VvBEJvo0JoQo1xPnWx3WW/vdcclxpsXXArVY
+         drPw==
+X-Gm-Message-State: AOAM533ldunzwLVuaadzIGaDmllZAZh5+LEvyW9ZCs8AoiJfkgjWeueg
+        0sty1Oo11Tl1A75EWCavJkCVh9T75Oy3RFbNRRY=
+X-Google-Smtp-Source: ABdhPJx7YX8zviFjrOEhTKLkYmCq2KlFovtI8luMYDcSxruAN3b9De/JFEEiXwNOCHvtvZ+X9imhz+Hlu9vqUFcQCHI=
+X-Received: by 2002:a4a:d509:: with SMTP id m9mr3027482oos.77.1601666534935;
+ Fri, 02 Oct 2020 12:22:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201002171112.22738-1-xypron.glpk@gmx.de> <CAMj1kXHsGcAX-DqfcpgxzZY3M+JzY-Ef9OdJ+JdysNnx1fK6zg@mail.gmail.com>
- <9899cc58-c856-38ca-3a89-4b545c973a4f@gmx.de>
-In-Reply-To: <9899cc58-c856-38ca-3a89-4b545c973a4f@gmx.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 2 Oct 2020 21:21:39 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGBGb5yU0XH3oBJfTUDiFzhqa8ihyYo=n_qyj1VcCs5zA@mail.gmail.com>
-Message-ID: <CAMj1kXGBGb5yU0XH3oBJfTUDiFzhqa8ihyYo=n_qyj1VcCs5zA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] docs: admin-guide: fdt and initrd load in EFI stub
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Fran=C3=A7ois_Ozog?= <francois.ozog@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch> <CAAFQd5AsFOau=m_3UPh2tKqwiUJaY4NH9HHrHJ17gbCLDgTNCQ@mail.gmail.com>
+In-Reply-To: <CAAFQd5AsFOau=m_3UPh2tKqwiUJaY4NH9HHrHJ17gbCLDgTNCQ@mail.gmail.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Fri, 2 Oct 2020 22:21:47 +0300
+Message-ID: <CAFCwf12zK9oLoShj9C71Bysg4Sd0VCaOHqPRJznZa_+SpB4j-Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/frame-vec: Drop gup_flags from get_vaddr_frames()
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 21:14, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+On Fri, Oct 2, 2020 at 9:23 PM Tomasz Figa <tfiga@chromium.org> wrote:
 >
-> On 10/2/20 7:21 PM, Ard Biesheuvel wrote:
-> > Hi Heinrich,
+> On Fri, Oct 2, 2020 at 7:53 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
 > >
-> > Thanks for documenting this.
+> > FOLL_WRITE | FOLL_FORCE is really the only reasonable thing to do for
+> > simple dma device that can't guarantee write protection. Which is also
+> > what all the callers are using.
 > >
+> > So just simplify this.
 > >
-> > On Fri, 2 Oct 2020 at 19:11, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
-> >>
-> >> Describe how a device tree and an initial RAM disk can be passed to the EFI
-> >> Boot Stub.
-> >>
-> >> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> >> ---
-> >>  Documentation/admin-guide/efi-stub.rst | 35 ++++++++++++++++++++++++++
-> >>  1 file changed, 35 insertions(+)
-> >>
-> >> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-guide/efi-stub.rst
-> >> index 833edb0d0bc4..86f50a33884c 100644
-> >> --- a/Documentation/admin-guide/efi-stub.rst
-> >> +++ b/Documentation/admin-guide/efi-stub.rst
-> >> @@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the system partition, and it
-> >>  may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
-> >>  should be copied but not necessarily renamed.
-> >>
-> >> +Passing an initial RAM disk to the EFI Boot Stub
-> >> +------------------------------------------------
-> >> +
-> >> +The following means sorted by decreasing priority can be used to provide an
-> >> +initial RAM disk to the EFI Boot Stub:
-> >> +
-> >> +* The firmware may provide a UEFI Load File 2 Protocol. The stub will try to
-> >> +  load the RAM disk by calling the LoadFile() service of the protocol using
-> >> +  a vendor device path with the vendor GUID
-> >> +  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
-> >> +* Next the EFI stub will try to load the file indicated by the "initrd=" command
-> >> +  line parameter.
-> >> +* The prior boot stage may pass the location of the initial RAM disk via the
-> >> +  "linux,initrd-start" and "linux,initrd-end" properties of the "/chosen" node
-> >> +  of the device-tree.
-> >> +
+> > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > Cc: Inki Dae <inki.dae@samsung.com>
+> > Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+> > Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+> > Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> > Cc: Kukjin Kim <kgene@kernel.org>
+> > Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> > Cc: Pawel Osciak <pawel@osciak.com>
+> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Cc: Tomasz Figa <tfiga@chromium.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> > Cc: Omer Shpigelman <oshpigelman@habana.ai>
+> > Cc: Tomer Tayar <ttayar@habana.ai>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Pawel Piskorski <ppiskorski@habana.ai>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-samsung-soc@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > ---
+> >  drivers/gpu/drm/exynos/exynos_drm_g2d.c           | 3 +--
+> >  drivers/media/common/videobuf2/videobuf2-memops.c | 3 +--
+> >  drivers/misc/habanalabs/common/memory.c           | 3 +--
+> >  include/linux/mm.h                                | 2 +-
+> >  mm/frame_vector.c                                 | 4 ++--
+> >  5 files changed, 6 insertions(+), 9 deletions(-)
 > >
-> > On x86, the boot_params struct is used to pass the address and size of
-> > the initrd in memory. Maybe include that for completeness?
+> > diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> > index 967a5cdc120e..ac452842bab3 100644
+> > --- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> > +++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> > @@ -480,8 +480,7 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
+> >                 goto err_free;
+> >         }
+> >
+> > -       ret = get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+> > -               g2d_userptr->vec);
+> > +       ret = get_vaddr_frames(start, npages, g2d_userptr->vec);
+> >         if (ret != npages) {
+> >                 DRM_DEV_ERROR(g2d->dev,
+> >                               "failed to get user pages from userptr.\n");
+> > diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
+> > index 6e9e05153f4e..9dd6c27162f4 100644
+> > --- a/drivers/media/common/videobuf2/videobuf2-memops.c
+> > +++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+> > @@ -40,7 +40,6 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+> >         unsigned long first, last;
+> >         unsigned long nr;
+> >         struct frame_vector *vec;
+> > -       unsigned int flags = FOLL_FORCE | FOLL_WRITE;
+> >
+> >         first = start >> PAGE_SHIFT;
+> >         last = (start + length - 1) >> PAGE_SHIFT;
+> > @@ -48,7 +47,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+> >         vec = frame_vector_create(nr);
+> >         if (!vec)
+> >                 return ERR_PTR(-ENOMEM);
+> > -       ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
+> > +       ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
+> >         if (ret < 0)
+> >                 goto out_destroy;
+> >         /* We accept only complete set of PFNs */
 >
-> On x86 boot_params is set in function efi_pe_entry() after loading the
-> file indicated by the initrd= command line.
+> For drivers/media/common/videobuf2/:
 >
-> boot_params is not accessible by a caller of the EFI stub but is a
-> structure used at the interface between EFI stub and main kernel. This
-> interface is not in the scope of the admin-guide.
+> Acked-by: Tomasz Figa <tfiga@chromium.org>
 >
+> Best regards,
+> Tomasz
 
- I don't see the difference between dt for arm and boot_params for
-x86. Both can be provided by the bootloader, and will be created from
-scratch by the efi stub if not. They both carry the command line and
-address and size of the initrd, and the efi stub will load  the initrd
-and update this Information, or pass it on unmodified if the
-bootloader already loaded the initrd into memory.
+For drivers/misc/habanalabs:
+Acked-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-
-
-> The main Linux entry point is already described in
-> Documentation/x86/boot.rst and ./Documentation/x86/zero-page.rst.
->
-> We can add Sphinx style documentation for function efi_pe_entry()
-> mentioning that it fills in boot_params.
-> drivers/firmware/efi/libstub/x86-stub.c then can be added to
-> Documentation/driver-api/firmware/efi/index.rst in an x86 chapter. But
-> these will be separate patches.
->
-> Best regards
->
-> Heinrich
->
-> >
-> >> +The first two items are inhibited by the "noinitrd" command line parameter.
-> >> +
-> >
-> > Interesting. Are you saying noinitrd is ignored by the kernel itself?
-> >
-> > Looking at the code, it might only work for preventing the load of old
-> > style initrd ramdisks, whereas initramfs images are handled
-> > separately.
-> >
-> > This is something that we should probably fix one way or the other.
-> >
-> >
-> >> +Passing a device-tree to the EFI Boot Stub
-> >> +------------------------------------------
-> >> +
-> >> +A device-tree can be passed to the EFI Boot Stub in decreasing priority using
-> >> +
-> >> +* command line option dtb=
-> >> +* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c69aae0.
-> >> +
-> >> +The command line option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y
-> >> +and secure boot is disabled.
-> >>
-> >>  Passing kernel parameters from the EFI shell
-> >>  --------------------------------------------
-> >> @@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzImage.efi, e.g.::
-> >>
-> >>         fs0:> bzImage.efi console=ttyS0 root=/dev/sda4
-> >>
-> >> +The "noinitrd" option
-> >> +---------------------
-> >> +
-> >> +The "noinitrd" option stops the EFI stub from loading an initial RAM disk.
-> >>
-> >>  The "initrd=" option
-> >>  --------------------
-> >> @@ -98,3 +130,6 @@ CONFIGURATION TABLE.
-> >>
-> >>  "dtb=" is processed in the same manner as the "initrd=" option that is
-> >>  described above.
-> >> +
-> >> +This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y and secure
-> >> +boot is disabled.
-> >> --
-> >> 2.28.0
-> >>
->
+Thanks,
+Oded
