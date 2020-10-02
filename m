@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A716F281E25
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBFE281E2A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgJBWQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBWQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:16:48 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A392FC0613D0;
-        Fri,  2 Oct 2020 15:16:47 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u4so2399487ljd.10;
-        Fri, 02 Oct 2020 15:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NqGPTwLDruLdjQOMyo3YXpB7b4xXruKaW+NIVVD0hZc=;
-        b=Biz8w7TYWU2BmCVHqFyceEdKLAmhopzgHH7dO9z7f8dCVsB/z+ULhrGkmGAf/w5OJa
-         mI6TXeIMsAA8fYqQaoin+VMmltrixfp9hL+GuLC4YIM24HxPRrIVgpbeWR/RvA46nmEg
-         NRhyu0BfTCxDBnRNf3k++60ergxyTG5IBc7YYtqF06iKJq4Fe8Xa1Cfr8fef1ppI0u9Q
-         euYPaarnohf327Ktwi2mfdnaqjoaOOQ2Rfxhz+Oszgs0cwc6WbyVk1dCHR9Rg/o7wXER
-         HpK3EmaADNHCMApjRZrPKEYHmOJpqNRNwCKTAAaXJTm7gJC/zGurtQAOdwbwa8VAcHHf
-         4MHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NqGPTwLDruLdjQOMyo3YXpB7b4xXruKaW+NIVVD0hZc=;
-        b=kbiO9sKsLs6gTT5sgomtiz1j96ZoZXgUEPDXdbbm6Z4uRLlo5yB/LAEXrLwsWZ6yf1
-         3aGn3pB1Umg46k10TYUyZSViSn7R/Rz2BYb0ZPLJb3Sizy93LTyK6cca49p0g3Qtua16
-         hPpCsXUOqyRWt1Mbtb25Qc2Pf7a3J9bYZAO+z+rt7zpNFeg151mbkZGU2Q1mPjoktJ9l
-         P8T/Jm3BOeYMUssgp0vKqg0PY8bCMJjAzqmM3zbh9E58ZogmvZ0H5KkDB1Meapk1J/QP
-         vmHQkaVYBmJPJvf7TIpLOXJ4sHzWemUSC1jzPXDkwYHrTQJ8w5FL+4ytagafbJe0ajYj
-         OSxw==
-X-Gm-Message-State: AOAM530K+XBgqMRgYps006edCTFmEOEQxAVnrVw7R5ti7ngWekwLFEpQ
-        GqL7si4ZBQe4uMuK4qD9HKvQ/zgFObqLL5YaIDY=
-X-Google-Smtp-Source: ABdhPJxadOUkwd6VjSFMQPfU8zpwIm2qXUgaLQD2hb1vfXJnv5p3GK6I35WQ0mzevNMmNMaABcLJ/2405m8fn+I7rwM=
-X-Received: by 2002:a2e:7014:: with SMTP id l20mr1355149ljc.91.1601677006107;
- Fri, 02 Oct 2020 15:16:46 -0700 (PDT)
+        id S1725782AbgJBWSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:18:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725497AbgJBWSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:18:32 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A808E20738;
+        Fri,  2 Oct 2020 22:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601677112;
+        bh=TeaOlavbFwonn5/j6s0DjJIppzCiC0RaB2IS2y4buCE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=yPEHRKayaHjV6+rIyUEnCb+VEYV1ScYIyiuV7wRRav2vUtgwb3LmuPV+MqchhhTQP
+         EBAnDIxed69EYzgigOjXcYJM67BxwOehdQhw4qZDAiqAz7uXqvaOFfSQjJrmtynnb+
+         nWque0qDnwNfZ2hKxqojknZQGo8Kk+fQJY9BpEuw=
+Date:   Fri, 2 Oct 2020 17:18:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, jonathan.derrick@intel.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] PCI: vmd: Enable ASPM for mobile platforms
+Message-ID: <20201002221830.GA2822405@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200929235049.2533242-1-haoluo@google.com> <CAADnVQK8XbzDs9hWLYEqkJj+g=1HJ7nrar+0STY5CY8t5nrC=A@mail.gmail.com>
- <CA+khW7i4wpvOsJTH4AePVsm4cAOnFoxEwEqv27tEzJrwOWFqxw@mail.gmail.com>
-In-Reply-To: <CA+khW7i4wpvOsJTH4AePVsm4cAOnFoxEwEqv27tEzJrwOWFqxw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 2 Oct 2020 15:16:34 -0700
-Message-ID: <CAADnVQ+UdKjHWWojmUx5K+RjUZ=DCe6LAHwhBicv-1KkuJnPVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/6] bpf: BTF support for ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200930082455.25613-2-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:48 PM Hao Luo <haoluo@google.com> wrote:
->
-> Ah, this is the bug in pahole described in
-> https://lkml.org/lkml/2020/8/20/1862. I proposed a fix [1] but it
-> hasn't reached pahole's master branch. Let me ask Arnaldo to see if he
-> is OK merging it.
->
-> [1] https://www.spinics.net/lists/dwarves/msg00451.html
->
-> On Tue, Sep 29, 2020 at 9:36 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > v3 -> v4:
-> > >  - Rebasing
-> > >  - Cast bpf_[per|this]_cpu_ptr's parameter to void __percpu * before
-> > >    passing into per_cpu_ptr.
+On Wed, Sep 30, 2020 at 04:24:54PM +0800, Kai-Heng Feng wrote:
+> BIOS may not be able to program ASPM for links behind VMD, prevent Intel
+> SoC from entering deeper power saving state.
 
-I've rebased it myself and applied. Thanks Hao.
+It's not a question of BIOS not being *able* to configure ASPM.  I
+think BIOS could do it, at least in principle, if it had a driver for
+VMD.  Actually, it probably *does* include some sort of VMD code
+because it sounds like BIOS can assign some Root Ports to appear
+either as regular Root Ports or behind the VMD.
+
+Since this issue is directly related to the unusual VMD topology, I
+think it would be worth a quick recap here.  Maybe something like:
+
+  VMD is a Root Complex Integrated Endpoint that acts as a host bridge
+  to a secondary PCIe domain.  BIOS can reassign one or more Root
+  Ports to appear within a VMD domain instead of the primary domain.
+
+  However, BIOS may not enable ASPM for the hierarchies behind a VMD,
+  ...
+
+(This is based on the commit log from 185a383ada2e ("x86/PCI: Add
+driver for Intel Volume Management Device (VMD)")).
+
+But we still have the problem that CONFIG_PCIEASPM_DEFAULT=y means
+"use the BIOS defaults", and this patch would make it so we use the
+BIOS defaults *except* for things behind VMD.
+
+  - Why should VMD be a special case?
+
+  - How would we document such a special case?
+
+  - If we built with CONFIG_PCIEASPM_POWERSAVE=y, would that solve the
+    SoC power state problem?
+
+  - What issues would CONFIG_PCIEASPM_POWERSAVE=y introduce?
+
+Link to previous discussion for the archives:
+https://lore.kernel.org/r/49A36179-D336-4A5E-8B7A-A632833AE6B2@canonical.com
+
+> So enable ASPM for links behind VMD to increase battery life.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/pci/controller/vmd.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+> index f69ef8c89f72..058fdef9c566 100644
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@ -417,6 +417,22 @@ static int vmd_find_free_domain(void)
+>  	return domain + 1;
+>  }
+>  
+> +static const struct pci_device_id vmd_mobile_bridge_tbl[] = {
+> +	{ PCI_VDEVICE(INTEL, 0x9a09) },
+> +	{ PCI_VDEVICE(INTEL, 0xa0b0) },
+> +	{ PCI_VDEVICE(INTEL, 0xa0bc) },
+> +	{ }
+> +};
+> +
+> +static int vmd_enable_aspm(struct device *dev, void *data)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
+> +
+> +	return 0;
+> +}
+> +
+>  static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
+>  {
+>  	struct pci_sysdata *sd = &vmd->sysdata;
+> @@ -603,8 +619,12 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
+>  	 * and will fail pcie_bus_configure_settings() early. It can instead be
+>  	 * run on each of the real root ports.
+>  	 */
+> -	list_for_each_entry(child, &vmd->bus->children, node)
+> +	list_for_each_entry(child, &vmd->bus->children, node) {
+> +		if (pci_match_id(vmd_mobile_bridge_tbl, child->self))
+> +			device_for_each_child(&child->self->dev, NULL, vmd_enable_aspm);
+
+Wouldn't something like this be sufficient?
+
+  list_for_each_entry(dev, &child->devices, bus_list)
+    vmd_enable_aspm(dev);
+
+>  		pcie_bus_configure_settings(child);
+> +	}
+>  
+>  	pci_bus_add_devices(vmd->bus);
+>  
+> -- 
+> 2.17.1
+> 
