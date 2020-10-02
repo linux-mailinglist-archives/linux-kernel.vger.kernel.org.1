@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A9F281E4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2790E281E4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgJBW1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
+        id S1725613AbgJBW1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBW1o (ORCPT
+        with ESMTP id S1725283AbgJBW1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:27:44 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A97C0613E2
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 15:27:44 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id dn5so3317426edb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 15:27:43 -0700 (PDT)
+        Fri, 2 Oct 2020 18:27:38 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DE6C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 15:27:37 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m34so1743929pgl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 15:27:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WenNmI5oUkGle0L0WRFJAM5U4b70dfVnKCotDQT26ic=;
-        b=qpOS6AVUOpuYRfzrRmEmY8nFGGqKUYhiSPRrmYu88Du2AlPVrjadxaORzyWIUB+fjv
-         xpaD/n3wkuOKLrC9HL/gQdNsnY351O+V0ZdYMLnIVW2BKM9QtUmYIvTjPSk/Zfcq3pBN
-         xsaKuY05LuXKpImIi1CiXpmFMSJ+WoX6JllYGomKn8gKTHCaHKeMWepJgmt5iX4SYnkM
-         hXpZng8JV1+NGujOYQZt5ix2ASa/uwXlpzl2sc7HOPP3UKX1TxAPv2X9zN37wP9VfVbR
-         RyR9KEP4ICSJJTRkowmJI7H/md2Pjy0JEq2U1hjvc1iMjpe41ESKQ/mHcBumKoqhLD0c
-         Uk9Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ieTq1qE7fV31SsmN163NlfY1jbqNTqvm2XluIpqKLDo=;
+        b=HN+/Fx1GpIGhfkisl4BGaBLsx7L3XREQDIPh+WvF+DxT2SSrgnq0dFvFKyhmpGvZa1
+         Sb83zHUK0DQ4vWO5uroM2opBvUcvfw8LF5IqUOqVN2SfiIECRb22EgTOovVNU17wrBJE
+         C+cDOUR3ooBSxfBNmj0IqOXMKZXwksH9wap0k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WenNmI5oUkGle0L0WRFJAM5U4b70dfVnKCotDQT26ic=;
-        b=pFdvcJ+Px2Ex367dr+FJamAE45La9zXCg7bvkpZZB31P5pNrHWNJ0FeCddnHHn6LpW
-         VFNANZhsLVOPf/j4roBvIlXKFenHKZDJa++4FlID2g3QukbKcbI4x2z47fGQrtoifAYU
-         uCB30GOtMIT1EujUV4ubVWXBUAtZWrsIx1assPx2iJzY0xKA6hdMKcerVVsMqMWJPRro
-         0PTxUlOW7xnlOf6vu4RG47ZYTavugYKlxcBTFl//xIBBIoOK/BlU3P0aWr6ieQANYwGP
-         dxi7/9CxyKRT6jxf7lRRXOwsCnl8gL9B2HUZSXMLY/BA0awiI5V4XNU4J6XGO0uM3qbG
-         dklQ==
-X-Gm-Message-State: AOAM530/7XFl+3RgP9g++GHo8rfF7+9GuCHQgAZz5ijJAuCLCuFOqjhi
-        rGRGR0rj/3XKfqxpVvl1Sm/EzGAjkVoC6Fkp8ghoVA==
-X-Google-Smtp-Source: ABdhPJzj0f7XvxzsCDrfMmIeI3C8DfvP4DCgq9+cCHs7tz7tMvkK8DfUcfTEg3mEkcGuHbAuc2NOlXwWuav+aHlt06Q=
-X-Received: by 2002:a05:6402:b0e:: with SMTP id bm14mr5117814edb.259.1601677662551;
- Fri, 02 Oct 2020 15:27:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ieTq1qE7fV31SsmN163NlfY1jbqNTqvm2XluIpqKLDo=;
+        b=E96rPDr0PYTBlwEAEPeA8lpnaxiGpCG+n3dO42KhLyz/pGG2CyG3CJ12pxCNOLLw/N
+         dmqREu4EHGo5IDYfLX55XG4BC4HFLzEgwmmZ+IgOleIcL9xXzDtj34OEycxTqY1pWHUu
+         mYTrjQrzQefPZ0go5af1SbKe4bgTJgTjEr2AMfQg/pgKrIAI7VwGCDC5/Pz25jJW2BDk
+         rZ4ga/3RGZD/EAvkZPcIkcgoJm2qtWNLIjjoRw2DfoYl32jyQigcpQZ8hOQL9BGFT2Pk
+         E03qGs7x3am6phkmWUrTkz5n9zwhqFXIQ3nrvuvDTExkEwHD3Lo/2Qgiw0d+dDdxCVSR
+         IYow==
+X-Gm-Message-State: AOAM533q2toIn9llePU+lnLfJNmxjdRlhuXNbZ56XMPa5DAEnDoMth2g
+        3rC0emnrd/28nGWY7IQQkSfdBw==
+X-Google-Smtp-Source: ABdhPJw6FQQhAFtb0/j4BJLwnb5NAb6/whRSQcmF96SZ4mtSzKLEb/Kqn6qu+Ke3rn9OoRd+jcZtzQ==
+X-Received: by 2002:a62:84c7:0:b029:152:2f5b:aa8 with SMTP id k190-20020a6284c70000b02901522f5b0aa8mr4365404pfd.3.1601677657354;
+        Fri, 02 Oct 2020 15:27:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x13sm3087599pfj.199.2020.10.02.15.27.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 15:27:36 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 15:27:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Joe Perches <joe@perches.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 1/8] sysfs: Add sysfs_emit and sysfs_emit_at to format
+ sysfs output
+Message-ID: <202010021526.84B4D81268@keescook>
+References: <cover.1600285923.git.joe@perches.com>
+ <884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com>
+ <20200930115740.GA1611809@kroah.com>
+ <202009302108.18B05CA38@keescook>
+ <20201001205029.GC915579@kroah.com>
 MIME-Version: 1.0
-References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-2-elver@google.com>
- <CAG48ez3+_K6YXoXgKBkB8AMeSQj++Mxi5u2OT--B+mJgE7Cyfg@mail.gmail.com>
- <20201002171959.GA986344@elver.google.com> <CAG48ez0D1+hStZaDOigwbqNqFHJAJtXK+8Nadeuiu1Byv+xp5A@mail.gmail.com>
- <CANpmjNN7s3o4DYbP64iLYo0MeDWciQnKd61njJKLsiZv+ZLQdA@mail.gmail.com>
-In-Reply-To: <CANpmjNN7s3o4DYbP64iLYo0MeDWciQnKd61njJKLsiZv+ZLQdA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 3 Oct 2020 00:27:16 +0200
-Message-ID: <CAG48ez0az-Mv1f6EpnQwO6cYQANwx4qCDLa+yda_i15AzciS1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 01/11] mm: add Kernel Electric-Fence infrastructure
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>, SeongJae Park <sjpark@amazon.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001205029.GC915579@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 11:28 PM Marco Elver <elver@google.com> wrote:
-> On Fri, 2 Oct 2020 at 21:32, Jann Horn <jannh@google.com> wrote:
-> > > That's another check; we don't want to make this more expensive.
-> >
-> > Ah, right, I missed that this is the one piece of KFENCE that is
-> > actually really hot code until Dmitry pointed that out.
-> >
-> > But actually, can't you reduce how hot this is for SLUB by moving
-> > is_kfence_address() down into the freeing slowpath? At the moment you
-> > use it in slab_free_freelist_hook(), which is in the super-hot
-> > fastpath, but you should be able to at least move it down into
-> > __slab_free()...
-> >
-> > Actually, you already have hooked into __slab_free(), so can't you
-> > just get rid of the check in the slab_free_freelist_hook()?
->
-> I missed this bit: the loop that follows wants the free pointer, so I
-> currently see how this might work. :-/
+On Thu, Oct 01, 2020 at 10:50:29PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Sep 30, 2020 at 09:17:03PM -0700, Kees Cook wrote:
+> > On Wed, Sep 30, 2020 at 01:57:40PM +0200, Greg Kroah-Hartman wrote:
+> > > Kees, and Rafael, I don't know if you saw this proposal from Joe for
+> > > sysfs files, questions below:
+> > 
+> > I'm a fan. I think the use of sprintf() in sysfs might have been one of
+> > my earliest complaints about unsafe code patterns in the kernel. ;)
+> 
+> Ok, great.
+> 
+> > > > +/**
+> > > > + *	sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer.
+> > > > + *	@buf:	start of PAGE_SIZE buffer.
+> > > > + *	@fmt:	format
+> > > > + *	@...:	optional arguments to @format
+> > > > + *
+> > > > + *
+> > > > + * Returns number of characters written to @buf.
+> > > > + */
+> > > > +int sysfs_emit(char *buf, const char *fmt, ...)
+> > > > +{
+> > > > +	va_list args;
+> > > > +	int len;
+> > > > +
+> > > > +	if (WARN(!buf || offset_in_page(buf),
+> > > > +		 "invalid sysfs_emit: buf:%p\n", buf))
+> > 
+> > I don't want the %p here, but otherwise, sure. I'd also make it a _ONCE
+> > variant:
+> > 
+> > 	if (WARN_ONCE(!buf || offset_in_page(buf),
+> > 		 "invalid sysfs_emit: offset_in_page(buf):%zd\n",
+> > 		  buf ? offset_in_page(buf) : 0))
+> 
+> As Joe points out, _ONCE doesn't work because this happens from all
+> sysfs files, not just one.
 
-reverse call graph:
-__slab_free
-  do_slab_free
-    slab_free
-      kmem_cache_free (frees a single non-kmalloc allocation)
-      kmem_cache_free_bulk (frees multiple)
-      kfree (frees a single kmalloc allocation)
-    ___cache_free (frees a single allocation for KASAN)
+Sure, it's just a question if you want log spamming vs how reachable you
+think something might be. I would expect this to be uncommon to
+encounter, but very repeatable for whatever system DOES hit it, so doing
+_ONCE means they see the report and don't get completely flooded with
+it.
 
-So the only path for which we can actually loop in __slab_free() is
-kmem_cache_free_bulk(); and you've already changed
-build_detached_freelist() (which is used by kmem_cache_free_bulk() to
-group objects from the same page) to consume KFENCE allocations before
-they can ever reach __slab_free(). So we know that if we've reached
-__slab_free(), then we are being called with either a single object
-(which may be a KFENCE object) or with a list of objects that all
-belong to the same page and don't contain any KFENCE allocations.
+I'm fine either way.
+
+-- 
+Kees Cook
