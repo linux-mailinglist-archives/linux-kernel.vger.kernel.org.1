@@ -2,414 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A640028121F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BD6281243
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387816AbgJBMSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S2387872AbgJBMWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbgJBMSH (ORCPT
+        with ESMTP id S2387782AbgJBMW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:18:07 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB6CC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 05:18:06 -0700 (PDT)
-Received: from [IPv6:2003:c7:cf13:ec00:987c:fa6c:93a9:1dfa] (p200300c7cf13ec00987cfa6c93a91dfa.dip0.t-ipconnect.de [IPv6:2003:c7:cf13:ec00:987c:fa6c:93a9:1dfa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9926B29DB43;
-        Fri,  2 Oct 2020 13:18:04 +0100 (BST)
-Subject: Re: [PATCH v3 4/9] media: vimc: Separate starting stream from
- pipeline initialisation
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20200819180442.11630-1-kgupta@es.iitr.ac.in>
- <20200819180442.11630-5-kgupta@es.iitr.ac.in>
- <eb5d4259-fe77-b4f2-1e62-0f846420b7c2@collabora.com>
- <20200821210123.GA28410@kaaira-HP-Pavilion-Notebook>
- <b3e20f32-64b9-778b-fa2f-f17b0c1bcc72@collabora.com>
- <00896ada-3ef7-a1b5-ab7b-fe8a41fc4881@ideasonboard.com>
- <20200912102134.GC5022@kaaira-HP-Pavilion-Notebook>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <b5daf857-dfe1-6cf0-2e06-cd52f4d14b01@collabora.com>
-Date:   Fri, 2 Oct 2020 14:18:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 08:22:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D765C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 05:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MTQ4vzPn+TUgUKKcoWUoAB8fcnSJCckabiOfgd7ojV4=; b=u+R89293VKjrL950PesPnUDIDe
+        Xgc19Gn/aakqGvWaf4OfcNjY+u4Rg5jRhl8xog5FaXEtduHCxwy7x81D97JMWgEx0DpXFyn6Nkoge
+        qMeAHTiEugkNO43SVoVkXGxSQcW9CJRLuexYC/zmXRysmDKTlkzsYuqt6uTWHc/LCKpHvQHAGG4ry
+        9GmXzBAEH0N3vvw3bXPJrQ5YGZ4/zWMewOsOlwyZLOZCljy/cw7bfRH4n9HSRYjkXChFlLUhSXmrl
+        hOFwMnVf9EAUA8EtaEogxdb5y3fDWHiEAxsHulGIoXiirixmt0EolobjUTME1kfxKY53hjeOYZ6Al
+        SumZaBZw==;
+Received: from [2001:4bb8:180:7b62:f738:1861:1acc:15c8] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOK4c-0003K8-4x; Fri, 02 Oct 2020 12:22:06 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: remove alloc_vm_area v4
+Date:   Fri,  2 Oct 2020 14:21:53 +0200
+Message-Id: <20201002122204.1534411-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200912102134.GC5022@kaaira-HP-Pavilion-Notebook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew,
 
+this series removes alloc_vm_area, which was left over from the big
+vmalloc interface rework.  It is a rather arkane interface, basicaly
+the equivalent of get_vm_area + actually faulting in all PTEs in
+the allocated area.  It was originally addeds for Xen (which isn't
+modular to start with), and then grew users in zsmalloc and i915
+which seems to mostly qualify as abuses of the interface, especially
+for i915 as a random driver should not set up PTE bits directly.
 
-Am 12.09.20 um 12:21 schrieb Kaaira Gupta:
-> On Wed, Sep 02, 2020 at 10:56:46AM +0100, Kieran Bingham wrote:
->> Hi Kaaira, Dafna,
->>
->> On 28/08/2020 21:37, Dafna Hirschfeld wrote:
->>> Hi,
->>>
->>> Am 21.08.20 um 23:01 schrieb Kaaira Gupta:
->>>> Hi,
->>>>
->>>> On Fri, Aug 21, 2020 at 05:11:23PM +0200, Dafna Hirschfeld wrote:
->>>>>
->>>>>
->>>>> Am 19.08.20 um 20:04 schrieb Kaaira Gupta:
->>>>>> Separate the process of initialising pipeline array from starting
->>>>>> streaming for all entities in path of a stream. This is needed because
->>>>>> multiple streams can stream, but only one pipeline object is needed.
->>>>>>
->>>>>> Process frames only for those entities in a pipeline which are
->>>>>> streaming. This is known through their use counts.
->>>>>>
->>>>>> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
->>>>>> ---
->>>>>>     .../media/test-drivers/vimc/vimc-streamer.c   | 95
->>>>>> ++++++++++++++++---
->>>>>>     1 file changed, 83 insertions(+), 12 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/media/test-drivers/vimc/vimc-streamer.c
->>>>>> b/drivers/media/test-drivers/vimc/vimc-streamer.c
->>>>>> index c1644d69686d..cc40ecabe95a 100644
->>>>>> --- a/drivers/media/test-drivers/vimc/vimc-streamer.c
->>>>>> +++ b/drivers/media/test-drivers/vimc/vimc-streamer.c
->>>>>> @@ -40,33 +40,30 @@ static void
->>>>>> vimc_streamer_pipeline_terminate(struct vimc_stream *stream)
->>>>>>     }
->>>>>>     /**
->>>>>> - * vimc_streamer_pipeline_init - Initializes the stream structure
->>>>>> + * vimc_streamer_stream_start - Starts streaming for all entities
->>>>>> + * in a stream
->>>>>>      *
->>>>>> - * @stream: the pointer to the stream structure to be initialized
->>>>>>      * @ved:    the pointer to the vimc entity initializing the stream
->>>>>>      *
->>>>>> - * Initializes the stream structure. Walks through the entity graph to
->>>>>> - * construct the pipeline used later on the streamer thread.
->>>>>> - * Calls vimc_streamer_s_stream() to enable stream in all entities of
->>>>>> - * the pipeline.
->>>>>> + * Walks through the entity graph to call vimc_streamer_s_stream()
->>>>>> + * to enable stream in all entities in path of a stream.
->>>>>>      *
->>>>>>      * Return: 0 if success, error code otherwise.
->>>>>>      */
->>>>>> -static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
->>>>>> -                       struct vimc_ent_device *ved)
->>>>>> +static int vimc_streamer_stream_start(struct vimc_stream *stream,
->>>>>> +                      struct vimc_ent_device *ved)
->>>>>>     {
->>>>>>         struct media_entity *entity;
->>>>>>         struct video_device *vdev;
->>>>>>         struct v4l2_subdev *sd;
->>>>>> +    int stream_size = 0;
->>>>>>         int ret = 0;
->>>>>> -    stream->pipe_size = 0;
->>>>>> -    while (stream->pipe_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
->>>>>> +    while (stream_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
->>>>>>             if (!ved) {
->>>>>>                 vimc_streamer_pipeline_terminate(stream);
->>>>>>                 return -EINVAL;
->>>>>>             }
->>>>>> -        stream->ved_pipeline[stream->pipe_size++] = ved;
->>>>>>             if (is_media_entity_v4l2_subdev(ved->ent)) {
->>>>>>                 sd = media_entity_to_v4l2_subdev(ved->ent);
->>>>>> @@ -104,6 +101,73 @@ static int vimc_streamer_pipeline_init(struct
->>>>>> vimc_stream *stream,
->>>>>>                             entity);
->>>>>>                 ved = video_get_drvdata(vdev);
->>>>>>             }
->>>>>> +        stream_size++;
->>>>>> +    }
->>>>>> +
->>>>>> +    vimc_streamer_pipeline_terminate(stream);
->>>>>> +    return -EINVAL;
->>>>>> +}
->>>>>> +
->>>>>> +/**
->>>>>> + * vimc_streamer_pipeline_init - Initialises pipeline and pipe size
->>>>>> + *
->>>>>> + * @stream: the pointer to the stream structure
->>>>>> + * @ved:    the pointer to the vimc entity initializing the stream
->>>>>> pipeline
->>
->> Which entity is this? Is it the start, or the end of the pipeline? I.e.
->> the sensor? or the capture ?
-> 
-> It is the capture, I will add it to the documentation..thanks
-> 
->>
->>>>>> + *
->>>>>> + * Walks through the entity graph to initialise ved_pipeline and
->>>>>> updates
->>>>>> + * pipe_size too.
->>>>>> + *
->>>>>> + * Return: 0 if success, error code otherwise.
->>>>>> + */
->>>>>> +static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
->>>>>> +                       struct vimc_ent_device *ved)
->>>>>> +{
->>>>>> +    struct media_entity *entity;
->>>>>> +    struct media_device *mdev;
->>>>>> +    struct media_graph graph;
->>>>>> +    struct video_device *vdev;
->>>>>> +    struct v4l2_subdev *sd;
->>>>>> +    int ret;
->>>>>> +
->>>>>> +    entity = ved->ent;
->>>>>> +    mdev = entity->graph_obj.mdev;
->>>>>> +
->>>>>> +    ret = media_graph_walk_init(&graph, mdev);
->>>>>> +    if (ret)
->>>>>> +        return ret;
->>>>>> +
->>>>>> +    media_graph_walk_start(&graph, entity);
->>>>>> +
->>>>>> +    /*
->>>>>> +     * Start pipeline array initialisation from RAW Capture only to
->>>>>> get
->>>>>> +     * entities in the correct order of their frame processing.
->>>>>> +     */
->>>>>> +    if (!strncmp(entity->name, "RGB", 3)) {
->>>>>
->>>>> I don't understand this condition, way is it good for?
->>>>
->>>> I have explained that later in the reply
->>
->> Matching on entity names is a bit awkward, as they could be changed I
->> guess quite easily, and easily missed in this string matching.
-> 
-> Agreed, I need to think of a better way to prevent this
-> 
->>
->> I haven't fully understood this code block yet to work out if there's
->> another way we could do this though, but reading ahead I see there might
->> be a way to 'walk the graph' on a per-stream basis which might be a good
->> way of factoring this path.
->>
->> Although there still needs to be a construction of the paths available
->> to a stream which splits from the sensor.
->>
->>
->>>>
->>>>>
->>>>> I think the function should be generic and not assume names of entities
->>>>> or specific topology.
->>>>
->>>> It doesn't assume the topology, rather it is in place just to make sure
->>>> that the entities in ved_pipeline are in correct order.
->>>>
->>>>>
->>>>>
->>>>>> +        entity = media_graph_walk_next(&graph);
->>>>>> +        mdev = entity->graph_obj.mdev;
->>>>>> +        media_graph_walk_cleanup(&graph);
->>>>>> +
->>>>>> +        ret = media_graph_walk_init(&graph, mdev);
->>>>>> +        if (ret)
->>>>>> +            return ret;
->>>>>> +        media_graph_walk_start(&graph, entity);
->>>
->>> Hi, can you explain what this code does?
->>> Why does it start the search in the next entity?
->>>
->>>>>> +    }
->>>>>> +
->>>>>> +    while (stream->pipe_size < VIMC_STREAMER_PIPELINE_MAX_SIZE) {
->>>>>> +        if (is_media_entity_v4l2_subdev(entity)) {
->>>>>> +            sd = media_entity_to_v4l2_subdev(entity);
->>>>>> +            ved = v4l2_get_subdevdata(sd);
->>>>>> +        } else {
->>>>>> +            vdev = container_of(entity, struct video_device, entity);
->>>>>> +            ved = video_get_drvdata(vdev);
->>>>>> +        }
->>>>>> +        stream->ved_pipeline[stream->pipe_size++] = ved;
->>>>>> +        entity = media_graph_walk_next(&graph);
->>>>>> +
->>>>>> +        if (!strcmp(entity->name,
->>>>>> stream->ved_pipeline[0]->ent->name)) {
->>>>>
->>>>> I also don't understand this condition
->>>>>
->>>>>> +            media_graph_walk_cleanup(&graph);
->>>>>> +            return 0;
->>>>>> +        }
->>>>>>         }
->>>>>
->>>>> It is not clear what this function does, it looks like it adds to
->>>>> 'ved_pipeline'
->>>>> all entities that are connected to the video node, in addition to the
->>>>> entities
->>>>> that where there from previous calls, so some entities appear several
->>>>> times.
->>>>
->>>> This function returns all the entities in a pipe, weather they are
->>>> streaming or not. For example, if only the RAW Capture 1 streams, or
->>>> RGB/YUB capture streams, or both stream..in all three cases ved_pipeline
->>>> will have the same entities, in exactly same order, and all will occur
->>>> just once.
->>>> Since media_graph_walk goes to each node of the graph, it returns back
->>>> to the first one (as its a graph), hence the last condition, ie,
->>>>
->>>>      if (!strcmp(entity->name, stream->ved_pipeline[0]->ent->name)) {
->>>>
->>>> makes sure that the first entity is not added again to the array.
->>>>
->>>> First condition, ie
->>>>
->>>>      if (!strncmp(entity->name, "RGB", 3)) {
->>>>
->>>> Just makes sure that the search starts at RGB capture only. This is
->>>> because, in case of any other video node, the order of entities, as you
->>>> have mentioned later in the mail, will not be desirable, ie it won't
->>>> start at sensor and end at captures. So this condition just takes care
->>>> that all the entities in ved_pipeline array are in correct order
->>>> (starting at sensor, ending at captures).
->>>
->>> It is better to compare to the whole name of the entity to make it more
->>> clear.
->>> Also I think it is better to document that this function is called only
->>> upon the
->>> first streaming node.
->>
->> If this doesn't end up refactored with other helpers, then indeed a few
->> comments might help the readabilty here. The distinctions of each
->> re-initialisation of the graph walk are hard to interpret the purpose.
->>
->>
->>
->>>
->>> I still think this function should be independent of the topology.
->>> Maybe you can use Helen's patch that allow walking a graph only opposite
->>> to the link direction: https://patchwork.kernel.org/patch/11564899/
->>> This ensures that the Sensor will be first in the graph walk. Then the
->>> streaming thread
->>> iterates the ved_pipeline from 0 upwards and not from 'pipe_size'
->>> downwards.
->>
->> Being able to use a direct helper to walk the pipeline cleanly sounds
->> promising indeed.
->>
->> I suspect at some point int he next patches though - I'm going to see
->> something that needs to have full visibility of all paths enabled from
->> the sensor, as I think I recall that the thread will then process all
->> (enabled) entities in a single pass.
-> 
-> Yes, that exactly is the problem :( This helper (that dafna has shared)
-> can walk through one path, while the thread (which processes the frames)
-> needs to view all the entites in all connected paths
+A git tree is also available here:
 
-Hi, what I think would be a good solution is to first to change the type of ved_pipeline
-from an array to a list:
-""
-- struct vimc_ent_device *ved_pipeline[VIMC_STREAMER_PIPELINE_MAX_SIZE];
-+ struct list_head ved_pipeline;
-""
+    git://git.infradead.org/users/hch/misc.git alloc_vm_area
 
-then you can use Helen's patch to iterate the topology in a depth first form only
-from sink to source and if an entity is already streaming then you don't add it to the
-ved_pipeline list (since it is already there). Adding to the ved_pipeline list
-is always to the end of the list. This ensures that for each entity, its source entity
-already processed its frame.
+Gitweb:
 
-This way, you iterate not the entities of the whole pipe but only the ones that are streaming.
-Let's look at two scenarios:
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/alloc_vm_area
 
-1) "RGB/YUV Capture" start streaming and afterwards "Raw Capture 0" start streaming:
-After the 'start_stream" of the "RGB/YUV Capture" , the ved_pipeline list is:
+Changes since v2:
+ - rebased to include the two conflicting i915 changes in drm-tip /
+   linux-next again.  No changes outside of drivers/gpu/drm/i915/
 
-Sensor A => Debayer A => Scaler => "RGB/YUV Capture"
+Changes since v2:
+ - add another missing i initialization
+ - rebased to mainline instead of drm-tip again
 
-After the start_stream of the "Raw Capture 0" the ved_pipeline list is:
+Changes since v1:
+ - fix a bug in the zsmalloc changes
+ - fix a bug and rebase to include the recent changes in i915
+ - add a new vmap flag that allows to free the page array and pages
+   using vfree
+ - add a vfree documentation updated from Matthew
 
-Sensor A => Debayer A => Scaler => "RGB/YUV Capture" => "Raw Capture 0"
-
-
-2) "Raw Capture 0" starts streaming and afterwards "RGB/YUV Capture" start streaming:
-After the 'start_stream" of the "Raw Capture 0" , the ved_pipeline list is:
-
-Sensor A => "Raw Capture 0"
-
-After the start_stream of the "RGB/YUV Capture" the ved_pipeline list is:
-
-Sensor A => "Raw Capture 0" => Debayer A => Scaler => "RGB/YUV Capture"
-
-Thanks,
-Dafna
-
-> 
->> --
->> Kieran
->>
->>
->>>
->>> Thanks,
->>> Dafna
->>>
->>>
->>>
->>>>
->>>> Thanks,
->>>> Kaaira
->>>>
->>>>>
->>>>> I think there is no need to use the graph walk here but to access the
->>>>> source entity
->>>>> in each iteration, the way done in vimc_streamer_stream_start
->>>>> also.
->>>>> I think the code should iterate here until it reaches an entity that
->>>>> is already streaming,
->>>>> this means that the entity is already in the `ved_pipeline`, also you
->>>>> should make sure
->>>>> that the sensor is the first entity that process a frame, therefore
->>>>> the sensor should be
->>>>> at the end/start of the list of entities. Generally each entity
->>>>> should appear exactly once
->>>>> in the 'ved_pipeline' array and the entities should be ordered such
->>>>> that when calling 'process_frame'
->>>>> on one entity should be after calling 'process_frame' on its source
->>>>> entity.
->>>>> maybe it is easyer to implement if 'ved_pipeline' is a linked list.
->>>>>
->>>>> Thanks,
->>>>> Dafna
->>>>>
->>>>>>         vimc_streamer_pipeline_terminate(stream);
->>>>>> @@ -138,8 +202,11 @@ static int vimc_streamer_thread(void *data)
->>>>>>             for (i = stream->pipe_size - 1; i >= 0; i--) {
->>>>>>                 ved = stream->ved_pipeline[i];
->>>>>> -            ret = ved->process_frame(ved);
->>>>>> +            if (atomic_read(&ved->use_count) == 0)
->>>>>> +                continue;
->>>>>> +
->>>>>> +            ret = ved->process_frame(ved);
->>>>>>                 if (ret)
->>>>>>                     break;
->>>>>>             }
->>>>>> @@ -179,6 +246,10 @@ int vimc_streamer_s_stream(struct vimc_stream
->>>>>> *stream,
->>>>>>             if (stream->kthread)
->>>>>>                 return 0;
->>>>>> +        ret = vimc_streamer_stream_start(stream, ved);
->>>>>> +        if (ret)
->>>>>> +            return ret;
->>>>>> +
->>>>>>             ret = vimc_streamer_pipeline_init(stream, ved);
->>>>>>             if (ret)
->>>>>>                 return ret;
->>>>>>
->>
->> -- 
->> Regards
->> --
->> Kieran
+Diffstat:
+ arch/x86/xen/grant-table.c                |   27 ++++--
+ drivers/gpu/drm/i915/Kconfig              |    1 
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c |  131 +++++++++++++-----------------
+ drivers/gpu/drm/i915/gt/shmem_utils.c     |   76 ++++-------------
+ drivers/xen/xenbus/xenbus_client.c        |   30 +++---
+ include/linux/vmalloc.h                   |    7 -
+ mm/Kconfig                                |    3 
+ mm/memory.c                               |   16 ++-
+ mm/nommu.c                                |    7 -
+ mm/vmalloc.c                              |  123 ++++++++++++++--------------
+ mm/zsmalloc.c                             |   10 +-
+ 11 files changed, 200 insertions(+), 231 deletions(-)
