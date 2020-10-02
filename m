@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EF6281077
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD1B28107D
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 12:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387707AbgJBKSI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Oct 2020 06:18:08 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39471 "EHLO mga07.intel.com"
+        id S2387686AbgJBKTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 06:19:46 -0400
+Received: from mga04.intel.com ([192.55.52.120]:12504 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgJBKSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 06:18:08 -0400
-IronPort-SDR: UPtcRLHPIFbbRcJe8g+gBokhr3U33Rt+Ej3SldYT96T5NTfSBlbRmJVYMgIOO15e0aozbe88N0
- BtZg+5EaZ4pA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="227086149"
+        id S1725993AbgJBKTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:19:45 -0400
+IronPort-SDR: AdVlLZiMKm0kHnSaWXmiwIIx/CqUrJeEBCsBI4ghqI2IwPSZeaz6CY7coACwtxD9d+TieKkEyn
+ EkSO4NyHWirA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="160361951"
 X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="227086149"
+   d="scan'208";a="160361951"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:18:05 -0700
-IronPort-SDR: Kpb/rqFqmSgxMZ4YWprkCaqyOLxzOBf8PbxJHor6TSCx8aEaj9za0YElyU6zOOTrndHXeMhDe9
- epkoor/PzNvA==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:19:39 -0700
+IronPort-SDR: JzKU2qBOyanjdW8uBoVlr2PxlVB12ruNojyn80r1aEfet1ILnVfNIPOK6lg07k2DYhwafyK0Je
+ BnYnHsDjvgcQ==
 X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="507888968"
-Received: from dkiely1x-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.86.194])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:18:01 -0700
-Content-Type: text/plain; charset="utf-8"
+   d="scan'208";a="515861578"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 03:19:35 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kOI9x-003Pdz-BL; Fri, 02 Oct 2020 13:19:29 +0300
+Date:   Fri, 2 Oct 2020 13:19:29 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        "wuxu . wu" <wuxu.wu@huawei.com>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 02/21] spi: dw: Add DWC SSI capability
+Message-ID: <20201002101929.GW3956970@smile.fi.intel.com>
+References: <20201001222829.15977-1-Sergey.Semin@baikalelectronics.ru>
+ <20201001222829.15977-3-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAKMK7uFOuFEOjrLGpB+oejs=J9kEvrRb6K9Ng6nBt+WS4gwKtQ@mail.gmail.com>
-References: <20201001203917.43d46a3d@canb.auug.org.au> <20201001135350.GA14869@lst.de> <CAKMK7uFfBLsZ=wetii4bc+BTiKObD5DJ7B-kDO4am6AhBY+AhQ@mail.gmail.com> <87h7rem1aj.fsf@intel.com> <CAKMK7uFOuFEOjrLGpB+oejs=J9kEvrRb6K9Ng6nBt+WS4gwKtQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the akpm tree with the drm-intel tree
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001222829.15977-3-Sergey.Semin@baikalelectronics.ru>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <160163387773.9343.3110431248747048197@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Fri, 02 Oct 2020 13:17:58 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Vetter (2020-10-01 18:13:26)
-> On Thu, Oct 1, 2020 at 5:08 PM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> >
-> > On Thu, 01 Oct 2020, Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
-> > > On Thu, Oct 1, 2020 at 3:53 PM Christoph Hellwig <hch@lst.de> wrote:
-> > >>
-> > >> On Thu, Oct 01, 2020 at 08:39:17PM +1000, Stephen Rothwell wrote:
-> > >> > Hi all,
-> > >> >
-> > >> > Today's linux-next merge of the akpm tree got a conflict in:
-> > >> >
-> > >> >   drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> > >> >
-> > >> > between commit:
-> > >> >
-> > >> >   4caf017ee937 ("drm/i915/gem: Avoid implicit vmap for highmem on x86-32")
-> > >> >   ba2ebf605d5f ("drm/i915/gem: Prevent using pgprot_writecombine() if PAT is not supported")
-> > >
-> > > Uh these patches shouldn't be in linux-next because they're for 5.11,
-> > > not the 5.10 merge window that will open soon. Joonas?
-> >
-> > I don't know anything else, but both are tagged Cc: stable.
+On Fri, Oct 02, 2020 at 01:28:10AM +0300, Serge Semin wrote:
+> Currently DWC SSI core is supported by means of setting up the
+> core-specific update_cr0() callback. It isn't suitable for multiple
+> reasons. First of all having exported several methods doing the same thing
+> but for different chips makes the code harder to maintain. Secondly the
+> spi-dw-core driver exports the methods, then the spi-dw-mmio driver sets
+> the private data callback with one of them so to be called by the core
+> driver again. That makes the code logic too complicated. Thirdly using
+> callbacks for just updating the CR0 register is problematic, since in case
+> if the register needed to be updated from different parts of the code,
+> we'd have to create another callback (for instance the SPI device-specific
+> parameters don't need to be calculated each time the SPI transfer is
+> submitted, so it's better to pre-calculate the CR0 data at the SPI-device
+> setup stage).
 > 
-> Uh right I got confused, they're on -fixes now. Well -next-fixes,
-> which seems like the wrong one for a cc: stable, I guess this should
-> go into 5.9 even. Apologies for my confusion.
-
-Yep, they happen to be Fixes: (Cc: stable even) so I asked Rodrigo to
-pull them to drm-intel-next-fixes.
-
-If they weren't Fixes: then indeed they would only have been queued for
-5.11.
-
-With regards to 5.9, due to the hiccup of doing the split PR, all the
--fixes for GT area were in limbo until -rc7. We didn't feel comfortable
-including all the new commits this late in the cycle, so we agreed stable
-porting those will be more appropriate.
-
-Regards, Joonas
-
-> -Daniel
+> So keeping all the above in mind let's discard the update_cr0() callbacks,
+> define a generic and static dw_spi_update_cr0() method and create the
+> DW_SPI_CAP_DWC_SSI capability, which when enabled would activate the
+> alternative CR0 register layout.
 > 
-> >
-> > BR,
-> > Jani.
-> >
-> > >
-> > >> > from the drm-intel tree and patch:
-> > >> >
-> > >> >   "drm/i915: use vmap in i915_gem_object_map"
-> > >> >
-> > >> > from the akpm tree.
-> > >> >
-> > >> > I fixed it up (I just dropped the changes in the former commits) and
-> > >>
-> > >> Sigh.  The solution is a bit more complicated, but I just redid my
-> > >> patches to not depend on the above ones.  I can revert back to the old
-> > >> version, though.  Andrew, let me know what works for you.
-> > >
-> > > Imo ignore, rebasing onto linux-next without those intel patches was
-> > > the right thing for the 5.10 merge window.
-> > > -Daniel
-> >
-> > --
-> > Jani Nikula, Intel Open Source Graphics Center
-> 
-> 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> While at it add the comments to the code path of the normal DW APB SSI
+> controller setup to make the dw_spi_update_cr0() method looking coherent.
+
+What the point to increase indentation level and produce additional churn?
+Can't you simply leave functions, unexport them, and call in one conditional of
+whatever new function is called?
+
+I have an impression that split of the series is done in a way that first
+patches in the series are not optimized to what is done in the last patches in
+the series.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
