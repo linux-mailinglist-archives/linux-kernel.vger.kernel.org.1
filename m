@@ -2,120 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCB2281557
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A747C281559
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388249AbgJBOf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        id S2388090AbgJBOgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388060AbgJBOf1 (ORCPT
+        with ESMTP id S1726017AbgJBOgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:35:27 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4E2C0613D0;
-        Fri,  2 Oct 2020 07:35:27 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x69so2136746lff.3;
-        Fri, 02 Oct 2020 07:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nMMO21NGQohJ9bqWbYFSMA1hjk7n59RS3N1fM462izU=;
-        b=hDLaS+CFrLkGzrGXeTn3pNGf1DvIlMbXEcEk8FJJ0EuMOD4Xj4lxl2Smemd3ETzxO9
-         CZyI9wpcWnpNtRMolA0T1qzwvl+at34sqrN/HKJzbRJnTOlT5Rg37JjDIN8ddb0/O1gp
-         9XzldlJbHouij2See9rmbKnM8HX7asREsX4nDtBlbdMrW8QZslX0WaHJuqvl1SRIl5xj
-         0hHUNhtE36x8AEHQMaX3pZveOmY1G22s92RKf1bbLT1r9RUKKg/fiJjH+2EpK9n2M5fr
-         HRfcwxj5p1S7ml37tqD5tc2Sykd3vxA0z/KTAcenf5VYySJMph2ZaGkS5kpA/LgjVzQJ
-         qGTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nMMO21NGQohJ9bqWbYFSMA1hjk7n59RS3N1fM462izU=;
-        b=PxOFOr/nV5QtFZBKDXLxFT7W6CD5ZIQPCJkXPwiOnpSiTi1n8Zb+IjQIvMFOW0SIns
-         fya92frWjmfCfzOqSQ5pL2+ASGbqCVJHMtsk1RcRKGrM31J76OZhgu31GJQkQYMgy4u4
-         lhURvLbGJ/oBoqjCgCDTTIVM34ZI1pOkaEmKJpFa77ZB7XxCfCh9Rhc7l84RtMR53HGq
-         qu6FkVMiF9SbA7r4thcPOVD3RqVkm48j7cVgFfArgTMtnwL+9vzeLI4pefeirpV3PxR6
-         1M77odIEmgS+I+bti2lgM0PLvbOW+9EUSevSXpa+WnPyT815Iqi6tKmw4V0hWm8jZ4nM
-         X50Q==
-X-Gm-Message-State: AOAM5331KkwVuT9h1GSmhA6AONOqhkvY5dadDRMcSH351Srl9TiBrl5k
-        p4tnuQb0v6iJ6VH9UzT4C6OpeCFCA4Q=
-X-Google-Smtp-Source: ABdhPJw1g7K2tJz51ldPxPgHLCyl68AFUOvce119apKPVPHnp6oe13Q3cBIqaNXKI470Du7pJRs7mg==
-X-Received: by 2002:a19:4a58:: with SMTP id x85mr956117lfa.168.1601649325320;
-        Fri, 02 Oct 2020 07:35:25 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id 78sm330330lfn.20.2020.10.02.07.35.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 07:35:24 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-4-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <eba0d5ff-dfb2-7c17-50c2-5709c506f62e@gmail.com>
-Date:   Fri, 2 Oct 2020 17:35:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 10:36:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446B7C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:36:18 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 16:36:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601649376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JrUOIAqsssB4FumTljj+LZWMjFcAq3+jZ2AYz8xyr74=;
+        b=uukbz9JOyKFxRkvFoV8RYwRksTtV9IuJLdXDfO2IcRSWBgpWlKwQTGMi2s2me9NGCbz10+
+        bDIbqwyeItpARP0XkzJE0sLP4V/61AQF/e+ktA59P5XWVAtEkbX8wn/pNGtBxi96FgiQ6n
+        IJCkUJ7j0LdjWQyY5njpjqpUkWzZnmtNKx0qOCmfUdawlJ02SmeXGQNf3gA+akL0F39gyj
+        OeLviF1qp07E3ZtywJr61nEDQs/jrBPduPSGVlkQ99J5I/UJjEKUecaQIXtgVESCY+MjIl
+        cZtawNKWMzx3SEBjMeL5X/Q3KheoEiCgkE51X3UkyLDj4UbyJtYq5Ph0t4G9aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601649376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JrUOIAqsssB4FumTljj+LZWMjFcAq3+jZ2AYz8xyr74=;
+        b=kTmyPDfP7CmIBp+GTLtDBCtsBSlWVOZiKw3rsv8RMtkaf66ajKj2D/TV1prC5uDa8OiDwK
+        geHRqJn2Y9tsGvCA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 7/9] sched: Add migrate_disable()
+Message-ID: <20201002143615.h42coicoyytahq2u@linutronix.de>
+References: <20200921163557.234036895@infradead.org>
+ <20200921163845.769861942@infradead.org>
+ <20200925165047.iey2dlcdn4im2vv4@linutronix.de>
+ <20201002142149.GZ2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201002060807.32138-4-nicoleotsuka@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201002142149.GZ2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.10.2020 09:08, Nicolin Chen пишет:
-> @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
->  	group->smmu = smmu;
->  	group->soc = soc;
->  
-> -	group->group = iommu_group_alloc();
-> +	if (dev_is_pci(dev))
-> +		group->group = pci_device_group(dev);
-> +	else
-> +		group->group = generic_device_group(dev);
-> +
->  	if (IS_ERR(group->group)) {
->  		devm_kfree(smmu->dev, group);
->  		mutex_unlock(&smmu->lock);
-> @@ -1069,22 +1074,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
->  	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
->  
->  	err = iommu_device_register(&smmu->iommu);
-> -	if (err) {
-> -		iommu_device_sysfs_remove(&smmu->iommu);
-> -		return ERR_PTR(err);
-> -	}
-> +	if (err)
-> +		goto err_sysfs;
->  
->  	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
-> -	if (err < 0) {
-> -		iommu_device_unregister(&smmu->iommu);
-> -		iommu_device_sysfs_remove(&smmu->iommu);
-> -		return ERR_PTR(err);
-> -	}
-> +	if (err < 0)
-> +		goto err_unregister;
-> +
-> +#ifdef CONFIG_PCI
-> +	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-> +	if (err < 0)
-> +		goto err_bus_set;
-> +#endif
->  
->  	if (IS_ENABLED(CONFIG_DEBUG_FS))
->  		tegra_smmu_debugfs_init(smmu);
->  
->  	return smmu;
-> +
-> +err_bus_set: __maybe_unused;
+On 2020-10-02 16:21:49 [+0200], Peter Zijlstra wrote:
+> Yeah, I didn't want it in a header where world can access it and attempt
+> creative use :/
 
-__maybe_unused?
+tell me about it. Currently cleaning up other creative abuse of things=E2=
+=80=A6
+
+Sebastian
