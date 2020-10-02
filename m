@@ -2,205 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376352814FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59972814FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388103AbgJBOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:23:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59535 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387688AbgJBOXW (ORCPT
+        id S2388096AbgJBOXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387688AbgJBOXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:23:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601648600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQ+HSosg+XAzZv7hWPdlxsgYgk4XvIPV+Q8NIU1ufCo=;
-        b=VScXDTODfioNCZpZFANKTNU9W+18Ynk4XP8e+LMd3xYjbDtsdjQpzWG1ss8UVPfD3nxWD0
-        S5ao8d1w/rHwoMWu1qwANHlown7bhgpPczZI5UdvxKqKogW1ga3CeJPKiHLA/dWvXm9Cfl
-        hDrheh3Hsfd0bJuXqO4AanH0e7eEXMc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-138-arJUEmwxP1--hVhtIvVv-g-1; Fri, 02 Oct 2020 10:23:18 -0400
-X-MC-Unique: arJUEmwxP1--hVhtIvVv-g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D43E1186DD2C;
-        Fri,  2 Oct 2020 14:23:15 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.194.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3DF482C31E;
-        Fri,  2 Oct 2020 14:23:11 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 16:23:08 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        qemu-devel@nongnu.org, Dave Martin <Dave.Martin@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] arm64: kvm: Save/restore MTE registers
-Message-ID: <20201002142308.xo4aaj33vpchpd3r@kamzik.brq.redhat.com>
-References: <20200925093607.3051-1-steven.price@arm.com>
- <20200925093607.3051-2-steven.price@arm.com>
+        Fri, 2 Oct 2020 10:23:17 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A98FC0613D0;
+        Fri,  2 Oct 2020 07:23:17 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y17so2072064lfa.8;
+        Fri, 02 Oct 2020 07:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DA+RN1Dn35B2wGHEnO/Mk8Fh50eib10nF2ruvxG9eT4=;
+        b=djXuCRSq/Vk/3n2qWVOABJEEMPuS4agtIctngP16KWi9ksY0NC+0U26anA+gJ2jmw4
+         4Fgt+8dxZTQlefXtkf10Cv3ABStOCLx1xef8I7P0BlbdpK1v3IpSSl7Jxm7klN7hTo1E
+         c+xK2L7i5wapA2HvG3yTFRugFpD6GnK/vWgQCTiuYklMxDtdLSxrlSFEPjcQPqx1NkGr
+         ICDhQnrXbxnjV9r6/ETJlrOmvn18Lo65cWZXIb3bgipaoBT+VOhz6mwsht5UB1T+zjDB
+         VxlOOJd8KQ5zRR3+fedbGkIMtnxZwq4bQf/VXQQ3LENyv003+sl/P3WLbiPaIxM0y/IO
+         dY5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DA+RN1Dn35B2wGHEnO/Mk8Fh50eib10nF2ruvxG9eT4=;
+        b=cj25gfi/O8NyaKWB2U632vCAyqBgpjBw+YDA0bZmGWq45C4AmTmLgjU6BOmu9Ydui+
+         jpQgFboMA2ovSZN+PdOLSQ/cKqlNQtc0RoHWeDiwAJPES68Q3gOupHVR9+Bx+6arP7A1
+         msphpauit8gheJsR4Ct1cFbQmXr9smPRC1BzzmTzPH/JaNaYdAMgsOhfnAlCEQXr2/88
+         qwGI09KTW1zOaWIv//YtyoIA+O2XXYUguFb5omwm444KLPyxw8an8LRRa7YtIQqCvhY4
+         4NZkpg1dk0aMHS92WkU9rUn46f2rc9wPqKZnr71zOodDyMXBm9rG9eZflJqfv/QRibhq
+         z/GA==
+X-Gm-Message-State: AOAM533rq5k39eGfyQ7R3eALc5kjPCkmrlLLugceLkurrY6ahApS/v2s
+        zl3bGaxQktVT5EdG5qTmbYKHykMoN9c=
+X-Google-Smtp-Source: ABdhPJw+ed2QEtC71VcfGQG07bMaRnVlimVs6U5wUut7GCddAP7FJEZrD0qEc4KtOnP7pp3HeaqlPg==
+X-Received: by 2002:a05:6512:3453:: with SMTP id j19mr1046979lfr.92.1601648595547;
+        Fri, 02 Oct 2020 07:23:15 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id f19sm316335lfs.85.2020.10.02.07.23.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 07:23:14 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <070a13b2-cde2-ab9e-7ee0-8fb71fb64d5d@gmail.com>
+Date:   Fri, 2 Oct 2020 17:23:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925093607.3051-2-steven.price@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20201002060807.32138-3-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:36:06AM +0100, Steven Price wrote:
-> Define the new system registers that MTE introduces and context switch
-> them. The MTE feature is still hidden from the ID register as it isn't
-> supported in a VM yet.
-> 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h          |  4 ++++
->  arch/arm64/include/asm/sysreg.h            |  3 ++-
->  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 14 ++++++++++++++
->  arch/arm64/kvm/sys_regs.c                  | 14 ++++++++++----
->  4 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index e52c927aade5..4f4360dd149e 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -126,6 +126,8 @@ enum vcpu_sysreg {
->  	SCTLR_EL1,	/* System Control Register */
->  	ACTLR_EL1,	/* Auxiliary Control Register */
->  	CPACR_EL1,	/* Coprocessor Access Control */
-> +	RGSR_EL1,	/* Random Allocation Tag Seed Register */
-> +	GCR_EL1,	/* Tag Control Register */
->  	ZCR_EL1,	/* SVE Control */
->  	TTBR0_EL1,	/* Translation Table Base Register 0 */
->  	TTBR1_EL1,	/* Translation Table Base Register 1 */
-> @@ -142,6 +144,8 @@ enum vcpu_sysreg {
->  	TPIDR_EL1,	/* Thread ID, Privileged */
->  	AMAIR_EL1,	/* Aux Memory Attribute Indirection Register */
->  	CNTKCTL_EL1,	/* Timer Control Register (EL1) */
-> +	TFSRE0_EL1,	/* Tag Fault Status Register (EL0) */
-> +	TFSR_EL1,	/* Tag Fault Stauts Register (EL1) */
->  	PAR_EL1,	/* Physical Address Register */
->  	MDSCR_EL1,	/* Monitor Debug System Control Register */
->  	MDCCINT_EL1,	/* Monitor Debug Comms Channel Interrupt Enable Reg */
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 52eefe2f7d95..cd60677551b7 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -563,7 +563,8 @@
->  #define SCTLR_ELx_M	(BIT(0))
->  
->  #define SCTLR_ELx_FLAGS	(SCTLR_ELx_M  | SCTLR_ELx_A | SCTLR_ELx_C | \
-> -			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB)
-> +			 SCTLR_ELx_SA | SCTLR_ELx_I | SCTLR_ELx_IESB | \
-> +			 SCTLR_ELx_ITFSB)
->  
->  /* SCTLR_EL2 specific flags. */
->  #define SCTLR_EL2_RES1	((BIT(4))  | (BIT(5))  | (BIT(11)) | (BIT(16)) | \
-> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
-> index 7a986030145f..a124ffa49ba3 100644
-> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
-> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
-> @@ -18,6 +18,11 @@
->  static inline void __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
+02.10.2020 09:08, Nicolin Chen пишет:
+>  static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
 >  {
->  	ctxt_sys_reg(ctxt, MDSCR_EL1)	= read_sysreg(mdscr_el1);
-> +	if (system_supports_mte()) {
-> +		ctxt_sys_reg(ctxt, RGSR_EL1)	= read_sysreg_s(SYS_RGSR_EL1);
-> +		ctxt_sys_reg(ctxt, GCR_EL1)	= read_sysreg_s(SYS_GCR_EL1);
-> +		ctxt_sys_reg(ctxt, TFSRE0_EL1)	= read_sysreg_s(SYS_TFSRE0_EL1);
-> +	}
->  }
+> -	struct device_node *np = dev->of_node;
+> -	struct tegra_smmu *smmu = NULL;
+> -	struct of_phandle_args args;
+> -	unsigned int index = 0;
+> -	int err;
+> -
+> -	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+> -					  &args) == 0) {
+> -		smmu = tegra_smmu_find(args.np);
+> -		if (smmu) {
+> -			err = tegra_smmu_configure(smmu, dev, &args);
+> -			of_node_put(args.np);
+> -
+> -			if (err < 0)
+> -				return ERR_PTR(err);
+> -
+> -			/*
+> -			 * Only a single IOMMU master interface is currently
+> -			 * supported by the Linux kernel, so abort after the
+> -			 * first match.
+> -			 */
+> -			dev_iommu_priv_set(dev, smmu);
+> -
+> -			break;
+> -		}
+> -
+> -		of_node_put(args.np);
+> -		index++;
+> -	}
+> +	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
 >  
->  static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
-> @@ -45,6 +50,8 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
->  	ctxt_sys_reg(ctxt, CNTKCTL_EL1)	= read_sysreg_el1(SYS_CNTKCTL);
->  	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg(par_el1);
->  	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
-> +	if (system_supports_mte())
-> +		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
->  
->  	ctxt_sys_reg(ctxt, SP_EL1)	= read_sysreg(sp_el1);
->  	ctxt_sys_reg(ctxt, ELR_EL1)	= read_sysreg_el1(SYS_ELR);
-> @@ -63,6 +70,11 @@ static inline void __sysreg_save_el2_return_state(struct kvm_cpu_context *ctxt)
->  static inline void __sysreg_restore_common_state(struct kvm_cpu_context *ctxt)
->  {
->  	write_sysreg(ctxt_sys_reg(ctxt, MDSCR_EL1),  mdscr_el1);
-> +	if (system_supports_mte()) {
-> +		write_sysreg_s(ctxt_sys_reg(ctxt, RGSR_EL1), SYS_RGSR_EL1);
-> +		write_sysreg_s(ctxt_sys_reg(ctxt, GCR_EL1), SYS_GCR_EL1);
-> +		write_sysreg_s(ctxt_sys_reg(ctxt, TFSRE0_EL1), SYS_TFSRE0_EL1);
-> +	}
->  }
->  
->  static inline void __sysreg_restore_user_state(struct kvm_cpu_context *ctxt)
-> @@ -106,6 +118,8 @@ static inline void __sysreg_restore_el1_state(struct kvm_cpu_context *ctxt)
->  	write_sysreg_el1(ctxt_sys_reg(ctxt, CNTKCTL_EL1), SYS_CNTKCTL);
->  	write_sysreg(ctxt_sys_reg(ctxt, PAR_EL1),	par_el1);
->  	write_sysreg(ctxt_sys_reg(ctxt, TPIDR_EL1),	tpidr_el1);
-> +	if (system_supports_mte())
-> +		write_sysreg_el1(ctxt_sys_reg(ctxt, TFSR_EL1), SYS_TFSR);
->  
->  	if (!has_vhe() &&
->  	    cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT) &&
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 379f4969d0bd..a655f172b5ad 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1391,6 +1391,12 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  	return false;
->  }
->  
-> +static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
-> +				   const struct sys_reg_desc *rd)
-> +{
-> +	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
-> +}
-> +
->  /* sys_reg_desc initialiser for known cpufeature ID registers */
->  #define ID_SANITISED(name) {			\
->  	SYS_DESC(SYS_##name),			\
-> @@ -1557,8 +1563,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->  	{ SYS_DESC(SYS_ACTLR_EL1), access_actlr, reset_actlr, ACTLR_EL1 },
->  	{ SYS_DESC(SYS_CPACR_EL1), NULL, reset_val, CPACR_EL1, 0 },
->  
-> -	{ SYS_DESC(SYS_RGSR_EL1), access_mte_regs },
-> -	{ SYS_DESC(SYS_GCR_EL1), access_mte_regs },
-> +	{ SYS_DESC(SYS_RGSR_EL1), access_mte_regs, reset_unknown, RGSR_EL1, .visibility = mte_visibility },
-> +	{ SYS_DESC(SYS_GCR_EL1), access_mte_regs, reset_unknown, GCR_EL1, .visibility = mte_visibility },
->  
->  	{ SYS_DESC(SYS_ZCR_EL1), NULL, reset_val, ZCR_EL1, 0, .visibility = sve_visibility },
->  	{ SYS_DESC(SYS_TTBR0_EL1), access_vm_reg, reset_unknown, TTBR0_EL1 },
-> @@ -1584,8 +1590,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
->  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
->  
-> -	{ SYS_DESC(SYS_TFSR_EL1), access_mte_regs },
-> -	{ SYS_DESC(SYS_TFSRE0_EL1), access_mte_regs },
-> +	{ SYS_DESC(SYS_TFSR_EL1), access_mte_regs, reset_unknown, TFSR_EL1, .visibility = mte_visibility },
-> +	{ SYS_DESC(SYS_TFSRE0_EL1), access_mte_regs, reset_unknown, TFSRE0_EL1, .visibility = mte_visibility },
->  
->  	{ SYS_DESC(SYS_FAR_EL1), access_vm_reg, reset_unknown, FAR_EL1 },
->  	{ SYS_DESC(SYS_PAR_EL1), NULL, reset_unknown, PAR_EL1 },
-> -- 
-> 2.20.1
-> 
->
+>  	if (!smmu)
+>  		return ERR_PTR(-ENODEV);
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-
+The !smmu can't ever be true now, isn't it? Then please remove it.
