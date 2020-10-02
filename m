@@ -2,96 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D7B281B4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3E7281B4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388265AbgJBTBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBTBk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:01:40 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172E7C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:01:40 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id p21so1452803pju.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 12:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qGhYscDpEEa9PdABAysmonDoSUGqxjnc8Si89+1YgF8=;
-        b=UwJ1R9X9cruSJ100MEq4odEmrwwOPv4UU+KRVMz6xqhG9XYepjHn5l22WuSFvomDTU
-         ItZyodn330C47DFgv5wnrXnwZP5nHCIXX/nOkD1Fpg/ZVyBh+6RJfNyCNBXarvyMER49
-         rFwanOCk3QAIePhQsHU4RudtDnZt7YPePxzaXo72VQMBDnamxBxcN7K2NTkDcsP6Yjw1
-         VlD18IPaTQA9I/umLwz3d+bHWjzJz/QH8Ht32fi5H3qir6SSmoPCt154Muv24szcrJOX
-         yboP2w24NybGi4Ui7OkPq+xwl1cRWmTngUTyjokazHBqTXLZ8RzR2nttNGaQntE6qS+a
-         bsbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qGhYscDpEEa9PdABAysmonDoSUGqxjnc8Si89+1YgF8=;
-        b=PN4J3mRTn8FZjUHKzzitKGpm5Z4KDUbQkm9PKLwSGldiAZamJtO19v9VvgKZjtbPqm
-         CMlKjgOusikVZKJWgVZPJqsgvytjniPGfEgVZ8JzPitpDNQaZNTmIUNytOykNKhJ80po
-         SbhmWm08qVPwx2/x1rJWM/zk13jew0XKLQ+fW2sTKIkEA1IFcX9iIcL+xpEI+RJxxpjg
-         A82uzrZ2+uFiPYUcNRuupoOKq50+Fk/WhpupAlm18l8h7GiTAhqgljOR59WiTDv0z/55
-         RLzwgRIAI1NS8C40CcrgVA1PQLU11fry3WUGc1086P98inJdbbcNoDy8XDNWPz0IfKYM
-         s19w==
-X-Gm-Message-State: AOAM53315ONZ+zJRGT/v0K4ueQsBjqbtXIRKXyk/QO2yhNvpCYPbOt8U
-        5zivXnL7+ewA8l/yE7fpQqANApaniHE=
-X-Google-Smtp-Source: ABdhPJx1xGPQ5P5S7KssFqMwmeq11Sud+tSQnhJU18nHVHtuTtoMfx+IvS/4BuDYXck7AYePD8JG6w==
-X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr4342034pjq.69.1601665299402;
-        Fri, 02 Oct 2020 12:01:39 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id 134sm2836954pfa.93.2020.10.02.12.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 12:01:38 -0700 (PDT)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH] phy: usb: Fix incorrect clearing of tca_drv_sel bit in SETUP reg for 7211
-Date:   Fri,  2 Oct 2020 15:01:15 -0400
-Message-Id: <20201002190115.48017-1-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S2388383AbgJBTBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:01:49 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55787 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725991AbgJBTBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:01:49 -0400
+IronPort-SDR: +8s2b7G7hTPgt2T/cnAImsvxcMRP4NKHmczGgFamSfPJ4+GuAuQ01cmuV5QdrGnaz71kJDrOVr
+ LhS0uFPBFv1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="162291709"
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="162291709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 12:01:47 -0700
+IronPort-SDR: 7ZXFDPt2U2URGQibqNJARaRDhHITm0x8nIHE7g0b9a7MQ9j3/r01M6j1SxKbFYYJ5OPV1cy5f2
+ 1tyUrjrrxIpg==
+X-IronPort-AV: E=Sophos;i="5.77,328,1596524400"; 
+   d="scan'208";a="352450628"
+Received: from ssing11-mobl.amr.corp.intel.com (HELO ellie) ([10.209.68.166])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 12:01:45 -0700
+From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To:     Erez Geva <erez.geva.ext@siemens.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>, Andrei Vagin <avagin@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladis Dronov <vdronov@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        Simon Sudler <simon.sudler@siemens.com>,
+        Andreas Meisinger <andreas.meisinger@siemens.com>,
+        Andreas Bucher <andreas.bucher@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andreas Zirkler <andreas.zirkler@siemens.com>,
+        Ermin Sakic <ermin.sakic@siemens.com>,
+        An Ninh Nguyen <anninh.nguyen@siemens.com>,
+        Michael Saenger <michael.saenger@siemens.com>,
+        Bernd Maehringer <bernd.maehringer@siemens.com>,
+        Gisela Greinert <gisela.greinert@siemens.com>,
+        Erez Geva <erez.geva.ext@siemens.com>,
+        Erez Geva <ErezGeva2@gmail.com>
+Subject: Re: [PATCH 0/7] TC-ETF support PTP clocks series
+In-Reply-To: <20201001205141.8885-1-erez.geva.ext@siemens.com>
+References: <20201001205141.8885-1-erez.geva.ext@siemens.com>
+Date:   Fri, 02 Oct 2020 12:01:45 -0700
+Message-ID: <87eemg5u5i.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 7211a0 has a tca_drv_sel bit in the USB SETUP register that
-should never be enabled. This feature is only used if there is a
-USB Type-C PHY, and the 7211 does not have one. If the bit is
-enabled, the VBUS signal will never be asserted. In the 7211a0,
-the bit was incorrectly defaulted to on so the driver had to clear
-the bit. In the 7211c0 the state was inverted so the driver should
-no longer clear the bit. This hasn't been a problem because all
-current 7211 boards don't use the VBUS signal, but there are some
-future customer boards that may use it.
+Hi Erez,
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
----
- drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c | 5 -----
- 1 file changed, 5 deletions(-)
+Erez Geva <erez.geva.ext@siemens.com> writes:
 
-diff --git a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-index 456dc4a100c2..e63457e145c7 100644
---- a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-+++ b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-@@ -270,11 +270,6 @@ static void usb_init_common_7211b0(struct brcm_usb_init_params *params)
- 	reg |= params->mode << USB_PHY_UTMI_CTL_1_PHY_MODE_SHIFT;
- 	brcm_usb_writel(reg, usb_phy + USB_PHY_UTMI_CTL_1);
- 
--	/* Fix the incorrect default */
--	reg = brcm_usb_readl(ctrl + USB_CTRL_SETUP);
--	reg &= ~USB_CTRL_SETUP_tca_drv_sel_MASK;
--	brcm_usb_writel(reg, ctrl + USB_CTRL_SETUP);
--
- 	usb_init_common(params);
- 
- 	/*
+> Add support for using PTP clock with
+>  Traffic control Earliest TxTime First (ETF) Qdisc.
+>
+> Why do we need ETF to use PTP clock?
+> Current ETF requires to synchronization the system clock
+>  to the PTP Hardware clock (PHC) we want to send through.
+> But there are cases that we can not synchronize the system clock with
+>  the desire NIC PHC.
+> 1. We use several NICs with several PTP domains that our device
+>     is not allowed to be PTP master.
+>    And we are not allowed to synchronize these PTP domains.
+> 2. We are using another clock source which we need for our system.
+>    Yet our device is not allowed to be PTP master.
+> Regardless of the exact topology, as the Linux tradition is to allow
+>  the user the freedom to choose, we propose a patch that will allow
+>  the user to configure the TC-ETF with a PTP clock as well as
+>  using the system clock.
+> * NOTE: we do encourage the users to synchronize the system clock with
+>   a PTP clock.
+>  As the ETF watchdog uses the system clock.
+>  Synchronizing the system clock with a PTP clock will probably
+>   reduce the frequency different of the PHC and the system clock.
+>  As sequence, the user might be able to reduce the ETF delta time
+>   and the packets latency cross the network.
+>
+> Follow the decision to derive a dynamic clock ID from the file description
+>  of an opened PTP clock device file.
+> We propose a simple way to use the dynamic clock ID with the ETF Qdisc.
+> We will submit a patch to the "tc" tool from the iproute2 project
+>  once this patch is accepted.
+>
+
+In addition to what Thomas said, I would like to add some thoughts
+(mostly re-wording some of Thomas' comments :-)).
+
+I think that there's an underlying problem/limitation that is the cause
+of the issue (or at least a step in the right direction) you are trying
+to solve: the issue is that PTP clocks can't be used as hrtimers.
+
+I didn't spend a lot of time thinking about how to solve this (the only
+thing that comes to mind is having a timecounter, or similar, "software
+view" over the PHC clock).
+
+Anyway, my feeling is that until this is solved, we would only be
+working around the problem, and creating even more hard to handle corner
+cases.
+
+
+Cheers,
 -- 
-2.17.1
-
+Vinicius
