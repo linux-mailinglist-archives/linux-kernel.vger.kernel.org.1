@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC6281AAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9E281AB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388206AbgJBSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBSN1 (ORCPT
+        id S2387957AbgJBSQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:16:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37605 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726017AbgJBSQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:13:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E07DC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xhQlY0JkE8VSgRmAWRCxmMRj374+etsiscJ83Nt4YS4=; b=Zw39RRLMQl/FOkrgq8hH60JbY8
-        EdMSnjWmbLbHts5ChvV6ARnzgTXo77B+srQSxZOjRhzNK+hlqK9U1yyszUXQ4JyblNmWO1qEKDmob
-        VFrylyY1kiqsndysxUQgenxv9p7fnIFk8ewItm4+fuy9HvMvNJ0DMJpnKtDcojNrsGDOZJFLDONI4
-        ahsqMUg70jlzChgpn6NhmNduuGxqMR4bVSnWad6G4WorNXGVyCXYuPRR26bbZL9EvyX+zVqO0uT/e
-        HLNTlRcbRQCcBv0sb4VYO2vTQvqGg2P1o1jNu1m4FLLdQtkOlW7vGtgU5mgCHTq0VAB1+c39EhY5x
-        ycbd61pw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOPYV-0002zX-MI; Fri, 02 Oct 2020 18:13:20 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AC76D980DD5; Fri,  2 Oct 2020 20:13:13 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 20:13:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [WARNING] kernel/rcu/tree.c:1058 rcu_irq_enter+0x15/0x20
-Message-ID: <20201002181313.GM29142@worktop.programming.kicks-ass.net>
-References: <20200917131647.2b55ebb1@gandalf.local.home>
- <20200930181323.GF2628@hirez.programming.kicks-ass.net>
- <20201002135644.7903d0e5@gandalf.local.home>
+        Fri, 2 Oct 2020 14:16:09 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 092IEIPI018984
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 2 Oct 2020 14:14:19 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9E71642003C; Fri,  2 Oct 2020 14:14:18 -0400 (EDT)
+Date:   Fri, 2 Oct 2020 14:14:18 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Torsten Duwe <duwe@lst.de>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [DISCUSSION PATCH 00/41] random: possible ways towards NIST
+ SP800-90B compliance
+Message-ID: <20201002181418.GV23474@mit.edu>
+References: <20200921075857.4424-1-nstange@suse.de>
+ <20201002123836.GA14807@lst.de>
+ <CY4PR0401MB365298FA8C0C53EAF2D66705C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20201002140428.GC3475053@kroah.com>
+ <CY4PR0401MB365240353B6AB3B2045C9F89C3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
+ <20201002151300.GC5212@kroah.com>
+ <CY4PR0401MB3652EA0FFA3CD9679172B02CC3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002135644.7903d0e5@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CY4PR0401MB3652EA0FFA3CD9679172B02CC3310@CY4PR0401MB3652.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:56:44PM -0400, Steven Rostedt wrote:
-> On Wed, 30 Sep 2020 20:13:23 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > Blergh, IIRC there's header hell that way. The sane fix is killing off
-> > that trace_*_rcuidle() disease.
-> > 
-> > But I think this will also cure it.
-> 
-> I guess you still don't build modules ;-). I had to add a
-> EXPORT_SYMBOL(lockdep_recursion) to get it to build, and then move the
+On Fri, Oct 02, 2020 at 03:39:35PM +0000, Van Leeuwen, Pascal wrote:
+> > Then your company can not contribute in Linux kernel development, as
+> > this is obviously not allowed by such a footer.
+> >
+> Interesting, this has never been raised as a problem until today ...
+> Going back through my mail archive, it looks like they started automatically adding that some
+> 3 months ago. Not that they informed anyone about that, it just silently happened.
 
-Correct, my regular configs are all without modules.
+So use a private e-mail address (e.g., at fastmail.fm if you don't
+want to run your mail server) and then tunnel out SMTP requests using
+ssh.  It's not hard.  :-)
 
-> checks within the irq disabling to get rid of the using cpu pointers within
-> preemptable code warnings
+I've worked a multiple $BIG_COMPANY's, and I've been doing this for
+decades.  It's also helpful when I need to send e-mails from
+conference networks from my laptop....
 
-Ah, I think I lost a s/__this_cpu_read/raw_cpu_read/ somewhere. The
-thing is, if we're preemptible/migratable it will be 0 on both CPUs and
-it doesn't matter which 0 we read. If it is !0, IRQs will be disabled
-and we can't get migrated.
-
-Anyway, let me go write a Changelog to go with it.
+						- Ted
