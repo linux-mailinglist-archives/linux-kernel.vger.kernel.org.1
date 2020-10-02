@@ -2,178 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDE5280F36
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01A9280F3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbgJBIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:48:43 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48260 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBIsn (ORCPT
+        id S2387600AbgJBItC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387550AbgJBItC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:48:43 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0928meiZ060590;
-        Fri, 2 Oct 2020 03:48:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601628520;
-        bh=KxIx2Q8BMe/BobBif6MsMuzIp5+oXC2YcE/NTHkf08I=;
-        h=From:Subject:To:CC:References:Date:In-Reply-To;
-        b=U+xQbIMyUgrRoMVxee4SCSno9XMO5dABhiIjPusxZ4ky9+l/dr/Sq122nX6MjVDpB
-         nJku4NJoapMnhmUY3R2fBXibJJ7VRiz5IoXUe1p+BZB1Y3Ftxv0VZPQI7O5sig9gcZ
-         rK2pWAAFnpPN4ogns1PmJBj+qFJYKZTpR6TUrjkg=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0928me96009602
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 2 Oct 2020 03:48:40 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 2 Oct
- 2020 03:48:39 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 2 Oct 2020 03:48:39 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0928mbcW099978;
-        Fri, 2 Oct 2020 03:48:38 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v3 2/3] dmaengine: add peripheral configuration
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200923063410.3431917-1-vkoul@kernel.org>
- <20200923063410.3431917-3-vkoul@kernel.org>
- <29f95fff-c484-0131-d1fe-b06e3000fb9f@ti.com>
- <20201001112307.GX2968@vkoul-mobl>
-X-Pep-Version: 2.0
-Message-ID: <f063ae03-41da-480a-19ba-d061e140e4d2@ti.com>
-Date:   Fri, 2 Oct 2020 11:48:55 +0300
+        Fri, 2 Oct 2020 04:49:02 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8035C0613D0;
+        Fri,  2 Oct 2020 01:49:01 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so885374wrv.1;
+        Fri, 02 Oct 2020 01:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K7eAm5kls60n05g4vOafAYjVrjTDKWTSLwCtfNq5U7w=;
+        b=GCrPAB9JCM+GcuECmdM2g6L33RNDCMeTnk96Sy7QRr1XfpkQRbolqbuoeQ/ZKlMQE8
+         XEWN8+3+0M/Q5RRyKMMh3cCz+CEPuxRIBKsZWDPjOQlPw41D5a3HUilPMsVKd6tbKCTp
+         TWkArQK1Te+bHUT+8zFq+XnkTb5KCH/U0cS/qU8FSOx+DJ9onp0MapLwGg5wJ80nt9tv
+         9tnLkWFXHuNQKv3I8ySkX3Xgcy6dRSevLZj4jjqS1+9mXvvoCoXe1SAW0IVQjTUgXz/p
+         XZA3iyiNISiVJIFgxf3k1sOmLYYierho4TNu6oVYHPiueCeYfyI3C+yBAdg84roRFamy
+         Mmvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K7eAm5kls60n05g4vOafAYjVrjTDKWTSLwCtfNq5U7w=;
+        b=bWWMNsNx9sbOduTKs2ypwMdfI3o2EmVOiad9Rt2Tsyn59YUq4YRgvZiQgu35jwA6V7
+         E1hE5qty3Zwl1H28pdx4NdfgXrGtx5o6WT7MhI2E/KeOsJY2v1kTFxZKS+sf20+CPCye
+         Pbol0FNX8SVEUEHhwt+A9mvklsbuptKmFrbcsPlByfsI6UMzDYZqHGHXH/FEQFT1KS8H
+         ifNtDHmx82Nk1Vynb/Wx9APm+SvmWJuatu8iCjAo7CNeVU9pYwSH8chBE1ZcsiA97wL1
+         GtRuQufAtsArct8jB7tkEoVUNVnV/HVNPdsRVo2tdFj6w4JAdSd4XLZDWTCzZCSZT/pX
+         YcUQ==
+X-Gm-Message-State: AOAM530LGrlRRn2nsSJDVZpmN2TAVZkwDGV3V4mEIbfKktOCYRds5Ojr
+        8qEFQN1mnJTmp4ci4o2dhhm7YUwXw7A=
+X-Google-Smtp-Source: ABdhPJxiHP8fC8neI4ZdLiTzpMZHOLYjfesrmeki2/9n/e6Ky8fP3VbEpZJPU4SP2JTIdntsN+GRIw==
+X-Received: by 2002:a5d:4247:: with SMTP id s7mr1730226wrr.167.1601628540258;
+        Fri, 02 Oct 2020 01:49:00 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id q4sm931747wru.65.2020.10.02.01.48.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 01:48:59 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] system_data_types.7: Add 'void *'
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Paul Eggert <eggert@cs.ucla.edu>, linux-man@vger.kernel.org,
+        libc-alpha@sourceware.org, gcc@gcc.gnu.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
+ <20201001154946.104626-2-colomar.6.4.3@gmail.com>
+ <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
+ <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
+Message-ID: <7c55f6cf-8cb1-7b63-30ec-990f8c370bf5@gmail.com>
+Date:   Fri, 2 Oct 2020 10:48:58 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201001112307.GX2968@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hi Michael,
 
-On 01/10/2020 14.23, Vinod Koul wrote:
-> Hi Peter,
->=20
-> On 29-09-20, 11:06, Peter Ujfalusi wrote:
->=20
->>> + * @spi: peripheral config for spi
->>> + * @i2c: peripheral config for i2c
->>> + */
->>> +struct dmaengine_peripheral_config {
->>> +	enum dmaengine_peripheral peripheral;
->>> +	u8 set_config;
->>> +	u32 rx_len;
->>> +	struct dmaengine_spi_config spi;
->>> +	struct dmaengine_i2c_config i2c;
->>
->> I know that you want this to be as generic as much as it is possible,
->> but do we really want to?
->=20
-> That is really a good question ;-)
->=20
->> GPIv2 will also handle I2S peripheral, other vendor's similar solution=
+On 2020-10-02 10:24, Alejandro Colomar wrote:
+> On 2020-10-01 19:32, Paul Eggert wrote:
+>  > For 'void *' you should also mention that one cannot use arithmetic on
+>  > void * pointers, so they're special in that way too.
+> 
+> Good suggestion!
+> 
+>  > Also, you should
+>  > warn that because one can convert from any pointer type to void * and
+>  > then to any other pointer type, it's a deliberate hole in C's
+>  > type-checking.
+> 
+> Also good.  I'll talk about generic function parameters for this.
+I think the patch as is now is complete enough to be added.
 
->=20
-> Not I2S, but yes but additional peripherals is always a question
+So I won't rewrite it for now.
+Please review the patch as is,
+and I'll add more info to this type in the future.
 
-Never underestimate the 'creativity'.
+Thanks,
 
->> would require different sets of parameters unique to their IPs?
->>
->> How we are going to handle similar setups for DMA which is used for
->> networking, SPI/I2C/I2S/NAND/display/capture, etc?
->>
->> Imho these settings are really part of the peripheral's domain and not=
-
->> the DMA. It is just a small detail that instead of direct register
->> writes, your setup is using the DMA descriptors to write.
->> It is similar to what I use as metadata (part of the descriptor belong=
-s
->> and owned by the client driver).
->>
->> I think it would be better to have:
->>
->> enum dmaengine_peripheral {
->> 	DMAENGINE_PERIPHERAL_GPI_SPI =3D 1,
->> 	DMAENGINE_PERIPHERAL_GPI_UART,
->> 	DMAENGINE_PERIPHERAL_GPI_I2C,
->> 	DMAENGINE_PERIPHERAL_XYZ_SPI,
->> 	DMAENGINE_PERIPHERAL_XYZ_AASRC,
->> 	DMAENGINE_PERIPHERAL_ABC_CAM,
->> 	...
->> 	DMAENGINE_PERIPHERAL_LAST,
->> };
->>
->> enum dmaengine_peripheral peripheral_type;
->> void *peripheral_config;
->>
->>
->> and that's it. The set_config is specific to GPI.
->> It can be debated where the structs should be defined, in the generic
->> dmaengine.h or in include/linux/dma/ as controller specific
->> (gpi_peripheral.h) or a generic one, like dmaengine_peripheral.h
->>
->> The SPI/I2C/UART client of yours would pass the GPI specific struct as=
-
->> in any case it has to know what is the DMA it is serviced by.
->=20
-> If we want to take that approach, I can actually move the whole logic o=
-f
-> creating the specific TREs from DMA to clients and they pass on TRE
-> values and driver adds to ring after appending DMA TREs
-
-The drawback is that you are tying the driver to a specific DMA with
-directly giving the TREs. If the TRE (or other method) is used by a
-newer device you need to work on both sides.
-
-> Question is how should this interface look like? reuse metadata or add =
-a
-> new API which sets the txn specific data (void pointer and size) to the=
-
-> txn..=20
-
-It depends which is best for the use case.
-I see the metadata useful when you need to send different
-metadata/configuration with each transfer.
-It can be also useful when you need it seldom, but for your use case and
-setup the dma_slave_config extended with
-
-enum dmaengine_peripheral peripheral_type;
-void *peripheral_config;
-
-would be a bit more explicit.
-
-I would then deal with the peripheral config in this way:
-when the DMA driver's device_config is called, I would take the
-parameters and set a flag that the config needs to be processed as it
-has changed.
-In the next prep_slave_sg() then I would prepare the TREs with the
-config and clear the flag that the next transfer does not need the
-configuration anymore.
-
-In this way each dmaengine_slave_config() will trigger at the next
-prep_slave_sg time configuration update for the peripheral to be
-included in the TREs.
-The set_config would be internal to the DMA driver, clients just need to
-update the configuration when they need to and everything is taken care o=
-f.
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Alex
