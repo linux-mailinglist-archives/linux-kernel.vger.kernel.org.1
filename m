@@ -2,85 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC17280DA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9D280DA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgJBGtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S1726207AbgJBGtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgJBGtK (ORCPT
+        with ESMTP id S1725968AbgJBGtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:49:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F2BC0613D0;
-        Thu,  1 Oct 2020 23:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F0HxCM48zlkqvSK9HVb3prVdbtr0XoJkMcMZ8q5cNvA=; b=KDDxxvWM+qd+VQy/Z9mnWYLcrp
-        VPcBmyOR0oC8nWvEYSkDW2MLWZ7ZsnvBDbhUPxXsUP7NiB3KZEPdJgXdtfJQI/d+tF5UbJR4W+SIq
-        clptew4ZQQo8cacoEUinGzP4g4x4Y5oaz9/JtjccY5fesqA8GDnOOx377W0WwIuqUD4sSbYNkEnBe
-        h+O5gx9IDFJvsVPyX7/3QEnZXiuHEYlaH+8SgPbpOY5B+vftVpHvQkm6k78TG54crxU4xHqQgdpCt
-        yg6HpDXyGGYupQltDce++CaqvL7dchYJ/fsCUegBIg3GpqScn3s3Ff069AXOZ+ragf9ss4ZcGko/X
-        vuD2YdAw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOEsL-0007XM-Ky; Fri, 02 Oct 2020 06:49:05 +0000
-Date:   Fri, 2 Oct 2020 07:49:05 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     linux-riscv@lists.infradead.org, kernel-team@android.com,
-        kernel test robot <lkp@intel.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        smueller@chronox.de
-Subject: get_cycles from modular code in jitterentropy, was Re: [PATCH]
- clocksource: clint: Export clint_time_val for modules
-Message-ID: <20201002064905.GA27115@infradead.org>
-References: <20200930065617.934638-1-palmerdabbelt@google.com>
+        Fri, 2 Oct 2020 02:49:52 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DD7C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:49:51 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x14so477196wrl.12
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 23:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UoynpyD6AhgXUB6wR1FXtYWnjMZi4vEwFI3CCNbPh/Q=;
+        b=tWXguv2ZF0F5qwrOvcenJ2zOdlhvSJCtiTfazpgPgCUff7y5mZjhcy91c4+YFMJQFs
+         r30J/sQBFQQGHuHftJQldSaD1Up2mzT5VYE143b1Ny7JTtZJUGmGRtB0eeFhZFsWSSdU
+         VFXK+kxDZyob7WTGnDZTD4K08nvWYRegljwj0VAAt0sO3RX03Eq4TXbnh3B97nhZ2GFf
+         zS6u77rCgEG6WPXLkmco018F6NTrS+yeUvgX+DEoEUnSpTy0y9rIJojPpxm4Z9GIcm9s
+         tTOGdi/sEB0xMeuLFLtonRmCGZQjCDvx3uQvR8AN2QBfh2cZjeNQ87gbgOcuO3tdeYkY
+         g/YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UoynpyD6AhgXUB6wR1FXtYWnjMZi4vEwFI3CCNbPh/Q=;
+        b=dhODXhbYtzaksp0gb0ZuI7mr51m88A1lLKiL/f/2J97Xgzsun0CntrK4M+m4BCwrO1
+         iweTILqbG7pBJeGabcqDLTyUR+4FRIVuseGbZ7VwAGFKn/C8fX+LJQ6SXv1vbuvr4w86
+         axwU2gqM6aQTiLOsKhnu0Dvpb6TEYXI14TZeGY9Mrxo8mVlSuNIyyM9al6fUYHaTUZCF
+         ipSDRcC5qdJ/BNoFts71mCqZEVWXoMzpMr9ogIaAMaLj3qmTvDtfJaluaB8oZBoXrlmc
+         JERrGGjybAD7fggQSPyYlNmOnMCYOsj1jujOHdLw8AO+p/0tP9PnXKqHfygIK+o4MV+6
+         oIyw==
+X-Gm-Message-State: AOAM531+Xx/lX2UlxN63947NLbYe05deJSaBsBoPmWMT8yN7/wnM5vsw
+        +ZN7nQ8Gyz+t/Zt2h/iC80M+bAjzJefsVg==
+X-Google-Smtp-Source: ABdhPJwXKvamwY1YeQU9ErKMKhnd33q+LPxo4LI6im24/u+dR6YSHPEn41d7IqdD7pAJjfPLnHbrvQ==
+X-Received: by 2002:adf:fe42:: with SMTP id m2mr1161269wrs.367.1601621390382;
+        Thu, 01 Oct 2020 23:49:50 -0700 (PDT)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id v204sm660429wmg.20.2020.10.01.23.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 23:49:49 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 07:49:48 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Oct 1 (drivers/mfd/simple-mfd-i2c.o)
+Message-ID: <20201002064948.GQ6148@dell>
+References: <20201001213929.241c1006@canb.auug.org.au>
+ <0dca758e-1b61-a4cd-db12-2e2060f7cf60@infradead.org>
+ <20201002063203.GP6148@dell>
+ <5974d448-a704-fd74-704c-b902b0ac9a8f@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200930065617.934638-1-palmerdabbelt@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5974d448-a704-fd74-704c-b902b0ac9a8f@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:56:18PM -0700, Palmer Dabbelt wrote:
-> clint_time_val will soon be used by the RISC-V implementation of
-> random_get_entropy(), which is a static inline function that may be used by
-> modules (at least CRYPTO_JITTERENTROPY=m).
+On Thu, 01 Oct 2020, Randy Dunlap wrote:
 
-At very least this needs to be an EXPORT_SYMBOL_GPL.  But I really don't
-think modules have any business using get_cycles, so I'd much rather
-fix CRYPTO_JITTERENTROPY to be required to be build in.
+> On 10/1/20 11:32 PM, Lee Jones wrote:
+> > On Thu, 01 Oct 2020, Randy Dunlap wrote:
+> > 
+> >> On 10/1/20 4:39 AM, Stephen Rothwell wrote:
+> >>> Hi all,
+> >>>
+> >>> Changes since 20200930:
+> >>>
+> >>
+> >> on x86_64:
+> >>
+> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+> >> simple-mfd-i2c.c:(.text+0x48): undefined reference to `__devm_regmap_init_i2c'
+> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_init':
+> >> simple-mfd-i2c.c:(.init.text+0x14): undefined reference to `i2c_register_driver'
+> >> ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_driver_exit':
+> >> simple-mfd-i2c.c:(.exit.text+0xd): undefined reference to `i2c_del_driver'
+> >>
+> >>
+> >> CONFIG_I2C=m
+> >> CONFIG_MFD_SIMPLE_MFD_I2C=y
+> >> CONFIG_MFD_SL28CPLD=y
+> >>
+> >>
+> >> Is linux-next missing the source code for CONFIG_MFD_SL28CPLD?
+> > 
+> > There isn't any associated source code.  It's a virtual symbol.
+> > 
+> >> The build error is caused by:
+> >>
+> >> config MFD_SL28CPLD
+> >> 	tristate "Kontron sl28cpld Board Management Controller"
+> >> 	select MFD_SIMPLE_MFD_I2C
+> >>
+> >> that "select" when "depends on I2C" is absent/missing.
+> > 
+> > Okay, so CONFIG_MFD_SIMPLE_MFD_I2C needs to depend on I2C too?  I made
+> > the assumption that 'select REGMAP_I2C' would do the right thing.
+> 
+> "select" never follows any dependency chains, so Yes, the other symbol
+> needs to depend on I2C also.
 
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> ---
->  drivers/clocksource/timer-clint.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-> index d17367dee02c..6cfe2ab73eb0 100644
-> --- a/drivers/clocksource/timer-clint.c
-> +++ b/drivers/clocksource/timer-clint.c
-> @@ -38,6 +38,7 @@ static unsigned int clint_timer_irq;
->  
->  #ifdef CONFIG_RISCV_M_MODE
->  u64 __iomem *clint_time_val;
-> +EXPORT_SYMBOL(clint_time_val);
->  #endif
->  
->  static void clint_send_ipi(const struct cpumask *target)
-> -- 
-> 2.28.0.709.gb0816b6eb0-goog
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
----end quoted text---
+Makes sense.  Will fix, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
