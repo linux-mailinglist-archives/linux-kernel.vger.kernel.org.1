@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D90281161
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3C228116A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387786AbgJBLn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
+        id S2387794AbgJBLoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:44:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:33354 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgJBLn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:43:26 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E810D206E3;
-        Fri,  2 Oct 2020 11:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601639004;
-        bh=Um0ftaims7pCV0EgtbpdXAsPSGzpFNfGBGqMRGVKZDk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=H017jt+AENqlGNPFcbs3k6i35nY2cX3xdETy+xt4hgTl/ENbHnxT2819pviiNxPny
-         rOSe1grXkX5H33e0dFYd29v8z3K4uS/4vUKif55N4lqt/X31ds6JC/QHQgGzdLBBei
-         bReBhEINXuK54Sa82lKc4iwK9cB3pPlRfBRaroXA=
-Date:   Fri, 2 Oct 2020 13:43:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     netdev@vger.kernel.org
-Cc:     Tuba Yavuz <tuba@ece.ufl.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v2] net: hso: do not call unregister if not registered
-Message-ID: <20201002114323.GA3296553@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S1725964AbgJBLoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 07:44:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFBDB1063;
+        Fri,  2 Oct 2020 04:44:53 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.50.3])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1C1813F73B;
+        Fri,  2 Oct 2020 04:44:49 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
+        daniel.lezcano@linaro.org, lukasz.luba@arm.com,
+        Dietmar.Eggemann@arm.com, qperret@google.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org,
+        rjw@rjwysocki.net
+Subject: [PATCH v2 0/3] Clarify abstract scale usage for power values in Energy Model, EAS and IPA
+Date:   Fri,  2 Oct 2020 12:44:23 +0100
+Message-Id: <20201002114426.31277-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuba Yavuz <tuba@ece.ufl.edu>
+Hi all,
 
-On an error path inside the hso_create_net_device function of the hso
-driver, hso_free_net_device gets called. This causes a use-after-free
-and a double-free if register_netdev has not been called yet as
-hso_free_net_device calls unregister_netdev regardless. I think the
-driver should distinguish these cases and call unregister_netdev only if
-register_netdev has been called.
+The Energy Model supports power values expressed in an abstract scale.
+This has an impact on Intelligent Power Allocation (IPA) and should be
+documented properly. There is also a need to update the DT binding for the
+'sustainable-power' and allow it to have abstract scale as well.
 
-Signed-off-by: Tuba Yavuz <tuba@ece.ufl.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: format cleaned up based on feedback from previous review
-    Forward to Greg to submit due to email problems on Tuba's side
+Changes:
+v2:
+- updated sustainable power section in IPA documentation
+- updated DT binding for the 'sustainable-power'
 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 2bb28db89432..e6b56bdf691d 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2366,7 +2366,8 @@ static void hso_free_net_device(struct hso_device *hso_dev, bool bailout)
- 
- 	remove_net_device(hso_net->parent);
- 
--	if (hso_net->net)
-+	if (hso_net->net &&
-+	    hso_net->net->reg_state == NETREG_REGISTERED)
- 		unregister_netdev(hso_net->net);
- 
- 	/* start freeing */
+The v1 of the patch set and related discussion can be found in [1].
+
+Regards,
+Lukasz Luba
+
+[1] https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+
+Lukasz Luba (3):
+  docs: Clarify abstract scale usage for power values in Energy Model
+  PM / EM: update the comments related to power scale
+  dt-bindings: thermal: update sustainable-power with abstract scale
+
+ .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+ .../driver-api/thermal/power_allocator.rst          | 13 ++++++++++++-
+ Documentation/power/energy-model.rst                | 13 +++++++++++++
+ Documentation/scheduler/sched-energy.rst            |  5 +++++
+ include/linux/energy_model.h                        | 11 +++++------
+ kernel/power/energy_model.c                         |  2 +-
+ 6 files changed, 45 insertions(+), 12 deletions(-)
+
+-- 
+2.17.1
+
