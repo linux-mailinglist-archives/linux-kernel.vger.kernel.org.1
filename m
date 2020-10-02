@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03E9280F95
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299D6280F9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 11:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387646AbgJBJKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 05:10:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:36535 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgJBJKf (ORCPT
+        id S2387659AbgJBJL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 05:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBJL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:10:35 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-224-aKI4CW-XN6iMcneJYcNyew-1; Fri, 02 Oct 2020 10:10:31 +0100
-X-MC-Unique: aKI4CW-XN6iMcneJYcNyew-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 2 Oct 2020 10:10:28 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 2 Oct 2020 10:10:28 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alejandro Colomar' <colomar.6.4.3@gmail.com>,
-        Paul Eggert <eggert@cs.ucla.edu>
-CC:     "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] system_data_types.7: Add 'void *'
-Thread-Topic: [PATCH v2 1/2] system_data_types.7: Add 'void *'
-Thread-Index: AQHWmJV8uvKm+YDY8kuGOueiBeQ7uKmEBB/Q
-Date:   Fri, 2 Oct 2020 09:10:28 +0000
-Message-ID: <a2c3ceecca7648b3bb33f1c8bf8e7893@AcuMS.aculab.com>
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com>
- <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
- <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
-In-Reply-To: <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 2 Oct 2020 05:11:28 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA65FC0613D0;
+        Fri,  2 Oct 2020 02:11:27 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id j136so926381wmj.2;
+        Fri, 02 Oct 2020 02:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n8sjYxuBkwwfLCJdcsNIECFFL7vsWBubB9+n9PHGGPs=;
+        b=TCdfGntsyw1waB7d5uBvcniLx8tutSj7FDcOqvJU4dyVkDfnDWJ7IhasTN846qxkRF
+         eUvNlYKJ60wEdTN0SxEicLHUPbdVzztUVIkfC6nNeWtfsRQmqRZgu2UJynLpfcWrFq7Y
+         +C82+9ko/wvLdY7CmZPElmbUnO3WXiI8VCKr9TgiHKCeJyDhfXmggU6DX/AGICVxLwnW
+         y+kppNhU4mF28ptAXoXC6pqbG28FxSBRpMrnzD/JhC8P2/5TxPjJ3VvgHv2VKBYelR2L
+         zNJ6Kzu0yp/qHcih9cM51/HNxs1+UxqB/OA/CVr8KBOkAoDweaiUJhNkbrWWBUhqINm8
+         y7kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n8sjYxuBkwwfLCJdcsNIECFFL7vsWBubB9+n9PHGGPs=;
+        b=KxCTgSMMssZQE/EVdI/M0LoyOS5I3Bf5NqkTihGEPI4N193DBezF3SPadxmh/t6Zru
+         rCRyDBBMEg92lVa1/JuLGgWMY0mrEux92p3nWEGJvgf3GzH1ZW+L5jij6v3+B9nYzvZF
+         woIuqsachUjFqVSUoUvL+SOY9DM8s+Rbq3rnXYagWTuuU7N8K+GEVWGe/HimZSSXlGNl
+         0cjAP13IxC7+wzbhNetrszlDUPPFjgX3wMYEGD3vF+vmhgwSfVHEOgeWbIz59Rabkh+A
+         89chjsjzRgP6dkdRuGj/VjjKLaiyJzlwJi4uFATCJPl8cLzBXAnR41t6yTrwXuwSCqX+
+         J+hA==
+X-Gm-Message-State: AOAM530JebwTPsSTkG1FrndY8usvSZXaLP9eRip0eyiK6XInj28gOcOj
+        ty9nSmrok5lFd7T+GyTnzWQ=
+X-Google-Smtp-Source: ABdhPJy8Mrw34LM+35Ok95pZgOyUQ2MIWncbi40rYI4yc/UePQnaewZFhARbTSOC00ajkgbtSYmNnA==
+X-Received: by 2002:a1c:1bd8:: with SMTP id b207mr1748837wmb.139.1601629886617;
+        Fri, 02 Oct 2020 02:11:26 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id t203sm1031893wmg.43.2020.10.02.02.11.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 02:11:26 -0700 (PDT)
+Subject: Re: [PATCH v2 12/12] arm64: dts: mediatek: Add mt8183 power domains
+ controller
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
+        drinkcat@chromium.org, hsinyi@chromium.org, weiyi.lu@mediatek.com,
+        Matthias Brugger <mbrugger@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
+ <20201001160154.3587848-13-enric.balletbo@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <6b972d3c-df15-7900-eeb0-df928fa3899f@gmail.com>
+Date:   Fri, 2 Oct 2020 11:11:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201001160154.3587848-13-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWxlamFuZHJvIENvbG9tYXINCj4gU2VudDogMDIgT2N0b2JlciAyMDIwIDA5OjI1DQo+
-ICA+IEZvciAndm9pZCAqJyB5b3Ugc2hvdWxkIGFsc28gbWVudGlvbiB0aGF0IG9uZSBjYW5ub3Qg
-dXNlIGFyaXRobWV0aWMgb24NCj4gID4gdm9pZCAqIHBvaW50ZXJzLCBzbyB0aGV5J3JlIHNwZWNp
-YWwgaW4gdGhhdCB3YXkgdG9vLg0KPiANCj4gR29vZCBzdWdnZXN0aW9uIQ0KDQpFeGNlcHQgdGhh
-dCBpcyBhIGdjYyBleHRlbnNpb24gdGhhdCBpcyBhbGxvd2VkIGluIHRoZSBrZXJuZWwuDQoNCj4g
-ID4gQWxzbywgeW91IHNob3VsZA0KPiAgPiB3YXJuIHRoYXQgYmVjYXVzZSBvbmUgY2FuIGNvbnZl
-cnQgZnJvbSBhbnkgcG9pbnRlciB0eXBlIHRvIHZvaWQgKiBhbmQNCj4gID4gdGhlbiB0byBhbnkg
-b3RoZXIgcG9pbnRlciB0eXBlLCBpdCdzIGEgZGVsaWJlcmF0ZSBob2xlIGluIEMncw0KPiAgPiB0
-eXBlLWNoZWNraW5nLg0KPiANCj4gQWxzbyBnb29kLiAgSSdsbCB0YWxrIGFib3V0IGdlbmVyaWMg
-ZnVuY3Rpb24gcGFyYW1ldGVycyBmb3IgdGhpcy4NCg0KVGhhdCBpc24ndCB3aGF0IHRoZSBDIHN0
-YW5kYXJkIHNheXMgYXQgYWxsLg0KV2hhdCBpcyBzYXlzIGlzIHRoYXQgeW91IGNhbiBjYXN0IGFu
-eSBkYXRhIHBvaW50ZXIgdG8gJ3ZvaWQgKicNCmFuZCB0aGVuIGNhc3QgaXQgYmFjayB0byB0aGUg
-c2FtZSB0eXBlLg0KDQpUaGlzIG1hdHRlcnMgYmVjYXVzZSB0aGUgY29tcGlsZXIgd2lsbCAncmVt
-ZW1iZXInIHN0cnVjdHVyZQ0KYWxpZ25tZW50IHRocm91Z2ggJ3ZvaWQgKicgY2FzdHMuDQpTbyB5
-b3UgY2FuJ3QgdXNlIG1lbWNweSgpIHRvIGNvcHkgZnJvbSBhIHBvdGVudGlhbGx5IG1pc2FsaWdu
-ZWQNCih0eXBlZCkgcG9pbnRlci4NCg0KJ3ZvaWQgKicgc2hvdWxkIG9ubHkgYmUgdXNlZCBmb3Ig
-c3RydWN0dXJlcyB0aGF0IGFyZSAnYSBzZXF1ZW5jZSBvZiBieXRlcycuDQooZWcgdGhpbmdzIHRo
-YXQgbG9vayBhIGJpdCBsaWtlIHJlYWQoKSBvciB3cml0ZSgpKS4NCg0KCURhdmlkDQoNCi0NClJl
-Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
-b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
-Cg==
 
+
+On 01/10/2020 18:01, Enric Balletbo i Serra wrote:
+> From: Matthias Brugger <mbrugger@suse.com>
+> 
+> Add power domains controller node for SoC mt8183
+> 
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> 
+> Changes in v2: None
+> 
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 162 +++++++++++++++++++++++
+>   drivers/soc/mediatek/mtk-mmsys.c         |   4 -
+>   2 files changed, 162 insertions(+), 4 deletions(-)
+> 
+[...]
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+> index ec4cc5eeabff..0c490f509655 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -560,10 +560,6 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
+>   		.compatible = "mediatek,mt8173-mmsys",
+>   		.data = &mt8173_mmsys_driver_data,
+>   	},
+> -	{
+> -		.compatible = "mediatek,mt8183-mmsys",
+> -		.data = &mt8183_mmsys_driver_data,
+> -	},
+
+Looks like an oversight from your side? At least it's not explained in the 
+commit message.
+
+Regards,
+Matthias
