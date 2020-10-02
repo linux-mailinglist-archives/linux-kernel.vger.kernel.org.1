@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C34281861
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026D2281865
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 18:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388182AbgJBQzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 12:55:19 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:45848 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgJBQzT (ORCPT
+        id S2387856AbgJBQ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 12:57:02 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:10136 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725991AbgJBQ5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 12:55:19 -0400
-Received: by mail-oo1-f65.google.com with SMTP id h8so498155ooc.12;
-        Fri, 02 Oct 2020 09:55:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8acJid1D+NJC+ex0YodQOTm9oogbBy0h06gU04aC0XY=;
-        b=JRPyZGJCt0fT8QC419QRIS2vXzHhyrrIbUwkjM5I+owYOkUYVyxIsQMIjswUcuxO1I
-         NuL1RR2M5oYysSGysrhYcy4dCmfcZXdJZKjVIYDsk9Z7Ivkh7/TH/5KmiEJPxR4AXXSZ
-         pLmqkKuwFh63OIDcoVq/hMQ0hf9wCpq1BHaUL/COO6vwfI9cxxX8O71Yrlw73++OY85v
-         AahmK++zN3TQZRx4IranLTYGzv4mVICmtc1pf2fSLN1XYglrdfplm5kryigqUTLr2vWo
-         SIHCv3486VNI5wsYgrQfEyCkQB+rRfD2XsL8vZ+RG9R/z4T2+qofo6Y2mjfBgH2v8Zqo
-         r9cA==
-X-Gm-Message-State: AOAM532e7QvAr7hUmtqFG9t4mJWMiYByoSb2jVF25Xx4g533hXtg1Dg4
-        9oxqv6Fq9d2h6hANjIvJGrUSNEPM5d1z+IsG5wQ=
-X-Google-Smtp-Source: ABdhPJwZUqG9hHnok6yLqSy68HWB+jGdIfkMO9LgBruMFrfKI+a59EUTUicSwMUusqw5ZgzGMiryMveJdWirBIO3Ikg=
-X-Received: by 2002:a4a:e946:: with SMTP id v6mr2586023ood.38.1601657717839;
- Fri, 02 Oct 2020 09:55:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200930140547.840251-1-Jonathan.Cameron@huawei.com>
-In-Reply-To: <20200930140547.840251-1-Jonathan.Cameron@huawei.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 2 Oct 2020 18:55:06 +0200
-Message-ID: <CAJZ5v0hUPk6Geh3MG+948Q_LmHNEYBoJgBKLFb7jH7RCbPv5PQ@mail.gmail.com>
-Subject: Re: [PATCH v12 0/6] ACPI: Support Generic Initiator proximity domains
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Linux Memory Management List <linux-mm@kvack.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linuxarm <linuxarm@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Hanjun Guo <guohanjun@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 2 Oct 2020 12:57:02 -0400
+X-IronPort-AV: E=Sophos;i="5.77,328,1596466800"; 
+   d="scan'208";a="58562610"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 03 Oct 2020 01:57:00 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id E7BDA4007F4C;
+        Sat,  3 Oct 2020 01:56:58 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Jacopo Mondi <jacopo@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v7 0/3] media: i2c: ov772x: Enable BT.656 mode and test pattern support
+Date:   Fri,  2 Oct 2020 17:56:53 +0100
+Message-Id: <20201002165656.16744-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 4:07 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> It would be very nice to finally merge this support during the next cycle,
-> so please take a look.
->
-> I think we need acks covering x86, ARM and ACPI.  Rafael took a look back
-> in November at v5 and was looking for x86 and ARM acks.  Whilst there is
-> no ARM specific code left we probably still need an Ack.  If anyone is
-> missing from the cc list, please add them.
->
-> Introduces a new type of NUMA node for cases where we want to represent
-> the access characteristics of a non CPU initiator of memory requests,
-> as these differ from all those for existing nodes containing CPUs and/or
-> memory.
->
-> These Generic Initiators are presented by the node access0 class in
-> sysfs in the same way as a CPU. It seems likely that there will be
-> usecases in which the best 'CPU' is desired and Generic Initiators
-> should be ignored.  The final few patches in this series introduced
-> access1 which is a new performance class in the sysfs node description
-> which presents only CPU to memory relationships.  Test cases for this
-> are described below.
+Hi All,
 
-The whole series has been applied as 5.10 material.
+This patch series adds support for BT.656 mode in the ov772x sensor
+and also enables color bar test pattern control.
 
-If anyone has concerns or objections, please let me know ASAP.
+Cheers,
+Prabhakar
 
-Thanks!
+v6->v7
+* Fixed review comments pointed by Sakari
+* Included Ack from Jacopo
+
+v5->v6
+* Introduced new function ov772x_parse_dt()
+* Moved the backward compatibility comment from 1/3 to 2/3
+
+v4->v5:
+* Put the ep instance back using fwnode_handle_put()
+* Renamed BT656 to BT.656
+* Correctly handled backward compatibility case falling
+  back to parallel mode.
+
+v3->v4:
+* New patch 1/3 to fallback in parallel mode.
+* Switched to v4l2_fwnode_endpoint_alloc_parse() for parsing the ep.
+* Dropped support for pdat for test pattern control.
+* DT documentation patches [1].
+
+v2->v3:
+* Dropped DT binding documentation patch as this is handled by Jacopo.
+* Fixed review comments pointed by Jacopo.
+
+v2:
+ https://patchwork.kernel.org/project/linux-renesas-soc/
+ list/?series=328133
+
+ v1:
+https://patchwork.kernel.org/project/linux-renesas-soc/
+list/?series=323807
+
+[1] https://patchwork.kernel.org/project/
+    linux-renesas-soc/list/?series=346809
+
+Lad Prabhakar (3):
+  media: i2c: ov772x: Parse endpoint properties
+  media: i2c: ov772x: Add support for BT.656 mode
+  media: i2c: ov772x: Add test pattern control
+
+ drivers/media/i2c/ov772x.c | 69 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 68 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
+
