@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507BA281B2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93497281B2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388348AbgJBSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S2388336AbgJBSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388265AbgJBSvm (ORCPT
+        with ESMTP id S1726224AbgJBSxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:51:42 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE91C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:51:40 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d13so1374498pgl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:51:40 -0700 (PDT)
+        Fri, 2 Oct 2020 14:53:30 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12173C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:53:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q18so1375134pgk.7
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:53:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=q3q5K3L+YoOnrFYFn2V2zaxlwZMcevW9IDjtYQos/JQ=;
-        b=E9JJvLMvVOS1W0AlhJ85n78PJzP5/BIKoHNyqHaoa2V8Y+jLVUcK3KYssVUGEMu4oL
-         m2NSA3KLlzF1WeWq0iegvthSjOqxSogfcVfjI3VXJ4nKai1v7ZRWtcl7HtZQV+ZUY2SI
-         bGAwAYqNydviGjdnGXTuBpQ6tWuqNO3H9GUKzWCyEvEfI1clUW6bSHx0bRKa9UAsKkcV
-         cVziU7KCyoB8hVPbSTtxr1z98YSC3YP+EW7jSknzlueTTolL357ddD//DCMAxaNAetTT
-         0DbE1IJohoGdT7tFDSlyB2k3Jl60xmLGMywKM2ptmPWxXt2nT3M5WLji7qFJsQRrMo4T
-         NxlQ==
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=iPAQMAMc1hYTdFsccictID911P3trsdKp6hSOQvOeKM=;
+        b=TbmjMQuBlCveAwmWwmy0rJQ/hA6alnl0KmM8J0ZZ58RmP01IE5DTu2H3o8e5bX6+6i
+         0YwyoLs9btHGeslavZk5eR6mazSh0Vp56XipFnfOSms2ZLhxONKw1FBfgQUmT7N0OHeO
+         0Qmsf5V6Dfx/L64zKA4I+egZpuHu0tIpULzjvF6KJIgs3+UEe7vhvxb50hmLE30oCTJJ
+         z0sqXQx19yAtu78ZbE66rGH8j2v7WPhXkHGfJcFSJCCNuY8eATn0k0r71+mxZn0DJiiu
+         GANK0TBCTARGx7mLBm3ERcQkqwVWH6HUggvBkiEa0pztkARv5aN3GdSHv+3Iaf1YwO1Y
+         sXfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=q3q5K3L+YoOnrFYFn2V2zaxlwZMcevW9IDjtYQos/JQ=;
-        b=f7e/rbCkG9+saOYSDd8c3amPon7iEsPOjfmRqNauRsUwDYaGEuh6AQaE8osRFwW/g5
-         mrB/2bxKJ5GMDd1OKIJ/YJtALz7kdBX1hjXawO09XgIwK6F+53H106NuzGejp4yFcIXH
-         0+YaCCbtsbvxEl/2Jp2Yd5zoK79uqCyu9S0pia+FcAy9Ieky7M42yoPEKJiWYNJNRMc+
-         +ETsCbrnxaa7wir1+/oi4Nsw8ZPaz/h25dBK7dsiSH4ymCcYxmKShsBqPNiZ7wISvoeT
-         nudkmlmivjQ/EOVB9ZDs8IFpI+zpi/tQXiQ7baAcXORlpaIbJV5+EflLThRs9U5uRzCz
-         +lBA==
-X-Gm-Message-State: AOAM530OtCn1LqWAyIkMxVZzXmqjanNPf3g7m5fTSVk9lI4/zIzoqtbe
-        5BQwO1hYnBll/Fh3K68sFYV4GQ==
-X-Google-Smtp-Source: ABdhPJxO048OYeo0qyqo36NDdaDJkIstmnKSpS2FwEASs9UYebeUGxjFE7Az7NnODd3qok+B23segQ==
-X-Received: by 2002:a62:7d91:0:b029:13e:d13d:a061 with SMTP id y139-20020a627d910000b029013ed13da061mr4256061pfc.39.1601664699826;
-        Fri, 02 Oct 2020 11:51:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=iPAQMAMc1hYTdFsccictID911P3trsdKp6hSOQvOeKM=;
+        b=MQ0qXa2SXv3IcU0PK7FSl8FJyK8sm8jutocUgs+nixGuoIcQwShBf7/jlwXwkHvywf
+         4v0sTLs176ViJgEFd8NDIDNSzf0CyNxB3z9+JGcpz5zzZDVhZE2xpXOuVSEdGagkexEa
+         i2pKMx/2eqr5sPLwj99nKYATxSSNHA22eajY7G2HTRBvVY7u9Wsc8lORiuhvOxY8gCon
+         ZTNy5TD5mRcuy12KgrKRiKUbX0QTPEByAPVozZnPivQO98cvRjKGMJn9ipIicSFmGc4S
+         8moeNLY4aKzR3Xe3Sv6wIw8D3iaHuLo6Z7c0gRZXwxJkGM9tB4LsJltXAsvuRRCwtQjg
+         uFfw==
+X-Gm-Message-State: AOAM532ShH1Y7ekevFMSnFl7L5Px00p1qwowe2P/kmLvdQ5iu8z3Mrna
+        p8c5BMFLyl1UVEvkhXxTxUjdsg==
+X-Google-Smtp-Source: ABdhPJzg9saFTkFjFL/6YScANuADv4CnZG6bZfHBk7SDK2lhxGXr30RQbFBKLPsfKq04zJHatQgCWQ==
+X-Received: by 2002:a63:fd0a:: with SMTP id d10mr3374536pgh.273.1601664808545;
+        Fri, 02 Oct 2020 11:53:28 -0700 (PDT)
 Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id n2sm2592796pfa.182.2020.10.02.11.51.38
+        by smtp.gmail.com with ESMTPSA id b3sm2798336pfd.66.2020.10.02.11.53.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 11:51:39 -0700 (PDT)
+        Fri, 02 Oct 2020 11:53:27 -0700 (PDT)
 From:   Kevin Hilman <khilman@baylibre.com>
-To:     linux-amlogic@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
-        jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: amlogic: meson-g12: use the G12A specific dwmac compatible
-Date:   Fri,  2 Oct 2020 11:51:36 -0700
-Message-Id: <160166469102.35184.724638054812070881.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925211743.537496-1-martin.blumenstingl@googlemail.com>
-References: <20200925211743.537496-1-martin.blumenstingl@googlemail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yue Wang <yue.wang@amlogic.com>
+Subject: Re: [PATCH] pci: meson: build as module by default
+In-Reply-To: <20200928163440.GA16986@e121166-lin.cambridge.arm.com>
+References: <20200918181251.32423-1-khilman@baylibre.com> <20200928163440.GA16986@e121166-lin.cambridge.arm.com>
+Date:   Fri, 02 Oct 2020 11:53:27 -0700
+Message-ID: <7h362wmpco.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 23:17:43 +0200, Martin Blumenstingl wrote:
-> We have a dedicated "amlogic,meson-g12a-dwmac" compatible string for the
-> Ethernet controller since commit 3efdb92426bf4 ("dt-bindings: net:
-> dwmac-meson: Add a compatible string for G12A onwards").
-> Using the AXG compatible string worked fine so far because the
-> dwmac-meson8b driver doesn't handle the newly introduced register bits
-> for G12A. However, once that changes the driver must be probed with the
-> correct compatible string to manage these new register bits.
+Hi Lorenzo,
 
-Applied, thanks!
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> writes:
 
-[1/1] arm64: dts: amlogic: meson-g12: use the G12A specific dwmac compatible
-      commit: c0c6f8e527a652d4785cb38ac82be0c95913349d
+> On Fri, Sep 18, 2020 at 11:12:51AM -0700, Kevin Hilman wrote:
+>> Enable pci-meson to build as a module whenever ARCH_MESON is enabled.
+>> 
+>> Cc: Yue Wang <yue.wang@amlogic.com>
+>> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+>> ---
+>> Tested on Khadas VIM3 and Khadas VIM3 using NVMe SSD devices.
+>> 
+>>  drivers/pci/controller/dwc/Kconfig     | 3 ++-
+>>  drivers/pci/controller/dwc/pci-meson.c | 8 +++++++-
+>>  2 files changed, 9 insertions(+), 2 deletions(-)
+>
+> Applied to pci/meson, thanks.
 
-Best regards,
--- 
-Kevin Hilman <khilman@baylibre.com>
+Rob pointed out that the MODULE_LICENCE wasn't the same as the SPDX
+header.  Could you squash the update below before submitting?
+
+Thanks,
+
+Kevin
+
+
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index 7a1fb55ee44a..35b167e907aa 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -604,4 +604,4 @@ module_platform_driver(meson_pcie_driver);
+ 
+ MODULE_AUTHOR("Yue Wang <yue.wang@amlogic.com>");
+ MODULE_DESCRIPTION("Amlogic PCIe Controller driver");
+-MODULE_LICENSE("Dual BSD/GPL");
++MODULE_LICENSE("GPL v2");
