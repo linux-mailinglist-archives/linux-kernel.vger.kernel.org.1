@@ -2,376 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901972810F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF17B281104
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387791AbgJBLJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:09:22 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48336 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387491AbgJBLI6 (ORCPT
+        id S2387793AbgJBLKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBLJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:08:58 -0400
-Received: from [IPv6:2003:c7:cf13:ec00:987c:fa6c:93a9:1dfa] (p200300c7cf13ec00987cfa6c93a91dfa.dip0.t-ipconnect.de [IPv6:2003:c7:cf13:ec00:987c:fa6c:93a9:1dfa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CAFB129DB67;
-        Fri,  2 Oct 2020 12:08:55 +0100 (BST)
-Subject: Re: [PATCH v3 2/9] media: vimc: Add get_frame callback
-To:     kieran.bingham@ideasonboard.com,
-        Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200819180442.11630-1-kgupta@es.iitr.ac.in>
- <20200819180442.11630-3-kgupta@es.iitr.ac.in>
- <80345b28-88e6-b119-5152-9f016dea2c76@ideasonboard.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <9c5a70c7-1eff-2047-62fb-403c2d2b3582@collabora.com>
-Date:   Fri, 2 Oct 2020 13:08:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 07:09:46 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94DCC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 04:09:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u4so848496ljd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 04:09:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzO9r/mm9kn9+8vQnJdM9eXg+PnaAIMWDsQ1sYGBPsQ=;
+        b=XKwOAUfLseMj6x2Y3HCLiEV6YHJcdo3MTKuUAWuJUYQNf5t+iX6Umg8ZAmmCSX7pJu
+         MaOG4WCvPHxchwYPsPNFQxaFNzbU9qHe0qhFbLDr4j/xbpRG3fMb4u3OFeIsbuwg+paH
+         1oGIgH8UK6VqvyBOjuyBmVW+3fi9Hy9tsiUej7HUXnYb3yKhvsAdnMzwtdpy/nILQQzw
+         LEZyHCwLLcXHtorRA3WXYHXPQoxm8dLF4FyMJJm2OgNyLC5zVeS8WIDrIKm+oRnumHXY
+         tpZ2CNw39d4n8fctnBZUWEhjZXurt93rPviZxOe7BbJevh2uukp+ob2sz7Xh3Vd8ZSkt
+         SFzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzO9r/mm9kn9+8vQnJdM9eXg+PnaAIMWDsQ1sYGBPsQ=;
+        b=KuFH48FdP+5kIxFk8KaexMxJkHMM9uuMEM8eUI0PYP5Tp275VzBOvu//uL5ItB5rsK
+         66FuF2l1WuPYnO8VBeYVxkvYLpmkksJTHq9R4DZYVsFe0+a+qaMSDMBDXTipP71CNoYC
+         1UI1aeTqGCDl/MlOTIzqAthPe47azZOb+NwJPp+Pn7RElCg0n4AZ+0bsfouPAn4H9xDO
+         QyRM/MTo0Pv9ZwC1k+gNbg2sR/l0ANdV8ZuUXufsQIo5c/6tTp2/QLI3fMLC5ig2olDW
+         0qOwgqy5Efec+vFpRJWq0KZAeQGmHA/gAKeoOqWzI9l3wlExEFLG4vAD8Qp/x4E7j37p
+         V5EQ==
+X-Gm-Message-State: AOAM530P+9GAATi7i7fyWwkDUVazJTdpVEpgGX+vr1LleVNyEozbMAbc
+        6s3ubTd/PjPzQ6GkglbZ5NI=
+X-Google-Smtp-Source: ABdhPJw5fDNozd5g/lD0TKVxOkPdTnVb01sF/xdoUJC4qfmgtMfDktx61pfRVC2gU3JunvKLWoa37Q==
+X-Received: by 2002:a2e:3002:: with SMTP id w2mr528037ljw.244.1601636982971;
+        Fri, 02 Oct 2020 04:09:42 -0700 (PDT)
+Received: from localhost.localdomain (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id m1sm232840lfh.99.2020.10.02.04.09.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 04:09:42 -0700 (PDT)
+From:   Topi Miettinen <toiwoton@gmail.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Topi Miettinen <toiwoton@gmail.com>
+Subject: [PATCH v2] mm: Optional full ASLR for mmap() and mremap()
+Date:   Fri,  2 Oct 2020 14:09:17 +0300
+Message-Id: <20201002110917.4227-1-toiwoton@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <80345b28-88e6-b119-5152-9f016dea2c76@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
+enables full randomization of memory mappings created with mmap(NULL,
+...). With 2, the base of the VMA used for such mappings is random,
+but the mappings are created in predictable places within the VMA and
+in sequential order. With 3, new VMAs are created to fully randomize
+the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
+even if not necessary.
 
-Am 20.08.20 um 17:36 schrieb Kieran Bingham:
-> Hi Kaaira,
-> 
-> On 19/08/2020 19:04, Kaaira Gupta wrote:
->> In the process of making vimc compatible for multiple streams, we need
->> to create a frame passing process such that two different entities can
->> get the frame from a common entity. This isn't possible currently without
->> calling process_frame twice for the common entity, as process_frames
->> returns the frame which gets passed on.
->>
->> So, to take care of this, add a get_frame callback to vimc device and
->> use it to get the frames for an entity from previous entity instead of
->> returning and passing the frames as an argument in process_frame.
->>
->> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
->> ---
->>   .../media/test-drivers/vimc/vimc-capture.c    | 18 +++++++++++++++---
->>   drivers/media/test-drivers/vimc/vimc-common.h |  7 ++++---
->>   .../media/test-drivers/vimc/vimc-debayer.c    | 19 ++++++++++++++++---
->>   drivers/media/test-drivers/vimc/vimc-scaler.c | 18 +++++++++++++++---
->>   drivers/media/test-drivers/vimc/vimc-sensor.c | 11 +++++++++--
->>   .../media/test-drivers/vimc/vimc-streamer.c   | 10 ++++++----
->>   6 files changed, 65 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
->> index c63496b17b9a..a8cbb8e4d5ba 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-capture.c
->> +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
->> @@ -355,12 +355,13 @@ static void vimc_cap_unregister(struct vimc_ent_device *ved)
->>   	video_unregister_device(&vcap->vdev);
->>   }
->>   
->> -static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
->> -				    const void *frame)
->> +static int vimc_cap_process_frame(struct vimc_ent_device *ved)
->>   {
->>   	struct vimc_cap_device *vcap = container_of(ved, struct vimc_cap_device,
->>   						    ved);
->>   	struct vimc_cap_buffer *vimc_buf;
->> +	struct v4l2_subdev *sd;
->> +	const void *frame;
->>   	void *vbuf;
->>   
->>   	spin_lock(&vcap->qlock);
->> @@ -370,7 +371,7 @@ static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
->>   					    typeof(*vimc_buf), list);
->>   	if (!vimc_buf) {
->>   		spin_unlock(&vcap->qlock);
->> -		return ERR_PTR(-EAGAIN);
->> +		return -EAGAIN;
->>   	}
->>   
->>   	/* Remove this entry from the list */
->> @@ -385,12 +386,22 @@ static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
->>   
->>   	vbuf = vb2_plane_vaddr(&vimc_buf->vb2.vb2_buf, 0);
->>   
->> +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
->> +	ved = v4l2_get_subdevdata(sd);
->> +	frame = ved->get_frame(ved);
-> 
-> Hrm, this code block is used in several places throughout this patch,
-> and it aliases the function parameter ved to a new device which isn't
-> nice. Not a problem as long as it's not used for the original VED after
-> of course.
-> 
-> But I wonder if we should instead add a helper into vimc-common.c:
-> 
-> struct vimc_ent_device *vimc_get_source_ved(struct vimc_ent_device *ved)
-> {
-> 	struct media_entity *ent;
-> 	struct v4l2_subdev *sd;
-> 
-> 	ent = vimc_get_source_entity(ved->ent);
-> 	if (!ent)
-> 		return NULL;
-> 
-> 	sd = media_entity_to_v4l2_subdev(ent);
-> 
-> 	return v4l2_get_subdevdata(sd);
-> }
-> 
-> It might not be necessary though, just an idea. If you like it, it can
-> be a patch on it's own after the vimc_get_source_entity() moving patch.
-> 
-> 
-> But it does show that vimc_get_source_entity() can return NULL which
-> might have to be checked... though perhaps we 'know' it will always be
-> valid ...
-> 
-> Also, following the links for each entity, for each frame sounds like
-> quite a lot of work. I wonder if the active source entity should be
-> cached in each VED ...
+On 32 bit systems this may cause problems due to increased VM
+fragmentation if the address space gets crowded.
 
-I think that we can add a pad number as an argument for the function and
-only ask for source entity for that pad.
+In this example, with value of 2, ld.so.cache, libc, an anonymous mmap
+and locale-archive are located close to each other:
+$ strace /bin/sync
+...
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
+mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e7f2000
+...
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7d9c1e7f0000
+mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7d9c1e62b000
+...
+openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
+mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e0c9000
 
-> 
-> That could be done on top anyway...
-> 
-> Overall, this looks like it will work, so with comments addressed how
-> you wish,
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> 
->> +
->>   	memcpy(vbuf, frame, vcap->format.sizeimage);
->>   
->>   	/* Set it as ready */
->>   	vb2_set_plane_payload(&vimc_buf->vb2.vb2_buf, 0,
->>   			      vcap->format.sizeimage);
->>   	vb2_buffer_done(&vimc_buf->vb2.vb2_buf, VB2_BUF_STATE_DONE);
->> +
->> +	return 0;
->> +}
->> +
->> +static void *vimc_cap_get_frame(struct vimc_ent_device *ved)
->> +{
->>   	return NULL;
->>   }
->>   
->> @@ -455,6 +466,7 @@ static struct vimc_ent_device *vimc_cap_add(struct vimc_device *vimc,
->>   	vcap->ved.ent = &vcap->vdev.entity;
->>   	vcap->ved.process_frame = vimc_cap_process_frame;
->>   	vcap->ved.vdev_get_format = vimc_cap_get_format;
->> +	vcap->ved.get_frame = vimc_cap_get_frame;
->>   	vcap->ved.dev = vimc->mdev.dev;
->>   
->>   	/* Initialize the video_device struct */
->> diff --git a/drivers/media/test-drivers/vimc/vimc-common.h b/drivers/media/test-drivers/vimc/vimc-common.h
->> index 4c580d854007..287d66edff49 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-common.h
->> +++ b/drivers/media/test-drivers/vimc/vimc-common.h
->> @@ -85,7 +85,8 @@ struct vimc_pix_map {
->>    *
->>    * @dev:		a pointer of the device struct of the driver
->>    * @ent:		the pointer to struct media_entity for the node
->> - * @process_frame:	callback send a frame to that node
->> + * @get_frame:		callback that sends a frame processed by the entity
+With 3, they are located in unrelated addresses:
+$ echo 3 > /proc/sys/kernel/randomize_va_space
+$ /bin/sync
+...
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
+mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0xeda4fbea000
+...
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8fb9c1d000
+mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xaabd8598000
+...
+openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
+mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0xbe351ab8000
 
-I see that all entities implemnt the 'get_frame' callback by returning the frame
-maybe we can instead make the frame a filed of vimc_ent_device instead of that
-callback.
+Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+---
+v2: also randomize mremap(..., MREMAP_MAYMOVE)
+---
+ Documentation/admin-guide/hw-vuln/spectre.rst |  6 +++---
+ Documentation/admin-guide/sysctl/kernel.rst   | 11 +++++++++++
+ init/Kconfig                                  |  2 +-
+ mm/mmap.c                                     |  7 ++++++-
+ mm/mremap.c                                   | 15 +++++++++++++++
+ 5 files changed, 36 insertions(+), 5 deletions(-)
 
-Thanks,
-Dafna
+diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
+index e05e581af5cf..9ea250522077 100644
+--- a/Documentation/admin-guide/hw-vuln/spectre.rst
++++ b/Documentation/admin-guide/hw-vuln/spectre.rst
+@@ -254,7 +254,7 @@ Spectre variant 2
+    left by the previous process will also be cleared.
+ 
+    User programs should use address space randomization to make attacks
+-   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
++   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
+ 
+ 3. A virtualized guest attacking the host
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@@ -499,8 +499,8 @@ Spectre variant 2
+    more overhead and run slower.
+ 
+    User programs should use address space randomization
+-   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
+-   difficult.
++   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
++   more difficult.
+ 
+ 3. VM mitigation
+ ^^^^^^^^^^^^^^^^
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index d4b32cc32bb7..acd0612155d9 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -1060,6 +1060,17 @@ that support this feature.
+     Systems with ancient and/or broken binaries should be configured
+     with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
+     address space randomization.
++
++3   Additionally enable full randomization of memory mappings created
++    with mmap(NULL, ...). With 2, the base of the VMA used for such
++    mappings is random, but the mappings are created in predictable
++    places within the VMA and in sequential order. With 3, new VMAs
++    are created to fully randomize the mappings. Also mremap(...,
++    MREMAP_MAYMOVE) will move the mappings even if not necessary.
++
++    On 32 bit systems this may cause problems due to increased VM
++    fragmentation if the address space gets crowded.
++
+ ==  ===========================================================================
+ 
+ 
+diff --git a/init/Kconfig b/init/Kconfig
+index d6a0b31b13dc..c5ea2e694f6a 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1859,7 +1859,7 @@ config COMPAT_BRK
+ 	  also breaks ancient binaries (including anything libc5 based).
+ 	  This option changes the bootup default to heap randomization
+ 	  disabled, and can be overridden at runtime by setting
+-	  /proc/sys/kernel/randomize_va_space to 2.
++	  /proc/sys/kernel/randomize_va_space to 2 or 3.
+ 
+ 	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 40248d84ad5f..489368f43af1 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -47,6 +47,7 @@
+ #include <linux/pkeys.h>
+ #include <linux/oom.h>
+ #include <linux/sched/mm.h>
++#include <linux/elf-randomize.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/cacheflush.h>
+@@ -206,7 +207,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+ #ifdef CONFIG_COMPAT_BRK
+ 	/*
+ 	 * CONFIG_COMPAT_BRK can still be overridden by setting
+-	 * randomize_va_space to 2, which will still cause mm->start_brk
++	 * randomize_va_space to >= 2, which will still cause mm->start_brk
+ 	 * to be arbitrarily shifted
+ 	 */
+ 	if (current->brk_randomized)
+@@ -1407,6 +1408,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+ 	if (mm->map_count > sysctl_max_map_count)
+ 		return -ENOMEM;
+ 
++	/* Pick a random address even outside current VMAs? */
++	if (!addr && randomize_va_space >= 3)
++		addr = arch_mmap_rnd();
++
+ 	/* Obtain the address to map to. we verify (or select) it and ensure
+ 	 * that it represents a valid section of the address space.
+ 	 */
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 138abbae4f75..c7fd1ab5fb5f 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -24,6 +24,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/mm-arch-hooks.h>
+ #include <linux/userfaultfd_k.h>
++#include <linux/elf-randomize.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/tlbflush.h>
+@@ -720,6 +721,20 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+ 		goto out;
+ 	}
+ 
++	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
++		/*
++		 * Caller is happy with a different address, so let's
++		 * move even if not necessary!
++		 */
++		new_addr = arch_mmap_rnd();
++
++		ret = mremap_to(addr, old_len, new_addr, new_len,
++				&locked, flags, &uf, &uf_unmap_early,
++				&uf_unmap);
++		goto out;
++	}
++
++
+ 	/*
+ 	 * Always allow a shrinking remap: that just unmaps
+ 	 * the unnecessary pages..
+-- 
+2.28.0
 
-> 
-> s/sends a/obtains the/
-> 
-> 
-> 
->> + * @process_frame:	callback that processes a frame
->>    * @vdev_get_format:	callback that returns the current format a pad, used
->>    *			only when is_media_entity_v4l2_video_device(ent) returns
->>    *			true
->> @@ -101,8 +102,8 @@ struct vimc_pix_map {
->>   struct vimc_ent_device {
->>   	struct device *dev;
->>   	struct media_entity *ent;
->> -	void * (*process_frame)(struct vimc_ent_device *ved,
->> -				const void *frame);
->> +	void * (*get_frame)(struct vimc_ent_device *ved);
->> +	int (*process_frame)(struct vimc_ent_device *ved);
->>   	void (*vdev_get_format)(struct vimc_ent_device *ved,
->>   			      struct v4l2_pix_format *fmt);
->>   };
->> diff --git a/drivers/media/test-drivers/vimc/vimc-debayer.c b/drivers/media/test-drivers/vimc/vimc-debayer.c
->> index c3f6fef34f68..f61e6e8899ac 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-debayer.c
->> +++ b/drivers/media/test-drivers/vimc/vimc-debayer.c
->> @@ -491,17 +491,22 @@ static void vimc_deb_calc_rgb_sink(struct vimc_deb_device *vdeb,
->>   	}
->>   }
->>   
->> -static void *vimc_deb_process_frame(struct vimc_ent_device *ved,
->> -				    const void *sink_frame)
->> +static int vimc_deb_process_frame(struct vimc_ent_device *ved)
->>   {
->>   	struct vimc_deb_device *vdeb = container_of(ved, struct vimc_deb_device,
->>   						    ved);
->>   	unsigned int rgb[3];
->>   	unsigned int i, j;
->> +	struct v4l2_subdev *sd;
->> +	const void *sink_frame;
->>   
->>   	/* If the stream in this node is not active, just return */
->>   	if (!vdeb->src_frame)
->> -		return ERR_PTR(-EINVAL);
->> +		return -EINVAL;
->> +
->> +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
->> +	ved = v4l2_get_subdevdata(sd);
->> +	sink_frame = ved->get_frame(ved);
->>   
->>   	for (i = 0; i < vdeb->sink_fmt.height; i++)
->>   		for (j = 0; j < vdeb->sink_fmt.width; j++) {
->> @@ -509,6 +514,13 @@ static void *vimc_deb_process_frame(struct vimc_ent_device *ved,
->>   			vdeb->set_rgb_src(vdeb, i, j, rgb);
->>   		}
->>   
->> +	return 0;
->> +}
->> +
->> +static void *vimc_deb_get_frame(struct vimc_ent_device *ved)
->> +{
->> +	struct vimc_deb_device *vdeb = container_of(ved, struct vimc_deb_device,
->> +						    ved);
->>   	return vdeb->src_frame;
->>   }
->>   
->> @@ -593,6 +605,7 @@ static struct vimc_ent_device *vimc_deb_add(struct vimc_device *vimc,
->>   		goto err_free_hdl;
->>   
->>   	vdeb->ved.process_frame = vimc_deb_process_frame;
->> +	vdeb->ved.get_frame = vimc_deb_get_frame;
->>   	vdeb->ved.dev = vimc->mdev.dev;
->>   	vdeb->mean_win_size = vimc_deb_ctrl_mean_win_size.def;
->>   
->> diff --git a/drivers/media/test-drivers/vimc/vimc-scaler.c b/drivers/media/test-drivers/vimc/vimc-scaler.c
->> index 121fa7d62a2e..347f9cd4a168 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-scaler.c
->> +++ b/drivers/media/test-drivers/vimc/vimc-scaler.c
->> @@ -455,18 +455,29 @@ static void vimc_sca_fill_src_frame(const struct vimc_sca_device *const vsca,
->>   			vimc_sca_scale_pix(vsca, i, j, sink_frame);
->>   }
->>   
->> -static void *vimc_sca_process_frame(struct vimc_ent_device *ved,
->> -				    const void *sink_frame)
->> +static int vimc_sca_process_frame(struct vimc_ent_device *ved)
->>   {
->>   	struct vimc_sca_device *vsca = container_of(ved, struct vimc_sca_device,
->>   						    ved);
->> +	const void *sink_frame;
->> +	struct v4l2_subdev *sd;
->>   
->>   	/* If the stream in this node is not active, just return */
->>   	if (!vsca->src_frame)
->> -		return ERR_PTR(-EINVAL);
->> +		return -EINVAL;
->>   
->> +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
->> +	ved = v4l2_get_subdevdata(sd);
->> +	sink_frame = ved->get_frame(ved);
->>   	vimc_sca_fill_src_frame(vsca, sink_frame);
->>   
->> +	return 0;
->> +};
->> +
->> +static void *vimc_sca_get_frame(struct vimc_ent_device *ved)
->> +{
->> +	struct vimc_sca_device *vsca = container_of(ved, struct vimc_sca_device,
->> +						    ved);
->>   	return vsca->src_frame;
->>   };
->>   
->> @@ -505,6 +516,7 @@ static struct vimc_ent_device *vimc_sca_add(struct vimc_device *vimc,
->>   	}
->>   
->>   	vsca->ved.process_frame = vimc_sca_process_frame;
->> +	vsca->ved.get_frame = vimc_sca_get_frame;
->>   	vsca->ved.dev = vimc->mdev.dev;
->>   
->>   	/* Initialize the frame format */
->> diff --git a/drivers/media/test-drivers/vimc/vimc-sensor.c b/drivers/media/test-drivers/vimc/vimc-sensor.c
->> index ba5db5a150b4..32a2c39de2cd 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-sensor.c
->> +++ b/drivers/media/test-drivers/vimc/vimc-sensor.c
->> @@ -190,8 +190,7 @@ static const struct v4l2_subdev_pad_ops vimc_sen_pad_ops = {
->>   	.set_fmt		= vimc_sen_set_fmt,
->>   };
->>   
->> -static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
->> -				    const void *sink_frame)
->> +static int vimc_sen_process_frame(struct vimc_ent_device *ved)
->>   {
->>   	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
->>   						    ved);
->> @@ -238,6 +237,13 @@ static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
->>   		break;
->>   	}
->>   
->> +	return 0;
->> +}
->> +
->> +static void *vimc_sen_get_frame(struct vimc_ent_device *ved)
->> +{
->> +	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
->> +						    ved);
->>   	return vsen->frame;
->>   }
->>   
->> @@ -429,6 +435,7 @@ static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
->>   		goto err_free_tpg;
->>   
->>   	vsen->ved.process_frame = vimc_sen_process_frame;
->> +	vsen->ved.get_frame = vimc_sen_get_frame;
->>   	vsen->ved.dev = vimc->mdev.dev;
->>   
->>   	/* Initialize the frame format */
->> diff --git a/drivers/media/test-drivers/vimc/vimc-streamer.c b/drivers/media/test-drivers/vimc/vimc-streamer.c
->> index 4f8384246042..c1644d69686d 100644
->> --- a/drivers/media/test-drivers/vimc/vimc-streamer.c
->> +++ b/drivers/media/test-drivers/vimc/vimc-streamer.c
->> @@ -125,7 +125,8 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
->>   static int vimc_streamer_thread(void *data)
->>   {
->>   	struct vimc_stream *stream = data;
->> -	u8 *frame = NULL;
->> +	struct vimc_ent_device *ved;
->> +	int ret;
->>   	int i;
->>   
->>   	set_freezable();
->> @@ -136,9 +137,10 @@ static int vimc_streamer_thread(void *data)
->>   			break;
->>   
->>   		for (i = stream->pipe_size - 1; i >= 0; i--) {
->> -			frame = stream->ved_pipeline[i]->process_frame(
->> -					stream->ved_pipeline[i], frame);
->> -			if (!frame || IS_ERR(frame))
->> +			ved = stream->ved_pipeline[i];
->> +			ret = ved->process_frame(ved);
->> +
->> +			if (ret)
->>   				break;
->>   		}
->>   		//wait for 60hz
->>
-> 
