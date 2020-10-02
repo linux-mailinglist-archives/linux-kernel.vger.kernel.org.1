@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20962815F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58192815F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388183AbgJBPCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:02:08 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:48358 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388091AbgJBPCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:02:07 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 2649D40A1DAC;
-        Fri,  2 Oct 2020 15:02:05 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] usb: gadget: goku_udc: fix potential crashes in probe
-Date:   Fri,  2 Oct 2020 18:01:55 +0300
-Message-Id: <20201002150155.7560-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.16.4
+        id S2388199AbgJBPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388016AbgJBPCW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:02:22 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615F9C0613D0;
+        Fri,  2 Oct 2020 08:02:22 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u21so1443452ljl.6;
+        Fri, 02 Oct 2020 08:02:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ka6/K8mHHg9ZELEKZJRCDuBiuNpr2lVVW/5oVw+42YU=;
+        b=eDay96xuK97T4BkOacSyhPCI9JzHTkiEJd6IX+cevA6rjO1X2KA03bRFPyuF765F5x
+         o3aftheCQj1UBhsqfgcVgiRSy9aU7rKYUP7im1zsGUVgXtssIcdLQevbUex90jG/sO42
+         B19vVAzZ0y9RgAayIYaNwbE3tWT8VkER55kctULFIZrSBaIjLJwBe1mSzzjeq7U9gGDa
+         G09jaaccZxjMy2WSxJDNeDwnKDWXdjYQ1lQvYg7SayTy/e63R4EQ5/LXVbyKV7/up1zb
+         Q3dPzHlSr1jfv381FKITRhTebp3sC8atHLKdYU59cqjU6B/NuPdIpQm52Gtf/dXOwq4L
+         CLvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ka6/K8mHHg9ZELEKZJRCDuBiuNpr2lVVW/5oVw+42YU=;
+        b=mEURNAqb/7VwYE7MiKZGjYa6mN9Ew5XJAuFozArVQ/+8bMK2nQH1Ez3oisY+Ky1SSJ
+         5Ku9tUt/6TWlr02Tkn8ccuXVcERySG79kaQrPBmFc/JxuztdMNyljxe5TsL/h1GGYE3E
+         mhepP0/0cVK3Bq8xSS1oE6y66ZRxPk/P3Zqd/J0Ik2Bi3BSIaYPqNuliaxSqbG+nGNI3
+         72qp48VcQ7+dmcab/xYxIkbzc7VDr9yIhuyPogovWwo7eyN64hG4DK1chqAZDoR0hJDW
+         mtpmbDAFOIijMSKWar5WYHHFX5P2w7WDpY0uWC+YZX6jxLP3toSs9LAkdxvVKzoxlLK0
+         kHmg==
+X-Gm-Message-State: AOAM533qAUGLJdPunrTPNnPdHHEOFo4+KEUIwJJeGGXscuAKwVoVrWpT
+        LUn9Yj95qHZqfpaE+DfFfpVhVkZpX8U=
+X-Google-Smtp-Source: ABdhPJwOT67jY7lMUAS0fLLHRBVwgEk4tvyQGOTRnJAWl+2qEQbUHagbwWasPsBuUvDWZwsOqRYGqg==
+X-Received: by 2002:a2e:b5d0:: with SMTP id g16mr814724ljn.402.1601650940389;
+        Fri, 02 Oct 2020 08:02:20 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id u22sm338978lfl.160.2020.10.02.08.02.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 08:02:19 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5542b314-f414-1e83-8cf6-2bf22a41ae9c@gmail.com>
+Date:   Fri, 2 Oct 2020 18:02:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201002060807.32138-3-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-goku_probe() goes to error label "err" and invokes goku_remove()
-in case of failures of pci_enable_device(), pci_resource_start()
-and ioremap(). goku_remove() gets a device from
-pci_get_drvdata(pdev) and works with it without any checks, in
-particular it dereferences a corresponding pointer. But
-goku_probe() did not set this device yet. So, one can expect
-various crashes. The patch moves setting the device just after
-allocation of memory for it.
+02.10.2020 09:08, Nicolin Chen пишет:
+>  static int tegra_smmu_of_xlate(struct device *dev,
+>  			       struct of_phandle_args *args)
+>  {
+> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+> +	struct tegra_mc *mc = platform_get_drvdata(iommu_pdev);
+>  	u32 id = args->args[0];
+>  
+> +	of_node_put(args->np);
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Reported-by: Pavel Andrianov <andrianov@ispras.ru>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/usb/gadget/udc/goku_udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/gadget/udc/goku_udc.c b/drivers/usb/gadget/udc/goku_udc.c
-index 25c1d6ab5adb..3e1267d38774 100644
---- a/drivers/usb/gadget/udc/goku_udc.c
-+++ b/drivers/usb/gadget/udc/goku_udc.c
-@@ -1760,6 +1760,7 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err;
- 	}
- 
-+	pci_set_drvdata(pdev, dev);
- 	spin_lock_init(&dev->lock);
- 	dev->pdev = pdev;
- 	dev->gadget.ops = &goku_ops;
-@@ -1793,7 +1794,6 @@ static int goku_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	}
- 	dev->regs = (struct goku_udc_regs __iomem *) base;
- 
--	pci_set_drvdata(pdev, dev);
- 	INFO(dev, "%s\n", driver_desc);
- 	INFO(dev, "version: " DRIVER_VERSION " %s\n", dmastr());
- 	INFO(dev, "irq %d, pci mem %p\n", pdev->irq, base);
--- 
-2.26.2
-
+of_find_device_by_node() takes device reference and not the np
+reference. This is a bug, please remove of_node_put().
