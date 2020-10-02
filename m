@@ -2,255 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0024281A45
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC0E281A4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388372AbgJBR4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbgJBR4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:56:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7649206DD;
-        Fri,  2 Oct 2020 17:56:45 +0000 (UTC)
-Date:   Fri, 2 Oct 2020 13:56:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [WARNING] kernel/rcu/tree.c:1058 rcu_irq_enter+0x15/0x20
-Message-ID: <20201002135644.7903d0e5@gandalf.local.home>
-In-Reply-To: <20200930181323.GF2628@hirez.programming.kicks-ass.net>
-References: <20200917131647.2b55ebb1@gandalf.local.home>
-        <20200930181323.GF2628@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2388132AbgJBR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387602AbgJBR7c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:59:32 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEAAC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:59:32 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id j76so1777165ybg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vZbuayUw4nR5ldchYC0QJ2SKyNmd/sp/ZArDf0aVmf4=;
+        b=hxne4JB9HZja3FImgOTwwGft+D9UZ0uS9fK4OcJP2Eg1oroqmn/9modjXkPJGSlN8g
+         Lh5UDYM7CynmC7F+t8Uq5psnpU8Z5iPg+RgiXlsA6p/lD2mphiU75QAqHBKi1YSqj7XW
+         7LoAJgH6xJq1blMl4m/G5sIIkMci/wvcZrPRhucqEIygDXBzfFT+Qf7VHFgFAyQk/z+1
+         F/V36+u2ogFL7XMkvpu/ekSzZkW2RoA3QWTLoD2astGElGbvCRuXZLvLQNp8zSMbfqsI
+         izqQ+mlyGkYqerxmFose6Nqt7AAsAnO9detgWoYY7GHj8Az83ZD5RLrYOddI9P+0V/ml
+         IIMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vZbuayUw4nR5ldchYC0QJ2SKyNmd/sp/ZArDf0aVmf4=;
+        b=Y0zbJjIUFrnxeeO8JrOmlx0/eJAvV/z8w+YKB1vKLs3q9Fh42azpoGQ18nvfeNtI8d
+         aBgtZX/tXSmZ+k38IrPpTiVG/QMCtMlde/i9PPlfWE6oyqx8B1Qv7BUXWMbX0AeN11J2
+         oXeUlDpdLx9Lfz4QqigRTVTNQGptJbvLccd1hrEy/hz7yNt70Md1mTa6vG/1ESh7R8EB
+         MmHAue3BUFGBR1JeDll/Mu4AJb1pR0irvm6N84W/lcf3Er/j7lM7hwsFzRQdwiBdodnG
+         FNIa/erP2zKxVvY2JWWm2+QeqcJRYJlK9VKIZEZu/PF5xWxw8W+w7urAW6mlloXUypz7
+         3ZYg==
+X-Gm-Message-State: AOAM530HvD00lYbpQBPQ5KQ5Pv71EWsVkAQUEDtBYSk7TWXz3DImwT+n
+        OT9y/P6X05ilUsX8on/ewZ7o0i97+D32QfQcdVFLUA==
+X-Google-Smtp-Source: ABdhPJy+2uWxMGaMD27VX8hqKxgrKfNstiISBRAtvv2ZfenCYYbpD2QB2rzAxASzDDq7221cpxy+ivvqhR77p6L+E3Y=
+X-Received: by 2002:a05:6902:725:: with SMTP id l5mr4142164ybt.346.1601661571259;
+ Fri, 02 Oct 2020 10:59:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com> <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
+ <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com> <20201002175423.GE3933@pendragon.ideasonboard.com>
+In-Reply-To: <20201002175423.GE3933@pendragon.ideasonboard.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 2 Oct 2020 10:58:55 -0700
+Message-ID: <CAGETcx-7nJaU6pDo_KL-nKmCaxv57C5aaXq-pvo4XiN=N0K5Jg@mail.gmail.com>
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Sep 2020 20:13:23 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Oct 2, 2020 at 10:55 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Saravana,
+>
+> On Fri, Oct 02, 2020 at 10:51:51AM -0700, Saravana Kannan wrote:
+> > On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > > On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+> > > > adding all top level devices") optimized the fwnode parsing when all top
+> > > > level devices are added, it missed out optimizing this for platform
+> > > > where the top level devices are added through the init_machine() path.
+> > > >
+> > > > This commit does the optimization for all paths by simply moving the
+> > > > fw_devlink_pause/resume() inside of_platform_default_populate().
+> > > >
+> > > > Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > ---
+> > > >  drivers/of/platform.c | 19 +++++++++++++++----
+> > > >  1 file changed, 15 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > > > index 071f04da32c8..79972e49b539 100644
+> > > > --- a/drivers/of/platform.c
+> > > > +++ b/drivers/of/platform.c
+> > > > @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
+> > > >                                  const struct of_dev_auxdata *lookup,
+> > > >                                  struct device *parent)
+> > > >  {
+> > > > -       return of_platform_populate(root, of_default_bus_match_table, lookup,
+> > > > -                                   parent);
+> > > > +       int ret;
+> > > > +
+> > > > +       /*
+> > > > +        * fw_devlink_pause/resume() are only safe to be called around top
+> > > > +        * level device addition due to locking constraints.
+> > > > +        */
+> > > > +       if (!root)
+> > > > +               fw_devlink_pause();
+> > > > +
+> > > > +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
+> > > > +                                  parent);
+> > >
+> > > of_platform_default_populate() vs. of_platform_populate() is just a
+> > > different match table. I don't think the behavior should otherwise be
+> > > different.
+> > >
+> > > There's also of_platform_probe() which has slightly different matching
+> > > behavior. It should not behave differently either with respect to
+> > > devlinks.
+> >
+> > So I'm trying to do this only when the top level devices are added for
+> > the first time. of_platform_default_populate() seems to be the most
+> > common path. For other cases, I think we just need to call
+> > fw_devlink_pause/resume() wherever the top level devices are added for
+> > the first time. As I said in the other email, we can't add
+> > fw_devlink_pause/resume() by default to of_platform_populate().
+> >
+> > Do you have other ideas for achieving "call fw_devlink_pause/resume()
+> > only when top level devices are added for the first time"?
+>
+> I'm not an expert in this domain, but before investigating it, would you
+> be able to share a hack patch that implements this (in the most simple
+> way) to check if it actually fixes the delays I experience on my system
+> ?
 
-> Blergh, IIRC there's header hell that way. The sane fix is killing off
-> that trace_*_rcuidle() disease.
-> 
-> But I think this will also cure it.
+So I take it the patch I sent out didn't work for you? Can you tell me
+what machine/DT you are using?
 
-I guess you still don't build modules ;-). I had to add a
-EXPORT_SYMBOL(lockdep_recursion) to get it to build, and then move the
-checks within the irq disabling to get rid of the using cpu pointers within
-preemptable code warnings
-
-But it appears to solve the problem.
-
--- Steve
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 0e100c9784a5..70610f217b4e 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -77,6 +77,7 @@ module_param(lock_stat, int, 0644);
- #endif
- 
- DEFINE_PER_CPU(unsigned int, lockdep_recursion);
-+EXPORT_SYMBOL(lockdep_recursion);
- 
- static inline bool lockdep_enabled(void)
- {
-@@ -4241,13 +4242,13 @@ void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
- 	if (subclass) {
- 		unsigned long flags;
- 
--		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
--			return;
--
- 		raw_local_irq_save(flags);
-+		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-+			goto out;
- 		lockdep_recursion_inc();
- 		register_lock_class(lock, subclass, 1);
- 		lockdep_recursion_finish();
-+out:
- 		raw_local_irq_restore(flags);
- 	}
- }
-@@ -4928,15 +4929,15 @@ void lock_set_class(struct lockdep_map *lock, const char *name,
- {
- 	unsigned long flags;
- 
--	if (unlikely(!lockdep_enabled()))
--		return;
--
- 	raw_local_irq_save(flags);
-+	if (unlikely(!lockdep_enabled()))
-+		goto out;
- 	lockdep_recursion_inc();
- 	check_flags(flags);
- 	if (__lock_set_class(lock, name, key, subclass, ip))
- 		check_chain_key(current);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_set_class);
-@@ -4945,15 +4946,15 @@ void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
- 
--	if (unlikely(!lockdep_enabled()))
--		return;
--
- 	raw_local_irq_save(flags);
-+	if (unlikely(!lockdep_enabled()))
-+		goto out;
- 	lockdep_recursion_inc();
- 	check_flags(flags);
- 	if (__lock_downgrade(lock, ip))
- 		check_chain_key(current);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_downgrade);
-@@ -5041,16 +5042,18 @@ void lock_release(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_release(lock, ip);
- 
-+	raw_local_irq_save(flags);
-+
- 	if (unlikely(!lockdep_enabled()))
--		return;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
- 	lockdep_recursion_inc();
- 	if (__lock_release(lock, ip))
- 		check_chain_key(current);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_release);
-@@ -5060,15 +5063,17 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
- 	unsigned long flags;
- 	int ret = 0;
- 
--	if (unlikely(!lockdep_enabled()))
--		return 1; /* avoid false negative lockdep_assert_held() */
--
- 	raw_local_irq_save(flags);
-+	if (unlikely(!lockdep_enabled())) {
-+		ret = 1; /* avoid false negative lockdep_assert_held() */
-+		goto out;
-+	}
- 	check_flags(flags);
- 
- 	lockdep_recursion_inc();
- 	ret = __lock_is_held(lock, read);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- 
- 	return ret;
-@@ -5081,15 +5086,16 @@ struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
- 	struct pin_cookie cookie = NIL_COOKIE;
- 	unsigned long flags;
- 
-+	raw_local_irq_save(flags);
- 	if (unlikely(!lockdep_enabled()))
--		return cookie;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
- 	lockdep_recursion_inc();
- 	cookie = __lock_pin_lock(lock);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- 
- 	return cookie;
-@@ -5100,15 +5106,16 @@ void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
- {
- 	unsigned long flags;
- 
-+	raw_local_irq_save(flags);
- 	if (unlikely(!lockdep_enabled()))
--		return;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
- 	lockdep_recursion_inc();
- 	__lock_repin_lock(lock, cookie);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_repin_lock);
-@@ -5117,15 +5124,16 @@ void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
- {
- 	unsigned long flags;
- 
-+	raw_local_irq_save(flags);
- 	if (unlikely(!lockdep_enabled()))
--		return;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 
- 	lockdep_recursion_inc();
- 	__lock_unpin_lock(lock, cookie);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_unpin_lock);
-@@ -5253,14 +5261,15 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_acquired(lock, ip);
- 
-+	raw_local_irq_save(flags);
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
--		return;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 	lockdep_recursion_inc();
- 	__lock_contended(lock, ip);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_contended);
-@@ -5271,14 +5280,15 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
- 
- 	trace_lock_contended(lock, ip);
- 
-+	raw_local_irq_save(flags);
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
--		return;
-+		goto out;
- 
--	raw_local_irq_save(flags);
- 	check_flags(flags);
- 	lockdep_recursion_inc();
- 	__lock_acquired(lock, ip);
- 	lockdep_recursion_finish();
-+out:
- 	raw_local_irq_restore(flags);
- }
- EXPORT_SYMBOL_GPL(lock_acquired);
+-Saravana
