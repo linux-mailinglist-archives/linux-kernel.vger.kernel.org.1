@@ -2,200 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDB4281D14
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACB0281D1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725681AbgJBUrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S1725780AbgJBUsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 16:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJBUrG (ORCPT
+        with ESMTP id S1725355AbgJBUsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:47:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEFEC0613E4
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:47:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id m6so3170334wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:47:05 -0700 (PDT)
+        Fri, 2 Oct 2020 16:48:18 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E734C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 13:48:17 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id y14so1569893pgf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 13:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uXKKFOeSYPG8al9cOaypQaHiMKPA9xxy17Dd4BLJwvc=;
-        b=A+1P4SoTB5U034QG0+WmgfcBxp3U+9PRSZ4IhqevphFs61HqRbCJpodggEf2oyNcwe
-         nKsqKkz45QhOTuJHkVnHwUfGyhEvIWJGe+3e5sm1JmMEq3413vQyblzchNBI6/IlNWYf
-         NHUXuTRp1W3982IMCnOwSPMzpKWPxIN49Bm2uoG2FHacvx7NnRYSJQrrrc9vtRvnI0ha
-         GyAtvSxeVmeQHlhSIMMdFoNBOYgz1S65Iq4nxYfoOeYdky7XN3teDdhWacbWFzf7sx94
-         w9OVi4MIOnIXEuefoxj4VIyvaLQ7VzWeI1Nojd7f6TvgoBnWkr6u099aHcuvKGurNLbj
-         28Xg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cLATYwuDqnhajc5QXKEUsa/OcJ1TmbemJ0CgVdLo4Ek=;
+        b=jpNf1D4Wi5BJQOSFaL6zihdxze85N1qgFBus9S+8h5/Gbq4JX0IBUfUdmxgRJRqj+9
+         B9enPn1Dj0RqI12GOSTJ7/ZUqmD5+HRZ0XKm2oEUgDPMl5/c5ZgtjkacrUBlCudalMil
+         DT1Mo+CRme+xk894/UHRuj0UUf5XJ356AoYcVldnSbVinqtZlsd7Wl3zMbc0TUPkIR+A
+         B44n8cH7lzw9MSbwCaVx2wILWeF+ZHpS183wHCPCP0PjRNQ8m34+1dcSheoQJ7RE0sgH
+         lwjpwsK44adXVgfd6/V51TZaCfgs4ISlGvXCVOG/c2RZJ5/IpvnUQdQAe0Qfklvp2WVz
+         YIzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uXKKFOeSYPG8al9cOaypQaHiMKPA9xxy17Dd4BLJwvc=;
-        b=ECs6DLmtOLYz89AUE9zHRXY0Ie3pT6ZC8gf27EuEjI///yoru26htvyjBG67/NDqVC
-         j14YxSC98kDE5PMEwGFmZ4thU/pYrUe1DKQz4Dx1aOVayNgOzG1AMYYDgOznUgMEkt+d
-         QpP8ZLNum6Uabxl/bvYNkjUvUsX1oTw4kSkE/1cxabsRQu0eUE4XJLdRhCYTLd8uiskP
-         X3ed2gtQ9/jKZwP3CJH6j/1ZUjTTArtlEYfwjmNo34F7khTt68Ipf1syJkRxQ1kN/ZnZ
-         Z7sp5zpOTM5uvbIP5k/j4IdUcnlt0yWNWdQOEaaZfzbM+N9bK/mY3/K+FcR1Ybv0bbNV
-         IP6g==
-X-Gm-Message-State: AOAM53309XkRML9Q7r4dSpplt7tyjcTeZQTVQBZM3JRPMKlReSBJ8sYq
-        6/tLgi8dNR/8+RLwcjruAJDgiPLR19FJNxDv0QsSCQ==
-X-Google-Smtp-Source: ABdhPJwf2MahFXb5roCcSXJw39ZF+8aTZAyovTdB7iZgRUUyATSygYlDICmS5UdszlFwdG4hfktZg+aSXxL6iEJknu8=
-X-Received: by 2002:adf:f5c1:: with SMTP id k1mr5271207wrp.271.1601671623743;
- Fri, 02 Oct 2020 13:47:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cLATYwuDqnhajc5QXKEUsa/OcJ1TmbemJ0CgVdLo4Ek=;
+        b=TSg2Pwev9f99yyppR1cmHdE+ud0DN+OmJpplYNq+693oFO6Dr8OtDVnn6JfOb+pRIZ
+         tqMcYnUt1H322HNOMDlH/3D1u3iDX3KJS35ffMai671jarE4JmxwEWe5AEtgJv8JA5/q
+         vAiH25TgtJoY7dcB7htByq+2fzzUBNsv9ZGfWOtzGFYrs6tEmqiNg6Pk+53PVSzBAdhK
+         2lfnZfgE4nbLD6d9P5Rv2UW+VoiS7ppU7elqQja5rj7hB0KU580p4xgdm0w9OkHP0KbI
+         zfrJqDQil+D2ovymBXCo20i6Q6baypRu4ltZ9YcbR8+m7ooah3u4qNfPgHuu010O3UD/
+         bHfw==
+X-Gm-Message-State: AOAM530T4fRBFco2SItXAkvPgWVy5qyf3eugm7E7YFL3zXKnwfWG25ld
+        sz3UYEkV8PLDcVAUcEhke36XFA==
+X-Google-Smtp-Source: ABdhPJxwzc6rFv0usOMnH38FiAyqbm/CY3bJyzbwqfG3tsfqs+vUWEAzUChtCseDztixr5Be67J6KQ==
+X-Received: by 2002:a63:c547:: with SMTP id g7mr3805983pgd.234.1601671695860;
+        Fri, 02 Oct 2020 13:48:15 -0700 (PDT)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id z21sm1779419pfr.43.2020.10.02.13.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 13:48:14 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 13:48:10 -0700
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
+        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20201002204810.GA3179405@google.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922014836.GA26507@linux.intel.com>
+ <20200922211404.GA4141897@google.com>
+ <20200924192116.GC9649@linux.intel.com>
+ <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+ <20200925222220.GA977797@google.com>
 MIME-Version: 1.0
-References: <20200507140819.126960-1-irogers@google.com> <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
-In-Reply-To: <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 2 Oct 2020 13:46:52 -0700
-Message-ID: <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     John Garry <john.garry@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925222220.GA977797@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 07/05/2020 15:08, Ian Rogers wrote:
->
-> Hi Ian,
->
-> I was wondering if you ever tested commit 2440689d62e9 ("perf
-> metricgroup: Remove duped metric group events") for when we have a
-> metric which aliases multiple instances of the same uncore PMU in the
-> system?
+On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:
+> On Thu, Sep 24, 2020 at 02:55:18PM -0500, Tom Lendacky wrote:
+> > On 9/24/20 2:21 PM, Sean Christopherson wrote:
+> > > On Tue, Sep 22, 2020 at 02:14:04PM -0700, Vipin Sharma wrote:
+> > > > On Mon, Sep 21, 2020 at 06:48:38PM -0700, Sean Christopherson wrote:
+> > > > > On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
+> > > > > > Hello,
+> > > > > > 
+> > > > > > This patch series adds a new SEV controller for tracking and limiting
+> > > > > > the usage of SEV ASIDs on the AMD SVM platform.
+> > > > > > 
+> > > > > > SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
+> > > > > > but this resource is in very limited quantity on a host.
+> > > > > > 
+> > > > > > This limited quantity creates issues like SEV ASID starvation and
+> > > > > > unoptimized scheduling in the cloud infrastructure.
+> > > > > > 
+> > > > > > SEV controller provides SEV ASID tracking and resource control
+> > > > > > mechanisms.
+> > > > > 
+> > > > > This should be genericized to not be SEV specific.  TDX has a similar
+> > > > > scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
+> > > > > (gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
+> > > > > would change anything, I think it'd just be a bunch of renaming.  The hardest
+> > > > > part would probably be figuring out a name :-).
+> > > > > 
+> > > > > Another idea would be to go even more generic and implement a KVM cgroup
+> > > > > that accounts the number of VMs of a particular type, e.g. legacy, SEV,
+> > > > > SEV-ES?, and TDX.  That has potential future problems though as it falls
+> > > > > apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
+> > > > > account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
+> > > > > light of day.
+> > > > 
+> > > > I read about the TDX and its use of the KeyID for encrypting VMs. TDX
+> > > > has two kinds of KeyIDs private and shared.
+> > > 
+> > > To clarify, "shared" KeyIDs are simply legacy MKTME KeyIDs.  This is relevant
+> > > because those KeyIDs can be used without TDX or KVM in the picture.
+> > > 
+> > > > On AMD platform there are two types of ASIDs for encryption.
+> > > > 1. SEV ASID - Normal runtime guest memory encryption.
+> > > > 2. SEV-ES ASID - Extends SEV ASID by adding register state encryption with
+> > > > 		 integrity.
+> > > > 
+> > > > Both types of ASIDs have their own maximum value which is provisioned in
+> > > > the firmware
+> > > 
+> > > Ugh, I missed that detail in the SEV-ES RFC.  Does SNP add another ASID type,
+> > > or does it reuse SEV-ES ASIDs?  If it does add another type, is that trend
+> > > expected to continue, i.e. will SEV end up with SEV, SEV-ES, SEV-ES-SNP,
+> > > SEV-ES-SNP-X, SEV-ES-SNP-X-Y, etc...?
+> > 
+> > SEV-SNP and SEV-ES share the same ASID range.
+> > 
+> > Thanks,
+> > Tom
+> > 
+> > > 
+> > > > So, we are talking about 4 different types of resources:
+> > > > 1. AMD SEV ASID (implemented in this patch as sev.* files in SEV cgroup)
+> > > > 2. AMD SEV-ES ASID (in future, adding files like sev_es.*)
+> > > > 3. Intel TDX private KeyID
+> > > > 4. Intel TDX shared KeyID
+> > > > 
+> > > > TDX private KeyID is similar to SEV and SEV-ES ASID. I think coming up
+> > > > with the same name which can be used by both platforms will not be easy,
+> > > > and extensible with the future enhancements. This will get even more
+> > > > difficult if Arm also comes up with something similar but with different
+> > > > nuances.
+> > > 
+> > > Honest question, what's easier for userspace/orchestration layers?  Having an
+> > > abstract but common name, or conrete but different names?  My gut reaction is
+> > > to provide a common interface, but I can see how that could do more harm than
+> > > good, e.g. some amount of hardware capabilitiy discovery is possible with
+> > > concrete names.  And I'm guessing there's already a fair amount of vendor
+> > > specific knowledge bleeding into userspace for these features...
+> 
+> I agree with you that the abstract name is better than the concrete
+> name, I also feel that we must provide HW extensions. Here is one
+> approach:
+> 
+> Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
+> suggestions)
+> 
+> Control files: slots.{max, current, events}
+> 
+> Contents of the slot.max:
+> default max
+> 	default: Corresponds to all kinds of encryption capabilities on
+> 		 a platform. For AMD, it will be SEV and SEV-ES.  For
+> 		 Intel, it will be TDX and MKTME. This can also be used
+> 		 by other devices not just CPU.
+> 
+> 	max: max or any number to denote limit on the cgroup.
+> 
+> A user who wants the finer control, then they need to know about the
+> capabilities a platform provides and use them, e.g. on AMD:
+> 
+> $ echo "sev-es 1000" > slot.max
+> $ cat slots.max
+> default max sev-es 1000
+> 
+> This means that in the cgroup maximum SEV-ES ASIDs which can be used is
+> 1000 and SEV ASIDs is max (default, no limit).  Each platform can
+> provide their own extensions which can be overwritten by a user,
+> otherwise extensions will have the default limit.
+> 
+> This is kind of similar to the IO and the rdma controller.
+> 
+> I think it is keeping abstraction for userspace and also providing finer
+> control for HW specific features.
+> 
+> What do you think about the above approach?  
+> 
+Hi Sean,
 
-Sorry for this, I hadn't tested such a metric and wasn't aware of how
-the aliasing worked. I sent a fix for this issue here:
-https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
-Could you see if this addresses the issue for you? I don't see the
-change in Arnaldo's trees yet.
+Any feedback/concern for the above abstraction approach?
 
-Thanks,
-Ian
-
-> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
-> issue where find_evsel_group() fails for the uncore metrics under the
-> condition mentioned above.
->
-> Unfortunately I don't have an x86 machine to which this test applies.
-> However, as an experiment, I added a test metric to my broadwell JSON:
->
-> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> index 8cdc7c13dc2a..fc6d9adf996a 100644
-> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> @@ -348,5 +348,11 @@
->          "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
->          "MetricGroup": "Power",
->          "MetricName": "C7_Pkg_Residency"
-> +    },
-> +    {
-> +        "BriefDescription": "test metric",
-> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
-> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-> +        "MetricGroup": "Test",
-> +        "MetricName": "test_metric_inc"
->      }
-> ]
->
->
-> And get this:
->
-> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
-> test_metric_inc sleep 1
-> Using CPUID GenuineIntel-6-3D-4
-> metric expr unc_cbo_xsnp_response.miss_xcore *
-> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
-> found event unc_cbo_xsnp_response.miss_eviction
-> found event unc_cbo_xsnp_response.miss_xcore
-> adding
-> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
-> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
-> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
-> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
-> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
-> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
-> unc_cbo_xsnp_response.miss_eviction
-> task-clock: 688876 688876 688876
-> context-switches: 2 688876 688876
-> cpu-migrations: 0 688876 688876
-> page-faults: 69 688876 688876
-> cycles: 2101719 695690 695690
-> instructions: 1180534 695690 695690
-> branches: 249450 695690 695690
-> branch-misses: 10815 695690 695690
->
-> Performance counter stats for 'sleep 1':
->
->               0.69 msec task-clock                #    0.001 CPUs
-> utilized
->                  2      context-switches          #    0.003 M/sec
->
->                  0      cpu-migrations            #    0.000 K/sec
->
->                 69      page-faults               #    0.100 M/sec
->
->          2,101,719      cycles                    #    3.051 GHz
->
->          1,180,534      instructions              #    0.56  insn per
-> cycle
->            249,450      branches                  #  362.112 M/sec
->
->             10,815      branch-misses             #    4.34% of all
-> branches
->
->        1.001177693 seconds time elapsed
->
->        0.001149000 seconds user
->        0.000000000 seconds sys
->
->
-> john@localhost:~/linux/tools/perf>
->
->
-> Any idea what is going wrong here, before I have to dive in? The issue
-> seems to be this named commit.
->
-> Thanks,
-> John
->
-> > A metric group contains multiple metrics. These metrics may use the same
-> > events. If metrics use separate events then it leads to more
-> > multiplexing and overall metric counts fail to sum to 100%.
-> > Modify how metrics are associated with events so that if the events in
-> > an earlier group satisfy the current metric, the same events are used.
-> > A record of used events is kept and at the end of processing unnecessary
-> > events are eliminated.
-> >
-> > Before:
+Thanks
