@@ -2,123 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBE5280C6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 05:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6C3280C73
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 05:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387612AbgJBDCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 23:02:46 -0400
-Received: from ozlabs.org ([203.11.71.1]:33575 "EHLO ozlabs.org"
+        id S2387549AbgJBDHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 23:07:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgJBDCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 23:02:46 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727780AbgJBDHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 23:07:50 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C2ZYC59Bbz9sSn;
-        Fri,  2 Oct 2020 13:02:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601607762;
-        bh=j53jquxv8eIAVcycClyih3HfZma6HX/HBe3EZidk8Vs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HDtakTJPdDRTtFG+PENzQYZTKweVWPbsyJpb3IFvuXGx6Xt8bkCRVEJ8XHnZJiOlB
-         LK9qxo4WSfVGFmWfB+v7vVqAjCKpftnRrLPDVREc/bpIm1KDZPwa5iNMInSadrBBkl
-         WL2ixftGxEQt5wp2Apcr62UI47Syhf+814XGI31zJkNjwzdj2vPSaCTR6GaWpy2RVq
-         8MXFkWLop3HfzmBdKr2Rva4XOHmnIbXg8NJyRUSQBQyfoFeZACrxi2lZunMkVS64F2
-         F7Hr6x2PwiiXzUJBcIJbdCkOGdQFcYzQiq2AV/3xSKQFp/9uAHf6Vyj/6b7gAEnfc6
-         fcsn8eCvGhXHg==
-Date:   Fri, 2 Oct 2020 13:02:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20201002130237.42fe476e@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 693F4206FA;
+        Fri,  2 Oct 2020 03:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601608070;
+        bh=p+jy9vFdrMGf1fygPPsXK+kHuK5POrDvBTFckF58Op0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lqd2ia1k7H16BMmxT9sAKMYZybuZH+G1KlKKdCZPX3W4tcyPLBqOPYBTgCQtX1Ghn
+         zRYdDrCxH8qpmPyBDmOih8jXREDRE8GZeqHkfdxtf0TpPjRyAwcqvxMfISwcWNBZQn
+         97B7bI9Rm6M74Pif37q8bBtnmKFqpLZUz3icAtTc=
+Date:   Thu, 1 Oct 2020 20:07:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
+Message-ID: <20201002030731.GA78003@sol.localdomain>
+References: <20200921221104.GA6556@gondor.apana.org.au>
+ <20200921232639.GK29330@paulmck-ThinkPad-P72>
+ <20200921235243.GA32959@sol.localdomain>
+ <20200922183100.GZ29330@paulmck-ThinkPad-P72>
+ <20200922190936.GB1616407@gmail.com>
+ <20200922205628.GD29330@paulmck-ThinkPad-P72>
+ <20200922215558.GA1833749@gmail.com>
+ <20200925005934.GA29330@paulmck-ThinkPad-P72>
+ <20200925020908.GB1266@sol.localdomain>
+ <20200925033102.GB29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1DvaFRiXCr4m2OmR.rD6n_Y";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925033102.GB29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1DvaFRiXCr4m2OmR.rD6n_Y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 24, 2020 at 08:31:02PM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 24, 2020 at 07:09:08PM -0700, Eric Biggers wrote:
+> > On Thu, Sep 24, 2020 at 05:59:34PM -0700, Paul E. McKenney wrote:
+> > > On Tue, Sep 22, 2020 at 02:55:58PM -0700, Eric Biggers wrote:
+> > > > On Tue, Sep 22, 2020 at 01:56:28PM -0700, Paul E. McKenney wrote:
+> > > > > > You're missing the point here.  b and c could easily be allocated by a function
+> > > > > > alloc_b() that's in another file.
+> > > > > 
+> > > > > I am still missing something.
+> > > > > 
+> > > > > If by "allocated" you mean something like kmalloc(), the compiler doesn't
+> > > > > know the address.  If you instead mean that there is a function that
+> > > > > returns the address of another translation unit's static variable, then
+> > > > > any needed ordering should preferably be built into that function's API.
+> > > > > Either way, one would hope for some documentation of anything the caller
+> > > > > needed to be careful of.
+> > > > > 
+> > > > > > > Besides which, control dependencies should be used only by LKMM experts
+> > > > > > > at this point.  
+> > > > > > 
+> > > > > > What does that even mean?  Control dependencies are everywhere.
+> > > > > 
+> > > > > Does the following work better for you?
+> > > > > 
+> > > > > "... the non-local ordering properties of control dependencies should be
+> > > > > relied on only by LKMM experts ...".
+> > > > 
+> > > > No.  I don't know what that means.  And I think very few people would know.
+> > > > 
+> > > > I just want to know if I use the one-time init pattern with a pointer to a data
+> > > > structure foo, are the readers using foo_use() supposed to use READ_ONCE() or
+> > > > are they supposed to use smp_load_acquire().
+> > > > 
+> > > > It seems the answer is that smp_load_acquire() is the only safe choice, since
+> > > > foo_use() *might* involve a control dependency, or might in the future since
+> > > > it's part of another kernel subsystem and its implementation could change.
+> > > 
+> > > First, the specific issue of one-time init.
+> > > 
+> > > If you are the one writing the code implementing one-time init, it is your
+> > > choice.  It seems like you prefer smp_load_acquire().  If someone sees
+> > > performance problems due to the resulting memory-barrier instructions,
+> > > they have the option of submitting a patch and either forking the
+> > > implementation or taking your implementation over from you, depending
+> > > on how that conversation goes.
+> > 
+> > It doesn't matter what I "prefer".  The question is, how to write code that is
+> > actually guaranteed to be correct on all supported Linux architectures, without
+> > assuming internal implementation details of other kernel subsystems.
+> 
+> And that question allows ample room for personal preferences.
+> 
+> There are after all tradeoffs.  Do you want to live within the current
+> knowledge of your users, or are you willing to invest time and energy
+> into teaching them something new?  If someone wants a level of performance
+> that is accommodated only by a difficult-to-use pattern, will you choose
+> to accommodate them, or will you tell them to build write their own?
+> 
+> There are often a number of ways to make something work, and they all
+> have advantages and disadvantages.  There are tradeoffs, and preferences
+> have a role to play as well.
 
-Hi all,
+Having options doesn't matter if no one can agree on which one to use.  This is
+the second bug fix that I can't get accepted due to bikeshedding over how to
+implement "one-time init":
 
-Today's linux-next merge of the net-next tree got a conflict in:
+First patch:
+v1: https://lkml.kernel.org/linux-fsdevel/20200713033330.205104-1-ebiggers@kernel.org
+v2: https://lkml.kernel.org/linux-fsdevel/20200717050510.95832-1-ebiggers@kernel.org
+Related thread: https://lkml.kernel.org/lkml/20200717044427.68747-1-ebiggers@kernel.org
 
-  Documentation/devicetree/bindings/net/renesas,ravb.txt
+Second patch (this one):
+https://lkml.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org
 
-between commit:
+The problem is identical in both cases.  In both cases, the code currently
+implements "one-time init" using a plain load on the reader side, which is
+undefined behavior and isn't sufficient on all supported Linux architectures
+(even *if* there is no control dependency, which is something that usually is
+hard to determine, as I've explained several times).
 
-  307eea32b202 ("dt-bindings: net: renesas,ravb: Add support for r8a774e1 S=
-oC")
+However in both cases, no one can agree on what to replace the broken code with.
+And the opinions were conflicting.  In the first patch, people were advocating
+for smp_load_acquire() over READ_ONCE() because it's too hard to determine when
+READ_ONCE() is safe.  And even after I switched to smp_load_acquire(), the patch
+was still rejected, with conflicting reasons.
 
-from the net tree and commit:
+Now in the second patch, people are instead advocating for READ_ONCE() over
+smp_load_acquire().  And you're claiming that all kernel developers are expected
+to read Documentation/RCU/rcu_dereference.rst and design all allocation
+functions to be usable in combination with rcu_dereference() or READ_ONCE().
+(Tough luck if anyone didn't do that, I guess!)
 
-  d7adf6331189 ("dt-bindings: net: renesas,etheravb: Convert to json-schema=
-")
+So what actually happens is that no one agrees on a fix, so the obviously broken
+code just gets left as-is.
 
-from the net-next tree.
+Now, I don't have unlimited patience, so in the end I'm just going to let that
+happen, and let it be Someone Else's problem to fix these bugs months/years down
+the line when they happen to cause a "real" problem, or are detected by KCSAN,
+etc.  It certainly seems like a bad outcome, though.
 
-I fixed it up (I deleted the file and added the following patch) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
+> If alloc_foo() also initializes static data, then it really should have
+> some name other than alloc_foo().
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 2 Oct 2020 12:57:33 +1000
-Subject: [PATCH] fix up for "dt-bindings: net: renesas,ravb: Add support fo=
-r r8a774e1 SoC"
+Not necessarily.  It could do one-time-init of static data, e.g. a workqueue or
+a mempool.  See fscrypt_initialize() (called by fscrypt_get_encryption_info())
+for a real-world example of this.  The fscrypt_bounce_page_pool uses a
+significant amount of memory, so we only allocate it if someone actually is
+going to need it.
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- Documentation/devicetree/bindings/net/renesas,etheravb.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Are you disputing that that's a reasonable thing to do?  There's a lot of kernel
+code that does something like this.
 
-diff --git a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml b/=
-Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-index e13653051b23..244befb6402a 100644
---- a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-+++ b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-@@ -31,6 +31,7 @@ properties:
-               - renesas,etheravb-r8a774a1     # RZ/G2M
-               - renesas,etheravb-r8a774b1     # RZ/G2N
-               - renesas,etheravb-r8a774c0     # RZ/G2E
-+              - renesas,etheravb-r8a774e1     # RZ/G2H
-               - renesas,etheravb-r8a7795      # R-Car H3
-               - renesas,etheravb-r8a7796      # R-Car M3-W
-               - renesas,etheravb-r8a77961     # R-Car M3-W+
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1DvaFRiXCr4m2OmR.rD6n_Y
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl92mE0ACgkQAVBC80lX
-0GyFkwgAk5IVGtAIGvgu9lD2+ANmo3Acy5T7ifjEcWfo3lxiJEoTeCEU61fwX2kM
-RwfBBOscw5WrWZFAwo9KMxZX0Uf57fwCyYXm5y0ppRa8IZBhE9S7EL75sbmbvBcl
-VTQZ8ryTOcYh+d+mOnyJzo0bT9lthZMYH9FSM3W9HcRNB4FxA1NvrOFM3EOzxnCX
-Sq5IcmRpxODzw7JvMBUY0axMqje4vF+szYv81tNIryWKtvAvxKjkwIf+61GgDYYQ
-htOAgWPFd+daht924kwG6QUUTsba05rfBwa1/uC1cNYOkkgmWo4ySoAa2WtADq1E
-30uzNIKW9CQkbHBG++L6Lic9zJHBBg==
-=U9tM
------END PGP SIGNATURE-----
-
---Sig_/1DvaFRiXCr4m2OmR.rD6n_Y--
+- Eric
