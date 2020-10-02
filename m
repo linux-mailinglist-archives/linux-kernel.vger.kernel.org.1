@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9755428131A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A2D28131E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387787AbgJBMsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        id S2387809AbgJBMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgJBMsK (ORCPT
+        with ESMTP id S1725964AbgJBMsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:48:10 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AABC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 05:48:10 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d20so1138129qka.5
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 05:48:10 -0700 (PDT)
+        Fri, 2 Oct 2020 08:48:38 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BE7C0613D0;
+        Fri,  2 Oct 2020 05:48:38 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id u24so726176pgi.1;
+        Fri, 02 Oct 2020 05:48:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qqs8ifS6kGN7LaOJsBRoUbMeD52hvAgPJsDQbcB16Ww=;
-        b=teN6lt9dYbTfeK4iHJe5EwHYYiMp8qbujal8f2CalekS8vb2pw+hAbarMaC3Dyy9/g
-         ZfIA6rxZ9+yK1ffdf1KM9aXD59XN5OfD6qRSiLddDtflDi4Ns2xS4ysacecYmjOd7o/Y
-         yxEz9yyXAVHbarO0UEK5GcYkbh6LYgtCsMFINrC1goIVzmQcfcXJ0TdsTCOQ04mn42DW
-         /AlRtZTPtEqGBYUA1DQfKR//S00/OvShWyJNcVZIzaLAcz9/Wc+28PbrogAtHRSlGAAI
-         sQsJAebzVERb8ad8PnaY3cuZPZc9FzzPw7D1bDFLlaueXV9yx3ZzezN5CqLgQgId8xb4
-         aB8w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RAIUPEHTeHS2U3+oSG9KsAR+ktrkLYIx+qWMYCIy9n4=;
+        b=pDiADnxeBlW00Qq4p1x38xVCA2IAxrvhBBqq7PjoGlfS/UW4KbPrm2PZ0NiRlWxYtK
+         asEOblO5qJLuHcyicxrc3tQSf/ovxhKsy+cWV7F9CzeZrD9RaAc4HKNUn0jZmbU62L/V
+         byWKtx6C+lzEAN7NV8FeGnkYCQGDvZRkxqufVjJWOaV6Sq5zALqbcSZHwI8dnmp+DaXe
+         1rO1ZD2jfieTrLyLmV79xOoasLTcyoQxYT2qmUYFRS7H8twXyzdxNU2W3X6vlmK0kcke
+         Wt9UrSZQJgFrUZLpDwjagpEsmOf55b2XMzGUrdxGToM6WQJ4jiZ25YOohO59PATj/grF
+         dD2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qqs8ifS6kGN7LaOJsBRoUbMeD52hvAgPJsDQbcB16Ww=;
-        b=n6WzT97SEJ9MW41Aeh1xiY7/5dGcc1paRRUyFjAaC4qNqbev/GoRPiN6YWywWCADQy
-         Wq4/SSXRba5VHthUo+AvtYq7XcY7HV+MGFeM/j56kq0ee7PZ2iuQnKbzNATf+L9tzzsE
-         E6IVPIY8XgRwHN2aAnD0PHTqA5sCpIsMEm4GTbC2GXbujcqn1RavvWoqOBWK7LL3MEv5
-         VH4DmRSwiQ3hYQR/ny8CQQxWxmjRAWWMDXNe7Dlm/x+laMQSkRFmtK2kk3XcLfvsK3ED
-         mWYiL6GZOW8KC6wBvrvAVGtOL3bakmfOhRAh6TumD1hScAhgfVQ7KKGfLlseLbjSSQ9P
-         6SSg==
-X-Gm-Message-State: AOAM5332Svi437Scea++MEX8WUVQNNuY6PXhllLTxp3e63wNl+xZqQBr
-        VuJn9O5YECMIxpc9GdId80goNGgWqsI+Nzt6
-X-Google-Smtp-Source: ABdhPJyQ2dJDmsq+UUaIzuzIq5vMU2J1btgFAxj6GOPoha5mgRKT6bHemLD/hK/dXSldsS3NSojT2A==
-X-Received: by 2002:a05:620a:13f9:: with SMTP id h25mr1764964qkl.283.1601642888962;
-        Fri, 02 Oct 2020 05:48:08 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id j25sm921577qtr.83.2020.10.02.05.48.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 05:48:08 -0700 (PDT)
-Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
- cache maintenance
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201001002709.21361-1-jonathan@marek.ca>
- <20201001002709.21361-3-jonathan@marek.ca>
- <20201002075321.GA7547@infradead.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
-Date:   Fri, 2 Oct 2020 08:46:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RAIUPEHTeHS2U3+oSG9KsAR+ktrkLYIx+qWMYCIy9n4=;
+        b=N6gmZzRnRRV33B2Y8tq/ROGIl49sir7nwpfj5PRrSlYtHJEYebB4sbhQLrOAK6TFwP
+         w8KBZ9CBj1y24HaSyhAuJdClaiCBiWUKeJaHBvhgBpPCWU05AQnEuy+gntLQpq3Kd+ht
+         pwmcQoNQuDJhA2btW0mm058T8KU9EaUNgmZaf+3DUYdthsD9L1HFM/vKUrAJAHAIJz4k
+         8P2OsgYylD2MfwON+I3MXK/f9ANqkvxbgiDCbrW8KcPxSzhL0wclNxl2Fy57kWPPlu+/
+         Joz0ZJ5g25Y0/FvkYAV8YScA7dRVhbzi2kT27f2IwMokW16caf/76Jdc9PmnF1AAG/vI
+         heZg==
+X-Gm-Message-State: AOAM531gjuUfL21ep1CGbTH1wGABe/EXduYDaACMl1bixRh3JPY+qCB2
+        /fy2d2mqlsyPxU2ihlICMRBtku6Rk9Fw7aLGf7U=
+X-Google-Smtp-Source: ABdhPJyQ2uudnQNegCeg41YZTs74edYoNeI0AADnzK8v5X5z2sm/0vQAll9kw4Rj6kU4iPDUTgkOZlowdc+7HS+MhDY=
+X-Received: by 2002:a63:4c1d:: with SMTP id z29mr2069434pga.203.1601642917546;
+ Fri, 02 Oct 2020 05:48:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201002075321.GA7547@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <9152bb8be33e4192a7766eb53c6ca9af@asem.it> <CAMRc=McnsSkg-7UMp7pKaGX2wSqsZC2jQZV2zRepxm9UxGg=YA@mail.gmail.com>
+ <CAHp75VfgEGydXN1A+Y=wn3iX1MbLhN8F9kYyfQwTZBJydr+0+Q@mail.gmail.com>
+ <feb8567c830748c483c8c66dd4717003@asem.it> <CAHp75Vdd2QjvJvLGHa1x=RaSknEG+O+YB4eJA6+2htnZ=Gf52g@mail.gmail.com>
+ <22753b53cd7d4dfba4ef3610f71cc462@asem.it> <20200930130113.GQ3956970@smile.fi.intel.com>
+ <2c26adae711145639d0b982a354aff3c@asem.it> <CAHp75Vcq1WOcMNoKpOSpCD1mFSyvYsaX-h7KHTaAOPe=6S4e0A@mail.gmail.com>
+ <CAHp75Vdm9K7nGxsk8P_iGy4m=vi=95zpH1S4NuJbb7bekwZoXg@mail.gmail.com> <757023db21e642a3a4b6d33428c191cc@asem.it>
+In-Reply-To: <757023db21e642a3a4b6d33428c191cc@asem.it>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 2 Oct 2020 15:48:18 +0300
+Message-ID: <CAHp75Vf-hJ78LmXF8PqOeF-CfWEYqYzMiGCEGaEfnMqxmtiwiw@mail.gmail.com>
+Subject: Re: How to use an ACPI declared GPIO in a userspace ...
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 3:53 AM, Christoph Hellwig wrote:
->> @@ -8,6 +8,7 @@
->>   #include <linux/shmem_fs.h>
->>   #include <linux/dma-buf.h>
->>   #include <linux/pfn_t.h>
->> +#include <linux/dma-noncoherent.h>
-> 
-> NAK, dma-noncoherent.h is not for driver use.  And will in fact go
-> away in 5.10.
-> 
+On Fri, Oct 2, 2020 at 1:02 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
 
-Not actually used, so can be removed.
+> > > > My SSDT table is:
+> > >
+> > > ^^^^ See the difference? I can't help here.
+>
+> This is the DSDT table related to the GPIO controller of my board:
+>
+> Device (GPO1)
+>         {
+>             Name (_ADR, Zero)  // _ADR: Address
+>             Name (_HID, "INT3452")  // _HID: Hardware ID
+>             Name (_CID, "INT3452")  // _CID: Compatible ID
+>             Name (_DDN, "General Purpose Input/Output (GPIO) Controller - Northwest")  // _DDN: DOS Device Name
+>             Name (_UID, 0x02)  // _UID: Unique ID
+>             Name (RBUF, ResourceTemplate ()
+>             {
+>                 Memory32Fixed (ReadWrite,
+>                     0x00000000,         // Address Base
+>                     0x00004000,         // Address Length
+>                     _Y08)
+>                 Interrupt (ResourceConsumer, Level, ActiveLow, Shared, ,, )
+>                 {
+>                     0x0000000E,
+>                 }
+>             })
+>             Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+>             {
+>                 CreateDWordField (RBUF, \_SB.GPO1._Y08._BAS, B0BA)  // _BAS: Base Address
+>                 CreateDWordField (RBUF, \_SB.GPO1._Y08._LEN, B0LN)  // _LEN: Length
+>                 B0BA = GP1A /* \GP1A */
+>                 B0LN = GP1L /* \GP1L */
+>                 Return (RBUF) /* \_SB_.GPO1.RBUF */
+>             }
+>
+>             Method (_STA, 0, NotSerialized)  // _STA: Status
+>             {
+>                 If ((OSYS < 0x07DC))
+>                 {
+>                     Return (Zero)
+>                 }
+>
+>                 Return (0x0F)
+>             }
+>         }
 
->>   
->>   #include <drm/drm_prime.h>
->>   
->> @@ -808,6 +809,20 @@ int msm_gem_cpu_fini(struct drm_gem_object *obj)
->>   	return 0;
->>   }
->>   
->> +void msm_gem_sync_cache(struct drm_gem_object *obj, uint32_t flags,
->> +		size_t range_start, size_t range_end)
->> +{
->> +	struct msm_gem_object *msm_obj = to_msm_bo(obj);
->> +
->> +	/* TODO: sync only the required range, and don't invalidate on clean */
->> +
->> +	if (flags & MSM_GEM_SYNC_CACHE_CLEAN)
->> +		sync_for_device(msm_obj);
->> +
->> +	if (flags & MSM_GEM_SYNC_CACHE_INVALIDATE)
->> +		sync_for_cpu(msm_obj);
-> 
-> And make to these ones as well.  They are complete abuses of the DMA
-> API, and while we had to live with that for now to not cause regressions
-> they absoutely must not be exposed in a userspace ABI like this.
-> 
+So, what about adding the following
 
-How do you propose that cached non-coherent memory be implemented? It is 
-a useful feature for userspace.
+DefinitionBlock ("linename.aml", "SSDT", 5, "", "LINENAME", 1)
+{
+  External (_SB_.GPO1, DeviceObj)
+  Scope (\_SB.GPO1)
+  {
+      Name (_DSD, Package () {
+          ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+          Package () {
+              Package () {
+                  "gpio-line-names",
+                  Package () {
+                      "Line0",
+                      "Line1",
+                      "Line2",
+                      ...
+                  }
+              },
+          }
+      })
+  }
+}
 
+?
+
+(Replace '...' with meaningful line names or drop for now, but in any
+case you need to provide as much names as lines of such GPIO
+controller)
+
+-- 
+With Best Regards,
+Andy Shevchenko
