@@ -2,144 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE45F281A2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7000A281A30
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388368AbgJBRwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:52:49 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:65460 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388330AbgJBRwt (ORCPT
+        id S2388371AbgJBRxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733260AbgJBRxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:52:49 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 092Ho4sp029994;
-        Fri, 2 Oct 2020 10:52:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=kvluGJLJlqNCam3D1dG/JC/Tdeahwln1fGq3Ika+wpM=;
- b=ECc6/AVDlDfTz1AT2SHs2Ah8SsWCHbp/6FneaIj3AxCh2fAI5c/Wcvv5kl2NjCmOHMrS
- 1UPgAszc7pI2ZV/etxLIry/5urDElWPf4ekjEjecZKRNaYQDPpErT7ktW50TsTbhksAy
- +vfLOrvspI6g5gb45x9zukMpAIFJdfqvz+k= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33vwu3mbyt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 02 Oct 2020 10:52:42 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 2 Oct 2020 10:52:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P4CeTkH/Ycer+oEcqFn4stYAfoyaw818aVtO1vd30YHN9NuQBQJuIhwqvUBC07WBuOJFnsuSZRnFiecprV169v7IojwaVZLzfSfgDO7apiPZhzkjr+rGPpUmkklFwbQXbfjsyDl9qqk3g5RIfd1sCNAluZJnBYVMSs2lMOChDTc+FjVfG1hbdp/2YJa0xRMpyzdY3T2LCfsvX4+X+2p7g79D6h8f6O8jzOzfVBVz3W3geWD3B2G2SkBQDZDNp1Z6sC/yEITHPowExpO/B40fRHdxG6i/a3KK18WxdOW4rgNVPGyjtFbKmxa4QkCQv19lSrffXrhh1ubghEAgk4Z3lA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kvluGJLJlqNCam3D1dG/JC/Tdeahwln1fGq3Ika+wpM=;
- b=kQB4fP+HVLtmrqJ/W9GDXiUpN/t9blWVdRNqRx6UXCwCSiTVN3lc3fJbndpxA6JexcIDmMab8Egf0KNEknLbWwx3FqkO7yZ2oRjMNzaJgATv1Y0bUFRgk89auDUmSgEBCvRZzAn962hhFlJMEw5kn0tAivSLW3xUiISwqD5Qi2NgJOuPgxAkmgeKpEzrFKCUY3PSJsLyuGjDBtsBZWGp65ywraseAI2myEGVijXhiORM1eNq8P0ODBXK57+bg0FelGO3q7/e1oLePiChbHSkjBsTsXsUqbfVtZhkxW0M/10Ggao1M+o2qTMZsI/e6/SmwwVgsFOyukRuNK4UWN1DyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kvluGJLJlqNCam3D1dG/JC/Tdeahwln1fGq3Ika+wpM=;
- b=hbCfkC6PQtCDBhQ1BR5IarYlXeiwbTAeeHyb6vgt6qYC8uCJDqazS6VIXXrmCsxu0ZIWM+yu6I9h8qCG/RC84xQgTlmxtQfFloO8jHm4hEki5sj29qL19er+Al12fQ/R3KJa7hA0mte5+uc8N7lXKrhaX/VFg2JLEG3xFbXVBok=
-Authentication-Results: npl.de; dkim=none (message not signed)
- header.d=none;npl.de; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SA0PR15MB3774.namprd15.prod.outlook.com
- (2603:10b6:806:89::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36; Fri, 2 Oct
- 2020 17:52:41 +0000
-Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
- ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3433.032; Fri, 2 Oct 2020
- 17:52:41 +0000
-Date:   Fri, 2 Oct 2020 10:52:36 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Bastian Bittorf <bb@npl.de>
-CC:     <linux-kernel@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        Fri, 2 Oct 2020 13:53:43 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C9EC0613E3
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:53:42 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d4so2474719wmd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Ic9kLI7iEmx4fzg6K/MGmVs8Kbr/xz3cK5mQ8gVn9M=;
+        b=GdOd/VH/FT5eF5Gfj5Q1p9o3Vy+IUnorHd0BlnwOL9uxqZXuqaW6hM5SPvXVoCliFo
+         bYTAnUT5U/MmyPZiyzSRP+mItblvHt3dnKeVQamNmGl1Wkstvlwhpe9QI+eMQwsUSnFG
+         vCIrvzCfJM5d8ZpALwF1YBf+lWT2Rg+eoosfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Ic9kLI7iEmx4fzg6K/MGmVs8Kbr/xz3cK5mQ8gVn9M=;
+        b=rJrPiMPsDeCfiYvKfe3g1T1gjJuk77iBVRtVL+6U8drYCbHcAom6udwyiyUcZLHOZp
+         sQcTk7XySpvRqsNR6DxQXVYDGi6Jd/T3QYYGfR64Dmfx+kbj5MgP7fARNkqgF8koztCD
+         av43R28KnQ0nj1ljD0MgwDPcuNWk+XpPuVeGhrjbjlp4SO6tqXFvgpBTW6kVi6Hj5dLG
+         oz5aip3L8k4SiK4xbuUe086xiW8k27TjWaOY+ouLI51AKKwFxb6b4NBcVRoIPWbM35wt
+         x+ZKdXlAoCmsI2zK/ujIFsS2gzHLBc2bDlxLmBOb3KmVRtvrvoTm/HoGJfINoXju4Ufe
+         l/+w==
+X-Gm-Message-State: AOAM532GA2gZHZx7+7xlXUwFDNs1iNbKb/WHVdCXHUYkBsuaPzCnTick
+        U1j2ABoMt68MD4MfOhxjtW6rTg==
+X-Google-Smtp-Source: ABdhPJx4N0mByTSrMhoszno9AheTX2LZ7oZ+iqT+Q3TvlZQuWl0+xgzy8x8+JKsZ5hS5NTaTlr3Xeg==
+X-Received: by 2002:a7b:cf1a:: with SMTP id l26mr4030327wmg.164.1601661221643;
+        Fri, 02 Oct 2020 10:53:41 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m10sm2585429wmc.9.2020.10.02.10.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 10:53:40 -0700 (PDT)
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     DRI Development <dri-devel@lists.freedesktop.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Linux 5.9-rc7 / VmallocTotal wrongly reported | Patch OK
-Message-ID: <20201002175236.GA2954069@carbon.dhcp.thefacebook.com>
-References: <20201001065104.apevlkqrs6nid3r5@hp-nas.internet>
- <CAHk-=wixd9kUup4o1d1y9Wg9WoRt6_mN7kM5sPX=_nrgrkZzFg@mail.gmail.com>
- <20201001195610.GC2706729@carbon.DHCP.thefacebook.com>
- <CAHk-=whwbrbZbdqpXVd9LOG=J04BEVZcT+vT=nXry=XP1JWqYA@mail.gmail.com>
- <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
- <20201002070114.do3xmia7sbsnrx6h@hp-nas.internet>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002070114.do3xmia7sbsnrx6h@hp-nas.internet>
-X-Originating-IP: [2620:10d:c090:400::5:a91a]
-X-ClientProxiedBy: MWHPR19CA0001.namprd19.prod.outlook.com
- (2603:10b6:300:d4::11) To SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14)
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH 1/2] mm/frame-vec: Drop gup_flags from get_vaddr_frames()
+Date:   Fri,  2 Oct 2020 19:53:02 +0200
+Message-Id: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a91a) by MWHPR19CA0001.namprd19.prod.outlook.com (2603:10b6:300:d4::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 2 Oct 2020 17:52:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cf51ff91-4b35-4cbd-7602-08d866fbf521
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3774:
-X-Microsoft-Antispam-PRVS: <SA0PR15MB37741F4CD57FB53F84FCAE68BE310@SA0PR15MB3774.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FbHbhSU7iK/vGyWpMa1y/Dr/9UHOiUMkQ0OOHReCJUOoF7X2OJB/ZFjOaIIOzsE140gPYXeUZuEI18o4jgs0JShuRYEzr/0vfciLy+rX4cYmq5YHcnUescpPG8f/+wyC4Stzb95n3U11edcSVO6kAQX5kUh2vQBETPIlfXcoXqAZeyZO95Zfw1nUvt6YqRkVDDHM+7QlC5cImiv1i8ZCnOhq0tuI/Ph5vOh5Id/1OaJEgiDWUtvABnEudTn1p8It/479v6XjaKVmFtvk5OcXEac1NBHbeNiws1txFJrK4/Ne3+aTcqH20fG1zuBzID3I4J1jqJJ50PKqlcYQFpnoPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(8676002)(8936002)(6666004)(4326008)(6916009)(55016002)(316002)(2906002)(478600001)(33656002)(86362001)(52116002)(66946007)(53546011)(7696005)(1076003)(54906003)(9686003)(66476007)(186003)(5660300002)(66556008)(16526019)(6506007)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: en8YHU1+ZJumqAMZu/heWaHbZiN6hxEr5rLIX9ymQ9kw92x6uZJes/4lT7pWjwSYG0ACGd13WdgykyBw6IhavYT3s9QZCFFv6avCxURSmtU7nL190r/ulRHlHKq1F7Z19//mDTF2+raMorhYh5T3jP/wGN3oDD0sHTBEbXwHFyhySMOGKHKhhRYlHv0ICOlbamrIcksSiOhj77duJ+MHlBAnv61e0KrNyrndAMp3dkB1xcoV4udtPYRyUjxDRmWScjtrgu9MHRqgKMjY0uV0JBYuM9Q8o3jBzlK2G5OUNezf/XFPRiwdcL2otJbRq387E6BQZlaiQb9+Xq5sr0F1vWLDa3iQ7rWy3OvKqyeGFX9of1O5IZHwW0bgzXUl7cFO36eJHrFogW9G9ywBDakZmkfglA2dhKEt/Iiwbel/KhhuDTPd6/SKkzdOOPZka+dBtU6wNrxW3sifN5qbj30sVHV+o3olShZmyeuTQ5SMGaXNVbQK6cv+kYXYA2adc//APdDT8rcwt0eGzDSv4rkqoOuLvJkQZ8qOxcts09STX+SrJa11V6t2wzn7/HhVLLpcWxxyfk/R7oKwrZKSxZ3ouQQbpczovwEJhFcevRER4bNQi8Qs+xDM52AWA0LjaxHnf3Q0ihd9wTu3zcWwGUUJLvltjQNyiFJqVuDnqxDfv2k=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf51ff91-4b35-4cbd-7602-08d866fbf521
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 17:52:41.0289
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J89hU9/m0fRtrdWfTe3Pz5Zh/CdloIcH7NKTKzK82i8mDoGr7JHUM9mqTmR7uDpG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3774
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_11:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=1 impostorscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020131
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 09:01:14AM +0200, Bastian Bittorf wrote:
-> On Thu, Oct 01, 2020 at 01:39:31PM -0700, Roman Gushchin wrote:
-> > > # Processor type and features
-> > > #
-> > > # CONFIG_ZONE_DMA is not set
-> > > # CONFIG_SMP is not set
-> > 
-> > Yes, here is the deal.
-> > 
-> > The SMP-version of __mod_node_page_state() converts a passed value from bytes
-> > to pages, but the non-SMP doesn't.
-> > 
-> > Thanks!
-> > 
-> > --
-> > 
-> > From 3d0233b37340c78012b991d3570b92f91cf5ebd2 Mon Sep 17 00:00:00 2001
-> > From: Roman Gushchin <guro@fb.com>
-> > Date: Thu, 1 Oct 2020 13:07:49 -0700
-> > Subject: [PATCH] mm: memcg/slab: fix slab statistics in !SMP configuration
-> 
-> 
-> I manually applied your patch and
-> this fixes to issue on my side too:
+FOLL_WRITE | FOLL_FORCE is really the only reasonable thing to do for
+simple dma device that can't guarantee write protection. Which is also
+what all the callers are using.
 
-Thank you for testing!
+So just simplify this.
 
-And sorry for the hassle.
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Pawel Osciak <pawel@osciak.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Tomasz Figa <tfiga@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Oded Gabbay <oded.gabbay@gmail.com>
+Cc: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: Tomer Tayar <ttayar@habana.ai>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Pawel Piskorski <ppiskorski@habana.ai>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-mm@kvack.org
+---
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c           | 3 +--
+ drivers/media/common/videobuf2/videobuf2-memops.c | 3 +--
+ drivers/misc/habanalabs/common/memory.c           | 3 +--
+ include/linux/mm.h                                | 2 +-
+ mm/frame_vector.c                                 | 4 ++--
+ 5 files changed, 6 insertions(+), 9 deletions(-)
 
-Roman
+diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+index 967a5cdc120e..ac452842bab3 100644
+--- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
++++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+@@ -480,8 +480,7 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
+ 		goto err_free;
+ 	}
+ 
+-	ret = get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+-		g2d_userptr->vec);
++	ret = get_vaddr_frames(start, npages, g2d_userptr->vec);
+ 	if (ret != npages) {
+ 		DRM_DEV_ERROR(g2d->dev,
+ 			      "failed to get user pages from userptr.\n");
+diff --git a/drivers/media/common/videobuf2/videobuf2-memops.c b/drivers/media/common/videobuf2/videobuf2-memops.c
+index 6e9e05153f4e..9dd6c27162f4 100644
+--- a/drivers/media/common/videobuf2/videobuf2-memops.c
++++ b/drivers/media/common/videobuf2/videobuf2-memops.c
+@@ -40,7 +40,6 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	unsigned long first, last;
+ 	unsigned long nr;
+ 	struct frame_vector *vec;
+-	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
+ 
+ 	first = start >> PAGE_SHIFT;
+ 	last = (start + length - 1) >> PAGE_SHIFT;
+@@ -48,7 +47,7 @@ struct frame_vector *vb2_create_framevec(unsigned long start,
+ 	vec = frame_vector_create(nr);
+ 	if (!vec)
+ 		return ERR_PTR(-ENOMEM);
+-	ret = get_vaddr_frames(start & PAGE_MASK, nr, flags, vec);
++	ret = get_vaddr_frames(start & PAGE_MASK, nr, vec);
+ 	if (ret < 0)
+ 		goto out_destroy;
+ 	/* We accept only complete set of PFNs */
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index 5ff4688683fd..43b10aee8150 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -1287,8 +1287,7 @@ static int get_user_memory(struct hl_device *hdev, u64 addr, u64 size,
+ 		return -ENOMEM;
+ 	}
+ 
+-	rc = get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+-				userptr->vec);
++	rc = get_vaddr_frames(start, npages, userptr->vec);
+ 
+ 	if (rc != npages) {
+ 		dev_err(hdev->dev,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 16b799a0522c..7d14aa2780d2 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1757,7 +1757,7 @@ struct frame_vector {
+ struct frame_vector *frame_vector_create(unsigned int nr_frames);
+ void frame_vector_destroy(struct frame_vector *vec);
+ int get_vaddr_frames(unsigned long start, unsigned int nr_pfns,
+-		     unsigned int gup_flags, struct frame_vector *vec);
++		     struct frame_vector *vec);
+ void put_vaddr_frames(struct frame_vector *vec);
+ int frame_vector_to_pages(struct frame_vector *vec);
+ void frame_vector_to_pfns(struct frame_vector *vec);
+diff --git a/mm/frame_vector.c b/mm/frame_vector.c
+index 10f82d5643b6..5d34c9047e9c 100644
+--- a/mm/frame_vector.c
++++ b/mm/frame_vector.c
+@@ -12,7 +12,6 @@
+  * get_vaddr_frames() - map virtual addresses to pfns
+  * @start:	starting user address
+  * @nr_frames:	number of pages / pfns from start to map
+- * @gup_flags:	flags modifying lookup behaviour
+  * @vec:	structure which receives pages / pfns of the addresses mapped.
+  *		It should have space for at least nr_frames entries.
+  *
+@@ -32,10 +31,11 @@
+  * This function takes care of grabbing mmap_lock as necessary.
+  */
+ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+-		     unsigned int gup_flags, struct frame_vector *vec)
++		     struct frame_vector *vec)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
++	unsigned int gup_flags = FOLL_WRITE | FOLL_FORCE;
+ 	int ret = 0;
+ 	int err;
+ 	int locked;
+-- 
+2.28.0
+
