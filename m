@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E698281656
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E27B281672
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388197AbgJBPPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:15:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:38860 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBPPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:15:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71AD21396;
-        Fri,  2 Oct 2020 08:15:53 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06A683F73B;
-        Fri,  2 Oct 2020 08:15:51 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 16:15:47 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] PCI: aardvark: Fix comphy with old ATF
-Message-ID: <20201002151547.GA25740@e121166-lin.cambridge.arm.com>
-References: <20200902144344.16684-1-pali@kernel.org>
- <20201002133713.GA24425@e121166-lin.cambridge.arm.com>
- <20201002142616.dxgdneg2lqw4pxie@pali>
- <20201002143851.GA25575@e121166-lin.cambridge.arm.com>
- <20201002145237.r2troxmgbq2bf3ep@pali>
- <20201002150300.GA25684@e121166-lin.cambridge.arm.com>
- <20201002150701.bvatgxygq4rjssly@pali>
+        id S2388192AbgJBPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:22:30 -0400
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:37894 "EHLO
+        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBPWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:22:30 -0400
+Received: from relay10.mail.gandi.net (unknown [217.70.178.230])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 4DEFD3A8EB5;
+        Fri,  2 Oct 2020 15:17:42 +0000 (UTC)
+Received: from localhost.localdomain (91-166-177-199.subs.proxad.net [91.166.177.199])
+        (Authenticated sender: thibaut.sautereau@clip-os.org)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 6580324000F;
+        Fri,  2 Oct 2020 15:17:17 +0000 (UTC)
+From:   Thibaut Sautereau <thibaut.sautereau@clip-os.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     netdev@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        linux-kernel@vger.kernel.org,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>, Emese Revfy <re.emese@gmail.com>
+Subject: [PATCH] random32: Restore __latent_entropy attribute on net_rand_state
+Date:   Fri,  2 Oct 2020 17:16:11 +0200
+Message-Id: <20201002151610.24258-1-thibaut.sautereau@clip-os.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002150701.bvatgxygq4rjssly@pali>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 05:07:01PM +0200, Pali Rohár wrote:
+From: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
 
-[...]
+Commit f227e3ec3b5c ("random32: update the net random state on interrupt
+and activity") broke compilation and was temporarily fixed by Linus in
+83bdc7275e62 ("random32: remove net_rand_state from the latent entropy
+gcc plugin") by entirely moving net_rand_state out of the things handled
+by the latent_entropy GCC plugin.
 
-> > I will apply the stable tag and dependency, it should be fine.
-> 
-> Ok! I thought that according to stable-kernel-rules.html that dependent
-> commit could be added after stable email address separated with # char.
-> At least this is how I understood stable-kernel-rules.html and its
-> section:
-> 
->   "Additionally, some patches submitted via Option 1 may have additional
->    patch prerequisites which can be cherry-picked."
+From what I understand when reading the plugin code, using the
+__latent_entropy attribute on a declaration was the wrong part and
+simply keeping the __latent_entropy attribute on the variable definition
+was the correct fix.
 
-That's what I did - pci/aardvark branch.
+Fixes: 83bdc7275e62 ("random32: remove net_rand_state from the latent entropy gcc plugin")
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Emese Revfy <re.emese@gmail.com>
+Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+---
+ lib/random32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Lorenzo
+diff --git a/lib/random32.c b/lib/random32.c
+index 932345323af0..dfb9981ab798 100644
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -49,7 +49,7 @@ static inline void prandom_state_selftest(void)
+ }
+ #endif
+ 
+-DEFINE_PER_CPU(struct rnd_state, net_rand_state);
++DEFINE_PER_CPU(struct rnd_state, net_rand_state)  __latent_entropy;
+ 
+ /**
+  *	prandom_u32_state - seeded pseudo-random number generator.
+-- 
+2.28.0
+
