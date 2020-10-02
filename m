@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86D8280E84
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11A4280E75
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 10:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgJBIHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 04:07:03 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2023 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgJBIHC (ORCPT
+        id S1726283AbgJBIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 04:06:31 -0400
+Received: from outbound-smtp36.blacknight.com ([46.22.139.219]:47789 "EHLO
+        outbound-smtp36.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726238AbgJBIGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 04:07:02 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f76df990011>; Fri, 02 Oct 2020 01:06:49 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 2 Oct
- 2020 08:06:24 +0000
-Received: from sandstorm.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 2 Oct 2020 08:06:24 +0000
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH 1/1] selftests/vm: 8x compaction_test speedup
-Date:   Fri, 2 Oct 2020 01:06:21 -0700
-Message-ID: <20201002080621.551044-2-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201002080621.551044-1-jhubbard@nvidia.com>
-References: <20201002080621.551044-1-jhubbard@nvidia.com>
+        Fri, 2 Oct 2020 04:06:30 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp36.blacknight.com (Postfix) with ESMTPS id B7B1B190C
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 09:06:27 +0100 (IST)
+Received: (qmail 20516 invoked from network); 2 Oct 2020 08:06:27 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Oct 2020 08:06:27 -0000
+Date:   Fri, 2 Oct 2020 09:06:24 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20201002080624.GB3227@techsingularity.net>
+References: <20200918194817.48921-1-urezki@gmail.com>
+ <20200918194817.48921-3-urezki@gmail.com>
+ <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
+ <20200929220742.GB8768@pc636>
+ <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
+ <20201001192626.GA29606@pc636>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601626009; bh=Ntx8Ri/1CPTa9H9QwVpmWKo8Bl+lnYBsuI8bdqZxJ5c=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=o/OoG1IJ89o/To3O5xOF1hwH7PD3vheBI22pWRct7jiG5lkZAytwJSFMia1mVrZBI
-         o1FyM/Sxc/HqML+oXsxsAgR6tUTnfg3O37RKuB87eyZuTQdFpHFf8RpCwTmMDy9RjG
-         WZS2PuyHr4mpuBFlSC55jLpUbbiVc9gNFcbvQe9be3RuwbD40tJsFw73CN6KHxZD4i
-         i89oAl3Ta2oQOTKIiW9FyoDB6hVeic6kyNhB/5g5t1d5F1oJ+wy5OVvMuJhtSX3vfu
-         q/ATmf1+WrfhI24e2/bVJUwg6aSrakR2l/Ou/SSbXKS10Eugx+LRsaZBN+9UTLQM6C
-         8A/vu5l7h/c1Q==
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201001192626.GA29606@pc636>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reduces the running time for compaction_test from about 27
-sec, to 3.3 sec, which is about an 8x speedup.
+On Thu, Oct 01, 2020 at 09:26:26PM +0200, Uladzislau Rezki wrote:
+> > 
+> > No, I meant going back to idea of new gfp flag, but adjust the implementation in
+> > the allocator (different from what you posted in previous version) so that it
+> > only looks at the flag after it tries to allocate from pcplist and finds out
+> > it's empty. So, no inventing of new page allocator entry points or checks such
+> > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
+> > affect existing fast paths.
+> >
+> OK. Now i see. Please have a look below at the patch, so we fully understand
+> each other. If that is something that is close to your view or not:
+> 
+> <snip>
+> t a/include/linux/gfp.h b/include/linux/gfp.h
+> index c603237e006c..7e613560a502 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -39,8 +39,9 @@ struct vm_area_struct;
+>  #define ___GFP_HARDWALL                0x100000u
+>  #define ___GFP_THISNODE                0x200000u
+>  #define ___GFP_ACCOUNT         0x400000u
+> +#define ___GFP_NO_LOCKS                0x800000u
+>  #ifdef CONFIG_LOCKDEP
+> -#define ___GFP_NOLOCKDEP       0x800000u
+> +#define ___GFP_NOLOCKDEP       0x1000000u
+>  #else
+>  #define ___GFP_NOLOCKDEP       0
+>  #endif
+> @@ -215,16 +216,22 @@ struct vm_area_struct;
+>   * %__GFP_COMP address compound page metadata.
+>   *
+>   * %__GFP_ZERO returns a zeroed page on success.
+> + *
+> + * %__GFP_NO_LOCKS order-0 allocation without sleepable-locks.
+> + * It obtains a page from the per-cpu-list and considered as
+> + * lock-less. No other actions are performed, thus it returns
+> + * NULL if per-cpu-list is empty.
+>   */
+>  #define __GFP_NOWARN   ((__force gfp_t)___GFP_NOWARN)
+>  #define __GFP_COMP     ((__force gfp_t)___GFP_COMP)
+>  #define __GFP_ZERO     ((__force gfp_t)___GFP_ZERO)
+> +#define __GFP_NO_LOCKS ((__force gfp_t)___GFP_NO_LOCKS)
+> 
 
-These numbers are for an Intel x86_64 system with 32 GB of DRAM.
+I'm not a fan of the GFP flag approach simply because we've had cases
+before where GFP flags were used in inappropriate contexts like
+__GFP_MEMALLOC which led to a surprising amount of bugs, particularly
+from out-of-tree drivers but also in-tree drivers. Of course, there
+are limited GFP flags available too but at least the comment should
+be as robust as possible. Maybe something like
 
-The compaction_test.c program was spending most of its time doing
-mmap(), 1 MB at a time, on about 25 GB of memory.
+ * %__GFP_NO_LOCKS attempts order-0 allocation without sleepable-locks. It
+ * attempts to obtain a page without acquiring any spinlocks. This
+ * should only be used in a context where the holder holds a
+ * raw_spin_lock that cannot be released for the allocation request.
+ * This may be necessary in PREEMPT_RT kernels where a
+ * raw_spin_lock is held which does not sleep tries to acquire a
+ * spin_lock that can sleep with PREEMPT_RT. This should not be
+ * confused with GFP_ATOMIC contexts. Like atomic allocation
+ * requests, there is no guarantee a page will be returned and
+ * the caller must be able to deal with allocation failures.
+ * The risk of allocation failure is higher than using GFP_ATOMIC.
 
-Instead, do the mmaps 100 MB at a time. (Going past 100 MB doesn't make
-things go much faster, because other parts of the program are using the
-remaining time.)
+It's verbose but it would be hard to misinterpret. I think we're
+going to go through a period of time before people get familiar
+with PREEMPT_RT-related hazards as various comments that were
+true are going to be misleading for a while.
 
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/compaction_test.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+For anyone reviewing, any use of __GFP_NO_LOCKS should meet a high
+standard where there is no alternative except to use the flags. i.e. a
+higher standard "but I'm an important driver".
 
-diff --git a/tools/testing/selftests/vm/compaction_test.c b/tools/testing/s=
-elftests/vm/compaction_test.c
-index bcec71250873..9b420140ba2b 100644
---- a/tools/testing/selftests/vm/compaction_test.c
-+++ b/tools/testing/selftests/vm/compaction_test.c
-@@ -18,7 +18,8 @@
-=20
- #include "../kselftest.h"
-=20
--#define MAP_SIZE 1048576
-+#define MAP_SIZE_MB	100
-+#define MAP_SIZE	(MAP_SIZE_MB * 1024 * 1024)
-=20
- struct map_list {
- 	void *map;
-@@ -165,7 +166,7 @@ int main(int argc, char **argv)
- 	void *map =3D NULL;
- 	unsigned long mem_free =3D 0;
- 	unsigned long hugepage_size =3D 0;
--	unsigned long mem_fragmentable =3D 0;
-+	long mem_fragmentable_MB =3D 0;
-=20
- 	if (prereq() !=3D 0) {
- 		printf("Either the sysctl compact_unevictable_allowed is not\n"
-@@ -190,9 +191,9 @@ int main(int argc, char **argv)
- 		return -1;
- 	}
-=20
--	mem_fragmentable =3D mem_free * 0.8 / 1024;
-+	mem_fragmentable_MB =3D mem_free * 0.8 / 1024;
-=20
--	while (mem_fragmentable > 0) {
-+	while (mem_fragmentable_MB > 0) {
- 		map =3D mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
- 			   MAP_ANONYMOUS | MAP_PRIVATE | MAP_LOCKED, -1, 0);
- 		if (map =3D=3D MAP_FAILED)
-@@ -213,7 +214,7 @@ int main(int argc, char **argv)
- 		for (i =3D 0; i < MAP_SIZE; i +=3D page_size)
- 			*(unsigned long *)(map + i) =3D (unsigned long)map + i;
-=20
--		mem_fragmentable--;
-+		mem_fragmentable_MB -=3D MAP_SIZE_MB;
- 	}
-=20
- 	for (entry =3D list; entry !=3D NULL; entry =3D entry->next) {
---=20
-2.28.0
-
+-- 
+Mel Gorman
+SUSE Labs
