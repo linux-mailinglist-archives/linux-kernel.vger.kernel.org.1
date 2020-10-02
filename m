@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB1C281D4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F102A281D4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 23:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbgJBVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 17:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBVBg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 17:01:36 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E800AC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 14:01:35 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id q5so2504503ilj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 14:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=0EgeC/OxuGrek2txihiSmap3MbhbavZ/3tORR9d+J8w=;
-        b=E7S1gwZRrc69yNZLUerKmIErkIvVFnHoj3SD/FYUzjDSXz0axcUKil7UeoSdEd36Du
-         ccMTE/O6ZMpPqcKN3AmleNx0C9+G2UdapKLC1srcId7hS7kg+JwQOCRL+E5CB3DZUGxu
-         na9RqGVxsCTvNXMIZwWY5VnynBV/WVqmMo/pM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=0EgeC/OxuGrek2txihiSmap3MbhbavZ/3tORR9d+J8w=;
-        b=aHkgIOK6ye/cEuDf7nSF7pP3LCwINJc6Z9PTNwR1aSQYBScYZ2R5SDEb5oXP3/5MM+
-         RFEWXG7nVjAIbYGsot2lLZOCV0x+Li3TMiwSKzphSlP8MLr6KVoIEC3nbyHtWNDV0mit
-         ZzcqebdsWTckNOP0lHBBPazzsslry7k5CEzrH1RE6QNlL3fh+ndwrJD469nVAD46Y8fA
-         L2BqJGPZDLFXZt4ViHfC5rJKOSjEp5VRSookacpMz4NrbGyT4j+w3ZR6Vi7s0gx2bqbd
-         XB/dmbs1ct4PkvfNxBphBmBfum/EEZlmNZZFinzjkQ1/38/h085Sqqkp1D4gkM1L97wQ
-         PhLg==
-X-Gm-Message-State: AOAM532td30rBK9lKPrNGrODswiM3+fsoaWYbFV9mZQtt192ZQxVMsWy
-        F1CHFGFeVanVYW2GEsgmpZBF/Q==
-X-Google-Smtp-Source: ABdhPJwH/+0yI2olAs2o17hTDrZwS2eXv8xXBlbua6zIn6xw456YIv/gW64/Cc4Y1QhUjGk8YbevhA==
-X-Received: by 2002:a92:9907:: with SMTP id p7mr3337726ili.200.1601672495127;
-        Fri, 02 Oct 2020 14:01:35 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m85sm1416332ill.64.2020.10.02.14.01.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 14:01:34 -0700 (PDT)
-To:     sudipm.mukherjee@gmail.com
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: drivers/char/ppdev -
-Message-ID: <110bee96-0c4b-21dd-9298-932970657801@linuxfoundation.org>
-Date:   Fri, 2 Oct 2020 15:01:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725798AbgJBVAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 17:00:31 -0400
+Received: from mga09.intel.com ([134.134.136.24]:44664 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgJBVAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 17:00:31 -0400
+IronPort-SDR: 0GXbjNjKMZfzjqhbHUXcIoUB8LOC/LoKrZFK8vubNUFtZFy6+lI7yXWjp1psdiBdX3Msx7Roxl
+ ncs3vhkCMLVA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="163941361"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="163941361"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 14:00:30 -0700
+IronPort-SDR: dRGMH4fBf/uaXhBuHbKd+MPThXrMW0Y+vIfhYFOx7GKk19+6EaF3rUwAU+UoOhOw+Pm3wxGVKT
+ G2VvN2iGzOuw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="510400794"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga005.jf.intel.com with ESMTP; 02 Oct 2020 14:00:30 -0700
+Date:   Fri, 2 Oct 2020 14:02:31 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH 2/3] x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+Message-ID: <20201002210231.GA3222@ranerica-svr.sc.intel.com>
+References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+ <20201002201931.2826-3-ricardo.neri-calderon@linux.intel.com>
+ <20201002203452.GE17436@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002203452.GE17436@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudip,
+On Fri, Oct 02, 2020 at 10:34:52PM +0200, Borislav Petkov wrote:
+> On Fri, Oct 02, 2020 at 01:19:30PM -0700, Ricardo Neri wrote:
+> > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+> > index 35ad8480c464..0778b3ad26b3 100644
+> > --- a/arch/x86/kernel/cpu/common.c
+> > +++ b/arch/x86/kernel/cpu/common.c
+> > @@ -932,6 +932,11 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+> >  		c->x86_capability[CPUID_D_1_EAX] = eax;
+> >  	}
+> >  
+> > +	if (cpu_has(c, X86_FEATURE_HYBRID_CPU)) {
+> > +		cpuid_count(0x0000001a, 0, &eax, &ebx, &ecx, &edx);
+> > +		c->x86_cpu_type = eax;
+> 
+> 		c->x86_cpu_type = cpuid_eax(0x0000001a);
+> 
+> should do too.
 
-While looking at atomic_t usages and noticed a few potential
-problem the way struct pp_struct: atomic_t irqc field
+Thank you for the quick feedback Boris! Sure I can implement it as you
+suggest.
 
-- There is inconsistencies the lock hold in this driver.
+> 
+> But send this patch together with the code that uses it.
 
-pp_do_mutex is help before pp_do_ioctl() is called.
-static int pp_do_ioctl()
-....
+Sure I can submit it along with the code using it.
 
-pp_do_mutex
-        case PPCLRIRQ:
-                 ret = atomic_read(&pp->irqc);
-                 if (copy_to_user(argp, &ret, sizeof(ret)))
-                         return -EFAULT;
-                 atomic_sub(ret, &pp->irqc);
-                 return 0;
+What about patches 1 and 3? Should I resubmit the series with only
+those?
 
-This path seems safe as far as atomic_t overflow is concerned.
-
-However, pp_poll(), pp_irq(), and pp_open() etc. don't hold
-lock while pp_do_ioctl() path does.
-
-Something to look into to see if this is safe. I see this
-comment for pp_poll() /* No kernel lock held - fine */
-
-Anyway, please take a look and see if this is indeed a problem.
-
-thanks,
--- Shuah
+Thanks and BR,
+Ricardo
