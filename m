@@ -2,222 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501612816A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E57C2816A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388334AbgJBPbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:31:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:39248 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387984AbgJBPbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:31:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AEAE1396;
-        Fri,  2 Oct 2020 08:31:01 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9EF43F73B;
-        Fri,  2 Oct 2020 08:30:58 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] arm64: kvm: Introduce MTE VCPU feature
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Haibo Xu <Haibo.Xu@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        qemu-devel@nongnu.org, Dave Martin <Dave.Martin@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
-References: <20200925093607.3051-1-steven.price@arm.com>
- <20200925093607.3051-3-steven.price@arm.com>
- <20201002143050.zamkpmqysy6k5ngl@kamzik.brq.redhat.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <8b617aef-2bff-8af0-df47-f9f863ab6fa0@arm.com>
-Date:   Fri, 2 Oct 2020 16:30:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388343AbgJBPbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:31:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43330 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388127AbgJBPbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:31:08 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601652667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2k/uk5Q61kfFbx4o1quTUaDHyKYAV/wduere4YBYfgY=;
+        b=172bzGOw43/yqmxoga1+kIcH0ilZVmDwIFzXwSPODOSr7Wt5GEXR15p1xoHK8nWdv+snlk
+        CCKa+Pd5eJguThCuZe4dpioCxL/okihyJlkVG/sr6i2pyIoAsmHyhCXxvbO/EetVYpUIl6
+        JpvgJXDIPUTbNyW2vXO0iUzMcQZOOrx9P3WP+CHdTymOvdwwF5ZnWYFcCHQJUBRX/jIqyQ
+        lkriry+tcHdEFolXgmsKDt2GGSLw4hoVyTTLjYS4DP+AfZ0ZHzEt16o20I6q83G8ldIvfT
+        Jilzhh5HG3XK3FkJCa7b73hJk2PzaXxAxOOb50tYLSzxzgccAyP8CTxHv8nq+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601652667;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2k/uk5Q61kfFbx4o1quTUaDHyKYAV/wduere4YBYfgY=;
+        b=+JBArhux1QGsz7SXKGhdjVt6SNCvavylnYb9R3nKqe/pgcaMiihPlWctLaO7FonpzHx2BS
+        JR2cmWtgvFgKlnDQ==
+To:     Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org
+Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
+In-Reply-To: <20201002151415.GA29066@redhat.com>
+References: <20201001194208.1153522-1-axboe@kernel.dk> <20201001194208.1153522-4-axboe@kernel.dk> <20201002151415.GA29066@redhat.com>
+Date:   Fri, 02 Oct 2020 17:31:07 +0200
+Message-ID: <871rigejb8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201002143050.zamkpmqysy6k5ngl@kamzik.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2020 15:30, Andrew Jones wrote:
-> On Fri, Sep 25, 2020 at 10:36:07AM +0100, Steven Price wrote:
->> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
->> for a VM. This exposes the feature to the guest and automatically tags
->> memory pages touched by the VM as PG_mte_tagged (and clears the tags
->> storage) to ensure that the guest cannot see stale tags, and so that the
->> tags are correctly saved/restored across swap.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>   arch/arm64/include/asm/kvm_emulate.h |  3 +++
->>   arch/arm64/include/asm/kvm_host.h    |  3 +++
->>   arch/arm64/kvm/arm.c                 |  9 +++++++++
->>   arch/arm64/kvm/mmu.c                 | 15 +++++++++++++++
->>   arch/arm64/kvm/sys_regs.c            |  6 +++++-
->>   include/uapi/linux/kvm.h             |  1 +
->>   6 files changed, 36 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
->> index 49a55be2b9a2..4923a566ae6e 100644
->> --- a/arch/arm64/include/asm/kvm_emulate.h
->> +++ b/arch/arm64/include/asm/kvm_emulate.h
->> @@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
->>   	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
->>   	    vcpu_el1_is_32bit(vcpu))
->>   		vcpu->arch.hcr_el2 |= HCR_TID2;
->> +
->> +	if (vcpu->kvm->arch.mte_enabled)
->> +		vcpu->arch.hcr_el2 |= HCR_ATA;
->>   }
->>   
->>   static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 4f4360dd149e..1379300c1487 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -110,6 +110,9 @@ struct kvm_arch {
->>   	 * supported.
->>   	 */
->>   	bool return_nisv_io_abort_to_user;
->> +
->> +	/* Memory Tagging Extension enabled for the guest */
->> +	bool mte_enabled;
->>   };
->>   
->>   struct kvm_vcpu_fault_info {
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 46dc3d75cf13..624edca0a1fa 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -87,6 +87,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->>   		r = 0;
->>   		kvm->arch.return_nisv_io_abort_to_user = true;
->>   		break;
->> +	case KVM_CAP_ARM_MTE:
->> +		if (!system_supports_mte() || kvm->created_vcpus)
->> +			return -EINVAL;
->> +		r = 0;
->> +		kvm->arch.mte_enabled = true;
->> +		break;
->>   	default:
->>   		r = -EINVAL;
->>   		break;
->> @@ -206,6 +212,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>   		 */
->>   		r = 1;
->>   		break;
->> +	case KVM_CAP_ARM_MTE:
->> +		r = system_supports_mte();
->> +		break;
->>   	default:
->>   		r = kvm_arch_vm_ioctl_check_extension(kvm, ext);
->>   		break;
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index ba00bcc0c884..befb9e1f0aa6 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -1949,6 +1949,21 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>   	if (vma_pagesize == PAGE_SIZE && !force_pte)
->>   		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->>   							   &pfn, &fault_ipa);
->> +	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
-> 
-> 'system_supports_mte() && kvm->arch.mte_enabled' is redundant, but I
-> assume system_supports_mte() is there to improve the efficiency of the
-> branch, as it's using cpus_have_const_cap().
+On Fri, Oct 02 2020 at 17:14, Oleg Nesterov wrote:
+> Heh. To be honest I don't really like 1-2 ;)
 
-system_supports_mte() compiles to 0 when MTE support isn't built in, so 
-this code can be removed by the compiler, whereas with 
-kvm->arch.mte_enabled I doubt the compiler can deduce that it is never set.
+I do not like any of this :)
 
-> Maybe a helper like
-> 
->   static inline bool kvm_arm_mte_enabled(struct kvm *kvm)
->   {
->     return system_supports_mte() && kvm->arch.mte_enabled;
->   }
-> 
-> would allow both the more efficient branch and look less confusing
-> where it gets used.
+> So I think that if we are going to add TIF_TASKWORK we should generalize
+> this logic and turn it into TIF_NOTIFY_SIGNAL. Similar to TIF_NOTIFY_RESUME
+> but implies signal_pending().
+>
+> IOW, something like
+>
+> 	void set_notify_signal(task)
+> 	{
+> 		if (!test_and_set_tsk_thread_flag(task, TIF_NOTIFY_SIGNAL)) {
+> 			if (!wake_up_state(task, TASK_INTERRUPTIBLE))
+> 				kick_process(t);
+> 		}
+> 	}
+>
+> 	// called by exit_to_user_mode_loop() if ti_work & _TIF_NOTIFY_SIGNAL
+> 	void tracehook_notify_signal(regs)
+> 	{
+> 		clear_thread_flag(TIF_NOTIFY_SIGNAL);
+> 		smp_mb__after_atomic();
+> 		if (unlikely(current->task_works))
+> 			task_work_run();
+> 	}
+>
+> This way task_work_run() doesn't need to clear TIF_NOTIFY_SIGNAL and it can
+> have more users.
 
-I wasn't sure it was worth having a helper since this was the only place 
-checking this condition. It's also a bit tricky putting this in a 
-logical header file, kvm_host.h doesn't work because struct kvm hasn't 
-been defined by then.
+I think it's fundamentaly wrong that we have several places and several
+flags which handle task_work_run() instead of having exactly one place
+and one flag.
 
-Steve
+Thanks,
 
->> +		/*
->> +		 * VM will be able to see the page's tags, so we must ensure
->> +		 * they have been initialised.
->> +		 */
->> +		struct page *page = pfn_to_page(pfn);
->> +		long i, nr_pages = compound_nr(page);
->> +
->> +		/* if PG_mte_tagged is set, tags have already been initialised */
->> +		for (i = 0; i < nr_pages; i++, page++) {
->> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
->> +				mte_clear_page_tags(page_address(page));
->> +		}
->> +	}
->> +
->>   	if (writable)
->>   		kvm_set_pfn_dirty(pfn);
->>   
->> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->> index a655f172b5ad..5010a47152b4 100644
->> --- a/arch/arm64/kvm/sys_regs.c
->> +++ b/arch/arm64/kvm/sys_regs.c
->> @@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
->>   			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
->>   		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
->>   	} else if (id == SYS_ID_AA64PFR1_EL1) {
->> -		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
->> +		if (!vcpu->kvm->arch.mte_enabled)
->> +			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
->>   	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
->>   		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
->>   			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
->> @@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->>   static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
->>   				   const struct sys_reg_desc *rd)
->>   {
->> +	if (vcpu->kvm->arch.mte_enabled)
->> +		return 0;
->> +
->>   	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
->>   }
->>   
->> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
->> index f6d86033c4fa..87678ed82ab4 100644
->> --- a/include/uapi/linux/kvm.h
->> +++ b/include/uapi/linux/kvm.h
->> @@ -1035,6 +1035,7 @@ struct kvm_ppc_resize_hpt {
->>   #define KVM_CAP_LAST_CPU 184
->>   #define KVM_CAP_SMALLER_MAXPHYADDR 185
->>   #define KVM_CAP_S390_DIAG318 186
->> +#define KVM_CAP_ARM_MTE 188
->>   
->>   #ifdef KVM_CAP_IRQ_ROUTING
->>   
->> -- 
->> 2.20.1
->>
->>
-> 
-> Besides the helper suggestion nit
-> 
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
-> 
+        tglx
 
