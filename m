@@ -2,152 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880EA280D5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02C7280D4B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 08:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgJBGPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 02:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        id S1726049AbgJBGJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 02:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgJBGO7 (ORCPT
+        with ESMTP id S1725968AbgJBGJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 02:14:59 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34847C0613E2;
-        Thu,  1 Oct 2020 23:14:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t14so150902pgl.10;
-        Thu, 01 Oct 2020 23:14:59 -0700 (PDT)
+        Fri, 2 Oct 2020 02:09:23 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C86C0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 23:09:21 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so323068ejf.6
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 23:09:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qXGNqQhVeWRXwkLxWO9NE32gvOp7FRxlv449PGRmjRE=;
-        b=tbbxizGzyYFtEdkzs4ZhGsQfqdyil04FfDQWafr5IUghUdQh1JrSMv80UBgF91tLlp
-         YGiRUA4QV07rT+oo8zMtVYMVCJo9PPrLeW8x5gBQ9QywFffChttS7ZPYxNwqVu+Sineh
-         N4SeBNSIIls3mN8gckW/ay1r6YJMUcquuc/w1Jr4rBkbYXwLKZ0/RTcjyMLHLGr3Ysl9
-         k5rfK6gUwA+Ga34MSF/28ccCyGYD2k92trgOT7MQbKEa+RJQVI5tCQwjvFOEZ2/bVSC1
-         PUKkESd2Ul5A5a15HZ5iT/Ocn7/zM6mBmYeoex7E8rlhODvXEaM69BpF7xKQaAphm+T7
-         yzdQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ErDIuUWMtALu7PV5gTspIOaPecBO2jLlFmry3dq1eBo=;
+        b=rBhLzpe9AaLtN/2VQTeF4ZLBJk0wEwLO1iXW7SFdIMCovz/n+bZLB7IAveG1e9ur8g
+         YRDBg+0/O3HVIFt9+77VO4vz1qRhWN0N5JLUJkLHeKN0Fq2FV1sS8zieRMheOhUf5bVF
+         9qAS9mTkKdzWHR4dJan0mJZrLW9vG6XzX1iipaUrffpCB3CFAGIdFAOD70DlWd/BV/00
+         YeempllyPkiOQYQTjPfz7FvV8Zq35XFb+EARWaMiaC9negdQ9wmS4SToBah7FpromM0/
+         j46OcFr+y/fWE9HUSVM5XGUXZ/ifypV3vicbNueD/Gkh591QW2pcf6xwTpu/Kqy1srWq
+         wZGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=qXGNqQhVeWRXwkLxWO9NE32gvOp7FRxlv449PGRmjRE=;
-        b=pfaHEhXHVMoA5k1gr8wB7kdRo5X/9wmjXmbnp7HvASaIL4eswZkqeD2ZC+YV/H+ZIf
-         67C0mjg0eC+Z7RRTj/Fz7Dq6yMmPAQqq1GAcxtxss54Z53G3h8hRZqr8n5dTyhYjj8UN
-         HzeGYHAaRsk72S6WfzYiek8LsA5gmbeT4k4uFfLpuX4pse0KxQWmw+mgLdhB+F5y4lJA
-         jSjImDuTjnIvqQSzw9CSk7kFz7JEGDKndwOJp8/IiIJqV3DlgeXtmETS8Bn7YtJ1tA/t
-         nVaIvDyZA32rRYsBiwSLwvq/DkIdl0Yw0aVGbx2iBM4P9v96X+EeiHLVInAvazAhGb02
-         w2TQ==
-X-Gm-Message-State: AOAM530O/WFiBdTxd5rs93aaKZJjm9WrJWx+uNTotQyb0+j55/WhcZat
-        l6RQwCd6OplGU1OxBc6MHDFeXODhlB0=
-X-Google-Smtp-Source: ABdhPJx7kP/IGJVxHPL9VMKDuHXuk9JMWkPkvbYeBcoIWDrtVw6kM5DcsnrPAnjzWnhKGye+xjddow==
-X-Received: by 2002:a63:24c2:: with SMTP id k185mr611501pgk.421.1601619298768;
-        Thu, 01 Oct 2020 23:14:58 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x4sm577429pfm.86.2020.10.01.23.14.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 23:14:58 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] iommu/tegra-smmu: Add PCI support
-Date:   Thu,  1 Oct 2020 23:08:07 -0700
-Message-Id: <20201002060807.32138-4-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002060807.32138-1-nicoleotsuka@gmail.com>
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ErDIuUWMtALu7PV5gTspIOaPecBO2jLlFmry3dq1eBo=;
+        b=I6AaMS8lzZmxfzl2t+jxxVIQVYNwLFrgmEDO9eB95qZMWW2oo6jd2KG01IMVW4XuRC
+         /068Qt3+s4vDkos/+bal5PRFzHmxQgrKqiSOmzpiIw62OI78nou9D2wVZnpJX8B2VOSb
+         SjfhU+Stn+seI/B2gvW+fqGlZVJqUJ74AKdP/z/APLdwbjvHdmuUUZuJmd6Wn55qX5Z+
+         H5iZO2gvzLuLqYXlHyMGgKrgh32TilJtn4H3GIl+R89TSodHQcWT6i5XVkNMJCI80tm+
+         8qyvYVjh1Tg2NOFMIBSd+CbCgogTef+mY9/uwV3TOKSKf1Y2Ro4thpQ2WJ1hy9Q2eK4n
+         ySFA==
+X-Gm-Message-State: AOAM530Vy6BVQz97IBL5Cj0QyVVklrCY4yPkXT2gJinFj7Wy4LVsRhKv
+        ph9j1q/sHrcWe43+J67dP0iqNtQ21e9Ezqb1jdwzOw==
+X-Google-Smtp-Source: ABdhPJyX8T+V5wOYpGANjLoJVq9hy+yf3n4BHwp6BilkYq6bai5LeCuRrBuF1aQ5IgShwbEHdu8lTpaX6/0OCPdGKR4=
+X-Received: by 2002:a17:906:394:: with SMTP id b20mr570705eja.513.1601618959814;
+ Thu, 01 Oct 2020 23:09:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200929133814.2834621-1-elver@google.com> <20200929133814.2834621-3-elver@google.com>
+In-Reply-To: <20200929133814.2834621-3-elver@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 2 Oct 2020 08:08:53 +0200
+Message-ID: <CAG48ez2yH+9jX40YdzkeiGk2vdwquw3U=GZY8S6WXrCEH+73Sw@mail.gmail.com>
+Subject: Re: [PATCH v4 02/11] x86, kfence: enable KFENCE for x86
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jonathan.Cameron@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-doc@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices.
+On Tue, Sep 29, 2020 at 3:38 PM Marco Elver <elver@google.com> wrote:
+> Add architecture specific implementation details for KFENCE and enable
+> KFENCE for the x86 architecture. In particular, this implements the
+> required interface in <asm/kfence.h> for setting up the pool and
+> providing helper functions for protecting and unprotecting pages.
+[...]
+> diff --git a/arch/x86/include/asm/kfence.h b/arch/x86/include/asm/kfence.h
+[...]
+> +/* Protect the given page and flush TLBs. */
+> +static inline bool kfence_protect_page(unsigned long addr, bool protect)
+> +{
+[...]
+> +       flush_tlb_one_kernel(addr);
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-
-Changelog
-v3->v4
- * Dropped !iommu_present() check
- * Added CONFIG_PCI check in the exit path
-v2->v3
- * Replaced ternary conditional operator with if-else in .device_group()
- * Dropped change in tegra_smmu_remove()
-v1->v2
- * Added error-out labels in tegra_smmu_probe()
- * Dropped pci_request_acs() since IOMMU core would call it.
-
- drivers/iommu/tegra-smmu.c | 37 +++++++++++++++++++++++++++----------
- 1 file changed, 27 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 02d02b0c55c4..b701a7b55e84 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
- 
--	group->group = iommu_group_alloc();
-+	if (dev_is_pci(dev))
-+		group->group = pci_device_group(dev);
-+	else
-+		group->group = generic_device_group(dev);
-+
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1069,22 +1074,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto err_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err < 0)
-+		goto err_unregister;
-+
-+#ifdef CONFIG_PCI
-+	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+	if (err < 0)
-+		goto err_bus_set;
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+err_bus_set: __maybe_unused;
-+	bus_set_iommu(&platform_bus_type, NULL);
-+err_unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+err_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
--- 
-2.17.1
-
+flush_tlb_one_kernel() -> flush_tlb_one_user() ->
+__flush_tlb_one_user() -> native_flush_tlb_one_user() only flushes on
+the local CPU core, not on others. If you want to leave it this way, I
+think this needs a comment explaining why we're not doing a global
+flush (locking context / performance overhead / ... ?).
