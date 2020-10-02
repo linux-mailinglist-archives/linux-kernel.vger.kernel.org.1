@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51477281C1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46309281C35
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 21:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388317AbgJBTjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 15:39:15 -0400
-Received: from smtprelay0143.hostedemail.com ([216.40.44.143]:44564 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725991AbgJBTjO (ORCPT
+        id S2388054AbgJBTmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 15:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbgJBTmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:39:14 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id CB712100E7B43;
-        Fri,  2 Oct 2020 19:39:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:4250:4321:4362:5007:6117:6690:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12295:12297:12438:12555:12679:12740:12895:13141:13146:13161:13229:13230:13894:14181:14659:14721:21080:21451:21611:21627:21740:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: bed23_4009da8271a6
-X-Filterd-Recvd-Size: 3290
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  2 Oct 2020 19:39:12 +0000 (UTC)
-Message-ID: <c87ecc94d62fb18ff48d4fb12d1c27013612b2c9.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Fix false positive on empty block comment
- lines
-From:   Joe Perches <joe@perches.com>
-To:     =?UTF-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Bart=C5=82omiej_?= =?UTF-8?Q?=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Date:   Fri, 02 Oct 2020 12:39:11 -0700
-In-Reply-To: <20201002191525.18942-1-l.stelmach@samsung.com>
-References: <CGME20201002191546eucas1p13545280767220c473c19d1071c87d107@eucas1p1.samsung.com>
-         <20201002191525.18942-1-l.stelmach@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 2 Oct 2020 15:42:49 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD6DC0613D0;
+        Fri,  2 Oct 2020 12:42:49 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u6so2782264iow.9;
+        Fri, 02 Oct 2020 12:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tp0tOCwH4dQMQU1jbfVhp24TqbT0i1fDhMp/Wjobwn8=;
+        b=Ap7BSOIg4OYbxFaSN2BlpmRPL+ZAkBcTZrouR4dsU30UKpICJijKJ/ZKAS6wW4oHaR
+         OyP+3l6C6uMDU03Q6tpXnqhFDVFB9IR6XytRpunCtgNVyC/DAL2wSHwIIHwINrTOsmgL
+         QvefHlNHwW3UDe97tfHkM5PAZ+gY/Pgs469Suewfhkcgws4I/b3tXId3xiEIk73Ka6Mj
+         PHfroUsC2mTBZ4yJt1f8hgd9NEq9hYMX7smV3CUH9W3eHBrUwl5/wJDAC9tzwmVfaG5H
+         Hmcrx3ygdd1ejXFkr+kAlZtS7ISHo96Xloghd5SLNeG571l9IZ3cm2WB34KnlHXP9CRz
+         bseQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tp0tOCwH4dQMQU1jbfVhp24TqbT0i1fDhMp/Wjobwn8=;
+        b=Ygyb5BjDHCmELWBytGYlxN9GAodWCkmKi3Jqiux/WVmrPAiHDylAYHq4WdivKLC5pK
+         fr4zbx1tuFa9SADc5xf0cnYglIisnvQ5eQP6dFM2mYVc6j6vgMv997lYl8pvw7SbEIa8
+         pMq4LV+LNSwxIztDZ602MJ6Qxeou5emMJVDmhBXnYYbS0i0oJOMtAja2446CYqJQE+66
+         /zFVUvOY8pdtzmamfmgQr2/Ob9cDL15a/hgmyXFihs6JFpQoII/Qvx+nyCvB/K4F7MJd
+         eg6R+JWsLv12O24vZ7ubp1eUw4x52Rb8P+aWKYSaTQVf/cd+JgYl1806pTetg+mk7Z/f
+         1TCA==
+X-Gm-Message-State: AOAM533UzljD/HOaOIvA2n8p8+hAu8iXK3fFZ7KtsSPMIqjxfuc2ofzj
+        MGb1OKYfOkaX2nd58mgeCwniEi3+9RVYvpbHU5k=
+X-Google-Smtp-Source: ABdhPJxY2bgAHNcLjUx4s5JpdfOPAFmahzwdpqCgDX5pvJ9JC7WhorJMYbgzNc+x15ANKY9rU+GBxXmAPuGg6Uzmn14=
+X-Received: by 2002:a6b:be44:: with SMTP id o65mr3195330iof.53.1601667768748;
+ Fri, 02 Oct 2020 12:42:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200928114445.19689-1-sudeep.holla@arm.com> <20200928114445.19689-5-sudeep.holla@arm.com>
+In-Reply-To: <20200928114445.19689-5-sudeep.holla@arm.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Fri, 2 Oct 2020 14:42:37 -0500
+Message-ID: <CABb+yY11d8uS34yfE6-c_NP6n5pmxvmjs67aOKEAduhUpnU3Uw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mailbox: arm_mhu: Add ARM MHU doorbell driver
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ALKML <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-02 at 21:15 +0200, Łukasz Stelmach wrote:
-> To avoid false positives in presence of SPDX-License-Identifier in
-> networking files it is required to increase the leeway for empty block
-> comment lines by one line.
+On Mon, Sep 28, 2020 at 6:45 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
 
-Thanks.
+> +
+> +static void mhu_db_shutdown(struct mbox_chan *chan)
+> +{
+> +       struct mhu_db_channel *chan_info = chan->con_priv;
+> +       struct mbox_controller *mbox = &chan_info->mhu->mbox;
+> +       int i;
+> +
+> +       for (i = 0; i < mbox->num_chans; i++)
+> +               if (chan == &mbox->chans[i])
+> +                       break;
+> +
+> +       if (mbox->num_chans == i) {
+> +               dev_warn(mbox->dev, "Request to free non-existent channel\n");
+> +               return;
+> +       }
+> +
+> +       /* Reset channel */
+> +       mhu_db_mbox_clear_irq(chan);
+> +       chan->con_priv = NULL;
+>
+request->free->request will fail because of this NULL assignment.
+Maybe add a 'taken' flag in mhu_db_channel, which should also be
+checked before calling mbox_chan_received_data because the data may
+arrive for a now relinquished channel.
 
-An example in the commit description would be nice.
-
-The intent here is to avoid the below error so the
-second line of a networking file can be an initial blank
-
-/*
-
-$ ./scripts/checkpatch.pl -f drivers/net/Space.c
-WARNING: networking block comments don't use an empty /* line, use /* Comment...
-#3: FILE: drivers/net/Space.c:3:
-+/*
-+ * INET		An implementation of the TCP/IP protocol suite for the LINUX
-
-total: 0 errors, 1 warnings, 0 checks, 155 lines checked
-
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  scripts/checkpatch.pl | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index a213cdb82ab0..60e10da4cccb 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3460,7 +3460,7 @@ sub process {
->  		if ($realfile =~ m@^(drivers/net/|net/)@ &&
->  		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
->  		    $rawline =~ /^\+[ \t]*\*/ &&
-> -		    $realline > 2) {
-> +		    $realline > 3) {
->  			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
->  			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
->  		}
-
-Maybe add a comment in the code too:
-
----
- scripts/checkpatch.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index a213cdb82ab0..632c543b108d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3457,10 +3457,11 @@ sub process {
- 
- # Block comment styles
- # Networking with an initial /*
-+# allow an initial blank /* at the top of the file with or without an SPDX line
- 		if ($realfile =~ m@^(drivers/net/|net/)@ &&
- 		    $prevrawline =~ /^\+[ \t]*\/\*[ \t]*$/ &&
- 		    $rawline =~ /^\+[ \t]*\*/ &&
--		    $realline > 2) {
-+		    $realline > 3) {
- 			WARN("NETWORKING_BLOCK_COMMENT_STYLE",
- 			     "networking block comments don't use an empty /* line, use /* Comment...\n" . $hereprev);
- 		}
-
-
+> +
+> +static struct mbox_chan *mhu_db_mbox_xlate(struct mbox_controller *mbox,
+> +                                          const struct of_phandle_args *spec)
+> +{
+> +       struct arm_mhu *mhu = dev_get_drvdata(mbox->dev);
+> +       struct mhu_db_channel *chan_info;
+> +       struct mbox_chan *chan = NULL;
+> +       unsigned int pchan = spec->args[0];
+> +       unsigned int doorbell = spec->args[1];
+> +       int i;
+> +
+> +       /* Bounds checking */
+> +       if (pchan >= MHU_CHANS || doorbell >= MHU_NUM_DOORBELLS) {
+> +               dev_err(mbox->dev,
+> +                       "Invalid channel requested pchan: %d doorbell: %d\n",
+> +                       pchan, doorbell);
+> +               return ERR_PTR(-EINVAL);
+> +       }
+> +
+> +       for (i = 0; i < mbox->num_chans; i++) {
+> +               chan_info = mbox->chans[i].con_priv;
+> +
+> +               /* Is requested channel free? */
+> +               if (chan_info &&
+> +                   mbox->dev == chan_info->mhu->dev &&
+> +                   pchan == chan_info->pchan &&
+> +                   doorbell == chan_info->doorbell) {
+> +                       dev_err(mbox->dev, "Channel in use\n");
+> +                       return ERR_PTR(-EBUSY);
+> +               }
+> +
+You may want to reuse mhu_db_mbox_to_channel.
