@@ -2,164 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055A628158E
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5AE281590
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388257AbgJBOn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        id S2388059AbgJBOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388016AbgJBOnZ (ORCPT
+        with ESMTP id S1726090AbgJBOo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:43:25 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80FCC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:43:25 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id k2so1332857ybp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:43:25 -0700 (PDT)
+        Fri, 2 Oct 2020 10:44:28 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9FCC0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:44:27 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id n22so1910307edt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:44:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XQ8K/rKC3UZmS+HPw3fqqFhEn9BpnVrMLbEfvCkaaxQ=;
-        b=l82Mo41OK7danCEzWkgt56N4HOyZSMpoctAVxphQ2DNsNn/JWTOXflC+wZEf+xF1B5
-         8Hg4cYinPO00dceLEz6lc4dhpgaMZcx4uYGF+Ge5gSlnA8It8rF0jSF8a9C+ylmlR0Th
-         JEon+J/ZUliHnLdGrxImVikl9b2l/qJ/lv7MyN1QFk9cD80SkybjZk2Uwk811JLa6O11
-         r9p1O430NCWEzUxgbcUTkEdt2HpvWK26f109OCCIKCPSgMQHn67MT1VgLZ1hI5q7zfJd
-         XI04hzcexR5PhQwXVxhy4UCWDVke6UzVCU0oIsWS1ufmplpU6ntdq76cFjpS/JsfUz96
-         3TNg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:subject:in-reply-to:date:message-id
+         :mime-version;
+        bh=H8SXq+IivXLIchSfhBFhCsQdlWRn5LQ5/8Y7HUIonDM=;
+        b=1oEjBHmcmrl7G72HPcgOOjmMfPKnY1mzHxUAG+YMZ0vx5yTz/K/Sr1YBmASnczaJn0
+         KsRBqbHaizK1jG+UCS2OF+8ZLJLqMqLv+Qen1kVBIpZJbdfq/dUsiU+Mmu7Y3+uzO5P4
+         pCSBt9oMxiH71ROSEvG80TXBpOAtBV3llQKzZKcDdkT9CtxBAqmGBZsn6/TfJ70xwX96
+         DPyIt4n5O1IvPYzVOCwTwfdhnX4a1u67Bd8FK7z+19KSRNfLUrTQk5VLPtCXDB3MBw1m
+         BQTywGcXHi5+/eMlx+RjQc96/GWlDtU8ZMYdTN4PM4mUvk79Xb1Wm+vsHU+qrt7TxYXX
+         CkOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XQ8K/rKC3UZmS+HPw3fqqFhEn9BpnVrMLbEfvCkaaxQ=;
-        b=qgoizhOgy16jTV+SUXz4aFferrMwmcihmkxCaHBiIIpE/r+aZ83Pma69msVg1ILeAi
-         hbgiCxMCYejNDuQlcpCeQ+XfBArMVOYNktC5vMtiw8VkYXIszE3zC4Wl78pPePHg4g1F
-         y8N7QP587jw15nGq/TNCPmQbdSWZ/vvRQ3DBNXmPY1OAYDKu0QfnT+OBGrE7KsSYrfOe
-         C1MO3xkdAU3paN75T8uO2kINDoaO2+BDT4Dx04Y/zEMuDaX8QR+5XVs7DNZ9tJG1pVYb
-         AH4TP5UuhR49dOV0HML/FIij1S8Qef4Nsd6lGmlWUOFPOtr+erKMjfdi8/FOoKfvxxRh
-         OatQ==
-X-Gm-Message-State: AOAM530Mq3DUKHQCgkPGau6hktd8rAgwhSLw8WAYYuGfw0+vvcAnA/0F
-        pWslzOsfJPxsvx7lrRK4NGOF/O+XNi6lKbf/x0/pVg==
-X-Google-Smtp-Source: ABdhPJwXSLQM1wMdKV7Ms/xCrbWz6N/IUGmNVzWK1V3dGvW4WrCOv1tOmgf1lKrNzn/nV3yOveSmij46dqVklmKPI/0=
-X-Received: by 2002:a25:9c87:: with SMTP id y7mr3357608ybo.18.1601649804901;
- Fri, 02 Oct 2020 07:43:24 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=H8SXq+IivXLIchSfhBFhCsQdlWRn5LQ5/8Y7HUIonDM=;
+        b=Bii3D7PlpXQ7h1jHBDLOIJKjcjwfKBdVQpc4XjZZcnYxrEqOI1b11I/ec4IwFQ87lN
+         JRFY8+uE49/Ls5npLXj2uGpCoIav/clbkI0zLDhPzxbH8OoQNlkHy372pn/p3Cs4zu3V
+         0qxrvJ6va5SHoWwS060XuSRowOpqXBEk7LVhRkeMeQEDvR3hehdOTbOfeC3IKrLswChM
+         l2hR28u5CbdcEk/5bpdqqnegpwPmK7orStb2hGQXh1b35MjzCBWn7t83B5y9FOogzvYo
+         +8KzkmZCObIq9/6nBDp9zx/Dnky7osPs+8V50rKyYNrXv89cim4SmAEeNr30uX2p221O
+         hO4g==
+X-Gm-Message-State: AOAM5305piaaAHhFsWDpweg4JLxaJ54iZQnu2ocDU6EWwwI3nLGttSwU
+        27DFPvaGhoXx2tkow34nHS1mUA==
+X-Google-Smtp-Source: ABdhPJyXQIsKPwo9MrANy8jUk3eZWf5PjDyGiQHyY2oynpsndOEwqFNGuAI3YT5mheABVJKbCxFbMg==
+X-Received: by 2002:aa7:c98f:: with SMTP id c15mr1761863edt.200.1601649866534;
+        Fri, 02 Oct 2020 07:44:26 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id cz11sm508493edb.62.2020.10.02.07.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 07:44:25 -0700 (PDT)
+References: <20201002141619.14387-1-christianshewitt@gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: meson: add SM1 soundcard name to VIM3L
+In-reply-to: <20201002141619.14387-1-christianshewitt@gmail.com>
+Date:   Fri, 02 Oct 2020 16:44:24 +0200
+Message-ID: <1jzh54it6f.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-References: <20200922074330.2549523-1-georgepope@google.com>
-In-Reply-To: <20200922074330.2549523-1-georgepope@google.com>
-From:   George Popescu <georgepope@google.com>
-Date:   Fri, 2 Oct 2020 17:43:14 +0300
-Message-ID: <CA+DmFKDMZPef9+f4xPWMQ2mgdHPSUBmYZ3X=bS6s8XudetmW5g@mail.gmail.com>
-Subject: Re: [PATCH v3] ubsan: introducing CONFIG_UBSAN_LOCAL_BOUNDS for Clang
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     peterz@infradead.org, Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        George Popescu <georgepope@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Is this patch ready to be merged?
 
-Best regards,
-George
+On Fri 02 Oct 2020 at 16:16, Christian Hewitt <christianshewitt@gmail.com> wrote:
 
-
-On Tue, Sep 22, 2020 at 10:43 AM George-Aurelian Popescu
-<georgepope@google.com> wrote:
+> VIM3L now inherits the sound node from the VIM3 common dtsi but is
+> an SM1 device, so label it as such, and stop users blaming future
+> support issues on the distro/app "wrongly detecting" their device.
 >
-> From: George Popescu <georgepope@android.com>
->
-> When the kernel is compiled with Clang, -fsanitize=bounds expands to
-> -fsanitize=array-bounds and -fsanitize=local-bounds.
->
-> Enabling -fsanitize=local-bounds with Clang has the unfortunate
-> side-effect of inserting traps; this goes back to its original intent,
-> which was as a hardening and not a debugging feature [1]. The same feature
-> made its way into -fsanitize=bounds, but the traps remained. For that
-> reason, -fsanitize=bounds was split into 'array-bounds' and
-> 'local-bounds' [2].
->
-> Since 'local-bounds' doesn't behave like a normal sanitizer, enable
-> it with Clang only if trapping behaviour was requested by
-> CONFIG_UBSAN_TRAP=y.
->
-> Add the UBSAN_BOUNDS_LOCAL config to Kconfig.ubsan to enable the
-> 'local-bounds' option by default when UBSAN_TRAP is enabled.
->
-> [1] http://lists.llvm.org/pipermail/llvm-dev/2012-May/049972.html
-> [2] http://lists.llvm.org/pipermail/cfe-commits/Week-of-Mon-20131021/091536.html
->
-> Suggested-by: Marco Elver <elver@google.com>
-> Reviewed-by: David Brazdil <dbrazdil@google.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-> Signed-off-by: George Popescu <georgepope@android.com>
->
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 > ---
-> v2: changed the name of the config, in Kconfig, to UBSAN_LOCAL_BOUNDS
-> ---
-> v3: added Reviewed-by tag
-> ---
->  lib/Kconfig.ubsan      | 14 ++++++++++++++
->  scripts/Makefile.ubsan | 10 +++++++++-
->  2 files changed, 23 insertions(+), 1 deletion(-)
+>  arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-> index 774315de555a..58f8d03d037b 100644
-> --- a/lib/Kconfig.ubsan
-> +++ b/lib/Kconfig.ubsan
-> @@ -47,6 +47,20 @@ config UBSAN_BOUNDS
->           to the {str,mem}*cpy() family of functions (that is addressed
->           by CONFIG_FORTIFY_SOURCE).
->
-> +config UBSAN_LOCAL_BOUNDS
-> +       bool "Perform array local bounds checking"
-> +       depends on UBSAN_TRAP
-> +       depends on CC_IS_CLANG
-> +       depends on !UBSAN_KCOV_BROKEN
-> +       help
-> +         This option enables -fsanitize=local-bounds which traps when an
-> +         exception/error is detected. Therefore, it should be enabled only
-> +         if trapping is expected.
-> +         Enabling this option detects errors due to accesses through a
-> +         pointer that is derived from an object of a statically-known size,
-> +         where an added offset (which may not be known statically) is
-> +         out-of-bounds.
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> index 4b517ca72059..f46f0ecc37ec 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> @@ -32,6 +32,10 @@
+>  		regulator-boot-on;
+>  		regulator-always-on;
+>  	};
 > +
->  config UBSAN_MISC
->         bool "Enable all other Undefined Behavior sanity checks"
->         default UBSAN
-> diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
-> index 27348029b2b8..4e3fff0745e8 100644
-> --- a/scripts/Makefile.ubsan
-> +++ b/scripts/Makefile.ubsan
-> @@ -4,7 +4,15 @@ ifdef CONFIG_UBSAN_ALIGNMENT
->  endif
->
->  ifdef CONFIG_UBSAN_BOUNDS
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
-> +      ifdef CONFIG_CC_IS_CLANG
-> +            CFLAGS_UBSAN += -fsanitize=array-bounds
-> +      else
-> +            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
-> +      endif
-> +endif
-> +
-> +ifdef CONFIG_UBSAN_LOCAL_BOUNDS
-> +      CFLAGS_UBSAN += -fsanitize=local-bounds
->  endif
->
->  ifdef CONFIG_UBSAN_MISC
-> --
-> 2.28.0.681.g6f77f65b4e-goog
->
+> +	sound {
+> +		model = "SM1-KHADAS-VIM3L";
+> +	};
+
+The sound card is the same so I don't see why the sm1 board should have
+a different name. If you are not happy with the name, please update it
+in the common file.
+
+>  };
+>  
+>  &cpu0 {
+
