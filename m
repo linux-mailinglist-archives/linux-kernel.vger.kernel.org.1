@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EC42818EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7312818F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388282AbgJBRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:15:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
+        id S2388238AbgJBRPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388143AbgJBRPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388181AbgJBRPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Oct 2020 13:15:15 -0400
-Subject: Re: [GIT PULL] IIO driver fixes for 5.9-rc8
+Subject: Re: [GIT PULL] Btrfs fixes for 5.9-rc8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601658915;
-        bh=IQ8+CwZRCHjjb3KBjrwXQHDpQPOvigLbY4fuwdvzX4g=;
+        bh=/xqQeskoEGId2eDkzvcqQ0L15X/8YEXOztIEY1EMWwY=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=KZBXELYedK0XebXD7f+WQE15RpMIqT9U/uERlqO/cCkEYzFqhUIa/oLRSRqyA+YFh
-         bEZX1yc+0etn7sSLqSTce/ozpsfsFBuhFXtrE5UueVt9iIdYjxZo4JSM6hhX0paT0T
-         yH63lZBXjMiVqXlmjbBxTPGMk3QK0z3Dn04PIs08=
+        b=bCAKxULOEOuc2XcYhBiEYsjNBKu6/Z6y5QS/47Q5UwdfrBCH2ftOQSVBXfx2B7gPv
+         Mm8D6nX0PByaov198uNDEu3MeH9hgY7M47UwkkrPLYgH6wTc9q+RN68Y/J1DT+xTMm
+         NVd87ScAFyNlGJIEyv6zFRff5hVeVvqSz1Ma8qFU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201002142011.GA3499938@kroah.com>
-References: <20201002142011.GA3499938@kroah.com>
+In-Reply-To: <cover.1601650060.git.dsterba@suse.com>
+References: <cover.1601650060.git.dsterba@suse.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201002142011.GA3499938@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.9-rc8
-X-PR-Tracked-Commit-Id: 52a035235ed5a1392fc264bd614eb96d1ac97a3d
+X-PR-Tracked-Message-Id: <cover.1601650060.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc7-tag
+X-PR-Tracked-Commit-Id: 4c8f353272dd1262013873990c0fafd0e3c8f274
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cc8ad8fa844aeae64c10f002b97a7c56619f1f57
-Message-Id: <160165891532.31225.17534733155112020176.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4e3b9ce271b4b54d2293a3916d22e4ddc0c89aab
+Message-Id: <160165891553.31225.16441597036192185427.pr-tracker-bot@kernel.org>
 Date:   Fri, 02 Oct 2020 17:15:15 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 2 Oct 2020 16:20:11 +0200:
+The pull request you sent on Fri,  2 Oct 2020 17:30:36 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.9-rc8
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc7-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cc8ad8fa844aeae64c10f002b97a7c56619f1f57
+https://git.kernel.org/torvalds/c/4e3b9ce271b4b54d2293a3916d22e4ddc0c89aab
 
 Thank you!
 
