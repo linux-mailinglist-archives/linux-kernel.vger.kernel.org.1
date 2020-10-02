@@ -2,200 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7602812BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B442812C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387827AbgJBMbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387677AbgJBMbV (ORCPT
+        id S2387889AbgJBMcB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Oct 2020 08:32:01 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:38847 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBMb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:31:21 -0400
-Received: from smtp2-2.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C069C0613D0;
-        Fri,  2 Oct 2020 05:31:20 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id AA89323F66A;
-        Fri,  2 Oct 2020 14:31:17 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.997
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.997 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.097, BAYES_00=-1.9] autolearn=ham
-Received: from smtp2.goneo.de ([127.0.0.1])
-        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Hs9TwZSDOHnW; Fri,  2 Oct 2020 14:31:16 +0200 (CEST)
-Received: from lem-wkst-02.lemonage.de. (hq.lemonage.de [87.138.178.34])
-        by smtp2.goneo.de (Postfix) with ESMTPA id 219A423F3EA;
-        Fri,  2 Oct 2020 14:31:16 +0200 (CEST)
-From:   poeschel@lemonage.de
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org (open list:PWM SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 1/2] pwm: sysfs: Set class on pwm devices
-Date:   Fri,  2 Oct 2020 14:30:47 +0200
-Message-Id: <20201002123048.3073128-1-poeschel@lemonage.de>
-X-Mailer: git-send-email 2.28.0
+        Fri, 2 Oct 2020 08:31:59 -0400
+Received: by mail-ej1-f66.google.com with SMTP id ce10so1725670ejc.5;
+        Fri, 02 Oct 2020 05:31:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ruty7DVy+OZPgSY4H/PWNx+35iqlcL+AUfsjOvXskTs=;
+        b=bCidhWP34d7hMNiuycxC4287P50KNdhUGOpcSVSh8X3Y17my6Oqo2/kyG8WjruGyrF
+         Lm+TXvzaCphpGV1DF9R1x66vNB9h67zBPB+RB72Sr3KNTFL8KvWL5sOu2nJE79BqFB05
+         gBpW0Hm9nR7q3UQuNH0+XSq7wdjpdIVDORyZ2soCYm0dYePfFWHCUrpTOtdPit6kewjB
+         e0LwG9wUrxzlFeas9mnMOG9GKsD7JOQx9F8pbaoqrKD1gFffSfYFC98oahTvyT8bGkxh
+         msaBQ5pS8RB9RD+5goykYKZqcoPyKMv8m8HeIutN9co3STxYosnwmsOK5G5FHabXl6vC
+         OPYA==
+X-Gm-Message-State: AOAM533mqHZKRCTMcghRzpGgTAvAN9+sYGYXA0CRTVxhFL08lF+I95JX
+        s9zTmRslrvUAzoJ9paSUWLk7xH3Vd+Q=
+X-Google-Smtp-Source: ABdhPJyhM3dwv7SEyAI4chEDpCbHJ/cxuWy1xtuG8hiRd28Nc8mdupnHvxGqdM5WftW4lVi38BAeFQ==
+X-Received: by 2002:a17:906:37c6:: with SMTP id o6mr2118364ejc.404.1601641917025;
+        Fri, 02 Oct 2020 05:31:57 -0700 (PDT)
+Received: from pi3 ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id a22sm1039191ejt.65.2020.10.02.05.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 05:31:55 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 14:31:53 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
+Cc:     Kukjin Kim <kgene@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBo=C5=82nierkiewicz?= 
+        <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v3 7/9] spi: spi-s3c64xx: Ensure cur_speed holds actual
+ clock value
+Message-ID: <20201002123153.GA7463@pi3>
+References: <20201002122243.26849-1-l.stelmach@samsung.com>
+ <CGME20201002122255eucas1p21976a8ba0566564b79a9dd6f62cd4caf@eucas1p2.samsung.com>
+ <20201002122243.26849-8-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201002122243.26849-8-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Poeschel <poeschel@lemonage.de>
+On Fri, Oct 02, 2020 at 02:22:41PM +0200, Łukasz Stelmach wrote:
+> Make sure the cur_speed value used in s3c64xx_enable_datapath()
+> to configure DMA channel and in s3c64xx_wait_for_*() to calculate the
+> transfer timeout is set to the actual value of (half) the clock speed.
+> 
+> Don't change non-CMU case, because no frequency calculation errors have
+> been reported.
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Suggested-by: Tomasz Figa <tomasz.figa@gmail.com>
+> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
 
-This adds a class to exported pwm devices.
-Exporting a pwm through sysfs did not yield udev events. The
-dev_uevent_filter function does filter-out devices without a bus or
-class.
-This was already addressed in commit
-commit 7e5d1fd75c3d ("pwm: Set class for exported channels in sysfs")
-but this did cause problems and the commit got reverted with
-commit c289d6625237 ("Revert "pwm: Set class for exported channels in
-sysfs"")
-Problem with the previous approach was, that there is a clash if we have
-multiple pwmchips:
-	echo 0 > pwmchip0/export
-	echo 0 > pwmchip1/export
-would both export /sys/class/pwm/pwm0 .
+For the future, tags are added in chronological order, so first is
+suggested (as someone suggested to make a patch), then your SoB (as you
+wrote it) and then my review (because you had to write a patch before I
+could review).
 
-Now this patch changes the sysfs interface. We do include the pwmchip
-number into the pwm directory that gets exported.
-With the example above we get:
-	/sys/class/pwm/pwm-0-0
-	/sys/class/pwm/pwm-1-0
-We maintain ABI backward compatibility through symlinks.
-	/sys/class/pwm/pwmchip0/pwm0
-	/sys/class/pwm/pwmchip1/pwm0
-are now symbolic links to the new names.
+All other patches here have these mixed up. No need to resend, but keep
+it in mind for the future.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
----
- drivers/pwm/sysfs.c | 57 +++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 47 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/pwm/sysfs.c b/drivers/pwm/sysfs.c
-index 449dbc0f49ed..c708da17a857 100644
---- a/drivers/pwm/sysfs.c
-+++ b/drivers/pwm/sysfs.c
-@@ -240,8 +240,10 @@ static void pwm_export_release(struct device *child)
- 
- static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
- {
-+	struct pwm_chip *chip = dev_get_drvdata(parent);
- 	struct pwm_export *export;
- 	char *pwm_prop[2];
-+	char *link_name;
- 	int ret;
- 
- 	if (test_and_set_bit(PWMF_EXPORTED, &pwm->flags))
-@@ -256,25 +258,39 @@ static int pwm_export_child(struct device *parent, struct pwm_device *pwm)
- 	export->pwm = pwm;
- 	mutex_init(&export->lock);
- 
-+	export->child.class = parent->class;
- 	export->child.release = pwm_export_release;
- 	export->child.parent = parent;
- 	export->child.devt = MKDEV(0, 0);
- 	export->child.groups = pwm_groups;
--	dev_set_name(&export->child, "pwm%u", pwm->hwpwm);
-+	dev_set_name(&export->child, "pwm-%u-%u", chip->base, pwm->hwpwm);
- 
- 	ret = device_register(&export->child);
--	if (ret) {
--		clear_bit(PWMF_EXPORTED, &pwm->flags);
--		put_device(&export->child);
--		export = NULL;
--		return ret;
-+	if (ret)
-+		goto error;
-+
-+	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
-+	if (link_name == NULL) {
-+		ret = -ENOMEM;
-+		goto dev_unregister;
- 	}
--	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=pwm%u", pwm->hwpwm);
-+
-+	pwm_prop[0] = kasprintf(GFP_KERNEL, "EXPORT=%s",
-+			export->child.kobj.name);
- 	pwm_prop[1] = NULL;
- 	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
- 	kfree(pwm_prop[0]);
- 
--	return 0;
-+	ret = sysfs_create_link(&parent->kobj, &export->child.kobj, link_name);
-+	return ret;
-+
-+dev_unregister:
-+	device_unregister(&export->child);
-+error:
-+	clear_bit(PWMF_EXPORTED, &pwm->flags);
-+	put_device(&export->child);
-+	export = NULL;
-+	return ret;
- }
- 
- static int pwm_unexport_match(struct device *child, void *data)
-@@ -286,6 +302,7 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
- {
- 	struct device *child;
- 	char *pwm_prop[2];
-+	char *link_name;
- 
- 	if (!test_and_clear_bit(PWMF_EXPORTED, &pwm->flags))
- 		return -ENODEV;
-@@ -294,7 +311,11 @@ static int pwm_unexport_child(struct device *parent, struct pwm_device *pwm)
- 	if (!child)
- 		return -ENODEV;
- 
--	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=pwm%u", pwm->hwpwm);
-+	link_name = kasprintf(GFP_KERNEL, "pwm%u", pwm->hwpwm);
-+	if (link_name)
-+		sysfs_delete_link(&parent->kobj, &child->kobj, link_name);
-+
-+	pwm_prop[0] = kasprintf(GFP_KERNEL, "UNEXPORT=%s", child->kobj.name);
- 	pwm_prop[1] = NULL;
- 	kobject_uevent_env(&parent->kobj, KOBJ_CHANGE, pwm_prop);
- 	kfree(pwm_prop[0]);
-@@ -365,13 +386,29 @@ static ssize_t npwm_show(struct device *parent, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(npwm);
- 
-+static umode_t pwm_is_visible(struct kobject *kobj, struct attribute *attr,
-+			      int n)
-+{
-+	struct device *dev = container_of(kobj, struct device, kobj);
-+
-+	if (dev->groups == pwm_groups)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
- static struct attribute *pwm_chip_attrs[] = {
- 	&dev_attr_export.attr,
- 	&dev_attr_unexport.attr,
- 	&dev_attr_npwm.attr,
- 	NULL,
- };
--ATTRIBUTE_GROUPS(pwm_chip);
-+
-+static const struct attribute_group pwm_chip_group = {
-+	.attrs = pwm_chip_attrs,
-+	.is_visible = pwm_is_visible,
-+};
-+__ATTRIBUTE_GROUPS(pwm_chip);
- 
- /* takes export->lock on success */
- static struct pwm_export *pwm_class_get_state(struct device *parent,
--- 
-2.28.0
+Best regards,
+Krzysztof
 
