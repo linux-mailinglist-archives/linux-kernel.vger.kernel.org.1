@@ -2,90 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FABC280C9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80620280C9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbgJBEON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 00:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
+        id S1725994AbgJBEPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 00:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgJBEOM (ORCPT
+        with ESMTP id S1725948AbgJBEPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 00:14:12 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78CAC0613D0;
-        Thu,  1 Oct 2020 21:14:12 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C2c7j2vkvz9s1t;
-        Fri,  2 Oct 2020 14:14:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601612050;
-        bh=0/+2nupUiN67dV2lwVOISuKUHiRzvhXj4XJwmbQN6Nw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Rc1NvyTVqHQD6G0o1d2Lb6fnKm4FI9osxebJK93RVm0X1xgBVNyvU9jUiRaxxELQV
-         17W75NyKcII56ARD9mgPhbO611L+VZPb1UixlpYAV6cKi4Vm71nuk1mgVXoIrSi1l1
-         qHodI89Viosjc0S0nuFey6IEsLWbQMZ0160rhbk4lkRvqtN131D/x8F7j2whdugb9k
-         mLezm+LLjnOEgF4bzb6navUIrs1I18Cgrs7UrlkpIbEC517owd+5cWTbY2tHJJI9n1
-         hU76Nigyb2ORM+6pz2JRCTpnvlbyxcKHgD0+1hpi7srzw/xUrECoBQOJstYHoFE2b+
-         dRy2Ty7R9UAiQ==
-Date:   Fri, 2 Oct 2020 14:14:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20201002141407.55733454@canb.auug.org.au>
+        Fri, 2 Oct 2020 00:15:13 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8178FC0613E2
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 21:15:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w21so363580pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 21:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rCG+f2QSNVgoR18fTBsnkmJJglqEGdhf6XYE51k3PwA=;
+        b=mRQgnespe5/t+naQoqSBDCHqf1WGaJTPOLKX2ZOx6umUHYzOPET5n4GnIln7WSp29P
+         QgSfoOL+fktLQc2+gFVeA36vae+MW63Og8ug/Y6xLyCo8UHyhHDp57wnqXYp6nyIGU2i
+         MxtrTgDhno/D/VLX88sJkIuQJM9lWFsPySRboT/xnLJ4o9mM16z22DBuc/Zl2A++RAU5
+         yeb4cGryNfY92Vv3OB4yXZlc1pSY0hZdxkPn5T7Ml8YdCqhllvnNf7Hkyhir11dc5snD
+         9sImLRnkKc//A/AGHjA02JZmiQIH20c/AaEBEshDN4eVCIfLW+POF9FpW8m8IZP78JjP
+         pdOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rCG+f2QSNVgoR18fTBsnkmJJglqEGdhf6XYE51k3PwA=;
+        b=IYhH3f1S6pJ3ToOXmn1iFbmkTj5PiucDxhv2r69IfrlUFhsiZYie7wesyUV808cdF4
+         i2C0TyXdrSgpslBUKtwFFYCiukAjsAzTI4MoFADCtrB7Hy2Q0KIrZQtM5Z0iQuiABW3g
+         VaQUzSN50y7prC2Hb9cgPegdFzAte9QVjtU0xWrnQqAOydk834jcVTcknvUaTLztYDv5
+         9f7j3g9Z11Sv0ueVTPtdOdePEB3+hjuVbD+YsLUtndsz22ea2/lVI3rChM81bkiRvC2v
+         CLiad0PcCmFdEnqjtfr87o7wYuBGJbrWXACFNNPpgnNwCQe8bRD2czmp+oCVKrnUlzEL
+         DIcw==
+X-Gm-Message-State: AOAM5318cVo5ZkSV7diforybLWO1o3SB07OFz1LcEHQD/yztvFvhLU99
+        BgYmsU62IDXKE9ok4xza523396moeRkJXQ==
+X-Google-Smtp-Source: ABdhPJzgBbNizousJDYI/cl1jEY2YddBxSt+TaGRCT78Uf6lUwXy715tNZhzd5vfpoOhB8nJJCyHWw==
+X-Received: by 2002:a62:301:0:b029:13c:1611:6587 with SMTP id 1-20020a6203010000b029013c16116587mr582826pfd.4.1601612112834;
+        Thu, 01 Oct 2020 21:15:12 -0700 (PDT)
+Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
+        by smtp.gmail.com with ESMTPSA id e2sm209209pgc.29.2020.10.01.21.15.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Oct 2020 21:15:11 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 07/13] PCI/AER: Extend AER error handling to RCECs
+Date:   Thu, 01 Oct 2020 21:15:10 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <927A388B-E682-4420-9EEA-B62C10E64CB7@intel.com>
+In-Reply-To: <20201001231407.GA2743007@bjorn-Precision-5520>
+References: <20201001231407.GA2743007@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZA+zvDXHWwl3ep5TJT=05x+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZA+zvDXHWwl3ep5TJT=05x+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 1 Oct 2020, at 16:14, Bjorn Helgaas wrote:
 
-Hi all,
+> On Wed, Sep 30, 2020 at 02:58:14PM -0700, Sean V Kelley wrote:
+>> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>
+>> Currently the kernel does not handle AER errors for Root Complex
+>> integrated End Points (RCiEPs)[0]. These devices sit on a root bus 
+>> within
+>> the Root Complex (RC). AER handling is performed by a Root Complex 
+>> Event
+>> Collector (RCEC) [1] which is a effectively a type of RCiEP on the 
+>> same
+>> root bus.
+>>
+>> For an RCEC (technically not a Bridge), error messages "received" 
+>> from
+>> associated RCiEPs must be enabled for "transmission" in order to 
+>> cause a
+>> System Error via the Root Control register or (when the Advanced 
+>> Error
+>> Reporting Capability is present) reporting via the Root Error Command
+>> register and logging in the Root Error Status register and Error 
+>> Source
+>> Identification register.
+>>
+>> In addition to the defined OS level handling of the reset flow for 
+>> the
+>> associated RCiEPs of an RCEC, it is possible to also have non-native
+>> handling. In that case there is no need to take any actions on the 
+>> RCEC
+>> because the firmware is responsible for them. This is true where APEI 
+>> [2]
+>> is used to report the AER errors via a GHES[v2] HEST entry [3] and
+>> relevant AER CPER record [4] and non-native handling is in use.
+>>
+>> We effectively end up with two different types of discovery for
+>> purposes of handling AER errors:
+>>
+>> 1) Normal bus walk - we pass the downstream port above a bus to which
+>> the device is attached and it walks everything below that point.
+>>
+>> 2) An RCiEP with no visible association with an RCEC as there is no 
+>> need
+>> to walk devices. In that case, the flow is to just call the callbacks 
+>> for
+>> the actual device, which in turn references its associated RCEC.
+>>
+>> A new walk function pci_walk_bridge(), similar to pci_walk_bus(),
+>> is provided that takes a pci_dev instead of a bus. If that bridge
+>> corresponds to a downstream port it will walk the subordinate bus of
+>> that bridge. If the device does not then it will call the function on
+>> that device alone.
+>>
+>> [0] ACPI PCI Express Base Specification 5.0-1 1.3.2.3 Root Complex
+>> Integrated Endpoint Rules.
+>> [1] ACPI PCI Express Base Specification 5.0-1 6.2 Error Signalling 
+>> and
+>> Logging
+>> [2] ACPI Specification 6.3 Chapter 18 ACPI Platform Error Interface 
+>> (APEI)
+>> [3] ACPI Specification 6.3 18.2.3.7 Generic Hardware Error Source
+>> [4] UEFI Specification 2.8, N.2.7 PCI Express Error Section
+>>
+>> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> ---
+>>  drivers/pci/pcie/err.c | 52 
+>> +++++++++++++++++++++++++++++++++---------
+>>  1 file changed, 41 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index 9e552330155b..c4ceca42a3bf 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -146,44 +146,73 @@ static int report_resume(struct pci_dev *dev, 
+>> void *data)
+>>  	return 0;
+>>  }
+>>
+>> +/**
+>> + * pci_walk_bridge - walk bridges potentially AER affected
+>> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
+>> + *           an RCiEP associated with an RCEC, or a Port.
+>> + * @cb       callback to be called for each device found
+>> + * @userdata arbitrary pointer to be passed to callback.
+>> + *
+>> + * If the device provided is a bridge, walk the subordinate bus,
+>> + * including any bridged devices on buses under this bus.
+>> + * Call the provided callback on each device found.
+>> + *
+>> + * If the device provided has no subordinate bus, call the provided
+>> + * callback on the device itself.
+>> + */
+>> +static void pci_walk_bridge(struct pci_dev *bridge, int (*cb)(struct 
+>> pci_dev *, void *),
+>> +			    void *userdata)
+>> +{
+>> +	if (bridge->subordinate)
+>> +		pci_walk_bus(bridge->subordinate, cb, userdata);
+>> +	else
+>> +		cb(bridge, userdata);
+>> +}
+>> +
+>>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  			pci_channel_state_t state,
+>>  			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
+>> *pdev))
+>>  {
+>>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>> -	struct pci_bus *bus;
+>>  	struct pci_dev *bridge;
+>>  	int type;
+>>
+>>  	/*
+>>  	 * Error recovery runs on all subordinates of the first downstream
+>>  	 * bridge. If the downstream bridge detected the error, it is
+>> -	 * cleared at the end.
+>> +	 * cleared at the end. For RCiEPs we should reset just the RCiEP 
+>> itself.
+>>  	 */
+>>  	type = pci_pcie_type(dev);
+>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>> -	    type == PCI_EXP_TYPE_DOWNSTREAM)
+>> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type == PCI_EXP_TYPE_RC_EC ||
+>> +	    type == PCI_EXP_TYPE_RC_END)
+>>  		bridge = dev;
+>>  	else
+>>  		bridge = pci_upstream_bridge(dev);
+>>
+>> -	bus = bridge->subordinate;
+>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>  	if (state == pci_channel_io_frozen) {
+>> -		pci_walk_bus(bus, report_frozen_detected, &status);
+>> -		status = reset_subordinate_device(dev);
+>> +		pci_walk_bridge(bridge, report_frozen_detected, &status);
+>
+> Wonder if it would be worth splitting out the pci_walk_bus() to
+> pci_walk_bridge() change -- initially pci_walk_bridge() would do only
+> this:
+>
+>   if (bridge->subordinate)
+>     pci_walk_bus(bridge->subordinate, cb, userdata);
+>
+> so basically just rename it and move the bridge->subordinate
+> dereference out.
 
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Sure, that’s fine. It was actually something that crossed my mind when 
+I was doing this prior splitting out because I realized I still needed 
+to dereference the bus and was disappointed to keep it here.
 
-sound/soc/fsl/fsl_spdif.c: In function 'fsl_spdif_probe':
-sound/soc/fsl/fsl_spdif.c:1255:22: warning: unused variable 'np' [-Wunused-=
-variable]
- 1255 |  struct device_node *np =3D pdev->dev.of_node;
-      |                      ^~
 
-Introduced by commit
+>
+> Then the next patch would be a lot smaller and would add the
+> !bridge->subordinate case (which I think is only for RC_EC & RC_END?)
 
-  601fd3a7d849 ("ASoC: fsl_spdif: Fix unnecessary check in fsl_spdif_probe(=
-)")
+Correct the check on bridge && bridge->subordinate comes in with the 
+RC_EC & RC_END
 
---=20
-Cheers,
-Stephen Rothwell
+>
+>> +		if (type == PCI_EXP_TYPE_RC_END) {
+>> +			pci_warn(dev, "subordinate device reset not possible for 
+>> RCiEP\n");
+>> +			status = PCI_ERS_RESULT_NONE;
+>> +			goto failed;
+>> +		}
+>> +
+>> +		status = reset_subordinate_devices(bridge);
+>
+> I missed the reason for this change:
+>
+>   -		status = reset_subordinate_device(dev);
+>   +		status = reset_subordinate_devices(bridge);
 
---Sig_/ZA+zvDXHWwl3ep5TJT=05x+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+This should have happened in the ‘bridge’ renaming patch. This was 
+going to be either a reset of dev or dev->bus->self depending on the 
+type via the assignment of dev = prior to renaming in (5/13). I should 
+move this change back to the bridge renaming patch.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl92qQ8ACgkQAVBC80lX
-0Gy1BQf6AvjElut4Ek42dnMMzVCdghtmAP6I8njdp6GFdk95doaUlenRaEkD4Wpk
-Sa3JQPCwK9U2hUwJEP3ES43oTzuV4EAJgdn6y9i41cceqcq1UlsyOmani0cEonPi
-IIHY0K/66RNEF3CUgmJYRkFQTtMUXwm84lsKmDBhjfvPEPLWNzYD5XbUhZ2jBaKT
-LPYdjn/z3+H3oeww2yCYsYF/ef826lgdCAxoQnouf5NYyFj2RQrhfkOfGbDbbkuk
-vVZIpmn/jFawqxaJVN88+Vh6k26ETOgFfm/HBDjqleOD9wpNDOZhFt9hinblBkaD
-vAWPTkZW5OBvBDXA+RuCSKEhCd/soQ==
-=XxLM
------END PGP SIGNATURE-----
+Sean
 
---Sig_/ZA+zvDXHWwl3ep5TJT=05x+--
+>
+>>  		if (status != PCI_ERS_RESULT_RECOVERED) {
+>>  			pci_warn(dev, "subordinate device reset failed\n");
+>>  			goto failed;
+>>  		}
+>>  	} else {
+>> -		pci_walk_bus(bus, report_normal_detected, &status);
+>> +		pci_walk_bridge(bridge, report_normal_detected, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+>> -		pci_walk_bus(bus, report_mmio_enabled, &status);
+>> +		pci_walk_bridge(bridge, report_mmio_enabled, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>> @@ -194,17 +223,18 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  		 */
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>> -		pci_walk_bus(bus, report_slot_reset, &status);
+>> +		pci_walk_bridge(bridge, report_slot_reset, &status);
+>>  	}
+>>
+>>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>>  		goto failed;
+>>
+>>  	pci_dbg(dev, "broadcast resume message\n");
+>> -	pci_walk_bus(bus, report_resume, &status);
+>> +	pci_walk_bridge(bridge, report_resume, &status);
+>>
+>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>> -	    type == PCI_EXP_TYPE_DOWNSTREAM) {
+>> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type == PCI_EXP_TYPE_RC_EC) {
+>>  		if (pcie_aer_is_native(bridge))
+>>  			pcie_clear_device_status(bridge);
+>>  		pci_aer_clear_nonfatal_status(bridge);
+>> -- 
+>> 2.28.0
+>>
