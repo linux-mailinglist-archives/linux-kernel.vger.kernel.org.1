@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CA2280DF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401F4280DF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgJBHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:17:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBHRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:17:08 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF5FF206B2;
-        Fri,  2 Oct 2020 07:17:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601623027;
-        bh=VKNPJL2bzFQr7IJTImeYEGk60ykcZAwXa6OGA3vrbfc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fHVwk1WBgCO5yj+pxZbKc1aPpUuioNEi4A07Nehen5d0kGzPu6f8GJW2Mdjg7isBt
-         al3Sc1SPhW60rklF4P07uOxwULmV6nYkmI6hHo3koAvM8nhymgE5DkEI6jPQ73hQrv
-         eKyZLqz0uRyKErzBPTcfieFqlmTW0DTMD0ooqwYU=
-Date:   Fri, 2 Oct 2020 16:17:03 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] tracing: Add support for dynamic strings to
- synthetic events
-Message-Id: <20201002161703.3961a96e84314fe31157f308@kernel.org>
-In-Reply-To: <86c164d6476fd1fa9595ec79634b15c25f59e5b0.1601490263.git.zanussi@kernel.org>
-References: <cover.1601490263.git.zanussi@kernel.org>
-        <86c164d6476fd1fa9595ec79634b15c25f59e5b0.1601490263.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726230AbgJBHS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:18:29 -0400
+Received: from smtp-bc0a.mail.infomaniak.ch ([45.157.188.10]:56245 "EHLO
+        smtp-bc0a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725961AbgJBHS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:18:29 -0400
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4C2hDM26gTzlhSjh;
+        Fri,  2 Oct 2020 09:18:27 +0200 (CEST)
+Received: from localhost (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4C2hDL58YNzllmgM;
+        Fri,  2 Oct 2020 09:18:26 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
+Subject: [PATCH v1] dm verity: Add support for signature verification with 2nd keyring
+Date:   Fri,  2 Oct 2020 09:18:02 +0200
+Message-Id: <20201002071802.535023-1-mic@digikod.net>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+From: Mickaël Salaün <mic@linux.microsoft.com>
 
-On Wed, 30 Sep 2020 13:40:52 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+Add a new DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING configuration
+to enable dm-verity signatures to be verified against the secondary
+trusted keyring.  This allows certificate updates without kernel update
+and reboot, aligning with module and kernel (kexec) signature
+verifications.
 
-> Currently, sythetic events only support static string fields such as:
-> 
->   # echo 'test_latency u64 lat; char somename[32]' > /sys/kernel/debug/tracing/synthetic_events
-> 
-> Which is fine, but wastes a lot of space in the event.
-> 
-> It also prevents the most commonly-defined strings in the existing
-> trace events e.g. those defined using __string(), from being passed to
-> synthetic events via the trace() action.
-> 
-> With this change, synthetic events with dynamic fields can be defined:
-> 
->   # echo 'test_latency u64 lat; char somename[]' > /sys/kernel/debug/tracing/synthetic_events
+Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+Cc: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
+Cc: Mike Snitzer <snitzer@redhat.com>
+Cc: Milan Broz <gmazyland@gmail.com>
+---
+ drivers/md/Kconfig                | 13 ++++++++++++-
+ drivers/md/dm-verity-verify-sig.c |  9 +++++++--
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
-Could you add a testcase (and update existing one) of ftracetest
-for this new feature too?
-
-> 
-> And the trace() action can be used to generate events using either
-> dynamic or static strings:
-> 
->   # echo 'hist:keys=name:lat=common_timestamp.usecs-$ts0:onmatch(sys.event).test_latency($lat,name)' > /sys/kernel/debug/tracing/events
-> 
-> The synthetic event dynamic strings are implemented in the same way as
-> the existing __data_loc strings and appear as such in the format file.
-> 
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  Documentation/trace/events.rst      |  15 +-
->  Documentation/trace/histogram.rst   |  18 +++
->  kernel/trace/synth_event_gen_test.c |  18 ++-
->  kernel/trace/trace_events_hist.c    |   9 ++
->  kernel/trace/trace_events_synth.c   | 239 ++++++++++++++++++++++++----
->  kernel/trace/trace_synth.h          |   4 +
-
-And you might also need to update tracefs/README so that user
-can check whether the kernel supports dynamic string or not.
-
-
-Thank you,
-
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index 30ba3573626c..63870fdfe8ce 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -530,11 +530,22 @@ config DM_VERITY_VERIFY_ROOTHASH_SIG
+ 	bool "Verity data device root hash signature verification support"
+ 	depends on DM_VERITY
+ 	select SYSTEM_DATA_VERIFICATION
+-	  help
++	---help---
+ 	  Add ability for dm-verity device to be validated if the
+ 	  pre-generated tree of cryptographic checksums passed has a pkcs#7
+ 	  signature file that can validate the roothash of the tree.
+ 
++	  By default, rely on the builtin trusted keyring.
++
++	  If unsure, say N.
++
++config DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
++	bool "Verity data device root hash signature verification with secondary keyring"
++	depends on DM_VERITY_VERIFY_ROOTHASH_SIG
++	depends on SECONDARY_TRUSTED_KEYRING
++	---help---
++	  Rely on the secondary trusted keyring to verify dm-verity signatures.
++
+ 	  If unsure, say N.
+ 
+ config DM_VERITY_FEC
+diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
+index 614e43db93aa..29385dc470d5 100644
+--- a/drivers/md/dm-verity-verify-sig.c
++++ b/drivers/md/dm-verity-verify-sig.c
+@@ -119,8 +119,13 @@ int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
+ 	}
+ 
+ 	ret = verify_pkcs7_signature(root_hash, root_hash_len, sig_data,
+-				sig_len, NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
+-				NULL, NULL);
++				sig_len,
++#ifdef CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
++				VERIFY_USE_SECONDARY_KEYRING,
++#else
++				NULL,
++#endif
++				VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
+ 
+ 	return ret;
+ }
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.28.0
+
