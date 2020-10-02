@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C6A2816C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FE12816C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387923AbgJBPiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:38:20 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:40997 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBPiT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:38:19 -0400
-Received: by mail-il1-f208.google.com with SMTP id f10so1426224ilj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 08:38:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=JmQQuAcGK0f8l/l7fmY64agtLz6hNPgTEZpUuG1yxiU=;
-        b=RpcYg7vBXCigDtiqyYqZmeLJyhdJR705KzcYSWFHpfQ2S7Xws/LchWvhb8S4NSgiHv
-         scIRN0pOssS3C9ehIsD2w6Mmup10lRzzU+4ZMv14z7Kp/E9y27JCJKoXp3zgqNSwczye
-         K+GWAZ1OCv9pqQyWzn07tQ+VUlGViZjhna/rR34y0IWMHqm/vkHsdXvILV6ncMAU+XZ0
-         856+uw8iNj8UbN8rXLM3BDfqzdxbpnNjt3bsVxKUy88UczbVOBFGMxxNnbYUobsrckMb
-         fZLyd2Ndp/cC4AGdlqNwREgfytlWxzTCFe6yocttwjEI8Q/rkGO7wox7bY9hfONJVsoS
-         GvWw==
-X-Gm-Message-State: AOAM530o3fremDjpKdjUxKNfD8LvZM7us79SNOk/Hx40miCwl+ujleX7
-        tllooutIuHL0L7LmCExzs6Ib6XUFEpD2rjYfKElWs7O7Z/VV
-X-Google-Smtp-Source: ABdhPJwRmObuMC9itRcX34av64HD85wugaMGA7DmCEg2SUPIGA0UZq/xVUp49l0b08j7tNPmJZrHTuAQP6EzWKdto5pJIhAVoIY1
+        id S2388057AbgJBPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:38:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2950 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726176AbgJBPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:38:50 -0400
+Received: from lhreml717-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id E1DE52450D7A0623FD4C;
+        Fri,  2 Oct 2020 16:38:48 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 2 Oct 2020 16:38:48 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Fri, 2 Oct 2020 16:38:48 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+Subject: RE: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+ short time period
+Thread-Topic: [RFC PATCH 0/7] RAS/CEC: Extend CEC for errors count check on
+ short time period
+Thread-Index: AQHWmLdPdbyjNlzT0kmpr3mH9sP7namEMSsAgAASuxA=
+Date:   Fri, 2 Oct 2020 15:38:48 +0000
+Message-ID: <19a8cc62b11c49e9b584857a6a6664e5@huawei.com>
+References: <20201002122235.1280-1-shiju.jose@huawei.com>
+ <20201002124352.GC17436@zn.tnic>
+In-Reply-To: <20201002124352.GC17436@zn.tnic>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.84.119]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c48:: with SMTP id x8mr2468609iov.152.1601653098284;
- Fri, 02 Oct 2020 08:38:18 -0700 (PDT)
-Date:   Fri, 02 Oct 2020 08:38:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa10d905b0b1eb89@google.com>
-Subject: WARNING in drv_bss_info_changed
-From:   syzbot <syzbot+4cf3e4e092f2f4120a52@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14846d83900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=4cf3e4e092f2f4120a52
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145eb667900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15422c1f900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4cf3e4e092f2f4120a52@syzkaller.appspotmail.com
-
-syz-executor686 uses obsolete (PF_INET,SOCK_PACKET)
-------------[ cut here ]------------
-wlan0: Failed check-sdata-in-driver check, flags: 0x4
-WARNING: CPU: 0 PID: 6917 at net/mac80211/driver-ops.h:172 drv_bss_info_changed+0x560/0x660 net/mac80211/driver-ops.h:172
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 6917 Comm: syz-executor686 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:drv_bss_info_changed+0x560/0x660 net/mac80211/driver-ops.h:172
-Code: ab 40 06 00 00 48 85 ed 0f 84 99 00 00 00 e8 a7 3e b8 f9 e8 a2 3e b8 f9 44 89 fa 48 89 ee 48 c7 c7 40 dd 5e 89 e8 12 7c 88 f9 <0f> 0b e9 6b fd ff ff e8 84 3e b8 f9 0f 0b e9 ac fc ff ff e8 38 14
-RSP: 0018:ffffc900054875c0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888088990c00 RCX: 0000000000000000
-RDX: ffff8880918184c0 RSI: ffffffff815f59d5 RDI: fffff52000a90eaa
-RBP: ffff888088990000 R08: 0000000000000001 R09: ffff8880ae4318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000002000000
-R13: ffff888088991e10 R14: 0000000000000000 R15: 0000000000000004
- ieee80211_bss_info_change_notify+0x9a/0xc0 net/mac80211/main.c:210
- ieee80211_set_mcast_rate+0x37/0x40 net/mac80211/cfg.c:2453
- rdev_set_mcast_rate net/wireless/rdev-ops.h:1212 [inline]
- nl80211_set_mcast_rate+0x387/0x6c0 net/wireless/nl80211.c:9911
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x442039
-Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffff85406a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000442039
-RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000002000000000 R09: 0000002000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+SGkgQm9yaXMsIEhpIEphbWVzLA0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9t
+OiBCb3Jpc2xhdiBQZXRrb3YgW21haWx0bzpicEBhbGllbjguZGVdDQo+U2VudDogMDIgT2N0b2Jl
+ciAyMDIwIDEzOjQ0DQo+VG86IFNoaWp1IEpvc2UgPHNoaWp1Lmpvc2VAaHVhd2VpLmNvbT4NCj5D
+YzogbGludXgtZWRhY0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFjcGlAdmdlci5rZXJuZWwub3Jn
+OyBsaW51eC0NCj5rZXJuZWxAdmdlci5rZXJuZWwub3JnOyB0b255Lmx1Y2tAaW50ZWwuY29tOyBy
+andAcmp3eXNvY2tpLm5ldDsNCj5qYW1lcy5tb3JzZUBhcm0uY29tOyBsZW5iQGtlcm5lbC5vcmc7
+IExpbnV4YXJtDQo+PGxpbnV4YXJtQGh1YXdlaS5jb20+DQo+U3ViamVjdDogUmU6IFtSRkMgUEFU
+Q0ggMC83XSBSQVMvQ0VDOiBFeHRlbmQgQ0VDIGZvciBlcnJvcnMgY291bnQgY2hlY2sgb24NCj5z
+aG9ydCB0aW1lIHBlcmlvZA0KPg0KPk9uIEZyaSwgT2N0IDAyLCAyMDIwIGF0IDAxOjIyOjI4UE0g
+KzAxMDAsIFNoaWp1IEpvc2Ugd3JvdGU6DQo+PiBPcGVuIFF1ZXN0aW9ucyBiYXNlZCBvbiB0aGUg
+ZmVlZGJhY2sgZnJvbSBCb3JpcywgMS4gQVJNIHByb2Nlc3Nvcg0KPj4gZXJyb3IgdHlwZXMgYXJl
+IGNhY2hlL1RMQi9idXMgZXJyb3JzLg0KPj4gICAgW1JlZmVyZW5jZSBOMi40LjQuMSBBUk0gUHJv
+Y2Vzc29yIEVycm9yIEluZm9ybWF0aW9uIFVFRkkgU3BlYyB2Mi44XQ0KPj4gQW55IG9mIHRoZSBh
+Ym92ZSBlcnJvciB0eXBlcyBzaG91bGQgbm90IGJlIGNvbnNpZGVyIGZvciB0aGUgZXJyb3INCj4+
+IGNvbGxlY3Rpb24gYW5kIENQVSBjb3JlIGlzb2xhdGlvbj8NCj4+DQo+PiAyLklmIGRpc2FibGlu
+ZyBlbnRpcmUgQ1BVIGNvcmUgaXMgbm90IGFjY2VwdGFibGUsIHBsZWFzZSBzdWdnZXN0DQo+PiBt
+ZXRob2QgdG8gZGlzYWJsZSBMMSBhbmQgTDIgY2FjaGUgb24gQVJNNjQgY29yZT8NCj4NCj5Nb3Jl
+IG9wZW4gcXVlc3Rpb25zOg0KPg0KPj4gVGhpcyByZXF1aXJlbWVudCBpcyB0aGUgcGFydCBvZiB0
+aGUgZWFybHkgZmF1bHQgcHJlZGljdGlvbiBieSB0YWtpbmcNCj4+IGFjdGlvbiB3aGVuIGxhcmdl
+IG51bWJlciBvZiBjb3JyZWN0ZWQgZXJyb3JzIHJlcG9ydGVkIG9uIGEgQ1BVIGNvcmUNCj4+IGJl
+Zm9yZSBpdCBjYXVzaW5nIHNlcmlvdXMgZmF1bHRzLg0KPg0KPkFuZCBkbyB5b3Uga25vdyBvZiBh
+Y3R1YWwgcmVhbC1saWZlIGV4YW1wbGVzIHdoZXJlIHRoaXMgaXMgcmVhbGx5IHRoZSBjYXNlPyBE
+bw0KPnlvdSBoYXZlIGFueSB1c2VycyB3aG8gcmVwb3J0IGEgbGFyZ2UgZXJyb3IgY291bnQgb24g
+QVJNIENQVXMsIG9yaWdpbmF0aW5nDQo+ZnJvbSB0aGUgY2FjaGVzIGFuZCB0aGF0IHNvbWV0aGlu
+ZyBsaWtlIHRoYXQgd291bGQgcmVhbGx5IGhlbHA/DQo+DQo+QmVjYXVzZSBmcm9tIG15IHg4NiBD
+UFVzIGxpbWl0ZWQgZXhwZXJpZW5jZSwgdGhlIGNhY2hlIGFycmF5cyBhcmUgbW9zdGx5DQo+Zmlu
+ZSBhbmQgZXJyb3JzIHJlcG9ydGVkIHRoZXJlIGFyZSBub3Qgc29tZXRoaW5nIHRoYXQgaGFwcGVu
+cyB2ZXJ5DQo+ZnJlcXVlbnRseSBzbyB3ZSBkb24ndCBldmVuIG5lZWQgdG8gY29sbGVjdCBhbmQg
+Y291bnQgdGhvc2UuDQo+DQo+U28gaXMgdGhpcyBzb21ldGhpbmcgd2hpY2ggeW91IG5lZWQgdG8g
+aGF2ZSBpbiBvcmRlciB0byBjaGVjayBhIGJveA0KPnNvbWV3aGVyZSB0aGF0IHRoZXJlIGlzIHNv
+bWUgZnVuY3Rpb25hbGl0eSBvciBpcyB0aGVyZSBhbiBhY3R1YWwgcmVhbC1saWZlIHVzZQ0KPmNh
+c2UgYmVoaW5kIGl0IHdoaWNoIGEgY3VzdG9tZXIgaGFzIHJlcXVlc3RlZD8NCldlIGhhdmUgbm90
+IGdvdCBhIHJlYWwtbGlmZSBleGFtcGxlIGZvciB0aGlzIGNhc2UuIEhvd2V2ZXIgcmFyZSBlcnJv
+cnMNCmxpa2UgdGhpcyBjYW4gb2NjdXIgZnJlcXVlbnRseSBzb21ldGltZXMgYXQgc2NhbGUsIHdo
+aWNoIHdvdWxkIGNhdXNlDQptb3JlIHNlcmlvdXMgaXNzdWVzIGlmIG5vdCBoYW5kbGVkLg0KPg0K
+Pk9wZW4gcXVlc3Rpb24gZnJvbSBKYW1lcyB3aXRoIG15IHJlcGx5IHRvIGl0Og0KPg0KPk9uIFRo
+dSwgT2N0IDAxLCAyMDIwIGF0IDA2OjE2OjAzUE0gKzAxMDAsIEphbWVzIE1vcnNlIHdyb3RlOg0K
+Pj4gSWYgdGhlIGNvcnJlY3RlZC1jb3VudCBpcyBhdmFpbGFibGUgc29tZXdoZXJlLCBjYW4ndCB0
+aGlzIHBvbGljeSBiZQ0KPj4gbWFkZSBpbiB1c2VyLXNwYWNlPw0KVGhlIGVycm9yIGNvdW50IGlz
+IHByZXNlbnQgaW4gdGhlIHN0cnVjdCBjcGVyX2FybV9lcnJfaW5mbywgdGhlIGZpZWxkcyBvZg0K
+dGhpcyBzdHJ1Y3R1cmUgIGFyZSBub3QgcmVwb3J0ZWQgdG8gdGhlIHVzZXItc3BhY2UgdGhyb3Vn
+aCB0cmFjZSBldmVudHM/DQpQcmVzZW50bHkgdGhlIGZpZWxkcyBvZiB0YWJsZSBzdHJ1Y3QgY3Bl
+cl9zZWNfcHJvY19hcm0gb25seSBhcmUgcmVwb3J0ZWQgDQp0byB0aGUgdXNlci1zcGFjZSB0aHJv
+dWdoIHRyYWNlLWFybS1ldmVudC4NCkFsc28gdGhlcmUgY2FuIGJlIG11bHRpcGxlIGNwZXJfYXJt
+X2Vycl9pbmZvIHBlciBjcGVyX3NlY19wcm9jX2FybS4NClRodXMgSSB0aGluayB0aGlzIG5lZWQg
+cmVwb3J0aW5nIHRocm91Z2ggYSBuZXcgdHJhY2UgZXZlbnQ/DQoNCkFsc28gdGhlIGxvZ2ljYWwg
+aW5kZXggb2YgYSBDUFUgd2hpY2ggSSB0aGluayBuZWVkIHRvIGV4dHJhY3QgZnJvbSB0aGUgJ21w
+aWRyJyBmaWVsZCBvZg0Kc3RydWN0IGNwZXJfc2VjX3Byb2NfYXJtIHVzaW5nIHBsYXRmb3JtIGRl
+cGVuZGVudCBrZXJuZWwgZnVuY3Rpb24gZ2V0X2xvZ2ljYWxfaW5kZXgoKS4gICAgDQpUaHVzIGNw
+dSBpbmRleCBhbHNvIG5lZWQgdG8gcmVwb3J0IHRvIHRoZSB1c2VyIHNwYWNlLg0KPg0KPllvdSBt
+ZWFuIHJhc2RhZW1vbiBnb2VzIGFuZCBvZmZsaW5lcyBDUFVzIHdoZW4gY2VydGFpbiB0aHJlc2hv
+bGRzIGFyZQ0KPnJlYWNoZWQ/IFN1cmUuIEl0IHdvdWxkIGJlIG11Y2ggbW9yZSBmbGV4aWJsZSB0
+b28uDQpJIHRoaW5rIGFkZGluZyB0aGUgQ1BVIGVycm9yIGNvbGxlY3Rpb24gdG8gdGhlIGtlcm5l
+bA0KaGFzIHRoZSBmb2xsb3dpbmcgYWR2YW50YWdlcywNCiAgICAxLiBUaGUgQ1BVIGVycm9yIGNv
+bGxlY3Rpb24gYW5kIGlzb2xhdGlvbiB3b3VsZCBub3QgYmUgYWN0aXZlIGlmIHRoZQ0KICAgICAg
+ICAgcmFzZGFlbW9uIHN0b3BwZWQgcnVubmluZyBvciBub3QgcnVubmluZyBvbiBhIG1hY2hpbmUu
+DQogICAgMi4gUmVjZWl2aW5nIGVycm9ycyBhbmQgaXNvbGF0aW5nIGEgQ1BVIGNvcmUgZnJvbSB0
+aGUgdXNlci1zcGFjZSB3b3VsZA0KICAgICAgICBwcm9iYWJseSBkZWxheWVkIG1vcmUsICB3aGVu
+IGxhcmdlIG51bWJlciBvZiBlcnJvcnMgYXJlIHJlcG9ydGVkLg0KICAgMy4gU3VwcG9ydGluZyB0
+aGUgaW50ZXJmYWNlIGZvciBjb25maWd1cmF0aW9uIHBhcmFtZXRlcnMgYW5kICBlcnJvciBzdGF0
+aXN0aWNzIGV0Yw0KICAgICAgICBwcm9iYWJseSBlYXN5IHRvIGltcGxlbWVudCBpbiB0aGUga2Vy
+bmVsLg0KICAgNC4gVGhlIGludGVyZmFjZSBnaXZlbiBmb3IgZGlzYWJsaW5nIGEgQ1BVIGlzIGVh
+c3kgdG8gdXNlIGZyb20gdGhlIGtlcm5lbCBsZXZlbC4NCg0KPg0KPkZpcnN0IHdlIGFuc3dlciBx
+dWVzdGlvbnMgYW5kIGRpc2N1c3MsIHRoZW4gd2UgY29kZS4NCj4NCj4tLQ0KPlJlZ2FyZHMvR3J1
+c3MsDQo+ICAgIEJvcmlzLg0KPg0KDQpUaGFua3MsDQpTaGlqdQ0KDQo+aHR0cHM6Ly9wZW9wbGUu
+a2VybmVsLm9yZy90Z2x4L25vdGVzLWFib3V0LW5ldGlxdWV0dGUNCg==
