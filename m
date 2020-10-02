@@ -2,140 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36312810ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ACD2810EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 13:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387759AbgJBLF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 07:05:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:46925 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgJBLFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:05:50 -0400
-IronPort-SDR: vSJx8f92fhTWlIEHqmLC9+6yks/cWVFVY7GkSxACCAfV1o5yEREUAwHvDYhde+KLHjkoHJ6bvN
- /e9GFbeQh1tw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150597608"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="150597608"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 04:05:50 -0700
-IronPort-SDR: QxNZ2X+JL+y0DoAQRWUbBFRyiidnIV2PWCnd36xj8LCNCcIwk1QTSzujYdAY3hmkdypBK6bMIa
- e+bKX4WRG1gg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="313473301"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga006.jf.intel.com with SMTP; 02 Oct 2020 04:05:43 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 02 Oct 2020 14:05:44 +0300
-Date:   Fri, 2 Oct 2020 14:05:44 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>, Qais Yousef <qais.yousef@arm.com>
-Subject: Re: [PATCH v2 0/3] drm: commit_work scheduling
-Message-ID: <20201002110544.GB6112@intel.com>
-References: <20200930211723.3028059-1-robdclark@gmail.com>
- <CAKMK7uHHPWE3h7ssG-dpb3czwbP5VtZYztMA=CpvQ4HV4LQTXA@mail.gmail.com>
- <CAF6AEGszF60dWn37m63wujjtuObqkz2ZqEN3LHaPhCkKa1cdmA@mail.gmail.com>
- <CAKMK7uEd853irzdBMCcaNEMAeOZKVFcFpgNtcYrgQkmHxdT3-w@mail.gmail.com>
- <20201002105256.GA6112@intel.com>
+        id S2387763AbgJBLHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 07:07:17 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:38118 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgJBLHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 07:07:17 -0400
+Received: by mail-ed1-f67.google.com with SMTP id c8so1227831edv.5;
+        Fri, 02 Oct 2020 04:07:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YQy6FiIzQNjdtyPlCm6RsMz74Z9Qpq3cOcma81PAdFY=;
+        b=K9n+rhEtsp0sWrNl8iD5trVLI96IyNJGDGi+j95rCv1cRyHgP1HrN7bRCs/14qYgDK
+         OwtqhymEa/ltjNQw3MLefkNgHDVerue2zCAKcZmHkFXPut38y+lSzJOmi6BflTTSFU2j
+         adkDg1QUAhGtiTa6avMx0MkLHrtMrNRUkecOBCmtjeKGnIsR8Ix0LFnQ33NUo9U+zf/D
+         d1fQK9RPT5KdzORwbJJZN5us6HSusPpXrfKCc5+457bs+hnuHAW97OMZRJhVvglg3nf9
+         DkXAkkJI98OK4C9SgUJiRZeEDVNsSLzFP5bZ9pRdJIUg1d02sqE3d1qm8Ea8y7z9OmhT
+         nKfg==
+X-Gm-Message-State: AOAM533sl/z5oE2r6L8CNi6N7WDVDjiCxKU8BfuM00BjTf7B+nxSUKaJ
+        scM4Zao811YDzbWy/D9nHkKQeV0ZnDs=
+X-Google-Smtp-Source: ABdhPJyZ33O0u4XYmGYq2Z/I18o6f1qpHMSJ5cZb516PFEEciaNIv1xG7LHkDSXCH8zGXdT119dDLA==
+X-Received: by 2002:a05:6402:18d:: with SMTP id r13mr1616331edv.267.1601636833441;
+        Fri, 02 Oct 2020 04:07:13 -0700 (PDT)
+Received: from pi3 ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id h10sm915230ejt.93.2020.10.02.04.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 04:07:12 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 13:07:09 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 01/24] dt-bindings: iommu: mediatek: Convert IOMMU to
+ DT schema
+Message-ID: <20201002110709.GC6888@pi3>
+References: <20200930070647.10188-1-yong.wu@mediatek.com>
+ <20200930070647.10188-2-yong.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002105256.GA6112@intel.com>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200930070647.10188-2-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:52:56PM +0300, Ville Syrjälä wrote:
-> On Thu, Oct 01, 2020 at 05:25:55PM +0200, Daniel Vetter wrote:
-> > On Thu, Oct 1, 2020 at 5:15 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > On Thu, Oct 1, 2020 at 12:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Wed, Sep 30, 2020 at 11:16 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > >
-> > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > >
-> > > > > The android userspace treats the display pipeline as a realtime problem.
-> > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > > > that I found.)
-> > > > >
-> > > > > But this presents a problem with using workqueues for non-blocking
-> > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > > > preempt the worker.  Which is not really the outcome you want.. once
-> > > > > the required fences are scheduled, you want to push the atomic commit
-> > > > > down to hw ASAP.
-> > > > >
-> > > > > But the decision of whether commit_work should be RT or not really
-> > > > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > > > >
-> > > > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > > > update loop.  And the last patch exposes the task id to userspace as
-> > > > > a CRTC property, so that userspace can adjust the priority and sched
-> > > > > policy to fit it's needs.
-> > > > >
-> > > > >
-> > > > > v2: Drop client cap and in-kernel setting of priority/policy in
-> > > > >     favor of exposing the kworker tid to userspace so that user-
-> > > > >     space can set priority/policy.
-> > > >
-> > > > Yeah I think this looks more reasonable. Still a bit irky interface,
-> > > > so I'd like to get some kworker/rt ack on this. Other opens:
-> > > > - needs userspace, the usual drill
-> > >
-> > > fwiw, right now the userspace is "modetest + chrt".. *probably* the
-> > > userspace will become a standalone helper or daemon, mostly because
-> > > the chrome gpu-process sandbox does not allow setting SCHED_FIFO.  I'm
-> > > still entertaining the possibility of switching between rt and cfs
-> > > depending on what is in the foreground (ie. only do rt for android
-> > > apps).
-> > >
-> > > > - we need this also for vblank workers, otherwise this wont work for
-> > > > drivers needing those because of another priority inversion.
-> > >
-> > > I have a thought on that, see below..
-> > 
-> > Hm, not seeing anything about vblank worker below?
-> > 
-> > > > - we probably want some indication of whether this actually does
-> > > > something useful, not all drivers use atomic commit helpers. Not sure
-> > > > how to do that.
-> > >
-> > > I'm leaning towards converting the other drivers over to use the
-> > > per-crtc kwork, and then dropping the 'commit_work` from atomic state.
-> > > I can add a patch to that, but figured I could postpone that churn
-> > > until there is some by-in on this whole idea.
-> > 
-> > i915 has its own commit code, it's not even using the current commit
-> > helpers (nor the commit_work). Not sure how much other fun there is.
+On Wed, Sep 30, 2020 at 03:06:24PM +0800, Yong Wu wrote:
+> Convert MediaTek IOMMU to DT schema.
 > 
-> I don't think we want per-crtc threads for this in i915. Seems
-> to me easier to guarantee atomicity across multiple crtcs if
-> we just commit them from the same thread.
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  .../bindings/iommu/mediatek,iommu.txt         | 103 ------------
+>  .../bindings/iommu/mediatek,iommu.yaml        | 154 ++++++++++++++++++
+>  2 files changed, 154 insertions(+), 103 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+>  create mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/mediatek,iommu.txt b/Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+> deleted file mode 100644
+> index c1ccd8582eb2..000000000000
+> --- a/Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+> +++ /dev/null
+> @@ -1,103 +0,0 @@
+> -* Mediatek IOMMU Architecture Implementation
+> -
+> -  Some Mediatek SOCs contain a Multimedia Memory Management Unit (M4U), and
+> -this M4U have two generations of HW architecture. Generation one uses flat
+> -pagetable, and only supports 4K size page mapping. Generation two uses the
+> -ARM Short-Descriptor translation table format for address translation.
+> -
+> -  About the M4U Hardware Block Diagram, please check below:
+> -
+> -              EMI (External Memory Interface)
+> -               |
+> -              m4u (Multimedia Memory Management Unit)
+> -               |
+> -          +--------+
+> -          |        |
+> -      gals0-rx   gals1-rx    (Global Async Local Sync rx)
+> -          |        |
+> -          |        |
+> -      gals0-tx   gals1-tx    (Global Async Local Sync tx)
+> -          |        |          Some SoCs may have GALS.
+> -          +--------+
+> -               |
+> -           SMI Common(Smart Multimedia Interface Common)
+> -               |
+> -       +----------------+-------
+> -       |                |
+> -       |             gals-rx        There may be GALS in some larbs.
+> -       |                |
+> -       |                |
+> -       |             gals-tx
+> -       |                |
+> -   SMI larb0        SMI larb1   ... SoCs have several SMI local arbiter(larb).
+> -   (display)         (vdec)
+> -       |                |
+> -       |                |
+> - +-----+-----+     +----+----+
+> - |     |     |     |    |    |
+> - |     |     |...  |    |    |  ... There are different ports in each larb.
+> - |     |     |     |    |    |
+> -OVL0 RDMA0 WDMA0  MC   PP   VLD
+> -
+> -  As above, The Multimedia HW will go through SMI and M4U while it
+> -access EMI. SMI is a bridge between m4u and the Multimedia HW. It contain
+> -smi local arbiter and smi common. It will control whether the Multimedia
+> -HW should go though the m4u for translation or bypass it and talk
+> -directly with EMI. And also SMI help control the power domain and clocks for
+> -each local arbiter.
+> -  Normally we specify a local arbiter(larb) for each multimedia HW
+> -like display, video decode, and camera. And there are different ports
+> -in each larb. Take a example, There are many ports like MC, PP, VLD in the
+> -video decode local arbiter, all these ports are according to the video HW.
+> -  In some SoCs, there may be a GALS(Global Async Local Sync) module between
+> -smi-common and m4u, and additional GALS module between smi-larb and
+> -smi-common. GALS can been seen as a "asynchronous fifo" which could help
+> -synchronize for the modules in different clock frequency.
+> -
+> -Required properties:
+> -- compatible : must be one of the following string:
+> -	"mediatek,mt2701-m4u" for mt2701 which uses generation one m4u HW.
+> -	"mediatek,mt2712-m4u" for mt2712 which uses generation two m4u HW.
+> -	"mediatek,mt6779-m4u" for mt6779 which uses generation two m4u HW.
+> -	"mediatek,mt7623-m4u", "mediatek,mt2701-m4u" for mt7623 which uses
+> -						     generation one m4u HW.
+> -	"mediatek,mt8173-m4u" for mt8173 which uses generation two m4u HW.
+> -	"mediatek,mt8183-m4u" for mt8183 which uses generation two m4u HW.
+> -- reg : m4u register base and size.
+> -- interrupts : the interrupt of m4u.
+> -- clocks : must contain one entry for each clock-names.
+> -- clock-names : Only 1 optional clock:
+> -  - "bclk": the block clock of m4u.
+> -  Here is the list which require this "bclk":
+> -  - mt2701, mt2712, mt7623 and mt8173.
+> -  Note that m4u use the EMI clock which always has been enabled before kernel
+> -  if there is no this "bclk".
+> -- mediatek,larbs : List of phandle to the local arbiters in the current Socs.
+> -	Refer to bindings/memory-controllers/mediatek,smi-larb.txt. It must sort
+> -	according to the local arbiter index, like larb0, larb1, larb2...
+> -- iommu-cells : must be 1. This is the mtk_m4u_id according to the HW.
+> -	Specifies the mtk_m4u_id as defined in
+> -	dt-binding/memory/mt2701-larb-port.h for mt2701, mt7623
+> -	dt-binding/memory/mt2712-larb-port.h for mt2712,
+> -	dt-binding/memory/mt6779-larb-port.h for mt6779,
+> -	dt-binding/memory/mt8173-larb-port.h for mt8173, and
+> -	dt-binding/memory/mt8183-larb-port.h for mt8183.
+> -
+> -Example:
+> -	iommu: iommu@10205000 {
+> -		compatible = "mediatek,mt8173-m4u";
+> -		reg = <0 0x10205000 0 0x1000>;
+> -		interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_LOW>;
+> -		clocks = <&infracfg CLK_INFRA_M4U>;
+> -		clock-names = "bclk";
+> -		mediatek,larbs = <&larb0 &larb1 &larb2 &larb3 &larb4 &larb5>;
+> -		#iommu-cells = <1>;
+> -	};
+> -
+> -Example for a client device:
+> -	display {
+> -		compatible = "mediatek,mt8173-disp";
+> -		iommus = <&iommu M4U_PORT_DISP_OVL0>,
+> -			 <&iommu M4U_PORT_DISP_RDMA0>;
+> -		...
+> -	};
+> diff --git a/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml b/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> new file mode 100644
+> index 000000000000..eae773ad53a3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+> @@ -0,0 +1,154 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/mediatek,iommu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek IOMMU Architecture Implementation
+> +
+> +maintainers:
+> +  - Yong Wu <yong.wu@mediatek.com>
+> +
+> +description: |+
+> +  Some MediaTek SOCs contain a Multimedia Memory Management Unit (M4U), and
+> +  this M4U have two generations of HW architecture. Generation one uses flat
+> +  pagetable, and only supports 4K size page mapping. Generation two uses the
+> +  ARM Short-Descriptor translation table format for address translation.
+> +
+> +  About the M4U Hardware Block Diagram, please check below:
+> +
+> +                EMI (External Memory Interface)
+> +                 |
+> +                m4u (Multimedia Memory Management Unit)
+> +                 |
+> +            +--------+
+> +            |        |
+> +        gals0-rx   gals1-rx    (Global Async Local Sync rx)
+> +            |        |
+> +            |        |
+> +        gals0-tx   gals1-tx    (Global Async Local Sync tx)
+> +            |        |          Some SoCs may have GALS.
+> +            +--------+
+> +                 |
+> +             SMI Common(Smart Multimedia Interface Common)
+> +                 |
+> +         +----------------+-------
+> +         |                |
+> +         |             gals-rx        There may be GALS in some larbs.
+> +         |                |
+> +         |                |
+> +         |             gals-tx
+> +         |                |
+> +     SMI larb0        SMI larb1   ... SoCs have several SMI local arbiter(larb).
+> +     (display)         (vdec)
+> +         |                |
+> +         |                |
+> +   +-----+-----+     +----+----+
+> +   |     |     |     |    |    |
+> +   |     |     |...  |    |    |  ... There are different ports in each larb.
+> +   |     |     |     |    |    |
+> +  OVL0 RDMA0 WDMA0  MC   PP   VLD
+> +
+> +  As above, The Multimedia HW will go through SMI and M4U while it
+> +  access EMI. SMI is a bridge between m4u and the Multimedia HW. It contain
+> +  smi local arbiter and smi common. It will control whether the Multimedia
+> +  HW should go though the m4u for translation or bypass it and talk
+> +  directly with EMI. And also SMI help control the power domain and clocks for
+> +  each local arbiter.
+> +
+> +  Normally we specify a local arbiter(larb) for each multimedia HW
+> +  like display, video decode, and camera. And there are different ports
+> +  in each larb. Take a example, There are many ports like MC, PP, VLD in the
+> +  video decode local arbiter, all these ports are according to the video HW.
+> +
+> +  In some SoCs, there may be a GALS(Global Async Local Sync) module between
+> +  smi-common and m4u, and additional GALS module between smi-larb and
+> +  smi-common. GALS can been seen as a "asynchronous fifo" which could help
+> +  synchronize for the modules in different clock frequency.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt2701-m4u # mt2701 generation one HW
+> +          - mediatek,mt2712-m4u # mt2712 generation two HW
+> +          - mediatek,mt6779-m4u # mt6779 generation two HW
+> +          - mediatek,mt8173-m4u # mt8173 generation two HW
+> +          - mediatek,mt8183-m4u # mt8183 generation two HW
+> +
+> +      - description: mt7623 generation one HW
+> +        items:
+> +          - const: mediatek,mt7623-m4u
+> +          - const: mediatek,mt2701-m4u
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: |
+> +      bclk is optional. here is the list which require this bclk:
+> +      mt2701, mt2712, mt7623 and mt8173.
 
-Oh, and we may have to commit things in a very specific order
-to guarantee the hw doesn't fall over, so yeah definitely per-crtc
-thread is a no go.
+Similarly to my comment in other patch, this should be part of schema
+within 'if-then'.
 
-I don't even understand the serialization argument. If the commits
-are truly independent then why isn't the unbound wq enough to avoid
-the serialization? It should just spin up a new thread for each commit
-no?
-
--- 
-Ville Syrjälä
-Intel
+Best regards,
+Krzysztof
