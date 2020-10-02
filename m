@@ -2,513 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA88B281E0A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4BC281E0D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 00:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725763AbgJBWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 18:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBWIm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:08:42 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DC3C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 15:08:42 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x22so2268916pfo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 15:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZTsbIZbxk/VLPosRWvsRfPC9ZULIuxmEiMaEwM9spDY=;
-        b=arFps9ZmNz+LxrAlpcG06dMwIARJR2irUoZbyHR+QUIhT4m3JXPL5Ay349I5q2Fo0V
-         0/sCkQhVxxIh5TpVOU8qj09EoY/m7jvscsKW8CIMW1Dypfj6TukHLwKdh0QGmJ/LwKrf
-         g5aQNClXmo8UQCY9POADn0C/ZR+XPMVsGAlse1oRWM6tNjBqLOYCyAW3IxqzfbDZbwnT
-         z91HvJd0a2dZpMDnTkuBS2LBKggMWlS5q1+OFnLPCFhVUVf2z9N3gorbyL21WHV4Axsv
-         cee56sC4L4TqHh0JSotOulOM4L7IpTAmgSjUUJ+727oklMHWRF8R6iErW1O2c2QHUv0D
-         GkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZTsbIZbxk/VLPosRWvsRfPC9ZULIuxmEiMaEwM9spDY=;
-        b=dVHBe+lVhzmkYELrbNZkIqY80JTCYcdyQUXyX3uUNtDdgSaIVHcI+G040q17rbAERr
-         IuAtIhPAu/FWngehJT4dZP6SZrfiqrm00DxvDVyWTCb+DtTnoPRxmKAAMPcg7EhND013
-         bIm/aG/37RTl5wDYmmbcHfYe1l7mOalxQq35/3oNYUzHaepB+i6SfzeYuxc7e7LajUYT
-         1KemPRRH63bepojDFfcG4yMlXcDZ+CDCgLd/JJTgm8nkG1EaTZPGFwmiLWBpQvaSn6sO
-         ofFwq5DxfvgPFF6uU93sW3B9xklhInbNM38mceBJYNtT1Dxx2T5RQoB+FnUE6cZiIpfn
-         MLpQ==
-X-Gm-Message-State: AOAM5305JOJF3FHqAde5Lqm98wbyYbGA9yLYriYMGCuj1Jx/PThpzGle
-        NRhEVCiG0R3UZ9Yp/uYEfDGSM8+tAserE3fPamu64A==
-X-Google-Smtp-Source: ABdhPJzziu9jz1tm+VBXgbKFPycLeYOboaED5MZJg+7acHe57tXEkp/1yDAJ5qcnPCnqjWOrEb8bRS3OW7F7M3+LHp8=
-X-Received: by 2002:a65:5cc2:: with SMTP id b2mr4122419pgt.124.1601676521329;
- Fri, 02 Oct 2020 15:08:41 -0700 (PDT)
+        id S1725768AbgJBWJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 18:09:29 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:32716 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgJBWJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:09:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601676567; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=0j4dQZY0u2LJ/facFzkTgdQ/39lsQWG5m0bKxRloVQ4=; b=SAZV/bR8dFPNCA0fHN/1tThu9MT2Z14eYy6VzqNSIa/FPA4QRi+By3wEEKg0bDwa+TbgDwEx
+ 3AAS+jsbXcog9yopBdE8GH3j7DLQ6uMMiJ9sFDvMwhAj/WU+S4SAcvnax1yEUlTgdo1XfTAD
+ w67flttJnDWY2kSFp9Td/OUPu6k=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f77a517ad37af35ecdebce1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 02 Oct 2020 22:09:27
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3C43C433FE; Fri,  2 Oct 2020 22:09:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        T_FILL_THIS_FORM_SHORT,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FB1DC433C8;
+        Fri,  2 Oct 2020 22:09:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5FB1DC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: fixes wrong connection state caused by failure of link train
+Date:   Fri,  2 Oct 2020 15:09:19 -0700
+Message-Id: <20201002220919.17245-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201002162101.665549-1-kaleshsingh@google.com>
- <20201002162101.665549-4-kaleshsingh@google.com> <20201002165122.bm427a4ealmmmtqc@black.fi.intel.com>
-In-Reply-To: <20201002165122.bm427a4ealmmmtqc@black.fi.intel.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Fri, 2 Oct 2020 18:08:29 -0400
-Message-ID: <CAC_TJvdcWV=cyszkOURekZGEZP2txvDyZKDyDgKB37+g+eg3hg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] mm: Speedup mremap on 1GB or larger regions
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        kernel test robot <lkp@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Jia He <justin.he@arm.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        Brian Geffon <bgeffon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kirill, thank you for the feedback.
+Connection state is set incorrectly happen at either failure of link train
+or cable plugged in while suspended. This patch fixes these problems.
+This patch also replace ST_SUSPEND_PENDING with ST_DISPLAY_OFF.
 
-On Fri, Oct 2, 2020 at 12:51 PM Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
->
-> On Fri, Oct 02, 2020 at 04:20:48PM +0000, Kalesh Singh wrote:
-> > Android needs to move large memory regions for garbage collection.
-> > The GC requires moving physical pages of multi-gigabyte heap
-> > using mremap. During this move, the application threads have to
-> > be paused for correctness. It is critical to keep this pause as
-> > short as possible to avoid jitters during user interaction.
-> >
-> > Optimize mremap for >=3D 1GB-sized regions by moving at the PUD/PGD
-> > level if the source and destination addresses are PUD-aligned.
-> > For CONFIG_PGTABLE_LEVELS =3D=3D 3, moving at the PUD level in effect m=
-oves
-> > PGD entries, since the PUD entry is =E2=80=9Cfolded back=E2=80=9D onto =
-the PGD entry.
-> > Add HAVE_MOVE_PUD so that architectures where moving at the PUD level
-> > isn't supported/tested can turn this off by not selecting the config.
-> >
-> > Fix build test error from v1 of this series reported by
-> > kernel test robot in [1].
-> >
-> > [1] https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread=
-/CKPGL4FH4NG7TGH2CVYX2UX76L25BTA3/
-> >
-> > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> > Changes in v2:
-> >   - Update commit message with description of Android GC's use case.
-> >   - Move set_pud_at() to a separate patch.
-> >   - Use switch() instead of ifs in move_pgt_entry()
-> >   - Fix build test error reported by kernel test robot on x86_64 in [1]=
-.
-> >     Guard move_huge_pmd() with IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE),
-> >     since this section doesn't get optimized out in the kernel test
-> >     robot's build test when HAVE_MOVE_PUD is enabled.
-> >   - Keep WARN_ON_ONCE(1) instead of BUILD_BUG() for the aforementioned
-> >     reason.
->
-> Okay, but IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) on the caller side woul=
-d
-> do the trick, I believe.
-I tried moving this to the caller side in move_page_tables(),
--                       if (extent =3D=3D HPAGE_PMD_SIZE &&
-+                       if (extent =3D=3D HPAGE_PMD_SIZE &&
-IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-but it produces the same error as reported by kernel test robot:
-ld.lld: error: undefined symbol: move_huge_pmd
-I'm not sure why these are different but the kernel test robot
-compiler complains.
->
-> >
-> >  arch/Kconfig |   7 ++
-> >  mm/mremap.c  | 220 ++++++++++++++++++++++++++++++++++++++++++++-------
-> >  2 files changed, 197 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index af14a567b493..5eabaa00bf9b 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -602,6 +602,13 @@ config HAVE_IRQ_TIME_ACCOUNTING
-> >         Archs need to ensure they use a high enough resolution clock to
-> >         support irq time accounting and then call enable_sched_clock_ir=
-qtime().
-> >
-> > +config HAVE_MOVE_PUD
-> > +     bool
-> > +     help
-> > +       Architectures that select this are able to move page tables at =
-the
-> > +       PUD level. If there are only 3 page table levels, the move effe=
-ctively
-> > +       happens at the PGD level.
-> > +
-> >  config HAVE_MOVE_PMD
-> >       bool
-> >       help
-> > diff --git a/mm/mremap.c b/mm/mremap.c
-> > index 138abbae4f75..c1d6ab667d70 100644
-> > --- a/mm/mremap.c
-> > +++ b/mm/mremap.c
-> > @@ -249,14 +249,176 @@ static bool move_normal_pmd(struct vm_area_struc=
-t *vma, unsigned long old_addr,
-> >
-> >       return true;
-> >  }
-> > +#else
-> > +static inline bool move_normal_pmd(struct vm_area_struct *vma, unsigne=
-d long old_addr,
-> > +               unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pmd)
-> > +{
-> > +     return false;
-> > +}
-> >  #endif
-> >
-> > +#ifdef CONFIG_HAVE_MOVE_PUD
-> > +static pud_t *get_old_pud(struct mm_struct *mm, unsigned long addr)
-> > +{
-> > +     pgd_t *pgd;
-> > +     p4d_t *p4d;
-> > +     pud_t *pud;
-> > +
-> > +     pgd =3D pgd_offset(mm, addr);
-> > +     if (pgd_none_or_clear_bad(pgd))
-> > +             return NULL;
-> > +
-> > +     p4d =3D p4d_offset(pgd, addr);
-> > +     if (p4d_none_or_clear_bad(p4d))
-> > +             return NULL;
-> > +
-> > +     pud =3D pud_offset(p4d, addr);
-> > +     if (pud_none_or_clear_bad(pud))
-> > +             return NULL;
-> > +
-> > +     return pud;
-> > +}
-> > +
-> > +static pud_t *alloc_new_pud(struct mm_struct *mm, struct vm_area_struc=
-t *vma,
-> > +                         unsigned long addr)
-> > +{
-> > +     pgd_t *pgd;
-> > +     p4d_t *p4d;
-> > +     pud_t *pud;
-> > +
-> > +     pgd =3D pgd_offset(mm, addr);
-> > +     p4d =3D p4d_alloc(mm, pgd, addr);
-> > +     if (!p4d)
-> > +             return NULL;
-> > +     pud =3D pud_alloc(mm, p4d, addr);
-> > +     if (!pud)
-> > +             return NULL;
-> > +
-> > +     return pud;
-> > +}
->
-> Looks like a code duplication.
->
-> Could you move these two helpers out of #ifdef CONFIG_HAVE_MOVE_PUD and
-> make get_old_pmd() and alloc_new_pmd() use them?
-Yes, that will be cleaner. I'll update it in the next version.
->
-> > +
-> > +static bool move_normal_pud(struct vm_area_struct *vma, unsigned long =
-old_addr,
-> > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
-> > +{
-> > +     spinlock_t *old_ptl, *new_ptl;
-> > +     struct mm_struct *mm =3D vma->vm_mm;
-> > +     pud_t pud;
-> > +
-> > +     /*
-> > +      * The destination pud shouldn't be established, free_pgtables()
-> > +      * should have released it.
-> > +      */
-> > +     if (WARN_ON_ONCE(!pud_none(*new_pud)))
-> > +             return false;
-> > +
-> > +     /*
-> > +      * We don't have to worry about the ordering of src and dst
-> > +      * ptlocks because exclusive mmap_lock prevents deadlock.
-> > +      */
-> > +     old_ptl =3D pud_lock(vma->vm_mm, old_pud);
-> > +     new_ptl =3D pud_lockptr(mm, new_pud);
-> > +     if (new_ptl !=3D old_ptl)
-> > +             spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-> > +
-> > +     /* Clear the pud */
-> > +     pud =3D *old_pud;
-> > +     pud_clear(old_pud);
-> > +
-> > +     VM_BUG_ON(!pud_none(*new_pud));
-> > +
-> > +     /* Set the new pud */
-> > +     set_pud_at(mm, new_addr, new_pud, pud);
-> > +     flush_tlb_range(vma, old_addr, old_addr + PUD_SIZE);
-> > +     if (new_ptl !=3D old_ptl)
-> > +             spin_unlock(new_ptl);
-> > +     spin_unlock(old_ptl);
-> > +
-> > +     return true;
-> > +}
-> > +#else
-> > +static inline bool move_normal_pud(struct vm_area_struct *vma, unsigne=
-d long old_addr,
-> > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
-> > +{
-> > +     return false;
-> > +}
-> > +#endif
-> > +
-> > +enum pgt_entry {
-> > +     NORMAL_PMD,
-> > +     HPAGE_PMD,
-> > +     NORMAL_PUD,
-> > +};
-> > +
-> > +/*
-> > + * Returns an extent of the corresponding size for the pgt_entry speci=
-fied if valid.
-> > + * Else returns a smaller extent bounded by the end of the source and =
-destination
-> > + * pgt_entry. Returns 0 if an invalid pgt_entry is specified.
-> > + */
-> > +static unsigned long get_extent(enum pgt_entry entry, unsigned long ol=
-d_addr,
-> > +                     unsigned long old_end, unsigned long new_addr)
-> > +{
-> > +     unsigned long next, extent, mask, size;
-> > +
-> > +     if (entry =3D=3D NORMAL_PMD || entry =3D=3D HPAGE_PMD) {
-> > +             mask =3D PMD_MASK;
-> > +             size =3D PMD_SIZE;
-> > +     } else if (entry =3D=3D NORMAL_PUD) {
-> > +             mask =3D PUD_MASK;
-> > +             size =3D PUD_SIZE;
-> > +     } else
-> > +             return 0;
->
-> Em. Who would ever specify invalid pgt_entry? It's bug.
-> Again, switch()?
-Sounds good. I'll use BUG() and switch() instead.
->
-> > +
-> > +     next =3D (old_addr + size) & mask;
-> > +     /* even if next overflowed, extent below will be ok */
-> > +     extent =3D (next > old_end) ? old_end - old_addr : next - old_add=
-r;
-> > +     next =3D (new_addr + size) & mask;
-> > +     if (extent > next - new_addr)
-> > +             extent =3D next - new_addr;
-> > +     return extent;
-> > +}
-> > +
-> > +/*
-> > + * Attempts to speedup the move by moving entry at the level correspon=
-ding to
-> > + * pgt_entry. Returns true if the move was successful, else false.
-> > + */
-> > +static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct=
- *vma,
-> > +                     unsigned long old_addr, unsigned long new_addr, v=
-oid *old_entry,
-> > +                     void *new_entry, bool need_rmap_locks)
-> > +{
-> > +     bool moved =3D false;
-> > +
-> > +     /* See comment in move_ptes() */
-> > +     if (need_rmap_locks)
-> > +             take_rmap_locks(vma);
-> > +
-> > +     switch (entry) {
-> > +     case NORMAL_PMD:
-> > +             moved =3D  move_normal_pmd(vma, old_addr, new_addr, old_e=
-ntry, new_entry);
->
-> Nit: here and below, double space after '=3D'. Why?
-Sorry, editing mistake on my end. I'll clean this up before resending.
->
-> > +             break;
-> > +     case NORMAL_PUD:
-> > +             moved =3D  move_normal_pud(vma, old_addr, new_addr, old_e=
-ntry, new_entry);
-> > +             break;
-> > +     case HPAGE_PMD:
-> > +             moved =3D  IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> > +                     move_huge_pmd(vma, old_addr, new_addr, old_entry,=
- new_entry);
-> > +             break;
-> > +     default:
-> > +             WARN_ON_ONCE(1);
-> > +             break;
-> > +     }
-> > +
-> > +     if (need_rmap_locks)
-> > +             drop_rmap_locks(vma);
-> > +
-> > +     return moved;
-> > +}
-> > +
-> >  unsigned long move_page_tables(struct vm_area_struct *vma,
-> >               unsigned long old_addr, struct vm_area_struct *new_vma,
-> >               unsigned long new_addr, unsigned long len,
-> >               bool need_rmap_locks)
-> >  {
-> > -     unsigned long extent, next, old_end;
-> > +     unsigned long extent, old_end;
-> >       struct mmu_notifier_range range;
-> >       pmd_t *old_pmd, *new_pmd;
-> >
-> > @@ -269,14 +431,27 @@ unsigned long move_page_tables(struct vm_area_str=
-uct *vma,
-> >
-> >       for (; old_addr < old_end; old_addr +=3D extent, new_addr +=3D ex=
-tent) {
-> >               cond_resched();
-> > -             next =3D (old_addr + PMD_SIZE) & PMD_MASK;
-> > -             /* even if next overflowed, extent below will be ok */
-> > -             extent =3D next - old_addr;
-> > -             if (extent > old_end - old_addr)
-> > -                     extent =3D old_end - old_addr;
-> > -             next =3D (new_addr + PMD_SIZE) & PMD_MASK;
-> > -             if (extent > next - new_addr)
-> > -                     extent =3D next - new_addr;
-> > +#ifdef CONFIG_HAVE_MOVE_PUD
->
-> Any chance  if (IS_ENABLED(CONFIG_HAVE_MOVE_PUD)) would work here?
-Once we move get_old_put() and alloc_new_pud() out of the #ifdefs as
-you suggested
-above, it should work. It would also now be possible to replace the
-#ifdef CONFIG_HAVE_MOVE_PMD in move_page_tables() with
-IS_ENABLED(CONFIG_HAVE_MOVE_PMD).
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 52 ++++++++++++++---------------
+ drivers/gpu/drm/msm/dp/dp_panel.c   |  5 +++
+ 2 files changed, 31 insertions(+), 26 deletions(-)
 
-Thanks,
-Kalesh
->
-> > +             /*
-> > +              * If extent is PUD-sized try to speed up the move by mov=
-ing at the
-> > +              * PUD level if possible.
-> > +              */
-> > +             extent =3D get_extent(NORMAL_PUD, old_addr, old_end, new_=
-addr);
-> > +             if (extent =3D=3D PUD_SIZE) {
-> > +                     pud_t *old_pud, *new_pud;
-> > +
-> > +                     old_pud =3D get_old_pud(vma->vm_mm, old_addr);
-> > +                     if (!old_pud)
-> > +                             continue;
-> > +                     new_pud =3D alloc_new_pud(vma->vm_mm, vma, new_ad=
-dr);
-> > +                     if (!new_pud)
-> > +                             break;
-> > +                     if (move_pgt_entry(NORMAL_PUD, vma, old_addr, new=
-_addr,
-> > +                                        old_pud, new_pud, need_rmap_lo=
-cks))
-> > +                             continue;
-> > +             }
-> > +#endif
-> > +             extent =3D get_extent(NORMAL_PMD, old_addr, old_end, new_=
-addr);
-> >               old_pmd =3D get_old_pmd(vma->vm_mm, old_addr);
-> >               if (!old_pmd)
-> >                       continue;
-> > @@ -284,18 +459,10 @@ unsigned long move_page_tables(struct vm_area_str=
-uct *vma,
-> >               if (!new_pmd)
-> >                       break;
-> >               if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) || =
-pmd_devmap(*old_pmd)) {
-> > -                     if (extent =3D=3D HPAGE_PMD_SIZE) {
-> > -                             bool moved;
-> > -                             /* See comment in move_ptes() */
-> > -                             if (need_rmap_locks)
-> > -                                     take_rmap_locks(vma);
-> > -                             moved =3D move_huge_pmd(vma, old_addr, ne=
-w_addr,
-> > -                                                   old_pmd, new_pmd);
-> > -                             if (need_rmap_locks)
-> > -                                     drop_rmap_locks(vma);
-> > -                             if (moved)
-> > -                                     continue;
-> > -                     }
-> > +                     if (extent =3D=3D HPAGE_PMD_SIZE &&
-> > +                         move_pgt_entry(HPAGE_PMD, vma, old_addr, new_=
-addr, old_pmd,
-> > +                                        new_pmd, need_rmap_locks))
-> > +                             continue;
-> >                       split_huge_pmd(vma, old_pmd, old_addr);
-> >                       if (pmd_trans_unstable(old_pmd))
-> >                               continue;
-> > @@ -305,15 +472,8 @@ unsigned long move_page_tables(struct vm_area_stru=
-ct *vma,
-> >                        * If the extent is PMD-sized, try to speed the m=
-ove by
-> >                        * moving at the PMD level if possible.
-> >                        */
-> > -                     bool moved;
-> > -
-> > -                     if (need_rmap_locks)
-> > -                             take_rmap_locks(vma);
-> > -                     moved =3D move_normal_pmd(vma, old_addr, new_addr=
-,
-> > -                                             old_pmd, new_pmd);
-> > -                     if (need_rmap_locks)
-> > -                             drop_rmap_locks(vma);
-> > -                     if (moved)
-> > +                     if (move_pgt_entry(NORMAL_PMD, vma, old_addr, new=
-_addr, old_pmd,
-> > +                                        new_pmd, need_rmap_locks))
-> >                               continue;
-> >  #endif
-> >               }
-> > --
-> > 2.28.0.806.g8561365e88-goog
-> >
->
-> --
->  Kirill A. Shutemov
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 431dff9de797..898c6cc1643a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -45,7 +45,7 @@ enum {
+ 	ST_CONNECT_PENDING,
+ 	ST_CONNECTED,
+ 	ST_DISCONNECT_PENDING,
+-	ST_SUSPEND_PENDING,
++	ST_DISPLAY_OFF,
+ 	ST_SUSPENDED,
+ };
+ 
+@@ -340,8 +340,6 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	}
+ 
+ 	dp_add_event(dp, EV_USER_NOTIFICATION, true, 0);
+-
+-
+ end:
+ 	return rc;
+ }
+@@ -489,7 +487,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state =  atomic_read(&dp->hpd_state);
+-	if (state == ST_SUSPEND_PENDING) {
++	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -511,14 +509,14 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 	hpd->hpd_high = 1;
+ 
+ 	ret = dp_display_usbpd_configure_cb(&dp->pdev->dev);
+-	if (ret) {	/* failed */
++	if (ret) {	/* link train failed */
+ 		hpd->hpd_high = 0;
+ 		atomic_set(&dp->hpd_state, ST_DISCONNECTED);
++	} else {
++		/* start sentinel checking in case of missing uevent */
++		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+ 	}
+ 
+-	/* start sanity checking */
+-	dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+-
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	/* uevent will complete connection part */
+@@ -563,10 +561,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state = atomic_read(&dp->hpd_state);
+-	if (state == ST_SUSPEND_PENDING) {
+-		mutex_unlock(&dp->event_mutex);
+-		return 0;
+-	}
+ 
+ 	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
+ 		mutex_unlock(&dp->event_mutex);
+@@ -594,7 +588,7 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	 */
+ 	dp_display_usbpd_disconnect_cb(&dp->pdev->dev);
+ 
+-	/* start sanity checking */
++	/* start sentinel checking in case of missing uevent */
+ 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
+ 
+ 	/* signal the disconnect event early to ensure proper teardown */
+@@ -634,7 +628,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	/* irq_hpd can happen at either connected or disconnected state */
+ 	state =  atomic_read(&dp->hpd_state);
+-	if (state == ST_SUSPEND_PENDING) {
++	if (state == ST_DISPLAY_OFF) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -1067,7 +1061,7 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
+ 		}
+ 
+ 		if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
+-			/* delete connect pending event first */
++			/* delete sentinel connect pending checking */
+ 			dp_del_event(dp, EV_CONNECT_PENDING_TIMEOUT);
+ 			dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
+ 		}
+@@ -1186,19 +1180,19 @@ static int dp_pm_resume(struct device *dev)
+ 
+ 	dp = container_of(dp_display, struct dp_display_private, dp_display);
+ 
++	/* start from dis connection state */
++	atomic_set(&dp->hpd_state, ST_DISCONNECTED);
++
+ 	dp_display_host_init(dp);
+ 
+ 	dp_catalog_ctrl_hpd_config(dp->catalog);
+ 
+ 	status = dp_catalog_hpd_get_state_status(dp->catalog);
+ 
+-	if (status) {
++	if (status)
+ 		dp->dp_display.is_connected = true;
+-	} else {
++	else
+ 		dp->dp_display.is_connected = false;
+-		/* make sure next resume host_init be called */
+-		dp->core_initialized = false;
+-	}
+ 
+ 	return 0;
+ }
+@@ -1214,6 +1208,9 @@ static int dp_pm_suspend(struct device *dev)
+ 	if (dp_display->power_on == true)
+ 		dp_display_disable(dp, 0);
+ 
++	/* host_init will be called at pm_resume */
++	dp->core_initialized = false;
++
+ 	atomic_set(&dp->hpd_state, ST_SUSPENDED);
+ 
+ 	return 0;
+@@ -1343,6 +1340,9 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 
+ 	mutex_lock(&dp_display->event_mutex);
+ 
++	/* delete sentinel checking */
++	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
++
+ 	rc = dp_display_set_mode(dp, &dp_display->dp_mode);
+ 	if (rc) {
+ 		DRM_ERROR("Failed to perform a mode set, rc=%d\n", rc);
+@@ -1368,9 +1368,8 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 		dp_display_unprepare(dp);
+ 	}
+ 
+-	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
+-
+-	if (state == ST_SUSPEND_PENDING)
++	/* manual kick off plug event to train link */
++	if (state == ST_DISPLAY_OFF)
+ 		dp_add_event(dp_display, EV_IRQ_HPD_INT, 0, 0);
+ 
+ 	/* completed connection */
+@@ -1402,20 +1401,21 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 
+ 	mutex_lock(&dp_display->event_mutex);
+ 
++	/* delete sentinel checking */
++	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
++
+ 	dp_display_disable(dp_display, 0);
+ 
+ 	rc = dp_display_unprepare(dp);
+ 	if (rc)
+ 		DRM_ERROR("DP display unprepare failed, rc=%d\n", rc);
+ 
+-	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+-
+ 	state =  atomic_read(&dp_display->hpd_state);
+ 	if (state == ST_DISCONNECT_PENDING) {
+ 		/* completed disconnection */
+ 		atomic_set(&dp_display->hpd_state, ST_DISCONNECTED);
+ 	} else {
+-		atomic_set(&dp_display->hpd_state, ST_SUSPEND_PENDING);
++		atomic_set(&dp_display->hpd_state, ST_DISPLAY_OFF);
+ 	}
+ 
+ 	mutex_unlock(&dp_display->event_mutex);
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+index 18cec4fc5e0b..1b7a20dc2d8e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.c
++++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+@@ -196,6 +196,11 @@ int dp_panel_read_sink_caps(struct dp_panel *dp_panel,
+ 					      &panel->aux->ddc);
+ 	if (!dp_panel->edid) {
+ 		DRM_ERROR("panel edid read failed\n");
++		/* check edid read fail is due to unplug */
++		if (!dp_catalog_hpd_get_state_status(panel->catalog)) {
++			rc = -ETIMEDOUT;
++			goto end;
++		}
+ 
+ 		/* fail safe edid */
+ 		mutex_lock(&connector->dev->mode_config.mutex);
+
+base-commit: 6fa6fd6a3e2cb76f7d54220daa1266a94c13bc4d
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
