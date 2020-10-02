@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89507280CD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE6A280CD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 06:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726001AbgJBEbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 00:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgJBEbt (ORCPT
+        id S1725914AbgJBEbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 00:31:11 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:38702 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgJBEbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 00:31:49 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E3C0613D0
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 21:31:47 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id v54so254628qtj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 21:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=67QkTaK15BUfYresy1TVjsxU85DKCqPslJxQaWBmDqo=;
-        b=WOXSa3KNsSGI2PwcEc+jkyPoE+qlMfylR7slXy5E0/XErqtokmZQjJjUFnKbZFadaE
-         RV6XS3/5HBprwTNOux9YdH4ALxgZE0CTz63UEnPgs9q/om8237/vuwnWOe6mwhZUKXFt
-         8nOJrMP0r7lyMLyYo0UNpJQleyl5cEsb8TzUYrsD0NQ+evFEBJ69y9V9lzbwz3GrS8LQ
-         UJhrQtujPuLB/BXmcMy8bzhtuhAuIT85Bbozg84zIEbWgTzcj7o0JS0Brg+lXS4iYEaA
-         h4DcjyMRWpEjaTCj5Cop3/JVKRLot4FrVhQ6zyETTrAhEwFrVamcFfjEUO1zrlNqTYKz
-         alug==
+        Fri, 2 Oct 2020 00:31:10 -0400
+Received: by mail-il1-f206.google.com with SMTP id p17so165042ilb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 21:31:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=67QkTaK15BUfYresy1TVjsxU85DKCqPslJxQaWBmDqo=;
-        b=uoSHridABtpkPFmyFUgC4GrJrgTcSO+GIGTxLv/ls5yoHLuZqLyIG7UCeEeRm34bnd
-         i6SrO/RLI6pRO9ZqFJnvhkR6pgJbDKUYehMW6/mcfYOwRHvcvdfnWDeUS75T6/IJQXQI
-         5j6wxFrZLSgpVKwVOWB4xHPUloNa2GrBpK+rnru/LyoZ6AFfGRPvYXn+PEdJa4rVGzg2
-         zz8NlWUMsKbUWZHlJ7KN1KGS7m2na98Uw/edZSWg76J5xhr22Q5RRXlk8MUbZ5JugEYv
-         g9hHwjpBIPZM3IS6YOvNzktmlTDo6BRxWNC5OKRTXiAkXNnEbwGhljjiJc48CCacu4DI
-         j1SA==
-X-Gm-Message-State: AOAM533wpwFJyGKhfZlNFXmSkztXMSHYTNh9SPsCrHu4fnMOOpqo353L
-        yUzCQP1NCCMfaA6rG2GE/sg=
-X-Google-Smtp-Source: ABdhPJx0+ta5NGLoHQOXc6ltRF6CDwJVRlQ3vRWEXVfnYaOjty2ZAY2gVMDvYHEQradIBnI8u5BERA==
-X-Received: by 2002:aed:3e0e:: with SMTP id l14mr651237qtf.150.1601613106518;
-        Thu, 01 Oct 2020 21:31:46 -0700 (PDT)
-Received: from localhost.localdomain ([68.183.97.120])
-        by smtp.gmail.com with ESMTPSA id t43sm262707qtc.54.2020.10.01.21.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 21:31:45 -0700 (PDT)
-From:   Mark Mossberg <mark.mossberg@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     hpa@zytor.com, jannh@google.com,
-        Mark Mossberg <mark.mossberg@gmail.com>
-Subject: [PATCH v2] x86/dumpstack: Fix misleading instruction pointer error message
-Date:   Fri,  2 Oct 2020 04:29:16 +0000
-Message-Id: <20201002042915.403558-1-mark.mossberg@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=2rR7OFCkiGOcbn8yg3FFIizJzk0Y5CDsOwEAe9MFfqY=;
+        b=NHNCbxh4ZazGEk7Eo1DHsjYvXLoELbhhXQ12RM4WK6PVpR70//EQcahIRNuN+wvSFr
+         CHKSkO+9w25BjKiza6XvUbsHuNPWe7H+DZJ4L5HfKLw8yS2TEW0AeO9n5ENjZhxwK4eE
+         Sgb5AK264pnHPfFuhZfrRjnxbiigVwuPqfpD/npIIAgSmidgQmNblkq4K0Qur8XbcWRa
+         4V+bRD36vdQyk4XItcEpB6LaIqa+YW7GANdHNNFQSHcZPLVSsOZVgsJXwCsUwA3OiXzD
+         JV9vuvTCQS01WULaWKea1IL7yh+sFeZwchtgrA6Dd7biUOt46DnQtw0Gq3cOOHtWOPoo
+         btbg==
+X-Gm-Message-State: AOAM532/WlN2VKbg7utsZGe91ab3ZvIl/Z9uzhVk28m+FJSwJzdx4Zd0
+        vo88i1kr5Eg40V/C0aJWhOSSiu71nIoUKQUUkLz0ztI/jl6o
+X-Google-Smtp-Source: ABdhPJwyio9B9RK4QMV+77SSkDUiL2aBMDrXygJtRXJZn8ix0TJV07LbSiIGdgU/ICZl+Xp6JhyjTk1bOjljcqJ5nfrSfAkO2l0T
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:24c1:: with SMTP id y1mr616780jat.119.1601613068931;
+ Thu, 01 Oct 2020 21:31:08 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 21:31:08 -0700
+In-Reply-To: <0000000000007b357405b099798f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a954d05b0a89a86@google.com>
+Subject: Re: WARNING in cfg80211_connect
+From:   syzbot <syzbot+5f9392825de654244975@syzkaller.appspotmail.com>
+To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, david@fromorbit.com, dchinner@redhat.com,
+        hch@lst.de, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Printing "Bad RIP value" if copy_code() fails can be misleading for
-userspace pointers, since copy_code() can fail if the instruction
-pointer is valid, but the code is paged out. This is because copy_code()
-calls copy_from_user_nmi() for userspace pointers, which disables page
-fault handling.
+syzbot has bisected this issue to:
 
-This is reproducible in OOM situations, where it's plausible that the
-code may be reclaimed in the time between entry into the kernel and when
-this message is printed. This leaves a misleading log in dmesg that
-suggests instruction pointer corruption has occurred, which may alarm
-users.
+commit 16d4d43595b4780daac8fcea6d042689124cb094
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Wed Jul 20 01:38:55 2016 +0000
 
-This patch changes the message to state the error condition more
-precisely.
+    xfs: split direct I/O and DAX path
 
-Thanks to Jann Horn for help with understanding OOM reclamation.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f662b7900000
+start commit:   87d5034d Merge tag 'mlx5-updates-2020-09-30' of git://git...
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f662b7900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f662b7900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7b5cc8ec2218e99d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f9392825de654244975
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1100d333900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1414c997900000
 
-Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
----
- arch/x86/kernel/dumpstack.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
+Fixes: 16d4d43595b4 ("xfs: split direct I/O and DAX path")
 
-diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-index 48ce44576947..ea8d51ec251b 100644
---- a/arch/x86/kernel/dumpstack.c
-+++ b/arch/x86/kernel/dumpstack.c
-@@ -115,7 +115,8 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
- 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
- 
- 	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
--		printk("%sCode: Bad RIP value.\n", loglvl);
-+		printk("%sCode: Unable to access opcode bytes at RIP 0x%lx.\n",
-+		       loglvl, prologue);
- 	} else {
- 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
- 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
--- 
-2.25.1
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
