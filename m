@@ -2,149 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A8E2818E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C355F2818E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388193AbgJBRL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:11:28 -0400
-Received: from mout.gmx.net ([212.227.17.22]:38737 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725991AbgJBRL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601658680;
-        bh=63H9pOiH0+7afFaplsAsPhAJR6vHQUiql917hmAqUC4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=AHIBOjdQrMnUSdVEpEelxmJ0npV7i+cfWWBZpd6MXVvFQY+HVm4duv1WSEclNWJrW
-         na5XrKkpugfVIrDGvUE4f/dLVJnT5g153nRdkc9WPZhxCff8fUaMHymb4hwcAa+MCD
-         jF9sK+FPAfQIc6VfM/EoTqalSl5zwCrAI0eleQmQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from workstation4.fritz.box ([178.202.41.107]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MWAOQ-1jvBXx43li-00XgCU; Fri, 02 Oct 2020 19:11:20 +0200
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-efi@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Fran=C3=A7ois=20Ozog?= <francois.ozog@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] docs: admin-guide: fdt and initrd load in EFI stub
-Date:   Fri,  2 Oct 2020 19:11:12 +0200
-Message-Id: <20201002171112.22738-1-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.28.0
+        id S2388121AbgJBROf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:14:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21517 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726096AbgJBROf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:14:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601658874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9YNVR6BrU2NGxneUWWYLKFH1m7KwKMpGFjULgODVOM=;
+        b=QnVoVH9Vk8YJzaKCIDQn5kM/9ePRUkE80/BAILPqm1eNdx0u2Gq1xHFQFibQU+hDEUUlRT
+        s/7hTITQwkwbKLl8cnSdFrJfkwtF1ECXBPhEs5PlSRql4hKxmemUxEXqv3higO9TGlG7H1
+        CfgfQJN2pkko+HNywqsfTCXuC4O9F8A=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-E0v9ozjlOISlwPyO1fyaPA-1; Fri, 02 Oct 2020 13:14:32 -0400
+X-MC-Unique: E0v9ozjlOISlwPyO1fyaPA-1
+Received: by mail-qk1-f199.google.com with SMTP id 16so1522292qky.8
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:14:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H9YNVR6BrU2NGxneUWWYLKFH1m7KwKMpGFjULgODVOM=;
+        b=FYLhgcVluBRC0pJuTCx6KcKiqBDrCtwm2+NeZCV07kqJVPxa1SpjIr7eTEvbqod5Ol
+         URDcFECwih7wOVZSkqj0JomJ0QU4yRmYG4PbCTnR2P26nkJFtfmtgGt0ACUqPY74qjYM
+         A5u/xX9/PE2k0efzG7GP5q8bsMfftLxhlaZ66j+RaiOVCk2r+87DCLkgRKbDHuFsXkpA
+         nEEC+ioM3le6gyEZRYo0JVB3xFvSz43bfOzucP391rDLQf6RavOrxX+DaOljoO7lZ4Cn
+         kjJP6Z9S5wXJMLRWEhr2J8o51X1+2OORBxXb6sUR2D2GCxaT3ChOxI3Hirr/vjowMYab
+         rAnQ==
+X-Gm-Message-State: AOAM53386s4LnZzVfztnhzJ0gOKNmRB7dd0tuo38I0yCwwQQrcuvtK+w
+        6iUT/c5miHh4eBmGMf8TIEP1Xq/pUfyaKrh8SRs3GExLgNQ87clciQXGyA9iLMicB8pcm0wl0Wf
+        trDgRSnwomcCjWs1wKwPTxgxF
+X-Received: by 2002:a05:620a:2082:: with SMTP id e2mr2899156qka.421.1601658871955;
+        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz91o8uz8PP283FAWSk1vB20zLLcd1fcgGHGqnN6wLniDiAftqBWCSKtKyZioCRYQC5Pw5w+Q==
+X-Received: by 2002:a05:620a:2082:: with SMTP id e2mr2899141qka.421.1601658871663;
+        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
+Received: from xz-x1 (toroon474qw-lp130-09-184-147-14-204.dsl.bell.ca. [184.147.14.204])
+        by smtp.gmail.com with ESMTPSA id g14sm1461694qkk.38.2020.10.02.10.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 10:14:31 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 13:14:29 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH] mm: Remove src/dst mm parameter in copy_page_range()
+Message-ID: <20201002171429.GB5473@xz-x1>
+References: <20200930204950.6668-1-peterx@redhat.com>
+ <20201002114312.GI9916@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9fZxmnWDuYGgQgNcRpM+wK+ePCFLSvRfmJIcmYW0YkFQZN49Tsg
- yaKZn5ZsBMZQ5LRjl//11nXeogKaa2pU5bf/SogphX0yOLPONPcEdGytZxFXXjna8RU7Hyh
- 0WFxYbNbsN5hE8khpQgI+Tb8CgrX0uDxkfS6eao8jsA1ToID86fjUTVe9TVxa7LdtOqGlOr
- 8gljEF1Tn6HkC1hkYERBw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4lfLB/DNw+M=:GCTPZBTTs4ZmwZ+lZr0j9j
- uScruu1n/2XPrZWcdyK2iG/MY5HrVtJ7wznHNHAyuKUfsVGuz7cVePf8d7authL+lu2Xh7T4q
- sR17or3373rFET5LBE87NmpiK2sjAaFmpDxsABqYhTvLg0lLaJf4bs7eDQRoAp+PrMtsp5rdz
- M/g4Mt6TDxVPeooKpYrytcK3dgW/AWgBK46GMXm0nTX7OsUNPbDDJH3zMlDHHdWe7azuwTWTe
- 2N0jvi4uvALkHjyCb1QRYETxh5PcUkwPaWN344tQQqHq2PVLCTbXuQjmfAenvY0w83TbVLS0g
- f7rX9SABHptl03s90sj3OtF3pUZp5u2pV0cFWmjPyK+QzTBbtGGfMX0BfZ+WcobvV/rlH7zB6
- 2dZ6tTR6vn/d+579yvY8YgjpKiiEplWRJ5o+VzRUXfXaKh3wum4CwLibf2r9370pZAgV6zr4H
- 5jm5qQWcKpT4BWL8FMHmd1JCGGuYWtvT5NnuA66zFXPKvAeMu45+qJa8cLvRemvNJeIv2xx16
- anqVHu2uqVcK+9m8V/Jvp+CSXcEGMs06wiGqbMfFuJSV1pWtCFx+cv5e9AE8rXQCAGWuLH25h
- 0V3SC4AtBibpv+AkB8Td8QKDxR0y8tOXmINIzQN7wgvZa/0XPtuE6Uv8xK+wwn89XAvLiujFb
- W2HoXUK4jR9KNS2Loj2UReX9Agvc/hRWY5NZ2cKNklKL/PeGIBbhw1YvB4NMnN3Bh1bhMdefQ
- GOVTXiev0ez6NYeh3tiQIHW/L8GSb0b18FS79s2wbMUGu8YQcRZdI3jZjtQM90MYIVbWlTjeB
- 3SwRigV8QoT3dscHeKs3Wd5Cd4GmeIvT0U5/DXKUqBKHdX1p1pllmK0dIfHM3GbSAcDD6DgC8
- ACLbK86XXI34bR0MIStUrmU34RHZsjjz4UbzeBbQ4eYvzSaSR2elvQja10Tl3D3VPddTZ3d6/
- F+VzjZTNpkgn6i8OoxTi6BhE0N7T60FYhIcIy+sB+G9TzVyGP0deeRvXUDlSHP7fTSFZzLlRd
- iNUSV8OZ/h3RphYGYkT0Fuw8naeehrIWDC6VQnGA7oSdvjssZI2Iimhds9MMQTLKcaxwJ8Sx8
- goXwuwL7BgGpHjWzT69RE8niHnn4Bx6eWuyoMajW1h8J1h7+UfE65E6vs/6C+4SK/xTA1PlK3
- Ju7pcBpGkdpG76SAZNrDkin7R+1+Jt87d1G+Qx0rUQtFdiXnXVHP+x5ikixF8aB9IXnA3rydG
- L+VxNDn/79m5OiZJjcNylfpGeF5ZjELEXKjeRPQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201002114312.GI9916@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe how a device tree and an initial RAM disk can be passed to the EF=
-I
-Boot Stub.
+On Fri, Oct 02, 2020 at 08:43:12AM -0300, Jason Gunthorpe wrote:
+> > -static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> > -		   pmd_t *dst_pmd, pmd_t *src_pmd, struct vm_area_struct *vma,
+> > -		   struct vm_area_struct *new,
+> > +static int copy_pte_range(pmd_t *dst_pmd, pmd_t *src_pmd,
+> > +		   struct vm_area_struct *vma, struct vm_area_struct *new,
+> >  		   unsigned long addr, unsigned long end)
+> 
+> I link this, my only minor quibble is the mixing of dst/src and new
+> language, and then reversing the order in each place. Would read
+> better to be consistent:
+> 
+>   copy_pte_range(dst_vma, dst_pmd, src_vma, src_pmd, addr, end)
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
- Documentation/admin-guide/efi-stub.rst | 35 ++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+I have no strong opinion on the ordering, but I agree the names are clearer.
+Considering normally we put the same type of parameters to be together, how
+about:
 
-diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-=
-guide/efi-stub.rst
-index 833edb0d0bc4..86f50a33884c 100644
-=2D-- a/Documentation/admin-guide/efi-stub.rst
-+++ b/Documentation/admin-guide/efi-stub.rst
-@@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the system par=
-tition, and it
- may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
- should be copied but not necessarily renamed.
+  copy_pte_range(dst_vma, src_vma, dst_pmd, src_pmd, addr, end)
 
-+Passing an initial RAM disk to the EFI Boot Stub
-+------------------------------------------------
-+
-+The following means sorted by decreasing priority can be used to provide =
-an
-+initial RAM disk to the EFI Boot Stub:
-+
-+* The firmware may provide a UEFI Load File 2 Protocol. The stub will try=
- to
-+  load the RAM disk by calling the LoadFile() service of the protocol usi=
-ng
-+  a vendor device path with the vendor GUID
-+  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
-+* Next the EFI stub will try to load the file indicated by the "initrd=3D=
-" command
-+  line parameter.
-+* The prior boot stage may pass the location of the initial RAM disk via =
-the
-+  "linux,initrd-start" and "linux,initrd-end" properties of the "/chosen"=
- node
-+  of the device-tree.
-+
-+The first two items are inhibited by the "noinitrd" command line paramete=
-r.
-+
-+Passing a device-tree to the EFI Boot Stub
-+------------------------------------------
-+
-+A device-tree can be passed to the EFI Boot Stub in decreasing priority u=
-sing
-+
-+* command line option dtb=3D
-+* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c69aa=
-e0.
-+
-+The command line option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADE=
-R=3Dy
-+and secure boot is disabled.
+Thanks,
 
- Passing kernel parameters from the EFI shell
- --------------------------------------------
-@@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzImage.efi=
-, e.g.::
-
- 	fs0:> bzImage.efi console=3DttyS0 root=3D/dev/sda4
-
-+The "noinitrd" option
-+---------------------
-+
-+The "noinitrd" option stops the EFI stub from loading an initial RAM disk=
-.
-
- The "initrd=3D" option
- --------------------
-@@ -98,3 +130,6 @@ CONFIGURATION TABLE.
-
- "dtb=3D" is processed in the same manner as the "initrd=3D" option that i=
-s
- described above.
-+
-+This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=3Dy and se=
-cure
-+boot is disabled.
-=2D-
-2.28.0
+-- 
+Peter Xu
 
