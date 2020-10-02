@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D08281540
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F840281527
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388218AbgJBOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
+        id S2388129AbgJBObs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387919AbgJBOct (ORCPT
+        with ESMTP id S2387777AbgJBObr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:32:49 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9800C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:32:49 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id u24so898712pgi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:32:49 -0700 (PDT)
+        Fri, 2 Oct 2020 10:31:47 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAEFC0613D0;
+        Fri,  2 Oct 2020 07:31:47 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id e2so1987542wme.1;
+        Fri, 02 Oct 2020 07:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=SSkvn3oDzCRhIrEuSpHYTZxiQ4F3t2VMbqy8/HZ/4go=;
-        b=etbkXi4UPw2PrA0q1xuOWjPS1aMdlMR5ll7pfMjNVjXx8BJEL48pEG1Z71p9R7+zEh
-         vn7i7/syNDrDj9onLLICslCgvT4nAQwNPUeYqNZQkId0KCVkkf+c/gWGjI5GCb0tafKq
-         nkuTAcOg+Sfwv5GRhEsEyypXzgbRmxUj1D0EwPJ4KTzii8Z53hJ8DDbSdTRxrwL8//dH
-         uyUkdBMpBYnwTu5+/XTHUk2zmpUG3tzv9lN+a36jh6wRo2h8ny7WrwFdhpjvgUCuLso9
-         nKBg3+W8ywkxYS+/YgN6iFOUnbSRwwUe0iAwpgztvXHb/m+UDJ4WcMuu3z/Abql8uHNF
-         ONlw==
+        bh=6o5jHfcjbw5X3IGqgGWdir89nONyuyUEchA4DUJix40=;
+        b=UWIB0bev3xg2tOPk3cOSDdcEz35DItpIA/02YLXLns/QR3nPDr+Tn39FOEQPVdbFd+
+         H6phd+DbKxi9Og6/8DlAVr/cJINOAME/KlKKEOiHlEw8ZMe9blKOKcH3Je8ctPioXUtG
+         aWoGwPCw9B2YqX5g3aIFpwZ01R4An0lCCQcYwqIkAdsBPzDgkD/dV+SEHIXFkB2y5XIp
+         rEKqcjohlxMfwkCtJ9GgRCaWxsqURiAg1R/vXCdwIJqcxBoEEFGbdsrRxrZH+z4ackeI
+         KGqfwru1urBy2/3llsa0sq3L4Jyvz9RuyGB9pgwKjMDVIWCvXhp52JvzF6vz4p5QwOEk
+         Yz4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SSkvn3oDzCRhIrEuSpHYTZxiQ4F3t2VMbqy8/HZ/4go=;
-        b=Fj0oN/mpCR5LUvUV/YDKQk3asDKqlqmcrT4eq0BIzYbhXs1+g8gwzrnba9XuokHkSC
-         wFd3++AZd8Y+TmkESi0snuG8PObcKiTLadd9xk8TmcEE6y/6afK4Rt+V+gvR2D88Qn5f
-         1QECza2isAD6V9t2iYd4L/BcCLwz55Ndm8EaWxZnygkt/XxcYfJobHgj2yGGB92UbVdC
-         zU5InSfQZWlULVB9yweZqWCRFTnVyQNMF3WZ6tG18RQew5N5WjSHZHi+QWqcFdTJjjfm
-         dLUsxOGQxMnCfPz5RHtQIvzKHB5qZs/vgCF0IHw4Z/T3BQLWTeBBGNwwetdhUp6HqDfB
-         TAWA==
-X-Gm-Message-State: AOAM531KMmzXw9HdR/+hLHfgFizb98qAnPU2hAGGD3ymBRgucI6DOOfx
-        p4QBfqqeNqdfwvHZ6+PIDwc=
-X-Google-Smtp-Source: ABdhPJx9MvAgmcud0sckaiTk8xpf5x5hvQ17m9X73spj9PWYZ735XAweN8zzcsv8bL0C+C7pJp+jgQ==
-X-Received: by 2002:a63:fd03:: with SMTP id d3mr2395327pgh.201.1601649169453;
-        Fri, 02 Oct 2020 07:32:49 -0700 (PDT)
-Received: from localhost (42-3-19-186.static.netvigator.com. [42.3.19.186])
-        by smtp.gmail.com with ESMTPSA id d8sm1803684pjs.47.2020.10.02.07.32.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 02 Oct 2020 07:32:48 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] ftrace: Fix some typos in comment
-Date:   Fri,  2 Oct 2020 22:31:26 +0800
-Message-Id: <20201002143126.2890-1-hqjagain@gmail.com>
+        bh=6o5jHfcjbw5X3IGqgGWdir89nONyuyUEchA4DUJix40=;
+        b=PqbxtwUcYCqE2VuBTC2XGwLa3ZcFfsxb25hiN8D8oNlfANVQwgEpkM4D7sLvW7TC5T
+         E282V2yAlgldhF2Cy+ShZShEeeugqjysJt8+ZmsFYprYoGHctzzsjZltMftZV0U+ugE2
+         dXUXq5jvNankgrmnB8nybEX84Eb96hiWVxuzMWu7I34Qrg1wmyVShHhs31lQ+mW/tDrB
+         n6fxpxdAu027h3+99WOYyf30lHmS9ArFl0BtEZwfcAljVQ81dHpY+5a9odI//XakrraT
+         miKK80PDYsWPAEI/JnbuSeoj03HW6OgXvC6FYUMiy1zLv/Jn5iT69Hzrzx4NrLfiA21Q
+         UdfA==
+X-Gm-Message-State: AOAM533CFitgq1p4jvEX/Be1jr98bZRNhZg/BbPda5sZa7wQ6zC0rig1
+        MtMIMuHWJprO4idlnEhrA5k=
+X-Google-Smtp-Source: ABdhPJwcBhx8MfW10XshdbWBrBec7TjBSbx9dXWZePPSkzyIMzN21tQ8bYJtJsv7m27t0JkHLjwlUw==
+X-Received: by 2002:a7b:cf27:: with SMTP id m7mr3234029wmg.74.1601649105740;
+        Fri, 02 Oct 2020 07:31:45 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id w7sm1907392wrm.92.2020.10.02.07.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 07:31:45 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH v2 00/10] arm64: dts: meson: add more GX soundcards
+Date:   Fri,  2 Oct 2020 14:31:31 +0000
+Message-Id: <20201002143141.14870-1-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/coorditate/coordinate/
-s/emty/empty/
-s/preeptive/preemptive/
-s/succes/success/
-s/carefule/careful/
+This series adds basic support for LPCM audio over HDMI and S/PDIF
+interfaces to GXBB/GXL/GXM devices without support. I'm sure audio
+support can be extended in places (some devices have internal DACs
+and headphone hardware) but this gets the basics working.
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- kernel/trace/ftrace.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I have personally tested with the khadas-vim2, odroid-c2, and both
+wetek devices as I have them, and there are positive forum reports
+from users with vega-s95 and some no-name P20X box devices.
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 541453927c82..549aeacabb61 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -230,7 +230,7 @@ static void update_ftrace_function(void)
- 	/*
- 	 * For static tracing, we need to be a bit more careful.
- 	 * The function change takes affect immediately. Thus,
--	 * we need to coorditate the setting of the function_trace_ops
-+	 * we need to coordinate the setting of the function_trace_ops
- 	 * with the setting of the ftrace_trace_function.
- 	 *
- 	 * Set the function to the list ops, which will call the
-@@ -1451,7 +1451,7 @@ static bool hash_contains_ip(unsigned long ip,
- {
- 	/*
- 	 * The function record is a match if it exists in the filter
--	 * hash and not in the notrace hash. Note, an emty hash is
-+	 * hash and not in the notrace hash. Note, an empty hash is
- 	 * considered a match for the filter hash, but an empty
- 	 * notrace hash is considered not in the notrace hash.
- 	 */
-@@ -2976,7 +2976,7 @@ int ftrace_shutdown(struct ftrace_ops *ops, int command)
- 		synchronize_rcu_tasks_rude();
- 
- 		/*
--		 * When the kernel is preeptive, tasks can be preempted
-+		 * When the kernel is preemptive, tasks can be preempted
- 		 * while on a ftrace trampoline. Just scheduling a task on
- 		 * a CPU is not good enough to flush them. Calling
- 		 * synchornize_rcu_tasks() will wait for those tasks to
-@@ -4368,7 +4368,7 @@ void **ftrace_func_mapper_find_ip(struct ftrace_func_mapper *mapper,
-  * @ip: The instruction pointer address to map @data to
-  * @data: The data to map to @ip
-  *
-- * Returns 0 on succes otherwise an error.
-+ * Returns 0 on success otherwise an error.
-  */
- int ftrace_func_mapper_add_ip(struct ftrace_func_mapper *mapper,
- 			      unsigned long ip, void *data)
-@@ -4536,7 +4536,7 @@ register_ftrace_function_probe(char *glob, struct trace_array *tr,
- 
- 	/*
- 	 * Note, there's a small window here that the func_hash->filter_hash
--	 * may be NULL or empty. Need to be carefule when reading the loop.
-+	 * may be NULL or empty. Need to be careful when reading the loop.
- 	 */
- 	mutex_lock(&probe->ops.func_hash->regex_lock);
- 
+Changes from v1
+- Drop nexbox-a1 and rbox-pro changes - the regulator changes are
+needed to get the dts to compile, but I do not have schematics to
+validate the changes or the hardware to test with.
+
+Christian Hewitt (10):
+  arm64: dts: meson: add audio playback to a95x
+  arm64: dts: meson: add audio playback to khadas-vim2
+  arm64: dts: meson: add audio playback to nanopi-k2
+  arm64: dts: meson: add audio playback to odroid-c2
+  arm64: dts: meson: add audio playback to p201
+  arm64: dts: meson: add audio playback to p200
+  arm64: dts: meson: add audio playback to p212-s905x dtsi
+  arm64: dts: meson: add audio playback to vega-s95 dtsi
+  arm64: dts: meson: add audio playback to wetek-hub
+  arm64: dts: meson: add audio playback to wetek-play2
+
+ .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts | 40 ++++++++++++
+ .../dts/amlogic/meson-gxbb-nexbox-a95x.dts    | 40 ++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-odroidc2.dts  | 40 ++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-p200.dts      | 61 +++++++++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-p201.dts      | 40 ++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-vega-s95.dtsi | 61 +++++++++++++++++++
+ .../boot/dts/amlogic/meson-gxbb-wetek-hub.dts | 40 ++++++++++++
+ .../dts/amlogic/meson-gxbb-wetek-play2.dts    | 61 +++++++++++++++++++
+ .../dts/amlogic/meson-gxl-s905x-p212.dtsi     | 40 ++++++++++++
+ .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 44 ++++++++++++-
+ 10 files changed, 464 insertions(+), 3 deletions(-)
+
 -- 
 2.17.1
 
