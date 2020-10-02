@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BC5280C33
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830B7280C3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 04:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387543AbgJBCD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 22:03:29 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40256 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgJBCD3 (ORCPT
+        id S2387574AbgJBCHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 22:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387496AbgJBCHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 22:03:29 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AA7EF528;
-        Fri,  2 Oct 2020 04:03:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1601604206;
-        bh=Ife6AOKSz1yLDqr0XawviHdGiWNIv1jH0uvLYdRZtlM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lasWYSqLneJlsXBLxscVGuOD/XNXH+Abh0TitNhRJdc+M9p4lK/eXlP0MKvND++Wn
-         XrdLdEpD/heMImgxZdenzPuJIKjICNVTNi3EuqkF+CATSwJsAunxYECt/ycxVt72I7
-         T6Vc+Dow77WLuyfYJ+Sg6TmH/3RQKPRftsiLb528=
-Date:   Fri, 2 Oct 2020 05:02:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Nava kishore Manne <nava.manne@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: dts: zynqmp: Fix pcie ranges description
-Message-ID: <20201002020249.GU3722@pendragon.ideasonboard.com>
-References: <f59a63d8cb941592de6d2dee8afa6f120b2e40c8.1601379794.git.michal.simek@xilinx.com>
+        Thu, 1 Oct 2020 22:07:02 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2040C0613E3
+        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 19:07:00 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id x1so370176vsf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 19:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vT94c58c5RJpPi7b9HKxloC1mNQH0vp26xTTILK9X5s=;
+        b=SyWPxJQjF1pyN0tV9nljtIiQi7IAU4ykxGKYZ+Ngd0KIBmRApBv8Lys4YpoYU593S3
+         R/81CTJRQli3fwWhMot/+N4MW2z9TutEevFLsPxdQT04VEDJf3EcDb7TxTqPw16raYmL
+         O185M4iVi+3hsx1y5CvCknDPjkmzzw/9oxohxNKfqhyfWVgIu2chMpy4PROp5XBAYtfw
+         FhfullWI5DsudxJwmWVhfm3K5WnYqpDGnYdwOeDSZPIpIYNezYXrtPq++798LoUDLvAf
+         jsLd/mLSMkpNOeJC2ZXc4XqQD5T+2H2J74a1Im5Bjz83C+9BqVudzCgo4FUKJFYPsFIw
+         L07w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vT94c58c5RJpPi7b9HKxloC1mNQH0vp26xTTILK9X5s=;
+        b=Q7BJN9yLoDoU5wjQp1N+6tzfKiyKBLi6HvLd5Hoc8qOJDrguyxTKEPv3ckmBlgOm/3
+         ojFYR4Tw15g+jw1CA3TnHlmuddvA7bcTnLSJsZ0AF9gZ7uyZW2GvKzwyCszUL1yVuJ6C
+         kYjMNV6FJVvi8mERI9ZAyKuphuS8BPeKcpsxhtl+Ke2OQE0IkRXe74PPJXcAivaeFGjQ
+         WjewwBVPPg2Kbg77SoVHnELwTsP6zZnQzu3AgOMIkVCdA6MddfazJSBwPxBQ0z4F/5Td
+         5kjD9m/2H1BrzHwow2nbv4yqxf4cIe8YNDkEzQx5vefm4oJvJYTWKw39W3adnUnv7yuQ
+         pDRw==
+X-Gm-Message-State: AOAM533wcObvuUGVY8DyeIy1v2Lzdo0GQXGsXdNo4oBH4jLTelE0yGfx
+        EHIOWT55ThTrW3M2kK8L7uPIPEvqW+fgNbL8PM7R1g==
+X-Google-Smtp-Source: ABdhPJxoSqWOWqkgye3JYdbsMetKDhjeqdmku/0TOcCNaVVCZlRIiJXTsWsPQC2qA8YecqG4ck2fb88Uv71SNqE97IM=
+X-Received: by 2002:a67:e83:: with SMTP id 125mr124303vso.22.1601604419476;
+ Thu, 01 Oct 2020 19:06:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f59a63d8cb941592de6d2dee8afa6f120b2e40c8.1601379794.git.michal.simek@xilinx.com>
+References: <20200925145649.5438-1-yu-cheng.yu@intel.com> <20200925145649.5438-20-yu-cheng.yu@intel.com>
+In-Reply-To: <20200925145649.5438-20-yu-cheng.yu@intel.com>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Thu, 1 Oct 2020 19:06:48 -0700
+Message-ID: <CAMn1gO4cxSt8-8qVbAei0jPErTtARdsEY4js6Fi=kzozAuE3yQ@mail.gmail.com>
+Subject: Re: [PATCH v13 19/26] mm: Re-introduce do_mmap_pgoff()
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
+On Fri, Sep 25, 2020 at 7:57 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>
+> There was no more caller passing vm_flags to do_mmap(), and vm_flags was
+> removed from the function's input by:
+>
+>     commit 45e55300f114 ("mm: remove unnecessary wrapper function do_mmap_pgoff()").
+>
+> There is a new user now.  Shadow stack allocation passes VM_SHSTK to
+> do_mmap().  Re-introduce the vm_flags and do_mmap_pgoff().
 
-Thank you for the patch.
+I would prefer to change the callers to pass the additional 0 argument
+instead of bringing the wrapper function back, but if we're going to
+bring it back then we should fix the naming (both functions take a
+pgoff argument, so the previous name do_mmap_pgoff() was just plain
+confusing).
 
-On Tue, Sep 29, 2020 at 01:43:22PM +0200, Michal Simek wrote:
-> DT schema is checking tuples which should be properly separated. The patch
-> is doing this separation to avoid the following warning:
-> ..yaml: axi: pcie@fd0e0000:ranges: [[33554432, 0, 3758096384, 0,
-> 3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0]] is not valid under
-> any of the given schemas (Possible causes of the failure):
-> ...dt.yaml: axi: pcie@fd0e0000:ranges: True was expected
-> ...dt.yaml: axi: pcie@fd0e0000:ranges:0: [33554432, 0, 3758096384, 0,
-> 3758096384, 0, 268435456, 1124073472, 6, 0, 6, 0, 2, 0] is too long
-
-I would keep the error message unwrapped as it's a bit confusing to
-read, even if it exceeds the normal 72 columns limit of commit messaged.
-
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> 
-> I have seen one conversation about it but don't have link which I can point
-> to.
-> ---
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> index 771f60e0346d..98073f3223e5 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> @@ -542,8 +542,8 @@ pcie: pcie@fd0e0000 {
->  			      <0x0 0xfd480000 0x0 0x1000>,
->  			      <0x80 0x00000000 0x0 0x1000000>;
->  			reg-names = "breg", "pcireg", "cfg";
-> -			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000	/* non-prefetchable memory */
-> -				  0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
-> +			ranges = <0x02000000 0x00000000 0xe0000000 0x00000000 0xe0000000 0x00000000 0x10000000>,/* non-prefetchable memory */
-> +				 <0x43000000 0x00000006 0x00000000 0x00000006 0x00000000 0x00000002 0x00000000>;/* prefetchable memory */
->  			bus-range = <0x00 0xff>;
->  			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
->  			interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc 0x1>,
-
--- 
-Regards,
-
-Laurent Pinchart
+Peter
