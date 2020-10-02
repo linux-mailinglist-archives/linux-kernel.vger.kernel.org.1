@@ -2,201 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B962815A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832AD2815B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 16:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388144AbgJBOsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 10:48:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26802 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387893AbgJBOsR (ORCPT
+        id S2388203AbgJBOtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 10:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387990AbgJBOtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:48:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601650095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=IM4pBIGYx/SKM1Dy3xGL2Rgl9xgWx7mTiMJTemJf/pE=;
-        b=V7wbk4MHFzO5sGyW2ka25bwjvQug9/Konjbi6pJz9LoA2dMfd3v0jF5SG5vyql9tNQqUhh
-        OsEc6zq+/omLUUjDQrMU7aUKKSeM0AnGfOBlVTt7b9Z4n7YgEW4Yx85RUuSXcCNVOJ2fGM
-        Yvl1OiPDJPXhf+Ipq8PhcxBkA5dNHk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-GAWETC74OFW0LAD_iYSeKQ-1; Fri, 02 Oct 2020 10:48:12 -0400
-X-MC-Unique: GAWETC74OFW0LAD_iYSeKQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF4995705A;
-        Fri,  2 Oct 2020 14:48:08 +0000 (UTC)
-Received: from [10.36.113.228] (ovpn-113-228.ams2.redhat.com [10.36.113.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81D7C78803;
-        Fri,  2 Oct 2020 14:48:05 +0000 (UTC)
-Subject: Re: [PATCH v1 1/5] mm/page_alloc: convert "report" flag of
- __free_one_page() to a proper flag
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
+        Fri, 2 Oct 2020 10:49:52 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2E7C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 07:49:50 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id u3so916944pjr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 07:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Khn8CfhobmHbzhXXTDMSt4Dh601ttzUMdRYWXwdYRPo=;
+        b=DJVCRzdqpxICqnwpdEMu4UOgh8muUdxeYvAVfpAOME/Py3vcwz4BdGQvhysx3sFU5K
+         ClVes1oURmnz88HUcBumi4d8BRhUwlKGdr0ysmvUMNdIkBXRUBCevHT/W9lm4z8C0nCm
+         yCEK+RCjzMOER5R6r8qy+1lMKE1wJYRQ41NqFMAnmwooDIdDyjlbV+N/ydWo3M9lElcq
+         ihBGTM3yXXWNktTz1UL/6HIFHunHziDgityBGyiEiydATqvfVA0zW9/IIiDalAy8XqPu
+         yOX8otRKWm0NkJj24ogiGE3CtQ9DS56Jeatu9vlLDoKhJe+2ohnw+B0u9rw0HosMpVDp
+         C6gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Khn8CfhobmHbzhXXTDMSt4Dh601ttzUMdRYWXwdYRPo=;
+        b=k4FblZ6E3EIP2gAji3/rnUEnOUxDveZsdgqGHLZ0RqwctJBYO5RemohR1OQ/MeA08Q
+         7hreeVMXfoMRzcps4CMUPE8cXyXU3syzGmAYKQCBry9chlx5vmdKSXdyxVDpQ41623xU
+         Zdvfm5tAlAVQ6vxXcRv5QFrGeHnPEsbe5AD7NFw4FygEepuODlCAjK+PWm1+XClZJ3LK
+         pLZlIBeyxCGMAecFZId0+7DnAhtvHg5QrteUJP7Iqe7+eWqO2q01l3UbbCc+Z47FqV8G
+         TpE7HhqDXzVfYin45mzHbxQF/NbLfb4hfVA7vG8xN0psBkERqjv/+EP74ZWvjn1kKJG6
+         f2Hw==
+X-Gm-Message-State: AOAM5324JB6Jq+yZYUG8Ts6pZK+BkmL/xRx+4Dv/0Mq9J55/7XPg1mQr
+        rQC6UAdv8YDTiKTD1xYXDgc+1J4gSUs2Vw==
+X-Google-Smtp-Source: ABdhPJxwW3dtMkRmIG5bjtfHXLP/iJtqLM2Vvz1Qub+OGsJcG5JmRFgbh6HpS0hiEJPKxStWbCVnOg==
+X-Received: by 2002:a17:90b:241:: with SMTP id fz1mr1137101pjb.17.1601650190202;
+        Fri, 02 Oct 2020 07:49:50 -0700 (PDT)
+Received: from Gentoo (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id h9sm1720278pfh.213.2020.10.02.07.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 07:49:49 -0700 (PDT)
+Date:   Fri, 2 Oct 2020 20:19:36 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "kernel-mentors@selenic.com" <kernel-mentors@selenic.com>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+Subject: Re: external tool to remove embedded filenames
+Message-ID: <20201002144936.GA17987@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Joe Perches <joe@perches.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>
-References: <20200928182110.7050-1-david@redhat.com>
- <20200928182110.7050-2-david@redhat.com>
- <20201002134118.GA20115@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <2b1baab8-861d-06a3-8eab-75c4e9e1b19d@redhat.com>
-Date:   Fri, 2 Oct 2020 16:48:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Andy Whitcroft <apw@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "kernel-mentors@selenic.com" <kernel-mentors@selenic.com>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>
+References: <1fd5f9188a14acdca703ca00301ee323de672a8d.camel@perches.com>
+ <bab3ecae932cb41106834156abbd27159d937e67.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002134118.GA20115@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
+Content-Disposition: inline
+In-Reply-To: <bab3ecae932cb41106834156abbd27159d937e67.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.20 15:41, Matthew Wilcox wrote:
-> On Mon, Sep 28, 2020 at 08:21:06PM +0200, David Hildenbrand wrote:
->> Let's prepare for additional flags and avoid long parameter lists of bools.
->> Follow-up patches will also make use of the flags in __free_pages_ok(),
->> however, I wasn't able to come up with a better name for the type - should
->> be good enough for internal purposes.
-> 
->> +/* Free One Page flags: for internal, non-pcp variants of free_pages(). */
->> +typedef int __bitwise fop_t;
-> 
-> That invites confusion with f_op.  There's no reason to use _t as a suffix
-> here ... why not free_f?
 
-git grep "bitwise" | grep typedef | grep include/linux
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-indicates that "_t" it the right thing to do.
+On 11:47 Thu 01 Oct 2020, Joe Perches wrote:
+>It's rather unnecessary for files to contain their
+>path/filename in source code comments.
+>
+>Here's a trivial little script that can remove
+>embedded filenames in c90 style comments from files.
+>
+>This requires git.
+>
+>It does the following types of removals:
+>
+>remove individual lines like /* filename */ completely
+>remove filename from /* filename -- comment */, leave /* comment */
+>remove filename and any trailing ' *\n' from /* filename, leave /*
+>remove filename from /* filename, leave /*
+>remove filename from continuation ' * filename -- comment' leave ' * comment'
+>remove filename and any trailing ' *\n' from continuation ' * filename\n *\n'
+>
+>It seems to work well enough.
+>
+>It does not handle c99 comments.
+>No // filename variants are removed.
+>
+>Running it on today's -next gives:
+>
+>$ perl remove_embedded_filenames.pl
+>$ git diff --shortstat
+> 2310 files changed, 354 insertions(+), 4239 deletions(-)
+>
+>It's also possible to give any filename or path
+>as an argument to the script
+>
+>For instance:
+>
+>$ perl remove_embedded_filenames.pl drivers/net
+>
 
-I want a name that highlights that is is for the internal variants of
-free_page(), free_f / free_t is too generic.
+>#!/usr/bin/perl -w
+>
+># script to remove * <filename> comments;
+># use: perl remove_embedded_filenames.pl <paths|files>
+># e.g.: perl remove_embedded_filenames.pl drivers/net/ethernet/intel
+>
+>use strict;
+>
+>my $P = $0;
+>my $modified = 0;
+>my $quiet = 0;
+>
+>sub expand_tabs {
+>    my ($str) = @_;
+>
+>    my $res = '';
+>    my $n = 0;
+>    for my $c (split(//, $str)) {
+>	if ($c eq "\t") {
+>	    $res .= ' ';
+>	    $n++;
+>	    for (; ($n % 8) != 0; $n++) {
+>		$res .= ' ';
+>	    }
+>	    next;
+>	}
+>	$res .= $c;
+>	$n++;
+>    }
+>
+>    return $res;
+>}
+>
+>my $args = join(" ", @ARGV);
+>my $output = `git ls-files -- $args`;
+>my @files = split("\n", $output);
+>
+>foreach my $file (@files) {
+>    my $f;
+>    my $cvt = 0;
+>    my $text;
+>
+># read the file
+>
+>    next if ((-d $file));
+>
+>    open($f, '<', $file)
+>	or die "$P: Can't open $file for read\n";
+>    $text = do { local($/) ; <$f> };
+>    close($f);
+>
+>    next if ($text eq "");
+>
+># Remove the embedded filenames
+>
+>    # remove individual lines like /* filename */ completely
+>    $cvt += $text =~ s@/\*[ \t]+(?:linux\/)?\Q$file\E[ \t]*\*/[ \t]*\n@@g;
+>    pos($text) = 0;
+>    # remove filenamee from /* filename -- comment */, leave /* comment */
+>    $cvt += $text =~ s@/\*([ \t]+)(?:linux\/)?\Q$file\E[ \t]*[:-]+[ \t]*@/*$1@g;
+>    pos($text) = 0;
+>    # remove filename and any trailing ' *\n' from /* filename, leave /*
+>    $cvt += $text =~ s@/\*([ \t]+)(?:linux\/)?\Q$file\E[ \t]*\n([ \t]*\*[ \t]*\n)*(?:[ \t]*\*)?@/*@g;
+>    pos($text) = 0;
+>    # remove filename from /* filename, leave /*
+>    $cvt += $text =~ s@/\*([ \t]+)(?:linux\/)?\Q$file\E[ \t]*\n@/*@g;
+>    pos($text) = 0;
+>    # remove filename from continuation ' * filename -- comment'
+>    # leave ' * comment'
+>    $cvt += $text =~ s/([ \t]+)\*([ \t]*)(?:linux\/)?\Q$file\E[ \t]*[:-]+[ \t]*/$1*$2/g;
+>    pos($text) = 0;
+>    # remove filename and any trailing ' *\n' from
+>    # continuation ' * filename\n *\n'
+>    $cvt += $text =~ s/([ \t]*)\*([ \t]*)(?:linux\/)?\Q$file\E[ \t]*\n([ \t]*\*[ \t]*\n)*//g;
+>    pos($text) = 0;
+>
+># write the file if something was changed
+>
+>    if ($cvt > 0) {
+>	$modified = 1;
+>	print("$file\n");
+>	open($f, '>', $file)
+>	    or die "$P: Can't open $file for write\n";
+>	print $f $text;
+>	close($f);
+>    }
+>}
+>
+>if ($modified && !$quiet) {
+>    print <<EOT;
+>
+>Warning: these changes may not be correct.
+>
+>These changes should be carefully reviewed manually and not combined with
+>any functional changes.
+>
+>Compile, build and test your changes.
+>
+>You should understand and be responsible for all object changes.
+>
+>Make sure you read Documentation/SubmittingPatches before sending
+>any changes to reviewers, maintainers or mailing lists.
+>EOT
+>}
+  Joe,
 
-fpi_t (Free Page Internal) ?
+  Suggestion.... please take those damn EOT lines out of it ..absolutely not
+  required...or did you put for your own purpose?? As I believe it not the final
+  product. Anyway, it would be good if those not there.
 
-> 
->> +/*
->> + * Skip free page reporting notification for the (possibly merged) page. (will
->> + * *not* mark the page reported, only skip the notification).
-> 
-> ... Don't you mean "will not skip marking the page as reported, only
-> skip the notification"?
+  Yup, I do like the "individual option" stuff ...so, you can only mess around
+  single thing than the whole lot.
 
-Yeah, I can use that.
+  ~Bhaskar
 
-The way free page reporting works is that
 
-1. Free page reporting infrastructure will get notified after buddy
-merging about a newly freed page.
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-2. Once a certain threshold of free pages is reached, it will pull pages
-from the freelist, report them, and mark them as reported. (see
-mm/page_reporting.c)
+-----BEGIN PGP SIGNATURE-----
 
-During 2., we didn't actually free a "new page", we only temporarily
-removed it from the list, that's why we have to skip the notification.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl93PfwACgkQsjqdtxFL
+KRV9CQgAhFY2kGXd+1qEwoZeNs7nVKb4v62+/RE8wWKm5Ys1RpiRjIRbRT3TJzxO
+EM+KzisFPmI6hHW51UJcve4QJn06DlddjdRe/VE2ioHPjz/UEScaBQ2K3qzT+7QE
+ARKMRRNCwPZIoUM/hZBXUhAmDoPzn0XPr2+/uLdA+6sqUo2BwTY/Y/AP/mEWmXyv
+1MYxxsKmI+cQeRgXOde/Z17Rc7udjUbSk9jFUrtJyH6Fle1DuZAkYaEL5H9plua5
+TePwFi9u+OmtptxTlTGLIi8wIBMOIDjS+xSDbodL0shR74eDYRLOUOcDd0FlmoFm
+eNaL2ptBn+bFXIUsQ/mj1RGTrtjNVQ==
+=D+Sc
+-----END PGP SIGNATURE-----
 
-What we do here is skip 1., not 2.
-
-> 
-> *reads code*
-> 
-> No, I'm still confused.  What does this sentence mean?
-> 
-> Would it help to have a FOP_DEFAULT that has FOP_REPORT_NOTIFY set and
-> then a FOP_SKIP_REPORT_NOTIFY define that is 0?
-
-Hmm, I'm not entirely sure if that improves the situation. Then, I need
-3 defines instead of two, and an "inverse" documentation for
-FOP_REPORT_NOTIFY.
-
-> 
->> -static inline void __free_one_page(struct page *page,
->> -		unsigned long pfn,
->> -		struct zone *zone, unsigned int order,
->> -		int migratetype, bool report)
->> +static inline void __free_one_page(struct page *page, unsigned long pfn,
->> +				   struct zone *zone, unsigned int order,
->> +				   int migratetype, fop_t fop_flags)
-> 
-> Please don't over-indent like this.
-> 
-> static inline void __free_one_page(struct page *page, unsigned long pfn,
-> 		struct zone *zone, unsigned int order, int migratetype,
-> 		fop_t fop_flags)
-> 
-> reads just as well and then if someone needs to delete the 'static'
-> later, they don't need to fiddle around with subsequent lines getting
-> the whitespace to line up again.
-> 
-
-I don't care too much about this specific instance and can fix it up.
-(this is clearly a matter of personal taste)
-
-Thanks!
-
--- 
-Thanks,
-
-David / dhildenb
-
+--PEIAKu/WMn1b1Hv9--
