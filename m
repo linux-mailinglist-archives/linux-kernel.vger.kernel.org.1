@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DAC281CDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C753A281D2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 22:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgJBUUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 16:20:40 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37931 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBUUj (ORCPT
+        id S1725785AbgJBUyT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 2 Oct 2020 16:54:19 -0400
+Received: from mastersmtp.scs-net.org ([213.178.226.248]:39156 "EHLO
+        slavesmtp.scs-net.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725283AbgJBUyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 16:20:39 -0400
-Received: by mail-pf1-f194.google.com with SMTP id l126so2071916pfd.5;
-        Fri, 02 Oct 2020 13:20:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PNXMj9wXy59v9qpnujnEiqx2cewwdkt3Afn29BVwn5c=;
-        b=I29wWkqJNcWLmuWX8U7PfkZ+rLbSx6rGWjwILVenrRB7D9b4pmC5ehILfcizm1jtzx
-         zf2qJRUgrzVHoWMoJBnDeh7Bsr8w+py5wovg6kBNapHrcIn5PaF6q/JsPdhPHcE+MS5w
-         FHRZmoaxG2sYCgX/OYHJ3r85SvjsAZ5U1Z9KfmU2WTGzRB4ZrOVbtkW3uyZhrFZCexCm
-         yeSo3yra1EQC5GO2stge1sMutnPBOD/l8t4+RDMDUAuC05aZhaQXVKyB7bnPLlDcoCbv
-         fXHArTBIuRNRPvu8MxOis5bOseKwfdSC4cQ1ITiIpCrRmPF2JiDKxoL+B8H/M9xp+Bo2
-         eR9w==
-X-Gm-Message-State: AOAM531LSskMS6awQ3rs1HSwiXujhNaPtd1zUt0S/XM2FJbjiWqmAOTZ
-        Gn4KJoxbAxLGw9f8/tnNXCEz9P1jdNg=
-X-Google-Smtp-Source: ABdhPJw1scUdnUZRdy3/EYDI1WJHpzUsv5E7oA4yVYCtrzDCdpypISTAeaMWrVX/eBkOYx4+UIzMMw==
-X-Received: by 2002:a63:f104:: with SMTP id f4mr3916557pgi.365.1601670038260;
-        Fri, 02 Oct 2020 13:20:38 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:1be2:3dfb:f0b7:cc27? ([2601:647:4802:9070:1be2:3dfb:f0b7:cc27])
-        by smtp.gmail.com with ESMTPSA id a1sm2388427pjh.2.2020.10.02.13.20.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 13:20:37 -0700 (PDT)
-Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
- RDMA map queue code
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
-        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org
-References: <20200929091358.421086-1-leon@kernel.org>
- <20200929091358.421086-2-leon@kernel.org> <20200929102046.GA14445@lst.de>
- <20200929103549.GE3094@unreal>
- <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me>
- <20201002064505.GA9593@lst.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <14fab6a7-f7b5-2f9d-e01f-923b1c36816d@grimberg.me>
-Date:   Fri, 2 Oct 2020 13:20:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 2 Oct 2020 16:54:18 -0400
+X-Greylist: delayed 681 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 16:54:17 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by shsmtp.scs-net.org (Postfix) with ESMTP id 942994CD5D0;
+        Fri,  2 Oct 2020 23:42:06 +0300 (EEST)
+X-Virus-Scanned: by SpamTitan at scs-net.org
+Received: from shsmtp.scs-net.org (localhost [127.0.0.1])
+        by shsmtp.scs-net.org (Postfix) with ESMTP id 881B64CD5CD;
+        Fri,  2 Oct 2020 23:42:01 +0300 (EEST)
+Authentication-Results: shsmtp.scs-net.org;
+        spf=pass smtp.mailfrom=asserat@scs-net.org smtp.helo=out.scs-net.org
+Received-SPF: pass
+        (scs-net.org: 213.178.226.246 is authorized to use 'asserat@scs-net.org' in 'mfrom' identity (mechanism 'ip4:213.178.226.240/28' matched))
+        receiver=shsmtp.scs-net.org;
+        identity=mailfrom;
+        envelope-from="asserat@scs-net.org";
+        helo=out.scs-net.org;
+        client-ip=213.178.226.246
+Received: from out.scs-net.org (unknown [213.178.226.246])
+        by shsmtp.scs-net.org (Postfix) with ESMTPS id 8AE934CD5BB;
+        Fri,  2 Oct 2020 23:41:54 +0300 (EEST)
+Received: from [41.79.221.98] (helo=[192.168.1.103])
+        by out.scs-net.org with esmtpa (Exim 4.89)
+        (envelope-from <asserat@scs-net.org>)
+        id 1kORYZ-0002tk-Mw; Fri, 02 Oct 2020 23:21:31 +0300
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20201002064505.GA9593@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Loan Offer
+To:     Recipients <asserat@scs-net.org>
+From:   "Robert Fast Capital" <asserat@scs-net.org>
+Date:   Fri, 02 Oct 2020 22:21:33 +0200
+Reply-To: robertfastcapital@gmail.com
+Message-Id: <E1kORYZ-0002tk-Mw@out.scs-net.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Do you need a loan?
 
->> Yes, basically usage of managed affinity caused people to report
->> regressions not being able to change irq affinity from procfs.
-> 
-> Well, why would they change it?  The whole point of the infrastructure
-> is that there is a single sane affinity setting for a given setup. Now
-> that setting needed some refinement from the original series (e.g. the
-> current series about only using housekeeping cpus if cpu isolation is
-> in use).  But allowing random users to modify affinity is just a receipe
-> for a trainwreck.
+We offer loan at 2% interest rate, our services include the following:
 
-Well allowing people to mangle irq affinity settings seem to be a hard
-requirement from the discussions in the past.
+* Business Loan [secure and unsecured]
+* Personal Loan [secure and unsecured]
+* Car Loan
+* Truck Loans
+* Home Loan
+* Mortgage Loan
 
-> So I think we need to bring this back ASAP, as doing affinity right
-> out of the box is an absolute requirement for sane performance without
-> all the benchmarketing deep magic.
-
-Well, it's hard to say that setting custom irq affinity settings is
-deemed non-useful to anyone and hence should be prevented. I'd expect
-that irq settings have a sane default that works and if someone wants to
-change it, it can but there should be no guarantees on optimal
-performance. But IIRC this had some dependencies on drivers and some
-more infrastructure to handle dynamic changes...
+For more info;
+Contact us today (robertfastcapital@gmail.com)Text/Call 407-236-1668
