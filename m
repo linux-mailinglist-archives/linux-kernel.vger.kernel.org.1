@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF49281A5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F5E281A5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 20:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgJBSBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 14:01:42 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:55568 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgJBSBm (ORCPT
+        id S2388320AbgJBSCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 14:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgJBSCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 14:01:42 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 092Hs2jE001874;
-        Fri, 2 Oct 2020 18:01:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=rnq1TPnApAb1bEkzjDsdjc0Ka2t0OY8u7KUNx1GDfXg=;
- b=FoJN4Rr7vDFopWjzucXOclx+6TYkwjt83HY4vJJ5rFLU4zw2eXgj2Z9n1CEzgujrokCa
- voIZUzvkhzMBrxOK84bKLwKweQT/kPimQkatsSmlGsi2uDrZYIZec9Apmol+DkX26+1R
- ClMVozCHq1gvmF3nr7OHOjeR9TzmuIZgg+/xC7twh5b4BAQfH2kk7HI+FMj5LqfGXA6q
- yjNKzpb4UQ9hxmLQPt6KfkY5ALaIP9z/oShdM49IQ/bdb4ZDOglvE/STPPQab+h69kJq
- zn0mOApQPFp5sc2Sf2FTNiD5wnr60lBazoHyrADf9E9hgApCTM1RdTVTdIm6NAULyadA Gw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 33wupg343p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 02 Oct 2020 18:01:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 092Hotnf133105;
-        Fri, 2 Oct 2020 18:01:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 33tfdxwvf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Oct 2020 18:01:38 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 092I1b7n006303;
-        Fri, 2 Oct 2020 18:01:37 GMT
-Received: from [20.15.0.202] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 11:01:37 -0700
-Subject: Re: [PATCH ] scsi: page warning: 'page' may be used uninitialized
-To:     john.p.donnelly@oracle.com, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     martin.petersen@oracle.com, bstroesser@ts.fujitsu.com
-References: <20200924001920.43594-1-john.p.donnelly@oracle.com>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <9c22ec6b-7487-300b-e376-b05297a5d0bc@oracle.com>
-Date:   Fri, 2 Oct 2020 13:01:36 -0500
+        Fri, 2 Oct 2020 14:02:07 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC190C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 11:02:05 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id y74so2455879iof.12
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 11:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h8V5q3hBBM9ppuZeH/Xy4eNROVtwo5GE81zegwvnGnU=;
+        b=S3g768h/qg61UFIr+oXtHH+4E/6og3mNqo0DzY618HZdzG9+E+pOIMs8FY/yQSHfhC
+         8hFXjlHsMLLU8LLJKEsnvl5mBJlvgqtOp4YZu3+6XR2+e86NVI+LZw3+PgpOYCapuWwn
+         xc6ofjLibNIo5zvKW3/Lt0ryeNESWVDyJRh/icZHho7fc5/F/2hdAxxe6O4UEiZ4Y3WK
+         5dQWiO/7wFRkEektG/RXn82qMl9uXgtztS7gA5YXbAQctoNYzmR28uLqptsT/vfFir1F
+         0WmccWdhDizKGm/b54nvHbmToZbtPyotVBhe8ObcAsUDfieur9U+6eacMaTBQwTSFnUV
+         qbzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h8V5q3hBBM9ppuZeH/Xy4eNROVtwo5GE81zegwvnGnU=;
+        b=d1porBdRNak2qDAAQhdPdjlb4Ug3FLepUsMGie05z2vd/Kb+UkU2QD7+4+ovifLZMu
+         4xvp9wx2vaqi4jtudIkLFPePDh7fMhOfOxLrZF7g1plODuJKdj0XOsCg7c4iOw7QKJFD
+         UVxM83ptjjnnQy767SLy8FUJiz0a8UfjXVl981hnjcYH5Nmh/sp7bQ5f5mA80yVOh3QH
+         645+PyEke1Rs9M/CPzRGDErqrwUg0lg33/uYFTtbArY/fhwr9VXP7/GA9m5Vs1BCihxq
+         poGkhF922ycKmqGiq+Oa8f9GKzrS4N0q/jyYifqvtnbvwa1NJ1BUcWd233QrV4/cdPOP
+         karw==
+X-Gm-Message-State: AOAM530qilInq25wyI5/7sZk7S7wQmz5oiSrfjVgTPiaRbEmj4+G0sRM
+        0RpE6zGPVvdXcyplifKr93pQ7v33Jk0whA==
+X-Google-Smtp-Source: ABdhPJwavZPyjCsEMgucy9HCbyMFL6IkNC+opMYPqy3LtDW9qjuur+mPiu2YegnxGZ+dir2bwGhDBQ==
+X-Received: by 2002:a02:8b:: with SMTP id 133mr2332650jaa.46.1601661724723;
+        Fri, 02 Oct 2020 11:02:04 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id s23sm994865iol.23.2020.10.02.11.02.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 11:02:04 -0700 (PDT)
+Subject: Re: [PATCH v4] block/scsi-ioctl: Fix kernel-infoleak in
+ scsi_put_cdrom_generic_arg()
+To:     Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+85433a479a646a064ab3@syzkaller.appspotmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        glider@google.com, Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-block@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+References: <000000000000a24fa705ae29dc6c@google.com>
+ <20201002142223.9482-1-yepeilin.cs@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <afa31e81-84d9-fc54-e6cf-a8301f1cf33a@kernel.dk>
+Date:   Fri, 2 Oct 2020 12:02:03 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200924001920.43594-1-john.p.donnelly@oracle.com>
+In-Reply-To: <20201002142223.9482-1-yepeilin.cs@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 clxscore=1011
- phishscore=0 mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/20 7:19 PM, john.p.donnelly@oracle.com wrote:
-> From: John Donnelly <john.p.donnelly@oracle.com>
-> 
-> corrects: drivers/target/target_core_user.c:688:6: warning: 'page' may be used
-> uninitialized
-> 
-> Fixes: 3c58f737231e ("scsi: target: tcmu: Optimize use of
-> flush_dcache_page")
-> 
-> To: linux-scsi@vger.kernel.org
-> Cc: Mike Christie <michael.christie@oracle.com>
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> ---
->  drivers/target/target_core_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-> index 9b7592350502..86b28117787e 100644
-> --- a/drivers/target/target_core_user.c
-> +++ b/drivers/target/target_core_user.c
-> @@ -681,7 +681,7 @@ static void scatter_data_area(struct tcmu_dev *udev,
->  	void *from, *to = NULL;
->  	size_t copy_bytes, to_offset, offset;
->  	struct scatterlist *sg;
-> -	struct page *page;
-> +	struct page *page = NULL;
->  
->  	for_each_sg(data_sg, sg, data_nents, i) {
->  		int sg_remaining = sg->length;
-> 
+On 10/2/20 8:22 AM, Peilin Ye wrote:
+> scsi_put_cdrom_generic_arg() is copying uninitialized stack memory to
+> userspace, since the compiler may leave a 3-byte hole in the middle of
+> `cgc32`. Fix it by adding a padding field to `struct
+> compat_cdrom_generic_command`.
 
-Looks ok for now. In the next kernel we can do the more invasive approach and
-add a new struct/helpers to make the code cleaner and fix it properly.
+Applied, thanks.
 
-Acked-by: Mike Christie <michael.christie@oracle.com>
+-- 
+Jens Axboe
+
