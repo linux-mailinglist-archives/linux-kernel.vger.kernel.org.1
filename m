@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE402816D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB26E2816E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 17:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387997AbgJBPkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 11:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387789AbgJBPkd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 11:40:33 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E98C0613D0;
-        Fri,  2 Oct 2020 08:40:33 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id o18so1651658ilg.0;
-        Fri, 02 Oct 2020 08:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=z4GmnqL+ap4HdUo7VaM2ph1Dt1KeNprTQUR8alGb9jk=;
-        b=BB/LcTMwrAFBbWb648gD3v3aWW2gRywqJIvat2aCTNjboxCO68ejekhJksb9Ky0Yeh
-         15PpanlKmNSMMPzGlFJ/tHmcYrQzA2j8vExKu5PGDvXGTXScgd10JRrZ3eUzXPCEA0KG
-         Z5bCph4CY7pdBdvrmq51Ylrr9NxPWyQFUCdJIWsZ1GkCO/axjyhGLwI8Tv3+RpkjFedU
-         EhydH2hOpjokA4FmECQI1knrxf0YJwsyUdiJnU0mMr7J2Uo6yF7FXb8z86DRmOKZXiCC
-         n052v4TbQ5Q/ONurwBT1bTDtxoAYolmvTsWwDo9j9upZVURzR0j/VJ3VO+9K2K9x+e2I
-         AY0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=z4GmnqL+ap4HdUo7VaM2ph1Dt1KeNprTQUR8alGb9jk=;
-        b=pWDI1kJ0Ln32Nz6pnlrpiZPHLbHugcZkv/HwwoRM8a/Cqj7GzCKKujt76xshGstY5Y
-         cLe5GefwbZFk1Ljdwl7gaAFT8tspeShLkG9kcZu+yR3ZlMq8p7YxTiuxKu/RvazD+fFO
-         oFNy4Lfro/HX3YoCU4akcn4QadyYQPkOcaLSC7dsYTpr04dk1KK9XfR1xrk6zmcvwR25
-         Gixg8s3MH5pYIy/ZQuKIqiULoGaTsZHJdoe/WtMy1GPcQtfg83hV5LKS8rh17V6CjGtq
-         sin+tB2qiGVhSdux60K5THLjPYbdQL6S0GvizcYg3fUGnL4UHAd8P169kQEXrjsYo5/U
-         J0Zw==
-X-Gm-Message-State: AOAM530/ctv5m0uUPzQDxabCg/3ad8PzReUeWYNQwlTlkPxRBt6OJzhO
-        zcCl5jJfTMJTDeuqLOWYHAtu3YDZCG+8/7We5m6jTcJzxjNp3Q==
-X-Google-Smtp-Source: ABdhPJx6YOEHpzKpVtj2GKePkM1ooAA22I+RJWeZntl348bFsbQJS4w95GGsHmZATmirwtfXokeaC+znSg9qKl/IZWo=
-X-Received: by 2002:a05:6e02:bc9:: with SMTP id c9mr2233146ilu.150.1601653232516;
- Fri, 02 Oct 2020 08:40:32 -0700 (PDT)
+        id S2387896AbgJBPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 11:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgJBPmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 11:42:07 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3CF02074B;
+        Fri,  2 Oct 2020 15:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601653327;
+        bh=v5iehWcOX0VLo1AP99P9bUun2tqq3LWKlFh9oC0pM6A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vlFOtcqOxfyc22WCafJBSQo1lA+ZbQIvpliVp5g+LacQS99cqT50bn3+vFDF+rpbf
+         9O0c5qNtP/fwlvgZ9oVP7lGlhLbedjAsUNUFgwBzyndZI4MgINYQI4itJqbXsFbSBC
+         77+q/QTtoD8VTqtvt7RQsUcbtA/ANEIvZN+tL8ic=
+Date:   Fri, 2 Oct 2020 16:41:07 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Olivier Moysan <olivier.moysan@st.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alexandre.torgue@st.com, arnaud.patard@rtp-net.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ASoC: cs42l51: add soft dependency declaration
+Message-ID: <20201002154107.GC5527@sirena.org.uk>
+References: <20201002152904.16448-1-olivier.moysan@st.com>
 MIME-Version: 1.0
-References: <20200928150038.97413-1-peron.clem@gmail.com> <20200930102732.zc3vs4vzm3fyt5dc@gilmour.lan>
-In-Reply-To: <20200930102732.zc3vs4vzm3fyt5dc@gilmour.lan>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Fri, 2 Oct 2020 17:40:20 +0200
-Message-ID: <CAJiuCccgdG0MNi8-q1HCC=FiUKpNSv_HvdyS0jEzab5+b=Enqg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: allwinner: h6: add eMMC voltage property for
- Beelink GS1
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MnLPg7ZWsaic7Fhd"
+Content-Disposition: inline
+In-Reply-To: <20201002152904.16448-1-olivier.moysan@st.com>
+X-Cookie: Words must be weighed, not counted.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
 
-On Wed, 30 Sep 2020 at 12:27, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi,
->
-> On Mon, Sep 28, 2020 at 05:00:37PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> > VQMMC supply is connected to BLDO2 which provides 1.8V.
-> >
-> > Let's reflect this in the device-tree.
->
-> This commit log doesn't really explain what is going on though?
->
-> > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 =
-board")
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/=
-arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > index 049c21718846..3f20d2c9bbbb 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > @@ -145,6 +145,7 @@ &mmc2 {
-> >       vqmmc-supply =3D <&reg_bldo2>;
->
-> The Device Tree already expresses that the vqmmc supply is connected to
-> BLDO2 which provides 1.8V here (together with the reg_bldo2 node).
->
-> >       non-removable;
-> >       cap-mmc-hw-reset;
-> > +     mmc-hs200-1_8v;
->
-> Whereas this indicates that the eMMC supports the HS200 MMC mode at 1.8V
+--MnLPg7ZWsaic7Fhd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What about a comment like this:
+On Fri, Oct 02, 2020 at 05:29:04PM +0200, Olivier Moysan wrote:
+> When configured as module, CS42L51 codec driver uses two modules
+> snd-soc-cs42l51 and snd-soc-cs42l51-i2c.
+> Add soft dependency on snd-soc-cs42l51-i2c in snd-soc-cs42l51,
+> to allow smart module dependency solving.
 
-Sunxi mmc driver can't distinguish at runtime what's the I/O voltage
-for HS200 mode.
-Add a property in the device-tree to notify mmc core about this configurati=
-on.
+Doesn't the userspace tooling usually manage to figure this out from
+symbol usage?
 
+--MnLPg7ZWsaic7Fhd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Regards,
-Clement
+-----BEGIN PGP SIGNATURE-----
 
->
-> Maxime
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl93ShIACgkQJNaLcl1U
+h9AfMgf/bO5iRl+FHKAa69Dt5NyALR5rJ9EhOt2FrK6Ql/DPOjT4GJE2wWdt/fKD
+H9c2EU6rY0lAp4X7M5PNZJrq4gOcyWdGaHfIOfXBf2qiEzN3L6AvX6iA5oBi1s3O
+eECGQmaRqcwv/nSuoOnzpkoKyywBq9+o9lkHWu1jBg7uhYU1kjp4kJmifrl1aeFU
+QrxFCjLwGSjmNFfm7v3N/33M/aNRwvhyrG9ct+19u1GabgzXBQpLqVj/7Qf1R4Ab
+4Wx8zbP9UI9kW+NLwFewr2wDMP4+WC86biyvT8yU2RYGfxzU3l5U6GtawF+TDhpR
+yBPJ2eIvTmHz66uX7dvMIHlzF2V+GA==
+=ioD8
+-----END PGP SIGNATURE-----
+
+--MnLPg7ZWsaic7Fhd--
