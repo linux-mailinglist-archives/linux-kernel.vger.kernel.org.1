@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A738281267
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE913281258
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 14:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387967AbgJBMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 08:23:26 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:55023 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387912AbgJBMW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:22:58 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201002122256euoutp01b6146e7a511d4fceeecef82ba67d6001~6LFixW65y0512305123euoutp01N
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 12:22:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201002122256euoutp01b6146e7a511d4fceeecef82ba67d6001~6LFixW65y0512305123euoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601641376;
-        bh=f/KuQfJ1RwS6nqmPWEc337gr7kbEjJQjnrujYNmhICE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LOEBdClYP4EjGghx1LWWF+Cy44x8vKEwvhOQypAODifhUZKjEQk2Gl0fvaqpH+TBy
-         WBfLXfmbUVslK9O9DKH1FjrwEoiHPua8Z1ia16Uzmo+fPpHbEMMjA/AUwFxAhdh9fM
-         vsWYsTklM6K84wWJ9Pl9XHUKE6fyGIVA5gT9dcWY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201002122256eucas1p2298f0dce69266f0ef85a610aedb7199b~6LFiRm4B-1010210102eucas1p2K;
-        Fri,  2 Oct 2020 12:22:56 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id F5.42.06456.0AB177F5; Fri,  2
-        Oct 2020 13:22:56 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201002122256eucas1p10093b3619fbe5f96ae351920329d1626~6LFh7A0NO0998409984eucas1p1D;
-        Fri,  2 Oct 2020 12:22:56 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201002122256eusmtrp1825b3cb0ad387e0924d5cb6303447670~6LFh6VMjH1376413764eusmtrp1O;
-        Fri,  2 Oct 2020 12:22:56 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-9f-5f771ba0f4f7
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F1.CD.06314.F9B177F5; Fri,  2
-        Oct 2020 13:22:55 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201002122255eusmtip27ea039f48d8ac51da319a2d6cd605682~6LFhvw5MM1355513555eusmtip2Y;
-        Fri,  2 Oct 2020 12:22:55 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?Bart=C5=82omiej=20=C5=BBo=C5=82nierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v3 9/9] spi: spi-s3c64xx: Turn on interrupts upon resume
-Date:   Fri,  2 Oct 2020 14:22:43 +0200
-Message-Id: <20201002122243.26849-10-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201002122243.26849-1-l.stelmach@samsung.com>
-MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLKsWRmVeSWpSXmKPExsWy7djPc7oLpMvjDRbtF7RY/OM5k8XGGetZ
-        LaY+fMJm0f/4NbPF+fMb2C1uHlrBaLHp8TVWi8u75rBZzDi/j8mi8eNNdou1R+6yW6za9YfR
-        gcfj+pJPzB47Z91l99i0qpPNY/OSeo++LasYPT5vkgtgi+KySUnNySxLLdK3S+DKuLF0PVPB
-        K7aKzkurWBsYn7N2MXJySAiYSDw7+pm5i5GLQ0hgBaPEvX2voZwvjBIn77axQDifGSV2nZjH
-        BNMy7fYHqKrljBIndu9jg3CeM0rsX/OJGaSKTcBRon/pCVaQhIjAdiaJiZ/Pg81iFjjKKLH5
-        wVUWkCphAQ+J3qYPYHNZBFQlWhdMAuvmFbCROPpnFtQ+eYn25dvZQGxOoPjJRdvYIGoEJU7O
-        fAI2h19AS2JN03UwmxmovnnrbLD7JATusUs82PKIGWKQi0T/121QQ4UlXh3fwg5hy0icntwD
-        1MwBZNdLTJ5kBtHbwyixbc4PFogaa4k7536xgdQwC2hKrN+lDxF2lOhYMI0RopVP4sZbQYgT
-        +CQmbZvODBHmlehoE4KoVpFY178HaqCURO+rFYwTGJVmIXlmFpIHZiHsWsDIvIpRPLW0ODc9
-        tdgwL7Vcrzgxt7g0L10vOT93EyMwUZ3+d/zTDsavl5IOMQpwMCrx8GYcKo0XYk0sK67MPcQo
-        wcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe40UvY4UE0hNLUrNTUwtSi2CyTByc
-        Ug2M+p1zO7Y4CTWbsJ+L/iH26aff7AXMzVkhe7OYsg0mW2Uff3lGSZuliHO6wfXF+7Se3e/w
-        7r86RXCLmlhA3OKlm/VvR97avGj6m0fVP4zD0tNvpX2rL379midTv+7AjNID8+Nl757XaOm4
-        t+NmnvH0gFsvW16zdh4tVlvaafCse9uRWN2++dGvlFiKMxINtZiLihMBKnO7blADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsVy+t/xe7rzpcvjDS5PsLJY/OM5k8XGGetZ
-        LaY+fMJm0f/4NbPF+fMb2C1uHlrBaLHp8TVWi8u75rBZzDi/j8mi8eNNdou1R+6yW6za9YfR
-        gcfj+pJPzB47Z91l99i0qpPNY/OSeo++LasYPT5vkgtgi9KzKcovLUlVyMgvLrFVija0MNIz
-        tLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DLuLF0PVPBK7aKzkurWBsYn7N2MXJySAiY
-        SEy7/YG5i5GLQ0hgKaPEjmuzmLoYOYASUhIr56ZD1AhL/LnWxQZiCwk8ZZRYNpkZxGYTcJTo
-        X3qCFaRXRGA/k8SlC/dZQBxmgcOMEpfXrWMCqRIW8JDobfoAZrMIqEq0LpgE1s0rYCNx9M8s
-        JogN8hLty7eDbeAEip9ctA1qm7VE68e5rBD1ghInZz5hATmOWUBdYv08IZAwv4CWxJqm6ywg
-        NjPQmOats5knMArNQtIxC6FjFpKqBYzMqxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQJjctux
-        n5t3MF7aGHyIUYCDUYmHV+BAabwQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KL
-        DzGaAr05kVlKNDkfmC7ySuINTQ3NLSwNzY3Njc0slMR5OwQOxggJpCeWpGanphakFsH0MXFw
-        SjUwLrz79yR/3dvKd895BL736XXwR52+zRMonuhet+/owhOn2EQNXVXbvzCsnPi0rE5/+rmo
-        ecr/NsleanwWqxjFEKm0xnaBsFdSVf6KLUky5+wNuk2KvSI5qll/ZGhFP9wXrCPWpB5T/rw9
-        QoiDx7nlS0NHbOAuSUvz69vnX0zJKdT7sb/xY6cSS3FGoqEWc1FxIgBUrg4f3wIAAA==
-X-CMS-MailID: 20201002122256eucas1p10093b3619fbe5f96ae351920329d1626
-X-Msg-Generator: CA
+        id S2387953AbgJBMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 08:23:16 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2941 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387945AbgJBMXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:23:11 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 337293E6E24ECF53ACB4;
+        Fri,  2 Oct 2020 13:23:09 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 2 Oct 2020 13:23:08 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Fri, 2 Oct 2020 13:23:08 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Borislav Petkov <bp@alien8.de>, James Morse <james.morse@arm.com>
+CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>, Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
+ an erroneous CPU core
+Thread-Topic: [PATCH 1/1] RAS: Add CPU Correctable Error Collector to isolate
+ an erroneous CPU core
+Thread-Index: AQHWgG1JK3/pxs0Hy0WMoA7NPJGN4qlT2awAgAxWxYCAAaMi4IAKtz4AgBaQpYCAAAQkAIABOIsA
+Date:   Fri, 2 Oct 2020 12:23:08 +0000
+Message-ID: <c18db7e0738d4895a4893ded1e6cd99a@huawei.com>
+References: <20200901140140.1772-1-shiju.jose@huawei.com>
+ <20200901143539.GC8392@zn.tnic> <512b7b8e6cb846aabaf5a2191cd9b5d4@huawei.com>
+ <20200909120203.GB12237@zn.tnic>
+ <50714e083d55491a8ccf5ad847682d1e@huawei.com>
+ <20200917084038.GE31960@zn.tnic>
+ <91e71fe9-b002-0f1f-3237-62cea49e083a@arm.com>
+ <20201001173052.GH17683@zn.tnic>
+In-Reply-To: <20201001173052.GH17683@zn.tnic>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.84.119]
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201002122256eucas1p10093b3619fbe5f96ae351920329d1626
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201002122256eucas1p10093b3619fbe5f96ae351920329d1626
-References: <20201002122243.26849-1-l.stelmach@samsung.com>
-        <CGME20201002122256eucas1p10093b3619fbe5f96ae351920329d1626@eucas1p1.samsung.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s3c64xx_spi_hwinit() disables interrupts. In s3c64xx_spi_probe() after
-calling s3c64xx_spi_hwinit() they are enabled with the following call.
-
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- drivers/spi/spi-s3c64xx.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 9f728a7c59a1..dfa7c91e13aa 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1378,6 +1378,10 @@ static int s3c64xx_spi_runtime_resume(struct device *dev)
- 
- 	s3c64xx_spi_hwinit(sdd);
- 
-+	writel(S3C64XX_SPI_INT_RX_OVERRUN_EN | S3C64XX_SPI_INT_RX_UNDERRUN_EN |
-+	       S3C64XX_SPI_INT_TX_OVERRUN_EN | S3C64XX_SPI_INT_TX_UNDERRUN_EN,
-+	       sdd->regs + S3C64XX_SPI_INT_EN);
-+
- 	return 0;
- 
- err_disable_src_clk:
--- 
-2.26.2
-
+SGkgQm9yaXMsIEhpIEphbWVzLA0KDQo+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj5Gcm9t
+OiBCb3Jpc2xhdiBQZXRrb3YgW21haWx0bzpicEBhbGllbjguZGVdDQo+U2VudDogMDEgT2N0b2Jl
+ciAyMDIwIDE4OjMxDQo+VG86IEphbWVzIE1vcnNlIDxqYW1lcy5tb3JzZUBhcm0uY29tPg0KPkNj
+OiBTaGlqdSBKb3NlIDxzaGlqdS5qb3NlQGh1YXdlaS5jb20+OyBsaW51eC1lZGFjQHZnZXIua2Vy
+bmVsLm9yZzsgbGludXgtDQo+YWNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc7IHRvbnkubHVja0BpbnRlbC5jb207DQo+cmp3QHJqd3lzb2NraS5uZXQ7IGxl
+bmJAa2VybmVsLm9yZzsgTGludXhhcm0gPGxpbnV4YXJtQGh1YXdlaS5jb20+DQo+U3ViamVjdDog
+UmU6IFtQQVRDSCAxLzFdIFJBUzogQWRkIENQVSBDb3JyZWN0YWJsZSBFcnJvciBDb2xsZWN0b3Ig
+dG8gaXNvbGF0ZQ0KPmFuIGVycm9uZW91cyBDUFUgY29yZQ0KPg0KPk9uIFRodSwgT2N0IDAxLCAy
+MDIwIGF0IDA2OjE2OjAzUE0gKzAxMDAsIEphbWVzIE1vcnNlIHdyb3RlOg0KPj4gSWYgdGhlIGNv
+cnJlY3RlZC1jb3VudCBpcyBhdmFpbGFibGUgc29tZXdoZXJlLCBjYW4ndCB0aGlzIHBvbGljeSBi
+ZQ0KPj4gbWFkZSBpbiB1c2VyLXNwYWNlPw0KPg0KPllvdSBtZWFuIHJhc2RhZW1vbiBnb2VzIGFu
+ZCBvZmZsaW5lcyBDUFVzIHdoZW4gY2VydGFpbiB0aHJlc2hvbGRzIGFyZQ0KPnJlYWNoZWQ/IFN1
+cmUuIEl0IHdvdWxkIGJlIG11Y2ggbW9yZSBmbGV4aWJsZSB0b28uDQoNCkkgd2lsbCBzZW5kIHRo
+ZSBrZXJuZWwgY2hhbmdlcyBmb3IgZXhpc3RpbmcgQ0VDIHRvIHN1cHBvcnQgdGhlIENQVSBDRSBl
+cnJvcnMuIA0KQ2FuIHlvdSBwbGVhc2UgaGF2ZSBhIGxvb2s/DQoNClRoYW5rcywNClNoaWp1DQoN
+Cj4NCj4tLQ0KPlJlZ2FyZHMvR3J1c3MsDQo+ICAgIEJvcmlzLg0KPg0KPmh0dHBzOi8vcGVvcGxl
+Lmtlcm5lbC5vcmcvdGdseC9ub3Rlcy1hYm91dC1uZXRpcXVldHRlDQo=
