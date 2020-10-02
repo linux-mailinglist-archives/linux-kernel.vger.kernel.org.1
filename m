@@ -2,188 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0E0280B88
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B681280B8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 02:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387403AbgJBAJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 1 Oct 2020 20:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733300AbgJBAJP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 1 Oct 2020 20:09:15 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228FAC0613E2
-        for <linux-kernel@vger.kernel.org>; Thu,  1 Oct 2020 17:09:15 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id f15so204614ilj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 01 Oct 2020 17:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SKmdoWvcoH054ieUmUn071qqw8A/m5uf6wtD7bMmYko=;
-        b=X+sw1RIw3DPYL39kYpPkOfnoG49QnA+1BLDx3z5vyVL5igSZLErLIR2DlIwC0mC4nI
-         8R+VEgEhd4ovTkGh8wczWav2bau0zRc84DRMlxb2n0Dm/5mv4RcbhMCdA1cRtWpGAnve
-         aj6063apIjx14YrF/V9Jz86YXUA56vWci8btoM2LfzJkubEywRNQqUQUWDL4WNfIMIwn
-         sS5sfcDDaAy/Bz0nXdTYQONveOqAnqDOSHcGOz73kyHn0TmQ4P2fNMr0tP+zKZI/VODd
-         TIm/1Vp7NnxwDp+ZfEJ5xZyU7hnlvTANmfr9nYlYYBP4xM3bQtwb+v+fq6QpDx0EJTRR
-         DCFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SKmdoWvcoH054ieUmUn071qqw8A/m5uf6wtD7bMmYko=;
-        b=QkJNdHGyz09r/1Y7KEFhfoy+F1iRu6aA1uU6myR+0cUtqUqS88483s6sWKsQe7mfmF
-         Ifp0BE+gH9T59BhAc+qNBRc5QFLYHqrIQ7lYjWlEtBrIRmYWIn9UptqdsrjSESuSts+d
-         IMR1k8Hx1oCf8cr8b/7BYZ5+UI/sO92CvascxIPh4PC0omNxxAfN0ejVxjY8zlcUoS18
-         NUzvvcicxANoJnYZsWm1dKU/FamUhn/gJxuanIFYgouAX2Cb0KbwD4O+AwEu5LC/wwQl
-         3mtIHnj28Ebhpkt7ZdAwJmYfgVeMSQuGGRBtju5uMurioce7nL2QpVZ6bhgYnVEDKe3l
-         NuCA==
-X-Gm-Message-State: AOAM532zsD9RneV9Sfayu7+6GGCjpo9DqQzgTMTF8/7kad/5GbKo1w4D
-        Jlx3wJ4SN8Wc8q0+igbotekqUcLE8EQlmJnOU70OSw==
-X-Google-Smtp-Source: ABdhPJyIaoez+xEgtDZBjl//yNKtp8GR6Y6g1HLTO9Gc6f31B7cO30jtfb+DhJiAfj4DKYKo3b6YMhdFVzymm1Qymu0=
-X-Received: by 2002:a92:ba4d:: with SMTP id o74mr4690236ili.205.1601597354132;
- Thu, 01 Oct 2020 17:09:14 -0700 (PDT)
+        id S2387428AbgJBAJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 1 Oct 2020 20:09:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:25712 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733085AbgJBAJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 1 Oct 2020 20:09:54 -0400
+IronPort-SDR: uj1mqgGHVCYH7vdSYaruMn9pVeTxnCWOFAxfR6+N81H/iKzUfteU40zGq8S8Q3AQnspEKwp547
+ ZVDygV4McJ8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150661745"
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="150661745"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 17:09:53 -0700
+IronPort-SDR: VeSzCLeyUvbecGZ3uyMh2Vx1dlowJMxbbQcBamEqfsaEvj66dkm0RcW3HbWoD2aFOoyVqsbXQl
+ oYvgWtwS5VUA==
+X-IronPort-AV: E=Sophos;i="5.77,325,1596524400"; 
+   d="scan'208";a="346263997"
+Received: from vuongn2x-mobl.amr.corp.intel.com ([10.255.228.170])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2020 17:09:52 -0700
+Date:   Thu, 1 Oct 2020 17:09:52 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+X-X-Sender: mjmartin@vuongn2x-mobl.amr.corp.intel.com
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geliang Tang <geliangtang@gmail.com>
+Subject: Re: linux-next: manual merge of the net-next tree with the net
+ tree
+In-Reply-To: <20201001135237.6ec2468a@canb.auug.org.au>
+Message-ID: <alpine.OSX.2.23.453.2010011707510.40522@vuongn2x-mobl.amr.corp.intel.com>
+References: <20201001135237.6ec2468a@canb.auug.org.au>
+User-Agent: Alpine 2.23 (OSX 453 2020-06-18)
 MIME-Version: 1.0
-References: <20200930222130.4175584-1-kaleshsingh@google.com>
- <20200930223207.5xepuvu6wr6xw5bb@black.fi.intel.com> <CA+EESO5ABYANQuynOs57UGYMcOaMjKN9TQdv4T2PObY5ng_1nw@mail.gmail.com>
- <20201001122706.jp2zr23a43hfomyg@black.fi.intel.com> <CAC_TJvd0ZM59XR0GYNcqYLK8fM=TkU+R6S7NuSx_-BN_mopksg@mail.gmail.com>
-In-Reply-To: <CAC_TJvd0ZM59XR0GYNcqYLK8fM=TkU+R6S7NuSx_-BN_mopksg@mail.gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Thu, 1 Oct 2020 17:09:02 -0700
-Message-ID: <CA+EESO6Wyeht1GrboyZ5vW4E-DvjbWn=uOQM3ugAG=bRKMuigw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Speed up mremap on large regions
-To:     Kalesh Singh <kaleshsingh@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Zhenyu Ye <yezhenyu2@huawei.com>, Jia He <justin.he@arm.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Brian Geffon <bgeffon@google.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 9:00 AM Kalesh Singh <kaleshsingh@google.com> wrote:
+
+On Thu, 1 Oct 2020, Stephen Rothwell wrote:
+
+> Hi all,
 >
-> On Thu, Oct 1, 2020 at 8:27 AM Kirill A. Shutemov
-> <kirill.shutemov@linux.intel.com> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 03:42:17PM -0700, Lokesh Gidra wrote:
-> > > On Wed, Sep 30, 2020 at 3:32 PM Kirill A. Shutemov
-> > > <kirill.shutemov@linux.intel.com> wrote:
-> > > >
-> > > > On Wed, Sep 30, 2020 at 10:21:17PM +0000, Kalesh Singh wrote:
-> > > > > mremap time can be optimized by moving entries at the PMD/PUD level if
-> > > > > the source and destination addresses are PMD/PUD-aligned and
-> > > > > PMD/PUD-sized. Enable moving at the PMD and PUD levels on arm64 and
-> > > > > x86. Other architectures where this type of move is supported and known to
-> > > > > be safe can also opt-in to these optimizations by enabling HAVE_MOVE_PMD
-> > > > > and HAVE_MOVE_PUD.
-> > > > >
-> > > > > Observed Performance Improvements for remapping a PUD-aligned 1GB-sized
-> > > > > region on x86 and arm64:
-> > > > >
-> > > > >     - HAVE_MOVE_PMD is already enabled on x86 : N/A
-> > > > >     - Enabling HAVE_MOVE_PUD on x86   : ~13x speed up
-> > > > >
-> > > > >     - Enabling HAVE_MOVE_PMD on arm64 : ~ 8x speed up
-> > > > >     - Enabling HAVE_MOVE_PUD on arm64 : ~19x speed up
-> > > > >
-> > > > >           Altogether, HAVE_MOVE_PMD and HAVE_MOVE_PUD
-> > > > >           give a total of ~150x speed up on arm64.
-> > > >
-> > > > Is there a *real* workload that benefit from HAVE_MOVE_PUD?
-> > > >
-> > > We have a Java garbage collector under development which requires
-> > > moving physical pages of multi-gigabyte heap using mremap. During this
-> > > move, the application threads have to be paused for correctness. It is
-> > > critical to keep this pause as short as possible to avoid jitters
-> > > during user interaction. This is where HAVE_MOVE_PUD will greatly
-> > > help.
-> >
-> > Any chance to quantify the effect of mremap() with and without
-> > HAVE_MOVE_PUD?
-> >
-> > I doubt it's a major contributor to the GC pause. I expect you need to
-> > move tens of gigs to get sizable effect. And if your GC routinely moves
-> > tens of gigs, maybe problem somewhere else?
-> >
-> > I'm asking for numbers, because increase in complexity comes with cost.
-> > If it doesn't provide an substantial benefit to a real workload
-> > maintaining the code forever doesn't make sense.
+> Today's linux-next merge of the net-next tree got a conflict in:
 >
-mremap is indeed the biggest contributor to the GC pause. It has to
-take place in what is typically known as a 'stop-the-world' pause,
-wherein all application threads are paused. During this pause the GC
-thread flips the GC roots (threads' stacks, globals etc.), and then
-resumes threads along with concurrent compaction of the heap.This
-GC-root flip differs depending on which compaction algorithm is being
-used.
+>  net/mptcp/protocol.h
+>
+> between commit:
+>
+>  1a49b2c2a501 ("mptcp: Handle incoming 32-bit DATA_FIN values")
+>
+> from the net tree and commit:
+>
+>  5c8c1640956e ("mptcp: add mptcp_destroy_common helper")
+>
+> from the net-next tree.
+>
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>
+> -- 
+> Cheers,
+> Stephen Rothwell
+>
+> diff --cc net/mptcp/protocol.h
+> index 20f04ac85409,7cfe52aeb2b8..000000000000
+> --- a/net/mptcp/protocol.h
+> +++ b/net/mptcp/protocol.h
+> @@@ -387,7 -407,8 +407,8 @@@ void mptcp_data_ready(struct sock *sk,
+>  bool mptcp_finish_join(struct sock *sk);
+>  void mptcp_data_acked(struct sock *sk);
+>  void mptcp_subflow_eof(struct sock *sk);
+> -bool mptcp_update_rcv_data_fin(struct mptcp_sock *msk, u64 data_fin_seq);
+> +bool mptcp_update_rcv_data_fin(struct mptcp_sock *msk, u64 data_fin_seq, bool use_64bit);
+> + void mptcp_destroy_common(struct mptcp_sock *msk);
+>
 
-In our case it involves updating object references in threads' stacks
-and remapping java heap to a different location. The threads' stacks
-can be handled in parallel with the mremap. Therefore, the dominant
-factor is indeed the cost of mremap. From patches 2 and 4, it is clear
-that remapping 1GB without this optimization will take ~9ms on arm64.
-
-Although this mremap has to happen only once every GC cycle, and the
-typical size is also not going to be more than a GB or 2, pausing
-application threads for ~9ms is guaranteed to cause jitters. OTOH,
-with this optimization, mremap is reduced to ~60us, which is a totally
-acceptable pause time.
-
-Unfortunately, implementation of the new GC algorithm hasn't yet
-reached the point where I can quantify the effect of this
-optimization. But I can confirm that without this optimization the new
-GC will not be approved.
+Yes, this is the appropriate conflict resolution. Thanks!
 
 
-> Lokesh on this thread would be better able to answer this. I'll let
-> him weigh in here.
-> Thanks, Kalesh
-> >
-> > --
-> >  Kirill A. Shutemov
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+--
+Mat Martineau
+Intel
