@@ -2,155 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FFE280E5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BA7280E60
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 09:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgJBH6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 03:58:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37807 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725961AbgJBH6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:58:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601625493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tMgNt08CRRmOXK3CIWenyUlTQX/4sjp7rZl7HOrw3DA=;
-        b=MCUrcoAHndWtbiWMIWhFj1Ce2cx20Jk5ky5nUgCtUd0aldh8eSIwJ8kd20/XdItV5LeWk+
-        v8a47Nw5Ia5qkBF7HrJEgjqo70dEMYmos4sSYMJOHDtiatRTXoXSrvOcMC59KPbipOTL0C
-        4ofsoVGZ69U6uns6y8oCeAVakpuQXks=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-K5DEoN4UNUCvuX9z_p_QDQ-1; Fri, 02 Oct 2020 03:58:12 -0400
-X-MC-Unique: K5DEoN4UNUCvuX9z_p_QDQ-1
-Received: by mail-wm1-f70.google.com with SMTP id u5so253801wme.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 00:58:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tMgNt08CRRmOXK3CIWenyUlTQX/4sjp7rZl7HOrw3DA=;
-        b=S2cnLM2sztx+7sX0HwU+CxGtzd4vyGRPGZHZpDQxxtDOE6D8MuVKJY0FurcgpAfN1u
-         /GqdR7AAioh3JSqwFXxj57NdPY1SYGCGbsH75DLa5IacHKxFHt94vk4AgolGUoHp35qC
-         h6VG8Eu6OQMy8v8/15zBElww7u0aMU0qqIlPdKPoC38IbNdtA4IHD1CAci1LzhflZXBM
-         7V/gL6qbMz6LNp4nVD9svB5dk3QypH/t4ucySgBO2ih3Hk7VzxFr+uHBiZkMc6Wv0Eed
-         fmfX4VynZAyC/XmBn+iaWRU3OQzqjOhtLDLcnzk5TIevT4+tXWTp/sB1W2ZnNqnjvP9m
-         H6eQ==
-X-Gm-Message-State: AOAM532CeUG9Iqp6ZcV4pJSQy39nOpqYgr1AGhMyaXkeE/q/86/9+pLY
-        0jWwrI/yYHlAI9/DiajMYNpXf8XyjYe/csSIBkT7aexIPqjPAYG/hFZjP4hJdbnworJhVn+X7gD
-        NRFHc+CDcjtfUkFrsxMOcj8hw
-X-Received: by 2002:adf:a418:: with SMTP id d24mr1537777wra.80.1601625490927;
-        Fri, 02 Oct 2020 00:58:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUO9y3AQg+kiMtHtpbAMV9S0Gq+elcdmP6P7MKm/4WwsJy3zoXR0uDgD0rnCYmyCKvBmBQ4A==
-X-Received: by 2002:adf:a418:: with SMTP id d24mr1537748wra.80.1601625490656;
-        Fri, 02 Oct 2020 00:58:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:11eb:3314:c22:e3c7? ([2001:b07:6468:f312:11eb:3314:c22:e3c7])
-        by smtp.gmail.com with ESMTPSA id 76sm891200wma.42.2020.10.02.00.58.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 00:58:10 -0700 (PDT)
-Subject: Re: [PATCH 2/6] docs: vcpu.rst: fix some build warnings
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601616399.git.mchehab+huawei@kernel.org>
- <b5385dd0213f1f070667925bf7a807bf5270ba78.1601616399.git.mchehab+huawei@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c3cb6146-4910-ea8e-f07c-9935cb971a18@redhat.com>
-Date:   Fri, 2 Oct 2020 09:58:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726903AbgJBH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 03:58:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726266AbgJBH6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 03:58:35 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B73C4206A5;
+        Fri,  2 Oct 2020 07:58:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601625513;
+        bh=VC5t7PYyhQ3yPcf8lwkEP8Aq1I28TaT7zlaw1h6RBQg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLeBRUFcZ40SPhOzyBOIzhK52CPt5FGDeNSRgEi4qZAJ8M8TEVNB6c96A/uj4jcKe
+         iFK2zJLEFMHg3VFLF7n55f9pULbUpzbkuLv31a/UIwoLijroTPPkhNxEhlrWO5OdrM
+         dwi6oVXKTpvNZrVn4ixQQiWB8ICKXewvmfWaMASc=
+Date:   Fri, 2 Oct 2020 09:58:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
+Message-ID: <20201002075832.GA1184016@kroah.com>
+References: <20200929121953.2817843-1-poeschel@lemonage.de>
+ <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
+ <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
+ <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
+ <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
+ <20201001112449.GA2364834@kroah.com>
+ <20201001135009.2dpgojasd3fm5phh@lem-wkst-02.lemonage>
 MIME-Version: 1.0
-In-Reply-To: <b5385dd0213f1f070667925bf7a807bf5270ba78.1601616399.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001135009.2dpgojasd3fm5phh@lem-wkst-02.lemonage>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/20 07:49, Mauro Carvalho Chehab wrote:
-> As warned with make htmldocs:
+On Thu, Oct 01, 2020 at 03:50:09PM +0200, Lars Poeschel wrote:
+> On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
+> > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
+> > > > Hello,
+> > > > 
+> > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
+> > > > Cc:.
+> > > > 
+> > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
+> > > > > thank you for your review!
+> > > > > 
+> > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
+> > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
+> > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
+> > > > > > > 
+> > > > > > > This adds a class to exported pwm devices.
+> > > > > > > Exporting a pwm through sysfs did not yield udev events. The
+> > > > > > 
+> > > > > > I wonder what is your use-case here. This for sure also has a place to
+> > > > > > be mentioned in the commit log. I suspect there is a better way to
+> > > > > > accomplish you way.
+> > > > > 
+> > > > > Use-case is to be able to use a pwm from a non-root userspace process.
+> > > > > I use udev rules to adjust permissions.
+> > > > 
+> > > > Hmm, how do you trigger the export? Without being aware of all the
+> > > > details in the sysfs code I would expect that the exported stuff is
+> > > > available instantly once the write used to export the PWM is completed.
+> > > > So changing the permissions can be done directly after triggering the
+> > > > export in the same process.
+> > > 
+> > > The export is triggered through the userspace process itself. Why can it
+> > > do this ? Because there is another udev rule, that changes permissions
+> > > when a pwmchip appears.
+> > > Then I'd like to have the second udev rule, that changes permissions on
+> > > the freshly exported pwm. The userspace process can't do this.
+> > > You are right I could propably do everything from within udev: If a
+> > > pwmchip appears, export certain pwms and right away change their
+> > > permissions. It does not also not feel right. It'd require knowledge
+> > > from the userspace application to be mapped to udev.
+> > 
+> > The way the kernel code is now, yes, you will not have any way to
+> > trigger it by userspace as the kernel is creating a "raw" struct device
+> > that isn't assigned to anything.  That is what needs to be fixed here.
 > 
-> 	.../Documentation/virt/kvm/devices/vcpu.rst:70: WARNING: Malformed table.
-> 	Text in column margin in table line 2.
+> I did a first try with our approach.
+> I set the class of the child to its parent class. This does work and
+> create the directories right under /sys/pwm but because the child now
+> also inherits the dev_groups from the parent its directory also contain
+> export, unexport and npwm files, that don't apply for pwm's as soon a I
+> register the device to driver core.
 > 
-> 	=======  ======================================================
-> 	-ENODEV: PMUv3 not supported or GIC not initialized
-> 	-ENXIO:  PMUv3 not properly configured or in-kernel irqchip not
-> 	         configured as required prior to calling this attribute
-> 	-EBUSY:  PMUv3 already initialized
-> 	-EINVAL: Invalid filter range
-> 	=======  ======================================================
-> 
-> The ':' character for two lines are above the size of the column.
-> Besides that, other tables at the file doesn't use ':', so
-> just drop them.
-> 
-> While here, also fix this warning also introduced at the same patch:
-> 
-> 	.../Documentation/virt/kvm/devices/vcpu.rst:88: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 
-> By marking the C code as a literal block.
-> 
-> Fixes: 8be86a5eec04 ("KVM: arm64: Document PMU filtering API")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/virt/kvm/devices/vcpu.rst | 26 ++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/devices/vcpu.rst b/Documentation/virt/kvm/devices/vcpu.rst
-> index da7c2ef7dafc..2acec3b9ef65 100644
-> --- a/Documentation/virt/kvm/devices/vcpu.rst
-> +++ b/Documentation/virt/kvm/devices/vcpu.rst
-> @@ -67,25 +67,25 @@ irqchip.
->  :Returns:
->  
->  	 =======  ======================================================
-> -	 -ENODEV: PMUv3 not supported or GIC not initialized
-> -	 -ENXIO:  PMUv3 not properly configured or in-kernel irqchip not
-> +	 -ENODEV  PMUv3 not supported or GIC not initialized
-> +	 -ENXIO   PMUv3 not properly configured or in-kernel irqchip not
->  	 	  configured as required prior to calling this attribute
-> -	 -EBUSY:  PMUv3 already initialized
-> -	 -EINVAL: Invalid filter range
-> +	 -EBUSY   PMUv3 already initialized
-> +	 -EINVAL  Invalid filter range
->  	 =======  ======================================================
->  
-> -Request the installation of a PMU event filter described as follows:
-> +Request the installation of a PMU event filter described as follows::
->  
-> -struct kvm_pmu_event_filter {
-> -	__u16	base_event;
-> -	__u16	nevents;
-> +    struct kvm_pmu_event_filter {
-> +	    __u16	base_event;
-> +	    __u16	nevents;
->  
-> -#define KVM_PMU_EVENT_ALLOW	0
-> -#define KVM_PMU_EVENT_DENY	1
-> +    #define KVM_PMU_EVENT_ALLOW	0
-> +    #define KVM_PMU_EVENT_DENY	1
->  
-> -	__u8	action;
-> -	__u8	pad[3];
-> -};
-> +	    __u8	action;
-> +	    __u8	pad[3];
-> +    };
->  
->  A filter range is defined as the range [@base_event, @base_event + @nevents),
->  together with an @action (KVM_PMU_EVENT_ALLOW or KVM_PMU_EVENT_DENY). The
-> 
+> Did we miss something or is there a way to avoid that ? I had a look at
+> device_add and saw that as soon as a class it set it's dev_groups get
+> exported through device_add_attrs.
 
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Ah, you need to tweak that group to only show up for a specific "type"
+of device.  There is a is_visable callback for a group that should be
+used for this, and you can check the type of device being affected here,
+try messing with that.  And make sure you set a new type for the new
+devices you are creating.
 
+I know that's vague, if you need more help I can work on it next week.
+
+> > > > Out of interest: What do you use the pwm for? Isn't there a suitable
+> > > > kernel driver that can do the required stuff? Compared to the kernel-API
+> > > > the sysfs interface isn't atomic. Is this an annoyance?
+> > > 
+> > > Use-case is generating a voltage from the pwm. This voltage is used to
+> > > signal different states and does not change very often. This is
+> > > absolutely not annoying that this is not atomic. We just change the duty
+> > > cycle on the fly. Everything else is configured one time at startup.
+> > > I'd call what I need pwm-dac. I could not find a ready to use driver.
+> > > Maybe I could misuse some kernel driver for this. Maybe I could use
+> > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
+> > > there is even a userspace facing part for this, but this is not
+> > > devicetree ready.
+> > > ...and the worst, please don't blame me: The application is java, so
+> > > ioctl is a problem.
+> > 
+> > I thought java could do ioctls, otherwise how would it ever be able to
+> > talk to serial ports?
+> 
+> It is not impossible but it is horrible. java itself can access the
+> ports through normal file I/O, but it can not set control lines or
+> baudrate or anything. You need some C-code for this, that is not part of
+> the java vm itself and has to be called through something called JNI -
+> java native interface.
+
+Ah, ok, yeah, that's not ok, sorry to hear you are stuck with Java :(
+
+greg k-h
