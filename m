@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAE82818D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6572818DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388229AbgJBRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:09:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbgJBRJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:09:17 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC03C205ED;
-        Fri,  2 Oct 2020 17:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601658557;
-        bh=XkJhhfg+ucSqL54w1TIz8V8cWXLZKBm/Z7c5yzqPaMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VkZ5a2fYAyrxdUEU/k19Iva7CNZw4aV3k1fJ3wcIKa9aNCo2TKEd8DT5IOhvuV/gW
-         sbcWrHkP5QVVtyItCGlE5+Vbcg4XxDxxbGb2EHxr3BgTtAJIKS2MHPhlkjyR33G4Bz
-         V9Iwc2xEBZoK6nFvStRJEygFemItok06jVFtkIjY=
-Date:   Fri, 2 Oct 2020 10:09:15 -0700
-From:   ebiggers@kernel.org
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Satya Tangirala <satyat@google.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hankinsea@gmail.com
-Subject: Re: [PATCH v2] scsi: ufs: fix missing brace warning for old compilers
-Message-ID: <20201002170915.GA2119452@gmail.com>
-References: <20201002063538.1250-1-shipujin.t@gmail.com>
+        id S2388262AbgJBRJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:09:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56630 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726096AbgJBRJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 13:09:37 -0400
+Received: from [222.129.36.226] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <aaron.ma@canonical.com>)
+        id 1kOOYi-00038m-V4; Fri, 02 Oct 2020 17:09:29 +0000
+From:   Aaron Ma <aaron.ma@canonical.com>
+To:     aaron.ma@canonical.com, mapengyu@gmail.com, ibm-acpi@hmh.eng.br,
+        dvhart@infradead.org, andy@infradead.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+Date:   Sat,  3 Oct 2020 01:09:16 +0800
+Message-Id: <20201002170916.64328-1-aaron.ma@canonical.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200929082025.51446-1-aaron.ma@canonical.com>
+References: <20200929082025.51446-1-aaron.ma@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002063538.1250-1-shipujin.t@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:35:38PM +0800, Pujin Shi wrote:
-> For older versions of gcc, the array = {0}; will cause warnings:
-> 
-> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_crypto_keyslot_program':
-> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: missing braces around initializer [-Wmissing-braces]
->   union ufs_crypto_cfg_entry cfg = { 0 };
->         ^
-> drivers/scsi/ufs/ufshcd-crypto.c:62:8: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]
-> drivers/scsi/ufs/ufshcd-crypto.c: In function 'ufshcd_clear_keyslot':
-> drivers/scsi/ufs/ufshcd-crypto.c:103:8: warning: missing braces around initializer [-Wmissing-braces]
->   union ufs_crypto_cfg_entry cfg = { 0 };
->         ^
-> 2 warnings generated
-> 
-> Fixes: 70297a8ac7a7 ("scsi: ufs: UFS crypto API")
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
-> ---
->  drivers/scsi/ufs/ufshcd-crypto.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-> index d2edbd960ebf..07310b12a5dc 100644
-> --- a/drivers/scsi/ufs/ufshcd-crypto.c
-> +++ b/drivers/scsi/ufs/ufshcd-crypto.c
-> @@ -59,7 +59,7 @@ static int ufshcd_crypto_keyslot_program(struct blk_keyslot_manager *ksm,
->  	u8 data_unit_mask = key->crypto_cfg.data_unit_size / 512;
->  	int i;
->  	int cap_idx = -1;
-> -	union ufs_crypto_cfg_entry cfg = { 0 };
-> +	union ufs_crypto_cfg_entry cfg = {};
->  	int err;
->  
->  	BUILD_BUG_ON(UFS_CRYPTO_KEY_SIZE_INVALID != 0);
-> @@ -100,7 +100,7 @@ static int ufshcd_clear_keyslot(struct ufs_hba *hba, int slot)
->  	 * Clear the crypto cfg on the device. Clearing CFGE
->  	 * might not be sufficient, so just clear the entire cfg.
->  	 */
-> -	union ufs_crypto_cfg_entry cfg = { 0 };
-> +	union ufs_crypto_cfg_entry cfg = {};
->  
+Evaluating ACPI _BCL could fail, then ACPI buffer size will be set to 0.
+When reuse this ACPI buffer, AE_BUFFER_OVERFLOW will be triggered.
 
-Looks good,
+Re-initialize buffer size will make ACPI evaluate successfully.
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Fixes: 46445b6b896fd ("thinkpad-acpi: fix handle locate for video and query of _BCL")
+Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 9c4df41687a3..477d63c49c04 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6829,8 +6829,10 @@ static int __init tpacpi_query_bcl_levels(acpi_handle handle)
+ 	list_for_each_entry(child, &device->children, node) {
+ 		acpi_status status = acpi_evaluate_object(child->handle, "_BCL",
+ 							  NULL, &buffer);
+-		if (ACPI_FAILURE(status))
++		if (ACPI_FAILURE(status)) {
++			buffer.length = ACPI_ALLOCATE_BUFFER;
+ 			continue;
++		}
+ 
+ 		obj = (union acpi_object *)buffer.pointer;
+ 		if (!obj || (obj->type != ACPI_TYPE_PACKAGE)) {
+-- 
+2.28.0
+
