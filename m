@@ -2,267 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C453281F03
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FDF281F10
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725601AbgJBX0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 19:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S1725710AbgJBXbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 19:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBX0y (ORCPT
+        with ESMTP id S1725283AbgJBXbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 19:26:54 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297CAC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 16:26:54 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id q5so2761310ilj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 16:26:54 -0700 (PDT)
+        Fri, 2 Oct 2020 19:31:02 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B09C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 16:31:02 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u24so1856566pgi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 16:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Fv3qdMRDaLBfogWRJHhoCXkOBnI4/36vTO6sbBXAcnw=;
-        b=eCa/98FCnp4UTR3aXlWZjL/eg4dh+N+ts98vxLiuv2sPK4mJUCce0x/JU5ChW0a/Oy
-         mwNP5uFItwXsMvCUwBEjoi4tOhFrA9EqH518+sPZceUxeWmIbqz4/Z792BXmDne4ugT+
-         GRHOHscqijBnPBF+TDWQqFJoCCuFsIzAo1E6U=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkRoSBn+9j9R5OIEl4YP80LYTvti9J8r4dhLT3jJi4w=;
+        b=oaTArStQI5r3+wKeZipK7ldrjIRddgqyk0elpNaXkVc+T5FYeZoJg/Ccqs3czoSuku
+         M+JaD9q4Qqzu1e56WrfIPN15L85RjAApxbYADXvI18x5RV989i8BlOEehq02kDMU7Pw1
+         NhD4eYHRF1Cw22i+VLq5z/JzeJIWQBZKBPuc8yt38V/KklVDdrk7lMdGu+OZvmn0Fhb2
+         rKKKMzzdBCEsJdsHH7AFE7Wx4PeuisQgPOLzxjRw+OB8IB0QgFkt8hO4+8CHpdt+7v7i
+         Yd2yiV+Hip8doG+o/rIch9jBtLqIk5E6mIZdC7+ykQioKhM21O+xru8c2rkGyEpRi0yr
+         DMVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Fv3qdMRDaLBfogWRJHhoCXkOBnI4/36vTO6sbBXAcnw=;
-        b=ZDQirZY9oYfTQjTkh2Lt04cpR1AchKsJsd8OY0D54dlVJq+P+2rzwzoyPw2u7apiZd
-         /pcUMURJbMGX7F59UlobtQCmoBB1ZdPqjxxkNEsm4ReNBs1CxJhyZPTPu/gcjztNZfDi
-         zOYE9C8Viv8gUd1EjjpY3b3eWAU45zg4EQoAZ3f0wsXoKFHiL7EgmCHxbTvvF4gwygXL
-         F3gnRP6+ZAl83YTCCF1oCrxoG0NFViBQ3sVVe8+DYDUgkXZUi+FZYyhQqm5DQDcA2AED
-         2xjFjzCHtvo878bHOT+lSEez99BpdKY0iN25FFhppiraY0EmwIsqevaq0/AnL9UxQ0tW
-         LEtA==
-X-Gm-Message-State: AOAM533MwvJLlZ5rSQAJ19IZH7rNz4WcGNVPLT+rE3xxSgHW/euoWK3C
-        /KA8CjcTwoH4HVeYi5OhzsN2IWQHUQBrjzQ1Q9O2
-X-Google-Smtp-Source: ABdhPJyDR2maUdIOnSOJWap/wYHYT+2zF9fyvJxRajeKbF/5ZCkey9h7TlhoaCXDUZOT/jc0S6kNr0TPct4RQVS58ow=
-X-Received: by 2002:a92:512:: with SMTP id q18mr3453000ile.147.1601681213180;
- Fri, 02 Oct 2020 16:26:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TkRoSBn+9j9R5OIEl4YP80LYTvti9J8r4dhLT3jJi4w=;
+        b=GzC2Gd0/r2djWqdFhe9TOX8Tw8Ymn6BtP+sOSoEyA7CR9klM3glIGsom2HlrQid/re
+         D3EnqfceJPwaUheE1/Pt06/ffOZd8hbw5lAoQJIQl1AAYuejgd/vu5peRWxV2Kj7VGPE
+         vsx0hPqdhU2g5wiuIWN6gsuolbSw+ctqm3pgn3VHQucgswbIhnUgHcvshA6TqmqaCWGc
+         DrqbyVZ7idfjPjHdjUp+0eUl5hE6mzThjmUsaOh0cDkKqaDx+qO5o/SvtOiRxxEySW4M
+         nXCFZXcFOFs3l2lTSXX9pqaTSa7/aC8YxUJGmq4jcuHvC3UDAr6J9UpumxSGu1JsbdY9
+         qmkQ==
+X-Gm-Message-State: AOAM530Zof/mLhqVRL/86B8tR5Ye8doAL2EaZOvl0CeQCkBXjM0to7bb
+        ZXLTI2Nt5bwcgCTyv2fAsOOfarknUczwof3Z
+X-Google-Smtp-Source: ABdhPJxfXJM+m1gVwAm9mK/vnU4jjbZsHIqtSWwTG4NnIzbeoHMHqdA+CuT/RMya/m/7e97YdLa7qw==
+X-Received: by 2002:a62:3605:0:b029:151:ee7f:d910 with SMTP id d5-20020a6236050000b0290151ee7fd910mr4935406pfa.49.1601681461997;
+        Fri, 02 Oct 2020 16:31:01 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id g129sm3183936pfb.9.2020.10.02.16.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 16:31:01 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     devel@driverdev.osuosl.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Alex Elder <elder@linaro.org>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org (moderated list:GREYBUS SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] staging: greybus: fix warnings about endianness detected by sparse
+Date:   Sat,  3 Oct 2020 07:30:54 +0800
+Message-Id: <20201002233057.74462-1-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201002171112.22738-1-xypron.glpk@gmx.de> <CAMj1kXHsGcAX-DqfcpgxzZY3M+JzY-Ef9OdJ+JdysNnx1fK6zg@mail.gmail.com>
- <9899cc58-c856-38ca-3a89-4b545c973a4f@gmx.de> <CAMj1kXGBGb5yU0XH3oBJfTUDiFzhqa8ihyYo=n_qyj1VcCs5zA@mail.gmail.com>
- <5c9370aa-aaba-bc2b-1924-2c691164ff69@gmx.de>
-In-Reply-To: <5c9370aa-aaba-bc2b-1924-2c691164ff69@gmx.de>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 2 Oct 2020 16:26:42 -0700
-Message-ID: <CAOnJCU+Sr2v4po98RrEC2=HyaxnmRzZy9Xka6aYjr1WZtBiCVw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] docs: admin-guide: fdt and initrd load in EFI stub
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Fran=C3=A7ois_Ozog?= <francois.ozog@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 1:04 PM Heinrich Schuchardt <xypron.glpk@gmx.de> wro=
-te:
->
-> On 10/2/20 9:21 PM, Ard Biesheuvel wrote:
-> > On Fri, 2 Oct 2020 at 21:14, Heinrich Schuchardt <xypron.glpk@gmx.de> w=
-rote:
-> >>
-> >> On 10/2/20 7:21 PM, Ard Biesheuvel wrote:
-> >>> Hi Heinrich,
-> >>>
-> >>> Thanks for documenting this.
-> >>>
-> >>>
-> >>> On Fri, 2 Oct 2020 at 19:11, Heinrich Schuchardt <xypron.glpk@gmx.de>=
- wrote:
-> >>>>
-> >>>> Describe how a device tree and an initial RAM disk can be passed to =
-the EFI
-> >>>> Boot Stub.
-> >>>>
-> >>>> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> >>>> ---
-> >>>>  Documentation/admin-guide/efi-stub.rst | 35 +++++++++++++++++++++++=
-+++
-> >>>>  1 file changed, 35 insertions(+)
-> >>>>
-> >>>> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/=
-admin-guide/efi-stub.rst
-> >>>> index 833edb0d0bc4..86f50a33884c 100644
-> >>>> --- a/Documentation/admin-guide/efi-stub.rst
-> >>>> +++ b/Documentation/admin-guide/efi-stub.rst
-> >>>> @@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the syst=
-em partition, and it
-> >>>>  may not need to be renamed. Similarly for arm64, arch/arm64/boot/Im=
-age
-> >>>>  should be copied but not necessarily renamed.
-> >>>>
-> >>>> +Passing an initial RAM disk to the EFI Boot Stub
-> >>>> +------------------------------------------------
-> >>>> +
-> >>>> +The following means sorted by decreasing priority can be used to pr=
-ovide an
-> >>>> +initial RAM disk to the EFI Boot Stub:
-> >>>> +
-> >>>> +* The firmware may provide a UEFI Load File 2 Protocol. The stub wi=
-ll try to
-> >>>> +  load the RAM disk by calling the LoadFile() service of the protoc=
-ol using
-> >>>> +  a vendor device path with the vendor GUID
-> >>>> +  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
-> >>>> +* Next the EFI stub will try to load the file indicated by the "ini=
-trd=3D" command
-> >>>> +  line parameter.
+This patch fix the following warnings from sparse,
 
-This is only applicable if EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER is enable=
-d.
-Should we specify that as well?
+$ make C=2 drivers/staging/greybus/
+drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:691:41:    expected unsigned int access
+drivers/staging/greybus/audio_topology.c:691:41:    got restricted __le32 [usertype] access
+drivers/staging/greybus/audio_topology.c:746:44: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:746:44:    expected unsigned int
+drivers/staging/greybus/audio_topology.c:746:44:    got restricted __le32
+drivers/staging/greybus/audio_topology.c:748:52: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:748:52:    expected unsigned int
+drivers/staging/greybus/audio_topology.c:748:52:    got restricted __le32
+drivers/staging/greybus/audio_topology.c:802:42: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:805:50: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:805:50:    expected restricted __le32
+drivers/staging/greybus/audio_topology.c:805:50:    got unsigned int
+drivers/staging/greybus/audio_topology.c:814:50: warning: restricted __le32 degrades to integer
+drivers/staging/greybus/audio_topology.c:817:58: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:817:58:    expected restricted __le32
+drivers/staging/greybus/audio_topology.c:817:58:    got unsigned int
+drivers/staging/greybus/audio_topology.c:889:25: warning: incorrect type in assignment (different base types)
+drivers/staging/greybus/audio_topology.c:889:25:    expected unsigned int access
+drivers/staging/greybus/audio_topology.c:889:25:    got restricted __le32 [usertype] access
 
-> >>>> +* The prior boot stage may pass the location of the initial RAM dis=
-k via the
-> >>>> +  "linux,initrd-start" and "linux,initrd-end" properties of the "/c=
-hosen" node
-> >>>> +  of the device-tree.
-> >>>> +
-> >>>
-> >>> On x86, the boot_params struct is used to pass the address and size o=
-f
-> >>> the initrd in memory. Maybe include that for completeness?
-> >>
-> >> On x86 boot_params is set in function efi_pe_entry() after loading the
-> >> file indicated by the initrd=3D command line.
-> >>
-> >> boot_params is not accessible by a caller of the EFI stub but is a
-> >> structure used at the interface between EFI stub and main kernel. This
-> >> interface is not in the scope of the admin-guide.
-> >>
-> >
-> >  I don't see the difference between dt for arm and boot_params for
-> > x86. Both can be provided by the bootloader, and will be created from
-> > scratch by the efi stub if not. They both carry the command line and
-> > address and size of the initrd, and the efi stub will load  the initrd
-> > and update this Information, or pass it on unmodified if the
-> > bootloader already loaded the initrd into memory.
->
-> "The Linux kernel user=E2=80=99s and administrator=E2=80=99s guide" is no=
-t targeted for
-> developers.
->
-> All I have described in this patch are interfaces between Linux and the
-> prior boot stage when using the EFI stub. It does not cover how the EFI
-> stub communicates with main Linux.
->
-> I may already have put too much technical detail here considering the
-> audience.
->
-> To my knowledge boot_params is not an inbound interface parameter of the
-> EFI stub.
->
-> Is it of interests for administrators and users to know that the EFI
-> stub calls the legacy entry point of Linux? If yes, we should point to
-> the documentation of the legacy entry point for all architectures:
->
-> https://www.kernel.org/doc/html/latest/x86/boot.html#bit-boot-protocol
-> https://www.kernel.org/doc/html/latest/x86/boot.html#id1
-> https://www.kernel.org/doc/html/latest/arm/booting.html
-> https://www.kernel.org/doc/html/latest/arm64/booting.html
->
-> I could not find an appropriate chapter for RISC-V in
-> https://www.kernel.org/doc/html/latest/riscv/index.html.
->
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Alex Elder <elder@linaro.org>
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/staging/greybus/audio_module.c   |  6 +++---
+ drivers/staging/greybus/audio_topology.c | 18 +++++++++---------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-Unfortunately, there is no booting document for RISC-V yet. It has
-been discussed many times but no patch yet.
-If you want to take a stab at it, that would be great.
+diff --git a/drivers/staging/greybus/audio_module.c b/drivers/staging/greybus/audio_module.c
+index 16f60256adb2..c52c4f361b90 100644
+--- a/drivers/staging/greybus/audio_module.c
++++ b/drivers/staging/greybus/audio_module.c
+@@ -219,7 +219,7 @@ static int gb_audio_add_data_connection(struct gbaudio_module_info *gbmodule,
+ 
+ 	greybus_set_drvdata(bundle, gbmodule);
+ 	dai->id = 0;
+-	dai->data_cport = connection->intf_cport_id;
++	dai->data_cport = cpu_to_le16(connection->intf_cport_id);
+ 	dai->connection = connection;
+ 	list_add(&dai->list, &gbmodule->data_list);
+ 
+@@ -329,7 +329,7 @@ static int gb_audio_probe(struct gb_bundle *bundle,
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"%d:Error while enabling %d:data connection\n",
+-				ret, dai->data_cport);
++				ret, le16_to_cpu(dai->data_cport));
+ 			goto disable_data_connection;
+ 		}
+ 	}
+@@ -451,7 +451,7 @@ static int gb_audio_resume(struct device *dev)
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"%d:Error while enabling %d:data connection\n",
+-				ret, dai->data_cport);
++				ret, le16_to_cpu(dai->data_cport));
+ 			return ret;
+ 		}
+ 	}
+diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+index 83b38ae8908c..2091031659de 100644
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -466,7 +466,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 		goto exit;
+ 
+ 	/* update ucontrol */
+-	if (gbvalue.value.integer_value[0] != val) {
++	if (le32_to_cpu(gbvalue.value.integer_value[0]) != val) {
+ 		for (wi = 0; wi < wlist->num_widgets; wi++) {
+ 			widget = wlist->widgets[wi];
+ 			snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol,
+@@ -689,7 +689,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
+ 				return -ENOMEM;
+ 			ctldata->ctl_id = ctl->id;
+ 			ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+-			ctldata->access = ctl->access;
++			ctldata->access = le32_to_cpu(ctl->access);
+ 			ctldata->vcount = ctl->count_values;
+ 			ctldata->info = &ctl->info;
+ 			*kctl = (struct snd_kcontrol_new)
+@@ -744,10 +744,10 @@ static int gbcodec_enum_dapm_ctl_get(struct snd_kcontrol *kcontrol,
+ 		return ret;
+ 	}
+ 
+-	ucontrol->value.enumerated.item[0] = gbvalue.value.enumerated_item[0];
++	ucontrol->value.enumerated.item[0] = le32_to_cpu(gbvalue.value.enumerated_item[0]);
+ 	if (e->shift_l != e->shift_r)
+ 		ucontrol->value.enumerated.item[1] =
+-			gbvalue.value.enumerated_item[1];
++			le32_to_cpu(gbvalue.value.enumerated_item[1]);
+ 
+ 	return 0;
+ }
+@@ -800,11 +800,11 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 	val = mux << e->shift_l;
+ 	mask = e->mask << e->shift_l;
+ 
+-	if (gbvalue.value.enumerated_item[0] !=
++	if (le32_to_cpu(gbvalue.value.enumerated_item[0]) !=
+ 	    ucontrol->value.enumerated.item[0]) {
+ 		change = 1;
+ 		gbvalue.value.enumerated_item[0] =
+-			ucontrol->value.enumerated.item[0];
++			cpu_to_le32(ucontrol->value.enumerated.item[0]);
+ 	}
+ 
+ 	if (e->shift_l != e->shift_r) {
+@@ -812,11 +812,11 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+ 			return -EINVAL;
+ 		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+ 		mask |= e->mask << e->shift_r;
+-		if (gbvalue.value.enumerated_item[1] !=
++		if (le32_to_cpu(gbvalue.value.enumerated_item[1]) !=
+ 		    ucontrol->value.enumerated.item[1]) {
+ 			change = 1;
+ 			gbvalue.value.enumerated_item[1] =
+-				ucontrol->value.enumerated.item[1];
++				cpu_to_le32(ucontrol->value.enumerated.item[1]);
+ 		}
+ 	}
+ 
+@@ -887,7 +887,7 @@ static int gbaudio_tplg_create_mixer_ctl(struct gbaudio_module_info *gb,
+ 		return -ENOMEM;
+ 	ctldata->ctl_id = ctl->id;
+ 	ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+-	ctldata->access = ctl->access;
++	ctldata->access = le32_to_cpu(ctl->access);
+ 	ctldata->vcount = ctl->count_values;
+ 	ctldata->info = &ctl->info;
+ 	*kctl = (struct snd_kcontrol_new)
+-- 
+2.28.0
 
-
-> As the interface between the EFI stub and main Linux is not exposed to
-> the outside world and may rightfully change without notice I suggest to
-> not mention it in the admin guide.
->
-> Best regards
->
-> Heinrich
->
-> >
-> >
-> >
-> >> The main Linux entry point is already described in
-> >> Documentation/x86/boot.rst and ./Documentation/x86/zero-page.rst.
-> >>
-> >> We can add Sphinx style documentation for function efi_pe_entry()
-> >> mentioning that it fills in boot_params.
-> >> drivers/firmware/efi/libstub/x86-stub.c then can be added to
-> >> Documentation/driver-api/firmware/efi/index.rst in an x86 chapter. But
-> >> these will be separate patches.
-> >>
-> >> Best regards
-> >>
-> >> Heinrich
-> >>
-> >>>
-> >>>> +The first two items are inhibited by the "noinitrd" command line pa=
-rameter.
-> >>>> +
-> >>>
-> >>> Interesting. Are you saying noinitrd is ignored by the kernel itself?
-> >>>
-> >>> Looking at the code, it might only work for preventing the load of ol=
-d
-> >>> style initrd ramdisks, whereas initramfs images are handled
-> >>> separately.
-> >>>
-> >>> This is something that we should probably fix one way or the other.
-> >>>
-> >>>
-> >>>> +Passing a device-tree to the EFI Boot Stub
-> >>>> +------------------------------------------
-> >>>> +
-> >>>> +A device-tree can be passed to the EFI Boot Stub in decreasing prio=
-rity using
-> >>>> +
-> >>>> +* command line option dtb=3D
-> >>>> +* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d915=
-2c69aae0.
-> >>>> +
-> >>>> +The command line option is only available if CONFIG_EFI_ARMSTUB_DTB=
-_LOADER=3Dy
-> >>>> +and secure boot is disabled.
-> >>>>
-> >>>>  Passing kernel parameters from the EFI shell
-> >>>>  --------------------------------------------
-> >>>> @@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzIma=
-ge.efi, e.g.::
-> >>>>
-> >>>>         fs0:> bzImage.efi console=3DttyS0 root=3D/dev/sda4
-> >>>>
-> >>>> +The "noinitrd" option
-> >>>> +---------------------
-> >>>> +
-> >>>> +The "noinitrd" option stops the EFI stub from loading an initial RA=
-M disk.
-> >>>>
-> >>>>  The "initrd=3D" option
-> >>>>  --------------------
-> >>>> @@ -98,3 +130,6 @@ CONFIGURATION TABLE.
-> >>>>
-> >>>>  "dtb=3D" is processed in the same manner as the "initrd=3D" option =
-that is
-> >>>>  described above.
-> >>>> +
-> >>>> +This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=3Dy =
-and secure
-> >>>> +boot is disabled.
-> >>>> --
-> >>>> 2.28.0
-> >>>>
-> >>
->
-
-
---
-Regards,
-Atish
