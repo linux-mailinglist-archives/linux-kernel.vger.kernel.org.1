@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F36281A35
-	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152E3281A39
+	for <lists+linux-kernel@lfdr.de>; Fri,  2 Oct 2020 19:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388381AbgJBRxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 13:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        id S2388299AbgJBRzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 13:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388375AbgJBRxq (ORCPT
+        with ESMTP id S1726096AbgJBRzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:53:46 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FE3C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 10:53:44 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so2719243wrn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 10:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mCTncko5YOfdd1hOhILVAexx/vlJaiXxqeCzAQ94in0=;
-        b=FeyUVdPtM4srxB1+dn7I4h3H7Wfi8/fg99I+ABCtisEx3wHtPquZTvZ16RuGWwmZzE
-         vz2bLh2sThVwHVg4NCZu/QZBQT8Z+HfU/9rp+qgb6Lzuk41uNLg5YV0/kZAopqb77csM
-         ge7J8s4JsvsrgpI2ThI5QqsYkQlmjW4Kii0Bw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mCTncko5YOfdd1hOhILVAexx/vlJaiXxqeCzAQ94in0=;
-        b=rgITNvNcDzMAQxhtEIMnhZ574JMXJ72tHiFwWl7oRkQ24yG+5Uv8CFFctBl0+Pptnl
-         d6oBCPvDQG4NUgpeSvgGFWByF7AZZtK4+iv1I936uN5enmxr+a6QjIWR2c8fXiy3EvcS
-         DWi3xtsGPR2Qwi06IeOC++YnP63T0BCW4U4po+4hy3ZiOUmgG2oSMGM3qgeTRLsHBy5S
-         kRGaUJlUj2gJ5/3EF5Uz6Q5Mn8sK15AS0LA/NmkVYkPIAVhjiHrmF4Tl6dyjQJoEhIdA
-         bBWl3LTP6fdkIdROaLW78/LZxauQx8ABrKLsm4cfyy8AbVZSwSN9WK8P0xKveKg9/Q4I
-         SY5Q==
-X-Gm-Message-State: AOAM531+kzTkCXYlF+L8jo1O1zSFZy9NxuGmS6s/Gp9tq8jxd26J7FDx
-        beanfD2fk0Jbqn/O55dmO+n08Q==
-X-Google-Smtp-Source: ABdhPJxqlu8ijgg5+4avDVYjjircN8ixFnEQp9RW1tMzahfcEDBuGAuy7tAthp9rZCHLP+C5s3jDnQ==
-X-Received: by 2002:a5d:4603:: with SMTP id t3mr4212688wrq.424.1601661223009;
-        Fri, 02 Oct 2020 10:53:43 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m10sm2585429wmc.9.2020.10.02.10.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 10:53:42 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
-Date:   Fri,  2 Oct 2020 19:53:03 +0200
-Message-Id: <20201002175303.390363-2-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
-References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+        Fri, 2 Oct 2020 13:55:05 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41F0C0613D0;
+        Fri,  2 Oct 2020 10:55:04 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BE0D72A2;
+        Fri,  2 Oct 2020 19:55:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601661300;
+        bh=Qf5HRVHyIghCAni0kFGOWiS+pLkA33+NJPB9Z0/mkIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tyQZ83BXpSGafZKcDDYw5h9fnxWiy6R8cB193qxbzdZznN7LBrciEoZTVFUOZBMl+
+         FhKB8srgeqVzZ6BUphAZ4AsgJnwvg2ebbaPIQLjtfq5ywom1UnaILbMF0sDMhDMUZN
+         jYIXxfd4B3aItZkQnYX08/FGcSHjOKgL+FOVFb4U=
+Date:   Fri, 2 Oct 2020 20:54:23 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+Message-ID: <20201002175423.GE3933@pendragon.ideasonboard.com>
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com>
+ <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
+ <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For $reasons I've stumbled over this code and I'm not sure the change
-to the new gup functions in 55a650c35fea ("mm/gup: frame_vector:
-convert get_user_pages() --> pin_user_pages()") was entirely correct.
+Hi Saravana,
 
-This here is used for long term buffers (not just quick I/O) like
-RDMA, and John notes this in his patch. But I thought the rule for
-these is that they need to add FOLL_LONGTERM, which John's patch
-didn't do.
+On Fri, Oct 02, 2020 at 10:51:51AM -0700, Saravana Kannan wrote:
+> On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+> > > adding all top level devices") optimized the fwnode parsing when all top
+> > > level devices are added, it missed out optimizing this for platform
+> > > where the top level devices are added through the init_machine() path.
+> > >
+> > > This commit does the optimization for all paths by simply moving the
+> > > fw_devlink_pause/resume() inside of_platform_default_populate().
+> > >
+> > > Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> > >  drivers/of/platform.c | 19 +++++++++++++++----
+> > >  1 file changed, 15 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > > index 071f04da32c8..79972e49b539 100644
+> > > --- a/drivers/of/platform.c
+> > > +++ b/drivers/of/platform.c
+> > > @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
+> > >                                  const struct of_dev_auxdata *lookup,
+> > >                                  struct device *parent)
+> > >  {
+> > > -       return of_platform_populate(root, of_default_bus_match_table, lookup,
+> > > -                                   parent);
+> > > +       int ret;
+> > > +
+> > > +       /*
+> > > +        * fw_devlink_pause/resume() are only safe to be called around top
+> > > +        * level device addition due to locking constraints.
+> > > +        */
+> > > +       if (!root)
+> > > +               fw_devlink_pause();
+> > > +
+> > > +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
+> > > +                                  parent);
+> >
+> > of_platform_default_populate() vs. of_platform_populate() is just a
+> > different match table. I don't think the behavior should otherwise be
+> > different.
+> >
+> > There's also of_platform_probe() which has slightly different matching
+> > behavior. It should not behave differently either with respect to
+> > devlinks.
+> 
+> So I'm trying to do this only when the top level devices are added for
+> the first time. of_platform_default_populate() seems to be the most
+> common path. For other cases, I think we just need to call
+> fw_devlink_pause/resume() wherever the top level devices are added for
+> the first time. As I said in the other email, we can't add
+> fw_devlink_pause/resume() by default to of_platform_populate().
+> 
+> Do you have other ideas for achieving "call fw_devlink_pause/resume()
+> only when top level devices are added for the first time"?
 
-There is already a dax specific check (added in b7f0554a56f2 ("mm:
-fail get_vaddr_frames() for filesystem-dax mappings")), so this seems
-like the prudent thing to do.
+I'm not an expert in this domain, but before investigating it, would you
+be able to share a hack patch that implements this (in the most simple
+way) to check if it actually fixes the delays I experience on my system
+?
 
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Jérôme Glisse <jglisse@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: linux-mm@kvack.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-media@vger.kernel.org
----
-Hi all,
-
-I stumbled over this and figured typing this patch can't hurt. Really
-just to maybe learn a few things about how gup/pup is supposed to be
-used (we have a bit of that in drivers/gpu), this here isn't really
-ralated to anything I'm doing.
-
-I'm also wondering whether the explicit dax check should be removed,
-since FOLL_LONGTERM should take care of that already.
--Daniel
----
- mm/frame_vector.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/frame_vector.c b/mm/frame_vector.c
-index 5d34c9047e9c..3507e09cb3ff 100644
---- a/mm/frame_vector.c
-+++ b/mm/frame_vector.c
-@@ -35,7 +35,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
--	unsigned int gup_flags = FOLL_WRITE | FOLL_FORCE;
-+	unsigned int gup_flags = FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM;
- 	int ret = 0;
- 	int err;
- 	int locked;
 -- 
-2.28.0
+Regards,
 
+Laurent Pinchart
