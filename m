@@ -2,196 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EA2282048
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECA1282049
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgJCCBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:01:38 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:58003 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725536AbgJCCBh (ORCPT
+        id S1725730AbgJCCCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:02:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24156 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgJCCCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:01:37 -0400
-Received: (qmail 308317 invoked by uid 1000); 2 Oct 2020 22:01:36 -0400
-Date:   Fri, 2 Oct 2020 22:01:36 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201003020136.GA307978@rowland.harvard.edu>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
+        Fri, 2 Oct 2020 22:02:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601690549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jiMlllEEKTQjIlICQJljkp75MtdRoQ3SeCkSnkimWXc=;
+        b=exoInPDtu8OSK+7yucXoiQcvmg7D+SYLoJHoC58d306Ef/HfRaC8Uyp+EWdeUPoS6ZTKr0
+        q981EYvJTYSQjfLR69W1c4KupPLyskpcyDABcm6i7ZWaQ6M1/bEsJKsdi6QMRebGNMGB7U
+        8Nj6XCnSR0uepqmOzbcu7kGK9dAirsg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-OWteqTiIPCaVq9BquirjMw-1; Fri, 02 Oct 2020 22:02:27 -0400
+X-MC-Unique: OWteqTiIPCaVq9BquirjMw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B2B11006703;
+        Sat,  3 Oct 2020 02:02:26 +0000 (UTC)
+Received: from [10.72.12.21] (ovpn-12-21.pek2.redhat.com [10.72.12.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E0DA1992F;
+        Sat,  3 Oct 2020 02:02:17 +0000 (UTC)
+Subject: Re: [PATCH] vhost-vdpa: fix page pinning leakage in error path
+To:     Si-Wei Liu <si-wei.liu@oracle.com>, tiwei.bie@intel.com,
+        lingshan.zhu@intel.com, mst@redhat.com
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <1601583799-15274-1-git-send-email-si-wei.liu@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <37df4421-7642-9b02-1859-af3a807d3e65@redhat.com>
+Date:   Sat, 3 Oct 2020 10:02:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001213048.GF29330@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1601583799-15274-1-git-send-email-si-wei.liu@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 02:30:48PM -0700, Paul E. McKenney wrote:
-> > Not the way I would have done it, but okay.  I would have modeled the 
-> > kfree by setting a and b both to some sentinel value.
-> 
-> Might be well worth pursuing!  But how would you model the address
-> dependencies in that approach?
 
-Al's original test never writes to V.  So the address dependencies don't 
-matter.
+On 2020/10/2 上午4:23, Si-Wei Liu wrote:
+> Pinned pages are not properly accounted particularly when
+> mapping error occurs on IOTLB update. Clean up dangling
+> pinned pages for the error path. As the inflight pinned
+> pages, specifically for memory region that strides across
+> multiple chunks, would need more than one free page for
+> book keeping and accounting. For simplicity, pin pages
+> for all memory in the IOVA range in one go rather than
+> have multiple pin_user_pages calls to make up the entire
+> region. This way it's easier to track and account the
+> pages already mapped, particularly for clean-up in the
+> error path.
+>
+> Fixes: 20453a45fb06 ("vhost: introduce vDPA-based backend")
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> ---
+>   drivers/vhost/vdpa.c | 121 +++++++++++++++++++++++++++++++--------------------
+>   1 file changed, 73 insertions(+), 48 deletions(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 796fe97..abc4aa2 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -565,6 +565,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+>   			      perm_to_iommu_flags(perm));
+>   	}
+>   
+> +	if (r)
+> +		vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
+>   	return r;
+>   }
 
-> > Why didn't this flag the data race?
-> 
-> Because I turned Al's simple assignments into *_ONCE() or better.
-> In doing this, I was following the default KCSAN settings which
-> (for better or worse) forgive the stores from data races.
 
-Ah, yes.  I had realized that when reading the litmus test for the first 
-time, and then forgot it.
+Please use a separate patch for this fix.
 
-> With your suggested change and using simple assignments where Al
-> indicated them:
-> 
-> ------------------------------------------------------------------------
-> 
-> $ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/C-viro-2020.09.29a.litmus
-> Test C-viro-2020.09.29a Allowed
-> States 5
-> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=0; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=0; 1:r1=1; 1:r2=2; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=1;
-> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
-> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=1; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=0;
-> Ok
-> Witnesses
-> Positive: 3 Negative: 2
-> Flag data-race
-> Condition exists (0:r0=1:r0 \/ v=1 \/ 0:r2=0 \/ 1:r2=0 \/ 0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ 1:r9b=0 \/ 1:r9c=0)
-> Observation C-viro-2020.09.29a Sometimes 3 2
-> Time C-viro-2020.09.29a 17.95
-> Hash=14ded51102b668bc38b790e8c3692227
-> 
-> ------------------------------------------------------------------------
-> 
-> So still "Sometimes", but the "Flag data-race" you expected is there.
-> 
-> I posted the updated litmus test below.  Additional or other thoughts?
 
-Two problems remaining.  One in the litmus test and one in the memory 
-model itself...
+>   
+> @@ -592,21 +594,19 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>   	struct vhost_dev *dev = &v->vdev;
+>   	struct vhost_iotlb *iotlb = dev->iotlb;
+>   	struct page **page_list;
+> -	unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
+> +	struct vm_area_struct **vmas;
+>   	unsigned int gup_flags = FOLL_LONGTERM;
+> -	unsigned long npages, cur_base, map_pfn, last_pfn = 0;
+> -	unsigned long locked, lock_limit, pinned, i;
+> +	unsigned long map_pfn, last_pfn = 0;
+> +	unsigned long npages, lock_limit;
+> +	unsigned long i, nmap = 0;
+>   	u64 iova = msg->iova;
+> +	long pinned;
+>   	int ret = 0;
+>   
+>   	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+>   				    msg->iova + msg->size - 1))
+>   		return -EEXIST;
+>   
+> -	page_list = (struct page **) __get_free_page(GFP_KERNEL);
+> -	if (!page_list)
+> -		return -ENOMEM;
+> -
+>   	if (msg->perm & VHOST_ACCESS_WO)
+>   		gup_flags |= FOLL_WRITE;
+>   
+> @@ -614,61 +614,86 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>   	if (!npages)
+>   		return -EINVAL;
+>   
+> +	page_list = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+> +	vmas = kvmalloc_array(npages, sizeof(struct vm_area_struct *),
+> +			      GFP_KERNEL);
+> +	if (!page_list || !vmas) {
+> +		ret = -ENOMEM;
+> +		goto free;
+> +	}
+> +
+>   	mmap_read_lock(dev->mm);
+>   
+> -	locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
+>   	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+> -
+> -	if (locked > lock_limit) {
+> +	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
+>   		ret = -ENOMEM;
+> -		goto out;
+> +		goto unlock;
+>   	}
+>   
+> -	cur_base = msg->uaddr & PAGE_MASK;
+> -	iova &= PAGE_MASK;
+> +	pinned = pin_user_pages(msg->uaddr & PAGE_MASK, npages, gup_flags,
+> +				page_list, vmas);
+> +	if (npages != pinned) {
+> +		if (pinned < 0) {
+> +			ret = pinned;
+> +		} else {
+> +			unpin_user_pages(page_list, pinned);
+> +			ret = -ENOMEM;
+> +		}
+> +		goto unlock;
+> +	}
+>   
+> -	while (npages) {
+> -		pinned = min_t(unsigned long, npages, list_size);
+> -		ret = pin_user_pages(cur_base, pinned,
+> -				     gup_flags, page_list, NULL);
+> -		if (ret != pinned)
+> -			goto out;
+> -
+> -		if (!last_pfn)
+> -			map_pfn = page_to_pfn(page_list[0]);
+> -
+> -		for (i = 0; i < ret; i++) {
+> -			unsigned long this_pfn = page_to_pfn(page_list[i]);
+> -			u64 csize;
+> -
+> -			if (last_pfn && (this_pfn != last_pfn + 1)) {
+> -				/* Pin a contiguous chunk of memory */
+> -				csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
+> -				if (vhost_vdpa_map(v, iova, csize,
+> -						   map_pfn << PAGE_SHIFT,
+> -						   msg->perm))
+> -					goto out;
+> -				map_pfn = this_pfn;
+> -				iova += csize;
+> +	iova &= PAGE_MASK;
+> +	map_pfn = page_to_pfn(page_list[0]);
+> +
+> +	/* One more iteration to avoid extra vdpa_map() call out of loop. */
+> +	for (i = 0; i <= npages; i++) {
+> +		unsigned long this_pfn;
+> +		u64 csize;
+> +
+> +		/* The last chunk may have no valid PFN next to it */
+> +		this_pfn = i < npages ? page_to_pfn(page_list[i]) : -1UL;
+> +
+> +		if (last_pfn && (this_pfn == -1UL ||
+> +				 this_pfn != last_pfn + 1)) {
+> +			/* Pin a contiguous chunk of memory */
+> +			csize = last_pfn - map_pfn + 1;
+> +			ret = vhost_vdpa_map(v, iova, csize << PAGE_SHIFT,
+> +					     map_pfn << PAGE_SHIFT,
+> +					     msg->perm);
+> +			if (ret) {
+> +				/*
+> +				 * Unpin the rest chunks of memory on the
+> +				 * flight with no corresponding vdpa_map()
+> +				 * calls having been made yet. On the other
+> +				 * hand, vdpa_unmap() in the failure path
+> +				 * is in charge of accounting the number of
+> +				 * pinned pages for its own.
+> +				 * This asymmetrical pattern of accounting
+> +				 * is for efficiency to pin all pages at
+> +				 * once, while there is no other callsite
+> +				 * of vdpa_map() than here above.
+> +				 */
+> +				unpin_user_pages(&page_list[nmap],
+> +						 npages - nmap);
+> +				goto out;
+>   			}
+> -
+> -			last_pfn = this_pfn;
+> +			atomic64_add(csize, &dev->mm->pinned_vm);
+> +			nmap += csize;
+> +			iova += csize << PAGE_SHIFT;
+> +			map_pfn = this_pfn;
+>   		}
+> -
+> -		cur_base += ret << PAGE_SHIFT;
+> -		npages -= ret;
+> +		last_pfn = this_pfn;
+>   	}
+>   
+> -	/* Pin the rest chunk */
+> -	ret = vhost_vdpa_map(v, iova, (last_pfn - map_pfn + 1) << PAGE_SHIFT,
+> -			     map_pfn << PAGE_SHIFT, msg->perm);
+> +	WARN_ON(nmap != npages);
+>   out:
+> -	if (ret) {
+> +	if (ret)
+>   		vhost_vdpa_unmap(v, msg->iova, msg->size);
+> -		atomic64_sub(npages, &dev->mm->pinned_vm);
+> -	}
+> +unlock:
+>   	mmap_read_unlock(dev->mm);
+> -	free_page((unsigned long)page_list);
+> +free:
+> +	kvfree(vmas);
+> +	kvfree(page_list);
+>   	return ret;
+>   }
 
-> ------------------------------------------------------------------------
-> 
-> C C-viro-2020.09.29a
-> 
-> {
-> 	int a = 1;
-> 	int b = 1;
-> 	int v = 1;
-> }
-> 
-> 
-> P0(int *a, int *b, int *v, spinlock_t *l)
-> {
-> 	int r0;
-> 	int r1;
-> 	int r2 = 2;
-> 	int r8;
-> 	int r9a = 2;
-> 	int r9b = 2;
-> 
-> 	r0 = 0;
-> 	spin_lock(l);
-> 	r9a = READ_ONCE(*v); // Use after free?
-> 	r8 = r9a - r9a; // Restore address dependency
-> 	r8 = b + r8;
-> 	r1 = smp_load_acquire(r8);
-> 	if (r1 == 0)
-> 		r0 = 1;
-> 	r9b = READ_ONCE(*v); // Use after free?
-> 	// WRITE_ONCE(*a, r9b - r9b); // Use data dependency
-> 	*a = r9b - r9b; // Use data dependency
-> 	spin_unlock(l);
-> 	if (r0) {
-> 		r2 = READ_ONCE(*v);
-> 		WRITE_ONCE(*v, 0); /* kfree(). */
-> 	}
-> }
-> 
-> P1(int *a, int *b, int *v, spinlock_t *l)
-> {
-> 	int r0;
-> 	int r1;
-> 	int r1a;
-> 	int r2 = 2;
-> 	int r8;
-> 	int r9a = 2;
-> 	int r9b = 2;
-> 	int r9c = 2;
-> 
-> 	r0 = 1;
-> 	r9a = READ_ONCE(*v); // Use after free?
-> 	r8 = r9a - r9a; // Restore address dependency
-> 	r8 = a + r8;
-> 	r1 = READ_ONCE(*r8);
-> 	if (r1) {
-> 		spin_lock(l);
-> 		r9b = READ_ONCE(*v); // Use after free?
-> 		r8 = r9b - r9b; // Restore address dependency
-> 		r8 = a + r8;
-> 		// r1a = READ_ONCE(*r8);
-> 		r1a = *r8;
-> 		if (r1a)
-> 			r0 = 0;
-> 		r9c = READ_ONCE(*v); // Use after free?
-> 		smp_store_release(b, r9c - rc9); // Use data dependency
--------------------------------------------^^^
-Typo: this should be r9c.  Too bad herd7 doesn't warn about undeclared 
-local variables.
 
-> 		spin_unlock(l);
-> 	}
-> 	if (r0) {
-> 		r2 = READ_ONCE(*v);
-> 		WRITE_ONCE(*v, 0); /* kfree(). */
-> 	}
-> }
-> 
-> locations [a;b;v;0:r1;0:r8;1:r1;1:r8]
-> exists (0:r0=1:r0 \/ (* Both or neither did kfree(). *)
-> 	v=1 \/ (* Neither did kfree, redundant check. *)
-> 	0:r2=0 \/ 1:r2=0 \/  (* Both did kfree, redundant check. *)
-> 	0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ (* CPU1 use after free. *)
-> 	1:r9b=0 \/ 1:r9c=0) (* CPU2 use after free. *)
+This looks like a rework, so I'd suggest to use use another patch for 
+this part.
 
-When you fix the typo, the test still fails.  But now it all makes 
-sense.  The reason for the failure is because of the way we don't model 
-control dependencies.
+(I was on vacation, so the reply would be slow)
 
-In short, suppose P1 reads 0 for V->A.  Then it does:
+Thanks
 
-	if (READ_ONCE(V->A)) {
-		... skipped ...
-	}
-	WRITE_ONCE(V, 0); /* actually kfree(to_free); */
 
-Because the WRITE_ONCE is beyond the end of the "if" statement, there is 
-no control dependency.  Nevertheless, the compiler is not allowed to 
-reorder those statements because the conditional code modifies to_free.
+>   
 
-Since the memory model thinks there isn't any control dependency, herd7 
-generates a potential execution (actually two of them) in which the 
-WRITE_ONCE executes before the READ_ONCE.  And of course that messes 
-everything up; in one of the executions 0:r9b is 0, and in the other 
-both 0:r9a and 0:r9b are 0.
-
-This failure to detect control dependencies properly is perhaps the 
-weakest aspect of the memory model.
-
-Alan
