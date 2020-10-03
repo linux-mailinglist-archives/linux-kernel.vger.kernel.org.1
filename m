@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313642826E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7674F2826EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgJCVpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 17:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJCVph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 17:45:37 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440D5C0613D0;
-        Sat,  3 Oct 2020 14:45:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id e10so3375059pfj.1;
-        Sat, 03 Oct 2020 14:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=YkUAXQMPmvjUV9l+UJIlcFx5SdBT09naUQnGkHuj+B8=;
-        b=t5vw0QXHPOchz1V8SraniNG+R+3YQuDdeEvq3g2ljZrqderQi+26wgYclnYhXJ3bXI
-         KpES5mPif9CYTD6auU9HJR5Ip2Z4YDIA2iqq0wcS8YsEmk5DNaKp3mzWP2ViAeeRz1hB
-         jFEnj5oBg0YCUPSSqDOk9nqEtz+rhAlZuaVWQwo8Th/T4pOaQcDhaEqZ9rAZOfwxHH1w
-         ELEK1/CZP5C3Ai80dzQgEldxb6DlwNUXfjUDVYDWlRqiUOBxsMAIFsdfMC8M4wUD/6KM
-         wzsPFkRU9i2hpuE1WzeL3VW3pS58H7unNDH2jtPj9v3/0d+8Hpw/RX35Z5KNj7B/0v9D
-         uIlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YkUAXQMPmvjUV9l+UJIlcFx5SdBT09naUQnGkHuj+B8=;
-        b=jSfUZDR9LVAVWjHYOiNukck01wWoBiPWAIBaohnVK0s4VR4luD8NtAaB9xXTS+ARvJ
-         uoYGypd6W6RfbYHBfzMt+Nr+iFyFpHp7EngHRlZktKrBKpP83z1EyPJzrixon3lvQ6zM
-         XAaMjzRD7CQ7ie6iHTyIi4iJ+zXr6PjrzYPwh6VxayOC2GLovFGlbl1Ixutug13Upr/w
-         K0hUGlgEWazbKbW7HArHqdWoj2YZ31NfVqUwcQwOcFnh8TtfNKmngKQ3hIHYAJcyK1qW
-         gQqq5qGbXebV8ECLLDDXEeFgK+5B2wWL3ibjZZ58CtoKAULw1tkmXuxgap2k/IqIqHA7
-         LJBQ==
-X-Gm-Message-State: AOAM530GAq152wltlRUSC/f8QEuIgzKND6ogQz8AisRQOoadDYD9m/fu
-        wG04DtytvXEd6r3g1VH9mBj/q5AZToTqmm1jMz0=
-X-Google-Smtp-Source: ABdhPJwYROoGkGZt6KQvqFerbMfc/dR6YQlgj1tfJoNfTb3oio7K82/Z9zxbSyNhIVaJ2ZsmrfecyQ==
-X-Received: by 2002:a62:3812:0:b029:13e:d13d:a062 with SMTP id f18-20020a6238120000b029013ed13da062mr8718921pfa.40.1601761535153;
-        Sat, 03 Oct 2020 14:45:35 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.217.69])
-        by smtp.gmail.com with ESMTPSA id y10sm6605367pfp.77.2020.10.03.14.45.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 14:45:34 -0700 (PDT)
-Subject: Re: [PATCH v3] net: usb: rtl8150: set random MAC address when
- set_ethernet_addr() fails
+        id S1726001AbgJCVuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 17:50:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgJCVuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 17:50:32 -0400
+Received: from earth.universe (unknown [185.213.155.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D39B206C3;
+        Sat,  3 Oct 2020 21:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601761831;
+        bh=fW/MShrvVaeOh1J4dzKJiFbCTCe6vgKzdHkQwIvKw2g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VfjKT85tbuHd2Hl+EPSekpf88rrzirRQQhZD3p/ij9MSuWuLVD5kQnxL46665rsg7
+         jbHnmrwPa/cG7lUUni4m7evSKESzeV5dHfGB7LJFogvpeBsWmZSwYnEPLei1Vmf1mk
+         UcERQUrl0QMTsTNfz/4Rbh1pVlo4j4Kwa/Xt2HkM=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 572133C0C87; Sat,  3 Oct 2020 23:50:29 +0200 (CEST)
+Date:   Sat, 3 Oct 2020 23:50:29 +0200
+From:   Sebastian Reichel <sre@kernel.org>
 To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        Petko Manolov <petkan@nucleusys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201003211931.11544-1-anant.thazhemadam@gmail.com>
- <d44d8c784f9df6f55dcf494c9c21cd11b16338d4.camel@perches.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <ed510989-841c-8f2f-73f0-3885eef35a99@gmail.com>
-Date:   Sun, 4 Oct 2020 03:15:29 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] test_power: add missing newlines when printing
+ parameters by sysfs
+Message-ID: <20201003215029.jsugcgpgrmcmydr3@earth.universe>
+References: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
+ <20201003212336.5et7erdf6fihqscu@earth.universe>
+ <472008b94f4b20915425db4714fdb505cb0cbe5a.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <d44d8c784f9df6f55dcf494c9c21cd11b16338d4.camel@perches.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ly4wgne62jo6bhtn"
+Content-Disposition: inline
+In-Reply-To: <472008b94f4b20915425db4714fdb505cb0cbe5a.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 04/10/20 3:05 am, Joe Perches wrote:
-> On Sun, 2020-10-04 at 02:49 +0530, Anant Thazhemadam wrote:
->> When get_registers() fails, in set_ethernet_addr(),the uninitialized
->> value of node_id gets copied as the address. This can be considered as
->> set_ethernet_addr() itself failing.
-> []
->> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-> []
->> @@ -909,7 +914,10 @@ static int rtl8150_probe(struct usb_interface *intf,
->>  		goto out1;
->>  	}
->>  	fill_skb_pool(dev);
->> -	set_ethernet_addr(dev);
->> +	if (!set_ethernet_addr(dev)) {
->> +		dev_err(&intf->dev, "assigining a random MAC address\n");
->> +		eth_hw_addr_random(dev->netdev);
-> 4 things:
-> .
-> o Typo for assigning
-Oh no. I'm sorry about that.
-> o Reverse the assignment and message to show the new random MAC
-Ah, okay. That would be more informative.
-> o This should use netdev_<level>
-Understood.
-> o Is this better as error or notification?
->
-> 	if (!set_ethernet_addr(dev)) {
-> 		eth_hw_addr_random(dev->netdev);
-> 		netdev_notice(dev->netdev, "Assigned a random MAC: %pM\n",
-> 			      dev->netdev->dev_addr);
-> 	}
-I thought it might be an error since set_ethernet_addr() did fail after
-all.  But making it info seems like a better idea, since technically speaking,
-the device is still made accessible.
+--ly4wgne62jo6bhtn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll wait for a day or two, to see if anybody else has any other comments,
-and send in a v4 incorporating these changes.
+Hi,
 
-Thanks,
-Anant
+On Sat, Oct 03, 2020 at 02:43:09PM -0700, Joe Perches wrote:
+> On Sat, 2020-10-03 at 23:23 +0200, Sebastian Reichel wrote:
+> > On Fri, Sep 04, 2020 at 02:09:58PM +0800, Xiongfeng Wang wrote:
+> > > When I cat some module parameters by sysfs, it displays as follows.
+> > > It's better to add a newline for easy reading.
+> []
+> > > root@syzkaller:~# cd /sys/module/test_power/parameters/
+> > > root@syzkaller:/sys/module/test_power/parameters# cat ac_online
+> > > onroot@syzkaller:/sys/module/test_power/parameters# cat battery_prese=
+nt
+> > > trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_hea=
+lth
+> > > goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_sta=
+tus
+> > > dischargingroot@syzkaller:/sys/module/test_power/parameters# cat batt=
+ery_technology
+> > > LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
+> > > onroot@syzkaller:/sys/module/test_power/parameters#
+> > >=20
+> > > Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> > > ---
+> >=20
+> > Thanks, queued.
+> []
+> > > diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply=
+/test_power.c
+> []
+> > > @@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, c=
+onst struct kernel_param *kp)
+> > >  static int param_get_ac_online(char *buffer, const struct kernel_par=
+am *kp)
+> > >  {
+> > >  	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
+> > > +	strcat(buffer, "\n");
+> > >  	return strlen(buffer);
+> > >  }
+>=20
+> All of these would be better as sprintf(buffer, "%s\n", <whatever>)
+> so the output is scanned just once instead of scanned three times.
+
+Agreed. Anybody willing to send a patch? :)
+
+-- Sebastian
+
+--ly4wgne62jo6bhtn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl948iIACgkQ2O7X88g7
++pqfHg/+LTGXjiz4dukxRGm15eNueBi4JiM/H06xmc2bd5Lk9IH2dB6cLjrcpk5f
+F123gNDhFIUPEnXzya64mqCUy2OmkUFijs6cXMOYgX7LPtIRBMjmiM7NRkOStpIg
+mn+XFesG8AhfOeZ0EX1pefbVRwjxrp2yJcOeKTtDSu4JNmdM3xT+IRSmi/fELJys
+ALoYqwtqr7jUKQAGCtnL9tv4sV4CqkqeayvKqnmB0amU6uXhQz0yawNsylhVAVW1
+1q3fy6c6qNEUls0Ykbac0RbbC6nWud1XoxuJLxjek5JQt9Od2sLyBYV6L/Ahnge/
+C6p2EWwMn81mUH5Xp50YhUxpGDwiAlREQgt18L9sbRr4qv7SUbuyiJHeNcjk1jps
+1fdjJiOIbNOcewnxeZZhaPeSDP6v5ORsM9bznOCBeIApHXor1LOgfvm381iR4x5g
+UqrlLtk9k4t/9UpEXfpTR2budlqlzVRRr0HNglC+vVnXxGVTykPEXAhVas08B3/p
+0gyNpd43/NSEzfmtJ54VEVRRFTxyxCfABq94vBOuCSVpgRwA4D+yYv/NL37qlnSk
+OTSP6iWKCiNEVHzA1HSZySt76NmvlLUiSJkrVvGTPlVQIk1+rw3MhpYHsoYJxDls
+sAZWEbVMN3epd/zrw/mw+Gd4YuD2W6sbCtqw3s4H7zTKJLqOjm8=
+=8CAB
+-----END PGP SIGNATURE-----
+
+--ly4wgne62jo6bhtn--
