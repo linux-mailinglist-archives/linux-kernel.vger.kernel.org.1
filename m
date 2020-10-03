@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D7428219D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 07:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD7C2821A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 07:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725765AbgJCFcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 01:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJCFcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 01:32:41 -0400
-Received: from localhost (p54b337f0.dip0.t-ipconnect.de [84.179.55.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCCAF206C3;
-        Sat,  3 Oct 2020 05:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601703161;
-        bh=ivPdo+afXcrBnRWmahPyp3SKVbAOjpAaMI2f+qq+UYc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HjyheEieSYiArv1ufpvKAuS+Q47TF7FBjKwsvlIO/ht7q2VzsDlnu8VVVgNo9EpFc
-         zQW9VhiNivlQRtoMZZfaCxk/OzyBcqLDpXxP49Dc6+WJZ9cwL2J6k3hN1lVVh+bwSM
-         d3Rszs6GbtYbZgLSd1XKUGCmrBS/TXU8/SQiD728=
-Date:   Sat, 3 Oct 2020 07:32:34 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for 5.9
-Message-ID: <20201003053234.GA2550@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
+        id S1725802AbgJCFqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 01:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgJCFqT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 01:46:19 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AD2C0613D0;
+        Fri,  2 Oct 2020 22:46:17 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i26so4617804ejb.12;
+        Fri, 02 Oct 2020 22:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hawXaGws1MU6sDkakK3AdQ7Q2ZSpEooEcbwe9eB+DI4=;
+        b=IJqZsshUb/VtWXvu3gAVH+H/lOqFcQCbt02rZY/vQn5rQT8hOGnAOAwrVxK6X2zObs
+         d5rfqYdcNlJ1fr9CmrRZym2wwYG7EhtZdKB8fO6X2s0DhWFthuSNqu2uqLYcDUxQMhXu
+         IPCuHZZvXIbieYw2Zrds6+xpKrYy3QvMy53ffAZDtCb9eAyxbQyReNxiQUcrrmk585g5
+         jIGSRaL+EchFyCS33FebRzWd7QRKUKnvdS+QQU+2FScmw+Xzwd7FnO+OKNO8bzLMOyXH
+         BJ9nB1Xn0P4RYU5+xMuV/QbO9n6UbHVsPcKoG2dJryEnmPAwakDlNNk9NcPh1yObzBFr
+         P+BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hawXaGws1MU6sDkakK3AdQ7Q2ZSpEooEcbwe9eB+DI4=;
+        b=TKIL3bINcc3zvQZzpcs/24Bec/w/UkRpcUda9Bk6876d0R65J045DSS2To0bezKi8N
+         2CoKa9BAXJRAY4QF0trfEWovFdFHO/Ihlm8uKDAk5wikmNmG1kB9ppGxE0rRjKdNJmRs
+         5KVDJl6nAFxQD/4rDwuDy3+D1MMBwn5WX/pz26rZr/bBR5F5TVgX3MrZk5RwzkVV0knV
+         i9vFg1rxX66379h3jQcUZfaDQj/A9h3v4+Lr/nT7Gbx41vxtByfaLN3vdiriuIke+7Vb
+         Bu6qclgaPPgzYEgrb38zu80waYOofroekSwaDEkR/aw6maWR4kbyY1+wZ+f2O0PloJAf
+         3pNg==
+X-Gm-Message-State: AOAM532CmCq+/HBgbeW7qQdj5JzmJ+AHrL2xcVkWwxgl43J4GDFYs2iL
+        RN66kJOKiDx2ckAKE/MXRBCT89Qow0j/6ziobYE=
+X-Google-Smtp-Source: ABdhPJy5Gznw4s6D4RY5w7kPpdyNu3ws7awM5vjJhfBJ4oLNKu0dObaNIfJPs7Y8ODqZr02QHnqX8ek78cTDMHzRSq8=
+X-Received: by 2002:a17:906:6409:: with SMTP id d9mr5265403ejm.344.1601703976062;
+ Fri, 02 Oct 2020 22:46:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
+References: <20200930070537.30982-1-haifeng.zhao@intel.com>
+ <20200930070537.30982-5-haifeng.zhao@intel.com> <52e9ba48-2789-31b8-b80c-23854190c4d4@kernel.org>
+In-Reply-To: <52e9ba48-2789-31b8-b80c-23854190c4d4@kernel.org>
+From:   Ethan Zhao <xerces.zhao@gmail.com>
+Date:   Sat, 3 Oct 2020 13:46:04 +0800
+Message-ID: <CAKF3qh1Bzj6LwBU0yzvLTxSO9RTU5GrJ7PRSwMBHdFJpbFzKEA@mail.gmail.com>
+Subject: Re: [PATCH v6 4/5] PCI: only return true when dev io state is really changed
+To:     Sinan Kaya <okaya@kernel.org>
+Cc:     Ethan Zhao <haifeng.zhao@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, Oliver <oohall@gmail.com>,
+        ruscur@russell.cc, Lukas Wunner <lukas@wunner.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ashok.raj@linux.intel.com,
+        Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sinan,
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sat, Oct 3, 2020 at 12:08 AM Sinan Kaya <okaya@kernel.org> wrote:
+>
+> On 9/30/2020 3:05 AM, Ethan Zhao wrote:
+> > When uncorrectable error happens, AER driver and DPC driver interrupt
+> > handlers likely call
+> >
+> >    pcie_do_recovery()
+> >    ->pci_walk_bus()
+> >      ->report_frozen_detected()
+> >
+> > with pci_channel_io_frozen the same time.
+>
+> We need some more data on this. If DPC is supported by HW, errors
+> should be triggered by DPC not AER.
+>
+> If I remember right, there is a register that tells which AER errors
+> should be handled by DPC.
 
-Linus,
+When uncorrectable errors happen, non-fatal severity level, AER and
+DPC could be triggered at the same time.
 
-some more driver fixes from I2C.
-
-Please pull.
 
 Thanks,
+Ethan
 
-   Wolfram
-
-
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
-
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-
-for you to fetch changes up to 8947efc077168c53b84d039881a7c967086a248a:
-
-  i2c: npcm7xx: Clear LAST bit after a failed transaction. (2020-09-27 20:05:27 +0200)
-
-----------------------------------------------------------------
-Jean Delvare (1):
-      i2c: i801: Exclude device from suspend direct complete optimization
-
-Nicolas VINCENT (1):
-      i2c: cpm: Fix i2c_ram structure
-
-Tali Perry (1):
-      i2c: npcm7xx: Clear LAST bit after a failed transaction.
-
- drivers/i2c/busses/i2c-cpm.c     | 3 +++
- drivers/i2c/busses/i2c-i801.c    | 1 +
- drivers/i2c/busses/i2c-npcm7xx.c | 9 +++++++++
- 3 files changed, 13 insertions(+)
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl94DO0ACgkQFA3kzBSg
-KbYaOg/8DNrKHEmaXW398wNKNBKhwF9JPBuTvGuxYH9AmtAULpu6oTMkipO/YiEs
-WQ6Dr05Ayu+uztcetKywLql7mkQIJzsqdoYWqIXYF0B+zFY65pTonXCpU3JPiBs7
-Lud4O6LF6rge35lNvBqfdr/4PtdI+I+HHJBQFPrDTo1N9xIx3ND319VVA01mgW2i
-uXO1mwOZvnCG26ZvR7cweYFCaoGRQIIZcycoxepzVATqWjNhotQRTLAQu6a57LPQ
-XTz4dpMwTexY0qLZHRMT9lA2Tn8S69oC+qQ5EsEKeB7z3E7f6XqpIxvd2WbcKbUq
-clFsu5yTg0MsVpCAi53ohyznmrwoOvyGKn5qgvtk96Kps8QN1wms0I9vMCzDZOD3
-J+Y9tjnbP285KYOX7+0+us+hy5XpGNHiQXB4GlLNv5CzpRi06Ya18+l0K+nH95gq
-1OtpWi/FHlflCjOsD6cGYvzxCoEkY9Npj3xZh+hMrIlTGecV1FHA21mXLCwFTmq8
-0eKMEVrm8I1R7ZR9D5RXGe7aMZDKeHwMPS3baxKxtSDNlpB9t2SYtKHZ28HTLITS
-U573Yj9Fh81beTKOcj1D6eZ6ep1uJY8BeDzh6EX5uAcNqvJkWrVO6EyVJioAgsnD
-1MkVkJPZdIQ2ilUeBG4U0/dU0/wgfr/xRWWfzhYyYHzUeiVlJZg=
-=m4eH
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
+>
