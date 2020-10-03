@@ -2,531 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406C8281FC2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF0F281FC6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgJCAWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 20:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbgJCAWB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:22:01 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE203C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 17:22:00 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id p21so2063138pju.0
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 17:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IxuQNcDjqnY+lEJz6FIG14oOUsoLZ6QcraJScTvL9vg=;
-        b=YJO6lKbvt9z/M25DB5ebW7M9vnyLf17zMtoZ4eHZDRQcEMOGOgXjkycvGkhUqz846+
-         LFoiX97lesGnYCIShDJmI0n5s4WkfJiSPJ8459xzsN/jtoP7cVhQeE6H5sTADa/uqiX7
-         hjeAovvMD9weRgBoxRHsRkC8mdF3n04IZTzlcolUyaKGtHKukno7X+4tG42mxuqEtCgf
-         lYyrphWkW3owV7oH2kvG+cJArl1cH7/aY5erC0So3alH0h5iy1EPLoCLoVDteMTCEGzq
-         mq1O7LRmoJxAxB3xyU3GHIxUKkrs1ITsaiU3vJsDJ5dBFsLeoVG1NPbTh41cmUflbIPS
-         i13A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IxuQNcDjqnY+lEJz6FIG14oOUsoLZ6QcraJScTvL9vg=;
-        b=jX6FiYl+89wwXxx7mTAKbIH3q412Jl4uRCpOP5Wn5E7GkP+rVK1R6GOtdhRdWUKHle
-         DngXzuQINd6OMkkDSu6Kt6ksFiYC966T96gRDA8mlAaE7AyphF44HrPdjxHya81FilU9
-         BLX3afgpzLAf4Llwhny1/Ylmd5WM/v8Bs76TS2KyzJ+n4f5a7ZfHeRnb01c3OUO3ZC6O
-         QuWWmsMgDDYDwbDnZjP53jkDUfOQt0/3VN71iZGQvesQq7jIoy5W2tCm2ujrmx9dpM/t
-         rKaRBoOn/xhmSVS2dlFR140GMUli2B8nodIdkFUjsjR1H40c+BTemfZF7IuvmZVknOxz
-         0/aQ==
-X-Gm-Message-State: AOAM533ULlXdBNeTH1pHhxZDL+kKryLOLjqSUIBKKoO2zz+8aalvXEG4
-        plrkYtA78eNu5aVM5MAmatvv7YgDhRUEuojTMKF38A==
-X-Google-Smtp-Source: ABdhPJw9F8PAjxDX83VhzBc1Safp+5/8zzAo7j96NLjNjBKAGIlfQSDFQ9j6p8vyGsrr14MjXFM4JBN5DdPfOR5Oi3g=
-X-Received: by 2002:a17:90a:634a:: with SMTP id v10mr5095711pjs.182.1601684519848;
- Fri, 02 Oct 2020 17:21:59 -0700 (PDT)
+        id S1725777AbgJCAYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 20:24:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:25767 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgJCAYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 20:24:02 -0400
+IronPort-SDR: dFpyDUpIK6b1V+KMf8Q3H7LBbX31h0N54kf/VQQNXVnRBdxM/P4VJcGWOfZnRX+kC/N0qXGsEH
+ yZtqXZUo0eUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160432096"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="160432096"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 17:24:01 -0700
+IronPort-SDR: +Z8AAU6YVx9vKo+Tb0ICijBJlC7rCixZj6CQqE4Ej3NlwfzgyeFuh7ceIEraqQutXjaj+6tLVV
+ GyxM+MrVohQQ==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="511263071"
+Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.33.58])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2020 17:23:57 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Chunyang Hui" <sanqian.hcy@antfin.com>,
+        "Jordan Hand" <jorhand@linux.microsoft.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Seth Moore" <sethmo@google.com>,
+        "Darren Kenny" <darren.kenny@oracle.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Suresh Siddha" <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+Date:   Fri, 02 Oct 2020 19:23:55 -0500
 MIME-Version: 1.0
-References: <20201002162101.665549-1-kaleshsingh@google.com>
- <20201002162101.665549-4-kaleshsingh@google.com> <20201002165122.bm427a4ealmmmtqc@black.fi.intel.com>
- <CAC_TJvdcWV=cyszkOURekZGEZP2txvDyZKDyDgKB37+g+eg3hg@mail.gmail.com>
-In-Reply-To: <CAC_TJvdcWV=cyszkOURekZGEZP2txvDyZKDyDgKB37+g+eg3hg@mail.gmail.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Fri, 2 Oct 2020 20:21:48 -0400
-Message-ID: <CAC_TJvfLUYThPi3dFa8-tW74=47++jtCf8npuLDJvocHdOgU2w@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] mm: Speedup mremap on 1GB or larger regions
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Minchan Kim <minchan@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        kernel test robot <lkp@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        Jia He <justin.he@arm.com>, Zhenyu Ye <yezhenyu2@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        Brian Geffon <bgeffon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0rvxzr02wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+In-Reply-To: <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 6:08 PM Kalesh Singh <kaleshsingh@google.com> wrote:
+On Tue, 15 Sep 2020 06:28:30 -0500, Jarkko Sakkinen  
+<jarkko.sakkinen@linux.intel.com> wrote:
+
+> Add an ioctl that performs ENCLS[ECREATE], which creates SGX Enclave
+> Control Structure for the enclave. SECS contains attributes about the
+> enclave that are used by the hardware and cannot be directly accessed by
+> software, as SECS resides in the EPC.
 >
-> Hi Kirill, thank you for the feedback.
+> One essential field in SECS is a field that stores the SHA256 of the
+> measured enclave pages. This field, MRENCLAVE, is initialized by the
+> ECREATE instruction and updated by every EADD and EEXTEND operation.
+> Finally, EINIT locks down the value.
 >
-> On Fri, Oct 2, 2020 at 12:51 PM Kirill A. Shutemov
-> <kirill.shutemov@linux.intel.com> wrote:
-> >
-> > On Fri, Oct 02, 2020 at 04:20:48PM +0000, Kalesh Singh wrote:
-> > > Android needs to move large memory regions for garbage collection.
-> > > The GC requires moving physical pages of multi-gigabyte heap
-> > > using mremap. During this move, the application threads have to
-> > > be paused for correctness. It is critical to keep this pause as
-> > > short as possible to avoid jitters during user interaction.
-> > >
-> > > Optimize mremap for >=3D 1GB-sized regions by moving at the PUD/PGD
-> > > level if the source and destination addresses are PUD-aligned.
-> > > For CONFIG_PGTABLE_LEVELS =3D=3D 3, moving at the PUD level in effect=
- moves
-> > > PGD entries, since the PUD entry is =E2=80=9Cfolded back=E2=80=9D ont=
-o the PGD entry.
-> > > Add HAVE_MOVE_PUD so that architectures where moving at the PUD level
-> > > isn't supported/tested can turn this off by not selecting the config.
-> > >
-> > > Fix build test error from v1 of this series reported by
-> > > kernel test robot in [1].
-> > >
-> > > [1] https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thre=
-ad/CKPGL4FH4NG7TGH2CVYX2UX76L25BTA3/
-> > >
-> > > Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > ---
-> > > Changes in v2:
-> > >   - Update commit message with description of Android GC's use case.
-> > >   - Move set_pud_at() to a separate patch.
-> > >   - Use switch() instead of ifs in move_pgt_entry()
-> > >   - Fix build test error reported by kernel test robot on x86_64 in [=
-1].
-> > >     Guard move_huge_pmd() with IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE=
-),
-> > >     since this section doesn't get optimized out in the kernel test
-> > >     robot's build test when HAVE_MOVE_PUD is enabled.
-> > >   - Keep WARN_ON_ONCE(1) instead of BUILD_BUG() for the aforementione=
-d
-> > >     reason.
-> >
-> > Okay, but IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) on the caller side wo=
-uld
-> > do the trick, I believe.
-> I tried moving this to the caller side in move_page_tables(),
-> -                       if (extent =3D=3D HPAGE_PMD_SIZE &&
-> +                       if (extent =3D=3D HPAGE_PMD_SIZE &&
-> IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> but it produces the same error as reported by kernel test robot:
-> ld.lld: error: undefined symbol: move_huge_pmd
-> I'm not sure why these are different but the kernel test robot
-> compiler complains.
-I should mention also that the patch series compiles without having to
-use IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) when using the test config
-from kernel test robot=E2=80=99s report and clang --version:
-Android (6443078 based on r383902) clang version 11.0.1
-(https://android.googlesource.com/toolchain/llvm-project
-b397f81060ce6d701042b782172ed13bee898b79)
-> >
-> > >
-> > >  arch/Kconfig |   7 ++
-> > >  mm/mremap.c  | 220 ++++++++++++++++++++++++++++++++++++++++++++-----=
---
-> > >  2 files changed, 197 insertions(+), 30 deletions(-)
-> > >
-> > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > index af14a567b493..5eabaa00bf9b 100644
-> > > --- a/arch/Kconfig
-> > > +++ b/arch/Kconfig
-> > > @@ -602,6 +602,13 @@ config HAVE_IRQ_TIME_ACCOUNTING
-> > >         Archs need to ensure they use a high enough resolution clock =
-to
-> > >         support irq time accounting and then call enable_sched_clock_=
-irqtime().
-> > >
-> > > +config HAVE_MOVE_PUD
-> > > +     bool
-> > > +     help
-> > > +       Architectures that select this are able to move page tables a=
-t the
-> > > +       PUD level. If there are only 3 page table levels, the move ef=
-fectively
-> > > +       happens at the PGD level.
-> > > +
-> > >  config HAVE_MOVE_PMD
-> > >       bool
-> > >       help
-> > > diff --git a/mm/mremap.c b/mm/mremap.c
-> > > index 138abbae4f75..c1d6ab667d70 100644
-> > > --- a/mm/mremap.c
-> > > +++ b/mm/mremap.c
-> > > @@ -249,14 +249,176 @@ static bool move_normal_pmd(struct vm_area_str=
-uct *vma, unsigned long old_addr,
-> > >
-> > >       return true;
-> > >  }
-> > > +#else
-> > > +static inline bool move_normal_pmd(struct vm_area_struct *vma, unsig=
-ned long old_addr,
-> > > +               unsigned long new_addr, pmd_t *old_pmd, pmd_t *new_pm=
-d)
-> > > +{
-> > > +     return false;
-> > > +}
-> > >  #endif
-> > >
-> > > +#ifdef CONFIG_HAVE_MOVE_PUD
-> > > +static pud_t *get_old_pud(struct mm_struct *mm, unsigned long addr)
-> > > +{
-> > > +     pgd_t *pgd;
-> > > +     p4d_t *p4d;
-> > > +     pud_t *pud;
-> > > +
-> > > +     pgd =3D pgd_offset(mm, addr);
-> > > +     if (pgd_none_or_clear_bad(pgd))
-> > > +             return NULL;
-> > > +
-> > > +     p4d =3D p4d_offset(pgd, addr);
-> > > +     if (p4d_none_or_clear_bad(p4d))
-> > > +             return NULL;
-> > > +
-> > > +     pud =3D pud_offset(p4d, addr);
-> > > +     if (pud_none_or_clear_bad(pud))
-> > > +             return NULL;
-> > > +
-> > > +     return pud;
-> > > +}
-> > > +
-> > > +static pud_t *alloc_new_pud(struct mm_struct *mm, struct vm_area_str=
-uct *vma,
-> > > +                         unsigned long addr)
-> > > +{
-> > > +     pgd_t *pgd;
-> > > +     p4d_t *p4d;
-> > > +     pud_t *pud;
-> > > +
-> > > +     pgd =3D pgd_offset(mm, addr);
-> > > +     p4d =3D p4d_alloc(mm, pgd, addr);
-> > > +     if (!p4d)
-> > > +             return NULL;
-> > > +     pud =3D pud_alloc(mm, p4d, addr);
-> > > +     if (!pud)
-> > > +             return NULL;
-> > > +
-> > > +     return pud;
-> > > +}
-> >
-> > Looks like a code duplication.
-> >
-> > Could you move these two helpers out of #ifdef CONFIG_HAVE_MOVE_PUD and
-> > make get_old_pmd() and alloc_new_pmd() use them?
-> Yes, that will be cleaner. I'll update it in the next version.
-> >
-> > > +
-> > > +static bool move_normal_pud(struct vm_area_struct *vma, unsigned lon=
-g old_addr,
-> > > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pu=
-d)
-> > > +{
-> > > +     spinlock_t *old_ptl, *new_ptl;
-> > > +     struct mm_struct *mm =3D vma->vm_mm;
-> > > +     pud_t pud;
-> > > +
-> > > +     /*
-> > > +      * The destination pud shouldn't be established, free_pgtables(=
-)
-> > > +      * should have released it.
-> > > +      */
-> > > +     if (WARN_ON_ONCE(!pud_none(*new_pud)))
-> > > +             return false;
-> > > +
-> > > +     /*
-> > > +      * We don't have to worry about the ordering of src and dst
-> > > +      * ptlocks because exclusive mmap_lock prevents deadlock.
-> > > +      */
-> > > +     old_ptl =3D pud_lock(vma->vm_mm, old_pud);
-> > > +     new_ptl =3D pud_lockptr(mm, new_pud);
-> > > +     if (new_ptl !=3D old_ptl)
-> > > +             spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-> > > +
-> > > +     /* Clear the pud */
-> > > +     pud =3D *old_pud;
-> > > +     pud_clear(old_pud);
-> > > +
-> > > +     VM_BUG_ON(!pud_none(*new_pud));
-> > > +
-> > > +     /* Set the new pud */
-> > > +     set_pud_at(mm, new_addr, new_pud, pud);
-> > > +     flush_tlb_range(vma, old_addr, old_addr + PUD_SIZE);
-> > > +     if (new_ptl !=3D old_ptl)
-> > > +             spin_unlock(new_ptl);
-> > > +     spin_unlock(old_ptl);
-> > > +
-> > > +     return true;
-> > > +}
-> > > +#else
-> > > +static inline bool move_normal_pud(struct vm_area_struct *vma, unsig=
-ned long old_addr,
-> > > +               unsigned long new_addr, pud_t *old_pud, pud_t *new_pu=
-d)
-> > > +{
-> > > +     return false;
-> > > +}
-> > > +#endif
-> > > +
-> > > +enum pgt_entry {
-> > > +     NORMAL_PMD,
-> > > +     HPAGE_PMD,
-> > > +     NORMAL_PUD,
-> > > +};
-> > > +
-> > > +/*
-> > > + * Returns an extent of the corresponding size for the pgt_entry spe=
-cified if valid.
-> > > + * Else returns a smaller extent bounded by the end of the source an=
-d destination
-> > > + * pgt_entry. Returns 0 if an invalid pgt_entry is specified.
-> > > + */
-> > > +static unsigned long get_extent(enum pgt_entry entry, unsigned long =
-old_addr,
-> > > +                     unsigned long old_end, unsigned long new_addr)
-> > > +{
-> > > +     unsigned long next, extent, mask, size;
-> > > +
-> > > +     if (entry =3D=3D NORMAL_PMD || entry =3D=3D HPAGE_PMD) {
-> > > +             mask =3D PMD_MASK;
-> > > +             size =3D PMD_SIZE;
-> > > +     } else if (entry =3D=3D NORMAL_PUD) {
-> > > +             mask =3D PUD_MASK;
-> > > +             size =3D PUD_SIZE;
-> > > +     } else
-> > > +             return 0;
-> >
-> > Em. Who would ever specify invalid pgt_entry? It's bug.
-> > Again, switch()?
-> Sounds good. I'll use BUG() and switch() instead.
-> >
-> > > +
-> > > +     next =3D (old_addr + size) & mask;
-> > > +     /* even if next overflowed, extent below will be ok */
-> > > +     extent =3D (next > old_end) ? old_end - old_addr : next - old_a=
-ddr;
-> > > +     next =3D (new_addr + size) & mask;
-> > > +     if (extent > next - new_addr)
-> > > +             extent =3D next - new_addr;
-> > > +     return extent;
-> > > +}
-> > > +
-> > > +/*
-> > > + * Attempts to speedup the move by moving entry at the level corresp=
-onding to
-> > > + * pgt_entry. Returns true if the move was successful, else false.
-> > > + */
-> > > +static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_stru=
-ct *vma,
-> > > +                     unsigned long old_addr, unsigned long new_addr,=
- void *old_entry,
-> > > +                     void *new_entry, bool need_rmap_locks)
-> > > +{
-> > > +     bool moved =3D false;
-> > > +
-> > > +     /* See comment in move_ptes() */
-> > > +     if (need_rmap_locks)
-> > > +             take_rmap_locks(vma);
-> > > +
-> > > +     switch (entry) {
-> > > +     case NORMAL_PMD:
-> > > +             moved =3D  move_normal_pmd(vma, old_addr, new_addr, old=
-_entry, new_entry);
-> >
-> > Nit: here and below, double space after '=3D'. Why?
-> Sorry, editing mistake on my end. I'll clean this up before resending.
-> >
-> > > +             break;
-> > > +     case NORMAL_PUD:
-> > > +             moved =3D  move_normal_pud(vma, old_addr, new_addr, old=
-_entry, new_entry);
-> > > +             break;
-> > > +     case HPAGE_PMD:
-> > > +             moved =3D  IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
-> > > +                     move_huge_pmd(vma, old_addr, new_addr, old_entr=
-y, new_entry);
-> > > +             break;
-> > > +     default:
-> > > +             WARN_ON_ONCE(1);
-> > > +             break;
-> > > +     }
-> > > +
-> > > +     if (need_rmap_locks)
-> > > +             drop_rmap_locks(vma);
-> > > +
-> > > +     return moved;
-> > > +}
-> > > +
-> > >  unsigned long move_page_tables(struct vm_area_struct *vma,
-> > >               unsigned long old_addr, struct vm_area_struct *new_vma,
-> > >               unsigned long new_addr, unsigned long len,
-> > >               bool need_rmap_locks)
-> > >  {
-> > > -     unsigned long extent, next, old_end;
-> > > +     unsigned long extent, old_end;
-> > >       struct mmu_notifier_range range;
-> > >       pmd_t *old_pmd, *new_pmd;
-> > >
-> > > @@ -269,14 +431,27 @@ unsigned long move_page_tables(struct vm_area_s=
-truct *vma,
-> > >
-> > >       for (; old_addr < old_end; old_addr +=3D extent, new_addr +=3D =
-extent) {
-> > >               cond_resched();
-> > > -             next =3D (old_addr + PMD_SIZE) & PMD_MASK;
-> > > -             /* even if next overflowed, extent below will be ok */
-> > > -             extent =3D next - old_addr;
-> > > -             if (extent > old_end - old_addr)
-> > > -                     extent =3D old_end - old_addr;
-> > > -             next =3D (new_addr + PMD_SIZE) & PMD_MASK;
-> > > -             if (extent > next - new_addr)
-> > > -                     extent =3D next - new_addr;
-> > > +#ifdef CONFIG_HAVE_MOVE_PUD
-> >
-> > Any chance  if (IS_ENABLED(CONFIG_HAVE_MOVE_PUD)) would work here?
-> Once we move get_old_put() and alloc_new_pud() out of the #ifdefs as
-> you suggested
-> above, it should work. It would also now be possible to replace the
-> #ifdef CONFIG_HAVE_MOVE_PMD in move_page_tables() with
-> IS_ENABLED(CONFIG_HAVE_MOVE_PMD).
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> Tested-by: Seth Moore <sethmo@google.com>
+> Tested-by: Darren Kenny <darren.kenny@oracle.com>
+> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>  arch/x86/include/uapi/asm/sgx.h               |  25 ++
+>  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+>  arch/x86/kernel/cpu/sgx/driver.c              |  12 +
+>  arch/x86/kernel/cpu/sgx/driver.h              |   1 +
+>  arch/x86/kernel/cpu/sgx/ioctl.c               | 220 ++++++++++++++++++
+>  6 files changed, 260 insertions(+)
+>  create mode 100644 arch/x86/include/uapi/asm/sgx.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
 >
-> Thanks,
-> Kalesh
-> >
-> > > +             /*
-> > > +              * If extent is PUD-sized try to speed up the move by m=
-oving at the
-> > > +              * PUD level if possible.
-> > > +              */
-> > > +             extent =3D get_extent(NORMAL_PUD, old_addr, old_end, ne=
-w_addr);
-> > > +             if (extent =3D=3D PUD_SIZE) {
-> > > +                     pud_t *old_pud, *new_pud;
-> > > +
-> > > +                     old_pud =3D get_old_pud(vma->vm_mm, old_addr);
-> > > +                     if (!old_pud)
-> > > +                             continue;
-> > > +                     new_pud =3D alloc_new_pud(vma->vm_mm, vma, new_=
-addr);
-> > > +                     if (!new_pud)
-> > > +                             break;
-> > > +                     if (move_pgt_entry(NORMAL_PUD, vma, old_addr, n=
-ew_addr,
-> > > +                                        old_pud, new_pud, need_rmap_=
-locks))
-> > > +                             continue;
-> > > +             }
-> > > +#endif
-> > > +             extent =3D get_extent(NORMAL_PMD, old_addr, old_end, ne=
-w_addr);
-> > >               old_pmd =3D get_old_pmd(vma->vm_mm, old_addr);
-> > >               if (!old_pmd)
-> > >                       continue;
-> > > @@ -284,18 +459,10 @@ unsigned long move_page_tables(struct vm_area_s=
-truct *vma,
-> > >               if (!new_pmd)
-> > >                       break;
-> > >               if (is_swap_pmd(*old_pmd) || pmd_trans_huge(*old_pmd) |=
-| pmd_devmap(*old_pmd)) {
-> > > -                     if (extent =3D=3D HPAGE_PMD_SIZE) {
-> > > -                             bool moved;
-> > > -                             /* See comment in move_ptes() */
-> > > -                             if (need_rmap_locks)
-> > > -                                     take_rmap_locks(vma);
-> > > -                             moved =3D move_huge_pmd(vma, old_addr, =
-new_addr,
-> > > -                                                   old_pmd, new_pmd)=
-;
-> > > -                             if (need_rmap_locks)
-> > > -                                     drop_rmap_locks(vma);
-> > > -                             if (moved)
-> > > -                                     continue;
-> > > -                     }
-> > > +                     if (extent =3D=3D HPAGE_PMD_SIZE &&
-> > > +                         move_pgt_entry(HPAGE_PMD, vma, old_addr, ne=
-w_addr, old_pmd,
-> > > +                                        new_pmd, need_rmap_locks))
-> > > +                             continue;
-> > >                       split_huge_pmd(vma, old_pmd, old_addr);
-> > >                       if (pmd_trans_unstable(old_pmd))
-> > >                               continue;
-> > > @@ -305,15 +472,8 @@ unsigned long move_page_tables(struct vm_area_st=
-ruct *vma,
-> > >                        * If the extent is PMD-sized, try to speed the=
- move by
-> > >                        * moving at the PMD level if possible.
-> > >                        */
-> > > -                     bool moved;
-> > > -
-> > > -                     if (need_rmap_locks)
-> > > -                             take_rmap_locks(vma);
-> > > -                     moved =3D move_normal_pmd(vma, old_addr, new_ad=
-dr,
-> > > -                                             old_pmd, new_pmd);
-> > > -                     if (need_rmap_locks)
-> > > -                             drop_rmap_locks(vma);
-> > > -                     if (moved)
-> > > +                     if (move_pgt_entry(NORMAL_PMD, vma, old_addr, n=
-ew_addr, old_pmd,
-> > > +                                        new_pmd, need_rmap_locks))
-> > >                               continue;
-> > >  #endif
-> > >               }
-> > > --
-> > > 2.28.0.806.g8561365e88-goog
-> > >
-> >
-> > --
-> >  Kirill A. Shutemov
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send =
-an email to kernel-team+unsubscribe@android.com.
-> >
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst  
+> b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 2a198838fca9..a89e1c46a25a 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -323,6 +323,7 @@ Code  Seq#    Include  
+> File                                           Comments
+>                                                                       <mailto:tlewis@mindspring.com>
+>  0xA3  90-9F  linux/dtlk.h
+>  0xA4  00-1F  uapi/linux/tee.h                                         
+> Generic TEE subsystem
+> +0xA4  00-1F  uapi/asm/sgx.h                                           
+> <mailto:linux-sgx@vger.kernel.org>
+>  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+>  0xAB  00-1F  linux/nbd.h
+>  0xAC  00-1F  linux/raw.h
+> diff --git a/arch/x86/include/uapi/asm/sgx.h  
+> b/arch/x86/include/uapi/asm/sgx.h
+> new file mode 100644
+> index 000000000000..c75b375f3770
+> --- /dev/null
+> +++ b/arch/x86/include/uapi/asm/sgx.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR  
+> BSD-3-Clause) */
+> +/*
+> + * Copyright(c) 2016-19 Intel Corporation.
+> + */
+> +#ifndef _UAPI_ASM_X86_SGX_H
+> +#define _UAPI_ASM_X86_SGX_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/ioctl.h>
+> +
+> +#define SGX_MAGIC 0xA4
+> +
+> +#define SGX_IOC_ENCLAVE_CREATE \
+> +	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
+> +
+> +/**
+> + * struct sgx_enclave_create - parameter structure for the
+> + *                             %SGX_IOC_ENCLAVE_CREATE ioctl
+> + * @src:	address for the SECS page data
+> + */
+> +struct sgx_enclave_create  {
+> +	__u64	src;
+> +};
+> +
+> +#endif /* _UAPI_ASM_X86_SGX_H */
+> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
+> b/arch/x86/kernel/cpu/sgx/Makefile
+> index 3fc451120735..91d3dc784a29 100644
+> --- a/arch/x86/kernel/cpu/sgx/Makefile
+> +++ b/arch/x86/kernel/cpu/sgx/Makefile
+> @@ -1,4 +1,5 @@
+>  obj-y += \
+>  	driver.o \
+>  	encl.o \
+> +	ioctl.o \
+>  	main.o
+> diff --git a/arch/x86/kernel/cpu/sgx/driver.c  
+> b/arch/x86/kernel/cpu/sgx/driver.c
+> index f54da5f19c2b..7bdb49dfcca6 100644
+> --- a/arch/x86/kernel/cpu/sgx/driver.c
+> +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> @@ -114,10 +114,22 @@ static unsigned long sgx_get_unmapped_area(struct  
+> file *file,
+>  	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
+>  }
+> +#ifdef CONFIG_COMPAT
+> +static long sgx_compat_ioctl(struct file *filep, unsigned int cmd,
+> +			      unsigned long arg)
+> +{
+> +	return sgx_ioctl(filep, cmd, arg);
+> +}
+> +#endif
+> +
+>  static const struct file_operations sgx_encl_fops = {
+>  	.owner			= THIS_MODULE,
+>  	.open			= sgx_open,
+>  	.release		= sgx_release,
+> +	.unlocked_ioctl		= sgx_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +	.compat_ioctl		= sgx_compat_ioctl,
+> +#endif
+>  	.mmap			= sgx_mmap,
+>  	.get_unmapped_area	= sgx_get_unmapped_area,
+>  };
+> diff --git a/arch/x86/kernel/cpu/sgx/driver.h  
+> b/arch/x86/kernel/cpu/sgx/driver.h
+> index f7ce40dedc91..e4063923115b 100644
+> --- a/arch/x86/kernel/cpu/sgx/driver.h
+> +++ b/arch/x86/kernel/cpu/sgx/driver.h
+> @@ -9,6 +9,7 @@
+>  #include <linux/rwsem.h>
+>  #include <linux/sched.h>
+>  #include <linux/workqueue.h>
+> +#include <uapi/asm/sgx.h>
+>  #include "sgx.h"
+> #define SGX_EINIT_SPIN_COUNT	20
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c  
+> b/arch/x86/kernel/cpu/sgx/ioctl.c
+> new file mode 100644
+> index 000000000000..352a3c461812
+> --- /dev/null
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -0,0 +1,220 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +// Copyright(c) 2016-19 Intel Corporation.
+> +
+> +#include <asm/mman.h>
+> +#include <linux/mman.h>
+> +#include <linux/delay.h>
+> +#include <linux/file.h>
+> +#include <linux/hashtable.h>
+> +#include <linux/highmem.h>
+> +#include <linux/ratelimit.h>
+> +#include <linux/sched/signal.h>
+> +#include <linux/shmem_fs.h>
+> +#include <linux/slab.h>
+> +#include <linux/suspend.h>
+> +#include "driver.h"
+> +#include "encl.h"
+> +#include "encls.h"
+> +
+> +static u32 sgx_calc_ssa_frame_size(u32 miscselect, u64 xfrm)
+> +{
+> +	u32 size_max = PAGE_SIZE;
+> +	u32 size;
+> +	int i;
+> +
+> +	for (i = 2; i < 64; i++) {
+> +		if (!((1 << i) & xfrm))
+> +			continue;
+> +
+> +		size = SGX_SSA_GPRS_SIZE + sgx_xsave_size_tbl[i];
+> +
+> +		if (miscselect & SGX_MISC_EXINFO)
+> +			size += SGX_SSA_MISC_EXINFO_SIZE;
+> +
+> +		if (size > size_max)
+> +			size_max = size;
+> +	}
+> +
+> +	return PFN_UP(size_max);
+> +}
+> +
+> +static int sgx_validate_secs(const struct sgx_secs *secs)
+> +{
+> +	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
+> +		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
+> +
+> +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+> +		return -EINVAL;
+> +
+> +	if (secs->base & (secs->size - 1))
+> +		return -EINVAL;
+> +
+> +	if (secs->miscselect & sgx_misc_reserved_mask ||
+> +	    secs->attributes & sgx_attributes_reserved_mask ||
+> +	    secs->xfrm & sgx_xfrm_reserved_mask)
+> +		return -EINVAL;
+> +
+
+Attributes should not be enforced against what's available on platform but  
+checked and enforced against the mask for enforcement in sigstruct. For  
+example an enclave could opt to sign with AVX bit in xfrm, but still be  
+loadable on a platform without it if the sigstruct->body.attributes_mask  
+does not turn that bit on.
+
+Suggest to remove the above check,and do following during EINIt in  
+sgx_encl_init:
+
+-       /* Check that the required attributes have been authorized. */
++       /* Check that the requested attributes have been authorized. */
+         if (encl->secs_attributes & ~encl->allowed_attributes)
+                 return -EACCES;
+
++       /* Check that mandatory features are supported. */
++       if (sigstruct->body.attributes & sigstruct->body.attributes_mask &
++           sgx_attributes_reserved_mask)
++               return -EINVAL;
++       if (sigstruct->body.miscselect & sigstruct->body.misc_mask &
++           sgx_misc_reserved_mask)
++               return -EINVAL;
++       if (sigstruct->body.xfrm & sigstruct->body.xfrm_mask &
++           sgx_xfrm_reserved_mask)
++               return -EINVAL;
++
+         ret = sgx_get_key_hash(sigstruct->modulus, mrsigner);
+
+Haitao
