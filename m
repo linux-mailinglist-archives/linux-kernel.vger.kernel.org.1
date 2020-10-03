@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91FC2823C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7732823CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgJCLLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 07:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgJCLLQ (ORCPT
+        id S1725785AbgJCLW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 07:22:27 -0400
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:41671 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725768AbgJCLW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 07:11:16 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDF7C0613D0;
-        Sat,  3 Oct 2020 04:11:14 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z1so4517601wrt.3;
-        Sat, 03 Oct 2020 04:11:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GnbMU4sFZhNsugLjOl+CGPMW76afg/wZKnEggQ7T6cw=;
-        b=cQOcDINVS6MiDBoZKsVMyRqVQndYXKkZv9tcvtlRcL4SrZnv/24eiwn5b/p1J6XoRq
-         b/bK231L8x74LwsmxCPPci0Cza+i0lyJfv/treN4Nlxw4Z31yj4b5YggHn2CUD1pXvXY
-         x9hue13PdN3HoWgypxTIggRgMfm0rnwzOsCQEeg5Aci+iiCDMOg82qzfXWVr1HRuC3Gm
-         wS4BmbpF867fcebKoIg1hWrJFOXn5/r75G/UXaLLAefpAjBgAZeGGWGtO/y6Uj4f9hgn
-         uSvMoynfHQG7pQExdsucOacjEe1fKSvMLQdu3L5cQIxR4BXAT1fjxvhd/loetEQakmeo
-         2/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GnbMU4sFZhNsugLjOl+CGPMW76afg/wZKnEggQ7T6cw=;
-        b=kOdnj8hf3Oh1jWxzmx+nkJTbli5SkOSJHtjiqNTvdupzZBIEeJOdo1ChsiiHXvopYp
-         VNJqWwXWZ1u7L3x9KAmBPY58Ot59WRxFudMe1rXztGK9WeUQ5JZ2RJnG8QBRHezVKDbw
-         dL2vICXe+sQWBTXTO9hJbwgIHXLTQCV2DUrWgTSJVJT4TGg6jBtbCW4giAxZkyXej65Y
-         80qBq3VOw612rEdtAeoXqM/p+oFJE1hNziLwDjG2+jM4onMX6497wc27uRzbVsfFiKBk
-         2ElVCv/VZhD7pzSoPqtKsY7/oEMCM3LiTR18BdqZpmyVQ90st0BCYK0PW5Aj9zJfPLen
-         gLwg==
-X-Gm-Message-State: AOAM5336VSpnsVhWQh+XvAq4EUWfj9aCB86x/k7Qtr2VQfAmHYgFxhBw
-        UtgzcLYM2n0bzD7qtleu6qU=
-X-Google-Smtp-Source: ABdhPJye6XSLqhpp984Q4kjRQ4Giw0MReRk2oETDk5NV4q7zUshaQCPtwEXp+7vyYu6U5DSl0W9HKQ==
-X-Received: by 2002:a5d:630a:: with SMTP id i10mr7550051wru.137.1601723473224;
-        Sat, 03 Oct 2020 04:11:13 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id u17sm5571995wri.45.2020.10.03.04.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 04:11:12 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Fix freeing of unassigned pointer
-Date:   Sat,  3 Oct 2020 12:10:50 +0100
-Message-Id: <20201003111050.25130-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sat, 3 Oct 2020 07:22:26 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id OfZekjIBgTHgxOfZhk6bEB; Sat, 03 Oct 2020 13:22:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1601724143; bh=SrIug3qpOAiuSFr6U/yS7Rn0eFN46Emp41MwllPybCQ=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=lIEZoRG5CjtoeoEGPkLY/BIIasiZFbFulBjKPxpLjT+IpicVyZDErY75NewaGbHPc
+         Qs/B3vZ8qEYRVyAgVcca3wvfUSKKQK2YLyys9BAdQwRc/ERAyXE1qpgxc31u8jSZLu
+         EO6VyPvRaQBKeM11Rgdy9m+uOSJFCa3uOC82qjS7g94z2CVb4kFmZGA56LpSjDv3Fc
+         ZHjbMmQ/4Sd7AcMUGXNAOBgLq+qO4BXZILehJKGCeMTh5qCzqLnnPyN/W6pbWQElp6
+         8lGctRToXbv3dnwMbMm8dRPxkP2TmEEjDElxUcfUMSHg9L85hJxTqRL6QIWgf0/skv
+         KTes3GM/39rCA==
+Subject: Re: [PATCH 2/3] media: mtk-vcodec: add missing put_device() call in
+ mtk_vcodec_init_dec_pm()
+To:     Yu Kuai <yukuai3@huawei.com>, tiffany.lin@mediatek.com,
+        andrew-ct.chen@mediatek.com, mchehab@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+References: <20200924081802.1061024-1-yukuai3@huawei.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f155ec8b-9036-55b4-2624-a042b6e26866@xs4all.nl>
+Date:   Sat, 3 Oct 2020 13:19:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200924081802.1061024-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfJuldRTWhFqMmLPFuJSzU6XO6AcWXdH+xgdSGhNL9Iuz8Y9k8ajM8u1BN4mGtyFF5ZIEqQLmb3tapojSVpcHG56c/vQPXPK3ki9mw2qOzMXpJBboPsaw
+ rNGssIMs1rGBwTUqaYOxdibW/AopGfHIuMaqBoCvpm+G7ZY4/u7hlMKPTUnMVtyQ23mfhqA6GbYSQoNwi8FPKWBWWyAqNjy0LWvhs+wogDotBhbdXRm/8Np+
+ 6brEA6w1YVztWW5fYPIOkISbehcGG2VfWG5f3KPIrynfoekCaw39M5qNQj0ncWtshCsDzH1OkdF6TOqxovOBd0N4xMvhmcHUWFZpzWXz5xEQ6Z2442ObyW7/
+ jjQGRFdSWasQ4vhek+wG8N9sTJxPji9H3isACSv/+9csZlBw99BNFv8f8y6UDfQeRYFgUnkiHmBwuzx9/exGDoqdmI3d8rQmYvIuwCTFyrvr+ekD2/OdM7o8
+ MY/DlpN7DR3foEyq9pExlzFMKIkB9A20JACAnqSsScAeo9MH97ZpCiy3oAE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ff7ea04ad579 ("net/mlx5e: Fix potential null pointer dereference")
-added some missing null checks but the error handling in
-mlx5e_alloc_flow() was left broken: the variable attr is passed to kfree
-although it is never assigned to and never needs to be freed in this
-function. Fix this.
+On 24/09/2020 10:18, Yu Kuai wrote:
+> if of_find_device_by_node() succeed, mtk_vcodec_init_dec_pm() doesn't have
+> a corresponding put_device(). Thus add jump target to fix the exception
+> handling for this function implementation.
+> 
+> Fixes: 590577a4e525 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Decoder Driver")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c    | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> index 5a6ec8fb52da..01e680ede9bd 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
+> @@ -48,11 +48,14 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
+>  		dec_clk->clk_info = devm_kcalloc(&pdev->dev,
+>  			dec_clk->clk_num, sizeof(*clk_info),
+>  			GFP_KERNEL);
+> -		if (!dec_clk->clk_info)
+> -			return -ENOMEM;
+> +		if (!dec_clk->clk_info) {
+> +			ret = -ENOMEM;
+> +			goto put_device;
+> +		}
+>  	} else {
+>  		mtk_v4l2_err("Failed to get vdec clock count");
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto put_device;
+>  	}
+>  
+>  	for (i = 0; i < dec_clk->clk_num; i++) {
+> @@ -61,19 +64,22 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
+>  			"clock-names", i, &clk_info->clk_name);
+>  		if (ret) {
+>  			mtk_v4l2_err("Failed to get clock name id = %d", i);
+> -			return ret;
+> +			goto put_device;
+>  		}
+>  		clk_info->vcodec_clk = devm_clk_get(&pdev->dev,
+>  			clk_info->clk_name);
+>  		if (IS_ERR(clk_info->vcodec_clk)) {
+>  			mtk_v4l2_err("devm_clk_get (%d)%s fail", i,
+>  				clk_info->clk_name);
+> -			return PTR_ERR(clk_info->vcodec_clk);
+> +			ret = PTR_ERR(clk_info->vcodec_clk);
+> +			goto put_device;
+>  		}
+>  	}
+>  
+>  	pm_runtime_enable(&pdev->dev);
+> -
+> +	return 0;
+> +put_device:
+> +	put_device(pm->larbvdec);
+>  	return ret;
+>  }
+>  
+> 
 
-Addresses-Coverity-ID: 1497536 ("Memory - illegal accesses")
-Fixes: ff7ea04ad579 ("net/mlx5e: Fix potential null pointer dereference")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+A similar question as with the previous patch: shouldn't there be a
+put_device(pm->larbvdec); in the mtk_vcodec_release_dec_pm() function?
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index a0c356987e1a..88298e96c4ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -4536,13 +4536,14 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
- 	struct mlx5e_tc_flow_parse_attr *parse_attr;
- 	struct mlx5_flow_attr *attr;
- 	struct mlx5e_tc_flow *flow;
--	int err = -ENOMEM;
- 	int out_index;
- 
- 	flow = kzalloc(sizeof(*flow), GFP_KERNEL);
-+	if (!flow)
-+		return -ENOMEM;
- 	parse_attr = kvzalloc(sizeof(*parse_attr), GFP_KERNEL);
--	if (!parse_attr || !flow)
--		goto err_free;
-+	if (!parse_attr)
-+		goto err_free_flow;
- 
- 	flow->flags = flow_flags;
- 	flow->cookie = f->cookie;
-@@ -4550,7 +4551,7 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
- 
- 	attr = mlx5_alloc_flow_attr(get_flow_name_space(flow));
- 	if (!attr)
--		goto err_free;
-+		goto err_free_parse_attr;
- 
- 	flow->attr = attr;
- 
-@@ -4566,11 +4567,11 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
- 
- 	return 0;
- 
--err_free:
--	kfree(flow);
-+err_free_parse_attr:
- 	kvfree(parse_attr);
--	kfree(attr);
--	return err;
-+err_free_flow:
-+	kfree(flow);
-+	return -ENOMEM;
- }
- 
- static void
--- 
-2.28.0
+Same for the next patch.
 
+Regards,
+
+	Hans
