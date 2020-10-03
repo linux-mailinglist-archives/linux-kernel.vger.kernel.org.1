@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7732823CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7592823D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725785AbgJCLW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 07:22:27 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:41671 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725768AbgJCLW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 07:22:26 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id OfZekjIBgTHgxOfZhk6bEB; Sat, 03 Oct 2020 13:22:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1601724143; bh=SrIug3qpOAiuSFr6U/yS7Rn0eFN46Emp41MwllPybCQ=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=lIEZoRG5CjtoeoEGPkLY/BIIasiZFbFulBjKPxpLjT+IpicVyZDErY75NewaGbHPc
-         Qs/B3vZ8qEYRVyAgVcca3wvfUSKKQK2YLyys9BAdQwRc/ERAyXE1qpgxc31u8jSZLu
-         EO6VyPvRaQBKeM11Rgdy9m+uOSJFCa3uOC82qjS7g94z2CVb4kFmZGA56LpSjDv3Fc
-         ZHjbMmQ/4Sd7AcMUGXNAOBgLq+qO4BXZILehJKGCeMTh5qCzqLnnPyN/W6pbWQElp6
-         8lGctRToXbv3dnwMbMm8dRPxkP2TmEEjDElxUcfUMSHg9L85hJxTqRL6QIWgf0/skv
-         KTes3GM/39rCA==
-Subject: Re: [PATCH 2/3] media: mtk-vcodec: add missing put_device() call in
- mtk_vcodec_init_dec_pm()
-To:     Yu Kuai <yukuai3@huawei.com>, tiffany.lin@mediatek.com,
-        andrew-ct.chen@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-References: <20200924081802.1061024-1-yukuai3@huawei.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <f155ec8b-9036-55b4-2624-a042b6e26866@xs4all.nl>
-Date:   Sat, 3 Oct 2020 13:19:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725787AbgJCLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 07:36:31 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:60211 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725767AbgJCLgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 07:36:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601724990; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+b3m7jKQ1O6fiYm/hL5ZFgqJTiOppqki6YMsfwFKW/s=; b=vsc/WZpgY2kbi0tQZKoD0UYkxJLnNc6bPPs89lHnvHip498hcMTGF6IZpWiJWLvuISQBlwvb
+ QdkHtEdVIpPFXGXgObaAYdqNl4l/YlRFPQbKW5aITjXPXZAmPnCFHMRpHW43Qc8eANK3enAa
+ I2mJDFhK0V3xkafET6HfZbcZ3vg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f78622ed63768e57b3be321 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 03 Oct 2020 11:36:14
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C15E5C4339C; Sat,  3 Oct 2020 11:36:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.131.172.121] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC457C433CB;
+        Sat,  3 Oct 2020 11:36:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC457C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH v8 5/7] ASoC: qcom: Add support for lpass hdmi driver
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1601447977-18115-1-git-send-email-srivasam@codeaurora.org>
+ <1601447977-18115-6-git-send-email-srivasam@codeaurora.org>
+ <c94cf74d-03f6-999e-012f-5d9ef2316d61@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited
+Message-ID: <925e2586-39dd-b1d9-174a-bda3367ab668@codeaurora.org>
+Date:   Sat, 3 Oct 2020 17:06:06 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200924081802.1061024-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <c94cf74d-03f6-999e-012f-5d9ef2316d61@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfJuldRTWhFqMmLPFuJSzU6XO6AcWXdH+xgdSGhNL9Iuz8Y9k8ajM8u1BN4mGtyFF5ZIEqQLmb3tapojSVpcHG56c/vQPXPK3ki9mw2qOzMXpJBboPsaw
- rNGssIMs1rGBwTUqaYOxdibW/AopGfHIuMaqBoCvpm+G7ZY4/u7hlMKPTUnMVtyQ23mfhqA6GbYSQoNwi8FPKWBWWyAqNjy0LWvhs+wogDotBhbdXRm/8Np+
- 6brEA6w1YVztWW5fYPIOkISbehcGG2VfWG5f3KPIrynfoekCaw39M5qNQj0ncWtshCsDzH1OkdF6TOqxovOBd0N4xMvhmcHUWFZpzWXz5xEQ6Z2442ObyW7/
- jjQGRFdSWasQ4vhek+wG8N9sTJxPji9H3isACSv/+9csZlBw99BNFv8f8y6UDfQeRYFgUnkiHmBwuzx9/exGDoqdmI3d8rQmYvIuwCTFyrvr+ekD2/OdM7o8
- MY/DlpN7DR3foEyq9pExlzFMKIkB9A20JACAnqSsScAeo9MH97ZpCiy3oAE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2020 10:18, Yu Kuai wrote:
-> if of_find_device_by_node() succeed, mtk_vcodec_init_dec_pm() doesn't have
-> a corresponding put_device(). Thus add jump target to fix the exception
-> handling for this function implementation.
-> 
-> Fixes: 590577a4e525 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Decoder Driver")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c    | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-> index 5a6ec8fb52da..01e680ede9bd 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-> @@ -48,11 +48,14 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
->  		dec_clk->clk_info = devm_kcalloc(&pdev->dev,
->  			dec_clk->clk_num, sizeof(*clk_info),
->  			GFP_KERNEL);
-> -		if (!dec_clk->clk_info)
-> -			return -ENOMEM;
-> +		if (!dec_clk->clk_info) {
-> +			ret = -ENOMEM;
-> +			goto put_device;
-> +		}
->  	} else {
->  		mtk_v4l2_err("Failed to get vdec clock count");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto put_device;
->  	}
->  
->  	for (i = 0; i < dec_clk->clk_num; i++) {
-> @@ -61,19 +64,22 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
->  			"clock-names", i, &clk_info->clk_name);
->  		if (ret) {
->  			mtk_v4l2_err("Failed to get clock name id = %d", i);
-> -			return ret;
-> +			goto put_device;
->  		}
->  		clk_info->vcodec_clk = devm_clk_get(&pdev->dev,
->  			clk_info->clk_name);
->  		if (IS_ERR(clk_info->vcodec_clk)) {
->  			mtk_v4l2_err("devm_clk_get (%d)%s fail", i,
->  				clk_info->clk_name);
-> -			return PTR_ERR(clk_info->vcodec_clk);
-> +			ret = PTR_ERR(clk_info->vcodec_clk);
-> +			goto put_device;
->  		}
->  	}
->  
->  	pm_runtime_enable(&pdev->dev);
-> -
-> +	return 0;
-> +put_device:
-> +	put_device(pm->larbvdec);
->  	return ret;
->  }
->  
-> 
+Thanks for bringing up this point Srinivas!!!
 
-A similar question as with the previous patch: shouldn't there be a
-put_device(pm->larbvdec); in the mtk_vcodec_release_dec_pm() function?
+On 9/30/2020 8:57 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 30/09/2020 07:39, Srinivasa Rao Mandadapu wrote:
+>> +}
+>> +
+>> +static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned 
+>> int reg)
+>> +{
+>> +    return true;
+>> +}
+>
+> I did ask this question in multiple reviews, but never got an answer!
+> Are all the dp/hdmi port register range really volatile!?
 
-Same for the next patch.
+Sorry for incomplete response in last review comment reply.
+With making only specific DMA registers and interrupts registers true, 
+aplay was stuck.
 
-Regards,
+Now we identified issue causing register and made it volatile.
+With that change it seems working fine. After doing all the tests we 
+will share v9 series patch.
 
-	Hans
+>
+>
+>
+> --srini
+>> +
+>> +struct regmap_config lpass_hdmi_regmap_config = {
+>> +    .reg_bits = 32,
+>> +    .reg_stride = 4,
+>> +    .val_bits = 32,
+>> +    .writeable_reg = lpass_hdmi_regmap_writeable,
+>> +    .readable_reg = lpass_hdmi_regmap_readable,
+>> +    .volatile_reg = lpass_hdmi_regmap_volatile,
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
