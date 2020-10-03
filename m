@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7075E2821D5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 08:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB0D2821E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 09:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725782AbgJCGiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 02:38:14 -0400
-Received: from mout.gmx.net ([212.227.17.21]:41065 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJCGiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 02:38:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601707075;
-        bh=XRD1G/FKH5P14Qoexkz4KABtNAoyURyyM07p9s6A2yA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=g55jZzqAXpsVo9RbgbGMro15/KEK4AFcMWrdbwImz473pZtOmJaiJwbz//1jX4CW9
-         Qij0VWSkZKiofX6EHL6No0kxRzRb+qu94tofYJs0DxbjcYBEA9LyNd8pIuFiNfEl6V
-         Stzs5swGlR/ESB2/krromLiah2I3ihqbn0ADvd4s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from LT02.fritz.box ([178.202.41.107]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvbG2-1ki3Gu4AmU-00seKf; Sat, 03
- Oct 2020 08:37:55 +0200
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-efi@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Atish Patra <atishp@atishpatra.org>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH v2 2/2] docs: admin-guide: EFI stub to main Linux handoff
-Date:   Sat,  3 Oct 2020 08:37:25 +0200
-Message-Id: <20201003063725.8698-3-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201003063725.8698-1-xypron.glpk@gmx.de>
-References: <20201003063725.8698-1-xypron.glpk@gmx.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i+31IZulvm+Hkm7Jgc9slA5QQmVL8UwmQXplGyx3R1TkJGbBspR
- XPqhfjvk+xyIKZzg6xGtnym6LYGj2X/c3mml0ZtXvQELo7AglFu2XZuDPIWWAitvE8yDNgw
- 84P5xxAjcRL80fFpZUmqUIxVt9IYKZSBnVteu54lr298LBb2oa7er5OvcTaVUgSnPMADJGo
- MA9ILHeYiCfEo47WlVY5g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yRmdQYnLlKc=:Bgo/dGOvyZPkoTfpEazkt9
- Mq8GzYXyQz+Oy0m3rCNm0b5Z8Yx9ctatfa8KzVu1YxGvr/7lLGg88dxNX7ksWz/SOHvZ4o6xw
- Cqbf715H1RvmSXr/O5IWQV0PpQEfe5Y111J085ZTRVqZBKqQghpXxyNe0cnr6VKunrePa0ZJY
- 3hgb+oZl4joxQnHP1xBXhjuQi1AbNqZg130i9dDLz/eu4IiPxvdr6wvgqywEP1ZQMg9DB081P
- Ici7eRvEX/MrAnbYUqKu7/bycqRs4WTGZ+xueMmd2TJDJFLOKYLog/p8Dqy9Z8hGyTVIhnnyW
- PylafJUW3WcjSIrVb97waWsUdlZxjz7NDxvThFLhsqUT+Pvd54onHnwCmMpuLupgahC2JPN/o
- lLp8Yju2LqoeoRPjpNCVzZyiDFjTwe41+i2hE4QMmVt/7plCq407JxIqdS7RR4c5GaAN4D1JJ
- zrTQtTjj01+62+WHDF9wXjMjnVw15yaLemD/7X+jvCNg6mm46/CYQz8KRZS+Mv88nFXTqRALF
- 9JlT9vW51bn9Nvj8L2HMdTv3CFv4y+9VYA8OcDhWwIwIcueks3dibaMRituDGzvwhriSXDgJw
- fqhQsYEeXHfTcImiz0+V99+3yePKcIPSj6YDH0iYOEcdNGfhBgiOTirG1QKl1yzXyoc6LC51l
- zF2ppOiS65pd0/Z9HTrtEs+DWdUe5labAI0T86H3/gQkcs6B6DIZBPfC8F1cIsqEsfRoKn+gg
- ooPXVx0s/vY8XHBMDFVydea77mvPCicDCb5eZzXi3VP5fqOmObJBeJ5tg3TLYhZyrQZgwbb/l
- 3q6FcKRAV9PIp4Ammt2N8UQqI+5XqGrVSZZb904c17/6AwiAbhv0Ql7nKjOQ+aM5OBwAnf0Cg
- EHO84YCGdx1ccKy3EHnvtfLwpHxxBEiR2veTQgz+KOxjj2adkUvxkcFuUiwQ+C3APUhMCx1R2
- +r0YIjMTEQ8fdGXi7DRr2U5dKzj42MuvuAUBryBx0VolVg88+uFYPQsCMBVdLWpn1OKHNhUOr
- iQjYnMEIYv6DYGn6uaZUpKb/LwpcHvIHxW4cI/AKK8wfKASPts3ytwC5PRirceBStfhYPriYz
- sjbjt86kxYQePZGEIbHU97ghXOhwNtUl/JgIBL4VLwzD4cn1P2MILACsW6k4gX2MFa/m4TIyQ
- RqKtzI5HN9D9NIOLnYwodw09fBMmv0VPrne6BDi0DK6H8AQRxUFmTgx+qEJq8OrxFi+8CnTzR
- bdm3EpoI15W6Up1/dCwYXGh/BIDeNLYwYfe0cnw==
+        id S1725790AbgJCHF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 03:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgJCHF6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 03:05:58 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4ADC0613D0;
+        Sat,  3 Oct 2020 00:05:58 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g18so263957pgd.5;
+        Sat, 03 Oct 2020 00:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GKKFXutVq6JBEK8XjRJaqT5wjVrg16/0GsaLUpb8/ig=;
+        b=UyB0pDppZuQygRa+/u02Y+YAu6ZQwnMMjnCIjVjZePLFuomQDp0ZEb8cIUvhuHP4ke
+         qQJOxYhY5Rhc8/EPjXmP0zXixURSkXyHeHhZ2094zCvaw4dZx6DY6IqPF4WdziB3PA9V
+         FmzOaugAvFQeOHyTh2DH+DrK1xgnzqUTq6nkfklmCdCbjncww5BZFCIJlCX/dPys/hMe
+         flG61XM+YygIZfxgSDOKeE2xf0vC7QvsKGiBoVlrNg3I2Mf5V/tqmx00FwTVOpyFhIXM
+         lsUi9JFVW2OOLPxysZJVWNwsvuOpANw4cVihDYt6vNs1nOfbS+ddtQVlv1xBqGA/tNIP
+         3rmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GKKFXutVq6JBEK8XjRJaqT5wjVrg16/0GsaLUpb8/ig=;
+        b=Ed0MHUiNb3++Za/SnVACUES7df0GTVLfdC3R0SPYqkWjSZNEa5NggJ3XRHNHDpse9F
+         fkquOiYoEptd0IXNeCS/SwTd9bA0T9peVZ5yrFn+DaUZkN4PLUK2VyFBzVoPi3jNLdcM
+         XJlSn7d78cNP5oIY1b81+/2ytEBVJ4iNBPNH1Qf1ky0AXIP/AH9Y9saAPMQ9qzOTqpOj
+         RX3UWlBFm/D3z/R++nXbxqL55QElqx+TAM1L38bLF8MXDKiD5IFq7feelAnQoqW2+BCV
+         h2UXDeTIpnSUl2vTyKWSj63e93TSybU/pTM6ebiRex5oZ9JCY01frwn6yX+tNRN72rxo
+         6DrQ==
+X-Gm-Message-State: AOAM533kNcX3ZBAo2OnpZWXkQl9L4RTI+CktIsopfNQr57BPENR/8Yxj
+        jMKAVBxPEjD8yl45Xdog0bFsKb7Oghg=
+X-Google-Smtp-Source: ABdhPJwWzCXCHgBMr3ABCAvMnsMEPZC0oefI+R/nGRotFLhuEtUwjYo0LbgwizMaVm/tkfxCQT64HA==
+X-Received: by 2002:a63:4451:: with SMTP id t17mr5707137pgk.32.1601708758277;
+        Sat, 03 Oct 2020 00:05:58 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id d25sm3854498pgl.23.2020.10.03.00.05.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 00:05:57 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] iommu/tegra-smmu: Add PCI support
+Date:   Fri,  2 Oct 2020 23:59:44 -0700
+Message-Id: <20201003065947.18671-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the handoff from the EFI stub to the main Linux kernel.
+This series is to add PCI support in tegra-smmu driver.
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
-v2:
-	new patch
-=2D--
- Documentation/admin-guide/efi-stub.rst | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Changelog (Detail in each patch)
+v4->v5
+ * PATCH-1 Cleaned two variables inits
+ * PATCH-2 Fixed put() in ->of_xlate() and Updated commit message
+ * PATCH-3 Added Dmitry's Reviewed-by
+v3->v4
+ * Dropped helper function
+ * Found another way to get smmu pointer
+v2->v3
+ * Replaced with devm_tegra_get_memory_controller
+ * Updated changes by following Dmitry's comments
+v1->v2
+ * Added PATCH-1 suggested by Dmitry
+ * Reworked PATCH-2 to unify certain code
 
-diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-=
-guide/efi-stub.rst
-index 4965dec48af4..669602ff4515 100644
-=2D-- a/Documentation/admin-guide/efi-stub.rst
-+++ b/Documentation/admin-guide/efi-stub.rst
-@@ -133,3 +133,15 @@ described above.
+Nicolin Chen (3):
+  iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
+  iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+  iommu/tegra-smmu: Add PCI support
 
- This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=3Dy and se=
-cure
- boot is disabled.
-+
-+Handoff to main Linux kernel
-+----------------------------
-+
-+Currently the EFI stub enters the main Linux kernel via the same entry po=
-ints
-+that are used when booting without UEFI. This might change in future vers=
-ions.
-+For a description of these entry points see:
-+
-+* for arm :doc:`/arm/booting`
-+* for arm64 :doc:`/arm64/booting`
-+* for riscv :doc:`/riscv/index`
-+* for x86 :doc:`/x86/boot`
-=2D-
-2.28.0
+ drivers/iommu/tegra-smmu.c | 183 ++++++++++++-------------------------
+ 1 file changed, 59 insertions(+), 124 deletions(-)
+
+-- 
+2.17.1
 
