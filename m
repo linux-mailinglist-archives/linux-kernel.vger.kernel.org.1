@@ -2,48 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C43F28217A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A302821A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 07:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725781AbgJCE71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:59:27 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53543 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725446AbgJCE71 (ORCPT
+        id S1725778AbgJCFnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 01:43:20 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:48978 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgJCFnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 00:59:27 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0934xGtI017783
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 3 Oct 2020 00:59:16 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id DA11542003C; Sat,  3 Oct 2020 00:59:15 -0400 (EDT)
-Date:   Sat, 3 Oct 2020 00:59:15 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Hui Su <sh_def@163.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] FIX the comment of struct jbd2_journal_handle
-Message-ID: <20201003045915.GI23474@mit.edu>
-References: <20200922171231.GA53120@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922171231.GA53120@rlk>
+        Sat, 3 Oct 2020 01:43:20 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0935dw1J156091;
+        Sat, 3 Oct 2020 05:43:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=9KxNDqQb/daFeFk4axWtWUrYIM1JzBO5oMsjX6VTYv4=;
+ b=eIu0EI35rkEjtQ6/BtqEmRp6xWyCUxGkUmlkEzOrQbVq26a1x9Uh8wssQZeRZ8rAL3/H
+ gvFuNAEwcPxA5HkUNwBtuzniYvmzhzDN9k02TZgRCUyISbCHE/Esnf1m8KglU8vVGpD6
+ g+bJMWzr9d8ICsYIaAOZuZj72cgopeOKYK5xsnRDHtI6Siy6WJFsLvw9WM3IntXPxCHB
+ WTCk4rzKuoV83v6syIBOxlpZT8Sm3z5AaFw1UwzVWWAptLOXZcoDwPjgE7irVBt2kWiu
+ ozhVLH/ZVMHtRdGKrieZndZZOV/7kzNAxOmHJQt+Im3Q39NzS72qTLn7t1w5LQvbz33P EA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 33xetagabk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 05:43:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0935eaSP071195;
+        Sat, 3 Oct 2020 05:43:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33xh3y29ut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 05:43:13 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0935hDsX026233;
+        Sat, 3 Oct 2020 05:43:13 GMT
+Received: from ban25x6uut24.us.oracle.com (/10.153.73.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 22:43:12 -0700
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     mst@redhat.com, jasowang@redhat.com, lingshan.zhu@intel.com
+Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH v3 0/2] vhost-vdpa mapping error path fixes
+Date:   Sat,  3 Oct 2020 01:02:08 -0400
+Message-Id: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:12:31AM +0800, Hui Su wrote:
-> the struct name was modified long ago, but the comment still
-> use struct handle_s.
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
+Commit 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
+has following issues in the failure path of IOTLB update:
 
-Tnanks, applied.  I updated the commit summary to be:
+1) vhost_vdpa_map() does not clean up dangling iotlb entry
+   upon mapping failure
 
-    jbd2: fix the comment of struct jbd2_journal_handle
+2) vhost_vdpa_process_iotlb_update() has leakage of pinned
+   pages in case of vhost_vdpa_map() failure
 
-					- Ted
+This patchset attempts to address the above issues.
+
+Changes in v3:
+- Factor out changes in vhost_vdpa_map() and the fix for
+  page pinning leak to separate patches (Jason)
+
+---
+Si-Wei Liu (2):
+  vhost-vdpa: fix vhost_vdpa_map() on error condition
+  vhost-vdpa: fix page pinning leakage in error path
+
+ drivers/vhost/vdpa.c | 122 +++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 74 insertions(+), 48 deletions(-)
+
+-- 
+1.8.3.1
+
