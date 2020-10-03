@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EB12823EE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551F72823F0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725805AbgJCLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 07:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgJCLjM (ORCPT
+        id S1725791AbgJCLkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 07:40:37 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47792 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgJCLkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 07:39:12 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577AAC0613D0;
-        Sat,  3 Oct 2020 04:39:10 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id j2so4594245eds.9;
-        Sat, 03 Oct 2020 04:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UTw9SC4xG6loXYiQpgIO7a9BnRpjOpziIFfpkToaJz4=;
-        b=QVW6ThXz97qmXyFNeSVi4zk2cCYB+QVEsy6GppgkSkctxhtEZ9ofDopxXoBdLTjQ3E
-         XX+DFRH5Dp828aIrNFhOq29RMtCnEhyJDbdUEqm6O7gCLK1pLkPpK72xbcT7VCL/K+5a
-         L5r/inDFW/3DYXuuqh0HvG9OOmZaH+M1ECbjOEVcW3bRHb20nq5cfsg/DjDVGS8Mbsbc
-         p3uN9CXyK5IGqWuCjG9pXdbbllFR/8a1MLMkMBO5YNkM0D93l508zObjMeJ6l/KudO2J
-         r9DAxYr2F6j37Daa5n/7qjAa2WKG2yXJ2sfF7l3dnhQtZ3hY8Z5lH1F6lIDz29yZZlSQ
-         botQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UTw9SC4xG6loXYiQpgIO7a9BnRpjOpziIFfpkToaJz4=;
-        b=kskMG63VelFk3nhOGwNDQln1HEOVUl4+D8DQv3PTaFPbnRl1JkDevneT9x9EFnMQ+z
-         i37AXCoV4Yn/8SUs2qUZpDJFGaTZOS3XgBTgh8Um4TNzHW42v2/OByxLkpbX1IO5HVtL
-         A5vPVTxWszj36HHwysrOYS6o3adRwvceyVZ73IqnCLgm21zBmKfq0jOT7ezoGVgpdhWV
-         +fvpw0fuzRR2qhZVJ2FpElWFJx5W2O10EwIPbMv47UJa145kKl2LzV93RE4feDy00A8r
-         BWSLhJZD9+JFUwrxwbGgcgzXWULx9Fd2Sl1UsuuVxbnGJPOoVgzgKVM6Ni3DJol7HOJ0
-         Vm0Q==
-X-Gm-Message-State: AOAM531VI7bMXwyZ+ZGN0d2BCnNZmZa7db5gjM/Bjb46ty62p4n2GrGY
-        AiK2/YpqVTK+5B1nLOygK6k=
-X-Google-Smtp-Source: ABdhPJz4IGJ4ISYi6auC7O+f73vqDdlpSHUE03FsbQ2189tNDKHW9mgdT3bZ8AICQAd+bomKwE+GfQ==
-X-Received: by 2002:a50:cbc7:: with SMTP id l7mr7962966edi.148.1601725149082;
-        Sat, 03 Oct 2020 04:39:09 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id g3sm1367436eds.56.2020.10.03.04.39.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 04:39:07 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Jonathan Wakely <jwakely.gcc@gmail.com>,
-        Paul Eggert <eggert@cs.ucla.edu>,
-        linux-man <linux-man@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gcc@gcc.gnu.org" <gcc@gcc.gnu.org>, David.Laight@ACULAB.COM
-Subject: Re: Navigational corrections
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <41affebd-3354-9420-0048-bffd14535e95@gmail.com>
- <20201001154946.104626-2-colomar.6.4.3@gmail.com>
- <538b683f-01d2-6148-4f1d-1b293eb5cd6b@cs.ucla.edu>
- <4b86f6e9-0d8a-f14a-73ce-ebbdc9d9edba@gmail.com>
- <CAH6eHdSLbaqTyXaPnBxnR4n+WVHJCBDF=C9RXa6To1rSuv0D4w@mail.gmail.com>
- <CAKgNAkiHbK4RU_a_165yg3O6W0-GZMNLQoBNbut6ME=bW7pvCw@mail.gmail.com>
- <CAH6eHdQrmsHxZbk3+JxRVZ5qH1fhFzLxyigs+DtEzSg2cet+kw@mail.gmail.com>
- <63826e82-7a19-0ecc-f73c-56aa560a842f@gmail.com>
- <CAH6eHdTpzNk4+Rg-+kUCRDZPLHe7MBBf2PK5i1WqD4VeEs60oQ@mail.gmail.com>
- <4422e4bc-f54c-02cf-9b47-808d07ce8ba5@gmail.com>
- <297e304a-758e-f703-d1e2-6708be3ffca8@gmail.com>
- <9c8f90c5-0f34-609f-8001-a61f90e05849@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <4c8a8fbf-3577-a242-94db-3044b57f6570@gmail.com>
-Date:   Sat, 3 Oct 2020 13:39:06 +0200
+        Sat, 3 Oct 2020 07:40:36 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 093BeE4v060421;
+        Sat, 3 Oct 2020 06:40:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601725214;
+        bh=FTAaKOrroH90dUpVpyn5QsXNTRmWLKDF16lL3JfcpP4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=XMc0S3QS2J2KV5MaWFv6m67pffjX4P8ZW1ashIwLRXxNvxqJbicJZQlxzWPZNL2SC
+         O1mZ5Z4mJtH3uSUB2Bf768LCR2qOXYGZjRjfaD1z9FHpQ3tjujWk2nDcXHnQTR4T1B
+         B7ZDUGidgl/wMH1I2W7I7g3r4BB6aAiZiBB6eNQE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 093BeE9J039175
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 3 Oct 2020 06:40:14 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 3 Oct
+ 2020 06:40:13 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sat, 3 Oct 2020 06:40:13 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 093Be9LR090992;
+        Sat, 3 Oct 2020 06:40:10 -0500
+Subject: Re: [PATCH v15 14/15] mtd: spi-nor: spansion: add support for Cypress
+ Semper flash
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+References: <20201001202045.21499-1-p.yadav@ti.com>
+ <20201001202045.21499-15-p.yadav@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <6690e22f-b2e4-7c89-397c-2c1aafb0339a@ti.com>
+Date:   Sat, 3 Oct 2020 17:10:09 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9c8f90c5-0f34-609f-8001-a61f90e05849@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201001202045.21499-15-p.yadav@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Hi Pratyush,
 
+On 10/2/20 1:50 AM, Pratyush Yadav wrote:
+> +
+> +/**
+> + * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+> + * @nor:		pointer to a 'struct spi_nor'
+> + * @enable:              whether to enable or disable Octal DTR
+> + *
+> + * This also sets the memory access latency cycles to 24 to allow the flash to
+> + * run at up to 200MHz.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> +{
+> +	struct spi_mem_op op;
+> +	u8 *buf = nor->bouncebuf;
+> +	int ret;
+> +
+> +	if (enable) {
+> +		/* Use 24 dummy cycles for memory array reads. */
+> +		ret = spi_nor_write_enable(nor);
+> +		if (ret)
+> +			return ret;
+> +
+> +		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
+> +		op = (struct spi_mem_op)
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
+> +				   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
+> +						   1),
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = spi_nor_wait_till_ready(nor);
+> +		if (ret)
+> +			return ret;
+> +
+> +		nor->read_dummy = 24;
+> +	}
+> +
+> +	/* Set/unset the octal and DTR enable bits. */
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (enable)
+> +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
+> +	else
+> +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
+> +
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
+> +			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
+> +					   SPINOR_REG_CYPRESS_CFR5V,
+> +					   1),
+> +			   SPI_MEM_OP_NO_DUMMY,
+> +			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> +
+> +	if (!enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Give some time for the mode change to take place. */
+> +	usleep_range(1000, 1500);
+> +
 
->  >
->  > The question of 'void *' is an interesting one. It is something
->  > like a fundamental C type, and not something that comes from POSIX.
->  > But, it does appear in POSIX APIs and often details of using
->  > the type are not well understood. So, as a matter of practicality,
->  > and again since you've done the work, I am inclined to include
->  > this type in the page, just so it can be handily referred to
->  > along with all of the other types.
->  >
->  > Looking ahead (and I hope none of the above disheartens you,
->  > since you've done a lot of great work for this page),
-> 
-> Actually, not.
-> Its good to have you tell me what is good for the man and what's not.
-> Otherwise, I wouldn't know.
-> I keep a branch with all of the rejected patches,
-> just to have an idea of what I should not send you :-)
-> 
->  > it would
->  > be good if you could provide a bit of an advance roadmap about
->  > the types that you'd like to add to the page.
-> 
-> Well, I didn't have a clear roadmap.
-> I had some types which I clearly wanted to document,
-> and they were ptrdiff_t, and ssize_t,
-> which I documented in the first patches,
-> and then I was finding related types,
-> and also tended to document about types which I knew very well too,
-> to have something useful to add to the description.
-> 
-> I may now start writing about off_t and related types,
-> which were the ones that made me want this page.
+According to datasheet, it seems switch to Octal DTR mode is immediate.
+So, I don't think this delay is necessary. Instead as a confirmation
+that mode switch is successful can we just read back
+SPINOR_REG_CYPRESS_CFR5V in Octal DTR mode and see if value reflects
+what was written?
 
-off_t would be great.
+Same applies for 15/15 as well.
 
-In case you are looking for some other candidates, some others
-that I would be interested to see go into the page would be
-
-fd_set
-clock_t
-clockid_t
-and probably dev_t
-
-
-Thanks,
-
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+> +	return 0;
+> +}
+> +
