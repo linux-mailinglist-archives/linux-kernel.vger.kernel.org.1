@@ -2,235 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE85A282564
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7527282566
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgJCQrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 12:47:43 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:55998 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbgJCQrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 12:47:42 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id EE66DFB03;
-        Sat,  3 Oct 2020 18:47:38 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id O1SgnQLk12Z5; Sat,  3 Oct 2020 18:47:37 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 7489845D0C; Sat,  3 Oct 2020 18:47:36 +0200 (CEST)
-Date:   Sat, 3 Oct 2020 18:47:36 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>
-Subject: Re: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI
- controller schemas
-Message-ID: <20201003164736.GA2773@bogon.m.sigxcpu.org>
-References: <20201002225924.3513700-1-robh@kernel.org>
+        id S1725821AbgJCQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 12:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgJCQu0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 12:50:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC815C0613D0;
+        Sat,  3 Oct 2020 09:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=+0e6+K3hwZF8MBukpU2gY6R90DOei1aWOAOJjZS9mg0=; b=OYrHGAdiqbM8IOWluCfZ4PgyVH
+        YI4sF50+rzmkrJJEelwHHaRIVdMWXiaRY0Xwt0LZ7vXw3Sfo9o2yBq6FjNafNAzO3jJW4BqQyna8C
+        GYhgQyXo/GfvbazLNnPLdF8gQ72/6qx2EpwSyya+w7xGpy0gdtHWWCbvR8HF2pg32/brYgnMCuXgr
+        pz7j8VvKTHBWHWdeIxYG0jrIXxE1/h+SOFKS6WrXSmYApwV0UeOR3pDwhqJuKh1vbSdUbL2dBrkCe
+        CcajlttSLw703Buppbvihc49ObvfgvKM5u9yvw559s8BeRn++ur8HyZsquctYoTibD67+dH6HOO+w
+        B5UiNPhg==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOkjk-0006xp-8v; Sat, 03 Oct 2020 16:50:20 +0000
+Subject: Re: [PATCH] media: mtk-vcodec: fix builds when remoteproc is disabled
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20201003130947.555637-1-acourbot@chromium.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <43e118c9-0bc6-d85d-2f86-e74f833e1e8a@infradead.org>
+Date:   Sat, 3 Oct 2020 09:50:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201002225924.3513700-1-robh@kernel.org>
+In-Reply-To: <20201003130947.555637-1-acourbot@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Fri, Oct 02, 2020 at 05:59:24PM -0500, Rob Herring wrote:
-> Some DSI controllers are missing a reference to the recently added
-> dsi-controller.yaml schema. Add it and we can drop the duplicate
-> parts.
-
-For the NWL part:
-
-Reviewed-by: Guido Günther <agx@sigxcpu.org> 
-
+On 10/3/20 6:09 AM, Alexandre Courbot wrote:
+> The addition of MT8183 support added a dependency on the SCP remoteproc
+> module. However the initial patch used the "select" Kconfig directive,
+> which may result in the SCP module to not be compiled if remoteproc was
+> disabled. In such a case, mtk-vcodec would try to link against
+> non-existent SCP symbols. "select" was clearly misused here as explained
+> in kconfig-language.txt.
 > 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Eric Anholt <eric@anholt.net>
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: "Guido Gúnther" <agx@sigxcpu.org>
-> Cc: Robert Chiras <robert.chiras@nxp.com>
-> Cc: Philippe Cornu <philippe.cornu@st.com>
-> Cc: Yannick Fertre <yannick.fertre@st.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Replace this by a "depends" directive on at least one of the VPU and
+> SCP modules, to allow the driver to be compiled as long as one of these
+> is enabled, and adapt the code to support this new scenario.
+> 
+> Also adapt the Kconfig text to explain the extra requirements for MT8173
+> and MT8183.
+> 
+> Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+
+I was seeing this also, so I checked this patch. WFM.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+See below.
+
 > ---
->  .../display/allwinner,sun6i-a31-mipi-dsi.yaml | 11 ++-------
->  .../bindings/display/brcm,bcm2835-dsi0.yaml   |  3 +++
->  .../bindings/display/bridge/nwl-dsi.yaml      | 11 ++++-----
->  .../bindings/display/st,stm32-dsi.yaml        | 23 ++++---------------
->  4 files changed, 14 insertions(+), 34 deletions(-)
+>  drivers/media/platform/Kconfig                | 11 +--
+>  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
+>  2 files changed, 55 insertions(+), 28 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml b/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
-> index 63f948175239..7aa330dabc44 100644
-> --- a/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
-> +++ b/Documentation/devicetree/bindings/display/allwinner,sun6i-a31-mipi-dsi.yaml
-> @@ -11,9 +11,6 @@ maintainers:
->    - Maxime Ripard <mripard@kernel.org>
->  
->  properties:
-> -  "#address-cells": true
-> -  "#size-cells": true
-> -
->    compatible:
->      enum:
->        - allwinner,sun6i-a31-mipi-dsi
-> @@ -57,12 +54,7 @@ properties:
->        port should be the input endpoint, usually coming from the
->        associated TCON.
->  
-> -patternProperties:
-> -  "^panel@[0-9]+$": true
-> -
->  required:
-> -  - "#address-cells"
-> -  - "#size-cells"
->    - compatible
->    - reg
->    - interrupts
-> @@ -74,6 +66,7 @@ required:
->    - port
->  
->  allOf:
-> +  - $ref: dsi-controller.yaml#
->    - if:
->        properties:
->          compatible:
-> @@ -99,7 +92,7 @@ allOf:
->          clocks:
->            minItems: 1
->  
-> -additionalProperties: false
-> +unevaluatedProperties: false
->  
->  examples:
->    - |
-> diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> index 3c643b227a70..eb44e072b6e5 100644
-> --- a/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> +++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-dsi0.yaml
-> @@ -9,6 +9,9 @@ title: Broadcom VC4 (VideoCore4) DSI Controller
->  maintainers:
->    - Eric Anholt <eric@anholt.net>
->  
-> +allOf:
-> +  - $ref: dsi-controller.yaml#
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index a3cb104956d5..e559d9c529b6 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -253,14 +253,17 @@ config VIDEO_MEDIATEK_VCODEC
+>  	depends on MTK_IOMMU || COMPILE_TEST
+>  	depends on VIDEO_DEV && VIDEO_V4L2
+>  	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select V4L2_MEM2MEM_DEV
+> -	select VIDEO_MEDIATEK_VPU
+> -	select MTK_SCP
+>  	help
+>  	    Mediatek video codec driver provides HW capability to
+> -	    encode and decode in a range of video formats
+> -	    This driver rely on VPU driver to communicate with VPU.
+> +	    encode and decode in a range of video formats on MT8173
+> +	    and MT8183.
 > +
->  properties:
->    "#clock-cells":
->      const: 1
-> diff --git a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> index b8ba6eb482a1..a125b2dd3a2f 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml
-> @@ -14,6 +14,9 @@ description: |
->    NWL MIPI-DSI host controller found on i.MX8 platforms. This is a dsi bridge for
->    the SOCs NWL MIPI-DSI host controller.
+> +	    Note that support for support for MT8173 requires
+
+Drop one of "support for" above. (or "for support" ;)
+
+> +	    VIDEO_MEDIATEK_VPU to also be selected. Support for
+> +	    MT8183 depends on MTK_SCP.
 >  
-> +allOf:
-> +  - $ref: ../dsi-controller.yaml#
-> +
->  properties:
->    compatible:
->      const: fsl,imx8mq-nwl-dsi
-> @@ -144,10 +147,6 @@ properties:
->  
->      additionalProperties: false
->  
-> -patternProperties:
-> -  "^panel@[0-9]+$":
-> -    type: object
-> -
->  required:
->    - '#address-cells'
->    - '#size-cells'
-> @@ -163,7 +162,7 @@ required:
->    - reset-names
->    - resets
->  
-> -additionalProperties: false
-> +unevaluatedProperties: false
->  
->  examples:
->    - |
-> @@ -172,7 +171,7 @@ examples:
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
->      #include <dt-bindings/reset/imx8mq-reset.h>
->  
-> -    mipi_dsi: mipi_dsi@30a00000 {
-> +    dsi@30a00000 {
->                #address-cells = <1>;
->                #size-cells = <0>;
->                compatible = "fsl,imx8mq-nwl-dsi";
-> diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-> index 69cc7e8bf15a..327a14d85df8 100644
-> --- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-> +++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
-> @@ -13,6 +13,9 @@ maintainers:
->  description:
->    The STMicroelectronics STM32 DSI controller uses the Synopsys DesignWare MIPI-DSI host controller.
->  
-> +allOf:
-> +  - $ref: dsi-controller.yaml#
-> +
->  properties:
->    compatible:
->      const: st,stm32-dsi
-> @@ -65,24 +68,6 @@ properties:
->          description:
->            DSI output port node, connected to a panel or a bridge input port"
->  
-> -patternProperties:
-> -  "^(panel|panel-dsi)@[0-9]$":
-> -    type: object
-> -    description:
-> -      A node containing the panel or bridge description as documented in
-> -      Documentation/devicetree/bindings/display/mipi-dsi-bus.txt
-> -    properties:
-> -      port:
-> -        type: object
-> -        description:
-> -          Panel or bridge port node, connected to the DSI output port (port@1)
-> -
-> -  "#address-cells":
-> -    const: 1
-> -
-> -  "#size-cells":
-> -    const: 0
-> -
->  required:
->    - "#address-cells"
->    - "#size-cells"
-> @@ -92,7 +77,7 @@ required:
->    - clock-names
->    - ports
->  
-> -additionalProperties: false
-> +unevaluatedProperties: false
->  
->  examples:
->    - |
-> -- 
-> 2.25.1
-> 
+>  	    To compile this driver as modules, choose M here: the
+>  	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
+
+
+thanks.
+-- 
+~Randy
