@@ -2,74 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CFB282038
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EA2282048
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725767AbgJCBtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCBtC (ORCPT
+        id S1725797AbgJCCBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:01:38 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:58003 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725536AbgJCCBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:49:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB93AC0613D0;
-        Fri,  2 Oct 2020 18:49:02 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601689741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=71bkXOVLDwtVOfCToFQug21Guut6/gzkIwIbpUN54pU=;
-        b=Stsdcz9+U/j6iA8iXss1yQDZNcosRTdUDPWRE2f5ZfXME3KPt7Sc/bygXerI4m9jr6H4qy
-        PyxaWzybcRfck8t2dqtxw+Up1jMRIzAz19lSKnBBAgCyl94DnRuI5EiIytdtpMZfnL5Vc0
-        qRZus32aUW0MAVF5XgsAXPHHwdlGSI7H1XPq5Wb4uvR1t9QxpCY4PjV15I8OA/pmm7xh3w
-        S3cJyhvNn4jM+dYvLJzSx/cHAmDPL/ZyvOOkQMKnpjpoEMICA/F2W1G+7ZRm7J3yv2YlGR
-        LpnjiLV+xqkxS56HG6lDWcfxk9WkBPNlrvNODteJ0+Au5Jhz2wr/Lfb03f7E6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601689741;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=71bkXOVLDwtVOfCToFQug21Guut6/gzkIwIbpUN54pU=;
-        b=iV1y8z8rfRPNqmaatTN5Ch/TxyHSucga7L+TOVQRCIB2c9BSOcceWzJHhYdvEiDsDfW/ks
-        G1qVZ+DNTTsxu0Dg==
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
-In-Reply-To: <20201002153849.GC29066@redhat.com>
-References: <20201001194208.1153522-1-axboe@kernel.dk> <20201001194208.1153522-4-axboe@kernel.dk> <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de> <20201002153849.GC29066@redhat.com>
-Date:   Sat, 03 Oct 2020 03:49:00 +0200
-Message-ID: <87o8lkcc4z.fsf@nanos.tec.linutronix.de>
+        Fri, 2 Oct 2020 22:01:37 -0400
+Received: (qmail 308317 invoked by uid 1000); 2 Oct 2020 22:01:36 -0400
+Date:   Fri, 2 Oct 2020 22:01:36 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201003020136.GA307978@rowland.harvard.edu>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001213048.GF29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02 2020 at 17:38, Oleg Nesterov wrote:
-> On 10/02, Thomas Gleixner wrote:
->>
->> I think it's fundamentaly wrong that we have several places and several
->> flags which handle task_work_run() instead of having exactly one place
->> and one flag.
->
-> Damn yes, agreed.
+On Thu, Oct 01, 2020 at 02:30:48PM -0700, Paul E. McKenney wrote:
+> > Not the way I would have done it, but okay.  I would have modeled the 
+> > kfree by setting a and b both to some sentinel value.
+> 
+> Might be well worth pursuing!  But how would you model the address
+> dependencies in that approach?
 
-Actually there are TWO places, but they don't interfere:
+Al's original test never writes to V.  So the address dependencies don't 
+matter.
 
-   1) exit to user
+> > Why didn't this flag the data race?
+> 
+> Because I turned Al's simple assignments into *_ONCE() or better.
+> In doing this, I was following the default KCSAN settings which
+> (for better or worse) forgive the stores from data races.
 
-   2) enter guest
+Ah, yes.  I had realized that when reading the litmus test for the first 
+time, and then forgot it.
 
-From the kernel POV they are pretty much the same as both are leaving
-the kernel domain. But they have a few subtle different requirements
-what has to be done or not.
+> With your suggested change and using simple assignments where Al
+> indicated them:
+> 
+> ------------------------------------------------------------------------
+> 
+> $ herd7 -conf linux-kernel.cfg ~/paper/scalability/LWNLinuxMM/litmus/manual/kernel/C-viro-2020.09.29a.litmus
+> Test C-viro-2020.09.29a Allowed
+> States 5
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=0; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=0; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=0; 1:r1=1; 1:r2=2; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=1;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=0; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=2; 1:r9c=2; a=0; b=1; v=0;
+> 0:r0=0; 0:r1=1; 0:r2=2; 0:r8=b; 0:r9a=1; 0:r9b=1; 1:r0=1; 1:r1=1; 1:r2=1; 1:r8=a; 1:r9a=1; 1:r9b=1; 1:r9c=1; a=0; b=1; v=0;
+> Ok
+> Witnesses
+> Positive: 3 Negative: 2
+> Flag data-race
+> Condition exists (0:r0=1:r0 \/ v=1 \/ 0:r2=0 \/ 1:r2=0 \/ 0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ 1:r9b=0 \/ 1:r9c=0)
+> Observation C-viro-2020.09.29a Sometimes 3 2
+> Time C-viro-2020.09.29a 17.95
+> Hash=14ded51102b668bc38b790e8c3692227
+> 
+> ------------------------------------------------------------------------
+> 
+> So still "Sometimes", but the "Flag data-race" you expected is there.
+> 
+> I posted the updated litmus test below.  Additional or other thoughts?
 
-So any change to that logic needs to fixup both places,
+Two problems remaining.  One in the litmus test and one in the memory 
+model itself...
 
-Thanks,
+> ------------------------------------------------------------------------
+> 
+> C C-viro-2020.09.29a
+> 
+> {
+> 	int a = 1;
+> 	int b = 1;
+> 	int v = 1;
+> }
+> 
+> 
+> P0(int *a, int *b, int *v, spinlock_t *l)
+> {
+> 	int r0;
+> 	int r1;
+> 	int r2 = 2;
+> 	int r8;
+> 	int r9a = 2;
+> 	int r9b = 2;
+> 
+> 	r0 = 0;
+> 	spin_lock(l);
+> 	r9a = READ_ONCE(*v); // Use after free?
+> 	r8 = r9a - r9a; // Restore address dependency
+> 	r8 = b + r8;
+> 	r1 = smp_load_acquire(r8);
+> 	if (r1 == 0)
+> 		r0 = 1;
+> 	r9b = READ_ONCE(*v); // Use after free?
+> 	// WRITE_ONCE(*a, r9b - r9b); // Use data dependency
+> 	*a = r9b - r9b; // Use data dependency
+> 	spin_unlock(l);
+> 	if (r0) {
+> 		r2 = READ_ONCE(*v);
+> 		WRITE_ONCE(*v, 0); /* kfree(). */
+> 	}
+> }
+> 
+> P1(int *a, int *b, int *v, spinlock_t *l)
+> {
+> 	int r0;
+> 	int r1;
+> 	int r1a;
+> 	int r2 = 2;
+> 	int r8;
+> 	int r9a = 2;
+> 	int r9b = 2;
+> 	int r9c = 2;
+> 
+> 	r0 = 1;
+> 	r9a = READ_ONCE(*v); // Use after free?
+> 	r8 = r9a - r9a; // Restore address dependency
+> 	r8 = a + r8;
+> 	r1 = READ_ONCE(*r8);
+> 	if (r1) {
+> 		spin_lock(l);
+> 		r9b = READ_ONCE(*v); // Use after free?
+> 		r8 = r9b - r9b; // Restore address dependency
+> 		r8 = a + r8;
+> 		// r1a = READ_ONCE(*r8);
+> 		r1a = *r8;
+> 		if (r1a)
+> 			r0 = 0;
+> 		r9c = READ_ONCE(*v); // Use after free?
+> 		smp_store_release(b, r9c - rc9); // Use data dependency
+-------------------------------------------^^^
+Typo: this should be r9c.  Too bad herd7 doesn't warn about undeclared 
+local variables.
 
-        tglx
+> 		spin_unlock(l);
+> 	}
+> 	if (r0) {
+> 		r2 = READ_ONCE(*v);
+> 		WRITE_ONCE(*v, 0); /* kfree(). */
+> 	}
+> }
+> 
+> locations [a;b;v;0:r1;0:r8;1:r1;1:r8]
+> exists (0:r0=1:r0 \/ (* Both or neither did kfree(). *)
+> 	v=1 \/ (* Neither did kfree, redundant check. *)
+> 	0:r2=0 \/ 1:r2=0 \/  (* Both did kfree, redundant check. *)
+> 	0:r9a=0 \/ 0:r9b=0 \/ 1:r9a=0 \/ (* CPU1 use after free. *)
+> 	1:r9b=0 \/ 1:r9c=0) (* CPU2 use after free. *)
+
+When you fix the typo, the test still fails.  But now it all makes 
+sense.  The reason for the failure is because of the way we don't model 
+control dependencies.
+
+In short, suppose P1 reads 0 for V->A.  Then it does:
+
+	if (READ_ONCE(V->A)) {
+		... skipped ...
+	}
+	WRITE_ONCE(V, 0); /* actually kfree(to_free); */
+
+Because the WRITE_ONCE is beyond the end of the "if" statement, there is 
+no control dependency.  Nevertheless, the compiler is not allowed to 
+reorder those statements because the conditional code modifies to_free.
+
+Since the memory model thinks there isn't any control dependency, herd7 
+generates a potential execution (actually two of them) in which the 
+WRITE_ONCE executes before the READ_ONCE.  And of course that messes 
+everything up; in one of the executions 0:r9b is 0, and in the other 
+both 0:r9a and 0:r9b are 0.
+
+This failure to detect control dependencies properly is perhaps the 
+weakest aspect of the memory model.
+
+Alan
