@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C32F2820DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DB62820E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgJCD7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 23:59:38 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38273 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725648AbgJCD7i (ORCPT
+        id S1725775AbgJCEBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgJCEBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 23:59:38 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0933xT2L010362
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 2 Oct 2020 23:59:29 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E9A6542003C; Fri,  2 Oct 2020 23:59:28 -0400 (EDT)
-Date:   Fri, 2 Oct 2020 23:59:28 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz,
-        Dan Williams <dan.j.williams@intel.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/3] ext4: Refactor ext4_overwrite_io() to take
- ext4_map_blocks as argument
-Message-ID: <20201003035928.GY23474@mit.edu>
-References: <cover.1598094830.git.riteshh@linux.ibm.com>
- <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
+        Sat, 3 Oct 2020 00:01:14 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA7FC0613D0;
+        Fri,  2 Oct 2020 21:01:13 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id w11so4320398lfn.2;
+        Fri, 02 Oct 2020 21:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4/c66VVNK2fZAJCWWd//XYQrFuPfF7bPZFCOGDskZLA=;
+        b=mdIKAi0jBk+gBPjsj69jEhbol1cZXK/qBB9/Mkh/UZktLcstFuefS7b3t0MJMDQkas
+         e/1w4tha2Rra5oZOH36cSyeXPhb36mRvl0IyDsAQ2QAn0/uAnoWS3t21hIMCkzrNye90
+         hxaRmEStuKQ6mDDC5sVxD9cmibghrb3++rfCXJJQdFxrSAC+AFj6fExIO9Bqj7YANeJV
+         fwGMtYq2dQMsPe3kEsXvV+HCIl/LRZHsZG88kEkA7Bp+9IgzMRSBeczJ/ivsBvkchVKS
+         2ZvH8NGOElXhx1BbOA1qfenw7i4Zv8jvr5X5EGW7iZhZHopYjhsCwiZH/GtV9kIpS+u6
+         me+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4/c66VVNK2fZAJCWWd//XYQrFuPfF7bPZFCOGDskZLA=;
+        b=SQfQfqESU6djRDHNvUhXSQ7gK0gxL3Hpm9bS7axSsGXeSWalNcodG2KcQC9pd0BbYP
+         sgEeuDVtvSwEjYayaoivFjHGHCmsYZ7bERP3jbkSdx+gZytpifGvhnwwoYh+eDa3zAya
+         t5vTQiC7Y7Iug6a+n13e/jUGyLy1NkWYI5Wi5RQv4MuzoDlc8edKIyiugEA42wucSgUa
+         HgnsuWPA7hEQ09+BIUhuprB4YNogQzjEYzjmJcpr4mmiGXUGlzBoo4B5fOV+8WB6P1rr
+         sypWh2tQtdy818tXL3N92BeF9pmXQL1rXvAfttktEBuOrkEiCsuL/sqOkOFtwLaGSorO
+         qdbw==
+X-Gm-Message-State: AOAM530tAXMSAznldrFK/JoQbQvu/Ni0Uuh6EmRfAY+x4GyQRjO/vQZi
+        pj8k9+MB0smjMWZ9fhINiUC98r8qEx0=
+X-Google-Smtp-Source: ABdhPJwqYUrBcIBR4L7qcbGhQA2/6ZFGelci0lcwwEoGBABBT77tRyIGIvMAojDM1i9m1c8LkS/juA==
+X-Received: by 2002:a19:549:: with SMTP id 70mr2110110lff.529.1601697671885;
+        Fri, 02 Oct 2020 21:01:11 -0700 (PDT)
+Received: from [192.168.2.145] ([109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id y10sm996183lfj.271.2020.10.02.21.01.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 21:01:11 -0700 (PDT)
+Subject: Re: [PATCH v4 1/3] iommu/tegra-smmu: Use fwspec in
+ tegra_smmu_(de)attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-2-nicoleotsuka@gmail.com>
+ <de0b717f-af5c-8813-eb3e-07d19eff5271@gmail.com>
+ <20201002194508.GD29706@Asurada-Nvidia>
+ <e594374b-d701-fb6f-93f2-4efb9c5eb608@gmail.com>
+ <20201002235329.GA11409@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <f61174fc-f8e2-5f2b-23ff-36642be62e87@gmail.com>
+Date:   Sat, 3 Oct 2020 07:01:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <057a08972f818c035621a9fd3ff870bedcdf5e83.1598094830.git.riteshh@linux.ibm.com>
+In-Reply-To: <20201002235329.GA11409@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 22, 2020 at 05:04:35PM +0530, Ritesh Harjani wrote:
-> Refactor ext4_overwrite_io() to take struct ext4_map_blocks
-> as it's function argument with m_lblk and m_len filled
-> from caller
+03.10.2020 02:53, Nicolin Chen пишет:
+> On Fri, Oct 02, 2020 at 11:12:18PM +0300, Dmitry Osipenko wrote:
+>> 02.10.2020 22:45, Nicolin Chen пишет:
+>>> On Fri, Oct 02, 2020 at 05:41:50PM +0300, Dmitry Osipenko wrote:
+>>>> 02.10.2020 09:08, Nicolin Chen пишет:
+>>>>>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+>>>>>  				 struct device *dev)
+>>>>>  {
+>>>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>>>>>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+>>>>>  	struct tegra_smmu_as *as = to_smmu_as(domain);
+>>>>> -	struct device_node *np = dev->of_node;
+>>>>> -	struct of_phandle_args args;
+>>>>>  	unsigned int index = 0;
+>>>>>  	int err = 0;
+>>>>>  
+>>>>> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+>>>>> -					   &args)) {
+>>>>> -		unsigned int swgroup = args.args[0];
+>>>>> -
+>>>>> -		if (args.np != smmu->dev->of_node) {
+>>>>> -			of_node_put(args.np);
+>>>>> -			continue;
+>>>>> -		}
+>>>>> -
+>>>>> -		of_node_put(args.np);
+>>>>> +	if (!fwspec)
+>>>>> +		return -ENOENT;
+>>>>
+>>>> Could the !fwspec ever be true here as well?
+>>>
+>>> There are multiple callers of this function. It's really not that
+>>> straightforward to track every one of them. So I'd rather have it
+>>> here as other iommu drivers do. We are human beings, so we could
+>>> have missed something somewhere, especially callers are not from
+>>> tegra-* drivers.
+>>>
+>>
+>> I'm looking at the IOMMU core and it requires device to be in IOMMU
+>> group before attach_dev() could be called.
+>>
+>> The group can't be assigned to device without the fwspec, see
+>> tegra_smmu_device_group().
+>>
+>> Seems majority of IOMMU drivers are checking dev_iommu_priv_get() for
+>> NULL in attach_dev(), some not checking anything, some check both and
+>> only arm-smmu checks the fwspec.
 > 
-> There should be no functionality change in this patch.
+> As I said a couple of days ago, I don't like to assume that the
+> callers won't change. And this time, it's from open code. So I
+> don't want to assume that there won't be a change.
 > 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/ext4/file.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+> If you are confident that there is no need to add such a check,
+> please send patches to remove those checks in those drivers to
+> see if others would agree. I would be willing to remove it after
+> that. Otherwise, I'd like to keep this.
 > 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 2a01e31a032c..84f73ed91af2 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -188,26 +188,22 @@ ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
->  }
->  
->  /* Is IO overwriting allocated and initialized blocks? */
-> -static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
-> +static bool ext4_overwrite_io(struct inode *inode, struct ext4_map_blocks *map)
->  {
-> -	struct ext4_map_blocks map;
->  	unsigned int blkbits = inode->i_blkbits;
-> -	int err, blklen;ts
-> +	loff_t end = (map->m_lblk + map->m_len) << blkbits;
+> Thanks for the review.
+> 
 
-As Dan Carpenter has pointed out, we need to cast map->m_lblk to
-loff_t, since m_lblk is 32 bits, and when this get shifted left by
-blkbits, we could end up losing bits.
+I haven't tried to check every code path very thoroughly, expecting you
+to do it since you're making this patch. Maybe there is a real reason
+why majority of drivers do the checks and it would be good to know why.
+Although, it's not critical in this particular case and indeed the
+checks could be improved later on.
 
-> -	if (pos + len > i_size_read(inode))
-> +	if (end > i_size_read(inode))
->  		return false;
+It looks to me that at least will be a bit better/cleaner to check the
+dev_iommu_priv_get() for NULL instead of fwspec because the private
+variable depends on the fwspec presence and there is a similar check in
+probe_device, hence checks will be more consistent.
 
-This transformation is not functionally identical.
-
-The problem is that pos is not necessarily a multiple of the file
-system blocksize.    From below, 
-
-> +	map.m_lblk = offset >> inode->i_blkbits;
-> +	map.m_len = EXT4_MAX_BLOCKS(count, offset, inode->i_blkbits);
-
-So what previously was the starting offset of the overwrite, is now
-offset shifted right by blkbits, and then shifted left back by blkbits.
-
-So unless I'm missing something, this looks not quite right?
-
-   	      	      		      	    - Ted
