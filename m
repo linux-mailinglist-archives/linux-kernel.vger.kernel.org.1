@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F71281F83
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C811281F71
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 01:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725772AbgJCADH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 20:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJCADH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:03:07 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A30C0613D0;
-        Fri,  2 Oct 2020 17:03:06 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b17so1883659pji.1;
-        Fri, 02 Oct 2020 17:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4wadPL5eRQ8Hbv2G79TEpM4KGWCbAz6BIZrfCkhvXS4=;
-        b=CX4FzF5HQo4aWMpOFQeBvEIGgwmdmfw6z4UFMbpOr4+Yli8BuDlsgSCyJF6bbIhK8N
-         VHRf4mfrwHm37t9Pj7SljZf5XiZdimtHl/6qWWt0YfzA/Xg/inK2dV2+qm5fbvnnzJsf
-         kJc6Oj6fBl3ABeZ+torudGhywLeQa8emLGVNVVcTVGKGpTQCvN7EUreJVjHlqvjaRe2h
-         ACeNJVPKyP0Y4WRvYjZiYClbZHVkad0yp2VhClN/dqhqoXKmmD2gvOZVUOMZ215QzQrw
-         43L1zT4DIr0mHCAv8T6k1ZFggbaHkJQoSe9jLWJVAZCCHQO3BD2FnKeNqmMN0zMFhKTm
-         Gwng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4wadPL5eRQ8Hbv2G79TEpM4KGWCbAz6BIZrfCkhvXS4=;
-        b=p9A/djUV2RD175V/g8wl5+QkOJ+NkfZistTS557gfI6tsP6MWrzzT8n5kqDGD/Ivax
-         S3QExtdhOkjWzl/dPZvZ5loBIM51aA28bdEzpITJ5S+T34yDJkGLpQmZpw8i7LIoiA/s
-         RW1KQphmAjK1CZ9cOChcAjYB3U1tpInex2KfGIx46KXjmX4ZsCj26waY02V/2NsscxSq
-         444MGH62pmaocdq6iw8CDTPmFouVaqlkpG0YB7dsGInMIo95ZpyH+XtD5GG9pwyc4BAg
-         e4Y1UWBHxRl5JcdHVh2poZPZb1+oqnUT49PDF+chMCZXOBjmC2lXlnX9LLcoDhxrfs5R
-         8l3g==
-X-Gm-Message-State: AOAM531PPMHeSN3flmR9vOUbPcnek5VsOIHsUUd3Wgul7pRG7rHxyQjC
-        /FZMkSBoNBU/cSTwP+J5cJw=
-X-Google-Smtp-Source: ABdhPJy6aDucl8FLM8J70ZSmYRA259SOdEdYonn852vYH80Q/GKrkairB+m/ReHBi3u1R0VQ+/Qamg==
-X-Received: by 2002:a17:90a:b293:: with SMTP id c19mr3434480pjr.122.1601683386425;
-        Fri, 02 Oct 2020 17:03:06 -0700 (PDT)
-Received: from sol (106-69-171-132.dyn.iinet.net.au. [106.69.171.132])
-        by smtp.gmail.com with ESMTPSA id r14sm2877142pgm.7.2020.10.02.17.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 17:03:05 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 08:02:59 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] docs: gpio: add a new document to its index.rst
-Message-ID: <20201003000259.GA6321@sol>
-References: <cover.1601616399.git.mchehab+huawei@kernel.org>
- <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+        id S1725730AbgJBX5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 19:57:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgJBX5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 19:57:49 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC3A0206B7;
+        Fri,  2 Oct 2020 23:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601683069;
+        bh=D69kYhvZhty/rRcWBokfk6DHbfSvto2f9RsRcfYH5dY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rhMNZf3GW4d8DjbjPwhSSeOCla2skLZ5iKfbM6AzAWJrJFyrZd7UmhLS3uIatWNFF
+         jeUckbfdf7oIdX7X4E0HjuZXNVPFS5tckNZcY16uUzUvd/2C/60VcZSmcUxqdN4Kbf
+         9eQFYpHibNELjiTCG3f9gYUvizFACwMNF0yQBBc4=
+Date:   Fri, 2 Oct 2020 19:03:38 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH][next] block: scsi_ioctl: Avoid the use of one-element
+ arrays
+Message-ID: <20201003000338.GA13557@embeddedor>
+References: <20201002231033.GA6273@embeddedor>
+ <ea92a55b-d12c-357e-62b2-879643ae18ce@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bad4d85c218d59c1bf69157df8e1012577680d88.1601616399.git.mchehab+huawei@kernel.org>
+In-Reply-To: <ea92a55b-d12c-357e-62b2-879643ae18ce@kernel.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:49:50AM +0200, Mauro Carvalho Chehab wrote:
-> There's now a new ReST file. Add it to the index.rst file.
+On Fri, Oct 02, 2020 at 05:53:05PM -0600, Jens Axboe wrote:
+> On 10/2/20 5:10 PM, Gustavo A. R. Silva wrote:
+> > diff --git a/include/uapi/linux/cdrom.h b/include/uapi/linux/cdrom.h
+> > index 2817230148fd..6c34f6e2f1f7 100644
+> > --- a/include/uapi/linux/cdrom.h
+> > +++ b/include/uapi/linux/cdrom.h
+> > @@ -289,7 +289,10 @@ struct cdrom_generic_command
+> >  	unsigned char		data_direction;
+> >  	int			quiet;
+> >  	int			timeout;
+> > -	void			__user *reserved[1];	/* unused, actually */
+> > +	union {
+> > +		void		__user *reserved[1];	/* unused, actually */
+> > +		void            __user *unused;
+> > +	};
 > 
-> Fixes: ce7a2f77f976 ("docs: gpio: Add GPIO Aggregator documentation")
-
-Shouldn't that be:
-
-Fixes: fd1abe99e5fb ("Documentation: gpio: add documentation for gpio-mockup")
-
-Cheers,
-Kent.
-
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/admin-guide/gpio/index.rst | 1 +
->  1 file changed, 1 insertion(+)
+> What's the point of this union, why not just turn it into
 > 
-> diff --git a/Documentation/admin-guide/gpio/index.rst b/Documentation/admin-guide/gpio/index.rst
-> index ef2838638e96..7db367572f30 100644
-> --- a/Documentation/admin-guide/gpio/index.rst
-> +++ b/Documentation/admin-guide/gpio/index.rst
-> @@ -9,6 +9,7 @@ gpio
->  
->      gpio-aggregator
->      sysfs
-> +    gpio-mockup
->  
->  .. only::  subproject and html
->  
-> -- 
-> 2.26.2
+> 	void *			__user *unused;
 > 
+> ?
+
+I just don't want to take any chances of breaking any user-space
+application that, for some reason, may be considering that field.
+
+--
+Gustavo
