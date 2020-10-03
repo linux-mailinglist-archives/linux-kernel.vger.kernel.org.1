@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8F22823C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542332823C5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgJCLFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 07:05:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbgJCLFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 07:05:03 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4320D2067D;
-        Sat,  3 Oct 2020 11:05:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601723102;
-        bh=/tulFan4fjxwlreVG+dB6Qz4ubfnQogZCZYwLMiJkjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dQ9GKmChfZGbKomxkEoeXtNwzSoufcSyR0X6XX3l1i7E1mehyNbfRiksctPlCPg+M
-         hmNyTk1YeXaBEfNwkBLuNKxE5EXhuc//wXuV8Ih4aEpa93OfRhDjFcVosJ30Cg6VEg
-         sNECZCN71doKHHMmvwcDdk+IDp1mc7KmuxDXqz1U=
-Date:   Sat, 3 Oct 2020 13:05:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
-Message-ID: <20201003110548.GA145099@kroah.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
- <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
- <20201003085345.GA114893@kroah.com>
+        id S1725790AbgJCLJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 07:09:18 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:35915 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgJCLJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 07:09:18 -0400
+Received: by mail-il1-f206.google.com with SMTP id q11so3225214ilt.3
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 04:09:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dTK/nKvhZxfMp3/bNpAjTTnUJuU+9eh3Dm8DpO4H7wU=;
+        b=CzzK9A+RmtC3eJSGz4uSiPEFYeNTH7ZmCJiM3b4fGHXDOsXisRo8EkfPueD82kBBQt
+         2R0R3HL5icGZDbXh1dsgTFWdjRjWx6/i3YCGsog5NZurFUSQUL3l0Y3Fo2sATnRUUr//
+         1h0noom9hKNzk3B5zdBDPm7Hfjd3nFuW/Fa/umvE+F732MxOfDf66S5nOLJ9CA9mckP+
+         1AztxTUlzpzweIQMb94SRy+Cu2u9nuAqyyfbxIVBXLAsL5xzhSKUfiHo3hlo8li/tIwz
+         XUM+++/5IP6pwY6YFSbYTScHpmJnvHm9F8j1O0YSG+gmwaQPEtwuP6azogyVdjCzAIyY
+         GhMg==
+X-Gm-Message-State: AOAM531uDZA3R8toTdwDQ1UvJ8vJseJEnlcCP7zS/hIwBw7BW5jCjdVR
+        r8lyXwj49Ny3F69ZhYpDgscMfDxhCA5+PO+aruGFR+KN8L/E
+X-Google-Smtp-Source: ABdhPJwC3dNiYhgqbzVbrFviSdVxYHW+Ve3vAnb5Edpdxxqh8eJY1R6saPfuuf3rtNlBWlmCOC+trqmxVsniBFooOQE+gNzWZBId
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201003085345.GA114893@kroah.com>
+X-Received: by 2002:a02:7412:: with SMTP id o18mr6257232jac.142.1601723355672;
+ Sat, 03 Oct 2020 04:09:15 -0700 (PDT)
+Date:   Sat, 03 Oct 2020 04:09:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4b3c205b0c24743@google.com>
+Subject: KASAN: out-of-bounds Read in __switch_to (2)
+From:   syzbot <syzbot+2667188e965125ab6e7a@syzkaller.appspotmail.com>
+To:     0x7f454c46@gmail.com, bp@alien8.de, chang.seok.bae@intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, sashal@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 10:53:45AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 02, 2020 at 06:17:42PM -0700, Ricardo Neri wrote:
-> > +/**
-> > + * arch_get_cpu_type_name() - Get the CPU type name
-> > + * @cpu_type:	Type of CPU micro-architecture.
-> > + *
-> > + * Returns a string name associated with the CPU micro-architecture type as
-> > + * indicated in @cpu_type. The format shall be <vendor>_<cpu_type>. Returns
-> > + * NULL if the CPU type is not known.
-> > + */
-> > +const char __weak *arch_get_cpu_type_name(u32 cpu_type)
-> > +{
-> > +	return NULL;
-> > +}
-> 
-> Why is vendor part of this?  Shouldn't it just be arch?
-> 
-> I say this as "vendor" is kind of "interesting" when it comes to other
-> arches...
-> 
-> Speaking of other arches, we all know that other arches have this
-> feature as well, have you worked with any other groups to verify that
-> this interface will also work with them?
+Hello,
 
-Here's one set of patches for ARM64 for much the same type of cpu
-design:
-	https://android-review.googlesource.com/c/kernel/common/+/1437098/3
-Yes, it's not been posted to any kernel lists, but this is public so you
-need to work with the ARM developers to come up with an interface that
-works for everyone please.
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15147bc3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
+dashboard link: https://syzkaller.appspot.com/bug?extid=2667188e965125ab6e7a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11743a37900000
 
-greg k-h
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2667188e965125ab6e7a@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: out-of-bounds in arch_end_context_switch arch/x86/include/asm/paravirt.h:625 [inline]
+BUG: KASAN: out-of-bounds in __switch_to+0xddc/0xfe0 arch/x86/kernel/process_64.c:566
+Read of size 8 at addr ffffffff89fc6bd8 by task swapper/1/0
+
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+
+The buggy address belongs to the variable:
+ pv_ops+0x118/0x2c0
+
+Memory state around the buggy address:
+ ffffffff89fc6a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffffff89fc6b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffffff89fc6b80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                                                       ^
+ ffffffff89fc6c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffffff89fc6c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 0 Comm: swapper/1 Tainted: G    B             5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
