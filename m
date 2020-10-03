@@ -2,154 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BE528272B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F33282730
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgJCWlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 18:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbgJCWlX (ORCPT
+        id S1726062AbgJCWqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 18:46:18 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:61377 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgJCWqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 18:41:23 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F41C0613D0;
-        Sat,  3 Oct 2020 15:41:23 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y14so732646pfp.13;
-        Sat, 03 Oct 2020 15:41:23 -0700 (PDT)
+        Sat, 3 Oct 2020 18:46:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601765175; x=1633301175;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
+  b=FaocotEfv9wSJjWDQ8v/Da3a1bvHXITOJPbJ8EO2uw2guRk43txgnGqa
+   LJrhNPY60wL8tq0t5TuopaLO97AfZFb2yQK8gsXgIWpTcKLWINBqa8Il9
+   7Lz6CdvegsJh6iZ8wLTjvq0wkkDD5r00pSWPmFRrp1+ZP3MdZEmQonb1j
+   dPivt/+5XKfxM1+5/7UEvWpQ8kjVWDj0kShmgYd4UG6gm6dB90gWKMGYk
+   QJdDvonOJ9oKDlLKz+6MbNfxW2aEuUtN+hp915hc5QDrFC4CvYEgPHUKY
+   RTFfsnef7A8QENVwVafXQRl7eRWpjR06aRixFT25Lsyi79p4z+61DQC/O
+   g==;
+IronPort-SDR: PEsOOj5DFQCGJ1G1dUu8gILOX5uRsCUFhtwadMZTKpcVkde3fw2Z8BH/gffThUH0WsM9tHTOR4
+ U02PuBO0lH2VpMcJkIan308VgS+Q70hbia1ksix6Xv7kj5OFIIS9wJ63ancpCBxQ6f0qWBykSM
+ MXH6POs8fddp3vr51Ch1ZhCqnEUmyO+ep3fhzOCFTymVCaxH9cTft9gJlrcLm4K4NEHz1fwZHT
+ TWpHr63zNQyITm2MI4htVeqZetdJmKZavJ61KiqQHJ/R+21zVA0agqa6XXshQH4TxfRuAzKvdE
+ /BA=
+X-IronPort-AV: E=Sophos;i="5.77,333,1596524400"; 
+   d="scan'208";a="91334750"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Oct 2020 15:46:15 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 3 Oct 2020 15:46:15 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Sat, 3 Oct 2020 15:46:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YpnZZBe7mgqft3aE15Pl2ARfRoKfAycD77na+SXkDkuVsQ1CFSl1Duqwq5sTOVyFEnlXblpE9SNbuxG90GRfkVC7GmvN4aO6D9CH6mgRoTZNXF7VbyZ2Poyc3b0xsCmyOKRxQO09nKYln+2wzPwdt1m0l17Te5RG3PGyP5O/7AUBISYMR6uGNN9t8RPkMa1pYush9mYbghXDov2FV8027BzS0zC4eWuGP5F9EPLw6T4SLV6MTUvYELsdDcVPQjis74WK77gv6JLctEHk0/hIRjpe5IvK8cBONrHU+QQCGA4yokr+wZ3keHWwaM31r5rPvxouSyYbwELQg6elKas7KA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
+ b=mX/TvcG5OwjMGnu46glGY9dagleEqafvBhZprEvRFtHQtWiXPvfhyNs5qtCLpzNfI2iK1EC+QYF3vM2KzCVVUSjLclYpfLfSAo9vhNeZeq1C+Hf2i+fdDbhND1xmmaIJ8NllReInn2k1M+8iJ0/JsZo/+L/xs4GBXjYEfXzisKP44Fx8mmwSxRcOUxd3/NjH445U8FAJWx8CY1qitrmEc/3ZqaaQ9BqjLdM8rfQyqJ4Vz+sYq41HMuTu7Ookq40bzTvDqKAS/+Gv6yNSddockQrP7aVmniA9o4Zd2VWjymA3zCPDtH+oZVEFb/49rx8DiPWNuVr16OyDl2sxRx9XLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dO66K4BodXcN3osd35WZPCm1CN9PU88SIY4ROPYVfzI=;
-        b=bMLKCTI69rLKJk+u6BnR5a2vB+Vpl9ogZ0tz/Z3IliV+lbiJjNfReMtnPzBOuHLqb3
-         NFLS+ibL4/Vp1smzokZNc1xcVgoJWbSwaVpQSuL9h37fA1v+XBUrJx3rTeui2Nf5XdKg
-         Z6StGJrHxmR+sVvrqVtq43iVG/21/fgXzjyq0kty2K+rYuY0TziKYsPejKYmJD8cBPpb
-         zhUVanyyxc0uE0DUh5nvRXfbBcGYwls+u0koJC6JotKC+80gwVeahIy8vASU2UXf53Zc
-         q+ONgUqDWHhodH4lT6kwsP+fd+AnS1ZpuqeKzxKVlCh/sgnJl7jzxo2tEr/Y/J6++fG5
-         JABQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dO66K4BodXcN3osd35WZPCm1CN9PU88SIY4ROPYVfzI=;
-        b=stXq38t81A0YN7k+8qL+vjWVWxTM3hMA6AyL8Z+s0cTFxwz3XQotZRA4zf3fjTku7u
-         Hcfmu0WQ8ohgCfv70FONwUcYqh6AUF5AmTctMSviuUKyVp6/iUp5wr9m18C7C7OB2WiG
-         cZj8Lsx6QR1wsYNW3UvUSlxL9YhF+UwntI9wy5Hu8e371bd8ZN7FlpS7L/nzVPtYJmxf
-         VijEzLZreAWpE5yN8IWNvIbO0rHIbgQBFGI/cvdxgk6Acw/ux8RNqvPW7CXVOR8pOSQp
-         3qKxNhjJHd+IlUE/fv6xEO1O3t8T2jWl8BZz0csyPpmc3EZGuox0UBA4navT5PA9M+jd
-         7IKQ==
-X-Gm-Message-State: AOAM5311KKObX/8hWg6Jx/RA/i2ywWP3UdLLo3Pw0eKAjW4BryAXbqYA
-        oeikhw/Sac5OLNL9CZRtxpo=
-X-Google-Smtp-Source: ABdhPJwDyRmHGgrvgAyfjUnIwraZxptnmhKcMf8nHNmhPmM3CkVJVdr3q7dCKlhjgTq+cWYIB+90tw==
-X-Received: by 2002:a63:c052:: with SMTP id z18mr8061427pgi.103.1601764882641;
-        Sat, 03 Oct 2020 15:41:22 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:12f:64be:90c0:b4c2])
-        by smtp.gmail.com with ESMTPSA id gp8sm5577889pjb.3.2020.10.03.15.41.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 15:41:22 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] drivers/net/wan/hdlc_fr: Improvements to the code of pvc_xmit
-Date:   Sat,  3 Oct 2020 15:41:05 -0700
-Message-Id: <20201003224105.74234-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
+ b=SvICjAXyydiAIAC3ihFZHIZy2SNTSqQ6LHLRqfxloYlRI/Y3BcM9cPdBTRJ4ARECumd8pAG8AQA5XNnvoX1+/FSxHBClgTwVGJBCjEbonOFn6QJtd0x0eth5QXiPLFgSjYOw4gVV4ibOQ5NXXUSWA2gBBT6+nqlMvsbfngtTrss=
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ (2603:10b6:903:b1::22) by CY4PR11MB0072.namprd11.prod.outlook.com
+ (2603:10b6:910:76::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.29; Sat, 3 Oct
+ 2020 22:46:14 +0000
+Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
+ ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3433.042; Sat, 3 Oct 2020
+ 22:46:13 +0000
+From:   <Codrin.Ciubotariu@microchip.com>
+To:     <linux@armlinux.org.uk>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <wsa@kernel.org>,
+        <alpawi@amazon.com>
+Subject: Re: [PATCH] i2c: pxa: move to generic GPIO recovery
+Thread-Topic: [PATCH] i2c: pxa: move to generic GPIO recovery
+Thread-Index: AQHWmaFbBZ8ed2vmCEezMTnByxu//KmGOd4AgABA2wA=
+Date:   Sat, 3 Oct 2020 22:46:13 +0000
+Message-ID: <dde8b782-9193-a044-a328-98955e9fa35e@microchip.com>
+References: <20201003162141.925518-1-codrin.ciubotariu@microchip.com>
+ <20201003185404.GH1551@shell.armlinux.org.uk>
+In-Reply-To: <20201003185404.GH1551@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [86.121.164.182]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ada7d1ef-c78b-4100-0e02-08d867ee21c0
+x-ms-traffictypediagnostic: CY4PR11MB0072:
+x-microsoft-antispam-prvs: <CY4PR11MB007278CC2048DB85FE9AEF84E70E0@CY4PR11MB0072.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4sVt6eCfghMAjPkKSJ9ZZOcaY8CaJQMA2381b1yl/wizAn/wGN7rv16qFn4tNt4Wlq5Fjx7M6WGTDnXL/tN01aviPt1WiKUNdY29WFdz0h0GshCZ7Pq1/td09EYTP1VHKRwt4mQwAefbzm3SM9+hyzsR15pnQv+xjUd92e58NqeDY1Hz5r1dRlozsHx/eyq2q0C/tuOnhxGuQ+eR/R0zEv1LbV8h0FvojRKmnw3y7EIXKtrrN9VLoI003a4ezQ5W6v9Co9eFugLYwNtAzZH6x+l8IuFrtlNv1RmTL9mPILcX4a42WNtK6YyRxf0fVoVYu3xWr1vzgP4fex17e1aLHzaCsVS1KVtRInVPTJwsRxK8V5sFfE9l/iwxpcN92xo1HPfuONkd216GSxbBmFSWEz/4bkDulD36yPvFfSWhYKLxjHsqoCE+3zIpBbe2KpXBX6yw7Jx4y+d1/Z/qxajkxQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(366004)(39850400004)(36756003)(186003)(4744005)(26005)(8676002)(6506007)(8936002)(2906002)(6512007)(83380400001)(31686004)(64756008)(4326008)(6486002)(66556008)(86362001)(478600001)(66476007)(31696002)(6916009)(66446008)(5660300002)(2616005)(66946007)(71200400001)(76116006)(91956017)(316002)(54906003)(41533002)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: rKiNMf+XwQIZVPB6CJ7D55S/HrTruDPJrbLD3SXDWlqrbmKMNjKpYLVNNGeVtlX1qGeBCI9IaBZ5uygvMClUzjfTxnSx4JAKOOnXBk4/U57+ICQEXHDymn3WUNsg1JMPIqEw+O+gWg3HnwcMkbdI1qsQV4Oq4bBmOe16Y29PfzqJH8eu5+wHWC3nxeD62WbCvoyj733lU/DzUUfmn8IZ/nuLY2nyCvW1a21ZF1kF/mdTw72YjCajjynP5O0CJ9OnGMbIf3ygW0kILPHF7Ncjc4F+aE06TVkykv1HvTk0FBzekULTUpfmToq4mVDMwCAoodT1fPU6Sm684iWBeNv3CJOtc4SnR2lLZM044j+Xg5/P4u8P9sPzCOIOPbnFv2glej97JUZpa39hT4DeX83nhkxn20tttr6h5wvL+DkkyPdskyqJqNvzvPgmCkoUuc5J1hk57cFAcwQ0FVMOwxD2+vzEvEU6nIOw2uI6IzPuac1cv8jh5Xz/QfzWZ+HmLuGp4ATcG1NOCtCfizqtxdaq5wCc3K0yJUqjGyzJUy2qu9Ikdmb1IpgH8XpIIZfAPX76EIdqGO5T4VuvYM/SVSqGGisVb9AFDltO5R1Xq5bHJ3JiWIeRsVw/RGNJ/mMZrib/mJ75dVMoWbLBNODipJbh3g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F5C2F45F5DBEFC429BF857DE14E6CEF4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ada7d1ef-c78b-4100-0e02-08d867ee21c0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2020 22:46:13.7927
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UdLcsda7lHJFNSopI5cyiya15UoDhHgY0kel0U7MA3zte/E2HUDy9Joh81pRhiZTJf+aG5o0Yc/115tSUfD+VHLSCYJOfsflpSXr8vh+KAs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB0072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Keep the code for the normal (non-error) flow at the lowest
-indentation level. And use "goto drop" for all error handling.
-
-2. Replace code that pads short Ethernet frames with a "__skb_pad" call.
-
-3. Change "dev_kfree_skb" to "kfree_skb" in error handling code.
-"kfree_skb" is the correct function to call when dropping an skb due to
-an error. "dev_kfree_skb", which is an alias of "consume_skb", is for
-dropping skbs normally (not due to an error).
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: Stephen Hemminger <stephen@networkplumber.org>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/hdlc_fr.c | 54 +++++++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
-index 3a44dad87602..4dfdbca54296 100644
---- a/drivers/net/wan/hdlc_fr.c
-+++ b/drivers/net/wan/hdlc_fr.c
-@@ -416,38 +416,36 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct pvc_device *pvc = dev->ml_priv;
- 
--	if (pvc->state.active) {
--		if (dev->type == ARPHRD_ETHER) {
--			int pad = ETH_ZLEN - skb->len;
--			if (pad > 0) { /* Pad the frame with zeros */
--				int len = skb->len;
--				if (skb_tailroom(skb) < pad)
--					if (pskb_expand_head(skb, 0, pad,
--							     GFP_ATOMIC)) {
--						dev->stats.tx_dropped++;
--						dev_kfree_skb(skb);
--						return NETDEV_TX_OK;
--					}
--				skb_put(skb, pad);
--				memset(skb->data + len, 0, pad);
--			}
--		}
--		skb->dev = dev;
--		if (!fr_hard_header(&skb, pvc->dlci)) {
--			dev->stats.tx_bytes += skb->len;
--			dev->stats.tx_packets++;
--			if (pvc->state.fecn) /* TX Congestion counter */
--				dev->stats.tx_compressed++;
--			skb->dev = pvc->frad;
--			skb->protocol = htons(ETH_P_HDLC);
--			skb_reset_network_header(skb);
--			dev_queue_xmit(skb);
--			return NETDEV_TX_OK;
-+	if (!pvc->state.active)
-+		goto drop;
-+
-+	if (dev->type == ARPHRD_ETHER) {
-+		int pad = ETH_ZLEN - skb->len;
-+
-+		if (pad > 0) { /* Pad the frame with zeros */
-+			if (__skb_pad(skb, pad, false))
-+				goto drop;
-+			skb_put(skb, pad);
- 		}
- 	}
- 
-+	skb->dev = dev;
-+	if (fr_hard_header(&skb, pvc->dlci))
-+		goto drop;
-+
-+	dev->stats.tx_bytes += skb->len;
-+	dev->stats.tx_packets++;
-+	if (pvc->state.fecn) /* TX Congestion counter */
-+		dev->stats.tx_compressed++;
-+	skb->dev = pvc->frad;
-+	skb->protocol = htons(ETH_P_HDLC);
-+	skb_reset_network_header(skb);
-+	dev_queue_xmit(skb);
-+	return NETDEV_TX_OK;
-+
-+drop:
- 	dev->stats.tx_dropped++;
--	dev_kfree_skb(skb);
-+	kfree_skb(skb);
- 	return NETDEV_TX_OK;
- }
- 
--- 
-2.25.1
-
+Pj4gICBzdGF0aWMgdm9pZCBpMmNfcHhhX3VucHJlcGFyZV9yZWNvdmVyeShzdHJ1Y3QgaTJjX2Fk
+YXB0ZXIgKmFkYXApDQo+PiBAQCAtMTMyNSw4ICsxMzIwLDYgQEAgc3RhdGljIHZvaWQgaTJjX3B4
+YV91bnByZXBhcmVfcmVjb3Zlcnkoc3RydWN0IGkyY19hZGFwdGVyICphZGFwKQ0KPj4gICAgICAg
+ICAgICAgICAgaTJjX3B4YV9kb19yZXNldChpMmMpOw0KPj4gICAgICAgIH0NCj4+DQo+PiAtICAg
+ICBXQVJOX09OKHBpbmN0cmxfc2VsZWN0X3N0YXRlKGkyYy0+cGluY3RybCwgaTJjLT5waW5jdHJs
+X2RlZmF1bHQpKTsNCj4+IC0NCj4gDQo+IFRoaXMgd29uJ3QgZmx5LiBXZSBuZWVkIHRvIHB1dCB0
+aGUgcGluY3RybCBiYWNrIGludG8gaTJjIG1vZGUgX2JlZm9yZV8NCj4gd2UgcmUtZW5hYmxlIHRo
+ZSBJMkMgbW9kdWxlLCBvdGhlcndpc2UgdGhlIEkyQyBibG9jayB3aWxsIHNlZSBsb2dpYyAwDQo+
+IG9uIGJvdGggU0NMIGFuZCBTREEgd2hpY2ggY291bGQgY29uZnVzZSB0aGUgYmxvY2suDQoNClJp
+Z2h0LCBJIHdpbGwgYWRkIGl0IGJhY2suDQoNCkJlc3QgcmVnYXJkcywNCkNvZHJpbg0K
