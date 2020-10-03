@@ -2,24 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1887282173
+	by mail.lfdr.de (Postfix) with ESMTP id 1A619282171
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgJCEwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
+        id S1726042AbgJCEwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:52:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgJCEvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725816AbgJCEvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 3 Oct 2020 00:51:52 -0400
 Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF9E21D6C;
-        Sat,  3 Oct 2020 04:51:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 698792311A;
+        Sat,  3 Oct 2020 04:51:50 +0000 (UTC)
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     x86@kernel.org, linux-sgx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
         Jethro Beekman <jethro@fortanix.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
@@ -30,9 +31,9 @@ Cc:     linux-kernel@vger.kernel.org,
         ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
         npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
         tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: [PATCH v39 19/24] x86/fault: Add helper function to sanitize error code
-Date:   Sat,  3 Oct 2020 07:50:54 +0300
-Message-Id: <20201003045059.665934-20-jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH v39 20/24] x86/traps: Attempt to fixup exceptions in vDSO before signaling
+Date:   Sat,  3 Oct 2020 07:50:55 +0300
+Message-Id: <20201003045059.665934-21-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
 References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
@@ -44,69 +45,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Add helper function to sanitize error code to prepare for vDSO exception
-fixup, which will expose the error code to userspace and runs before
-set_signal_archinfo(), i.e. suppresses the signal when fixup is successful.
+vDSO functions can now leverage an exception fixup mechanism similar to
+kernel exception fixup.  For vDSO exception fixup, the initial user is
+Intel's Software Guard Extensions (SGX), which will wrap the low-level
+transitions to/from the enclave, i.e. EENTER and ERESUME instructions,
+in a vDSO function and leverage fixup to intercept exceptions that would
+otherwise generate a signal.  This allows the vDSO wrapper to return the
+fault information directly to its caller, obviating the need for SGX
+applications and libraries to juggle signal handlers.
 
+Attempt to fixup vDSO exceptions immediately prior to populating and
+sending signal information.  Except for the delivery mechanism, an
+exception in a vDSO function should be treated like any other exception
+in userspace, e.g. any fault that is successfully handled by the kernel
+should not be directly visible to userspace.
+
+Although it's debatable whether or not all exceptions are of interest to
+enclaves, defer to the vDSO fixup to decide whether to do fixup or
+generate a signal.  Future users of vDSO fixup, if there ever are any,
+will undoubtedly have different requirements than SGX enclaves, e.g. the
+fixup vs. signal logic can be made function specific if/when necessary.
+
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Acked-by: Jethro Beekman <jethro@fortanix.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- arch/x86/mm/fault.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ arch/x86/kernel/traps.c | 10 ++++++++++
+ arch/x86/mm/fault.c     |  7 +++++++
+ 2 files changed, 17 insertions(+)
 
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index e2c6fd4dde8e..13dbc59c6bc5 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -60,6 +60,7 @@
+ #include <asm/umip.h>
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
++#include <asm/vdso.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <asm/x86_init.h>
+@@ -117,6 +118,9 @@ do_trap_no_signal(struct task_struct *tsk, int trapnr, const char *str,
+ 		tsk->thread.error_code = error_code;
+ 		tsk->thread.trap_nr = trapnr;
+ 		die(str, regs, error_code);
++	} else {
++		if (fixup_vdso_exception(regs, trapnr, error_code, 0))
++			return 0;
+ 	}
+ 
+ 	/*
+@@ -550,6 +554,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+ 		tsk->thread.error_code = error_code;
+ 		tsk->thread.trap_nr = X86_TRAP_GP;
+ 
++		if (fixup_vdso_exception(regs, X86_TRAP_GP, error_code, 0))
++			return;
++
+ 		show_signal(tsk, SIGSEGV, "", desc, regs, error_code);
+ 		force_sig(SIGSEGV);
+ 		goto exit;
+@@ -1031,6 +1038,9 @@ static void math_error(struct pt_regs *regs, int trapnr)
+ 	if (!si_code)
+ 		goto exit;
+ 
++	if (fixup_vdso_exception(regs, trapnr, 0, 0))
++		return;
++
+ 	force_sig_fault(SIGFPE, si_code,
+ 			(void __user *)uprobe_get_trap_addr(regs));
+ exit:
 diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 90ee91c244c6..24ab833ede41 100644
+index 24ab833ede41..bda67aba6553 100644
 --- a/arch/x86/mm/fault.c
 +++ b/arch/x86/mm/fault.c
-@@ -602,6 +602,18 @@ pgtable_bad(struct pt_regs *regs, unsigned long error_code,
- 	oops_end(flags, regs, sig);
- }
+@@ -30,6 +30,7 @@
+ #include <asm/cpu_entry_area.h>		/* exception stack		*/
+ #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
+ #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
++#include <asm/vdso.h>			/* fixup_vdso_exception()	*/
  
-+static void sanitize_error_code(unsigned long address,
-+				unsigned long *error_code)
-+{
-+	/*
-+	 * To avoid leaking information about the kernel page
-+	 * table layout, pretend that user-mode accesses to
-+	 * kernel addresses are always protection faults.
-+	 */
-+	if (address >= TASK_SIZE_MAX)
-+		*error_code |= X86_PF_PROT;
-+}
+ #define CREATE_TRACE_POINTS
+ #include <asm/trace/exceptions.h>
+@@ -822,6 +823,9 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 
+ 		sanitize_error_code(address, &error_code);
+ 
++		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code, address))
++			return;
 +
- static void set_signal_archinfo(unsigned long address,
- 				unsigned long error_code)
- {
-@@ -658,6 +670,8 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 		 * faulting through the emulate_vsyscall() logic.
- 		 */
- 		if (current->thread.sig_on_uaccess_err && signal) {
-+			sanitize_error_code(address, &error_code);
-+
- 			set_signal_archinfo(address, error_code);
- 
- 			/* XXX: hwpoison faults will set the wrong code. */
-@@ -806,13 +820,7 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 		if (is_errata100(regs, address))
- 			return;
- 
--		/*
--		 * To avoid leaking information about the kernel page table
--		 * layout, pretend that user-mode accesses to kernel addresses
--		 * are always protection faults.
--		 */
--		if (address >= TASK_SIZE_MAX)
--			error_code |= X86_PF_PROT;
-+		sanitize_error_code(address, &error_code);
- 
  		if (likely(show_unhandled_signals))
  			show_signal_msg(regs, error_code, address, tsk);
-@@ -931,6 +939,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- 	if (is_prefetch(regs, error_code, address))
- 		return;
  
-+	sanitize_error_code(address, &error_code);
+@@ -941,6 +945,9 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ 
+ 	sanitize_error_code(address, &error_code);
+ 
++	if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code, address))
++		return;
 +
  	set_signal_archinfo(address, error_code);
  
