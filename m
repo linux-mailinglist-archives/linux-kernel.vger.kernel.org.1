@@ -2,101 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4547B2822DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B003A2822E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725805AbgJCJEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 05:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S1725820AbgJCJFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 05:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgJCJEl (ORCPT
+        with ESMTP id S1725648AbgJCJFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 05:04:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70ADC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:04:40 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1db40057382cf78206bf6d.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b400:5738:2cf7:8206:bf6d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 644D91EC03D5;
-        Sat,  3 Oct 2020 11:04:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601715878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1SH4DawKGxEBnhO6tanT/ub1CjAtxRG7qf1OcF1y/8s=;
-        b=TZnuojTfjwJtSipbHXCP7Cioq6xQy829yAkzpGBy98Eq+9U3W3eVm6mBjPxpXOLW8E5bgM
-        MoFKEHWJUytrEEaXrHQHDU2liXgzzgUf9B6f1kW7zj8hXvKGl4JeIuhcTFubLtmb+EwsEy
-        ICBkToE8+7FygNovqqDFFbXiI+ExRUY=
-Date:   Sat, 3 Oct 2020 11:04:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid
- CPUs
-Message-ID: <20201003090413.GB14035@zn.tnic>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
- <87r1qgccku.fsf@nanos.tec.linutronix.de>
- <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
+        Sat, 3 Oct 2020 05:05:46 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220B2C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:05:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h7so681673wre.4
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 02:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PXtBvwPlcuDjwSsxSPImY3z6WHPiXSWPjxcN7VcIbOU=;
+        b=xWmUhcNwRVay4TOiYuqVk0ciV9jAYW2hkR/c5oSasXx6dlPSgDuoiEs5bQ2H1D+nK9
+         bZGhbc0jEDonbh1M6ZUlJ9xL05Aju2FkN1pNaNzRlpvStuNr0ieVLlKVMznCdecfG4nl
+         goQT6rHfdnxnr+qpIV+1svuUSVoY7D2nPXJMq4Cc8zpcvmiwCGB5ZKndgHSs6wxTyKi4
+         OfMlsWISEzPQHdfFx5xqNUScJw6aMeIJxasV+V/+9qs/GsHFIOCAOfoyziZE9+IycSCH
+         0tilHv+qVfHgbdxJvOcCDWst9h3KF6XVjfvsQgRusvQNjzYBrwgSAPDy3gFWMobbaiYs
+         nQpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PXtBvwPlcuDjwSsxSPImY3z6WHPiXSWPjxcN7VcIbOU=;
+        b=h2K6eGR9u0DYWwkdu6K9m7nQcB/uJGEwmetGvN4DsaCtlva7X116R2H8PXDANTMkCM
+         3AXEgnyF3u9KHMgA/ctz7ye4m3/JHvD0E7VmV4EgfSlfV4xJBv+0mwJQqQUoGyqz/fmM
+         gaVrhNd/TPswi9EVnzAO6viTn+/mlwtTxBtzExGlRSqoraE3Or3So1mF6HK2qHMkJX94
+         +4qStovimSdHqCHTe6VprmnCPEKSmzW96J3jZ1wyzLgVwPDU33wFFzv0ROWC+jPnzXaj
+         MhoXC7D7MDGqcvDpkbcylv5++H1WdCdgRD8iXFeb1C7ZMT9POKr7rX5jqqUdnYvWfajv
+         DCEA==
+X-Gm-Message-State: AOAM532cLAUeazACBYV2hyXxB9ZVibD5m8/cGNZRXLUUvynSbvlRTvMe
+        VE+U4hy/A5YfoFjb35MIQEQBcY2Gt9TuHATS
+X-Google-Smtp-Source: ABdhPJyBBzbxZHxBxE5j7jMZDVBv8TTqmDz4UOFNGwqcAC3B7MxDDYCOXK8ytbNIrWF9XhciuA6NKg==
+X-Received: by 2002:adf:cd0c:: with SMTP id w12mr67849wrm.305.1601715943753;
+        Sat, 03 Oct 2020 02:05:43 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id f14sm4873009wrt.53.2020.10.03.02.05.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 02:05:43 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 11:05:42 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 05/16] devlink: Add remote reload stats
+Message-ID: <20201003090542.GF3159@nanopsycho.orion>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-6-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <1601560759-11030-6-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:17:30PM -0700, Luck, Tony wrote:
-> On Sat, Oct 03, 2020 at 03:39:29AM +0200, Thomas Gleixner wrote:
-> > On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
-> > > Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
-> > > part has CPUs with more than one type of micro-architecture. Thus, certain
-> > > features may only be present in a specific CPU type.
-> > >
-> > > It is useful to know the type of CPUs present in a system. For instance,
-> > > perf may need to handle CPUs differently depending on the type of micro-
-> > > architecture. Decoding machine check error logs may need the additional
-> > > micro-architecture type information, so include that in the log.
-> > 
-> > 'It is useful' as justification just makes me barf.
+Thu, Oct 01, 2020 at 03:59:08PM CEST, moshe@mellanox.com wrote:
+>Add remote reload stats to hold the history of actions performed due
+>devlink reload commands initiated by remote host. For example, in case
+>firmware activation with reset finished successfully but was initiated
+>by remote host.
+>
+>The function devlink_remote_reload_actions_performed() is exported to
+>enable drivers update on remote reload actions performed as it was not
+>initiated by their own devlink instance.
+>
+>Expose devlink remote reload stats to the user through devlink dev get
+>command.
+>
+>Examples:
+>$ devlink dev show
+>pci/0000:82:00.0:
+>  stats:
+>      reload_stats:
+>        driver_reinit 2
+>        fw_activate 1
+>        fw_activate_no_reset 0
+>      remote_reload_stats:
+>        driver_reinit 0
+>        fw_activate 0
+>        fw_activate_no_reset 0
+>pci/0000:82:00.1:
+>  stats:
+>      reload_stats:
+>        driver_reinit 1
+>        fw_activate 0
+>        fw_activate_no_reset 0
+>      remote_reload_stats:
+>        driver_reinit 1
+>        fw_activate 1
+>        fw_activate_no_reset 0
+>
+>$ devlink dev show -jp
+>{
+>    "dev": {
+>        "pci/0000:82:00.0": {
+>            "stats": {
+>                "reload_stats": [ {
+>                        "driver_reinit": 2
+>                    },{
+>                        "fw_activate": 1
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ],
+>                "remote_reload_stats": [ {
+>                        "driver_reinit": 0
+>                    },{
+>                        "fw_activate": 0
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ]
+>            }
+>        },
+>        "pci/0000:82:00.1": {
+>            "stats": {
+>                "reload_stats": [ {
+>                        "driver_reinit": 1
+>                    },{
+>                        "fw_activate": 0
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ],
+>                "remote_reload_stats": [ {
+>                        "driver_reinit": 1
+>                    },{
+>                        "fw_activate": 1
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ]
+>            }
+>        }
+>    }
+>}
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>RFCv5 -> v1:
+>- Resplit this patch and the previous one by remote/local reload stats
+>instead of set/get reload stats
+>- Rename reload_action_stats to reload_stats
+>RFCv4 -> RFCv5:
+>- Add remote actions stats
+>- If devlink reload is not supported, show only remote_stats
+>RFCv3 -> RFCv4:
+>- Renamed DEVLINK_ATTR_RELOAD_ACTION_CNT to
+>  DEVLINK_ATTR_RELOAD_ACTION_STAT
+>- Add stats per action per limit level
+>RFCv2 -> RFCv3:
+>- Add reload actions counters instead of supported reload actions
+>  (reload actions counters are only for supported action so no need for
+>   both)
+>RFCv1 -> RFCv2:
+>- Removed DEVLINK_ATTR_RELOAD_DEFAULT_LEVEL
+>- Removed DEVLINK_ATTR_RELOAD_LEVELS_INFO
+>- Have actions instead of levels
+>---
+> include/net/devlink.h        |  1 +
+> include/uapi/linux/devlink.h |  1 +
+> net/core/devlink.c           | 49 +++++++++++++++++++++++++++++++-----
+> 3 files changed, 45 insertions(+), 6 deletions(-)
+>
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index 0f3bd23b6c04..a4ccb83bbd2c 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -42,6 +42,7 @@ struct devlink {
+> 	const struct devlink_ops *ops;
+> 	struct xarray snapshot_ids;
+> 	u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+>+	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+
+Perhaps a nested struct  {} stats?
+
+
+> 	struct device *dev;
+> 	possible_net_t _net;
+> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+>index 97e0137f6201..f9887d8afdc7 100644
+>--- a/include/uapi/linux/devlink.h
+>+++ b/include/uapi/linux/devlink.h
+>@@ -530,6 +530,7 @@ enum devlink_attr {
+> 	DEVLINK_ATTR_RELOAD_STATS,		/* nested */
+> 	DEVLINK_ATTR_RELOAD_STATS_ENTRY,	/* nested */
+> 	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
+>+	DEVLINK_ATTR_REMOTE_RELOAD_STATS,	/* nested */
 > 
-> This isn't "hetero" ... all of the cores are architecturally the same.
+> 	/* add new attributes above here, update the policy in devlink.c */
+> 
+>diff --git a/net/core/devlink.c b/net/core/devlink.c
+>index 05516f1e4c3e..3b6bd3b4d346 100644
+>--- a/net/core/devlink.c
+>+++ b/net/core/devlink.c
+>@@ -523,28 +523,35 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
+> 	return -EMSGSIZE;
+> }
+> 
+>-static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
+>+static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink, bool is_remote)
+> {
+> 	struct nlattr *reload_stats_attr;
+> 	int i, j, stat_idx;
+> 	u32 value;
+> 
+>-	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>+	if (!is_remote)
+>+		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>+	else
+>+		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_REMOTE_RELOAD_STATS);
+> 
+> 	if (!reload_stats_attr)
+> 		return -EMSGSIZE;
+> 
+> 	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
+>-		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+>+		if (!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
 
-But it says above "A hybrid part has CPUs with more than one type of
-micro-architecture."
+I don't follow the check "!is_remote" here,
 
-So which is it?
+> 		    !devlink_reload_limit_is_supported(devlink, j))
+> 			continue;
+> 		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
+>-			if (!devlink_reload_action_is_supported(devlink, i) ||
+>+			if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
 
-> If CPUID says that some feature is supported, then it will be supported
-> on all of the cores.
+and here. Could you perhaps put in a comment to describe what are you
+doing?
 
-Ok.
 
-> There might be some model specific performance counter events that only
-> apply to some cores.
 
-That sounds like the perf counter scheduling code would have to pay
-attention to what is supported. I think we have some functionality for
-that due to some AMD parts but I'd prefer if Peter comments here.
-
-> Or a machine check error code that is logged in the model specific
-> MSCOD field of IA32_MCi_STATUS. But any and all code can run on any
-> core.
-
-As long as that is consumed only by userspace I guess that's ok. The
-moment someone starts to want to differentiate on what kind of CPU
-kernel code runs and acts accordingly, then it becomes ugly so we better
-hash it out upfront.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>+			    i == DEVLINK_RELOAD_ACTION_UNSPEC ||
+> 			    devlink_reload_combination_is_invalid(i, j))
+> 				continue;
+> 
+> 			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
+>-			value = devlink->reload_stats[stat_idx];
+>+			if (!is_remote)
+>+				value = devlink->reload_stats[stat_idx];
+>+			else
+>+				value = devlink->remote_reload_stats[stat_idx];
+> 			if (devlink_reload_stat_put(msg, i, j, value))
+> 				goto nla_put_failure;
+> 		}
+>@@ -577,7 +584,9 @@ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+> 	if (!dev_stats)
+> 		goto nla_put_failure;
+> 
+>-	if (devlink_reload_stats_put(msg, devlink))
+>+	if (devlink_reload_stats_put(msg, devlink, false))
+>+		goto dev_stats_nest_cancel;
+>+	if (devlink_reload_stats_put(msg, devlink, true))
+> 		goto dev_stats_nest_cancel;
+> 
+> 	nla_nest_end(msg, dev_stats);
+>@@ -3100,15 +3109,40 @@ devlink_reload_stats_update(struct devlink *devlink, enum devlink_reload_limit l
+> 	__devlink_reload_stats_update(devlink, devlink->reload_stats, limit, actions_performed);
+> }
+> 
+>+/**
+>+ *	devlink_remote_reload_actions_performed - Update devlink on reload actions
+>+ *	  performed which are not a direct result of devlink reload call.
+>+ *
+>+ *	This should be called by a driver after performing reload actions in case it was not
+>+ *	a result of devlink reload call. For example fw_activate was performed as a result
+>+ *	of devlink reload triggered fw_activate on another host.
+>+ *	The motivation for this function is to keep data on reload actions performed on this
+>+ *	function whether it was done due to direct devlink reload call or not.
+>+ *
+>+ *	@devlink: devlink
+>+ *	@limit: reload limit
+>+ *	@actions_performed: bitmask of actions performed
+>+ */
+>+void devlink_remote_reload_actions_performed(struct devlink *devlink,
+>+					     enum devlink_reload_limit limit,
+>+					     unsigned long actions_performed)
+>+{
+>+	__devlink_reload_stats_update(devlink, devlink->remote_reload_stats, limit,
+>+				      actions_performed);
+>+}
+>+EXPORT_SYMBOL_GPL(devlink_remote_reload_actions_performed);
+>+
+> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 			  enum devlink_reload_action action, enum devlink_reload_limit limit,
+> 			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+> {
+>+	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+> 	int err;
+> 
+> 	if (!devlink->reload_enabled)
+> 		return -EOPNOTSUPP;
+> 
+>+	memcpy(remote_reload_stats, devlink->remote_reload_stats, sizeof(remote_reload_stats));
+> 	err = devlink->ops->reload_down(devlink, !!dest_net, action, limit, extack);
+> 	if (err)
+> 		return err;
+>@@ -3122,6 +3156,9 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 		return err;
+> 
+> 	WARN_ON(!test_bit(action, actions_performed));
+>+	/* Catch driver on updating the remote action within devlink reload */
+>+	WARN_ON(memcmp(remote_reload_stats, devlink->remote_reload_stats,
+>+		       sizeof(remote_reload_stats)));
+> 	devlink_reload_stats_update(devlink, limit, *actions_performed);
+> 	return 0;
+> }
+>-- 
+>2.18.2
+>
