@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E6928224F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC37128225D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgJCIBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 04:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJCIBv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:01:51 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F60C0613D0;
-        Sat,  3 Oct 2020 01:01:50 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l15so2482806wmh.1;
-        Sat, 03 Oct 2020 01:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vuCwt/HhHLXbCNrxSYxh8rmLHgkWRSUuSZzo3V3bnzU=;
-        b=uaW8pLwidd8y5z49rnqBXsRqXB7tmRS09/5CSrjqcEudalbI52Jqo12Cnt4dEGJN9c
-         paxf8K31rfBftIKBE3OUbDGnNUKn20or17NmeTRNYnn/QSAI67Z4tuIQM56oCyjLNj4d
-         g2GfHxaqPhmMreMD0AMDzkGgD5Xgmj1xPFEQHNS6Q9IZtWvCw+m6EgRHQueK4Pi830tM
-         y3yhqX77rN2+AK9KYTFLRmYnaRwUoNxG0WDWUcXQEk1+xP91e9EOm6/yeGpWMbkh3JN0
-         UZZs+59bIJUWYFOpiV1U8FbBAZ/nYLONgmGoHvD9DnJTEOgbh4rpsgP6L4eZ4Uq1DJBf
-         POlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vuCwt/HhHLXbCNrxSYxh8rmLHgkWRSUuSZzo3V3bnzU=;
-        b=OyyYmfHBk54ZSsI2b9On60bz3D6uzyQz8vj3Gr3HkcH0qdHvlPzaxfPEcf/XjOgLkJ
-         xvUvDPDCXPe0OOfA6HDZBHNmFvtY4eSHxMxlPdoMztkneQLGWzgNsmmwy3o+2TeB8ux1
-         RUURnf7gFABokbmkEMTUALFNIzf6BKzVlx0PNMzQ+HsIEoPKPEeAUapLHoIDjSl8xzT1
-         ebLi4zII5bQ3oC805BjShMkTLNSi914c03+/ShauQNwyAKIKpxW+2Odfl+y2k3ytMUGi
-         ykMnHuFkEzUe5sHx92oBcdCc9akQxyUWsRkfca1u/0h+C27YzhAxqI1LnAQOI8ZUtbri
-         owAA==
-X-Gm-Message-State: AOAM532nl4vDYeFByMKXZudYP2t8QSCKxIdRt5qVFQ/0JuMY+0oZPJBC
-        l8cKAxuk9P4ZSYma8Mtrn7E=
-X-Google-Smtp-Source: ABdhPJzOlZZPqJA9PSu9JywlEz8QeDlrsQRirMEIQoF5VbbDBIe2P9dWlWXXL+XdwGeUd16pr3JeRw==
-X-Received: by 2002:a1c:2042:: with SMTP id g63mr6559588wmg.174.1601712109693;
-        Sat, 03 Oct 2020 01:01:49 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id f5sm4310777wmh.16.2020.10.03.01.01.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 01:01:49 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, linux-man@vger.kernel.org,
-        gcc-patches@gcc.gnu.org, libc-alpha@sourceware.org,
-        eggert@cs.ucla.edu, linux-kernel@vger.kernel.org,
-        jwakely.gcc@gmail.com, David.Laight@ACULAB.COM
-Subject: Re: [PATCH v5 2/2] void.3: New link to system_data_types(7)
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
-References: <20201002151419.32053-1-colomar.6.4.3@gmail.com>
- <20201002192814.14113-3-colomar.6.4.3@gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <836888b0-22c8-0904-aa9d-04c987c5ef41@gmail.com>
-Date:   Sat, 3 Oct 2020 10:01:48 +0200
+        id S1725775AbgJCIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 04:04:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgJCIEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 04:04:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601712272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Sf4LuO79pJtn1h8GcldPVEayw9DaZgt5IWpkc17EoAI=;
+        b=ApHVckZk+6W7nGlUuD18Bzex5yiJL10vcRoz1kk0UyVJg6lx+jo5dpjWJOs5Lhry43Nz9D
+        UowFTX0hgqBd12z3bBP/sAbwEWHVDXX/0iJoqA/ClRoh72kT385cZYUADXIkaldN54Q72b
+        b0/6LMErFaxjRFYCDKbQtWDRhKYnVRU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6C26AC8B;
+        Sat,  3 Oct 2020 08:04:31 +0000 (UTC)
+Subject: Re: [PATCH] fs: tree-checker: fix missing brace warning for old
+ compilers
+To:     Pujin Shi <shipujin.t@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hankinsea@gmail.com
+References: <20201003001151.1306-1-shipujin.t@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <fbddb15a-6e46-3f21-23ba-b18f66e3448a@suse.com>
+Date:   Sat, 3 Oct 2020 11:04:29 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201002192814.14113-3-colomar.6.4.3@gmail.com>
+In-Reply-To: <20201003001151.1306-1-shipujin.t@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alex,
 
-On 10/2/20 9:28 PM, Alejandro Colomar wrote:
-> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 
-Patch applied.
+On 3.10.20 г. 3:11 ч., Pujin Shi wrote:
+> For older versions of gcc, the array = {0}; will cause warnings:
+> 
+> fs/btrfs/tree-checker.c: In function 'check_root_item':
+> fs/btrfs/tree-checker.c:1038:9: warning: missing braces around initializer [-Wmissing-braces]
+>   struct btrfs_root_item ri = { 0 };
+>          ^
+> fs/btrfs/tree-checker.c:1038:9: warning: (near initialization for 'ri.inode') [-Wmissing-braces]
+> 
+> 1 warnings generated
+> 
+> Fixes: 443b313c7ff8 ("btrfs: tree-checker: fix false alert caused by legacy btrfs root item")
+> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 
-And, I think we're now at a sync point.
+This is a compiler artifact, please see:
+http://www.ex-parrot.com/~chris/random/initialise.html
 
-Thanks,
+ALso having an empty initialization list like = {} while valid for gcc
+is actually invalid according to the official standard. Check ISO C
+Standard section 6.7.9 for the correct syntax of initializer-list.
 
-Michael
-
+IOW - NAK.
 
 > ---
->  man3/void.3 | 1 +
->  1 file changed, 1 insertion(+)
->  create mode 100644 man3/void.3
+>  fs/btrfs/tree-checker.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/man3/void.3 b/man3/void.3
-> new file mode 100644
-> index 000000000..db50c0f09
-> --- /dev/null
-> +++ b/man3/void.3
-> @@ -0,0 +1 @@
-> +.so man7/system_data_types.7
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index f0ffd5ee77bd..5028b3af308c 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer *leaf, struct btrfs_key *key,
+>  			   int slot)
+>  {
+>  	struct btrfs_fs_info *fs_info = leaf->fs_info;
+> -	struct btrfs_root_item ri = { 0 };
+> +	struct btrfs_root_item ri = {};
+>  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
+>  				     BTRFS_ROOT_SUBVOL_DEAD;
+>  	int ret;
 > 
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
