@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410EA282647
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378BB282640
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgJCTgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        id S1725902AbgJCTbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJCTgJ (ORCPT
+        with ESMTP id S1725870AbgJCTbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:36:09 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA952C0613E7
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:36:07 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 77so6126014lfj.0
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:36:07 -0700 (PDT)
+        Sat, 3 Oct 2020 15:31:45 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F459C0613A6
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:31:43 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id o21so5843269qtp.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=w3Ngi5vlbzYdW/bDZyAeIiKsITew3BleP03QjUOOp9E=;
-        b=NL3W0BU3MYVSlmKaGe0apPVLCOWMrRvHHy6MxlaJ4zkI/5fZW6A2ly8bd/ZSw5zN4l
-         UbsojxYClh5sDdVjL4VpsS+1gbchOMXIpbo/Lee4jyQjFVIGH4K4vnRxRPrCK5jDlJso
-         L6itAExkxUCBRPMKT0n9qougujJj4UbEIlXkvQ71i2fX+7ioM4OYkc6X5DZh/i/GB0hV
-         9mKb+fFKNYcIppRJpwX5/3kxqLUSBZqNCNejgkAI0xLPwMr2fuZ3mQe84JhOs+7X027h
-         ykx2K8gU3qUEs8T7OBOX8Xm1JaQfj8jo+p7YHBpqtr9bNMhyYrmZoILcw3dZYVUqyfkg
-         fS+A==
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CWQLnefJnV9lai9ha07+j4R+wHuwUmFBxVnJsYEYjsI=;
+        b=TRIuiKupRuCU5VUlLtlKbsBlNQbnfv9jVMRmvy5WrUMTyv5g7SdRa3REDAkElPyBzv
+         WSOws0iapEwPs/zPE6it9FcrVqCtAnsz/UakcRiEJxUOMFcBe7pAZ20U41kh3yUYUB6u
+         lAK2edDDWs/OyXo320TXSOEjMz+2dy680rqXQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=w3Ngi5vlbzYdW/bDZyAeIiKsITew3BleP03QjUOOp9E=;
-        b=rZ5d8myMDHRR9GNeOG0neuLvPUu6GYb1b4JV6/GfMot3pG0psTohSkTtgSDD+10pwp
-         r67xPu1uPp7/dgoFkA38Jm3fgdX77ooFAtwRE4dHICYVZcmf1vi1mLlA0zY3hMi/8e8G
-         XEGMYUiOwK1ZMbliuhb/4qZl5Rsf1IjIuBEx6R4hRSuNFzVZGQ18rNxgqgY5N8mlLB6C
-         oqjSxpynQma5P0Z0CsxthvPFvuAdeEGOuxrUpdnHGPhUyejIqDJjPbrdZeeJTUoo/pvn
-         GD5J1jD1j4TkPZnxypVwmprQ4I/ZJTUxpJe2K/YxvSdm0Qypqj/j/ygXkLyc6jIA8MAL
-         K0Xg==
-X-Gm-Message-State: AOAM531HTyeuMciNwQHOUA17LuXQfy3nE13m9MzzwIRXfLxK6pM0OCeV
-        2Y4TLlVuKJPWaQmpvxjeTmwziw==
-X-Google-Smtp-Source: ABdhPJzlCylEeGhrYpzJE62KmnsvFA9SXe6+3IcJwxU1POJcuOBkf2krH+BSRuYP+ZJuVQlcdpntFg==
-X-Received: by 2002:a19:4c1:: with SMTP id 184mr924325lfe.547.1601753766144;
-        Sat, 03 Oct 2020 12:36:06 -0700 (PDT)
-Received: from localhost (h85-30-9-151.cust.a3fiber.se. [85.30.9.151])
-        by smtp.gmail.com with ESMTPSA id b28sm1826099lfq.107.2020.10.03.12.36.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=CWQLnefJnV9lai9ha07+j4R+wHuwUmFBxVnJsYEYjsI=;
+        b=tuMUb3cNmrYXWdS2eqCsrQeWtebXJsHY9HbXcTKPPOGmhvJyunFOGKI47QuBVjo7iO
+         F/DN52Uyevz6pdM1p+Gq1VEeODIGWMGaui6LoZkjHSf4J/eBQG4u7ObWfxYqWGzGx5zS
+         50vI/ojtZHGnxXMWPn8452BYGOQlryJ8WRNQXmj3jcuhA4siq/Hpz43Ja8aUcwbcgX5B
+         pQwnH3GnRP572dOItL/YrtUUtksEgpT521p09NR8T7WwTF50izyq/4oqBkR2uJ5gvPJj
+         31JyCFEaznl0NdXDK44RkkD4vIMeuFPl25mwH6k0sqQ1vZ5wdHCHMoyIbUHEErc1U8vb
+         ZHMQ==
+X-Gm-Message-State: AOAM530nzwR485Zno1Q7KT1w5kNFAbvMwMDNehoEgF96GqxCXNpmwxnT
+        sZU9L+mL9pBg2HUNQUveSZ6C8Q==
+X-Google-Smtp-Source: ABdhPJyXj0to29E/962sKEc6U/odEp+QvXfYgP1BYnP1Sa/tA6o1DsKTTnJkOmEDBav7C7kIlGgFyQ==
+X-Received: by 2002:ac8:4548:: with SMTP id z8mr7894174qtn.291.1601753502454;
+        Sat, 03 Oct 2020 12:31:42 -0700 (PDT)
+Received: from chatter.i7.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id a66sm3745298qkc.52.2020.10.03.12.31.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 12:36:04 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 12:31:36 -0700
-From:   Olof Johansson <olof@lixom.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Khuong Dinh <khuong@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arm@kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] arm64: dts: apm: drop unused reg-io-width from DW
- APB GPIO controller
-Message-ID: <20201003193136.GC8203@lx2k>
-References: <20200917165040.22908-1-krzk@kernel.org>
- <20201002160922.GA4542@kozik-lap>
+        Sat, 03 Oct 2020 12:31:41 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 15:31:37 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Joe Perches <joe@perches.com>, Mark Brown <broonie@kernel.org>,
+        tools@linux.kernel.org, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20201003193137.z2bpwzlz5a66kkex@chatter.i7.local>
+Mail-Followup-To: Julia Lawall <julia.lawall@inria.fr>,
+        Joe Perches <joe@perches.com>, Mark Brown <broonie@kernel.org>,
+        tools@linux.kernel.org, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>, linux-acpi@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+ <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+ <20200929113745.GB4799@sirena.org.uk>
+ <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
+ <20201001110150.GA6715@sirena.org.uk>
+ <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
+ <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
+ <alpine.DEB.2.22.394.2010032118420.2741@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201002160922.GA4542@kozik-lap>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.DEB.2.22.394.2010032118420.2741@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 06:09:22PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, Sep 17, 2020 at 06:50:39PM +0200, Krzysztof Kozlowski wrote:
-> > The Synopsys DesignWare APB GPIO controller driver does not parse
-> > reg-io-width and dtschema does not allow it so drop it to fix dtschema
-> > warnings like:
-> > 
-> >   arch/arm64/boot/dts/apm/apm-mustang.dt.yaml: gpio@1c024000:
-> >     'reg-io-width' does not match any of the regexes: '^gpio-(port|controller)@[0-9a-f]+$', 'pinctrl-[0-9]+'
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > 
-> > ---
+On Sat, Oct 03, 2020 at 09:18:51PM +0200, Julia Lawall wrote:
+> > > There seems to be some mismatch between b4's use of the
+> > > cover letter to a patch series and what maintainers that
+> > > apply a subset of the patches in the patch series.
+> > >
+> > > The merge description shows the entire patch series as
+> > > applied, but the actual merge is only a subset of the
+> > > series.
+> > >
+> > > Can this be improved in b4?
+> >
+> > So, the following logic should be applied:
+> >
+> > - if the entire series was applied, reply to 0/n
+> > - if a subset only is applied, reply to each n/n of the patch that was
+> >   cherry-picked out of the series
+> >
+> > Is that an accurate summary?
 > 
-> Dear Arnd and Olof,
-> 
-> There is no response from APM maintainer, so maybe you could apply these
-> two patches directly? Optionally I could take it and send to you via
-> pull-request.
+> That sounds good.
 
-Sure, applying.
+I'm worried that this can get unwieldy for series of 50 patches where 49 
+got applied. Would the following be better:
 
+-----
+From: ...
+To: ...
+Subject: Re: [PATCH 00/18] use semicolons...
 
--Olof
+On Sun...
+> These patches...
+>
+> [...]
+
+A subset of these patches was applied to
+
+  https://...
+
+Thanks!
+
+[5/18] regmap: debugfs:
+       commit:
+
+(etc)
+-----
+
+In other words, we:
+
+- specifically say that it's a subset
+- instead of just enumerating the number of patches that were applied, 
+  as is currently the case ([1/1]) we list the exact numbers out of the 
+  posted series (e.g. [5/18])
+
+I think this is a better solution than potentially flooding everyone 
+with 49 emails.
+
+-K
