@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC7628266F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A83A282671
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgJCToe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJCTod (ORCPT
+        id S1725931AbgJCTou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:44:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26087 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725884AbgJCTos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:44:33 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4D9C0613D0;
-        Sat,  3 Oct 2020 12:44:32 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 19so5871841qtp.1;
-        Sat, 03 Oct 2020 12:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5hUezzo8hUcmZG6E5UAfmoNw5nxRF6WFHj3rv30U5Bs=;
-        b=m5S4x6BEp6u4XqhhSv3TOKpm/N6FoVFmOp0DC9/on/dANweIR9vks8AfuVCksRKcML
-         buxRVCIdXZpEY++Yaoqy3QlyaXL1q66yI0CQqjvZZvP4nO0lB5mCnVDN05fIqTKrrt2Y
-         NcAZGNP8ebkMQPLJhu5GtXuHazwFtL7U2UQP/z+o9Liskwx+7ft6qOaA1auC2z8N0gs7
-         7EHlVW9ufeWlLtYeGTq3WIZTKHsewfK7fZ++sa63Gq7inKnECsKKa4msY+iSPmj0ESLA
-         uSo5KLCpy9hfKWnw0yFcqsBCVcze+6CbwlVNP8QfC8d1xKa1DS6vXgc42fvWChOoipO5
-         VNiQ==
+        Sat, 3 Oct 2020 15:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601754287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ajQYGYojq4f9aQLq4fZ43qbXeKvwhmhvTmq4l0hgCs=;
+        b=iolzYA72rwRTeMOgkMRLXENozUKvU2bVeoYVmk/6WGo0eH7LvDFjBmzmnfw2OuBc/N2gxi
+        K/reKmb6sq0GNPvDlURzLfogH0mlY9W5OU1ATKCPGISKnalVqQTRdibSyzsg1HbgmQUelX
+        e00OZBOry8yRo10Z2dXnPTggIi/WqYE=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-_3E15oi-OOKm3vouTgujhQ-1; Sat, 03 Oct 2020 15:44:45 -0400
+X-MC-Unique: _3E15oi-OOKm3vouTgujhQ-1
+Received: by mail-ot1-f72.google.com with SMTP id g2so2295468otr.4
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:44:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5hUezzo8hUcmZG6E5UAfmoNw5nxRF6WFHj3rv30U5Bs=;
-        b=rWvVWp+GzDltee5NskcqumAGTszfUq4ntJRT80OA+vUEvmOI5f8RQz+V2Cw3rvhuHh
-         Yd6QkgDGvhDFWDaBhPmoqe01PPdPA+rzsZHumotxfAu7nAiuROjbQCUOZCLGCebeJa42
-         +zzEkNBuLVhse1AXH9cJM/FtlSDrpwHlWhwxqGXFEU58lySffW2b76UcLdIGu7Y1Wiz9
-         aXU6ljGTKm5u07Z9fpaCta1LKhIPjXfWutXv3UVYRbj+pjLbHNSJ8wiDGF3DcTnSqGPQ
-         ANCY8i1sN1oNtEBytEqkIj1Pie1WSnUhMBuAZxchkPOhXE+MtqdKnATULzG5gF5xATXf
-         8ydA==
-X-Gm-Message-State: AOAM5306XvdRLS4VI46QOZdwcuOLcyLvVgmG141KZdjrwF85WTOO9iBA
-        uAvsnQv+MCL+8kbYgdf3YBU=
-X-Google-Smtp-Source: ABdhPJwE7Tgts9z7iIMcYd8Oc8lRH9YbkRma2HmxX1HDPzxgJHmyYcIonhX0QBg9WoomtY1fXp384Q==
-X-Received: by 2002:ac8:33ec:: with SMTP id d41mr7915646qtb.390.1601754271477;
-        Sat, 03 Oct 2020 12:44:31 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id c70sm3855038qkg.4.2020.10.03.12.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 12:44:30 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sat, 3 Oct 2020 15:44:29 -0400
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] efi/libstub/x86: simplify efi_is_native()
-Message-ID: <20201003194429.GA768061@rani.riverdale.lan>
-References: <20201003060356.4913-1-xypron.glpk@gmx.de>
- <CAMzpN2hZ6833u4P=Vr1hueoYCfYryHoTW1dpa-9FTL3nvehJ0A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ajQYGYojq4f9aQLq4fZ43qbXeKvwhmhvTmq4l0hgCs=;
+        b=UFy4wewna1ZVMSE+MXZR+a5jGSYpAEVKt/+xPbDF5lUEaQwzHLxIDAAoL9+QgfnkY1
+         VMu+ce9ESo+7IKVthAPyj6Gkw7VVg3fkLiuzGXN0cvUH7s55s/DoEnQsxLYRjRucVXGu
+         jjta+DZukDU9Ej48vjstQaWVj3AwesFn8kMBKSSviauK2Mxj9FagVrzh69/gB1MVw8lH
+         uBG3EWQsakT5R2+ZeXv8dbhFCRVA1X2PCb4ENOoqTduekcaaWBbpBoungaX2p9WElNtd
+         FwmKSUy/oB/jCgL3EFvf+73z1FvRhRWTtlWPjoepmvF3EBBV3LBYlDLf89c+KHpfaNE8
+         JGvA==
+X-Gm-Message-State: AOAM5320GkDDS74UzMDVLa25kyjQjhx4JpvOVqBjRcVsSwDvsEzaPNFQ
+        1V7E/evgZZVyxSAYGfDTK6nAQxuHWtDdjA7POPPoVRB9yDsC/v4lkjemKg9tpwB9DRQjnlEDzor
+        LKIYejRl4TLjfNe5DQTgoo8ppykrKB8PLRzpwbhti
+X-Received: by 2002:aca:4e06:: with SMTP id c6mr2746463oib.120.1601754284256;
+        Sat, 03 Oct 2020 12:44:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz+1W2OcJQdBH5Es26AH2enJprMfA6Y6Ta0TykOVjsUsp+EeIZZaj3b8yn+Q4U1qjm0n74jCFvjcTLQRMWgMzI=
+X-Received: by 2002:aca:4e06:: with SMTP id c6mr2746461oib.120.1601754284042;
+ Sat, 03 Oct 2020 12:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMzpN2hZ6833u4P=Vr1hueoYCfYryHoTW1dpa-9FTL3nvehJ0A@mail.gmail.com>
+References: <20201002174001.3012643-6-jarod@redhat.com> <20201002121051.5ca41c1a@hermes.local>
+ <CAKfmpSecU63B1eJ5KEyPcCAkXxeqZQdghvUMdn_yGn3+iQWwcQ@mail.gmail.com> <20201002.155535.2066858020292000189.davem@davemloft.net>
+In-Reply-To: <20201002.155535.2066858020292000189.davem@davemloft.net>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Sat, 3 Oct 2020 15:44:33 -0400
+Message-ID: <CAKfmpSd=mSUEThgD_z58wHkyLtHZcZHcK87t+EzXHU2QSxf2Dg@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 5/6] bonding: update Documentation for
+ port/bond terminology
+To:     David Miller <davem@davemloft.net>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 01:28:18PM -0400, Brian Gerst wrote:
-> On Sat, Oct 3, 2020 at 2:05 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
-> >
-> > CONFIG_EFI_MIXED depends on CONFIG_X86_64=y.
-> > There is no need to check CONFIG_X86_64 again.
-> >
-> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> > ---
-> >  arch/x86/include/asm/efi.h | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-> > index b9c2667ac46c..ab28bf1c74cf 100644
-> > --- a/arch/x86/include/asm/efi.h
-> > +++ b/arch/x86/include/asm/efi.h
-> > @@ -223,8 +223,6 @@ static inline bool efi_is_64bit(void)
-> >
-> >  static inline bool efi_is_native(void)
-> >  {
-> > -       if (!IS_ENABLED(CONFIG_X86_64))
-> > -               return true;
-> >         return efi_is_64bit();
-> >  }
-> 
-> This would then return false for native 32-bit.
-> 
-> --
-> Brian Gerst
+On Fri, Oct 2, 2020 at 6:55 PM David Miller <davem@davemloft.net> wrote:
+>
+> From: Jarod Wilson <jarod@redhat.com>
+> Date: Fri, 2 Oct 2020 16:12:49 -0400
+>
+> > The documentation was updated to point to the new names, but the old
+> > ones still exist across the board, there should be no userspace
+> > breakage here. (My lnst bonding tests actually fall flat currently
+> > if the old names are gone).
+>
+> The documentation is the reference point for people reading code in
+> userspace that manipulates bonding devices.
+>
+> So people will come across the deprecated names in userland code and
+> therefore will try to learn what they do and what they mean.
+>
+> Which means that the documentation must reference the old names.
+>
+> You can mark them "(DEPRECATED)" or similar, but you must not remove
+> them.
 
-32-bit doesn't use this implementation: it's #define'd to true in
-drivers/firmware/efi/libstub/efistub.h.
+Okay, so it sounds like just a blurb near the top of the file
+referencing the changes that have been made in the code might be the
+way to go here. Tagging every occurrence of master or slave in the doc
+inline as deprecated would get ... noisy.
 
-Thanks.
+-- 
+Jarod Wilson
+jarod@redhat.com
+
