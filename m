@@ -2,159 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7797E2826C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9D42826CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgJCVXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 17:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgJCVXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 17:23:39 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726013AbgJCVZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 17:25:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbgJCVZA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 17:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601760300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RI9t3QpvbxrdIY+RQ7srct2+LY1Jf4IiVSWRdQxLDY0=;
+        b=dir+ilIb+d9yMsr8AVznga2JmaAbxot7djPPJNuVkewwVnuX4Qdz5H5AUGiAWG5cXqNfF4
+        QfQWZpGzG7yaHCGIjxH4RfN9E7bn62opuZ5Gofode7poHSniqHrop5E6iotKI23s+/YKcN
+        L2laua39NhY8eoFohTQKI4unUd3DA9E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-rSE8_r2TP1CBc_FYuxiyDA-1; Sat, 03 Oct 2020 17:24:58 -0400
+X-MC-Unique: rSE8_r2TP1CBc_FYuxiyDA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6F69206C1;
-        Sat,  3 Oct 2020 21:23:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601760218;
-        bh=XOM1iiTCmlGn+kzb56sHfCoEltP/3d+b62BLvBc/MwM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v70+ZPsuxCZhL/PJC3oUz2XopDL4VJ1G/R9qucP21vAcIIZoizqMSmTFOEMJelHtv
-         pHljq0lChWdkxwy1ft7Psk0TtuA9ng8B4wtY3wd9GmSpdrm2w+pQ1uBmpst1mS1Pun
-         EtqnaRsjrhulkNmNwatX+RZ1SlO1jsg78IE55vVs=
-Received: by earth.universe (Postfix, from userid 1000)
-        id C04563C0C87; Sat,  3 Oct 2020 23:23:36 +0200 (CEST)
-Date:   Sat, 3 Oct 2020 23:23:36 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] test_power: add missing newlines when printing
- parameters by sysfs
-Message-ID: <20201003212336.5et7erdf6fihqscu@earth.universe>
-References: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57297801AAD;
+        Sat,  3 Oct 2020 21:24:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-116-196.rdu2.redhat.com [10.10.116.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7596560BE2;
+        Sat,  3 Oct 2020 21:24:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20201003.141720.1850598738964828712.davem@davemloft.net>
+References: <20201003.141720.1850598738964828712.davem@davemloft.net> <20201002.160325.520066148052804695.davem@davemloft.net> <160156420377.1728886.5309670328610130816.stgit@warthog.procyon.org.uk> <2438800.1601755309@warthog.procyon.org.uk>
+To:     David Miller <davem@davemloft.net>
+Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 00/23] rxrpc: Fixes and preparation for RxGK
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fs3y3zgguzqvtvv3"
-Content-Disposition: inline
-In-Reply-To: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2450212.1601760295.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Sat, 03 Oct 2020 22:24:55 +0100
+Message-ID: <2450213.1601760295@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+David Miller <davem@davemloft.net> wrote:
 
---fs3y3zgguzqvtvv3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > Since the fixes in the set need to go after the patches in net-next, s=
+hould I
+> > resubmit just those for net-next, or sit on them till -rc1?
+> =
 
-Hi,
+> My 'net' tree is always open for bug fixes, and that's where bug fixes
+> belong.  Not 'net-next'.
 
-On Fri, Sep 04, 2020 at 02:09:58PM +0800, Xiongfeng Wang wrote:
-> When I cat some module parameters by sysfs, it displays as follows.
-> It's better to add a newline for easy reading.
->=20
-> root@syzkaller:~# cd /sys/module/test_power/parameters/
-> root@syzkaller:/sys/module/test_power/parameters# cat ac_online
-> onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
-> trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
-> goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
-> dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_=
-technology
-> LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
-> onroot@syzkaller:/sys/module/test_power/parameters#
->=20
-> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> ---
+"Need to go after the patches in net-next" - ie. there's a dependency.
 
-Thanks, queued.
+David
 
--- Sebastian
-
->  drivers/power/supply/test_power.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/tes=
-t_power.c
-> index 04acd76..4895ee5 100644
-> --- a/drivers/power/supply/test_power.c
-> +++ b/drivers/power/supply/test_power.c
-> @@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const=
- struct kernel_param *kp)
->  static int param_get_ac_online(char *buffer, const struct kernel_param *=
-kp)
->  {
->  	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> @@ -366,6 +367,7 @@ static int param_set_usb_online(const char *key, cons=
-t struct kernel_param *kp)
->  static int param_get_usb_online(char *buffer, const struct kernel_param =
-*kp)
->  {
->  	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> @@ -380,6 +382,7 @@ static int param_set_battery_status(const char *key,
->  static int param_get_battery_status(char *buffer, const struct kernel_pa=
-ram *kp)
->  {
->  	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> @@ -394,6 +397,7 @@ static int param_set_battery_health(const char *key,
->  static int param_get_battery_health(char *buffer, const struct kernel_pa=
-ram *kp)
->  {
->  	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> @@ -409,6 +413,7 @@ static int param_get_battery_present(char *buffer,
->  					const struct kernel_param *kp)
->  {
->  	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> @@ -426,6 +431,7 @@ static int param_get_battery_technology(char *buffer,
->  {
->  	strcpy(buffer,
->  		map_get_key(map_technology, battery_technology, "unknown"));
-> +	strcat(buffer, "\n");
->  	return strlen(buffer);
->  }
-> =20
-> --=20
-> 1.7.12.4
->=20
-
---fs3y3zgguzqvtvv3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9469UACgkQ2O7X88g7
-+pojdw//dQ9BtbUc8f2f7SfslHm9n0RPIVKqSlelkWXvUcQm52R0ebOudWndllLU
-QFK4OMQZDhF/9Tyo/l5tJKAJKbOUAM4NbP6TlFlapuP0WpVmaH/waQie3R4LYiGD
-ORJboknaMKca189SmC8QCGDpsaPHTR0y4BVEYjTnYAPg/RbBdGCseYhrATTOEi2Q
-DOu5T7qsyqL1AmlHVpet0eg40aLPBqmI/vmGJ3svzSeja0cvzEC8L8gbbybplwGr
-ZtrE+GUUNEiA4SVTcdXVJ0Nwbv2yMWdi3N4gwS+9jW3hcJLvPfnjm90x0DrKN1Og
-VrejrCdpaow7WEP2a/Lg4mC2KusdCdx4A4a5xYqNqNiIETehKimX3IlpjWVeQjqY
-iLqZc3FC0cXuKWbyOJScYueOYn1v25gzYM3nvTKY0dPgsPM4l+o2FRhJaNHMf0lR
-V8X5ogpnPKfUaipgd6s+rupo/b/H+EUKuqjW6I/eFY1M3UI0u86VDPXNvyzTrMSg
-Y2EEYVQDGw2KfN+/y56VUTWn0ZJZBv8v5e0A2+HIyVJDZ2iOjhhf1M669ff1XFAT
-sRQd6xq+iIpZjaZqDRMe8rmWJU5e3ARRWNtIliFde1YsYXwfBZ/tq/hMlDZuDEP1
-EnjAsDzBHQZhZleDeipLTP3v17K28mvU5VcDhTrytzQpqBoM1aY=
-=P9et
------END PGP SIGNATURE-----
-
---fs3y3zgguzqvtvv3--
