@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE18281FF7
+	by mail.lfdr.de (Postfix) with ESMTP id AB612281FF8
 	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725821AbgJCBP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:15:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53475 "EHLO mga11.intel.com"
+        id S1725829AbgJCBQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:16:00 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53472 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgJCBPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725795AbgJCBPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 2 Oct 2020 21:15:49 -0400
-IronPort-SDR: 6R/8SmycwubMsc0vu6LLgxOQWhQSezSVJjvVwcXSIaO+DfB6XSZ7T3pLEqDr81KIB2fQ37Xuxg
- IShjDYCV5vGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160436329"
+IronPort-SDR: P5Sec4b6tpXvdfP4uVCDR/OxngOcqmC7uGDfGbuW6UAayz15pZ/HKpUgu4evionzUomIAktk/h
+ M5HiQLXeSD/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160436330"
 X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="160436329"
+   d="scan'208";a="160436330"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:15:48 -0700
-IronPort-SDR: OgSlaYaUfjMtCNeloWh2eEicy15R5Q8SwXSYtgZImuj4ES3+8GNdKHWZHXpLNpYJ4OEMkAAuD6
- B0s0OfwdFWmw==
+IronPort-SDR: lAxzQVGKuMxkID9g+fJASlns2DwBBYh6sTVMtg7mjJZD7y67rzpMUlLE33yKcDG08mtNcScJ2q
+ V19o/bq9FttA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="325996791"
+   d="scan'208";a="325996798"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga002.jf.intel.com with ESMTP; 02 Oct 2020 18:15:47 -0700
+  by orsmga002.jf.intel.com with ESMTP; 02 Oct 2020 18:15:48 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
         Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Tony Luck <tony.luck@intel.com>, Len Brown <len.brown@intel.com>,
         Dave Hansen <dave.hansen@intel.com>,
         Kan Liang <kan.liang@linux.intel.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH 3/4] x86/cpu/intel: Add function to get name of hybrid CPU types
-Date:   Fri,  2 Oct 2020 18:17:44 -0700
-Message-Id: <20201003011745.7768-4-ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 4/4] x86/cpu/topology: Implement the CPU type sysfs interface
+Date:   Fri,  2 Oct 2020 18:17:45 -0700
+Message-Id: <20201003011745.7768-5-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
 References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
@@ -50,88 +50,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provided a human-friendly string name for each type of CPU micro-
-architecture in Intel hybrid parts. This string is to be used in the
-CPU type sysfs interface.
+Recent Intel processors combine CPUs with different types of micro-
+architecture in the same package. There may be applications interested in
+knowing the type topology of the system. For instance, it can be used to
+to determine which subsets of CPUs share a common feature.
 
-In order to uniquely identify CPUs of the same type, compose the name
-string as <cpu_type_name>_<native_model_id_nr>.
+Implement cpu_type sysfs interfaces for Intel processors.
+
+For example, in a system with four Intel Atom CPUs and one Intel Core CPU,
+these entries look as below. In this example, the native model IDs for
+both types of CPUs are 0:
+
+user@host:~$: ls /sys/devices/system/cpu/types
+intel_atom_0 intel_core_0
+
+user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
+cpulist cpumap
+
+user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
+cpulist cpumap
+
+user@host:~$ cat /sys/devices/system/cpu/types/intel_atom/cpumap
+0f
+
+user@host:~$ cat /sys/devices/system/cpu/types/intel_atom/cpulist
+0-3
+
+user@nost:~$ cat /sys/devices/system/cpu/types/intel_core/cpumap
+10
+
+user@host:~$ cat /sys/devices/system/cpu/types/intel_core/cpulist
+4
 
 Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Len Brown <len.brown@intel.com>
 Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
 Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 Cc: linux-kernel@vger.kernel.org
 Reviewed-by: Tony Luck <tony.luck@intel.com>
+Suggested-by: Len Brown <len.brown@intel.com> # Necessity of the interface
+Suggested-by: Dave Hansen <dave.hansen@intel.com> # Details of the interface
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
- arch/x86/include/asm/intel-family.h |  4 ++++
- arch/x86/kernel/cpu/cpu.h           |  3 +++
- arch/x86/kernel/cpu/intel.c         | 23 +++++++++++++++++++++++
- 3 files changed, 30 insertions(+)
+ arch/x86/include/asm/topology.h |  2 ++
+ arch/x86/kernel/cpu/topology.c  | 23 +++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index 5e658ba2654a..4ec2272e0049 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -133,4 +133,8 @@
- /* Family 5 */
- #define INTEL_FAM5_QUARK_X1000		0x09 /* Quark X1000 SoC */
+diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
+index f4234575f3fd..d4a3e1ce8338 100644
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -218,4 +218,6 @@ static inline void arch_set_max_freq_ratio(bool turbo_disabled)
+ }
+ #endif
  
-+/* Types of CPUs in hybrid parts. */
-+#define INTEL_HYBRID_TYPE_ATOM		0x20
-+#define INTEL_HYBRID_TYPE_CORE		0x40
++#define CPUTYPES_MAX_NR 2
 +
- #endif /* _ASM_X86_INTEL_FAMILY_H */
-diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
-index 9d033693519a..b4474238e1f3 100644
---- a/arch/x86/kernel/cpu/cpu.h
-+++ b/arch/x86/kernel/cpu/cpu.h
-@@ -56,8 +56,11 @@ extern __ro_after_init enum tsx_ctrl_states tsx_ctrl_state;
- extern void __init tsx_init(void);
- extern void tsx_enable(void);
- extern void tsx_disable(void);
-+extern const char *intel_get_hybrid_cpu_type_name(u32 cpu_type);
- #else
- static inline void tsx_init(void) { }
-+static inline const char *intel_get_hybrid_cpu_type_name(u32 cpu_type)
-+{ return NULL; }
- #endif /* CONFIG_CPU_SUP_INTEL */
- 
- extern void get_cpu_cap(struct cpuinfo_x86 *c);
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 59a1e3ce3f14..e1dee382cf98 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -1191,3 +1191,26 @@ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
- 	cpu_model_supports_sld = true;
- 	split_lock_setup();
+ #endif /* _ASM_X86_TOPOLOGY_H */
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index d3a0791bc052..709fc473f905 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -153,3 +153,26 @@ int detect_extended_topology(struct cpuinfo_x86 *c)
+ #endif
+ 	return 0;
  }
 +
-+static char hybrid_name[64];
-+
-+const char *intel_get_hybrid_cpu_type_name(u32 cpu_type)
++u32 arch_get_cpu_type(int cpu)
 +{
-+	u32 native_model_id = cpu_type & X86_HYBRID_CPU_NATIVE_MODEL_ID_MASK;
-+	u8 type = cpu_type >> X86_HYBRID_CPU_TYPE_ID_SHIFT;
++	struct cpuinfo_x86 *c = &cpu_data(cpu);
 +
-+	switch (type) {
-+	case INTEL_HYBRID_TYPE_ATOM:
-+		snprintf(hybrid_name, sizeof(hybrid_name), "intel_atom_%u",
-+			 native_model_id);
-+		break;
-+	case INTEL_HYBRID_TYPE_CORE:
-+		snprintf(hybrid_name, sizeof(hybrid_name), "intel_core_%u",
-+			 native_model_id);
-+		break;
-+	default:
-+		return NULL;
-+	}
++	if (cpu < 0 || cpu >= nr_cpu_ids)
++		return 0;
 +
-+	return hybrid_name;
++	return c->x86_cpu_type;
++}
++
++bool arch_has_cpu_type(void)
++{
++	return boot_cpu_has(X86_FEATURE_HYBRID_CPU);
++}
++
++const char *arch_get_cpu_type_name(u32 cpu_type)
++{
++	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
++		return intel_get_hybrid_cpu_type_name(cpu_type);
++
++	return NULL;
 +}
 -- 
 2.17.1
