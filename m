@@ -2,98 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7817C2823B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7928B2826E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725791AbgJCKs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 06:48:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58812 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgJCKsZ (ORCPT
+        id S1726016AbgJCViY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 17:38:24 -0400
+Received: from 70-252-206-104.staticrdns.eonix.net ([104.206.252.70]:45360
+        "EHLO 70-252-206-104.staticrdns.eonix.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725913AbgJCViX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:48:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 61CE829D0C7
-Received: by earth.universe (Postfix, from userid 1000)
-        id 433743C0C84; Sat,  3 Oct 2020 12:48:21 +0200 (CEST)
-Date:   Sat, 3 Oct 2020 12:48:21 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv1] power: supply: document current direction
-Message-ID: <20201003104821.oduzfpxbw23b4fcz@earth.universe>
-References: <20200827140248.37749-1-sebastian.reichel@collabora.com>
- <20201002182303.51db1289@aktux>
+        Sat, 3 Oct 2020 17:38:23 -0400
+X-Greylist: delayed 26623 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Oct 2020 17:38:22 EDT
+Received: from User (localhost [IPv6:::1])
+        by 70-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id 5F6B155CEB9;
+        Sat,  3 Oct 2020 06:49:37 -0400 (EDT)
+Reply-To: <stewart.macdonald58@rockhopperexplorationplc.co.uk>
+From:   "MacDonald" <stewart.macdonald58@rockhopperexplorationplc.co.uk>
+Subject: Please Check this out and reply urgently
+Date:   Sat, 3 Oct 2020 03:49:41 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tut7zgjl6z4grit4"
-Content-Disposition: inline
-In-Reply-To: <20201002182303.51db1289@aktux>
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20201003104937.5F6B155CEB9@70-252-206-104.staticrdns.eonix.net>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Attention please!
 
---tut7zgjl6z4grit4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am the Chief Financial Officer of Rockhopper and Gas company London UK, and by the virtue, as the Chief Financial Officer. I got your contact through a directory search and decided to propose this business. I am seeking your assistance in remitting of some funds,  Ninety five million  to your account for private investment purpose, hence my request for your assistance.
+ 
+  
+ SOURCE OF THE FUND:
 
-Hi,
+The fund to be transferred into your account is accrued from an over-invoiced contract amount awarded for the completion of the last phase of our refinery, valves and depot for storage of product all over our branches here in the UK which include laying of  distribution pipelines. The contract which was originally valued for One Hundred and Twenty Seven Million was manipulated to read, Two Hundred and Twenty Two Million.  The extra, Ninety Five Million, is what I want to move to your account, the original contractors who executed the job has been paid all their contract bills remaining this Ninety Five Million.
+  
+ DISBURSEMENT:
 
-On Fri, Oct 02, 2020 at 06:23:03PM +0200, Andreas Kemnade wrote:
-> On Thu, 27 Aug 2020 16:02:48 +0200
-> Sebastian Reichel <sebastian.reichel@collabora.com> wrote:
->=20
-> > Currently the sign for CURRENT_NOW and CURRENT_AVG is a bit
-> > of a mess. There are basically 3 different ways battery fuel
-> > gauges report the current:
-> >=20
-> > 1. uses negative values for discharging and positive values
-> >    for charging
-> > 2. uses positive values for discharging and negative values
-> >    for discharging (opposit of 1)
-> > 3. only uses positive values
-> >=20
-> > As a result userspace currently cannot use the sign at all in
-> > a generic way. Let's solve the issue by documenting a canonical
-> > way for reporting the data and ensure new drivers follow this
-> > way. Then existing drivers can be fixed on a case-by-case basis.
-> >=20
-> > The 'negative value =3D battery discharging' has been choosen,
-> > since there are only very few drivers doing it the other way
-> > around.
-> >=20
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
->=20
-> would be nice if this comes in, so that is it clearly specified.
+I have resolved that you take Forty percent  of the total amount for your assistance. that is, fronting you as a sub contractor to claim the remaining balance of Ninety Five Million  which is left now in our bank from the over invoice contract because it is impossible for me to claim the over invoiced amount without your assistance as a Foreign Contractor. In addition Ten percent has been mapped out for any miscellaneous expenses that   might be incurred by both of us during this business while Fifty percent  will be my own share.
 
-Ack, I'm a bit late picking up patches this merge window due to a
-vacation. This has been queued now.
+SECURITY:
 
--- Sebastian
+All modalities to effect the payment and subsequent transfer of this money has been worked out, so this transaction is Hundred percent risk free, though you are required to treat it with strictest confidence, on our acceptance please send to me your personal details and your direct mobile phone number for speedy correspondence.
+  
+I am looking forward to doing business with you. Your prompt reply will be highly appreciated. Do kindly furnish me with your contact details if you are interested in partnering with me on this transaction.
+ 
+  
+Yours Faithfully,
 
---tut7zgjl6z4grit4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl94Vu8ACgkQ2O7X88g7
-+ppLfw//axQg30mpwaFeoG1ILvanxIQOc96J9leo41XLs8N2xNNYak4Nry9OS0ET
-G7P1wmo22Y9HdwbvzKV3t5sMKc3d2gswhd+CnjM8FbrbTd4iI6JQv4G38gRPcqPK
-HUA/NWmLRHakRb70AgsuJBMR6JIhSBNWt54CfjXk/GsrJ3hpwApgKGPRK2oQ2oHd
-VTXMOKzqhV3J47NY4d2Xn0jWPDY6Kjm5xuevOhAH6XNKyYZMScifQIItVBTOXnX/
-sh960fhph6Mh50KhztJQaqWEusCi99m7WPxyvdNwte2UEPLnMUG7d31b0hIo/k7k
-qYoy4soOD8FR3wIRRcbwS+SFhztaM//4jqN0YcIL9HQAyxWQsbEngVP67SVVwOEA
-UvS2vPunFwHrvWDR1eWMLNf/pX0s7ov5BZ7H7p+5JGqV9r81DHM86NxLUF5bz+p+
-ggzM6ZyAxGh0XnVki10J7VUIIFxMirwEZYO/7IMPI2DZmOuduQ/IyHErAlxjpBCQ
-K+AecAV4qTdXqSZ0qaV26bSN67+GDWk7MkQIlyStDI5x6l727MSk0TzRjH9dpYJ4
-uDdqmlFCyriNolOvdESnsf5B8Wa321RCLwXLA5OJ2NIXqWsoe4PAZasAqneicnvQ
-WUSiWhVxzGlOnahDfI8/a5lsT/vzbx8xStTLPGmV4jcMGnXuOW4=
-=vsSI
------END PGP SIGNATURE-----
-
---tut7zgjl6z4grit4--
+Stewart MacDonald
+Chief Financial Officer
+Rockhopper Exploration PLC
