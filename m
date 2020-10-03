@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C80282606
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C865E28260D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgJCTMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgJCTMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:12:32 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D080206DB;
-        Sat,  3 Oct 2020 19:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601752351;
-        bh=qH+El+Idu9/X13MY5rS8/2uN35BsyZbyOKOMO6EuwM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sabh5m1SmeaY0uStCSD1KWWl9zXY2GLRcQPGFoEQjHVAUXuFwHFMq9jIYcI5pfQ3B
-         Qf5ugk+ig6qFNEaDhjWknGO2s6STqprv8vTAUaeRuscdkSvSI29jeI3tUAR1fPaAKi
-         95BfMererNVn8JfUOG/snH0U8M2EGCxA+YmGgKMQ=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 4C58A3C0C87; Sat,  3 Oct 2020 21:12:29 +0200 (CEST)
-Date:   Sat, 3 Oct 2020 21:12:29 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH v5 0/7] power: supply: max17040 support compatible devices
-Message-ID: <20201003191229.dmxov4itycdhs4hy@earth.universe>
-References: <20200922114237.1803628-1-iskren.chernev@gmail.com>
+        id S1725869AbgJCTPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgJCTPG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 15:15:06 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EAAC0613A8
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:15:06 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q63so7194650qkf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:15:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XDd6ahIT6gLYMAruH7ju3Kkp37FW6zZiiBzXKCROhVM=;
+        b=BSsJMiNovC7ylJtGVK8Pu6lbRNONMCIf6IKbC00u5s1boHBtCnTHfJa/Q5VQbBE7QD
+         V4bS1NjUh5BbbOIsGpNZvopY7M6czs5rDiFGIqVWOTcL/cuAcI2C4+QBDfXFlYfMA/pD
+         daW0tThIPF0WuvSn4othGKNjDJ5j6h9bkvbes=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=XDd6ahIT6gLYMAruH7ju3Kkp37FW6zZiiBzXKCROhVM=;
+        b=RIq4Y3X7YVl9UuJKJF3iiaaPgvII3rNKK8fafYPnPPIGzwDQbardlCVFLkYACKG3M2
+         nRkfPSfqQ5Rzte/OBBaHxgMysRKkEgSRY+K/iJ3kVTf6Eirq7dDi6QIGzfZi42vb3UHE
+         o8y23RRfeUuwOAhAs2JoBYFKe9a4rC7gAaxN4FSEpgLjskTTtXM5f7lnOBHZZ0j//eux
+         mCF6oKoXM+oetHiQi2wn9MFY+6t/dKVCglkFF324iYmtN0BcQW2V77hs6QAxtg74VnOR
+         UDCidf3oFwtTJa8EqfxL3PexqcfhVf71EFFvYeL83mBg6QP9gMjSd1IWn0VJIk80t7HC
+         NILw==
+X-Gm-Message-State: AOAM530pkawwHpVC8yKC2ar6AxFoMEeXwVp31/c9dnJyOppoXjyJRz4v
+        fz2XrWQQf+4wx2YGBxIp6vws/g==
+X-Google-Smtp-Source: ABdhPJyMY8qIL4KEm7vcRUWiReW42vytsh13A1Usl//XvmLKcZ1mWKVKCTveyFrYEAH8SB+YYGag4g==
+X-Received: by 2002:a37:7844:: with SMTP id t65mr7450404qkc.136.1601752505009;
+        Sat, 03 Oct 2020 12:15:05 -0700 (PDT)
+Received: from chatter.i7.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id k22sm3882799qkk.13.2020.10.03.12.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 12:15:04 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 15:15:01 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Mark Brown <broonie@kernel.org>, tools@linux.kernel.org,
+        linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+Message-ID: <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
+Mail-Followup-To: Joe Perches <joe@perches.com>,
+        Mark Brown <broonie@kernel.org>, tools@linux.kernel.org,
+        linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>, linux-acpi@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+ <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+ <20200929113745.GB4799@sirena.org.uk>
+ <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
+ <20201001110150.GA6715@sirena.org.uk>
+ <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="q4k4oxhr25ei5syr"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200922114237.1803628-1-iskren.chernev@gmail.com>
+In-Reply-To: <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 03, 2020 at 11:40:48AM -0700, Joe Perches wrote:
+> (Adding tools and Konstantin Ryabitsev)
+> 
+> There seems to be some mismatch between b4's use of the
+> cover letter to a patch series and what maintainers that
+> apply a subset of the patches in the patch series.
+> 
+> The merge description shows the entire patch series as
+> applied, but the actual merge is only a subset of the
+> series.
+> 
+> Can this be improved in b4?
 
---q4k4oxhr25ei5syr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So, the following logic should be applied:
 
-Hi,
+- if the entire series was applied, reply to 0/n
+- if a subset only is applied, reply to each n/n of the patch that was 
+  cherry-picked out of the series
 
-On Tue, Sep 22, 2020 at 02:42:30PM +0300, Iskren Chernev wrote:
-> The max17040 fuel gauge is part of a family of 8 chips that have very
-> similar mode of operations and registers.
->=20
-> This patch set adds:
-> - compatible strings for all supported devices and handles the minor
->   differences between them;
-> - handling for devices reporting double capacity via maxim,double-soc;
-> - handling for setting rcomp, a compensation value for more accurate
->   reading, affected by battery chemistry and operating temps;
-> - suppot for SOC alerts (capacity changes by +/- 1%), to prevent polling
->   every second;
-> - improved max17040 driver with regmap and devm_
->=20
-> The datasheets of the supported devices are linked [0] [1] [2] [3].
->=20
-> [0] https://datasheets.maximintegrated.com/en/ds/MAX17040-MAX17041.pdf
-> [1] https://datasheets.maximintegrated.com/en/ds/MAX17043-MAX17044.pdf
-> [2] https://datasheets.maximintegrated.com/en/ds/MAX17048-MAX17049.pdf
-> [3] https://datasheets.maximintegrated.com/en/ds/MAX17058-MAX17059.pdf
->=20
-> v4: https://lkml.org/lkml/2020/9/6/237
-> v3: https://lkml.org/lkml/2020/6/24/874
-> v2: https://lkml.org/lkml/2020/6/18/260
-> v1: https://lkml.org/lkml/2020/6/8/682
->=20
-> Changes from v4:
-> - fix warning reported by kernel test robot <lkp@intel.com> for v4
->   patch 4/7
-> - ensure all patches have Sign-off-by matching author (was violated
->   for v4 patch 2/7)
+Is that an accurate summary?
 
-Thanks, queued.
-
--- Sebastian
-
---q4k4oxhr25ei5syr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl94zRIACgkQ2O7X88g7
-+pq12g//USMO6LOjo7Z/QuPNh4ZNG9Go4FZmbMCH7zI8qbOD8MXNXhIZ+7fy1aFr
-SDJif+eai0hQTsb2o1B7Y0Z0eeSVsW624Sfnl5/hMONP+FPgptLT58nWY5R7yFYe
-PsvavVcyqmfSWDYnd8MG93i5nPGMHkNLVyxjiZpDWq+Jjv8WxEzEzVxhnMgKmXql
-yBi3QxyDKnupNaZpJyfe6wIRloTtLXaLs5LczbsqCq7e5weFluzE9psDeGPjlBqf
-VE8v8vrR99C8sYrH4YronPfAS2rJQ9ilJ1rgUpREdX/moo5OsUubb72XXvTKltB1
-HoNQQ7o2pLhBrB5LhaFfV8VQN80KJoc/qeKMLFTw2F/SPS2uboUEogemG3WCW5w2
-2IP5G6nrbnRPJbvfNkR8jo2RbNqxdKnV08HpPGW4RXKGNGermYuKKAFSbmEWL6zU
-U80wE5DEpoH/gTS5dyjfPiYjnmnF1pATSh7l5uI/95MkP2njfihpYhDHjdsZru/7
-bvta95mvDM2YrquVNNiZSgwbRWcR4HlB7VS65ITxf0abI33dCz24zGS6Gmd2kY2Y
-AieaRuO2mloB6olxImypRtr8B8J1jylfbRS2lXoeV2U3eoc+JDvM831VKWSiq8Zn
-1Rcs2/0WPsokn8TSxZL3gtdk77hz9oeRemRlVC7FBZDeVJsD7dQ=
-=fWvd
------END PGP SIGNATURE-----
-
---q4k4oxhr25ei5syr--
+-K
