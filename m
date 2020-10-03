@@ -2,123 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF9228259C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 19:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB2C2825A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 19:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgJCRdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 13:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S1725824AbgJCRfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 13:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgJCRdT (ORCPT
+        with ESMTP id S1725797AbgJCRff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 13:33:19 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B3C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 10:33:19 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m17so4909409ioo.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 10:33:19 -0700 (PDT)
+        Sat, 3 Oct 2020 13:35:35 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C915AC0613D0;
+        Sat,  3 Oct 2020 10:35:35 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g29so3051338pgl.2;
+        Sat, 03 Oct 2020 10:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MK5uVqASqRoyPGix1z3iLbSJV9eTUDiTtMGnbaIWbDE=;
-        b=TtfeTiM6Bu8KDOBYg+UOw+aUjK4K8FSO1lNVk6VODxoFEX7bIGz4XyPR76AWYvEuoj
-         KYB4bunpwahtwP/KBoROWdvDiVxUxRv0hn74b4gmAbuaI76fm/QubP643BltlIZsKUyW
-         8eKAlmSUnTL8Mug9u7Kq23GJuGNcKWoUG1nQg=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U2D17a00wejIh6SMkTte/xd0hBTvlzW+TGrZeiOnUiA=;
+        b=MxhTZenC9HVCUiViU4wpZ+8EAqbTvVycsVBX423eXRxUx/uZTioNT+U6ayqrEcOhzp
+         O7hRn4BJNm3hEVpDNo+dEu+wYGw35io74OwUCaPN8YnaqeKYh12fE8yGdQ4pqLfrqZLt
+         s0SJp4SAkyez25Vrm5PmoAu4QkdXX9mfLk6TnL/+qO8DPuRqwnxvgK37cWxCfepJ+NR0
+         d7ndeDF0Ciw82ZZ+GZdS2Eif5BQRX8/FtAp90JntH4tppPWw4G1aherTU+hb9kmYrbcZ
+         lQvx38vPDVCDmy9A14aTuJIbaJhH4BTJwtV98//rOWsDUqGiQnlOg2CSb76lybJq+oMs
+         rwtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MK5uVqASqRoyPGix1z3iLbSJV9eTUDiTtMGnbaIWbDE=;
-        b=mYdK9jWcApwXsBeFlOiPKLqBAVBML24vgNHTEnF/Bm0V5ydWtW6tROTwJ9QvHZ/MKD
-         DTv9qLWBmGWXD+WlbM4FLhjSPuMLhHBTflHokCGuNoFmZZsmsNe2u7NxxAeRwubZvQ34
-         IIzGNWbNEriK8d3yUAlkVR7eu+uMNBDTr8fkC9zD/woOQTjBPyVVDJVH9ODnPM7QlU4p
-         fe5CwyfLb/Odqw2qd6YFF/aqiB+xTEFR3/Fk1y7cg0OeWW1acXYVM2axyz/oTVN7fZKC
-         Lv1xbRmUz1tpxarmB/p8JbLNBlU4SD5NJ22f3aLqg4KOUghzbXYDGhYLvvzJ9e5tm468
-         YXoA==
-X-Gm-Message-State: AOAM532UM4NBVImtaONyrOgQyjbCD/Rlb9VyfBNOYt49NfG+2ehOTget
-        Xu0F/YkURBI+PLzI9rb6V6qcT9GJ3spdm7zKy5h8
-X-Google-Smtp-Source: ABdhPJxF5XjTpqjoAoetC0Qpvrxi7mQ4ZOXBEKnuOWzzvzBGYi8KHxY9YWAPoSOX74+9heXweJg8YKy8lpzGfOA3olM=
-X-Received: by 2002:a05:6602:18a:: with SMTP id m10mr5823189ioo.174.1601746398592;
- Sat, 03 Oct 2020 10:33:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U2D17a00wejIh6SMkTte/xd0hBTvlzW+TGrZeiOnUiA=;
+        b=TVHxV1nPUo131TwMZARCaLLk+jZfTnUCHi6FtJoeJLNaGCG4p+ROKhJPS4sj16/4kl
+         XLF25ujDN+13oDMSlHvzi7l++YYKTJ53dbBHcTJZnHb5pZ/+wZ+/Pz0eAkRSMUZV0uYL
+         ZnA7/vXaS2a5A10h5kBGUgxzpeZxzE3nEe0S73srr0Ho5SWmdmkfZLflf7ch7n6CIhGa
+         r9WDfXBUgJU0Uf52sNjnT2eimhDId2pWbJ6MZRFJ2vLQyPccBl45LsdJLZD8e/RyE6RI
+         I/udlyaETUa9amJGCgVkxU3S7Hj2Lx5+kEfJA9JsnKEb2fms/zqN/3T6oGu0Jn3fYaiX
+         NJUA==
+X-Gm-Message-State: AOAM531jQcAgUeh+jixPJxv8iXnNILeY+B3KEVUD64e148DaWqZqJK9p
+        ytWz3kLJKB0ZxkxRbTdkimmBuBauZAA=
+X-Google-Smtp-Source: ABdhPJzl4H1dMHCXa5KYVL+gqispJ+CNKQAFVvw2YUe5w/t5q5sQKKRIp4hNkyMlHqTEycu+VIm10A==
+X-Received: by 2002:a62:830c:0:b029:152:3490:c8e6 with SMTP id h12-20020a62830c0000b02901523490c8e6mr7374648pfe.6.1601746535392;
+        Sat, 03 Oct 2020 10:35:35 -0700 (PDT)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:25ba:f7b0:670e:518f])
+        by smtp.gmail.com with ESMTPSA id c9sm5496445pgl.92.2020.10.03.10.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 10:35:34 -0700 (PDT)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net-next] drivers/net/wan/hdlc_fr: Reduce indentation in pvc_xmit
+Date:   Sat,  3 Oct 2020 10:35:28 -0700
+Message-Id: <20201003173528.41404-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <bug-209317-8243@https.bugzilla.kernel.org/> <bug-209317-8243-E6Z0ICootN@https.bugzilla.kernel.org/>
- <20200928111341.7eaa98a8@oasis.local.home> <67278555f143564677878cc849155393a93c018a.camel@wdc.com>
-In-Reply-To: <67278555f143564677878cc849155393a93c018a.camel@wdc.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Sat, 3 Oct 2020 10:33:07 -0700
-Message-ID: <CAOnJCUJgzWkKixYyFCrqbNF2ONgB_RUOSTB9BhT5D0stnf=vUw@mail.gmail.com>
-Subject: Re: [Bug 209317] ftrace kernel self test failure on RISC-V on 5.8,
- regression from 5.4.0
-To:     Alan Kao <alankao@andestech.com>, Zong Li <zong.li@sifive.com>
-Cc:     "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "bugzilla-daemon@bugzilla.kernel.org" 
-        <bugzilla-daemon@bugzilla.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Atish Patra <Atish.Patra@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan and Zong,
-I initially suspected ftrace is broken between v5.6 & v5.7 as Kolin pointed out.
-I couldn't find any reason how the HSM patch is related. Zong's ftrace
-patching code was also merged in that release.
-However, I was able to reproduce the issue in the older kernel(v5.4)
-as well on both Qemu & Unleashed hardware.
-Here are the steps:
+1. Keep the code for the normal (non-error) flow at the lowest
+indentation level. This reduces indentation and makes the code feels
+more natural to read.
 
-mount -t debugfs none /sys/kernel/debug/
-cd /sys/kernel/debug/tracing
-echo function_graph > current_tracer
-echo function > current_tracer
+2. Use "goto drop" for all error handling. This reduces duplicate code.
 
-It works for the first time with function_graph but writing any other
-tracer crashes immediately.
-Can you take a look to check if the bug is in ftrace infrastructure code ?
+3. Change "dev_kfree_skb" to "kfree_skb" in error handling code.
+"kfree_skb" is the correct function to call when dropping an skb due to
+an error. "dev_kfree_skb", which is an alias of "consume_skb", is for
+dropping skbs normally (not due to an error).
 
-On Mon, Sep 28, 2020 at 10:25 AM Atish Patra <Atish.Patra@wdc.com> wrote:
->
-> On Mon, 2020-09-28 at 11:13 -0400, Steven Rostedt wrote:
-> > On Sat, 26 Sep 2020 22:02:35 +0000
-> > bugzilla-daemon@bugzilla.kernel.org wrote:
-> >
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=209317
-> > >
-> > > --- Comment #4 from Colin Ian King (colin.king@canonical.com) ---
-> > > Issue still in 5.9-rc6
-> > >
-> >
-> > Atish,
-> >
-> > As the issues bisects down to your commit, care to take a look at
-> > this.
-> > (And take ownership of this bug)
-> >
->
-> Yes. I am already looking into this. Colin informed me about the bug
-> over the weekend.
->
-> I couldn't change the ownership as I am not part of the editbugs group.
-> I have sent an email to helpdesk@kernel.org for access.
->
-> > -- Steve
->
-> --
-> Regards,
-> Atish
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Cc: Krzysztof Halasa <khc@pm.waw.pl>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ drivers/net/wan/hdlc_fr.c | 58 ++++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 28 deletions(-)
 
-
-
+diff --git a/drivers/net/wan/hdlc_fr.c b/drivers/net/wan/hdlc_fr.c
+index 3a44dad87602..48aaf435da50 100644
+--- a/drivers/net/wan/hdlc_fr.c
++++ b/drivers/net/wan/hdlc_fr.c
+@@ -416,38 +416,40 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct pvc_device *pvc = dev->ml_priv;
+ 
+-	if (pvc->state.active) {
+-		if (dev->type == ARPHRD_ETHER) {
+-			int pad = ETH_ZLEN - skb->len;
+-			if (pad > 0) { /* Pad the frame with zeros */
+-				int len = skb->len;
+-				if (skb_tailroom(skb) < pad)
+-					if (pskb_expand_head(skb, 0, pad,
+-							     GFP_ATOMIC)) {
+-						dev->stats.tx_dropped++;
+-						dev_kfree_skb(skb);
+-						return NETDEV_TX_OK;
+-					}
+-				skb_put(skb, pad);
+-				memset(skb->data + len, 0, pad);
+-			}
+-		}
+-		skb->dev = dev;
+-		if (!fr_hard_header(&skb, pvc->dlci)) {
+-			dev->stats.tx_bytes += skb->len;
+-			dev->stats.tx_packets++;
+-			if (pvc->state.fecn) /* TX Congestion counter */
+-				dev->stats.tx_compressed++;
+-			skb->dev = pvc->frad;
+-			skb->protocol = htons(ETH_P_HDLC);
+-			skb_reset_network_header(skb);
+-			dev_queue_xmit(skb);
+-			return NETDEV_TX_OK;
++	if (!pvc->state.active)
++		goto drop;
++
++	if (dev->type == ARPHRD_ETHER) {
++		int pad = ETH_ZLEN - skb->len;
++
++		if (pad > 0) { /* Pad the frame with zeros */
++			int len = skb->len;
++
++			if (skb_tailroom(skb) < pad)
++				if (pskb_expand_head(skb, 0, pad, GFP_ATOMIC))
++					goto drop;
++			skb_put(skb, pad);
++			memset(skb->data + len, 0, pad);
+ 		}
+ 	}
+ 
++	skb->dev = dev;
++	if (fr_hard_header(&skb, pvc->dlci))
++		goto drop;
++
++	dev->stats.tx_bytes += skb->len;
++	dev->stats.tx_packets++;
++	if (pvc->state.fecn) /* TX Congestion counter */
++		dev->stats.tx_compressed++;
++	skb->dev = pvc->frad;
++	skb->protocol = htons(ETH_P_HDLC);
++	skb_reset_network_header(skb);
++	dev_queue_xmit(skb);
++	return NETDEV_TX_OK;
++
++drop:
+ 	dev->stats.tx_dropped++;
+-	dev_kfree_skb(skb);
++	kfree_skb(skb);
+ 	return NETDEV_TX_OK;
+ }
+ 
 -- 
-Regards,
-Atish
+2.25.1
+
