@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FB3282035
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CFB282038
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgJCBnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:43:40 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42006 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCBnk (ORCPT
+        id S1725767AbgJCBtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCBtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:43:40 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931dhfW051310;
-        Sat, 3 Oct 2020 01:43:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=jr7g9jBDA0hKwl6jmC4FK21yEFt8GUbjoiRHm8XnRHk=;
- b=q/oVU9CEtVX/Sxh9LaUfYdApLac9rXLN7sh2oJ87NFw+0odu//NG3hzKhqVz+aM6qC7s
- kv00dkrGhcdBkuGQWS3p2J7uo3UQ04Bpf1X4VeKFPLVOztmXSS4+X4eOPyB8uamjZuUi
- 5jhEmhLdPniXjTlDJ45qifyFNyPhpFH9e8bOIfBiRbPjg+0wkaVPwLlCvuH3N9Rfgu/F
- jJjv77X93/Hihwp+DKqjraNxrbHL3NE7zVPHuTL7fS0s9w4zs8K8IxBinjSYpEFR1xAE
- i9bRSxhFKWfCAjOtpn+L4krUJ/ryXQ9kN0bGDa1MwXv8gtFZxZC7i8LDM+DtuCoynM1P 0A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33swkmdgd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 01:43:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931eu57065334;
-        Sat, 3 Oct 2020 01:43:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33tfdydh9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 01:43:32 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0931hVxh008342;
-        Sat, 3 Oct 2020 01:43:32 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 18:43:31 -0700
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: mvumi: Fix error return in mvumi_io_attach()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1a6x4ccec.fsf@ca-mkp.ca.oracle.com>
-References: <20200910123848.93649-1-jingxiangfeng@huawei.com>
-Date:   Fri, 02 Oct 2020 21:43:29 -0400
-In-Reply-To: <20200910123848.93649-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Thu, 10 Sep 2020 20:38:48 +0800")
+        Fri, 2 Oct 2020 21:49:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB93AC0613D0;
+        Fri,  2 Oct 2020 18:49:02 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601689741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=71bkXOVLDwtVOfCToFQug21Guut6/gzkIwIbpUN54pU=;
+        b=Stsdcz9+U/j6iA8iXss1yQDZNcosRTdUDPWRE2f5ZfXME3KPt7Sc/bygXerI4m9jr6H4qy
+        PyxaWzybcRfck8t2dqtxw+Up1jMRIzAz19lSKnBBAgCyl94DnRuI5EiIytdtpMZfnL5Vc0
+        qRZus32aUW0MAVF5XgsAXPHHwdlGSI7H1XPq5Wb4uvR1t9QxpCY4PjV15I8OA/pmm7xh3w
+        S3cJyhvNn4jM+dYvLJzSx/cHAmDPL/ZyvOOkQMKnpjpoEMICA/F2W1G+7ZRm7J3yv2YlGR
+        LpnjiLV+xqkxS56HG6lDWcfxk9WkBPNlrvNODteJ0+Au5Jhz2wr/Lfb03f7E6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601689741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=71bkXOVLDwtVOfCToFQug21Guut6/gzkIwIbpUN54pU=;
+        b=iV1y8z8rfRPNqmaatTN5Ch/TxyHSucga7L+TOVQRCIB2c9BSOcceWzJHhYdvEiDsDfW/ks
+        G1qVZ+DNTTsxu0Dg==
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, peterz@infradead.org
+Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
+In-Reply-To: <20201002153849.GC29066@redhat.com>
+References: <20201001194208.1153522-1-axboe@kernel.dk> <20201001194208.1153522-4-axboe@kernel.dk> <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de> <20201002153849.GC29066@redhat.com>
+Date:   Sat, 03 Oct 2020 03:49:00 +0200
+Message-ID: <87o8lkcc4z.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010030015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=1 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 02 2020 at 17:38, Oleg Nesterov wrote:
+> On 10/02, Thomas Gleixner wrote:
+>>
+>> I think it's fundamentaly wrong that we have several places and several
+>> flags which handle task_work_run() instead of having exactly one place
+>> and one flag.
+>
+> Damn yes, agreed.
 
-Jing,
+Actually there are TWO places, but they don't interfere:
 
-> Fix to return error code PTR_ERR() from the error handling case instead
-> of 0.
+   1) exit to user
 
-Applied to 5.10/scsi-staging, thanks!
+   2) enter guest
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+From the kernel POV they are pretty much the same as both are leaving
+the kernel domain. But they have a few subtle different requirements
+what has to be done or not.
+
+So any change to that logic needs to fixup both places,
+
+Thanks,
+
+        tglx
