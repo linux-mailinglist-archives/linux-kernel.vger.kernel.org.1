@@ -2,136 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A435E2822B5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948EF2822C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725782AbgJCIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 04:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
+        id S1725791AbgJCJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 05:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJCIzV (ORCPT
+        with ESMTP id S1725765AbgJCJAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:55:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9B4C0613D0;
-        Sat,  3 Oct 2020 01:55:20 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so4268311wrl.12;
-        Sat, 03 Oct 2020 01:55:20 -0700 (PDT)
+        Sat, 3 Oct 2020 05:00:16 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB6AC0613E7
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:00:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g4so4295124wrs.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 02:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+bcD/CAAXV7lyNPV3QRgxAmLGFQtjxS5V6MhUGAQTGo=;
-        b=kz7MJAgBwohvqrukst++kx32d+paduyD9iPZrCimHFqPxFjuEPELd6j7o7Q+9ELrY6
-         RUzVvHA4WTHgemuAK2+6HRSapT8a3Nch4yGwtQ2FZcKtoDC3Dr9Kj3pY4h/qkhmtHJpL
-         KYeKk2rtHGpQwW1bIqCBHhHp+Gv9UC/DLQPGgIrRYXCJzBgzXQ6IZTZ608KkEuZ2YxL5
-         /kIxWsZB8gl67jqKSbVP34VX148GDj+K2GGTbnlakTxozieFvQzPPA+parBjPTOXgjE2
-         XsHJQQoJLwTPOXwa0y5ik3NgfaEETYDX912x6s5D0ASzTMEXCPD3Cf/juFo4tJ2mzwlr
-         xzQg==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FWvAgG6fLKNtWyrZkZOZJw2itYUdLGqH3xAcV+rybR0=;
+        b=FpkRkc37maLjN/mwf6kt+GJwXuWQOSNgpkxoY2UtsLz9NH9JwuKHrLLn3QgMFSxRcv
+         WycwzB3LYv81/xKZ0P4NZi/YnFavws6fns0nsyZr0VPM6M9ojVBUUVu3w+f8uBidTcgE
+         uR+qORO2//jZg8iUirFYJLORxMvdiBpSo3gyU/Ir4MqS24Lml1ARrqC73bfA1u3i/lqa
+         nkefx9wgFjfTXz033Ehq8N4btB084fDuQW//A+BjQRURedDSg8+ctpJCHurhRF+wFxie
+         tHhELyHIxASVP9Wn6dgqIclp8gY7yAr7tMixhbQde+nwnXt2ejs0x6t0ZHJ0loLr5Z82
+         SUew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+bcD/CAAXV7lyNPV3QRgxAmLGFQtjxS5V6MhUGAQTGo=;
-        b=ZlvKp95Db7q61BlRylRnR/UjCmGZa0hUR7ZnYEYjRJEHbW3YGMIWwywF1fgKf5YhOp
-         VkhXR9rItStbEPgsqoluGNRJzqqxIp0rDnz6rKEI3mELA19uiLw+hwcLhPJE8k4VJn5C
-         bhQNo/9gpLbAzZCX2YGNLcyZH+z06aSpNhBlGJT4KGq3SN+lw4hC4hNr7upVwUGR06Dp
-         1UziF1Ks4zMINwbcLOkXhCcQkvHGyrMa1k8ykkggmPGe1LvakBwMAj6UmfXoUsPLb+ec
-         JguRQOttuDQCrDJFQfX08hoe4LV/6aR8EWdf5ZlOR67DRoIWr38ln0XlRl6qAkEeq6U8
-         7oaQ==
-X-Gm-Message-State: AOAM5322J5GeFgE+NI4ighN2uHAEokcbM6xQ6HTnAo7N6Epa4t2x3V6O
-        vrc7JAlOzkacc1qNvqtJ06A=
-X-Google-Smtp-Source: ABdhPJyijR/eRLvEQ/ol/MBO40aPRhjsu5QPazk4ZLlz2mySjhCA6HuHEWQ+35KGye5dRPfmq7qzAw==
-X-Received: by 2002:adf:f6cd:: with SMTP id y13mr7139426wrp.161.1601715319616;
-        Sat, 03 Oct 2020 01:55:19 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id b64sm4639194wmh.13.2020.10.03.01.55.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 01:55:18 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] system_data_types.7: Add 'void *'
-To:     "G. Branden Robinson" <g.branden.robinson@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Paul Eggert <eggert@cs.ucla.edu>, linux-man@vger.kernel.org,
-        gcc-patches@gcc.gnu.org, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org, jwakely.gcc@gmail.com,
-        David.Laight@ACULAB.COM
-References: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
- <20201002151419.32053-2-colomar.6.4.3@gmail.com>
- <3941e130-df05-778b-dc76-90cd58400192@cs.ucla.edu>
- <d794a058-0506-7c3c-6f3e-518a788933af@gmail.com>
- <ff1700df-d383-44e7-24b4-da10000f83fc@cs.ucla.edu>
- <5b01a17e-5819-115f-7972-7f849d4356df@gmail.com>
- <78368866-e848-d208-eef7-f3a93a797853@gmail.com>
- <20201003074807.swdpnwaq2rzigadl@localhost.localdomain>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <97b1b0d8-1f87-ac68-2ae9-92c2681ac49a@gmail.com>
-Date:   Sat, 3 Oct 2020 10:55:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FWvAgG6fLKNtWyrZkZOZJw2itYUdLGqH3xAcV+rybR0=;
+        b=qQD7Y9mrdH+4aAgI1BY9bWlKkVpBGyXc4ykX4ozIFLsaRNHUlmAY5mcN8VEr9l17UA
+         lQUDYV9bhZCHVJrqj7/QF86x20PrLZuGMhl6fXOPA47VrIq2KAR+ImLPYVdmWlwrf59C
+         5/sTrcNHCEK5PO4w6EyWF5fUqS+feB20JHX+NHXxAcEpS5VtKnHQhy1hFJZ7sRVTWShK
+         p95qc+eLbdvD5/cVrmzuT7qYCLqdpVfwyonojUPb82d93oYE9r9qWLlm+hjcFpGHjBDn
+         TyIkhYTWQZgYDswO3CSSVRCvHNPWEpnQU2RvtQ3iP2nUn494wTUo07HEfJL1WPRvGmEZ
+         lsFw==
+X-Gm-Message-State: AOAM5328b7Uks0E6HbhyilcN1twFw+7jRrmXxelwfXjpJVOChu4s70DL
+        ZbFAF96LZn86vCmDHkRis/tO1A==
+X-Google-Smtp-Source: ABdhPJwA/FRsEwX5N0DjLeVkZPmCc3xaLpC9Yns0bnBJDKDENaZHq6zjL2lp2+BZMe0c+gUm+JMCmg==
+X-Received: by 2002:adf:f643:: with SMTP id x3mr194188wrp.180.1601715614290;
+        Sat, 03 Oct 2020 02:00:14 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id z13sm4465628wro.97.2020.10.03.02.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 02:00:13 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 11:00:12 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 04/16] devlink: Add reload stats
+Message-ID: <20201003090012.GE3159@nanopsycho.orion>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-5-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20201003074807.swdpnwaq2rzigadl@localhost.localdomain>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601560759-11030-5-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael and Branden,
+Thu, Oct 01, 2020 at 03:59:07PM CEST, moshe@mellanox.com wrote:
+>Add reload stats to hold the history per reload action type and limit.
+>
+>For example, the number of times fw_activate has been performed on this
+>device since the driver module was added or if the firmware activation
+>was performed with or without reset.
+>
+>Add devlink notification on stats update.
+>
+>Expose devlink reload stats to the user through devlink dev get command.
+>
+>Examples:
+>$ devlink dev show
+>pci/0000:82:00.0:
+>  stats:
+>      reload_stats:
+>        driver_reinit 2
+>        fw_activate 1
+>        fw_activate_no_reset 0
+>pci/0000:82:00.1:
+>  stats:
+>      reload_stats:
+>        driver_reinit 1
+>        fw_activate 0
+>        fw_activate_no_reset 0
+>
+>$ devlink dev show -jp
+>{
+>    "dev": {
+>        "pci/0000:82:00.0": {
+>            "stats": {
+>                "reload_stats": [ {
 
-On 2020-10-03 09:48, G. Branden Robinson wrote:
-> At 2020-10-03T09:10:14+0200, Michael Kerrisk (man-pages) wrote:
->> On 10/2/20 10:27 PM, Alejandro Colomar wrote:
->>> On 2020-10-02 22:14, Paul Eggert wrote:
->>>   > On 10/2/20 11:38 AM, Alejandro Colomar wrote:
->>>   >
->>>   >> .I void *
->>>   >>
->>>   >> renders with a space in between.
->>>   >
->>>   > That's odd, as "man(7)" says "All of the arguments will be
->>>   > printed next to each other without intervening spaces". I'd play
->>>   > it safe and quote the arg anyway.
->>>
->>> Oops, that's a bug in man(7).  Don't worry about it.
->>
->> I'm not sure where that text in man(7) comes from. However, for
->> clarity I would normally also use quotes in this case.
+Just "reload". No need to repeat "stats" here.
 
-Hi Michael and Branden,
 
-Here is the offending line:
-
-https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man7/man.7#n172
-
-Thanks,
-
-Alex
-
->>
->>> Michael, you might want to have a look at it.
->>>
->>> I'll also add Branden, who might have something to say about it.
->>
->> Yes, maybe Branden can add some insight.
+>                        "driver_reinit": 2
+>                    },{
+>                        "fw_activate": 1
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ]
+>            }
+>        },
+>        "pci/0000:82:00.1": {
+>            "stats": {
+>                "reload_stats": [ {
+>                        "driver_reinit": 1
+>                    },{
+>                        "fw_activate": 0
+>                    },{
+>                        "fw_activate_no_reset": 0
+>                    } ]
+>            }
+>        }
+>    }
+>}
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>RFCv5 -> v1:
+>- Changed the stats output structure, have 2 stats, one for local and
+>one for remote
+>- Resplit this patch and the next one by remote/local reload stast
+>instead of set/get reload stats
+>- Add helper function devlink_reload_stats_put()
+>RFCv4 -> RFCv5:
+>- Add separate reload action stats for updating on remote actions
+>- Protect  from updating remote actions stats during reload_down()/up()
+>RFCv3 -> RFCv4:
+>- Renamed reload_actions_cnts to reload_action_stats
+>- Add devlink notifications on stats update
+>- Renamed devlink_reload_actions_implicit_actions_performed() and add
+>  function comment in code
+>RFCv2 -> RFCv3:
+>- New patch
+>---
+> include/net/devlink.h        |  7 +++
+> include/uapi/linux/devlink.h |  5 ++
+> net/core/devlink.c           | 97 ++++++++++++++++++++++++++++++++++++
+> 3 files changed, 109 insertions(+)
+>
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index 43dde69086e5..0f3bd23b6c04 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -20,6 +20,9 @@
+> #include <uapi/linux/devlink.h>
+> #include <linux/xarray.h>
 > 
-> The "short" answer[1] is that I think Alex is correct; Paul's caution is
-> unwarranted and arises from confusion with the font alternation macros
-> of the man(7) macro package.  Examples of the latter are .BI and .BR.
-> Those set their even-numbered arguments in one font and odd-numbered
-> arguments in another, with no space between them.  That suppression of
-> space is the reason they exist.  With the "single-font" macros like .B
-> and .I[2], if you don't want space, don't type it.
+>+#define DEVLINK_RELOAD_STATS_ARRAY_SIZE \
+>+	(__DEVLINK_RELOAD_LIMIT_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+>+
+> struct devlink_ops;
 > 
-> I could say more, including an annotated explanation of the groff and
-> Version 7 Unix man(7) implementations of the I macro, if desired.  :)
+> struct devlink {
+>@@ -38,6 +41,7 @@ struct devlink {
+> 	struct list_head trap_policer_list;
+> 	const struct devlink_ops *ops;
+> 	struct xarray snapshot_ids;
+>+	u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+> 	struct device *dev;
+> 	possible_net_t _net;
+> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>@@ -1470,6 +1474,9 @@ void
+> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
 > 
-> Regards,
-> Branden
+> bool devlink_is_reload_failed(const struct devlink *devlink);
+>+void devlink_remote_reload_actions_performed(struct devlink *devlink,
+>+					     enum devlink_reload_limit limit,
+>+					     unsigned long actions_performed);
+
+Leftover, please remove/move.
+
+
 > 
-> [1] since as everyone knows, I struggle with brevity
-> [2] I (and others) discourage use of .SM and .SB because they can't be
-> distinguished from ordinary roman and bold type, respectively, on
-> terminals.
+> void devlink_flash_update_begin_notify(struct devlink *devlink);
+> void devlink_flash_update_end_notify(struct devlink *devlink);
+>diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+>index cc5dc4c07b4a..97e0137f6201 100644
+>--- a/include/uapi/linux/devlink.h
+>+++ b/include/uapi/linux/devlink.h
+>@@ -526,6 +526,11 @@ enum devlink_attr {
+> 	DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,	/* u64 */
+> 	DEVLINK_ATTR_RELOAD_LIMIT,	/* u8 */
 > 
+>+	DEVLINK_ATTR_DEV_STATS,			/* nested */
+>+	DEVLINK_ATTR_RELOAD_STATS,		/* nested */
+>+	DEVLINK_ATTR_RELOAD_STATS_ENTRY,	/* nested */
+>+	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
+>+
+> 	/* add new attributes above here, update the policy in devlink.c */
+> 
+> 	__DEVLINK_ATTR_MAX,
+>diff --git a/net/core/devlink.c b/net/core/devlink.c
+>index 6de7d6aa6ed1..05516f1e4c3e 100644
+>--- a/net/core/devlink.c
+>+++ b/net/core/devlink.c
+>@@ -500,10 +500,68 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
+> 	return test_bit(limit, &devlink->ops->reload_limits);
+> }
+> 
+>+static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
+>+				   enum devlink_reload_limit limit, u32 value)
+>+{
+>+	struct nlattr *reload_stats_entry;
+>+
+>+	reload_stats_entry = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS_ENTRY);
+>+	if (!reload_stats_entry)
+>+		return -EMSGSIZE;
+>+
+>+	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action))
+>+		goto nla_put_failure;
+>+	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_LIMIT, limit))
+>+		goto nla_put_failure;
+>+	if (nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
+>+		goto nla_put_failure;
+>+	nla_nest_end(msg, reload_stats_entry);
+>+	return 0;
+>+
+>+nla_put_failure:
+>+	nla_nest_cancel(msg, reload_stats_entry);
+>+	return -EMSGSIZE;
+>+}
+>+
+>+static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
+>+{
+>+	struct nlattr *reload_stats_attr;
+>+	int i, j, stat_idx;
+>+	u32 value;
+>+
+>+	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>+
+>+	if (!reload_stats_attr)
+>+		return -EMSGSIZE;
+>+
+>+	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
+>+		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+
+You should check limit_unspec during driver register, not here.
+
+
+>+		    !devlink_reload_limit_is_supported(devlink, j))
+>+			continue;
+>+		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
+>+			if (!devlink_reload_action_is_supported(devlink, i) ||
+>+			    devlink_reload_combination_is_invalid(i, j))
+>+				continue;
+>+
+>+			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
+>+			value = devlink->reload_stats[stat_idx];
+>+			if (devlink_reload_stat_put(msg, i, j, value))
+>+				goto nla_put_failure;
+>+		}
+>+	}
+>+	nla_nest_end(msg, reload_stats_attr);
+>+	return 0;
+>+
+>+nla_put_failure:
+>+	nla_nest_cancel(msg, reload_stats_attr);
+>+	return -EMSGSIZE;
+>+}
+>+
+> static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+> 			   enum devlink_command cmd, u32 portid,
+> 			   u32 seq, int flags)
+> {
+>+	struct nlattr *dev_stats;
+> 	void *hdr;
+> 
+> 	hdr = genlmsg_put(msg, portid, seq, &devlink_nl_family, flags, cmd);
+>@@ -515,9 +573,19 @@ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+> 	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_FAILED, devlink->reload_failed))
+> 		goto nla_put_failure;
+> 
+>+	dev_stats = nla_nest_start(msg, DEVLINK_ATTR_DEV_STATS);
+
+Avoid the "DEV". Just "DEVLINK_ATTR_STATS" is enough.
+
+
+>+	if (!dev_stats)
+>+		goto nla_put_failure;
+>+
+>+	if (devlink_reload_stats_put(msg, devlink))
+>+		goto dev_stats_nest_cancel;
+>+
+>+	nla_nest_end(msg, dev_stats);
+> 	genlmsg_end(msg, hdr);
+> 	return 0;
+> 
+>+dev_stats_nest_cancel:
+>+	nla_nest_cancel(msg, dev_stats);
+> nla_put_failure:
+> 	genlmsg_cancel(msg, hdr);
+> 	return -EMSGSIZE;
+>@@ -3004,6 +3072,34 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+> }
+> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+> 
+>+static void
+>+__devlink_reload_stats_update(struct devlink *devlink, u32 *reload_stats,
+>+			      enum devlink_reload_limit limit, unsigned long actions_performed)
+>+{
+>+	int stat_idx;
+>+	int action;
+>+
+>+	if (!actions_performed)
+>+		return;
+>+
+>+	if (WARN_ON(limit > DEVLINK_RELOAD_LIMIT_MAX))
+
+I don't understand the reason for this check and warn on. You should
+sanitize this in the caller (I think you already do that).
+
+>+		return;
+>+	for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
+>+		if (!test_bit(action, &actions_performed))
+>+			continue;
+>+		stat_idx = limit * __DEVLINK_RELOAD_ACTION_MAX + action;
+>+		reload_stats[stat_idx]++;
+>+	}
+>+	devlink_notify(devlink, DEVLINK_CMD_NEW);
+>+}
+>+
+>+static void
+>+devlink_reload_stats_update(struct devlink *devlink, enum devlink_reload_limit limit,
+>+			    unsigned long actions_performed)
+>+{
+>+	__devlink_reload_stats_update(devlink, devlink->reload_stats, limit, actions_performed);
+>+}
+>+
+> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 			  enum devlink_reload_action action, enum devlink_reload_limit limit,
+> 			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+>@@ -3026,6 +3122,7 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 		return err;
+> 
+> 	WARN_ON(!test_bit(action, actions_performed));
+>+	devlink_reload_stats_update(devlink, limit, *actions_performed);
+> 	return 0;
+> }
+> 
+>-- 
+>2.18.2
+>
