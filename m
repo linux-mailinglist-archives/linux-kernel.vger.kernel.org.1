@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3982824BF
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A40028259F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 19:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgJCO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45172 "EHLO mail.kernel.org"
+        id S1725843AbgJCRdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 13:33:42 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:55670 "EHLO msg-2.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbgJCO0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:26:07 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F29EE206B8;
-        Sat,  3 Oct 2020 14:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601735166;
-        bh=2nOPF4EOCcanEina9U8+kv9YWJwUQ3G0BitfdrDMnbc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cqd13kJotJ2DyUeSNiVxFHXReSdKSq5zGm1YBydC1b7WjWhJSyj+M3lw/SlbMFCEE
-         zGYBcAHGbuCDDQmUKzrOt+5G6U7meinrzHbbCt00G9MjjL8Mcrw2mctacOjDklQLeL
-         yxB3xs5ak7OyqffO7TAolAifE7EuIDR4WWPKsUB8=
-Date:   Sat, 3 Oct 2020 16:26:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB/PHY driver fixes for 5.9-rc8
-Message-ID: <20201003142651.GA794077@kroah.com>
+        id S1725797AbgJCRdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 13:33:42 -0400
+X-Greylist: delayed 11171 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Oct 2020 13:33:41 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1601735247; bh=imNu7MHThjAESrJNpmhOyRli59QkLGoI0kFTAxDCsF8=;
+        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
+        b=dkMhJ5QchIXG+Hy8U/wfRx6/oubjDIaRXvmWAAWFfawB6K0AxUrgCTw18dL4djFnk
+         ei6Jzj7BArFFCk2gZr7J3EdNa6kB46xr5jFll/hep3ZvnprKjz/A0HHTObsxf8PW9q
+         UHpjoKrDY4nwba5Q+7DYMhii3mSSOvc3yb8+q8Ks=
+Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Sat,  3 Oct 2020 16:27:27 +0200 (CEST)
+X-EA-Auth: chZqOqSjMGhpYYrQYEHoviLKXI/U1P1qJspKX9NxQLD9OuH6MudHEBb/csrmzqyfTT+/ZA0dRFaEiu+ioS21gGuiUmLOx5GEte2jXfSbrto=
+Message-ID: <104955668ed768682adf1757e79022117460d268.camel@mailoo.org>
+Subject: Re: [PATCH 1/5] interconnect: qcom: Consolidate interconnect RPM
+ support
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Jun Nie <jun.nie@linaro.org>, devicetree@vger.kernel.org,
+        georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org
+Cc:     shawn.guo@linaro.org
+Date:   Sat, 03 Oct 2020 16:27:25 +0200
+In-Reply-To: <20200930081645.3434-2-jun.nie@linaro.org>
+References: <20200930081645.3434-1-jun.nie@linaro.org>
+         <20200930081645.3434-2-jun.nie@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit a31128384dfd9ca11f15ef4ea73df25e394846d1:
+Le mercredi 30 septembre 2020 =C3=A0 16:16 +0800, Jun Nie a =C3=A9crit :
+> Add RPM based interconnect driver implements the set and aggregate
+> functionalities that translates bandwidth requests into RPM messages.
+> These modules provide a common set of functionalities for all
+> Qualcomm RPM based interconnect providers and should help reduce code
+> duplication when adding new providers.
+>=20
+> Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> ---
+>  drivers/interconnect/qcom/Makefile  |   3 +-
+>  drivers/interconnect/qcom/icc-rpm.c | 194 ++++++++++++++++++++++
+>  drivers/interconnect/qcom/icc-rpm.h |  73 +++++++++
+>  drivers/interconnect/qcom/msm8916.c | 241 ++--------------------------
+>  4 files changed, 279 insertions(+), 232 deletions(-)
+>  create mode 100644 drivers/interconnect/qcom/icc-rpm.c
+>  create mode 100644 drivers/interconnect/qcom/icc-rpm.h
+>=20
+> diff --git a/drivers/interconnect/qcom/Makefile
+> b/drivers/interconnect/qcom/Makefile
+> index 1702ece67dc5..f5e803489de0 100644
+> --- a/drivers/interconnect/qcom/Makefile
+> +++ b/drivers/interconnect/qcom/Makefile
+> @@ -9,7 +9,7 @@ icc-rpmh-obj				:=3D icc-rpmh.o
+>  qnoc-sc7180-objs			:=3D sc7180.o
+>  qnoc-sdm845-objs			:=3D sdm845.o
+>  qnoc-sm8150-objs			:=3D sm8150.o
+> -icc-smd-rpm-objs			:=3D smd-rpm.o
+> +icc-smd-rpm-objs			:=3D smd-rpm.o icc-rpm.o
+> =20
+>  obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) +=3D icc-bcm-voter.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) +=3D qnoc-msm8916.o
+> @@ -21,3 +21,4 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SC7180) +=3D qnoc-sc7180=
+.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) +=3D qnoc-sdm845.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) +=3D qnoc-sm8150.o
+>  obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) +=3D icc-smd-rpm.o
+> +obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) +=3D icc-smd-rpm.o
 
-  Merge tag 'libnvdimm-fixes-5.9-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm (2020-09-21 08:46:20 -0700)
+Duplicate ?
 
-are available in the Git repository at:
+Thanks for msm8939 work, please Cc: me on any related patch :-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc8
 
-for you to fetch changes up to 25b9e4b31ed5724b1f37a8a46fd50c6bafa6745c:
 
-  Merge tag 'phy-fixes-2-5.9' of git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy into usb-linus (2020-09-29 17:21:54 +0200)
 
-----------------------------------------------------------------
-USB/PHY fixes for 5.9-rc8
 
-Here are some small USB and PHY driver fixes for 5.9-rc8
-
-The PHY driver fix resolves an issue found by Dan Carpenter for a memory
-leak.
-
-The USB fixes fall into two groups:
-	- usb gadget fix from Bryan that is a fix for a previous
-	  security fix that showed up in in-the-wild testing
-	- usb core driver matching bugfixes.  This fixes a bug that has
-	  plagued the both the usbip driver and syzbot testing tools
-	  this -rc release cycle.  All is now working properly so usbip
-	  connections will work, and syzbot can get back to fuzzing USB
-	  drivers properly.
-
-All have been in linux-next for a while with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Bryan O'Donoghue (1):
-      USB: gadget: f_ncm: Fix NDP16 datagram validation
-
-Dan Carpenter (1):
-      phy: ti: am654: Fix a leak in serdes_am654_probe()
-
-Greg Kroah-Hartman (1):
-      Merge tag 'phy-fixes-2-5.9' of git://git.kernel.org/.../phy/linux-phy into usb-linus
-
-M. Vefa Bicakci (4):
-      Revert "usbip: Implement a match function to fix usbip"
-      usbcore/driver: Fix specific driver selection
-      usbcore/driver: Fix incorrect downcast
-      usbcore/driver: Accommodate usbip
-
- drivers/phy/ti/phy-am654-serdes.c   |  6 +++--
- drivers/usb/core/driver.c           | 50 +++++++++++++++++++++++++------------
- drivers/usb/gadget/function/f_ncm.c | 30 ++--------------------
- drivers/usb/usbip/stub_dev.c        |  6 -----
- 4 files changed, 40 insertions(+), 52 deletions(-)
