@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56D428216E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC62282176
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgJCEwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:52:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgJCEwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 00:52:01 -0400
-Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 114AC2311E;
-        Sat,  3 Oct 2020 04:52:00 +0000 (UTC)
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, yaozhangx@google.com,
-        mikko.ylinen@intel.com
-Subject: [PATCH v39 24/24] x86/sgx: Update MAINTAINERS
-Date:   Sat,  3 Oct 2020 07:50:59 +0300
-Message-Id: <20201003045059.665934-25-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+        id S1725772AbgJCE4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:56:37 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52766 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725446AbgJCE4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 00:56:37 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0934uS1W015912
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 3 Oct 2020 00:56:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 85B3942003C; Sat,  3 Oct 2020 00:56:28 -0400 (EDT)
+Date:   Sat, 3 Oct 2020 00:56:28 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-ext4@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: fix leaking sysfs kobject after failed mount
+Message-ID: <20201003045628.GH23474@mit.edu>
+References: <000000000000443d8a05afcff2b5@google.com>
+ <20200922162456.93657-1-ebiggers@kernel.org>
+ <20200924090859.GF27019@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924090859.GF27019@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the maintainer information for the SGX subsystem.
+On Thu, Sep 24, 2020 at 11:08:59AM +0200, Jan Kara wrote:
+> On Tue 22-09-20 09:24:56, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > ext4_unregister_sysfs() only deletes the kobject.  The reference to it
+> > needs to be put separately, like ext4_put_super() does.
+> > 
+> > This addresses the syzbot report
+> > "memory leak in kobject_set_name_vargs (3)"
+> > (https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1).
+> > 
+> > Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
+> > Fixes: 72ba74508b28 ("ext4: release sysfs kobject when failing to enable quotas on mount")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> 
+> Looks good. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Thanks, applied.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b81aad6f7f97..ca1995b1ef45 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9070,6 +9070,17 @@ F:	Documentation/x86/intel_txt.rst
- F:	arch/x86/kernel/tboot.c
- F:	include/linux/tboot.h
- 
-+INTEL SGX
-+M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-+M:	Sean Christopherson <sean.j.christopherson@intel.com>
-+L:	linux-sgx@vger.kernel.org
-+S:	Maintained
-+Q:	https://patchwork.kernel.org/project/intel-sgx/list/
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git
-+F:	arch/x86/include/uapi/asm/sgx.h
-+F:	arch/x86/kernel/cpu/sgx/*
-+K:	\bSGX_
-+
- INTERCONNECT API
- M:	Georgi Djakov <georgi.djakov@linaro.org>
- L:	linux-pm@vger.kernel.org
--- 
-2.25.1
-
+					- Ted
