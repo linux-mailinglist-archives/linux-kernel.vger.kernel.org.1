@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F358F28206C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD0A282068
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbgJCCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:09:41 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:52028 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCCJk (ORCPT
+        id S1725828AbgJCCJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCCJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:09:40 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 093219kg112639;
-        Sat, 3 Oct 2020 02:09:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=1EF3sPjla1js3f3DJrKTRfHqnejbpn9qRzm27IbV/xI=;
- b=T3PGwLZ4bU/SMD60vtM2hr2oYAyYZfE+8Pl3N9GjgXuKCG6c4/kuup1aOpI+MDVo5t2X
- yLaslutr/xJNoLX2hfH8Te6DZPI9OjWwPT4v9pF9yGFBDPM54GuZETfx2k0x6jjGV57V
- a2iWkwIXQ9mP4iz16Cfw0WF1gCCBVe5wA4zln0/HYv1x1MGn+5OS28AaDTcNXxA6sJrM
- d0iSh2CKN1dg+5Ids4HYsgQZLTMn4a3aZRQqkYPIMZSGc3yjqRvBHRN87gO/5npEGpi+
- FC0hKeaUYcqEutneGkO7u5P4M+GZk+8WEAYJmVqHn0J1O8T9OsEQOQm1PnETBiYWVf63 5w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 33xetag39v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 02:09:28 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931xsYE046219;
-        Sat, 3 Oct 2020 02:07:27 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33xeds33hf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 02:07:27 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09327NIR013201;
-        Sat, 3 Oct 2020 02:07:23 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 19:07:23 -0700
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     <QLogic-Storage-Upstream@cavium.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <skashyap@marvell.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: qedf: remove redundant assignment to variable 'rc'
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mu14awq4.fsf@ca-mkp.ca.oracle.com>
-References: <20200917021906.175933-1-jingxiangfeng@huawei.com>
-Date:   Fri, 02 Oct 2020 22:07:21 -0400
-In-Reply-To: <20200917021906.175933-1-jingxiangfeng@huawei.com> (Jing
-        Xiangfeng's message of "Thu, 17 Sep 2020 10:19:06 +0800")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 suspectscore=1 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030018
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030018
+        Fri, 2 Oct 2020 22:09:32 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7035C0613D0;
+        Fri,  2 Oct 2020 19:09:32 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4BCD9126298D1;
+        Fri,  2 Oct 2020 18:52:44 -0700 (PDT)
+Date:   Fri, 02 Oct 2020 19:09:31 -0700 (PDT)
+Message-Id: <20201002.190931.2160541172091214230.davem@davemloft.net>
+To:     grygorii.strashko@ti.com
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, vigneshr@ti.com,
+        nsekhar@ti.com, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, m-karicheri2@ti.com
+Subject: Re: [PATCH net-next 7/8] net: ethernet: ti: am65-cpsw: prepare
+ xmit/rx path for multi-port devices in mac-only mode
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201001105258.2139-8-grygorii.strashko@ti.com>
+References: <20201001105258.2139-1-grygorii.strashko@ti.com>
+        <20201001105258.2139-8-grygorii.strashko@ti.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 02 Oct 2020 18:52:44 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Grygorii Strashko <grygorii.strashko@ti.com>
+Date: Thu, 1 Oct 2020 13:52:57 +0300
 
-Jing,
+> This patch adds multi-port support to TI AM65x CPSW driver xmit/rx path in
+> preparation for adding support for multi-port devices, like Main CPSW0 on
+> K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
+> Hence DMA channels are common/shared for all ext Ports and the RX/TX NAPI
+> and DMA processing going to be assigned to first netdev this patch:
+>  - ensures all RX descriptors fields are initialized;
+>  - adds synchronization for TX DMA push/pop operation (locking) as
+> Networking core is not enough any more;
+>  - updates TX bql processing for every packet in
+> am65_cpsw_nuss_tx_compl_packets() as every completed TX skb can have
+> different ndev assigned (come from different netdevs).
+> 
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-> This assignment is  meaningless, so remove it.
+This locking is unnecessary in single-port non-shared DMA situations
+and therefore will impose unnecessary performance loss for basically
+all existing supported setups.
 
-Applied to 5.10/scsi-staging, thanks!
+Please do this another way.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+In fact, I would encourage you to find a way to avoid the new atomic
+operations even in multi-port configurations.
+
+Thank you.
