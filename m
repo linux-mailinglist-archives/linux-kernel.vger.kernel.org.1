@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DAD281FFB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B152281FF4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgJCBRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:17:24 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15319 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJCBRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:17:24 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f77d0bb0000>; Fri, 02 Oct 2020 18:15:39 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 3 Oct
- 2020 01:17:23 +0000
-Received: from sandstorm.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Sat, 3 Oct 2020 01:17:23 +0000
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH] selftests/vm: 10x speedup for hmm-tests
-Date:   Fri, 2 Oct 2020 18:17:21 -0700
-Message-ID: <20201003011721.44238-1-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601687739; bh=YW/NWGpa68jtDIRpTXUYduQIdru2AkHtxJU2AhNsM+0=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=SoUIN9/u21hlPuWqGmiNhBACDJHJQd9Sn87vBzky3eLvGj5B72TVGaEHnYyH5QUlJ
-         TMsVPyuYUtXFvaqPM6WIBfbsRs1PdRP6RdUW5E9XBUHNoCwz8QBmFhTc9xrde9QCZM
-         NoqFEMU/8nEp7J1Hl4DKNYfMSNNl2m2yeOFGQEzeWrm4fXc8HtOZ9wSBLi6JFvUkY3
-         q04FbnaWAW4TLzb5xewaBBh0oMWBA8TGIXMf3E7RhejB8SdmomvxhKeiHlxgRbOzIy
-         9h4gnsKWzrQItebOvLEpeX4lQnyEhFQgD2B2k7oSndB3/3GMK0Qee3gntO4v0he4jV
-         U1JzvDbLUk7OA==
+        id S1725792AbgJCBPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:15:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53472 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgJCBPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 21:15:47 -0400
+IronPort-SDR: 61scJdn2isADiSgl02v5gxf/5iXiHFuGilD0WOfJPZp5OzO/0udQnMKz7gMweJMNm77BQV5oI/
+ RulRamgv8vNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160436325"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="160436325"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:15:47 -0700
+IronPort-SDR: OY57zqeOnaXEg5lNznw+9oRx+mdMvMSyi8V6b1DDT6sNuOOhLvEdYiQhBpFUFL1hCr2uB1wo0X
+ sBnnBiYwoEyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="325996774"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga002.jf.intel.com with ESMTP; 02 Oct 2020 18:15:46 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 0/4] drivers core: Introduce CPU type sysfs interface
+Date:   Fri,  2 Oct 2020 18:17:41 -0700
+Message-Id: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reduces the running time for hmm-tests from about 10+
-seconds, to just under 1.0 second, for an approximately 10x speedup.
-That brings it in line with most of the other tests in selftests/vm,
-which mostly run in < 1 sec.
+Hybrid CPU topologies combine processors with more than one type of
+micro-architecture. Hence, it is possible that individual CPUs support
+slightly different features (e.g., performance counters) and different
+performance properties. Thus, there may be user space entities interested
+in knowing the topology of the system based on the types of available
+CPUs.
 
-This is done with a one-line change that simply reduces the number of
-iterations of several tests, from 256, to 10. Thanks to Ralph Campbell
-for suggesting changing NTIMES as a way to get the speedup.
+Currently, there exists an interface for the CPU capacity (/sys/devices/
+system/cpu/cpuX/cpu_capacity). However, CPU capacity does not always map
+to CPU types (by the way, I will submit a separate series to bring such
+interface to x86).
 
-Suggested-by: Ralph Campbell <rcampbell@nvidia.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
+This series proposes the new interface /sys/devices/system/cpu/types
+which, in hybrid parts, creates a subdirectory for each type of CPU.
+Each subdirectory contains a CPU list and a CPU map that user space can
+query.
 
-This is based on mmotm.
+Patch 1 of the series proposes the generic interface, with hooks
+that architectures can override to suit their needs. The three patches
+patches implement such interface for x86 (as per request from Boris,
+I pulled patch 2 from a separate submission [1]).
 
- tools/testing/selftests/vm/hmm-tests.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks and BR,
+Ricardo
 
-diff --git a/tools/testing/selftests/vm/hmm-tests.c b/tools/testing/selftes=
-ts/vm/hmm-tests.c
-index 6b79723d7dc6..5d1ac691b9f4 100644
---- a/tools/testing/selftests/vm/hmm-tests.c
-+++ b/tools/testing/selftests/vm/hmm-tests.c
-@@ -49,7 +49,7 @@ struct hmm_buffer {
- #define TWOMEG		(1 << 21)
- #define HMM_BUFFER_SIZE (1024 << 12)
- #define HMM_PATH_MAX    64
--#define NTIMES		256
-+#define NTIMES		10
-=20
- #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
-=20
---=20
-2.28.0
+[1]. https://lkml.org/lkml/2020/10/2/1013
+
+Ricardo Neri (4):
+  drivers core: Introduce CPU type sysfs interface
+  x86/cpu: Describe hybrid CPUs in cpuinfo_x86
+  x86/cpu/intel: Add function to get name of hybrid CPU types
+  x86/cpu/topology: Implement the CPU type sysfs interface
+
+ .../ABI/testing/sysfs-devices-system-cpu      |  13 ++
+ arch/x86/include/asm/intel-family.h           |   4 +
+ arch/x86/include/asm/processor.h              |  13 ++
+ arch/x86/include/asm/topology.h               |   2 +
+ arch/x86/kernel/cpu/common.c                  |   3 +
+ arch/x86/kernel/cpu/cpu.h                     |   3 +
+ arch/x86/kernel/cpu/intel.c                   |  23 ++
+ arch/x86/kernel/cpu/topology.c                |  23 ++
+ drivers/base/cpu.c                            | 214 ++++++++++++++++++
+ include/linux/cpu.h                           |  12 +
+ include/linux/cpuhotplug.h                    |   1 +
+ 11 files changed, 311 insertions(+)
+
+-- 
+2.17.1
 
