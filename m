@@ -2,79 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822EC2824D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9062824D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgJCOjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgJCOjq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:39:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BB6C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 07:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ovpqGIldjsodgVCbtVP+i9x5Z/lL56OSfrqaI5z7PG0=; b=Xh0rBWuqQscGufPUfZrq5LeR8h
-        P/TGcF6V+VbLV2mPw7ME+k2HVCfd9FaSV5/8Qxuo8hj8bnIHhQijz4cnpz/rWe5ne96VROLl2fohS
-        d9XxAgUl8qM2rYTcAHzwHuXHRA8bX5AM1Pva5XeJVGS9IEN+j1tj9PAKw04JOnJ3DfauA2K6Qd9lo
-        oUi1bUv1XUfvEeh58mwwYocaiyRAp0nWcViG4VK/RiKpsqeF7QYBdIlQWPz/ic6XWNmXTmti9fP7x
-        EzP3LZSnL9DHB6gMIfeX9RziDvLdGIvkBjPlY+dbJITCtWyTAXtN8Z1srxkwxfjSWRrSwNMuSC5pW
-        ugjDHRFQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOih5-0000RR-1r; Sat, 03 Oct 2020 14:39:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1725824AbgJCOio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725787AbgJCOin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 10:38:43 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4B105302526;
-        Sat,  3 Oct 2020 16:39:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 73C522B7C0E0A; Sat,  3 Oct 2020 16:39:23 +0200 (CEST)
-Date:   Sat, 3 Oct 2020 16:39:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Liang, Kan" <kan.liang@intel.com>
-Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid
- CPUs
-Message-ID: <20201003143923.GC2628@hirez.programming.kicks-ass.net>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
- <87r1qgccku.fsf@nanos.tec.linutronix.de>
- <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
- <87lfgnd1tm.fsf@nanos.tec.linutronix.de>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BFAB206C3;
+        Sat,  3 Oct 2020 14:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601735920;
+        bh=RxrhockqeZOloATOUVwefSN3AZJaztfIXqkt3B+OQiI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F7Elliplu5e0ZwL1bWMnYtB6mjs1UdW24s7l9jlxmfVexxVbx7yQXaEk7VM5jnXcF
+         qRNnOG1ZfYbQ2xZ0cq8e/wg0Gua89hNe+yJSoWT7rsxcHuPxf2zi1DPSOjS5O3fRc8
+         0if4x+VDPjmmuqC5d40ObBYuT8t7O0j0NtnJUNW8=
+Date:   Sat, 3 Oct 2020 16:39:25 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201003143925.GB800720@kroah.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87lfgnd1tm.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 12:46:29PM +0200, Thomas Gleixner wrote:
-> > There might be some model specific performance counter events that only
-> > apply to some cores. Or a machine check error code that is logged in the
-> > model specific MSCOD field of IA32_MCi_STATUS. But any and all code can run
-> > on any core.
+On Sat, Oct 03, 2020 at 07:50:46AM +0300, Jarkko Sakkinen wrote:
+> Intel Software Guard eXtensions (SGX) is a set of CPU instructions that can
+> be used by applications to set aside private regions of code and data. The
+> code outside the SGX hosted software entity is prevented from accessing the
+> memory inside the enclave by the CPU. We call these entities enclaves.
 > 
-> Ok. The perf side should be doable, IIRC we already have something like
-> that, but Peter should know better.
+> Add a driver that provides an ioctl API to construct and run enclaves.
+> Enclaves are constructed from pages residing in reserved physical memory
+> areas. The contents of these pages can only be accessed when they are
+> mapped as part of an enclave, by a hardware thread running inside the
+> enclave.
+> 
+> The starting state of an enclave consists of a fixed measured set of
+> pages that are copied to the EPC during the construction process by
+> using the opcode ENCLS leaf functions and Software Enclave Control
+> Structure (SECS) that defines the enclave properties.
+> 
+> Enclaves are constructed by using ENCLS leaf functions ECREATE, EADD and
+> EINIT. ECREATE initializes SECS, EADD copies pages from system memory to
+> the EPC and EINIT checks a given signed measurement and moves the enclave
+> into a state ready for execution.
+> 
+> An initialized enclave can only be accessed through special Thread Control
+> Structure (TCS) pages by using ENCLU (ring-3 only) leaf EENTER.  This leaf
+> function converts a thread into enclave mode and continues the execution in
+> the offset defined by the TCS provided to EENTER. An enclave is exited
+> through syscall, exception, interrupts or by explicitly calling another
+> ENCLU leaf EEXIT.
+> 
+> The mmap() permissions are capped by the contained enclave page
+> permissions. The mapped areas must also be populated, i.e. each page
+> address must contain a page. This logic is implemented in
+> sgx_encl_may_map().
+> 
+> Cc: linux-security-module@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> Tested-by: Seth Moore <sethmo@google.com>
+> Tested-by: Darren Kenny <darren.kenny@oracle.com>
+> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  arch/x86/kernel/cpu/sgx/Makefile |   2 +
+>  arch/x86/kernel/cpu/sgx/driver.c | 173 ++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/driver.h |  29 +++
+>  arch/x86/kernel/cpu/sgx/encl.c   | 331 +++++++++++++++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/encl.h   |  85 ++++++++
+>  arch/x86/kernel/cpu/sgx/main.c   |  11 +
+>  6 files changed, 631 insertions(+)
+>  create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
+> 
+> diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
+> index 79510ce01b3b..3fc451120735 100644
+> --- a/arch/x86/kernel/cpu/sgx/Makefile
+> +++ b/arch/x86/kernel/cpu/sgx/Makefile
+> @@ -1,2 +1,4 @@
+>  obj-y += \
+> +	driver.o \
+> +	encl.o \
+>  	main.o
+> diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+> new file mode 100644
+> index 000000000000..f54da5f19c2b
+> --- /dev/null
+> +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> @@ -0,0 +1,173 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 
-Yes, ARM big.LITTLE has horrible hacks. Please look at them for
-inspiration.
+You use gpl-only header files in this file, so how in the world can it
+be bsd-3 licensed?
 
-Also, I once started (and never found time to finish)..
+Please get your legal department to agree with this, after you explain
+to them how you are mixing gpl2-only code in with this file.
 
-  https://lkml.kernel.org/r/20181010104559.GO5728@hirez.programming.kicks-ass.net
+> +// Copyright(c) 2016-18 Intel Corporation.
 
-Kan should be aware of all this.
+Dates are hard to get right :(
+
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/miscdevice.h>
+> +#include <linux/mman.h>
+> +#include <linux/security.h>
+> +#include <linux/suspend.h>
+> +#include <asm/traps.h>
+> +#include "driver.h"
+> +#include "encl.h"
+> +
+> +u64 sgx_encl_size_max_32;
+> +u64 sgx_encl_size_max_64;
+> +u32 sgx_misc_reserved_mask;
+> +u64 sgx_attributes_reserved_mask;
+> +u64 sgx_xfrm_reserved_mask = ~0x3;
+> +u32 sgx_xsave_size_tbl[64];
+> +
+> +static int sgx_open(struct inode *inode, struct file *file)
+> +{
+> +	struct sgx_encl *encl;
+> +	int ret;
+> +
+> +	encl = kzalloc(sizeof(*encl), GFP_KERNEL);
+> +	if (!encl)
+> +		return -ENOMEM;
+> +
+> +	atomic_set(&encl->flags, 0);
+> +	kref_init(&encl->refcount);
+> +	xa_init(&encl->page_array);
+> +	mutex_init(&encl->lock);
+> +	INIT_LIST_HEAD(&encl->mm_list);
+> +	spin_lock_init(&encl->mm_lock);
+> +
+> +	ret = init_srcu_struct(&encl->srcu);
+> +	if (ret) {
+> +		kfree(encl);
+> +		return ret;
+> +	}
+> +
+> +	file->private_data = encl;
+> +
+> +	return 0;
+> +}
+> +
+> +static int sgx_release(struct inode *inode, struct file *file)
+> +{
+> +	struct sgx_encl *encl = file->private_data;
+> +	struct sgx_encl_mm *encl_mm;
+> +
+> +	for ( ; ; )  {
+> +		spin_lock(&encl->mm_lock);
+> +
+> +		if (list_empty(&encl->mm_list)) {
+> +			encl_mm = NULL;
+> +		} else {
+> +			encl_mm = list_first_entry(&encl->mm_list,
+> +						   struct sgx_encl_mm, list);
+> +			list_del_rcu(&encl_mm->list);
+> +		}
+> +
+> +		spin_unlock(&encl->mm_lock);
+> +
+> +		/* The list is empty, ready to go. */
+> +		if (!encl_mm)
+> +			break;
+> +
+> +		synchronize_srcu(&encl->srcu);
+> +		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> +		kfree(encl_mm);
+> +	}
+> +
+> +	mutex_lock(&encl->lock);
+> +	atomic_or(SGX_ENCL_DEAD, &encl->flags);
+
+So you set a flag that this is dead, and then instantly delete it?  Why
+does that matter?  I see you check for this flag elsewhere, but as you
+are just about to delete this structure, how can this be an issue?
+
+> +	mutex_unlock(&encl->lock);
+> +
+> +	kref_put(&encl->refcount, sgx_encl_release);
+
+Don't you need to hold the lock across the put?  If not, what is
+serializing this?
+
+But an even larger comment, why is this reference count needed at all?
+
+You never grab it except at init time, and you free it at close time.
+Why not rely on the reference counting that the vfs ensures you?
+
+
+
+> +	return 0;
+> +}
+> +
+> +static int sgx_mmap(struct file *file, struct vm_area_struct *vma)
+> +{
+> +	struct sgx_encl *encl = file->private_data;
+> +	int ret;
+> +
+> +	ret = sgx_encl_may_map(encl, vma->vm_start, vma->vm_end, vma->vm_flags);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = sgx_encl_mm_add(encl, vma->vm_mm);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vma->vm_ops = &sgx_vm_ops;
+> +	vma->vm_flags |= VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP | VM_IO;
+> +	vma->vm_private_data = encl;
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned long sgx_get_unmapped_area(struct file *file,
+> +					   unsigned long addr,
+> +					   unsigned long len,
+> +					   unsigned long pgoff,
+> +					   unsigned long flags)
+> +{
+> +	if ((flags & MAP_TYPE) == MAP_PRIVATE)
+> +		return -EINVAL;
+> +
+> +	if (flags & MAP_FIXED)
+> +		return addr;
+> +
+> +	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
+> +}
+> +
+> +static const struct file_operations sgx_encl_fops = {
+> +	.owner			= THIS_MODULE,
+> +	.open			= sgx_open,
+> +	.release		= sgx_release,
+> +	.mmap			= sgx_mmap,
+> +	.get_unmapped_area	= sgx_get_unmapped_area,
+> +};
+> +
+> +static struct miscdevice sgx_dev_enclave = {
+> +	.minor = MISC_DYNAMIC_MINOR,
+> +	.name = "enclave",
+> +	.nodename = "sgx/enclave",
+
+A subdir for a single device node?  Ok, odd, but why not just
+"sgx_enclave"?  How "special" is this device node?
+
+thanks,
+
+greg k-h
