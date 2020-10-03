@@ -2,132 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F33282730
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58C128273F
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgJCWqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 18:46:18 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:61377 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgJCWqR (ORCPT
+        id S1726070AbgJCWvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 18:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgJCWvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 18:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601765175; x=1633301175;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
-  b=FaocotEfv9wSJjWDQ8v/Da3a1bvHXITOJPbJ8EO2uw2guRk43txgnGqa
-   LJrhNPY60wL8tq0t5TuopaLO97AfZFb2yQK8gsXgIWpTcKLWINBqa8Il9
-   7Lz6CdvegsJh6iZ8wLTjvq0wkkDD5r00pSWPmFRrp1+ZP3MdZEmQonb1j
-   dPivt/+5XKfxM1+5/7UEvWpQ8kjVWDj0kShmgYd4UG6gm6dB90gWKMGYk
-   QJdDvonOJ9oKDlLKz+6MbNfxW2aEuUtN+hp915hc5QDrFC4CvYEgPHUKY
-   RTFfsnef7A8QENVwVafXQRl7eRWpjR06aRixFT25Lsyi79p4z+61DQC/O
-   g==;
-IronPort-SDR: PEsOOj5DFQCGJ1G1dUu8gILOX5uRsCUFhtwadMZTKpcVkde3fw2Z8BH/gffThUH0WsM9tHTOR4
- U02PuBO0lH2VpMcJkIan308VgS+Q70hbia1ksix6Xv7kj5OFIIS9wJ63ancpCBxQ6f0qWBykSM
- MXH6POs8fddp3vr51Ch1ZhCqnEUmyO+ep3fhzOCFTymVCaxH9cTft9gJlrcLm4K4NEHz1fwZHT
- TWpHr63zNQyITm2MI4htVeqZetdJmKZavJ61KiqQHJ/R+21zVA0agqa6XXshQH4TxfRuAzKvdE
- /BA=
-X-IronPort-AV: E=Sophos;i="5.77,333,1596524400"; 
-   d="scan'208";a="91334750"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Oct 2020 15:46:15 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 3 Oct 2020 15:46:15 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Sat, 3 Oct 2020 15:46:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YpnZZBe7mgqft3aE15Pl2ARfRoKfAycD77na+SXkDkuVsQ1CFSl1Duqwq5sTOVyFEnlXblpE9SNbuxG90GRfkVC7GmvN4aO6D9CH6mgRoTZNXF7VbyZ2Poyc3b0xsCmyOKRxQO09nKYln+2wzPwdt1m0l17Te5RG3PGyP5O/7AUBISYMR6uGNN9t8RPkMa1pYush9mYbghXDov2FV8027BzS0zC4eWuGP5F9EPLw6T4SLV6MTUvYELsdDcVPQjis74WK77gv6JLctEHk0/hIRjpe5IvK8cBONrHU+QQCGA4yokr+wZ3keHWwaM31r5rPvxouSyYbwELQg6elKas7KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
- b=mX/TvcG5OwjMGnu46glGY9dagleEqafvBhZprEvRFtHQtWiXPvfhyNs5qtCLpzNfI2iK1EC+QYF3vM2KzCVVUSjLclYpfLfSAo9vhNeZeq1C+Hf2i+fdDbhND1xmmaIJ8NllReInn2k1M+8iJ0/JsZo/+L/xs4GBXjYEfXzisKP44Fx8mmwSxRcOUxd3/NjH445U8FAJWx8CY1qitrmEc/3ZqaaQ9BqjLdM8rfQyqJ4Vz+sYq41HMuTu7Ookq40bzTvDqKAS/+Gv6yNSddockQrP7aVmniA9o4Zd2VWjymA3zCPDtH+oZVEFb/49rx8DiPWNuVr16OyDl2sxRx9XLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Sat, 3 Oct 2020 18:51:05 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED7C0613D0;
+        Sat,  3 Oct 2020 15:51:03 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id j8so1418150pjy.5;
+        Sat, 03 Oct 2020 15:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fJXu3MDUzNslK7ukgDP2lMIodbRt2PJPY4SmvSFMsFw=;
- b=SvICjAXyydiAIAC3ihFZHIZy2SNTSqQ6LHLRqfxloYlRI/Y3BcM9cPdBTRJ4ARECumd8pAG8AQA5XNnvoX1+/FSxHBClgTwVGJBCjEbonOFn6QJtd0x0eth5QXiPLFgSjYOw4gVV4ibOQ5NXXUSWA2gBBT6+nqlMvsbfngtTrss=
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- (2603:10b6:903:b1::22) by CY4PR11MB0072.namprd11.prod.outlook.com
- (2603:10b6:910:76::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.29; Sat, 3 Oct
- 2020 22:46:14 +0000
-Received: from CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e]) by CY4PR1101MB2341.namprd11.prod.outlook.com
- ([fe80::908:a628:69ca:d62e%7]) with mapi id 15.20.3433.042; Sat, 3 Oct 2020
- 22:46:13 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <linux@armlinux.org.uk>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <wsa@kernel.org>,
-        <alpawi@amazon.com>
-Subject: Re: [PATCH] i2c: pxa: move to generic GPIO recovery
-Thread-Topic: [PATCH] i2c: pxa: move to generic GPIO recovery
-Thread-Index: AQHWmaFbBZ8ed2vmCEezMTnByxu//KmGOd4AgABA2wA=
-Date:   Sat, 3 Oct 2020 22:46:13 +0000
-Message-ID: <dde8b782-9193-a044-a328-98955e9fa35e@microchip.com>
-References: <20201003162141.925518-1-codrin.ciubotariu@microchip.com>
- <20201003185404.GH1551@shell.armlinux.org.uk>
-In-Reply-To: <20201003185404.GH1551@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ojz49Zt+s6mkb4TtFbOzKw4PVPVKDTdnn7U+S7XnkKE=;
+        b=OZKaVM/UYxBu5IQYFDJJ1lYZNi1mqeBpf0EM+OkBKCzFSoDsVvkLVTsFcZdkMWLpoa
+         2/MbzdvfuRu4DyuijQZHSjvg3vHk5pR/JQTs0UgbIdMJq0Qp/ns1YLLEEoMsVPskdTUR
+         1ffqrfWrkEbWfEBtp7H9Je9yT8FnEftyQ10aKz5c0aR/KEj2sGM2uv7jnSWIz+Y/tSVU
+         A8es+QWcr1YspCL4KlyahjNeA9VcUlqL7lH8+RZf+Y3E3u5Y4ZZFhKx5DlScz59lzMke
+         2SPavtAOqQ3JflozKyMFxinAiJlfD1QlxMGRHzYYzlr2SCLapPXQuVl0NXL4e+tDRtVw
+         GEcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ojz49Zt+s6mkb4TtFbOzKw4PVPVKDTdnn7U+S7XnkKE=;
+        b=f2xWbLt6l1RBmtMKNUCZ1v+H4ihddFjJQ2xWK1Zpy4JhQSFDuahJUQwWJqT/RtfmTl
+         fxckTg/c7FBsHOsw3IDtVxdZ6Tuj1kIZ4ptf+skqNkNTHQl9UsJAEK8RhX5+KAEqNHrm
+         OGS75Xh24b3TJ33Y6+/zRZZ3dDMo0C45hWfnb7Dy51cSprR5LJeVvzdyRPgT+ncg/IVF
+         v+L6Rw+Azog535MEf5WMGJVu8y7YNrfzGZJ6Z22wvhPQC11SHMOWT/tAZo5NGpgOVzVF
+         UDC+Z/V4RK+MxcpUmtZpeGsHKmmunaOtMABy4QiH/HG77Djdjyy+bitMzH8pixblgKdU
+         vO7Q==
+X-Gm-Message-State: AOAM532OBPf/cjgIJBDcYIxEgDZjRNHDaYiisFoi16sSA3ijCipPcbx1
+        M9dY6RqGmsfiRHWQSglTfIHXLrFuJJg=
+X-Google-Smtp-Source: ABdhPJxZf1jkuycgPp6N8XlRtSqJ9+E2VRUKWARZYaOO278FWhJGPEuDMzcRUUVKO7sauABIsSrSRw==
+X-Received: by 2002:a17:90a:cb92:: with SMTP id a18mr1918106pju.136.1601765463152;
+        Sat, 03 Oct 2020 15:51:03 -0700 (PDT)
+Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id j9sm6644519pfc.175.2020.10.03.15.50.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 15:51:02 -0700 (PDT)
+Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
+ <20201003171338.GA323226@rowland.harvard.edu>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <73e74c29-c804-f83c-d9a1-f8b479d0ab75@gmail.com>
+Date:   Sun, 4 Oct 2020 07:50:57 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-authentication-results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [86.121.164.182]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ada7d1ef-c78b-4100-0e02-08d867ee21c0
-x-ms-traffictypediagnostic: CY4PR11MB0072:
-x-microsoft-antispam-prvs: <CY4PR11MB007278CC2048DB85FE9AEF84E70E0@CY4PR11MB0072.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4sVt6eCfghMAjPkKSJ9ZZOcaY8CaJQMA2381b1yl/wizAn/wGN7rv16qFn4tNt4Wlq5Fjx7M6WGTDnXL/tN01aviPt1WiKUNdY29WFdz0h0GshCZ7Pq1/td09EYTP1VHKRwt4mQwAefbzm3SM9+hyzsR15pnQv+xjUd92e58NqeDY1Hz5r1dRlozsHx/eyq2q0C/tuOnhxGuQ+eR/R0zEv1LbV8h0FvojRKmnw3y7EIXKtrrN9VLoI003a4ezQ5W6v9Co9eFugLYwNtAzZH6x+l8IuFrtlNv1RmTL9mPILcX4a42WNtK6YyRxf0fVoVYu3xWr1vzgP4fex17e1aLHzaCsVS1KVtRInVPTJwsRxK8V5sFfE9l/iwxpcN92xo1HPfuONkd216GSxbBmFSWEz/4bkDulD36yPvFfSWhYKLxjHsqoCE+3zIpBbe2KpXBX6yw7Jx4y+d1/Z/qxajkxQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1101MB2341.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(396003)(366004)(39850400004)(36756003)(186003)(4744005)(26005)(8676002)(6506007)(8936002)(2906002)(6512007)(83380400001)(31686004)(64756008)(4326008)(6486002)(66556008)(86362001)(478600001)(66476007)(31696002)(6916009)(66446008)(5660300002)(2616005)(66946007)(71200400001)(76116006)(91956017)(316002)(54906003)(41533002)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: rKiNMf+XwQIZVPB6CJ7D55S/HrTruDPJrbLD3SXDWlqrbmKMNjKpYLVNNGeVtlX1qGeBCI9IaBZ5uygvMClUzjfTxnSx4JAKOOnXBk4/U57+ICQEXHDymn3WUNsg1JMPIqEw+O+gWg3HnwcMkbdI1qsQV4Oq4bBmOe16Y29PfzqJH8eu5+wHWC3nxeD62WbCvoyj733lU/DzUUfmn8IZ/nuLY2nyCvW1a21ZF1kF/mdTw72YjCajjynP5O0CJ9OnGMbIf3ygW0kILPHF7Ncjc4F+aE06TVkykv1HvTk0FBzekULTUpfmToq4mVDMwCAoodT1fPU6Sm684iWBeNv3CJOtc4SnR2lLZM044j+Xg5/P4u8P9sPzCOIOPbnFv2glej97JUZpa39hT4DeX83nhkxn20tttr6h5wvL+DkkyPdskyqJqNvzvPgmCkoUuc5J1hk57cFAcwQ0FVMOwxD2+vzEvEU6nIOw2uI6IzPuac1cv8jh5Xz/QfzWZ+HmLuGp4ATcG1NOCtCfizqtxdaq5wCc3K0yJUqjGyzJUy2qu9Ikdmb1IpgH8XpIIZfAPX76EIdqGO5T4VuvYM/SVSqGGisVb9AFDltO5R1Xq5bHJ3JiWIeRsVw/RGNJ/mMZrib/mJ75dVMoWbLBNODipJbh3g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F5C2F45F5DBEFC429BF857DE14E6CEF4@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1101MB2341.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ada7d1ef-c78b-4100-0e02-08d867ee21c0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2020 22:46:13.7927
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UdLcsda7lHJFNSopI5cyiya15UoDhHgY0kel0U7MA3zte/E2HUDy9Joh81pRhiZTJf+aG5o0Yc/115tSUfD+VHLSCYJOfsflpSXr8vh+KAs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB0072
+In-Reply-To: <20201003171338.GA323226@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gICBzdGF0aWMgdm9pZCBpMmNfcHhhX3VucHJlcGFyZV9yZWNvdmVyeShzdHJ1Y3QgaTJjX2Fk
-YXB0ZXIgKmFkYXApDQo+PiBAQCAtMTMyNSw4ICsxMzIwLDYgQEAgc3RhdGljIHZvaWQgaTJjX3B4
-YV91bnByZXBhcmVfcmVjb3Zlcnkoc3RydWN0IGkyY19hZGFwdGVyICphZGFwKQ0KPj4gICAgICAg
-ICAgICAgICAgaTJjX3B4YV9kb19yZXNldChpMmMpOw0KPj4gICAgICAgIH0NCj4+DQo+PiAtICAg
-ICBXQVJOX09OKHBpbmN0cmxfc2VsZWN0X3N0YXRlKGkyYy0+cGluY3RybCwgaTJjLT5waW5jdHJs
-X2RlZmF1bHQpKTsNCj4+IC0NCj4gDQo+IFRoaXMgd29uJ3QgZmx5LiBXZSBuZWVkIHRvIHB1dCB0
-aGUgcGluY3RybCBiYWNrIGludG8gaTJjIG1vZGUgX2JlZm9yZV8NCj4gd2UgcmUtZW5hYmxlIHRo
-ZSBJMkMgbW9kdWxlLCBvdGhlcndpc2UgdGhlIEkyQyBibG9jayB3aWxsIHNlZSBsb2dpYyAwDQo+
-IG9uIGJvdGggU0NMIGFuZCBTREEgd2hpY2ggY291bGQgY29uZnVzZSB0aGUgYmxvY2suDQoNClJp
-Z2h0LCBJIHdpbGwgYWRkIGl0IGJhY2suDQoNCkJlc3QgcmVnYXJkcywNCkNvZHJpbg0K
+On Sat, 3 Oct 2020 13:13:38 -0400, Alan Stern wrote:
+> On Sun, Oct 04, 2020 at 12:16:31AM +0900, Akira Yokosawa wrote:
+>> Hi Alan,
+>>
+>> Just a minor nit in the litmus test.
+>>
+>> On Sat, 3 Oct 2020 09:22:12 -0400, Alan Stern wrote:
+>>> To expand on my statement about the LKMM's weakness regarding control 
+>>> constructs, here is a litmus test to illustrate the issue.  You might 
+>>> want to add this to one of the archives.
+>>>
+>>> Alan
+>>>
+>>> C crypto-control-data
+>>> (*
+>>>  * LB plus crypto-control-data plus data
+>>>  *
+>>>  * Expected result: allowed
+>>>  *
+>>>  * This is an example of OOTA and we would like it to be forbidden.
+>>>  * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+>>>  * control-dependent on the preceding READ_ONCE.  But the dependencies are
+>>>  * hidden by the form of the conditional control construct, hence the 
+>>>  * name "crypto-control-data".  The memory model doesn't recognize them.
+>>>  *)
+>>>
+>>> {}
+>>>
+>>> P0(int *x, int *y)
+>>> {
+>>> 	int r1;
+>>>
+>>> 	r1 = 1;
+>>> 	if (READ_ONCE(*x) == 0)
+>>> 		r1 = 0;
+>>> 	WRITE_ONCE(*y, r1);
+>>> }
+>>>
+>>> P1(int *x, int *y)
+>>> {
+>>> 	WRITE_ONCE(*x, READ_ONCE(*y));
+>>
+>> Looks like this one-liner doesn't provide data-dependency of y -> x on herd7.
+> 
+> You're right.  This is definitely a bug in herd7.
+> 
+> Luc, were you aware of this?
+> 
+>> When I changed P1 to
+>>
+>> P1(int *x, int *y)
+>> {
+>> 	int r1;
+>>
+>> 	r1 = READ_ONCE(*y);
+>> 	WRITE_ONCE(*x, r1);
+>> }
+>>
+>> and replaced the WRITE_ONCE() in P0 with smp_store_release(),
+>> I got the result of:
+>>
+>> -----
+>> Test crypto-control-data Allowed
+>> States 1
+>> 0:r1=0;
+>> No
+>> Witnesses
+>> Positive: 0 Negative: 3
+>> Condition exists (0:r1=1)
+>> Observation crypto-control-data Never 0 3
+>> Time crypto-control-data 0.01
+>> Hash=9b9aebbaf945dad8183d2be0ccb88e11
+>> -----
+>>
+>> Restoring the WRITE_ONCE() in P0, I got the result of:
+>>
+>> -----
+>> Test crypto-control-data Allowed
+>> States 2
+>> 0:r1=0;
+>> 0:r1=1;
+>> Ok
+>> Witnesses
+>> Positive: 1 Negative: 4
+>> Condition exists (0:r1=1)
+>> Observation crypto-control-data Sometimes 1 4
+>> Time crypto-control-data 0.01
+>> Hash=843eaa4974cec0efae79ce3cb73a1278
+>> -----
+> 
+> What you should have done was put smp_store_release in P0 and left P1 in 
+> its original form.  That test should not be allowed, but herd7 says that 
+> it is.
+
+Yea, that was what I tried first, expecting the result of "Never".
+
+> 
+>> As this is the same as the expected result, I suppose you have missed another
+>> limitation of herd7 + LKMM.
+> 
+> It would be more accurate to say that we all missed it.  :-)  (And it's 
+> a bug in herd7, not a limitation of either herd7 or LKMM.)  How did you 
+> notice it?
+
+:-) :-) :-)
+
+Well, I thought I had never seen a litmus test with such one-liner.
+So I split the READ_ONCE() and WRITE_ONCE() into two lines and
+got the expected result.
+
+I don't expect much from herd7's C mode in the first place.
+(No offense intended!)
+
+ 
+>> By the way, I think this weakness on control dependency + data dependency
+>> deserves an entry in tools/memory-model/Documentation/litmus-tests.txt.
+>>
+>> In the LIMITATIONS section, item #1 mentions some situation where
+>> LKMM may not recognize possible losses of control-dependencies by
+>> compiler optimizations.
+>>
+>> What this litmus test demonstrates is a different class of mismatch.
+> 
+> Yes, one in which LKMM does not recognize a genuine dependency because 
+> it can't tell that some optimizations are not valid.
+> 
+> This flaw is fundamental to the way herd7 works.  It examines only one 
+> execution at a time, and it doesn't consider the code in a conditional 
+> branch while it's examining an execution where that branch wasn't taken.  
+> Therefore it has no way to know that the code in the unexecuted branch 
+> would prevent a certain optimization.  But the compiler does consider 
+> all the code in all branches when deciding what optimizations to apply.
+
+I see.
+
+> 
+> Here's another trivial example:
+> 
+> 	r1 = READ_ONCE(*x);
+> 	if (r1 == 0)
+> 		smp_mb();
+> 	WRITE_ONCE(*y, 1);
+> 
+> The compiler can't move the WRITE_ONCE before the READ_ONCE or the "if" 
+> statement, because it's not allowed to move shared memory accesses past 
+> a memory barrier -- even if that memory barrier isn't always executed.  
+> Therefore the WRITE_ONCE actually is ordered after the READ_ONCE, but 
+> the memory model doesn't realize it.> 
+>> Alan, can you come up with an update in this regard?
+> 
+> I'll write something.
+
+Thanks!
+
+        Akira
+
+> 
+> Alan
+> 
