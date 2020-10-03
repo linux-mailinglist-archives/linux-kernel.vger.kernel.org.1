@@ -2,175 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6F9281FA2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178E3281FA5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725763AbgJCAOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 20:14:23 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:47802 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJCAOX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:14:23 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DE87A2A2;
-        Sat,  3 Oct 2020 02:14:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1601684060;
-        bh=+6oLaNXCzW10EOi7yZGKf53UByBP3OfCZ2DbymvFru4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bc+Deodasn0sCNZhaf6Gx6XbXjbyA7lfRaoFjKOxRjIEndIeT2xnvZAokcMbefTQw
-         OP9+oMRViNvXrrED+cG2VM92CfLmCZbm2aFhZAD3Wyigb0P4dwUvUhDrhDIY7727CE
-         Y+hgqcbTo6LIJe9vjNIbPBBkIdeb+0UBK1ua8qu0=
-Date:   Sat, 3 Oct 2020 03:13:42 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
- init_machine() path
-Message-ID: <20201003001342.GA1730@pendragon.ideasonboard.com>
-References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
- <20201001225952.3676755-1-saravanak@google.com>
- <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
- <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
- <20201002175423.GE3933@pendragon.ideasonboard.com>
- <CAGETcx-7nJaU6pDo_KL-nKmCaxv57C5aaXq-pvo4XiN=N0K5Jg@mail.gmail.com>
- <20201002182712.GF3933@pendragon.ideasonboard.com>
- <11018e7e-a6a1-2df6-5639-821a7c0cb68b@ti.com>
- <CAGETcx8DCiEJy-1PiHheyuuw3YBYfFh67MBcOwv4JEviXmsp3Q@mail.gmail.com>
+        id S1725768AbgJCAP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 20:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725379AbgJCAP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 20:15:26 -0400
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E2CD206DD
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 00:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601684125;
+        bh=WCVkpV9lVcMu/a91FyPWiV8xFzBcOovpX2b0/MhAOTQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b/k9tgpjFqGDydLIOzo03KBarsp4a0A1OhAd3vwKG0gWm9zorkp1q2NKwzuzY21ph
+         MhPm+bFi18q0KlqE5viVWHhPGxcnYYs4/oniyl5bTz+iO5BRIu54OcHB95XyXCqAVE
+         AdII9hSwhZP6mWjkIryDfMpcnjW2fMgDmqmNrm24=
+Received: by mail-wm1-f44.google.com with SMTP id s13so3165489wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 17:15:25 -0700 (PDT)
+X-Gm-Message-State: AOAM532jXi++nHNS5SJR31OeMa0qNX//FeNzjRXt/PQxtFDYi4cImjyH
+        YWXoGBlmkYw+37A0PJ3FWPt7qDM1tIceFHSkO4I42Q==
+X-Google-Smtp-Source: ABdhPJyZIyNGFvfwTDltZ2YascvAupuI3eLG+8cLVnGWpoJeoydBvbPk7R9ye7C+yexnxFwRoHu4UnyusIbPBnCew18=
+X-Received: by 2002:a1c:63c1:: with SMTP id x184mr5372177wmb.138.1601684124056;
+ Fri, 02 Oct 2020 17:15:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8DCiEJy-1PiHheyuuw3YBYfFh67MBcOwv4JEviXmsp3Q@mail.gmail.com>
+References: <20201001205819.27879-1-krisman@collabora.com> <20201001205819.27879-8-krisman@collabora.com>
+ <CALCETrW74MjC2-MRkRrp3uGOhapH_1zG5GCBkPsLFXs+jPXNOg@mail.gmail.com> <20201002224005.GF24460@linux.intel.com>
+In-Reply-To: <20201002224005.GF24460@linux.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 2 Oct 2020 17:15:12 -0700
+X-Gmail-Original-Message-ID: <CALCETrWw3WkjzzqS+j5LDhLdLrr1yCoSq3j-wTD6i_Rdge8pBw@mail.gmail.com>
+Message-ID: <CALCETrWw3WkjzzqS+j5LDhLdLrr1yCoSq3j-wTD6i_Rdge8pBw@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] x86: Use current USER_CS to setup correct context
+ on vmx entry
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Hellwig <hch@lst.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Robert Richter <rric@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Fri, Oct 02, 2020 at 12:56:30PM -0700, Saravana Kannan wrote:
-> On Fri, Oct 2, 2020 at 11:35 AM 'Grygorii Strashko' via kernel-team wrote:
-> > On 02/10/2020 21:27, Laurent Pinchart wrote:
-> > > On Fri, Oct 02, 2020 at 10:58:55AM -0700, Saravana Kannan wrote:
-> > >> On Fri, Oct 2, 2020 at 10:55 AM Laurent Pinchart wrote:
-> > >>> On Fri, Oct 02, 2020 at 10:51:51AM -0700, Saravana Kannan wrote:
-> > >>>> On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > >>>>> On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >>>>>>
-> > >>>>>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
-> > >>>>>> adding all top level devices") optimized the fwnode parsing when all top
-> > >>>>>> level devices are added, it missed out optimizing this for platform
-> > >>>>>> where the top level devices are added through the init_machine() path.
-> > >>>>>>
-> > >>>>>> This commit does the optimization for all paths by simply moving the
-> > >>>>>> fw_devlink_pause/resume() inside of_platform_default_populate().
-> > >>>>>>
-> > >>>>>> Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> > >>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > >>>>>> ---
-> > >>>>>>   drivers/of/platform.c | 19 +++++++++++++++----
-> > >>>>>>   1 file changed, 15 insertions(+), 4 deletions(-)
-> > >>>>>>
-> > >>>>>> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > >>>>>> index 071f04da32c8..79972e49b539 100644
-> > >>>>>> --- a/drivers/of/platform.c
-> > >>>>>> +++ b/drivers/of/platform.c
-> > >>>>>> @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
-> > >>>>>>                                   const struct of_dev_auxdata *lookup,
-> > >>>>>>                                   struct device *parent)
-> > >>>>>>   {
-> > >>>>>> -       return of_platform_populate(root, of_default_bus_match_table, lookup,
-> > >>>>>> -                                   parent);
-> > >>>>>> +       int ret;
-> > >>>>>> +
-> > >>>>>> +       /*
-> > >>>>>> +        * fw_devlink_pause/resume() are only safe to be called around top
-> > >>>>>> +        * level device addition due to locking constraints.
-> > >>>>>> +        */
-> > >>>>>> +       if (!root)
-> > >>>>>> +               fw_devlink_pause();
-> > >>>>>> +
-> > >>>>>> +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
-> > >>>>>> +                                  parent);
-> > >>>>>
-> > >>>>> of_platform_default_populate() vs. of_platform_populate() is just a
-> > >>>>> different match table. I don't think the behavior should otherwise be
-> > >>>>> different.
-> > >>>>>
-> > >>>>> There's also of_platform_probe() which has slightly different matching
-> > >>>>> behavior. It should not behave differently either with respect to
-> > >>>>> devlinks.
-> > >>>>
-> > >>>> So I'm trying to do this only when the top level devices are added for
-> > >>>> the first time. of_platform_default_populate() seems to be the most
-> > >>>> common path. For other cases, I think we just need to call
-> > >>>> fw_devlink_pause/resume() wherever the top level devices are added for
-> > >>>> the first time. As I said in the other email, we can't add
-> > >>>> fw_devlink_pause/resume() by default to of_platform_populate().
-> > >>>>
-> > >>>> Do you have other ideas for achieving "call fw_devlink_pause/resume()
-> > >>>> only when top level devices are added for the first time"?
-> > >>>
-> > >>> I'm not an expert in this domain, but before investigating it, would you
-> > >>> be able to share a hack patch that implements this (in the most simple
-> > >>> way) to check if it actually fixes the delays I experience on my system
-> > >>> ?
-> > >>
-> > >> So I take it the patch I sent out didn't work for you? Can you tell me
-> > >> what machine/DT you are using?
+On Fri, Oct 2, 2020 at 3:40 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Thu, Oct 01, 2020 at 02:52:32PM -0700, Andy Lutomirski wrote:
+> > On Thu, Oct 1, 2020 at 1:59 PM Gabriel Krisman Bertazi
+> > <krisman@collabora.com> wrote:
 > > >
-> > > I've replied to the patch:
+> > > vmx_prepare_switch_to_guest shouldn't use is_64bit_mm, which has a
+> > > very specific use in uprobes.  Use the user_64bit_mode helper instead.
+> > > This reduces the usage of is_64bit_mm, which is awkward, since it relies
+> > > on the personality at load time, which is fine for uprobes, but doesn't
+> > > seem fine here.
 > > >
-> > > Based on v5.9-rc5, before the patch:
+> > > I tested this by running VMs with 64 and 32 bits payloads from 64/32
+> > > programs.
 > > >
-> > > [    0.652887] cpuidle: using governor menu
-> > > [   12.349476] No ATAGs?
+> > > Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> > > ---
+> > >  arch/x86/kvm/vmx/vmx.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
 > > >
-> > > After the patch:
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index 7b2a068f08c1..b5aafd9e5f5d 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -1172,7 +1172,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
+> > >         savesegment(es, host_state->es_sel);
 > > >
-> > > [    0.650460] cpuidle: using governor menu
-> > > [   12.262101] No ATAGs?
-> > >
-> > > I'm using an AM57xx EVM, whose DT is not upstream, but it's essentially
-> > > a am57xx-beagle-x15-revb1.dts (it includes that DTS) with a few
-> > > additional nodes for GPIO keys, LCD panel, backlight and touchscreen.
-> > >
+> > >         gs_base = cpu_kernelmode_gs_base(cpu);
+> > > -       if (likely(is_64bit_mm(current->mm))) {
+> > > +       if (likely(user_64bit_mode(current_pt_regs()))) {
+> > >                 current_save_fsgs();
+> > >                 fs_sel = current->thread.fsindex;
+> > >                 gs_sel = current->thread.gsindex;
 > >
-> > hope you are receiving my mails as I've provided you with all required information already [1]
-> 
-> Laurent/Grygorii,
-> 
-> Looks like I'm definitely missing emails. Sorry about the confusion.
-> 
-> I have some other urgent things on my plate right now. Is it okay if I
-> get to this in a day or two? In the end, we'll find a solution that
-> addresses most/all of the delay.
+> > I disagree with this one.  This whole code path is nonsense.  Can you
+> > just remove the condition entirely and use the 64-bit path
+> > unconditionally?
+>
+> I finally came back to this one with fresh eyes.  I've read through the code
+> a bajllion times and typed up half a dozen responses.  I think, finally, I
+> understand what's broken.
+>
+> I believe your original assertion that the bug was misdiagnosed is correct
+> (can't link because LKML wasn't in the loop).  I'm pretty sure your analysis
+> that KVM's handling of things works mostly by coincidence is also correct.
+>
+> The coincidence is that "real" VMMs all use arch_prctl(), and
+> do_arch_prctl_64() ensures thread.{fs,gs}base are accurate.  save_base_legacy()
+> detects sel==0 and intentionally does nothing, knowing the the base is already
+> accurate.
+>
+> Userspaces that don't use arch_prctl(), in the bug report case a 32-bit compat
+> test, may or may not have accurate thread.{fs,gs}base values.  This is
+> especially true if sel!=0 as save_base_legacy() explicitly zeros the base in
+> this case, as load_seg_legacy() will restore the seg on the backend.
+>
+> KVM on the other hand assumes thread.{fs,gs}base are always fresh.  When that
+> didn't hold true for userspace that didn't use arch_prctl(), the fix of
+> detecting a !64-bit mm just so happened to work because all 64-bit VMMs use
+> arch_prctl().
+>
+> It's tempting to just open code this and use RD{FS,GS}BASE when possible,
+> i.e. avoid any guesswork.  Maybe with a module param that userspace can set
+> to tell KVM it doesn't do anything fancy with FS/GS base (will userspace still
+> use arch_prctl() even if FSGSABSE is available?).
+>
+>         savesegment(fs, fs_sel);
+>         savesegment(gs, gs_sel);
+>         if (use_current_fsgs_base) {
+>                 fs_base = current->thread.fsbase;
+>                 vmx->msr_host_kernel_gs_base = current->thread.gsbase;
 
-No issue on my side.
+I don't like this.  The FSGSBASE case is fast, and the !FSGSBASE case
+is mostly obsolete.  I see no great reason to have a module parameter
+asking for incorrect behavior.  There have been too many bugs in this
+area -- let's not add more please.
 
-By the way, during initial investigations, I've traced code paths to
-figure out if there was a particular step that would consume a large
-amount of time, and found out that of_platform_populate() ends up
-executing devlink-related code that seems to have an O(n^3) complexity
-on the number of devices, with a few dozens of milliseconds for each
-iteration. That's a very bad complexity.
+>         } else if (static_cpu_has(X86_FEATURE_FSGSBASE)) {
+>                 fs_base = rdfsbase()
+>                 vmx->msr_host_kernel_gs_base = __rdgsbase_inactive();
+>         } else {
+>                 fs_base = read_msr(MSR_FS_BASE);
+>                 vmx->msr_host_kernel_gs_base = read_msr(MSR_KERNEL_GS_BASE);
+>         }
 
--- 
-Regards,
+I'm okay with this, but I think you should fix the corresponding bugs
+on the restore side as well.  The current code is:
 
-Laurent Pinchart
+        if (host_state->ldt_sel || (host_state->gs_sel & 7)) {
+                kvm_load_ldt(host_state->ldt_sel);
+#ifdef CONFIG_X86_64
+                load_gs_index(host_state->gs_sel);
+#else
+                loadsegment(gs, host_state->gs_sel);
+#endif
+        }
+        if (host_state->fs_sel & 7)
+                loadsegment(fs, host_state->fs_sel);
+
+which is blatantly wrong in the case where fs_set.TI == 1, gs_set.TI
+== 0, and ldt_sel != 0.  But it's also more subtly wrong -- this
+corrupts all the segment attributes in the case where a segment points
+to the GDT and the GDT attributes are non-default.  So I would suggest
+making the code radically simpler and more correct:
+
+if (host_state->idt_sel)
+  kvm_load_idt(host_state->idt_sel);  // see below
+if (host_state->ds_sel)
+  loadsegment(ds, host_state->ds_sel);
+if (host_state->es_sel)
+  loadsegment(es, host_state->es_sel);
+if (host_state->fs_sel) {
+  loadsegment(fs, host_state->fs_sel);
+  x86_fsbase_write_cpu(host_state->fs_base);
+}
+if (host_state->gs_sel) {
+  load_gs_index(host_state->gs_sel);
+  x86_gsbase_write_cpu_inactive(host_state->msr_host_kernel_gs_base);
+}
+
+In the IMO unlikely event that any performance-critical KVM userspace
+runs with these selectors != 0, you could also skip the load if they
+are set to __USER_DS.
+
+You can also simplify this crud:
+
+        if (unlikely(fs_sel != host->fs_sel)) {
+                if (!(fs_sel & 7))
+                        vmcs_write16(HOST_FS_SELECTOR, fs_sel);
+                else
+                        vmcs_write16(HOST_FS_SELECTOR, 0);
+                host->fs_sel = fs_sel;
+        }
+
+There is nothing special about segments with TI set according to the
+SDM (AFAICT) nor is anything particularly special about them in
+Linux's segment tables, so this code makes little sense.  It could
+just be:
+
+host->fs_sel = fs_sel;
+
+and leave the VMCS field set to 0.  Or if you do the __USER_DS
+optimization above, you could do:
+
+if (unlikely(fs_sel != host->fs_sel)) {
+  vmcs_write16(HOST_FS_SELECTOR, fs_sel == __USER_DS ? __USER_DS : 0);
+  host->fs_sel = fs_sel;
+}
+
+I suspect that the only users who care about performance (or for whom
+we should care about performance) are normal userspace, and normal
+64-bit userspace has DS == ES == FS == GS == 0.
+
+
+I would also be okay with making the KVM code match the context switch
+code, but this may be distinctly nontrivial.
