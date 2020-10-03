@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D116428205A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F358F28206C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgJCCGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgJCCGn (ORCPT
+        id S1725853AbgJCCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:09:41 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:52028 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCCJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:06:43 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6B5C0613D0;
-        Fri,  2 Oct 2020 19:06:42 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 947C91260D092;
-        Fri,  2 Oct 2020 18:49:53 -0700 (PDT)
-Date:   Fri, 02 Oct 2020 19:06:38 -0700 (PDT)
-Message-Id: <20201002.190638.1090456279017490485.davem@davemloft.net>
-To:     anant.thazhemadam@gmail.com
-Cc:     mst@redhat.com, jasowang@redhat.com, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees][PATCH 0/2] reorder members of
- structures in virtio_net for optimization
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
-References: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 02 Oct 2020 18:49:54 -0700 (PDT)
+        Fri, 2 Oct 2020 22:09:40 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 093219kg112639;
+        Sat, 3 Oct 2020 02:09:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=1EF3sPjla1js3f3DJrKTRfHqnejbpn9qRzm27IbV/xI=;
+ b=T3PGwLZ4bU/SMD60vtM2hr2oYAyYZfE+8Pl3N9GjgXuKCG6c4/kuup1aOpI+MDVo5t2X
+ yLaslutr/xJNoLX2hfH8Te6DZPI9OjWwPT4v9pF9yGFBDPM54GuZETfx2k0x6jjGV57V
+ a2iWkwIXQ9mP4iz16Cfw0WF1gCCBVe5wA4zln0/HYv1x1MGn+5OS28AaDTcNXxA6sJrM
+ d0iSh2CKN1dg+5Ids4HYsgQZLTMn4a3aZRQqkYPIMZSGc3yjqRvBHRN87gO/5npEGpi+
+ FC0hKeaUYcqEutneGkO7u5P4M+GZk+8WEAYJmVqHn0J1O8T9OsEQOQm1PnETBiYWVf63 5w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33xetag39v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 02:09:28 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931xsYE046219;
+        Sat, 3 Oct 2020 02:07:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33xeds33hf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 02:07:27 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09327NIR013201;
+        Sat, 3 Oct 2020 02:07:23 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 19:07:23 -0700
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     <QLogic-Storage-Upstream@cavium.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <skashyap@marvell.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: qedf: remove redundant assignment to variable 'rc'
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mu14awq4.fsf@ca-mkp.ca.oracle.com>
+References: <20200917021906.175933-1-jingxiangfeng@huawei.com>
+Date:   Fri, 02 Oct 2020 22:07:21 -0400
+In-Reply-To: <20200917021906.175933-1-jingxiangfeng@huawei.com> (Jing
+        Xiangfeng's message of "Thu, 17 Sep 2020 10:19:06 +0800")
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 suspectscore=1 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030018
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Date: Wed, 30 Sep 2020 10:47:20 +0530
 
-> The structures virtnet_info and receive_queue have byte holes in 
-> middle, and their members could do with some rearranging 
-> (order-of-declaration wise) in order to overcome this.
-> 
-> Rearranging the members helps in:
->   * elimination the byte holes in the middle of the structures
->   * reduce the size of the structure (virtnet_info)
->   * have more members stored in one cache line (as opposed to 
->     unnecessarily crossing the cacheline boundary and spanning
->     different cachelines)
-> 
-> The analysis was performed using pahole.
-> 
-> These patches may be applied in any order.
+Jing,
 
-What effects do these changes have on performance?
+> This assignment is  meaningless, so remove it.
 
-The cache locality for various TX and RX paths could be effected.
+Applied to 5.10/scsi-staging, thanks!
 
-I'm not applying these patches without some data on the performance
-impact.
-
-Thank you.
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
