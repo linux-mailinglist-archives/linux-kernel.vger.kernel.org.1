@@ -2,1566 +2,529 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9932828218F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 07:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE5D282191
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 07:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725769AbgJCFW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 01:22:57 -0400
-Received: from mga11.intel.com ([192.55.52.93]:4748 "EHLO mga11.intel.com"
+        id S1725783AbgJCFXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 01:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJCFW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 01:22:57 -0400
-IronPort-SDR: W9ESk4hB/GlwjSke+wFZ8v4inUcmG1YZ5ziyvmyM6icimwwMmx0V72d/WU+5BkRFMEY1HnV1tn
- iZd+kDPUp8xw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160460188"
-X-IronPort-AV: E=Sophos;i="5.77,330,1596524400"; 
-   d="scan'208";a="160460188"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 22:22:53 -0700
-IronPort-SDR: NaujWQ13apLPFcVPrhSfCdbh5FVJEKwe+F3M/plw9AOoGbBxq74/4trI6C2vTb/GkDILMGCpGX
- NCCwI41UwLdg==
-X-IronPort-AV: E=Sophos;i="5.77,330,1596524400"; 
-   d="scan'208";a="512458801"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.33.58])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2020 22:22:49 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Jordan Hand" <jorhand@linux.microsoft.com>,
-        "Nathaniel McCallum" <npmccallum@redhat.com>,
-        "Chunyang Hui" <sanqian.hcy@antfin.com>,
-        "Seth Moore" <sethmo@google.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 16/24] x86/sgx: Add a page reclaimer
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-17-jarkko.sakkinen@linux.intel.com>
-Date:   Sat, 03 Oct 2020 00:22:47 -0500
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0rwbv916wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-In-Reply-To: <20201003045059.665934-17-jarkko.sakkinen@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+        id S1725446AbgJCFXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 01:23:11 -0400
+Received: from X1 (c-76-21-107-111.hsd1.ca.comcast.net [76.21.107.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A1F2206C3;
+        Sat,  3 Oct 2020 05:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601702589;
+        bh=un09nsmR0OdEtA6YA85MjiSj0yTBRjp3wJi2EKIHUck=;
+        h=Date:From:To:Subject:From;
+        b=fyhKLKmJrunvbT880Ke1+n8EL+DEd5+YwFV4+v+rVDcA3qfhaRpEbUt8qjphI4m7X
+         U1/YZ8topkxOM9GOXbLCIeePGTO+ZNzZXG0S7U7PpdK0a5ATNiHil1Iqs1+xUatxlg
+         nEOAe4qpfsPJU8iSBON+MayatRklf9eupz1OFc0o=
+Date:   Fri, 02 Oct 2020 22:23:08 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mm-commits@vger.kernel.org
+Subject:  mmotm 2020-10-02-22-22 uploaded
+Message-ID: <20201003052308.mfxUV%akpm@linux-foundation.org>
+User-Agent: s-nail v14.9.10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I turn on CONFIG_PROVE_LOCKING, kernel reports following suspicious  
-RCU usages. Not sure if it is an issue. Just reporting here:
+The mm-of-the-moment snapshot 2020-10-02-22-22 has been uploaded to
 
-[ +34.337095] =============================
-[  +0.000001] WARNING: suspicious RCU usage
-[  +0.000002] 5.9.0-rc6-lock-sgx39 #1 Not tainted
-[  +0.000001] -----------------------------
-[  +0.000001] ./include/linux/xarray.h:1165 suspicious  
-rcu_dereference_check() usage!
-[  +0.000001]
-               other info that might help us debug this:
+   https://www.ozlabs.org/~akpm/mmotm/
 
-[  +0.000001]
-               rcu_scheduler_active = 2, debug_locks = 1
-[  +0.000001] 1 lock held by enclaveos-runne/4238:
-[  +0.000001]  #0: ffff9cc6657e45e8 (&mm->mmap_lock#2){++++}-{3:3}, at:  
-vm_mmap_pgoff+0xa1/0x120
-[  +0.000005]
-               stack backtrace:
-[  +0.000002] CPU: 1 PID: 4238 Comm: enclaveos-runne Not tainted  
-5.9.0-rc6-lock-sgx39 #1
-[  +0.000001] Hardware name: Microsoft Corporation Virtual Machine/Virtual  
-Machine, BIOS Hyper-V UEFI Release v4.1 04/02/2020
-[  +0.000002] Call Trace:
-[  +0.000003]  dump_stack+0x7d/0x9f
-[  +0.000003]  lockdep_rcu_suspicious+0xce/0xf0
-[  +0.000004]  xas_start+0x14c/0x1c0
-[  +0.000003]  xas_load+0xf/0x50
-[  +0.000002]  xas_find+0x25c/0x2c0
-[  +0.000004]  sgx_encl_may_map+0x87/0x1c0
-[  +0.000006]  sgx_mmap+0x29/0x70
-[  +0.000003]  mmap_region+0x3ee/0x710
-[  +0.000006]  do_mmap+0x3f1/0x5e0
-[  +0.000004]  vm_mmap_pgoff+0xcd/0x120
-[  +0.000007]  ksys_mmap_pgoff+0x1de/0x240
-[  +0.000005]  __x64_sys_mmap+0x33/0x40
-[  +0.000002]  do_syscall_64+0x37/0x80
-[  +0.000003]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  +0.000002] RIP: 0033:0x7fe34efe06ba
-[  +0.000002] Code: 89 f5 41 54 49 89 fc 55 53 74 35 49 63 e8 48 63 da 4d  
-89 f9 49 89 e8 4d 63 d6 48 89 da 4c 89 ee 4c 89 e7 b8 09 00 00 00 0f 05  
-<48> 3d 00 f0 ff ff 77 56 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 1f 00
-[  +0.000001] RSP: 002b:00007ffee83eac08 EFLAGS: 00000206 ORIG_RAX:  
-0000000000000009
-[  +0.000001] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:  
-00007fe34efe06ba
-[  +0.000001] RDX: 0000000000000001 RSI: 0000000000001000 RDI:  
-0000000007fff000
-[  +0.000001] RBP: 0000000000000004 R08: 0000000000000004 R09:  
-0000000000000000
-[  +0.000001] R10: 0000000000000011 R11: 0000000000000206 R12:  
-0000000007fff000
-[  +0.000001] R13: 0000000000001000 R14: 0000000000000011 R15:  
-0000000000000000
+mmotm-readme.txt says
 
-[  +0.000010] =============================
-[  +0.000001] WARNING: suspicious RCU usage
-[  +0.000001] 5.9.0-rc6-lock-sgx39 #1 Not tainted
-[  +0.000001] -----------------------------
-[  +0.000001] ./include/linux/xarray.h:1181 suspicious  
-rcu_dereference_check() usage!
-[  +0.000001]
-               other info that might help us debug this:
+README for mm-of-the-moment:
 
-[  +0.000001]
-               rcu_scheduler_active = 2, debug_locks = 1
-[  +0.000001] 1 lock held by enclaveos-runne/4238:
-[  +0.000001]  #0: ffff9cc6657e45e8 (&mm->mmap_lock#2){++++}-{3:3}, at:  
-vm_mmap_pgoff+0xa1/0x120
-[  +0.000003]
-               stack backtrace:
-[  +0.000001] CPU: 1 PID: 4238 Comm: enclaveos-runne Not tainted  
-5.9.0-rc6-lock-sgx39 #1
-[  +0.000001] Hardware name: Microsoft Corporation Virtual Machine/Virtual  
-Machine, BIOS Hyper-V UEFI Release v4.1 04/02/2020
-[  +0.000001] Call Trace:
-[  +0.000001]  dump_stack+0x7d/0x9f
-[  +0.000003]  lockdep_rcu_suspicious+0xce/0xf0
-[  +0.000003]  xas_descend+0x116/0x120
-[  +0.000004]  xas_load+0x42/0x50
-[  +0.000002]  xas_find+0x25c/0x2c0
-[  +0.000004]  sgx_encl_may_map+0x87/0x1c0
-[  +0.000006]  sgx_mmap+0x29/0x70
-[  +0.000002]  mmap_region+0x3ee/0x710
-[  +0.000006]  do_mmap+0x3f1/0x5e0
-[  +0.000004]  vm_mmap_pgoff+0xcd/0x120
-[  +0.000007]  ksys_mmap_pgoff+0x1de/0x240
-[  +0.000005]  __x64_sys_mmap+0x33/0x40
-[  +0.000002]  do_syscall_64+0x37/0x80
-[  +0.000002]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  +0.000001] RIP: 0033:0x7fe34efe06ba
-[  +0.000001] Code: 89 f5 41 54 49 89 fc 55 53 74 35 49 63 e8 48 63 da 4d  
-89 f9 49 89 e8 4d 63 d6 48 89 da 4c 89 ee 4c 89 e7 b8 09 00 00 00 0f 05  
-<48> 3d 00 f0 ff ff 77 56 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 1f 00
-[  +0.000001] RSP: 002b:00007ffee83eac08 EFLAGS: 00000206 ORIG_RAX:  
-0000000000000009
-[  +0.000001] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:  
-00007fe34efe06ba
-[  +0.000001] RDX: 0000000000000001 RSI: 0000000000001000 RDI:  
-0000000007fff000
-[  +0.000001] RBP: 0000000000000004 R08: 0000000000000004 R09:  
-0000000000000000
-[  +0.000001] R10: 0000000000000011 R11: 0000000000000206 R12:  
-0000000007fff000
-[  +0.000001] R13: 0000000000001000 R14: 0000000000000011 R15:  
-0000000000000000
+https://www.ozlabs.org/~akpm/mmotm/
 
-[  +0.001117] =============================
-[  +0.000001] WARNING: suspicious RCU usage
-[  +0.000001] 5.9.0-rc6-lock-sgx39 #1 Not tainted
-[  +0.000001] -----------------------------
-[  +0.000001] ./include/linux/xarray.h:1181 suspicious  
-rcu_dereference_check() usage!
-[  +0.000001]
-               other info that might help us debug this:
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
 
-[  +0.000001]
-               rcu_scheduler_active = 2, debug_locks = 1
-[  +0.000001] 1 lock held by enclaveos-runne/4238:
-[  +0.000001]  #0: ffff9cc6657e45e8 (&mm->mmap_lock#2){++++}-{3:3}, at:  
-vm_mmap_pgoff+0xa1/0x120
-[  +0.000003]
-               stack backtrace:
-[  +0.000002] CPU: 1 PID: 4238 Comm: enclaveos-runne Not tainted  
-5.9.0-rc6-lock-sgx39 #1
-[  +0.000001] Hardware name: Microsoft Corporation Virtual Machine/Virtual  
-Machine, BIOS Hyper-V UEFI Release v4.1 04/02/2020
-[  +0.000001] Call Trace:
-[  +0.000002]  dump_stack+0x7d/0x9f
-[  +0.000003]  lockdep_rcu_suspicious+0xce/0xf0
-[  +0.000003]  sgx_encl_may_map+0x1b0/0x1c0
-[  +0.000006]  sgx_mmap+0x29/0x70
-[  +0.000002]  mmap_region+0x3ee/0x710
-[  +0.000006]  do_mmap+0x3f1/0x5e0
-[  +0.000005]  vm_mmap_pgoff+0xcd/0x120
-[  +0.000006]  ksys_mmap_pgoff+0x1de/0x240
-[  +0.000005]  __x64_sys_mmap+0x33/0x40
-[  +0.000002]  do_syscall_64+0x37/0x80
-[  +0.000002]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  +0.000002] RIP: 0033:0x7fe34efe06ba
-[  +0.000001] Code: 89 f5 41 54 49 89 fc 55 53 74 35 49 63 e8 48 63 da 4d  
-89 f9 49 89 e8 4d 63 d6 48 89 da 4c 89 ee 4c 89 e7 b8 09 00 00 00 0f 05  
-<48> 3d 00 f0 ff ff 77 56 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 1f 00
-[  +0.000001] RSP: 002b:00007ffee83eac08 EFLAGS: 00000206 ORIG_RAX:  
-0000000000000009
-[  +0.000001] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:  
-00007fe34efe06ba
-[  +0.000001] RDX: 0000000000000003 RSI: 0000000000010000 RDI:  
-0000000007fee000
-[  +0.000001] RBP: 0000000000000004 R08: 0000000000000004 R09:  
-0000000000000000
-[  +0.000001] R10: 0000000000000011 R11: 0000000000000206 R12:  
-0000000007fee000
-[  +0.000001] R13: 0000000000010000 R14: 0000000000000011 R15:  
-0000000000000000
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
 
-[  +0.003197] =============================
-[  +0.000001] WARNING: suspicious RCU usage
-[  +0.000001] 5.9.0-rc6-lock-sgx39 #1 Not tainted
-[  +0.000001] -----------------------------
-[  +0.000001] ./include/linux/xarray.h:1198 suspicious  
-rcu_dereference_check() usage!
-[  +0.000001]
-               other info that might help us debug this:
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
 
-[  +0.000001]
-               rcu_scheduler_active = 2, debug_locks = 1
-[  +0.000001] 1 lock held by enclaveos-runne/4238:
-[  +0.000001]  #0: ffff9cc6657e45e8 (&mm->mmap_lock#2){++++}-{3:3}, at:  
-vm_mmap_pgoff+0xa1/0x120
-[  +0.000003]
-               stack backtrace:
-[  +0.000002] CPU: 1 PID: 4238 Comm: enclaveos-runne Not tainted  
-5.9.0-rc6-lock-sgx39 #1
-[  +0.000001] Hardware name: Microsoft Corporation Virtual Machine/Virtual  
-Machine, BIOS Hyper-V UEFI Release v4.1 04/02/2020
-[  +0.000001] Call Trace:
-[  +0.000002]  dump_stack+0x7d/0x9f
-[  +0.000003]  lockdep_rcu_suspicious+0xce/0xf0
-[  +0.000004]  xas_find+0x255/0x2c0
-[  +0.000003]  sgx_encl_may_map+0xad/0x1c0
-[  +0.000006]  sgx_mmap+0x29/0x70
-[  +0.000003]  mmap_region+0x3ee/0x710
-[  +0.000005]  do_mmap+0x3f1/0x5e0
-[  +0.000005]  vm_mmap_pgoff+0xcd/0x120
-[  +0.000007]  ksys_mmap_pgoff+0x1de/0x240
-[  +0.000004]  __x64_sys_mmap+0x33/0x40
-[  +0.000002]  do_syscall_64+0x37/0x80
-[  +0.000002]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  +0.000002] RIP: 0033:0x7fe34efe06ba
-[  +0.000001] Code: 89 f5 41 54 49 89 fc 55 53 74 35 49 63 e8 48 63 da 4d  
-89 f9 49 89 e8 4d 63 d6 48 89 da 4c 89 ee 4c 89 e7 b8 09 00 00 00 0f 05  
-<48> 3d 00 f0 ff ff 77 56 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 1f 00
-[  +0.000001] RSP: 002b:00007ffee83eac08 EFLAGS: 00000206 ORIG_RAX:  
-0000000000000009
-[  +0.000002] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:  
-00007fe34efe06ba
-[  +0.000001] RDX: 0000000000000003 RSI: 0000000000010000 RDI:  
-0000000007fba000
-[  +0.000001] RBP: 0000000000000004 R08: 0000000000000004 R09:  
-0000000000000000
-[  +0.000001] R10: 0000000000000011 R11: 0000000000000206 R12:  
-0000000007fba000
-[  +0.000001] R13: 0000000000010000 R14: 0000000000000011 R15:  
-0000000000000000
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
 
 
-On Fri, 02 Oct 2020 23:50:51 -0500, Jarkko Sakkinen  
-<jarkko.sakkinen@linux.intel.com> wrote:
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
 
-> There is a limited amount of EPC available. Therefore, some of it must be
-> copied to the regular memory, and only subset kept in the SGX reserved
-> memory. While kernel cannot directly access enclave memory, SGX provides  
-> a
-> set of ENCLS leaf functions to perform reclaiming.
->
-> Implement a page reclaimer by using these leaf functions. It picks the
-> victim pages in LRU fashion from all the enclaves running in the system.
-> The thread ksgxswapd reclaims pages on the event when the number of free
-> EPC pages goes below SGX_NR_LOW_PAGES up until it reaches
-> SGX_NR_HIGH_PAGES.
->
-> sgx_alloc_epc_page() can optionally directly reclaim pages with @reclaim
-> set true. A caller must also supply owner for each page so that the
-> reclaimer can access the associated enclaves. This is needed for locking,
-> as most of the ENCLS leafs cannot be executed concurrently for an  
-> enclave.
-> The owner is also needed for accessing SECS, which is required to be
-> resident when its child pages are being reclaimed.
->
-> Cc: linux-mm@kvack.org
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
-> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
-> Tested-by: Seth Moore <sethmo@google.com>
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/x86/kernel/cpu/sgx/driver.c |   1 +
->  arch/x86/kernel/cpu/sgx/encl.c   | 344 +++++++++++++++++++++-
->  arch/x86/kernel/cpu/sgx/encl.h   |  41 +++
->  arch/x86/kernel/cpu/sgx/ioctl.c  |  78 ++++-
->  arch/x86/kernel/cpu/sgx/main.c   | 481 +++++++++++++++++++++++++++++++
->  arch/x86/kernel/cpu/sgx/sgx.h    |   9 +
->  6 files changed, 947 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/driver.c  
-> b/arch/x86/kernel/cpu/sgx/driver.c
-> index d01b28f7ce4a..0446781cc7a2 100644
-> --- a/arch/x86/kernel/cpu/sgx/driver.c
-> +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> @@ -29,6 +29,7 @@ static int sgx_open(struct inode *inode, struct file  
-> *file)
->  	atomic_set(&encl->flags, 0);
->  	kref_init(&encl->refcount);
->  	xa_init(&encl->page_array);
-> +	INIT_LIST_HEAD(&encl->va_pages);
->  	mutex_init(&encl->lock);
->  	INIT_LIST_HEAD(&encl->mm_list);
->  	spin_lock_init(&encl->mm_lock);
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c  
-> b/arch/x86/kernel/cpu/sgx/encl.c
-> index c2c4a77af36b..54326efa6c2f 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -12,9 +12,88 @@
->  #include "encls.h"
->  #include "sgx.h"
-> +/*
-> + * ELDU: Load an EPC page as unblocked. For more info, see "OS  
-> Management of EPC
-> + * Pages" in the SDM.
-> + */
-> +static int __sgx_encl_eldu(struct sgx_encl_page *encl_page,
-> +			   struct sgx_epc_page *epc_page,
-> +			   struct sgx_epc_page *secs_page)
-> +{
-> +	unsigned long va_offset = SGX_ENCL_PAGE_VA_OFFSET(encl_page);
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_pageinfo pginfo;
-> +	struct sgx_backing b;
-> +	pgoff_t page_index;
-> +	int ret;
-> +
-> +	if (secs_page)
-> +		page_index = SGX_ENCL_PAGE_INDEX(encl_page);
-> +	else
-> +		page_index = PFN_DOWN(encl->size);
-> +
-> +	ret = sgx_encl_get_backing(encl, page_index, &b);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pginfo.addr = SGX_ENCL_PAGE_ADDR(encl_page);
-> +	pginfo.contents = (unsigned long)kmap_atomic(b.contents);
-> +	pginfo.metadata = (unsigned long)kmap_atomic(b.pcmd) +
-> +			  b.pcmd_offset;
-> +
-> +	if (secs_page)
-> +		pginfo.secs = (u64)sgx_get_epc_addr(secs_page);
-> +	else
-> +		pginfo.secs = 0;
-> +
-> +	ret = __eldu(&pginfo, sgx_get_epc_addr(epc_page),
-> +		     sgx_get_epc_addr(encl_page->va_page->epc_page) +
-> +				      va_offset);
-> +	if (ret) {
-> +		if (encls_failed(ret))
-> +			ENCLS_WARN(ret, "ELDU");
-> +
-> +		ret = -EFAULT;
-> +	}
-> +
-> +	kunmap_atomic((void *)(unsigned long)(pginfo.metadata -  
-> b.pcmd_offset));
-> +	kunmap_atomic((void *)(unsigned long)pginfo.contents);
-> +
-> +	sgx_encl_put_backing(&b, false);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page  
-> *encl_page,
-> +					  struct sgx_epc_page *secs_page)
-> +{
-> +	unsigned long va_offset = SGX_ENCL_PAGE_VA_OFFSET(encl_page);
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_epc_page *epc_page;
-> +	int ret;
-> +
-> +	epc_page = sgx_alloc_epc_page(encl_page, false);
-> +	if (IS_ERR(epc_page))
-> +		return epc_page;
-> +
-> +	ret = __sgx_encl_eldu(encl_page, epc_page, secs_page);
-> +	if (ret) {
-> +		sgx_free_epc_page(epc_page);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	sgx_free_va_slot(encl_page->va_page, va_offset);
-> +	list_move(&encl_page->va_page->list, &encl->va_pages);
-> +	encl_page->desc &= ~SGX_ENCL_PAGE_VA_OFFSET_MASK;
-> +	encl_page->epc_page = epc_page;
-> +
-> +	return epc_page;
-> +}
-> +
->  static struct sgx_encl_page *sgx_encl_load_page(struct sgx_encl *encl,
->  						unsigned long addr)
->  {
-> +	struct sgx_epc_page *epc_page;
->  	struct sgx_encl_page *entry;
->  	unsigned int flags;
-> @@ -33,10 +112,27 @@ static struct sgx_encl_page  
-> *sgx_encl_load_page(struct sgx_encl *encl,
->  		return ERR_PTR(-EFAULT);
-> 	/* Page is already resident in the EPC. */
-> -	if (entry->epc_page)
-> +	if (entry->epc_page) {
-> +		if (entry->desc & SGX_ENCL_PAGE_BEING_RECLAIMED)
-> +			return ERR_PTR(-EBUSY);
-> +
->  		return entry;
-> +	}
-> +
-> +	if (!(encl->secs.epc_page)) {
-> +		epc_page = sgx_encl_eldu(&encl->secs, NULL);
-> +		if (IS_ERR(epc_page))
-> +			return ERR_CAST(epc_page);
-> +	}
-> -	return ERR_PTR(-EFAULT);
-> +	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
-> +	if (IS_ERR(epc_page))
-> +		return ERR_CAST(epc_page);
-> +
-> +	encl->secs_child_cnt++;
-> +	sgx_mark_page_reclaimable(entry->epc_page);
-> +
-> +	return entry;
->  }
-> static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
-> @@ -132,6 +228,9 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct  
-> mm_struct *mm)
-> 	spin_lock(&encl->mm_lock);
->  	list_add_rcu(&encl_mm->list, &encl->mm_list);
-> +	/* Pairs with smp_rmb() in sgx_reclaimer_block(). */
-> +	smp_wmb();
-> +	encl->mm_list_version++;
->  	spin_unlock(&encl->mm_lock);
-> 	return 0;
-> @@ -179,6 +278,8 @@ static unsigned int sgx_vma_fault(struct vm_fault  
-> *vmf)
->  		goto out;
->  	}
-> +	sgx_encl_test_and_clear_young(vma->vm_mm, entry);
-> +
->  out:
->  	mutex_unlock(&encl->lock);
->  	return ret;
-> @@ -280,6 +381,7 @@ int sgx_encl_find(struct mm_struct *mm, unsigned  
-> long addr,
->   */
->  void sgx_encl_destroy(struct sgx_encl *encl)
->  {
-> +	struct sgx_va_page *va_page;
->  	struct sgx_encl_page *entry;
->  	unsigned long index;
-> @@ -287,6 +389,13 @@ void sgx_encl_destroy(struct sgx_encl *encl)
-> 	xa_for_each(&encl->page_array, index, entry) {
->  		if (entry->epc_page) {
-> +			/*
-> +			 * The page and its radix tree entry cannot be freed
-> +			 * if the page is being held by the reclaimer.
-> +			 */
-> +			if (sgx_unmark_page_reclaimable(entry->epc_page))
-> +				continue;
-> +
->  			sgx_free_epc_page(entry->epc_page);
->  			encl->secs_child_cnt--;
->  			entry->epc_page = NULL;
-> @@ -301,6 +410,19 @@ void sgx_encl_destroy(struct sgx_encl *encl)
->  		sgx_free_epc_page(encl->secs.epc_page);
->  		encl->secs.epc_page = NULL;
->  	}
-> +
-> +	/*
-> +	 * The reclaimer is responsible for checking SGX_ENCL_DEAD before doing
-> +	 * EWB, thus it's safe to free VA pages even if the reclaimer holds a
-> +	 * reference to the enclave.
-> +	 */
-> +	while (!list_empty(&encl->va_pages)) {
-> +		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
-> +					   list);
-> +		list_del(&va_page->list);
-> +		sgx_free_epc_page(va_page->epc_page);
-> +		kfree(va_page);
-> +	}
->  }
-> /**
-> @@ -329,3 +451,221 @@ void sgx_encl_release(struct kref *ref)
-> 	kfree(encl);
->  }
-> +
-> +static struct page *sgx_encl_get_backing_page(struct sgx_encl *encl,
-> +					      pgoff_t index)
-> +{
-> +	struct inode *inode = encl->backing->f_path.dentry->d_inode;
-> +	struct address_space *mapping = inode->i_mapping;
-> +	gfp_t gfpmask = mapping_gfp_mask(mapping);
-> +
-> +	return shmem_read_mapping_page_gfp(mapping, index, gfpmask);
-> +}
-> +
-> +/**
-> + * sgx_encl_get_backing() - Pin the backing storage
-> + * @encl:	an enclave pointer
-> + * @page_index:	enclave page index
-> + * @backing:	data for accessing backing storage for the page
-> + *
-> + * Pin the backing storage pages for storing the encrypted contents and  
-> Paging
-> + * Crypto MetaData (PCMD) of an enclave page.
-> + *
-> + * Return:
-> + *   0 on success,
-> + *   -errno otherwise.
-> + */
-> +int sgx_encl_get_backing(struct sgx_encl *encl, unsigned long  
-> page_index,
-> +			 struct sgx_backing *backing)
-> +{
-> +	pgoff_t pcmd_index = PFN_DOWN(encl->size) + 1 + (page_index >> 5);
-> +	struct page *contents;
-> +	struct page *pcmd;
-> +
-> +	contents = sgx_encl_get_backing_page(encl, page_index);
-> +	if (IS_ERR(contents))
-> +		return PTR_ERR(contents);
-> +
-> +	pcmd = sgx_encl_get_backing_page(encl, pcmd_index);
-> +	if (IS_ERR(pcmd)) {
-> +		put_page(contents);
-> +		return PTR_ERR(pcmd);
-> +	}
-> +
-> +	backing->page_index = page_index;
-> +	backing->contents = contents;
-> +	backing->pcmd = pcmd;
-> +	backing->pcmd_offset =
-> +		(page_index & (PAGE_SIZE / sizeof(struct sgx_pcmd) - 1)) *
-> +		sizeof(struct sgx_pcmd);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sgx_encl_put_backing() - Unpin the backing storage
-> + * @backing:	data for accessing backing storage for the page
-> + * @do_write:	mark pages dirty
-> + */
-> +void sgx_encl_put_backing(struct sgx_backing *backing, bool do_write)
-> +{
-> +	if (do_write) {
-> +		set_page_dirty(backing->pcmd);
-> +		set_page_dirty(backing->contents);
-> +	}
-> +
-> +	put_page(backing->pcmd);
-> +	put_page(backing->contents);
-> +}
-> +
-> +static int sgx_encl_test_and_clear_young_cb(pte_t *ptep, unsigned long  
-> addr,
-> +					    void *data)
-> +{
-> +	pte_t pte;
-> +	int ret;
-> +
-> +	ret = pte_young(*ptep);
-> +	if (ret) {
-> +		pte = pte_mkold(*ptep);
-> +		set_pte_at((struct mm_struct *)data, addr, ptep, pte);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * sgx_encl_test_and_clear_young() - Test and reset the accessed bit
-> + * @mm:		mm_struct that is checked
-> + * @page:	enclave page to be tested for recent access
-> + *
-> + * Checks the Access (A) bit from the PTE corresponding to the enclave  
-> page and
-> + * clears it.
-> + *
-> + * Return: 1 if the page has been recently accessed and 0 if not.
-> + */
-> +int sgx_encl_test_and_clear_young(struct mm_struct *mm,
-> +				  struct sgx_encl_page *page)
-> +{
-> +	unsigned long addr = SGX_ENCL_PAGE_ADDR(page);
-> +	struct sgx_encl *encl = page->encl;
-> +	struct vm_area_struct *vma;
-> +	int ret;
-> +
-> +	ret = sgx_encl_find(mm, addr, &vma);
-> +	if (ret)
-> +		return 0;
-> +
-> +	if (encl != vma->vm_private_data)
-> +		return 0;
-> +
-> +	ret = apply_to_page_range(vma->vm_mm, addr, PAGE_SIZE,
-> +				  sgx_encl_test_and_clear_young_cb, vma->vm_mm);
-> +	if (ret < 0)
-> +		return 0;
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * sgx_encl_reserve_page() - Reserve an enclave page
-> + * @encl:	an enclave pointer
-> + * @addr:	a page address
-> + *
-> + * Load an enclave page and lock the enclave so that the page can be  
-> used by
-> + * EDBG* and EMOD*.
-> + *
-> + * Return:
-> + *   an enclave page on success
-> + *   -EFAULT	if the load fails
-> + */
-> +struct sgx_encl_page *sgx_encl_reserve_page(struct sgx_encl *encl,
-> +					    unsigned long addr)
-> +{
-> +	struct sgx_encl_page *entry;
-> +
-> +	for ( ; ; ) {
-> +		mutex_lock(&encl->lock);
-> +
-> +		entry = sgx_encl_load_page(encl, addr);
-> +		if (PTR_ERR(entry) != -EBUSY)
-> +			break;
-> +
-> +		mutex_unlock(&encl->lock);
-> +	}
-> +
-> +	if (IS_ERR(entry))
-> +		mutex_unlock(&encl->lock);
-> +
-> +	return entry;
-> +}
-> +
-> +/**
-> + * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-> + *
-> + * Allocate a free EPC page and convert it to a Version Array (VA) page.
-> + *
-> + * Return:
-> + *   a VA page,
-> + *   -errno otherwise
-> + */
-> +struct sgx_epc_page *sgx_alloc_va_page(void)
-> +{
-> +	struct sgx_epc_page *epc_page;
-> +	int ret;
-> +
-> +	epc_page = sgx_alloc_epc_page(NULL, true);
-> +	if (IS_ERR(epc_page))
-> +		return ERR_CAST(epc_page);
-> +
-> +	ret = __epa(sgx_get_epc_addr(epc_page));
-> +	if (ret) {
-> +		WARN_ONCE(1, "EPA returned %d (0x%x)", ret, ret);
-> +		sgx_free_epc_page(epc_page);
-> +		return ERR_PTR(-EFAULT);
-> +	}
-> +
-> +	return epc_page;
-> +}
-> +
-> +/**
-> + * sgx_alloc_va_slot - allocate a VA slot
-> + * @va_page:	a &struct sgx_va_page instance
-> + *
-> + * Allocates a slot from a &struct sgx_va_page instance.
-> + *
-> + * Return: offset of the slot inside the VA page
-> + */
-> +unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page)
-> +{
-> +	int slot = find_first_zero_bit(va_page->slots, SGX_VA_SLOT_COUNT);
-> +
-> +	if (slot < SGX_VA_SLOT_COUNT)
-> +		set_bit(slot, va_page->slots);
-> +
-> +	return slot << 3;
-> +}
-> +
-> +/**
-> + * sgx_free_va_slot - free a VA slot
-> + * @va_page:	a &struct sgx_va_page instance
-> + * @offset:	offset of the slot inside the VA page
-> + *
-> + * Frees a slot from a &struct sgx_va_page instance.
-> + */
-> +void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset)
-> +{
-> +	clear_bit(offset >> 3, va_page->slots);
-> +}
-> +
-> +/**
-> + * sgx_va_page_full - is the VA page full?
-> + * @va_page:	a &struct sgx_va_page instance
-> + *
-> + * Return: true if all slots have been taken
-> + */
-> +bool sgx_va_page_full(struct sgx_va_page *va_page)
-> +{
-> +	int slot = find_first_zero_bit(va_page->slots, SGX_VA_SLOT_COUNT);
-> +
-> +	return slot == SGX_VA_SLOT_COUNT;
-> +}
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h  
-> b/arch/x86/kernel/cpu/sgx/encl.h
-> index 0448d22d3010..e8eb9e9a834e 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -19,6 +19,10 @@
-> /**
->   * enum sgx_encl_page_desc - defines bits for an enclave page's  
-> descriptor
-> + * %SGX_ENCL_PAGE_BEING_RECLAIMED:	The page is in the process of being
-> + *					reclaimed.
-> + * %SGX_ENCL_PAGE_VA_OFFSET_MASK:	Holds the offset in the Version Array
-> + *					(VA) page for a swapped page.
->   * %SGX_ENCL_PAGE_ADDR_MASK:		Holds the virtual address of the page.
->   *
->   * The page address for SECS is zero and is used by the subsystem to  
-> recognize
-> @@ -26,16 +30,23 @@
->   */
->  enum sgx_encl_page_desc {
->  	/* Bits 11:3 are available when the page is not swapped. */
-> +	SGX_ENCL_PAGE_BEING_RECLAIMED		= BIT(3),
-> +	SGX_ENCL_PAGE_VA_OFFSET_MASK	= GENMASK_ULL(11, 3),
->  	SGX_ENCL_PAGE_ADDR_MASK		= PAGE_MASK,
->  };
-> #define SGX_ENCL_PAGE_ADDR(page) \
->  	((page)->desc & SGX_ENCL_PAGE_ADDR_MASK)
-> +#define SGX_ENCL_PAGE_VA_OFFSET(page) \
-> +	((page)->desc & SGX_ENCL_PAGE_VA_OFFSET_MASK)
-> +#define SGX_ENCL_PAGE_INDEX(page) \
-> +	PFN_DOWN((page)->desc - (page)->encl->base)
-> struct sgx_encl_page {
->  	unsigned long desc;
->  	unsigned long vm_max_prot_bits;
->  	struct sgx_epc_page *epc_page;
-> +	struct sgx_va_page *va_page;
->  	struct sgx_encl *encl;
->  };
-> @@ -61,6 +72,7 @@ struct sgx_encl {
->  	struct mutex lock;
->  	struct list_head mm_list;
->  	spinlock_t mm_lock;
-> +	unsigned long mm_list_version;
->  	struct file *backing;
->  	struct kref refcount;
->  	struct srcu_struct srcu;
-> @@ -68,12 +80,21 @@ struct sgx_encl {
->  	unsigned long size;
->  	unsigned long ssaframesize;
->  	struct xarray page_array;
-> +	struct list_head va_pages;
->  	struct sgx_encl_page secs;
->  	cpumask_t cpumask;
->  	unsigned long attributes;
->  	unsigned long attributes_mask;
->  };
-> +#define SGX_VA_SLOT_COUNT 512
-> +
-> +struct sgx_va_page {
-> +	struct sgx_epc_page *epc_page;
-> +	DECLARE_BITMAP(slots, SGX_VA_SLOT_COUNT);
-> +	struct list_head list;
-> +};
-> +
->  extern const struct vm_operations_struct sgx_vm_ops;
-> int sgx_encl_find(struct mm_struct *mm, unsigned long addr,
-> @@ -84,4 +105,24 @@ int sgx_encl_mm_add(struct sgx_encl *encl, struct  
-> mm_struct *mm);
->  int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
->  		     unsigned long end, unsigned long vm_flags);
-> +struct sgx_backing {
-> +	pgoff_t page_index;
-> +	struct page *contents;
-> +	struct page *pcmd;
-> +	unsigned long pcmd_offset;
-> +};
-> +
-> +int sgx_encl_get_backing(struct sgx_encl *encl, unsigned long  
-> page_index,
-> +			 struct sgx_backing *backing);
-> +void sgx_encl_put_backing(struct sgx_backing *backing, bool do_write);
-> +int sgx_encl_test_and_clear_young(struct mm_struct *mm,
-> +				  struct sgx_encl_page *page);
-> +struct sgx_encl_page *sgx_encl_reserve_page(struct sgx_encl *encl,
-> +					    unsigned long addr);
-> +
-> +struct sgx_epc_page *sgx_alloc_va_page(void);
-> +unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
-> +void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
-> +bool sgx_va_page_full(struct sgx_va_page *va_page);
-> +
->  #endif /* _X86_ENCL_H */
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c  
-> b/arch/x86/kernel/cpu/sgx/ioctl.c
-> index 3c04798e83e5..613f6c03598e 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -16,6 +16,43 @@
->  #include "encl.h"
->  #include "encls.h"
-> +static struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl)
-> +{
-> +	struct sgx_va_page *va_page = NULL;
-> +	void *err;
-> +
-> +	BUILD_BUG_ON(SGX_VA_SLOT_COUNT !=
-> +		(SGX_ENCL_PAGE_VA_OFFSET_MASK >> 3) + 1);
-> +
-> +	if (!(encl->page_cnt % SGX_VA_SLOT_COUNT)) {
-> +		va_page = kzalloc(sizeof(*va_page), GFP_KERNEL);
-> +		if (!va_page)
-> +			return ERR_PTR(-ENOMEM);
-> +
-> +		va_page->epc_page = sgx_alloc_va_page();
-> +		if (IS_ERR(va_page->epc_page)) {
-> +			err = ERR_CAST(va_page->epc_page);
-> +			kfree(va_page);
-> +			return err;
-> +		}
-> +
-> +		WARN_ON_ONCE(encl->page_cnt % SGX_VA_SLOT_COUNT);
-> +	}
-> +	encl->page_cnt++;
-> +	return va_page;
-> +}
-> +
-> +static void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page  
-> *va_page)
-> +{
-> +	encl->page_cnt--;
-> +
-> +	if (va_page) {
-> +		sgx_free_epc_page(va_page->epc_page);
-> +		list_del(&va_page->list);
-> +		kfree(va_page);
-> +	}
-> +}
-> +
->  static u32 sgx_calc_ssa_frame_size(u32 miscselect, u64 xfrm)
->  {
->  	u32 size_max = PAGE_SIZE;
-> @@ -80,15 +117,24 @@ static int sgx_validate_secs(const struct sgx_secs  
-> *secs)
->  static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->  {
->  	struct sgx_epc_page *secs_epc;
-> +	struct sgx_va_page *va_page;
->  	struct sgx_pageinfo pginfo;
->  	struct sgx_secinfo secinfo;
->  	unsigned long encl_size;
->  	struct file *backing;
->  	long ret;
-> +	va_page = sgx_encl_grow(encl);
-> +	if (IS_ERR(va_page))
-> +		return PTR_ERR(va_page);
-> +	else if (va_page)
-> +		list_add(&va_page->list, &encl->va_pages);
-> +	/* else the tail page of the VA page list had free slots. */
-> +
->  	if (sgx_validate_secs(secs)) {
->  		pr_debug("invalid SECS\n");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto err_out_shrink;
->  	}
-> 	/* The extra page goes to SECS. */
-> @@ -96,12 +142,14 @@ static int sgx_encl_create(struct sgx_encl *encl,  
-> struct sgx_secs *secs)
-> 	backing = shmem_file_setup("SGX backing", encl_size + (encl_size >> 5),
->  				   VM_NORESERVE);
-> -	if (IS_ERR(backing))
-> -		return PTR_ERR(backing);
-> +	if (IS_ERR(backing)) {
-> +		ret = PTR_ERR(backing);
-> +		goto err_out_shrink;
-> +	}
-> 	encl->backing = backing;
-> -	secs_epc = __sgx_alloc_epc_page();
-> +	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
->  	if (IS_ERR(secs_epc)) {
->  		ret = PTR_ERR(secs_epc);
->  		goto err_out_backing;
-> @@ -149,6 +197,9 @@ static int sgx_encl_create(struct sgx_encl *encl,  
-> struct sgx_secs *secs)
->  	fput(encl->backing);
->  	encl->backing = NULL;
-> +err_out_shrink:
-> +	sgx_encl_shrink(encl, va_page);
-> +
->  	return ret;
->  }
-> @@ -321,21 +372,35 @@ static int sgx_encl_add_page(struct sgx_encl  
-> *encl, unsigned long src,
->  {
->  	struct sgx_encl_page *encl_page;
->  	struct sgx_epc_page *epc_page;
-> +	struct sgx_va_page *va_page;
->  	int ret;
-> 	encl_page = sgx_encl_page_alloc(encl, offset, secinfo->flags);
->  	if (IS_ERR(encl_page))
->  		return PTR_ERR(encl_page);
-> -	epc_page = __sgx_alloc_epc_page();
-> +	epc_page = sgx_alloc_epc_page(encl_page, true);
->  	if (IS_ERR(epc_page)) {
->  		kfree(encl_page);
->  		return PTR_ERR(epc_page);
->  	}
-> +	va_page = sgx_encl_grow(encl);
-> +	if (IS_ERR(va_page)) {
-> +		ret = PTR_ERR(va_page);
-> +		goto err_out_free;
-> +	}
-> +
->  	mmap_read_lock(current->mm);
->  	mutex_lock(&encl->lock);
-> +	/*
-> +	 * Adding to encl->va_pages must be done under encl->lock.  Ditto for
-> +	 * deleting (via sgx_encl_shrink()) in the error path.
-> +	 */
-> +	if (va_page)
-> +		list_add(&va_page->list, &encl->va_pages);
-> +
->  	/*
->  	 * Insert prior to EADD in case of OOM.  EADD modifies MRENCLAVE, i.e.
->  	 * can't be gracefully unwound, while failure on EADD/EXTEND is limited
-> @@ -366,6 +431,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl,  
-> unsigned long src,
->  			goto err_out;
->  	}
-> +	sgx_mark_page_reclaimable(encl_page->epc_page);
->  	mutex_unlock(&encl->lock);
->  	mmap_read_unlock(current->mm);
->  	return ret;
-> @@ -374,9 +440,11 @@ static int sgx_encl_add_page(struct sgx_encl *encl,  
-> unsigned long src,
->  	xa_erase(&encl->page_array, PFN_DOWN(encl_page->desc));
-> err_out_unlock:
-> +	sgx_encl_shrink(encl, va_page);
->  	mutex_unlock(&encl->lock);
->  	mmap_read_unlock(current->mm);
-> +err_out_free:
->  	sgx_free_epc_page(epc_page);
->  	kfree(encl_page);
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
-> b/arch/x86/kernel/cpu/sgx/main.c
-> index 4137254fb29e..3f9130501370 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -16,6 +16,395 @@
->  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
->  static int sgx_nr_epc_sections;
->  static struct task_struct *ksgxswapd_tsk;
-> +static DECLARE_WAIT_QUEUE_HEAD(ksgxswapd_waitq);
-> +static LIST_HEAD(sgx_active_page_list);
-> +static DEFINE_SPINLOCK(sgx_active_page_list_lock);
-> +
-> +/**
-> + * sgx_mark_page_reclaimable() - Mark a page as reclaimable
-> + * @page:	EPC page
-> + *
-> + * Mark a page as reclaimable and add it to the active page list. Pages
-> + * are automatically removed from the active list when freed.
-> + */
-> +void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
-> +{
-> +	spin_lock(&sgx_active_page_list_lock);
-> +	page->desc |= SGX_EPC_PAGE_RECLAIMABLE;
-> +	list_add_tail(&page->list, &sgx_active_page_list);
-> +	spin_unlock(&sgx_active_page_list_lock);
-> +}
-> +
-> +/**
-> + * sgx_unmark_page_reclaimable() - Remove a page from the reclaim list
-> + * @page:	EPC page
-> + *
-> + * Clear the reclaimable flag and remove the page from the active page  
-> list.
-> + *
-> + * Return:
-> + *   0 on success,
-> + *   -EBUSY if the page is in the process of being reclaimed
-> + */
-> +int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
-> +{
-> +	/*
-> +	 * Remove the page from the active list if necessary.  If the page
-> +	 * is actively being reclaimed, i.e. RECLAIMABLE is set but the
-> +	 * page isn't on the active list, return -EBUSY as we can't free
-> +	 * the page at this time since it is "owned" by the reclaimer.
-> +	 */
-> +	spin_lock(&sgx_active_page_list_lock);
-> +	if (page->desc & SGX_EPC_PAGE_RECLAIMABLE) {
-> +		if (list_empty(&page->list)) {
-> +			spin_unlock(&sgx_active_page_list_lock);
-> +			return -EBUSY;
-> +		}
-> +		list_del(&page->list);
-> +		page->desc &= ~SGX_EPC_PAGE_RECLAIMABLE;
-> +	}
-> +	spin_unlock(&sgx_active_page_list_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
-> +{
-> +	struct sgx_encl_page *page = epc_page->owner;
-> +	struct sgx_encl *encl = page->encl;
-> +	struct sgx_encl_mm *encl_mm;
-> +	bool ret = true;
-> +	int idx;
-> +
-> +	idx = srcu_read_lock(&encl->srcu);
-> +
-> +	list_for_each_entry_rcu(encl_mm, &encl->mm_list, list) {
-> +		if (!mmget_not_zero(encl_mm->mm))
-> +			continue;
-> +
-> +		mmap_read_lock(encl_mm->mm);
-> +		ret = !sgx_encl_test_and_clear_young(encl_mm->mm, page);
-> +		mmap_read_unlock(encl_mm->mm);
-> +
-> +		mmput_async(encl_mm->mm);
-> +
-> +		if (!ret || (atomic_read(&encl->flags) & SGX_ENCL_DEAD))
-> +			break;
-> +	}
-> +
-> +	srcu_read_unlock(&encl->srcu, idx);
-> +
-> +	if (!ret && !(atomic_read(&encl->flags) & SGX_ENCL_DEAD))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static void sgx_reclaimer_block(struct sgx_epc_page *epc_page)
-> +{
-> +	struct sgx_encl_page *page = epc_page->owner;
-> +	unsigned long addr = SGX_ENCL_PAGE_ADDR(page);
-> +	struct sgx_encl *encl = page->encl;
-> +	unsigned long mm_list_version;
-> +	struct sgx_encl_mm *encl_mm;
-> +	struct vm_area_struct *vma;
-> +	int idx, ret;
-> +
-> +	do {
-> +		mm_list_version = encl->mm_list_version;
-> +
-> +		/* Pairs with smp_rmb() in sgx_encl_mm_add(). */
-> +		smp_rmb();
-> +
-> +		idx = srcu_read_lock(&encl->srcu);
-> +
-> +		list_for_each_entry_rcu(encl_mm, &encl->mm_list, list) {
-> +			if (!mmget_not_zero(encl_mm->mm))
-> +				continue;
-> +
-> +			mmap_read_lock(encl_mm->mm);
-> +
-> +			ret = sgx_encl_find(encl_mm->mm, addr, &vma);
-> +			if (!ret && encl == vma->vm_private_data)
-> +				zap_vma_ptes(vma, addr, PAGE_SIZE);
-> +
-> +			mmap_read_unlock(encl_mm->mm);
-> +
-> +			mmput_async(encl_mm->mm);
-> +		}
-> +
-> +		srcu_read_unlock(&encl->srcu, idx);
-> +	} while (unlikely(encl->mm_list_version != mm_list_version));
-> +
-> +	mutex_lock(&encl->lock);
-> +
-> +	if (!(atomic_read(&encl->flags) & SGX_ENCL_DEAD)) {
-> +		ret = __eblock(sgx_get_epc_addr(epc_page));
-> +		if (encls_failed(ret))
-> +			ENCLS_WARN(ret, "EBLOCK");
-> +	}
-> +
-> +	mutex_unlock(&encl->lock);
-> +}
-> +
-> +static int __sgx_encl_ewb(struct sgx_epc_page *epc_page, void *va_slot,
-> +			  struct sgx_backing *backing)
-> +{
-> +	struct sgx_pageinfo pginfo;
-> +	int ret;
-> +
-> +	pginfo.addr = 0;
-> +	pginfo.secs = 0;
-> +
-> +	pginfo.contents = (unsigned long)kmap_atomic(backing->contents);
-> +	pginfo.metadata = (unsigned long)kmap_atomic(backing->pcmd) +
-> +			  backing->pcmd_offset;
-> +
-> +	ret = __ewb(&pginfo, sgx_get_epc_addr(epc_page), va_slot);
-> +
-> +	kunmap_atomic((void *)(unsigned long)(pginfo.metadata -
-> +					      backing->pcmd_offset));
-> +	kunmap_atomic((void *)(unsigned long)pginfo.contents);
-> +
-> +	return ret;
-> +}
-> +
-> +static void sgx_ipi_cb(void *info)
-> +{
-> +}
-> +
-> +static const cpumask_t *sgx_encl_ewb_cpumask(struct sgx_encl *encl)
-> +{
-> +	cpumask_t *cpumask = &encl->cpumask;
-> +	struct sgx_encl_mm *encl_mm;
-> +	int idx;
-> +
-> +	/*
-> +	 * Can race with sgx_encl_mm_add(), but ETRACK has already been
-> +	 * executed, which means that the CPUs running in the new mm will enter
-> +	 * into the enclave with a fresh epoch.
-> +	 */
-> +	cpumask_clear(cpumask);
-> +
-> +	idx = srcu_read_lock(&encl->srcu);
-> +
-> +	list_for_each_entry_rcu(encl_mm, &encl->mm_list, list) {
-> +		if (!mmget_not_zero(encl_mm->mm))
-> +			continue;
-> +
-> +		cpumask_or(cpumask, cpumask, mm_cpumask(encl_mm->mm));
-> +
-> +		mmput_async(encl_mm->mm);
-> +	}
-> +
-> +	srcu_read_unlock(&encl->srcu, idx);
-> +
-> +	return cpumask;
-> +}
-> +
-> +/*
-> + * Swap page to the regular memory transformed to the blocked state by  
-> using
-> + * EBLOCK, which means that it can no loger be referenced (no new TLB  
-> entries).
-> + *
-> + * The first trial just tries to write the page assuming that some  
-> other thread
-> + * has reset the count for threads inside the enlave by using ETRACK,  
-> and
-> + * previous thread count has been zeroed out. The second trial calls  
-> ETRACK
-> + * before EWB. If that fails we kick all the HW threads out, and then  
-> do EWB,
-> + * which should be guaranteed the succeed.
-> + */
-> +static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
-> +			 struct sgx_backing *backing)
-> +{
-> +	struct sgx_encl_page *encl_page = epc_page->owner;
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_va_page *va_page;
-> +	unsigned int va_offset;
-> +	void *va_slot;
-> +	int ret;
-> +
-> +	encl_page->desc &= ~SGX_ENCL_PAGE_BEING_RECLAIMED;
-> +
-> +	va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
-> +				   list);
-> +	va_offset = sgx_alloc_va_slot(va_page);
-> +	va_slot = sgx_get_epc_addr(va_page->epc_page) + va_offset;
-> +	if (sgx_va_page_full(va_page))
-> +		list_move_tail(&va_page->list, &encl->va_pages);
-> +
-> +	ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +	if (ret == SGX_NOT_TRACKED) {
-> +		ret = __etrack(sgx_get_epc_addr(encl->secs.epc_page));
-> +		if (ret) {
-> +			if (encls_failed(ret))
-> +				ENCLS_WARN(ret, "ETRACK");
-> +		}
-> +
-> +		ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +		if (ret == SGX_NOT_TRACKED) {
-> +			/*
-> +			 * Slow path, send IPIs to kick cpus out of the
-> +			 * enclave.  Note, it's imperative that the cpu
-> +			 * mask is generated *after* ETRACK, else we'll
-> +			 * miss cpus that entered the enclave between
-> +			 * generating the mask and incrementing epoch.
-> +			 */
-> +			on_each_cpu_mask(sgx_encl_ewb_cpumask(encl),
-> +					 sgx_ipi_cb, NULL, 1);
-> +			ret = __sgx_encl_ewb(epc_page, va_slot, backing);
-> +		}
-> +	}
-> +
-> +	if (ret) {
-> +		if (encls_failed(ret))
-> +			ENCLS_WARN(ret, "EWB");
-> +
-> +		sgx_free_va_slot(va_page, va_offset);
-> +	} else {
-> +		encl_page->desc |= va_offset;
-> +		encl_page->va_page = va_page;
-> +	}
-> +}
-> +
-> +static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
-> +				struct sgx_backing *backing)
-> +{
-> +	struct sgx_encl_page *encl_page = epc_page->owner;
-> +	struct sgx_encl *encl = encl_page->encl;
-> +	struct sgx_backing secs_backing;
-> +	int ret;
-> +
-> +	mutex_lock(&encl->lock);
-> +
-> +	if (atomic_read(&encl->flags) & SGX_ENCL_DEAD) {
-> +		ret = __eremove(sgx_get_epc_addr(epc_page));
-> +		ENCLS_WARN(ret, "EREMOVE");
-> +	} else {
-> +		sgx_encl_ewb(epc_page, backing);
-> +	}
-> +
-> +	encl_page->epc_page = NULL;
-> +	encl->secs_child_cnt--;
-> +
-> +	if (!encl->secs_child_cnt) {
-> +		if (atomic_read(&encl->flags) & SGX_ENCL_DEAD) {
-> +			sgx_free_epc_page(encl->secs.epc_page);
-> +			encl->secs.epc_page = NULL;
-> +		} else if (atomic_read(&encl->flags) & SGX_ENCL_INITIALIZED) {
-> +			ret = sgx_encl_get_backing(encl, PFN_DOWN(encl->size),
-> +						   &secs_backing);
-> +			if (ret)
-> +				goto out;
-> +
-> +			sgx_encl_ewb(encl->secs.epc_page, &secs_backing);
-> +
-> +			sgx_free_epc_page(encl->secs.epc_page);
-> +			encl->secs.epc_page = NULL;
-> +
-> +			sgx_encl_put_backing(&secs_backing, true);
-> +		}
-> +	}
-> +
-> +out:
-> +	mutex_unlock(&encl->lock);
-> +}
-> +
-> +/*
-> + * Take a fixed number of pages from the head of the active page pool  
-> and
-> + * reclaim them to the enclave's private shmem files. Skip the pages,  
-> which have
-> + * been accessed since the last scan. Move those pages to the tail of  
-> active
-> + * page pool so that the pages get scanned in LRU like fashion.
-> + *
-> + * Batch process a chunk of pages (at the moment 16) in order to  
-> degrade amount
-> + * of IPI's and ETRACK's potentially required. sgx_encl_ewb() does  
-> degrade a bit
-> + * among the HW threads with three stage EWB pipeline (EWB, ETRACK +  
-> EWB and IPI
-> + * + EWB) but not sufficiently. Reclaiming one page at a time would  
-> also be
-> + * problematic as it would increase the lock contention too much, which  
-> would
-> + * halt forward progress.
-> + */
-> +static void sgx_reclaim_pages(void)
-> +{
-> +	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
-> +	struct sgx_backing backing[SGX_NR_TO_SCAN];
-> +	struct sgx_epc_section *section;
-> +	struct sgx_encl_page *encl_page;
-> +	struct sgx_epc_page *epc_page;
-> +	int cnt = 0;
-> +	int ret;
-> +	int i;
-> +
-> +	spin_lock(&sgx_active_page_list_lock);
-> +	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
-> +		if (list_empty(&sgx_active_page_list))
-> +			break;
-> +
-> +		epc_page = list_first_entry(&sgx_active_page_list,
-> +					    struct sgx_epc_page, list);
-> +		list_del_init(&epc_page->list);
-> +		encl_page = epc_page->owner;
-> +
-> +		if (kref_get_unless_zero(&encl_page->encl->refcount) != 0)
-> +			chunk[cnt++] = epc_page;
-> +		else
-> +			/* The owner is freeing the page. No need to add the
-> +			 * page back to the list of reclaimable pages.
-> +			 */
-> +			epc_page->desc &= ~SGX_EPC_PAGE_RECLAIMABLE;
-> +	}
-> +	spin_unlock(&sgx_active_page_list_lock);
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		encl_page = epc_page->owner;
-> +
-> +		if (!sgx_reclaimer_age(epc_page))
-> +			goto skip;
-> +
-> +		ret = sgx_encl_get_backing(encl_page->encl,
-> +					   SGX_ENCL_PAGE_INDEX(encl_page),
-> +					   &backing[i]);
-> +		if (ret)
-> +			goto skip;
-> +
-> +		mutex_lock(&encl_page->encl->lock);
-> +		encl_page->desc |= SGX_ENCL_PAGE_BEING_RECLAIMED;
-> +		mutex_unlock(&encl_page->encl->lock);
-> +		continue;
-> +
-> +skip:
-> +		spin_lock(&sgx_active_page_list_lock);
-> +		list_add_tail(&epc_page->list, &sgx_active_page_list);
-> +		spin_unlock(&sgx_active_page_list_lock);
-> +
-> +		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> +
-> +		chunk[i] = NULL;
-> +	}
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		if (epc_page)
-> +			sgx_reclaimer_block(epc_page);
-> +	}
-> +
-> +	for (i = 0; i < cnt; i++) {
-> +		epc_page = chunk[i];
-> +		if (!epc_page)
-> +			continue;
-> +
-> +		encl_page = epc_page->owner;
-> +		sgx_reclaimer_write(epc_page, &backing[i]);
-> +		sgx_encl_put_backing(&backing[i], true);
-> +
-> +		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> +		epc_page->desc &= ~SGX_EPC_PAGE_RECLAIMABLE;
-> +
-> +		section = sgx_get_epc_section(epc_page);
-> +		spin_lock(&section->lock);
-> +		list_add_tail(&epc_page->list, &section->page_list);
-> +		section->free_cnt++;
-> +		spin_unlock(&section->lock);
-> +	}
-> +}
-> +
-> static void sgx_sanitize_section(struct sgx_epc_section *section)
->  {
-> @@ -44,6 +433,23 @@ static void sgx_sanitize_section(struct  
-> sgx_epc_section *section)
->  	}
->  }
-> +static unsigned long sgx_nr_free_pages(void)
-> +{
-> +	unsigned long cnt = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < sgx_nr_epc_sections; i++)
-> +		cnt += sgx_epc_sections[i].free_cnt;
-> +
-> +	return cnt;
-> +}
-> +
-> +static bool sgx_should_reclaim(unsigned long watermark)
-> +{
-> +	return sgx_nr_free_pages() < watermark &&
-> +	       !list_empty(&sgx_active_page_list);
-> +}
-> +
->  static int ksgxswapd(void *p)
->  {
->  	int i;
-> @@ -69,6 +475,20 @@ static int ksgxswapd(void *p)
->  			WARN(1, "EPC section %d has unsanitized pages.\n", i);
->  	}
-> +	while (!kthread_should_stop()) {
-> +		if (try_to_freeze())
-> +			continue;
-> +
-> +		wait_event_freezable(ksgxswapd_waitq,
-> +				     kthread_should_stop() ||
-> +				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
-> +
-> +		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
-> +			sgx_reclaim_pages();
-> +
-> +		cond_resched();
-> +	}
-> +
->  	return 0;
->  }
-> @@ -94,6 +514,7 @@ static struct sgx_epc_page  
-> *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-> 	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
->  	list_del_init(&page->list);
-> +	section->free_cnt--;
-> 	return page;
->  }
-> @@ -127,6 +548,57 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
->  	return ERR_PTR(-ENOMEM);
->  }
-> +/**
-> + * sgx_alloc_epc_page() - Allocate an EPC page
-> + * @owner:	the owner of the EPC page
-> + * @reclaim:	reclaim pages if necessary
-> + *
-> + * Iterate through EPC sections and borrow a free EPC page to the  
-> caller. When a
-> + * page is no longer needed it must be released with  
-> sgx_free_epc_page(). If
-> + * @reclaim is set to true, directly reclaim pages when we are out of  
-> pages. No
-> + * mm's can be locked when @reclaim is set to true.
-> + *
-> + * Finally, wake up ksgxswapd when the number of pages goes below the  
-> watermark
-> + * before returning back to the caller.
-> + *
-> + * Return:
-> + *   an EPC page,
-> + *   -errno on error
-> + */
-> +struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-> +{
-> +	struct sgx_epc_page *entry;
-> +
-> +	for ( ; ; ) {
-> +		entry = __sgx_alloc_epc_page();
-> +		if (!IS_ERR(entry)) {
-> +			entry->owner = owner;
-> +			break;
-> +		}
-> +
-> +		if (list_empty(&sgx_active_page_list))
-> +			return ERR_PTR(-ENOMEM);
-> +
-> +		if (!reclaim) {
-> +			entry = ERR_PTR(-EBUSY);
-> +			break;
-> +		}
-> +
-> +		if (signal_pending(current)) {
-> +			entry = ERR_PTR(-ERESTARTSYS);
-> +			break;
-> +		}
-> +
-> +		sgx_reclaim_pages();
-> +		schedule();
-> +	}
-> +
-> +	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-> +		wake_up(&ksgxswapd_waitq);
-> +
-> +	return entry;
-> +}
-> +
->  /**
->   * sgx_free_epc_page() - Free an EPC page
->   * @page:	an EPC page
-> @@ -138,12 +610,20 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
->  	struct sgx_epc_section *section = sgx_get_epc_section(page);
->  	int ret;
-> +	/*
-> +	 * Don't take sgx_active_page_list_lock when asserting the page isn't
-> +	 * reclaimable, missing a WARN in the very rare case is preferable to
-> +	 * unnecessarily taking a global lock in the common case.
-> +	 */
-> +	WARN_ON_ONCE(page->desc & SGX_EPC_PAGE_RECLAIMABLE);
-> +
->  	ret = __eremove(sgx_get_epc_addr(page));
->  	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
->  		return;
-> 	spin_lock(&section->lock);
->  	list_add_tail(&page->list, &section->page_list);
-> +	section->free_cnt++;
->  	spin_unlock(&section->lock);
->  }
-> @@ -194,6 +674,7 @@ static bool __init sgx_setup_epc_section(u64 addr,  
-> u64 size,
->  		list_add_tail(&page->list, &section->unsanitized_page_list);
->  	}
-> +	section->free_cnt = nr_pages;
->  	return true;
-> err_out:
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h  
-> b/arch/x86/kernel/cpu/sgx/sgx.h
-> index 8d126070db1e..ec4f7b338dbe 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -15,6 +15,7 @@
-> struct sgx_epc_page {
->  	unsigned long desc;
-> +	struct sgx_encl_page *owner;
->  	struct list_head list;
->  };
-> @@ -27,6 +28,7 @@ struct sgx_epc_page {
->  struct sgx_epc_section {
->  	unsigned long pa;
->  	void *va;
-> +	unsigned long free_cnt;
->  	struct list_head page_list;
->  	struct list_head unsanitized_page_list;
->  	spinlock_t lock;
-> @@ -35,6 +37,10 @@ struct sgx_epc_section {
->  #define SGX_EPC_SECTION_MASK		GENMASK(7, 0)
->  #define SGX_MAX_EPC_SECTIONS		(SGX_EPC_SECTION_MASK + 1)
->  #define SGX_MAX_ADD_PAGES_LENGTH	0x100000
-> +#define SGX_EPC_PAGE_RECLAIMABLE	BIT(8)
-> +#define SGX_NR_TO_SCAN			16
-> +#define SGX_NR_LOW_PAGES		32
-> +#define SGX_NR_HIGH_PAGES		64
-> extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
-> @@ -50,7 +56,10 @@ static inline void *sgx_get_epc_addr(struct  
-> sgx_epc_page *page)
->  	return section->va + (page->desc & PAGE_MASK) - section->pa;
->  }
-> +void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
-> +int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
->  struct sgx_epc_page *__sgx_alloc_epc_page(void);
-> +struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
->  void sgx_free_epc_page(struct sgx_epc_page *page);
-> #endif /* _X86_SGX_H */
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
 
 
--- 
-Using Opera's mail client: http://www.opera.com/mail/
+
+This mmotm tree contains the following patches against 5.9-rc7:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* mm-slub-restore-initial-kmem_cache-flags.patch
+* mm-page_alloc-handle-a-missing-case-for-memalloc_nocma_save-restore-apis.patch
+* scripts-spellingtxt-fix-malformed-entry.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* mm-khugepaged-recalculate-min_free_kbytes-after-memory-hotplug-as-expected-by-khugepaged.patch
+* mm-khugepaged-recalculate-min_free_kbytes-after-memory-hotplug-as-expected-by-khugepaged-v5.patch
+* mm-swapfile-avoid-split_swap_cluster-null-pointer-dereference.patch
+* compiler-clang-add-build-check-for-clang-1001.patch
+* revert-kbuild-disable-clangs-default-use-of-fmerge-all-constants.patch
+* revert-arm64-bti-require-clang-=-1001-for-in-kernel-bti-support.patch
+* revert-arm64-vdso-fix-compilation-with-clang-older-than-8.patch
+* partially-revert-arm-8905-1-emit-__gnu_mcount_nc-when-using-clang-1000-or-newer.patch
+* kasan-remove-mentions-of-unsupported-clang-versions.patch
+* compiler-gcc-improve-version-error.patch
+* compilerh-avoid-escaped-section-names.patch
+* exporth-fix-section-name-for-config_trim_unused_ksyms-for-clang.patch
+* kbuild-doc-describe-proper-script-invocation.patch
+* increase-error-prone-spell-checking.patch
+* scripts-decodecode-add-the-capability-to-supply-the-program-counter.patch
+* ntfs-add-check-for-mft-record-size-in-superblock.patch
+* fs-ocfs2-delete-repeated-words-in-comments.patch
+* ocfs2-fix-potential-soft-lockup-during-fstrim.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* ramfs-support-o_tmpfile.patch
+* fs-xattrc-fix-kernel-doc-warnings-for-setxattr-removexattr.patch
+* fs_parse-mark-fs_param_bad_value-as-static.patch
+* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
+  mm.patch
+* mm-slabc-clean-code-by-removing-redundant-if-condition.patch
+* include-linux-slabh-fix-a-typo-error-in-comment.patch
+* mm-slub-branch-optimization-in-free-slowpath.patch
+* mm-slub-fix-missing-alloc_slowpath-stat-when-bulk-alloc.patch
+* mm-slub-make-add_full-condition-more-explicit.patch
+* mm-kmemleak-rely-on-rcu-for-task-stack-scanning.patch
+* mmkmemleak-testc-move-kmemleak-testc-to-samples-dir.patch
+* x86-numa-cleanup-configuration-dependent-command-line-options.patch
+* x86-numa-add-nohmat-option.patch
+* x86-numa-add-nohmat-option-fix.patch
+* efi-fake_mem-arrange-for-a-resource-entry-per-efi_fake_mem-instance.patch
+* acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device.patch
+* acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
+* resource-report-parent-to-walk_iomem_res_desc-callback.patch
+* mm-memory_hotplug-introduce-default-phys_to_target_node-implementation.patch
+* mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
+* acpi-hmat-attach-a-device-for-each-soft-reserved-range.patch
+* acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
+* device-dax-drop-the-dax_regionpfn_flags-attribute.patch
+* device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
+* device-dax-make-pgmap-optional-for-instance-creation.patch
+* device-dax-kmem-introduce-dax_kmem_range.patch
+* device-dax-kmem-move-resource-name-tracking-to-drvdata.patch
+* device-dax-kmem-replace-release_resource-with-release_mem_region.patch
+* device-dax-add-an-allocation-interface-for-device-dax-instances.patch
+* device-dax-introduce-struct-dev_dax-typed-driver-operations.patch
+* device-dax-introduce-seed-devices.patch
+* drivers-base-make-device_find_child_by_name-compatible-with-sysfs-inputs.patch
+* device-dax-add-resize-support.patch
+* mm-memremap_pages-convert-to-struct-range.patch
+* mm-memremap_pages-convert-to-struct-range-fix.patch
+* mm-memremap_pages-support-multiple-ranges-per-invocation.patch
+* device-dax-add-dis-contiguous-resource-support.patch
+* device-dax-introduce-mapping-devices.patch
+* device-dax-make-align-a-per-device-property.patch
+* device-dax-add-an-align-attribute.patch
+* dax-hmem-introduce-dax_hmemregion_idle-parameter.patch
+* device-dax-add-a-range-mapping-allocation-attribute.patch
+* mm-debug-do-not-dereference-i_ino-blindly.patch
+* mm-dump_page-rename-head_mapcount-head_compound_mapcount.patch
+* powerpc-mm-add-debug_vm-warn-for-pmd_clear.patch
+* powerpc-mm-move-setting-pte-specific-flags-to-pfn_pte.patch
+* powerpc-mm-move-setting-pte-specific-flags-to-pfn_pte-fix.patch
+* mm-debug_vm_pgtable-ppc64-avoid-setting-top-bits-in-radom-value.patch
+* mm-debug_vm_pgtables-hugevmap-use-the-arch-helper-to-identify-huge-vmap-support.patch
+* mm-debug_vm_pgtable-savedwrite-enable-savedwrite-test-with-config_numa_balancing.patch
+* mm-debug_vm_pgtable-thp-mark-the-pte-entry-huge-before-using-set_pmd-pud_at.patch
+* mm-debug_vm_pgtable-set_pte-pmd-pud-dont-use-set__at-to-update-an-existing-pte-entry.patch
+* mm-debug_vm_pgtable-locks-move-non-page-table-modifying-test-together.patch
+* mm-debug_vm_pgtable-locks-take-correct-page-table-lock.patch
+* mm-debug_vm_pgtable-thp-use-page-table-depost-withdraw-with-thp.patch
+* mm-debug_vm_pgtable-pmd_clear-dont-use-pmd-pud_clear-on-pte-entries.patch
+* mm-debug_vm_pgtable-hugetlb-disable-hugetlb-test-on-ppc64.patch
+* mm-debug_vm_pgtable-hugetlb-disable-hugetlb-test-on-ppc64-fix.patch
+* mm-debug_vm_pgtable-avoid-none-pte-in-pte_clear_test.patch
+* mm-debug_vm_pgtable-avoid-doing-memory-allocation-with-pgtable_t-mapped.patch
+* mm-factor-find_get_incore_page-out-of-mincore_page.patch
+* mm-use-find_get_incore_page-in-memcontrol.patch
+* mm-optimise-madvise-willneed.patch
+* mm-optimise-madvise-willneed-fix.patch
+* proc-optimise-smaps-for-shmem-entries.patch
+* i915-use-find_lock_page-instead-of-find_lock_entry.patch
+* mm-convert-find_get_entry-to-return-the-head-page.patch
+* mm-convert-find_get_entry-to-return-the-head-page-fix.patch
+* mm-shmem-return-head-page-from-find_lock_entry.patch
+* mm-shmem-return-head-page-from-find_lock_entry-fix.patch
+* mm-add-find_lock_head.patch
+* mm-filemap-fix-filemap_map_pages-for-thp.patch
+* mm-fadvise-improve-the-expensive-remote-lru-cache-draining-after-fadv_dontneed.patch
+* mm-gup_benchmark-update-the-documentation-in-kconfig.patch
+* mm-gup_benchmark-use-pin_user_pages-for-foll_longterm-flag.patch
+* mm-gup-dont-permit-users-to-call-get_user_pages-with-foll_longterm.patch
+* mm-gup-dont-permit-users-to-call-get_user_pages-with-foll_longterm-fix.patch
+* mm-gup-protect-unpin_user_pages-against-npages==-errno.patch
+* mm-frame-vec-drop-gup_flags-from-get_vaddr_frames.patch
+* mm-frame-vec-use-foll_longterm.patch
+* swap-rename-swp_fs-to-swap_fs_ops-to-avoid-ambiguity.patch
+* mm-remove-activate_page-from-unuse_pte.patch
+* mm-remove-superfluous-__clearpageactive.patch
+* mm-swap-fix-confusing-comment-in-release_pages.patch
+* mm-swap_slotsc-remove-always-zero-and-unused-return-value-of-enable_swap_slots_cache.patch
+* mm-remove-useless-out-label-in-__swap_writepage.patch
+* mm-fix-incomplete-comment-in-lru_cache_add_inactive_or_unevictable.patch
+* mm-remove-unnecessary-goto-out-in-_swap_info_get.patch
+* mm-fix-potential-memory-leak-in-sys_swapon.patch
+* memremap-convert-devmap-static-branch-to-incdec.patch
+* mm-memcontrol-use-flex_array_size-helper-in-memcpy.patch
+* mm-memcontrol-use-the-preferred-form-for-passing-the-size-of-a-structure-type.patch
+* mm-memcg-slab-fix-racy-access-to-page-mem_cgroup-in-mem_cgroup_from_obj.patch
+* mm-memcontrol-correct-the-comment-of-mem_cgroup_iter.patch
+* mm-memcg-clean-up-obsolete-enum-charge_type.patch
+* mm-memcg-simplify-mem_cgroup_get_max.patch
+* mm-memcg-simplify-mem_cgroup_get_max-v4.patch
+* mm-memcg-unify-swap-and-memsw-page-counters.patch
+* mm-memcontrol-add-the-missing-numa_stat-interface-for-cgroup-v2.patch
+* mm-page_counter-correct-the-obsolete-func-name-in-the-comment-of-page_counter_try_charge.patch
+* mm-memcontrol-reword-obsolete-comment-of-mem_cgroup_unmark_under_oom.patch
+* selftests-vm-fix-false-build-success-on-the-second-and-later-attempts.patch
+* selftests-vm-fix-incorrect-gcc-invocation-in-some-cases.patch
+* mm-account-pmd-tables-like-pte-tables.patch
+* mm-account-pmd-tables-like-pte-tables-fix.patch
+* mm-memory-fix-typo-in-__do_fault-comment.patch
+* mm-memoryc-replace-vmf-vma-with-variable-vma.patch
+* mm-mmap-rename-__vma_unlink_common-to-__vma_unlink.patch
+* mm-mmap-leverage-vma_rb_erase_ignore-to-implement-vma_rb_erase.patch
+* mmap-locking-api-add-mmap_lock_is_contended.patch
+* mm-smaps-extend-smap_gather_stats-to-support-specified-beginning.patch
+* mm-proc-smaps_rollup-do-not-stall-write-attempts-on-mmap_lock.patch
+* mm-mmap-fix-the-adjusted-length-error.patch
+* mm-move-pagedoublemap-bit.patch
+* mm-simplify-pagedoublemap-with-pf_second-policy.patch
+* mm-mmap-leave-adjust_next-as-virtual-address-instead-of-page-frame-number.patch
+* mm-memoryc-fix-spello-of-function.patch
+* mm-mmap-not-necessary-to-check-mapping-separately.patch
+* mm-mmap-check-on-file-instead-of-the-rb_root_cached-of-its-address_space.patch
+* mm-use-helper-function-mapping_allow_writable.patch
+* mm-mmap-use-helper-function-allow_write_access-in-__remove_shared_vm_struct.patch
+* mm-mmapc-replace-do_brk-with-do_brk_flags-in-comment-of-insert_vm_struct.patch
+* mm-remove-src-dst-mm-parameter-in-copy_page_range.patch
+* mm-remove-src-dst-mm-parameter-in-copy_page_range-v2.patch
+* mm-cleanup-mincore_huge_pmd.patch
+* mm-test-use-the-new-skip-macro.patch
+* hmm-test-remove-unused-dmirror_zero_page.patch
+* mm-dmapoolc-replace-open-coded-list_for_each_entry_safe.patch
+* mm-dmapoolc-replace-hard-coded-function-name-with-__func__.patch
+* mm-memory-failure-do-pgoff-calculation-before-for_each_process.patch
+* mm-remove-unused-marco-writeback.patch
+* mm-vmallocc-update-the-comment-in-__vmalloc_area_node.patch
+* mm-vmallocc-fix-the-comment-of-find_vm_area.patch
+* docs-vm-fix-mm_count-vs-mm_users-counter-confusion.patch
+* add-kunit-struct-to-current-task.patch
+* kunit-kasan-integration.patch
+* kasan-port-kasan-tests-to-kunit.patch
+* kasan-port-kasan-tests-to-kunit-v14.patch
+* kasan-testing-documentation.patch
+* mm-kasan-do-not-panic-if-both-panic_on_warn-and-kasan_multishot-set.patch
+* mm-page_alloc-tweak-comments-in-has_unmovable_pages.patch
+* mm-page_isolation-exit-early-when-pageblock-is-isolated-in-set_migratetype_isolate.patch
+* mm-page_isolation-drop-warn_on_once-in-set_migratetype_isolate.patch
+* mm-page_isolation-cleanup-set_migratetype_isolate.patch
+* virtio-mem-dont-special-case-zone_movable.patch
+* mm-document-semantics-of-zone_movable.patch
+* mm-isolation-avoid-checking-unmovable-pages-across-pageblock-boundary.patch
+* mm-page_allocc-clean-code-by-removing-unnecessary-initialization.patch
+* mm-page_allocc-clean-code-by-removing-unnecessary-initialization-fix.patch
+* mm-page_allocc-micro-optimization-remove-unnecessary-branch.patch
+* mm-page_allocc-fix-early-params-garbage-value-accesses.patch
+* mm-page_allocc-clean-code-by-merging-two-functions.patch
+* mm-page_allocc-__perform_reclaim-should-return-unsigned-long.patch
+* mmzone-clean-code-by-removing-unused-macro-parameter.patch
+* mm-move-call-to-compound_head-in-release_pages.patch
+* page_alloc-fix-freeing-non-compound-pages.patch
+* mm-clarify-usage-of-gfp_atomic-in-preemptible-contexts.patch
+* mm-hugetlbc-make-is_hugetlb_entry_hwpoisoned-return-bool.patch
+* mm-hugetlbc-remove-the-unnecessary-non_swap_entry.patch
+* doc-vm-fix-typo-in-the-hugetlb-admin-documentation.patch
+* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
+* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
+* mm-hugetlb-not-necessary-to-coalesce-regions-recursively.patch
+* mm-hugetlb-remove-vm_bug_onnrg-in-get_file_region_entry_from_cache.patch
+* mm-hugetlb-use-list_splice-to-merge-two-list-at-once.patch
+* mm-hugetlb-count-file_region-to-be-added-when-regions_needed-=-null.patch
+* mm-hugetlb-a-page-from-buddy-is-not-on-any-list.patch
+* mm-hugetlb-narrow-the-hugetlb_lock-protection-area-during-preparing-huge-page.patch
+* mm-hugetlb-take-the-free-hpage-during-the-iteration-directly.patch
+* mm-hugetlb-take-the-free-hpage-during-the-iteration-directly-v4.patch
+* hugetlb-add-lockdep-check-for-i_mmap_rwsem-held-in-huge_pmd_share.patch
+* mm-vmscan-fix-infinite-loop-in-drop_slab_node.patch
+* mm-vmscan-fix-comments-for-isolate_lru_page.patch
+* mmz3fold-use-xx_zalloc-instead-xx_alloc-and-memset.patch
+* mm-zbud-remove-redundant-initialization.patch
+* mm-compactionc-micro-optimization-remove-unnecessary-branch.patch
+* include-linux-compactionh-clean-code-by-removing-unused-enum-value.patch
+* selftests-vm-8x-compaction_test-speedup.patch
+* mm-mempolicy-remove-or-narrow-the-lock-on-current.patch
+* mm-remove-unused-alloc_page_vma_node.patch
+* mm-mempool-add-else-to-split-mutually-exclusive-case.patch
+* mm-mempool-add-else-to-split-mutually-exclusive-case-fix.patch
+* kvm-ppc-book3s-hv-simplify-kvm_cma_reserve.patch
+* dma-contiguous-simplify-cma_early_percent_memory.patch
+* arm-xtensa-simplify-initialization-of-high-memory-pages.patch
+* arm64-numa-simplify-dummy_numa_init.patch
+* h8300-nds32-openrisc-simplify-detection-of-memory-extents.patch
+* riscv-drop-unneeded-node-initialization.patch
+* mircoblaze-drop-unneeded-numa-and-sparsemem-initializations.patch
+* memblock-make-for_each_memblock_type-iterator-private.patch
+* memblock-make-memblock_debug-and-related-functionality-private.patch
+* memblock-make-memblock_debug-and-related-functionality-private-fix.patch
+* memblock-reduce-number-of-parameters-in-for_each_mem_range.patch
+* arch-mm-replace-for_each_memblock-with-for_each_mem_pfn_range.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range-fix.patch
+* arch-drivers-replace-for_each_membock-with-for_each_mem_range-fix-2.patch
+* x86-setup-simplify-initrd-relocation-and-reservation.patch
+* x86-setup-simplify-reserve_crashkernel.patch
+* memblock-remove-unused-memblock_mem_size.patch
+* memblock-implement-for_each_reserved_mem_region-using-__next_mem_region.patch
+* memblock-use-separate-iterators-for-memory-and-reserved-regions.patch
+* mm-oom_adj-dont-loop-through-tasks-in-__set_oom_adj-when-not-necessary.patch
+* mm-oom_adj-dont-loop-through-tasks-in-__set_oom_adj-when-not-necessary-v3.patch
+* mm-migrate-remove-cpages-in-migrate_vma_finalize.patch
+* mm-migrate-remove-obsolete-comment-about-device-public.patch
+* xarray-add-xa_get_order.patch
+* xarray-add-xa_get_order-fix.patch
+* xarray-add-xas_split.patch
+* xarray-add-xas_split-fix.patch
+* xarray-add-xas_split-fix-2.patch
+* xarray-add-xas_split-fix-3patch.patch
+* mm-filemap-fix-storing-to-a-thp-shadow-entry.patch
+* mm-filemap-fix-page-cache-removal-for-arbitrary-sized-thps.patch
+* mm-memory-remove-page-fault-assumption-of-compound-page-size.patch
+* mm-memory-remove-page-fault-assumption-of-compound-page-size-fix.patch
+* mm-page_owner-change-split_page_owner-to-take-a-count.patch
+* mm-huge_memory-fix-total_mapcount-assumption-of-page-size.patch
+* mm-huge_memory-fix-split-assumption-of-page-size.patch
+* mm-huge_memory-fix-page_trans_huge_mapcount-assumption-of-thp-size.patch
+* mm-huge_memory-fix-can_split_huge_page-assumption-of-thp-size.patch
+* mm-rmap-fix-assumptions-of-thp-size.patch
+* mm-truncate-fix-truncation-for-pages-of-arbitrary-size.patch
+* mm-page-writeback-support-tail-pages-in-wait_for_stable_page.patch
+* mm-vmscan-allow-arbitrary-sized-pages-to-be-paged-out.patch
+* fs-add-a-filesystem-flag-for-thps.patch
+* fs-do-not-update-nr_thps-for-mappings-which-support-thps.patch
+* mm-readahead-add-define_readahead.patch
+* mm-readahead-make-page_cache_ra_unbounded-take-a-readahead_control.patch
+* mm-readahead-make-do_page_cache_ra-take-a-readahead_control.patch
+* mm-readahead-make-ondemand_readahead-take-a-readahead_control.patch
+* mm-readahead-pass-readahead_control-to-force_page_cache_ra.patch
+* mm-readahead-add-page_cache_sync_ra-and-page_cache_async_ra.patch
+* mm-filemap-fold-ra_submit-into-do_sync_mmap_readahead.patch
+* mm-readahead-pass-a-file_ra_state-into-force_page_cache_ra.patch
+* mmhwpoison-cleanup-unused-pagehuge-check.patch
+* mm-hwpoison-remove-recalculating-hpage.patch
+* mmhwpoison-inject-dont-pin-for-hwpoison_filter.patch
+* mmhwpoison-unexport-get_hwpoison_page-and-make-it-static.patch
+* mmhwpoison-refactor-madvise_inject_error.patch
+* mmhwpoison-kill-put_hwpoison_page.patch
+* mmhwpoison-unify-thp-handling-for-hard-and-soft-offline.patch
+* mmhwpoison-rework-soft-offline-for-free-pages.patch
+* mmhwpoison-rework-soft-offline-for-in-use-pages.patch
+* mmhwpoison-refactor-soft_offline_huge_page-and-__soft_offline_page.patch
+* mmhwpoison-return-0-if-the-page-is-already-poisoned-in-soft-offline.patch
+* mmhwpoison-introduce-mf_msg_unsplit_thp.patch
+* mmhwpoison-double-check-page-count-in-__get_any_page.patch
+* mmhwpoison-try-to-narrow-window-race-for-free-pages.patch
+* mm-page_poisonc-replace-bool-variable-with-static-key.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
+* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
+* mm-vmstat-use-helper-macro-abs.patch
+* mm-util-update-the-kerneldoc-for-kstrdup_const.patch
+* mm-mmu_notifier-fix-mmget-assert-in-__mmu_interval_notifier_insert.patch
+* mm-memory_hotplug-inline-__offline_pages-into-offline_pages.patch
+* mm-memory_hotplug-enforce-section-granularity-when-onlining-offlining.patch
+* mm-memory_hotplug-simplify-page-offlining.patch
+* mm-memory_hotplug-simplify-page-offlining-fix.patch
+* mm-page_alloc-simplify-__offline_isolated_pages.patch
+* mm-memory_hotplug-drop-nr_isolate_pageblock-in-offline_pages.patch
+* mm-page_isolation-simplify-return-value-of-start_isolate_page_range.patch
+* mm-memory_hotplug-simplify-page-onlining.patch
+* mm-page_alloc-drop-stale-pageblock-comment-in-memmap_init_zone.patch
+* mm-pass-migratetype-into-memmap_init_zone-and-move_pfn_range_to_zone.patch
+* mm-memory_hotplug-mark-pageblocks-migrate_isolate-while-onlining-memory.patch
+* kernel-resource-make-release_mem_region_adjustable-never-fail.patch
+* kernel-resource-make-release_mem_region_adjustable-never-fail-fix.patch
+* kernel-resource-move-and-rename-ioresource_mem_driver_managed.patch
+* mm-memory_hotplug-guard-more-declarations-by-config_memory_hotplug.patch
+* mm-memory_hotplug-prepare-passing-flags-to-add_memory-and-friends.patch
+* mm-memory_hotplug-memhp_merge_resource-to-specify-merging-of-system-ram-resources.patch
+* virtio-mem-try-to-merge-system-ram-resources.patch
+* xen-balloon-try-to-merge-system-ram-resources.patch
+* hv_balloon-try-to-merge-system-ram-resources.patch
+* kernel-resource-make-iomem_resource-implicit-in-release_mem_region_adjustable.patch
+* mm-dont-panic-when-links-cant-be-created-in-sysfs.patch
+* zram-failing-to-decompress-is-warn_on-worthy.patch
+* mm-slab-remove-duplicate-include.patch
+* mm-page_reporting-drop-stale-list-head-check-in-page_reporting_cycle.patch
+* mm-highmem-clean-up-endif-comments.patch
+* mm-use-add_page_to_lru_list-page_lru-page_off_lru.patch
+* mm-use-self-explanatory-macros-rather-than-2.patch
+* mm-fix-some-broken-comments.patch
+* mm-fix-some-comments-formatting.patch
+* mm-fix-some-doc-warnings-in-workingsetc.patch
+* mm-use-helper-function-put_write_access.patch
+* mm-remove-unused-early_pfn_valid.patch
+* mm-rename-page_order-to-buddy_order.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* fs-configfs-delete-repeated-words-in-comments.patch
+* kernelh-split-out-min-max-et-al-helpers.patch
+* kernel-sysc-replace-do_brk-with-do_brk_flags-in-comment-of-prctl_set_mm_map.patch
+* get_maintainer-add-test-for-file-in-vcs.patch
+* get_maintainer-exclude-maintainers-files-from-git-fallback.patch
+* lib-bitmap-delete-duplicated-words.patch
+* lib-libcrc32c-delete-duplicated-words.patch
+* lib-decompress_bunzip2-delete-duplicated-words.patch
+* lib-devres-delete-duplicated-words.patch
+* lib-dynamic_queue_limits-delete-duplicated-words-fix-typo.patch
+* lib-earlycpio-delete-duplicated-words.patch
+* lib-radix-tree-delete-duplicated-words.patch
+* lib-syscall-delete-duplicated-words.patch
+* lib-test_sysctl-delete-duplicated-words.patch
+* lib-mpi-fix-spello-of-functions.patch
+* idr-document-calling-context-for-ida-apis-mustnt-use-locks.patch
+* idr-document-that-ida_simple_getremove-are-deprecated.patch
+* lib-scatterlist-avoid-a-double-memset.patch
+* percpu_counter-use-helper-macro-abs.patch
+* list-add-a-macro-to-test-if-entry-is-pointing-to-the-head.patch
+* lib-crc32c-fix-trivial-typo-in-preprocessor-condition.patch
+* bitops-simplify-get_count_order_long.patch
+* bitops-use-the-same-mechanism-for-get_count_order.patch
+* checkpatch-add-kconfig-prefix.patch
+* checkpatch-move-repeated-word-test.patch
+* checkpatch-add-test-for-comma-use-that-should-be-semicolon.patch
+* const_structscheckpatch-add-phy_ops.patch
+* checkpatch-warn-if-trace_printk-and-friends-are-called.patch
+* const_structscheckpatch-add-pinctrl_ops-and-pinmux_ops.patch
+* checkpatch-warn-on-self-assignments.patch
+* checkpatch-warn-on-self-assignments-checkpatch-fixes.patch
+* checkpatch-allow-not-using-f-with-files-that-are-in-git.patch
+* checkpatch-allow-not-using-f-with-files-that-are-in-git-fix.patch
+* checkpatch-extend-author-signed-off-by-check-for-split-from-header.patch
+* checkpatch-test-git_dir-changes.patch
+* checkpatch-emit-a-warning-on-embedded-filenames.patch
+* checkpatch-emit-a-warning-on-embedded-filenames-fix.patch
+* checkpatch-fix-multi-statement-macro-checks-for-while-blocks.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address-fix.patch
+* fs-binfmt_elf-use-pt_load-p_align-values-for-suitable-start-address-v4.patch
+* add-self-test-for-verifying-load-alignment.patch
+* binfmt_elf_fdpic-stop-using-dump_emit-on-user-pointers-on-mmu.patch
+* coredump-let-dump_emit-bail-out-on-short-writes.patch
+* coredump-refactor-page-range-dumping-into-common-helper.patch
+* coredump-rework-elf-elf_fdpic-vma_dump_size-into-common-helper.patch
+* binfmt_elf-binfmt_elf_fdpic-use-a-vma-list-snapshot.patch
+* mm-gup-take-mmap_lock-in-get_dump_page.patch
+* mm-remove-the-now-unnecessary-mmget_still_valid-hack.patch
+* ramfs-fix-nommu-mmap-with-gaps-in-the-page-cache.patch
+* harden-autofs-ioctl-table.patch
+* nilfs2-fix-some-kernel-doc-warnings-for-nilfs2.patch
+* rapidio-fix-error-handling-path.patch
+* rapidio-fix-the-missed-put_device-for-rio_mport_add_riodev.patch
+* panic-dump-registers-on-panic_on_warn.patch
+* aio-simplify-read_events.patch
+* proc-add-struct-mount-struct-super_block-addr-in-lx-mounts-command.patch
+* tasks-add-headers-and-improve-spacing-format.patch
+* schedh-drop-in_ubsan-field-when-ubsan-is-in-trap-mode.patch
+* ubsan-introducing-config_ubsan_local_bounds-for-clang.patch
+* romfs-support-inode-blocks-calculation.patch
+* lib-include-linux-add-usercopy-failure-capability.patch
+* lib-uaccess-add-failure-injection-to-usercopy-functions.patch
+* x86-add-failure-injection-to-get-put-clear_user.patch
+  linux-next.patch
+  linux-next-rejects.patch
+  linux-next-git-rejects.patch
+* fs-fuse-virtio_fsc-fix-for-mm-memremap_pages-convert-to-struct-range.patch
+* ia64-fix-build-error-with-coredump.patch
+* mm-rework-remote-memcg-charging-api-to-support-nesting.patch
+* mm-kmem-move-memcg_kmem_bypass-calls-to-get_mem-obj_cgroup_from_current.patch
+* mm-kmem-remove-redundant-checks-from-get_obj_cgroup_from_current.patch
+* mm-kmem-prepare-remote-memcg-charging-infra-for-interrupt-contexts.patch
+* mm-kmem-enable-kernel-memcg-accounting-from-interrupt-contexts.patch
+* mm-memory-failure-remove-a-wrapper-for-alloc_migration_target.patch
+* mm-memory_hotplug-remove-a-wrapper-for-alloc_migration_target.patch
+* mm-migrate-avoid-possible-unnecessary-process-right-check-in-kernel_move_pages.patch
+* mm-mmap-add-inline-vma_next-for-readability-of-mmap-code.patch
+* mm-mmap-add-inline-munmap_vma_range-for-code-readability.patch
+* mm-gup_benchmark-take-the-mmap-lock-around-gup.patch
+* binfmt_elf-take-the-mmap-lock-around-find_extend_vma.patch
+* mmap-locking-api-dont-check-locking-if-the-mm-isnt-live-yet.patch
+* mm-gup-assert-that-the-mmap-lock-is-held-in-__get_user_pages.patch
+* mm-gup_benchmark-rename-to-mm-gup_test.patch
+* selftests-vm-use-a-common-gup_testh.patch
+* selftests-vm-rename-run_vmtests-run_vmtestssh.patch
+* selftests-vm-minor-cleanup-makefile-and-gup_testc.patch
+* selftests-vm-only-some-gup_test-items-are-really-benchmarks.patch
+* selftests-vm-gup_test-introduce-the-dump_pages-sub-test.patch
+* selftests-vm-run_vmtestsh-update-and-clean-up-gup_test-invocation.patch
+* selftests-vm-hmm-tests-remove-the-libhugetlbfs-dependency.patch
+* selftests-vm-hmm-tests-remove-the-libhugetlbfs-dependency-fix.patch
+* mm-madvise-pass-mm-to-do_madvise.patch
+* pid-move-pidfd_get_pid-to-pidc.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-madvise-introduce-process_madvise-syscall-an-external-memory-hinting-api-fix-fix-fix-fix-fix-fix-fix-fix-fix.patch
+* mm-update-the-documentation-for-vfree.patch
+* mm-add-a-vm_map_put_pages-flag-for-vmap.patch
+* mm-add-a-vmap_pfn-function.patch
+* mm-allow-a-null-fn-callback-in-apply_to_page_range.patch
+* zsmalloc-switch-from-alloc_vm_area-to-get_vm_area.patch
+* drm-i915-use-vmap-in-shmem_pin_map.patch
+* drm-i915-stop-using-kmap-in-i915_gem_object_map.patch
+* drm-i915-use-vmap-in-i915_gem_object_map.patch
+* xen-xenbus-use-apply_to_page_range-directly-in-xenbus_map_ring_pv.patch
+* x86-xen-open-code-alloc_vm_area-in-arch_gnttab_valloc.patch
+* mm-remove-alloc_vm_area.patch
+* mm-cleanup-the-gfp_mask-handling-in-__vmalloc_area_node.patch
+* mm-remove-the-filename-in-the-top-of-file-comment-in-vmallocc.patch
+* mm-remove-duplicate-include-statement-in-mmuc.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
