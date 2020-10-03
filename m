@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14404282625
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2BF282634
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725889AbgJCT1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:27:10 -0400
-Received: from smtprelay0180.hostedemail.com ([216.40.44.180]:36376 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725831AbgJCT1J (ORCPT
+        id S1725884AbgJCTaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgJCTaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:27:09 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 08F8B181D330D;
-        Sat,  3 Oct 2020 19:27:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3874:4321:5007:6248:6742:6743:7974:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14096:14097:14659:14721:14777:21080:21325:21433:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:19,LUA_SUMMARY:none
-X-HE-Tag: bell15_5909bf3271af
-X-Filterd-Recvd-Size: 2863
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf01.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  3 Oct 2020 19:27:04 +0000 (UTC)
-Message-ID: <c7fd58ebd81f8731fc03434b2bdd8aa4bf99335a.camel@perches.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-From:   Joe Perches <joe@perches.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Mark Brown <broonie@kernel.org>, tools@linux.kernel.org,
-        linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Date:   Sat, 03 Oct 2020 12:27:03 -0700
-In-Reply-To: <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
-         <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
-         <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
-         <20200929113745.GB4799@sirena.org.uk>
-         <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
-         <20201001110150.GA6715@sirena.org.uk>
-         <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
-         <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 3 Oct 2020 15:30:12 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8757FC0613E7
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:30:10 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id o18so4375462ilg.0
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QZ1DkwSWJLJyYMYsQtbtyLF9BA7njwH8/m0Qh4QFyf0=;
+        b=A5vNPlSg4HijI19FL1wcWgBkX6IvHjg0QVpuOEIfTEA8iQ0aoSLXQjpE1OgWypVbho
+         jrGD4HJhrSprVjPwFBbkNvqHTimfJ/SMXv9HCiSUnn+SqDmpfAZ0Wz8fkZAOjEymHokx
+         h3AXG6fpmmeQxZAFyfiAISkonpgr48kELwII8iJiaQo+G414Yq1El+YlpLbkmu80kMzq
+         1hze753ZMN1gzExfSrewSMxGEM6bzc5RmgV71myGJR4b2smD3yWwJUDcsFvFe/kfs/g9
+         b1InsD0t6ubXRm/B4DQ0rn2qvgqsjakMb9HchoRwzEGcuO2uEvuRmDKzrit7IBboXv6d
+         o2dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QZ1DkwSWJLJyYMYsQtbtyLF9BA7njwH8/m0Qh4QFyf0=;
+        b=MUobDtNufzCmaKdqmJl5SMi/38SB81yDf6nEmOuRMNBevE11VL1o3xj6Rzf7MykbUX
+         HPa9Paw+JXFcHnL3kR+LiWqOYXMT9Kg9i3M47K+5vFfYt5Tqqi2Oasy+WpBwvfhzVYWC
+         p2Ifru9pZ130homRpjl1I/aV1T9tfvBXOdqvghsPT82WXAeaZD41FldEBCsTjSxuvPVp
+         jyHvnQAuPlYF4A3T6NW7AoWQMxP+iZCU0d6k5mNCQUF0D3tuBkIHZwG4N9a3W2SFRCMw
+         LWNV/9sTf9nkt1NzXzlqFiFOd1PB2GPn033e+wZPk8Pmf+PA/r7L5drBSjKXf62E/C8B
+         rytQ==
+X-Gm-Message-State: AOAM530TWPbHNkiS1NAk4M6+E7k2O+ORKkQR38nkiHrmp7ackBJpIY4D
+        9ypVFGdN4Ixc6QisC6uFEibjEWa0bMnptFrQQxjhtg==
+X-Google-Smtp-Source: ABdhPJxKg0IoqJI26FZ9A3MzYx9uR79rmwvgiHj4d/z29C+q8n+2BLlXrFyK67G4mAxZaLLsKBj31wLjA7e6avXfkws=
+X-Received: by 2002:a92:6403:: with SMTP id y3mr6327624ilb.72.1601753409817;
+ Sat, 03 Oct 2020 12:30:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200920160705.9651-1-krzk@kernel.org> <20200920160705.9651-5-krzk@kernel.org>
+ <20200926195026.GA2230@lx2k>
+In-Reply-To: <20200926195026.GA2230@lx2k>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Sat, 3 Oct 2020 21:29:58 +0200
+Message-ID: <CAOesGMgQ67n1F-od-amKN8MuG75V3euOhEwdyYryQSQyWH3TBQ@mail.gmail.com>
+Subject: Re: [GIT PULL 4/5] ARM: samsung: mach/soc for v5.10
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        ARM-SoC Maintainers <arm@kernel.org>,
+        SoC Team <soc@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-03 at 15:15 -0400, Konstantin Ryabitsev wrote:
-> On Sat, Oct 03, 2020 at 11:40:48AM -0700, Joe Perches wrote:
-> > (Adding tools and Konstantin Ryabitsev)
-> > 
-> > There seems to be some mismatch between b4's use of the
-> > cover letter to a patch series and what maintainers that
-> > apply a subset of the patches in the patch series.
-> > 
-> > The merge description shows the entire patch series as
-> > applied, but the actual merge is only a subset of the
-> > series.
-> > 
-> > Can this be improved in b4?
-> 
-> So, the following logic should be applied:
-> 
-> - if the entire series was applied, reply to 0/n
-> - if a subset only is applied, reply to each n/n of the patch that was 
->   cherry-picked out of the series
-> 
-> Is that an accurate summary?
+On Sat, Oct 3, 2020 at 9:29 PM Olof Johansson <olof@lixom.net> wrote:
+>
+> Hi,
+>
+> On Sun, Sep 20, 2020 at 06:07:04PM +0200, Krzysztof Kozlowski wrote:
+> > Hi,
+> >
+> > This will conflict around renamed/moved files:
+> >
+> > 1. arch/arm/mach-s3c/s3c24xx.c:
+> >    Merge both changes to new location, so:
+> > =======
+> >  +#include "s3c24xx.h"
+> >  +#include "fb-core-s3c24xx.h"
+> >  +#include "nand-core-s3c24xx.h"
+> >  +#include "spi-core-s3c24xx.h"
+> >
+> > - static struct map_desc s3c2416_iodesc[] __initdata = {
+> > + static struct map_desc s3c2416_iodesc[] __initdata __maybe_unused = {
+> > =======
+> >
+> > 2. drivers/soc/samsung/Kconfig
+> >    Add DEBUG_LL && MMU to SAMSUNG_PM_DEBUG section, so:
+> >
+> > =======
+> >   config EXYNOS_PM_DOMAINS
+> >       bool "Exynos PM domains" if COMPILE_TEST
+> >  -    depends on PM_GENERIC_DOMAINS || COMPILE_TEST
+> >  +    depends on (ARCH_EXYNOS && PM_GENERIC_DOMAINS) || COMPILE_TEST
+> >  +
+> >  +config SAMSUNG_PM_DEBUG
+> >  +    bool "Samsung PM Suspend debug"
+> >  +    depends on PM && DEBUG_KERNEL
+> >  +    depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
+> >  +    depends on DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
+> > ++    depends on DEBUG_LL && MMU
+> >  +    help
+> >  +      Say Y here if you want verbose debugging from the PM Suspend and
+> >  +      Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
+> >  +      for more information.
+> >  +
+> > =======
+>
+> I don't mind doing this conflict resolution, and will merge it now,
+> but next time you can just base this branch on the cleanup branch.
 
-Exactly so, thanks.
+Apologies for sitting on this email, I flush the outbound queue by
+hand and seem to have forgotten. :)
 
 
+-Olof
