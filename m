@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48A62824AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47B32824A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbgJCOUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S1725942AbgJCOUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgJCOU0 (ORCPT
+        with ESMTP id S1725828AbgJCOUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:20:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC40C0613D0;
-        Sat,  3 Oct 2020 07:20:25 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id w5so4845827wrp.8;
-        Sat, 03 Oct 2020 07:20:25 -0700 (PDT)
+        Sat, 3 Oct 2020 10:20:18 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DAEC061787
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 07:20:17 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id g29so2852488pgl.2
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 07:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q/UCGl1ZdUoHsUHtTTTH+r1dTXLa/BTl7CcT5LFzhtQ=;
-        b=u8GC3+J+LJHL0bHYqdtwcb3saMTpTg/ICMHyMfYfjlApBBb4bwA+VHYb//eiAZZMwV
-         3xmfzwIbOsqMMYb9IaDEZEW/OGpDmXSg/+Vn+/x00zBkbN6N4mlp6nhEB6G9jsGMVLTO
-         lVH7H2i4jWa+FZvUauEfJBPYJFK5dilmhU/Yxs2XI2ElpomZq0rsrYySZ9CwgjE9EnFv
-         vpSurOm8cd03JBQvYfTW07dTigWjso/hQQUchefNbaVLHHI80Ozb+pyG0pJ+619nW3QT
-         fJli5utqMvduQ5cmsuZCSOlz+l9xlRe9BoTULGcX/DaCpmfuMhHbJqq6+ZyX0RmLlCfj
-         S4MQ==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=+w9ezZ2ptMY0SEs0AzmqlyanFEZQPYlxJrLop71X20k=;
+        b=iAIi+FfMfWxojLoPAoAXwS/dJfs5LrMu/Chc2ZBEQ5AEAAxfAdfhgNaEeIHV/VkiQf
+         ZRf2SsBDgdGMsrEUcQg73G4h4MLt1tgn74JNcvv5m0wTfYn0mIDpFBMNOSeve4CkzZw6
+         WZY0za93fZYDjPBX8BdtmZJfLi1U7SRB4EgGUmpczKjbomqetD6Wo8O9UBjGHmd3fGyZ
+         Im69K/yDwk60pLKrDcXGwhJcC6W8xeYG0AW9bFQsiBIjEaDjJ+v79dhYnfph+sDi7EAJ
+         Mzy/gWtH0ndR7zw6dkCuLBwnvHlzRZury6zn4ezNoIDDL4Co9BFgqnPIhrvX1auNXchz
+         XGrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q/UCGl1ZdUoHsUHtTTTH+r1dTXLa/BTl7CcT5LFzhtQ=;
-        b=qW4WfoHheK58eOU2+r2Pe/HETXGzlzuD5CSmlJpfD3Q0pT5Hu2j6mZSPFzOnasPQDB
-         lMGeCz6LA66d8XV/tO+unGTeQkOx2keQm50ZKg/2yhuSsa7skvKjZjqPQbEbxf+QayEW
-         4PMUZdm8RQMDkItutORsoHuy7Agm/3NmdQqPfrN4e1KEPJ2K3QBKbBF9u15bqVCr4gOh
-         gtPEAH6qtfrFHu5dznkBYh8qrO6evlfFpza0C43wANO+FeDZwXQ6dmGvWQN+QkzIeXj9
-         8xkCwAUgUtu/vJJpP8IY2DaqinVacWrRDHaKH2AmSp0/SffsP2VdGMN+84dSVL9CvhAg
-         RCMQ==
-X-Gm-Message-State: AOAM532DQTvb9yl29bT+2SRbNygOoOLJ6/qYnKbcJCmDMpbA6HoYPrTh
-        PQTW4hXd9g44P7hOd544UQY=
-X-Google-Smtp-Source: ABdhPJxHfyuLH8+eJsmhPM4gM03KPgUvXhOFVldQ+mJwiPnHNBL32S2zcjp6aubvOgLXigkLM11n9A==
-X-Received: by 2002:a5d:4486:: with SMTP id j6mr2306431wrq.278.1601734824252;
-        Sat, 03 Oct 2020 07:20:24 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.20.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=+w9ezZ2ptMY0SEs0AzmqlyanFEZQPYlxJrLop71X20k=;
+        b=maU8lo9GkZNLJxzqedx+f4D2gYEFItH3cwgznQWcr6UN2qzkbayj/7Bj+VrldX5AF4
+         ngQNavLRwV4l+tEKsiE0qwGFa8dqoeoaixlze9Ui2v8yTMmqJ/4u61YfV8lTjbPZxLSQ
+         2Xqze76/WaBlE84P2T8ez6KzIoW5w6mKJX92FCX8/2qteQ59zWxJnjoSjsz54tph09tb
+         09U81nlv815xT1i0INQg/rU+Wq/+eA6GoO3EkisUWh9Cm6TXFcgzimrixrjBfb1V4RaU
+         oKwgAho8Erk/Kb2XQWLF15DWeIVxWKkiDem3JjdCsdNqWiV1SjJkCeBD29vx46LjIvbN
+         OI5g==
+X-Gm-Message-State: AOAM533DiXspbq+rGyhDXMCV+/bTdpCxYwm+ki+awhCu4vHyeTCJTUe8
+        +0aHGJsxfnVfA4QASOAr6pTpNe10ZNp9nQ==
+X-Google-Smtp-Source: ABdhPJy/T1TvH67o58xShETdWKTcRzBWZOkfXQARvntQW7B02hxDkS53+FAeaAQ05OJr++cOmodwCQ==
+X-Received: by 2002:a63:1f03:: with SMTP id f3mr6501658pgf.381.1601734817379;
+        Sat, 03 Oct 2020 07:20:17 -0700 (PDT)
+Received: from adolin ([49.207.201.114])
+        by smtp.gmail.com with ESMTPSA id l14sm5764255pfc.170.2020.10.03.07.20.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 07:20:23 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v6 14/14] arm: dts: sunxi: h3/h5: Add I2S2 node
-Date:   Sat,  3 Oct 2020 16:19:50 +0200
-Message-Id: <20201003141950.455829-15-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201003141950.455829-1-peron.clem@gmail.com>
-References: <20201003141950.455829-1-peron.clem@gmail.com>
+        Sat, 03 Oct 2020 07:20:16 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 19:50:12 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: coccicheck: Refactor display messages on coccinelle
+ start up
+Message-ID: <20201003142012.idwudlhqiv3a4mjj@adolin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+Currently, coccinelle starts by printing
+	"When using "patch" mode, carefully review the
+patch before submitting it."
 
-Add H3/H5 I2S2 node connected to the HDMI interface.
+Modify coccicheck to print this message only when the user has
+explicitly selected "patch"  or "chain" mode.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
 ---
- arch/arm/boot/dts/sunxi-h3-h5.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ scripts/coccicheck | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 22d533d18992..9be13378d4df 100644
---- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-+++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -662,6 +662,19 @@ i2s1: i2s@1c22400 {
- 			status = "disabled";
- 		};
+diff --git a/scripts/coccicheck b/scripts/coccicheck
+index e04d328210ac..07d1b5831bf6 100755
+--- a/scripts/coccicheck
++++ b/scripts/coccicheck
+@@ -118,7 +118,9 @@ fi
+ if [ "$ONLINE" = "0" ] ; then
+     echo ''
+     echo 'Please check for false positives in the output before submitting a patch.'
+-    echo 'When using "patch" mode, carefully review the patch before submitting it.'
++    if [ "$MODE" = "patch" -o "$MODE" = "chain" ] ; then
++        echo 'When using "patch" mode, carefully review the patch before submitting it.'
++    fi
+     echo ''
+ fi
  
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 27>;
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "tx";
-+			status = "disabled";
-+		};
-+
- 		codec: codec@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-codec";
 -- 
 2.25.1
 
