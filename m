@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47B32824A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4325D2824B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgJCOUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        id S1725826AbgJCOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgJCOUS (ORCPT
+        with ESMTP id S1725781AbgJCOW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:20:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DAEC061787
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 07:20:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g29so2852488pgl.2
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 07:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=+w9ezZ2ptMY0SEs0AzmqlyanFEZQPYlxJrLop71X20k=;
-        b=iAIi+FfMfWxojLoPAoAXwS/dJfs5LrMu/Chc2ZBEQ5AEAAxfAdfhgNaEeIHV/VkiQf
-         ZRf2SsBDgdGMsrEUcQg73G4h4MLt1tgn74JNcvv5m0wTfYn0mIDpFBMNOSeve4CkzZw6
-         WZY0za93fZYDjPBX8BdtmZJfLi1U7SRB4EgGUmpczKjbomqetD6Wo8O9UBjGHmd3fGyZ
-         Im69K/yDwk60pLKrDcXGwhJcC6W8xeYG0AW9bFQsiBIjEaDjJ+v79dhYnfph+sDi7EAJ
-         Mzy/gWtH0ndR7zw6dkCuLBwnvHlzRZury6zn4ezNoIDDL4Co9BFgqnPIhrvX1auNXchz
-         XGrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=+w9ezZ2ptMY0SEs0AzmqlyanFEZQPYlxJrLop71X20k=;
-        b=maU8lo9GkZNLJxzqedx+f4D2gYEFItH3cwgznQWcr6UN2qzkbayj/7Bj+VrldX5AF4
-         ngQNavLRwV4l+tEKsiE0qwGFa8dqoeoaixlze9Ui2v8yTMmqJ/4u61YfV8lTjbPZxLSQ
-         2Xqze76/WaBlE84P2T8ez6KzIoW5w6mKJX92FCX8/2qteQ59zWxJnjoSjsz54tph09tb
-         09U81nlv815xT1i0INQg/rU+Wq/+eA6GoO3EkisUWh9Cm6TXFcgzimrixrjBfb1V4RaU
-         oKwgAho8Erk/Kb2XQWLF15DWeIVxWKkiDem3JjdCsdNqWiV1SjJkCeBD29vx46LjIvbN
-         OI5g==
-X-Gm-Message-State: AOAM533DiXspbq+rGyhDXMCV+/bTdpCxYwm+ki+awhCu4vHyeTCJTUe8
-        +0aHGJsxfnVfA4QASOAr6pTpNe10ZNp9nQ==
-X-Google-Smtp-Source: ABdhPJy/T1TvH67o58xShETdWKTcRzBWZOkfXQARvntQW7B02hxDkS53+FAeaAQ05OJr++cOmodwCQ==
-X-Received: by 2002:a63:1f03:: with SMTP id f3mr6501658pgf.381.1601734817379;
-        Sat, 03 Oct 2020 07:20:17 -0700 (PDT)
-Received: from adolin ([49.207.201.114])
-        by smtp.gmail.com with ESMTPSA id l14sm5764255pfc.170.2020.10.03.07.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 07:20:16 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 19:50:12 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts: coccicheck: Refactor display messages on coccinelle
- start up
-Message-ID: <20201003142012.idwudlhqiv3a4mjj@adolin>
+        Sat, 3 Oct 2020 10:22:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FECC0613D0;
+        Sat,  3 Oct 2020 07:22:26 -0700 (PDT)
+Date:   Sat, 03 Oct 2020 14:22:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601734945;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=wZhirwpt1PSn/tdjVw8sKf8GRictB6TaYL8Zm3MnWKU=;
+        b=EwJId8sIe0MPWG1+gyOKqVX6yfpVZGeY2+JUA04L2re7wQ0kGyr78ecADjxd+dwuZyAv3Q
+        50UB7bF31gOym5yOhVRufQMPbJfyjS5ToMSZgAifQ7A9M4z/NZoXwhN6H4d7/yJBxbIUT5
+        ZumcXwVUx2gY3cMdy6aWhy501oEql11OMExCPWNyLomk8JWBCDs322RbGSQduwoW79paiI
+        tSY7oLvMA8ndVP3EnNwL5NwU9YSCOffXyXo/XbeSKA71TPt2g+AXs8K24ckmzR7gMXQ84i
+        +UodXBG27cEhmGVWU4oKU4rUHpfX2Q0ZqMS3/nZD11d1Q++GCD+30hnyRx1Btw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601734945;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=wZhirwpt1PSn/tdjVw8sKf8GRictB6TaYL8Zm3MnWKU=;
+        b=b17Rx8uGY1voNG9RBPJ6ZuvBhD7togPOs5uVE7IkkOFbp1JEsaWvh8A4MJpBDxxSKfZxuc
+        ZHtD1zk4TSkIWTDw==
+From:   "tip-bot2 for Nathan Chancellor" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/static_call] static_call: Fix return type of static_call_init
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <160173494363.7002.10430993422075682487.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, coccinelle starts by printing
-	"When using "patch" mode, carefully review the
-patch before submitting it."
+The following commit has been merged into the core/static_call branch of tip:
 
-Modify coccicheck to print this message only when the user has
-explicitly selected "patch"  or "chain" mode.
+Commit-ID:     69e0ad37c9f32d5aa1beb02aab4ec0cd055be013
+Gitweb:        https://git.kernel.org/tip/69e0ad37c9f32d5aa1beb02aab4ec0cd055be013
+Author:        Nathan Chancellor <natechancellor@gmail.com>
+AuthorDate:    Mon, 28 Sep 2020 16:09:39 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 02 Oct 2020 21:18:25 +02:00
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+static_call: Fix return type of static_call_init
+
+Functions that are passed to early_initcall should be of type
+initcall_t, which expects a return type of int. This is not currently an
+error but a patch in the Clang LTO series could change that in the
+future.
+
+Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+Link: https://lore.kernel.org/lkml/20200903203053.3411268-17-samitolvanen@google.com/
 ---
- scripts/coccicheck | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/static_call.h | 6 +++---
+ kernel/static_call.c        | 5 +++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/scripts/coccicheck b/scripts/coccicheck
-index e04d328210ac..07d1b5831bf6 100755
---- a/scripts/coccicheck
-+++ b/scripts/coccicheck
-@@ -118,7 +118,9 @@ fi
- if [ "$ONLINE" = "0" ] ; then
-     echo ''
-     echo 'Please check for false positives in the output before submitting a patch.'
--    echo 'When using "patch" mode, carefully review the patch before submitting it.'
-+    if [ "$MODE" = "patch" -o "$MODE" = "chain" ] ; then
-+        echo 'When using "patch" mode, carefully review the patch before submitting it.'
-+    fi
-     echo ''
- fi
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index bfa2ba3..695da4c 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -136,7 +136,7 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
  
--- 
-2.25.1
-
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+ 
+-extern void __init static_call_init(void);
++extern int __init static_call_init(void);
+ 
+ struct static_call_mod {
+ 	struct static_call_mod *next;
+@@ -187,7 +187,7 @@ extern int static_call_text_reserved(void *start, void *end);
+ 
+ #elif defined(CONFIG_HAVE_STATIC_CALL)
+ 
+-static inline void static_call_init(void) { }
++static inline int static_call_init(void) { return 0; }
+ 
+ struct static_call_key {
+ 	void *func;
+@@ -234,7 +234,7 @@ static inline int static_call_text_reserved(void *start, void *end)
+ 
+ #else /* Generic implementation */
+ 
+-static inline void static_call_init(void) { }
++static inline int static_call_init(void) { return 0; }
+ 
+ struct static_call_key {
+ 	void *func;
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index f8362b3..84565c2 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -410,12 +410,12 @@ int static_call_text_reserved(void *start, void *end)
+ 	return __static_call_mod_text_reserved(start, end);
+ }
+ 
+-void __init static_call_init(void)
++int __init static_call_init(void)
+ {
+ 	int ret;
+ 
+ 	if (static_call_initialized)
+-		return;
++		return 0;
+ 
+ 	cpus_read_lock();
+ 	static_call_lock();
+@@ -434,6 +434,7 @@ void __init static_call_init(void)
+ #ifdef CONFIG_MODULES
+ 	register_module_notifier(&static_call_module_nb);
+ #endif
++	return 0;
+ }
+ early_initcall(static_call_init);
+ 
