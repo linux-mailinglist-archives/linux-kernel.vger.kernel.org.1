@@ -2,237 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58C128273F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3449282743
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgJCWvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 18:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgJCWvF (ORCPT
+        id S1726080AbgJCWwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 18:52:43 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11170 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgJCWwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 18:51:05 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEED7C0613D0;
-        Sat,  3 Oct 2020 15:51:03 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j8so1418150pjy.5;
-        Sat, 03 Oct 2020 15:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ojz49Zt+s6mkb4TtFbOzKw4PVPVKDTdnn7U+S7XnkKE=;
-        b=OZKaVM/UYxBu5IQYFDJJ1lYZNi1mqeBpf0EM+OkBKCzFSoDsVvkLVTsFcZdkMWLpoa
-         2/MbzdvfuRu4DyuijQZHSjvg3vHk5pR/JQTs0UgbIdMJq0Qp/ns1YLLEEoMsVPskdTUR
-         1ffqrfWrkEbWfEBtp7H9Je9yT8FnEftyQ10aKz5c0aR/KEj2sGM2uv7jnSWIz+Y/tSVU
-         A8es+QWcr1YspCL4KlyahjNeA9VcUlqL7lH8+RZf+Y3E3u5Y4ZZFhKx5DlScz59lzMke
-         2SPavtAOqQ3JflozKyMFxinAiJlfD1QlxMGRHzYYzlr2SCLapPXQuVl0NXL4e+tDRtVw
-         GEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ojz49Zt+s6mkb4TtFbOzKw4PVPVKDTdnn7U+S7XnkKE=;
-        b=f2xWbLt6l1RBmtMKNUCZ1v+H4ihddFjJQ2xWK1Zpy4JhQSFDuahJUQwWJqT/RtfmTl
-         fxckTg/c7FBsHOsw3IDtVxdZ6Tuj1kIZ4ptf+skqNkNTHQl9UsJAEK8RhX5+KAEqNHrm
-         OGS75Xh24b3TJ33Y6+/zRZZ3dDMo0C45hWfnb7Dy51cSprR5LJeVvzdyRPgT+ncg/IVF
-         v+L6Rw+Azog535MEf5WMGJVu8y7YNrfzGZJ6Z22wvhPQC11SHMOWT/tAZo5NGpgOVzVF
-         UDC+Z/V4RK+MxcpUmtZpeGsHKmmunaOtMABy4QiH/HG77Djdjyy+bitMzH8pixblgKdU
-         vO7Q==
-X-Gm-Message-State: AOAM532OBPf/cjgIJBDcYIxEgDZjRNHDaYiisFoi16sSA3ijCipPcbx1
-        M9dY6RqGmsfiRHWQSglTfIHXLrFuJJg=
-X-Google-Smtp-Source: ABdhPJxZf1jkuycgPp6N8XlRtSqJ9+E2VRUKWARZYaOO278FWhJGPEuDMzcRUUVKO7sauABIsSrSRw==
-X-Received: by 2002:a17:90a:cb92:: with SMTP id a18mr1918106pju.136.1601765463152;
-        Sat, 03 Oct 2020 15:51:03 -0700 (PDT)
-Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id j9sm6644519pfc.175.2020.10.03.15.50.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 15:51:02 -0700 (PDT)
-Subject: Re: Bug in herd7 [Was: Re: Litmus test for question from Al Viro]
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, dlustig@nvidia.com, joel@joelfernandes.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
- <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
- <20201003171338.GA323226@rowland.harvard.edu>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <73e74c29-c804-f83c-d9a1-f8b479d0ab75@gmail.com>
-Date:   Sun, 4 Oct 2020 07:50:57 +0900
+        Sat, 3 Oct 2020 18:52:42 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f7900800000>; Sat, 03 Oct 2020 15:51:44 -0700
+Received: from [10.2.58.214] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 3 Oct
+ 2020 22:52:32 +0000
+Subject: Re: [PATCH 2/2] mm/frame-vec: use FOLL_LONGTERM
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+CC:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20201002175303.390363-1-daniel.vetter@ffwll.ch>
+ <20201002175303.390363-2-daniel.vetter@ffwll.ch>
+ <cb56763e-4fda-a783-03ae-7f749ec55981@nvidia.com>
+ <CAKMK7uGzZ2dBe040vP1BJmQ7cuhj_OQHL0ncyz5XyUcb=bPjmg@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <f5130c7f-eebe-7b21-62b8-68f08212b106@nvidia.com>
+Date:   Sat, 3 Oct 2020 15:52:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201003171338.GA323226@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAKMK7uGzZ2dBe040vP1BJmQ7cuhj_OQHL0ncyz5XyUcb=bPjmg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601765504; bh=5ppvHLUO/9fbIncZBsX0QRcDvjgd285ERncHZH+jBTQ=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Ji1FUw05hePaqwM1D5cwu0YizjaQWb5Mp458Rnbz7PTao0aGPynwrhOclhjCKrJU0
+         TuxSCKhpy2o33ZbQ6qctuVu+ZH6TjebLlAv44xr1m5C0eM5O/KFwFMsP29suyi4HxU
+         7niB1RXiaToj7nlQHwVmz22ekwMcQmAfv1SQB4LhZWP2ztwPzMu0Jo22dFhBC9TRtB
+         cXXl6qFqoXI2Qrn049sPT6pv80tx1yV3OVUJgOrgdkV8M6TTcCMzJ+5wIKXAUWpm9T
+         x/g3UL5urU1erhjCn4JTTyUhitwG8XonVuxdQJYZPMYoqax5wISjFnhnUnAkLbQ+KR
+         1GnsY+nrXhBJQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 3 Oct 2020 13:13:38 -0400, Alan Stern wrote:
-> On Sun, Oct 04, 2020 at 12:16:31AM +0900, Akira Yokosawa wrote:
->> Hi Alan,
+On 10/3/20 2:45 AM, Daniel Vetter wrote:
+> On Sat, Oct 3, 2020 at 12:39 AM John Hubbard <jhubbard@nvidia.com> wrote:
 >>
->> Just a minor nit in the litmus test.
->>
->> On Sat, 3 Oct 2020 09:22:12 -0400, Alan Stern wrote:
->>> To expand on my statement about the LKMM's weakness regarding control 
->>> constructs, here is a litmus test to illustrate the issue.  You might 
->>> want to add this to one of the archives.
+>> On 10/2/20 10:53 AM, Daniel Vetter wrote:
+>>> For $reasons I've stumbled over this code and I'm not sure the change
+>>> to the new gup functions in 55a650c35fea ("mm/gup: frame_vector:
+>>> convert get_user_pages() --> pin_user_pages()") was entirely correct.
 >>>
->>> Alan
->>>
->>> C crypto-control-data
->>> (*
->>>  * LB plus crypto-control-data plus data
->>>  *
->>>  * Expected result: allowed
->>>  *
->>>  * This is an example of OOTA and we would like it to be forbidden.
->>>  * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
->>>  * control-dependent on the preceding READ_ONCE.  But the dependencies are
->>>  * hidden by the form of the conditional control construct, hence the 
->>>  * name "crypto-control-data".  The memory model doesn't recognize them.
->>>  *)
->>>
->>> {}
->>>
->>> P0(int *x, int *y)
->>> {
->>> 	int r1;
->>>
->>> 	r1 = 1;
->>> 	if (READ_ONCE(*x) == 0)
->>> 		r1 = 0;
->>> 	WRITE_ONCE(*y, r1);
->>> }
->>>
->>> P1(int *x, int *y)
->>> {
->>> 	WRITE_ONCE(*x, READ_ONCE(*y));
+>>> This here is used for long term buffers (not just quick I/O) like
+>>> RDMA, and John notes this in his patch. But I thought the rule for
+>>> these is that they need to add FOLL_LONGTERM, which John's patch
+>>> didn't do.
 >>
->> Looks like this one-liner doesn't provide data-dependency of y -> x on herd7.
-> 
-> You're right.  This is definitely a bug in herd7.
-> 
-> Luc, were you aware of this?
-> 
->> When I changed P1 to
+>> Yep. The earlier gup --> pup conversion patches were intended to not
+>> have any noticeable behavior changes, and FOLL_LONGTERM, with it's
+>> special cases and such, added some risk that I wasn't ready to take
+>> on yet. Also, FOLL_LONGTERM rules are only *recently* getting firmed
+>> up. So there was some doubt at least in my mind, about which sites
+>> should have it.
 >>
->> P1(int *x, int *y)
->> {
->> 	int r1;
->>
->> 	r1 = READ_ONCE(*y);
->> 	WRITE_ONCE(*x, r1);
->> }
->>
->> and replaced the WRITE_ONCE() in P0 with smp_store_release(),
->> I got the result of:
->>
->> -----
->> Test crypto-control-data Allowed
->> States 1
->> 0:r1=0;
->> No
->> Witnesses
->> Positive: 0 Negative: 3
->> Condition exists (0:r1=1)
->> Observation crypto-control-data Never 0 3
->> Time crypto-control-data 0.01
->> Hash=9b9aebbaf945dad8183d2be0ccb88e11
->> -----
->>
->> Restoring the WRITE_ONCE() in P0, I got the result of:
->>
->> -----
->> Test crypto-control-data Allowed
->> States 2
->> 0:r1=0;
->> 0:r1=1;
->> Ok
->> Witnesses
->> Positive: 1 Negative: 4
->> Condition exists (0:r1=1)
->> Observation crypto-control-data Sometimes 1 4
->> Time crypto-control-data 0.01
->> Hash=843eaa4974cec0efae79ce3cb73a1278
->> -----
+>> But now that we're here, I think it's really good that you've brought
+>> this up. It's definitely time to add FOLL_LONGTERM wherever it's missing.
 > 
-> What you should have done was put smp_store_release in P0 and left P1 in 
-> its original form.  That test should not be allowed, but herd7 says that 
-> it is.
+> So should I keep this patch, or will it collide with a series you're working on?
 
-Yea, that was what I tried first, expecting the result of "Never".
+It doesn't collide with anything on my end yet, because I've been slow to
+pick up on the need for changing callsites to add FOLL_LONGTERM. :)
+
+And it looks like that's actually a problem, because:
 
 > 
->> As this is the same as the expected result, I suppose you have missed another
->> limitation of herd7 + LKMM.
-> 
-> It would be more accurate to say that we all missed it.  :-)  (And it's 
-> a bug in herd7, not a limitation of either herd7 or LKMM.)  How did you 
-> notice it?
+> Also with the firmed up rules, correct that I can also drop the
+> vma_is_fsdax check when the FOLL_LONGTERM flag is set?
 
-:-) :-) :-)
+That's the right direction to go *in general*, but I see that the
+pin_user_pages code is still a bit stuck in the past. And this patch
+won't actually work, with or without that vma_is_fsdax() check.
+Because:
 
-Well, I thought I had never seen a litmus test with such one-liner.
-So I split the READ_ONCE() and WRITE_ONCE() into two lines and
-got the expected result.
+get_vaddr_frames(FOLL_LONGTERM)
+    pin_user_pages_locked()
+	if (WARN_ON_ONCE(gup_flags & FOLL_LONGTERM))
+		return -EINVAL;
 
-I don't expect much from herd7's C mode in the first place.
-(No offense intended!)
 
- 
->> By the way, I think this weakness on control dependency + data dependency
->> deserves an entry in tools/memory-model/Documentation/litmus-tests.txt.
->>
->> In the LIMITATIONS section, item #1 mentions some situation where
->> LKMM may not recognize possible losses of control-dependencies by
->> compiler optimizations.
->>
->> What this litmus test demonstrates is a different class of mismatch.
-> 
-> Yes, one in which LKMM does not recognize a genuine dependency because 
-> it can't tell that some optimizations are not valid.
-> 
-> This flaw is fundamental to the way herd7 works.  It examines only one 
-> execution at a time, and it doesn't consider the code in a conditional 
-> branch while it's examining an execution where that branch wasn't taken.  
-> Therefore it has no way to know that the code in the unexecuted branch 
-> would prevent a certain optimization.  But the compiler does consider 
-> all the code in all branches when deciding what optimizations to apply.
+So, again, pin_user_pages*() is at least partly behind the times here.
+I can jump in and start fixing it up, but it depends on what you and
+Oded and others are planning? Note: there is a particular combination of
+dax and locking that we have to still avoid, within gup.c. That's
+already covered, but needs to continue to be covered when we enable
+FOLL_LONGTERM in the remaining pin_user_pages*() calling paths.
 
-I see.
 
-> 
-> Here's another trivial example:
-> 
-> 	r1 = READ_ONCE(*x);
-> 	if (r1 == 0)
-> 		smp_mb();
-> 	WRITE_ONCE(*y, 1);
-> 
-> The compiler can't move the WRITE_ONCE before the READ_ONCE or the "if" 
-> statement, because it's not allowed to move shared memory accesses past 
-> a memory barrier -- even if that memory barrier isn't always executed.  
-> Therefore the WRITE_ONCE actually is ordered after the READ_ONCE, but 
-> the memory model doesn't realize it.> 
->> Alan, can you come up with an update in this regard?
-> 
-> I'll write something.
 
-Thanks!
-
-        Akira
-
-> 
-> Alan
-> 
+thanks,
+-- 
+John Hubbard
+NVIDIA
