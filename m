@@ -2,93 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726ED281F9C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6F9281FA2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725769AbgJCAM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 20:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJCAM2 (ORCPT
+        id S1725763AbgJCAOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 20:14:23 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47802 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgJCAOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:12:28 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAB7C0613D0;
-        Fri,  2 Oct 2020 17:12:28 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id x2so1898466pjk.0;
-        Fri, 02 Oct 2020 17:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5QZv+Rd3bQMX47IS5ZlWsHnrzTDh43gZUw508PHN7F8=;
-        b=I/+spYdaGvO2WV5sfLpO8DHlGCmBH7ZvKcq5mZ3GMoooMMmswFizyAl3a+GoeIMirK
-         MmxwUO8wXBdiuRKVmjTZ9NP4dkYAfsgwgtBj7W4EMTc5lXwd6NfzJ93BAeDCXs/DTAm+
-         iDc+mmVR96FHw3cfok3Hk74Sm5HzwlzCmfIr2YrJ8NbTKWoZWcDjaG5xRtBcBHZzfgkA
-         y9mUYD1+/NDJ8IwZQSzbIchw+Ti2dcLTvZLiv/PxfjDldLLoJPejaXWfFvSrb/5htXod
-         7clXyg9dHz3J9KV2vrIrwLkvNOuKAfbjO/UAkOvncEkDr4ryZpYH9gzMsCscahKriBSc
-         /gEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5QZv+Rd3bQMX47IS5ZlWsHnrzTDh43gZUw508PHN7F8=;
-        b=c2c822guNycAOP0eVsrXXCka1s34GA8doVquaWdqDzIWxlxDo17tgNYIUb4mbn8IHL
-         vB8mTK4rdDdiQ3pAZM7KAEkiHLtEsHJnR40IIeJ+64/CxioVaWviv8F7mg/lbjVsnfEW
-         8kPmpNAQd8Dw6SnaQZ9Ydh8ecJ+B8XhymhRo0gRV+WX9zf8/o+jYpTqOHdtXuYxjZoPh
-         PnfECCSdBVKrE9aAY4NkBd9beD2SNKifEiuH5IQrCEuYixXcOQYzJMUfYPJ+vJD3CtYI
-         aSzfLgHQrQdHjcml/N1LdZASRS/XXFC57RAnnn63XmEYRIPDlz8achK1xtyEl/uReFpX
-         54gg==
-X-Gm-Message-State: AOAM533Dts5EkM9aIbRhamZmc3Dx+TRw68Bqt9xd+Gekn34T/GoxaJW5
-        9EDO60OOH5w6dQUs5LpmjA==
-X-Google-Smtp-Source: ABdhPJyIYYo3YEa+NE0tgLYIBhTIWLWVeoPQBsAN0/yxAhaJHr0QNbg9Wy59W3wd2zXtS6tsvNkB5g==
-X-Received: by 2002:a17:90a:203:: with SMTP id c3mr5063154pjc.149.1601683948034;
-        Fri, 02 Oct 2020 17:12:28 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.140.181])
-        by smtp.gmail.com with ESMTPSA id x140sm3303157pfc.211.2020.10.02.17.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 17:12:27 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hankinsea@gmail.com,
-        Pujin Shi <shipujin.t@gmail.com>
-Subject: [PATCH] fs: tree-checker: fix missing brace warning for old compilers
-Date:   Sat,  3 Oct 2020 08:11:51 +0800
-Message-Id: <20201003001151.1306-1-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        Fri, 2 Oct 2020 20:14:23 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DE87A2A2;
+        Sat,  3 Oct 2020 02:14:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601684060;
+        bh=+6oLaNXCzW10EOi7yZGKf53UByBP3OfCZ2DbymvFru4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bc+Deodasn0sCNZhaf6Gx6XbXjbyA7lfRaoFjKOxRjIEndIeT2xnvZAokcMbefTQw
+         OP9+oMRViNvXrrED+cG2VM92CfLmCZbm2aFhZAD3Wyigb0P4dwUvUhDrhDIY7727CE
+         Y+hgqcbTo6LIJe9vjNIbPBBkIdeb+0UBK1ua8qu0=
+Date:   Sat, 3 Oct 2020 03:13:42 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] of: platform: Batch fwnode parsing in the
+ init_machine() path
+Message-ID: <20201003001342.GA1730@pendragon.ideasonboard.com>
+References: <CAGETcx8owDP_Bu4oNCyHEsME8XpKygxghm8+yNc2RyMA4wyjCA@mail.gmail.com>
+ <20201001225952.3676755-1-saravanak@google.com>
+ <CAL_JsqKOUkKBKyxPtZ+BFXPiOfm2uPXhgJPxKP=WS-qX6kSB0w@mail.gmail.com>
+ <CAGETcx-tq446JQN0RpKhtyCXB+Y_PUePN_tBZsUmtpO7othm4g@mail.gmail.com>
+ <20201002175423.GE3933@pendragon.ideasonboard.com>
+ <CAGETcx-7nJaU6pDo_KL-nKmCaxv57C5aaXq-pvo4XiN=N0K5Jg@mail.gmail.com>
+ <20201002182712.GF3933@pendragon.ideasonboard.com>
+ <11018e7e-a6a1-2df6-5639-821a7c0cb68b@ti.com>
+ <CAGETcx8DCiEJy-1PiHheyuuw3YBYfFh67MBcOwv4JEviXmsp3Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAGETcx8DCiEJy-1PiHheyuuw3YBYfFh67MBcOwv4JEviXmsp3Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For older versions of gcc, the array = {0}; will cause warnings:
+Hi Saravana,
 
-fs/btrfs/tree-checker.c: In function 'check_root_item':
-fs/btrfs/tree-checker.c:1038:9: warning: missing braces around initializer [-Wmissing-braces]
-  struct btrfs_root_item ri = { 0 };
-         ^
-fs/btrfs/tree-checker.c:1038:9: warning: (near initialization for 'ri.inode') [-Wmissing-braces]
+On Fri, Oct 02, 2020 at 12:56:30PM -0700, Saravana Kannan wrote:
+> On Fri, Oct 2, 2020 at 11:35 AM 'Grygorii Strashko' via kernel-team wrote:
+> > On 02/10/2020 21:27, Laurent Pinchart wrote:
+> > > On Fri, Oct 02, 2020 at 10:58:55AM -0700, Saravana Kannan wrote:
+> > >> On Fri, Oct 2, 2020 at 10:55 AM Laurent Pinchart wrote:
+> > >>> On Fri, Oct 02, 2020 at 10:51:51AM -0700, Saravana Kannan wrote:
+> > >>>> On Fri, Oct 2, 2020 at 7:08 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >>>>> On Thu, Oct 1, 2020 at 5:59 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >>>>>>
+> > >>>>>> When commit 93d2e4322aa7 ("of: platform: Batch fwnode parsing when
+> > >>>>>> adding all top level devices") optimized the fwnode parsing when all top
+> > >>>>>> level devices are added, it missed out optimizing this for platform
+> > >>>>>> where the top level devices are added through the init_machine() path.
+> > >>>>>>
+> > >>>>>> This commit does the optimization for all paths by simply moving the
+> > >>>>>> fw_devlink_pause/resume() inside of_platform_default_populate().
+> > >>>>>>
+> > >>>>>> Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> > >>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > >>>>>> ---
+> > >>>>>>   drivers/of/platform.c | 19 +++++++++++++++----
+> > >>>>>>   1 file changed, 15 insertions(+), 4 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > >>>>>> index 071f04da32c8..79972e49b539 100644
+> > >>>>>> --- a/drivers/of/platform.c
+> > >>>>>> +++ b/drivers/of/platform.c
+> > >>>>>> @@ -501,8 +501,21 @@ int of_platform_default_populate(struct device_node *root,
+> > >>>>>>                                   const struct of_dev_auxdata *lookup,
+> > >>>>>>                                   struct device *parent)
+> > >>>>>>   {
+> > >>>>>> -       return of_platform_populate(root, of_default_bus_match_table, lookup,
+> > >>>>>> -                                   parent);
+> > >>>>>> +       int ret;
+> > >>>>>> +
+> > >>>>>> +       /*
+> > >>>>>> +        * fw_devlink_pause/resume() are only safe to be called around top
+> > >>>>>> +        * level device addition due to locking constraints.
+> > >>>>>> +        */
+> > >>>>>> +       if (!root)
+> > >>>>>> +               fw_devlink_pause();
+> > >>>>>> +
+> > >>>>>> +       ret = of_platform_populate(root, of_default_bus_match_table, lookup,
+> > >>>>>> +                                  parent);
+> > >>>>>
+> > >>>>> of_platform_default_populate() vs. of_platform_populate() is just a
+> > >>>>> different match table. I don't think the behavior should otherwise be
+> > >>>>> different.
+> > >>>>>
+> > >>>>> There's also of_platform_probe() which has slightly different matching
+> > >>>>> behavior. It should not behave differently either with respect to
+> > >>>>> devlinks.
+> > >>>>
+> > >>>> So I'm trying to do this only when the top level devices are added for
+> > >>>> the first time. of_platform_default_populate() seems to be the most
+> > >>>> common path. For other cases, I think we just need to call
+> > >>>> fw_devlink_pause/resume() wherever the top level devices are added for
+> > >>>> the first time. As I said in the other email, we can't add
+> > >>>> fw_devlink_pause/resume() by default to of_platform_populate().
+> > >>>>
+> > >>>> Do you have other ideas for achieving "call fw_devlink_pause/resume()
+> > >>>> only when top level devices are added for the first time"?
+> > >>>
+> > >>> I'm not an expert in this domain, but before investigating it, would you
+> > >>> be able to share a hack patch that implements this (in the most simple
+> > >>> way) to check if it actually fixes the delays I experience on my system
+> > >>> ?
+> > >>
+> > >> So I take it the patch I sent out didn't work for you? Can you tell me
+> > >> what machine/DT you are using?
+> > >
+> > > I've replied to the patch:
+> > >
+> > > Based on v5.9-rc5, before the patch:
+> > >
+> > > [    0.652887] cpuidle: using governor menu
+> > > [   12.349476] No ATAGs?
+> > >
+> > > After the patch:
+> > >
+> > > [    0.650460] cpuidle: using governor menu
+> > > [   12.262101] No ATAGs?
+> > >
+> > > I'm using an AM57xx EVM, whose DT is not upstream, but it's essentially
+> > > a am57xx-beagle-x15-revb1.dts (it includes that DTS) with a few
+> > > additional nodes for GPIO keys, LCD panel, backlight and touchscreen.
+> > >
+> >
+> > hope you are receiving my mails as I've provided you with all required information already [1]
+> 
+> Laurent/Grygorii,
+> 
+> Looks like I'm definitely missing emails. Sorry about the confusion.
+> 
+> I have some other urgent things on my plate right now. Is it okay if I
+> get to this in a day or two? In the end, we'll find a solution that
+> addresses most/all of the delay.
 
-1 warnings generated
+No issue on my side.
 
-Fixes: 443b313c7ff8 ("btrfs: tree-checker: fix false alert caused by legacy btrfs root item")
-Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
----
- fs/btrfs/tree-checker.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+By the way, during initial investigations, I've traced code paths to
+figure out if there was a particular step that would consume a large
+amount of time, and found out that of_platform_populate() ends up
+executing devlink-related code that seems to have an O(n^3) complexity
+on the number of devices, with a few dozens of milliseconds for each
+iteration. That's a very bad complexity.
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index f0ffd5ee77bd..5028b3af308c 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer *leaf, struct btrfs_key *key,
- 			   int slot)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
--	struct btrfs_root_item ri = { 0 };
-+	struct btrfs_root_item ri = {};
- 	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
- 				     BTRFS_ROOT_SUBVOL_DEAD;
- 	int ret;
 -- 
-2.18.1
+Regards,
 
+Laurent Pinchart
