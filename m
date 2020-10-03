@@ -2,106 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4960C2825EB
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 20:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84F22825ED
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 20:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725861AbgJCSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 14:43:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55861 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725816AbgJCSnY (ORCPT
+        id S1725835AbgJCSty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 14:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgJCSty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 14:43:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601750603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HWM0RfrM0HZAs25gIGx3NLfFo36RAwB9ram8EBWXtH0=;
-        b=GZdA/dNgTetISJvKA0GhuyfZlqwEPFjnyJ/dfy0/FPIqofXNispA1i0pX8zPn3aIlxtBah
-        PN00URs8rm7BwF1BxiM9QEtElv12C14VlYae6MhmiQD4dGe4L6DTlts5pAMBca8Z2W8yq6
-        4Kf8RUVA87GLGDe+cz8m2ZkEAHJSPac=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-XBxCzSEXPWS7Mu60RHBHhg-1; Sat, 03 Oct 2020 14:43:19 -0400
-X-MC-Unique: XBxCzSEXPWS7Mu60RHBHhg-1
-Received: by mail-wr1-f72.google.com with SMTP id l17so2043204wrw.11
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 11:43:19 -0700 (PDT)
+        Sat, 3 Oct 2020 14:49:54 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087DAC0613D0;
+        Sat,  3 Oct 2020 11:49:54 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id d197so5082994iof.0;
+        Sat, 03 Oct 2020 11:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=M+NTwkwx0N9yWO/wezg68AB6eVWtAoDDg6Kty2qKvP4=;
+        b=hzBguYBkZBzqEmJuug5dfNrRgMRf6oBU/2R4G6OqH0ZlE8g5C+3cfL9s2NOAT7E/Hd
+         hGQ67gOxjyqiarz6Gye17iQkaLwoBT/sPyZSRHeKfiP0YSqONZRVnTRbtTNRfzjfhJnp
+         BdXbK+akhn7RNnn4nLegEW94W+Zo9gUZwPHkPNRmsAiBv/Oz7bgVLTxC6SmJT6CTPxT4
+         I2Jtb8e1Kvv7Kc0TAqEEwJ6rO3kjFoRBLMDpb5va1XFFcIdDLBDJ0x/jdm9YyDOlrnZz
+         0zLfHNnVDBY+qZLiVjh40pfXt4lqLMjjXCPT/stvkZQv94+Mc5NyvD8V7yjs4WfFwffA
+         VrkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HWM0RfrM0HZAs25gIGx3NLfFo36RAwB9ram8EBWXtH0=;
-        b=Z5cfUBF6hDKMSb/HZvF4Dvqujlumh5YlumAwbYcOQKLySIN8DuLdLom+C5dagTDsZo
-         jkFVel8bTa5UUvKyCUuPL35Br2Zf1S0nS6lo2If+Vh6Uky62GzY+3M95z319X86+NglN
-         a4CE98iq2anxcG8kAGieofsdCzFE4uK7Y4u34eCi9TaLYaWFrqlAGr8AxYosKLVejR8+
-         8mXjssUupSCiJR13w6Fj7t4K0H0F8lz9jCg80gxD/hiZudUWfhmgIPBNu8rp9OZyvySA
-         EV70m2UBqRV5cbVOkcKkXiLFGoDCNM0kJ3ceHq4IcrGtU+S0iEVkSbd+D4icFs1MRfWb
-         FYMA==
-X-Gm-Message-State: AOAM531/9X5lkkQcX35SM8AoF0dS6xcBJotU3r5GzcXbF7xL3o+IJXYk
-        bWlnlzQuUaDCAvEufFJXVeFFZ2EdATC+8YeAbEPi88BgdGB6f5UFdNuK33bzuXGgOrnOHj4J/ek
-        Od53JnkuDx/o6pM6wo4oVdy4U
-X-Received: by 2002:adf:e852:: with SMTP id d18mr9744712wrn.40.1601750598435;
-        Sat, 03 Oct 2020 11:43:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy038Yccnpob9//W8sOr1lm3wbsl6dgaQoAhcFw98vUjFVu1T3n44Gs2WlgxSmLiPyyNgs9bw==
-X-Received: by 2002:adf:e852:: with SMTP id d18mr9744690wrn.40.1601750598224;
-        Sat, 03 Oct 2020 11:43:18 -0700 (PDT)
-Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
-        by smtp.gmail.com with ESMTPSA id z127sm6091271wmc.2.2020.10.03.11.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 11:43:17 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 14:43:13 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     anant.thazhemadam@gmail.com, jasowang@redhat.com, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees][PATCH 0/2] reorder members of structures
- in virtio_net for optimization
-Message-ID: <20201003144300-mutt-send-email-mst@kernel.org>
-References: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
- <20201002.190638.1090456279017490485.davem@davemloft.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=M+NTwkwx0N9yWO/wezg68AB6eVWtAoDDg6Kty2qKvP4=;
+        b=a5O/XDBcE0fZOYVPAAvjSyyKYiuV86m0A05LHHuHejFV+CJkCKy6sKanJ+TvmReOhg
+         7WdB3T3IYXzhcibFahGn0ENgShWrr9Y67JqEW/JPmL+xPJzwh/gF1QC2Y9VkCAE7T4a6
+         bgkTY2I9xvRgjSRrLph+BXpmKQdyEBFVcU+VgVVqqc62iv3YEvJPGndhT5uHuwXccMvT
+         atS4IuqTdoAIThwpdQneC6vPxUlXSikR/H2nXvD48CF2rbUJEyS/43d4dtrDtKl24C64
+         dGrOv5IQTGy905AJOdkVYxQF21AIEZlbHjbnitNdVZapiG4oZDa/qfw7YOq1ZV+AgXxD
+         b1tw==
+X-Gm-Message-State: AOAM533CYk36fhjYHpHrDI001btjHXu8FxmC7hYq9SkaRu2LIEFM/X+Y
+        20fGoittFq6HzLgWkb9zFjXmpnSQfgApqeFeWhk=
+X-Google-Smtp-Source: ABdhPJzj/OwLvzGJH4oaINGM+2uNqD1w5q9P2e6hzirF/Lenr4xohEOk7v0GXYVGKoFkXkSfrsdpSwgsbgAXIK4EXL8=
+X-Received: by 2002:a05:6638:1389:: with SMTP id w9mr7118360jad.138.1601750993142;
+ Sat, 03 Oct 2020 11:49:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002.190638.1090456279017490485.davem@davemloft.net>
+References: <20200928085505.GA22244@shbuild999.sh.intel.com>
+ <74757C2A-7C09-4C2E-9828-E8D12EE4706B@fb.com> <996F1C01-3607-4643-817E-8318DFCE59A9@fb.com>
+ <20200929054730.GA55377@shbuild999.sh.intel.com>
+In-Reply-To: <20200929054730.GA55377@shbuild999.sh.intel.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 3 Oct 2020 20:49:41 +0200
+Message-ID: <CA+icZUUu2Tv+EJ8FpkCxyNqRa3hRwutUrFCxY-RFZ5LACm9ieA@mail.gmail.com>
+Subject: Re: PROBLEM: zstd bzImage decompression fails for some x86_32 config
+ on 5.9-rc1
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Nick Terrell <terrelln@fb.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
+        "philip.li@intel.com" <philip.li@intel.com>,
+        Petr Malat <oss@malat.biz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 07:06:38PM -0700, David Miller wrote:
-> From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> Date: Wed, 30 Sep 2020 10:47:20 +0530
-> 
-> > The structures virtnet_info and receive_queue have byte holes in 
-> > middle, and their members could do with some rearranging 
-> > (order-of-declaration wise) in order to overcome this.
-> > 
-> > Rearranging the members helps in:
-> >   * elimination the byte holes in the middle of the structures
-> >   * reduce the size of the structure (virtnet_info)
-> >   * have more members stored in one cache line (as opposed to 
-> >     unnecessarily crossing the cacheline boundary and spanning
-> >     different cachelines)
-> > 
-> > The analysis was performed using pahole.
-> > 
-> > These patches may be applied in any order.
-> 
-> What effects do these changes have on performance?
-> 
-> The cache locality for various TX and RX paths could be effected.
-> 
-> I'm not applying these patches without some data on the performance
-> impact.
-> 
-> Thank you.
+On Tue, Sep 29, 2020 at 7:47 AM Feng Tang <feng.tang@intel.com> wrote:
+>
+> On Tue, Sep 29, 2020 at 05:15:38AM +0000, Nick Terrell wrote:
+> >
+> >
+> > > On Sep 28, 2020, at 11:02 AM, Nick Terrell <terrelln@fb.com> wrote:
+> > >
+> > >
+> > >
+> > >> On Sep 28, 2020, at 1:55 AM, Feng Tang <feng.tang@intel.com> wrote:
+> > >>
+> > >> Hi Nick,
+> > >>
+> > >> 0day has found some kernel decomprssion failure case since 5.9-rc1 (=
+X86_32
+> > >> build), and it could be related with ZSTD code, though initially we =
+bisected
+> > >> to some other commits.
+> > >>
+> > >> The error messages are:
+> > >>    Decompressing Linux...
+> > >>
+> > >>    ZSTD-compressed data is corrupt
+> > >>
+> > >> This could be reproduced by compiling the kernel with attached confi=
+g,
+> > >> and use QEMU to boot it.
+> > >>
+> > >> We suspect it could be related with the kernel size, as we only see
+> > >> it on big kernel, and some more info are:
+> > >>
+> > >> * If we remove a lot of kernel config to build a much smaller kernel=
+,
+> > >> it will boot fine
+> > >>
+> > >> * If we change the zstd algorithm from zstd22 to zstd19, the kernel =
+will
+> > >> boot fine with below patch
+> > >>
+> > >> Please let me know if you need more info, and sorry for the late rep=
+ort
+> > >> as we just tracked down to this point.
+> > >
+> > > Thanks for the report, I will look into it today.
+> >
+> > CC: Petr Malat
+> >
+> > I=E2=80=99ve successfully reproduced, and found the issue. It turns out=
+ that this
+> > patch [0] from Petr Malat fixes the issue. As I mentioned in that threa=
+d, his
+> > fix corresponds to this upstream commit [1].
+>
+> Glad to know there is already a fix.
+>
+> > Can we get Petr's patch merged into v5.9?
+> >
+> > This bug only happens when the window size is > 8 MB. A non-kernel work=
+around
+> > would be to compress the kernel level 19 instead of level 22, which use=
+s an
+> > 8 MB window size, instead of a 128 MB window size.
+> >
+> > The reason it only shows up for large kernels, is that the code is only=
+ buggy
+> > when an offset > 8 MB is used, so a kernel <=3D 8 MB can't trigger the =
+bug.
+> >
+> > Best,
+> > Nick
+> >
+> > [0] https://lkml.org/lkml/2020/9/14/94
+>
+> With this patch, all the failed cases on my side could boot fine.
+>
+> Tested-by: Feng Tang <feng.tang@intel.com>
+>
 
-Agree wholeheartedly.
+I applied this patch to see if it is OK with x86 64bit - Yes, it is.
 
--- 
-MST
+Feel free to add my:
 
+     Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+- Sedat -
+
+> Thanks,
+> Feng
+>
+> > [1] https://github.com/facebook/zstd/commit/8a5c0c98ae5a7884694589d7a69=
+bc99011add94d
+>
+>
