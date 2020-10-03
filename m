@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A80D281FED
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E3A281FF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725763AbgJCBLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:11:24 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:42142 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgJCBLY (ORCPT
+        id S1725778AbgJCBPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:15:19 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:38954 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgJCBPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:11:24 -0400
-X-Greylist: delayed 395 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 21:11:23 EDT
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 1274F6C00736;
-        Sat,  3 Oct 2020 04:04:47 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1601687087; bh=rP1SpII8IfYLyn/Duc/a2Uv9a8cxe5kZgqutMyfoNp4=;
-        h=References:From:To:Cc:Subject:In-reply-to:Date;
-        b=lKHqTME3BKFdahpEWa9pHuudtFTOkciYRzgTKZPCThpMTMGxidgUt687HYEZHeO3N
-         Z9MIOmSYChUOJitm1C6WWDlbK1FFJ1QHe7E0eOGwT38ePlFQzgS0UeDb5HK0XiHNQZ
-         WCqVwd1BdaUIV8DIprCxJYtqcXJ2D5QHG5CuhCzQ=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 00CB26C0071E;
-        Sat,  3 Oct 2020 04:04:47 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id dsh-QdpKNSkL; Sat,  3 Oct 2020 04:04:46 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 6826A6C0071B;
-        Sat,  3 Oct 2020 04:04:46 +0300 (EEST)
-Received: from nas (unknown [103.116.47.50])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 929CF1BE00ED;
-        Sat,  3 Oct 2020 04:04:43 +0300 (EEST)
-References: <20201003001151.1306-1-shipujin.t@gmail.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hankinsea@gmail.com
-Subject: Re: [PATCH] fs: tree-checker: fix missing brace warning for old
- compilers
-In-reply-to: <20201003001151.1306-1-shipujin.t@gmail.com>
-Message-ID: <tuvcnmqj.fsf@damenly.su>
-Date:   Sat, 03 Oct 2020 09:04:36 +0800
+        Fri, 2 Oct 2020 21:15:18 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931F98j019268;
+        Sat, 3 Oct 2020 01:15:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=abE86DuzVPBoYXarI72XFmF5L0gOwK3lw7dIMJvC8k8=;
+ b=IC3RiVMn+vJnSox7VKbbaXmukqRGZ0L7q5x64UFuNdBWXEGGv6B/4H6nTs13o2h2RbLW
+ M/vPtMTETtK7dVlUnu0bclX99VDYuZEC2KDn/OMua1NjcehdnJN+idEvhxHYmpBrlbXG
+ x74/Vi/dT9TEEc+sX73+ZfnW/WkkCWLhOFfDmnrBdlZmpxluZER2Pydp1if+UH6VOBOy
+ GWjPoNYmk/xnXqduCVW0xLi8TXlkDzu615RY/9sB9kFHeRiQ9Y47klC3RaybntyDoYzy
+ 1Hqb3FpEfViZhmz38YlCJZmAmMTRzRorxQL/3kzXwF7WN2eciHy4uckPN7nBqlYVQXUx /w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33xetag1td-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 01:15:08 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931F1iU167551;
+        Sat, 3 Oct 2020 01:15:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33xfb8g3f3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 01:15:08 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0931F49K023571;
+        Sat, 3 Oct 2020 01:15:06 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 18:15:04 -0700
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     <kartilak@cisco.com>, <sebaddel@cisco.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: snic: Remove unnecessary condition to simplify
+ the code
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq18scodsa8.fsf@ca-mkp.ca.oracle.com>
+References: <20200925060754.156599-1-jingxiangfeng@huawei.com>
+Date:   Fri, 02 Oct 2020 21:15:02 -0400
+In-Reply-To: <20200925060754.156599-1-jingxiangfeng@huawei.com> (Jing
+        Xiangfeng's message of "Fri, 25 Sep 2020 14:07:54 +0800")
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6NpmlYxOGzysiV+lRWetdgtKxjYrL+Dt55TE3V0G3GeDUSOFfksTURGxg2hxU3m4og==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
+ suspectscore=1 malwarescore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=1 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sat 03 Oct 2020 at 08:11, Pujin Shi <shipujin.t@gmail.com> 
-wrote:
+Jing,
 
-> For older versions of gcc, the array = {0}; will cause warnings:
->
-So what's the version number of the gcc? "struct foo = { 0 }" 
-should be
-correct.
+> ret is always zero or an error in this code path. So the assignment to
+> ret is redundant, and the code jumping to a label is unneed.
+> Let's remove them to simplify the code. No functional changes.
 
-May be the compiler issue[1] related?
+Applied to 5.10/scsi-staging, thanks!
 
-1: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119
-
-
-> fs/btrfs/tree-checker.c: In function 'check_root_item':
-> fs/btrfs/tree-checker.c:1038:9: warning: missing braces around 
-> initializer [-Wmissing-braces]
->   struct btrfs_root_item ri = { 0 };
->          ^
-> fs/btrfs/tree-checker.c:1038:9: warning: (near initialization 
-> for 'ri.inode') [-Wmissing-braces]
->
-> 1 warnings generated
->
-> Fixes: 443b313c7ff8 ("btrfs: tree-checker: fix false alert 
-> caused by legacy btrfs root item")
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
-> ---
->  fs/btrfs/tree-checker.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index f0ffd5ee77bd..5028b3af308c 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1035,7 +1035,7 @@ static int check_root_item(struct 
-> extent_buffer *leaf, struct btrfs_key *key,
->  			   int slot)
->  {
->  	struct btrfs_fs_info *fs_info = leaf->fs_info;
-> -	struct btrfs_root_item ri = { 0 };
-> +	struct btrfs_root_item ri = {};
->  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
->  				     BTRFS_ROOT_SUBVOL_DEAD;
->  	int ret;
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
