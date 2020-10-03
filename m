@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542332823C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91FC2823C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 13:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgJCLJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 07:09:18 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:35915 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgJCLJS (ORCPT
+        id S1725803AbgJCLLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 07:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725767AbgJCLLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 07:09:18 -0400
-Received: by mail-il1-f206.google.com with SMTP id q11so3225214ilt.3
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 04:09:16 -0700 (PDT)
+        Sat, 3 Oct 2020 07:11:16 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDF7C0613D0;
+        Sat,  3 Oct 2020 04:11:14 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so4517601wrt.3;
+        Sat, 03 Oct 2020 04:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GnbMU4sFZhNsugLjOl+CGPMW76afg/wZKnEggQ7T6cw=;
+        b=cQOcDINVS6MiDBoZKsVMyRqVQndYXKkZv9tcvtlRcL4SrZnv/24eiwn5b/p1J6XoRq
+         b/bK231L8x74LwsmxCPPci0Cza+i0lyJfv/treN4Nlxw4Z31yj4b5YggHn2CUD1pXvXY
+         x9hue13PdN3HoWgypxTIggRgMfm0rnwzOsCQEeg5Aci+iiCDMOg82qzfXWVr1HRuC3Gm
+         wS4BmbpF867fcebKoIg1hWrJFOXn5/r75G/UXaLLAefpAjBgAZeGGWGtO/y6Uj4f9hgn
+         uSvMoynfHQG7pQExdsucOacjEe1fKSvMLQdu3L5cQIxR4BXAT1fjxvhd/loetEQakmeo
+         2/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dTK/nKvhZxfMp3/bNpAjTTnUJuU+9eh3Dm8DpO4H7wU=;
-        b=CzzK9A+RmtC3eJSGz4uSiPEFYeNTH7ZmCJiM3b4fGHXDOsXisRo8EkfPueD82kBBQt
-         2R0R3HL5icGZDbXh1dsgTFWdjRjWx6/i3YCGsog5NZurFUSQUL3l0Y3Fo2sATnRUUr//
-         1h0noom9hKNzk3B5zdBDPm7Hfjd3nFuW/Fa/umvE+F732MxOfDf66S5nOLJ9CA9mckP+
-         1AztxTUlzpzweIQMb94SRy+Cu2u9nuAqyyfbxIVBXLAsL5xzhSKUfiHo3hlo8li/tIwz
-         XUM+++/5IP6pwY6YFSbYTScHpmJnvHm9F8j1O0YSG+gmwaQPEtwuP6azogyVdjCzAIyY
-         GhMg==
-X-Gm-Message-State: AOAM531uDZA3R8toTdwDQ1UvJ8vJseJEnlcCP7zS/hIwBw7BW5jCjdVR
-        r8lyXwj49Ny3F69ZhYpDgscMfDxhCA5+PO+aruGFR+KN8L/E
-X-Google-Smtp-Source: ABdhPJwC3dNiYhgqbzVbrFviSdVxYHW+Ve3vAnb5Edpdxxqh8eJY1R6saPfuuf3rtNlBWlmCOC+trqmxVsniBFooOQE+gNzWZBId
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GnbMU4sFZhNsugLjOl+CGPMW76afg/wZKnEggQ7T6cw=;
+        b=kOdnj8hf3Oh1jWxzmx+nkJTbli5SkOSJHtjiqNTvdupzZBIEeJOdo1ChsiiHXvopYp
+         VNJqWwXWZ1u7L3x9KAmBPY58Ot59WRxFudMe1rXztGK9WeUQ5JZ2RJnG8QBRHezVKDbw
+         dL2vICXe+sQWBTXTO9hJbwgIHXLTQCV2DUrWgTSJVJT4TGg6jBtbCW4giAxZkyXej65Y
+         80qBq3VOw612rEdtAeoXqM/p+oFJE1hNziLwDjG2+jM4onMX6497wc27uRzbVsfFiKBk
+         2ElVCv/VZhD7pzSoPqtKsY7/oEMCM3LiTR18BdqZpmyVQ90st0BCYK0PW5Aj9zJfPLen
+         gLwg==
+X-Gm-Message-State: AOAM5336VSpnsVhWQh+XvAq4EUWfj9aCB86x/k7Qtr2VQfAmHYgFxhBw
+        UtgzcLYM2n0bzD7qtleu6qU=
+X-Google-Smtp-Source: ABdhPJye6XSLqhpp984Q4kjRQ4Giw0MReRk2oETDk5NV4q7zUshaQCPtwEXp+7vyYu6U5DSl0W9HKQ==
+X-Received: by 2002:a5d:630a:: with SMTP id i10mr7550051wru.137.1601723473224;
+        Sat, 03 Oct 2020 04:11:13 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id u17sm5571995wri.45.2020.10.03.04.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 04:11:12 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Fix freeing of unassigned pointer
+Date:   Sat,  3 Oct 2020 12:10:50 +0100
+Message-Id: <20201003111050.25130-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:7412:: with SMTP id o18mr6257232jac.142.1601723355672;
- Sat, 03 Oct 2020 04:09:15 -0700 (PDT)
-Date:   Sat, 03 Oct 2020 04:09:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a4b3c205b0c24743@google.com>
-Subject: KASAN: out-of-bounds Read in __switch_to (2)
-From:   syzbot <syzbot+2667188e965125ab6e7a@syzkaller.appspotmail.com>
-To:     0x7f454c46@gmail.com, bp@alien8.de, chang.seok.bae@intel.com,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, luto@kernel.org,
-        mingo@redhat.com, sashal@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Commit ff7ea04ad579 ("net/mlx5e: Fix potential null pointer dereference")
+added some missing null checks but the error handling in
+mlx5e_alloc_flow() was left broken: the variable attr is passed to kfree
+although it is never assigned to and never needs to be freed in this
+function. Fix this.
 
-syzbot found the following issue on:
-
-HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15147bc3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
-dashboard link: https://syzkaller.appspot.com/bug?extid=2667188e965125ab6e7a
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11743a37900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2667188e965125ab6e7a@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: out-of-bounds in arch_end_context_switch arch/x86/include/asm/paravirt.h:625 [inline]
-BUG: KASAN: out-of-bounds in __switch_to+0xddc/0xfe0 arch/x86/kernel/process_64.c:566
-Read of size 8 at addr ffffffff89fc6bd8 by task swapper/1/0
-
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
-
-The buggy address belongs to the variable:
- pv_ops+0x118/0x2c0
-
-Memory state around the buggy address:
- ffffffff89fc6a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff89fc6b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffffff89fc6b80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                                                       ^
- ffffffff89fc6c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff89fc6c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 0 Comm: swapper/1 Tainted: G    B             5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Addresses-Coverity-ID: 1497536 ("Memory - illegal accesses")
+Fixes: ff7ea04ad579 ("net/mlx5e: Fix potential null pointer dereference")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index a0c356987e1a..88298e96c4ea 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -4536,13 +4536,14 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
+ 	struct mlx5e_tc_flow_parse_attr *parse_attr;
+ 	struct mlx5_flow_attr *attr;
+ 	struct mlx5e_tc_flow *flow;
+-	int err = -ENOMEM;
+ 	int out_index;
+ 
+ 	flow = kzalloc(sizeof(*flow), GFP_KERNEL);
++	if (!flow)
++		return -ENOMEM;
+ 	parse_attr = kvzalloc(sizeof(*parse_attr), GFP_KERNEL);
+-	if (!parse_attr || !flow)
+-		goto err_free;
++	if (!parse_attr)
++		goto err_free_flow;
+ 
+ 	flow->flags = flow_flags;
+ 	flow->cookie = f->cookie;
+@@ -4550,7 +4551,7 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
+ 
+ 	attr = mlx5_alloc_flow_attr(get_flow_name_space(flow));
+ 	if (!attr)
+-		goto err_free;
++		goto err_free_parse_attr;
+ 
+ 	flow->attr = attr;
+ 
+@@ -4566,11 +4567,11 @@ mlx5e_alloc_flow(struct mlx5e_priv *priv, int attr_size,
+ 
+ 	return 0;
+ 
+-err_free:
+-	kfree(flow);
++err_free_parse_attr:
+ 	kvfree(parse_attr);
+-	kfree(attr);
+-	return err;
++err_free_flow:
++	kfree(flow);
++	return -ENOMEM;
+ }
+ 
+ static void
+-- 
+2.28.0
+
