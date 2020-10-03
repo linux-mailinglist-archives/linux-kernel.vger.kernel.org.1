@@ -2,95 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD74C28202E
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9DC28202F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725765AbgJCBjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
+        id S1725783AbgJCBjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCBjR (ORCPT
+        with ESMTP id S1725536AbgJCBjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:39:17 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B67C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:15 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id h6so1332423pgk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 18:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h+QvCgCquLIB4PMIfsSI7g6Fcy5ZKMf55mJGCk+rTuI=;
-        b=BKxeBRa8DzK0YevsxBG8HJKezJXiRcmaDt5TT9fjnZd676lV9U9Kp3WYiikbZLQTCG
-         MsHhzbNT12XBkeupHSevSFUkAUPZ5TV9NQQjVFwO4hNmJWhobiHKQwQ6idmD2XxRna6w
-         9Ui7AD3bwIf6mHtJ6DZeoYnIvKBQihrIcHlbhh9lZWRF3p4M9wf2RW7yHoFpZAyb7gOk
-         dqAWzNJZVp77PPxTDoxHcRlJ48f9OVq2F7xUKzXiVY4LSWCLRP4REQjb6f5uOWXiG9Le
-         uHc8EGTYLwo75lCa/QvjlrN8WTcGEEqpiC3SYyvYfswFG/6srJqkGw/a4img/UW29Rst
-         kcLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h+QvCgCquLIB4PMIfsSI7g6Fcy5ZKMf55mJGCk+rTuI=;
-        b=SBmq0HoWSaN7NYoLvYipO5DLcAaak4x8JFlMfRB1X5lp+ZR4Hb+LtWDIZcXG9yIn0D
-         6kPcp0gGBI/tLFBDdJo7w8TXRxFaF06jahdOwPSabm9UeppsNgZ8JR5NDDxzKrbJCGlv
-         IKXNul4ebwjmuCYzSr8+p1MyFTnfpmgbL+BFImET20a9/o7uSYWHw20vFNdBn1UxvDQQ
-         jC2vT04y5PdOOT9tGZSuRWRxmOkLTSvLTweau2Y3ICehaQbA6eRx/KlijGUPRuCGWg2c
-         KCesx42otLy8zi8dYJwFiqlolS/NCQyQRiWbrlWmzzT91sGQiDAi9pWj6uA0M2mZdpRg
-         /NBg==
-X-Gm-Message-State: AOAM531d+S/OfUCqtvlY58X8imnoCLR3kwD4HgKVNuBvvpwmgC0Y3BCV
-        nF4Ae8FkYDlS0iOPXEArrgM=
-X-Google-Smtp-Source: ABdhPJzB2sB2tGvXPYLx0+TtzBNtOp8iWqRFjcT0S9ClFoF+s1HLljVCgbIB8YKmCtZ6v2/g2UHAOw==
-X-Received: by 2002:aa7:941a:0:b029:142:2501:34dc with SMTP id x26-20020aa7941a0000b0290142250134dcmr5533372pfo.53.1601689155074;
-        Fri, 02 Oct 2020 18:39:15 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id ie13sm2895918pjb.5.2020.10.02.18.39.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 18:39:14 -0700 (PDT)
-Subject: Re: [PATCH v6 11/14] misc: bcm-vk: add BCM_VK_QSTATS
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Desmond Yan <desmond.yan@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>
-References: <20201002212327.18393-1-scott.branden@broadcom.com>
- <20201002212327.18393-12-scott.branden@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <55f88956-48ea-08e3-c353-babb08f3a786@gmail.com>
-Date:   Fri, 2 Oct 2020 18:39:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.3.1
+        Fri, 2 Oct 2020 21:39:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6D1C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:31 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601689169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zvJj+HSH0Ju5woOAeCpiSB83Gd2F5p1g+Rg4kXFcYPg=;
+        b=GBQA8cl2QWn1FxCagUH1Y740o551bzNHs0yObGofP2BMx2yC5LvoT6UabyXDsQ6mvgWuCE
+        hTn9HVx5EqtNc37bYkvD5qz6Nz4nBAntv1iWBw/Im2GtEFa9giI72Aq1lgbsr6IvSfg9lU
+        Sdxz0wddpwQAOiNAgq3tkmS8JMJNMPlVcbTV4feOjHYWdeQM0febM7iP9kxv9vRNOMKppp
+        oSeN0XXeiXJXcqTXHNnaPPmqNNWnWcuxShwe8n8coYqZgeW5cIOtDTPullZLtIGUjjKdja
+        t4LUw0uv/C5xwwpFNKPkhbwZ6cmBgupe101FesFhZKRyTZuN8waWtb7NaPnJXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601689169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zvJj+HSH0Ju5woOAeCpiSB83Gd2F5p1g+Rg4kXFcYPg=;
+        b=L3U50frbBz1Ix3gIL2MrVdit5q77q3U0MWSN3vAoDFoglAiUwAnM8XCj0MycpodZJDVN+e
+        pGbgXqFGdh9RvDBw==
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid CPUs
+In-Reply-To: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+Date:   Sat, 03 Oct 2020 03:39:29 +0200
+Message-ID: <87r1qgccku.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201002212327.18393-12-scott.branden@broadcom.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
+> Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
+> part has CPUs with more than one type of micro-architecture. Thus, certain
+> features may only be present in a specific CPU type.
+>
+> It is useful to know the type of CPUs present in a system. For instance,
+> perf may need to handle CPUs differently depending on the type of micro-
+> architecture. Decoding machine check error logs may need the additional
+> micro-architecture type information, so include that in the log.
+
+'It is useful' as justification just makes me barf.
+
+> A hybrid part can be identified by reading a new CPUID feature bit.
+> Likewise, CPUID contains information about the CPU type as well as a new
+> native model ID. Details can be found in the Intel manual (SDM, [1]).
+>
+> This series adds support for Intel hybrid parts in two areas: a) adding
+> the hybrid feature bit as well as struct cpuinfo_x86; and b) decode machine
+> check errors on hybrid parts.
+
+Bla, bla, bla.
+
+> A later submission will use the proposed functionality to expose the CPU
+> topology to user space.
+
+The only patch which is accepted for now is:
+
+    	if (boot_cpu_has(X86_FEATURE_HYBRID_CPU))
+        	panic("Unsuppported insanity\n");
+
+I'm not all all willing to take anything else unless you or someone else
+provides a reasonable explanation for the overall approach of supporting
+this mess inlcuding stable kernels.
+
+This has been clearly communicated years ago when the topic was
+discussed at one of the Intel Techday events. It's not my problem if
+Intel internal communication is disfunctional.
+
+Just to bring you up to speed:
+
+     1) The whole CPU enumeration of x86 sucks and is in no way prepared
+        to deal with heterogenous CPU faetures
+
+        Boris and I have discussed this with Intel and on LKML and there
+        are ideas how to clean up that mess.
+
+        This needs to be solved first before we even start to talk about
+        this CPU has FOO but the other does not.
+
+     2) Intel has been told clearly that a prerequisite of adding any of
+        this is a well defined programming model and a proper design of
+        dealing with it at the kernel level.
+
+        Since that discussion at one of the Intel events I haven't heard
+        and seen anything related to that.
+
+        If Intel thinks that some magic PDF and some Intel internal
+        'works for me' patches are solving it, then I just have to give
+        up because explaining the requirements again is just waste of
+        time.
+
+So I'm taking Patch 1/3 which defines the misfeature flag and then put
+something like the above on top which will prevent booting on any of
+these machines.
+
+These two patches are going to be marked for stable simply because any
+attempt to use any of these asymetric features is a recipe to
+disaster. And that disaster is going to happen simply because user space
+can use CPUID to figure out what a CPU supports. I'm not at all
+interested in the resulting wreckage reports.
+
+It's a sad state of affairs that the only outcome of a dicsussion which
+touched all of the above is a patch set which paves the path to hell.
+
+Not going to happen.
+
+Thanks,
+
+        tglx
 
 
-On 10/2/2020 2:23 PM, Scott Branden wrote:
-> Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
-> queue statistics.
-> 
-> These statistics keep track of max, abs_max, and average for the
-> messages queues.
-> 
-> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
-> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-
-would not it make more sense to have those debug prints be trace printks 
-instead? Given what you explained in the previous patch version and the 
-desire to correlate with other system wide activity, that might make 
-more sense. Looking at the kernel's log for debugging performance or 
-utilization or just to get a glimpse of what is going on is not quite 
-suited past probe.
--- 
-Florian
