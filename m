@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386E7282032
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FB3282035
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgJCBj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCBj5 (ORCPT
+        id S1725768AbgJCBnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:43:40 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42006 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCBnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:39:57 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A0DC0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:56 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id x16so2019425pgj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 18:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=1v3By7yU45Bmu0NIaU5QNcQkQvQCDjWaS3fjoaCGs4M=;
-        b=X1Admulul8xwuETLmzkYaZmPKEcjCvBdCxOIAo6xYnj0918QidtP5lCCoCFYAOj6yW
-         Yxn566dOAjKJ9iJx33fFAxQgsSab3CHx1Ry4FcwZCP8f6zhaqW0cCsNLqq+4wMPUKth9
-         7dehe7jAXb2/HI7wlIvMLJmEkivR6hNmQnSNI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=1v3By7yU45Bmu0NIaU5QNcQkQvQCDjWaS3fjoaCGs4M=;
-        b=VONc5MSFFb8cnJ1qUr8AnHIFIhHsAzQdTpbsRiiADRAy862tTHUr59n8Pn5j8fea/7
-         KokVSKhm2UTaugzwA/AvgmvMwsik+7besEbIVNqiV3n1UrJO7KRKzSK9hMGFvI1O0w5I
-         FQBUNdUTk73hppsdK/9sEgKmEWxtOL/93fMCHofsnl/dKMBpSzVaqA1JAbGU07BJnSTu
-         MOuiRi/2wcJL2E9oM80r38iR7QeBwqCgSOlW/NDVPg61zEr0FHM3zdnPGxPoEo/skLyl
-         fE5bb6BBcuRDTmiNd9NdUb7EzdauWm9EEWa+yPdD2cYZxak8hnySNKixYEAS1X3YWUOY
-         3iDg==
-X-Gm-Message-State: AOAM533Znjd6w6iVVojM4Kxygq6bUbxegLIEmjFqEh1cmPZgqVMPanRv
-        dRqpJbdGU5BdMaAuqwb5jg+M4Q==
-X-Google-Smtp-Source: ABdhPJx3l+GbWwg/wKPqoJepbGG2OIbKFcguASZ6y5wTgqJgOe9scEIGjuqf7fADhsHj623SrG1WJg==
-X-Received: by 2002:aa7:85d4:0:b029:142:4339:42ca with SMTP id z20-20020aa785d40000b0290142433942camr5460800pfn.5.1601689195794;
-        Fri, 02 Oct 2020 18:39:55 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id z28sm3648837pfq.81.2020.10.02.18.39.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 18:39:54 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 2 Oct 2020 21:43:40 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931dhfW051310;
+        Sat, 3 Oct 2020 01:43:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=jr7g9jBDA0hKwl6jmC4FK21yEFt8GUbjoiRHm8XnRHk=;
+ b=q/oVU9CEtVX/Sxh9LaUfYdApLac9rXLN7sh2oJ87NFw+0odu//NG3hzKhqVz+aM6qC7s
+ kv00dkrGhcdBkuGQWS3p2J7uo3UQ04Bpf1X4VeKFPLVOztmXSS4+X4eOPyB8uamjZuUi
+ 5jhEmhLdPniXjTlDJ45qifyFNyPhpFH9e8bOIfBiRbPjg+0wkaVPwLlCvuH3N9Rfgu/F
+ jJjv77X93/Hihwp+DKqjraNxrbHL3NE7zVPHuTL7fS0s9w4zs8K8IxBinjSYpEFR1xAE
+ i9bRSxhFKWfCAjOtpn+L4krUJ/ryXQ9kN0bGDa1MwXv8gtFZxZC7i8LDM+DtuCoynM1P 0A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33swkmdgd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 01:43:33 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931eu57065334;
+        Sat, 3 Oct 2020 01:43:32 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33tfdydh9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 01:43:32 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0931hVxh008342;
+        Sat, 3 Oct 2020 01:43:32 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 18:43:31 -0700
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: mvumi: Fix error return in mvumi_io_attach()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1a6x4ccec.fsf@ca-mkp.ca.oracle.com>
+References: <20200910123848.93649-1-jingxiangfeng@huawei.com>
+Date:   Fri, 02 Oct 2020 21:43:29 -0400
+In-Reply-To: <20200910123848.93649-1-jingxiangfeng@huawei.com> (Jing
+        Xiangfeng's message of "Thu, 10 Sep 2020 20:38:48 +0800")
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201001084425.23117-4-rojay@codeaurora.org>
-References: <20201001084425.23117-1-rojay@codeaurora.org> <20201001084425.23117-4-rojay@codeaurora.org>
-Subject: Re: [PATCH V5 3/3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, vkaur@codeaurora.org,
-        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
-Date:   Fri, 02 Oct 2020 18:39:53 -0700
-Message-ID: <160168919332.310579.15311671258384969025@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ adultscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010030015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=1 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Roja Rani Yarubandi (2020-10-01 01:44:25)
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
-qcom-geni.c
-> index aee2a1dd2c62..56d3fbfe7eb6 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -380,6 +380,36 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_=
-dev *gi2c,
->         }
->  }
-> =20
-> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
-> +{
-> +       int ret;
-> +       u32 geni_status;
-> +       unsigned long flags;
-> +       struct i2c_msg *cur;
-> +
-> +       /* Resume device, runtime suspend can happen anytime during trans=
-fer */
-> +       ret =3D pm_runtime_get_sync(gi2c->se.dev);
-> +       if (ret < 0) {
-> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", re=
-t);
-> +               return;
-> +       }
-> +
-> +       spin_lock_irqsave(&gi2c->lock, flags);
 
-We grab the lock here.
+Jing,
 
-> +       geni_status =3D readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
-> +       if (!(geni_status & M_GENI_CMD_ACTIVE))
-> +               goto out;
-> +
-> +       cur =3D gi2c->cur;
-> +       geni_i2c_abort_xfer(gi2c);
+> Fix to return error code PTR_ERR() from the error handling case instead
+> of 0.
 
-But it looks like this function takes the lock again? Did you test this
-with lockdep enabled? It should hang even without lockdep, so it seems
-like this path of code has not been tested.
+Applied to 5.10/scsi-staging, thanks!
 
-> +       if (cur->flags & I2C_M_RD)
-> +               geni_i2c_rx_msg_cleanup(gi2c, cur);
-> +       else
-> +               geni_i2c_tx_msg_cleanup(gi2c, cur);
-> +       spin_unlock_irqrestore(&gi2c->lock, flags);
-> +out:
-> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
-> +}
-> +
->  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg=
- *msg,
->                                 u32 m_param)
->  {
+-- 
+Martin K. Petersen	Oracle Linux Engineering
