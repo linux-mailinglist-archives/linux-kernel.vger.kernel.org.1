@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369AC2822A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4002822A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgJCIrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 04:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgJCIrB (ORCPT
+        id S1725795AbgJCIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 04:48:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725601AbgJCIsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:47:01 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE69BC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 01:47:00 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 62F49C63EB; Sat,  3 Oct 2020 09:46:56 +0100 (BST)
-Date:   Sat, 3 Oct 2020 09:46:56 +0100
-From:   Sean Young <sean@mess.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>, mchehab@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH V3 1/2] bindings: media: gpio-ir-receiver: add
- linux,autosuspend-period property
-Message-ID: <20201003084656.GA29917@gofer.mess.org>
-References: <20200922190807.6830-1-qiangqing.zhang@nxp.com>
- <20200922190807.6830-2-qiangqing.zhang@nxp.com>
- <20200929155201.GA665464@bogus>
+        Sat, 3 Oct 2020 04:48:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601714926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JSzviH95g3Cg7Ab3hoyr0QKGSSvhU8NZpt80cGzHgMc=;
+        b=ghXyQabf2StgurIKwvbMjJzNxrYezAFn8OmNZ5UkdM45DKD6t3QltjttTY86Ks6HIxNPHf
+        srhzjDDyt/mmazIT0bZG6apRhUX6J7XDa5zRp1v3rITGGMl6z3kIwrrBgH3ynOlA6CAv8u
+        yJgbMrJJeDTr40iVuFOypxKqweOP+9k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-543-_qK2yB6GOomSwg1G7JME1w-1; Sat, 03 Oct 2020 04:48:44 -0400
+X-MC-Unique: _qK2yB6GOomSwg1G7JME1w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8686D80364D;
+        Sat,  3 Oct 2020 08:48:43 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B02C760C05;
+        Sat,  3 Oct 2020 08:48:36 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Qian Cai <cai@redhat.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH] KVM: VMX: update PFEC_MASK/PFEC_MATCH together with PF intercept
+Date:   Sat,  3 Oct 2020 04:48:35 -0400
+Message-Id: <20201003084835.237833-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929155201.GA665464@bogus>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:52:01AM -0500, Rob Herring wrote:
-> On Wed, Sep 23, 2020 at 03:08:06AM +0800, Joakim Zhang wrote:
-> > Add linux,autosuspend-period property for gpio ir receiver. Some cpuidle
-> > systems wake from idle may take a bit long time, for such case, need
-> > disable cpuidle temporarily.
-> > 
-> > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > ---
-> > ChangeLogs:
-> > V1->V2:
-> > 	* New add.
-> > V2->V3:
-> > 	* linux,autosuspend-period = 125; -> linux,autosuspend-period = <125>;
-> > ---
-> >  Documentation/devicetree/bindings/media/gpio-ir-receiver.txt | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > index 58261fb7b408..e1447c9b0e26 100644
-> > --- a/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > +++ b/Documentation/devicetree/bindings/media/gpio-ir-receiver.txt
-> > @@ -7,6 +7,8 @@ Required properties:
-> >  Optional properties:
-> >  	- linux,rc-map-name: see rc.txt file in the same
-> >  	  directory.
-> > +        - linux,autosuspend-period: autosuspend delay time,
-> > +          the unit is milisecond.
-> 
-> What makes this linux specific?
+The PFEC_MASK and PFEC_MATCH fields in the VMCS reverse the meaning of
+the #PF intercept bit in the exception bitmap when they do not match.
+This means that, if PFEC_MASK and/or PFEC_MATCH are set, the
+hypervisor can get a vmexit for #PF exceptions even when the
+corresponding bit is clear in the exception bitmap.
 
-Good point. "linux,autosuspend-period" does not say what is being
-suspended either. How about "cpuidle-suspend-period" instead?
+This is unexpected and is promptly detected by a WARN_ON_ONCE.
+To fix it, reset PFEC_MASK and PFEC_MATCH when the #PF intercept
+is disabled (as is common with enable_ept && !allow_smaller_maxphyaddr).
 
+Reported-by: Qian Cai <cai@redhat.com>>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-Sean
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index f0384e93548a..f4e9c310032a 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -794,6 +794,18 @@ void update_exception_bitmap(struct kvm_vcpu *vcpu)
+ 	 */
+ 	if (is_guest_mode(vcpu))
+ 		eb |= get_vmcs12(vcpu)->exception_bitmap;
++        else {
++		/*
++		 * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
++		 * between guest and host.  In that case we only care about present
++		 * faults.  For vmcs02, however, PFEC_MASK and PFEC_MATCH are set in
++		 * prepare_vmcs02_rare.
++		 */
++		bool selective_pf_trap = enable_ept && (eb & (1u << PF_VECTOR));
++		int mask = selective_pf_trap ? PFERR_PRESENT_MASK : 0;
++		vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, mask);
++		vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, mask);
++	}
+ 
+ 	vmcs_write32(EXCEPTION_BITMAP, eb);
+ }
+@@ -4355,16 +4367,6 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+ 		vmx->pt_desc.guest.output_mask = 0x7F;
+ 		vmcs_write64(GUEST_IA32_RTIT_CTL, 0);
+ 	}
+-
+-	/*
+-	 * If EPT is enabled, #PF is only trapped if MAXPHYADDR is mismatched
+-	 * between guest and host.  In that case we only care about present
+-	 * faults.
+-	 */
+-	if (enable_ept) {
+-		vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, PFERR_PRESENT_MASK);
+-		vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, PFERR_PRESENT_MASK);
+-	}
+ }
+ 
+ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+-- 
+2.26.2
+
