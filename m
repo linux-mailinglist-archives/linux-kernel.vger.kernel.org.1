@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCFF2826C0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7797E2826C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726006AbgJCVUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 17:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgJCVUP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 17:20:15 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F44DC0613D0;
-        Sat,  3 Oct 2020 14:20:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so3031551pjb.2;
-        Sat, 03 Oct 2020 14:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=snQrsKK9wGUFakYFc3REQ5zRMVVl45uxLHEVZUf1zPE=;
-        b=uW8S+Fcu7cIrW1qdaLgGVCTcAXyZtwcLuuFHOuASPkpEY5tMlqyE2xZEsr+U7O7jnU
-         /oPYqWZ019qoXJ2N8XTHDr2274AVt/GhmPhdV7pPp07oYF2PRtQlignkwNwcUvY/pWI8
-         7QOdpol5oWv2i/+dIP77XbIiuWVLwPYfpI8fzoPiuscI2GXfNIyuYgpfbs6xG/ThizmK
-         wonsMN9Bdc4ZanBrm0TLxpQe8RMyMGb4FOc2s2PrhmGqYUsE7pDlRPIOIFCF3QvEeMEh
-         rojF6mDqPIpfDhdfk7OtAC6hct9CwhFiy8EGAR8m+p2/9LiU6Q9aAXapS8JQWHbA7SoO
-         OJIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=snQrsKK9wGUFakYFc3REQ5zRMVVl45uxLHEVZUf1zPE=;
-        b=TLfUFKv4majQaAxxd+Mz5WdJh4sipRi1Tftr5TlauH3BIrIxM6Eh6J9hS6vvAIt/5p
-         L9smz3O+PKfMxaioNc1qtKSlAKPAoJZI/j+SUg5iPJsgG5e9mqqxWpTGABZA/u7/RPE+
-         xILs25/LqHCBces/zA0Y/uZ4I273qbRd/4w7KlHEGNVcMABtrp96lIUCC6AC3ILqfo9w
-         skSXedPLIkp+mUg+id+q25Jo+skkkffJ1JlwHUMz7wb90IlHP93fulCp35Nnqeju2fRe
-         OX3NoWtOiyKRGblt4mGEv3Zu62CWkCHw1vyCc3W/jjrvrrM28bABARNQEOAuMxcxuZQD
-         jftg==
-X-Gm-Message-State: AOAM532S+l96T9OOMe8EWINls9GOMICeNwC1M4nzMT40YhY1urLzwfa9
-        9JzgUoPVRtrIX/XBWhD5IGU=
-X-Google-Smtp-Source: ABdhPJxu6wgoODYD1L249tBKjrit5dqjZ8vAWqt9NDnX4FUgsb5CwVv9+fEdutwq+r/QCMsLlyhyJQ==
-X-Received: by 2002:a17:90a:128d:: with SMTP id g13mr9016097pja.35.1601760014082;
-        Sat, 03 Oct 2020 14:20:14 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.217.69])
-        by smtp.gmail.com with ESMTPSA id u8sm2406380pfk.79.2020.10.03.14.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 14:20:13 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org, joe@perches.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
-        Petko Manolov <petkan@nucleusys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
-Date:   Sun,  4 Oct 2020 02:49:31 +0530
-Message-Id: <20201003211931.11544-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1725952AbgJCVXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 17:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725897AbgJCVXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 17:23:39 -0400
+Received: from earth.universe (unknown [185.213.155.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6F69206C1;
+        Sat,  3 Oct 2020 21:23:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601760218;
+        bh=XOM1iiTCmlGn+kzb56sHfCoEltP/3d+b62BLvBc/MwM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v70+ZPsuxCZhL/PJC3oUz2XopDL4VJ1G/R9qucP21vAcIIZoizqMSmTFOEMJelHtv
+         pHljq0lChWdkxwy1ft7Psk0TtuA9ng8B4wtY3wd9GmSpdrm2w+pQ1uBmpst1mS1Pun
+         EtqnaRsjrhulkNmNwatX+RZ1SlO1jsg78IE55vVs=
+Received: by earth.universe (Postfix, from userid 1000)
+        id C04563C0C87; Sat,  3 Oct 2020 23:23:36 +0200 (CEST)
+Date:   Sat, 3 Oct 2020 23:23:36 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] test_power: add missing newlines when printing
+ parameters by sysfs
+Message-ID: <20201003212336.5et7erdf6fihqscu@earth.universe>
+References: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fs3y3zgguzqvtvv3"
+Content-Disposition: inline
+In-Reply-To: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When get_registers() fails, in set_ethernet_addr(),the uninitialized
-value of node_id gets copied as the address. This can be considered as
-set_ethernet_addr() itself failing.
 
-The return type of set_ethernet_addr() is modified to indicate if it
-failed or not, and return values are appropriately checked by caller.
+--fs3y3zgguzqvtvv3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When set_ethernet_addr() fails, a randomly generated MAC address is set
-as the MAC address instead.
+Hi,
 
-On the other hand, for the case when get_registers() does succeed,
-set_ethernet_addr() has been updated to use ether_addr_copy() to copy
-the address, instead of memcpy().
+On Fri, Sep 04, 2020 at 02:09:58PM +0800, Xiongfeng Wang wrote:
+> When I cat some module parameters by sysfs, it displays as follows.
+> It's better to add a newline for easy reading.
+>=20
+> root@syzkaller:~# cd /sys/module/test_power/parameters/
+> root@syzkaller:/sys/module/test_power/parameters# cat ac_online
+> onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
+> trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
+> goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
+> dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_=
+technology
+> LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
+> onroot@syzkaller:/sys/module/test_power/parameters#
+>=20
+> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+> ---
 
-Reported-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Tested-by: syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com
-Acked-by: Petko Manolov <petkan@nucleusys.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-Changes in v3:
+Thanks, queued.
 
-	* Set a random MAC address to the device rather than making
-	  the device not work at all in the even set_ethernet_addr()
-	  fails. (Suggested by David Miller <davem@davemloft.net>)
+-- Sebastian
 
-	* Update set_ethernet_addr() to use ether_addr_copy() to copy 
-	  the MAC Address (instead of using memcpy() for that same).
-	  (Suggested by Joe Perches <joe@perches.com>)
+>  drivers/power/supply/test_power.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/tes=
+t_power.c
+> index 04acd76..4895ee5 100644
+> --- a/drivers/power/supply/test_power.c
+> +++ b/drivers/power/supply/test_power.c
+> @@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const=
+ struct kernel_param *kp)
+>  static int param_get_ac_online(char *buffer, const struct kernel_param *=
+kp)
+>  {
+>  	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> @@ -366,6 +367,7 @@ static int param_set_usb_online(const char *key, cons=
+t struct kernel_param *kp)
+>  static int param_get_usb_online(char *buffer, const struct kernel_param =
+*kp)
+>  {
+>  	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> @@ -380,6 +382,7 @@ static int param_set_battery_status(const char *key,
+>  static int param_get_battery_status(char *buffer, const struct kernel_pa=
+ram *kp)
+>  {
+>  	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> @@ -394,6 +397,7 @@ static int param_set_battery_health(const char *key,
+>  static int param_get_battery_health(char *buffer, const struct kernel_pa=
+ram *kp)
+>  {
+>  	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> @@ -409,6 +413,7 @@ static int param_get_battery_present(char *buffer,
+>  					const struct kernel_param *kp)
+>  {
+>  	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> @@ -426,6 +431,7 @@ static int param_get_battery_technology(char *buffer,
+>  {
+>  	strcpy(buffer,
+>  		map_get_key(map_technology, battery_technology, "unknown"));
+> +	strcat(buffer, "\n");
+>  	return strlen(buffer);
+>  }
+> =20
+> --=20
+> 1.7.12.4
+>=20
 
+--fs3y3zgguzqvtvv3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Changes in v2:
+-----BEGIN PGP SIGNATURE-----
 
-	* Modified condition checking get_registers()'s return value to 
-		ret == sizeof(node_id)
-	  for stricter checking in compliance with the new usb_control_msg_recv()
-	  API
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl9469UACgkQ2O7X88g7
++pojdw//dQ9BtbUc8f2f7SfslHm9n0RPIVKqSlelkWXvUcQm52R0ebOudWndllLU
+QFK4OMQZDhF/9Tyo/l5tJKAJKbOUAM4NbP6TlFlapuP0WpVmaH/waQie3R4LYiGD
+ORJboknaMKca189SmC8QCGDpsaPHTR0y4BVEYjTnYAPg/RbBdGCseYhrATTOEi2Q
+DOu5T7qsyqL1AmlHVpet0eg40aLPBqmI/vmGJ3svzSeja0cvzEC8L8gbbybplwGr
+ZtrE+GUUNEiA4SVTcdXVJ0Nwbv2yMWdi3N4gwS+9jW3hcJLvPfnjm90x0DrKN1Og
+VrejrCdpaow7WEP2a/Lg4mC2KusdCdx4A4a5xYqNqNiIETehKimX3IlpjWVeQjqY
+iLqZc3FC0cXuKWbyOJScYueOYn1v25gzYM3nvTKY0dPgsPM4l+o2FRhJaNHMf0lR
+V8X5ogpnPKfUaipgd6s+rupo/b/H+EUKuqjW6I/eFY1M3UI0u86VDPXNvyzTrMSg
+Y2EEYVQDGw2KfN+/y56VUTWn0ZJZBv8v5e0A2+HIyVJDZ2iOjhhf1M669ff1XFAT
+sRQd6xq+iIpZjaZqDRMe8rmWJU5e3ARRWNtIliFde1YsYXwfBZ/tq/hMlDZuDEP1
+EnjAsDzBHQZhZleDeipLTP3v17K28mvU5VcDhTrytzQpqBoM1aY=
+=P9et
+-----END PGP SIGNATURE-----
 
-	* Added Acked-by: Petko Manolov
-
- drivers/net/usb/rtl8150.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-index 733f120c852b..bbd49ebdf095 100644
---- a/drivers/net/usb/rtl8150.c
-+++ b/drivers/net/usb/rtl8150.c
-@@ -274,12 +274,17 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
- 		return 1;
- }
- 
--static inline void set_ethernet_addr(rtl8150_t * dev)
-+static bool set_ethernet_addr(rtl8150_t *dev)
- {
--	u8 node_id[6];
-+	u8 node_id[ETH_ALEN];
-+	int ret;
- 
--	get_registers(dev, IDR, sizeof(node_id), node_id);
--	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
-+	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
-+	if (ret == sizeof(node_id)) {
-+		ether_addr_copy(dev->netdev->dev_addr, node_id);
-+		return true;
-+	}
-+	return false;
- }
- 
- static int rtl8150_set_mac_address(struct net_device *netdev, void *p)
-@@ -909,7 +914,10 @@ static int rtl8150_probe(struct usb_interface *intf,
- 		goto out1;
- 	}
- 	fill_skb_pool(dev);
--	set_ethernet_addr(dev);
-+	if (!set_ethernet_addr(dev)) {
-+		dev_err(&intf->dev, "assigining a random MAC address\n");
-+		eth_hw_addr_random(dev->netdev);
-+	}
- 
- 	usb_set_intfdata(intf, dev);
- 	SET_NETDEV_DEV(netdev, &intf->dev);
--- 
-2.25.1
-
+--fs3y3zgguzqvtvv3--
