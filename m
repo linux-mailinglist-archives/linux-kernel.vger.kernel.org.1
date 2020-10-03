@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A40028259F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 19:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017DB2824C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgJCRdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 13:33:42 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:55670 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725797AbgJCRdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 13:33:42 -0400
-X-Greylist: delayed 11171 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Oct 2020 13:33:41 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1601735247; bh=imNu7MHThjAESrJNpmhOyRli59QkLGoI0kFTAxDCsF8=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
-        b=dkMhJ5QchIXG+Hy8U/wfRx6/oubjDIaRXvmWAAWFfawB6K0AxUrgCTw18dL4djFnk
-         ei6Jzj7BArFFCk2gZr7J3EdNa6kB46xr5jFll/hep3ZvnprKjz/A0HHTObsxf8PW9q
-         UHpjoKrDY4nwba5Q+7DYMhii3mSSOvc3yb8+q8Ks=
-Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Sat,  3 Oct 2020 16:27:27 +0200 (CEST)
-X-EA-Auth: chZqOqSjMGhpYYrQYEHoviLKXI/U1P1qJspKX9NxQLD9OuH6MudHEBb/csrmzqyfTT+/ZA0dRFaEiu+ioS21gGuiUmLOx5GEte2jXfSbrto=
-Message-ID: <104955668ed768682adf1757e79022117460d268.camel@mailoo.org>
-Subject: Re: [PATCH 1/5] interconnect: qcom: Consolidate interconnect RPM
- support
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     Jun Nie <jun.nie@linaro.org>, devicetree@vger.kernel.org,
-        georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org
-Cc:     shawn.guo@linaro.org
-Date:   Sat, 03 Oct 2020 16:27:25 +0200
-In-Reply-To: <20200930081645.3434-2-jun.nie@linaro.org>
-References: <20200930081645.3434-1-jun.nie@linaro.org>
-         <20200930081645.3434-2-jun.nie@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1725830AbgJCO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgJCO2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 10:28:00 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9026CC0613D0;
+        Sat,  3 Oct 2020 07:27:59 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b12so5464395lfp.9;
+        Sat, 03 Oct 2020 07:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WcsBuP3zP0tyQaN/LT3trjYTTJjbx6YMciPdXNhaCSc=;
+        b=nKVgE5e4W8YLfy5meKUdYu8j+1C+p3kRksSQLxOvu8bVkiWnH9Il35e69GQp7tia9o
+         Xg8d5NR8T3ymDHMQzK43jBXe+T+tOBtNKVo7Jp+dgR0804GaXwEBntkEhcxC0BHV50dl
+         g/H7yiPT8KWadrr+2KvR+MJQLuTXdbi/7LD7nIa4FVxxY6pQwln0sECcnQPwT9DMtlJh
+         3oZJ2mMY2y3yN5xjBGxxUXXJrc2STKAYNSOSDOyWFeh7KJDVNTHwC1xQICyAHY/iuK+P
+         cVg4EYC9ZASmiGfde4HUYunWpmkIUazxQjRqf9ZciYCBbCnmvT+3JELvTNqgKSQpyN89
+         P3gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WcsBuP3zP0tyQaN/LT3trjYTTJjbx6YMciPdXNhaCSc=;
+        b=U9R5wwpDIVEHKbThfEhwoFL5tV+nbweFLjhOQrcPEmIOyy+W5/HcSGYPhSFPMG1l2N
+         JfhPFzQVHIjSNov72c1jSUQBL/oP1H16cxDJepJMNWAvnYlJO2q0sC8yZlTu5Y43FDVT
+         zLbLM3EgmhVag/dbc+MoRCUcsZdhvq3MppLUtzVGa6nZd3KSZaF9SP+u+hB+cYM1Rgcu
+         9SD4n4tT8F2KghCGHBLZa7xwdsHf6tQQsM2oWRKimm7G9tDAELEi10rmqtBvBoXUs4bS
+         LqUtwIOlfircud2CDAGozjv+6Wf6Ra7rWHyPlWnQuKWB2b+C5fOqJ01/1gGWlU0Hiqb0
+         yvag==
+X-Gm-Message-State: AOAM530V5uMPjsqETZfctada8ZTh/jAQxeYfOgO8BjY3SDFAknjIWFaO
+        D5pnvgn+xf50k4RCKWkJNP0=
+X-Google-Smtp-Source: ABdhPJzNCwTkVXy5Gvj9nlcWlPzP08lu7UGmjgsHq9zxLPPHQ2Uyqy1897ulAmyitOucaozbgNvuBA==
+X-Received: by 2002:ac2:443a:: with SMTP id w26mr674369lfl.435.1601735277910;
+        Sat, 03 Oct 2020 07:27:57 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id p21sm1586032lfo.194.2020.10.03.07.27.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 07:27:57 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, hch@infradead.org
+References: <20200929061325.10197-1-nicoleotsuka@gmail.com>
+ <20200929061325.10197-2-nicoleotsuka@gmail.com>
+ <35d789ae-7deb-7f8c-0556-98fe73f5999f@gmail.com>
+Message-ID: <0cc12c08-e2f2-b915-e7b4-8e2e94ea2ac4@gmail.com>
+Date:   Sat, 3 Oct 2020 17:27:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <35d789ae-7deb-7f8c-0556-98fe73f5999f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 30 septembre 2020 =C3=A0 16:16 +0800, Jun Nie a =C3=A9crit :
-> Add RPM based interconnect driver implements the set and aggregate
-> functionalities that translates bandwidth requests into RPM messages.
-> These modules provide a common set of functionalities for all
-> Qualcomm RPM based interconnect providers and should help reduce code
-> duplication when adding new providers.
->=20
-> Signed-off-by: Jun Nie <jun.nie@linaro.org>
-> ---
->  drivers/interconnect/qcom/Makefile  |   3 +-
->  drivers/interconnect/qcom/icc-rpm.c | 194 ++++++++++++++++++++++
->  drivers/interconnect/qcom/icc-rpm.h |  73 +++++++++
->  drivers/interconnect/qcom/msm8916.c | 241 ++--------------------------
->  4 files changed, 279 insertions(+), 232 deletions(-)
->  create mode 100644 drivers/interconnect/qcom/icc-rpm.c
->  create mode 100644 drivers/interconnect/qcom/icc-rpm.h
->=20
-> diff --git a/drivers/interconnect/qcom/Makefile
-> b/drivers/interconnect/qcom/Makefile
-> index 1702ece67dc5..f5e803489de0 100644
-> --- a/drivers/interconnect/qcom/Makefile
-> +++ b/drivers/interconnect/qcom/Makefile
-> @@ -9,7 +9,7 @@ icc-rpmh-obj				:=3D icc-rpmh.o
->  qnoc-sc7180-objs			:=3D sc7180.o
->  qnoc-sdm845-objs			:=3D sdm845.o
->  qnoc-sm8150-objs			:=3D sm8150.o
-> -icc-smd-rpm-objs			:=3D smd-rpm.o
-> +icc-smd-rpm-objs			:=3D smd-rpm.o icc-rpm.o
-> =20
->  obj-$(CONFIG_INTERCONNECT_QCOM_BCM_VOTER) +=3D icc-bcm-voter.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_MSM8916) +=3D qnoc-msm8916.o
-> @@ -21,3 +21,4 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SC7180) +=3D qnoc-sc7180=
-.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) +=3D qnoc-sdm845.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) +=3D qnoc-sm8150.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) +=3D icc-smd-rpm.o
-> +obj-$(CONFIG_INTERCONNECT_QCOM_SMD_RPM) +=3D icc-smd-rpm.o
+29.09.2020 20:41, Dmitry Osipenko пишет:
+> 29.09.2020 09:13, Nicolin Chen пишет:
+>> The tegra_smmu_group_get was added to group devices in different
+>> SWGROUPs and it'd return a NULL group pointer upon a mismatch at
+>> tegra_smmu_find_group(), so for most of clients/devices, it very
+>> likely would mismatch and need a fallback generic_device_group().
+>>
+>> But now tegra_smmu_group_get handles devices in same SWGROUP too,
+>> which means that it would allocate a group for every new SWGROUP
+>> or would directly return an existing one upon matching a SWGROUP,
+>> i.e. any device will go through this function.
+>>
+>> So possibility of having a NULL group pointer in device_group()
+>> is upon failure of either devm_kzalloc() or iommu_group_alloc().
+>> In either case, calling generic_device_group() no longer makes a
+>> sense. Especially for devm_kzalloc() failing case, it'd cause a
+>> problem if it fails at devm_kzalloc() yet succeeds at a fallback
+>> generic_device_group(), because it does not create a group->list
+>> for other devices to match.
+>>
+>> This patch simply unwraps the function to clean it up.
+>>
+>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+>> ---
+> 
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> 
 
-Duplicate ?
-
-Thanks for msm8939 work, please Cc: me on any related patch :-)
-
-
-
-
-
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
