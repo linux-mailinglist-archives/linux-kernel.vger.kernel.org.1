@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D36A28237D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EB0282385
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725794AbgJCKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 06:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgJCKDm (ORCPT
+        id S1725792AbgJCKG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 06:06:57 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48876 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725681AbgJCKG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:03:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175EDC0613D0;
-        Sat,  3 Oct 2020 03:03:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o5so4382366wrn.13;
-        Sat, 03 Oct 2020 03:03:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VgpkF28etaKQ0J2igjsOiDIjupmhgpQVJ1epnK66aAc=;
-        b=J4PrM12sIgMTcBoaR+fYwd31zTy3mgEmuWvpvqrRHMtUzcdbLx8XdUxPt0RvlNuDaz
-         HKmxhK5WT99yQL9R+8d8pCsFZ1r9+gGMpTXDQSsjy0TYmkPwT1n1Ss0u90AsQYZVaBpQ
-         Whd+sal5+a6Z2u/xRz4pfK6YgbLWi0uwoa3VxUx0KI4jgPLgGC7+eKdcXWX97q1Hh5Ki
-         NflIwc0WOproUwxvsI+c6egajZ0AV05D83w7Zvb9l12xkvWiCybcwjv0EO5uTKJCVNnM
-         1aNl6SIcI4KlW1axFsXJQeSdlORaYNACa9Kw47SbyvVy8d2vsBwV+AiKaZiOlXMghvDj
-         DdhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VgpkF28etaKQ0J2igjsOiDIjupmhgpQVJ1epnK66aAc=;
-        b=S9H8LpDd9TpX1Of5MnOfOeMvOHSTg8z3i8+jCHtt7ESZ8iQ/VN+eqMPUDvpbbPz6bI
-         GzEqZ1CUioRzOPZ/3Cjw5nV4x0iUo3xnW2zrQekjjbRGkrP1JEeeRlizSU1P0jCzfJky
-         gC/CKoAldcYRBpJwGFILr+TZsayaEn6/bMLEJY8ih5b0G8uXdgw2aGNQGWU9vlAatyiF
-         QGlSLATkJriB5TXBJzUnuDZ3wE4FAvgDrK4VYm0PYRAM4T5xGI1vjDxk9eWR0+hovHFG
-         H9P644HeAkI0GX8DU69T5xtpchFjTviXsbXrwOO/tZ4JqgwiStjDm9V6HE8I+0wsgwJA
-         YLaw==
-X-Gm-Message-State: AOAM531sAnI6AVx0uMbuDFFCHh6lhyoxRRVgp9cpxaGJgkzL4JfuUM+1
-        2Q4Khc0CbYIm0gEX9CAX9x0=
-X-Google-Smtp-Source: ABdhPJyJGnit4g06Hq/dog0xk1OHhFyKXNvYd8zgb8PKTw3H5Mwu4T2Qvj/pZSkoEAJ3sISuKtZLKA==
-X-Received: by 2002:adf:f586:: with SMTP id f6mr7459362wro.299.1601719420618;
-        Sat, 03 Oct 2020 03:03:40 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id p67sm4954529wmp.11.2020.10.03.03.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 03:03:39 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: sun4i-a10: fix cpu_alert temperature
-Date:   Sat,  3 Oct 2020 12:03:32 +0200
-Message-Id: <20201003100332.431178-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 3 Oct 2020 06:06:57 -0400
+X-UUID: 1a6aa90af3f34b229d4135d70def2dc4-20201003
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XNRzXuFMSlzxxGZrXmTzf78PDDjCanucLXGX3tXCMVc=;
+        b=t0Tw5DJ7Z3pjppfPTnYfGF9fTrRsw6yRcOwXRJNTnJymGVujSqGUSxSmYbKevSuWdrFAF4i1IiEkenEUxuThmix/hlOreIFW1sKbw3+Qsbuy8DyO49E+N5seS/pVu+WiUcvTHdnmBV+JxaA78Iu2A20Um+mm+ssMqQTa3qVxu80=;
+X-UUID: 1a6aa90af3f34b229d4135d70def2dc4-20201003
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1898778443; Sat, 03 Oct 2020 18:06:50 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 3 Oct 2020 18:06:42 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 3 Oct 2020 18:06:42 +0800
+Message-ID: <1601719607.774.1.camel@mtkswgap22>
+Subject: Re: [PATCH v10 3/3] clk: mediatek: add UART0 clock support
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>, CC Hwang <cc.hwang@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Loda Chou <loda.chou@mediatek.com>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Sat, 3 Oct 2020 18:06:47 +0800
+In-Reply-To: <1599546314.24690.3.camel@mtkswgap22>
+References: <1596115816-11758-1-git-send-email-hanks.chen@mediatek.com>
+         <1596115816-11758-4-git-send-email-hanks.chen@mediatek.com>
+         <1599546314.24690.3.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 6297D8A22D190C79E560529B8B9A1614A3F0EDC1D7AD1F9E0539D6629E5EC1AA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running dtbs_check thermal_zone warn about the
-temperature declared.
-
-thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
-
-It's indeed wrong the real value is 85°C and not 850°C.
-
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index 0f95a6ef8543..1c5a666c54b5 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -143,7 +143,7 @@ map0 {
- 			trips {
- 				cpu_alert0: cpu-alert0 {
- 					/* milliCelsius */
--					temperature = <850000>;
-+					temperature = <85000>;
- 					hysteresis = <2000>;
- 					type = "passive";
- 				};
--- 
-2.25.1
+SGkgTWljaGFlbCAmIFN0ZXBoZW4sDQoNClBsZWFzZSBraW5kbHkgbGV0IG1lIGtub3cgeW91ciBj
+b21tZW50cyBhYm91dCB0aGlzIHBhdGNoLg0KVGhhbmtzDQoNClJlZ2FyZHMsDQpIYW5rcw0KDQoN
+Ck9uIFR1ZSwgMjAyMC0wOS0wOCBhdCAxNDoyNSArMDgwMCwgSGFua3MgQ2hlbiB3cm90ZToNCj4g
+SGkgYWxsLA0KPiANCj4gR2VudGxlIHBpbmcgb24gdGhpcyBwYXRjaC4NCj4gDQo+IFRoYW5rcw0K
+PiANCj4gDQo+IEhhbmtzIENoZW4NCj4gDQo+IA0KPiBPbiBUaHUsIDIwMjAtMDctMzAgYXQgMjE6
+MzAgKzA4MDAsIEhhbmtzIENoZW4gd3JvdGU6DQo+ID4gQWRkIE1UNjc3OSBVQVJUMCBjbG9jayBz
+dXBwb3J0Lg0KPiA+IA0KPiA+IEZpeGVzOiA3MTA3NzRlMDQ4NjEgKCJjbGs6IG1lZGlhdGVrOiBB
+ZGQgTVQ2Nzc5IGNsb2NrIHN1cHBvcnQiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFdlbmRlbGwgTGlu
+IDx3ZW5kZWxsLmxpbkBtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogSGFua3MgQ2hl
+biA8aGFua3MuY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IE1hdHRoaWFzIEJy
+dWdnZXIgPG1hdHRoaWFzLmJnZ0BnbWFpbC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvY2xr
+L21lZGlhdGVrL2Nsay1tdDY3NzkuYyB8IDIgKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
+ZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ2Nzc5LmMgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMNCj4gPiBpbmRl
+eCA5NzY2Y2NjZjU4NDQuLjZlMGQzYTE2NjcyOSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Ns
+ay9tZWRpYXRlay9jbGstbXQ2Nzc5LmMNCj4gPiArKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ2Nzc5LmMNCj4gPiBAQCAtOTE5LDYgKzkxOSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+bXRrX2dhdGUgaW5mcmFfY2xrc1tdID0gew0KPiA+ICAJCSAgICAicHdtX3NlbCIsIDE5KSwNCj4g
+PiAgCUdBVEVfSU5GUkEwKENMS19JTkZSQV9QV00sICJpbmZyYV9wd20iLA0KPiA+ICAJCSAgICAi
+cHdtX3NlbCIsIDIxKSwNCj4gPiArCUdBVEVfSU5GUkEwKENMS19JTkZSQV9VQVJUMCwgImluZnJh
+X3VhcnQwIiwNCj4gPiArCQkgICAgInVhcnRfc2VsIiwgMjIpLA0KPiA+ICAJR0FURV9JTkZSQTAo
+Q0xLX0lORlJBX1VBUlQxLCAiaW5mcmFfdWFydDEiLA0KPiA+ICAJCSAgICAidWFydF9zZWwiLCAy
+MyksDQo+ID4gIAlHQVRFX0lORlJBMChDTEtfSU5GUkFfVUFSVDIsICJpbmZyYV91YXJ0MiIsDQo+
+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBM
+aW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW1lZGlhdGVrDQoNCg==
 
