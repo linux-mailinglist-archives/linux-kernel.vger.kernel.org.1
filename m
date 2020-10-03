@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D1A2826A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 22:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234032826B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 22:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725944AbgJCUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 16:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S1725952AbgJCU6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 16:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgJCUdX (ORCPT
+        with ESMTP id S1725897AbgJCU6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 16:33:23 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8DBC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 13:33:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k8so3895931pfk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 13:33:21 -0700 (PDT)
+        Sat, 3 Oct 2020 16:58:23 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CD7C0613D0;
+        Sat,  3 Oct 2020 13:58:23 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a17so2508357pju.1;
+        Sat, 03 Oct 2020 13:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WfQ+i+BxpbFQx3pen9QNH4hEFsBqsYjP8pLH9bs7mUw=;
-        b=Bp+Of4EY8R7dq7agpxR3FH4RsGGGxOLR03sus0ezi4ewM034U1nkstuEpOVj0UVGK7
-         6hxitcMpw5mM+Yfm8QmRVvQ2ih44rqmY7tM0a6O5kH6rq+4O1ht4+zHbFtpLfeX4qIeA
-         z5vZtQkroTAmaYAlJrWPNNCQuQR73BWwS7ffYvVO56oo/BuBFW9sjwynLoi1Bnt9C8/c
-         M3Eb1noqWQ62M6d528zW9GFdYwqdc6mqIJV7ckGNpVZiBzkHM6Wbh7v1xN8bN67c192N
-         3ds6niFo6VLc2jzfdQIqD+25jngBKhwtdPKRacTKVKcJyxWfX3Di23WJERmL75EPPTFQ
-         togA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=AZZnFmMC17E9yGBAkNVOXQNqt+M2aS94kheendbZAAI=;
+        b=tXSRk41dOnyVQFHFQteEMOA9RHgmNiqaQmvOeiMspL+XX3vSKCFh+mgDwfo4rsGAZB
+         wOI1k7m1YwWeVtEP8ElhegJKyHIEeltLd6mHm4nAIPaR9XYXtGJ+IEK6BZptgeXOQJZm
+         nEb9ULgDKPSWi8vMQnrBY3+R37DAjwQycwnfbPx4N3tgWwAc4KFd2HgsmSmYx/eAHjPm
+         nEf+UnInjpBuiWNL2+vdY7pNR85TxkqSUeteVJSyzaupPDu8j53qCk9yFNLDUOj2n+sJ
+         1Tyg0tjq9qgi81jgGL8q5skGli/aCuWVypJTOuo36KM06igQxOTtGqlTOox5QF2bBf3+
+         sVDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WfQ+i+BxpbFQx3pen9QNH4hEFsBqsYjP8pLH9bs7mUw=;
-        b=YCl0VxMB4SF/t1oFeiCqRN3ABKy7qUGcY5CQTn4IoYsYr+KxwC9N+xArLnQ+Ovzug+
-         v7cFPVKWHJKJUMVBIDMDKkmY1Qn42j+hRk7qrI7+S7Ad44O4OpqYqGW+3XXL5Vq3PgGF
-         87vdxGRm7HKnLcF/plB2CK5BzfiKJM/NrojEPiY/amj3swqn5p3jwGLGhsZTobv8Jo4S
-         0KXpQLH48uJ9ujaG4iKLm8O00LGTsXyLbX2dfsbcsw+bSDPXMuwv7jNZKlDaZkK0OfNl
-         dlR1h6s4gnv/O+ElLvYCSCQhCrDs9HdBhwJA1CAtecPLJYov/VExZkAk0x0lk+bwZhxp
-         RcIQ==
-X-Gm-Message-State: AOAM531FJAkiqjcyh0EZ9AI91sZm8DVDJghUQF4d4uRlHUwJrMpzrIii
-        udNMcQzZgrF5qIfAjbVkebk=
-X-Google-Smtp-Source: ABdhPJzHEcb0FuV1DCvKntiRgzf3Bf7lfi0p9EM/K5/fze9qprL346jRWeiUX+qn8g9puKzep7Jqag==
-X-Received: by 2002:a62:3001:0:b029:142:2501:39e3 with SMTP id w1-20020a6230010000b0290142250139e3mr8528343pfw.50.1601757201024;
-        Sat, 03 Oct 2020 13:33:21 -0700 (PDT)
-Received: from localhost.localdomain ([45.118.167.204])
-        by smtp.googlemail.com with ESMTPSA id v22sm5339736pff.159.2020.10.03.13.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 13:33:20 -0700 (PDT)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     dwmw2@infradead.org, richard@nod.at, viro@zeniv.linux.org.uk,
-        sandeen@sandeen.net, dhowells@redhat.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
-        syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com
-Subject: [Linux-kernel-mentees] [PATCH] fs: jffs2: super: Fix null pointer dereference in jffs2_parse_param()
-Date:   Sun,  4 Oct 2020 02:03:10 +0530
-Message-Id: <20201003203310.494524-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AZZnFmMC17E9yGBAkNVOXQNqt+M2aS94kheendbZAAI=;
+        b=EWmyxIDylOp8lqTKMriwO01w2jF0f3ulG1QvaaMFK5d5mNGjCuDaWDN9xh1fyStGgW
+         rDNtBRKsDRsT7VYLqZAO1AqV6zfXAIn2tU/B2Ix3VkOHw3PMSNsdCaFFpLK1jyu16Sz1
+         LVbIUWq/KHWUlpYgG8gEOi5OiizS0mUOKRgaBx2so8dnlWGwp8WvrVKn5mBah+MvUwFG
+         N3aOx71vTA31HvnzKpXuFCetZ3tEenZm5UE40XPaCj3dWWhr7UlKB/MWynkjZVwLTwEQ
+         z7zeZbLdL8inJ/yIyzpjUbqrnJZrKbZb2q5MfVdBDX3zk8edf0/+k974ifk3DLxKJtIO
+         HEXw==
+X-Gm-Message-State: AOAM532AhwETibGy+USevlp2xsF3lwncwBbQxK3d/qjyHX38a7eebb0i
+        J4QjLD3m37bbV4WmPdnz+tlTw2JKl7wuhiXzUfU=
+X-Google-Smtp-Source: ABdhPJxiKPUGZnuM6OqUtXhszbDMEqmHhXppikt/00huy7eOAH4bexu9KtNZH7gq0ez9wPuyLS+vUQ==
+X-Received: by 2002:a17:90a:ea0a:: with SMTP id w10mr8792531pjy.165.1601758701945;
+        Sat, 03 Oct 2020 13:58:21 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.217.69])
+        by smtp.gmail.com with ESMTPSA id i17sm6640460pfa.29.2020.10.03.13.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 13:58:21 -0700 (PDT)
+Subject: Re: [PATCH v2] net: usb: rtl8150: prevent set_ethernet_addr from
+ setting uninit address
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201001073221.239618-1-anant.thazhemadam@gmail.com>
+ <dbe67fce55c6bbe569cefdc1a01708a0d01b140a.camel@perches.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <81a5d8b6-5258-1f2e-15da-4324579799df@gmail.com>
+Date:   Sun, 4 Oct 2020 02:28:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <dbe67fce55c6bbe569cefdc1a01708a0d01b140a.camel@perches.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtd is getting NULL dereferenced in jffs2_parse_param(), while checking condition
-for pool size when, case: opt is Opt_rp_size hits.
 
-- fs/jffs2/super.c
-The bug seems to get triggered in this line:
+On 04/10/20 1:08 am, Joe Perches wrote:
+> On Thu, 2020-10-01 at 13:02 +0530, Anant Thazhemadam wrote:
+>> When get_registers() fails (which happens when usb_control_msg() fails)
+>> in set_ethernet_addr(), the uninitialized value of node_id gets copied
+>> as the address.
+> unrelated trivia:
+>
+>> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> []
+>> @@ -274,12 +274,17 @@ static int write_mii_word(rtl8150_t * dev, u8 phy, __u8 indx, u16 reg)
+>>  		return 1;
+>>  }
+>>  
+>> -static inline void set_ethernet_addr(rtl8150_t * dev)
+>> +static bool set_ethernet_addr(rtl8150_t *dev)
+>>  {
+>>  	u8 node_id[6];
+> This might be better as:
+>
+> 	u8 node_id[ETH_ALEN];
+>
+>> +	int ret;
+>>  
+>> -	get_registers(dev, IDR, sizeof(node_id), node_id);
+>> -	memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
+>> +	ret = get_registers(dev, IDR, sizeof(node_id), node_id);
+>> +	if (ret == sizeof(node_id)) {
+>> +		memcpy(dev->netdev->dev_addr, node_id, sizeof(node_id));
+> and
+> 		ether_addr_copy(dev->netdev->dev_addr, node_id);
+>
+>
+I will include this change as well, in the v3.
+Thank you for pointing that out.
 
-if (opt > c->mtd->size)
-	return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
-				      c->mtd->size / 1024);
+Thanks,
+Anant
 
-
-Fix this by adding a NULL check for 'c->mtd' device and return invalf(); which wraps 
-errorf() and returns -EINVAL for convenience, which allows userspace to collect them 
-directly.
-
-Reported-and-tested-by: syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com 
-Link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732 
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
- fs/jffs2/super.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 05d7878dfad1..f4ce67ac8486 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -203,6 +203,10 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		if (result.uint_32 > UINT_MAX / 1024)
- 			return invalf(fc, "jffs2: rp_size unrepresentable");
- 		opt = result.uint_32 * 1024;
-+
-+		if (!c->mtd)
-+			return invalf(fc, "jffs2: mtd device is NULL");
-+
- 		if (opt > c->mtd->size)
- 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
- 				      c->mtd->size / 1024);
--- 
-2.28.0
