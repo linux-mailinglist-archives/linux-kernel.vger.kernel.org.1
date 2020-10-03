@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A9B28208A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F408528208B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725841AbgJCCbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:31:09 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53440 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCCbI (ORCPT
+        id S1725854AbgJCCdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:33:07 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:52709 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCCdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:31:08 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0932UnEo125073;
-        Sat, 3 Oct 2020 02:30:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=AHIJHndUWDOhZ1tf2gXu+pgSucaKlmzUp8l2/R/cryU=;
- b=CJaFsovMPP/JaHJz/b5KEkBP8SH/VxYhi8NCOAEsredQfNXMnuJgd/LxkMglNakbg8CG
- +cfLGIhQWUtUFB6iIhk2V2VGdSzrDqWvoMrP4+Knw2oqWQiVlsOXy0R1JtDKo+lz25ml
- A/SAOTmaohBaHjlQlfSGwTncYfnCf20rSKfIaDRChbafLjmJz/jw0Jzzzbf+lUPY7zao
- n2cOzgT55Ta/1iF2lotE+F848xBTgVFWPmOrt/Lslnrx/z82MS8Lkiy/A0vQvBauFz2K
- EqDmVedqJclJfaqjc8OQupmyX8WXvzqV5WAU+UyfWkAOKekPUhbP2iLIOOXJPdhQTT/b 3Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33sx9nnga1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 02:30:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0932Ubj5069975;
-        Sat, 3 Oct 2020 02:30:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33tfj3t8q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 02:30:48 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0932UeUt032414;
-        Sat, 3 Oct 2020 02:30:43 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 19:30:40 -0700
-To:     ching Huang <ching2048@areca.com.tw>
-Cc:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dan.carpenter@oracle.com, hch@infradead.org,
-        Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH 0/4] scsi: arcmsr: Fix timer stop and support new
- adapter ARC-1886 series
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1h7rcavne.fsf@ca-mkp.ca.oracle.com>
-References: <0fcd9588bb87f47856316677e8bb495f14fcb597.camel@areca.com.tw>
-Date:   Fri, 02 Oct 2020 22:30:38 -0400
-In-Reply-To: <0fcd9588bb87f47856316677e8bb495f14fcb597.camel@areca.com.tw>
-        (ching Huang's message of "Mon, 28 Sep 2020 18:19:24 +0800")
+        Fri, 2 Oct 2020 22:33:06 -0400
+Received: by mail-io1-f80.google.com with SMTP id m4so2249359iov.19
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 19:33:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=huAQ2XNxNk0+JP0caungu+yrhrmWz2OAWIUz9RtSlI4=;
+        b=NTJm2WAil3llRVOzR1vKbP51d2luHk8wMin2zHkLnA2FDPp/361auV1BwBhDuVBh4x
+         cLUoDbTgKFNyXv6Ex+Qov6MuNo645Dqm7yIDEAGPuWsKMOn/G6aLo67xOLGAi0aVzc+R
+         jJ1ECj4OtSF0tlAMP45w32nMy4IOSk9E3/RpU80RY71DvgQ7Eb75I9mRP020kli8K6N6
+         T6VeD3fus79JHK465erM5Z5n6wsEyT6skFphhW7ohl09Uw5UxnkCgx1bC/GzwuHTJGJI
+         k/+XiGlnJlT1S/94r9ptY6AFSjKZSevGKNsPZUfboApwFqf0lR8BYiwsntSGDWgGhZT0
+         fycw==
+X-Gm-Message-State: AOAM532f85st87i04RJ8Y9Tt8lGZvc+wnOoJm8jglGt9dm4ZyOUGa5Lk
+        XOr9OZ2D6WG2Pr6SjvvZuBZdVY7U8CgQw/5/gYrRX2rvwI00
+X-Google-Smtp-Source: ABdhPJzrlAP5imDWEPKyVGiLnhg0plpe3Pjdz0K8YSADKul87MvIbS1OPbnv7c/HZQJfp1argFlx9wEiLJU/BiWVN/BRncyNJ03n
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=853 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=1 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=868 suspectscore=1
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030021
+X-Received: by 2002:a02:5d85:: with SMTP id w127mr4693509jaa.76.1601692385603;
+ Fri, 02 Oct 2020 19:33:05 -0700 (PDT)
+Date:   Fri, 02 Oct 2020 19:33:05 -0700
+In-Reply-To: <000000000000ed022605b0b1efaa@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aef3fc05b0bb11ce@google.com>
+Subject: Re: WARNING in ieee80211_bss_info_change_notify
+From:   syzbot <syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, alexander.deucher@amd.com,
+        amd-gfx@lists.freedesktop.org, christian.koenig@amd.com,
+        davem@davemloft.net, dieter@nuetzel-hh.de,
+        dri-devel@lists.freedesktop.org, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
-ching,
+commit 135f971181d779c96ff3725c1a350a721785cc66
+Author: Alex Deucher <alexander.deucher@amd.com>
+Date:   Mon Nov 20 22:49:53 2017 +0000
 
-> This patch series are against to mkp's 5.10/scsi-queue.
->
-> 1. Remove unnecessary syntax.
-> 2. Fix device hot-plug monitoring timer stop.
-> 3. Add supporting ARC-1886 series Raid controllers.
-> 4. Update driver version to v1.50.00.02-20200819.
+    drm/amdgpu: don't skip attributes when powerplay is enabled
 
-Applied to 5.10/scsi-staging, thanks!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=120f55bd900000
+start commit:   fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=110f55bd900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=160f55bd900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e672827d2ffab1f
+dashboard link: https://syzkaller.appspot.com/bug?extid=09d1cd2f71e6dd3bfd2c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=161112eb900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124fc533900000
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Reported-by: syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com
+Fixes: 135f971181d7 ("drm/amdgpu: don't skip attributes when powerplay is enabled")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
