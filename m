@@ -2,68 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F19B282716
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1595F282723
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726058AbgJCWPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 18:15:46 -0400
-Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:57676 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725913AbgJCWPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 18:15:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C13E718029120;
-        Sat,  3 Oct 2020 22:15:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2689:2693:2828:3138:3139:3140:3141:3142:3352:3622:3870:3871:3872:3876:4321:5007:7576:7875:10004:10400:10848:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13095:13255:13311:13357:13439:14181:14659:14721:21080:21433:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: land70_6101ae7271b0
-X-Filterd-Recvd-Size: 1838
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  3 Oct 2020 22:15:43 +0000 (UTC)
-Message-ID: <ebafdf9c1647070c45124786e71a0112f86d10b8.camel@perches.com>
-Subject: Re: [PATCH][next] power: supply: fix spelling mistake "unprecise"
- -> "imprecise"
-From:   Joe Perches <joe@perches.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Colin King <colin.king@canonical.com>
-Cc:     linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S1726034AbgJCW12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 18:27:28 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:38297 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725931AbgJCW11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 18:27:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601764047; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=1PDuM28uKaJpHgjGCDQGxh1EXLQjcqc7FfnyQAT/UZI=; b=MFvL0vpb4mIh82z6s7VPbI2S26hx9pDLbGxhzTeYh20AzltSTMu48FlpDTVdmJ3bjSj2DBqn
+ Yyox1VnY7R+umIhkEHsNO0ZooDlGxPu3jnI/Bm1wXu5XdE0H3KVIJCAkuk5SeVpDn19Y9GxZ
+ OXEtzSwm2I6L01tOxJEIgg+vzjk=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f78fab6d63768e57b23ba7b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 03 Oct 2020 22:27:02
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A6B7EC433FE; Sat,  3 Oct 2020 22:27:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E72ECC433F1;
+        Sat,  3 Oct 2020 22:26:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E72ECC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Date:   Sat, 03 Oct 2020 15:15:42 -0700
-In-Reply-To: <20201003215102.5hl5lvidyki2xu7b@earth.universe>
-References: <20200902101656.57676-1-colin.king@canonical.com>
-         <20201003215102.5hl5lvidyki2xu7b@earth.universe>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+Subject: [PATCH v2]  drm/msm/dp: add opp_table corner voting support base on dp_ink_clk rate
+Date:   Sat,  3 Oct 2020 15:26:52 -0700
+Message-Id: <20201003222652.32671-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-03 at 23:51 +0200, Sebastian Reichel wrote:
-> On Wed, Sep 02, 2020 at 11:16:56AM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> > There is a spelling mistake in a dev_info message. Fix it.
-> > 
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> 
-> Thanks, queued.
-[]
-> > diff --git a/drivers/power/supply/rn5t618_power.c b/drivers/power/supply/rn5t618_power.c
-[]
-> > @@ -487,7 +487,7 @@ static int rn5t618_power_probe(struct platform_device *pdev)
-> >  		 * gauge will get decalibrated.
-> >  		 */
-> >  		dev_info(&pdev->dev, "Fuel gauge not enabled, enabling now\n");
-> > -		dev_info(&pdev->dev, "Expect unprecise results\n");
-> > +		dev_info(&pdev->dev, "Expect imprecise results\n");
+Set link rate by using OPP set rate api so that CX level will be set
+accordingly based on the link rate.
 
-Might as well be a single line too
+Changes in v2:
+-- remove dev from dp_ctrl_put() parameters
+-- address review comments
 
-		dev_info(&pdev->dev, "Fuel gauge not enabled, enabling now - expect imprecise results\n");
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 26 +++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_display.c |  2 +-
+ drivers/gpu/drm/msm/dp/dp_power.c   | 44 ++++++++++++++++++++++++++---
+ drivers/gpu/drm/msm/dp/dp_power.h   |  2 +-
+ 4 files changed, 68 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 2e3e1917351f..6eb9cdad1421 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -10,6 +10,7 @@
+ #include <linux/delay.h>
+ #include <linux/phy/phy.h>
+ #include <linux/phy/phy-dp.h>
++#include <linux/pm_opp.h>
+ #include <drm/drm_fixed.h>
+ #include <drm/drm_dp_helper.h>
+ #include <drm/drm_print.h>
+@@ -76,6 +77,8 @@ struct dp_ctrl_private {
+ 	struct dp_parser *parser;
+ 	struct dp_catalog *catalog;
+ 
++	struct opp_table *opp_table;
++
+ 	struct completion idle_comp;
+ 	struct completion video_comp;
+ };
+@@ -1836,6 +1839,7 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 			struct dp_parser *parser)
+ {
+ 	struct dp_ctrl_private *ctrl;
++	int ret;
+ 
+ 	if (!dev || !panel || !aux ||
+ 	    !link || !catalog) {
+@@ -1849,6 +1853,19 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
++	ctrl->opp_table = dev_pm_opp_set_clkname(dev, "ctrl_link");
++	if (IS_ERR(ctrl->opp_table)) {
++		dev_err(dev, "invalid DP OPP table in device tree\n");
++		ctrl->opp_table = NULL;
++	} else {
++		/* OPP table is optional */
++		ret = dev_pm_opp_of_add_table(dev);
++		if (ret && ret != -ENODEV) {
++			dev_pm_opp_put_clkname(ctrl->opp_table);
++			ctrl->opp_table = NULL;
++		}
++	}
++
+ 	init_completion(&ctrl->idle_comp);
+ 	init_completion(&ctrl->video_comp);
+ 
+@@ -1866,4 +1883,13 @@ struct dp_ctrl *dp_ctrl_get(struct device *dev, struct dp_link *link,
+ 
+ void dp_ctrl_put(struct dp_ctrl *dp_ctrl)
+ {
++	struct dp_ctrl_private *ctrl;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	if (ctrl->opp_table) {
++		dev_pm_opp_of_remove_table(ctrl->dev);
++		dev_pm_opp_put_clkname(ctrl->opp_table);
++		ctrl->opp_table = NULL;
++	}
+ }
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e175aa3fd3a9..269f83550b46 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -698,7 +698,7 @@ static int dp_init_sub_modules(struct dp_display_private *dp)
+ 		goto error;
+ 	}
+ 
+-	dp->power = dp_power_get(dp->parser);
++	dp->power = dp_power_get(dev, dp->parser);
+ 	if (IS_ERR(dp->power)) {
+ 		rc = PTR_ERR(dp->power);
+ 		DRM_ERROR("failed to initialize power, rc = %d\n", rc);
+diff --git a/drivers/gpu/drm/msm/dp/dp_power.c b/drivers/gpu/drm/msm/dp/dp_power.c
+index 17c1fc6a2d44..9c4ea00a5f2a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_power.c
++++ b/drivers/gpu/drm/msm/dp/dp_power.c
+@@ -8,12 +8,14 @@
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/pm_opp.h>
+ #include "dp_power.h"
+ #include "msm_drv.h"
+ 
+ struct dp_power_private {
+ 	struct dp_parser *parser;
+ 	struct platform_device *pdev;
++	struct device *dev;
+ 	struct clk *link_clk_src;
+ 	struct clk *pixel_provider;
+ 	struct clk *link_provider;
+@@ -148,18 +150,51 @@ static int dp_power_clk_deinit(struct dp_power_private *power)
+ 	return 0;
+ }
+ 
++static int dp_power_clk_set_link_rate(struct dp_power_private *power,
++			struct dss_clk *clk_arry, int num_clk, int enable)
++{
++	u32 rate;
++	int i, rc = 0;
++
++	for (i = 0; i < num_clk; i++) {
++		if (clk_arry[i].clk) {
++			if (clk_arry[i].type == DSS_CLK_PCLK) {
++				if (enable)
++					rate = clk_arry[i].rate;
++				else
++					rate = 0;
++
++				rc = dev_pm_opp_set_rate(power->dev, rate);
++				if (rc)
++					break;
++			}
++
++		}
++	}
++	return rc;
++}
++
+ static int dp_power_clk_set_rate(struct dp_power_private *power,
+ 		enum dp_pm_type module, bool enable)
+ {
+ 	int rc = 0;
+ 	struct dss_module_power *mp = &power->parser->mp[module];
+ 
+-	if (enable) {
+-		rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
++	if (module == DP_CTRL_PM) {
++		rc = dp_power_clk_set_link_rate(power, mp->clk_config, mp->num_clk, enable);
+ 		if (rc) {
+-			DRM_ERROR("failed to set clks rate.\n");
++			DRM_ERROR("failed to set link clks rate\n");
+ 			return rc;
+ 		}
++	} else {
++
++		if (enable) {
++			rc = msm_dss_clk_set_rate(mp->clk_config, mp->num_clk);
++			if (rc) {
++				DRM_ERROR("failed to set clks rate\n");
++				return rc;
++			}
++		}
+ 	}
+ 
+ 	rc = msm_dss_enable_clk(mp->clk_config, mp->num_clk, enable);
+@@ -349,7 +384,7 @@ int dp_power_deinit(struct dp_power *dp_power)
+ 	return 0;
+ }
+ 
+-struct dp_power *dp_power_get(struct dp_parser *parser)
++struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser)
+ {
+ 	struct dp_power_private *power;
+ 	struct dp_power *dp_power;
+@@ -365,6 +400,7 @@ struct dp_power *dp_power_get(struct dp_parser *parser)
+ 
+ 	power->parser = parser;
+ 	power->pdev = parser->pdev;
++	power->dev = dev;
+ 
+ 	dp_power = &power->dp_power;
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_power.h b/drivers/gpu/drm/msm/dp/dp_power.h
+index 76743d755833..7d0327bbc0d5 100644
+--- a/drivers/gpu/drm/msm/dp/dp_power.h
++++ b/drivers/gpu/drm/msm/dp/dp_power.h
+@@ -102,6 +102,6 @@ void dp_power_client_deinit(struct dp_power *power);
+  * methods to be called by the client to configure the power related
+  * modueles.
+  */
+-struct dp_power *dp_power_get(struct dp_parser *parser);
++struct dp_power *dp_power_get(struct device *dev, struct dp_parser *parser);
+ 
+ #endif /* _DP_POWER_H_ */
+
+base-commit: d1ea914925856d397b0b3241428f20b945e31434
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
