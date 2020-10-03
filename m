@@ -2,292 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF0F281FC6
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88B8281FDF
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 02:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725777AbgJCAYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 20:24:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:25767 "EHLO mga11.intel.com"
+        id S1725775AbgJCAxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 20:53:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53276 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgJCAYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:24:02 -0400
-IronPort-SDR: dFpyDUpIK6b1V+KMf8Q3H7LBbX31h0N54kf/VQQNXVnRBdxM/P4VJcGWOfZnRX+kC/N0qXGsEH
- yZtqXZUo0eUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160432096"
+        id S1725283AbgJCAxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 20:53:55 -0400
+IronPort-SDR: 46B1LC4/uT1k4v7ggxzXuqju+9+cZQULgcBYRzrUCO+oG+kFOubQ/atJvghzjWhbhcylioD6F6
+ 5iYXKsXXYU2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160434940"
 X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="160432096"
+   d="scan'208";a="160434940"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 17:24:01 -0700
-IronPort-SDR: +Z8AAU6YVx9vKo+Tb0ICijBJlC7rCixZj6CQqE4Ej3NlwfzgyeFuh7ceIEraqQutXjaj+6tLVV
- GyxM+MrVohQQ==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 17:53:54 -0700
+IronPort-SDR: mRASdR68gfRGX7NTizGi/jZ5k7Hze+0zR7LAxscwms79WjVwSWMkGb6vGGsf5uL5H06mGBVXgZ
+ PFq4RBS8UbYg==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="511263071"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.33.58])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2020 17:23:57 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Chunyang Hui" <sanqian.hcy@antfin.com>,
-        "Jordan Hand" <jorhand@linux.microsoft.com>,
-        "Nathaniel McCallum" <npmccallum@redhat.com>,
-        "Seth Moore" <sethmo@google.com>,
-        "Darren Kenny" <darren.kenny@oracle.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        "Suresh Siddha" <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
-Date:   Fri, 02 Oct 2020 19:23:55 -0500
+   d="scan'208";a="309193823"
+Received: from lkp-server02.sh.intel.com (HELO 404f47266ee4) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 02 Oct 2020 17:53:52 -0700
+Received: from kbuild by 404f47266ee4 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kOVo7-0000BF-Rs; Sat, 03 Oct 2020 00:53:51 +0000
+Date:   Sat, 03 Oct 2020 08:53:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ 238c91115cd05c71447ea071624a4c9fe661f970
+Message-ID: <5f77cb73.aSVdM1OYbIb3BHiF%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0rvxzr02wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-In-Reply-To: <20200915112842.897265-13-jarkko.sakkinen@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 06:28:30 -0500, Jarkko Sakkinen  
-<jarkko.sakkinen@linux.intel.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/core
+branch HEAD: 238c91115cd05c71447ea071624a4c9fe661f970  x86/dumpstack: Fix misleading instruction pointer error message
 
-> Add an ioctl that performs ENCLS[ECREATE], which creates SGX Enclave
-> Control Structure for the enclave. SECS contains attributes about the
-> enclave that are used by the hardware and cannot be directly accessed by
-> software, as SECS resides in the EPC.
->
-> One essential field in SECS is a field that stores the SHA256 of the
-> measured enclave pages. This field, MRENCLAVE, is initialized by the
-> ECREATE instruction and updated by every EADD and EEXTEND operation.
-> Finally, EINIT locks down the value.
->
-> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Jethro Beekman <jethro@fortanix.com>
-> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
-> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
-> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
-> Tested-by: Seth Moore <sethmo@google.com>
-> Tested-by: Darren Kenny <darren.kenny@oracle.com>
-> Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  arch/x86/include/uapi/asm/sgx.h               |  25 ++
->  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
->  arch/x86/kernel/cpu/sgx/driver.c              |  12 +
->  arch/x86/kernel/cpu/sgx/driver.h              |   1 +
->  arch/x86/kernel/cpu/sgx/ioctl.c               | 220 ++++++++++++++++++
->  6 files changed, 260 insertions(+)
->  create mode 100644 arch/x86/include/uapi/asm/sgx.h
->  create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
->
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst  
-> b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 2a198838fca9..a89e1c46a25a 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -323,6 +323,7 @@ Code  Seq#    Include  
-> File                                           Comments
->                                                                       <mailto:tlewis@mindspring.com>
->  0xA3  90-9F  linux/dtlk.h
->  0xA4  00-1F  uapi/linux/tee.h                                         
-> Generic TEE subsystem
-> +0xA4  00-1F  uapi/asm/sgx.h                                           
-> <mailto:linux-sgx@vger.kernel.org>
->  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
->  0xAB  00-1F  linux/nbd.h
->  0xAC  00-1F  linux/raw.h
-> diff --git a/arch/x86/include/uapi/asm/sgx.h  
-> b/arch/x86/include/uapi/asm/sgx.h
-> new file mode 100644
-> index 000000000000..c75b375f3770
-> --- /dev/null
-> +++ b/arch/x86/include/uapi/asm/sgx.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR  
-> BSD-3-Clause) */
-> +/*
-> + * Copyright(c) 2016-19 Intel Corporation.
-> + */
-> +#ifndef _UAPI_ASM_X86_SGX_H
-> +#define _UAPI_ASM_X86_SGX_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/ioctl.h>
-> +
-> +#define SGX_MAGIC 0xA4
-> +
-> +#define SGX_IOC_ENCLAVE_CREATE \
-> +	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
-> +
-> +/**
-> + * struct sgx_enclave_create - parameter structure for the
-> + *                             %SGX_IOC_ENCLAVE_CREATE ioctl
-> + * @src:	address for the SECS page data
-> + */
-> +struct sgx_enclave_create  {
-> +	__u64	src;
-> +};
-> +
-> +#endif /* _UAPI_ASM_X86_SGX_H */
-> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
-> b/arch/x86/kernel/cpu/sgx/Makefile
-> index 3fc451120735..91d3dc784a29 100644
-> --- a/arch/x86/kernel/cpu/sgx/Makefile
-> +++ b/arch/x86/kernel/cpu/sgx/Makefile
-> @@ -1,4 +1,5 @@
->  obj-y += \
->  	driver.o \
->  	encl.o \
-> +	ioctl.o \
->  	main.o
-> diff --git a/arch/x86/kernel/cpu/sgx/driver.c  
-> b/arch/x86/kernel/cpu/sgx/driver.c
-> index f54da5f19c2b..7bdb49dfcca6 100644
-> --- a/arch/x86/kernel/cpu/sgx/driver.c
-> +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> @@ -114,10 +114,22 @@ static unsigned long sgx_get_unmapped_area(struct  
-> file *file,
->  	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
->  }
-> +#ifdef CONFIG_COMPAT
-> +static long sgx_compat_ioctl(struct file *filep, unsigned int cmd,
-> +			      unsigned long arg)
-> +{
-> +	return sgx_ioctl(filep, cmd, arg);
-> +}
-> +#endif
-> +
->  static const struct file_operations sgx_encl_fops = {
->  	.owner			= THIS_MODULE,
->  	.open			= sgx_open,
->  	.release		= sgx_release,
-> +	.unlocked_ioctl		= sgx_ioctl,
-> +#ifdef CONFIG_COMPAT
-> +	.compat_ioctl		= sgx_compat_ioctl,
-> +#endif
->  	.mmap			= sgx_mmap,
->  	.get_unmapped_area	= sgx_get_unmapped_area,
->  };
-> diff --git a/arch/x86/kernel/cpu/sgx/driver.h  
-> b/arch/x86/kernel/cpu/sgx/driver.h
-> index f7ce40dedc91..e4063923115b 100644
-> --- a/arch/x86/kernel/cpu/sgx/driver.h
-> +++ b/arch/x86/kernel/cpu/sgx/driver.h
-> @@ -9,6 +9,7 @@
->  #include <linux/rwsem.h>
->  #include <linux/sched.h>
->  #include <linux/workqueue.h>
-> +#include <uapi/asm/sgx.h>
->  #include "sgx.h"
-> #define SGX_EINIT_SPIN_COUNT	20
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c  
-> b/arch/x86/kernel/cpu/sgx/ioctl.c
-> new file mode 100644
-> index 000000000000..352a3c461812
-> --- /dev/null
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -0,0 +1,220 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +// Copyright(c) 2016-19 Intel Corporation.
-> +
-> +#include <asm/mman.h>
-> +#include <linux/mman.h>
-> +#include <linux/delay.h>
-> +#include <linux/file.h>
-> +#include <linux/hashtable.h>
-> +#include <linux/highmem.h>
-> +#include <linux/ratelimit.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/shmem_fs.h>
-> +#include <linux/slab.h>
-> +#include <linux/suspend.h>
-> +#include "driver.h"
-> +#include "encl.h"
-> +#include "encls.h"
-> +
-> +static u32 sgx_calc_ssa_frame_size(u32 miscselect, u64 xfrm)
-> +{
-> +	u32 size_max = PAGE_SIZE;
-> +	u32 size;
-> +	int i;
-> +
-> +	for (i = 2; i < 64; i++) {
-> +		if (!((1 << i) & xfrm))
-> +			continue;
-> +
-> +		size = SGX_SSA_GPRS_SIZE + sgx_xsave_size_tbl[i];
-> +
-> +		if (miscselect & SGX_MISC_EXINFO)
-> +			size += SGX_SSA_MISC_EXINFO_SIZE;
-> +
-> +		if (size > size_max)
-> +			size_max = size;
-> +	}
-> +
-> +	return PFN_UP(size_max);
-> +}
-> +
-> +static int sgx_validate_secs(const struct sgx_secs *secs)
-> +{
-> +	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
-> +		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
-> +
-> +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> +		return -EINVAL;
-> +
-> +	if (secs->base & (secs->size - 1))
-> +		return -EINVAL;
-> +
-> +	if (secs->miscselect & sgx_misc_reserved_mask ||
-> +	    secs->attributes & sgx_attributes_reserved_mask ||
-> +	    secs->xfrm & sgx_xfrm_reserved_mask)
-> +		return -EINVAL;
-> +
+elapsed time: 723m
 
-Attributes should not be enforced against what's available on platform but  
-checked and enforced against the mask for enforcement in sigstruct. For  
-example an enclave could opt to sign with AVX bit in xfrm, but still be  
-loadable on a platform without it if the sigstruct->body.attributes_mask  
-does not turn that bit on.
+configs tested: 172
+configs skipped: 63
 
-Suggest to remove the above check,and do following during EINIt in  
-sgx_encl_init:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--       /* Check that the required attributes have been authorized. */
-+       /* Check that the requested attributes have been authorized. */
-         if (encl->secs_attributes & ~encl->allowed_attributes)
-                 return -EACCES;
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          moxart_defconfig
+mips                           ip32_defconfig
+arm                       spear13xx_defconfig
+powerpc                   motionpro_defconfig
+powerpc                    amigaone_defconfig
+mips                        maltaup_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                          allmodconfig
+powerpc                      makalu_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         s3c2410_defconfig
+arm                           viper_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                      ppc64e_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                          ep93xx_defconfig
+arm                         palmz72_defconfig
+m68k                       m5475evb_defconfig
+sh                   secureedge5410_defconfig
+arm                           tegra_defconfig
+sh                           se7619_defconfig
+mips                       lemote2f_defconfig
+mips                 decstation_r4k_defconfig
+s390                       zfcpdump_defconfig
+m68k                        m5307c3_defconfig
+sh                           se7724_defconfig
+um                             i386_defconfig
+arm                       multi_v4t_defconfig
+sh                        dreamcast_defconfig
+arm                            zeus_defconfig
+powerpc                     tqm8555_defconfig
+sh                           se7343_defconfig
+powerpc                        cell_defconfig
+m68k                        stmark2_defconfig
+arm                         axm55xx_defconfig
+powerpc                     tqm5200_defconfig
+mips                     loongson1b_defconfig
+sh                          sdk7786_defconfig
+arm                     am200epdkit_defconfig
+xtensa                generic_kc705_defconfig
+alpha                            alldefconfig
+powerpc                    mvme5100_defconfig
+sh                            titan_defconfig
+riscv                               defconfig
+powerpc                     mpc512x_defconfig
+arm                            lart_defconfig
+mips                           jazz_defconfig
+c6x                         dsk6455_defconfig
+arm                        mini2440_defconfig
+c6x                        evmc6474_defconfig
+arm                          imote2_defconfig
+arm                       imx_v4_v5_defconfig
+arm                            xcep_defconfig
+ia64                            zx1_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                          polaris_defconfig
+sh                          kfr2r09_defconfig
+m68k                        m5407c3_defconfig
+riscv                    nommu_virt_defconfig
+xtensa                       common_defconfig
+arm                       omap2plus_defconfig
+sh                          rsk7264_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 canyonlands_defconfig
+arm                        multi_v7_defconfig
+powerpc                 mpc832x_mds_defconfig
+sparc64                          alldefconfig
+mips                      pistachio_defconfig
+arm                        oxnas_v6_defconfig
+mips                        bcm63xx_defconfig
+powerpc                       maple_defconfig
+powerpc                       ebony_defconfig
+powerpc                         wii_defconfig
+powerpc                     tqm8541_defconfig
+m68k                             alldefconfig
+arm                            mmp2_defconfig
+mips                            gpr_defconfig
+powerpc                      ppc44x_defconfig
+xtensa                         virt_defconfig
+arm                        clps711x_defconfig
+mips                          rb532_defconfig
+arm                        multi_v5_defconfig
+powerpc                     kmeter1_defconfig
+arm                        spear6xx_defconfig
+powerpc                          g5_defconfig
+mips                         mpc30x_defconfig
+arm                  colibri_pxa270_defconfig
+m68k                           sun3_defconfig
+sh                          lboxre2_defconfig
+mips                  cavium_octeon_defconfig
+s390                          debug_defconfig
+sh                           se7751_defconfig
+mips                          malta_defconfig
+arm                        mvebu_v7_defconfig
+arm                        vexpress_defconfig
+parisc                              defconfig
+mips                            ar7_defconfig
+arm                            dove_defconfig
+powerpc                     stx_gp3_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201002
+x86_64               randconfig-a001-20201002
+x86_64               randconfig-a002-20201002
+x86_64               randconfig-a005-20201002
+x86_64               randconfig-a003-20201002
+x86_64               randconfig-a006-20201002
+i386                 randconfig-a006-20201002
+i386                 randconfig-a005-20201002
+i386                 randconfig-a001-20201002
+i386                 randconfig-a004-20201002
+i386                 randconfig-a003-20201002
+i386                 randconfig-a002-20201002
+i386                 randconfig-a014-20201002
+i386                 randconfig-a013-20201002
+i386                 randconfig-a015-20201002
+i386                 randconfig-a016-20201002
+i386                 randconfig-a011-20201002
+i386                 randconfig-a012-20201002
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-+       /* Check that mandatory features are supported. */
-+       if (sigstruct->body.attributes & sigstruct->body.attributes_mask &
-+           sgx_attributes_reserved_mask)
-+               return -EINVAL;
-+       if (sigstruct->body.miscselect & sigstruct->body.misc_mask &
-+           sgx_misc_reserved_mask)
-+               return -EINVAL;
-+       if (sigstruct->body.xfrm & sigstruct->body.xfrm_mask &
-+           sgx_xfrm_reserved_mask)
-+               return -EINVAL;
-+
-         ret = sgx_get_key_hash(sigstruct->modulus, mrsigner);
+clang tested configs:
+x86_64               randconfig-a012-20201002
+x86_64               randconfig-a015-20201002
+x86_64               randconfig-a014-20201002
+x86_64               randconfig-a013-20201002
+x86_64               randconfig-a011-20201002
+x86_64               randconfig-a016-20201002
 
-Haitao
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
