@@ -2,144 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB612281FF8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AE428200F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgJCBQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:16:00 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53472 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725795AbgJCBPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:15:49 -0400
-IronPort-SDR: P5Sec4b6tpXvdfP4uVCDR/OxngOcqmC7uGDfGbuW6UAayz15pZ/HKpUgu4evionzUomIAktk/h
- M5HiQLXeSD/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="160436330"
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="160436330"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:15:48 -0700
-IronPort-SDR: lAxzQVGKuMxkID9g+fJASlns2DwBBYh6sTVMtg7mjJZD7y67rzpMUlLE33yKcDG08mtNcScJ2q
- V19o/bq9FttA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="325996798"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga002.jf.intel.com with ESMTP; 02 Oct 2020 18:15:48 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, x86@kernel.org,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH 4/4] x86/cpu/topology: Implement the CPU type sysfs interface
-Date:   Fri,  2 Oct 2020 18:17:45 -0700
-Message-Id: <20201003011745.7768-5-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
-References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+        id S1725855AbgJCBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:25:21 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58464 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgJCBZU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 21:25:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931Ovah024776;
+        Sat, 3 Oct 2020 01:25:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=HiDonggRQ8JlxsajXB85uBIozSr+fg3QMRuX4W0IOqw=;
+ b=ZvjHO4N7iR/xgW5vZDciG+gffm9dUknsBnSogrggTuO+jqdIMHy1N9DhPpIlcFEr2a68
+ YxNg0sOnqHe6PP2xmD5k2kRCLBxSXublXY/fQFv/auelhLE8UxXaAAO5sIGn2YudiLeP
+ 6atpt7NwEF7OvBSSh0bhWJd4/Swd1ysbMDYqe+3gMpcJ3fmVHJtHLbMIH1UUNL/ogJoP
+ psi+ZCd1BUnRM6HMZCgJPnBuyaPKcDX9V70sfVsTM+AcMaWlD8s9VxIFv2abSmpBDEE9
+ F1yMKiWTSiKrVwYNkRjxuLzo0Lg/B+P8MWYLuGxp3sIAvLBSwtlTc1iz2OTDuSiKhYUw uw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33swkmdfxe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 01:25:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931Jsni162137;
+        Sat, 3 Oct 2020 01:23:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33xeds2et4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 01:23:14 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0931NB2B026108;
+        Sat, 3 Oct 2020 01:23:11 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 18:23:11 -0700
+To:     john.p.donnelly@oracle.com
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, michael.christie@oracle.com,
+        bstroesser@ts.fujitsu.com
+Subject: Re: [PATCH ] scsi: page warning: 'page' may be used uninitialized
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1wo08cdco.fsf@ca-mkp.ca.oracle.com>
+References: <20200924001920.43594-1-john.p.donnelly@oracle.com>
+Date:   Fri, 02 Oct 2020 21:23:09 -0400
+In-Reply-To: <20200924001920.43594-1-john.p.donnelly@oracle.com> (john
+        p. donnelly's message of "Wed, 23 Sep 2020 17:19:20 -0700")
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=893 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 suspectscore=3 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030012
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=3 mlxlogscore=907 clxscore=1011 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent Intel processors combine CPUs with different types of micro-
-architecture in the same package. There may be applications interested in
-knowing the type topology of the system. For instance, it can be used to
-to determine which subsets of CPUs share a common feature.
 
-Implement cpu_type sysfs interfaces for Intel processors.
+John,
 
-For example, in a system with four Intel Atom CPUs and one Intel Core CPU,
-these entries look as below. In this example, the native model IDs for
-both types of CPUs are 0:
+> corrects: drivers/target/target_core_user.c:688:6: warning: 'page' may be used
+> uninitialized
 
-user@host:~$: ls /sys/devices/system/cpu/types
-intel_atom_0 intel_core_0
+Applied to 5.10/scsi-staging, thanks!
 
-user@host:~$ ls /sys/devices/system/cpu/types/intel_atom_0
-cpulist cpumap
-
-user@host:~$ ls /sys/devices/system/cpu/types/intel_core_0
-cpulist cpumap
-
-user@host:~$ cat /sys/devices/system/cpu/types/intel_atom/cpumap
-0f
-
-user@host:~$ cat /sys/devices/system/cpu/types/intel_atom/cpulist
-0-3
-
-user@nost:~$ cat /sys/devices/system/cpu/types/intel_core/cpumap
-10
-
-user@host:~$ cat /sys/devices/system/cpu/types/intel_core/cpulist
-4
-
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Suggested-by: Len Brown <len.brown@intel.com> # Necessity of the interface
-Suggested-by: Dave Hansen <dave.hansen@intel.com> # Details of the interface
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
- arch/x86/include/asm/topology.h |  2 ++
- arch/x86/kernel/cpu/topology.c  | 23 +++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
-
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index f4234575f3fd..d4a3e1ce8338 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -218,4 +218,6 @@ static inline void arch_set_max_freq_ratio(bool turbo_disabled)
- }
- #endif
- 
-+#define CPUTYPES_MAX_NR 2
-+
- #endif /* _ASM_X86_TOPOLOGY_H */
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index d3a0791bc052..709fc473f905 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -153,3 +153,26 @@ int detect_extended_topology(struct cpuinfo_x86 *c)
- #endif
- 	return 0;
- }
-+
-+u32 arch_get_cpu_type(int cpu)
-+{
-+	struct cpuinfo_x86 *c = &cpu_data(cpu);
-+
-+	if (cpu < 0 || cpu >= nr_cpu_ids)
-+		return 0;
-+
-+	return c->x86_cpu_type;
-+}
-+
-+bool arch_has_cpu_type(void)
-+{
-+	return boot_cpu_has(X86_FEATURE_HYBRID_CPU);
-+}
-+
-+const char *arch_get_cpu_type_name(u32 cpu_type)
-+{
-+	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
-+		return intel_get_hybrid_cpu_type_name(cpu_type);
-+
-+	return NULL;
-+}
 -- 
-2.17.1
-
+Martin K. Petersen	Oracle Linux Engineering
