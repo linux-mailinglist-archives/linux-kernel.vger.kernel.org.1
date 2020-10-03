@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58FA282379
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D36A28237D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725896AbgJCKC0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 3 Oct 2020 06:02:26 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:55486 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725857AbgJCKCX (ORCPT
+        id S1725794AbgJCKDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 06:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgJCKDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:02:23 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-tgmJOLFBPUuJiiTYcs74xg-1; Sat, 03 Oct 2020 06:02:18 -0400
-X-MC-Unique: tgmJOLFBPUuJiiTYcs74xg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5F43185A0C1;
-        Sat,  3 Oct 2020 10:02:16 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-192.ams2.redhat.com [10.36.112.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C57B110013C4;
-        Sat,  3 Oct 2020 10:02:14 +0000 (UTC)
-Subject: [PATCH v3 3/3] vhost: Don't call log_access_ok() when using IOTLB
-From:   Greg Kurz <groug@kaod.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org, Laurent Vivier <laurent@vivier.eu>,
-        David Gibson <david@gibson.dropbear.id.au>
-Date:   Sat, 03 Oct 2020 12:02:13 +0200
-Message-ID: <160171933385.284610.10189082586063280867.stgit@bahia.lan>
-In-Reply-To: <160171888144.284610.4628526949393013039.stgit@bahia.lan>
-References: <160171888144.284610.4628526949393013039.stgit@bahia.lan>
-User-Agent: StGit/0.21
+        Sat, 3 Oct 2020 06:03:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175EDC0613D0;
+        Sat,  3 Oct 2020 03:03:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id o5so4382366wrn.13;
+        Sat, 03 Oct 2020 03:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VgpkF28etaKQ0J2igjsOiDIjupmhgpQVJ1epnK66aAc=;
+        b=J4PrM12sIgMTcBoaR+fYwd31zTy3mgEmuWvpvqrRHMtUzcdbLx8XdUxPt0RvlNuDaz
+         HKmxhK5WT99yQL9R+8d8pCsFZ1r9+gGMpTXDQSsjy0TYmkPwT1n1Ss0u90AsQYZVaBpQ
+         Whd+sal5+a6Z2u/xRz4pfK6YgbLWi0uwoa3VxUx0KI4jgPLgGC7+eKdcXWX97q1Hh5Ki
+         NflIwc0WOproUwxvsI+c6egajZ0AV05D83w7Zvb9l12xkvWiCybcwjv0EO5uTKJCVNnM
+         1aNl6SIcI4KlW1axFsXJQeSdlORaYNACa9Kw47SbyvVy8d2vsBwV+AiKaZiOlXMghvDj
+         DdhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VgpkF28etaKQ0J2igjsOiDIjupmhgpQVJ1epnK66aAc=;
+        b=S9H8LpDd9TpX1Of5MnOfOeMvOHSTg8z3i8+jCHtt7ESZ8iQ/VN+eqMPUDvpbbPz6bI
+         GzEqZ1CUioRzOPZ/3Cjw5nV4x0iUo3xnW2zrQekjjbRGkrP1JEeeRlizSU1P0jCzfJky
+         gC/CKoAldcYRBpJwGFILr+TZsayaEn6/bMLEJY8ih5b0G8uXdgw2aGNQGWU9vlAatyiF
+         QGlSLATkJriB5TXBJzUnuDZ3wE4FAvgDrK4VYm0PYRAM4T5xGI1vjDxk9eWR0+hovHFG
+         H9P644HeAkI0GX8DU69T5xtpchFjTviXsbXrwOO/tZ4JqgwiStjDm9V6HE8I+0wsgwJA
+         YLaw==
+X-Gm-Message-State: AOAM531sAnI6AVx0uMbuDFFCHh6lhyoxRRVgp9cpxaGJgkzL4JfuUM+1
+        2Q4Khc0CbYIm0gEX9CAX9x0=
+X-Google-Smtp-Source: ABdhPJyJGnit4g06Hq/dog0xk1OHhFyKXNvYd8zgb8PKTw3H5Mwu4T2Qvj/pZSkoEAJ3sISuKtZLKA==
+X-Received: by 2002:adf:f586:: with SMTP id f6mr7459362wro.299.1601719420618;
+        Sat, 03 Oct 2020 03:03:40 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id p67sm4954529wmp.11.2020.10.03.03.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 03:03:39 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: sun4i-a10: fix cpu_alert temperature
+Date:   Sat,  3 Oct 2020 12:03:32 +0200
+Message-Id: <20201003100332.431178-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the IOTLB device is enabled, the log_guest_addr that is passed by
-userspace to the VHOST_SET_VRING_ADDR ioctl, and which is then written
-to vq->log_addr, is a GIOVA. All writes to this address are translated
-by log_user() to writes to an HVA, and then ultimately logged through
-the corresponding GPAs in log_write_hva(). No logging will ever occur
-with vq->log_addr in this case. It is thus wrong to pass vq->log_addr
-and log_guest_addr to log_access_vq() which assumes they are actual
-GPAs.
+When running dtbs_check thermal_zone warn about the
+temperature declared.
 
-Introduce a new vq_log_used_access_ok() helper that only checks accesses
-to the log for the used structure when there isn't an IOTLB device around.
+thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
 
-Signed-off-by: Greg Kurz <groug@kaod.org>
+It's indeed wrong the real value is 85°C and not 850°C.
+
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- drivers/vhost/vhost.c |   23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 9d2c225fb518..9ad45e1d27f0 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -1370,6 +1370,20 @@ bool vhost_log_access_ok(struct vhost_dev *dev)
- }
- EXPORT_SYMBOL_GPL(vhost_log_access_ok);
- 
-+static bool vq_log_used_access_ok(struct vhost_virtqueue *vq,
-+				  void __user *log_base,
-+				  bool log_used,
-+				  u64 log_addr)
-+{
-+	/* If an IOTLB device is present, log_addr is a GIOVA that
-+	 * will never be logged by log_used(). */
-+	if (vq->iotlb)
-+		return true;
-+
-+	return !log_used || log_access_ok(log_base, log_addr,
-+					  vhost_get_used_size(vq, vq->num));
-+}
-+
- /* Verify access for write logging. */
- /* Caller should have vq mutex and device mutex */
- static bool vq_log_access_ok(struct vhost_virtqueue *vq,
-@@ -1377,8 +1391,7 @@ static bool vq_log_access_ok(struct vhost_virtqueue *vq,
- {
- 	return vq_memory_access_ok(log_base, vq->umem,
- 				   vhost_has_feature(vq, VHOST_F_LOG_ALL)) &&
--		(!vq->log_used || log_access_ok(log_base, vq->log_addr,
--				  vhost_get_used_size(vq, vq->num)));
-+		vq_log_used_access_ok(vq, log_base, vq->log_used, vq->log_addr);
- }
- 
- /* Can we start vq? */
-@@ -1517,9 +1530,9 @@ static long vhost_vring_set_addr(struct vhost_dev *d,
- 			return -EINVAL;
- 
- 		/* Also validate log access for used ring if enabled. */
--		if ((a.flags & (0x1 << VHOST_VRING_F_LOG)) &&
--			!log_access_ok(vq->log_base, a.log_guest_addr,
--				       vhost_get_used_size(vq, vq->num)))
-+		if (!vq_log_used_access_ok(vq, vq->log_base,
-+				a.flags & (0x1 << VHOST_VRING_F_LOG),
-+				a.log_guest_addr))
- 			return -EINVAL;
- 	}
- 
-
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index 0f95a6ef8543..1c5a666c54b5 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -143,7 +143,7 @@ map0 {
+ 			trips {
+ 				cpu_alert0: cpu-alert0 {
+ 					/* milliCelsius */
+-					temperature = <850000>;
++					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+-- 
+2.25.1
 
