@@ -2,205 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED02282389
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FBF28238D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgJCKKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 06:10:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgJCKKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:10:10 -0400
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DB35206DB;
-        Sat,  3 Oct 2020 10:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601719809;
-        bh=4uc/yvgQ0Bg2rkjDtTSRMtPCAxTyxmhc3nyBiJXwIp0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WDzokKxhT2P5YFYukQBAb+AdsJuSG5RYTi/TLJUFAIPUNSS7FPWreUOZJPhduUgaI
-         IdxgzcQkOb0cNucRjsC+j3lE2zfFwKFgr6gSepkwrGFmGFW/fVw+LLTE6YujRgLjNx
-         r3O7NsYGeKbVugZmLsP7edh6M90bbWgQ6JiXYSpE=
-Received: by mail-ej1-f46.google.com with SMTP id p15so5084039ejm.7;
-        Sat, 03 Oct 2020 03:10:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533y81cjjHObQMy2KJQ1hLfBvCke6X2WsGSpf0mdYOen+5UZVCk6
-        +qv/Qz6wr9iRpWCdr076mPjU1f9m6b1hQnPheUc=
-X-Google-Smtp-Source: ABdhPJzsmojD/sHn318W+3K8GmWS4SrdOb2+YB41wl8ewmNenZaBBjddwx/tEamQQEtD4UTCIX8d2tfHG5kC/ZRLua0=
-X-Received: by 2002:a17:906:14db:: with SMTP id y27mr6295897ejc.148.1601719807676;
- Sat, 03 Oct 2020 03:10:07 -0700 (PDT)
+        id S1725801AbgJCKL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 06:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgJCKL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 06:11:26 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A7CC0613D0;
+        Sat,  3 Oct 2020 03:11:25 -0700 (PDT)
+Received: from ip4d14bc8c.dynamic.kabel-deutschland.de ([77.20.188.140] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kOeVg-0003S9-3R; Sat, 03 Oct 2020 12:11:24 +0200
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <e9166fcbb777e9b7685745e572ab7c7322596ec2.1601541165.git.linux@leemhuis.info>
+ <275187e0-92b5-d0a6-0bf7-76c827e2c808@infradead.org>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; prefer-encrypt=mutual; keydata=
+ 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
+ 5iv6NKaV29GWHbY=
+Subject: Re: [RFC PATCH v1 15/26] docs: reporting-bugs: make readers test
+ mainline, but leave a loophole
+Message-ID: <a08d1012-78bf-5f84-26d2-4f596bc3b59d@leemhuis.info>
+Date:   Sat, 3 Oct 2020 12:11:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CGME20201002192215eucas1p2c1d2baebfe2a9caa11d88175a2899fea@eucas1p2.samsung.com>
- <20201002192210.19967-1-l.stelmach@samsung.com> <20201002192210.19967-2-l.stelmach@samsung.com>
-In-Reply-To: <20201002192210.19967-2-l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sat, 3 Oct 2020 12:09:55 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeLiKQLSud4f9zxqBdR9a1sk04K56_=jtQr1FGxyDmDuQ@mail.gmail.com>
-Message-ID: <CAJKOXPeLiKQLSud4f9zxqBdR9a1sk04K56_=jtQr1FGxyDmDuQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: net: Add bindings for AX88796C SPI
- Ethernet Adapter
-To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <275187e0-92b5-d0a6-0bf7-76c827e2c808@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601719885;9082f3d0;
+X-HE-SMSGID: 1kOeVg-0003S9-3R
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Oct 2020 at 21:22, =C5=81ukasz Stelmach <l.stelmach@samsung.com> =
-wrote:
->
-> Add bindings for AX88796C SPI Ethernet Adapter.
->
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  .../bindings/net/asix,ax88796c-spi.yaml       | 76 +++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  2 files changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c-s=
-pi.yaml
->
-> diff --git a/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml=
- b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
-> new file mode 100644
-> index 000000000000..50a488d59dbf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/asix,ax88796c-spi.yaml
-> @@ -0,0 +1,76 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/asix,ax88796c-spi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ASIX AX88796C SPI Ethernet Adapter
-> +
-> +allOf:
-> +  - $ref: ethernet-controller.yaml#
+Many thx for you comments. Consider all the obvious spelling and
+grammatical mistakes you pointed out fixed, I won't mention all of them
+in this reply to keep things easier to follow.
 
-Order of top-level entries please:
-1. id, schema
-2. title
-3. maintainers
-4. description
-and then allOf. See example-schema.yaml.
+Am 02.10.20 um 19:51 schrieb Randy Dunlap:
+> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
+>> = RFC =
+>>
+>> Am I asking for too much from users by telling them to test mainline? But most
+>> will likely have an outdated and heavily patched vendor kernel anyway, so they
+>> have to install a vanilla kernel if they want to report something upstream;
+>> that's why I thought "well, then let's go all in and make them test mainline.
+> 
+> That is appropriate IMO.
 
-> +
-> +description: |
-> +  ASIX AX88796C is an Ethernet controller with a built in PHY. This
-> +  describes SPI mode of the chip.
-> +
-> +  The node for this driver must be a child node of a SPI controller, hen=
-ce
-> +  all mandatory properties described in ../spi/spi-bus.txt must be speci=
-fied.
-> +
-> +maintainers:
-> +  - =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: asix,ax99796c-spi
-> +
-> +  reg:
-> +    description:
-> +      SPI device address.
+Yeah, but finding the the right tone in the text seem important to me,
+as some people might see it as "hey, the kernel develpers are putting
+the bar really really high". That's why I pointed it out explicitly.
+>> +Instead, look a little lower for a table for a line with the description
+> 
+>                                             with a line with the description
+> 
+>> +'mainline', which you'll find at the top of that table.
 
-Skip description, it's trivial.
+Rewrote this sentence:
 
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 40000000
-> +
-> +  interrupts:
-> +    description:
-> +     GPIO interrupt to which the chip is connected.
+Instead, look at the table below for a line starting with 'mainline',
+which you'll find at the top of that table.
 
-Skip the description. It's trivial and might be not accurate (does not
-have to be a GPIO).
-
-> +    maxItems: 1
-> +
-> +  interrupt-parrent:
-> +    description:
-> +      A phandle of an interrupt controller.
-
-Skip description.
-
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    description:
-> +      A GPIO line handling reset of the chip. As the line is active low,
-> +      it should be marked GPIO_ACTIVE_LOW.
-> +    maxItems: 1
-> +
-> +  local-mac-address: true
-> +
-> +  mac-address: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +  - interrupts
-> +  - interrupt-parrent
-> +  - reset-gpios
-
-Additional properties false.
-
-> +
-> +examples:
-> +  # Artik5 eval board
-> +  - |
-> +    ax88796c@0 {
-> +        compatible =3D "asix,ax88796c";
-> +        local-mac-address =3D [00 00 00 00 00 00]; /* Filled in by a boo=
-tloader */
-> +        interrupt-parent =3D <&gpx2>;
-> +        interrupts =3D <0 IRQ_TYPE_LEVEL_LOW>;
-> +        spi-max-frequency =3D <40000000>;
-> +        reg =3D <0x0>;
-> +        reset-gpios =3D <&gpe0 2 GPIO_ACTIVE_LOW>;
-> +        controller-data {
-> +            samsung,spi-feedback-delay =3D <2>;
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
-umentation/devicetree/bindings/vendor-prefixes.yaml
-> index 2baee2c817c1..5ce5c4a43735 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -117,6 +117,8 @@ patternProperties:
->      description: Asahi Kasei Corp.
->    "^asc,.*":
->      description: All Sensors Corporation
-> +  "^asix,.*":
-> +    description: ASIX Electronics Corporation
-
-Separate patch please.
-
-Best regards,
-Krzysztof
-
->    "^aspeed,.*":
->      description: ASPEED Technology Inc.
->    "^asus,.*":
-> --
-> 2.26.2
->
+Ciao, Thorsten
