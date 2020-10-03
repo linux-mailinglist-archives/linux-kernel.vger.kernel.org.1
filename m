@@ -2,103 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3445728250A
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1C828250C
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgJCPSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 11:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S1725847AbgJCPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 11:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJCPSG (ORCPT
+        with ESMTP id S1725747AbgJCPTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 11:18:06 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A502CC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 08:18:06 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d1so5454715qtr.6
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 08:18:06 -0700 (PDT)
+        Sat, 3 Oct 2020 11:19:22 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16840C0613D0;
+        Sat,  3 Oct 2020 08:19:22 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d13so2903567pgl.6;
+        Sat, 03 Oct 2020 08:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3lHtCt0w283nQgWH715RcZfWnKuLjRS7WehMmHRVIcc=;
-        b=SeyjLBcRIVrZTJZY0KLwWww1RJ6UuD7C6Oipr2TpswR9eN6F0w91vDK8/Zf5l9UwHh
-         p6CLCpX08MonfdENPrVnfRSodVoVMuWL4XrlTh32Mw7MGu7hwjD6Frhv0L1cjyjhWvs7
-         TMynocz19xnB8BmvBiNAjDw/h17SujylbtkafzKFvbdbgQFf4hH6YeP/S5J5YkPibDjN
-         qPo9ezsnE3G+8mTZ80CEkf+K/D9VBj4Z4IP0DsKphS35pEQhNlT0gz881AKdxVdwpMj/
-         9HpReSYmCj6af61qFsYDvLQVx+LehXpjJFgdquklLvTHAhXhO2HhpZr09qKCoVTqbF/7
-         3EnA==
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=HMfn3sVRJkjUaie6oXrhM0CzB/smuFPKw2b5ubgLlhc=;
+        b=URSW9S7Yh9pgXx9kH/9tDW55XHPSaePxAJzrA1+IaFs74cDB4OcrStoabKhadIoHW7
+         HqPPrs9+bYxgOAboifMNm77e5cuIG4M0wGUO+FEaMqlcLhzHmQqTeGblrD68vYnDeDD+
+         VZIHxIHlLiS0Lby902IO+l4KrTZDrdXlfWq7AyVjNRJ4IWZCp2ykdwF0RnFm1BmSOcZr
+         1E//Wix2emL1M7szIvNhbVpG9fuiqALn6eoNkZGnBNljE5vqjYfewpode7sXdEUqS10C
+         T0Dc2T7TgnOFIJ98oRnb5KBJxjpVHdWuVG42MFYt2k0H86e1f4WhP6pnBeulSf7fX159
+         9Y0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3lHtCt0w283nQgWH715RcZfWnKuLjRS7WehMmHRVIcc=;
-        b=melnn932GHzcS9HdQeJ/eovkDiCx3DWCiRtn70X3h0azD0auSbyXVsF29OANJ6Qcs/
-         bMqIhMkBsOywy/7qIczJv4Uglfx2AZrWF2sk5VAMD4czBeeHh+j8u4vQMW9fRstpZBKB
-         bV2jxcIGbiENePlqVklzBLdImyQHTMkhAJKixPS32lks2swND0VzWMbE7ZGGZaCuiLVj
-         +pXpTIjYKWPmec8zob7qRsK0AlA6Ki7hLo5OoFP1py7YQ5eBYP1bSmdgV9q8qWV0U0kY
-         /FK+8Vgl6dNh2qI4ewbl4yZGaQxToUbNExRL8G5DaAvMEYLZYgHDJMYMWlxPcfuIoQCL
-         ZENg==
-X-Gm-Message-State: AOAM530fYaj2l5orsUfdvepzaLGiAohs127iDkLmXkRKljzY+xxxtORK
-        VBRpoiqXi65Uwew7AqWJXNA=
-X-Google-Smtp-Source: ABdhPJwhfA2iPlKraNgvrPoYKdg94Nd3q96bEw9hZLqZVVT82wLRrGGuVWHNLDzex6SM+jZLCas7qw==
-X-Received: by 2002:aed:2e05:: with SMTP id j5mr6820176qtd.94.1601738285790;
-        Sat, 03 Oct 2020 08:18:05 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id d12sm3436343qka.34.2020.10.03.08.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 08:18:05 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sat, 3 Oct 2020 11:18:03 -0400
-To:     Gabriel C <nix.or.die@googlemail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.9-rc7
-Message-ID: <20201003151803.GA614088@rani.riverdale.lan>
-References: <CAHk-=wj1SJmva5pQxT-XZkMREOa+iJuy0K8-zua0K=vF-Jz7zw@mail.gmail.com>
- <CAEJqkgiq5ss9S4edHGb5x+YjhODF1HqBW-5qjHA8=AFnhX2tSQ@mail.gmail.com>
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=HMfn3sVRJkjUaie6oXrhM0CzB/smuFPKw2b5ubgLlhc=;
+        b=WqBT8aT9P5B9y2T75A0oSmithOox2xybbHSUzMlVxajkTu9zugi4owfSJeN/FS/wea
+         35EfRxtAVh1hYA4NTd/GCP6tbC7LFmH0EuThm2ZgOz1yW2zFBbBpegS7bmWVCkmR+hxW
+         oZ43TBODgw8G1q9ftTQJkZGWrFpUaoja78fobymMmgnoIuJfgok/yMOHuK1ovDhkcazD
+         7NSBqopMVDarBy1s6kl3GIAq7nMwr8J2fgNfCeVyDcQZPi/U6DDqPWQe3ukkb+pfUOJg
+         Tn4rQTA3FMIVaZ4gbqGNywEsrle2RKurffymrTkVaW2mDc3tJu+5fSAHHHfgS+0TeWl1
+         Kq5g==
+X-Gm-Message-State: AOAM5300wX4CMZE6fzwW6XKDbkngN/UhdCZPi0reCcjg3kOA/R+hcEek
+        Y56o+HbI1cjsosWuLrZaouU=
+X-Google-Smtp-Source: ABdhPJz5rON6RZFPTbpjA/dtzaoEYP2k8KrlDnLsNCZN1DXtGWEylj5EaPIDAqO1U0Snz2amTP2b2g==
+X-Received: by 2002:aa7:9555:0:b029:152:4b0b:cca with SMTP id w21-20020aa795550000b02901524b0b0ccamr2917244pfq.16.1601738361449;
+        Sat, 03 Oct 2020 08:19:21 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
+        by smtp.gmail.com with ESMTPSA id fv13sm5312717pjb.50.2020.10.03.08.19.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 08:19:20 -0700 (PDT)
+From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+Subject: [PATCH RFC 0/2] use interpreters to invoke scripts
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Message-ID: <2b00e566-112c-5657-c10f-7f210d3eae93@gmail.com>
+Date:   Sat, 3 Oct 2020 20:49:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEJqkgiq5ss9S4edHGb5x+YjhODF1HqBW-5qjHA8=AFnhX2tSQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 04:23:15PM +0200, Gabriel C wrote:
-> Am Mo., 28. Sept. 2020 um 00:00 Uhr schrieb Linus Torvalds
-> <torvalds@linux-foundation.org>:
-> Hello,
-> 
-> > Shortlog appended, but what I really hope you all will do is to give
-> > it a nice good testing. One extra week or rc kernels will help, but
-> > only if people actually try this out.
-> >
-> > So.. Please?
-> 
-> I'm a bit late testing, but the first thing I noticed is this warning:
-> 
-> ld: arch/x86/boot/compressed/head_64.o: warning: relocation in
-> read-only section `.head.text'
-> ld: warning: creating DT_TEXTREL in a PIE
-> 
-> The compiler is gcc 9.2.1 20200215, with default PIE enabled, ld version 2.35.1.
-> The config used is the 64bit defconfig.
-> 
-> Best Regards,
-> 
-> Gabriel C.
+This patch series aims at removing the dependency on execute 
+bit of the scripts in the kbuild system.
 
-You can ignore the warning for now, it is harmless: it's always been
-there, but binutils-2.35 has enabled the warning by default. There are
-patches in tip that should make this go away for v5.10.
+If not working with fresh clone of linux-next, clean the srctree:
+make distclean
+make tools/clean
 
-Thanks.
+To test the dependency on execute bits, I tried building the 
+kernel after removing x-bits for all files in the repository.
+Removing execute bits:
+for i in $(find -executable -type f); do chmod -x $i; done
 
-https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;a=blob_plain;f=ld/NEWS;hb=refs/tags/binutils-2_35_1
+Any attempts to configure (or build) the kernel fail because of 
+'Permission denied' on scripts with the following error:
+$ make allmodconfig
+sh: ./scripts/gcc-version.sh: Permission denied
+init/Kconfig:34: syntax error
+init/Kconfig:33: invalid statement
+init/Kconfig:34: invalid statement
+sh: ./scripts/ld-version.sh: Permission denied
+init/Kconfig:39: syntax error
+init/Kconfig:38: invalid statement
+sh: ./scripts/clang-version.sh: Permission denied
+init/Kconfig:49: syntax error
+init/Kconfig:48: invalid statement
+make[1]: *** [scripts/kconfig/Makefile:71: allmodconfig] Error 1
+make: *** [Makefile:606: allmodconfig] Error 2
 
-* Add a configure option, --enable-textrel-check=[no|yes|warning|error],
-  to decide what ELF linker should do by default with DT_TEXTREL in an
-  executable or shared library.  Default to yes for Linux/x86 targets.
+Changes:
+1. Adds specific interpreters (in Kconfig) to invoke 
+scripts.
+
+After this patch I could successfully do a kernel build 
+without any errors.
+
+2. Again, adds specific interpreters to other parts of 
+kbuild system.
+
+I could successfully perform the following make targets after 
+applying the PATCH 2/2:
+make headerdep
+make kselftest-merge
+make rpm-pkg
+make perf-tar-src-pkg
+make ARCH=ia64 defconfig
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make prepare
+
+Following changes in PATCH 2/2 are not yet tested:
+arch/arm64/kernel/vdso32/Makefile
+arch/nds32/kernel/vdso/Makefile
+scripts/Makefile.build
+
+Ujjwal Kumar (2):
+  kconfig: use interpreters to invoke scripts
+  kbuild: use interpreters to invoke scripts
+
+ Makefile                          |  4 ++--
+ arch/arm64/kernel/vdso/Makefile   |  2 +-
+ arch/arm64/kernel/vdso32/Makefile |  2 +-
+ arch/ia64/Makefile                |  4 ++--
+ arch/nds32/kernel/vdso/Makefile   |  2 +-
+ init/Kconfig                      | 16 ++++++++--------
+ scripts/Makefile.build            |  2 +-
+ scripts/Makefile.package          |  4 ++--
+ 8 files changed, 18 insertions(+), 18 deletions(-)
+
+-- 
+2.26.2
+
