@@ -2,136 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C80282433
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 15:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AFE282435
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 15:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725791AbgJCNIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 09:08:46 -0400
-Received: from mail-bn8nam12on2062.outbound.protection.outlook.com ([40.107.237.62]:15137
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725710AbgJCNIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 09:08:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LH5GxOe2D29a5Q3TFUF05Xf6+awGvfCwaFii+hjfPWutwEhne66wffiRTzq/EEXhhTXe8MYyTqI2yM2+gfbL0ii8KHVbHDUcQ9t+9shuDMV3xoCemzV5h6S4x6GsEgp+Bq6PlbEonlLZ5NKbn5go2XhmR93OIcwL2wRl5ehewu6hXZrtZtbfoFXtuyGlOnCwdTiJ4/3EAz9TsZU02GFIqq181hDG0IqeM32ixI32GRQnee73sPIflYqYqWrYQxCx9mnYqpXP/pT/oJZPqddN8fmxv/cs4TJF9Jd31R5em7F3KL1q3d0W9yKa2Dd+sjj4Wz3gb7Us33PQR49ykPBLRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kNZMzsr8vnKyLNGGI0uH/b6LWbBp4Hvg0imdwsNYVOU=;
- b=Rg0zthqWYbvEsy9TCZIxwWmtv6GA0e9qvAzDOS9fpeBmcmBe2BTOaINljy3c1NbmFLiPXsZcWfli+L7Fptf19Sfo/1HPczNzhma8Ox+elc+3Z1HX2JQ+LmPC41IrqEtogAZDlnDMMWWAGl8bej4kilrIuSJNqDZRxuryn2YlKOE970rqx1Owv3XOvwXhYWUPHjqFT7XbD5mno/Tvoutp4lkTTjHLWXfQjcRtsbXN3spTXDFnKu1E101koTHmzcP+TyTg9ZyMX9B2UagHaezGeZm/5r/GUQEmSAjW8hUgQqkbe9qdkm8ozMDWVfK9E8Ys8EW/tfycj2X75+wmcpJGEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kNZMzsr8vnKyLNGGI0uH/b6LWbBp4Hvg0imdwsNYVOU=;
- b=D+JF8qp3EjggAwtoAGvPdijpJHuBBGEaS69AOQ82UsvlneZURGIcKByOOCp51T8N6z5B9Z3xoNPV9mFIUmdHLsbXS0SJCIzPGnZ8ahyo6mNC2Rlq1RPImIIXX7t4/0O6KqppDqd2Jv0Y6Wf0TYDsfTcmWtXkJxdlHLwipmEM2sA=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM6PR12MB2827.namprd12.prod.outlook.com (2603:10b6:5:7f::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3433.38; Sat, 3 Oct 2020 13:08:40 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3433.039; Sat, 3 Oct 2020
- 13:08:40 +0000
-Subject: Re: [PATCH v2 00/13] iommu/amd: Add Generic IO Page Table Framework
- Support
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, robin.murphy@arm.com
-References: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <835c0d46-ed96-9fbe-856a-777dcffac967@amd.com>
-Date:   Sat, 3 Oct 2020 20:08:32 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-In-Reply-To: <20201002122830.4051-1-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [61.90.26.46]
-X-ClientProxiedBy: SG2PR01CA0165.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::21) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        id S1725813AbgJCNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 09:09:18 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:51831 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgJCNJR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 09:09:17 -0400
+Received: by mail-io1-f79.google.com with SMTP id o7so2656075iof.18
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 06:09:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iVL3IohRqT6c/uXzx5CC8YPW5rjrUz4BS2oOo74sL2M=;
+        b=M+XgVt0RzfCvEKb9U7vkcHtkf/DbaYVca9KIndAKy9m+0hZjrYotvqyav5XDsPABv0
+         6UY7iEKg9tFV40GS2oRcz9T+45vBIvINmmFbW5tywsMCa8iVNSbRAEfO0+Aek/5Zfss9
+         /BKMCcezGZ+qbwpzw6dAvWzqbNeK5PwpdN052H7xjDH1Fq9G5TSsFOjS9P+yyoRNVLVT
+         SPTf4ZYgY3JkGT2b7j0/dhDfOrj2SQLUiii6xqJ1Oykwgxo2xNWj+3qkyubp+ZeVHK+u
+         kc4oGn3JtX2JUIlBgSwUkFASVE0nBC8B+GJbsM0OMxeyO//FyfRQvw7NhH9MBdM8TflL
+         OSYQ==
+X-Gm-Message-State: AOAM531bKR8GoYboRH0cLtwmvPj8DbNY9+dHfXVb0VylI84hkAHQb0QP
+        HHVEarMO7A46hefyQ4DXUS0mnoVUi7fnrW5KBP+MOKw+q/C9
+X-Google-Smtp-Source: ABdhPJzRay26HKMVft78Lrncn852vCrGTWO51ZHtl15nl4W8WpyjG0P3FlwM0y2vhB9msdxzy6rqhqrJOgovuNK0MeVEDP/zauuo
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (61.90.26.46) by SG2PR01CA0165.apcprd01.prod.exchangelabs.com (2603:1096:4:28::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Sat, 3 Oct 2020 13:08:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f89d9647-f187-43d8-135b-08d8679d7264
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2827:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2827C3C46BAEA726EA0AA8FCF30E0@DM6PR12MB2827.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DRecu6wGgjc3Hj5wIBavLEhJ8JW2hLFQcXqNafiXl55jEHtuFI7tOcH+RXlvBNFcDD53cA1pIa9swh1Q9bMfZt86aknWy/J56O0J11837pJr+EcRob8vMw2W8ybETplNnNvGHRQfQPFAMi2wO58uJ/mRdmTaaGAMr5CQbRqRxuTGsxwM/Sdv4fotAbeI8olxyLSl99sCmS97p++EmCc5ocZZM8eBjdnIGcZYXGJ0s1S+hVLEW4oUgDKtuJTHcXQVSuUDGVMtFv9yrYHIVe/7ysGCdgYWFokhCw3IWPzKGzAuB2tma5pbf0s99RqEBZi+ByWiWn0uAuPJcvaYi+P1Ivu71VWH8dxHwmp88MAJl9wEcCmh4Y1YiUm7t7tpVnzUI6VxBwJWj8MvqW1fZxgN0fTXz9KLwpUyNuwoz0vH0J5IpDk6R5W0+oGo4p4NpOymCPcus1rqyn0kD4uef5P5Yayvzg8iHZL4xmwDNIKv4Gk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(26005)(83080400001)(4326008)(6506007)(83380400001)(6512007)(16526019)(186003)(316002)(53546011)(2906002)(8936002)(52116002)(66556008)(66476007)(2616005)(6666004)(5660300002)(956004)(31696002)(8676002)(66946007)(44832011)(86362001)(6486002)(31686004)(36756003)(478600001)(41533002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: fUv7fn25TWszg1er8gyYw/2SboIRY+0DPYGI0p9YCvgxQD/vYk1feGanlzGf/uzKBwM9BAdjiawiLNRZsT/iovLzLtRb1yGql2nXpWc9m6cMCFpu65D3PyOabd9jcVRWIWJNV/24kMr/u99nRlxDLNLNGObrZEYcHwYbv/7rue70EAUIBh+mKwSensX6+taw2dT3lMTm6DZSG4QjCaRDI/JFahpCEEareLnp2AQJY60nRJwlmxRdpdDlDBmbcQtj1czTapw1GPpBfV/xvjonu3fXn73FDXfevs0pixswXKLRErEmu+3j8Ti6R0DOLUThmLNYajKA1SzG0225f6GgKaJYfN+oDRt3jeB354C4lgRbXXWA160XoMqaUWmC6uAB5JDJN8pRJwJL/4DtGaynm28ApofLuBV5JnRqC+/CCuZ/vIhO17NWB1T11liZXWquv1bu2sktSLU3VzrPliQdQQmcoa9SPWoFOflYYeTP4PqA9vVgHpZ19jynnezp4rrW/8MPNwYbzGxAfzqgSj5BYinubcs57BJx03lmEQiqDA4QQ/C28BBDUd9Io+S7iqjfdljtZdP0nj/A7Y3TKtgDTMiTHbq37C1E6YrSZ6dtyy9Exz+djv/lfW7L8lPRHWMgZ0uOrTfi3pBJisNOZZKG4w==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f89d9647-f187-43d8-135b-08d8679d7264
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2020 13:08:40.3561
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 78ruS7AEWpFOjxok/1+V6yV1gnKNDNLXMuZCSjmIaswOG0WStYa++6A5ru2elhqj1naZV+Fz/kh11QZUwhFNTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2827
+X-Received: by 2002:a05:6638:c6:: with SMTP id w6mr6259820jao.143.1601730555760;
+ Sat, 03 Oct 2020 06:09:15 -0700 (PDT)
+Date:   Sat, 03 Oct 2020 06:09:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cd530a05b0c3f4bc@google.com>
+Subject: INFO: task hung in blkdev_put (4)
+From:   syzbot <syzbot+9a29d5e745bd7523c851@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchristi@redhat.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found an issue w/ this series. Please ignore. I'll send out V3.
+Hello,
 
-Regards,
-Suravee
+syzbot found the following issue on:
 
-On 10/2/20 7:28 PM, Suravee Suthikulpanit wrote:
-> The framework allows callable implementation of IO page table.
-> This allows AMD IOMMU driver to switch between different types
-> of AMD IOMMU page tables (e.g. v1 vs. v2).
-> 
-> This series refactors the current implementation of AMD IOMMU v1 page table
-> to adopt the framework. There should be no functional change.
-> Subsequent series will introduce support for the AMD IOMMU v2 page table.
-> 
-> Thanks,
-> Suravee
-> 
-> Change from V1 (https://lkml.org/lkml/2020/9/23/251)
->    - Do not specify struct io_pgtable_cfg.coherent_walk, since it is
->      not currently used. (per Robin)
->    - Remove unused struct iommu_flush_ops.  (patch 2/13)
->    - Move amd_iommu_setup_io_pgtable_ops to iommu.c instead of io_pgtable.c
->      patch 13/13)
-> 
-> Suravee Suthikulpanit (13):
->    iommu/amd: Re-define amd_iommu_domain_encode_pgtable as inline
->    iommu/amd: Prepare for generic IO page table framework
->    iommu/amd: Move pt_root to to struct amd_io_pgtable
->    iommu/amd: Convert to using amd_io_pgtable
->    iommu/amd: Declare functions as extern
->    iommu/amd: Move IO page table related functions
->    iommu/amd: Restructure code for freeing page table
->    iommu/amd: Remove amd_iommu_domain_get_pgtable
->    iommu/amd: Rename variables to be consistent with struct
->      io_pgtable_ops
->    iommu/amd: Refactor fetch_pte to use struct amd_io_pgtable
->    iommu/amd: Introduce iommu_v1_iova_to_phys
->    iommu/amd: Introduce iommu_v1_map_page and iommu_v1_unmap_page
->    iommu/amd: Adopt IO page table framework
-> 
->   drivers/iommu/amd/Kconfig           |   1 +
->   drivers/iommu/amd/Makefile          |   2 +-
->   drivers/iommu/amd/amd_iommu.h       |  22 +
->   drivers/iommu/amd/amd_iommu_types.h |  40 +-
->   drivers/iommu/amd/io_pgtable.c      | 534 +++++++++++++++++++++++
->   drivers/iommu/amd/iommu.c           | 644 +++-------------------------
->   drivers/iommu/io-pgtable.c          |   3 +
->   include/linux/io-pgtable.h          |   2 +
->   8 files changed, 656 insertions(+), 592 deletions(-)
->   create mode 100644 drivers/iommu/amd/io_pgtable.c
-> 
+HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1527329d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a29d5e745bd7523c851
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13cb63e3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae6083900000
+
+The issue was bisected to:
+
+commit 2da22da573481cc4837e246d0eee4d518b3f715e
+Author: Mike Christie <mchristi@redhat.com>
+Date:   Tue Aug 13 16:39:52 2019 +0000
+
+    nbd: fix zero cmd timeout handling v2
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e51b27900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e51b27900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e51b27900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9a29d5e745bd7523c851@syzkaller.appspotmail.com
+Fixes: 2da22da57348 ("nbd: fix zero cmd timeout handling v2")
+
+INFO: task syz-executor931:6875 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor931 state:D stack:27640 pid: 6875 ppid:  6874 flags:0x80004006
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0xec9/0x2280 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ blkdev_put+0x30/0x520 fs/block_dev.c:1804
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1853
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445039
+Code: Bad RIP value.
+RSP: 002b:00007ffdc5595ec8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: fffffffffffffe00 RBX: 0000000000000000 RCX: 0000000000445039
+RDX: 00000000ffffffff RSI: 000000000000ab03 RDI: 0000000000000003
+RBP: 00000000006cf018 R08: 00000000004002e0 R09: 00000000004002e0
+R10: 00000000004002e0 R11: 0000000000000246 R12: 0000000000402200
+R13: 0000000000402290 R14: 0000000000000000 R15: 0000000000000000
+INFO: task systemd-udevd:6879 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:systemd-udevd   state:D stack:26264 pid: 6879 ppid:  3932 flags:0x00004100
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0xec9/0x2280 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ io_schedule+0xb5/0x120 kernel/sched/core.c:6296
+ wait_on_page_bit_common+0x32a/0xe30 mm/filemap.c:1253
+ wait_on_page_bit mm/filemap.c:1314 [inline]
+ wait_on_page_locked include/linux/pagemap.h:611 [inline]
+ wait_on_page_read mm/filemap.c:2931 [inline]
+ do_read_cache_page+0x957/0x1390 mm/filemap.c:2974
+ read_mapping_page include/linux/pagemap.h:437 [inline]
+ read_part_sector+0xf6/0x5af block/partitions/core.c:777
+ adfspart_check_ICS+0x9d/0xc90 block/partitions/acorn.c:360
+ check_partition block/partitions/core.c:140 [inline]
+ blk_add_partitions+0x45c/0xe40 block/partitions/core.c:705
+ bdev_disk_changed+0x1ea/0x370 fs/block_dev.c:1416
+ __blkdev_get+0xee4/0x1aa0 fs/block_dev.c:1559
+ blkdev_get fs/block_dev.c:1639 [inline]
+ blkdev_open+0x227/0x300 fs/block_dev.c:1753
+ do_dentry_open+0x4b9/0x11b0 fs/open.c:817
+ do_open fs/namei.c:3251 [inline]
+ path_openat+0x1b9a/0x2730 fs/namei.c:3368
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_open fs/open.c:1192 [inline]
+ __se_sys_open fs/open.c:1188 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fd8b1526840
+Code: Bad RIP value.
+RSP: 002b:00007ffc6e5f3668 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 000055f1c1bb6e40 RCX: 00007fd8b1526840
+RDX: 000055f1c0593fe3 RSI: 00000000000a0800 RDI: 000055f1c1bb9b10
+RBP: 00007ffc6e5f37e0 R08: 000055f1c0593670 R09: 0000000000000010
+R10: 000055f1c0593d0c R11: 0000000000000246 R12: 00007ffc6e5f3730
+R13: 000055f1c1bb1a90 R14: 0000000000000003 R15: 000000000000000e
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1174:
+ #0: ffffffff8a067f40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
+1 lock held by in:imklog/6556:
+ #0: ffff88809144e370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+1 lock held by syz-executor931/6875:
+ #0: ffff88808927b6c0 (&bdev->bd_mutex){+.+.}-{3:3}, at: blkdev_put+0x30/0x520 fs/block_dev.c:1804
+1 lock held by systemd-udevd/6879:
+ #0: ffff88808927b6c0 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x4b8/0x1aa0 fs/block_dev.c:1492
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1174 Comm: khungtaskd Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
+ nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd7d/0x1000 kernel/hung_task.c:295
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 3911 Comm: systemd-journal Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0xffffffffa00185f0
+Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc <0f> 1f 44 00 00 55 48 89 e5 48 81 ec 00 00 00 00 53 41 55 41 56 41
+RSP: 0018:ffffc90003817d88 EFLAGS: 00000246
+RAX: 1ffff920001c3e06 RBX: ffff8880a7b97c00 RCX: dffffc0000000000
+RDX: ffff8880a77602c0 RSI: ffffc90000e1f038 RDI: ffffc90003817e38
+RBP: ffffc90000e1f000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: 00000000000001a0 R14: 0000000000080042 R15: ffffc90003817e38
+FS:  00007fa30091e8c0(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa2fdcde010 CR3: 00000000a8f90000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
