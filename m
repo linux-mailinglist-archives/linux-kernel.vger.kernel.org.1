@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE141282648
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB2C28264D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgJCTgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgJCTgK (ORCPT
+        id S1725925AbgJCTgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:36:19 -0400
+Received: from smtprelay0167.hostedemail.com ([216.40.44.167]:37162 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725831AbgJCTgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:36:10 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D355CC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 12:36:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m16so1626858ljo.6
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 12:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lixom-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=A5i2OjTLBkoVH5tm7bzHi/USJTrW+lyYNLFkq/+L0FE=;
-        b=h3cyyzFG4wrIzM4oY5CE0DCL/Xlwnalfgek7F6Jl6pEXbpfFB93mpo+Ea2whCFCE5A
-         eefa/5pd2+DMdH7Z23HajkB6EKfH9TQdBlvDWC/a/yWf/yWAaK3kpZ5rfSM1c0B6zbr1
-         GobhSXja3U2BbV98T6fHAf4LoaR5R2hb7t7GfiJNBPkFNklMUMYSNmE71ValjBQ684sd
-         n48zNbKObaLBDIFo679zmuOCOamJ4Jlspgzx3Mvd5FNsnM8HdU6I7vFYZczmmabom/4R
-         VjN6RK9fG5tbRAYG/qpvwlVcCEGkkHeR9DCTS0LUgUXPAl0h8bDDFiX0DngZWCyfoz2n
-         VM5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A5i2OjTLBkoVH5tm7bzHi/USJTrW+lyYNLFkq/+L0FE=;
-        b=Z5OZ5QjDGp+R+p9Rsfhcqnn2sIeEEAWjubzDjaC4hFZjCMfa+yQPvCUdYPuVjiHz1A
-         6wJ9AaFREJiexPZ+iLyfp09ubSlQCzblphmjOwjmqT2DL2FhzENXVdelLxqVMls/O0g5
-         tmmffPoGb6c8tJ8sXEGZD3uXVLsrEGX2RMSTgVfHUsGY0wPS9FUhGUrA+7Pw0F+4XnjI
-         nevadwpRttweW8Lkwn+os53V26bsNPrhe3VqYv/LIUjAd43PZrabLBtcQdMbG80Fcfbo
-         5djX+xrXM+vd0eAcEM+1qLSguybgAweqyBcZl/oXc5btidAgWfuednHdm4HrAvTQiTwy
-         g2oQ==
-X-Gm-Message-State: AOAM531MVJyt5rvYX3KZhA5Y9VBLCGdD3qZa35ky+bKzEeiMsOkAhpOm
-        wMzeEsWusFwRCJHPcKJnyShWINclsAGwX45s
-X-Google-Smtp-Source: ABdhPJzHJtCvvQB+I/1En4cpoIp25Yjr+eteA0t1Q7YniLLB8jaOGU2zQtPRVLJFu9G/iNWeJuwReg==
-X-Received: by 2002:a2e:8e30:: with SMTP id r16mr2385633ljk.304.1601753768288;
-        Sat, 03 Oct 2020 12:36:08 -0700 (PDT)
-Received: from localhost (h85-30-9-151.cust.a3fiber.se. [85.30.9.151])
-        by smtp.gmail.com with ESMTPSA id o17sm1911597lfi.261.2020.10.03.12.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 12:36:07 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 12:33:10 -0700
-From:   Olof Johansson <olof@lixom.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Khuong Dinh <khuong@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arm@kernel.org, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] arm64: dts: apm: drop unused reg-io-width from DW
- APB GPIO controller
-Message-ID: <20201003193310.GD8203@lx2k>
-References: <20200917165040.22908-1-krzk@kernel.org>
- <20201002160922.GA4542@kozik-lap>
+        Sat, 3 Oct 2020 15:36:17 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id DC1A2180A7FF0;
+        Sat,  3 Oct 2020 19:36:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2393:2553:2559:2562:2691:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3874:4321:5007:6248:6742:6743:7903:7974:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:14777:21080:21325:21433:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: ship26_570a7fe271af
+X-Filterd-Recvd-Size: 3575
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sat,  3 Oct 2020 19:36:11 +0000 (UTC)
+Message-ID: <306974234222092651f7497504f8c03e1304926b.camel@perches.com>
+Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
+ statements
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, tools@linux.kernel.org,
+        linux-iio@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-crypto@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
+        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
+        openipmi-developer@lists.sourceforge.net,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-wireless@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Date:   Sat, 03 Oct 2020 12:36:10 -0700
+In-Reply-To: <c7fd58ebd81f8731fc03434b2bdd8aa4bf99335a.camel@perches.com>
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+         <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
+         <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
+         <20200929113745.GB4799@sirena.org.uk>
+         <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
+         <20201001110150.GA6715@sirena.org.uk>
+         <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
+         <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
+         <c7fd58ebd81f8731fc03434b2bdd8aa4bf99335a.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002160922.GA4542@kozik-lap>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 06:09:22PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, Sep 17, 2020 at 06:50:39PM +0200, Krzysztof Kozlowski wrote:
-> > The Synopsys DesignWare APB GPIO controller driver does not parse
-> > reg-io-width and dtschema does not allow it so drop it to fix dtschema
-> > warnings like:
+On Sat, 2020-10-03 at 12:27 -0700, Joe Perches wrote:
+> On Sat, 2020-10-03 at 15:15 -0400, Konstantin Ryabitsev wrote:
+> > On Sat, Oct 03, 2020 at 11:40:48AM -0700, Joe Perches wrote:
+> > > (Adding tools and Konstantin Ryabitsev)
+> > > 
+> > > There seems to be some mismatch between b4's use of the
+> > > cover letter to a patch series and what maintainers that
+> > > apply a subset of the patches in the patch series.
+> > > 
+> > > The merge description shows the entire patch series as
+> > > applied, but the actual merge is only a subset of the
+> > > series.
+> > > 
+> > > Can this be improved in b4?
 > > 
-> >   arch/arm64/boot/dts/apm/apm-mustang.dt.yaml: gpio@1c024000:
-> >     'reg-io-width' does not match any of the regexes: '^gpio-(port|controller)@[0-9a-f]+$', 'pinctrl-[0-9]+'
+> > So, the following logic should be applied:
 > > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > - if the entire series was applied, reply to 0/n
+> > - if a subset only is applied, reply to each n/n of the patch that was 
+> >   cherry-picked out of the series
 > > 
-> > ---
+> > Is that an accurate summary?
 > 
-> Dear Arnd and Olof,
-> 
-> There is no response from APM maintainer, so maybe you could apply these
-> two patches directly? Optionally I could take it and send to you via
-> pull-request.
+> Exactly so, thanks.
 
-I've already applied them, so no need. Thanks for following up though, seems
-like the patchwork email service hasn't been working on all patches.
+And there's no need to commit the [0/n] cover letter as a
+part of the merge unless the entire series was committed.
 
+Or perhaps trim the cover letter to exclude the files
+modified by the patch series and show only the actual files
+committed.
 
--Olof
+And I believe b4 inserts this line ahead of the 0/n series
+cover letter description for the merge:
+
+    Merge series "<series>" from <author>:
+
+Perhaps that like could be "partial merge of" when a partial
+merge occurs or left as is if the entire series is applied.
+
+cheers, Joe
 
