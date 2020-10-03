@@ -2,131 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD3D282093
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF695282099
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgJCClz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:41:55 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1604 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgJCClz (ORCPT
+        id S1725847AbgJCCow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:44:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgJCCov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:41:55 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0932dE7B027310;
-        Fri, 2 Oct 2020 19:41:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=hhdsHK1egZ5uDeBeJD2GZo9kZjJvvFzDz5yyEa6vNJsQdtyl+zZFbEUOKh7kzacArKK/
- DeYCoNT9G1645DLj7k4Fsv3U2sKR3H/E/0dqmrssphfJgrd4d1EoqDoLJUecYg26bDjr
- 8QffX9rj7/j+L9ix9Q+inwx5/HSeUeHgEGs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33x0n24qun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 02 Oct 2020 19:41:40 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 2 Oct 2020 19:41:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kyeEKbGSxqXN2BQMZXQaFIyOivmBYtN+pHzKOykxQ64r5Odtj0eboAUPhb5E+YxyePcTkARzhtW1kVVlsJnlZ0MGWu1e2O9E2SRYnp7Je7MxU+qxCZxzZ2ozsW66IIbVLEf7XgZfHTTEUKyODmOD5Mi3Pv4EoP+LfNt6wAOj4VouU/kYv177NX+um2hLi3k1pkvGC6zVaDCrbyEdpUr6kTw/2+W9QysR8lyj7EFNJCS30qk0ZAnoc/vT49N8ZyJTful50F6u7B4Q7oRDvmWj7GwJ88crbe25sqX+ZG5Dml5RtimHAD8FgwwQ0HMzh5hb78mUF0VgV1Rw4sgwPaSJ+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=C0ekNl2C1GG7aHXLYFVrQ5HfAMWy+e6HhmgJkT4oWuhIooxOVM9EAcuqMjxsjQvVX3HV6nVyD1DkNCUumKDiWfpopIFpQEZOJF4U6EgY4cZUiRowhVXwAvnFjt2sxB0DRIB61P3QtqF1o4HtJ8r8E1GT5dktLzU9mPnRFUS70+WG2tzpKvP+lw0NFY/aElsW2CkaY+T5GkD6Ib+R52Jlog+skAwO+qlj8ky34COqtlPKD6RLk8mrCVj8veZ4t8PCxyW75x//sP4b+MNeswXYDCc14T99Dddq1s8x6Ndf+Zdn2w5O2aAqK60915838rzXaObmI7qSr/qc2QfZPK27SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=JW39eemGP/ZWKjlpWGos+5C9wKOu5mIx76mS0hl9ErZWKyzpwCdLD6247j4+G1hhyqLVlGGaC7IBVsHrjqF5oMIPiJaHTpMXzu58bBUQPwcGi5vlJRWDvUEm0OG/NVBVfkCwA+1EB1mPHyzCqUg+WDdxHY0w4MTVurMdS6+WWCg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3094.namprd15.prod.outlook.com (2603:10b6:a03:ff::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Sat, 3 Oct
- 2020 02:41:38 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3433.039; Sat, 3 Oct 2020
- 02:41:38 +0000
-Subject: Re: [PATCH][next] bpf: verifier: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-References: <20201002234217.GA12280@embeddedor>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3673ee00-3bdb-fb02-f379-849d5881d3b4@fb.com>
-Date:   Fri, 2 Oct 2020 19:41:35 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-In-Reply-To: <20201002234217.GA12280@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Fri, 2 Oct 2020 22:44:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601693089;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pmt/NFGOMfjXSvFg2hSwkpIXiVUYu79NUjIlXkSBJKs=;
+        b=F8X7yPgs/P0X+rqNgPj+Y1j7FXECcdt5sDCeWth2j2giZuhp49FicsZpZBSDyGzsRHCPi8
+        HT4hsFPtn5f+BG7gRFbr7ERLBzVqZBvIR78WMuhfvgVIa09FVWGTuSnIqVrV1JzEPYm9HQ
+        GRrRuXUQxb5ZMZiqAqwdraMIrgkk6yE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-dTrPfswyODeXxZHNSwD3PA-1; Fri, 02 Oct 2020 22:44:47 -0400
+X-MC-Unique: dTrPfswyODeXxZHNSwD3PA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6090C801AC9;
+        Sat,  3 Oct 2020 02:44:46 +0000 (UTC)
+Received: from ovpn-113-213.rdu2.redhat.com (ovpn-113-213.rdu2.redhat.com [10.10.113.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DB475C1DA;
+        Sat,  3 Oct 2020 02:44:37 +0000 (UTC)
+Message-ID: <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
+Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
+From:   Qian Cai <cai@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Date:   Fri, 02 Oct 2020 22:44:37 -0400
+In-Reply-To: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
+References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:7e45]
-X-ClientProxiedBy: MWHPR1201CA0003.namprd12.prod.outlook.com
- (2603:10b6:301:4a::13) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1836] (2620:10d:c090:400::5:7e45) by MWHPR1201CA0003.namprd12.prod.outlook.com (2603:10b6:301:4a::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Sat, 3 Oct 2020 02:41:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 343b7627-5a97-4fd1-9466-08d86745d9b7
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3094:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3094DB85A4E750A00B9E58FCD30E0@BYAPR15MB3094.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:747;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qG8hG2UqOy0ZVTrsSwIrOSzEIBCHnMnh6Mu4lEVemgDI6KiwCxl7QUoY4Ehr5v5EUWWOQ77VYx0tb8psXG8Z83RNrqGcLkiMDSE5FoXo7OJREGoZTK3TI7LS09QlaFnIBCovGEC3g9dcq+jV7Ix8cIRR5N5gBhpWvmsHDkMtkqD+d8nXmNdNAXKIrjqfydKo2Jw/lmyTyTUE4yQ6igTS30/avshXcYcFRnGthgYUujg9DpwoisMEC2Sy8fJmrUq/xZVH0L4ydwEuFL4VJJF0PIcRIWKFChuOYsm9nZOb5A9G+TYhWc96vYxaK1BHZwaWZ067KDKEtCvsu8qnpA6BYPZ+UCEfuE1e257BjgQKLZ48+BC5U0kLeRqFAlTZPmCWI3pTOdFKbnc4Br7JKxPP5cOKMTWAPWa48zIdv22EUFkFgNqr+6rBKnEDYAMAjp5Yt6aFPONapGqsZuTKL4gmHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(83080400001)(86362001)(6486002)(52116002)(31696002)(966005)(2906002)(478600001)(36756003)(2616005)(4744005)(8676002)(8936002)(110136005)(186003)(5660300002)(4326008)(31686004)(66556008)(66946007)(53546011)(66476007)(316002)(16526019)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: EemoctjEy1miUQnMmyrIGpXGL9EeLHGTzPiITL3CgIA9xXz7WwnY5wGUZs0SSvpboAbx73sDCrrHaQvg6SpGptZa7fyo1Cp4oorb+Tj+4HhVfCAwqn1dVXzBV4NIB9S2aDamKAZrT4kTf/7Nu/CTxR1qIJgiDdWlife5kzIZPyLTMQvg+9ASZm0KJ1LoNA+hkPcgGzRorMMoQX/XUtZv+J/xsOVJ78JgWDwuK61/CYmR9a17ddmtjVFOUJB8f/5mSxErWJTshp8hsVHZ8Qzy4qS8CnTHOnjls5KOlPHKSbD7YhN9VeUjJxaEfumjh/cALbNSZj4Yjjd2pCrMGqfsA+BtkF3clSJbD3UepnIyS1ZQdJfpi9qg9zwd6JFVYi+kG7do7Xtyvexp5PLfhsx0pVOWCFJTc3xhcJ5Pxow5tjwE9HqgP8rw9NkwNqcXlD/rUxNOZyleREKxtShYI16+psILGx/AnDqSPLdhx89s7yBagxLBicYp7zJ8S5HHEuZ0cbWXx2RbGR/ffYRxnc4x9nNCcfrW96rVrcD5tYpuyBxxha0/Wl4Hz+fO3gUgGklV2i2geUz1bG6RT/FbZ5ScE6fYX3LteHlXMumdbdf5Qa+2j3ZzuRCdaAeTTM0rrh4+bCBxbUNHCi80FdojS3ACkguZKxuBxA/cRxA9DBwAmdw=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 343b7627-5a97-4fd1-9466-08d86745d9b7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2020 02:41:37.9294
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z4xeLt8Z/9voag4OVlnJ3L/jXjNMsYTmUK/GdoiEX7mwjpU1dHC7ntqC7uGzDVfW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3094
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_14:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxlogscore=590 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- clxscore=1011 spamscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010030023
-X-FB-Internal: deliver
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/2/20 4:42 PM, Gustavo A. R. Silva wrote:
-> Replace /* fallthrough */ comments with the new pseudo-keyword macro
-> fallthrough[1].
+On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
+> Running some fuzzing on virtiofs from a non-privileged user could trigger a
+> warning in virtio_fs_enqueue_req():
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> WARN_ON(out_sgs + in_sgs != total_sgs);
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Okay, I can reproduce this after running for a few hours:
+
+out_sgs = 3, in_sgs = 2, total_sgs = 6
+
+and this time from flush_bg_queue() instead of fuse_simple_request().
+
+From the log, the last piece of code is:
+
+ftruncate(fd=186, length=4)
+
+which is a test file on virtiofs:
+
+[main]  testfile fd:186 filename:trinity-testfile3 flags:2 fopened:1 fcntl_flags:2000 global:1
+[main]   start: 0x7f47c1199000 size:4KB  name: trinity-testfile3 global:1
+
+
+[ 9863.468502] WARNING: CPU: 16 PID: 286083 at fs/fuse/virtio_fs.c:1152 virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+[ 9863.474442] Modules linked in: dlci 8021q garp mrp bridge stp llc ieee802154_socket ieee802154 vsock_loopback vmw_vsock_virtio_transport_common vmw_vsock_vmci_transport vsock mpls_router vmw_vmci ip_tunnel as
+[ 9863.474555]  ata_piix fuse serio_raw libata e1000 sunrpc dm_mirror dm_region_hash dm_log dm_mod
+[ 9863.535805] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
+[ 9863.544368] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+[ 9863.550129] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+[ 9863.552998] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
+[ 9863.561720] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
+[ 9863.565420] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
+[ 9863.568735] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
+[ 9863.572037] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
+[ 9863.575383] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
+[ 9863.578668] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
+[ 9863.581971] FS:  00007f47c12f5740(0000) GS:ffff888a7f800000(0000) knlGS:0000000000000000
+[ 9863.585752] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 9863.590232] CR2: 0000000000000000 CR3: 0000000a63570005 CR4: 0000000000770ee0
+[ 9863.594698] DR0: 00007f6642e43000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 9863.598521] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+[ 9863.601861] PKRU: 55555540
+[ 9863.603173] Call Trace:
+[ 9863.604382]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
+[ 9863.606838]  ? is_bpf_text_address+0x21/0x30
+[ 9863.608869]  ? kernel_text_address+0x125/0x140
+[ 9863.610962]  ? __kernel_text_address+0xe/0x30
+[ 9863.613117]  ? unwind_get_return_address+0x5f/0xa0
+[ 9863.615427]  ? create_prof_cpu_mask+0x20/0x20
+[ 9863.617435]  ? _raw_write_lock_irqsave+0xe0/0xe0
+[ 9863.619627]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
+[ 9863.622638]  ? queue_request_and_unlock+0x115/0x280 [fuse]
+[ 9863.625224]  flush_bg_queue+0x24c/0x3e0 [fuse]
+[ 9863.627325]  fuse_simple_background+0x3d7/0x6c0 [fuse]
+[ 9863.629735]  fuse_send_writepage+0x173/0x420 [fuse]
+[ 9863.632031]  fuse_flush_writepages+0x1fe/0x330 [fuse]
+[ 9863.634463]  ? make_kgid+0x13/0x20
+[ 9863.636064]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
+[ 9863.638850]  fuse_do_setattr+0xe84/0x13c0 [fuse]
+[ 9863.641024]  ? migrate_swap_stop+0x8d1/0x920
+[ 9863.643041]  ? fuse_flush_times+0x390/0x390 [fuse]
+[ 9863.645347]  ? avc_has_perm_noaudit+0x390/0x390
+[ 9863.647465]  fuse_setattr+0x197/0x400 [fuse]
+[ 9863.649466]  notify_change+0x744/0xda0
+[ 9863.651247]  ? __down_timeout+0x2a0/0x2a0
+[ 9863.653125]  ? do_truncate+0xe2/0x180
+[ 9863.654854]  do_truncate+0xe2/0x180
+[ 9863.656509]  ? __x64_sys_openat2+0x1c0/0x1c0
+[ 9863.658512]  ? alarm_setitimer+0xa0/0x110
+[ 9863.660418]  do_sys_ftruncate+0x1ee/0x2c0
+[ 9863.662311]  do_syscall_64+0x33/0x40
+[ 9863.663980]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 9863.666384] RIP: 0033:0x7f47c0c0878d
+[ 9863.668061] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
+[ 9863.676717] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+[ 9863.680226] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
+[ 9863.688055] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
+[ 9863.693672] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
+[ 9863.699423] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
+[ 9863.708897] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
+[ 9863.713106] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
+[ 9863.717465] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+[ 9863.721389] Call Trace:
+[ 9863.722547]  dump_stack+0x7c/0xa2
+[ 9863.724110]  __warn.cold.13+0xe/0x47
+[ 9863.725804]  ? virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+[ 9863.728427]  report_bug+0x1af/0x260
+[ 9863.730054]  handle_bug+0x44/0x80
+[ 9863.731652]  exc_invalid_op+0x13/0x40
+[ 9863.734911]  asm_exc_invalid_op+0x12/0x20
+[ 9863.736940] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+[ 9863.739833] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
+[ 9863.748519] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
+[ 9863.750935] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
+[ 9863.754247] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
+[ 9863.760885] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
+[ 9863.764814] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
+[ 9863.768148] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
+[ 9863.771492]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
+[ 9863.773950]  ? is_bpf_text_address+0x21/0x30
+[ 9863.775979]  ? kernel_text_address+0x125/0x140
+[ 9863.778061]  ? __kernel_text_address+0xe/0x30
+[ 9863.780124]  ? unwind_get_return_address+0x5f/0xa0
+[ 9863.782395]  ? create_prof_cpu_mask+0x20/0x20
+[ 9863.784451]  ? _raw_write_lock_irqsave+0xe0/0xe0
+[ 9863.786602]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
+[ 9863.789614]  ? queue_request_and_unlock+0x115/0x280 [fuse]
+[ 9863.792178]  flush_bg_queue+0x24c/0x3e0 [fuse]
+[ 9863.796678]  fuse_simple_background+0x3d7/0x6c0 [fuse]
+[ 9863.802329]  fuse_send_writepage+0x173/0x420 [fuse]
+[ 9863.808342]  fuse_flush_writepages+0x1fe/0x330 [fuse]
+[ 9863.812086]  ? make_kgid+0x13/0x20
+[ 9863.813681]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
+[ 9863.816465]  fuse_do_setattr+0xe84/0x13c0 [fuse]
+[ 9863.819633]  ? migrate_swap_stop+0x8d1/0x920
+[ 9863.824285]  ? fuse_flush_times+0x390/0x390 [fuse]
+[ 9863.827331]  ? avc_has_perm_noaudit+0x390/0x390
+[ 9863.875278]  fuse_setattr+0x197/0x400 [fuse]
+[ 9863.878496]  notify_change+0x744/0xda0
+[ 9863.880640]  ? __down_timeout+0x2a0/0x2a0
+[ 9863.882960]  ? do_truncate+0xe2/0x180
+[ 9863.886311]  do_truncate+0xe2/0x180
+[ 9863.888392]  ? __x64_sys_openat2+0x1c0/0x1c0
+[ 9863.890418]  ? alarm_setitimer+0xa0/0x110
+[ 9863.894430]  do_sys_ftruncate+0x1ee/0x2c0
+[ 9863.896468]  do_syscall_64+0x33/0x40
+[ 9863.898167]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 9863.901089] RIP: 0033:0x7f47c0c0878d
+[ 9863.903447] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
+[ 9863.914356] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+[ 9863.917998] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
+[ 9863.921364] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
+[ 9863.928285] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
+[ 9863.932523] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
+[ 9863.935835] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
+[ 9863.939183] ---[ end trace f6f5d958c186bcee ]---
+
