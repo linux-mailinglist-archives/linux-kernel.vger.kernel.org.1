@@ -2,319 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B003A2822E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E92F2822F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgJCJFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 05:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
+        id S1725797AbgJCJOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 05:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJCJFq (ORCPT
+        with ESMTP id S1725763AbgJCJOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 05:05:46 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220B2C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:05:45 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h7so681673wre.4
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 02:05:45 -0700 (PDT)
+        Sat, 3 Oct 2020 05:14:33 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A827C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:14:33 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j2so4325745wrx.7
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 02:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=PXtBvwPlcuDjwSsxSPImY3z6WHPiXSWPjxcN7VcIbOU=;
-        b=xWmUhcNwRVay4TOiYuqVk0ciV9jAYW2hkR/c5oSasXx6dlPSgDuoiEs5bQ2H1D+nK9
-         bZGhbc0jEDonbh1M6ZUlJ9xL05Aju2FkN1pNaNzRlpvStuNr0ieVLlKVMznCdecfG4nl
-         goQT6rHfdnxnr+qpIV+1svuUSVoY7D2nPXJMq4Cc8zpcvmiwCGB5ZKndgHSs6wxTyKi4
-         OfMlsWISEzPQHdfFx5xqNUScJw6aMeIJxasV+V/+9qs/GsHFIOCAOfoyziZE9+IycSCH
-         0tilHv+qVfHgbdxJvOcCDWst9h3KF6XVjfvsQgRusvQNjzYBrwgSAPDy3gFWMobbaiYs
-         nQpw==
+        bh=dE+mp6CvJ+Rm67MjVF3KVatmX9kZjm6IJMWnD9PC+yo=;
+        b=pvVAMnUMKp2KDA/SvropcJLIVKfuhBCs0iTd6+Rg7CC2cEGn0M5BN6FF63WOnS3dzX
+         Fj2gx0Xr+MyJ3thn/RzIWYRpHbUuG7AYfvhU3Zn9/X4rJs7xmHD2DvtgPQkATYEnZ0vh
+         SLlykEhwsX9BYXEE9NJdhAapvQX7X5xJDC7SMevirOiQNrDQNAMGyq0xaxf/JcQwMlRG
+         TXwUXsMeh7cTIifZDLA3aHm/1UnQP9yRaiL80tzINxbs9iEkUxUoKEqQ0zhyqa/YpG7w
+         K7XD12I76DPTpge5m/FnunVJEvaITjyFco8Os1YW2QrJ9wI/Z0ysvyszoB8b4CF728Dc
+         Aukg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=PXtBvwPlcuDjwSsxSPImY3z6WHPiXSWPjxcN7VcIbOU=;
-        b=h2K6eGR9u0DYWwkdu6K9m7nQcB/uJGEwmetGvN4DsaCtlva7X116R2H8PXDANTMkCM
-         3AXEgnyF3u9KHMgA/ctz7ye4m3/JHvD0E7VmV4EgfSlfV4xJBv+0mwJQqQUoGyqz/fmM
-         gaVrhNd/TPswi9EVnzAO6viTn+/mlwtTxBtzExGlRSqoraE3Or3So1mF6HK2qHMkJX94
-         +4qStovimSdHqCHTe6VprmnCPEKSmzW96J3jZ1wyzLgVwPDU33wFFzv0ROWC+jPnzXaj
-         MhoXC7D7MDGqcvDpkbcylv5++H1WdCdgRD8iXFeb1C7ZMT9POKr7rX5jqqUdnYvWfajv
-         DCEA==
-X-Gm-Message-State: AOAM532cLAUeazACBYV2hyXxB9ZVibD5m8/cGNZRXLUUvynSbvlRTvMe
-        VE+U4hy/A5YfoFjb35MIQEQBcY2Gt9TuHATS
-X-Google-Smtp-Source: ABdhPJyBBzbxZHxBxE5j7jMZDVBv8TTqmDz4UOFNGwqcAC3B7MxDDYCOXK8ytbNIrWF9XhciuA6NKg==
-X-Received: by 2002:adf:cd0c:: with SMTP id w12mr67849wrm.305.1601715943753;
-        Sat, 03 Oct 2020 02:05:43 -0700 (PDT)
+        bh=dE+mp6CvJ+Rm67MjVF3KVatmX9kZjm6IJMWnD9PC+yo=;
+        b=aQNhqPpdDchG67OJdvaEJ68K806COV/TRjGGckUXc6U2eEvHVmrd/tilc5o28dtO4I
+         R8kHOuBurLw2xgHfc85k4+KCxwqky9Q7CUKe+O0x1wdpjalTArYTpCLfDcp4XcYw6/Jd
+         C57TlKaCLyBce2BlvXpoplPpzugM714Crr6NYQe251ftZ7w1W9ffYug+qVMYrI2ERWEN
+         pqK45zDUXwbPd02tB+KYAsKIe1e0pbjGw45cbMBLc9+qsIMbCgY+YxESaiH1C5fJna4m
+         mFA76ZWkQMZDdHS0S0SA4nlp/UYRaZlAojp90O6DBko6JQUvwHD1zBMfRTHFfTgFVPWD
+         Hi1Q==
+X-Gm-Message-State: AOAM532PAVWyixLYRIHTZZhHq8rDGh9VQOYFLXhcohoQwkniF8EpyybF
+        C1J9Z64UYdBKTv8od4aiDMsmOQHYQY3lta7x
+X-Google-Smtp-Source: ABdhPJyB41F4r+UGFJxr9dLuua8eg5hKftEiergj4DDKcXKIhI5V74g3SzdWyte/oeCPktVz+nbooQ==
+X-Received: by 2002:a5d:55c8:: with SMTP id i8mr7367543wrw.331.1601716471969;
+        Sat, 03 Oct 2020 02:14:31 -0700 (PDT)
 Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id f14sm4873009wrt.53.2020.10.03.02.05.42
+        by smtp.gmail.com with ESMTPSA id v128sm4483721wme.2.2020.10.03.02.14.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 02:05:43 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 11:05:42 +0200
+        Sat, 03 Oct 2020 02:14:31 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 11:14:30 +0200
 From:   Jiri Pirko <jiri@resnulli.us>
 To:     Moshe Shemesh <moshe@mellanox.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 05/16] devlink: Add remote reload stats
-Message-ID: <20201003090542.GF3159@nanopsycho.orion>
+Subject: Re: [PATCH net-next 16/16] devlink: Add
+ Documentation/networking/devlink/devlink-reload.rst
+Message-ID: <20201003091430.GG3159@nanopsycho.orion>
 References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
- <1601560759-11030-6-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-17-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1601560759-11030-6-git-send-email-moshe@mellanox.com>
+In-Reply-To: <1601560759-11030-17-git-send-email-moshe@mellanox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Oct 01, 2020 at 03:59:08PM CEST, moshe@mellanox.com wrote:
->Add remote reload stats to hold the history of actions performed due
->devlink reload commands initiated by remote host. For example, in case
->firmware activation with reset finished successfully but was initiated
->by remote host.
->
->The function devlink_remote_reload_actions_performed() is exported to
->enable drivers update on remote reload actions performed as it was not
->initiated by their own devlink instance.
->
->Expose devlink remote reload stats to the user through devlink dev get
->command.
->
->Examples:
->$ devlink dev show
->pci/0000:82:00.0:
->  stats:
->      reload_stats:
->        driver_reinit 2
->        fw_activate 1
->        fw_activate_no_reset 0
->      remote_reload_stats:
->        driver_reinit 0
->        fw_activate 0
->        fw_activate_no_reset 0
->pci/0000:82:00.1:
->  stats:
->      reload_stats:
->        driver_reinit 1
->        fw_activate 0
->        fw_activate_no_reset 0
->      remote_reload_stats:
->        driver_reinit 1
->        fw_activate 1
->        fw_activate_no_reset 0
->
->$ devlink dev show -jp
->{
->    "dev": {
->        "pci/0000:82:00.0": {
->            "stats": {
->                "reload_stats": [ {
->                        "driver_reinit": 2
->                    },{
->                        "fw_activate": 1
->                    },{
->                        "fw_activate_no_reset": 0
->                    } ],
->                "remote_reload_stats": [ {
->                        "driver_reinit": 0
->                    },{
->                        "fw_activate": 0
->                    },{
->                        "fw_activate_no_reset": 0
->                    } ]
->            }
->        },
->        "pci/0000:82:00.1": {
->            "stats": {
->                "reload_stats": [ {
->                        "driver_reinit": 1
->                    },{
->                        "fw_activate": 0
->                    },{
->                        "fw_activate_no_reset": 0
->                    } ],
->                "remote_reload_stats": [ {
->                        "driver_reinit": 1
->                    },{
->                        "fw_activate": 1
->                    },{
->                        "fw_activate_no_reset": 0
->                    } ]
->            }
->        }
->    }
->}
+Thu, Oct 01, 2020 at 03:59:19PM CEST, moshe@mellanox.com wrote:
+>Add devlink reload rst documentation file.
+>Update index file to include it.
 >
 >Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
 >---
 >RFCv5 -> v1:
->- Resplit this patch and the previous one by remote/local reload stats
->instead of set/get reload stats
->- Rename reload_action_stats to reload_stats
+>- Rename reload_action_limit_level to reload_limit
 >RFCv4 -> RFCv5:
->- Add remote actions stats
->- If devlink reload is not supported, show only remote_stats
+>- Rephrase namespace chnage section
+>- Rephrase note on actions performed
 >RFCv3 -> RFCv4:
->- Renamed DEVLINK_ATTR_RELOAD_ACTION_CNT to
->  DEVLINK_ATTR_RELOAD_ACTION_STAT
->- Add stats per action per limit level
+>- Remove reload action fw_activate_no_reset
+>- Add reload actions limit levels and document the no_reset limit level
+>  constrains
 >RFCv2 -> RFCv3:
->- Add reload actions counters instead of supported reload actions
->  (reload actions counters are only for supported action so no need for
->   both)
+>- Devlink reload returns the actions done
+>- Replace fw_live_patch action by fw_activate_no_reset
+>- Explain fw_activate meaning
 >RFCv1 -> RFCv2:
->- Removed DEVLINK_ATTR_RELOAD_DEFAULT_LEVEL
->- Removed DEVLINK_ATTR_RELOAD_LEVELS_INFO
->- Have actions instead of levels
+>- Instead of reload levels driver,fw_reset,fw_live_patch have reload
+>  actions driver_reinit,fw_activate,fw_live_patch
 >---
-> include/net/devlink.h        |  1 +
-> include/uapi/linux/devlink.h |  1 +
-> net/core/devlink.c           | 49 +++++++++++++++++++++++++++++++-----
-> 3 files changed, 45 insertions(+), 6 deletions(-)
+> .../networking/devlink/devlink-reload.rst     | 81 +++++++++++++++++++
+> Documentation/networking/devlink/index.rst    |  1 +
+> 2 files changed, 82 insertions(+)
+> create mode 100644 Documentation/networking/devlink/devlink-reload.rst
 >
->diff --git a/include/net/devlink.h b/include/net/devlink.h
->index 0f3bd23b6c04..a4ccb83bbd2c 100644
->--- a/include/net/devlink.h
->+++ b/include/net/devlink.h
->@@ -42,6 +42,7 @@ struct devlink {
-> 	const struct devlink_ops *ops;
-> 	struct xarray snapshot_ids;
-> 	u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
->+	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
-
-Perhaps a nested struct  {} stats?
-
-
-> 	struct device *dev;
-> 	possible_net_t _net;
-> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
->diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
->index 97e0137f6201..f9887d8afdc7 100644
->--- a/include/uapi/linux/devlink.h
->+++ b/include/uapi/linux/devlink.h
->@@ -530,6 +530,7 @@ enum devlink_attr {
-> 	DEVLINK_ATTR_RELOAD_STATS,		/* nested */
-> 	DEVLINK_ATTR_RELOAD_STATS_ENTRY,	/* nested */
-> 	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
->+	DEVLINK_ATTR_REMOTE_RELOAD_STATS,	/* nested */
-> 
-> 	/* add new attributes above here, update the policy in devlink.c */
-> 
->diff --git a/net/core/devlink.c b/net/core/devlink.c
->index 05516f1e4c3e..3b6bd3b4d346 100644
->--- a/net/core/devlink.c
->+++ b/net/core/devlink.c
->@@ -523,28 +523,35 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
-> 	return -EMSGSIZE;
-> }
-> 
->-static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
->+static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink, bool is_remote)
-> {
-> 	struct nlattr *reload_stats_attr;
-> 	int i, j, stat_idx;
-> 	u32 value;
-> 
->-	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
->+	if (!is_remote)
->+		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
->+	else
->+		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_REMOTE_RELOAD_STATS);
-> 
-> 	if (!reload_stats_attr)
-> 		return -EMSGSIZE;
-> 
-> 	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
->-		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
->+		if (!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
-
-I don't follow the check "!is_remote" here,
-
-> 		    !devlink_reload_limit_is_supported(devlink, j))
-> 			continue;
-> 		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
->-			if (!devlink_reload_action_is_supported(devlink, i) ||
->+			if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
-
-and here. Could you perhaps put in a comment to describe what are you
-doing?
-
-
-
->+			    i == DEVLINK_RELOAD_ACTION_UNSPEC ||
-> 			    devlink_reload_combination_is_invalid(i, j))
-> 				continue;
-> 
-> 			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
->-			value = devlink->reload_stats[stat_idx];
->+			if (!is_remote)
->+				value = devlink->reload_stats[stat_idx];
->+			else
->+				value = devlink->remote_reload_stats[stat_idx];
-> 			if (devlink_reload_stat_put(msg, i, j, value))
-> 				goto nla_put_failure;
-> 		}
->@@ -577,7 +584,9 @@ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
-> 	if (!dev_stats)
-> 		goto nla_put_failure;
-> 
->-	if (devlink_reload_stats_put(msg, devlink))
->+	if (devlink_reload_stats_put(msg, devlink, false))
->+		goto dev_stats_nest_cancel;
->+	if (devlink_reload_stats_put(msg, devlink, true))
-> 		goto dev_stats_nest_cancel;
-> 
-> 	nla_nest_end(msg, dev_stats);
->@@ -3100,15 +3109,40 @@ devlink_reload_stats_update(struct devlink *devlink, enum devlink_reload_limit l
-> 	__devlink_reload_stats_update(devlink, devlink->reload_stats, limit, actions_performed);
-> }
-> 
->+/**
->+ *	devlink_remote_reload_actions_performed - Update devlink on reload actions
->+ *	  performed which are not a direct result of devlink reload call.
->+ *
->+ *	This should be called by a driver after performing reload actions in case it was not
->+ *	a result of devlink reload call. For example fw_activate was performed as a result
->+ *	of devlink reload triggered fw_activate on another host.
->+ *	The motivation for this function is to keep data on reload actions performed on this
->+ *	function whether it was done due to direct devlink reload call or not.
->+ *
->+ *	@devlink: devlink
->+ *	@limit: reload limit
->+ *	@actions_performed: bitmask of actions performed
->+ */
->+void devlink_remote_reload_actions_performed(struct devlink *devlink,
->+					     enum devlink_reload_limit limit,
->+					     unsigned long actions_performed)
->+{
->+	__devlink_reload_stats_update(devlink, devlink->remote_reload_stats, limit,
->+				      actions_performed);
->+}
->+EXPORT_SYMBOL_GPL(devlink_remote_reload_actions_performed);
+>diff --git a/Documentation/networking/devlink/devlink-reload.rst b/Documentation/networking/devlink/devlink-reload.rst
+>new file mode 100644
+>index 000000000000..5abc5c2c75fd
+>--- /dev/null
+>+++ b/Documentation/networking/devlink/devlink-reload.rst
+>@@ -0,0 +1,81 @@
+>+.. SPDX-License-Identifier: GPL-2.0
 >+
-> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
-> 			  enum devlink_reload_action action, enum devlink_reload_limit limit,
-> 			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
-> {
->+	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
-> 	int err;
+>+==============
+>+Devlink Reload
+
+No reason for capital "R".
+
+
+>+==============
+>+
+>+``devlink-reload`` provides mechanism to either reinit driver entities,
+>+applying ``devlink-params`` and ``devlink-resources`` new values or firmware
+>+activation depends on reload action selected.
+
+Could you perhaps split the sentense? It is hard to read.
+
+
+>+
+>+Reload actions
+>+==============
+>+
+>+User may select a reload action.
+>+By default ``driver_reinit`` action is selected.
+>+
+>+.. list-table:: Possible reload actions
+>+   :widths: 5 90
+>+
+>+   * - Name
+>+     - Description
+>+   * - ``driver-reinit``
+>+     - Devlink driver entities re-initialization, including applying
+>+       new values to devlink entities which are used during driver
+>+       load such as ``devlink-params`` in configuration mode
+>+       ``driverinit`` or ``devlink-resources``
+>+   * - ``fw_activate``
+>+     - Firmware activate. Activates new firmware if such image is stored and
+>+       pending activation. If no limitation specified this action may involve
+>+       firmware reset. If no new image pending this action will reload current
+>+       firmware image.
+>+
+>+Note that even though user asks for a specific action, the driver
+>+implementation might require to perform another action alongside with
+>+it. For example, some driver do not support driver reinitialization
+>+being performed without fw activation. Therefore, the devlink reload
+>+command returns the list of actions which were actrually performed.
+>+
+>+Reload limits
+>+=============
+>+
+>+By default reload actions are not limited and driver implementation may
+>+include reset or downtime as needed to perform the actions.
+>+
+>+However, some drivers support action limits, which limit the action
+>+implementation to specific constrains.
+>+
+>+.. list-table:: Possible reload limits
+>+   :widths: 5 90
+>+
+>+   * - Name
+>+     - Description
+>+   * - ``no_reset``
+>+     - No reset allowed, no down time allowed, no link flap and no
+>+       configuration is lost.
+>+
+>+Change namespace
+>+================
+>+
+>+The netns option allow user to be able to move devlink instances into
+
+"allows"
+
+
+>+namespaces during devlink reload operation.
+>+By default all devlink instances are created in init_net and stay there.
+>+
+>+example usage
+>+-------------
+>+
+>+.. code:: shell
+>+
+>+    $ devlink dev reload help
+>+    $ devlink dev reload DEV [ netns { PID | NAME | ID } ] [ action { driver_reinit | fw_activate } ] [ limit no_reset ]
+>+
+>+    # Run reload command for devlink driver entities re-initialization:
+>+    $ devlink dev reload pci/0000:82:00.0 action driver_reinit
+>+    reload_actions_performed:
+>+      driver_reinit
+>+
+>+    # Run reload command to activate firmware:
+>+    # Note that mlx5 driver reloads the driver while activating firmware
+>+    $ devlink dev reload pci/0000:82:00.0 action fw_activate
+>+    reload_actions_performed:
+>+      driver_reinit fw_activate
+>diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+>index 7684ae5c4a4a..d82874760ae2 100644
+>--- a/Documentation/networking/devlink/index.rst
+>+++ b/Documentation/networking/devlink/index.rst
+>@@ -20,6 +20,7 @@ general.
+>    devlink-params
+>    devlink-region
+>    devlink-resource
+>+   devlink-reload
+>    devlink-trap
 > 
-> 	if (!devlink->reload_enabled)
-> 		return -EOPNOTSUPP;
-> 
->+	memcpy(remote_reload_stats, devlink->remote_reload_stats, sizeof(remote_reload_stats));
-> 	err = devlink->ops->reload_down(devlink, !!dest_net, action, limit, extack);
-> 	if (err)
-> 		return err;
->@@ -3122,6 +3156,9 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
-> 		return err;
-> 
-> 	WARN_ON(!test_bit(action, actions_performed));
->+	/* Catch driver on updating the remote action within devlink reload */
->+	WARN_ON(memcmp(remote_reload_stats, devlink->remote_reload_stats,
->+		       sizeof(remote_reload_stats)));
-> 	devlink_reload_stats_update(devlink, limit, *actions_performed);
-> 	return 0;
-> }
+> Driver-specific documentation
 >-- 
 >2.18.2
 >
