@@ -2,205 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AFE282435
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 15:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B86C282438
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 15:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgJCNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 09:09:18 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:51831 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgJCNJR (ORCPT
+        id S1725825AbgJCNKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 09:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgJCNKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 09:09:17 -0400
-Received: by mail-io1-f79.google.com with SMTP id o7so2656075iof.18
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 06:09:16 -0700 (PDT)
+        Sat, 3 Oct 2020 09:10:07 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A32C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 06:10:05 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f18so3399866pfa.10
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 06:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wqfp6uDLd1Ek6c5nY5LcdFjEx+sOBJtiN1rh9srmovY=;
+        b=WpTYoa9SyELCp3OGJgRtON2R34el+7p1DgN7M0FVF28nSLfbSLXCrJVl8qH+IJYvxA
+         Ylhrfg6qNrok0XQkytQcaMZGTpgIWBAOYKD2qCCHoMOhnK68P70Arg+ZX151HJk2UaSF
+         i8xTvdkyigOE0Qt1T/S0BwY2hMQUy6/Wi+D94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iVL3IohRqT6c/uXzx5CC8YPW5rjrUz4BS2oOo74sL2M=;
-        b=M+XgVt0RzfCvEKb9U7vkcHtkf/DbaYVca9KIndAKy9m+0hZjrYotvqyav5XDsPABv0
-         6UY7iEKg9tFV40GS2oRcz9T+45vBIvINmmFbW5tywsMCa8iVNSbRAEfO0+Aek/5Zfss9
-         /BKMCcezGZ+qbwpzw6dAvWzqbNeK5PwpdN052H7xjDH1Fq9G5TSsFOjS9P+yyoRNVLVT
-         SPTf4ZYgY3JkGT2b7j0/dhDfOrj2SQLUiii6xqJ1Oykwgxo2xNWj+3qkyubp+ZeVHK+u
-         kc4oGn3JtX2JUIlBgSwUkFASVE0nBC8B+GJbsM0OMxeyO//FyfRQvw7NhH9MBdM8TflL
-         OSYQ==
-X-Gm-Message-State: AOAM531bKR8GoYboRH0cLtwmvPj8DbNY9+dHfXVb0VylI84hkAHQb0QP
-        HHVEarMO7A46hefyQ4DXUS0mnoVUi7fnrW5KBP+MOKw+q/C9
-X-Google-Smtp-Source: ABdhPJzRay26HKMVft78Lrncn852vCrGTWO51ZHtl15nl4W8WpyjG0P3FlwM0y2vhB9msdxzy6rqhqrJOgovuNK0MeVEDP/zauuo
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wqfp6uDLd1Ek6c5nY5LcdFjEx+sOBJtiN1rh9srmovY=;
+        b=AE+HzDci6S5JwEtpgWCmQGAeVA3mFGV0ckYkdq09GyTTGrW7cb0UYJAAubo2MdiN9/
+         iImDBy0ZsIpOLivL1bV/vP7XxNq1s+zdASHzfhYZu/KaghTSlvp4RS2iW9K5kvJaTfJm
+         pP5Ko8esrxYb4ZEb5bHHdLS8OPJ/3qdf4gxJwhn9uNiOtt3s/HrlnadWKasK74IvjAxS
+         Op1ufimCDBR4Tcj06CbKyb6VswNtyfHypLDwHIsA91yMN3dQGocEFA5S1qNvNmQZAN/C
+         q4ZZFPk76Lf39bsy2lQUwIs7ut67kaGKs6rfdzbw6xsEHrzhQTdN/BYGkWe34AuSRatE
+         ZYMw==
+X-Gm-Message-State: AOAM530yeRxgPuQu2ikAVsXbLQ8C3C5j7JpSRFCbVmckBIkpjreSKxmq
+        edcP2LTAQFMKNXBe2RYDFEcOkg==
+X-Google-Smtp-Source: ABdhPJydOa1l3ngWaWpt5IC7SXDSQpLwq34xTwJ/r3w6gvVxbWCZ4nuiwiKrnmHTE9bYsSp+jpnDWA==
+X-Received: by 2002:a63:6746:: with SMTP id b67mr5891562pgc.301.1601730604943;
+        Sat, 03 Oct 2020 06:10:04 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id d1sm5812763pfn.220.2020.10.03.06.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 06:10:04 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH] media: mtk-vcodec: fix builds when remoteproc is disabled
+Date:   Sat,  3 Oct 2020 22:09:47 +0900
+Message-Id: <20201003130947.555637-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:c6:: with SMTP id w6mr6259820jao.143.1601730555760;
- Sat, 03 Oct 2020 06:09:15 -0700 (PDT)
-Date:   Sat, 03 Oct 2020 06:09:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cd530a05b0c3f4bc@google.com>
-Subject: INFO: task hung in blkdev_put (4)
-From:   syzbot <syzbot+9a29d5e745bd7523c851@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchristi@redhat.com, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The addition of MT8183 support added a dependency on the SCP remoteproc
+module. However the initial patch used the "select" Kconfig directive,
+which may result in the SCP module to not be compiled if remoteproc was
+disabled. In such a case, mtk-vcodec would try to link against
+non-existent SCP symbols. "select" was clearly misused here as explained
+in kconfig-language.txt.
 
-syzbot found the following issue on:
+Replace this by a "depends" directive on at least one of the VPU and
+SCP modules, to allow the driver to be compiled as long as one of these
+is enabled, and adapt the code to support this new scenario.
 
-HEAD commit:    fb0155a0 Merge tag 'nfs-for-5.9-3' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1527329d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a29d5e745bd7523c851
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13cb63e3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae6083900000
+Also adapt the Kconfig text to explain the extra requirements for MT8173
+and MT8183.
 
-The issue was bisected to:
-
-commit 2da22da573481cc4837e246d0eee4d518b3f715e
-Author: Mike Christie <mchristi@redhat.com>
-Date:   Tue Aug 13 16:39:52 2019 +0000
-
-    nbd: fix zero cmd timeout handling v2
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e51b27900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e51b27900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e51b27900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9a29d5e745bd7523c851@syzkaller.appspotmail.com
-Fixes: 2da22da57348 ("nbd: fix zero cmd timeout handling v2")
-
-INFO: task syz-executor931:6875 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor931 state:D stack:27640 pid: 6875 ppid:  6874 flags:0x80004006
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- blkdev_put+0x30/0x520 fs/block_dev.c:1804
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1853
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb7d/0x29f0 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x445039
-Code: Bad RIP value.
-RSP: 002b:00007ffdc5595ec8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: fffffffffffffe00 RBX: 0000000000000000 RCX: 0000000000445039
-RDX: 00000000ffffffff RSI: 000000000000ab03 RDI: 0000000000000003
-RBP: 00000000006cf018 R08: 00000000004002e0 R09: 00000000004002e0
-R10: 00000000004002e0 R11: 0000000000000246 R12: 0000000000402200
-R13: 0000000000402290 R14: 0000000000000000 R15: 0000000000000000
-INFO: task systemd-udevd:6879 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:systemd-udevd   state:D stack:26264 pid: 6879 ppid:  3932 flags:0x00004100
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- io_schedule+0xb5/0x120 kernel/sched/core.c:6296
- wait_on_page_bit_common+0x32a/0xe30 mm/filemap.c:1253
- wait_on_page_bit mm/filemap.c:1314 [inline]
- wait_on_page_locked include/linux/pagemap.h:611 [inline]
- wait_on_page_read mm/filemap.c:2931 [inline]
- do_read_cache_page+0x957/0x1390 mm/filemap.c:2974
- read_mapping_page include/linux/pagemap.h:437 [inline]
- read_part_sector+0xf6/0x5af block/partitions/core.c:777
- adfspart_check_ICS+0x9d/0xc90 block/partitions/acorn.c:360
- check_partition block/partitions/core.c:140 [inline]
- blk_add_partitions+0x45c/0xe40 block/partitions/core.c:705
- bdev_disk_changed+0x1ea/0x370 fs/block_dev.c:1416
- __blkdev_get+0xee4/0x1aa0 fs/block_dev.c:1559
- blkdev_get fs/block_dev.c:1639 [inline]
- blkdev_open+0x227/0x300 fs/block_dev.c:1753
- do_dentry_open+0x4b9/0x11b0 fs/open.c:817
- do_open fs/namei.c:3251 [inline]
- path_openat+0x1b9a/0x2730 fs/namei.c:3368
- do_filp_open+0x17e/0x3c0 fs/namei.c:3395
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_open fs/open.c:1192 [inline]
- __se_sys_open fs/open.c:1188 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1188
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fd8b1526840
-Code: Bad RIP value.
-RSP: 002b:00007ffc6e5f3668 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 000055f1c1bb6e40 RCX: 00007fd8b1526840
-RDX: 000055f1c0593fe3 RSI: 00000000000a0800 RDI: 000055f1c1bb9b10
-RBP: 00007ffc6e5f37e0 R08: 000055f1c0593670 R09: 0000000000000010
-R10: 000055f1c0593d0c R11: 0000000000000246 R12: 00007ffc6e5f3730
-R13: 000055f1c1bb1a90 R14: 0000000000000003 R15: 000000000000000e
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1174:
- #0: ffffffff8a067f40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
-1 lock held by in:imklog/6556:
- #0: ffff88809144e370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-1 lock held by syz-executor931/6875:
- #0: ffff88808927b6c0 (&bdev->bd_mutex){+.+.}-{3:3}, at: blkdev_put+0x30/0x520 fs/block_dev.c:1804
-1 lock held by systemd-udevd/6879:
- #0: ffff88808927b6c0 (&bdev->bd_mutex){+.+.}-{3:3}, at: __blkdev_get+0x4b8/0x1aa0 fs/block_dev.c:1492
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1174 Comm: khungtaskd Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd7d/0x1000 kernel/hung_task.c:295
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 3911 Comm: systemd-journal Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0xffffffffa00185f0
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc <0f> 1f 44 00 00 55 48 89 e5 48 81 ec 00 00 00 00 53 41 55 41 56 41
-RSP: 0018:ffffc90003817d88 EFLAGS: 00000246
-RAX: 1ffff920001c3e06 RBX: ffff8880a7b97c00 RCX: dffffc0000000000
-RDX: ffff8880a77602c0 RSI: ffffc90000e1f038 RDI: ffffc90003817e38
-RBP: ffffc90000e1f000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
-R13: 00000000000001a0 R14: 0000000000080042 R15: ffffc90003817e38
-FS:  00007fa30091e8c0(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa2fdcde010 CR3: 00000000a8f90000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-
-
+Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/media/platform/Kconfig                | 11 +--
+ .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 72 ++++++++++++-------
+ 2 files changed, 55 insertions(+), 28 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+index a3cb104956d5..e559d9c529b6 100644
+--- a/drivers/media/platform/Kconfig
++++ b/drivers/media/platform/Kconfig
+@@ -253,14 +253,17 @@ config VIDEO_MEDIATEK_VCODEC
+ 	depends on MTK_IOMMU || COMPILE_TEST
+ 	depends on VIDEO_DEV && VIDEO_V4L2
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
++	depends on VIDEO_MEDIATEK_VPU || MTK_SCP
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select V4L2_MEM2MEM_DEV
+-	select VIDEO_MEDIATEK_VPU
+-	select MTK_SCP
+ 	help
+ 	    Mediatek video codec driver provides HW capability to
+-	    encode and decode in a range of video formats
+-	    This driver rely on VPU driver to communicate with VPU.
++	    encode and decode in a range of video formats on MT8173
++	    and MT8183.
++
++	    Note that support for support for MT8173 requires
++	    VIDEO_MEDIATEK_VPU to also be selected. Support for
++	    MT8183 depends on MTK_SCP.
+ 
+ 	    To compile this driver as modules, choose M here: the
+ 	    modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+index 6c2a2568d844..23a80027a8fb 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+@@ -13,6 +13,7 @@ struct mtk_vcodec_fw_ops {
+ 			    mtk_vcodec_ipi_handler handler, const char *name, void *priv);
+ 	int (*ipi_send)(struct mtk_vcodec_fw *fw, int id, void *buf,
+ 			unsigned int len, unsigned int wait);
++	void (*release)(struct mtk_vcodec_fw *fw);
+ };
+ 
+ struct mtk_vcodec_fw {
+@@ -22,6 +23,8 @@ struct mtk_vcodec_fw {
+ 	struct mtk_scp *scp;
+ };
+ 
++#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
++
+ static int mtk_vcodec_vpu_load_firmware(struct mtk_vcodec_fw *fw)
+ {
+ 	return vpu_load_firmware(fw->pdev);
+@@ -64,6 +67,27 @@ static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
+ 	return vpu_ipi_send(fw->pdev, id, buf, len);
+ }
+ 
++static void mtk_vcodec_vpu_release(struct mtk_vcodec_fw *fw)
++{
++	put_device(&fw->pdev->dev);
++}
++
++static void mtk_vcodec_vpu_reset_handler(void *priv)
++{
++	struct mtk_vcodec_dev *dev = priv;
++	struct mtk_vcodec_ctx *ctx;
++
++	mtk_v4l2_err("Watchdog timeout!!");
++
++	mutex_lock(&dev->dev_mutex);
++	list_for_each_entry(ctx, &dev->ctx_list, list) {
++		ctx->state = MTK_STATE_ABORT;
++		mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
++			       ctx->id);
++	}
++	mutex_unlock(&dev->dev_mutex);
++}
++
+ static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
+ 	.load_firmware = mtk_vcodec_vpu_load_firmware,
+ 	.get_vdec_capa = mtk_vcodec_vpu_get_vdec_capa,
+@@ -71,8 +95,13 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
+ 	.map_dm_addr = mtk_vcodec_vpu_map_dm_addr,
+ 	.ipi_register = mtk_vcodec_vpu_set_ipi_register,
+ 	.ipi_send = mtk_vcodec_vpu_ipi_send,
++	.release = mtk_vcodec_vpu_release,
+ };
+ 
++#endif  /* IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU) */
++
++#if IS_ENABLED(CONFIG_MTK_SCP)
++
+ static int mtk_vcodec_scp_load_firmware(struct mtk_vcodec_fw *fw)
+ {
+ 	return rproc_boot(scp_get_rproc(fw->scp));
+@@ -107,6 +136,11 @@ static int mtk_vcodec_scp_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
+ 	return scp_ipi_send(fw->scp, id, buf, len, wait);
+ }
+ 
++static void mtk_vcodec_scp_release(struct mtk_vcodec_fw *fw)
++{
++	scp_put(fw->scp);
++}
++
+ static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
+ 	.load_firmware = mtk_vcodec_scp_load_firmware,
+ 	.get_vdec_capa = mtk_vcodec_scp_get_vdec_capa,
+@@ -114,23 +148,10 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
+ 	.map_dm_addr = mtk_vcodec_vpu_scp_dm_addr,
+ 	.ipi_register = mtk_vcodec_scp_set_ipi_register,
+ 	.ipi_send = mtk_vcodec_scp_ipi_send,
++	.release = mtk_vcodec_scp_release,
+ };
+ 
+-static void mtk_vcodec_reset_handler(void *priv)
+-{
+-	struct mtk_vcodec_dev *dev = priv;
+-	struct mtk_vcodec_ctx *ctx;
+-
+-	mtk_v4l2_err("Watchdog timeout!!");
+-
+-	mutex_lock(&dev->dev_mutex);
+-	list_for_each_entry(ctx, &dev->ctx_list, list) {
+-		ctx->state = MTK_STATE_ABORT;
+-		mtk_v4l2_debug(0, "[%d] Change to state MTK_STATE_ABORT",
+-			       ctx->id);
+-	}
+-	mutex_unlock(&dev->dev_mutex);
+-}
++#endif  /* IS_ENABLED(CONFIG_MTK_SCP) */
+ 
+ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+ 					   enum mtk_vcodec_fw_type type,
+@@ -143,16 +164,22 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+ 
+ 	switch (type) {
+ 	case VPU:
++#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VPU)
+ 		ops = &mtk_vcodec_vpu_msg;
+ 		fw_pdev = vpu_get_plat_device(dev->plat_dev);
+ 		if (!fw_pdev) {
+ 			mtk_v4l2_err("firmware device is not ready");
+ 			return ERR_PTR(-EINVAL);
+ 		}
+-		vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_reset_handler,
++		vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_vpu_reset_handler,
+ 				    dev, rst_id);
+ 		break;
++#else
++		mtk_v4l2_err("no VPU support in this kernel");
++		return ERR_PTR(-ENODEV);
++#endif
+ 	case SCP:
++#if IS_ENABLED(CONFIG_MTK_SCP)
+ 		ops = &mtk_vcodec_rproc_msg;
+ 		scp = scp_get(dev->plat_dev);
+ 		if (!scp) {
+@@ -160,6 +187,10 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+ 			return ERR_PTR(-EPROBE_DEFER);
+ 		}
+ 		break;
++#else
++		mtk_v4l2_err("no SCP support in this kernel");
++		return ERR_PTR(-ENODEV);
++#endif
+ 	default:
+ 		mtk_v4l2_err("invalid vcodec fw type");
+ 		return ERR_PTR(-EINVAL);
+@@ -180,14 +211,7 @@ EXPORT_SYMBOL_GPL(mtk_vcodec_fw_select);
+ 
+ void mtk_vcodec_fw_release(struct mtk_vcodec_fw *fw)
+ {
+-	switch (fw->type) {
+-	case VPU:
+-		put_device(&fw->pdev->dev);
+-		break;
+-	case SCP:
+-		scp_put(fw->scp);
+-		break;
+-	}
++	fw->ops->release(fw);
+ }
+ EXPORT_SYMBOL_GPL(mtk_vcodec_fw_release);
+ 
+-- 
+2.28.0.806.g8561365e88-goog
+
