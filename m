@@ -2,152 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6636528248C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9B128248F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725834AbgJCOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
+        id S1725842AbgJCOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgJCOTK (ORCPT
+        with ESMTP id S1725781AbgJCOT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:19:10 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A451EC0613D0;
-        Sat,  3 Oct 2020 07:19:09 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id l13so497738ljg.10;
-        Sat, 03 Oct 2020 07:19:09 -0700 (PDT)
+        Sat, 3 Oct 2020 10:19:56 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AFEC0613D0;
+        Sat,  3 Oct 2020 07:19:55 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e2so4563688wme.1;
+        Sat, 03 Oct 2020 07:19:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jN8VgN7S7pjs1PzOSOFLnFJnbrtuHTaGBpTaIB/dfig=;
-        b=BEc4myMLhmq3tcDouty00YxzIuK9lSi+P6qlkY/aLnpDlv3/3D+YMgHkXTlfim0OXb
-         53/sDvTtdx54B3xoyPajsSTnkGJZqdBHzNFNAHOBGq6IPW2J39XcgPDHgb9SF8N2MOGt
-         1Rovttm9dRUi3GQhYc3HOCB5jmtT+W90vIhnfQDDyxv0nO8XanOEwFfyzA+lLPjW/zXY
-         wGAR5ni75OnVz8Y3dJUmQ6adIPuZhciuECOS7HLZ+i6qU1n8ikwBc0BmEJKwNOxZDo/w
-         LGvSQ5L32fJUAO+GzIlp+o9vUHmKq5lU/N0tkpmXruD/oUbRelW6E/78TP7eD7VqZ8ko
-         vqgw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sAKeLC7pKBrSZOIJOxRnqxVieh8N56D+SKtFZ1KaxX0=;
+        b=OM5gZ26qxRLmtq3I0KrEhNN1Ve7bUeZ5qW6c2m+KV3XDw+XP6F5HqAN3aFsBoqh8/R
+         r5EXMUPngagmQJ7ZJholjm7QwETF1PfOB3Xb523NuW6hZA6u3QkQMehgAUhPAB470rkm
+         WHhTeJ7td0LNj4Gu3DHDpUOMI2dmdf+tSrrZLE5/1d+rwZGtgrHEs/XVMtd2Yp1pQLu+
+         7ZGUy0XtT1GdMyKfga3jgcE/Cu8HeGl+a+9PtDYOrkh/mQKaxiGMmUdmQYnNI1Cu/7t1
+         BvoDjDzc92Lry8+4eHcryQXaeALTKc3wo9rtquDtuSYTLXigTYuUqVWeCDrMWhtktc5G
+         MePQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jN8VgN7S7pjs1PzOSOFLnFJnbrtuHTaGBpTaIB/dfig=;
-        b=TcsYEh350YZ3xnHsvmcRxCMBrFGgWARZPJoAq6C9H3VztNf/za4uw5y/4gKM0oDWGg
-         fiJW28BMO+0mwSp3UhDcooW4ZHDf+wi8vFG+XLV9BwJrOv4PLdjS12x4YwcWX65mSK7r
-         6kxpBSFpFyqHbpkD5Y0eUv4RPUrQh2jWwsDA411RoDamTIB/XMDt45GLczaU4ypgnwIE
-         Zfkq5hy7xRI3nDdCozNArf8Tl1CSaFkbc2sxMoimmOd2txNP/TJ7QF6SJJn9VSXB4Euj
-         Z5rOp+udgdEYlf2UjOG1ZsquM7OcxjimErjMzcuGV96H/zqc0sCpPQ3IuQFb74drhPdJ
-         dQ1Q==
-X-Gm-Message-State: AOAM532Xl14qJ3uVYa2Xdwm/sf4HJ6xJCYyjnsinrbZXwMbYj80Zbmpj
-        ZHrb9tl3t3vTKEbIwHoKjAtSC/Y9JqA=
-X-Google-Smtp-Source: ABdhPJz8HRkiH2e6yJaKfQVsXBwbSCTParLvavlh7kezkqoMDYHYISv/d74+Ey8VVb+z5CjBdiRViQ==
-X-Received: by 2002:a2e:b006:: with SMTP id y6mr1782981ljk.462.1601734747881;
-        Sat, 03 Oct 2020 07:19:07 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id i139sm1645750lfi.276.2020.10.03.07.19.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 07:19:07 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20201003065947.18671-1-nicoleotsuka@gmail.com>
- <20201003065947.18671-3-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <386737ab-83e3-9424-66d9-afff04092599@gmail.com>
-Date:   Sat, 3 Oct 2020 17:19:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=sAKeLC7pKBrSZOIJOxRnqxVieh8N56D+SKtFZ1KaxX0=;
+        b=d2/NgBJUiNwRw1gLnYkxW4GcPGeIhFt9sYstghmjJJ/OGz0rhrb5ISoNoUEmaNDVif
+         EdZahOyMd9M1FOXbsZhj8jSClFgGdNxZEFJU0uAmbVxeQoBrIz+p4LS+QQZCfe4MPZBo
+         HEyj0lq7Xcriwvne9fvnRtV4cP3ITAfPOQVrzomyCo3js+yNXzP1wvLHjnTQTH+8YzIX
+         xNShjUfWtqNnsuQfoNxZomiYT4YyNlXEK/uraNJGyZvsXkLvQS2VpfZguD4WPBa4BE+4
+         0zSmAsGIGo4ZldRbqBvsCMwXIjG+dBbJ0WB6F9X4tC8ogF/2Q4kdv6Xq9AQ3tHZIE7UZ
+         tKdA==
+X-Gm-Message-State: AOAM5313lbAJFBPDyU+0niGDjT7dUDp2xoB+DcvW9ABsoV1I3hKgto3m
+        UwzqjwSd3nSHRFAs/3xC7RE=
+X-Google-Smtp-Source: ABdhPJyTeQ1m65Ns5vfNh53o537krrvtVOgQyCvbeT2a8kq2REcyo1Fx0HsdEvdPwNM5+u1CS7dBuQ==
+X-Received: by 2002:a05:600c:216:: with SMTP id 22mr7667470wmi.149.1601734794185;
+        Sat, 03 Oct 2020 07:19:54 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.19.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 07:19:52 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v6 00/14] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date:   Sat,  3 Oct 2020 16:19:36 +0200
+Message-Id: <20201003141950.455829-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201003065947.18671-3-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.10.2020 09:59, Nicolin Chen пишет:
-> The bus_set_iommu() in tegra_smmu_probe() enumerates all clients
-> to call in tegra_smmu_probe_device() where each client searches
-> its DT node for smmu pointer and swgroup ID, so as to configure
-> an fwspec. But this requires a valid smmu pointer even before mc
-> and smmu drivers are probed. So in tegra_smmu_probe() we added a
-> line of code to fill mc->smmu, marking "a bit of a hack".
-> 
-> This works for most of clients in the DTB, however, doesn't work
-> for a client that doesn't exist in DTB, a PCI device for example.
-> 
-> Actually, if we return ERR_PTR(-ENODEV) in ->probe_device() when
-> it's called from bus_set_iommu(), iommu core will let everything
-> carry on. Then when a client gets probed, of_iommu_configure() in
-> iommu core will search DTB for swgroup ID and call ->of_xlate()
-> to prepare an fwspec, similar to tegra_smmu_probe_device() and
-> tegra_smmu_configure(). Then it'll call tegra_smmu_probe_device()
-> again, and this time we shall return smmu->iommu pointer properly.
-> 
-> So we can get rid of tegra_smmu_find() and tegra_smmu_configure()
-> along with DT polling code by letting the iommu core handle every
-> thing, except a problem that we search iommus property in DTB not
-> only for swgroup ID but also for mc node to get mc->smmu pointer
-> to call dev_iommu_priv_set() and return the smmu->iommu pointer.
-> So we'll need to find another way to get smmu pointer.
-> 
-> Referencing the implementation of sun50i-iommu driver, of_xlate()
-> has client's dev pointer, mc node and swgroup ID. This means that
-> we can call dev_iommu_priv_set() in of_xlate() instead, so we can
-> simply get smmu pointer in ->probe_device().
-> 
-> This patch reworks tegra_smmu_probe_device() by:
-> 1) Removing mc->smmu hack in tegra_smmu_probe() so as to return
->    ERR_PTR(-ENODEV) in tegra_smmu_probe_device() during stage of
->    tegra_smmu_probe/tegra_mc_probe().
-> 2) Moving dev_iommu_priv_set() to of_xlate() so we can get smmu
->    pointer in tegra_smmu_probe_device() to replace DTB polling.
-> 3) Removing tegra_smmu_configure() accordingly since iommu core
->    takes care of it.
-> 
-> This also fixes a problem that previously we added all clients to
-> iommu groups before iommu core initializes its default domain:
->     ubuntu@jetson:~$ dmesg | grep iommu
->     platform smmu_benchmark: Adding to iommu group 0
->     platform 1003000.pcie: Adding to iommu group 1
->     platform 50000000.host1x: Adding to iommu group 2
->     platform 57000000.gpu: Adding to iommu group 3
->     platform 7000c400.i2c: Adding to iommu group 4
->     platform 7000c500.i2c: Adding to iommu group 4
->     platform 7000c700.i2c: Adding to iommu group 4
->     platform 7000d000.i2c: Adding to iommu group 4
->     iommu: Default domain type: Translated
-> 
-> Though it works fine with IOMMU_DOMAIN_UNMANAGED, but will have
-> warnings if switching to IOMMU_DOMAIN_DMA:
->     iommu: Failed to allocate default IOMMU domain of type 0 for
->            group (null) - Falling back to IOMMU_DOMAIN_DMA
->     iommu: Failed to allocate default IOMMU domain of type 0 for
->            group (null) - Falling back to IOMMU_DOMAIN_DMA
-> 
-> Now, bypassing the first probe_device() call from bus_set_iommu()
-> fixes the sequence:
->     ubuntu@jetson:~$ dmesg | grep iommu
->     iommu: Default domain type: Translated 
->     tegra-i2c 7000c400.i2c: Adding to iommu group 0
->     tegra-i2c 7000c500.i2c: Adding to iommu group 0
->     tegra-i2c 7000d000.i2c: Adding to iommu group 0
->     tegra-pcie 1003000.pcie: Adding to iommu group 1
->     ...
-> 
-> Note that dmesg log above is testing with IOMMU_DOMAIN_UNMANAGED.
-> 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
+Hi,
 
-Everything looks good to me, apart from the very minor pending question
-about the NULL-checking. Thanks!
+To avoid using set-tdm property of the simple-soundcard we will introduce
+a specific soundcard for Allwinner HDMI later.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+So I have dropped the simple-soundcard, the title of the serie is no more
+relevent...
+
+Regards,
+Clement
+
+Change since v5:
+- Drop HDMI simple soundcard
+- Collect Chen-Yu Tsai tags
+- Configure channels from 9 to 15.
+- Remove DMA RX for H3/H5
+- Fix Documentation for H3/H5
+
+Change since v4:
+- add more comment on get_wss() and set_channel_cfg() patch
+- merge soundcard and DAI HDMI patches
+
+Change since v3:
+- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
+- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
+- Fix get_wss() for sun4i
+- Add a commit to fix checkpatch warning
+
+Change since v2:
+- rebase on next-20200918
+- drop revert LRCK polarity patch
+- readd simple-audio-card,frame-inversion in dts
+- Add patch for changing set_chan_cfg params
+
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+*** BLURB HERE ***
+
+Clément Péron (6):
+  ASoC: sun4i-i2s: Change set_chan_cfg() params
+  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  ASoC: sun4i-i2s: fix coding-style for callback definition
+  arm64: defconfig: Enable Allwinner i2s driver
+  dt-bindings: sound: sun4i-i2s: Document H3 with missing RX channel
+    possibility
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add I2S1 node
+
+Marcus Cooper (4):
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm64: dts: allwinner: a64: Add I2S2 node
+  arm: dts: sunxi: h3/h5: Add I2S2 node
+
+Samuel Holland (1):
+  ASoC: sun4i-i2s: Fix setting of FIFO modes
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   6 +-
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  13 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  14 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  13 +
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 376 +++++++++++++++---
+ 6 files changed, 368 insertions(+), 55 deletions(-)
+
+-- 
+2.25.1
+
