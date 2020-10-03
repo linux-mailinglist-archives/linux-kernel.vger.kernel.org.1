@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062B92820B8
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7B52820BB
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725835AbgJCDLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 23:11:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51260 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgJCDLm (ORCPT
+        id S1725867AbgJCDPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 23:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgJCDPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 23:11:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09339FnJ181646;
-        Sat, 3 Oct 2020 03:11:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=oItmdEaeIAaqyxoLoOo5RezFovUnw4M8ThBzmA7X9uE=;
- b=yhSEwJQVGzslOQ61C/U4ZYqEb3s/SR91nw67qCXhSLJKAqdEnfwDFk8WDcpIMC13HvkP
- dXgfkCtNVwftK13lssttTpWh1fUpT4MdUgVk+aaVMNTCBKc5eplxyGV9zKUrzbfpIXah
- 6Hf2hT2nmlhItnJ+IhI7aWN6uMtBI6NbvYyRsA5COes2AutykhWBIdt9TfIu8j4ehfPF
- xEkBiU6axiOyYzf8Bgn6ES8uDTrmb5MjN9mQ8GwvJxoK1ieDJclVgJcIAPJKRE9ed2xd
- Q/1l7Pvj2VY4dj4tH5TWwX10pyNWkJZMrek/zGrOImNorSDg3cnyD9w8W4b95d89zRfQ YA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33sx9nnhpx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 03:11:31 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09339sI7001503;
-        Sat, 3 Oct 2020 03:11:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33xeds588y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 03:11:31 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0933BSsu004954;
-        Sat, 3 Oct 2020 03:11:28 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 20:11:28 -0700
-To:     John Garry <john.garry@huawei.com>
-Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: Re: [PATCH 0/7] hisi_sas: Add runtime PM support for v3 hw
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1a6x4atrp.fsf@ca-mkp.ca.oracle.com>
-References: <1601649038-25534-1-git-send-email-john.garry@huawei.com>
-Date:   Fri, 02 Oct 2020 23:11:26 -0400
-In-Reply-To: <1601649038-25534-1-git-send-email-john.garry@huawei.com> (John
-        Garry's message of "Fri, 2 Oct 2020 22:30:31 +0800")
+        Fri, 2 Oct 2020 23:15:18 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5676C0613D0;
+        Fri,  2 Oct 2020 20:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wDKUxlcya9naUV0UUfQqQb+yB0tpX4ZGEqkBZBtNiOM=; b=Rc/5pEYHyYsfQRSxE1J+0ThmAh
+        voTB+SlPTbiwjVg4cgfEEAH52oKElXMj0xgph1dWt/JxxTX5yqbaf3d+nocox2YStHLDJf2fn7uVW
+        pefAXSKTXQJnPANSMIRjcOfljk5veun8RS1IA+mtoqTFhzdk1Q2xWLXMFhf9qaAngqy73fk/Rteru
+        U4CHEYRKTr5CKmIi8GM/TlNnruogGE3HxamOaDtSIT2GLY+1T/Y5092TENjso2B8d3mny+sNIErsg
+        tFKi+QivUS4ACyrOX8gqlEhmbt27W7XlWnM417Byifmy1EAhgqQBG23Rbh9DNQNLEnn5lcXAm0Pw0
+        ICpxZw1w==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOY0o-0000O4-KM; Sat, 03 Oct 2020 03:15:06 +0000
+Subject: Re: [PATCH v2 2/6] fpga: m10bmc-sec: create max10 bmc security engine
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-3-russell.h.weight@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6854e626-e21b-d3b6-fa31-f150edba6f66@infradead.org>
+Date:   Fri, 2 Oct 2020 20:15:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 suspectscore=1 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030028
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=1
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030028
+In-Reply-To: <20201003012412.16831-3-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/2/20 6:24 PM, Russ Weight wrote:
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index c534cc80f398..2380d36b08c7 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -235,4 +235,15 @@ config IFPGA_SEC_MGR
+>  	  region and for the BMC. Select this option to enable
+>  	  updates for secure FPGA devices.
+>  
+> +config IFPGA_M10_BMC_SECURE
+> +        tristate "Intel MAX10 BMC security engine"
+> +	depends on MFD_INTEL_M10_BMC && IFPGA_SEC_MGR
+> +        help
+> +          Secure update support for the Intel MAX10 board management
+> +	  controller.
+> +
+> +	  This is a subdriver of the Intel MAX10 board management controller
+> +	  (BMC) and provides support for secure updates for the BMC image,
+> +	  the FPGA image, the Root Entry Hashes, etc.
+> +
+>  endif # FPGA
 
-John,
+Dagnabit, I need a bot to do this.
 
-> This series adds runtime PM support for v3 hw. Consists of:
-> - Switch to new PM suspend and resume framework
-> - Add links to devices to ensure host cannot be suspended while devices
->   are not
-> - Filter out phy events during suspend to avoid deadlock
-> - Add controller RPM support
-> - And some more minor misc related changes
+Clean up the indentation in the Kconfig file.
 
-Applied to 5.10/scsi-staging, thanks!
+From Documentation/process/coding-style.rst, section 10:
 
+Lines under a ``config`` definition
+are indented with one tab, while help text is indented an additional two
+spaces.
+
+checkpatch should have found that issue. Did it not?
+
+
+thanks.
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Randy
+
