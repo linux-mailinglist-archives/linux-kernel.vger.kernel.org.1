@@ -2,148 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCB6282163
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A00282162
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbgJCEvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50158 "EHLO mail.kernel.org"
+        id S1725914AbgJCEvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgJCEvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 00:51:25 -0400
+        id S1725879AbgJCEv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 00:51:27 -0400
 Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39F5B21D92;
-        Sat,  3 Oct 2020 04:51:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B4F9221EA;
+        Sat,  3 Oct 2020 04:51:26 +0000 (UTC)
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     x86@kernel.org, linux-sgx@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
         Jethro Beekman <jethro@fortanix.com>,
         Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        tglx@linutronix.de, yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: [PATCH v39 09/24] x86/sgx: Add __sgx_alloc_epc_page() and sgx_free_epc_page()
-Date:   Sat,  3 Oct 2020 07:50:44 +0300
-Message-Id: <20201003045059.665934-10-jarkko.sakkinen@linux.intel.com>
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: [PATCH v39 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
+Date:   Sat,  3 Oct 2020 07:50:45 +0300
+Message-Id: <20201003045059.665934-11-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
 References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add __sgx_alloc_epc_page(), which iterates through EPC sections and borrows
-a page structure that is not used by anyone else. When a page is no longer
-needed it must be released with sgx_free_epc_page(). This function
-implicitly calls ENCLS[EREMOVE], which will return the page to the
-uninitialized state (i.e. not required from caller part).
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
+Background
+==========
+
+1. SGX enclave pages are populated with data by copying data to them from
+   normal memory via an ioctl() (SGX_IOC_ENCLAVE_ADD_PAGES).
+2. It is desirable to be able to restrict those normal memory data sources.
+   For instance, to ensure that the source data is executable before
+   copying data to an executable enclave page.
+3. Enclave page permissions are dynamic (just like normal permissions) and
+   can be adjusted at runtime with mprotect().
+4. The original data source may have long since vanished at the time when
+   enclave page permissions are established (mmap() or mprotect()).
+
+The solution (elsewhere in this series) is to force enclaves creators to
+declare their paging permission *intent* up front to the ioctl().  This
+intent can me immediately compared to the source data’s mapping (and
+rejected if necessary).
+
+The intent is also stashed off for later comparison with enclave PTEs.
+This ensures that any future mmap()/mprotect() operations performed by the
+enclave creator or done on behalf of the enclave can be compared with the
+earlier declared permissions.
+
+Problem
+=======
+
+There is an existing mmap() hook which allows SGX to perform this
+permission comparison at mmap() time.  However, there is no corresponding
+->mprotect() hook.
+
+Solution
+========
+
+Add a vm_ops->mprotect() hook so that mprotect() operations which are
+inconsistent with any page's stashed intent can be rejected by the driver.
+
+Cc: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>
 Acked-by: Jethro Beekman <jethro@fortanix.com>
 Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
- 2 files changed, 65 insertions(+)
+ include/linux/mm.h | 3 +++
+ mm/mprotect.c      | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c5831e3db14a..97c6895fb6c9 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -83,6 +83,68 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
- 
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
-+{
-+	struct sgx_epc_page *page;
-+
-+	if (list_empty(&section->page_list))
-+		return NULL;
-+
-+	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
-+	list_del_init(&page->list);
-+
-+	return page;
-+}
-+
-+/**
-+ * __sgx_alloc_epc_page() - Allocate an EPC page
-+ *
-+ * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-+ * page is no longer needed it must be released with sgx_free_epc_page().
-+ *
-+ * Return:
-+ *   an EPC page,
-+ *   -errno on error
-+ */
-+struct sgx_epc_page *__sgx_alloc_epc_page(void)
-+{
-+	struct sgx_epc_section *section;
-+	struct sgx_epc_page *page;
-+	int i;
-+
-+	for (i = 0; i < sgx_nr_epc_sections; i++) {
-+		section = &sgx_epc_sections[i];
-+		spin_lock(&section->lock);
-+		page = __sgx_alloc_epc_page_from_section(section);
-+		spin_unlock(&section->lock);
-+
-+		if (page)
-+			return page;
-+	}
-+
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+/**
-+ * sgx_free_epc_page() - Free an EPC page
-+ * @page:	an EPC page
-+ *
-+ * Call EREMOVE for an EPC page and insert it back to the list of free pages.
-+ */
-+void sgx_free_epc_page(struct sgx_epc_page *page)
-+{
-+	struct sgx_epc_section *section = sgx_get_epc_section(page);
-+	int ret;
-+
-+	ret = __eremove(sgx_get_epc_addr(page));
-+	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
-+		return;
-+
-+	spin_lock(&section->lock);
-+	list_add_tail(&page->list, &section->page_list);
-+	spin_unlock(&section->lock);
-+}
-+
- static void __init sgx_free_epc_section(struct sgx_epc_section *section)
- {
- 	struct sgx_epc_page *page;
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index dff4f5f16d09..fce756c3434b 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -49,4 +49,7 @@ static inline void *sgx_get_epc_addr(struct sgx_epc_page *page)
- 	return section->va + (page->desc & PAGE_MASK) - section->pa;
- }
- 
-+struct sgx_epc_page *__sgx_alloc_epc_page(void);
-+void sgx_free_epc_page(struct sgx_epc_page *page);
-+
- #endif /* _X86_SGX_H */
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index b2f370f0b420..dca57fe80555 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -551,6 +551,9 @@ struct vm_operations_struct {
+ 	void (*close)(struct vm_area_struct * area);
+ 	int (*split)(struct vm_area_struct * area, unsigned long addr);
+ 	int (*mremap)(struct vm_area_struct * area);
++	int (*mprotect)(struct vm_area_struct *vma,
++			struct vm_area_struct **pprev, unsigned long start,
++			unsigned long end, unsigned long newflags);
+ 	vm_fault_t (*fault)(struct vm_fault *vmf);
+ 	vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+ 			enum page_entry_size pe_size);
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index ce8b8a5eacbb..f170f3da8a4f 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -610,7 +610,10 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 		tmp = vma->vm_end;
+ 		if (tmp > end)
+ 			tmp = end;
+-		error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
++		if (vma->vm_ops && vma->vm_ops->mprotect)
++			error = vma->vm_ops->mprotect(vma, &prev, nstart, tmp, newflags);
++		else
++			error = mprotect_fixup(vma, &prev, nstart, tmp, newflags);
+ 		if (error)
+ 			goto out;
+ 		nstart = tmp;
 -- 
 2.25.1
 
