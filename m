@@ -2,184 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196EB282262
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1720282268
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 10:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725798AbgJCIF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 04:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S1725770AbgJCISQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 04:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgJCIF1 (ORCPT
+        with ESMTP id S1725601AbgJCISQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:05:27 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0BDC0613D0;
-        Sat,  3 Oct 2020 01:05:27 -0700 (PDT)
-Received: from ip4d14bc8c.dynamic.kabel-deutschland.de ([77.20.188.140] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kOcXl-0001ZJ-0l; Sat, 03 Oct 2020 10:05:25 +0200
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <cover.1601541165.git.linux@leemhuis.info>
- <0c647add40e56b403bc17e9de1430917aa88bacb.1601541165.git.linux@leemhuis.info>
- <3f8a3a67-9e04-80a6-e540-c4c511dc4546@infradead.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; prefer-encrypt=mutual; keydata=
- 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
- 5iv6NKaV29GWHbY=
-Cc:     linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 03/26] docs: reporting-bugs: step-by-step guide on
- how to report issues
-Message-ID: <6ae431a8-f181-6de9-b5cb-bbab80c0566a@leemhuis.info>
-Date:   Sat, 3 Oct 2020 10:05:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 3 Oct 2020 04:18:16 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D070C0613D0;
+        Sat,  3 Oct 2020 01:18:16 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b17so2390576pji.1;
+        Sat, 03 Oct 2020 01:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+BYI0/u6OpMKyw3gjay+S2BO3oSX5QDwS4LJbDTNE+0=;
+        b=MKgL9seMPv5Xnyriytx9J/qyyRCDv2PJfCoEFgTjWbSksEOeFbBffkBa/WpD1oB1r7
+         xCerWCditb25c/6DdUc5pJt8z79TB3ojEvNDSs99M6Jom+NsmByO8xW0iNMLJiwurBwt
+         mfDTfL2xASh5zpm9mBgG9wM1NmdAf6ZC+IIjYLai+nz5YO2zmR2jWemMXSUwWbSGmtSg
+         kK2EDni/h0qbZWohVEb4CDHyoEBJhwUmR3VyCDTGVxVVfz7CQwDx34WCJo2pxi4xsCKK
+         UBOY+1GWrj90IiUX655XMwlQgLr39jT/SbQmn/InoPRsuB9oVNGH9NfOH3HsZHPUwjjr
+         N9dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+BYI0/u6OpMKyw3gjay+S2BO3oSX5QDwS4LJbDTNE+0=;
+        b=dxe/ueZsMwXL28qV/jO8FcKhjK08rf5907FSemby0aGjFsr++2pq9uTS+0pXn6weQP
+         kF1tAmtL7sBC7uW3Qy/w3Xhy6gpUawryFHO5TYT4IK22USq7wWk+z+6dMXqk4/16fAc2
+         Ofr2gNtEPAcpGoyRv9zogc5JBTFNmNcebq/WPKDxN9HroBXjAW2MaTtv5Ls892pxfYEy
+         NKS4hmDVpKn38YCpy7NnVk6Ehb6ZJZKX5+n2E+QK8dNPOqt2Pb8q2jOTsq44d10Cjgft
+         jGdRv4QyzFNAypUXg8OKdhfzpjvxkwAtUavLKcRDKL/CCZNU7o5F+uHcNlZO/XK05KYY
+         K3+A==
+X-Gm-Message-State: AOAM533EXkh1cD7cgmkKs8RIzeQWbLpfZPiCCX/kg3XQCKQ2poNFnAgB
+        i0WxekKiM1dlRDm40/aNIb12v5Y6iEJKC/CSbK0=
+X-Google-Smtp-Source: ABdhPJywj3WBJFKaEItRt4k8MI0LfRZi8eXCe2NuFYGEk4FbyHWblbBuqNEFRs63V6ZVeA12FGaXPyYhwrKDMBchlv4=
+X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr6734978pjr.228.1601713095383;
+ Sat, 03 Oct 2020 01:18:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3f8a3a67-9e04-80a6-e540-c4c511dc4546@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601712327;934a7a25;
-X-HE-SMSGID: 1kOcXl-0001ZJ-0l
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200924192455.2484005-5-j.neuschaefer@gmx.net> <20200925063037.fcrmqvpe5noi3ef4@pengutronix.de>
+ <20200927211044.GC2510@latitude> <20200928083546.gwu7ucx7os5yc5bn@pengutronix.de>
+ <20201002233630.GB500800@latitude>
+In-Reply-To: <20201002233630.GB500800@latitude>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 3 Oct 2020 11:17:58 +0300
+Message-ID: <CAHp75VeSB4i_QNOX1UbrooNo0twqgbOhoaxnwk5a+=dEFWMzqA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/7] pwm: ntxec: Add driver for PWM function in
+ Netronix EC
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pwm@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many thx for you comments. Consider all the obvious spelling and
-grammatical mistakes you pointed out fixed, I won't mention all of them
-in this reply to keep things easier to follow.
+On Sat, Oct 3, 2020 at 2:36 AM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
+> On Mon, Sep 28, 2020 at 10:35:46AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > On Sun, Sep 27, 2020 at 11:10:44PM +0200, Jonathan Neusch=C3=A4fer wrot=
+e:
 
-Am 02.10.20 um 05:02 schrieb Randy Dunlap:
-> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
-> […]
->> +brief for you, look up the details in the reference section below, where each
->> +of the steps is explained in more detail.
->> +
->> +Note, this section covers a few more aspects than the TL;DR and does things in a
->    Note:
+...
 
-Ohh, really? LanguageTool suggested to use the comma once when I forgot
-a colon, so I assumed it was okay. Uhhps.
+> > You can even check this with an LED using something like:
+> >
+> >       pwm_apply(mypwm, {.enabled =3D true, .duty_cycle =3D $big, .perio=
+d =3D $big});
+> >       pwm_apply(mypwm, {.enabled =3D false, ... });
+> >
+> > . If the period is completed the LED is on for $big ns, if not the LED
+> > is on for a timespan that is probably hardly noticable with the human
+> > eye.
+>
+> The longest configurable period is about 8ms, so it's not long enough to
+> see anything. However, after writing enable=3D0, it can take about a
+> second for the PWM signal to turn off... this hardware is a bit weird.
 
+Sounds like you have 1/128 divisor and off/on is done on lower
+frequency. (We saw PWMs with an additional 7-bit counter, reminds me
+Crystal Cove PMIC PWM).
 
->> + * Reproduce the issue with the kernel you just installed. If it doesn't show up
->> +   there, head over to the instructions for issues only happening with stable
->> +   and longterm kernels if you want to see it fixed there.
-> Can you link (reference) to that section?
-
-I raised that problem in the cover letter, as this is not the only place
-where it would make sense. Hoping for input from Jonathan here how to do
-that without adding lots of anchors...
-
->> + * Optimize your notes: try to find and write the most straightforward way to
->> +   reproduce your issue. Make sure the end result has all the important details,
->> +   and at the same time is easy to read and understand for others that hear
->> +   about it for the first time. And if you learned something in this process,
->> +   consider searching again for existing reports about the issue.
->> +
->> + * If the failure includes a stack dump, like an Oops does, consider decoding it
->> +   to find the offending line of code.
-> Refer to scripts/decodecode ?
-> or is that done elsewhere?
-
-Elsewhere and this step and that document likely needs to be heavily
-updated anyway, as pointed out in a later patch :-/
-
->> +
->> + * If your problem is a regression, try to narrow down when the issue was
->> +   introduced as much as possible.
->> +
->> + * Start to compile the report by writing a detailed description about the
->> +   issue. Always mentions a few things: the latest kernel version you installed
->> +   for reproducing, the Linux Distribution used, and your notes how to
-> 
-> I would say:                                                 notes on how to
-> Maybe it's just me.
-
-Googled a bit and to me as a non-native English speaker looks like
-you're correct.
-
->> +   reproduce the issue. Ideally, make the kernels build configuration (.config)
->                                              kernel's
-
-Uggh, sorry, this mistake will show up a few more times, looks like I
-applied German grammar rules to English. :-/
-
->> +   the issue and the impact quickly. On top of this add one sentence that
->> +   briefly describes the problem and gets people to read on. Now give the thing
->> +   a descriptive title or subject that yet again is shorter. Then you're ready
->> +   to send or file the report like the `MAINTAINERS file
->> +   <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/MAINTAINERS>`_
->> +   told you, unless you are dealing with one of those 'issues of high priority':
->       tells you,
-> OK, I like present tense as much as possible.
-
-Hmmm. Normally I'd agree, but I used past tense here because it refers
-to something the reader did in an earlier step.
-
->> + * Wait for reactions and keep the thing rolling until you can accept the
->> +   outcome in one way or the other. Thus react publicly and in a timely manner
->> +   to any inquiries. Test proposed fixes. Do proactive testing when a new rc1
->                                                                   when a new -rc
-> (release candidate) is released. Send
-
-I only meant "rc1" here, not every rc. More about this in a later patch.
-
-Regarding explaining "rc" as "release candidate": my stupid brain has a
-really hard time following that suggestion, as it still remembers some
-words someone named Linus Torvalds wrote many many years ago:
-```
-I'll just use "-rc", and we can all agree that it stands for "Ridiculous
-Count" rather than "Release Candidate".
-```
-https://lore.kernel.org/lkml/Pine.LNX.4.58.0410221821030.2101@ppc970.osdl.org/
-
-
-I'll go and try to find some pills to force my brain into compliance.
-;-) Once they start to work it hopefully can agree to this:
-
-Do proactive testing: retest with at least every first release candidate
-(RC) of a new mainline version and report your results.
-
-Ciao, Thorsten
+--=20
+With Best Regards,
+Andy Shevchenko
