@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1032820C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA552820C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgJCD1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 23:27:15 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60758 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgJCD1P (ORCPT
+        id S1725895AbgJCD15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 23:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgJCD15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 23:27:15 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0933QdHv011976;
-        Sat, 3 Oct 2020 03:26:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Q5gCUNUwVNp18O2aAI1zS+Go2N/xwygxM1Kh8DxytVA=;
- b=icGZpAuw5+GfeKdPLVaRNCo1MSOLoh2bbRz73bBgupdJQnoofInec6jkUPKHtZeKBBM8
- kLQhxvn/3jnEbCKP7oNLVewCZwxSjcyrjIFev847fTDQwvaibB6osgt1KY/EiurbrCFN
- oV6kHYWtA0ent+Ym40IQVM8izHw1kC4j+5vKi/30wxaT32le1Iao+WsePGk58cUCzbsI
- uvN3XHsCLzH0cHQHqqfHZrXTm+Hh5qAEtWEYW3sgf9rw23lMadDO9cqEVJWJn9E1QByP
- O+B035qa4l7c6jS8uUlMXpz+7oj+ogiMn0xhEMm3o+XwqrDYZg1j6E8k+CgtqLfBebkU EQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 33sx9nnj61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 03:26:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0933Jtlf025445;
-        Sat, 3 Oct 2020 03:26:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 33xeds5get-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 03:26:38 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0933QYaB023427;
-        Sat, 3 Oct 2020 03:26:34 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 20:26:33 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     stanley.chu@mediatek.com, cang@codeaurora.org,
-        tomas.winkler@intel.com, bvanassche@acm.org, jejb@linux.ibm.com,
-        asutoshd@codeaurora.org, Bean Huo <huobean@gmail.com>,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: ufs-exynos: use devm_platform_ioremap_resource_byname()
-Date:   Fri,  2 Oct 2020 23:26:31 -0400
-Message-Id: <160167976617.22934.16539006538891779539.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200916084017.14086-1-huobean@gmail.com>
-References: <20200916084017.14086-1-huobean@gmail.com>
+        Fri, 2 Oct 2020 23:27:57 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B59CC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 20:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=QQSZoOnloLMD7/ZhvOjy+/MmtuG47S2C6q8QYmBfaLg=; b=VcshOLvwQUeuRpKaTWGm+Y8U+2
+        GRyNs41czvUF8AZ+KMGn6OYdMKpAkL4xDTfHCc5jZd1CuaGmGbOdFIg9mRr4tW8Tiwvpab8i4oeRF
+        WIAZphlvKmRzjuWSvAvl7BB5Bz2JKcJsWT/j/hojTdMro6nEHkgMgvJQIUXIXRV7rKTdLTRNvTAZH
+        cuxUqeAV7TTvCfNZp3XCzoRgtSTfCzrevvewoIMbGerSRSV6m/pKRYyTmW/eGryGPa52L7eWUOgFn
+        OOLN+9peMY/pWJEn6gLx3C1TYQo/vBRdNGBF8DSa8A6m3UcspAJVbfnWBOuS+jwMd/l3cVhhO4SxD
+        nfhT8bQg==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kOYD7-000129-6I; Sat, 03 Oct 2020 03:27:49 +0000
+Subject: Re: [PATCH 1/4] drivers core: Introduce CPU type sysfs interface
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        x86@kernel.org, Borislav Petkov <bp@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <20201003011745.7768-1-ricardo.neri-calderon@linux.intel.com>
+ <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <de7b5aa2-9866-c93e-0f1b-4ffff82d2f1e@infradead.org>
+Date:   Fri, 2 Oct 2020 20:27:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030029
+In-Reply-To: <20201003011745.7768-2-ricardo.neri-calderon@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 10:40:17 +0200, Bean Huo wrote:
+On 10/2/20 6:17 PM, Ricardo Neri wrote:
+> +/**
+> + * arch_get_cpu_type() - Get the CPU type number
+> + * @cpu:	Index of the CPU of which the index is needed
+> + *
+> + * Get the CPU type number of @cpu, a non-zero unsigned 32-bit number that
 
-> Use devm_platform_ioremap_resource_byname() to simplify the code.
+Are you sure that @cpu is non-zero?
 
-Applied to 5.10/scsi-queue, thanks!
 
-[1/1] scsi: ufs: ufs-exynos: Use devm_platform_ioremap_resource_byname()
-      https://git.kernel.org/mkp/scsi/c/2dd39fad92a1
+> + * uniquely identifies a type of CPU micro-architecture. All CPUs of the same
+> + * type have the same type number. Type numbers are defined by each CPU
+> + * architecture.
+> + */
+> +u32 __weak arch_get_cpu_type(int cpu)
+> +{
+> +	return 0;
+> +}
+
+arch_get_cpu_type() in patch 4/4 allows @cpu to be 0.
+
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+~Randy
+
