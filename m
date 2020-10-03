@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA4D2820C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1032820C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 05:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgJCD0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 23:26:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbgJCD0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 23:26:18 -0400
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47F7A20719
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 03:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601695577;
-        bh=CBE60R04Ssh2X4r5oUkkDdZCifZI6pr2boyjVftGq04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JYzuV6AlipFT9jR0QccHNBWhs+sWE/CY4+1YHGm7YJQy2byk5AdKePh9hbM7BKIcL
-         LADPIBysqb2spD9KAib5bcNy0WE5/M8TeeJssN17ryj3IRqT/BwilY6iUdl/aStxY/
-         BxsjjhPhX/t/cjHRDe7YLp1TD1VxFdxqyfSwvVFU=
-Received: by mail-ej1-f51.google.com with SMTP id a3so4417712ejy.11
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 20:26:17 -0700 (PDT)
-X-Gm-Message-State: AOAM53185vHURyHLyEUMbZZUMLXXo/uVUoE1B8FbYsN3uBHi7wVUZzl2
-        AaA2BM/rikIBi7BcJDd8zDDcFAqR/oEb7qGTZA==
-X-Google-Smtp-Source: ABdhPJyVT37Ny80mPGlIZPTaykVZw3A0gTf5M2DLK3vsvTWIDBjG6hSjhM5Hie0HqnCRjpNoKC1wpuzkQUpYZezZs38=
-X-Received: by 2002:a17:906:158f:: with SMTP id k15mr187553ejd.310.1601695575882;
- Fri, 02 Oct 2020 20:26:15 -0700 (PDT)
+        id S1725888AbgJCD1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 23:27:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60758 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725772AbgJCD1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 23:27:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0933QdHv011976;
+        Sat, 3 Oct 2020 03:26:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Q5gCUNUwVNp18O2aAI1zS+Go2N/xwygxM1Kh8DxytVA=;
+ b=icGZpAuw5+GfeKdPLVaRNCo1MSOLoh2bbRz73bBgupdJQnoofInec6jkUPKHtZeKBBM8
+ kLQhxvn/3jnEbCKP7oNLVewCZwxSjcyrjIFev847fTDQwvaibB6osgt1KY/EiurbrCFN
+ oV6kHYWtA0ent+Ym40IQVM8izHw1kC4j+5vKi/30wxaT32le1Iao+WsePGk58cUCzbsI
+ uvN3XHsCLzH0cHQHqqfHZrXTm+Hh5qAEtWEYW3sgf9rw23lMadDO9cqEVJWJn9E1QByP
+ O+B035qa4l7c6jS8uUlMXpz+7oj+ogiMn0xhEMm3o+XwqrDYZg1j6E8k+CgtqLfBebkU EQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 33sx9nnj61-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 03 Oct 2020 03:26:39 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0933Jtlf025445;
+        Sat, 3 Oct 2020 03:26:38 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33xeds5get-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 03 Oct 2020 03:26:38 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0933QYaB023427;
+        Sat, 3 Oct 2020 03:26:34 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 02 Oct 2020 20:26:33 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     stanley.chu@mediatek.com, cang@codeaurora.org,
+        tomas.winkler@intel.com, bvanassche@acm.org, jejb@linux.ibm.com,
+        asutoshd@codeaurora.org, Bean Huo <huobean@gmail.com>,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: ufs-exynos: use devm_platform_ioremap_resource_byname()
+Date:   Fri,  2 Oct 2020 23:26:31 -0400
+Message-Id: <160167976617.22934.16539006538891779539.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200916084017.14086-1-huobean@gmail.com>
+References: <20200916084017.14086-1-huobean@gmail.com>
 MIME-Version: 1.0
-References: <20200827182507.4938-1-krzk@kernel.org>
-In-Reply-To: <20200827182507.4938-1-krzk@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 3 Oct 2020 11:26:05 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9jC2CMws-xoRgLmcHY=4f1EbLaFRkjAPsC18rrWn12jQ@mail.gmail.com>
-Message-ID: <CAAOTY_9jC2CMws-xoRgLmcHY=4f1EbLaFRkjAPsC18rrWn12jQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mailbox: mediatek: Fix handling of platform_get_irq() error
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        CK Hu <ck.hu@mediatek.com>, HS Liao <hs.liao@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Frank Wunderlich <frank-w@public-files.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
+ spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010030029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski <krzk@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8828=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=882:25=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> platform_get_irq() returns -ERRNO on error.  In such case casting to u32
-> and comparing to 0 would pass the check.
->
+On Wed, 16 Sep 2020 10:40:17 +0200, Bean Huo wrote:
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Use devm_platform_ioremap_resource_byname() to simplify the code.
 
-> Fixes: 623a6143a845 ("mailbox: mediatek: Add Mediatek CMDQ driver")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> ---
->
-> Changes since v2:
-> 1. Fix subject.
->
-> Changes since v1:
-> 1. Correct u32->int,
-> 2. Fix left-over '!'.
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index 484d4438cd83..5665b6ea8119 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -69,7 +69,7 @@ struct cmdq_task {
->  struct cmdq {
->         struct mbox_controller  mbox;
->         void __iomem            *base;
-> -       u32                     irq;
-> +       int                     irq;
->         u32                     thread_nr;
->         u32                     irq_mask;
->         struct cmdq_thread      *thread;
-> @@ -525,10 +525,8 @@ static int cmdq_probe(struct platform_device *pdev)
->         }
->
->         cmdq->irq =3D platform_get_irq(pdev, 0);
-> -       if (!cmdq->irq) {
-> -               dev_err(dev, "failed to get irq\n");
-> -               return -EINVAL;
-> -       }
-> +       if (cmdq->irq < 0)
-> +               return cmdq->irq;
->
->         plat_data =3D (struct gce_plat *)of_device_get_match_data(dev);
->         if (!plat_data) {
-> --
-> 2.17.1
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Applied to 5.10/scsi-queue, thanks!
+
+[1/1] scsi: ufs: ufs-exynos: Use devm_platform_ioremap_resource_byname()
+      https://git.kernel.org/mkp/scsi/c/2dd39fad92a1
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
