@@ -2,174 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196D3282558
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5CC28255D
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725809AbgJCQ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 12:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgJCQ2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 12:28:11 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BDEC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 09:28:11 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id d18so1216839uav.4
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 09:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TA0oD8jJw+LkQ5vHfPBXWjnJlwzWARU2bgJJP02kwPY=;
-        b=AhPsyEanmy1bCVOGOLncwlr8WBiN5rysP+bzPJ9hn2duKdpOKaUM+7fYOJyuMz8asS
-         JsO1XOC2ZoaaY6mxBS2jUKvi2PqZz5Oene4kc/Hg1xm/BHI+mdc2wURPC3sPweEC/fIg
-         vjpXckxvWxCFmy3+m0uRmtewBwKZyzgLYcNxM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TA0oD8jJw+LkQ5vHfPBXWjnJlwzWARU2bgJJP02kwPY=;
-        b=NnnqiVH5KTh6D62LR0IjfJwCLUDZexd6E69bkciIopqoKHdMd9y3LHEkWUPaiFwaT9
-         gUTRsFrwj7GNDfbPOoTHnaeOPP5F6cTU+RJ5JxqKaha+ub1wJweHK7aaCtpXJFak/AJP
-         M2WjTHaj5BGTOovQZZd+OSK4angz19S5ho+zk4YDcjWLE0Q4ohJk1JQeBmXGg/O2iHYY
-         gHKBw7n/n5brsdiEi4g6SP0mek7ihz4Fp0yD1+8ZUs0UuARkaE4vRELBsj7IOKvIRQOv
-         dIxB0hxMSZJ5D27zqYAjofJ1sxAPjOp+qMsNOwu3GJmYXzwJ6So/LyYLUrwHmYS3RNS5
-         tW3g==
-X-Gm-Message-State: AOAM530lmIYbFyM0YmtEmpfLofMY/zLdbfRy8tl35BVGOTAoixlDJAey
-        +0vxhw8shDU31NYoqhR7RYMOTqkmnENnXw==
-X-Google-Smtp-Source: ABdhPJy86ZvXmQOWZ4L0GpyUFWTza8Pqd71VXgFnpZ/NeKCmyA5jSj2QMsbhf22axvl/v4c7Bx4zzA==
-X-Received: by 2002:ab0:5a22:: with SMTP id l31mr3891342uad.32.1601742489300;
-        Sat, 03 Oct 2020 09:28:09 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id h14sm756371vsp.18.2020.10.03.09.28.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 09:28:08 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id 5so2032697vsu.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 09:28:08 -0700 (PDT)
-X-Received: by 2002:a05:6102:2f7:: with SMTP id j23mr1525181vsj.37.1601742487724;
- Sat, 03 Oct 2020 09:28:07 -0700 (PDT)
+        id S1725818AbgJCQbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 12:31:32 -0400
+Received: from mail-am6eur05on2088.outbound.protection.outlook.com ([40.107.22.88]:1122
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725789AbgJCQbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 12:31:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AZ6qORbPf3HJYroUlH2E6LGFDGXlBVCpVzbbOnjFqqHS97h3ibuuwfEb7zVMV6yHSuhhfFFni0l/hTmzAnmN+tbYPx4hDXZJx+snuBabx2XnqjkTeXzjeIP4mM6A44+imSR5xmx2aRvuGHnn4HDz3b5FMuOqQ1vmzqFwoMdA15hpR4Q5Ibg8w+Vnp4tBIVFTTAT0tpVxtE/AnB6hpeDxKpEwB0+MHMkzwP6cCBgfbu2aH/i0GkJwxoZxz+XWyi+U8etupvxtt/nuX8hEgEhf15zH9ERV41iz0P30BUxSZMmfjlTKOxTjKgVUpEkTUsyepyQqQ/+TbAKGf1H5JZYBAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h+4JQJtPkJpVlcyqQ15CAQkJCO2UyuqQJUKjIPkeefc=;
+ b=f8bEasfiYO1mdPH3uDXO6dzxZgmht9MKABbufTfyaKzgdI2b+PNrtoWqjPPC+8HceBFwSyQthMS7+sCtDJzA4/sxs69fogJP6zGtTa7RUrtHMof+XamB0cs+3KRZKKOT2pMZLiNSBiXiGHBr8DnDP6S5gh2t//yihIZxEkrQh5mmHWOT7HYeqoPgxzLYHi4Ldrk4qAXs57C8MY1UUnREDIQ0B98PIl+SGyz3XmWg5jVhc4rWrCCSwfLKFDVDiEqKJwZ65M8FD24Z+xjhk6X+WAfKroLIb648HL+0iWDDU9kOJRBc6FJmPeFniuutYLAA8kz6vPXgObjN75ORGYKWMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h+4JQJtPkJpVlcyqQ15CAQkJCO2UyuqQJUKjIPkeefc=;
+ b=jau4MB96LHl689lVWb058qX1zVZTNni5Scif/v+TOAnjbwP+sxXpHphpwstzI6ppxAb7JbzlmFlKVDRyRT3OjYm5fx4bfTSlVwcXC25EV+p03Bn55cF4Y4NkGGBjguyx4Z4yay+mmTi+mwwi8FbpqtV8y2bJB2g0MbKCpUrQrlQ=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR0402MB3764.eurprd04.prod.outlook.com (2603:10a6:208:9::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Sat, 3 Oct
+ 2020 16:31:27 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::a997:35ae:220c:14ef%7]) with mapi id 15.20.3433.038; Sat, 3 Oct 2020
+ 16:31:26 +0000
+Date:   Sat, 3 Oct 2020 22:00:25 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>, netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [net-next PATCH v1 6/7] net: dpaa2-mac: Add ACPI support for
+ DPAA2 MAC driver
+Message-ID: <20201003163025.GA28093@lsv03152.swis.in-blr01.nxp.com>
+References: <20200930160430.7908-1-calvin.johnson@oss.nxp.com>
+ <20200930160430.7908-7-calvin.johnson@oss.nxp.com>
+ <CAHp75Vfu_-=+CNYoRd141md902N2uR+K0xvHryfH9YCQi9Hp4w@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vfu_-=+CNYoRd141md902N2uR+K0xvHryfH9YCQi9Hp4w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [14.142.151.118]
+X-ClientProxiedBy: SG2PR01CA0125.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::29) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-References: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
- <20201003150633.23416-1-michael@walle.cc>
-In-Reply-To: <20201003150633.23416-1-michael@walle.cc>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Sat, 3 Oct 2020 09:27:56 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VB-ML0=kmN-yAH7sD-sMiX9Cq1_9B9QwVL=Ed5ZrGnbg@mail.gmail.com>
-Message-ID: <CAD=FV=VB-ML0=kmN-yAH7sD-sMiX9Cq1_9B9QwVL=Ed5ZrGnbg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Prefer asynchronous probe
-To:     Michael Walle <michael@walle.cc>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
-        miquel.raynal@bootlin.com, richard@nod.at,
-        tudor.ambarus@microchip.com, vigneshr@ti.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR01CA0125.apcprd01.prod.exchangelabs.com (2603:1096:4:40::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.36 via Frontend Transport; Sat, 3 Oct 2020 16:31:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b7fd94a2-c2b7-4733-a6cd-08d867b9c615
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3764:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB3764CDFEF275F03D8FC74CACD20E0@AM0PR0402MB3764.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HQ4YCKgk2uweXrjcfOQGQVRckPI1YHaGf0pgjFzp/Kb2X1mdb3myWLmpcwVVjMWfZqf+On09WmbOH3ym6v1fpHzxVbVxgMp99Ek9oDD9QJreXGUiIyhtpUpIh47ui7iXic6+wFboqtaAJmicXLB+ruQm29VQdBIMHGueKf6GXzk5AXTRBpU5BdTvkDnOcxFxXb86tVhn2QN0ITE/heUF7z6Ubut8YHsCPVvwJKF4mBCP6P76WaX5nJjsLbHyDNKKBqkHYyoh3RntTAwMqRq4522lP3BSZ22aipK2dOG9bu9c4liSaDv5it8uhOH81vYEa9pBhgSEFatC5d0hL1GtKu13bNh0aPI9KPjOCTRj7qyL8q+eWusbNC/ad1pLCgkGnlgcNMDq/wt4w+DGUTAq9UcLEMCzfmLYrJoAT8B8AgDga/rQKR1UpaYvqOKBLGCr/PSR1eXOaqTQjCquI8r5kw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39850400004)(396003)(346002)(1006002)(86362001)(55236004)(2906002)(83080400001)(956004)(8676002)(966005)(478600001)(16526019)(66556008)(186003)(1076003)(52116002)(55016002)(7696005)(7416002)(4326008)(66946007)(6506007)(44832011)(66476007)(53546011)(316002)(6916009)(9686003)(26005)(5660300002)(8936002)(33656002)(83380400001)(54906003)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: g4Pl7bqTwezxc6fWwQ0oMfqcUm4lXMy/9zISyKL+vquHFkQc0G+AeLh+4LoYSBg3vKC805Z/bOspmvFk8ycj7r+pcg2aWoBTukz3+XIo/x6sbCuNBSWKMz8ITWH4iqQsdjJXtfAFCK3Q3qLZ7KD31SQHf7c9VixlxxDrRvJS6Id8YV1HGbajF7PJKputvp4vuiFXKVQzlksXMVkEGWq3L2iDw0uO1xE8/AWa4UYJvc0f+TCsLtaOP6line3OprtbpHfSgL5qMmV/Bb+asaQRJP4mAb560wSoQReCkN5nn6cMw62P8Tta8Jfkyxj7NVhZiE7oB1z4OdvqKaaDXP2wQTmSaaN5E7RAXr5Bbb5XLqCdAEdTySRf9vxn2JCCnWQ4ZHtvx/xVyjrFPLKgNfbFKZWaRLe7FmHwk53/Gm0LUd7TGDi5JZYwr9/MMYA/JJeM07pFAz3NhjIR4xpug4tcDZM9kz4lgKvmNWknR8cWRD65dKMZemjtJjWbP/OJZFJUVZoP1rEkc2m8mME4iemCvV+5dceEuzFvcXsAjnMIh0O6vmSvWCLsbHGJJ2xgz7wa3z9yZYxbKWqJVW4GzOBhxRHgleN19H40njgQ3hyIMRqBP1u3iVkfWfBnsBdjpHtpAkJswYGdNvORnuVbhPvqpQ==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7fd94a2-c2b7-4733-a6cd-08d867b9c615
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2020 16:31:26.7980
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qKVHzar0Ri7MyfDemFmLW28VRbH7wi+k9pXHcSfyBnRb6qKJaKN2UMTOFqZMYSxBnwLtiB0Xs5h7Hn9QBGwrFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3764
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Andy,
 
-On Sat, Oct 3, 2020 at 8:22 AM Michael Walle <michael@walle.cc> wrote:
->
-> Hi Douglas,
->
-> > On my system the spi_nor_probe() took ~6 ms at bootup.  That's not a
-> > lot, but every little bit adds up to a slow bootup.  While we can get
-> > this out of the boot path by making it a module, there are times where
-> > it is convenient (or even required) for this to be builtin the kernel.
-> > Let's set that we prefer async probe so that we don't block other
-> > drivers from probing while we are probing.
+On Thu, Oct 01, 2020 at 06:36:06PM +0300, Andy Shevchenko wrote:
+> On Wed, Sep 30, 2020 at 7:06 PM Calvin Johnson
+> <calvin.johnson@oss.nxp.com> wrote:
 > >
-> > This is a tiny little change that is almost guaranteed to be safe for
-> > anything that is able to run as a module, which SPI_NOR is.
-> > Specifically modules are already probed asynchronously.  Also: since
-> > other things in the system may have enabled asynchronous probe the
-> > system may already be doing other things during our probe.
+> > Modify dpaa2_mac_connect() to support ACPI along with DT.
+> > Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
+> > DT or ACPI.
 > >
-> > There is a small possibility that some other driver that was a client
-> > of SPI_NOR didn't handle -EPROBE_DEFER and was relying on probe
-> > ordering and only worked when the SPI_NOR and the SPI bus were
-> > builtin.  In that case the other driver has a bug that's waiting to
-> > hit and the other driver should be fixed.
->
-> linux-next now triggers the following warning in kernel/kmod.c:136 on my
-> board. I've bisected this to this patch.
->
-> kmod.c:
->         /*
->          * We don't allow synchronous module loading from async.  Module
->          * init may invoke async_synchronize_full() which will end up
->          * waiting for this task which already is waiting for the module
->          * loading to complete, leading to a deadlock.
->          */
->         WARN_ON_ONCE(wait && current_is_async());
->
-> [    1.849801] ------------[ cut here ]------------
-> [    1.854271] mscc_felix 0000:00:00.5: device is disabled, skipping
-> [    1.858753] WARNING: CPU: 1 PID: 7 at kernel/kmod.c:136 __request_module+0x3a4/0x568
-> [    1.858755] Modules linked in:
-> [    1.865028] fsl_enetc 0000:00:00.0: Adding to iommu group 1
-> [    1.872640] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.9.0-rc6-00001-g03edda0e1eda #113
-> [    1.872642] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-> [    1.872647] Workqueue: events_unbound async_run_entry_fn
-> [    1.876013] spi-nor spi0.0: w25q32dw (4096 Kbytes)
-> [    1.881294] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
-> [    1.881297] pc : __request_module+0x3a4/0x568
-> [    1.881299] lr : __request_module+0x39c/0x568
-> [    1.881302] sp : ffff8000113a3920
-> [    1.925739] x29: ffff8000113a3920 x28: ffff800010c7b000
-> [    1.931068] x27: ffff00207ae05648 x26: ffff800010a41a88
-> [    1.936397] x25: 0000000000000000 x24: 0000000000000000
-> [    1.941727] x23: ffff800010c35140 x22: 0000000000000001
-> [    1.947055] x21: ffff800011149948 x20: ffff800010615bdc
-> [    1.952383] x19: 00000000ffffffff x18: 0000000000000000
-> [    1.957447] fsl_enetc 0000:00:00.0: enabling device (0400 -> 0402)
-> [    1.957711] x17: ffff800010a3e618 x16: ffff800010a3e5f8
-> [    1.964175] libphy: Freescale ENETC MDIO Bus: probed
-> [    1.969238] x15: ffffffffffffffff x14: ffff800011149948
-> [    1.969241] x13: ffff8000113a3918 x12: 0000000000000018
-> [    1.969245] x11: 0000000000000005 x10: 0101010101010101
-> [    1.975241] 10 fixed-partitions partitions found on MTD device 20c0000.spi
-> [    1.979550] x9 : ffff80001005f6a4 x8 : 0000000000000000
-> [    1.979553] x7 : 606f2c6364776865 x6 : 05041c090d431511
-> [    1.979556] x5 : 1115430d091c0405 x4 : 0000000000000000
-> [    1.979558] x3 : 6dac8d8d2dccae00 x2 : ffff800010c956e8
-> [    1.979561] x1 : ffff80001005fa58 x0 : 0000000000000001
-> [    1.979564] Call trace:
-> [    1.979571]  __request_module+0x3a4/0x568
-> [    1.984914] Creating 10 MTD partitions on "20c0000.spi":
-> [    1.990227]  parse_mtd_partitions+0x2ec/0x3c0
-> [    1.990232]  mtd_device_parse_register+0xdc/0x1c8
-> [    1.997133] 0x000000000000-0x000000010000 : "rcw"
-> [    2.002454]  spi_nor_probe+0x29c/0x2f0
-> [    2.002458]  spi_mem_probe+0x74/0xb0
-> [    2.017759] 0x000000010000-0x000000100000 : "failsafe bootloader"
-> [    2.018433]  spi_drv_probe+0x88/0xe8
-> [    2.018439]  really_probe+0xec/0x3c0
-> [    2.033744] 0x000000100000-0x000000140000 : "failsafe DP firmware"
-> [    2.035555]  driver_probe_device+0x60/0xc0
-> [    2.035559]  __device_attach_driver+0x8c/0xd0
-> [    2.040455] 0x000000140000-0x0000001e0000 : "failsafe trusted firmware"
-> [    2.044642]  bus_for_each_drv+0x84/0xd8
-> [    2.044645]  __device_attach_async_helper+0xc4/0xe8
-> [    2.044648]  async_run_entry_fn+0x4c/0x150
-> [    2.044653]  process_one_work+0x1f4/0x4b8
-> [    2.057751] 0x0000001e0000-0x000000200000 : "reserved"
-> [    2.062814]  worker_thread+0x50/0x480
-> [    2.062817]  kthread+0x160/0x168
-> [    2.062821]  ret_from_fork+0x10/0x34
-> [    2.073748] 0x000000200000-0x000000210000 : "configuration store"
-> [    2.076185] ---[ end trace 44224cc02e4e53d2 ]---
->
-> -michael
+> > Replace of_get_phy_mode with fwnode_get_phy_mode to get
+> > phy-mode for a dpmac_node.
+> >
+> > Use helper function phylink_fwnode_phy_connect() to find phy_dev and
+> > connect to mac->phylink.
+> 
+> ...
+> 
+> >  #include "dpaa2-eth.h"
+> >  #include "dpaa2-mac.h"
+> 
+> > +#include <linux/acpi.h>
+> 
+> Please, put generic headers first.
+> 
+> > +       struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> > +       struct fwnode_handle *dpmacs, *dpmac = NULL;
+> > +       unsigned long long adr;
+> > +       acpi_status status;
+> >         int err;
+> > +       u32 id;
+> >
+> > -       dpmacs = of_find_node_by_name(NULL, "dpmacs");
+> > -       if (!dpmacs)
+> > -               return NULL;
+> > +       if (is_of_node(dev->parent->fwnode)) {
+> > +               dpmacs = device_get_named_child_node(dev->parent, "dpmacs");
+> > +               if (!dpmacs)
+> > +                       return NULL;
+> > +
+> > +               while ((dpmac = fwnode_get_next_child_node(dpmacs, dpmac))) {
+> > +                       err = fwnode_property_read_u32(dpmac, "reg", &id);
+> > +                       if (err)
+> > +                               continue;
+> > +                       if (id == dpmac_id)
+> > +                               return dpmac;
+> > +               }
+> >
+> > +       } else if (is_acpi_node(dev->parent->fwnode)) {
+> > +               device_for_each_child_node(dev->parent, dpmac) {
+> > +                       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(dpmac),
+> > +                                                      "_ADR", NULL, &adr);
+> > +                       if (ACPI_FAILURE(status)) {
+> > +                               pr_debug("_ADR returned %d on %s\n",
+> > +                                        status, (char *)buffer.pointer);
+> > +                               continue;
+> > +                       } else {
+> > +                               id = (u32)adr;
+> > +                               if (id == dpmac_id)
+> > +                                       return dpmac;
+> > +                       }
+> > +               }
+> 
+> Can you rather implement generic one which will be
+> 
+> int fwnode_get_child_id(struct fwnode_handle *fwnode, u64 *id);
+> 
+> and put the logic of retrieving 'reg' or _ADR? Also, for the latter we
+> have a special macro
+> METHOD_NAME__ADR.
+> 
+> See [1] as well. Same idea I have shared already.
+> 
+> [1]: https://lore.kernel.org/linux-iio/20200824054347.3805-1-william.sung@advantech.com.tw/T/#m5f61921fa67a5b40522b7f7b17216e0d204647be
+> 
+> ...
+> 
+> > -       of_node_put(dpmac_node);
+> > +       if (is_of_node(dpmac_node))
+> > +               of_node_put(to_of_node(dpmac_node));
+> 
+> I'm not sure why you can't use fwnode_handle_put()?
+> 
+> > +       if (is_of_node(dpmac_node))
+> > +               of_node_put(to_of_node(dpmac_node));
+> 
+> Ditto.
 
-Thanks for your report!  My vote would be to revert my patch and then
-this would need to be resolved before it could be added back in.
-Without doing tons of research, maybe the right answer here is that
-mtd_device_parse_register() should be moved into a separate task so
-it's not blocking probe?  I probably won't try to tackle this
-immediately, but the eventual goal is that async is default, so I
-think this would need to be resolved before then.
-
--Doug
+Sure. I'll take care of these comments.
+Thanks
+Calvin
