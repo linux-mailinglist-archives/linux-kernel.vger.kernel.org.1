@@ -2,192 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DEF282554
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196D3282558
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 18:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbgJCQWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 12:22:08 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:26458 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgJCQWH (ORCPT
+        id S1725809AbgJCQ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 12:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgJCQ2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 12:22:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601742127; x=1633278127;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=bSJ5pW8Xo0q1O7vsir/uXxHmzq8pUP0MTm9cvt1lYQg=;
-  b=crpt2sGJ2B5Q+6XglNuvGmYYYTGUV3rg/EVclgVWMiuo+p2NWe+Mykgi
-   e6ZswJwZhb4bD9Yf7LoCQSKVYvy7P7s/hkPbbIu9mCgUz836YHLrZELxM
-   V5P7P102oL3svgLNGbH57n0JSfsbVnr8mUJw69XBjXYdJNg3746N3dj7f
-   l7C9b0xgDjZgvjn4yIQGzrkw4IsZNzsR5MIel6WIlXs+IpOwKoqtDHfzy
-   Us7iCC7fnd9WN32BO1eSwqzyyOQzy3xTIQ/DR/yp5Brg6R2kjNd+6e8vZ
-   5FCMuiqDP0b7sI1FtX3udA5WFUIPNmCivavdDlPPoYItiR3aktwRQ3NpJ
-   w==;
-IronPort-SDR: x758Rq0annDbmZ+aa1MJFDKioJnD8rDDjhDgMO3nDjphNui/woQTVlsAvxD/hf45rJf7lP5/S5
- rZ0xDJqlOmqgBVGHM1bnIBr1G5vGum37JuRER6gl/H8fuV5u5rxp2qf+nksrKJj3CFRS57h0zC
- cJ0Qbbu9ceK9lUtACjTPvuKP2fLkzFoo7Vys7PU9FP/XtGKuiWV7DCmdtqtiuKe2KX9F6bLqs7
- +TUyR95DL0NXOKX/WfiT0+SRAynshO5nu+AXa0dlGlAXHv8XTjElEkWwsJRoN9ffmMr9Omm8ih
- 9+M=
-X-IronPort-AV: E=Sophos;i="5.77,331,1596524400"; 
-   d="scan'208";a="89013701"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Oct 2020 09:22:06 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 3 Oct 2020 09:22:06 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Sat, 3 Oct 2020 09:21:45 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <wsa@kernel.org>, <rmk+kernel@armlinux.org.uk>,
-        <alpawi@amazon.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH] i2c: pxa: move to generic GPIO recovery
-Date:   Sat, 3 Oct 2020 19:21:41 +0300
-Message-ID: <20201003162141.925518-1-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 3 Oct 2020 12:28:11 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BDEC0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 09:28:11 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id d18so1216839uav.4
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 09:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TA0oD8jJw+LkQ5vHfPBXWjnJlwzWARU2bgJJP02kwPY=;
+        b=AhPsyEanmy1bCVOGOLncwlr8WBiN5rysP+bzPJ9hn2duKdpOKaUM+7fYOJyuMz8asS
+         JsO1XOC2ZoaaY6mxBS2jUKvi2PqZz5Oene4kc/Hg1xm/BHI+mdc2wURPC3sPweEC/fIg
+         vjpXckxvWxCFmy3+m0uRmtewBwKZyzgLYcNxM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TA0oD8jJw+LkQ5vHfPBXWjnJlwzWARU2bgJJP02kwPY=;
+        b=NnnqiVH5KTh6D62LR0IjfJwCLUDZexd6E69bkciIopqoKHdMd9y3LHEkWUPaiFwaT9
+         gUTRsFrwj7GNDfbPOoTHnaeOPP5F6cTU+RJ5JxqKaha+ub1wJweHK7aaCtpXJFak/AJP
+         M2WjTHaj5BGTOovQZZd+OSK4angz19S5ho+zk4YDcjWLE0Q4ohJk1JQeBmXGg/O2iHYY
+         gHKBw7n/n5brsdiEi4g6SP0mek7ihz4Fp0yD1+8ZUs0UuARkaE4vRELBsj7IOKvIRQOv
+         dIxB0hxMSZJ5D27zqYAjofJ1sxAPjOp+qMsNOwu3GJmYXzwJ6So/LyYLUrwHmYS3RNS5
+         tW3g==
+X-Gm-Message-State: AOAM530lmIYbFyM0YmtEmpfLofMY/zLdbfRy8tl35BVGOTAoixlDJAey
+        +0vxhw8shDU31NYoqhR7RYMOTqkmnENnXw==
+X-Google-Smtp-Source: ABdhPJy86ZvXmQOWZ4L0GpyUFWTza8Pqd71VXgFnpZ/NeKCmyA5jSj2QMsbhf22axvl/v4c7Bx4zzA==
+X-Received: by 2002:ab0:5a22:: with SMTP id l31mr3891342uad.32.1601742489300;
+        Sat, 03 Oct 2020 09:28:09 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id h14sm756371vsp.18.2020.10.03.09.28.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 09:28:08 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id 5so2032697vsu.5
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 09:28:08 -0700 (PDT)
+X-Received: by 2002:a05:6102:2f7:: with SMTP id j23mr1525181vsj.37.1601742487724;
+ Sat, 03 Oct 2020 09:28:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
+ <20201003150633.23416-1-michael@walle.cc>
+In-Reply-To: <20201003150633.23416-1-michael@walle.cc>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Sat, 3 Oct 2020 09:27:56 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VB-ML0=kmN-yAH7sD-sMiX9Cq1_9B9QwVL=Ed5ZrGnbg@mail.gmail.com>
+Message-ID: <CAD=FV=VB-ML0=kmN-yAH7sD-sMiX9Cq1_9B9QwVL=Ed5ZrGnbg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Prefer asynchronous probe
+To:     Michael Walle <michael@walle.cc>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        tudor.ambarus@microchip.com, vigneshr@ti.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with
-commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
-GPIO bus recovery is supported by the I2C core, so we can remove the
-driver implementation and use that one instead.
+Hi,
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
+On Sat, Oct 3, 2020 at 8:22 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Hi Douglas,
+>
+> > On my system the spi_nor_probe() took ~6 ms at bootup.  That's not a
+> > lot, but every little bit adds up to a slow bootup.  While we can get
+> > this out of the boot path by making it a module, there are times where
+> > it is convenient (or even required) for this to be builtin the kernel.
+> > Let's set that we prefer async probe so that we don't block other
+> > drivers from probing while we are probing.
+> >
+> > This is a tiny little change that is almost guaranteed to be safe for
+> > anything that is able to run as a module, which SPI_NOR is.
+> > Specifically modules are already probed asynchronously.  Also: since
+> > other things in the system may have enabled asynchronous probe the
+> > system may already be doing other things during our probe.
+> >
+> > There is a small possibility that some other driver that was a client
+> > of SPI_NOR didn't handle -EPROBE_DEFER and was relying on probe
+> > ordering and only worked when the SPI_NOR and the SPI bus were
+> > builtin.  In that case the other driver has a bug that's waiting to
+> > hit and the other driver should be fixed.
+>
+> linux-next now triggers the following warning in kernel/kmod.c:136 on my
+> board. I've bisected this to this patch.
+>
+> kmod.c:
+>         /*
+>          * We don't allow synchronous module loading from async.  Module
+>          * init may invoke async_synchronize_full() which will end up
+>          * waiting for this task which already is waiting for the module
+>          * loading to complete, leading to a deadlock.
+>          */
+>         WARN_ON_ONCE(wait && current_is_async());
+>
+> [    1.849801] ------------[ cut here ]------------
+> [    1.854271] mscc_felix 0000:00:00.5: device is disabled, skipping
+> [    1.858753] WARNING: CPU: 1 PID: 7 at kernel/kmod.c:136 __request_module+0x3a4/0x568
+> [    1.858755] Modules linked in:
+> [    1.865028] fsl_enetc 0000:00:00.0: Adding to iommu group 1
+> [    1.872640] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.9.0-rc6-00001-g03edda0e1eda #113
+> [    1.872642] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+> [    1.872647] Workqueue: events_unbound async_run_entry_fn
+> [    1.876013] spi-nor spi0.0: w25q32dw (4096 Kbytes)
+> [    1.881294] pstate: 00000005 (nzcv daif -PAN -UAO BTYPE=--)
+> [    1.881297] pc : __request_module+0x3a4/0x568
+> [    1.881299] lr : __request_module+0x39c/0x568
+> [    1.881302] sp : ffff8000113a3920
+> [    1.925739] x29: ffff8000113a3920 x28: ffff800010c7b000
+> [    1.931068] x27: ffff00207ae05648 x26: ffff800010a41a88
+> [    1.936397] x25: 0000000000000000 x24: 0000000000000000
+> [    1.941727] x23: ffff800010c35140 x22: 0000000000000001
+> [    1.947055] x21: ffff800011149948 x20: ffff800010615bdc
+> [    1.952383] x19: 00000000ffffffff x18: 0000000000000000
+> [    1.957447] fsl_enetc 0000:00:00.0: enabling device (0400 -> 0402)
+> [    1.957711] x17: ffff800010a3e618 x16: ffff800010a3e5f8
+> [    1.964175] libphy: Freescale ENETC MDIO Bus: probed
+> [    1.969238] x15: ffffffffffffffff x14: ffff800011149948
+> [    1.969241] x13: ffff8000113a3918 x12: 0000000000000018
+> [    1.969245] x11: 0000000000000005 x10: 0101010101010101
+> [    1.975241] 10 fixed-partitions partitions found on MTD device 20c0000.spi
+> [    1.979550] x9 : ffff80001005f6a4 x8 : 0000000000000000
+> [    1.979553] x7 : 606f2c6364776865 x6 : 05041c090d431511
+> [    1.979556] x5 : 1115430d091c0405 x4 : 0000000000000000
+> [    1.979558] x3 : 6dac8d8d2dccae00 x2 : ffff800010c956e8
+> [    1.979561] x1 : ffff80001005fa58 x0 : 0000000000000001
+> [    1.979564] Call trace:
+> [    1.979571]  __request_module+0x3a4/0x568
+> [    1.984914] Creating 10 MTD partitions on "20c0000.spi":
+> [    1.990227]  parse_mtd_partitions+0x2ec/0x3c0
+> [    1.990232]  mtd_device_parse_register+0xdc/0x1c8
+> [    1.997133] 0x000000000000-0x000000010000 : "rcw"
+> [    2.002454]  spi_nor_probe+0x29c/0x2f0
+> [    2.002458]  spi_mem_probe+0x74/0xb0
+> [    2.017759] 0x000000010000-0x000000100000 : "failsafe bootloader"
+> [    2.018433]  spi_drv_probe+0x88/0xe8
+> [    2.018439]  really_probe+0xec/0x3c0
+> [    2.033744] 0x000000100000-0x000000140000 : "failsafe DP firmware"
+> [    2.035555]  driver_probe_device+0x60/0xc0
+> [    2.035559]  __device_attach_driver+0x8c/0xd0
+> [    2.040455] 0x000000140000-0x0000001e0000 : "failsafe trusted firmware"
+> [    2.044642]  bus_for_each_drv+0x84/0xd8
+> [    2.044645]  __device_attach_async_helper+0xc4/0xe8
+> [    2.044648]  async_run_entry_fn+0x4c/0x150
+> [    2.044653]  process_one_work+0x1f4/0x4b8
+> [    2.057751] 0x0000001e0000-0x000000200000 : "reserved"
+> [    2.062814]  worker_thread+0x50/0x480
+> [    2.062817]  kthread+0x160/0x168
+> [    2.062821]  ret_from_fork+0x10/0x34
+> [    2.073748] 0x000000200000-0x000000210000 : "configuration store"
+> [    2.076185] ---[ end trace 44224cc02e4e53d2 ]---
+>
+> -michael
 
-This patch is not tested.
-The only different thing should be the fact that the pinctl state is
-now switched back to the default state after the bus is enabled.
+Thanks for your report!  My vote would be to revert my patch and then
+this would need to be resolved before it could be added back in.
+Without doing tons of research, maybe the right answer here is that
+mtd_device_parse_register() should be moved into a separate task so
+it's not blocking probe?  I probably won't try to tackle this
+immediately, but the eventual goal is that async is default, so I
+think this would need to be resolved before then.
 
- drivers/i2c/busses/i2c-pxa.c | 75 +++---------------------------------
- 1 file changed, 6 insertions(+), 69 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
-index 35ca2c02c9b9..dd357b6e6c61 100644
---- a/drivers/i2c/busses/i2c-pxa.c
-+++ b/drivers/i2c/busses/i2c-pxa.c
-@@ -264,9 +264,6 @@ struct pxa_i2c {
- 	u32			hs_mask;
- 
- 	struct i2c_bus_recovery_info recovery;
--	struct pinctrl		*pinctrl;
--	struct pinctrl_state	*pinctrl_default;
--	struct pinctrl_state	*pinctrl_recovery;
- };
- 
- #define _IBMR(i2c)	((i2c)->reg_ibmr)
-@@ -1305,8 +1302,6 @@ static void i2c_pxa_prepare_recovery(struct i2c_adapter *adap)
- 	 */
- 	gpiod_set_value(i2c->recovery.scl_gpiod, ibmr & IBMR_SCLS);
- 	gpiod_set_value(i2c->recovery.sda_gpiod, ibmr & IBMR_SDAS);
--
--	WARN_ON(pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery));
- }
- 
- static void i2c_pxa_unprepare_recovery(struct i2c_adapter *adap)
-@@ -1325,8 +1320,6 @@ static void i2c_pxa_unprepare_recovery(struct i2c_adapter *adap)
- 		i2c_pxa_do_reset(i2c);
- 	}
- 
--	WARN_ON(pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default));
--
- 	dev_dbg(&i2c->adap.dev, "recovery: IBMR 0x%08x ISR 0x%08x\n",
- 	        readl(_IBMR(i2c)), readl(_ISR(i2c)));
- 
-@@ -1347,76 +1340,20 @@ static int i2c_pxa_init_recovery(struct pxa_i2c *i2c)
- 	if (IS_ENABLED(CONFIG_I2C_PXA_SLAVE))
- 		return 0;
- 
--	i2c->pinctrl = devm_pinctrl_get(dev);
--	if (PTR_ERR(i2c->pinctrl) == -ENODEV)
--		i2c->pinctrl = NULL;
--	if (IS_ERR(i2c->pinctrl))
--		return PTR_ERR(i2c->pinctrl);
--
--	if (!i2c->pinctrl)
--		return 0;
--
--	i2c->pinctrl_default = pinctrl_lookup_state(i2c->pinctrl,
--						    PINCTRL_STATE_DEFAULT);
--	i2c->pinctrl_recovery = pinctrl_lookup_state(i2c->pinctrl, "recovery");
--
--	if (IS_ERR(i2c->pinctrl_default) || IS_ERR(i2c->pinctrl_recovery)) {
--		dev_info(dev, "missing pinmux recovery information: %ld %ld\n",
--			 PTR_ERR(i2c->pinctrl_default),
--			 PTR_ERR(i2c->pinctrl_recovery));
--		return 0;
--	}
--
--	/*
--	 * Claiming GPIOs can influence the pinmux state, and may glitch the
--	 * I2C bus. Do this carefully.
--	 */
--	bri->scl_gpiod = devm_gpiod_get(dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
--	if (bri->scl_gpiod == ERR_PTR(-EPROBE_DEFER))
--		return -EPROBE_DEFER;
--	if (IS_ERR(bri->scl_gpiod)) {
--		dev_info(dev, "missing scl gpio recovery information: %pe\n",
--			 bri->scl_gpiod);
--		return 0;
--	}
--
--	/*
--	 * We have SCL. Pull SCL low and wait a bit so that SDA glitches
--	 * have no effect.
--	 */
--	gpiod_direction_output(bri->scl_gpiod, 0);
--	udelay(10);
--	bri->sda_gpiod = devm_gpiod_get(dev, "sda", GPIOD_OUT_HIGH_OPEN_DRAIN);
--
--	/* Wait a bit in case of a SDA glitch, and then release SCL. */
--	udelay(10);
--	gpiod_direction_output(bri->scl_gpiod, 1);
--
--	if (bri->sda_gpiod == ERR_PTR(-EPROBE_DEFER))
--		return -EPROBE_DEFER;
--
--	if (IS_ERR(bri->sda_gpiod)) {
--		dev_info(dev, "missing sda gpio recovery information: %pe\n",
--			 bri->sda_gpiod);
-+	bri->pinctrl = devm_pinctrl_get(dev);
-+	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
-+		bri->pinctrl = NULL;
- 		return 0;
- 	}
-+	if (IS_ERR(bri->pinctrl))
-+		return PTR_ERR(bri->pinctrl);
- 
- 	bri->prepare_recovery = i2c_pxa_prepare_recovery;
- 	bri->unprepare_recovery = i2c_pxa_unprepare_recovery;
--	bri->recover_bus = i2c_generic_scl_recovery;
- 
- 	i2c->adap.bus_recovery_info = bri;
- 
--	/*
--	 * Claiming GPIOs can change the pinmux state, which confuses the
--	 * pinctrl since pinctrl's idea of the current setting is unaffected
--	 * by the pinmux change caused by claiming the GPIO. Work around that
--	 * by switching pinctrl to the GPIO state here. We do it this way to
--	 * avoid glitching the I2C bus.
--	 */
--	pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
--
--	return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
-+	return 0;
- }
- 
- static int i2c_pxa_probe(struct platform_device *dev)
--- 
-2.25.1
-
+-Doug
