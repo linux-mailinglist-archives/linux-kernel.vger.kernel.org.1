@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4228C28249B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824212824A9
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgJCOUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        id S1725998AbgJCOUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725873AbgJCOUH (ORCPT
+        with ESMTP id S1725897AbgJCOUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:20:07 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D70CC0613E8;
-        Sat,  3 Oct 2020 07:20:06 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k10so4853102wru.6;
-        Sat, 03 Oct 2020 07:20:06 -0700 (PDT)
+        Sat, 3 Oct 2020 10:20:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4F1C0613D0;
+        Sat,  3 Oct 2020 07:20:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so4854112wrt.3;
+        Sat, 03 Oct 2020 07:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=c3QS3j+CeqKrt27pTi8NL7yFtwOG0PZkLe82cU+0pxA=;
-        b=kMAqJeFUdJ0bC8iwfYBMz7Yvlg882gYnH+oOugICVuxhuJhRGCEC9We1CMO04vqn9W
-         cNFBbl5DDkx9EXhfpdJufMQVmwehk/QBSSyZ0mssQ/1hNNyiMVAwjvhXX86wV0tItZ2/
-         fBicXWVALqgSLDAboeHCE/nrQ55coP8oTIAigInk331ndEUzyhmui3QKK/2dSL8HJI66
-         TqolQqQUk1pTXmwqYM7ITtfaO/oGFj4aqTN5dNyJg4kwsa548z+hxHUsZ2MUpGNJ8Eg+
-         N8Y+KGddoq7qLfhQbkJdhOIqv44qz5VLVoHrAGn8xUWOa0faLMpK4RquykDRe4fL3w3L
-         yfhg==
+        bh=GG2/Dd/Pfj/stdMqywLnjL8coxrUAoJ9mpk4ojfM8Fo=;
+        b=La5vwbHbR1jnuvX12uTDXOVFTg8mLqrERM77iYNSjm1KNsRBosLxvWRu0yvxuJfMEJ
+         oTsZwReZD2qO+v6/quG0T2tQZmS6pdJWwBlnypjIAU3upGKteJHeCCCgvo7KKkKVSrqq
+         4/IUGA5cCxNkXiZ2ma58E5VilDg+IjTfRom4NzUYx0WVar9xknPKMDaGg4mbkYLsp1PZ
+         Q42NrBqaSxt/eGWeeA9ySF8Fk2+xGKCMmgx+L/ba3Du0jkHx4S3apzU3jDydVaKz4wd+
+         nJzuo/0DzG+s6gNa2txaGf4x/EJhSyCWAPhOTvEbd/A2L93VThZQQ5P0oki0G8F40xEr
+         9ktw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c3QS3j+CeqKrt27pTi8NL7yFtwOG0PZkLe82cU+0pxA=;
-        b=GE9gNe/WbD1Bo0or81dhwsyJuv/tbRIRw4OCjaEkrG/+TiKwppaPKPchhah59W85Tf
-         2MdQn7woqRF3cWQ1LViGSJBcwl1xJfhox7a3fJEJoUw06CsJAzOaWYaatnlEF23jNYLo
-         0H6K+IWdKGCvT2FUD2bn6Q5ODN6VJBosPtkv98BMXGa2p/xkxjMfzKarcSdfJ897cIQG
-         Yq2okpMkEzH+H/tlcdR6rBiR8iRmStOyoc5LRygJVLSNxAP8lDE8KPy0IeWpXsEhLPw4
-         i13A66kUuaKYC/WgJPPXl5q0/iwe3Xu5ymfobtIkg98juZgCVHUKjavNfXed5d0tYDdy
-         3smA==
-X-Gm-Message-State: AOAM530JQxlWbRRlngUREomFJnGj5ux1OQ7CSD5Ojs3EaWvCnhlDW5Cq
-        t581JVN897PYuPTy1ggXIhE=
-X-Google-Smtp-Source: ABdhPJwKkHNl8pWb6gTzIH1iTPyzjAW/z57oJrJ3Kbl5rA5SmPgDK5L4bHXq7zHEgvEvGOKi4oM19w==
-X-Received: by 2002:a5d:6547:: with SMTP id z7mr8402679wrv.322.1601734805100;
-        Sat, 03 Oct 2020 07:20:05 -0700 (PDT)
+        bh=GG2/Dd/Pfj/stdMqywLnjL8coxrUAoJ9mpk4ojfM8Fo=;
+        b=sUXi4Y0B1MAUUNfIaKIiJvsMfQvDnc8T4bTK8SMx3A9JOpzG/1FYqHDsYK8efdAhp1
+         o8mJAVxnbUKRjbbUt2uRrYaDHe0Z60CFV/bCINLP8HYdGuLPj7semS9W0tXjws9yPYGk
+         m0UIxE/8J4iw0zXwVQohSwXyYZTWSYb0MZhXXQAXFbyarDbIhQ0y4qTVslrZ65lMLcMB
+         B80/URLBa71EcN4PMKsaO8k1IdCoifkkBgftu9lKvenxQDixBQDwO3rgbEmFADLET17+
+         Meco9Ka1xOhtDeUL38dmCdWP7TtedBgPCGJ1CncunPwIfbyTC/rSBVtEANHZjmzY9kEp
+         XbmQ==
+X-Gm-Message-State: AOAM531taIbhHA/xKZQMFunixD8Zxo7JhSLmyBvfM7A+k4YrBQucW+qh
+        ZsKMmh0vQQ60TjlmBR5LNhWxU1eWU3CtPg==
+X-Google-Smtp-Source: ABdhPJxGRE4IDwwLwXLF61O5XwpP4zJXdg3TDS4HcNO71kQwZRKme1VQ72oK2Ri92ijto3Kb6RNZVg==
+X-Received: by 2002:adf:e407:: with SMTP id g7mr2338694wrm.349.1601734807424;
+        Sat, 03 Oct 2020 07:20:07 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.20.02
+        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 07:20:04 -0700 (PDT)
+        Sat, 03 Oct 2020 07:20:06 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v6 05/14] ASoc: sun4i-i2s: Add 20 and 24 bit support
-Date:   Sat,  3 Oct 2020 16:19:41 +0200
-Message-Id: <20201003141950.455829-6-peron.clem@gmail.com>
+Subject: [PATCH v6 06/14] ASoC: sun4i-i2s: Fix sun8i volatile regs
+Date:   Sat,  3 Oct 2020 16:19:42 +0200
+Message-Id: <20201003141950.455829-7-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201003141950.455829-1-peron.clem@gmail.com>
 References: <20201003141950.455829-1-peron.clem@gmail.com>
@@ -73,61 +73,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+The FIFO TX reg is volatile and sun8i i2s register
+mapping is different from sun4i.
 
-Extend the functionality of the driver to include support of 20 and
-24 bits per sample.
+Even if in this case it's doesn't create an issue,
+Avoid setting some regs that are undefined in sun8i.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Acked-by: Maxime Ripard <mripard@kernel.org>
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 73103673643a..ba7514849b73 100644
+index ba7514849b73..92671eb94db9 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -592,6 +592,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
-+	case 32:
-+		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
- 			params_physical_width(params));
-@@ -1073,6 +1076,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
- 	return 0;
+@@ -1154,12 +1154,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+ 
+ static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
+ {
+-	if (reg == SUN8I_I2S_INT_STA_REG)
++	switch (reg) {
++	case SUN4I_I2S_FIFO_CTRL_REG:
++	case SUN4I_I2S_FIFO_RX_REG:
++	case SUN4I_I2S_FIFO_STA_REG:
++	case SUN4I_I2S_RX_CNT_REG:
++	case SUN4I_I2S_TX_CNT_REG:
++	case SUN8I_I2S_FIFO_TX_REG:
++	case SUN8I_I2S_INT_STA_REG:
+ 		return true;
+-	if (reg == SUN8I_I2S_FIFO_TX_REG)
+-		return false;
+ 
+-	return sun4i_i2s_volatile_reg(dev, reg);
++	default:
++		return false;
++	}
  }
  
-+#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+			 SNDRV_PCM_FMTBIT_S20_LE | \
-+			 SNDRV_PCM_FMTBIT_S24_LE)
-+
- static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 	.probe = sun4i_i2s_dai_probe,
- 	.capture = {
-@@ -1080,14 +1087,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SUN4I_FORMATS,
- 	},
- 	.ops = &sun4i_i2s_dai_ops,
- 	.symmetric_rates = 1,
+ static const struct reg_default sun4i_i2s_reg_defaults[] = {
 -- 
 2.25.1
 
