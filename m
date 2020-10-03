@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84D52823AE
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7817C2823B0
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgJCKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 06:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJCKqb (ORCPT
+        id S1725791AbgJCKs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 06:48:27 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58812 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgJCKsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:46:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E914C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 03:46:31 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601721989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1VRUsWyO1yj5q36awhvuHbtHiEkWL23xYdk+RuvW+rM=;
-        b=EmxaGmQbCI8kX09kl/c5X9JCA/mrnzVhjjyb4KBrOA4Nnvdfdvk4jsXL9yUmbHDfMiUg5L
-        kS8T7E+ceEcw26DVixWTgyglozNdbEd8tZr7LbbLvqRBqGe7iutF4cv2JV0zAZjU7wzXOn
-        pu6WTpYYiqOY3a6ZXUb20DZW7cUOyObC/R1J2IJEk4cbD0bh/lKG2f2hKQbROGxD9onUcZ
-        mFSsVixbwjRlO9uNRz5ZkKedvYP8o53eHw+qijPIE+gffMcvAdsBJ8LDM8/H7h7YFsDOr2
-        MPo1K/LHIonl3AC6AlbRcrmtGUnXVYdZlwANSm/FUAMZp4OqNuoFs+99bMzsYA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601721989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1VRUsWyO1yj5q36awhvuHbtHiEkWL23xYdk+RuvW+rM=;
-        b=aJv0JHpQK7HSDXkIz12bPt/CuDtBwaNJ5c18xkpvE/zECtOF0+A77vWuB8CHHaSo8SS4bO
-        n4LpC9gE1YHQSVDg==
-To:     "Luck\, Tony" <tony.luck@intel.com>
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>
-Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid CPUs
-In-Reply-To: <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com> <87r1qgccku.fsf@nanos.tec.linutronix.de> <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
-Date:   Sat, 03 Oct 2020 12:46:29 +0200
-Message-ID: <87lfgnd1tm.fsf@nanos.tec.linutronix.de>
+        Sat, 3 Oct 2020 06:48:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 61CE829D0C7
+Received: by earth.universe (Postfix, from userid 1000)
+        id 433743C0C84; Sat,  3 Oct 2020 12:48:21 +0200 (CEST)
+Date:   Sat, 3 Oct 2020 12:48:21 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv1] power: supply: document current direction
+Message-ID: <20201003104821.oduzfpxbw23b4fcz@earth.universe>
+References: <20200827140248.37749-1-sebastian.reichel@collabora.com>
+ <20201002182303.51db1289@aktux>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tut7zgjl6z4grit4"
+Content-Disposition: inline
+In-Reply-To: <20201002182303.51db1289@aktux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02 2020 at 19:17, Tony Luck wrote:
 
-> On Sat, Oct 03, 2020 at 03:39:29AM +0200, Thomas Gleixner wrote:
->> On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
->> > Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
->> > part has CPUs with more than one type of micro-architecture. Thus, certain
->> > features may only be present in a specific CPU type.
->> >
->> > It is useful to know the type of CPUs present in a system. For instance,
->> > perf may need to handle CPUs differently depending on the type of micro-
->> > architecture. Decoding machine check error logs may need the additional
->> > micro-architecture type information, so include that in the log.
->> 
->> 'It is useful' as justification just makes me barf.
->
-> This isn't "hetero" ... all of the cores are architecturally the same.
+--tut7zgjl6z4grit4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The above clearly says:
+Hi,
 
->> > A hybrid part has CPUs with more than one type of micro-architecture.
+On Fri, Oct 02, 2020 at 06:23:03PM +0200, Andreas Kemnade wrote:
+> On Thu, 27 Aug 2020 16:02:48 +0200
+> Sebastian Reichel <sebastian.reichel@collabora.com> wrote:
+>=20
+> > Currently the sign for CURRENT_NOW and CURRENT_AVG is a bit
+> > of a mess. There are basically 3 different ways battery fuel
+> > gauges report the current:
+> >=20
+> > 1. uses negative values for discharging and positive values
+> >    for charging
+> > 2. uses positive values for discharging and negative values
+> >    for discharging (opposit of 1)
+> > 3. only uses positive values
+> >=20
+> > As a result userspace currently cannot use the sign at all in
+> > a generic way. Let's solve the issue by documenting a canonical
+> > way for reporting the data and ensure new drivers follow this
+> > way. Then existing drivers can be fixed on a case-by-case basis.
+> >=20
+> > The 'negative value =3D battery discharging' has been choosen,
+> > since there are only very few drivers doing it the other way
+> > around.
+> >=20
+> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > ---
+>=20
+> would be nice if this comes in, so that is it clearly specified.
 
-Can you folks talk to each other and chose non-ambigous wording in
-changelogs and cover letters?
+Ack, I'm a bit late picking up patches this merge window due to a
+vacation. This has been queued now.
 
-> If CPUID says that some feature is supported, then it will be supported
-> on all of the cores.
+-- Sebastian
 
-That's a different story.
+--tut7zgjl6z4grit4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> There might be some model specific performance counter events that only
-> apply to some cores. Or a machine check error code that is logged in the
-> model specific MSCOD field of IA32_MCi_STATUS. But any and all code can run
-> on any core.
+-----BEGIN PGP SIGNATURE-----
 
-Ok. The perf side should be doable, IIRC we already have something like
-that, but Peter should know better.
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl94Vu8ACgkQ2O7X88g7
++ppLfw//axQg30mpwaFeoG1ILvanxIQOc96J9leo41XLs8N2xNNYak4Nry9OS0ET
+G7P1wmo22Y9HdwbvzKV3t5sMKc3d2gswhd+CnjM8FbrbTd4iI6JQv4G38gRPcqPK
+HUA/NWmLRHakRb70AgsuJBMR6JIhSBNWt54CfjXk/GsrJ3hpwApgKGPRK2oQ2oHd
+VTXMOKzqhV3J47NY4d2Xn0jWPDY6Kjm5xuevOhAH6XNKyYZMScifQIItVBTOXnX/
+sh960fhph6Mh50KhztJQaqWEusCi99m7WPxyvdNwte2UEPLnMUG7d31b0hIo/k7k
+qYoy4soOD8FR3wIRRcbwS+SFhztaM//4jqN0YcIL9HQAyxWQsbEngVP67SVVwOEA
+UvS2vPunFwHrvWDR1eWMLNf/pX0s7ov5BZ7H7p+5JGqV9r81DHM86NxLUF5bz+p+
+ggzM6ZyAxGh0XnVki10J7VUIIFxMirwEZYO/7IMPI2DZmOuduQ/IyHErAlxjpBCQ
+K+AecAV4qTdXqSZ0qaV26bSN67+GDWk7MkQIlyStDI5x6l727MSk0TzRjH9dpYJ4
+uDdqmlFCyriNolOvdESnsf5B8Wa321RCLwXLA5OJ2NIXqWsoe4PAZasAqneicnvQ
+WUSiWhVxzGlOnahDfI8/a5lsT/vzbx8xStTLPGmV4jcMGnXuOW4=
+=vsSI
+-----END PGP SIGNATURE-----
 
-> Sure there will be some different power/performance tradeoffs on some
-> cores. But we already have that with some cores able to achieve higher
-> turbo frequencies than others.
-
-Right, that's not a problem.
-
-Thanks,
-
-        tglx
+--tut7zgjl6z4grit4--
