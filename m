@@ -2,162 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD0E282208
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 09:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA43282211
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 09:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgJCHej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 03:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        id S1725769AbgJCHsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 03:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgJCHei (ORCPT
+        with ESMTP id S1725730AbgJCHsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 03:34:38 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5853C0613E7
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 00:34:38 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id m17so3965924ioo.1
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 00:34:38 -0700 (PDT)
+        Sat, 3 Oct 2020 03:48:16 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D17AC0613D0;
+        Sat,  3 Oct 2020 00:48:16 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id e10so2500315pfj.1;
+        Sat, 03 Oct 2020 00:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A/hFuD0pWxvAf/6HKfG9LqHPnlCk2KB4TQo/QrnDyUw=;
-        b=TSSOyFW/OsE891vjDb7uTsAgAOjucA7X2yx49uUci+QgjTnsFLeKrFPpq0ohIxle46
-         oyrDjA0jZtSrhkp4pFV5Wcio2uO/B/9+FhfechaHG/ooSQfldB6CV29GjZE0QtaX4rwy
-         u6ogpq2v9R3nGD1Wqzy4jiuRkAvvRUlMAsuhc=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3wg7vDGDoSPn36ce9BVY8UU5tlfwOEjnljRYdmgCRis=;
+        b=UjnPBEiUGGr8HIuzf+xx5wbjWJiJoHTICvhtydHjaN0P/hauLfacKsRm1GGq+Lb1Oi
+         wYwJ+oFwuBC2okNDDbb5NYep42oUxx3Ctt3A4cR4IDP6tsoemb1fditGHaNKNr+D7Jw4
+         2tsxp6Wqrbp8PwGHVn8c2TaJqNCrmD/30D4vccJz+tLPRs1rLRg0bI5R0PsTrLn7wlnc
+         aB1scNVuunjWcCIvytiZU9XktiJa4kRHF+xnq83sYXVlcYdqqrmsyI8MLy8P8BYOKwQc
+         sbWrEBl3okOBlXGBHSAuFgm9eT3+0V2/CL2pQO0ouk5gIh2UwUS1XO05JGpVsgQU1HvT
+         ScxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A/hFuD0pWxvAf/6HKfG9LqHPnlCk2KB4TQo/QrnDyUw=;
-        b=T/rN5J7h2gtJnI01gRvQSPBBnAzZHalYdQ2sJIJefgwvGrPkDUISAtoq/WIOtBeWxw
-         qMJlf/QiMK/HmnQwJA+dAUkwkOz0qT6oHb3aN0/z8dK4iPJdozjN65n3P62qthZ+4jbd
-         3zvTv5Ae//o3/Dhk3b7thoDsRhJWSYEuynrPIhxXsmO0vcyPOZ62epmVEAaNecP4E3TR
-         dsD+BDHcxVNYEk7OdMfz6QqN7+L1pjwbPAd1kPr4yWI1z1NoCDFZ1SuMuU0iLFFg/9s3
-         zb6NtK01YmYDKyz8NyFV2Ae7mWwwX60mMaxJICSqg10W2BJTqM1rgrqeA2TEY9/GzKQe
-         9IZg==
-X-Gm-Message-State: AOAM5330OzQHHHMJEz5GIlLxsemA5H0zultvo4lbMBBlwfqveSrlYepu
-        x52O2KDrgdQae0E0DlScG7EHZjZv7kzo8RR6W2f2
-X-Google-Smtp-Source: ABdhPJzU47BomkLH2sgLaq0NqpKKKH1s8t8ZcNa8isBsZIYcpKdYr02MEDk1Z/exFcavbhjUVNek9sg3AM9Q6uxaIdA=
-X-Received: by 2002:a05:6638:2b3:: with SMTP id d19mr5543487jaq.141.1601710477948;
- Sat, 03 Oct 2020 00:34:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3wg7vDGDoSPn36ce9BVY8UU5tlfwOEjnljRYdmgCRis=;
+        b=VvZleWYKTw0jtkIWTcQ9S2gcEI3NEdgR0O2gxu7y+PA4HJsIvMLCBPv0UdEI5Yj7x3
+         jn3sFFbzFrKeh/LwG9KUvIpSmBoCBIHM/BSTn6E4q+JPcZyi78uhbSipKk6iWD0vTQgy
+         82z8D+QtQwLq3LelGQ/Kl3qhoyOQbXkmxtSBUl/OI9+D28uuUoUklzfcbQGKVANiTcMH
+         ygVfyVm44e5HMVPx4IZmSyi+r3QXTxvEhIWy+MND2qFB1sMEyGYjPG/+XviAMZOfkII1
+         oiFFBj7YgLLg+J+3fMaIky7pQONj2puKbxnfR3UeO5L09baQF41xovnmSUs3c0PlZQnD
+         9S6g==
+X-Gm-Message-State: AOAM530vlsGqTNp6ZaMqx0TAiLKMiF2RmbcHhZeNGJ3oTF+hjhY6rOqT
+        IhS/PJ9VnpkKdqZ/YByzMaI=
+X-Google-Smtp-Source: ABdhPJx0YTtqK1GDMY58LULCRH8vEEEzcMfd47EYZmabLdxW34wdLuuM+dirn/Hxhydgoju0yq/aKQ==
+X-Received: by 2002:a63:1d26:: with SMTP id d38mr5827413pgd.0.1601711295732;
+        Sat, 03 Oct 2020 00:48:15 -0700 (PDT)
+Received: from localhost.localdomain ([1.129.171.185])
+        by smtp.gmail.com with ESMTPSA id x20sm4594105pfr.190.2020.10.03.00.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 00:48:15 -0700 (PDT)
+Date:   Sat, 3 Oct 2020 17:48:09 +1000
+From:   "G. Branden Robinson" <g.branden.robinson@gmail.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        Paul Eggert <eggert@cs.ucla.edu>, linux-man@vger.kernel.org,
+        gcc-patches@gcc.gnu.org, libc-alpha@sourceware.org,
+        linux-kernel@vger.kernel.org, jwakely.gcc@gmail.com,
+        David.Laight@ACULAB.COM
+Subject: Re: [PATCH v4 1/2] system_data_types.7: Add 'void *'
+Message-ID: <20201003074807.swdpnwaq2rzigadl@localhost.localdomain>
+References: <20201002121645.23646-1-colomar.6.4.3@gmail.com>
+ <20201002151419.32053-2-colomar.6.4.3@gmail.com>
+ <3941e130-df05-778b-dc76-90cd58400192@cs.ucla.edu>
+ <d794a058-0506-7c3c-6f3e-518a788933af@gmail.com>
+ <ff1700df-d383-44e7-24b4-da10000f83fc@cs.ucla.edu>
+ <5b01a17e-5819-115f-7972-7f849d4356df@gmail.com>
+ <78368866-e848-d208-eef7-f3a93a797853@gmail.com>
 MIME-Version: 1.0
-References: <20201003063725.8698-1-xypron.glpk@gmx.de> <20201003063725.8698-2-xypron.glpk@gmx.de>
-In-Reply-To: <20201003063725.8698-2-xypron.glpk@gmx.de>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Sat, 3 Oct 2020 00:34:27 -0700
-Message-ID: <CAOnJCU+kit2dHihTad9UPYUmN0+EAdVN9m97ibs=Jnu44Qe_LQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] docs: admin-guide: fdt and initrd load in EFI stub
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rr7offwlvonk753t"
+Content-Disposition: inline
+In-Reply-To: <78368866-e848-d208-eef7-f3a93a797853@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 11:38 PM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
->
-> Describe how a device tree and an initial RAM disk can be passed to the EFI
-> Boot Stub.
->
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> ---
-> v2:
->         mention EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER (thx Atish)
-> ---
->  Documentation/admin-guide/efi-stub.rst | 35 ++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
->
-> diff --git a/Documentation/admin-guide/efi-stub.rst b/Documentation/admin-guide/efi-stub.rst
-> index 833edb0d0bc4..4965dec48af4 100644
-> --- a/Documentation/admin-guide/efi-stub.rst
-> +++ b/Documentation/admin-guide/efi-stub.rst
-> @@ -38,6 +38,34 @@ arch/arm/boot/zImage should be copied to the system partition, and it
->  may not need to be renamed. Similarly for arm64, arch/arm64/boot/Image
->  should be copied but not necessarily renamed.
->
-> +Passing an initial RAM disk to the EFI Boot Stub
-> +------------------------------------------------
-> +
-> +The following means sorted by decreasing priority can be used to provide an
-> +initial RAM disk to the EFI Boot Stub:
-> +
-> +* The firmware may provide a UEFI Load File 2 Protocol. The stub will try to
-> +  load the RAM disk by calling the LoadFile() service of the protocol using
-> +  a vendor device path with the vendor GUID
-> +  5568e427-0x68fc-4f3d-ac74-ca555231cc68.
-> +* Next the EFI stub will try to load the file indicated by the "initrd=" command
-> +  line parameter if CONFIG_EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER is enabled.
-> +* The prior boot stage may pass the location of the initial RAM disk via the
-> +  "linux,initrd-start" and "linux,initrd-end" properties of the "/chosen" node
-> +  of the device-tree.
-> +
 
-Should we also specify which method is enabled by default for which
-ARCH and recommended methods?
+--rr7offwlvonk753t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For example, It's recommended to use the LoadFile method for RISC-V
-and new ARM systems.
-Existing ARM ones will continue to use the initrd argument as that's
-the method enabled by default.
+At 2020-10-03T09:10:14+0200, Michael Kerrisk (man-pages) wrote:
+> On 10/2/20 10:27 PM, Alejandro Colomar wrote:
+> > On 2020-10-02 22:14, Paul Eggert wrote:
+> >  > On 10/2/20 11:38 AM, Alejandro Colomar wrote:
+> >  >
+> >  >> .I void *
+> >  >>
+> >  >> renders with a space in between.
+> >  >
+> >  > That's odd, as "man(7)" says "All of the arguments will be
+> >  > printed next to each other without intervening spaces". I'd play
+> >  > it safe and quote the arg anyway.
+> >=20
+> > Oops, that's a bug in man(7).  Don't worry about it.
+>=20
+> I'm not sure where that text in man(7) comes from. However, for
+> clarity I would normally also use quotes in this case.
+>=20
+> > Michael, you might want to have a look at it.
+> >=20
+> > I'll also add Branden, who might have something to say about it.
+>=20
+> Yes, maybe Branden can add some insight.
 
-> +The first two items are inhibited by the "noinitrd" command line parameter.
-> +
-> +Passing a device-tree to the EFI Boot Stub
-> +------------------------------------------
-> +
-> +A device-tree can be passed to the EFI Boot Stub in decreasing priority using
-> +
-> +* command line option dtb=
-> +* a UEFI configuration table with GUID b1b621d5-f19c-41a5-830b-d9152c69aae0.
-> +
+The "short" answer[1] is that I think Alex is correct; Paul's caution is
+unwarranted and arises from confusion with the font alternation macros
+of the man(7) macro package.  Examples of the latter are .BI and .BR.
+Those set their even-numbered arguments in one font and odd-numbered
+arguments in another, with no space between them.  That suppression of
+space is the reason they exist.  With the "single-font" macros like .B
+and .I[2], if you don't want space, don't type it.
 
-I am just curious. Is there any specific reason why efistub tries to
-load the dtb from the command line first
-and loads from the config table only if it fails from the first approach ?
+I could say more, including an annotated explanation of the groff and
+Version 7 Unix man(7) implementations of the I macro, if desired.  :)
 
-> +The command line option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y
-> +and secure boot is disabled.
->
->  Passing kernel parameters from the EFI shell
->  --------------------------------------------
-> @@ -46,6 +74,10 @@ Arguments to the kernel can be passed after bzImage.efi, e.g.::
->
->         fs0:> bzImage.efi console=ttyS0 root=/dev/sda4
->
-> +The "noinitrd" option
-> +---------------------
-> +
-> +The "noinitrd" option stops the EFI stub from loading an initial RAM disk.
->
->  The "initrd=" option
->  --------------------
-> @@ -98,3 +130,6 @@ CONFIGURATION TABLE.
->
->  "dtb=" is processed in the same manner as the "initrd=" option that is
->  described above.
-> +
-> +This option is only available if CONFIG_EFI_ARMSTUB_DTB_LOADER=y and secure
-> +boot is disabled.
-> --
-> 2.28.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
--- 
 Regards,
-Atish
+Branden
+
+[1] since as everyone knows, I struggle with brevity
+[2] I (and others) discourage use of .SM and .SB because they can't be
+distinguished from ordinary roman and bold type, respectively, on
+terminals.
+
+--rr7offwlvonk753t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEh3PWHWjjDgcrENwa0Z6cfXEmbc4FAl94LK8ACgkQ0Z6cfXEm
+bc5+nw//f6fop8j8PwUtzgiCmcOth3lifScGtsY1u+vE/Xb2ERSkOYCr2NHR4Mpt
+/tITo0C2SKUPleEc38EapkiVFWaqJ81nhkaluibs3HxobuvTbocrfMDirAqvykcI
+CE6fIdbkfSL770MCHpPcrcBCdjb2QJ7gdUzAUln8Gps+8G+pM3508Yt/YmgYU4uI
+d0D+IyT5fCPx1IBUebZVidX7It3DWPVuuu3dQ2zY9zyDbisazO9RVnbckcMYg2tH
+M/PvT59gKkBVgpTGsfmVX7oaEgV1UmvW7Oqwq+u/oY9HKMXgcw1BSp3k40DdJs0N
+zxcsJcH1njk0Zs20t2SNWNh4WrB8KMHo4ssfouOXBBT+GA+TJIjHKjm+PVUqC9XL
+Rvb5Gdn64xSsZjzKH8xm32VqJosw7QXpZ19urQBvamKpZoIknhr2E/2UeiN+MZ9f
+6aRnEU9m+iu6jfm62nmrX6bq+0E0oRTmOkypWy702NSgcKgG9OiISGwgxaCoOkRj
+Xr2BYst99HKU4W/Y0aReRzrwDZlkoZJi2tl/ibTxO4bJc/pg7Z/UbqcSw61AXH5j
+Y8cfODaE4FWRflNhK+0yQ0cECPSmqOR8TBULugUL3b5bFRBm2ciMMBIGe+sthD4o
+e0dISavwN4eiD5D26l/5/MmYm5RTETwYltFaYYDh0uAUiBdMVCw=
+=xxZ3
+-----END PGP SIGNATURE-----
+
+--rr7offwlvonk753t--
