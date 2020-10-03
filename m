@@ -2,73 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F408528208B
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE1728208F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 04:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbgJCCdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 22:33:07 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:52709 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCCdG (ORCPT
+        id S1725839AbgJCCgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 22:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCCgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 22:33:06 -0400
-Received: by mail-io1-f80.google.com with SMTP id m4so2249359iov.19
-        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 19:33:06 -0700 (PDT)
+        Fri, 2 Oct 2020 22:36:18 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F575C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 19:36:18 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id 19so4396653qtp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 19:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qMmWF6ubbtV92w199K+3UInTe5FQZJe6gLAHz49PtPo=;
+        b=hgtENHPHkh6zTxcjGbJwuue7p57lIA8ne9nOJ1+/l6pP7Zcl6TJqSOv28eF1SDxvGc
+         LOSH4nWYb2h9hSO6fPFS6g5rasN7bByaO6G6K/ZGw3XJQWFk5ZANfVTE37q0qHuqy/YM
+         vJH/YrYTz/ixZ+s7ijdactefIJ6fuHxMpSNTquWRLOrOEzKv2kL/+vhcVd2RV+i6FeiL
+         oECIQD3M8o7VPBRt3Gllq7t90m9lvSoIIGIedLW4bA344IvlxIiURTPfpMrl5CbO5o7t
+         X7ecq/K9tunmN2mighMN2KPioNXZuQ5mbE30U60dZVYQOI/rQ59lLQBuHkKd2v0gUi3O
+         CjpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=huAQ2XNxNk0+JP0caungu+yrhrmWz2OAWIUz9RtSlI4=;
-        b=NTJm2WAil3llRVOzR1vKbP51d2luHk8wMin2zHkLnA2FDPp/361auV1BwBhDuVBh4x
-         cLUoDbTgKFNyXv6Ex+Qov6MuNo645Dqm7yIDEAGPuWsKMOn/G6aLo67xOLGAi0aVzc+R
-         jJ1ECj4OtSF0tlAMP45w32nMy4IOSk9E3/RpU80RY71DvgQ7Eb75I9mRP020kli8K6N6
-         T6VeD3fus79JHK465erM5Z5n6wsEyT6skFphhW7ohl09Uw5UxnkCgx1bC/GzwuHTJGJI
-         k/+XiGlnJlT1S/94r9ptY6AFSjKZSevGKNsPZUfboApwFqf0lR8BYiwsntSGDWgGhZT0
-         fycw==
-X-Gm-Message-State: AOAM532f85st87i04RJ8Y9Tt8lGZvc+wnOoJm8jglGt9dm4ZyOUGa5Lk
-        XOr9OZ2D6WG2Pr6SjvvZuBZdVY7U8CgQw/5/gYrRX2rvwI00
-X-Google-Smtp-Source: ABdhPJzrlAP5imDWEPKyVGiLnhg0plpe3Pjdz0K8YSADKul87MvIbS1OPbnv7c/HZQJfp1argFlx9wEiLJU/BiWVN/BRncyNJ03n
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=qMmWF6ubbtV92w199K+3UInTe5FQZJe6gLAHz49PtPo=;
+        b=q9kks5aL54cSgt6t7XQAxRx5y7kZ+F1jSmQB/Uj/Y4Phs4H1XdBQIWmDgtp7QozAP4
+         D4BWLzY7zICkj+WBCuNPm1QUBN1T1MyooquspKjPhU9pC1jf4X3UHWxEa36GNhwZv7Qk
+         v11igBc1zGGiSTwEyG9r7++0wQ0FZK/HO9x8Iu7um6I12dJbOgEQvtRqgiqoAHbTR5hn
+         fb3bEH0wHZYgKYKeDwbkn+OhPw4sD885sz5HWnutSM3XxYII4TnZTSheGpuFNzIaglUk
+         0JECp3J89ZHHnlbnIBVf0dXH8K0x+HkJMaF4BMtW0AceEO5ePpbzrZPeuSPECrdpkw8U
+         nCvQ==
+X-Gm-Message-State: AOAM530wgMT4YOy8B5L07RfO2zncbKLsBXr6irq+/C1e65TPBgoLn5Rh
+        DZaoHlElViu/IraQblBMc9HvuDxn+kswuu3Yino=
+X-Google-Smtp-Source: ABdhPJx6XKrmxmn9ZlBAljfHP0pP+/JKsDRxA0KCLSnuk0rE/oe+59Oh8fyJKbF3HtrelUDipbsYeg==
+X-Received: by 2002:ac8:3fd4:: with SMTP id v20mr5104744qtk.210.1601692577156;
+        Fri, 02 Oct 2020 19:36:17 -0700 (PDT)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id e1sm2547440qtb.0.2020.10.02.19.36.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 19:36:16 -0700 (PDT)
+Subject: Re: Litmus test for question from Al Viro
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <17935342-e927-284c-9a2b-ca75dd2398ad@jonmasters.org>
+Date:   Fri, 2 Oct 2020 22:35:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:5d85:: with SMTP id w127mr4693509jaa.76.1601692385603;
- Fri, 02 Oct 2020 19:33:05 -0700 (PDT)
-Date:   Fri, 02 Oct 2020 19:33:05 -0700
-In-Reply-To: <000000000000ed022605b0b1efaa@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aef3fc05b0bb11ce@google.com>
-Subject: Re: WARNING in ieee80211_bss_info_change_notify
-From:   syzbot <syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, alexander.deucher@amd.com,
-        amd-gfx@lists.freedesktop.org, christian.koenig@amd.com,
-        davem@davemloft.net, dieter@nuetzel-hh.de,
-        dri-devel@lists.freedesktop.org, johannes@sipsolutions.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201001161529.GA251468@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On 10/1/20 12:15 PM, Alan Stern wrote:
+> On Wed, Sep 30, 2020 at 09:51:16PM -0700, Paul E. McKenney wrote:
+>> Hello!
+>>
+>> Al Viro posted the following query:
+>>
+>> ------------------------------------------------------------------------
+>>
+>> <viro> fun question regarding barriers, if you have time for that
+>> <viro>         V->A = V->B = 1;
+>> <viro>
+>> <viro> CPU1:
+>> <viro>         to_free = NULL
+>> <viro>         spin_lock(&LOCK)
+>> <viro>         if (!smp_load_acquire(&V->B))
+>> <viro>                 to_free = V
+>> <viro>         V->A = 0
+>> <viro>         spin_unlock(&LOCK)
+>> <viro>         kfree(to_free)
+>> <viro>
+>> <viro> CPU2:
+>> <viro>         to_free = V;
+>> <viro>         if (READ_ONCE(V->A)) {
+>> <viro>                 spin_lock(&LOCK)
+>> <viro>                 if (V->A)
+>> <viro>                         to_free = NULL
+>> <viro>                 smp_store_release(&V->B, 0);
+>> <viro>                 spin_unlock(&LOCK)
+>> <viro>         }
+>> <viro>         kfree(to_free);
+>> <viro> 1) is it guaranteed that V will be freed exactly once and that
+>> 	  no accesses to *V will happen after freeing it?
+>> <viro> 2) do we need smp_store_release() there?  I.e. will anything
+>> 	  break if it's replaced with plain V->B = 0?
+> 
+> Here are my answers to Al's questions:
+> 
+> 1) It is guaranteed that V will be freed exactly once.  It is not
+> guaranteed that no accesses to *V will occur after it is freed, because
+> the test contains a data race.  CPU1's plain "V->A = 0" write races with
+> CPU2's READ_ONCE; if the plain write were replaced with
+> "WRITE_ONCE(V->A, 0)" then the guarantee would hold.  Equally well,
+> CPU1's smp_load_acquire could be replaced with a plain read while the
+> plain write is replaced with smp_store_release.
+> 
+> 2) The smp_store_release in CPU2 is not needed.  Replacing it with a
+> plain V->B = 0 will not break anything.
 
-commit 135f971181d779c96ff3725c1a350a721785cc66
-Author: Alex Deucher <alexander.deucher@amd.com>
-Date:   Mon Nov 20 22:49:53 2017 +0000
+This was my interpretation also. I made the mistake of reading this 
+right before trying to go to bed the other night and ended up tweeting 
+at Paul that I'd regret it if he gave me scary dreams. Thought about it 
+and read your write up and it is still exactly how I see it.
 
-    drm/amdgpu: don't skip attributes when powerplay is enabled
+Jon.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=120f55bd900000
-start commit:   fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=110f55bd900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=160f55bd900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4e672827d2ffab1f
-dashboard link: https://syzkaller.appspot.com/bug?extid=09d1cd2f71e6dd3bfd2c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=161112eb900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124fc533900000
-
-Reported-by: syzbot+09d1cd2f71e6dd3bfd2c@syzkaller.appspotmail.com
-Fixes: 135f971181d7 ("drm/amdgpu: don't skip attributes when powerplay is enabled")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Computer Architect
