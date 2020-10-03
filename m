@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CA22822D9
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4547B2822DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 11:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgJCJET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 05:04:19 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:47844 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJCJER (ORCPT
+        id S1725805AbgJCJEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 05:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgJCJEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 05:04:17 -0400
-Received: by mail-il1-f207.google.com with SMTP id z14so129443ilb.14
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 02:04:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Pdh2OQI0GV4T/rFY4m1WLv9vo8jU4IolNrdujND4j1M=;
-        b=IeDNsHreJY6xZOXP15ZS5EPng/kfG2KGpkNcqmdujlj+rqZ9DQDkY7RunJ2+Ly/8pO
-         bpyLQJykxDUL6C0iCKT75EUVRfWYXlS1hmVCoCI6B2je1oUgdyKc0hjDDCjPy0VzfbfW
-         qgrY7CRb0MClCI8aiYBRtD2E8tfPzamEwRvcqfK9wbfeBJ6NVYhsZIjyuaCGp54+OQ38
-         Di8yiPNMqd1XyWE0GCtgHQpa/B4IoPAjQ765+LILWPCTUS0A92AbRWwb4r8PjqTCuZTy
-         QDYyZHNhNQNSNvHBw1+G470y1hsI6EskAXI5D9+yMLXGKSmA/LWp3z4J7aUIOBngdFdR
-         r4pQ==
-X-Gm-Message-State: AOAM532BOSqw5tz9by5REB3YT2JK8RTsKs/MBt8s3F3lS095in/+dhI2
-        ccgQxV/91wsInOGawmcK/eP2+TPsF0hmvdlqR/IayytMI2W9
-X-Google-Smtp-Source: ABdhPJxHM8i64jh0/L4j/WPJNg7f4Q1jCmcPbGIDMQxeZCrqOmDh1S6AoI6ohpz5y4zUeB22PDq9uv2rLIacJp8uODpPtDZFQ70u
+        Sat, 3 Oct 2020 05:04:41 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70ADC0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 02:04:40 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1db40057382cf78206bf6d.dip0.t-ipconnect.de [IPv6:2003:ec:2f1d:b400:5738:2cf7:8206:bf6d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 644D91EC03D5;
+        Sat,  3 Oct 2020 11:04:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601715878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=1SH4DawKGxEBnhO6tanT/ub1CjAtxRG7qf1OcF1y/8s=;
+        b=TZnuojTfjwJtSipbHXCP7Cioq6xQy829yAkzpGBy98Eq+9U3W3eVm6mBjPxpXOLW8E5bgM
+        MoFKEHWJUytrEEaXrHQHDU2liXgzzgUf9B6f1kW7zj8hXvKGl4JeIuhcTFubLtmb+EwsEy
+        ICBkToE8+7FygNovqqDFFbXiI+ExRUY=
+Date:   Sat, 3 Oct 2020 11:04:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        x86@kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid
+ CPUs
+Message-ID: <20201003090413.GB14035@zn.tnic>
+References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
+ <87r1qgccku.fsf@nanos.tec.linutronix.de>
+ <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:712c:: with SMTP id n44mr5831606jac.37.1601715854776;
- Sat, 03 Oct 2020 02:04:14 -0700 (PDT)
-Date:   Sat, 03 Oct 2020 02:04:14 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008e1e2205b0c08851@google.com>
-Subject: BUG: corrupted list in rxrpc_put_call
-From:   syzbot <syzbot+e6326c848f3404ffb673@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dhowells@redhat.com, kuba@kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201003021730.GA19361@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 02, 2020 at 07:17:30PM -0700, Luck, Tony wrote:
+> On Sat, Oct 03, 2020 at 03:39:29AM +0200, Thomas Gleixner wrote:
+> > On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
+> > > Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
+> > > part has CPUs with more than one type of micro-architecture. Thus, certain
+> > > features may only be present in a specific CPU type.
+> > >
+> > > It is useful to know the type of CPUs present in a system. For instance,
+> > > perf may need to handle CPUs differently depending on the type of micro-
+> > > architecture. Decoding machine check error logs may need the additional
+> > > micro-architecture type information, so include that in the log.
+> > 
+> > 'It is useful' as justification just makes me barf.
+> 
+> This isn't "hetero" ... all of the cores are architecturally the same.
 
-syzbot found the following issue on:
+But it says above "A hybrid part has CPUs with more than one type of
+micro-architecture."
 
-HEAD commit:    fcadab74 Merge tag 'drm-fixes-2020-10-01-1' of git://anong..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=143340a3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=e6326c848f3404ffb673
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+So which is it?
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> If CPUID says that some feature is supported, then it will be supported
+> on all of the cores.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e6326c848f3404ffb673@syzkaller.appspotmail.com
+Ok.
 
-tipc: TX() has been purged, node left!
-list_del corruption. next->prev should be ffff888000102c38, but was f000ff53f000e2c3
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:54!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 32547 Comm: kworker/u4:4 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-RIP: 0010:__list_del_entry_valid.cold+0x48/0x55 lib/list_debug.c:54
-Code: e8 51 9b 9b fd 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 00 b4 d8 88 e8 3d 9b 9b fd 0f 0b 48 89 ee 48 c7 c7 c0 b4 d8 88 e8 2c 9b 9b fd <0f> 0b cc cc cc cc cc cc cc cc cc cc cc 41 57 41 56 41 55 41 54 55
-RSP: 0018:ffffc900190ffa20 EFLAGS: 00010286
-RAX: 0000000000000054 RBX: ffff888000102c38 RCX: 0000000000000000
-RDX: ffff888097a50280 RSI: ffffffff815f59d5 RDI: fffff5200321ff36
-RBP: ffff888000102c38 R08: 0000000000000054 R09: ffff8880ae4318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88804e898010
-R13: ffff888000000000 R14: ffff888000102c40 R15: 00000000000002b2
-FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000334ea98 CR3: 000000009e10c000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_del_entry include/linux/list.h:132 [inline]
- list_del_init include/linux/list.h:204 [inline]
- rxrpc_put_call+0x17d/0x300 net/rxrpc/call_object.c:567
- rxrpc_discard_prealloc+0x7e2/0xb30 net/rxrpc/call_accept.c:242
- rxrpc_listen+0x11c/0x330 net/rxrpc/af_rxrpc.c:245
- afs_close_socket+0x95/0x320 fs/afs/rxrpc.c:110
- afs_net_exit+0x1c4/0x310 fs/afs/main.c:158
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace e8b698dc6d68e2dc ]---
-RIP: 0010:__list_del_entry_valid.cold+0x48/0x55 lib/list_debug.c:54
-Code: e8 51 9b 9b fd 0f 0b 4c 89 e2 48 89 ee 48 c7 c7 00 b4 d8 88 e8 3d 9b 9b fd 0f 0b 48 89 ee 48 c7 c7 c0 b4 d8 88 e8 2c 9b 9b fd <0f> 0b cc cc cc cc cc cc cc cc cc cc cc 41 57 41 56 41 55 41 54 55
-RSP: 0018:ffffc900190ffa20 EFLAGS: 00010286
-RAX: 0000000000000054 RBX: ffff888000102c38 RCX: 0000000000000000
-RDX: ffff888097a50280 RSI: ffffffff815f59d5 RDI: fffff5200321ff36
-RBP: ffff888000102c38 R08: 0000000000000054 R09: ffff8880ae4318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88804e898010
-R13: ffff888000000000 R14: ffff888000102c40 R15: 00000000000002b2
-FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000334ea98 CR3: 000000009e10c000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> There might be some model specific performance counter events that only
+> apply to some cores.
 
+That sounds like the perf counter scheduling code would have to pay
+attention to what is supported. I think we have some functionality for
+that due to some AMD parts but I'd prefer if Peter comments here.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Or a machine check error code that is logged in the model specific
+> MSCOD field of IA32_MCi_STATUS. But any and all code can run on any
+> core.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+As long as that is consumed only by userspace I guess that's ok. The
+moment someone starts to want to differentiate on what kind of CPU
+kernel code runs and acts accordingly, then it becomes ugly so we better
+hash it out upfront.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
