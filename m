@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2727C28249D
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4228C28249B
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgJCOUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
+        id S1725907AbgJCOUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgJCOUF (ORCPT
+        with ESMTP id S1725873AbgJCOUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:20:05 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50884C0613E7;
-        Sat,  3 Oct 2020 07:20:04 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w2so4363640wmi.1;
-        Sat, 03 Oct 2020 07:20:04 -0700 (PDT)
+        Sat, 3 Oct 2020 10:20:07 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D70CC0613E8;
+        Sat,  3 Oct 2020 07:20:06 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k10so4853102wru.6;
+        Sat, 03 Oct 2020 07:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tHoXwY3xX0WUoWW6tlHEdcpR0QKtJC6rTb0bCU8aKdk=;
-        b=KyaiihczA9bp1LX7qWgkSt46EAF95V23eGPw32uhFY/iinMTcRF/Av22wzxWL0p+9L
-         e0OlfkF8hpxyAxyF4n4FQGr9CXJdtTVz7ypzpU5+HzeBqLzrlURAirk3/ZfhJv1ZigpC
-         cDuCrUsIkCpqakqiCECklcve9bxPSpwgvlTYr5MNvCvmJIDackzTdPge/rNB3MgPkymL
-         4ePtRtVd85gJmRvYW48hEZS+AemsYUD8BFpXjAfc2sAFJPCT30sreR5Npi3AJqejnUTg
-         VDVZqKoP33ZQtw4C8EMaJmss0MWei2xNvnJq6/KEdbXZ7cmAljXqgFrdXus+UdH1865+
-         Gpmg==
+        bh=c3QS3j+CeqKrt27pTi8NL7yFtwOG0PZkLe82cU+0pxA=;
+        b=kMAqJeFUdJ0bC8iwfYBMz7Yvlg882gYnH+oOugICVuxhuJhRGCEC9We1CMO04vqn9W
+         cNFBbl5DDkx9EXhfpdJufMQVmwehk/QBSSyZ0mssQ/1hNNyiMVAwjvhXX86wV0tItZ2/
+         fBicXWVALqgSLDAboeHCE/nrQ55coP8oTIAigInk331ndEUzyhmui3QKK/2dSL8HJI66
+         TqolQqQUk1pTXmwqYM7ITtfaO/oGFj4aqTN5dNyJg4kwsa548z+hxHUsZ2MUpGNJ8Eg+
+         N8Y+KGddoq7qLfhQbkJdhOIqv44qz5VLVoHrAGn8xUWOa0faLMpK4RquykDRe4fL3w3L
+         yfhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tHoXwY3xX0WUoWW6tlHEdcpR0QKtJC6rTb0bCU8aKdk=;
-        b=hJOemvDHltY3nSFtQkmcEjPML2U+h35FBylU+6bJlTbguPcdE3u/JbUzjUhSe7ekQl
-         9jZsRU7O+H7eSDgEgldQWCFTFkToUeR7lRKkUSEjWisWp1oY9jETyPHtMSa62B1zktlS
-         btI8oCOL5jEbU8+G61Wl8pmh65qAbcjEbi4Danhlt3rOUsS3mI0GTFV3TitmtM8TOqHZ
-         6wLCD5+UA4iCJg9yz30RWUvNxGvVMq5ZtK1fjRPFcsCdqgq3iN+VH9B+HfMgshZu9RGE
-         8c8ZX3riC43jnPtomFz0Tm0ZdIwuWsaduUXTt5tJ2Xod8YBReU10H4neVtCNPVeS3iD9
-         rr6Q==
-X-Gm-Message-State: AOAM5336KHfzhTxwuM5rGbpfFa5xSCB5F/I6PFr3uKnNBBE6IVBQg1ze
-        B+wq5f8DdzXWRbZhJ1Lhy6E=
-X-Google-Smtp-Source: ABdhPJyGv3V6mW6itpDq4Ks0Rmgohv1x8u28ITJfQRFuJkpTdhbP4zQdzEdvyDK2xOwI8QF1cxIN+A==
-X-Received: by 2002:a7b:cc88:: with SMTP id p8mr8098841wma.150.1601734802909;
-        Sat, 03 Oct 2020 07:20:02 -0700 (PDT)
+        bh=c3QS3j+CeqKrt27pTi8NL7yFtwOG0PZkLe82cU+0pxA=;
+        b=GE9gNe/WbD1Bo0or81dhwsyJuv/tbRIRw4OCjaEkrG/+TiKwppaPKPchhah59W85Tf
+         2MdQn7woqRF3cWQ1LViGSJBcwl1xJfhox7a3fJEJoUw06CsJAzOaWYaatnlEF23jNYLo
+         0H6K+IWdKGCvT2FUD2bn6Q5ODN6VJBosPtkv98BMXGa2p/xkxjMfzKarcSdfJ897cIQG
+         Yq2okpMkEzH+H/tlcdR6rBiR8iRmStOyoc5LRygJVLSNxAP8lDE8KPy0IeWpXsEhLPw4
+         i13A66kUuaKYC/WgJPPXl5q0/iwe3Xu5ymfobtIkg98juZgCVHUKjavNfXed5d0tYDdy
+         3smA==
+X-Gm-Message-State: AOAM530JQxlWbRRlngUREomFJnGj5ux1OQ7CSD5Ojs3EaWvCnhlDW5Cq
+        t581JVN897PYuPTy1ggXIhE=
+X-Google-Smtp-Source: ABdhPJwKkHNl8pWb6gTzIH1iTPyzjAW/z57oJrJ3Kbl5rA5SmPgDK5L4bHXq7zHEgvEvGOKi4oM19w==
+X-Received: by 2002:a5d:6547:: with SMTP id z7mr8402679wrv.322.1601734805100;
+        Sat, 03 Oct 2020 07:20:05 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.20.00
+        by smtp.gmail.com with ESMTPSA id d18sm5417473wrm.10.2020.10.03.07.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 07:20:01 -0700 (PDT)
+        Sat, 03 Oct 2020 07:20:04 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v6 04/14] ASoC: sun4i-i2s: Set sign extend sample
-Date:   Sat,  3 Oct 2020 16:19:40 +0200
-Message-Id: <20201003141950.455829-5-peron.clem@gmail.com>
+Subject: [PATCH v6 05/14] ASoc: sun4i-i2s: Add 20 and 24 bit support
+Date:   Sat,  3 Oct 2020 16:19:41 +0200
+Message-Id: <20201003141950.455829-6-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201003141950.455829-1-peron.clem@gmail.com>
 References: <20201003141950.455829-1-peron.clem@gmail.com>
@@ -75,83 +75,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-On the newer SoCs such as the H3 and A64 this is set by default
-to transfer a 0 after each sample in each slot. However the A10
-and A20 SoCs that this driver was developed on had a default
-setting where it padded the audio gain with zeros.
-
-This isn't a problem while we have only support for 16bit audio
-but with larger sample resolution rates in the pipeline then SEXT
-bits should be cleared so that they also pad at the LSB. Without
-this the audio gets distorted.
-
-Set sign extend sample for all the sunxi generations even if they
-are not affected. This will keep consistency and avoid relying on
-default.
+Extend the functionality of the driver to include support of 20 and
+24 bits per sample.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/sunxi/sun4i-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 8e497fb3de09..73103673643a 100644
+index 73103673643a..ba7514849b73 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -48,6 +48,9 @@
- #define SUN4I_I2S_FMT0_FMT_I2S				(0 << 0)
- 
- #define SUN4I_I2S_FMT1_REG		0x08
-+#define SUN4I_I2S_FMT1_REG_SEXT_MASK		BIT(8)
-+#define SUN4I_I2S_FMT1_REG_SEXT(sext)			((sext) << 8)
-+
- #define SUN4I_I2S_FIFO_TX_REG		0x0c
- #define SUN4I_I2S_FIFO_RX_REG		0x10
- 
-@@ -105,6 +108,9 @@
- #define SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED		(1 << 7)
- #define SUN8I_I2S_FMT0_BCLK_POLARITY_NORMAL		(0 << 7)
- 
-+#define SUN8I_I2S_FMT1_REG_SEXT_MASK		GENMASK(5, 4)
-+#define SUN8I_I2S_FMT1_REG_SEXT(sext)			((sext) << 4)
-+
- #define SUN8I_I2S_INT_STA_REG		0x0c
- #define SUN8I_I2S_FIFO_TX_REG		0x20
- 
-@@ -678,6 +684,7 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 	}
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
- 			   SUN4I_I2S_CTRL_MODE_MASK, val);
-+
+@@ -592,6 +592,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 		break;
++	case 32:
++		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
+ 	default:
+ 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
+ 			params_physical_width(params));
+@@ -1073,6 +1076,10 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
  	return 0;
  }
  
-@@ -780,6 +787,11 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
- 			   val);
- 
-+	/* Set sign extension to pad out LSB with 0 */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
-+			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
-+			   SUN8I_I2S_FMT1_REG_SEXT(0));
++#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++			 SNDRV_PCM_FMTBIT_S20_LE | \
++			 SNDRV_PCM_FMTBIT_S24_LE)
 +
- 	return 0;
- }
- 
-@@ -882,6 +894,11 @@ static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
- 			   val);
- 
-+	/* Set sign extension to pad out LSB with 0 */
-+	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT1_REG,
-+			   SUN8I_I2S_FMT1_REG_SEXT_MASK,
-+			   SUN8I_I2S_FMT1_REG_SEXT(0));
-+
- 	return 0;
- }
- 
+ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 	.probe = sun4i_i2s_dai_probe,
+ 	.capture = {
+@@ -1080,14 +1087,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = SNDRV_PCM_RATE_8000_192000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SUN4I_FORMATS,
+ 	},
+ 	.ops = &sun4i_i2s_dai_ops,
+ 	.symmetric_rates = 1,
 -- 
 2.25.1
 
