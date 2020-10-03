@@ -2,104 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E6B282522
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADF1282525
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgJCPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 11:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        id S1725866AbgJCPhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 11:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgJCPf2 (ORCPT
+        with ESMTP id S1725787AbgJCPhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 11:35:28 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7061AC0613E7
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 08:35:28 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id q4so2949645pjh.5
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 08:35:28 -0700 (PDT)
+        Sat, 3 Oct 2020 11:37:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBACC0613E7
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 08:37:04 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id t16so5043004edw.7
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 08:37:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7QohD13O9ct1icuF7YVXwVcLpdW6HdikDCA8uoBPY/o=;
-        b=lc/vLk4vutWFpYoNTo3jQkosR2KdyX8jdmGJWOb2HiSuev1VY9E+NM4c1n2J4YEmvg
-         OxGIM7QFdUvCUE4jZ8ISxkfbRJykFvhMVW3vXaQORP2NhIDGawlaHLuoU0v35ClSlQZF
-         ekP7GIlJPg2FqavjDQov5aV9gx1oamGmILVSqoWdUPgfWs/EUlhwSx9oCDmGLt37I1At
-         0NvXnFOPgsuRyPU1lseJYrAtPKTmoGcOCwx7hXu4mu1CKzevmiRRUYqy6rXGTNJ5O+C2
-         4CuCCXlf45qUzS4OAKDytMUKBu70rv4t584LFtuE26xSChipQhAkty28SWaUqMWp2IsT
-         hSbw==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YfWb1QvzEtlqqy8XFPM/8NHEfrfMPuBTiUyjdxLWQ9k=;
+        b=rP9ULBumcayL5fLbfM7eDQhihWy4oQFHgmOqUZmefgWbg+dMrN4mKQic4U8MW1tOFI
+         5FnGIE1fhCtxI/653Hq8YkPmU1N6xjamvKilZXQWvmPgMCIFFSKxwIZiDCxOE1/Iohw7
+         rA6c2eRcpkWBCQ5RQnukhERLJ1b1GORLtu+Wr/5OyBHVCQTyzxCDthzWfhhM4GRIJW+v
+         BgUdcq5Jg01cAksJ+94dL4c2B1c37nDmRQsV/XNExGDiwR58ZHMG0GryaRon86LrK52n
+         Ij/LaLy0d/Bqav2wGbO9zW4wsgMfFreQdGu9W6HPvHdP7+3d3+NKAB3krdPc3++IDq+z
+         qXEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7QohD13O9ct1icuF7YVXwVcLpdW6HdikDCA8uoBPY/o=;
-        b=oQHsAtAwuDE81002OgwvbyZpeLNmuaTg5xSqw/1fOyOOa81Hi3F8eDitvo5V2d9tsG
-         shC/fGkVQVUthxVULiy6m6/e9tqVKJrELiYC1VCjJD48x5X7/tEuV5VECRl3zwhHs2jF
-         uoglC3uPevy//1cKqThwC0vDEw2Ca/JsbkRCbbKY/viKz/A9E2YKsPmRfy+nk6bgPk86
-         3ULTAYMQEHe5J3oFMEbMaC/3VPaqUOEOrG5gHefYH4HzJEaHrNCf5Odx80NHeGuk/xkA
-         D7LVP1iIIHqudGMuzW8w1MgJTy64xzfuXougMlUbnqWxlArwGFGtePJ3nThO5FFQDlyG
-         cj0g==
-X-Gm-Message-State: AOAM532GfqFLJcdSEKllZXQDsWeryrmoYxxJgXFIARWYqCTr9jOTZdzS
-        uaPS66s32V33bvWdKT6+cWfihgXdTNaGoDTU
-X-Google-Smtp-Source: ABdhPJy5+BSRDJcFwryYwHMzid8SaCmIVvpP1g6eVyK2X+IlpEDUh6sy272o6rTojAJngDGPJ/NEVg==
-X-Received: by 2002:a17:90b:1211:: with SMTP id gl17mr8384471pjb.87.1601739327734;
-        Sat, 03 Oct 2020 08:35:27 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id s20sm5894519pfu.112.2020.10.03.08.35.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 08:35:26 -0700 (PDT)
-Subject: Re: [PATCH 3/3] task_work: use TIF_TASKWORK if available
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org
-References: <20201001194208.1153522-1-axboe@kernel.dk>
- <20201001194208.1153522-4-axboe@kernel.dk>
- <20201002151415.GA29066@redhat.com> <871rigejb8.fsf@nanos.tec.linutronix.de>
- <20201002153849.GC29066@redhat.com> <87o8lkcc4z.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9c1a3233-b359-85ee-34cc-6b7bf6244a4d@kernel.dk>
-Date:   Sat, 3 Oct 2020 09:35:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=YfWb1QvzEtlqqy8XFPM/8NHEfrfMPuBTiUyjdxLWQ9k=;
+        b=LLWheaj6mEmyuCjNolpYHJuiChqJY/cJjj0haeDlQaccHwnXJKw9yLEwQpFUjLSvah
+         //tpYIw55OxmX4kGI+uztirwCE3HAdx0gIaU1ZoHu/go2eYfov5LJjr7UqeNZFQb0tXT
+         N0K6kmcajJ0LTDV6mOsscg5/fanCU4sjwax7+Fj35vjBHHIGbDNb5LFmyNczwAmsCQNn
+         qAOCq3Q1fSHl0ULG2ZorxDPsKjVE5Xv86OuHTtSAL3xI+DwVNhnY/orQ0uu8jJN5kBXy
+         RaVODVLEpfN9j+f3vWeiCjB6UoqDmkWPr3wYM7pyAxxrYKSB9XWQoPIwiTKcaU3DydbV
+         913Q==
+X-Gm-Message-State: AOAM533fLzSV99CV8WS/dluUBOytUhWFI2PnB0dPRD7Cwkru9t8A1Ffc
+        AusQ4g7XFRI9ncboYqS375d9Zw==
+X-Google-Smtp-Source: ABdhPJxS9bXlGuf066KNdZLv8CsXQJZOZ/763lB4JzQgPcVxHnY4Gf+ORu5OSGkeODk1wE8sUDsMqw==
+X-Received: by 2002:a05:6402:84f:: with SMTP id b15mr9060153edz.149.1601739423024;
+        Sat, 03 Oct 2020 08:37:03 -0700 (PDT)
+Received: from tsr-vdi-mbaerts.nix.tessares.net (static.23.216.130.94.clients.your-server.de. [94.130.216.23])
+        by smtp.gmail.com with ESMTPSA id w15sm3268679ejy.121.2020.10.03.08.37.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 08:37:02 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Geliang Tang <geliangtang@gmail.com>
+Cc:     Davide Caratti <dcaratti@redhat.com>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] mptcp: ADD_ADDRs with echo bit are smaller
+Date:   Sat,  3 Oct 2020 17:36:56 +0200
+Message-Id: <20201003153656.1224144-1-matthieu.baerts@tessares.net>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <87o8lkcc4z.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 7:49 PM, Thomas Gleixner wrote:
-> On Fri, Oct 02 2020 at 17:38, Oleg Nesterov wrote:
->> On 10/02, Thomas Gleixner wrote:
->>>
->>> I think it's fundamentaly wrong that we have several places and several
->>> flags which handle task_work_run() instead of having exactly one place
->>> and one flag.
->>
->> Damn yes, agreed.
-> 
-> Actually there are TWO places, but they don't interfere:
-> 
->    1) exit to user
-> 
->    2) enter guest
-> 
-> From the kernel POV they are pretty much the same as both are leaving
-> the kernel domain. But they have a few subtle different requirements
-> what has to be done or not.
-> 
-> So any change to that logic needs to fixup both places,
+The MPTCP ADD_ADDR suboption with echo-flag=1 has no HMAC, the size is
+smaller than the one initially sent without echo-flag=1. We then need to
+use the correct size everywhere when we need this echo bit.
 
-Right, I actually did spot that, but didn't include it in the initial
-series. I've split up the series a bit more, into functional bits.
-Should be easier to reason/discuss:
+Before this patch, the wrong size was reserved but the correct amount of
+bytes were written (and read): the remaining bytes contained garbage.
 
-https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
+Fixes: 6a6c05a8b016 ("mptcp: send out ADD_ADDR with echo flag")
+Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/95
+Reported-and-tested-by: Davide Caratti <dcaratti@redhat.com>
+Acked-by: Geliang Tang <geliangtang@gmail.com>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+---
+ net/mptcp/options.c  | 2 +-
+ net/mptcp/pm.c       | 5 +++--
+ net/mptcp/protocol.h | 7 ++++---
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/net/mptcp/options.c b/net/mptcp/options.c
+index 411fd4a41796..03794f89efeb 100644
+--- a/net/mptcp/options.c
++++ b/net/mptcp/options.c
+@@ -587,7 +587,7 @@ static bool mptcp_established_options_add_addr(struct sock *sk,
+ 	    !(mptcp_pm_add_addr_signal(msk, remaining, &saddr, &echo)))
+ 		return false;
+ 
+-	len = mptcp_add_addr_len(saddr.family);
++	len = mptcp_add_addr_len(saddr.family, echo);
+ 	if (remaining < len)
+ 		return false;
+ 
+diff --git a/net/mptcp/pm.c b/net/mptcp/pm.c
+index 7e81f53d1e5d..e19e1525ecbb 100644
+--- a/net/mptcp/pm.c
++++ b/net/mptcp/pm.c
+@@ -183,11 +183,12 @@ bool mptcp_pm_add_addr_signal(struct mptcp_sock *msk, unsigned int remaining,
+ 	if (!mptcp_pm_should_add_signal(msk))
+ 		goto out_unlock;
+ 
+-	if (remaining < mptcp_add_addr_len(msk->pm.local.family))
++	*echo = READ_ONCE(msk->pm.add_addr_echo);
++
++	if (remaining < mptcp_add_addr_len(msk->pm.local.family, *echo))
+ 		goto out_unlock;
+ 
+ 	*saddr = msk->pm.local;
+-	*echo = READ_ONCE(msk->pm.add_addr_echo);
+ 	WRITE_ONCE(msk->pm.add_addr_signal, false);
+ 	ret = true;
+ 
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index 7cfe52aeb2b8..6eef4db9ee5c 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -464,11 +464,12 @@ static inline bool mptcp_pm_should_rm_signal(struct mptcp_sock *msk)
+ 	return READ_ONCE(msk->pm.rm_addr_signal);
+ }
+ 
+-static inline unsigned int mptcp_add_addr_len(int family)
++static inline unsigned int mptcp_add_addr_len(int family, bool echo)
+ {
+ 	if (family == AF_INET)
+-		return TCPOLEN_MPTCP_ADD_ADDR;
+-	return TCPOLEN_MPTCP_ADD_ADDR6;
++		return echo ? TCPOLEN_MPTCP_ADD_ADDR_BASE
++			    : TCPOLEN_MPTCP_ADD_ADDR;
++	return echo ? TCPOLEN_MPTCP_ADD_ADDR6_BASE : TCPOLEN_MPTCP_ADD_ADDR6;
+ }
+ 
+ bool mptcp_pm_add_addr_signal(struct mptcp_sock *msk, unsigned int remaining,
 -- 
-Jens Axboe
+2.27.0
 
