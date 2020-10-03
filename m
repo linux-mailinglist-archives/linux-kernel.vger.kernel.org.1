@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558F828210C
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C124F282112
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgJCEI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgJCEI7 (ORCPT
+        id S1725765AbgJCEPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:15:42 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42004 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725446AbgJCEPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 00:08:59 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11D1C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 21:08:58 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOYqv-00Apfv-Aw; Sat, 03 Oct 2020 04:08:57 +0000
-Date:   Sat, 3 Oct 2020 05:08:57 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] compat: move strut compat_iovec out of #ifdef
- CONFIG_COMPAT
-Message-ID: <20201003040857.GL3421308@ZenIV.linux.org.uk>
-References: <20200928161414.642727-1-hch@lst.de>
- <20201002061512.GA9230@lst.de>
+        Sat, 3 Oct 2020 00:15:42 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0934FYYo020226
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 3 Oct 2020 00:15:35 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7E59942003C; Sat,  3 Oct 2020 00:15:34 -0400 (EDT)
+Date:   Sat, 3 Oct 2020 00:15:34 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] ext4: Fix error handling code in add_new_gdb
+Message-ID: <20201003041534.GC23474@mit.edu>
+References: <20200829025403.3139-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002061512.GA9230@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20200829025403.3139-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 08:15:12AM +0200, Christoph Hellwig wrote:
-> ping?  This is needed to unbreak the work.iov_iter branch that is in
-> for-next.
+On Sat, Aug 29, 2020 at 10:54:02AM +0800, Dinghao Liu wrote:
+> When ext4_journal_get_write_access() fails, we should
+> terminate the execution flow and release n_group_desc,
+> iloc.bh, dind and gdb_bh.
+> 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Folded into "iov_iter: refactor rw_copy_check_uvector and import_iovec"
-and force-pushed...
+Thanks, applied.
+
+				- Ted
