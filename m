@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A871928239F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498412823A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 12:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725798AbgJCKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 06:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgJCKbQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 06:31:16 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C189C0613D0;
-        Sat,  3 Oct 2020 03:31:13 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id d197so4218404iof.0;
-        Sat, 03 Oct 2020 03:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LEW03emwbM/iyY0SspYu2AMTNIV4tsnpwwvPwoBdGRc=;
-        b=OmnM9u+2AJV5cpYnayIjs0x0nrt2lSRUbj/RBhjWviYVFrh/HNGGFYbut+t3NX0s/e
-         cELmxnbXE2SO1qAR59PzLrUuMFTZXCM6u9S3KtkT6/Z4AVbKF/gt7lA8j9iLmKMB/KC7
-         fkXfpTtitU6kbGcDJTYZp5rn9I0x/MqgGRQS+vLQJBJWEgyt/EjdntghLwSLFFn/EaZT
-         PG3FYCsDErz/mnabOpHNoDfDbQSHccNRLyJI59wYPLSnUEN5aE4n2a1iQuK8cGFza1Jg
-         EY2cxZ1HLouhvbZ4KWlMW4RqqgVYr8vBDMgrhROgaRIUDRHFD9kMj63YS7E+blJc88Rw
-         xkxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LEW03emwbM/iyY0SspYu2AMTNIV4tsnpwwvPwoBdGRc=;
-        b=n/QObwIgUccOoPOryWLo/VWNaHb1jL42fOGNKjni9Z4toQVJK63WK1xZ3ImNRoOj+J
-         GA8UGg68gbkYZWaXnkupfMO3ozTE9oP1CF7TTZakxgc8TGUjW3/GeR/Rl2gzdh8/EPXl
-         zJXsPLHY73iEknRddswuN+tBobvBI4KJ+EKFaQw2/0xmK7jtrA+QO28O1F1m0YKjS99A
-         tuiTJZzmpUkyZxKM6n1B/XTTf/jG3ZsYVTkc8d4QoH2HlgYETzFsCkAugAPJEjdZl0FU
-         5C7F66pFkyuoQi6yDFF9GIOoPAc40EkKxWItYy/QlEJJBP06AxW16x0sG+q0ZhEi9/z5
-         lecg==
-X-Gm-Message-State: AOAM533KNusC9F6u90DYb/duBvhaxPxsBvHAPMCzg78h+ajrOD3Gvle1
-        2Sa09/ecrgY+xBUF9p2Tl9Z8+OJyzsJoZVkKCzQ=
-X-Google-Smtp-Source: ABdhPJypIXF2h3NouDp9HchvAsrQmwG8yx+yBR5+KrGawyAPeQ/FYfzZFaIJybHADJW857uITXwr4+iyNB9xI1B/F2U=
-X-Received: by 2002:a02:8791:: with SMTP id t17mr5648145jai.89.1601721072584;
- Sat, 03 Oct 2020 03:31:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923005709.147966-1-icenowy@aosc.io> <20200925151241.kfmytlff4grswtzh@gilmour.lan>
- <CAJiuCceT3NxwYSZKkCbMy5kfxgyN+iZcRwtHEorg6xGNnFhZzw@mail.gmail.com>
-In-Reply-To: <CAJiuCceT3NxwYSZKkCbMy5kfxgyN+iZcRwtHEorg6xGNnFhZzw@mail.gmail.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Sat, 3 Oct 2020 12:31:01 +0200
-Message-ID: <CAJiuCcdTTtyNjMnO7KqpuGC9gD9YtHtHd1oxxQPBB79kJ6okYA@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH 0/7] Pine64 PineCube support
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725790AbgJCKdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 06:33:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbgJCKdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 06:33:45 -0400
+Received: from localhost.localdomain (unknown [194.230.155.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB7A9206CA;
+        Sat,  3 Oct 2020 10:33:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601721225;
+        bh=rB8xq/M+Sn+CR3KktzhPZaVmPVTAjNlwif1rBofVHoo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bde6OJ8BraCW7MCYqx4P/fk5IIvKpzKYGCRfivd+5znh17C0indUxv3NDsohmJl6h
+         V0IP1Ktnm5r9ol/lxxiI5ngpnKS54M5j3E0LRdBYijD0W6cQ0ERZ00XLX64Ks1rwFS
+         G5eAuXckSOJwO8t74cJ/L1WcLE261O2553CX/Q4s=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dt-bindings: vendor-prefixes: favor "gateworks" over "gw"
+Date:   Sat,  3 Oct 2020 12:33:35 +0200
+Message-Id: <20201003103335.23404-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, 25 Sep 2020 at 17:12, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Sep 23, 2020 at 08:57:02AM +0800, Icenowy Zheng wrote:
-> > > Pine64 PineCube is an IP camera based on Allwinner S3 chip.
-> > >
-> > > This patchset tries to add support for it.
-> > >
-> > > In order to make sure the system do not hang when camera is brought up,
-> > > a fix to AXP209 driver is needed (sent individually), otherwise the
-> > > system will hang because it changes the voltage of LDO2 when LDO4
-> > > tweaking.
-> >
-> > Queued all the patches for 5.11
+There are two vendor prefixes for Gateworks: "gw" and "gateworks".
+Favor the longer one (more descriptive) and mark "gw" as deprecated so
+it will not be used in new bindings.
 
-I was on top of sunxi sunxi/for-next branch
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Maybe I'm missing some dt-bindings merged in another tree.
+---
 
-Sorry if it's a false warning.
+"gw" is still used in multiple DTS and bindings. I could fix them up as
+well, although maybe this is unnecessary churn and compatibility
+breakage.
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Regards,
-Clement
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index e7f0f7dec193..cd940d0680d4 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -431,6 +431,8 @@ patternProperties:
+     description: Gumstix, Inc.
+   "^gw,.*":
+     description: Gateworks Corporation
++                 use "gateworks" vendor prefix
++    deprecated: true
+   "^hannstar,.*":
+     description: HannStar Display Corporation
+   "^haoyu,.*":
+-- 
+2.17.1
 
-> >
-> > > Icenowy Zheng (7):
-> > >   ARM: dts: sun8i: V3/V3s/S3/S3L: add Ethernet support
-> > >   ARM: dts: sun8i: V3/V3s/S3/S3L: add pinctrl for UART2 RX/TX
-> > >   ARM: dts: sun8i: V3/V3s/S3/S3L: add CSI1 device node
-> > >   ARM: dts: sun8i: V3/V3s/S3/S3L: add pinctrl for 8-bit parallel CSI
-> > >   ARM: dts: sun8i: V3/V3s/S3/S3L: add pinctrl for I2C1 at PE bank
-> > >   dt-bindings: arm: sunxi: add Pine64 PineCube binding
-> > >   ARM: dts: sun8i: s3l: add support for Pine64 PineCube IP camera
-> >
-> > However, I guess for the next patches to the v3s DTSI we should just
-> > have a simpler prefix (like v3), it's really taking a lot of characters
-> > here :)
-> >
-> > Maxime
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> > To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20200925151241.kfmytlff4grswtzh%40gilmour.lan.
