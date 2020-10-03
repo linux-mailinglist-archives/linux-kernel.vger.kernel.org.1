@@ -2,137 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9DC28202F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386E7282032
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbgJCBjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
+        id S1725822AbgJCBj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJCBjb (ORCPT
+        with ESMTP id S1725536AbgJCBj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:39:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6D1C0613D0
-        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:31 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601689169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zvJj+HSH0Ju5woOAeCpiSB83Gd2F5p1g+Rg4kXFcYPg=;
-        b=GBQA8cl2QWn1FxCagUH1Y740o551bzNHs0yObGofP2BMx2yC5LvoT6UabyXDsQ6mvgWuCE
-        hTn9HVx5EqtNc37bYkvD5qz6Nz4nBAntv1iWBw/Im2GtEFa9giI72Aq1lgbsr6IvSfg9lU
-        Sdxz0wddpwQAOiNAgq3tkmS8JMJNMPlVcbTV4feOjHYWdeQM0febM7iP9kxv9vRNOMKppp
-        oSeN0XXeiXJXcqTXHNnaPPmqNNWnWcuxShwe8n8coYqZgeW5cIOtDTPullZLtIGUjjKdja
-        t4LUw0uv/C5xwwpFNKPkhbwZ6cmBgupe101FesFhZKRyTZuN8waWtb7NaPnJXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601689169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zvJj+HSH0Ju5woOAeCpiSB83Gd2F5p1g+Rg4kXFcYPg=;
-        b=L3U50frbBz1Ix3gIL2MrVdit5q77q3U0MWSN3vAoDFoglAiUwAnM8XCj0MycpodZJDVN+e
-        pGbgXqFGdh9RvDBw==
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        x86@kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Len Brown <len.brown@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: Re: [PATCH 0/3] x86: Add initial support to discover Intel hybrid CPUs
-In-Reply-To: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
-References: <20201002201931.2826-1-ricardo.neri-calderon@linux.intel.com>
-Date:   Sat, 03 Oct 2020 03:39:29 +0200
-Message-ID: <87r1qgccku.fsf@nanos.tec.linutronix.de>
+        Fri, 2 Oct 2020 21:39:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A0DC0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:56 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x16so2019425pgj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 18:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=1v3By7yU45Bmu0NIaU5QNcQkQvQCDjWaS3fjoaCGs4M=;
+        b=X1Admulul8xwuETLmzkYaZmPKEcjCvBdCxOIAo6xYnj0918QidtP5lCCoCFYAOj6yW
+         Yxn566dOAjKJ9iJx33fFAxQgsSab3CHx1Ry4FcwZCP8f6zhaqW0cCsNLqq+4wMPUKth9
+         7dehe7jAXb2/HI7wlIvMLJmEkivR6hNmQnSNI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=1v3By7yU45Bmu0NIaU5QNcQkQvQCDjWaS3fjoaCGs4M=;
+        b=VONc5MSFFb8cnJ1qUr8AnHIFIhHsAzQdTpbsRiiADRAy862tTHUr59n8Pn5j8fea/7
+         KokVSKhm2UTaugzwA/AvgmvMwsik+7besEbIVNqiV3n1UrJO7KRKzSK9hMGFvI1O0w5I
+         FQBUNdUTk73hppsdK/9sEgKmEWxtOL/93fMCHofsnl/dKMBpSzVaqA1JAbGU07BJnSTu
+         MOuiRi/2wcJL2E9oM80r38iR7QeBwqCgSOlW/NDVPg61zEr0FHM3zdnPGxPoEo/skLyl
+         fE5bb6BBcuRDTmiNd9NdUb7EzdauWm9EEWa+yPdD2cYZxak8hnySNKixYEAS1X3YWUOY
+         3iDg==
+X-Gm-Message-State: AOAM533Znjd6w6iVVojM4Kxygq6bUbxegLIEmjFqEh1cmPZgqVMPanRv
+        dRqpJbdGU5BdMaAuqwb5jg+M4Q==
+X-Google-Smtp-Source: ABdhPJx3l+GbWwg/wKPqoJepbGG2OIbKFcguASZ6y5wTgqJgOe9scEIGjuqf7fADhsHj623SrG1WJg==
+X-Received: by 2002:aa7:85d4:0:b029:142:4339:42ca with SMTP id z20-20020aa785d40000b0290142433942camr5460800pfn.5.1601689195794;
+        Fri, 02 Oct 2020 18:39:55 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id z28sm3648837pfq.81.2020.10.02.18.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 18:39:54 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201001084425.23117-4-rojay@codeaurora.org>
+References: <20201001084425.23117-1-rojay@codeaurora.org> <20201001084425.23117-4-rojay@codeaurora.org>
+Subject: Re: [PATCH V5 3/3] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        akashast@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, vkaur@codeaurora.org,
+        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Date:   Fri, 02 Oct 2020 18:39:53 -0700
+Message-ID: <160168919332.310579.15311671258384969025@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02 2020 at 13:19, Ricardo Neri wrote:
-> Add support to discover and enumerate CPUs in Intel hybrid parts. A hybrid
-> part has CPUs with more than one type of micro-architecture. Thus, certain
-> features may only be present in a specific CPU type.
->
-> It is useful to know the type of CPUs present in a system. For instance,
-> perf may need to handle CPUs differently depending on the type of micro-
-> architecture. Decoding machine check error logs may need the additional
-> micro-architecture type information, so include that in the log.
+Quoting Roja Rani Yarubandi (2020-10-01 01:44:25)
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-=
+qcom-geni.c
+> index aee2a1dd2c62..56d3fbfe7eb6 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -380,6 +380,36 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_=
+dev *gi2c,
+>         }
+>  }
+> =20
+> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+> +{
+> +       int ret;
+> +       u32 geni_status;
+> +       unsigned long flags;
+> +       struct i2c_msg *cur;
+> +
+> +       /* Resume device, runtime suspend can happen anytime during trans=
+fer */
+> +       ret =3D pm_runtime_get_sync(gi2c->se.dev);
+> +       if (ret < 0) {
+> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", re=
+t);
+> +               return;
+> +       }
+> +
+> +       spin_lock_irqsave(&gi2c->lock, flags);
 
-'It is useful' as justification just makes me barf.
+We grab the lock here.
 
-> A hybrid part can be identified by reading a new CPUID feature bit.
-> Likewise, CPUID contains information about the CPU type as well as a new
-> native model ID. Details can be found in the Intel manual (SDM, [1]).
->
-> This series adds support for Intel hybrid parts in two areas: a) adding
-> the hybrid feature bit as well as struct cpuinfo_x86; and b) decode machine
-> check errors on hybrid parts.
+> +       geni_status =3D readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+> +       if (!(geni_status & M_GENI_CMD_ACTIVE))
+> +               goto out;
+> +
+> +       cur =3D gi2c->cur;
+> +       geni_i2c_abort_xfer(gi2c);
 
-Bla, bla, bla.
+But it looks like this function takes the lock again? Did you test this
+with lockdep enabled? It should hang even without lockdep, so it seems
+like this path of code has not been tested.
 
-> A later submission will use the proposed functionality to expose the CPU
-> topology to user space.
-
-The only patch which is accepted for now is:
-
-    	if (boot_cpu_has(X86_FEATURE_HYBRID_CPU))
-        	panic("Unsuppported insanity\n");
-
-I'm not all all willing to take anything else unless you or someone else
-provides a reasonable explanation for the overall approach of supporting
-this mess inlcuding stable kernels.
-
-This has been clearly communicated years ago when the topic was
-discussed at one of the Intel Techday events. It's not my problem if
-Intel internal communication is disfunctional.
-
-Just to bring you up to speed:
-
-     1) The whole CPU enumeration of x86 sucks and is in no way prepared
-        to deal with heterogenous CPU faetures
-
-        Boris and I have discussed this with Intel and on LKML and there
-        are ideas how to clean up that mess.
-
-        This needs to be solved first before we even start to talk about
-        this CPU has FOO but the other does not.
-
-     2) Intel has been told clearly that a prerequisite of adding any of
-        this is a well defined programming model and a proper design of
-        dealing with it at the kernel level.
-
-        Since that discussion at one of the Intel events I haven't heard
-        and seen anything related to that.
-
-        If Intel thinks that some magic PDF and some Intel internal
-        'works for me' patches are solving it, then I just have to give
-        up because explaining the requirements again is just waste of
-        time.
-
-So I'm taking Patch 1/3 which defines the misfeature flag and then put
-something like the above on top which will prevent booting on any of
-these machines.
-
-These two patches are going to be marked for stable simply because any
-attempt to use any of these asymetric features is a recipe to
-disaster. And that disaster is going to happen simply because user space
-can use CPUID to figure out what a CPU supports. I'm not at all
-interested in the resulting wreckage reports.
-
-It's a sad state of affairs that the only outcome of a dicsussion which
-touched all of the above is a patch set which paves the path to hell.
-
-Not going to happen.
-
-Thanks,
-
-        tglx
-
-
+> +       if (cur->flags & I2C_M_RD)
+> +               geni_i2c_rx_msg_cleanup(gi2c, cur);
+> +       else
+> +               geni_i2c_tx_msg_cleanup(gi2c, cur);
+> +       spin_unlock_irqrestore(&gi2c->lock, flags);
+> +out:
+> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
+> +
+>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg=
+ *msg,
+>                                 u32 m_param)
+>  {
