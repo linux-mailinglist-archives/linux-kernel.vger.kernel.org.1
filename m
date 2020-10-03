@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EE5282714
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F19B282716
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 00:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgJCWP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 18:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgJCWP0 (ORCPT
+        id S1726058AbgJCWPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 18:15:46 -0400
+Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:57676 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725913AbgJCWPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 18:15:26 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65971C0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 15:15:25 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u3so3081418pjr.3
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 15:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M4HF7g1d0vJnY9H0PTtn0Kn7BvX/4ucoesfW9cqR2nI=;
-        b=OWf8W/akknscbZ1L7tVZ+uusj+60T2f01UlnU2oUNwWPNeMYGKKZi4Q2d4E5hp2yE6
-         pt/C3AXTYTXSExWDRuWyVECJ+9FQWKMH9/nGOwR5ihgMO25uiSzSHNSY9kEdnZnIOwzn
-         /6YwGs5AQxCoovuHztbtLl746j7yPZkl9UKAc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M4HF7g1d0vJnY9H0PTtn0Kn7BvX/4ucoesfW9cqR2nI=;
-        b=QMyXM4dsth7in7VOwqREFAO3coNu1F/kNzguUYZl2YSeBTohwfaFfgg0Kb7rXI2x2D
-         BnmLrEEKisihBP73Qrhmfmrb98fz92y0bnnHJpenb5qoLxk97AjmFyAJJRE3kq2St4gC
-         BOi++PF39DsikWmVDh1hZp8fg43l9Se0UqmPCyafu1UlaFoLnK2iMaYZRAm0CAR55tmo
-         EhEjkP8nF7cJT8C6Kg6indPhzoPaNfu51K4UBxOMIePb2Zx6ZMa6Blg8zhU52uHEstJ6
-         y7ydcRXeB9+hIhJQyB131v6agXnA1HQDeKdLK0HlgbEU0L/TnzYQBJuiDHRXbzyUWv39
-         Czgw==
-X-Gm-Message-State: AOAM533MKNVU7ts3ruqoKAMMXYRw94N03k3TPzWuE0iTce6DlgL9qDIn
-        bp7hvxx2nDB5tiJDSFC/mIqWkA==
-X-Google-Smtp-Source: ABdhPJwG0j09i2Gjxfhz8UVAnFLxcWNUBIxl37Tk2NE/qmJLANVy9sRbgzcmjQrTIeWcbGSsQa3Saw==
-X-Received: by 2002:a17:90b:198:: with SMTP id t24mr9413193pjs.107.1601763324908;
-        Sat, 03 Oct 2020 15:15:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gl17sm5577505pjb.49.2020.10.03.15.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 15:15:23 -0700 (PDT)
-Date:   Sat, 3 Oct 2020 15:15:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH V3 1/8] sysfs: Add sysfs_emit and sysfs_emit_at to format
- sysfs output
-Message-ID: <202010031513.60B9BF7557@keescook>
-References: <cover.1600285923.git.joe@perches.com>
- <884235202216d464d61ee975f7465332c86f76b2.1600285923.git.joe@perches.com>
- <20200930115740.GA1611809@kroah.com>
- <202009302108.18B05CA38@keescook>
- <9b57d0d4896a91debc330a70a20ae0f240afbd3b.camel@perches.com>
- <202010021527.DF20CE0@keescook>
- <20201003135551.GA3187@kroah.com>
+        Sat, 3 Oct 2020 18:15:45 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C13E718029120;
+        Sat,  3 Oct 2020 22:15:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2689:2693:2828:3138:3139:3140:3141:3142:3352:3622:3870:3871:3872:3876:4321:5007:7576:7875:10004:10400:10848:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13095:13255:13311:13357:13439:14181:14659:14721:21080:21433:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: land70_6101ae7271b0
+X-Filterd-Recvd-Size: 1838
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sat,  3 Oct 2020 22:15:43 +0000 (UTC)
+Message-ID: <ebafdf9c1647070c45124786e71a0112f86d10b8.camel@perches.com>
+Subject: Re: [PATCH][next] power: supply: fix spelling mistake "unprecise"
+ -> "imprecise"
+From:   Joe Perches <joe@perches.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 03 Oct 2020 15:15:42 -0700
+In-Reply-To: <20201003215102.5hl5lvidyki2xu7b@earth.universe>
+References: <20200902101656.57676-1-colin.king@canonical.com>
+         <20201003215102.5hl5lvidyki2xu7b@earth.universe>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201003135551.GA3187@kroah.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 03:55:51PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 02, 2020 at 03:30:30PM -0700, Kees Cook wrote:
-> > On Wed, Sep 30, 2020 at 09:22:19PM -0700, Joe Perches wrote:
-> > > On Wed, 2020-09-30 at 21:17 -0700, Kees Cook wrote:
-> > > > On Wed, Sep 30, 2020 at 01:57:40PM +0200, Greg Kroah-Hartman wrote:
-> > > > > Kees, and Rafael, I don't know if you saw this proposal from Joe for
-> > > > > sysfs files, questions below:
-> > > > 
-> > > > I'm a fan. I think the use of sprintf() in sysfs might have been one of
-> > > > my earliest complaints about unsafe code patterns in the kernel. ;)
-> > > []
-> > > > > > +	if (WARN(!buf || offset_in_page(buf),
-> > > > > > +		 "invalid sysfs_emit: buf:%p\n", buf))
-> > > 
-> > > The dump_stack() is also going to emit pointers
-> > > so I don't see how it does anything but help
-> > > show where the buffer was.  It is hashed...
+On Sat, 2020-10-03 at 23:51 +0200, Sebastian Reichel wrote:
+> On Wed, Sep 02, 2020 at 11:16:56AM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> > There is a spelling mistake in a dev_info message. Fix it.
 > > 
-> > dump_stack() is going to report symbols and register contents.
-> > 
-> > I was just pointing out that %p has no value here[1]. The interesting
-> > states are: "was it NULL?" "how offset was it?". Its actual content
-> > won't matter.
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
 > 
-> Ok, suggestions for a better error message are always welcome :)
+> Thanks, queued.
+[]
+> > diff --git a/drivers/power/supply/rn5t618_power.c b/drivers/power/supply/rn5t618_power.c
+[]
+> > @@ -487,7 +487,7 @@ static int rn5t618_power_probe(struct platform_device *pdev)
+> >  		 * gauge will get decalibrated.
+> >  		 */
+> >  		dev_info(&pdev->dev, "Fuel gauge not enabled, enabling now\n");
+> > -		dev_info(&pdev->dev, "Expect unprecise results\n");
+> > +		dev_info(&pdev->dev, "Expect imprecise results\n");
 
-... I did. :P
+Might as well be a single line too
 
-https://lore.kernel.org/lkml/202009302108.18B05CA38@keescook/
+		dev_info(&pdev->dev, "Fuel gauge not enabled, enabling now - expect imprecise results\n");
 
-But it doesn't need to hold up the series; %p is hashed, so I don't
-care. It's just that the mandate from Linus was to not add new %p uses.
-:P
 
--- 
-Kees Cook
