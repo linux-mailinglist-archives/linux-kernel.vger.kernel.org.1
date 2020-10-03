@@ -2,147 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DB62820E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51462820E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 06:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbgJCEBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 00:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S1725781AbgJCEDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 00:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgJCEBO (ORCPT
+        with ESMTP id S1725730AbgJCEDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 00:01:14 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA7FC0613D0;
-        Fri,  2 Oct 2020 21:01:13 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id w11so4320398lfn.2;
-        Fri, 02 Oct 2020 21:01:13 -0700 (PDT)
+        Sat, 3 Oct 2020 00:03:05 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C725C0613E2
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 21:03:04 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e10so2229920pfj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 21:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4/c66VVNK2fZAJCWWd//XYQrFuPfF7bPZFCOGDskZLA=;
-        b=mdIKAi0jBk+gBPjsj69jEhbol1cZXK/qBB9/Mkh/UZktLcstFuefS7b3t0MJMDQkas
-         e/1w4tha2Rra5oZOH36cSyeXPhb36mRvl0IyDsAQ2QAn0/uAnoWS3t21hIMCkzrNye90
-         hxaRmEStuKQ6mDDC5sVxD9cmibghrb3++rfCXJJQdFxrSAC+AFj6fExIO9Bqj7YANeJV
-         fwGMtYq2dQMsPe3kEsXvV+HCIl/LRZHsZG88kEkA7Bp+9IgzMRSBeczJ/ivsBvkchVKS
-         2ZvH8NGOElXhx1BbOA1qfenw7i4Zv8jvr5X5EGW7iZhZHopYjhsCwiZH/GtV9kIpS+u6
-         me+g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VjaWCVVHnQkyjgZIf+F5rOHFvTh6Oj2mEVi69T9s924=;
+        b=KHGKrTS4eMx4zeqKXxUrtf+ZXVtgB0NHPyLsRT96T1A3zG5TuEhdRy6U18S43zwA1f
+         2YIldOPesNlBtEKnk0r5EV+J3Air7t7eHaKcV7ydpMka5SLd6wmNy+RFto6yfOJnvnlr
+         9seQC5gFITUdsj0smCtMwOowEnt+3koJAv3ItloHOn6of1Y8HuK46F7Sf27EaVsMvwCM
+         d3SrxbrCwIldC+c8v3HsbLx9Ncs8DNbfVDrzq/Cogdha17EnpLBWUbW4FJyVsTKZsFdk
+         ZG1LubdsfYfXus12O2dAGXG2UVfZV8VN4fjMGlK++4U8fBGTqP6GiLcn3TSGOjir2b0L
+         EFPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4/c66VVNK2fZAJCWWd//XYQrFuPfF7bPZFCOGDskZLA=;
-        b=SQfQfqESU6djRDHNvUhXSQ7gK0gxL3Hpm9bS7axSsGXeSWalNcodG2KcQC9pd0BbYP
-         sgEeuDVtvSwEjYayaoivFjHGHCmsYZ7bERP3jbkSdx+gZytpifGvhnwwoYh+eDa3zAya
-         t5vTQiC7Y7Iug6a+n13e/jUGyLy1NkWYI5Wi5RQv4MuzoDlc8edKIyiugEA42wucSgUa
-         HgnsuWPA7hEQ09+BIUhuprB4YNogQzjEYzjmJcpr4mmiGXUGlzBoo4B5fOV+8WB6P1rr
-         sypWh2tQtdy818tXL3N92BeF9pmXQL1rXvAfttktEBuOrkEiCsuL/sqOkOFtwLaGSorO
-         qdbw==
-X-Gm-Message-State: AOAM530tAXMSAznldrFK/JoQbQvu/Ni0Uuh6EmRfAY+x4GyQRjO/vQZi
-        pj8k9+MB0smjMWZ9fhINiUC98r8qEx0=
-X-Google-Smtp-Source: ABdhPJwqYUrBcIBR4L7qcbGhQA2/6ZFGelci0lcwwEoGBABBT77tRyIGIvMAojDM1i9m1c8LkS/juA==
-X-Received: by 2002:a19:549:: with SMTP id 70mr2110110lff.529.1601697671885;
-        Fri, 02 Oct 2020 21:01:11 -0700 (PDT)
-Received: from [192.168.2.145] ([109.252.91.252])
-        by smtp.googlemail.com with ESMTPSA id y10sm996183lfj.271.2020.10.02.21.01.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Oct 2020 21:01:11 -0700 (PDT)
-Subject: Re: [PATCH v4 1/3] iommu/tegra-smmu: Use fwspec in
- tegra_smmu_(de)attach_dev
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
- <20201002060807.32138-2-nicoleotsuka@gmail.com>
- <de0b717f-af5c-8813-eb3e-07d19eff5271@gmail.com>
- <20201002194508.GD29706@Asurada-Nvidia>
- <e594374b-d701-fb6f-93f2-4efb9c5eb608@gmail.com>
- <20201002235329.GA11409@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f61174fc-f8e2-5f2b-23ff-36642be62e87@gmail.com>
-Date:   Sat, 3 Oct 2020 07:01:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=VjaWCVVHnQkyjgZIf+F5rOHFvTh6Oj2mEVi69T9s924=;
+        b=KCHUUeHnLXDd8fp9J6RmpM01hB6fVGgbph/rv41c2X1tdPFIi5nCv/CuCsi7lluF81
+         fRizFXzytMcEdt0ITpQ57D24juhoU+TkB51lSOksHrG0Ca7flpa3K2N6sZvbvbShPunx
+         nW5X/un1WtVvc/qCgKW/TsADahu7Dk4GnRyAlJGo1kVSO8h/YDWEZ5V04pc8NNzOIDlL
+         l4XtmwHeOylhnwy3YxNcZCaapy6JmhETVxM0bQAPqWnGAKXEFdEwn1oUIprgFIEDUcIH
+         LVxUSFrBi5qx42vQEW+0qWqKL81JHVtkYi+HDr/zVBIdOsj/teZoGJc8Ce6rT67RwW7c
+         VBxA==
+X-Gm-Message-State: AOAM531SzI/05bPS7CMxVFVPyP0rmDcEfyo2bMn/LompGhesiP3/z4M/
+        M6hwrj4nbgyDujqGa6OsUiOYtXqkZMIsNg==
+X-Google-Smtp-Source: ABdhPJzkXxcRaSO+6+4+aDg4abp67iwneyQm/cvxOIoR8lrdt1w8XWzkhH0Qz1V1uu9y3MYgXyu3PQ==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:39dd with SMTP id e9-20020aa782490000b0290142250139ddmr5982786pfn.44.1601697783389;
+        Fri, 02 Oct 2020 21:03:03 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id 190sm3909290pfy.22.2020.10.02.21.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Oct 2020 21:03:02 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v3 0/7] dma-buf: Performance improvements for system heap & a system-uncached implementation
+Date:   Sat,  3 Oct 2020 04:02:50 +0000
+Message-Id: <20201003040257.62768-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20201002235329.GA11409@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.10.2020 02:53, Nicolin Chen пишет:
-> On Fri, Oct 02, 2020 at 11:12:18PM +0300, Dmitry Osipenko wrote:
->> 02.10.2020 22:45, Nicolin Chen пишет:
->>> On Fri, Oct 02, 2020 at 05:41:50PM +0300, Dmitry Osipenko wrote:
->>>> 02.10.2020 09:08, Nicolin Chen пишет:
->>>>>  static int tegra_smmu_attach_dev(struct iommu_domain *domain,
->>>>>  				 struct device *dev)
->>>>>  {
->>>>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->>>>>  	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
->>>>>  	struct tegra_smmu_as *as = to_smmu_as(domain);
->>>>> -	struct device_node *np = dev->of_node;
->>>>> -	struct of_phandle_args args;
->>>>>  	unsigned int index = 0;
->>>>>  	int err = 0;
->>>>>  
->>>>> -	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
->>>>> -					   &args)) {
->>>>> -		unsigned int swgroup = args.args[0];
->>>>> -
->>>>> -		if (args.np != smmu->dev->of_node) {
->>>>> -			of_node_put(args.np);
->>>>> -			continue;
->>>>> -		}
->>>>> -
->>>>> -		of_node_put(args.np);
->>>>> +	if (!fwspec)
->>>>> +		return -ENOENT;
->>>>
->>>> Could the !fwspec ever be true here as well?
->>>
->>> There are multiple callers of this function. It's really not that
->>> straightforward to track every one of them. So I'd rather have it
->>> here as other iommu drivers do. We are human beings, so we could
->>> have missed something somewhere, especially callers are not from
->>> tegra-* drivers.
->>>
->>
->> I'm looking at the IOMMU core and it requires device to be in IOMMU
->> group before attach_dev() could be called.
->>
->> The group can't be assigned to device without the fwspec, see
->> tegra_smmu_device_group().
->>
->> Seems majority of IOMMU drivers are checking dev_iommu_priv_get() for
->> NULL in attach_dev(), some not checking anything, some check both and
->> only arm-smmu checks the fwspec.
-> 
-> As I said a couple of days ago, I don't like to assume that the
-> callers won't change. And this time, it's from open code. So I
-> don't want to assume that there won't be a change.
-> 
-> If you are confident that there is no need to add such a check,
-> please send patches to remove those checks in those drivers to
-> see if others would agree. I would be willing to remove it after
-> that. Otherwise, I'd like to keep this.
-> 
-> Thanks for the review.
-> 
+Hey All,
+  So this is another revision of my patch series to performance
+optimizations to the dma-buf system heap.
 
-I haven't tried to check every code path very thoroughly, expecting you
-to do it since you're making this patch. Maybe there is a real reason
-why majority of drivers do the checks and it would be good to know why.
-Although, it's not critical in this particular case and indeed the
-checks could be improved later on.
+Unfortunately, in working these up, I realized the heap-helpers
+infrastructure we tried to add to miniimize code duplication is
+not as generic as we intended. For some heaps it makes sense to
+deal with page lists, for other heaps it makes more sense to
+track things with sgtables.
 
-It looks to me that at least will be a bit better/cleaner to check the
-dev_iommu_priv_get() for NULL instead of fwspec because the private
-variable depends on the fwspec presence and there is a similar check in
-probe_device, hence checks will be more consistent.
+So this series reworks the system heap to use sgtables, and then
+consolidates the pagelist method from the heap-helpers into the
+CMA heap. After which the heap-helpers logic is removed (as it
+is unused). I'd still like to find a better way to avoid some of
+the logic duplication in implementing the entire dma_buf_ops
+handlers per heap. But unfortunately that code is tied somewhat
+to how the buffer's memory is tracked.
+
+After this, the series introduces an optimization that
+Ørjan Eide implemented for ION that avoids calling sync on
+attachments that don't have a mapping.
+
+Next, an optimization to use larger order pages for the system
+heap. This change brings us closer to the current performance
+of the ION code.
+
+Unfortunately, after submitting the last round, I realized that
+part of the reason the page-pooling patch I had included was
+providing such great performance numbers, was because the
+network page-pool implementation doesn't zero pages that it
+pulls from the cache. This is very inappropriate for buffers we
+pass to userland and was what gave it an unfair advantage
+(almost constant time performance) relative to ION's allocation
+performance numbers. I added some patches to zero the buffers
+manually similar to how ION does it, but I found this resulted
+in basically no performance improvement from the standard page
+allocator. Thus I've dropped that patch in this series for now.
+
+Unfortunately this means we still have a performance delta from
+the ION system heap as measured by my microbenchmark, and this
+delta comes from ION system_heap's use of deferred freeing of
+pages. So less work is done in the measured interval of the
+microbenchmark. I'll be looking at adding similar code
+eventually but I don't want to hold the rest of the patches up
+on this, as it is still a good improvement over the current
+code.
+
+I've updated the chart I shared earlier with current numbers
+(including with the unsubmitted net pagepool implementation, and
+with a different unsubmitted pagepool implementation borrowed
+from ION) here:
+https://docs.google.com/spreadsheets/d/1-1C8ZQpmkl_0DISkI6z4xelE08MlNAN7oEu34AnO4Ao/edit?usp=sharing
+
+I did add to this series a reworked version of my uncached
+system heap implementation I was submitting a few weeks back.
+Since it duplicated a lot of the now reworked system heap code,
+I realized it would be much simpler to add the functionality to
+the system_heap implementaiton itself.
+
+While not improving the core allocation performance, the
+uncached heap allocations do result in *much* improved
+performance on HiKey960 as it avoids a lot of flushing and
+invalidating buffers that the cpu doesn't touch often.
+
+Feedback on these would be great!
+
+thanks
+-john
+
+
+New in v3:
+* Dropped page-pool patches as after correcting the code to
+  zero buffers, they provided no net performance gain.
+* Added system-uncached implementation ontop of reworked
+  system-heap.
+* Use the new sgtable mapping functions, in the system and cma
+  code  as Suggested-by: Daniel Mentz <danielmentz@google.com>
+* Cleanup: Use page_size() rather then open-coding it
+
+
+
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+
+John Stultz (7):
+  dma-buf: system_heap: Rework system heap to use sgtables instead of
+    pagelists
+  dma-buf: heaps: Move heap-helper logic into the cma_heap
+    implementation
+  dma-buf: heaps: Remove heap-helpers code
+  dma-buf: heaps: Skip sync if not mapped
+  dma-buf: system_heap: Allocate higher order pages if available
+  dma-buf: dma-heap: Keep track of the heap device struct
+  dma-buf: system_heap: Add a system-uncached heap re-using the system
+    heap
+
+ drivers/dma-buf/dma-heap.c           |  33 +-
+ drivers/dma-buf/heaps/Makefile       |   1 -
+ drivers/dma-buf/heaps/cma_heap.c     | 327 +++++++++++++++---
+ drivers/dma-buf/heaps/heap-helpers.c | 271 ---------------
+ drivers/dma-buf/heaps/heap-helpers.h |  53 ---
+ drivers/dma-buf/heaps/system_heap.c  | 480 ++++++++++++++++++++++++---
+ include/linux/dma-heap.h             |   9 +
+ 7 files changed, 741 insertions(+), 433 deletions(-)
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
+
+-- 
+2.17.1
 
