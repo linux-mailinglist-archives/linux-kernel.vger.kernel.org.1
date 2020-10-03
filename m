@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C24282477
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01EE282479
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 16:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725818AbgJCOMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 10:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
+        id S1725819AbgJCOOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 10:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgJCOMn (ORCPT
+        with ESMTP id S1725781AbgJCOOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 10:12:43 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7645CC0613D0
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 07:12:43 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id n16so3818039ilm.8
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 07:12:43 -0700 (PDT)
+        Sat, 3 Oct 2020 10:14:38 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2807CC0613D0;
+        Sat,  3 Oct 2020 07:14:36 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id l13so491370ljg.10;
+        Sat, 03 Oct 2020 07:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=rRjmJekzjKc3btxXuiToGnd/SN56eSyUxlYhyqaToks=;
-        b=Ps+v0a6qUzMBLTUTMTO4R81KiessN+UsZV4Eg922eur+CEYpl2j2ETzvhi8ikBWsuq
-         eGdEi1Q87EglLEy3AOfMNPzF/cAMbZ8RQi0EN4WE0g6fOgMS5yRLce1kk+boRP9qsMl6
-         meByY5l+scbPQT/EcydqDx15fCTLJ+R4/lHsUCruUniVkiOIPsZruXkYUBEfwRMpgVLH
-         ScfAP+XDD8coUZ5w/DiCFDU4H/mHZfVYap2hMB6emcvCXjXP1KBQoMI4ZwKvRZfII1Ej
-         zBWCwmxFtAuqHYGvNpBX8dT4mpab5S1WahKnTKKqVl7O44uRxrnOvwqfI2FDmZQwXrEn
-         CRTw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Tst9irh6GksvKPw8ga3l4/uVVfdGZqpV7pFfQRzp6+Q=;
+        b=HK/+xpsbVETdOQjnTAAmtpWFdXmvr8V2jLEQ0Lo39HgkGbLBTh4Q2SqjFF/QxchbkL
+         OLx/PGygV73+elkbNW5MAoSqHjMsP24RY4hSMaUnO1l7PTAE1W3ar3ZSApzU3DBKOzk2
+         CWEJINOe5JSmjCBo4QWCOoB1wgaqWWiJAPjf8hCfzk6DPBX4fSQiRniTjYsI3vemtQPN
+         p+tbvA7bSCYTYYAeZ3HrC51PEKEe1zsISoWQItHVA1ShX4mbdkDeOUch7yTrXGFQdM/d
+         EZXweyqd85+KU8EWWe6X3KTof7iNaRINTxngzxF3/MrF/d2eVYksE641DT2QaU/tLz/Y
+         iX7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=rRjmJekzjKc3btxXuiToGnd/SN56eSyUxlYhyqaToks=;
-        b=YYumxxWuJLqBh3CsvdVsLbc2kPJhpwigVv9Vgerw3DiXl30JNnLxxkBGBXHh64zRzU
-         PcnF9ORkeevceWLiRyc3RB5UeNhxH0VSnKIZ6dITKOIoc7RcuCdo+FtA/NjOdVSn+yIW
-         5TiWGXq3boWtkKJDis0QDoNozMsoQqUbQiUPUU+HFqpFr4rvmnuD6oPpVuZXK16yQvJ5
-         Qt5Ujni/OPUq0c+DSUjPyhh3eNKLaZTp1LG9yB40xKGtMztVDEOJ83xk24quWBCCdvR3
-         ZZaTzsddmtNqESaaB5iEbvXUCuALEs1TihxuynJHGRcemVkU61dbcwED+Dl6R7/jL0nz
-         n6sg==
-X-Gm-Message-State: AOAM532ijkrQsTdzQSyummwcL2HuCuFjPtP2SFtQF7t0faADsSJ6UFzU
-        RJ353o7bqu0SFlFNPG9VEO9x26N5dfYvze+i2p0=
-X-Google-Smtp-Source: ABdhPJx+805pEzeIU3i8xJ9mIwpnLQlZvhP8wFbnTUIh9vJytRnqtOG4yGqskjrcsBIgsTE4E5xMFZnfut4/zkX/iXk=
-X-Received: by 2002:a05:6e02:44d:: with SMTP id a13mr3949516ils.273.1601734362724;
- Sat, 03 Oct 2020 07:12:42 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Tst9irh6GksvKPw8ga3l4/uVVfdGZqpV7pFfQRzp6+Q=;
+        b=M4pnnYDTX7xS7rF7xqqIzP6zlH5K/lKYE84hD+4ECNnx8bjDmLesNg0MYc7XolPmCX
+         SKMCnjsaXM6BUzeqGT8d/tnL+9Ca8JzuyUSScReTlBADrR3c+Ckr67HL1I5G5A1L9CAy
+         wmrAQiXXKU33nQy1xiqHJWZ9TXvvgoe7CvFEqNGVF5e6IGJoG0cpl2SGtBEjMJqP9WPP
+         7qNlxGnl5CmKj0ufbz1ecb9+NL8Xfys7Kui+7O6ewX9v8uU8alAicWRrOrm9ai3siazx
+         Dnbj3cdHoFAyLma7wHY3LvOwAu81rRDWyf568xiqS7EUhZykniTqoBq1FJcG3GuMfZ56
+         Vm4w==
+X-Gm-Message-State: AOAM530flU0gR7jcglh8FuSSM7jp9Rt3L9ypnniw+eL5Q6+kS+t+5dW4
+        MrqSWyOICBiwbGhkQOeMNvL0wcghpEY=
+X-Google-Smtp-Source: ABdhPJwQeKuHbETMb2aLQTvU1IDeyzqnysdODtX4b9+61V2w1lWG8caqy/R/zMrMjJgZ6/VsW8wPkA==
+X-Received: by 2002:a05:651c:1073:: with SMTP id y19mr2080980ljm.57.1601734474241;
+        Sat, 03 Oct 2020 07:14:34 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-91-252.nat.spd-mgts.ru. [109.252.91.252])
+        by smtp.googlemail.com with ESMTPSA id o15sm1530649lfo.188.2020.10.03.07.14.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 07:14:33 -0700 (PDT)
+Subject: Re: [PATCH v5 1/3] iommu/tegra-smmu: Use fwspec in
+ tegra_smmu_(de)attach_dev
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20201003065947.18671-1-nicoleotsuka@gmail.com>
+ <20201003065947.18671-2-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <620c9f83-94e8-10c1-67f7-77e57929f46e@gmail.com>
+Date:   Sat, 3 Oct 2020 17:14:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Sender: navnath.sssonly1@gmail.com
-Received: by 2002:a02:2729:0:0:0:0:0 with HTTP; Sat, 3 Oct 2020 07:12:42 -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Sat, 3 Oct 2020 15:12:42 +0100
-X-Google-Sender-Auth: 8BmlemYD9o22bvegBkLA06nOYH0
-Message-ID: <CAM5MUpW=Cv8aixFiGOMOCBAtC+iY=96Maq1n6az6zgL5ozn9jw@mail.gmail.com>
-Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201003065947.18671-2-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sch=C3=B6nen Tag,
+03.10.2020 09:59, Nicolin Chen пишет:
+> In tegra_smmu_(de)attach_dev() functions, we poll DTB for each
+> client's iommus property to get swgroup ID in order to prepare
+> "as" and enable smmu. Actually tegra_smmu_configure() prepared
+> an fwspec for each client, and added to the fwspec all swgroup
+> IDs of client DT node in DTB.
+> 
+> So this patch uses fwspec in tegra_smmu_(de)attach_dev() so as
+> to replace the redundant DT polling code.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
 
-Ich bin Mr.Ahmed Muzashah, Account Manager einer Investmentbank hier
-in Burkina Faso. In meinem Unternehmen wird seit langem ein
-Kontoprojekt von einem Kunden unserer Bank er=C3=B6ffnet. Ich habe die
-M=C3=B6glichkeit, den verbleibenden Fonds (15,8 Millionen US-Dollar) zu
-=C3=BCbertragen. F=C3=BCnfzehn Millionen Achthunderttausend US-Dollar.
+I'm still not highly impressed by seeing the !fwspec check in this
+patch. But I'm not a maintainer of the SMMU driver, hence will leave it
+up to Thierry and Joerg to decide whether this is good or needs to be
+improved.
 
-Ich m=C3=B6chte diese Mittel investieren und diese Vereinbarung bei unserer
-Bank einreichen. Diese wird im Rahmen einer legitimen Vereinbarung
-ausgef=C3=BChrt, die uns vor Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt. Wir =
-teilen den
-Fonds zu 40% f=C3=BCr Sie, zu 50% f=C3=BCr mich und zu 10%, um eine Basis f=
-=C3=BCr
-arme Kinder in Ihrem Land zu schaffen. Wenn Sie wirklich an meinem
-Vorschlag interessiert sind, erhalten Sie weitere Informationen zur
-=C3=9Cberweisung.
+Otherwise this patch is good to me, thanks. I tested it on Nexus 7,
+which is Tegra30.
 
-Dein,
-Mr.Ahmed Muzashah.
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
