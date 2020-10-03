@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1EA282667
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC7628266F
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 21:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgJCTnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 15:43:21 -0400
-Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:57876 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725831AbgJCTnU (ORCPT
+        id S1725906AbgJCToe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 15:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbgJCTod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 15:43:20 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 91E911DED;
-        Sat,  3 Oct 2020 19:43:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4362:4470:4605:5007:6248:6742:6743:7576:7875:7974:9010:9040:9545:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13161:13229:13436:13439:14659:14721:21080:21325:21433:21451:21627:21819:30034:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: loss06_3d0c09b271af
-X-Filterd-Recvd-Size: 4162
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  3 Oct 2020 19:43:15 +0000 (UTC)
-Message-ID: <9ab43333596f08abbbbbf1fa8cdf1ded4b65af2a.camel@perches.com>
-Subject: Re: [PATCH 00/18] use semicolons rather than commas to separate
- statements
-From:   Joe Perches <joe@perches.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     Mark Brown <broonie@kernel.org>, tools@linux.kernel.org,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-crypto@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-acpi@vger.kernel.org, David Lechner <david@lechnology.com>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors@vger.kernel.org, drbd-dev@lists.linbit.com,
-        openipmi-developer@lists.sourceforge.net,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-ide@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sat, 3 Oct 2020 15:44:33 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4D9C0613D0;
+        Sat,  3 Oct 2020 12:44:32 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id 19so5871841qtp.1;
+        Sat, 03 Oct 2020 12:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5hUezzo8hUcmZG6E5UAfmoNw5nxRF6WFHj3rv30U5Bs=;
+        b=m5S4x6BEp6u4XqhhSv3TOKpm/N6FoVFmOp0DC9/on/dANweIR9vks8AfuVCksRKcML
+         buxRVCIdXZpEY++Yaoqy3QlyaXL1q66yI0CQqjvZZvP4nO0lB5mCnVDN05fIqTKrrt2Y
+         NcAZGNP8ebkMQPLJhu5GtXuHazwFtL7U2UQP/z+o9Liskwx+7ft6qOaA1auC2z8N0gs7
+         7EHlVW9ufeWlLtYeGTq3WIZTKHsewfK7fZ++sa63Gq7inKnECsKKa4msY+iSPmj0ESLA
+         uSo5KLCpy9hfKWnw0yFcqsBCVcze+6CbwlVNP8QfC8d1xKa1DS6vXgc42fvWChOoipO5
+         VNiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5hUezzo8hUcmZG6E5UAfmoNw5nxRF6WFHj3rv30U5Bs=;
+        b=rWvVWp+GzDltee5NskcqumAGTszfUq4ntJRT80OA+vUEvmOI5f8RQz+V2Cw3rvhuHh
+         Yd6QkgDGvhDFWDaBhPmoqe01PPdPA+rzsZHumotxfAu7nAiuROjbQCUOZCLGCebeJa42
+         +zzEkNBuLVhse1AXH9cJM/FtlSDrpwHlWhwxqGXFEU58lySffW2b76UcLdIGu7Y1Wiz9
+         aXU6ljGTKm5u07Z9fpaCta1LKhIPjXfWutXv3UVYRbj+pjLbHNSJ8wiDGF3DcTnSqGPQ
+         ANCY8i1sN1oNtEBytEqkIj1Pie1WSnUhMBuAZxchkPOhXE+MtqdKnATULzG5gF5xATXf
+         8ydA==
+X-Gm-Message-State: AOAM5306XvdRLS4VI46QOZdwcuOLcyLvVgmG141KZdjrwF85WTOO9iBA
+        uAvsnQv+MCL+8kbYgdf3YBU=
+X-Google-Smtp-Source: ABdhPJwE7Tgts9z7iIMcYd8Oc8lRH9YbkRma2HmxX1HDPzxgJHmyYcIonhX0QBg9WoomtY1fXp384Q==
+X-Received: by 2002:ac8:33ec:: with SMTP id d41mr7915646qtb.390.1601754271477;
+        Sat, 03 Oct 2020 12:44:31 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c70sm3855038qkg.4.2020.10.03.12.44.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 12:44:30 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Sat, 3 Oct 2020 15:44:29 -0400
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-wireless@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Date:   Sat, 03 Oct 2020 12:43:13 -0700
-In-Reply-To: <20201003193137.z2bpwzlz5a66kkex@chatter.i7.local>
-References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
-         <160132172369.55460.9237357219623604216.b4-ty@kernel.org>
-         <b1174f9be2ce65f6b5ebefcba0b48e792926abbc.camel@perches.com>
-         <20200929113745.GB4799@sirena.org.uk>
-         <db26d49401dc0bd6b9013a603a155f9827f404a4.camel@perches.com>
-         <20201001110150.GA6715@sirena.org.uk>
-         <f44d19ad596f261c0287c9ab18c45161003efb43.camel@perches.com>
-         <20201003191501.o56tqq63d2buq5ox@chatter.i7.local>
-         <alpine.DEB.2.22.394.2010032118420.2741@hadrien>
-         <20201003193137.z2bpwzlz5a66kkex@chatter.i7.local>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] efi/libstub/x86: simplify efi_is_native()
+Message-ID: <20201003194429.GA768061@rani.riverdale.lan>
+References: <20201003060356.4913-1-xypron.glpk@gmx.de>
+ <CAMzpN2hZ6833u4P=Vr1hueoYCfYryHoTW1dpa-9FTL3nvehJ0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMzpN2hZ6833u4P=Vr1hueoYCfYryHoTW1dpa-9FTL3nvehJ0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-03 at 15:31 -0400, Konstantin Ryabitsev wrote:
-> On Sat, Oct 03, 2020 at 09:18:51PM +0200, Julia Lawall wrote:
-> > > > There seems to be some mismatch between b4's use of the
-> > > > cover letter to a patch series and what maintainers that
-> > > > apply a subset of the patches in the patch series.
-> > > > 
-> > > > The merge description shows the entire patch series as
-> > > > applied, but the actual merge is only a subset of the
-> > > > series.
-> > > > 
-> > > > Can this be improved in b4?
-> > > 
-> > > So, the following logic should be applied:
-> > > 
-> > > - if the entire series was applied, reply to 0/n
-> > > - if a subset only is applied, reply to each n/n of the patch that was
-> > >   cherry-picked out of the series
-> > > 
-> > > Is that an accurate summary?
-> > 
-> > That sounds good.
+On Sat, Oct 03, 2020 at 01:28:18PM -0400, Brian Gerst wrote:
+> On Sat, Oct 3, 2020 at 2:05 AM Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
+> >
+> > CONFIG_EFI_MIXED depends on CONFIG_X86_64=y.
+> > There is no need to check CONFIG_X86_64 again.
+> >
+> > Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> > ---
+> >  arch/x86/include/asm/efi.h | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+> > index b9c2667ac46c..ab28bf1c74cf 100644
+> > --- a/arch/x86/include/asm/efi.h
+> > +++ b/arch/x86/include/asm/efi.h
+> > @@ -223,8 +223,6 @@ static inline bool efi_is_64bit(void)
+> >
+> >  static inline bool efi_is_native(void)
+> >  {
+> > -       if (!IS_ENABLED(CONFIG_X86_64))
+> > -               return true;
+> >         return efi_is_64bit();
+> >  }
 > 
-> I'm worried that this can get unwieldy for series of 50 patches where 49 
-> got applied. Would the following be better:
+> This would then return false for native 32-bit.
 > 
-> -----
-> From: ...
-> To: ...
-> Subject: Re: [PATCH 00/18] use semicolons...
-> 
-> On Sun...
-> > These patches...
-> > 
-> > [...]
-> 
-> A subset of these patches was applied to
-> 
->   https://...
-> 
-> Thanks!
-> 
-> [5/18] regmap: debugfs:
->        commit:
-> 
-> (etc)
-> -----
-> 
-> In other words, we:
-> 
-> - specifically say that it's a subset
-> - instead of just enumerating the number of patches that were applied, 
->   as is currently the case ([1/1]) we list the exact numbers out of the 
->   posted series (e.g. [5/18])
-> 
-> I think this is a better solution than potentially flooding everyone 
-> with 49 emails.
+> --
+> Brian Gerst
 
-I think it would be better to reply individually as
-the likelihood that the maintainer skips just a few
-patches of a large series is relatively low.
+32-bit doesn't use this implementation: it's #define'd to true in
+drivers/firmware/efi/libstub/efistub.h.
 
-It's more likely for a treewide or multi-subsystem
-patch set for a maintainer to apply just a single one
-or a selected few of the patches and individual
-replies make it much easier to determine which ones
-were applied.
-
-thanks, Joe
-
+Thanks.
