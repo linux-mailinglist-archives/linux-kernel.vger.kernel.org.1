@@ -2,181 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26A2282506
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3445728250A
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 17:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725821AbgJCPQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 11:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
+        id S1725832AbgJCPSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 11:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJCPQl (ORCPT
+        with ESMTP id S1725747AbgJCPSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 11:16:41 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC289C0613D0;
-        Sat,  3 Oct 2020 08:16:40 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id nl2so801650pjb.1;
-        Sat, 03 Oct 2020 08:16:40 -0700 (PDT)
+        Sat, 3 Oct 2020 11:18:06 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A502CC0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 08:18:06 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d1so5454715qtr.6
+        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 08:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AWToDGi9VFGS/DA0WK0XAC/g7pGoXnJI85oX3vgFGHs=;
-        b=AMiOo/8mSsXqmFoyts2oGRiPw9+Dzq0MMVwY9VhCGiUHVNUA7V3du498Tc151NdxWV
-         kmtLxlbSMQaUvnzbgbXyxpTgn7ydFppM0I9kgg3YsoUj0ntJ64qWDRwyVgLz6DLYU9F8
-         TcDkdfpHiJbvzvz550p/BzxCH95hkfLUT8FBfrt/frNKFUGprqfmKt2cMdvXPDlkH9Ct
-         7Rp92+kkQtNygt7FsUlxrODrhapRS+UJD0GJzZE2omRppdgk4zRNa89iY6GGxMJm7dIj
-         tpygy4Lo1DTxzbRMxRfX6umibGRkj3rKWS7mGewVlktqK0ANvzSHu9cCJ+4L0LInNK5C
-         AoiA==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3lHtCt0w283nQgWH715RcZfWnKuLjRS7WehMmHRVIcc=;
+        b=SeyjLBcRIVrZTJZY0KLwWww1RJ6UuD7C6Oipr2TpswR9eN6F0w91vDK8/Zf5l9UwHh
+         p6CLCpX08MonfdENPrVnfRSodVoVMuWL4XrlTh32Mw7MGu7hwjD6Frhv0L1cjyjhWvs7
+         TMynocz19xnB8BmvBiNAjDw/h17SujylbtkafzKFvbdbgQFf4hH6YeP/S5J5YkPibDjN
+         qPo9ezsnE3G+8mTZ80CEkf+K/D9VBj4Z4IP0DsKphS35pEQhNlT0gz881AKdxVdwpMj/
+         9HpReSYmCj6af61qFsYDvLQVx+LehXpjJFgdquklLvTHAhXhO2HhpZr09qKCoVTqbF/7
+         3EnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AWToDGi9VFGS/DA0WK0XAC/g7pGoXnJI85oX3vgFGHs=;
-        b=Rak/INzXv7/hMB5l6SmybQEClC+grw5negr9gexTZg+5rE0/+StcEoCySBltRJqgw9
-         Sgft0dAQ6WJDpUqDtMNb5K2cj2C3qtEHJZ0kkTWWp1h5Cc3xDcCv34HYAkkoYsg5cHlu
-         td6lAtboBC1MbSYVaK3BpxMikpbpw+X+rIhKiuYPRk3S+/qWOBjjkVnBTB2r6iFs+kaw
-         r6zs62IzZwZ6MarN9yx9I3ySAL45W6OIs7br0gp39ppllV4G7GhPHrXBImgvHKWFr/Mq
-         Xld+Spe6aLULG1k4/4OBg9NV0MwtZvCHfgxPW5owxV6DqWTSoICN7xWhN4tknd4y++Tx
-         cYOQ==
-X-Gm-Message-State: AOAM531dFjoL5LmeqK5rCzrNCb1Iiw/cTklRXUjN7TARU3KGHfgt2hRZ
-        1GUkXLO7qoe+MIqvWHuXbH4=
-X-Google-Smtp-Source: ABdhPJxFaw7yeqEVcj7Yh0vzTlFn8p1lnEFl3nSi8F72nv81BUItSKik5wjDO1AgKcQRrgPZ+xmQ2Q==
-X-Received: by 2002:a17:90b:1902:: with SMTP id mp2mr8239031pjb.176.1601738198972;
-        Sat, 03 Oct 2020 08:16:38 -0700 (PDT)
-Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id h9sm5293089pgk.52.2020.10.03.08.16.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 03 Oct 2020 08:16:38 -0700 (PDT)
-Subject: Re: Litmus test for question from Al Viro
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, dlustig@nvidia.com,
-        joel@joelfernandes.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <20201001213048.GF29330@paulmck-ThinkPad-P72>
- <20201003132212.GB318272@rowland.harvard.edu>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
-Date:   Sun, 4 Oct 2020 00:16:31 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3lHtCt0w283nQgWH715RcZfWnKuLjRS7WehMmHRVIcc=;
+        b=melnn932GHzcS9HdQeJ/eovkDiCx3DWCiRtn70X3h0azD0auSbyXVsF29OANJ6Qcs/
+         bMqIhMkBsOywy/7qIczJv4Uglfx2AZrWF2sk5VAMD4czBeeHh+j8u4vQMW9fRstpZBKB
+         bV2jxcIGbiENePlqVklzBLdImyQHTMkhAJKixPS32lks2swND0VzWMbE7ZGGZaCuiLVj
+         +pXpTIjYKWPmec8zob7qRsK0AlA6Ki7hLo5OoFP1py7YQ5eBYP1bSmdgV9q8qWV0U0kY
+         /FK+8Vgl6dNh2qI4ewbl4yZGaQxToUbNExRL8G5DaAvMEYLZYgHDJMYMWlxPcfuIoQCL
+         ZENg==
+X-Gm-Message-State: AOAM530fYaj2l5orsUfdvepzaLGiAohs127iDkLmXkRKljzY+xxxtORK
+        VBRpoiqXi65Uwew7AqWJXNA=
+X-Google-Smtp-Source: ABdhPJwhfA2iPlKraNgvrPoYKdg94Nd3q96bEw9hZLqZVVT82wLRrGGuVWHNLDzex6SM+jZLCas7qw==
+X-Received: by 2002:aed:2e05:: with SMTP id j5mr6820176qtd.94.1601738285790;
+        Sat, 03 Oct 2020 08:18:05 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d12sm3436343qka.34.2020.10.03.08.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Oct 2020 08:18:05 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Sat, 3 Oct 2020 11:18:03 -0400
+To:     Gabriel C <nix.or.die@googlemail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.9-rc7
+Message-ID: <20201003151803.GA614088@rani.riverdale.lan>
+References: <CAHk-=wj1SJmva5pQxT-XZkMREOa+iJuy0K8-zua0K=vF-Jz7zw@mail.gmail.com>
+ <CAEJqkgiq5ss9S4edHGb5x+YjhODF1HqBW-5qjHA8=AFnhX2tSQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201003132212.GB318272@rowland.harvard.edu>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAEJqkgiq5ss9S4edHGb5x+YjhODF1HqBW-5qjHA8=AFnhX2tSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
-
-Just a minor nit in the litmus test.
-
-On Sat, 3 Oct 2020 09:22:12 -0400, Alan Stern wrote:
-> To expand on my statement about the LKMM's weakness regarding control 
-> constructs, here is a litmus test to illustrate the issue.  You might 
-> want to add this to one of the archives.
+On Sat, Oct 03, 2020 at 04:23:15PM +0200, Gabriel C wrote:
+> Am Mo., 28. Sept. 2020 um 00:00 Uhr schrieb Linus Torvalds
+> <torvalds@linux-foundation.org>:
+> Hello,
 > 
-> Alan
+> > Shortlog appended, but what I really hope you all will do is to give
+> > it a nice good testing. One extra week or rc kernels will help, but
+> > only if people actually try this out.
+> >
+> > So.. Please?
 > 
-> C crypto-control-data
-> (*
->  * LB plus crypto-control-data plus data
->  *
->  * Expected result: allowed
->  *
->  * This is an example of OOTA and we would like it to be forbidden.
->  * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
->  * control-dependent on the preceding READ_ONCE.  But the dependencies are
->  * hidden by the form of the conditional control construct, hence the 
->  * name "crypto-control-data".  The memory model doesn't recognize them.
->  *)
+> I'm a bit late testing, but the first thing I noticed is this warning:
 > 
-> {}
+> ld: arch/x86/boot/compressed/head_64.o: warning: relocation in
+> read-only section `.head.text'
+> ld: warning: creating DT_TEXTREL in a PIE
 > 
-> P0(int *x, int *y)
-> {
-> 	int r1;
+> The compiler is gcc 9.2.1 20200215, with default PIE enabled, ld version 2.35.1.
+> The config used is the 64bit defconfig.
 > 
-> 	r1 = 1;
-> 	if (READ_ONCE(*x) == 0)
-> 		r1 = 0;
-> 	WRITE_ONCE(*y, r1);
-> }
+> Best Regards,
 > 
-> P1(int *x, int *y)
-> {
-> 	WRITE_ONCE(*x, READ_ONCE(*y));
+> Gabriel C.
 
-Looks like this one-liner doesn't provide data-dependency of y -> x on herd7.
+You can ignore the warning for now, it is harmless: it's always been
+there, but binutils-2.35 has enabled the warning by default. There are
+patches in tip that should make this go away for v5.10.
 
-When I changed P1 to
+Thanks.
 
-P1(int *x, int *y)
-{
-	int r1;
+https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;a=blob_plain;f=ld/NEWS;hb=refs/tags/binutils-2_35_1
 
-	r1 = READ_ONCE(*y);
-	WRITE_ONCE(*x, r1);
-}
-
-and replaced the WRITE_ONCE() in P0 with smp_store_release(),
-I got the result of:
-
------
-Test crypto-control-data Allowed
-States 1
-0:r1=0;
-No
-Witnesses
-Positive: 0 Negative: 3
-Condition exists (0:r1=1)
-Observation crypto-control-data Never 0 3
-Time crypto-control-data 0.01
-Hash=9b9aebbaf945dad8183d2be0ccb88e11
------
-
-Restoring the WRITE_ONCE() in P0, I got the result of:
-
------
-Test crypto-control-data Allowed
-States 2
-0:r1=0;
-0:r1=1;
-Ok
-Witnesses
-Positive: 1 Negative: 4
-Condition exists (0:r1=1)
-Observation crypto-control-data Sometimes 1 4
-Time crypto-control-data 0.01
-Hash=843eaa4974cec0efae79ce3cb73a1278
------
-
-As this is the same as the expected result, I suppose you have missed another
-limitation of herd7 + LKMM.
-
-By the way, I think this weakness on control dependency + data dependency
-deserves an entry in tools/memory-model/Documentation/litmus-tests.txt.
-
-In the LIMITATIONS section, item #1 mentions some situation where
-LKMM may not recognize possible losses of control-dependencies by
-compiler optimizations.
-
-What this litmus test demonstrates is a different class of mismatch.
-
-Alan, can you come up with an update in this regard?
-
-        Thanks, Akira
-
-> }
-> 
-> exists (0:r1=1)
-> 
+* Add a configure option, --enable-textrel-check=[no|yes|warning|error],
+  to decide what ELF linker should do by default with DT_TEXTREL in an
+  executable or shared library.  Default to yes for Linux/x86 targets.
