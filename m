@@ -2,515 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E662282029
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD74C28202E
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725766AbgJCBb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:31:29 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6379 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgJCBb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:31:29 -0400
-IronPort-SDR: dMFkbHTlsaSeYGDhHn8TjgLkxHG8ekDlNNPAMI1xkFjqbKg7w4HY3/zZ0Yj2mYm5ScCUxSuqYu
- 9v1VDL672rHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="162364716"
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="162364716"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:31:27 -0700
-IronPort-SDR: 9AQL0FQPJhZ82CZGKuTc5+2yuWczlIe3oEbg+JV12dCoCGdVTwjk5KDntTsf6Rh1QgamEj1qdk
- YZnVZtgQ6z/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
-   d="scan'208";a="511558204"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 02 Oct 2020 18:31:27 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id 6622958082E;
-        Fri,  2 Oct 2020 18:31:27 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     lee.jones@linaro.org, david.e.box@linux.intel.com,
-        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        hdegoede@redhat.com, alexey.budankov@linux.intel.com
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH V8 5/5] platform/x86: Intel PMT Crashlog capability driver
-Date:   Fri,  2 Oct 2020 18:31:23 -0700
-Message-Id: <20201003013123.20269-6-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201003013123.20269-1-david.e.box@linux.intel.com>
-References: <20201003013123.20269-1-david.e.box@linux.intel.com>
+        id S1725765AbgJCBjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJCBjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 21:39:17 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B67C0613D0
+        for <linux-kernel@vger.kernel.org>; Fri,  2 Oct 2020 18:39:15 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id h6so1332423pgk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 02 Oct 2020 18:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h+QvCgCquLIB4PMIfsSI7g6Fcy5ZKMf55mJGCk+rTuI=;
+        b=BKxeBRa8DzK0YevsxBG8HJKezJXiRcmaDt5TT9fjnZd676lV9U9Kp3WYiikbZLQTCG
+         MsHhzbNT12XBkeupHSevSFUkAUPZ5TV9NQQjVFwO4hNmJWhobiHKQwQ6idmD2XxRna6w
+         9Ui7AD3bwIf6mHtJ6DZeoYnIvKBQihrIcHlbhh9lZWRF3p4M9wf2RW7yHoFpZAyb7gOk
+         dqAWzNJZVp77PPxTDoxHcRlJ48f9OVq2F7xUKzXiVY4LSWCLRP4REQjb6f5uOWXiG9Le
+         uHc8EGTYLwo75lCa/QvjlrN8WTcGEEqpiC3SYyvYfswFG/6srJqkGw/a4img/UW29Rst
+         kcLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h+QvCgCquLIB4PMIfsSI7g6Fcy5ZKMf55mJGCk+rTuI=;
+        b=SBmq0HoWSaN7NYoLvYipO5DLcAaak4x8JFlMfRB1X5lp+ZR4Hb+LtWDIZcXG9yIn0D
+         6kPcp0gGBI/tLFBDdJo7w8TXRxFaF06jahdOwPSabm9UeppsNgZ8JR5NDDxzKrbJCGlv
+         IKXNul4ebwjmuCYzSr8+p1MyFTnfpmgbL+BFImET20a9/o7uSYWHw20vFNdBn1UxvDQQ
+         jC2vT04y5PdOOT9tGZSuRWRxmOkLTSvLTweau2Y3ICehaQbA6eRx/KlijGUPRuCGWg2c
+         KCesx42otLy8zi8dYJwFiqlolS/NCQyQRiWbrlWmzzT91sGQiDAi9pWj6uA0M2mZdpRg
+         /NBg==
+X-Gm-Message-State: AOAM531d+S/OfUCqtvlY58X8imnoCLR3kwD4HgKVNuBvvpwmgC0Y3BCV
+        nF4Ae8FkYDlS0iOPXEArrgM=
+X-Google-Smtp-Source: ABdhPJzB2sB2tGvXPYLx0+TtzBNtOp8iWqRFjcT0S9ClFoF+s1HLljVCgbIB8YKmCtZ6v2/g2UHAOw==
+X-Received: by 2002:aa7:941a:0:b029:142:2501:34dc with SMTP id x26-20020aa7941a0000b0290142250134dcmr5533372pfo.53.1601689155074;
+        Fri, 02 Oct 2020 18:39:15 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id ie13sm2895918pjb.5.2020.10.02.18.39.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 18:39:14 -0700 (PDT)
+Subject: Re: [PATCH v6 11/14] misc: bcm-vk: add BCM_VK_QSTATS
+To:     Scott Branden <scott.branden@broadcom.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>
+References: <20201002212327.18393-1-scott.branden@broadcom.com>
+ <20201002212327.18393-12-scott.branden@broadcom.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <55f88956-48ea-08e3-c353-babb08f3a786@gmail.com>
+Date:   Fri, 2 Oct 2020 18:39:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201002212327.18393-12-scott.branden@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-Add support for the Intel Platform Monitoring Technology crashlog
-interface. This interface provides a few sysfs values to allow for
-controlling the crashlog telemetry interface as well as a character
-driver to allow for mapping the crashlog memory region so that it can be
-accessed after a crashlog has been recorded.
 
-This driver is meant to only support the server version of the crashlog
-which is identified as crash_type 1 with a version of zero. Currently no
-other types are supported.
+On 10/2/2020 2:23 PM, Scott Branden wrote:
+> Add BCM_VK_QSTATS Kconfig option to allow for enabling debug VK
+> queue statistics.
+> 
+> These statistics keep track of max, abs_max, and average for the
+> messages queues.
+> 
+> Co-developed-by: Desmond Yan <desmond.yan@broadcom.com>
+> Signed-off-by: Desmond Yan <desmond.yan@broadcom.com>
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 
-Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
----
- .../ABI/testing/sysfs-class-intel_pmt         |  65 ++++
- drivers/platform/x86/Kconfig                  |  11 +
- drivers/platform/x86/Makefile                 |   1 +
- drivers/platform/x86/intel_pmt_crashlog.c     | 328 ++++++++++++++++++
- 4 files changed, 405 insertions(+)
- create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
-
-diff --git a/Documentation/ABI/testing/sysfs-class-intel_pmt b/Documentation/ABI/testing/sysfs-class-intel_pmt
-index 926b5cf95fd1..ed4c886a21b1 100644
---- a/Documentation/ABI/testing/sysfs-class-intel_pmt
-+++ b/Documentation/ABI/testing/sysfs-class-intel_pmt
-@@ -52,3 +52,68 @@ Contact:	David Box <david.e.box@linux.intel.com>
- Description:
- 		(RO) The offset of telemetry region in bytes that corresponds to
- 		the mapping for the telem file.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		The crashlog<x> directory contains files for configuring an
-+		instance of a PMT crashlog device that can perform crash data
-+		recording. Each crashlog<x> device has an associated crashlog
-+		file. This file can be opened and mapped or read to access the
-+		resulting crashlog buffer. The register layout for the buffer
-+		can be determined from an XML file of specified GUID for the
-+		parent device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/crashlog
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	David Box <david.e.box@linux.intel.com>
-+Description:
-+		(RO) The crashlog buffer for this crashlog device. This file
-+		may be mapped or read to obtain the data.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/guid
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The GUID for this crashlog device. The GUID identifies the
-+		version of the XML file for the parent device that should be
-+		used to determine the register layout.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/size
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The length of the result buffer in bytes that corresponds
-+		to the size for the crashlog buffer.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/offset
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RO) The offset of the buffer in bytes that corresponds
-+		to the mapping for the crashlog device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/enable
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RW) Boolean value controlling if the crashlog functionality
-+		is enabled for the crashlog device.
-+
-+What:		/sys/class/intel_pmt/crashlog<x>/trigger
-+Date:		October 2020
-+KernelVersion:	5.10
-+Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
-+Description:
-+		(RW) Boolean value controlling the triggering of the crashlog
-+		device node. When read it provides data on if the crashlog has
-+		been triggered. When written to it can be used to either clear
-+		the current trigger by writing false, or to trigger a new
-+		event if the trigger is not currently set.
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 90b4c1bd9532..4ac555a9916b 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1383,6 +1383,17 @@ config INTEL_PMT_TELEMETRY
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called intel_pmt_telemetry.
- 
-+config INTEL_PMT_CRASHLOG
-+	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
-+	select INTEL_PMT_CLASS
-+	help
-+	  The Intel Platform Monitoring Technology (PMT) crashlog driver provides
-+	  access to hardware crashlog capabilities on devices that support the
-+	  feature.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called intel_pmt_crashlog.
-+
- config INTEL_PUNIT_IPC
- 	tristate "Intel P-Unit IPC Driver"
- 	help
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 6a7b61f59ea8..ca82c1344977 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -142,6 +142,7 @@ obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
- obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
- obj-$(CONFIG_INTEL_PMT_CLASS)		+= intel_pmt_class.o
- obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
-+obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
- obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
- obj-$(CONFIG_INTEL_SCU_IPC)		+= intel_scu_ipc.o
- obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
-diff --git a/drivers/platform/x86/intel_pmt_crashlog.c b/drivers/platform/x86/intel_pmt_crashlog.c
-new file mode 100644
-index 000000000000..97dd749c8290
---- /dev/null
-+++ b/drivers/platform/x86/intel_pmt_crashlog.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel Platform Monitoring Technology Crashlog driver
-+ *
-+ * Copyright (c) 2020, Intel Corporation.
-+ * All Rights Reserved.
-+ *
-+ * Author: "Alexander Duyck" <alexander.h.duyck@linux.intel.com>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+#include <linux/overflow.h>
-+
-+#include "intel_pmt_class.h"
-+
-+#define DRV_NAME		"pmt_crashlog"
-+
-+/* Crashlog discovery header types */
-+#define CRASH_TYPE_OOBMSM	1
-+
-+/* Control Flags */
-+#define CRASHLOG_FLAG_DISABLE		BIT(27)
-+
-+/*
-+ * Bits 28 and 29 control the state of bit 31.
-+ *
-+ * Bit 28 will clear bit 31, if set, allowing a new crashlog to be captured.
-+ * Bit 29 will immediately trigger a crashlog to be generated, setting bit 31.
-+ * Bit 30 is read-only and reserved as 0.
-+ * Bit 31 is the read-only status with a 1 indicating log is complete.
-+ */
-+#define CRASHLOG_FLAG_TRIGGER_CLEAR	BIT(28)
-+#define CRASHLOG_FLAG_TRIGGER_EXECUTE	BIT(29)
-+#define CRASHLOG_FLAG_TRIGGER_COMPLETE	BIT(31)
-+#define CRASHLOG_FLAG_TRIGGER_MASK	GENMASK(31, 28)
-+
-+/* Crashlog Discovery Header */
-+#define CONTROL_OFFSET		0x0
-+#define GUID_OFFSET		0x4
-+#define BASE_OFFSET		0x8
-+#define SIZE_OFFSET		0xC
-+#define GET_ACCESS(v)		((v) & GENMASK(3, 0))
-+#define GET_TYPE(v)		(((v) & GENMASK(7, 4)) >> 4)
-+#define GET_VERSION(v)		(((v) & GENMASK(19, 16)) >> 16)
-+/* size is in bytes */
-+#define GET_SIZE(v)		((v) * sizeof(u32))
-+
-+struct crashlog_entry {
-+	/* entry must be first member of struct */
-+	struct intel_pmt_entry		entry;
-+	struct mutex			control_mutex;
-+};
-+
-+struct pmt_crashlog_priv {
-+	int			num_entries;
-+	struct crashlog_entry	entry[];
-+};
-+
-+/*
-+ * I/O
-+ */
-+static bool pmt_crashlog_complete(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* return current value of the crashlog complete flag */
-+	return !!(control & CRASHLOG_FLAG_TRIGGER_COMPLETE);
-+}
-+
-+static bool pmt_crashlog_disabled(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* return current value of the crashlog disabled flag */
-+	return !!(control & CRASHLOG_FLAG_DISABLE);
-+}
-+
-+static bool pmt_crashlog_supported(struct intel_pmt_entry *entry)
-+{
-+	u32 discovery_header = readl(entry->disc_table + CONTROL_OFFSET);
-+	u32 crash_type, version;
-+
-+	crash_type = GET_TYPE(discovery_header);
-+	version = GET_VERSION(discovery_header);
-+
-+	/*
-+	 * Currently we only recognize OOBMSM version 0 devices.
-+	 * We can ignore all other crashlog devices in the system.
-+	 */
-+	return crash_type == CRASH_TYPE_OOBMSM && version == 0;
-+}
-+
-+static void pmt_crashlog_set_disable(struct intel_pmt_entry *entry,
-+				     bool disable)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	/* clear trigger bits so we are only modifying disable flag */
-+	control &= ~CRASHLOG_FLAG_TRIGGER_MASK;
-+
-+	if (disable)
-+		control |= CRASHLOG_FLAG_DISABLE;
-+	else
-+		control &= ~CRASHLOG_FLAG_DISABLE;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+static void pmt_crashlog_set_clear(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	control &= ~CRASHLOG_FLAG_TRIGGER_MASK;
-+	control |= CRASHLOG_FLAG_TRIGGER_CLEAR;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+static void pmt_crashlog_set_execute(struct intel_pmt_entry *entry)
-+{
-+	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
-+
-+	control &= ~CRASHLOG_FLAG_TRIGGER_MASK;
-+	control |= CRASHLOG_FLAG_TRIGGER_EXECUTE;
-+
-+	writel(control, entry->disc_table + CONTROL_OFFSET);
-+}
-+
-+/*
-+ * sysfs
-+ */
-+static ssize_t
-+enable_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct intel_pmt_entry *entry = dev_get_drvdata(dev);
-+	int enabled = !pmt_crashlog_disabled(entry);
-+
-+	return sprintf(buf, "%d\n", enabled);
-+}
-+
-+static ssize_t
-+enable_store(struct device *dev, struct device_attribute *attr,
-+	    const char *buf, size_t count)
-+{
-+	struct crashlog_entry *entry;
-+	bool enabled;
-+	int result;
-+
-+	entry = dev_get_drvdata(dev);
-+
-+	result = kstrtobool(buf, &enabled);
-+	if (result)
-+		return result;
-+
-+	mutex_lock(&entry->control_mutex);
-+	pmt_crashlog_set_disable(&entry->entry, !enabled);
-+	mutex_unlock(&entry->control_mutex);
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(enable);
-+
-+static ssize_t
-+trigger_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct intel_pmt_entry *entry;
-+	int trigger;
-+
-+	entry = dev_get_drvdata(dev);
-+	trigger = pmt_crashlog_complete(entry);
-+
-+	return sprintf(buf, "%d\n", trigger);
-+}
-+
-+static ssize_t
-+trigger_store(struct device *dev, struct device_attribute *attr,
-+	    const char *buf, size_t count)
-+{
-+	struct crashlog_entry *entry;
-+	bool trigger;
-+	int result;
-+
-+	entry = dev_get_drvdata(dev);
-+
-+	result = kstrtobool(buf, &trigger);
-+	if (result)
-+		return result;
-+
-+	mutex_lock(&entry->control_mutex);
-+
-+	if (!trigger) {
-+		pmt_crashlog_set_clear(&entry->entry);
-+	} else if (pmt_crashlog_complete(&entry->entry)) {
-+		/* we cannot trigger a new crash if one is still pending */
-+		result = -EEXIST;
-+		goto err;
-+	} else if (pmt_crashlog_disabled(&entry->entry)) {
-+		/* if device is currently disabled, return busy */
-+		result = -EBUSY;
-+		goto err;
-+	} else {
-+		pmt_crashlog_set_execute(&entry->entry);
-+	}
-+
-+	result = count;
-+err:
-+	mutex_unlock(&entry->control_mutex);
-+	return result;
-+}
-+static DEVICE_ATTR_RW(trigger);
-+
-+static struct attribute *pmt_crashlog_attrs[] = {
-+	&dev_attr_enable.attr,
-+	&dev_attr_trigger.attr,
-+	NULL
-+};
-+
-+static struct attribute_group pmt_crashlog_group = {
-+	.attrs	= pmt_crashlog_attrs,
-+};
-+
-+static int pmt_crashlog_header_decode(struct intel_pmt_entry *entry,
-+				      struct intel_pmt_header *header,
-+				      struct device *dev)
-+{
-+	void __iomem *disc_table = entry->disc_table;
-+	struct crashlog_entry *crashlog;
-+
-+	if (!pmt_crashlog_supported(entry))
-+		return 1;
-+
-+	/* initialize control mutex */
-+	crashlog = container_of(entry, struct crashlog_entry, entry);
-+	mutex_init(&crashlog->control_mutex);
-+
-+	header->access_type = GET_ACCESS(readl(disc_table));
-+	header->guid = readl(disc_table + GUID_OFFSET);
-+	header->base_offset = readl(disc_table + BASE_OFFSET);
-+
-+	/* Size is measured in DWORDS, but accessor returns bytes */
-+	header->size = GET_SIZE(readl(disc_table + SIZE_OFFSET));
-+
-+	return 0;
-+}
-+
-+static DEFINE_XARRAY_ALLOC(crashlog_array);
-+static struct intel_pmt_namespace pmt_crashlog_ns = {
-+	.name = "crashlog",
-+	.xa = &crashlog_array,
-+	.attr_grp = &pmt_crashlog_group,
-+	.pmt_header_decode = pmt_crashlog_header_decode,
-+};
-+
-+/*
-+ * initialization
-+ */
-+static int pmt_crashlog_remove(struct platform_device *pdev)
-+{
-+	struct pmt_crashlog_priv *priv = platform_get_drvdata(pdev);
-+	int i;
-+
-+	for (i = 0; i < priv->num_entries; i++)
-+		intel_pmt_dev_destroy(&priv->entry[i].entry, &pmt_crashlog_ns);
-+
-+	return 0;
-+}
-+
-+static int pmt_crashlog_probe(struct platform_device *pdev)
-+{
-+	struct pmt_crashlog_priv *priv;
-+	size_t size;
-+	int i, ret;
-+
-+	size = struct_size(priv, entry, pdev->num_resources);
-+	priv = devm_kzalloc(&pdev->dev, size, GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	for (i = 0; i < pdev->num_resources; i++) {
-+		struct intel_pmt_entry *entry = &priv->entry[i].entry;
-+
-+		ret = intel_pmt_dev_create(entry, &pmt_crashlog_ns, pdev, i);
-+		if (ret < 0)
-+			goto abort_probe;
-+		if (ret)
-+			continue;
-+
-+		priv->num_entries++;
-+	}
-+
-+	return 0;
-+abort_probe:
-+	pmt_crashlog_remove(pdev);
-+	return ret;
-+}
-+
-+static struct platform_driver pmt_crashlog_driver = {
-+	.driver = {
-+		.name   = DRV_NAME,
-+	},
-+	.remove = pmt_crashlog_remove,
-+	.probe  = pmt_crashlog_probe,
-+};
-+
-+static int __init pmt_crashlog_init(void)
-+{
-+	return platform_driver_register(&pmt_crashlog_driver);
-+}
-+
-+static void __exit pmt_crashlog_exit(void)
-+{
-+	platform_driver_unregister(&pmt_crashlog_driver);
-+	xa_destroy(&crashlog_array);
-+}
-+
-+module_init(pmt_crashlog_init);
-+module_exit(pmt_crashlog_exit);
-+
-+MODULE_AUTHOR("Alexander Duyck <alexander.h.duyck@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel PMT Crashlog driver");
-+MODULE_ALIAS("platform:" DRV_NAME);
-+MODULE_LICENSE("GPL v2");
+would not it make more sense to have those debug prints be trace printks 
+instead? Given what you explained in the previous patch version and the 
+desire to correlate with other system wide activity, that might make 
+more sense. Looking at the kernel's log for debugging performance or 
+utilization or just to get a glimpse of what is going on is not quite 
+suited past probe.
 -- 
-2.20.1
-
+Florian
