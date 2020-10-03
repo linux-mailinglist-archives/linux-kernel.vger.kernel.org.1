@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AE428200F
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22E5282001
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 03:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgJCBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 2 Oct 2020 21:25:21 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58464 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgJCBZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 2 Oct 2020 21:25:20 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931Ovah024776;
-        Sat, 3 Oct 2020 01:25:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=HiDonggRQ8JlxsajXB85uBIozSr+fg3QMRuX4W0IOqw=;
- b=ZvjHO4N7iR/xgW5vZDciG+gffm9dUknsBnSogrggTuO+jqdIMHy1N9DhPpIlcFEr2a68
- YxNg0sOnqHe6PP2xmD5k2kRCLBxSXublXY/fQFv/auelhLE8UxXaAAO5sIGn2YudiLeP
- 6atpt7NwEF7OvBSSh0bhWJd4/Swd1ysbMDYqe+3gMpcJ3fmVHJtHLbMIH1UUNL/ogJoP
- psi+ZCd1BUnRM6HMZCgJPnBuyaPKcDX9V70sfVsTM+AcMaWlD8s9VxIFv2abSmpBDEE9
- F1yMKiWTSiKrVwYNkRjxuLzo0Lg/B+P8MWYLuGxp3sIAvLBSwtlTc1iz2OTDuSiKhYUw uw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33swkmdfxe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 03 Oct 2020 01:25:15 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0931Jsni162137;
-        Sat, 3 Oct 2020 01:23:14 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 33xeds2et4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 03 Oct 2020 01:23:14 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0931NB2B026108;
-        Sat, 3 Oct 2020 01:23:11 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Oct 2020 18:23:11 -0700
-To:     john.p.donnelly@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, michael.christie@oracle.com,
-        bstroesser@ts.fujitsu.com
-Subject: Re: [PATCH ] scsi: page warning: 'page' may be used uninitialized
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1wo08cdco.fsf@ca-mkp.ca.oracle.com>
-References: <20200924001920.43594-1-john.p.donnelly@oracle.com>
-Date:   Fri, 02 Oct 2020 21:23:09 -0400
-In-Reply-To: <20200924001920.43594-1-john.p.donnelly@oracle.com> (john
-        p. donnelly's message of "Wed, 23 Sep 2020 17:19:20 -0700")
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=893 mlxscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 suspectscore=3 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030012
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9762 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=3 mlxlogscore=907 clxscore=1011 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010030012
+        id S1725747AbgJCBYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 2 Oct 2020 21:24:20 -0400
+Received: from mga14.intel.com ([192.55.52.115]:5543 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgJCBYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 2 Oct 2020 21:24:20 -0400
+IronPort-SDR: SrdP3G9JneM5WsksLQ/v31DVvlTq1seRCUD/T2Ms1KIYqUHJuaGK7x8ThG/DG0ZDAOaRkmBtpz
+ 2ulnHQaAWZsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9762"; a="162363104"
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="162363104"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:24:18 -0700
+IronPort-SDR: DP5/+FkK2lecpZs26tCYQLPeWOYP3dZvK3rSUM7ln5/LgdX1LWOHc7p3sPftj07E5rT5QUZN4R
+ epOTsafe2kyA==
+X-IronPort-AV: E=Sophos;i="5.77,329,1596524400"; 
+   d="scan'208";a="516097849"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.254.5.53])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 18:24:17 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v2 0/6] Intel MAX10 BMC Security Engine Driver
+Date:   Fri,  2 Oct 2020 18:24:06 -0700
+Message-Id: <20201003012412.16831-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches were previously submitted as part of a larger V1
+patch set under the title "FPGA Security Manager Class Driver".
 
-John,
+The Intel MAX10 BMC Security Engine driver instantiates the Intel
+Security Manager class driver and provides the callback functions
+required to support secure updates on Intel n3000 PAC devices.
+This driver is implemented as a sub-driver of the Intel MAX10 BMC
+mfd driver. Future instances of the MAX10 BMC will support other
+devices as well (e.g. d5005) and this same MAX10 BMC Security
+Engine driver will receive modifications to support that device.
 
-> corrects: drivers/target/target_core_user.c:688:6: warning: 'page' may be used
-> uninitialized
+This driver interacts with the HW secure update engine of the
+BMC in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
+Security is enforced by hardware and firmware. The MAX10 BMC
+Security Engine driver interacts with the firmware to initiate
+an update, pass in the necessary data, and collect status on
+the update.
 
-Applied to 5.10/scsi-staging, thanks!
+This driver passes operation call-back functions to the Intel
+FPGA Security Manager Class Driver to support the following
+functions:
+
+(1) Instantiate and monitor a secure update
+(2) Display security information including: Root Entry Hashes (REH),
+    Cancelled Code Signing Keys (CSK), and flash update counts for
+    both BMC and FPGA images.
+
+These patches are dependent on other patches that are under
+review. If you want to apply these patches on linux-next,
+please apply these patches first, in the following order:
+
+(1 patch)   https://marc.info/?l=linux-fpga&m=159782339732362&w=2
+(4 patches) https://marc.info/?l=linux-fpga&m=160014074806950&w=2
+(7 patches) https://marc.info/?l=linux-fpga&m=160167824311379&w=2
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+
+Russ Weight (6):
+  mfd: intel-m10-bmc: support for MAX10 BMC Security Engine
+  fpga: m10bmc-sec: create max10 bmc security engine
+  fpga: m10bmc-sec: expose max10 flash update counts
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+  fpga: m10bmc-sec: add max10 get_hw_errinfo callback func
+
+ MAINTAINERS                         |   1 +
+ drivers/fpga/Kconfig                |  11 +
+ drivers/fpga/Makefile               |   3 +
+ drivers/fpga/intel-m10-bmc-secure.c | 591 ++++++++++++++++++++++++++++
+ include/linux/mfd/intel-m10-bmc.h   | 134 +++++++
+ 5 files changed, 740 insertions(+)
+ create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
