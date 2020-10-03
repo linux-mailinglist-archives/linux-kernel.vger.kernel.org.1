@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8262826E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313642826E5
+	for <lists+linux-kernel@lfdr.de>; Sat,  3 Oct 2020 23:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgJCVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 17:43:12 -0400
-Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:60266 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725803AbgJCVnM (ORCPT
+        id S1726027AbgJCVpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 17:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgJCVph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 17:43:12 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 40ABA100E7B43;
-        Sat,  3 Oct 2020 21:43:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1461:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:4184:4321:5007:7901:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13311:13357:13439:14180:14181:14659:14721:21060:21080:21451:21611:21627:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: son82_5e02d3d271b0
-X-Filterd-Recvd-Size: 2434
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  3 Oct 2020 21:43:10 +0000 (UTC)
-Message-ID: <472008b94f4b20915425db4714fdb505cb0cbe5a.camel@perches.com>
-Subject: Re: [PATCH] test_power: add missing newlines when printing
- parameters by sysfs
-From:   Joe Perches <joe@perches.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 03 Oct 2020 14:43:09 -0700
-In-Reply-To: <20201003212336.5et7erdf6fihqscu@earth.universe>
-References: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
-         <20201003212336.5et7erdf6fihqscu@earth.universe>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 3 Oct 2020 17:45:37 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440D5C0613D0;
+        Sat,  3 Oct 2020 14:45:36 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e10so3375059pfj.1;
+        Sat, 03 Oct 2020 14:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=YkUAXQMPmvjUV9l+UJIlcFx5SdBT09naUQnGkHuj+B8=;
+        b=t5vw0QXHPOchz1V8SraniNG+R+3YQuDdeEvq3g2ljZrqderQi+26wgYclnYhXJ3bXI
+         KpES5mPif9CYTD6auU9HJR5Ip2Z4YDIA2iqq0wcS8YsEmk5DNaKp3mzWP2ViAeeRz1hB
+         jFEnj5oBg0YCUPSSqDOk9nqEtz+rhAlZuaVWQwo8Th/T4pOaQcDhaEqZ9rAZOfwxHH1w
+         ELEK1/CZP5C3Ai80dzQgEldxb6DlwNUXfjUDVYDWlRqiUOBxsMAIFsdfMC8M4wUD/6KM
+         wzsPFkRU9i2hpuE1WzeL3VW3pS58H7unNDH2jtPj9v3/0d+8Hpw/RX35Z5KNj7B/0v9D
+         uIlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YkUAXQMPmvjUV9l+UJIlcFx5SdBT09naUQnGkHuj+B8=;
+        b=jSfUZDR9LVAVWjHYOiNukck01wWoBiPWAIBaohnVK0s4VR4luD8NtAaB9xXTS+ARvJ
+         uoYGypd6W6RfbYHBfzMt+Nr+iFyFpHp7EngHRlZktKrBKpP83z1EyPJzrixon3lvQ6zM
+         XAaMjzRD7CQ7ie6iHTyIi4iJ+zXr6PjrzYPwh6VxayOC2GLovFGlbl1Ixutug13Upr/w
+         K0hUGlgEWazbKbW7HArHqdWoj2YZ31NfVqUwcQwOcFnh8TtfNKmngKQ3hIHYAJcyK1qW
+         gQqq5qGbXebV8ECLLDDXEeFgK+5B2wWL3ibjZZ58CtoKAULw1tkmXuxgap2k/IqIqHA7
+         LJBQ==
+X-Gm-Message-State: AOAM530GAq152wltlRUSC/f8QEuIgzKND6ogQz8AisRQOoadDYD9m/fu
+        wG04DtytvXEd6r3g1VH9mBj/q5AZToTqmm1jMz0=
+X-Google-Smtp-Source: ABdhPJwYROoGkGZt6KQvqFerbMfc/dR6YQlgj1tfJoNfTb3oio7K82/Z9zxbSyNhIVaJ2ZsmrfecyQ==
+X-Received: by 2002:a62:3812:0:b029:13e:d13d:a062 with SMTP id f18-20020a6238120000b029013ed13da062mr8718921pfa.40.1601761535153;
+        Sat, 03 Oct 2020 14:45:35 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.217.69])
+        by smtp.gmail.com with ESMTPSA id y10sm6605367pfp.77.2020.10.03.14.45.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 03 Oct 2020 14:45:34 -0700 (PDT)
+Subject: Re: [PATCH v3] net: usb: rtl8150: set random MAC address when
+ set_ethernet_addr() fails
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+abbc768b560c84d92fd3@syzkaller.appspotmail.com,
+        Petko Manolov <petkan@nucleusys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201003211931.11544-1-anant.thazhemadam@gmail.com>
+ <d44d8c784f9df6f55dcf494c9c21cd11b16338d4.camel@perches.com>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <ed510989-841c-8f2f-73f0-3885eef35a99@gmail.com>
+Date:   Sun, 4 Oct 2020 03:15:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d44d8c784f9df6f55dcf494c9c21cd11b16338d4.camel@perches.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-03 at 23:23 +0200, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Fri, Sep 04, 2020 at 02:09:58PM +0800, Xiongfeng Wang wrote:
-> > When I cat some module parameters by sysfs, it displays as follows.
-> > It's better to add a newline for easy reading.
-[]
-> > root@syzkaller:~# cd /sys/module/test_power/parameters/
-> > root@syzkaller:/sys/module/test_power/parameters# cat ac_online
-> > onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
-> > trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
-> > goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
-> > dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
-> > LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
-> > onroot@syzkaller:/sys/module/test_power/parameters#
-> > 
-> > Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> > ---
-> 
-> Thanks, queued.
-[]
-> > diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-[]
-> > @@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
-> >  static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
-> >  {
-> >  	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
-> > +	strcat(buffer, "\n");
-> >  	return strlen(buffer);
-> >  }
 
-All of these would be better as sprintf(buffer, "%s\n", <whatever>)
-so the output is scanned just once instead of scanned three times.
+On 04/10/20 3:05 am, Joe Perches wrote:
+> On Sun, 2020-10-04 at 02:49 +0530, Anant Thazhemadam wrote:
+>> When get_registers() fails, in set_ethernet_addr(),the uninitialized
+>> value of node_id gets copied as the address. This can be considered as
+>> set_ethernet_addr() itself failing.
+> []
+>> diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
+> []
+>> @@ -909,7 +914,10 @@ static int rtl8150_probe(struct usb_interface *intf,
+>>  		goto out1;
+>>  	}
+>>  	fill_skb_pool(dev);
+>> -	set_ethernet_addr(dev);
+>> +	if (!set_ethernet_addr(dev)) {
+>> +		dev_err(&intf->dev, "assigining a random MAC address\n");
+>> +		eth_hw_addr_random(dev->netdev);
+> 4 things:
+> .
+> o Typo for assigning
+Oh no. I'm sorry about that.
+> o Reverse the assignment and message to show the new random MAC
+Ah, okay. That would be more informative.
+> o This should use netdev_<level>
+Understood.
+> o Is this better as error or notification?
+>
+> 	if (!set_ethernet_addr(dev)) {
+> 		eth_hw_addr_random(dev->netdev);
+> 		netdev_notice(dev->netdev, "Assigned a random MAC: %pM\n",
+> 			      dev->netdev->dev_addr);
+> 	}
+I thought it might be an error since set_ethernet_addr() did fail after
+all.  But making it info seems like a better idea, since technically speaking,
+the device is still made accessible.
 
+I'll wait for a day or two, to see if anybody else has any other comments,
+and send in a v4 incorporating these changes.
 
+Thanks,
+Anant
