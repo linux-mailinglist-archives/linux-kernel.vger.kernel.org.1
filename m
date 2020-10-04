@@ -2,123 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4544282965
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE4628296D
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgJDHVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 03:21:01 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:1248 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDHVA (ORCPT
+        id S1725855AbgJDHhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 03:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbgJDHht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 03:21:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1601796060; x=1633332060;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=cuX35NZCxmLaPAE4V+bJcgKNfQtt6XH9TL4RC1ZvbU4=;
-  b=Emxk9PEEAXQiSm0kZ39si4mj5CA9YWAMBXwfLANL3UTS6Kuln5Vbqcuf
-   VTW7kkeuBgcRhdDLNh1MARo42R9ItIXkpDigATvyUklNC3IZl4uU5jECC
-   pbQcV/3mlDE469Gwem34feIVKxIwH3CbiTEeRDhe0a+mQmgEAR+U/U+pn
-   tEj5quJ36e8iPBwsjh2bYcvO8spqEsrAFw894EcyCUPbXcPSO4vGqNzH9
-   EyjvpXk9ZKDG/QArsHKLt2yKRa9J+omcLkVfKzn6xZcCskTeHlqAVqe1d
-   MXiF8+1GXBSuH2wHlO8Idu2B+6KdO85xhEfJZ77INnauS8yJrRZRrF9DS
-   g==;
-IronPort-SDR: ROP/plRzvZbtqzD+uuSLBuU3lkpCPFEYfLm7bX/3frnCeUlwrifAvdkazSHPOmxcpulkXF+X9C
- zJEOZ787JHvvJV0isQECsWDGe6SUPjR2/oy/pp6h40OoHEVor4uMeW/shMddxXlp7qE2z6aCJP
- k1+BgJOHrxFSZLbb2cimNG/sPivhtt1tZaft2I/Twq9sQekQpCZoB4hVd7f3ByTAwWqLAxvYjs
- IiY7hs+dm4S7wqOw+cx5hoc7TbzCFSTFxlIw40jbHMj4dxsYkb+1a59UukxtoqRrlroBIrJ9yo
- VSI=
-X-IronPort-AV: E=Sophos;i="5.77,334,1596470400"; 
-   d="scan'208";a="258790465"
-Received: from mail-dm6nam12lp2168.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.168])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Oct 2020 15:20:59 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZKVJf0JHRusRROA/8YPIptxJAoQsg8KPyj4DxSzMIdttMseG6soV166S2TvXHsOM0l3tIQXVNu0cpLd3ADyOdTxSBuW7zBFkzvdi7++xctJa8B4InXQIsiMSeye3ijXZfmk3Yw+AIW3JVfFS2ifC1hwIE8pNiVV/HFYc8bBqVjClYG5BDodjkeomP+AbpkkXYtuyiXf/VIt+uZZTipicL+p0tTi5ZBklHqND1LXHzJg+c5Knyx46WxYTS5esRuxjML0W+wYcgnJILdxU+KkTIQc6TpYuivWAhN0TyspFq0m2sYloY8zcFGUBDfDRLL8TcfB75UmmVyRWX7XuP0MpQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4JMDeCMvqmJDQcRNpMXrbpHmIohpislWjU4QvlfEf0Y=;
- b=Svaer/Gn6NEU/dtFvxGhXvxCPt5E0dN40h1MrPSdlZcS/jHCr5ko5BpvlrWFM8vXIMzXKtcHvkWH1I+JPqBtshxo9VCngFaCBFeS8iytBIVSKrpILA8rp7lDS5idaC294wVJddeRwoNs2Umg3stoVqcoUFN4nTk0jmouomrCYDL+Es72X7t6/i1Doe599ix5simpKJiL8SURjxWJWBK5A035gs3YO+KCncPMB5fgYdcXDknl2idheN7DnkGbSDMSHxBsvdMrcGoLr9ZfWiIuRmPtsTUZXN74qg4cEDLGtIUtzPg0zlXOMJ28qrSyitRyaJgPovNvCyyVJL/FWLrYLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sun, 4 Oct 2020 03:37:49 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1D4C0613CE;
+        Sun,  4 Oct 2020 00:37:48 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x22so4404910pfo.12;
+        Sun, 04 Oct 2020 00:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4JMDeCMvqmJDQcRNpMXrbpHmIohpislWjU4QvlfEf0Y=;
- b=wtnElEyHzp89eJRPibr0lZEeHeDGhHfMRVOTv2pQ6iuv0Mqy0m5kpDl71FSSzpKMOfXM5WVdJgPr0W/QpGSsgUAmpacXGYJlffRE7IZoBzHncdcbiXyXbcr6q7j6FwdnWPe1bbYfwUJ1QZpKKDLwZKUIIDwwTQcbe9chJOQ3IaY=
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
- by BYAPR04MB4087.namprd04.prod.outlook.com (2603:10b6:a02:a9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Sun, 4 Oct
- 2020 07:20:57 +0000
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::5567:207e:4c1b:3ce1]) by BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::5567:207e:4c1b:3ce1%8]) with mapi id 15.20.3433.041; Sun, 4 Oct 2020
- 07:20:57 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: RE: [PATCH 1/2] scsi: ufs: Add DeepSleep feature
-Thread-Topic: [PATCH 1/2] scsi: ufs: Add DeepSleep feature
-Thread-Index: AQHWmLlX/36ef3l9WEy26/6zpaIUz6mHC2pQ
-Date:   Sun, 4 Oct 2020 07:20:57 +0000
-Message-ID: <BY5PR04MB67053A1985F6FD419214C6B9FC0F0@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <20201002124043.25394-1-adrian.hunter@intel.com>
- <20201002124043.25394-2-adrian.hunter@intel.com>
-In-Reply-To: <20201002124043.25394-2-adrian.hunter@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2017d997-3ae8-47d9-1032-08d8683609ac
-x-ms-traffictypediagnostic: BYAPR04MB4087:
-x-microsoft-antispam-prvs: <BYAPR04MB408771588C8252D1F80F1F58FC0F0@BYAPR04MB4087.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: s9POC3CE5oasXAM5dTZOisNyvXTCmSh7jyS7xM4aOmE4jgsWvy3vJI60GP3m6horI9vcX4TQm1+Dqr8GpFZ5JyMkkET24EDx1LoayBJcn0ZnMp2SOFJRAcS80MkKzqi7zG9HUOjxWEZI/GQnopb7azi6xKPpTpbXxZz3uoTUKFW23dZ2IozWnX3PrxyVijMS/a/6SgrhIt1IJHm3CT21ZmQzi5Lp51U5/zhLfMtwTS0tXuDpc8ShI+vLl5LrCDyiorxHzMTmywbw4HI51xFSwUJhuaJvDnw9hStgKQn9kpsR2dlDvsa0+F4kJ8xScFfJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(396003)(136003)(39850400004)(76116006)(52536014)(558084003)(86362001)(5660300002)(316002)(54906003)(7696005)(8936002)(110136005)(2906002)(8676002)(4326008)(6506007)(9686003)(55016002)(33656002)(26005)(478600001)(186003)(66476007)(71200400001)(66446008)(64756008)(66946007)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: wdK3gSo194UOH+55QkWYVxlLr2dHgRIxMdVSOxyRWwsLKHrc+/0gAYQgAkkPfF7wHSWzT/4d5yfCAcd7BYZJ/QB+fEe7Hr3HC/FYgOyxvPd5k1pyxNoWTevYbaWrirW843yfNtwqqW2JOLkXuwDsX5hsBVVzlDrg/Db5D0gRVKl6E1qc/f7z/3vqhgrdqoKLXrSdS7IDMiPv3eQ7+K2l4+FEGrfAIK8N0y/n7znIk+/sX2BXdlfwrULU6am5hyuLKYO6vcu51eEcbcPmHyitXhA49BWF/6FugGYQqToR2x1+sCbv47qq4vQzY6gCPevIWNSe2tXW7IPpgyT0LkgITUi5Si1s2vOT6ofrm1XsA9R8VXFsqIVkgJGRU/6P3mGiwxHfFBleci7/ZsOcoPm/ED4OnlSdRxYJ+Tk6tUaJOgmM+jZp4q918kxRhafyRovbXjkbgzLnXtGgW+vEY+aEf0QO1ERlAthBKuyl/Kmy8YS4t1ux7cArIF4ZtcJKptgIMXTXPRVJ8mrPr4HuQbkwdr4M1NKeUK/8WrH83EbBSLFfV5Jt9op/h+jJfu8kPRkgwXPpKbs8qotBwzUCAq13qDEgbodWQew+MrmQVvyRrOyK53tY4twA5gFKJFo65RYnSMrTP03Ae3DpKatddEsmoQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WfCbCO1Ao7anoEBmTDmMuxXQu7QeWRK6G03kQt12ZFU=;
+        b=OffVEwzk5rWoDFgvuWzdXLhu4jOQ8cNgoiW4XmVFPkjqhY1t6d853/dAmIUPxImWBn
+         QO1LuG62Lvv9pWLJ3lETIQjMOapNbwHJ/ION/X0kTchfnEwSwQqX6AJoFHYjlygwm38h
+         9Xh9+8Y18FG25ENDFXw44gvp0OTHyea0SzKyP6GSVBZVihPvrkLkSQtoT2OVkx+EuCj0
+         QVPbvcdCMWPn1ho90VrvQguO2suyFftIr7hGdPlSfoRn5Oq16aO9Vfu9SJfgYmr2Qfnb
+         eanYhreeIU86bNc4iy275YpYSNzs8Kai4eN1nVOlmhl5UrREwyOtOQt1FFnqp4inPPdm
+         vG/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WfCbCO1Ao7anoEBmTDmMuxXQu7QeWRK6G03kQt12ZFU=;
+        b=ELO6zVj8SDvkVuaOH7aOKK8hHK8EaExiPIwYWo0jVO3Y0xfPx6bTYFNJeGIuazHIof
+         w7kOm8o1U4h0eeECfnBb+equkObQp9N4TFlkKIMbwIDcYG/zCGTwUnWc6LHQ0eiCH9wV
+         XPvbTNJ9q5Z6YExNwSboVNEZrNfhxv4mMr+1Asg9Ft9qWSbPMdeLzaPHwTu4uBYewTkP
+         GEC7vRVltVUeBdBZ/FTWis8bm5qV29Xs3nBnqvsj1k8y+dwKmfkyZAOFhFA0IecG9we+
+         ORjuqOFUzhY2uD1sPHZTezXIGdsT8QQeqwU1do7/891IE113n0r+/ZotziMVGdLNQlkJ
+         OFrw==
+X-Gm-Message-State: AOAM530YC/CbWZHe8sscsyscLOiy0S49ymnMWg0RpWj7z/zKSJKm7GIX
+        LG16cwgroskmOQaDE1k224w=
+X-Google-Smtp-Source: ABdhPJxEpvyqMNGI4mta5dKV03BltD2crZS1TfUy42HTMCK33lGoq7cjYrelzKeNdW5nWmi334LwQg==
+X-Received: by 2002:a63:f746:: with SMTP id f6mr9198685pgk.128.1601797067284;
+        Sun, 04 Oct 2020 00:37:47 -0700 (PDT)
+Received: from Ryzen-9-3900X.localdomain (ip68-3-136-221.ph.ph.cox.net. [68.3.136.221])
+        by smtp.gmail.com with ESMTPSA id ie13sm6668209pjb.5.2020.10.04.00.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 00:37:46 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 00:37:43 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH RFC 1/2] kconfig: use interpreters to invoke scripts
+Message-ID: <20201004073743.GA31645@Ryzen-9-3900X.localdomain>
+References: <d398ec09-2146-1fef-c594-643a9c868b06@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2017d997-3ae8-47d9-1032-08d8683609ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2020 07:20:57.1295
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K2tlhivLrisVkTp3OrOez8o7b3UajKUQQXMowvtrnh03LVQ0ij/YtPSFFq9FF7DbjYTy4hV+mUXdxeKz5mPidA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d398ec09-2146-1fef-c594-643a9c868b06@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +       /*
-> +        * DeepSleep requires the Immediate flag. DeepSleep state is actu=
-ally
-> +        * entered when the link state goes to Hibern8.
-> +        */
-> +       if (pwr_mode =3D=3D UFS_DEEPSLEEP_PWR_MODE)
-> +               cmd[1] =3D 1;
-Shouldn't it be bit1, i.e. cmd[1] =3D 2 ?
+On Sat, Oct 03, 2020 at 08:50:10PM +0530, Ujjwal Kumar wrote:
+> We cannot rely on execute bits to be set on files in the repository.
+> The build script should use the explicit interpreter when invoking any
+> script from the repository.
+> 
+> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
+> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+> 
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
 
->         cmd[4] =3D pwr_mode << 4;
->=20
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+
+> ---
+>  init/Kconfig | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 91456ac0ef20..524f6b555945 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -30,12 +30,12 @@ config CC_IS_GCC
+>  
+>  config GCC_VERSION
+>  	int
+> -	default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
+> +	default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
+>  	default 0
+>  
+>  config LD_VERSION
+>  	int
+> -	default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
+> +	default $(shell,$(LD) --version | $(AWK) -f $(srctree)/scripts/ld-version.sh)
+>  
+>  config CC_IS_CLANG
+>  	def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
+> @@ -45,20 +45,20 @@ config LD_IS_LLD
+>  
+>  config CLANG_VERSION
+>  	int
+> -	default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
+> +	default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/clang-version.sh $(CC))
+>  
+>  config CC_CAN_LINK
+>  	bool
+> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
+> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
+> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
+> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
+>  
+>  config CC_CAN_LINK_STATIC
+>  	bool
+> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
+> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
+> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
+> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
+>  
+>  config CC_HAS_ASM_GOTO
+> -	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+> +	def_bool $(success,$(CONFIG_SHELL) $(srctree)/scripts/gcc-goto.sh $(CC))
+>  
+>  config CC_HAS_ASM_GOTO_OUTPUT
+>  	depends on CC_HAS_ASM_GOTO
+> -- 
+> 2.26.2
+> 
