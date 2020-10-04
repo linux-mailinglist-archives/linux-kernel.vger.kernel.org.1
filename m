@@ -2,137 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A85282DB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C9E282DB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgJDVOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 17:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgJDVOH (ORCPT
+        id S1726569AbgJDVN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 17:13:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726345AbgJDVN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 17:14:07 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1E3C0613CE;
-        Sun,  4 Oct 2020 14:14:05 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c8so7265959edv.5;
-        Sun, 04 Oct 2020 14:14:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7gA9oTDv2nx4CTXkWjdZU1D66M5iJ2f3g7L7EeYpRzY=;
-        b=YMyZ9mhtEGiDopnT6L0K4z2Bs77YPPsTg7zanex2x0ZRObnttr5PRiug7QsWWcYT44
-         KiYBX5N+I862z5Rsbrk/yE3ir3PXG+Feg/S3lFMfx6otoKEuiZfXkQ3EZEcurNk3T+4c
-         E34h4mTicLH097dwYQATIvRPY9YhDHvLj9EUpZ9anBzGXbtmdljGP1zrwvIr6Jm4ueZT
-         Yt0J9vv1W6WlvxJcG1t/q7vehZfPZj4labmKU9Er5LSVhA40t9tpygAAB0eO0QKtgbBb
-         f+7sW9zN5ZWr9vUisiKrFQi27xs8EBbIni7gt3rY/UIZRVOY0Ci1xrOOTe9KUClHSSy2
-         ujYw==
+        Sun, 4 Oct 2020 17:13:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601846036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D5g8z6S2B6j+xxiFBjjsrhfdJC7yATVO13gI0yfLlEc=;
+        b=AIi6XBnRwfxR++z3fsbDK4bGoimd1sVwR+S4RGHGiloiu1K8KDyaYVbY7/z3yIvKE0smYu
+        f9ulAOWFuwMLZMtMeWxDEq9Tx3jGH1P0yoku4OY7umCCft1DV6qOTAeMuerXpyHhydqtEg
+        7m+n8LEat/2NVKj1q84XN7X2ZWFd5sw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-Ie-28906PPGY3yH2vSXXBw-1; Sun, 04 Oct 2020 17:13:54 -0400
+X-MC-Unique: Ie-28906PPGY3yH2vSXXBw-1
+Received: by mail-qv1-f72.google.com with SMTP id v14so4599643qvq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 14:13:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7gA9oTDv2nx4CTXkWjdZU1D66M5iJ2f3g7L7EeYpRzY=;
-        b=muIk0eF7cjBVu+9iRCKoWfIYx6bVEsVS7JsOMEKSMX41wUvhATsi8n48CkXnPNr/yY
-         WPHM2stUqJjpt4cbmoiTDrqGuf7p08rP5BJ2t8sJszTW/FQui3yz3XYJI9mSdwye7IYB
-         IzNG4Fs1k0rhTtypfZF5hHC87QtgMfA05VuBiiAEJlDyqRz23u5DhQVKUHfdR9c8I3zx
-         DWo4C9oeqdetSIiixPqZ6cTTbgr6nB61rCJSNKtMTT4YkGu1wWPd1kB4CNyandUPDvth
-         Igf+hGJ5UOfg6pvzPXD9YNydr+rcaKnFRkOlioY/RwH83uuIy3VBEOUTSuAtJHyExbWc
-         3ezw==
-X-Gm-Message-State: AOAM533BVy/cw9VU7RsNwDVDPHbK2Yikorx0/5/zvzoj8egzocbIMyI/
-        FcVoEgZBoCcJAtKCGt5qeSU=
-X-Google-Smtp-Source: ABdhPJwXO7OuY1abcos1ZhW7HdL6Pk5MgNC3CA6lsWBno1qabXMND3RaKAiSb7vl75XOelA8KtF/IA==
-X-Received: by 2002:a50:9e87:: with SMTP id a7mr12817999edf.297.1601846043924;
-        Sun, 04 Oct 2020 14:14:03 -0700 (PDT)
-Received: from localhost.localdomain (host-79-12-92-76.retail.telecomitalia.it. [79.12.92.76])
-        by smtp.gmail.com with ESMTPSA id r24sm1387803edm.95.2020.10.04.14.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 14:14:03 -0700 (PDT)
-From:   Elia Devito <eliadevito@gmail.com>
-Cc:     mgross@linux.intel.com, Elia Devito <eliadevito@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] platform/x86: hp-wmi: add support for thermal policy
-Date:   Sun,  4 Oct 2020 23:13:05 +0200
-Message-Id: <20201004211305.11628-1-eliadevito@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200917214957.GD29136@mtg-dev.jf.intel.com>
-References: <20200917214957.GD29136@mtg-dev.jf.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=D5g8z6S2B6j+xxiFBjjsrhfdJC7yATVO13gI0yfLlEc=;
+        b=mDL1LhRyx5eF0EB7p1mkXi5o5gqA/8upY+P2t8yQsX5DYaNs3io6Hp4nugI8lDEhsr
+         cH490oWbZvfGSvYVhkvL2GKiQhqCrFS7qiWHvHU9VQ+ZXJYooONOd4Ic8HRA0arZAX1+
+         8Cm+QCOK7L6DqLUkdfEeg1vStkBpFNrdpHBt3GQpGD6kXyAzP+sYGLR3EJkzIB3EHASh
+         n/mFj+To5T34EMhqvUEzhiaaA7O/92m9illXYcR+XiZ0s0haHj45zzEHkUN7H6n/sE5A
+         HfyaaIHReLy9MW9yh4G/hwpO6j3mkpmJsgNse41x8nRVh4DlvZgo4xesXQguwRp4hGTd
+         c1Sg==
+X-Gm-Message-State: AOAM533TlLAErk7bUAIkX6drboChzBKUoxETl/IYNMNbpzpQGARTytHH
+        3mIlVzvlqwNU+v931Z4wFQpZ1fcJ08ohA4MjUOoYGhiJQSbh2mItozF2T3l0n/tgjcTkytubBW0
+        gNx1iaTf2VfHZDNAOG5WIQtQI
+X-Received: by 2002:a0c:8b02:: with SMTP id q2mr11889463qva.48.1601846033974;
+        Sun, 04 Oct 2020 14:13:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBm/DNLaWx5TY+QXm8x86b1+eqf3lzpjMrjev3k2uVCPg0ICM6del+7XR+gIKDjzCzbdNIjg==
+X-Received: by 2002:a0c:8b02:: with SMTP id q2mr11889447qva.48.1601846033788;
+        Sun, 04 Oct 2020 14:13:53 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 12sm5779154qty.34.2020.10.04.14.13.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 14:13:53 -0700 (PDT)
+Subject: Re: [PATCH v2 6/7] fpga: sec-mgr: enable cancel of secure update
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20201002223701.1317-1-russell.h.weight@intel.com>
+ <20201002223701.1317-7-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ba28b4b3-11f3-e4a0-da77-8336810b30fd@redhat.com>
+Date:   Sun, 4 Oct 2020 14:13:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20201002223701.1317-7-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HP Spectre notebooks (and probably other model as well)
-support up to 4 thermal policy:
- - HP Recommended
- - Performance
- - Cool
- - Quiet
 
-at least on HP Spectre x360 Convertible 15-df0xxx the firmware sets the
-thermal policy to default but hardcode the odvp0 variable to 1, this causes
-thermald to choose the wrong DPTF profile witch result in low performance
-when notebook is on AC, calling thermal policy write command allow firmware
-to correctly set the odvp0 variable.
+On 10/2/20 3:37 PM, Russ Weight wrote:
+> Extend the Intel Security Manager class driver to include
+> an update/cancel sysfs file that can be written to request
+> that an update be canceled. The write may return EBUSY if
+> the update has progressed to the point that it cannot be
+> canceled by software or ENODEV if there is no update in
+> progress.
+>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> ---
+> v2:
+>   - Bumped documentation date and version
+>   - Minor code cleanup per review comments 
+> ---
+>  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 10 ++++
+>  drivers/fpga/ifpga-sec-mgr.c                  | 59 +++++++++++++++++--
+>  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
+>  3 files changed, 66 insertions(+), 4 deletions(-)
 
-Signed-off-by: Elia Devito <eliadevito@gmail.com>
----
- drivers/platform/x86/hp-wmi.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+This is 10/12 of the original patch set.
 
-diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
-index 1762f335bac9..6e448a79caee 100644
---- a/drivers/platform/x86/hp-wmi.c
-+++ b/drivers/platform/x86/hp-wmi.c
-@@ -81,6 +81,7 @@ enum hp_wmi_commandtype {
- 	HPWMI_FEATURE2_QUERY		= 0x0d,
- 	HPWMI_WIRELESS2_QUERY		= 0x1b,
- 	HPWMI_POSTCODEERROR_QUERY	= 0x2a,
-+	HPWMI_THERMAL_POLICY_QUERY	= 0x4c
- };
- 
- enum hp_wmi_command {
-@@ -861,6 +862,26 @@ static int __init hp_wmi_rfkill2_setup(struct platform_device *device)
- 	return err;
- }
- 
-+static int thermal_policy_setup(struct platform_device *device)
-+{
-+	int err, tp;
-+
-+	tp = hp_wmi_read_int(HPWMI_THERMAL_POLICY_QUERY);
-+	if (tp < 0)
-+		return tp;
-+
-+	/*
-+	 * call thermal policy write command to ensure that the firmware correctly
-+	 * sets the OEM variables for the DPTF
-+	 */
-+	err = hp_wmi_perform_query(HPWMI_THERMAL_POLICY_QUERY, HPWMI_WRITE, &tp,
-+							   sizeof(tp), 0);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int __init hp_wmi_bios_setup(struct platform_device *device)
- {
- 	/* clear detected rfkill devices */
-@@ -872,6 +893,8 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
- 	if (hp_wmi_rfkill_setup(device))
- 		hp_wmi_rfkill2_setup(device);
- 
-+	thermal_policy_setup(device);
-+
- 	return 0;
- }
- 
--- 
-2.26.2
+Discussions covered most of my issues, the others are changed here.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
 
