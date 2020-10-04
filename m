@@ -2,149 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2792E282D75
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EB4282D77
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgJDTwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 15:52:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726289AbgJDTws (ORCPT
+        id S1726352AbgJDT7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 15:59:32 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:47474 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgJDT7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 15:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601841167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=81gdfWSJQiIATUxk77MqivOx/sBnbsTjBZna/BWmRt0=;
-        b=ZLWOCB4/85Onx0FbiJFQ1ahZQlYPRWOTcjIrtwa9ZWSH7fMdfzKgle86F2InBwMESPPXS4
-        crR+ye+07lkWHqXSt+8JhTybyzCH0fxZoSAaZaK4pR/mGDv2sdBE2TjPiN8j8i8A5jXuKt
-        Z3+F7BU5+89r8fSFntTx4AM+O1wgqx4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-5Ltar8peOFKTGxqvIATySw-1; Sun, 04 Oct 2020 15:52:44 -0400
-X-MC-Unique: 5Ltar8peOFKTGxqvIATySw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sun, 4 Oct 2020 15:59:31 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0ADA751B6;
-        Sun,  4 Oct 2020 19:52:43 +0000 (UTC)
-Received: from krava (unknown [10.40.192.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 909CE60C05;
-        Sun,  4 Oct 2020 19:52:40 +0000 (UTC)
-Date:   Sun, 4 Oct 2020 21:52:39 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Al Grant <al.grant@foss.arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH] perf inject: Flush ordered events on FINISHED_ROUND
-Message-ID: <20201004195239.GA217601@krava>
-References: <20201002130317.1356440-1-namhyung@kernel.org>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 0B2F9804D0;
+        Sun,  4 Oct 2020 21:59:22 +0200 (CEST)
+Date:   Sun, 4 Oct 2020 21:59:21 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Christoph Hellwig <hch@lst.de>, Dave Airlie <airlied@linux.ie>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, od@zcrc.me,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "gpu/drm: ingenic: Add option to mmap GEM buffers
+ cached"
+Message-ID: <20201004195921.GA556605@ravnborg.org>
+References: <20200930165212.GA8833@lst.de>
+ <20201004141758.1013317-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201002130317.1356440-1-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201004141758.1013317-1-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8
+        a=hHz-11tamBC_RTbrKwYA:9 a=NK4jn7RG8jkPqzVQ:21 a=7SsSijUGAxRx6cEd:21
+        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:03:17PM +0900, Namhyung Kim wrote:
-> Currently perf inject just repipes the event without any flush.  It
-> makes an issue that it changes the order of events processed.
-> 
-> Normally we want to process events in time order, but events are
-> recorded from several cpus and they weren't sorted with each other.
-> So we put them into the ordered event queue, sorted by time, and flush
-> them when we see a next FINISHED_ROUND event.
-> 
-> But this is for events from kernel, user space events (like the
-> FINISHED_ROUND) are processed without queueing.  So during the perf
-> inject, it writes all the FINISHED_ROUND events directly while
-> SAMPLE (and other) events are kept in the queue.  This makes the user
-> space events are put before any kernel events.
-> 
-> You can see that with the following command:
-> 
->   $ perf record -a -o- sleep 1 | perf inject -b | perf script -i- --show-round-events
->   PERF_RECORD_FINISHED_ROUND
->   PERF_RECORD_FINISHED_ROUND
->   PERF_RECORD_FINISHED_ROUND
->   ...
-> 
-> Omitting perf inject, you can see the events are placed in the middle
-> of the data.
-> 
-> You might argue that the whole point of the FINISHED_ROUND event is to
-> sort (kernel) events.  And after perf inject, all events are written
-> in a proper time order so we don't care about the FINISHED_ROUND event
-> anymore.
-> 
-> But the problem is we don't know whether the input data is sorted or
-> not (maybe we can add a feature bit for this?) so it should use an
-> ordered event queue when processing the input like in perf report.
+Hi Paul.
 
-I like the idea of storing the information that the data is sorted,
-and when it's there, let's not use ordered_oevets
+On Sun, Oct 04, 2020 at 04:17:58PM +0200, Paul Cercueil wrote:
+> This reverts commit 37054fc81443cc6a8c3a38395f384412b8373d82.
+
+In the changelog please refer to commits like this:
+37054fc81443 ("gpu/drm: ingenic: Add option to mmap GEM buffers cached")
+
+Use "dim cite 37054fc81443cc6a8c3a38395f384412b8373d82" to get the right format.
 
 > 
-> Remember all the FINISHED_ROUND events now come before other events so
-> the tool cannot know when it can flush the data so everything will be
-> queued until it meets the end of the input.  Actually it's same for
-> perf inject itself as it doesn't flush the queue.
+> At the very moment this commit was created, the DMA API it relied on was
+> modified in the DMA tree, which caused the driver to break in
+> linux-next.
 > 
-> Below measures time and memory usage during the perf inject and
-> report using ~190MB data file.
+> Revert it for now, and it will be resubmitted later to work with the new
+> DMA API.
 > 
-> Before:
->   perf inject:  11.09 s,  382148 KB
->   perf report:   8.05 s,  397440 KB
-> 
-> After:
->   perf inject:  16.24 s,   83376 KB
->   perf report:   7.96 s,  216184 KB
-> 
-> As you can see, it used 2x memory of the input size.  I guess it's
-> because it needs to keep the copy for the whole input.  But I don't
-> understand why processing time of perf inject increased..
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-would be good to find out first
+With the changelog updated:
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-thanks,
-jirka
-
-> 
-> I'm not sure how it affects the auxtrace, but it should be fine IMHO.
-> 
-> Cc: Al Grant <al.grant@foss.arm.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->  tools/perf/builtin-inject.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 114 +---------------------
+>  drivers/gpu/drm/ingenic/ingenic-drm.h     |   4 -
+>  drivers/gpu/drm/ingenic/ingenic-ipu.c     |  12 +--
+>  3 files changed, 4 insertions(+), 126 deletions(-)
 > 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 6d2f410d773a..9fa78a9edfc5 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -79,6 +79,7 @@ static int perf_event__repipe_oe_synth(struct perf_tool *tool,
->  				       union perf_event *event,
->  				       struct ordered_events *oe __maybe_unused)
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 0225dc1f5eb8..7d8b0ad52979 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -9,8 +9,6 @@
+>  #include <linux/component.h>
+>  #include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+> -#include <linux/dma-noncoherent.h>
+> -#include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/of_device.h>
+> @@ -24,7 +22,6 @@
+>  #include <drm/drm_color_mgmt.h>
+>  #include <drm/drm_crtc.h>
+>  #include <drm/drm_crtc_helper.h>
+> -#include <drm/drm_damage_helper.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_gem_cma_helper.h>
+>  #include <drm/drm_fb_cma_helper.h>
+> @@ -100,11 +97,6 @@ struct ingenic_drm {
+>  	struct notifier_block clock_nb;
+>  };
+>  
+> -static bool ingenic_drm_cached_gem_buf;
+> -module_param_named(cached_gem_buffers, ingenic_drm_cached_gem_buf, bool, 0400);
+> -MODULE_PARM_DESC(cached_gem_buffers,
+> -		 "Enable fully cached GEM buffers [default=false]");
+> -
+>  static bool ingenic_drm_writeable_reg(struct device *dev, unsigned int reg)
 >  {
-> +	ordered_events__flush(oe, OE_FLUSH__ROUND);
->  	return perf_event__repipe_synth(tool, event);
+>  	switch (reg) {
+> @@ -402,8 +394,6 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+>  	     plane->state->fb->format->format != state->fb->format->format))
+>  		crtc_state->mode_changed = true;
+>  
+> -	drm_atomic_helper_check_plane_damage(state->state, state);
+> -
+>  	return 0;
 >  }
 >  
+> @@ -521,38 +511,6 @@ void ingenic_drm_plane_config(struct device *dev,
+>  	}
+>  }
+>  
+> -void ingenic_drm_sync_data(struct device *dev,
+> -			   struct drm_plane_state *old_state,
+> -			   struct drm_plane_state *state)
+> -{
+> -	const struct drm_format_info *finfo = state->fb->format;
+> -	struct ingenic_drm *priv = dev_get_drvdata(dev);
+> -	struct drm_atomic_helper_damage_iter iter;
+> -	unsigned int offset, i;
+> -	struct drm_rect clip;
+> -	dma_addr_t paddr;
+> -	void *addr;
+> -
+> -	if (!ingenic_drm_cached_gem_buf)
+> -		return;
+> -
+> -	drm_atomic_helper_damage_iter_init(&iter, old_state, state);
+> -
+> -	drm_atomic_for_each_plane_damage(&iter, &clip) {
+> -		for (i = 0; i < finfo->num_planes; i++) {
+> -			paddr = drm_fb_cma_get_gem_addr(state->fb, state, i);
+> -			addr = phys_to_virt(paddr);
+> -
+> -			/* Ignore x1/x2 values, invalidate complete lines */
+> -			offset = clip.y1 * state->fb->pitches[i];
+> -
+> -			dma_cache_sync(priv->dev, addr + offset,
+> -				       (clip.y2 - clip.y1) * state->fb->pitches[i],
+> -				       DMA_TO_DEVICE);
+> -		}
+> -	}
+> -}
+> -
+>  static void ingenic_drm_update_palette(struct ingenic_drm *priv,
+>  				       const struct drm_color_lut *lut)
+>  {
+> @@ -581,8 +539,6 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>  	if (state && state->fb) {
+>  		crtc_state = state->crtc->state;
+>  
+> -		ingenic_drm_sync_data(priv->dev, oldstate, state);
+> -
+>  		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
+>  		width = state->src_w >> 16;
+>  		height = state->src_h >> 16;
+> @@ -752,69 +708,7 @@ static void ingenic_drm_disable_vblank(struct drm_crtc *crtc)
+>  	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL, JZ_LCD_CTRL_EOF_IRQ, 0);
+>  }
+>  
+> -static struct drm_framebuffer *
+> -ingenic_drm_gem_fb_create(struct drm_device *dev, struct drm_file *file,
+> -			  const struct drm_mode_fb_cmd2 *mode_cmd)
+> -{
+> -	if (ingenic_drm_cached_gem_buf)
+> -		return drm_gem_fb_create_with_dirty(dev, file, mode_cmd);
+> -
+> -	return drm_gem_fb_create(dev, file, mode_cmd);
+> -}
+> -
+> -static int ingenic_drm_gem_mmap(struct drm_gem_object *obj,
+> -				struct vm_area_struct *vma)
+> -{
+> -	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(obj);
+> -	struct device *dev = cma_obj->base.dev->dev;
+> -	unsigned long attrs;
+> -	int ret;
+> -
+> -	if (ingenic_drm_cached_gem_buf)
+> -		attrs = DMA_ATTR_NON_CONSISTENT;
+> -	else
+> -		attrs = DMA_ATTR_WRITE_COMBINE;
+> -
+> -	/*
+> -	 * Clear the VM_PFNMAP flag that was set by drm_gem_mmap(), and set the
+> -	 * vm_pgoff (used as a fake buffer offset by DRM) to 0 as we want to map
+> -	 * the whole buffer.
+> -	 */
+> -	vma->vm_flags &= ~VM_PFNMAP;
+> -	vma->vm_pgoff = 0;
+> -	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+> -
+> -	ret = dma_mmap_attrs(dev, vma, cma_obj->vaddr, cma_obj->paddr,
+> -			     vma->vm_end - vma->vm_start, attrs);
+> -	if (ret)
+> -		drm_gem_vm_close(vma);
+> -
+> -	return ret;
+> -}
+> -
+> -static int ingenic_drm_gem_cma_mmap(struct file *filp,
+> -				    struct vm_area_struct *vma)
+> -{
+> -	int ret;
+> -
+> -	ret = drm_gem_mmap(filp, vma);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return ingenic_drm_gem_mmap(vma->vm_private_data, vma);
+> -}
+> -
+> -static const struct file_operations ingenic_drm_fops = {
+> -	.owner		= THIS_MODULE,
+> -	.open		= drm_open,
+> -	.release	= drm_release,
+> -	.unlocked_ioctl	= drm_ioctl,
+> -	.compat_ioctl	= drm_compat_ioctl,
+> -	.poll		= drm_poll,
+> -	.read		= drm_read,
+> -	.llseek		= noop_llseek,
+> -	.mmap		= ingenic_drm_gem_cma_mmap,
+> -};
+> +DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
+>  
+>  static struct drm_driver ingenic_drm_driver_data = {
+>  	.driver_features	= DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
+> @@ -878,7 +772,7 @@ static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs =
+>  };
+>  
+>  static const struct drm_mode_config_funcs ingenic_drm_mode_config_funcs = {
+> -	.fb_create		= ingenic_drm_gem_fb_create,
+> +	.fb_create		= drm_gem_fb_create,
+>  	.output_poll_changed	= drm_fb_helper_output_poll_changed,
+>  	.atomic_check		= drm_atomic_helper_check,
+>  	.atomic_commit		= drm_atomic_helper_commit,
+> @@ -1032,8 +926,6 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  		return ret;
+>  	}
+>  
+> -	drm_plane_enable_fb_damage_clips(&priv->f1);
+> -
+>  	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
+>  
+>  	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+> @@ -1062,8 +954,6 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+>  			return ret;
+>  		}
+>  
+> -		drm_plane_enable_fb_damage_clips(&priv->f0);
+> -
+>  		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && has_components) {
+>  			ret = component_bind_all(dev, drm);
+>  			if (ret) {
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> index ee3a892c0383..9b48ce02803d 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
+> @@ -171,10 +171,6 @@ void ingenic_drm_plane_config(struct device *dev,
+>  			      struct drm_plane *plane, u32 fourcc);
+>  void ingenic_drm_plane_disable(struct device *dev, struct drm_plane *plane);
+>  
+> -void ingenic_drm_sync_data(struct device *dev,
+> -			   struct drm_plane_state *old_state,
+> -			   struct drm_plane_state *state);
+> -
+>  extern struct platform_driver *ingenic_ipu_driver_ptr;
+>  
+>  #endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> index 38c83e8cc6a5..fc8c6e970ee3 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+> @@ -20,7 +20,6 @@
+>  
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+> -#include <drm/drm_damage_helper.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_fb_cma_helper.h>
+>  #include <drm/drm_fourcc.h>
+> @@ -317,8 +316,6 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
+>  				JZ_IPU_CTRL_CHIP_EN | JZ_IPU_CTRL_LCDC_SEL);
+>  	}
+>  
+> -	ingenic_drm_sync_data(ipu->master, oldstate, state);
+> -
+>  	/* New addresses will be committed in vblank handler... */
+>  	ipu->addr_y = drm_fb_cma_get_gem_addr(state->fb, state, 0);
+>  	if (finfo->num_planes > 1)
+> @@ -537,7 +534,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  
+>  	if (!state->crtc ||
+>  	    !crtc_state->mode.hdisplay || !crtc_state->mode.vdisplay)
+> -		goto out_check_damage;
+> +		return 0;
+>  
+>  	/* Plane must be fully visible */
+>  	if (state->crtc_x < 0 || state->crtc_y < 0 ||
+> @@ -554,7 +551,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  		return -EINVAL;
+>  
+>  	if (!osd_changed(state, plane->state))
+> -		goto out_check_damage;
+> +		return 0;
+>  
+>  	crtc_state->mode_changed = true;
+>  
+> @@ -581,9 +578,6 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+>  	ipu->denom_w = denom_w;
+>  	ipu->denom_h = denom_h;
+>  
+> -out_check_damage:
+> -	drm_atomic_helper_check_plane_damage(state->state, state);
+> -
+>  	return 0;
+>  }
+>  
+> @@ -765,8 +759,6 @@ static int ingenic_ipu_bind(struct device *dev, struct device *master, void *d)
+>  		return err;
+>  	}
+>  
+> -	drm_plane_enable_fb_damage_clips(plane);
+> -
+>  	/*
+>  	 * Sharpness settings range is [0,32]
+>  	 * 0       : nearest-neighbor
 > -- 
-> 2.28.0.806.g8561365e88-goog
-> 
-
+> 2.28.0
