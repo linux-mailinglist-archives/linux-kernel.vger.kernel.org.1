@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7522B28287A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 06:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58B728287C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 06:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgJDEDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 00:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S1726235AbgJDEDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 00:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgJDEDH (ORCPT
+        with ESMTP id S1725840AbgJDEDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 00:03:07 -0400
+        Sun, 4 Oct 2020 00:03:15 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A63C0613CE;
-        Sat,  3 Oct 2020 21:03:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E0EC0613CE;
+        Sat,  3 Oct 2020 21:03:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
         :Reply-To:Content-ID:Content-Description;
-        bh=eVh3e7AfStrrTBvDoNAkIk/GhPVsgabPyX7WZ1hyuo0=; b=zQNUmIwxewnBI4vSOjy4AcQ4Wh
-        HE5P/lDakCLoGH3+n0LgblCZw8GwYkRDFutBaTovnYZwgJvK8QwgPP+YWrtrxSG4/98fZleuI7MMG
-        gTXzdqy/1OSCyfWIGVjpaiw7jvKGmMDlQz/FKnR/cHmn4gR8TU2Z1i6Y975c+4FUcWJVXM4ErgPSd
-        cPbjzahIyDAHTmkTrpA6fK2YjOLln0/BlLRCPbj4ChQdgIsxUEUNGD46Oa+FEv1roQ5T2V4ImsLbI
-        VXTzqUUfLPcFbiBF6J84EvRMb5D3n4xaK4RzMfoF+ubQV92kwEdnJrQ2Na7gMQs1c9Cwn1ALxN8C5
-        16zkd2tA==;
+        bh=uosIuGqo5WrSfn/X7dmY/Vzi0c2BvZ+1dVG4/rwapaw=; b=Jl3WI5+2o9Xzmu2oBODrs461CX
+        zvvloen5rtwR2vOKR0NVhpTkgA1hw4xYzDb9MDPrOQDwDJLdwcw20zNs0ha9yBUSJMNSuQEOTrRPp
+        K7AqNWVS9Tb37l9KEu4N0bIFV/QJ+NVZ6WsJ07Rte1JmzWvF6qN3KerGVqbcwn6R+rpcej/XqH5D7
+        3slSUPVO00WYN9kaIBVYZ5tu1GKb2QkkKZ8LNVSaUCYlgs71O12PB1oE1jJR3hnaB/UpmFXFalfxU
+        oSIaXoGAj4qFBTWGPMUIu9AOBaQwOcxMwusrD3HsoegMoyvjHA0FSZGoTuoEeqye91z1rJS0UoPRY
+        w4vIzR1A==;
 Received: from [2601:1c0:6280:3f0::2c9a]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOvEm-00054b-CY; Sun, 04 Oct 2020 04:03:04 +0000
+        id 1kOvEu-00056B-GD; Sun, 04 Oct 2020 04:03:12 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [RFC PATCH v1 20/26] docs: reporting-bugs: instructions for
- handling regressions
+Subject: Re: [RFC PATCH v1 24/26] docs: reporting-bugs: explain why users
+ might get neither reply nor fix
 To:     Thorsten Leemhuis <linux@leemhuis.info>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <cover.1601541165.git.linux@leemhuis.info>
- <7071ace5086f39ceaa2b1ffcc3bc774f362b4aa7.1601541165.git.linux@leemhuis.info>
-Message-ID: <06589a41-94c8-dc94-247f-71390a5d99c9@infradead.org>
-Date:   Sat, 3 Oct 2020 21:03:01 -0700
+ <aac1d02c1ca7d4a20dfe47ae6f824e1091c654e3.1601541165.git.linux@leemhuis.info>
+Message-ID: <3f495f9f-7daf-861f-6c84-e28eb91e7a4e@infradead.org>
+Date:   Sat, 3 Oct 2020 21:03:09 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <7071ace5086f39ceaa2b1ffcc3bc774f362b4aa7.1601541165.git.linux@leemhuis.info>
+In-Reply-To: <aac1d02c1ca7d4a20dfe47ae6f824e1091c654e3.1601541165.git.linux@leemhuis.info>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
-> Describe what users will have to do if they deal with a regression.
-> Point out that bisection is really important.
-> 
-> While at it explicitly mention the .config files for the newer kernel
-> needs to be similar to the old kernel, as that's an important detail
-> quite a few people seem to miss sometimes.
+On 10/1/20 1:50 AM, Thorsten Leemhuis wrote:
+> Not even getting a reply after one invested quite a bit of time with
+> preparing and writing a report can be quite devastating. But when it
+> comes to Linux, this can easily happen for good or bad reasons. Hence,
+> use this opportunity to explain why this might happen, hopefully some
+> people then will be less disappointed if it happens.
 > 
 > Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
 > ---
->  Documentation/admin-guide/bug-bisect.rst     |  2 +
->  Documentation/admin-guide/reporting-bugs.rst | 53 ++++++++++++++++++++
->  2 files changed, 55 insertions(+)
+>  Documentation/admin-guide/reporting-bugs.rst | 56 ++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
 > 
-> diff --git a/Documentation/admin-guide/bug-bisect.rst b/Documentation/admin-guide/bug-bisect.rst
-> index 59567da344e8..38d9dbe7177d 100644
-> --- a/Documentation/admin-guide/bug-bisect.rst
-> +++ b/Documentation/admin-guide/bug-bisect.rst
-> @@ -1,3 +1,5 @@
-> +.. _bugbisect:
-> +
->  Bisecting a bug
->  +++++++++++++++
->  
 > diff --git a/Documentation/admin-guide/reporting-bugs.rst b/Documentation/admin-guide/reporting-bugs.rst
-> index e1219e56979f..71c49347c544 100644
+> index 340fa44b352c..8f60af27635b 100644
 > --- a/Documentation/admin-guide/reporting-bugs.rst
 > +++ b/Documentation/admin-guide/reporting-bugs.rst
-> @@ -792,6 +792,59 @@ sometimes needs to get decoded to be readable, which is explained in
->  admin-guide/bug-hunting.rst.
+> @@ -1402,6 +1402,62 @@ for the subsystem as well as the stable mailing list the `MAINTAINERS file
+>  mention in the section "STABLE BRANCH".
 >  
 >  
-> +Special care for regressions
-> +----------------------------
+> +Why some issues won't get any reaction or remain unfixed after being reported
+> +=============================================================================
 > +
-> +    *If your problem is a regression, try to narrow down when the issue was
-> +    introduced as much as possible.*
+> +When reporting a problem to the Linux developers, be aware only 'issues of high
+> +priority' (regression, security issue, severe problems) are definitely going to
+> +get resolved. The maintainers or if all else fails Linus Torvalds himself will
+> +make sure of that. They and the other kernel developers will fix a lot of other
+> +issues as well. But be aware that sometimes they can't or won't help; and
+> +sometimes there isn't even anyone to send a report to.
 > +
-> +Linux lead developer Linus Torvalds insists that the Linux kernel never
-> +worsens, that's why he deems regressions as unacceptable and wants to see them
-> +fixed quickly. That's why changes that introduced a regression are often
-> +promptly reverted if the issue they cause can't get solved quickly any other
-> +way. Reporting a regression is thus a bit like playing a kind of trump card to
-> +get something quickly fixed. But for that to happen the culprit needs to be
-> +known. Normally it's up to the reporter to track down the change that's causing
-> +the regression, as maintainers often won't have the time or setup at hand to
-> +reproduce it themselves.
+> +This is best explained with kernel developers that contribute to the Linux
+> +kernel in their spare time. Quite a few of the drivers in the kernel were
+> +written by such programmers, often because they simply wanted to make their
+> +hardware usable on their favorite operating system.
 > +
-> +To find the culprit there is a process called 'bisection' which the document
-> +:ref:`Documentation/admin-guide/bug-bisect.rst <bugbisect>` describes in detail.
-> +That process will often require you to build about ten to twenty kernel images
-> +and test each of them for the issue. Yes, that takes some time, but 't worry,
-
-                                                                   but don't worry,
-
-> +it works a lot quicker than most people assume. Thanks to a 'binary search' this
-> +will lead you to the one commit in the source code management system that's
-> +causing the regression. Once you found it, serch the net for the subject of the
-
-                                    find it, search
-
-Often it can find the bad commit, but sometimes it fails. It's not always perfect.
-
-> +change, its commit id and the shortened commit id (the first 12 characters of
-> +the commit id). This will lead you to exisiting reports about it, if there are
-
-                                         existing
-
-> +any.
+> +These programmers most of the time will happily fix problems other people
+> +report. But nobody can force them to do, as they are contributing voluntarily.
 > +
-> +Note, a bisection needs a bit of know-how, which not everyone has, and quite a
-> +bit of effort, which not everyone is willing to invest. Nevertheless, it's
-> +highly recommended performing a bisection yourself. If you really can't or don't
-
-I would say:
-   highly recommended to perform a bisection yourself.
-
-> +want to go down that route at least find out which mainline kernel introduced
-> +the regression. If something for example breaks when switching from 5.5.15 to
-> +5.8.4, then try at least all the mainline releases in that area (5.6, 5.7 and
-> +5.8) to check when it first showed up. Unless you're trying to find a regression
-> +in a stable or longterm kernel, avoid testing versions which number has three
-> +sections (5.6.12, 5.7.8), as that can lead to confusion and might make your
-> +testing useless. Then feel free to go further in the reporting process. But
-> +keep in mind: if the developers will be able to help depend on the issue at
-
-                                                        depends
-
-> +hand. Sometimes the developers from the report will be able to recognize want
-> +went wrong and fix it; other times they might be unable to help unless the
-> +reporter performs a bisection.
+> +Then there are situations where such developers really want to fix an issue,
+> +but can't: they lack hardware programming documentation to do so. This often
+> +happens when the publicly available docs are superficial or the driver was
+> +written with the help of reverse engineering.
 > +
-> +When dealing with regressions make sure the issue you face is really caused by
-> +the kernel and not by something else, as outlined above already.
+> +Sooner or later spare time developers will also stop caring for the driver.
+> +Maybe their test hardware broke, got replaced by something more fancy, or is so
+> +old that it's something you don't find much outside of computer museums
+> +anymore. Or the developer stops caring for their code and Linux at all, as
+> +something different in their life became way more important. Sometimes nobody
+> +is willing to take over the job as maintainer – and nobody can be forced to, as
+> +contributing to the Linux kernel is done on a voluntary basis. Abandoned
+> +drivers nevertheless remain in the kernel: they are still useful for people and
+> +removing would be a regression.
 > +
-> +In the whole process keep in mind: an issue only qualifies as regression if the
-> +older and the newer kernel got build with a similar configuration. The best way
+> +The situation is not that different with developers that are paid for their
+> +work on the Linux kernel. Those contribute most changes these days. But their
+> +employers sooner or later also stop caring for some code and make its programmer
+> +focus on other thing. Hardware vendors for example earn their money mainly by
 
-                                  built
+         on other things.
 
-> +to archive this: copy the configuration file (``.config``) from the old kernel
-> +freshly to each newer kernel version you try. Afterwards run
-> +``make oldnoconfig`` to adjust it for the needs of the new version without
-> +enabling any new feature, as those are allowed to cause regressions.
+> +selling new hardware; quite a few of them hence are not investing much time and
+> +energy in maintaining a Linux kernel driver for something they sold years ago.
+> +Enterprise Linux distributors often care for a longer time period, but in new
+> +version often leave support for old and rare hardware aside to limit the scope.
+> +Often spare time contributors take over once a company leaves some orphan some
+
+                                                                  drop last: some
+
+> +code, but as mentioned above: sooner or later will leave the code behind, too.
+
+                                           later they will leave the code behind, too.
+
+> +
+> +Priorities are another reason why some issues are not fixed, as maintainers
+> +quite often are forced to set those, as time to work on Linux is limited. That's
+> +true for spare time or the time employers grant their developers to spend on
+> +maintenance work on the upstream kernel. Sometimes maintainers also get
+> +overwhelmed with reports, even if a driver is working nearly perfectly. To not
+> +get completely stuck, the programmer thus might have no other choice then to
+
+                                                                        than to
+
+> +prioritize issue reports and reject some of them.
+> +
+> +But don't worry too much about all of this, a lot of drivers have active
+> +maintainers who are quite interested in fixing as many issues as possible.
 > +
 > +
 >  .. ############################################################################
