@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D83282A41
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 12:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C2E282A4E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 12:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgJDKw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 06:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgJDKw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 06:52:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C549E208A9;
-        Sun,  4 Oct 2020 10:52:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601808748;
-        bh=LTFTpf96xiRnQzkHrsJDx2t7cosvHAasmQcVgfkqtmc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fTFrUfNxvhDhr1lg9I5CPHZmNPwzw7NWNw/E1IzBUMDPl3/MYvGhVKExnHinzKkK3
-         g8rdJGAvgfPaxDJGQKujvh0uZJ98sioqxmbF5hRpDCuF9gUrjuNOsP2o5DgRpDxynU
-         lCWCPDllVX/GvaBxJAbY8LkskvrOdwYwfXyEx+ao=
-Date:   Sun, 4 Oct 2020 12:53:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-Message-ID: <20201004105314.GB2429@kroah.com>
-References: <20201003135449.GA2691@kroah.com>
- <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
- <20201003160713.GA1512229@kroah.com>
- <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
- <20201004105124.GA2429@kroah.com>
+        id S1725988AbgJDK7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 06:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDK67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 06:58:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6544AC0613CE;
+        Sun,  4 Oct 2020 03:58:54 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u3so3562556pjr.3;
+        Sun, 04 Oct 2020 03:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y8R13MrEUeHU+M2+OfMCzecQHtp4h9EaF+xa9gESpa8=;
+        b=VQ3nxo/dd4KDAeCJnlToDINx6uvb1hzyreMLbofLc1Lnf8kz9Nj76ab/HJBsBh9qd5
+         BjyWNzsHoo7+LudounhLzlkptxZ5e2qwAYrLS05z1yO3o2GlsQgxGJeiqlPkHJV/p+4V
+         iFAKkcXc0O87KYUJfaGCuMfDLNxHpjjaVIShbzw+ooC2VF0O+K/fmXqrGqL2j8IKAJ0y
+         2/wCipWPDpBtDyqh6KgSssjTelM57O93imjwqyvdMRpd6EUJ3SbxwNf5s/u2ut0+eQUQ
+         6cbALKHYz95ad/CEaM7/bxJ57mtBmEbsTTAZY7Vkxkx+o1bHjZc2s43EyVUM1LzXxuh2
+         3N7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y8R13MrEUeHU+M2+OfMCzecQHtp4h9EaF+xa9gESpa8=;
+        b=kvrnOqW/r6lZamj1sobMjUTYpw5rwcjhvhBATUUjzuDEuOnQbiDhKZDRcmnSwPbC9b
+         SLm4tXfIwmGcubM4i9BxaBrPXebaGGhRTcG6a+L+jLKQVFJJcjuOEGvTFOmOvcQCr3/J
+         GpYV/r57N1l6STvBeHIB935mJSIEWHuDYo+QpxG7ANv38tRiv9hYk++afkqJCOvVBfGC
+         Ia0AAUhXNoFkD2AeyIQXEaN12o/Rh9W16nQEMiUxy3l53mmd5xLay4qksq0n5J3EmCwv
+         f9zcTJUFzt/dyuDdIf39gX8Jcp/1PTovjVNm5zZwwgkBl58DiS8+HHlhdl5sBs3zwc7r
+         vM7g==
+X-Gm-Message-State: AOAM530y6q16Ma+GUE+2HTFLiMes7VOslUIx/6yit8e4K0qTLWRkKb2q
+        PiCub+KFj9051xRJDQgOKiE=
+X-Google-Smtp-Source: ABdhPJzo4tYDYMN4QPqKFJ9QWagdn8EpJPAQRXK3B5M4gk3ofjxcN409cs5uQsZPzrbzvbpGwPtBOg==
+X-Received: by 2002:a17:90a:4043:: with SMTP id k3mr11450036pjg.141.1601809133834;
+        Sun, 04 Oct 2020 03:58:53 -0700 (PDT)
+Received: from [192.168.1.5] ([110.77.216.3])
+        by smtp.googlemail.com with ESMTPSA id g4sm7310799pgg.75.2020.10.04.03.58.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 03:58:53 -0700 (PDT)
+Subject: Re: [PATCH] USB: serial: option: Add Telit FT980-KS composition
+To:     Leonid Bloch <lb.workbox@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Leonid Bloch <leonidb@asocscloud.com>
+References: <20201004095703.2633-1-lb.workbox@gmail.com>
+From:   Lars Melin <larsm17@gmail.com>
+Message-ID: <886eb499-4db4-1d61-2e67-0335423bf077@gmail.com>
+Date:   Sun, 4 Oct 2020 17:58:49 +0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004105124.GA2429@kroah.com>
+In-Reply-To: <20201004095703.2633-1-lb.workbox@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 12:51:24PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Oct 03, 2020 at 08:33:18PM +0200, Marcel Holtmann wrote:
-> > Hi Greg,
-> > 
-> > >>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
-> > >>> breaks all bluetooth connections on my machine.
-> > >>> 
-> > >>> Cc: Marcel Holtmann <marcel@holtmann.org>
-> > >>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
-> > >>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
-> > >>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > >>> ---
-> > >>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
-> > >>> 1 file changed, 2 insertions(+), 39 deletions(-)
-> > >>> 
-> > >>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
-> > >>> stopped working on my desktop system.  I finally got the time to do
-> > >>> bisection today, and it came down to this patch.  Reverting it on top of
-> > >>> 5.9-rc7 restored bluetooth devices and now my input devices properly
-> > >>> work.
-> > >>> 
-> > >>> As it's almost 5.9-final, any chance this can be merged now to fix the
-> > >>> issue?
-> > >> 
-> > >> can you be specific what breaks since our guys and I also think the
-> > >> ChromeOS guys have been testing these series of patches heavily.
-> > > 
-> > > My bluetooth trackball does not connect at all.  With this reverted, it
-> > > all "just works".
-> > > 
-> > > Same I think for a Bluetooth headset, can check that again if you really
-> > > need me to, but the trackball is reliable here.
-> > > 
-> > >> When you run btmon does it indicate any errors?
-> > > 
-> > > How do I run it and where are the errors displayed?
-> > 
-> > you can do btmon -w trace.log and just let it run like tcdpump.
+On 10/4/2020 16:57, Leonid Bloch wrote:
+> This commit adds the following Telit FT980-KS composition:
 > 
-> Ok, attached.
+> 0x1054: rndis, diag, adb, nmea, modem, modem, aux
 > 
-> The device is not connecting, and then I open the gnome bluetooth dialog
-> and it scans for devices in the area, but does not connect to my
-> existing devices at all.
+> AT commands can be sent to /dev/ttyUSB5.
 > 
 
-And any hints on how to read this file?  'btsnoop' has no man page, and
-the --help options are pretty sparse :(
+Please submit a verbose lsusb listing for the device, I can't imagine 
+that the adb interface should be handled by the option serial driver so 
+there will never be a ttyUSB5.
 
-thanks,
 
-greg k-h
+thanks
+Lars
+
