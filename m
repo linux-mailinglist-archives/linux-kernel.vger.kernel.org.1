@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C85B282960
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1904282962
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgJDHQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 03:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDHQx (ORCPT
+        id S1725895AbgJDHSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 03:18:25 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8682 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDHSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 03:16:53 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7F5C0613CE;
-        Sun,  4 Oct 2020 00:16:52 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id p21so3659633pju.0;
-        Sun, 04 Oct 2020 00:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wTu6mV8M0PZGhZvk2kb+ZcD1dw1mw7y+tx+MmFTk1ow=;
-        b=CGdVC3cyTGmWUQQF7nbfsccUqGk3PsUBtBPAlIEdVo8rtQjBGX3nPMBuDMKfOZ7YvJ
-         drxCEbEOnMtiQetfr7nAfC6wnON7Zlvk+o0a+iZ5fcCwkzY6xsHR635YkcITTOPvT6KI
-         O+GIUwloWcYGmFCBv8re7J51EhaOpjKaM8jaUuloq0zvQ74X1R+PMIshG2T+/FwaQH5O
-         MyZnfj3SZhFxjEHYv58BRX53YcmU0CiKgsKJ3H1HaLcARggRNvVUJ+8Gev2n82LYv7k/
-         nMkx5wRXk4fYFllz3j4gISROcnpqI1G2AaDICZA+Xx9x4YzDF8Ivst6lBGr2mfoAKaQt
-         TLeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wTu6mV8M0PZGhZvk2kb+ZcD1dw1mw7y+tx+MmFTk1ow=;
-        b=IqVj5X52wWhNC/TGFFanTTMUZQ4AFfK4CA7jc70a8G815YSxq3AvA44meCO58uR24N
-         bapF4wLw+V13C2v9L5PfX9BgSQtm2/VIYxnLI5JC4JYKf4CZjzOqaOePAmaig17XqzRT
-         sFPjSrElCQD91qJ7Re0zZlIzr/PZ7ZUMq2C/wRgVhhROt96CsiZXAhLf7zCmiqrVzmyc
-         W8k9vHxQ5bbhULCs8eF91eXuq+ret7RnyLr6Ia8CVHH5JrBAKpU1cEGNSsihfZz7m/6S
-         3jMLklF4UfiDR6VbL2VtIUAetWcMLmlIFdOFfZ3+VXkb9a09Xm0N/qTMhVCqJSotVbKq
-         ZQFg==
-X-Gm-Message-State: AOAM532VUvReTBcd46iggtMrQuDG7kv5Dnu3lIsxHfvGrMx/HThjiIMA
-        +rXkFLRzWNMnJ+40gtPbCqc=
-X-Google-Smtp-Source: ABdhPJzB6lbS+zcp60SMSO6Fjy5MFZNMhbB3nz3nR6XXtD0vSb39ubadiIN1OSv5SyM2MCoeO+DZNQ==
-X-Received: by 2002:a17:90b:4303:: with SMTP id ih3mr9933863pjb.14.1601795812431;
-        Sun, 04 Oct 2020 00:16:52 -0700 (PDT)
-Received: from Ryzen-9-3900X.localdomain (ip68-3-136-221.ph.ph.cox.net. [68.3.136.221])
-        by smtp.gmail.com with ESMTPSA id b22sm117630pff.131.2020.10.04.00.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 00:16:51 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 00:16:48 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        George Popescu <georgepope@android.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] ubsan: Disable UBSAN_TRAP for all*config
-Message-ID: <20201004071648.GD1650@Ryzen-9-3900X.localdomain>
-References: <20201002221527.177500-1-keescook@chromium.org>
- <20201002221527.177500-5-keescook@chromium.org>
+        Sun, 4 Oct 2020 03:18:25 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f79770b0000>; Sun, 04 Oct 2020 00:17:31 -0700
+Received: from [10.21.180.76] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 4 Oct
+ 2020 07:18:15 +0000
+Subject: Re: [PATCH net-next 03/16] devlink: Add devlink reload limit option
+To:     Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@resnulli.us>
+CC:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-4-git-send-email-moshe@mellanox.com>
+ <20201003075100.GC3159@nanopsycho.orion>
+ <20201003080436.40cd8eb5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <62b6436c-5f12-8362-b10f-3b19f913e08a@nvidia.com>
+Date:   Sun, 4 Oct 2020 10:18:11 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002221527.177500-5-keescook@chromium.org>
+In-Reply-To: <20201003080436.40cd8eb5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601795851; bh=ohvtIRryN1zqM/5y/NLdA3n4okfaM02PHrUQ5xzLOpA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=phne8JUY+Ba311sQJ194bnAHtbO7HikyzBYSwY16YfKlxoWCVrHITLzSmy8JVRES9
+         QYw+0wiCJLOyp8YbNNVifEaWdFEsOXN/8dgY2Ui0gJwGAoMgaaBe3VolBmtsFMR4iB
+         TQuapQBEZJSNdwchwPf8BMkGeVWeXvoGJHN8Bcz0d2ygNRqvLjMAXfjnFKAZpvyZnD
+         1Yf0aLA/nmaJDmCSD9/tJMkAiRmh4dflTPWkFLLU+faPDzoFehBOUEl5cLK51EtVJc
+         RJi77DXSWJHyX15G+FZnFIwQcM5oTleNWbCueJ0rbHzQ3DaDVJaT6mNxt4HfQlQHQL
+         2fMrBEDAtFH5A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:15:27PM -0700, Kees Cook wrote:
-> Doing all*config builds attempts build as much as possible. UBSAN_TRAP
-> effectively short-circuits lib/usban.c, so it should be disabled for
-> COMPILE_TEST so that the lib/ubsan.c code gets built.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+On 10/3/2020 6:04 PM, Jakub Kicinski wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Sat, 3 Oct 2020 09:51:00 +0200 Jiri Pirko wrote:
+>>> enum devlink_attr {
+>>>      /* don't change the order or add anything between, this is ABI! */
+>>>      DEVLINK_ATTR_UNSPEC,
+>>> @@ -507,6 +524,7 @@ enum devlink_attr {
+>>>
+>>>      DEVLINK_ATTR_RELOAD_ACTION,             /* u8 */
+>>>      DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,  /* u64 */
+>>> +    DEVLINK_ATTR_RELOAD_LIMIT,      /* u8 */
+>> Hmm, why there could be specified only single "limit"? I believe this
+>> should be a bitfield. Same for the internal api to the driver.
+> Hm I was expecting limits to be ordered (in maths sense) but you're
+> right perhaps that can't be always guaranteed.
+>
+> Also - Moshe please double check that there will not be any kdoc
+> warnings here - I just learned that W=1 builds don't check headers
+> but I'll fix up my bot by the time you post v2.
 
-> ---
->  lib/Kconfig.ubsan | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-> index 1fc07f936e06..b5b9da0b635a 100644
-> --- a/lib/Kconfig.ubsan
-> +++ b/lib/Kconfig.ubsan
-> @@ -14,6 +14,7 @@ if UBSAN
->  
->  config UBSAN_TRAP
->  	bool "On Sanitizer warnings, abort the running kernel code"
-> +	depends on !COMPILE_TEST
->  	depends on $(cc-option, -fsanitize-undefined-trap-on-error)
->  	help
->  	  Building kernels with Sanitizer features enabled tends to grow
-> -- 
-> 2.25.1
+
+Didn't know this tool, but I will. Thanks.
+
