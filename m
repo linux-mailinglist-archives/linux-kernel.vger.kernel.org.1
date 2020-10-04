@@ -2,570 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51BC282B43
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E36282B45
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgJDObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 10:31:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16322 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725937AbgJDObT (ORCPT
+        id S1726032AbgJDObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 10:31:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20975 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725991AbgJDObf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 10:31:19 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 094E3G5l037625;
-        Sun, 4 Oct 2020 10:31:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=2znO3uBsDzo11hTLwr/U9AX1CyFKB7Yk5SXMY8Q3jB4=;
- b=PUjMSP07XzOyF7JObne9S+I6oRvEGeslklBcL7PPEtEoTdrgoR/0+TErPfc6eYQPD7V6
- LogVIsphq///bEoiyHW85rqj5Nlf7Bp8s4yHqJ/GFguiQv45xVJHSkifepVqPKLpBS3J
- 196w2WwPCQghspLdmV3f/r7mn6cvoozmLFTEf3Fqm2ouNX5cV4NBth+O0DVihIuSV5JN
- b6+NyInBv6KCc5XNbE5u4ZH7V9PUXnUbERP73smjzke6O1YcATaduw1z4JugzfGJPVQv
- VWZV6c9OiJuTw28wYnYZgk8uS4cIJ4uyte7OWaXg61jWHn+dT4kDe7C4lABdIZNySPsW lA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33yeng9fxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Oct 2020 10:31:03 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 094EPcbv078429;
-        Sun, 4 Oct 2020 10:31:02 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33yeng9fws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Oct 2020 10:31:02 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 094EEufd032605;
-        Sun, 4 Oct 2020 14:31:00 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 33xgx7rmcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 04 Oct 2020 14:30:59 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 094EUvTA23921028
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 4 Oct 2020 14:30:57 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 941F5AE051;
-        Sun,  4 Oct 2020 14:30:57 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 620DDAE04D;
-        Sun,  4 Oct 2020 14:30:56 +0000 (GMT)
-Received: from localhost (unknown [9.145.42.132])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sun,  4 Oct 2020 14:30:56 +0000 (GMT)
-Date:   Sun, 4 Oct 2020 16:30:54 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v4 4/4] objtool: fix x86 orc generation on big endian
- cross compiles
-Message-ID: <patch-4.thread-a8def4.git-a8def4f04016.your-ad-here.call-01601818410-ext-7687@work.hours>
-References: <20201002160114.7yb7z7aeijhchpwl@treble>
- <cover.thread-a8def4.your-ad-here.call-01601818410-ext-7687@work.hours>
+        Sun, 4 Oct 2020 10:31:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601821892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hw35o/WV9m/qkw/LDsoZYoQnTAnjxF/Bj5J/yNL7Z08=;
+        b=g2YyhQr8imVnzoACe8BEuF7S7FtJkaYTmBD0z4C/RQwe8FMpEsX2GeMadcko1+hb85kcBo
+        YOKoQsr8TTIHNeEHAtf8VhUe1KumS6Ad6u6XHtqYA3wSUFp5F8o+tOuNHVIvy2xWKUOpZk
+        gLusedNiVFirTiFxPAaKxDhGRaqBI14=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-KukSRhPdPI-cSVqmNDrbfQ-1; Sun, 04 Oct 2020 10:31:30 -0400
+X-MC-Unique: KukSRhPdPI-cSVqmNDrbfQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBF9A107465A;
+        Sun,  4 Oct 2020 14:31:29 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-112-97.rdu2.redhat.com [10.10.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A5EC91972A;
+        Sun,  4 Oct 2020 14:31:19 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 19475222E37; Sun,  4 Oct 2020 10:31:19 -0400 (EDT)
+Date:   Sun, 4 Oct 2020 10:31:19 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
+Message-ID: <20201004143119.GA58616@redhat.com>
+References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
+ <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.thread-a8def4.your-ad-here.call-01601818410-ext-7687@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-04_12:2020-10-02,2020-10-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- mlxscore=0 phishscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=2 bulkscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010040104
+In-Reply-To: <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct objtool orc generation endianness problems to enable fully
-functional x86 cross compiles on big endian hardware.
+On Fri, Oct 02, 2020 at 10:44:37PM -0400, Qian Cai wrote:
+> On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
+> > Running some fuzzing on virtiofs from a non-privileged user could trigger a
+> > warning in virtio_fs_enqueue_req():
+> > 
+> > WARN_ON(out_sgs + in_sgs != total_sgs);
+> 
+> Okay, I can reproduce this after running for a few hours:
+> 
+> out_sgs = 3, in_sgs = 2, total_sgs = 6
 
-Introduces bswap_if_needed macro which does a byte swap if target
-endianness doesn't match the host, i.e. cross compilation for little
-endian on big endian and vice versa. To be used for multi-byte values
-conversion, which are read from / about to be written to a target native
-endianness ELF file.
+Thanks. I can also reproduce it simply by calling.
 
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+ioctl(fd, 0x5a004000, buf);
 
-diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
-index fdbffec4cfde..5a2baf28a1dc 100644
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -40,6 +40,8 @@
- #define ORC_REG_MAX			15
+I think following WARN_ON() is not correct.
 
- #ifndef __ASSEMBLY__
-+#include <asm/byteorder.h>
-+
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-  * Frame Information standard.  It contains only the necessary parts of DWARF
-@@ -51,10 +53,18 @@
- struct orc_entry {
- 	s16		sp_offset;
- 	s16		bp_offset;
-+#if defined(__LITTLE_ENDIAN_BITFIELD)
- 	unsigned	sp_reg:4;
- 	unsigned	bp_reg:4;
- 	unsigned	type:2;
- 	unsigned	end:1;
-+#elif defined(__BIG_ENDIAN_BITFIELD)
-+	unsigned	bp_reg:4;
-+	unsigned	sp_reg:4;
-+	unsigned	unused:5;
-+	unsigned	end:1;
-+	unsigned	type:2;
-+#endif
- } __packed;
+WARN_ON(out_sgs + in_sgs != total_sgs)
 
- #endif /* __ASSEMBLY__ */
-diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
-index fdbffec4cfde..5a2baf28a1dc 100644
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -40,6 +40,8 @@
- #define ORC_REG_MAX			15
+toal_sgs should actually be max sgs. It looks at ap->num_pages and
+counts one sg for each page. And it assumes that same number of
+pages will be used both for input and output.
 
- #ifndef __ASSEMBLY__
-+#include <asm/byteorder.h>
-+
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-  * Frame Information standard.  It contains only the necessary parts of DWARF
-@@ -51,10 +53,18 @@
- struct orc_entry {
- 	s16		sp_offset;
- 	s16		bp_offset;
-+#if defined(__LITTLE_ENDIAN_BITFIELD)
- 	unsigned	sp_reg:4;
- 	unsigned	bp_reg:4;
- 	unsigned	type:2;
- 	unsigned	end:1;
-+#elif defined(__BIG_ENDIAN_BITFIELD)
-+	unsigned	bp_reg:4;
-+	unsigned	sp_reg:4;
-+	unsigned	unused:5;
-+	unsigned	end:1;
-+	unsigned	type:2;
-+#endif
- } __packed;
+But there are no such guarantees. With above ioctl() call, I noticed
+we are using 2 pages for input (out_sgs) and one page for output (in_sgs).
 
- #endif /* __ASSEMBLY__ */
-diff --git a/tools/objtool/arch/x86/include/arch_endianness.h b/tools/objtool/arch/x86/include/arch_endianness.h
-new file mode 100644
-index 000000000000..7c362527da20
---- /dev/null
-+++ b/tools/objtool/arch/x86/include/arch_endianness.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ARCH_ENDIANNESS_H
-+#define _ARCH_ENDIANNESS_H
-+
-+#include <endian.h>
-+
-+#define __TARGET_BYTE_ORDER __LITTLE_ENDIAN
-+
-+#endif /* _ARCH_ENDIANNESS_H */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 2df9f769412e..fd892b77e98f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -13,6 +13,7 @@
- #include "special.h"
- #include "warn.h"
- #include "arch_elf.h"
-+#include "endianness.h"
+So out_sgs=4, in_sgs=3 and total_sgs=8 and warning triggers.
 
- #include <linux/objtool.h>
- #include <linux/hashtable.h>
-@@ -1370,7 +1371,7 @@ static int read_unwind_hints(struct objtool_file *file)
- 		cfa = &insn->cfi.cfa;
+I think total sgs is actually max number of sgs and warning
+should probably be.
 
- 		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
--			insn->ret_offset = hint->sp_offset;
-+			insn->ret_offset = bswap_if_needed(hint->sp_offset);
- 			continue;
- 		}
+WARN_ON(out_sgs + in_sgs >  total_sgs)
 
-@@ -1382,7 +1383,7 @@ static int read_unwind_hints(struct objtool_file *file)
- 			return -1;
- 		}
+Stefan, WDYT?
 
--		cfa->offset = hint->sp_offset;
-+		cfa->offset = bswap_if_needed(hint->sp_offset);
- 		insn->cfi.type = hint->type;
- 		insn->cfi.end = hint->end;
- 	}
-diff --git a/tools/objtool/endianness.h b/tools/objtool/endianness.h
-new file mode 100644
-index 000000000000..ebece3191b58
---- /dev/null
-+++ b/tools/objtool/endianness.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _OBJTOOL_ENDIANNESS_H
-+#define _OBJTOOL_ENDIANNESS_H
-+
-+#include <linux/kernel.h>
-+#include <endian.h>
-+#include "arch_endianness.h"
-+
-+#ifndef __TARGET_BYTE_ORDER
-+#error undefined arch __TARGET_BYTE_ORDER
-+#endif
-+
-+#if __BYTE_ORDER != __TARGET_BYTE_ORDER
-+#define __NEED_BSWAP 1
-+#else
-+#define __NEED_BSWAP 0
-+#endif
-+
-+/*
-+ * Does a byte swap if target endianness doesn't match the host, i.e. cross
-+ * compilation for little endian on big endian and vice versa.
-+ * To be used for multi-byte values conversion, which are read from / about
-+ * to be written to a target native endianness ELF file.
-+ */
-+#define bswap_if_needed(val)						\
-+({									\
-+	__typeof__(val) __ret;						\
-+	switch (sizeof(val)) {						\
-+	case 8: __ret = __NEED_BSWAP ? bswap_64(val) : (val); break;	\
-+	case 4: __ret = __NEED_BSWAP ? bswap_32(val) : (val); break;	\
-+	case 2: __ret = __NEED_BSWAP ? bswap_16(val) : (val); break;	\
-+	default:							\
-+		BUILD_BUG(); break;					\
-+	}								\
-+	__ret;								\
-+})
-+
-+#endif /* _OBJTOOL_ENDIANNESS_H */
-diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
-index 5e6a95368d35..4e818a22e44b 100644
---- a/tools/objtool/orc_dump.c
-+++ b/tools/objtool/orc_dump.c
-@@ -8,6 +8,7 @@
- #include <asm/orc_types.h>
- #include "objtool.h"
- #include "warn.h"
-+#include "endianness.h"
+I will send a patch for this.
 
- static const char *reg_name(unsigned int reg)
- {
-@@ -197,11 +198,11 @@ int orc_dump(const char *_objname)
+Thanks
+Vivek
 
- 		printf(" sp:");
 
--		print_reg(orc[i].sp_reg, orc[i].sp_offset);
-+		print_reg(orc[i].sp_reg, bswap_if_needed(orc[i].sp_offset));
 
- 		printf(" bp:");
+> 
+> and this time from flush_bg_queue() instead of fuse_simple_request().
+> 
+> From the log, the last piece of code is:
+> 
+> ftruncate(fd=186, length=4)
+> 
+> which is a test file on virtiofs:
+> 
+> [main]  testfile fd:186 filename:trinity-testfile3 flags:2 fopened:1 fcntl_flags:2000 global:1
+> [main]   start: 0x7f47c1199000 size:4KB  name: trinity-testfile3 global:1
+> 
+> 
+> [ 9863.468502] WARNING: CPU: 16 PID: 286083 at fs/fuse/virtio_fs.c:1152 virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+> [ 9863.474442] Modules linked in: dlci 8021q garp mrp bridge stp llc ieee802154_socket ieee802154 vsock_loopback vmw_vsock_virtio_transport_common vmw_vsock_vmci_transport vsock mpls_router vmw_vmci ip_tunnel as
+> [ 9863.474555]  ata_piix fuse serio_raw libata e1000 sunrpc dm_mirror dm_region_hash dm_log dm_mod
+> [ 9863.535805] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
+> [ 9863.544368] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+> [ 9863.550129] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+> [ 9863.552998] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
+> [ 9863.561720] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
+> [ 9863.565420] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
+> [ 9863.568735] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
+> [ 9863.572037] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
+> [ 9863.575383] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
+> [ 9863.578668] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
+> [ 9863.581971] FS:  00007f47c12f5740(0000) GS:ffff888a7f800000(0000) knlGS:0000000000000000
+> [ 9863.585752] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 9863.590232] CR2: 0000000000000000 CR3: 0000000a63570005 CR4: 0000000000770ee0
+> [ 9863.594698] DR0: 00007f6642e43000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 9863.598521] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+> [ 9863.601861] PKRU: 55555540
+> [ 9863.603173] Call Trace:
+> [ 9863.604382]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
+> [ 9863.606838]  ? is_bpf_text_address+0x21/0x30
+> [ 9863.608869]  ? kernel_text_address+0x125/0x140
+> [ 9863.610962]  ? __kernel_text_address+0xe/0x30
+> [ 9863.613117]  ? unwind_get_return_address+0x5f/0xa0
+> [ 9863.615427]  ? create_prof_cpu_mask+0x20/0x20
+> [ 9863.617435]  ? _raw_write_lock_irqsave+0xe0/0xe0
+> [ 9863.619627]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
+> [ 9863.622638]  ? queue_request_and_unlock+0x115/0x280 [fuse]
+> [ 9863.625224]  flush_bg_queue+0x24c/0x3e0 [fuse]
+> [ 9863.627325]  fuse_simple_background+0x3d7/0x6c0 [fuse]
+> [ 9863.629735]  fuse_send_writepage+0x173/0x420 [fuse]
+> [ 9863.632031]  fuse_flush_writepages+0x1fe/0x330 [fuse]
+> [ 9863.634463]  ? make_kgid+0x13/0x20
+> [ 9863.636064]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
+> [ 9863.638850]  fuse_do_setattr+0xe84/0x13c0 [fuse]
+> [ 9863.641024]  ? migrate_swap_stop+0x8d1/0x920
+> [ 9863.643041]  ? fuse_flush_times+0x390/0x390 [fuse]
+> [ 9863.645347]  ? avc_has_perm_noaudit+0x390/0x390
+> [ 9863.647465]  fuse_setattr+0x197/0x400 [fuse]
+> [ 9863.649466]  notify_change+0x744/0xda0
+> [ 9863.651247]  ? __down_timeout+0x2a0/0x2a0
+> [ 9863.653125]  ? do_truncate+0xe2/0x180
+> [ 9863.654854]  do_truncate+0xe2/0x180
+> [ 9863.656509]  ? __x64_sys_openat2+0x1c0/0x1c0
+> [ 9863.658512]  ? alarm_setitimer+0xa0/0x110
+> [ 9863.660418]  do_sys_ftruncate+0x1ee/0x2c0
+> [ 9863.662311]  do_syscall_64+0x33/0x40
+> [ 9863.663980]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 9863.666384] RIP: 0033:0x7f47c0c0878d
+> [ 9863.668061] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
+> [ 9863.676717] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+> [ 9863.680226] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
+> [ 9863.688055] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
+> [ 9863.693672] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
+> [ 9863.699423] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
+> [ 9863.708897] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
+> [ 9863.713106] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
+> [ 9863.717465] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
+> [ 9863.721389] Call Trace:
+> [ 9863.722547]  dump_stack+0x7c/0xa2
+> [ 9863.724110]  __warn.cold.13+0xe/0x47
+> [ 9863.725804]  ? virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+> [ 9863.728427]  report_bug+0x1af/0x260
+> [ 9863.730054]  handle_bug+0x44/0x80
+> [ 9863.731652]  exc_invalid_op+0x13/0x40
+> [ 9863.734911]  asm_exc_invalid_op+0x12/0x20
+> [ 9863.736940] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
+> [ 9863.739833] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
+> [ 9863.748519] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
+> [ 9863.750935] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
+> [ 9863.754247] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
+> [ 9863.760885] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
+> [ 9863.764814] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
+> [ 9863.768148] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
+> [ 9863.771492]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
+> [ 9863.773950]  ? is_bpf_text_address+0x21/0x30
+> [ 9863.775979]  ? kernel_text_address+0x125/0x140
+> [ 9863.778061]  ? __kernel_text_address+0xe/0x30
+> [ 9863.780124]  ? unwind_get_return_address+0x5f/0xa0
+> [ 9863.782395]  ? create_prof_cpu_mask+0x20/0x20
+> [ 9863.784451]  ? _raw_write_lock_irqsave+0xe0/0xe0
+> [ 9863.786602]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
+> [ 9863.789614]  ? queue_request_and_unlock+0x115/0x280 [fuse]
+> [ 9863.792178]  flush_bg_queue+0x24c/0x3e0 [fuse]
+> [ 9863.796678]  fuse_simple_background+0x3d7/0x6c0 [fuse]
+> [ 9863.802329]  fuse_send_writepage+0x173/0x420 [fuse]
+> [ 9863.808342]  fuse_flush_writepages+0x1fe/0x330 [fuse]
+> [ 9863.812086]  ? make_kgid+0x13/0x20
+> [ 9863.813681]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
+> [ 9863.816465]  fuse_do_setattr+0xe84/0x13c0 [fuse]
+> [ 9863.819633]  ? migrate_swap_stop+0x8d1/0x920
+> [ 9863.824285]  ? fuse_flush_times+0x390/0x390 [fuse]
+> [ 9863.827331]  ? avc_has_perm_noaudit+0x390/0x390
+> [ 9863.875278]  fuse_setattr+0x197/0x400 [fuse]
+> [ 9863.878496]  notify_change+0x744/0xda0
+> [ 9863.880640]  ? __down_timeout+0x2a0/0x2a0
+> [ 9863.882960]  ? do_truncate+0xe2/0x180
+> [ 9863.886311]  do_truncate+0xe2/0x180
+> [ 9863.888392]  ? __x64_sys_openat2+0x1c0/0x1c0
+> [ 9863.890418]  ? alarm_setitimer+0xa0/0x110
+> [ 9863.894430]  do_sys_ftruncate+0x1ee/0x2c0
+> [ 9863.896468]  do_syscall_64+0x33/0x40
+> [ 9863.898167]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 9863.901089] RIP: 0033:0x7f47c0c0878d
+> [ 9863.903447] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
+> [ 9863.914356] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
+> [ 9863.917998] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
+> [ 9863.921364] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
+> [ 9863.928285] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
+> [ 9863.932523] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
+> [ 9863.935835] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
+> [ 9863.939183] ---[ end trace f6f5d958c186bcee ]---
+> 
 
--		print_reg(orc[i].bp_reg, orc[i].bp_offset);
-+		print_reg(orc[i].bp_reg, bswap_if_needed(orc[i].bp_offset));
-
- 		printf(" type:%s end:%d\n",
- 		       orc_type_name(orc[i].type), orc[i].end);
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 235663b96adc..134d7863093d 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -11,6 +11,7 @@
-
- #include "check.h"
- #include "warn.h"
-+#include "endianness.h"
-
- int create_orc(struct objtool_file *file)
- {
-@@ -96,6 +97,8 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 	/* populate ORC data */
- 	orc = (struct orc_entry *)u_sec->data->d_buf + idx;
- 	memcpy(orc, o, sizeof(*orc));
-+	orc->sp_offset = bswap_if_needed(orc->sp_offset);
-+	orc->bp_offset = bswap_if_needed(orc->bp_offset);
-
- 	/* populate reloc for ip */
- 	reloc = malloc(sizeof(*reloc));
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index 1a2420febd08..ab7cb1e13411 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -15,6 +15,7 @@
- #include "special.h"
- #include "warn.h"
- #include "arch_special.h"
-+#include "endianness.h"
-
- struct special_entry {
- 	const char *sec;
-@@ -77,8 +78,9 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 	if (entry->feature) {
- 		unsigned short feature;
-
--		feature = *(unsigned short *)(sec->data->d_buf + offset +
--					      entry->feature);
-+		feature = bswap_if_needed(*(unsigned short *)(sec->data->d_buf +
-+							      offset +
-+							      entry->feature));
- 		arch_handle_alternative(feature, alt);
- 	}
----
- arch/x86/include/asm/orc_types.h              | 10 +++++
- tools/arch/x86/include/asm/orc_types.h        | 10 +++++
- .../arch/x86/include/arch_endianness.h        |  9 +++++
- tools/objtool/check.c                         |  5 ++-
- tools/objtool/endianness.h                    | 38 +++++++++++++++++++
- tools/objtool/orc_dump.c                      |  5 ++-
- tools/objtool/orc_gen.c                       |  3 ++
- tools/objtool/special.c                       |  6 ++-
- 8 files changed, 80 insertions(+), 6 deletions(-)
- create mode 100644 tools/objtool/arch/x86/include/arch_endianness.h
- create mode 100644 tools/objtool/endianness.h
-
-diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
-index fdbffec4cfde..5a2baf28a1dc 100644
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -40,6 +40,8 @@
- #define ORC_REG_MAX			15
- 
- #ifndef __ASSEMBLY__
-+#include <asm/byteorder.h>
-+
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-  * Frame Information standard.  It contains only the necessary parts of DWARF
-@@ -51,10 +53,18 @@
- struct orc_entry {
- 	s16		sp_offset;
- 	s16		bp_offset;
-+#if defined(__LITTLE_ENDIAN_BITFIELD)
- 	unsigned	sp_reg:4;
- 	unsigned	bp_reg:4;
- 	unsigned	type:2;
- 	unsigned	end:1;
-+#elif defined(__BIG_ENDIAN_BITFIELD)
-+	unsigned	bp_reg:4;
-+	unsigned	sp_reg:4;
-+	unsigned	unused:5;
-+	unsigned	end:1;
-+	unsigned	type:2;
-+#endif
- } __packed;
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
-index fdbffec4cfde..5a2baf28a1dc 100644
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -40,6 +40,8 @@
- #define ORC_REG_MAX			15
- 
- #ifndef __ASSEMBLY__
-+#include <asm/byteorder.h>
-+
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-  * Frame Information standard.  It contains only the necessary parts of DWARF
-@@ -51,10 +53,18 @@
- struct orc_entry {
- 	s16		sp_offset;
- 	s16		bp_offset;
-+#if defined(__LITTLE_ENDIAN_BITFIELD)
- 	unsigned	sp_reg:4;
- 	unsigned	bp_reg:4;
- 	unsigned	type:2;
- 	unsigned	end:1;
-+#elif defined(__BIG_ENDIAN_BITFIELD)
-+	unsigned	bp_reg:4;
-+	unsigned	sp_reg:4;
-+	unsigned	unused:5;
-+	unsigned	end:1;
-+	unsigned	type:2;
-+#endif
- } __packed;
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/tools/objtool/arch/x86/include/arch_endianness.h b/tools/objtool/arch/x86/include/arch_endianness.h
-new file mode 100644
-index 000000000000..7c362527da20
---- /dev/null
-+++ b/tools/objtool/arch/x86/include/arch_endianness.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _ARCH_ENDIANNESS_H
-+#define _ARCH_ENDIANNESS_H
-+
-+#include <endian.h>
-+
-+#define __TARGET_BYTE_ORDER __LITTLE_ENDIAN
-+
-+#endif /* _ARCH_ENDIANNESS_H */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 2df9f769412e..fd892b77e98f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -13,6 +13,7 @@
- #include "special.h"
- #include "warn.h"
- #include "arch_elf.h"
-+#include "endianness.h"
- 
- #include <linux/objtool.h>
- #include <linux/hashtable.h>
-@@ -1370,7 +1371,7 @@ static int read_unwind_hints(struct objtool_file *file)
- 		cfa = &insn->cfi.cfa;
- 
- 		if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
--			insn->ret_offset = hint->sp_offset;
-+			insn->ret_offset = bswap_if_needed(hint->sp_offset);
- 			continue;
- 		}
- 
-@@ -1382,7 +1383,7 @@ static int read_unwind_hints(struct objtool_file *file)
- 			return -1;
- 		}
- 
--		cfa->offset = hint->sp_offset;
-+		cfa->offset = bswap_if_needed(hint->sp_offset);
- 		insn->cfi.type = hint->type;
- 		insn->cfi.end = hint->end;
- 	}
-diff --git a/tools/objtool/endianness.h b/tools/objtool/endianness.h
-new file mode 100644
-index 000000000000..ebece3191b58
---- /dev/null
-+++ b/tools/objtool/endianness.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _OBJTOOL_ENDIANNESS_H
-+#define _OBJTOOL_ENDIANNESS_H
-+
-+#include <linux/kernel.h>
-+#include <endian.h>
-+#include "arch_endianness.h"
-+
-+#ifndef __TARGET_BYTE_ORDER
-+#error undefined arch __TARGET_BYTE_ORDER
-+#endif
-+
-+#if __BYTE_ORDER != __TARGET_BYTE_ORDER
-+#define __NEED_BSWAP 1
-+#else
-+#define __NEED_BSWAP 0
-+#endif
-+
-+/*
-+ * Does a byte swap if target endianness doesn't match the host, i.e. cross
-+ * compilation for little endian on big endian and vice versa.
-+ * To be used for multi-byte values conversion, which are read from / about
-+ * to be written to a target native endianness ELF file.
-+ */
-+#define bswap_if_needed(val)						\
-+({									\
-+	__typeof__(val) __ret;						\
-+	switch (sizeof(val)) {						\
-+	case 8: __ret = __NEED_BSWAP ? bswap_64(val) : (val); break;	\
-+	case 4: __ret = __NEED_BSWAP ? bswap_32(val) : (val); break;	\
-+	case 2: __ret = __NEED_BSWAP ? bswap_16(val) : (val); break;	\
-+	default:							\
-+		BUILD_BUG(); break;					\
-+	}								\
-+	__ret;								\
-+})
-+
-+#endif /* _OBJTOOL_ENDIANNESS_H */
-diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
-index 5e6a95368d35..4e818a22e44b 100644
---- a/tools/objtool/orc_dump.c
-+++ b/tools/objtool/orc_dump.c
-@@ -8,6 +8,7 @@
- #include <asm/orc_types.h>
- #include "objtool.h"
- #include "warn.h"
-+#include "endianness.h"
- 
- static const char *reg_name(unsigned int reg)
- {
-@@ -197,11 +198,11 @@ int orc_dump(const char *_objname)
- 
- 		printf(" sp:");
- 
--		print_reg(orc[i].sp_reg, orc[i].sp_offset);
-+		print_reg(orc[i].sp_reg, bswap_if_needed(orc[i].sp_offset));
- 
- 		printf(" bp:");
- 
--		print_reg(orc[i].bp_reg, orc[i].bp_offset);
-+		print_reg(orc[i].bp_reg, bswap_if_needed(orc[i].bp_offset));
- 
- 		printf(" type:%s end:%d\n",
- 		       orc_type_name(orc[i].type), orc[i].end);
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 235663b96adc..134d7863093d 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -11,6 +11,7 @@
- 
- #include "check.h"
- #include "warn.h"
-+#include "endianness.h"
- 
- int create_orc(struct objtool_file *file)
- {
-@@ -96,6 +97,8 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 	/* populate ORC data */
- 	orc = (struct orc_entry *)u_sec->data->d_buf + idx;
- 	memcpy(orc, o, sizeof(*orc));
-+	orc->sp_offset = bswap_if_needed(orc->sp_offset);
-+	orc->bp_offset = bswap_if_needed(orc->bp_offset);
- 
- 	/* populate reloc for ip */
- 	reloc = malloc(sizeof(*reloc));
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index 1a2420febd08..ab7cb1e13411 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -15,6 +15,7 @@
- #include "special.h"
- #include "warn.h"
- #include "arch_special.h"
-+#include "endianness.h"
- 
- struct special_entry {
- 	const char *sec;
-@@ -77,8 +78,9 @@ static int get_alt_entry(struct elf *elf, struct special_entry *entry,
- 	if (entry->feature) {
- 		unsigned short feature;
- 
--		feature = *(unsigned short *)(sec->data->d_buf + offset +
--					      entry->feature);
-+		feature = bswap_if_needed(*(unsigned short *)(sec->data->d_buf +
-+							      offset +
-+							      entry->feature));
- 		arch_handle_alternative(feature, alt);
- 	}
- 
--- 
-⣿⣿⣿⣿⢋⡀⣀⠹⣿⣿⣿⣿
-⣿⣿⣿⣿⠠⣶⡦⠀⣿⣿⣿⣿
-⣿⣿⣿⠏⣴⣮⣴⣧⠈⢿⣿⣿
-⣿⣿⡏⢰⣿⠖⣠⣿⡆⠈⣿⣿
-⣿⢛⣵⣄⠙⣶⣶⡟⣅⣠⠹⣿
-⣿⣜⣛⠻⢎⣉⣉⣀⠿⣫⣵⣿
