@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3767C282D57
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C16282D5A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgJDTru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 15:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S1726444AbgJDTsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 15:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgJDTrt (ORCPT
+        with ESMTP id S1726085AbgJDTsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 15:47:49 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD6C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 12:47:49 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 197so8331927lfo.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 12:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XG1wTZsegfbn4qSMGTJS4ZJXmsnG2K3cv9FPUxyxcl0=;
-        b=tyvwm6vJeWvUG+YylyY192T8KZn8Qr5yrM6GStT9s5de2OxMteL5B7wGjth4sUWlJN
-         yeRtZ8fzQPLTP9l2wh0H4IA+OpTFu+WFAAplzJ8qc9EgqPbrd2PoM0mVI+iXrNmT75AN
-         zcroezNosDv86rT9OyuWus0A0/2KUpofl7Ic65A/DKOQSHF2ZxeFdfHeZIBk6XkKcUxP
-         HcSwGnU3K1N1pOubYNNMe+L1KRExsaA+TjbpHqxVxSIX365Uj2OrENw22Bctly0oE6hB
-         GdG+QQMsq0my+4UDQnJFFUrBuYSUf4kcP9liwUpC/a4Ob7vniiKdILK/bCPKjY49XOww
-         WnkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XG1wTZsegfbn4qSMGTJS4ZJXmsnG2K3cv9FPUxyxcl0=;
-        b=dA1HaDcKexLYkmXRlhLOVy7Dd2K9k/GCp11ctk/8vahEBWzZF8RdJpp9E5Tb1uUInP
-         coucJrPq+wLulalY+hlKkC3CREc/eli1/NXpJYi9m88uoLarB+3JeNyoORlD1Bi3oecv
-         r+zAuHMtvlzJ6qkPUtdbf4kgPeY0CQQIGDcEIwY98wUr+5YuL/R+9H3Ck5OVrsAuZZtC
-         KvjypGu/rY/01zzHKbDjLRdv1EgWIXVhPzGmPeRJM0PwGA0hfTdEE0eBPhZwII6RghWS
-         Rmf111PgGSbc8U4D8fCYTB71FDiYhSH4ATUc/+on2M27gvoqS0pt+r67eJjUZWAnKtD2
-         mb8w==
-X-Gm-Message-State: AOAM53316HB+rSxQ0oP8kvUuLZo18azRN1Rpz295gqUfDvgcaWzTLVXy
-        Inb881b0yxTTfH0lYXTfxsUNKgdw8HJy/nnBnmf+HA==
-X-Google-Smtp-Source: ABdhPJyyPZraV7h6Tujv7YTcdF+DimoKQoWubCHdJkkJBqSwis5CluCtrWiab98vMgU9wcgCmJaaSrN9A56tCRbI6Eg=
-X-Received: by 2002:ac2:42d8:: with SMTP id n24mr3845234lfl.502.1601840867685;
- Sun, 04 Oct 2020 12:47:47 -0700 (PDT)
+        Sun, 4 Oct 2020 15:48:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8A2C0613CE;
+        Sun,  4 Oct 2020 12:48:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=OMbsxgtTm3OucAzsWwXDCdUo0myWgb96GxBl2Cc9TAU=; b=UyxMmPPTT6LXrwdFWQrfqymKBh
+        g/MqrIjBNzRP6eeZb4uD2UWPzo3JQR/zsrWaH+W4O0xm0qarwq/QZAVAMUapbkem6gHIUjPp+a6h6
+        ZnUBJjhfRDUyexWfWPiLAUcVbM/gIyhMTCl+KDkWCsSkIJ21JlOQzYr6qE+1Dr5kqB3BTlWddII4y
+        z7+An7KgC99ayO0xC5OuS6OYZpCziLg9Ro5AGGbYkYHbz8nCqgOg04XdAXAlMhpz01lxVtu/Vhibe
+        l4UOgFTXXUPn7G9KMDp8UEP9K9nS34R4QPzyj7vTHZKjtHdaGrWG1jJFcBS5E4Tga9EsYscXucCoA
+        YY2RYzZA==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kP9zY-0000zN-LN; Sun, 04 Oct 2020 19:48:21 +0000
+Subject: Re: [RFC PATCH 1/1] overlayfs: add ioctls that allows to get fhandle
+ for layers dentries
+To:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
+        miklos@szeredi.hu
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
+ <20201004192401.9738-2-alexander.mikhalitsyn@virtuozzo.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9cd0e9d1-f124-3f2d-86e6-e6e96a1ccb1e@infradead.org>
+Date:   Sun, 4 Oct 2020 12:48:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201003103335.23404-1-krzk@kernel.org>
-In-Reply-To: <20201003103335.23404-1-krzk@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 4 Oct 2020 21:47:36 +0200
-Message-ID: <CACRpkdYASOe+rRu+AcXX7bgb=+JZFT9asQNUJ4U7Mq4DPDAvEQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: vendor-prefixes: favor "gateworks" over "gw"
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201004192401.9738-2-alexander.mikhalitsyn@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 3, 2020 at 12:33 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On 10/4/20 12:24 PM, Alexander Mikhalitsyn wrote:
+> +#define	OVL_IOC_GETLWRFHNDLSNUM			_IO('o', 1)
+> +// DISCUSS: what if MAX_HANDLE_SZ will change?
+> +#define	OVL_IOC_GETLWRFHNDL			_IOR('o', 2, struct ovl_mnt_opt_fh)
+> +#define	OVL_IOC_GETUPPRFHNDL			_IOR('o', 3, struct ovl_mnt_opt_fh)
+> +#define	OVL_IOC_GETWRKFHNDL			_IOR('o', 4, struct ovl_mnt_opt_fh)
 
-> There are two vendor prefixes for Gateworks: "gw" and "gateworks".
-> Favor the longer one (more descriptive) and mark "gw" as deprecated so
-> it will not be used in new bindings.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Hi,
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+This needs to have Documentation/userspace-api/ioctl/ioctl-number.rst
+updated also.
 
-Yours,
-Linus Walleij
+thanks.
+-- 
+~Randy
+
