@@ -2,117 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBAB282D8D
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 22:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA83282D92
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 22:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgJDUng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 16:43:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726327AbgJDUng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 16:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601844214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1726534AbgJDUuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 16:50:10 -0400
+Received: from crapouillou.net ([89.234.176.41]:45496 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726313AbgJDUuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 16:50:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1601844607; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jZ2kTKiFO3mkdMEg8ILVmGdnJBT4O9bHhq3zxcUrH+w=;
-        b=Bo5uogp13x+1oRrnOkluZdDjuSl/X5JsZUryijUibsBfBsCC6xAwlzwRjDOs+mwHWEPjln
-        Cs2O0FdR5k6JE4HRUhmS1kByIvls0Gea4R8G1q3805r+UD0IZ2ZSemwb8aOTwcq38HjpOJ
-        WPYshUJzSL+suzw7pSuy6nQlbl7+/S8=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-9tnsKgXzOdyhgMW45NQ8uA-1; Sun, 04 Oct 2020 16:43:33 -0400
-X-MC-Unique: 9tnsKgXzOdyhgMW45NQ8uA-1
-Received: by mail-qk1-f200.google.com with SMTP id m186so5225186qkf.12
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 13:43:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=jZ2kTKiFO3mkdMEg8ILVmGdnJBT4O9bHhq3zxcUrH+w=;
-        b=VjSjr8iDwSJ6/Hpt/VOawfIydmIZrtiHHl4/s5XbMdtaPjif19JWSM7EI916QeSeHQ
-         Pse3earwOCddAT2i+xzOqQDYZnp7TYh41JEbkkSVWmP2MP61BYOYRGguA4FaYHkAB/V8
-         NNGfsd2uKuMhLxgpvajF0tOJFGcWKORgOUSEhfLoaEb8SC6JCKfJuO0eXYzFvggT6aB0
-         +O7ES7b7tDYSZI2j+mbjvrJy3B30Ac2+ySdl2qznUirEsc+nDQf5T0OqIk5Cr89lXzFB
-         0VlwohKr3xDeJM1hKoOZjIa1xOXjGFiS0Blzm6rDyc9vLBAExPKYSr3Z33U0/TrHUs3Q
-         J3tQ==
-X-Gm-Message-State: AOAM533YI9RoEeQ2McMZuq8DlwfaMvFKTvvNYOCguHZkqlgmwUSvHFIQ
-        1GSuwRercWh5YBTHGz9hLr9rc8MpbUMd6pASOaq8Eak4GlfcFOJq8A+euh6XVApmWrcsuqJiB1D
-        OcGNYwP6iim/Rv/sZMPttFxTu
-X-Received: by 2002:ac8:70d8:: with SMTP id g24mr10035870qtp.221.1601844212662;
-        Sun, 04 Oct 2020 13:43:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+GbC8nBNvRHq2uFSKkOacyczKoG8HTcDjmrTKr+v+rjzitUTE3Whsdyx9T/BNAyK0MOmyDA==
-X-Received: by 2002:ac8:70d8:: with SMTP id g24mr10035850qtp.221.1601844212405;
-        Sun, 04 Oct 2020 13:43:32 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j9sm6048077qtq.36.2020.10.04.13.43.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 13:43:31 -0700 (PDT)
-Subject: Re: [PATCH v2 1/7] fpga: sec-mgr: intel fpga security manager class
- driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201002223701.1317-1-russell.h.weight@intel.com>
- <20201002223701.1317-2-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <171cfcae-07a2-51a4-64bc-4cdf58c2226a@redhat.com>
-Date:   Sun, 4 Oct 2020 13:43:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        bh=CWn9LPqMiEyecOu8vR9hPIcK4K0WPOW8o5AJFCYfgNk=;
+        b=aAeoOJjgXIpRApHMMlIHb6iwd/oghKo9HQkOAfRD8GGrbkRSvtPQ6/c72P37bMneUAod5s
+        2PosfE/4Tp/8xK3racxDW/cnH+lV9XfcL/akTWhIl0KdfFYmCu0AJ9b6wXmtxW+2CHihE7
+        9wUDYRfvjlM8LIW5HA7WrSEssVfs6p0=
+Date:   Sun, 04 Oct 2020 22:49:55 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: cevt-r4k: Enable intimer for Loongson64 CPUs with
+ extimer
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        WANG Xuerui <git@xen0n.name>,
+        Paul Burton <paulburton@kernel.org>,
+        =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <773PHQ.F1MX5ZDA2SEE@crapouillou.net>
+In-Reply-To: <20200923110301.58125-1-jiaxun.yang@flygoat.com>
+References: <20200923110301.58125-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002223701.1317-2-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 10/2/20 3:36 PM, Russ Weight wrote:
-> Create the Intel Security Manager class driver. The security
-> manager provides interfaces to manage secure updates for the
-> FPGA and BMC images that are stored in FLASH. The driver can
-> also be used to update root entry hashes and to cancel code
-> signing keys.
->
-> This patch creates the class driver and provides sysfs
-> interfaces for displaying root entry hashes, canceled code
-> signing keys and flash counts.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Le mer. 23 sept. 2020 =E0 19:02, Jiaxun Yang <jiaxun.yang@flygoat.com> a=20
+=E9crit :
+> Loongson64C and Loongson64G have extimer feature, which is a
+> timer sharing Cause.TI with cevt-r4k (named intimer).
+>=20
+> To ensure the cevt-r4k's usability, we need to add a callback for
+> clock device to switch intimer.
+>=20
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
-> v2:
->   - Bumped documentation dates and versions
->   - Added Documentation/fpga/ifpga-sec-mgr.rst 
->   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
->   - Split ifpga_sec_mgr_register() into create() and register() functions
->   - Added devm_ifpga_sec_mgr_create()
->   - Removed typedefs for imgr ops
-> ---
->  .../ABI/testing/sysfs-class-ifpga-sec-mgr     |  67 +++
->  Documentation/fpga/ifpga-sec-mgr.rst          |  50 ++
->  Documentation/fpga/index.rst                  |   1 +
->  MAINTAINERS                                   |   9 +
->  drivers/fpga/Kconfig                          |   9 +
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/ifpga-sec-mgr.c                  | 432 ++++++++++++++++++
->  include/linux/fpga/ifpga-sec-mgr.h            |  81 ++++
->  8 files changed, 652 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-ifpga-sec-mgr
->  create mode 100644 Documentation/fpga/ifpga-sec-mgr.rst
->  create mode 100644 drivers/fpga/ifpga-sec-mgr.c
->  create mode 100644 include/linux/fpga/ifpga-sec-mgr.h
+>  arch/mips/include/asm/cpu-features.h |  4 ++++
+>  arch/mips/include/asm/cpu.h          |  1 +
+>  arch/mips/kernel/cevt-r4k.c          | 25 +++++++++++++++++++++++++
+>  arch/mips/kernel/cpu-probe.c         |  6 +++++-
+>  4 files changed, 35 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/include/asm/cpu-features.h=20
+> b/arch/mips/include/asm/cpu-features.h
+> index 78cf7e300f12..aec458eee2a5 100644
+> --- a/arch/mips/include/asm/cpu-features.h
+> +++ b/arch/mips/include/asm/cpu-features.h
+> @@ -576,6 +576,10 @@
+>  # define cpu_has_gsexcex	__opt(MIPS_CPU_GSEXCEX)
+>  #endif
+>=20
+> +#ifndef cpu_has_extimer
+> +# define cpu_has_extimer	__opt(MIPS_CPU_EXTIMER)
+> +#endif
+> +
+>  #ifdef CONFIG_SMP
+>  /*
+>   * Some systems share FTLB RAMs between threads within a core=20
+> (siblings in
+> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+> index 388a82f28a87..854e1b44254b 100644
+> --- a/arch/mips/include/asm/cpu.h
+> +++ b/arch/mips/include/asm/cpu.h
+> @@ -429,6 +429,7 @@ enum cpu_type_enum {
+>  #define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(60)	/* CPU Only support=20
+> MAC2008 Fused multiply-add instruction */
+>  #define MIPS_CPU_FTLBPAREX	BIT_ULL(61)	/* CPU has FTLB parity=20
+> exception */
+>  #define MIPS_CPU_GSEXCEX	BIT_ULL(62)	/* CPU has GSExc exception */
+> +#define MIPS_CPU_EXTIMER	BIT_ULL(63)	/* CPU has External Timer=20
+> (Loongson) */
+>=20
+>  /*
+>   * CPU ASE encodings
+> diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+> index 995ad9e69ded..fae49e9215b4 100644
+> --- a/arch/mips/kernel/cevt-r4k.c
+> +++ b/arch/mips/kernel/cevt-r4k.c
+> @@ -15,6 +15,8 @@
+>=20
+>  #include <asm/time.h>
+>  #include <asm/cevt-r4k.h>
+> +#include <asm/cpu-features.h>
+> +#include <asm/mipsregs.h>
+>=20
+>  static int mips_next_event(unsigned long delta,
+>  			   struct clock_event_device *evt)
+> @@ -294,6 +296,24 @@ core_initcall(r4k_register_cpufreq_notifier);
+>=20
+>  #endif /* !CONFIG_CPU_FREQ */
+>=20
+> +#ifdef CONFIG_CPU_LOONGSON64
+> +static int c0_compare_int_enable(struct clock_event_device *cd)
+> +{
+> +	if (cpu_has_extimer)
+> +		set_c0_config6(LOONGSON_CONF6_INTIMER);
+> +
+> +	return 0;
+> +}
+> +
+> +static int c0_compare_int_disable(struct clock_event_device *cd)
+> +{
+> +	if (cpu_has_extimer)
+> +		clear_c0_config6(LOONGSON_CONF6_INTIMER);
+> +
+> +	return 0;
+> +}
+> +#endif
 
-Thanks for the changes, looks good.
+static int __maybe_unused c0_compare_int_enable(...)
+{
+    ...
+}
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+without the #ifdef.
+
+Or better, move these two to loongson64 board code, with "extern int=20
+c0_compare_int_enable" in a header somewhere.
+
+> +
+>  int r4k_clockevent_init(void)
+>  {
+>  	unsigned long flags =3D IRQF_PERCPU | IRQF_TIMER | IRQF_SHARED;
+> @@ -329,6 +349,11 @@ int r4k_clockevent_init(void)
+>  	cd->set_next_event	=3D mips_next_event;
+>  	cd->event_handler	=3D mips_event_handler;
+>=20
+> +#ifdef CONFIG_CPU_LOONGSON64
+> +	cd->set_state_oneshot =3D c0_compare_int_enable;
+> +	cd->set_state_shutdown =3D c0_compare_int_disable;
+> +#endif
+> +
+
+if (IS_ENABLED(CONFIG_CPU_LOONGSON64)) {
+    cd->set_state_oneshot =3D ...;
+}
+
+Although I think this is still incorrect: here you check whether the=20
+kernel supports this CPU, instead of checking what CPU you're running=20
+on.
+
+Cheers,
+-Paul
+
+>  	clockevents_config_and_register(cd, mips_hpt_frequency, min_delta,=20
+> 0x7fffffff);
+>=20
+>  	if (cp0_timer_irq_installed)
+> diff --git a/arch/mips/kernel/cpu-probe.c=20
+> b/arch/mips/kernel/cpu-probe.c
+> index 6be23f205e74..4f1e9ef2644e 100644
+> --- a/arch/mips/kernel/cpu-probe.c
+> +++ b/arch/mips/kernel/cpu-probe.c
+> @@ -2030,6 +2030,9 @@ static inline void decode_cpucfg(struct=20
+> cpuinfo_mips *c)
+>  	if (cfg2 & LOONGSON_CFG2_LEXT2)
+>  		c->ases |=3D MIPS_ASE_LOONGSON_EXT2;
+>=20
+> +	if (cfg2 & LOONGSON_CFG2_LLFTP)
+> +		c->options |=3D MIPS_CPU_EXTIMER;
+> +
+>  	if (cfg2 & LOONGSON_CFG2_LSPW) {
+>  		c->options |=3D MIPS_CPU_LDPTE;
+>  		c->guest.options |=3D MIPS_CPU_LDPTE;
+> @@ -2088,7 +2091,8 @@ static inline void cpu_probe_loongson(struct=20
+> cpuinfo_mips *c, unsigned int cpu)
+>  		 * Also some early Loongson-3A2000 had wrong TLB type in Config
+>  		 * register, we correct it here.
+>  		 */
+> -		c->options |=3D MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
+> +		c->options |=3D MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE |
+> +			      MIPS_CPU_EXTIMER;
+>  		c->writecombine =3D _CACHE_UNCACHED_ACCELERATED;
+>  		c->ases |=3D (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
+>  			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
+> --
+> 2.28.0
+>=20
 
 
