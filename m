@@ -2,142 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09773282903
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 07:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6584282911
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 07:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgJDFPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 01:15:08 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33144 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgJDFPA (ORCPT
+        id S1725861AbgJDFTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 01:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgJDFTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 01:15:00 -0400
-Received: by mail-pg1-f194.google.com with SMTP id o25so3629311pgm.0;
-        Sat, 03 Oct 2020 22:15:00 -0700 (PDT)
+        Sun, 4 Oct 2020 01:19:21 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2A7C0613CE;
+        Sat,  3 Oct 2020 22:19:21 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y14so1068114pfp.13;
+        Sat, 03 Oct 2020 22:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YY5pMYpevGR839B5cx54Fulu2YjKsLgJpNccuay8eNE=;
+        b=QUEuRNL2/f0vNDU811IkT8oJy65EEA5RLHx/EyzEou/dIw7Lgap4gMEklNC57gOplN
+         l8xHJPahvprG2NoUvBsKTxugOIajPKlLNe4hUz3uTfYvznGIqSnlILhN/Jr5ev8iKq4F
+         +y95QpfGDXoFfakhC46uVWWING9y39BpumyjKdZWKuhlDWyNCeRwxDaINRf/lm+7Mv52
+         Fur8S5xlSIVKZcdcgUptMXD6aK72qo3mc/HYciHrbSqXpzNmHpIMdUNd4FbvcPY/n4BH
+         CMKEMLzgi3TsqIZKnbBy8AnPpCQQigMtYEx9rFqzqW7c4TRylecFScgYdI+JiWHF69VF
+         dZmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KEIkOfJmCkr+mhT8bgXa4RUyoZrWLuARarkprMlR8hc=;
-        b=OzyP89KzGNiBMLR3F+3dCT7FyS+OwNtCiVu+9jMaLZg5yUROePP+fc/2nR6SlFwQ5n
-         b6XtfjpFv55EGkWdMN3EA5JPN23zHZIiZ7as5ZUjrPf7UYRcwVMJv0FR6X+CTuarRVbd
-         IbUQuXUFgV1/dNnc/16PSanT0hlcBFwoiviOjaTsOzqw2iS3OxNVYhOyUsOuDRLoGhZQ
-         gUCxZ5Ntv8qcfdfs3h1ilGcnVVn1rvdEZST0npugvcp/sFrejV8BmGy4/Ee6rWtQHD94
-         ad/OpS9UJQ7IHtat1E6Fga82w4PzBAqqyXsCCLCUA0T+4Kpkeh6AbOyiLc5DXLAe2D8T
-         ZRYw==
-X-Gm-Message-State: AOAM532gSo/BM8ViewjwC210iDSy5TFrjVKArJ1ToQkUoVDNsSQgn8aw
-        jYbF3m7Y9SOJhNJdeZwmuvdOUdK8KPs=
-X-Google-Smtp-Source: ABdhPJxBFvc18Vo2CntFUWWe0qTHBP6EsWSvDe3RC70HKzn/p+q5e49ivi4n+Rtv76OD8E2enCUyiQ==
-X-Received: by 2002:a62:2581:0:b029:13f:ba38:b113 with SMTP id l123-20020a6225810000b029013fba38b113mr10296040pfl.15.1601788499350;
-        Sat, 03 Oct 2020 22:14:59 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id q15sm6177964pjp.26.2020.10.03.22.14.58
+        bh=YY5pMYpevGR839B5cx54Fulu2YjKsLgJpNccuay8eNE=;
+        b=spVVKf7HcRcPEM+gcvkCL3MeuLn44Z3oraw750qKMmhAsWTAc/Lqsay4r+hZGgC1Zb
+         QRWABl86elAdBLXZwbiLUbw/6+cPRcfu3oVKmL2aNDCOEXTWnSIgBdJ/oFt/z8x0jmzU
+         62Dfq+gr/apVSwuAU7ZOXC1iE/71MVgTyUMNwQ6oUjgRh7mPNaSZXDPVKY9mSfqOdrCN
+         5cxhCWV/VRfZ9yxyV3txyRTO9mJBjXn/rjw27nVqkao+8mcwbsa/anR8LvsUTvvQBXUC
+         8L1gEJbBCRzf89kghVHt4XbKBqee3L5JyvqzZT21YlQFyOmCEvzUQvv81fqgdHiwlRZf
+         ic8g==
+X-Gm-Message-State: AOAM532gnwpOG2RnZRtp76SuLxWhzSEmpUiJWXjLEjW2wxvy+4rJtJnB
+        j0rGw856XOLka2J2NCL4UbbOUHcd6NGcBX3o8W0=
+X-Google-Smtp-Source: ABdhPJyskOIiX+/6se3/zqc3U0Q28Gujo8gH9xebEuSsgrqq8f7Y8JyUZFinX4uREXcqoI6J6OpzQQ==
+X-Received: by 2002:a63:f345:: with SMTP id t5mr8807996pgj.147.1601788760553;
+        Sat, 03 Oct 2020 22:19:20 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.217.69])
+        by smtp.gmail.com with ESMTPSA id d9sm6263859pjx.47.2020.10.03.22.19.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 22:14:58 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     linux-fpga@vger.kernel.org
-Cc:     trix@redhat.com, hao.wu@intel.com, michal.simek@xilinx.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        russell.h.weight@intel.com, matthew.gerlach@intel.com,
-        Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH 10/10] fpga: fpga-mgr: altera-pr-ip: Simplify registration
-Date:   Sat,  3 Oct 2020 22:14:23 -0700
-Message-Id: <20201004051423.75879-11-mdf@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201004051423.75879-1-mdf@kernel.org>
-References: <20201004051423.75879-1-mdf@kernel.org>
+        Sat, 03 Oct 2020 22:19:19 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] bluetooth: hci_h5: fix memory leak in h5_close
+Date:   Sun,  4 Oct 2020 10:47:08 +0530
+Message-Id: <20201004051708.21985-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
+References: <20201001194329.9328-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify registration using new devm_fpga_mgr_register() API.
-Remove the now obsolete altera_pr_unregister() function.
+When h5_close() is called and !hu->serdev, h5 is directly freed.
+However, h5->rx_skb is not freed before h5 is freed, which causes
+a memory leak.
+Freeing h5->rx_skb (when !hu->serdev) fixes this memory leak before
+freeing h5.
 
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 ---
+Changes in v3:
+	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
+	* Do not incorrectly and unnecessarily call serdev_device_close()
 
-We should take another look at this, IIRC correctly the point of
-splitting this up into a separate driver was to make it useable by a
-different (pci?) driver later on.
+Changes in v2:
+	* Fixed the Fixes tag
 
-It doesn't seem like this happened, and I think we should just make this
-a platform driver?
+Hans de Goede also suggested calling h5_reset_rx() on close (for both, !hu->serdev
+and hu->serdev cases). 
+However, doing so seems to lead to a null-ptr-dereference error,
+        https://syzkaller.appspot.com/text?tag=CrashReport&x=136a9a5d900000,
+and for this reason, it has not been implemented.
 
----
- drivers/fpga/altera-pr-ip-core-plat.c  | 10 ----------
- drivers/fpga/altera-pr-ip-core.c       | 14 +-------------
- include/linux/fpga/altera-pr-ip-core.h |  1 -
- 3 files changed, 1 insertion(+), 24 deletions(-)
+Instead, directly freeing h5->rx_skb seems to suffice in preventing the memory leak
+reported. 
+And since h5 is freed immediately after freeing h5->rx_skb, assigning h5->rx_skb to
+be NULL isn't necessary.
 
-diff --git a/drivers/fpga/altera-pr-ip-core-plat.c b/drivers/fpga/altera-pr-ip-core-plat.c
-index 99b9cc0e70f0..b008a6b8d2d3 100644
---- a/drivers/fpga/altera-pr-ip-core-plat.c
-+++ b/drivers/fpga/altera-pr-ip-core-plat.c
-@@ -28,15 +28,6 @@ static int alt_pr_platform_probe(struct platform_device *pdev)
- 	return alt_pr_register(dev, reg_base);
+ drivers/bluetooth/hci_h5.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index e41854e0d79a..171e55c080ce 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -248,8 +248,10 @@ static int h5_close(struct hci_uart *hu)
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
+ 
+-	if (!hu->serdev)
++	if (!hu->serdev){
++		kfree_skb(h5->rx_skb);
+ 		kfree(h5);
++	}
+ 
+ 	return 0;
  }
- 
--static int alt_pr_platform_remove(struct platform_device *pdev)
--{
--	struct device *dev = &pdev->dev;
--
--	alt_pr_unregister(dev);
--
--	return 0;
--}
--
- static const struct of_device_id alt_pr_of_match[] = {
- 	{ .compatible = "altr,a10-pr-ip", },
- 	{},
-@@ -46,7 +37,6 @@ MODULE_DEVICE_TABLE(of, alt_pr_of_match);
- 
- static struct platform_driver alt_pr_platform_driver = {
- 	.probe = alt_pr_platform_probe,
--	.remove = alt_pr_platform_remove,
- 	.driver = {
- 		.name	= "alt_a10_pr_ip",
- 		.of_match_table = alt_pr_of_match,
-diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera-pr-ip-core.c
-index 2cf25fd5e897..dfdf21ed34c4 100644
---- a/drivers/fpga/altera-pr-ip-core.c
-+++ b/drivers/fpga/altera-pr-ip-core.c
-@@ -195,22 +195,10 @@ int alt_pr_register(struct device *dev, void __iomem *reg_base)
- 	if (!mgr)
- 		return -ENOMEM;
- 
--	dev_set_drvdata(dev, mgr);
--
--	return fpga_mgr_register(mgr);
-+	return devm_fpga_mgr_register(dev, mgr);
- }
- EXPORT_SYMBOL_GPL(alt_pr_register);
- 
--void alt_pr_unregister(struct device *dev)
--{
--	struct fpga_manager *mgr = dev_get_drvdata(dev);
--
--	dev_dbg(dev, "%s\n", __func__);
--
--	fpga_mgr_unregister(mgr);
--}
--EXPORT_SYMBOL_GPL(alt_pr_unregister);
--
- MODULE_AUTHOR("Matthew Gerlach <matthew.gerlach@linux.intel.com>");
- MODULE_DESCRIPTION("Altera Partial Reconfiguration IP Core");
- MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/fpga/altera-pr-ip-core.h b/include/linux/fpga/altera-pr-ip-core.h
-index 0b08ac20ab16..a6b4c07858cc 100644
---- a/include/linux/fpga/altera-pr-ip-core.h
-+++ b/include/linux/fpga/altera-pr-ip-core.h
-@@ -13,6 +13,5 @@
- #include <linux/io.h>
- 
- int alt_pr_register(struct device *dev, void __iomem *reg_base);
--void alt_pr_unregister(struct device *dev);
- 
- #endif /* _ALT_PR_IP_CORE_H */
 -- 
-2.28.0
+2.25.1
 
