@@ -2,68 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40472282DD0
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF7282DD1
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgJDVsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 17:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbgJDVsZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 17:48:25 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A16C0613CE;
-        Sun,  4 Oct 2020 14:48:25 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 90DD212780A38;
-        Sun,  4 Oct 2020 14:31:36 -0700 (PDT)
-Date:   Sun, 04 Oct 2020 14:48:23 -0700 (PDT)
-Message-Id: <20201004.144823.620544782441330271.davem@davemloft.net>
-To:     anant.thazhemadam@gmail.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com,
-        jiri@resnulli.us, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: team: fix memory leak in __team_options_register
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201004205536.4734-1-anant.thazhemadam@gmail.com>
-References: <20201004205536.4734-1-anant.thazhemadam@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 04 Oct 2020 14:31:36 -0700 (PDT)
+        id S1726617AbgJDVvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 17:51:01 -0400
+Received: from mga04.intel.com ([192.55.52.120]:55645 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726374AbgJDVvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 17:51:01 -0400
+IronPort-SDR: yYmNnjanNMJ8VYMV09pgvnBs/dBGqVZOO9nclRaSAIAA//DoRZNcq/m+36nfRdFvQv4pruC8Pi
+ 05LqduBaqUBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="160691149"
+X-IronPort-AV: E=Sophos;i="5.77,336,1596524400"; 
+   d="scan'208";a="160691149"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 14:51:00 -0700
+IronPort-SDR: EEMfRrmKF5apVUkzCSKc2F4boDvYXgM2WIiX3IKlfihwdPDwme+T1WTU0NW+ThUPsdSvhOMb38
+ AgF15xRfEFfQ==
+X-IronPort-AV: E=Sophos;i="5.77,336,1596524400"; 
+   d="scan'208";a="521929167"
+Received: from avahldie-mobl.amr.corp.intel.com (HELO localhost) ([10.249.32.74])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 14:50:51 -0700
+Date:   Mon, 5 Oct 2020 00:50:49 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201004215049.GA43926@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003195440.GD20115@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201003195440.GD20115@casper.infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Date: Mon,  5 Oct 2020 02:25:36 +0530
+On Sat, Oct 03, 2020 at 08:54:40PM +0100, Matthew Wilcox wrote:
+> On Sat, Oct 03, 2020 at 07:50:46AM +0300, Jarkko Sakkinen wrote:
+> > +	XA_STATE(xas, &encl->page_array, idx_start);
+> > +
+> > +	/*
+> > +	 * Disallow READ_IMPLIES_EXEC tasks as their VMA permissions might
+> > +	 * conflict with the enclave page permissions.
+> > +	 */
+> > +	if (current->personality & READ_IMPLIES_EXEC)
+> > +		return -EACCES;
+> > +
+> > +	xas_for_each(&xas, page, idx_end)
+> > +		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> > +			return -EACCES;
+> 
+> You're iterating the array without holding any lock that the XArray knows
+> about.  If you're OK with another thread adding/removing pages behind your
+> back, or there's a higher level lock (the mmap_sem?) protecting the XArray
+> from being modified while you walk it, then hold the rcu_read_lock()
+> while walking the array.  Otherwise you can prevent modification by
+> calling xas_lock(&xas) and xas_unlock()..
 
-> The variable "i" isn't initialized back correctly after the first loop
-> under the label inst_rollback gets executed.
-> 
-> The value of "i" is assigned to be option_count - 1, and the ensuing 
-> loop (under alloc_rollback) begins by initializing i--. 
-> Thus, the value of i when the loop begins execution will now become 
-> i = option_count - 2.
-> 
-> Thus, when kfree(dst_opts[i]) is called in the second loop in this 
-> order, (i.e., inst_rollback followed by alloc_rollback), 
-> dst_optsp[option_count - 2] is the first element freed, and 
-> dst_opts[option_count - 1] does not get freed, and thus, a memory 
-> leak is caused.
-> 
-> This memory leak can be fixed, by assigning i = option_count (instead of
-> option_count - 1).
-> 
-> Fixes: 80f7c6683fe0 ("team: add support for per-port options")
-> Reported-by: syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com
-> Tested-by: syzbot+69b804437cfec30deac3@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+I backtracked this. The locks have been there from v21-v35. This is a
+refactoring mistake in radix_tree to xarray migration happened in v36.
+It's by no means intentional.
 
-Applied and queued up for -stable, thank you.
+What is shoukd take is encl->lock.
+
+The loop was pre-v36 like:
+
+	idx_start = PFN_DOWN(start);
+	idx_end = PFN_DOWN(end - 1);
+
+	for (idx = idx_start; idx <= idx_end; ++idx) {
+		mutex_lock(&encl->lock);
+		page = radix_tree_lookup(&encl->page_tree, idx);
+		mutex_unlock(&encl->lock);
+
+		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+			return -EACCES;
+	}
+
+Looking at xarray.h and filemap.c, I'm thinking something along the
+lines of:
+
+	for (idx = idx_start; idx <= idx_end; ++idx) {
+		mutex_lock(&encl->lock);
+		page = xas_find(&xas, idx + 1);
+		mutex_unlock(&encl->lock);
+
+		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+			return -EACCES;
+	}
+
+Does this look about right?
+
+/Jarkko
