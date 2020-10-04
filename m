@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DA4282E2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427D3282E20
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725896AbgJDWpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 18:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgJDWpJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:45:09 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E14C0613CE;
-        Sun,  4 Oct 2020 15:45:09 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id g29so4622115pgl.2;
-        Sun, 04 Oct 2020 15:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tH7CH0xERnssTzk2TZ8/B+QGzBaLA6HcrfNelQzPQmk=;
-        b=PrjEUpaOD8OzReAH0XqyAEAQ1ebhwlj0dgDQiZCRLSwTNqXTtJvGfEexsHfJfm83i8
-         YEn4mxf+HoNF8iuy3+dTFX5hF2BFbZ2ogJYcU3yeQeuMnk2j7sWbXzfngFc57fPTYkIw
-         Qm8T/+wbrzn990feUc9ZfEGDYmR9+++i2XX2cja9kbrnFcI91dSHY49bzIn9YrjYaXT9
-         EDj9ki2iHJwExh2wXtsfsD8PUiEFkds43lNUR/e1Yjjc0VQ5aSHuubHWpvcoQpXPqfR0
-         cuh8nb2SM7GBc3D5OdzzBskLUuUgNUFeleSi2lHvTKvuJbl1YViq+tX3zNsQwsJ/nRTt
-         4iIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tH7CH0xERnssTzk2TZ8/B+QGzBaLA6HcrfNelQzPQmk=;
-        b=Iwf/dI9ZCJXXiAtKA4H3pPDTYmek/nqjQjzHWoHEHL7NZHu3Qrrv+ZShW0qzv8I9Fy
-         /NOVUB7/jX0LeKZAbdNat1Yuz1TVEOyOgAGcZNS/PKsste7b8TzG0CZQvKKHZ9Pg4/w3
-         95G8iN1Q9m6glFbdtRLnxIIZthqv8Y24EYoCY4y0mDZHVDAhZXGRNYOvSxjlYGNDUIbO
-         AE/M8emIdMtVct8Qn84JxcPQEneQFK1p7is+Wh1egnFzXv6EmLeT87tBla8ZDCptaP4n
-         WYCfuqjXWELEfyNEnE04iNN4+kGY4859nASG2/pxfPs9nLPI8yHE30YE65HFaGSHiXKm
-         rRuA==
-X-Gm-Message-State: AOAM532wfgksNOus1/Pt1mdqypIdnBI7rtgbfL5dBY0DIDvFZxcmrKQ5
-        wbjO6Jed4Dy1z6nAJm8lvw8=
-X-Google-Smtp-Source: ABdhPJxWbzDo+6M2tYfJrFl/Uh9lGBrRAaf/Gz/fMSH3YjwYmxjtZxgWyObigauM21d4CXUxEseKAA==
-X-Received: by 2002:a65:628f:: with SMTP id f15mr7670588pgv.168.1601851507460;
-        Sun, 04 Oct 2020 15:45:07 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id d129sm9073236pfc.161.2020.10.04.15.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 15:45:06 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] iommu/tegra-smmu: Add PCI support
-Date:   Sun,  4 Oct 2020 15:38:37 -0700
-Message-Id: <20201004223837.15303-4-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201004223837.15303-1-nicoleotsuka@gmail.com>
-References: <20201004223837.15303-1-nicoleotsuka@gmail.com>
+        id S1725845AbgJDWje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 18:39:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:13159 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725831AbgJDWjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 18:39:33 -0400
+IronPort-SDR: SaEnvdh5J+/0xgbR1oxc/acjtT9mfH7ru0W6GC38RXzZu4HZQN14t+rorYOyIeygUz3vBo0zsO
+ U62FBjjLVMLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="151093825"
+X-IronPort-AV: E=Sophos;i="5.77,336,1596524400"; 
+   d="scan'208";a="151093825"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 15:39:32 -0700
+IronPort-SDR: q3N0KWptmMBcYAecsPXECP1Z4ZDmXJi37nBwbx/BkW4gf0Or8YeP6Xa1ov6+tjLnyHAOdApOTB
+ E1YUS/ouD1XQ==
+X-IronPort-AV: E=Sophos;i="5.77,336,1596524400"; 
+   d="scan'208";a="522137154"
+Received: from avahldie-mobl.amr.corp.intel.com (HELO localhost) ([10.249.32.74])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 15:39:24 -0700
+Date:   Mon, 5 Oct 2020 01:39:21 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com, willy@infradead.org
+Subject: Re: [PATCH v39 16/24] x86/sgx: Add a page reclaimer
+Message-ID: <20201004223921.GA48517@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-17-jarkko.sakkinen@linux.intel.com>
+ <op.0rwbv916wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20201003133245.GA6074@linux.intel.com>
+ <op.0rxb1z06wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <op.0rxb1z06wjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices.
+On Sat, Oct 03, 2020 at 01:23:49PM -0500, Haitao Huang wrote:
+> On Sat, 03 Oct 2020 08:32:45 -0500, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> 
+> > On Sat, Oct 03, 2020 at 12:22:47AM -0500, Haitao Huang wrote:
+> > > When I turn on CONFIG_PROVE_LOCKING, kernel reports following
+> > > suspicious RCU
+> > > usages. Not sure if it is an issue. Just reporting here:
+> > 
+> > I'm glad to hear that my tip helped you to get us the data.
+> > 
+> > This does not look like an issue in the page reclaimer, which was not
+> > obvious for me before. That's a good thing. I was really worried about
+> > that because it has been very stable for a long period now. The last
+> > bug fix for the reclaimer was done in June in v31 version of the patch
+> > set and after that it has been unchanged (except possibly some renames
+> > requested by Boris).
+> > 
+> > I wildly guess I have a bad usage pattern for xarray. I migrated to it
+> > in v36, and it is entirely possible that I've misused it. It was the
+> > first time that I ever used it. Before xarray we had radix_tree but
+> > based Matthew Wilcox feedback I did a migration to xarray.
+> > 
+> > What I'd ask you to do next is to, if by any means possible, to try to
+> > run the same test with v35 so we can verify this. That one still has
+> > the radix tree.
+> > 
+> 
+> 
+> v35 does not cause any such warning messages from kernel
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
+Thank you. Looks like Matthew already located the issue, a fix will
+land soon.
 
-Changelog
-v5->v6
- * Added Dmitry's Reviewed-by and Tested-by.
-v4->v5
- * Added Dmitry's Reviewed-by
-v3->v4
- * Dropped !iommu_present() check
- * Added CONFIG_PCI check in the exit path
-v2->v3
- * Replaced ternary conditional operator with if-else in .device_group()
- * Dropped change in tegra_smmu_remove()
-v1->v2
- * Added error-out labels in tegra_smmu_probe()
- * Dropped pci_request_acs() since IOMMU core would call it.
-
- drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index c3a3131543c8..e54c006dedd1 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
- 
--	group->group = iommu_group_alloc();
-+	if (dev_is_pci(dev))
-+		group->group = pci_device_group(dev);
-+	else
-+		group->group = generic_device_group(dev);
-+
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1068,22 +1073,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto err_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err < 0)
-+		goto err_unregister;
-+
-+#ifdef CONFIG_PCI
-+	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+	if (err < 0)
-+		goto err_bus_set;
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+err_bus_set: __maybe_unused;
-+	bus_set_iommu(&platform_bus_type, NULL);
-+err_unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+err_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
--- 
-2.17.1
-
+/Jarkko
