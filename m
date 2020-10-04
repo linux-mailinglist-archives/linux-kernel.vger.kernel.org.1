@@ -2,65 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8E7282BD9
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B9D282BDC
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 18:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJDQq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 12:46:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgJDQq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 12:46:59 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2218206B6;
-        Sun,  4 Oct 2020 16:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601830019;
-        bh=sVEX0xi2MOLC/1DXKNiNcCpDgAXQI03GADdRHFc9uZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DKamgwob7/jlJskOlG4YZ5v6qF71gImkGZeH95aFI/LtSjGTsPI0kdInTGrTGULNf
-         EOMLWYHZGoDfq38MqYRzaUVMLd80bhqXRpM3SsqXn/3y8dDxNtQoGo6mS8SOQR6dYS
-         /YSh2OwwVGl6JHtT7TKTe5iDR5+g9V5vCUrVjTRQ=
-Date:   Sun, 4 Oct 2020 18:47:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     pierre kuo <vichy.kuo@gmail.com>
-Cc:     rafael@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] driver core: platform: provide
- devm_platform_iounremap_resource
-Message-ID: <20201004164745.GA196660@kroah.com>
-References: <20200920113808.22223-1-vichy.kuo@gmail.com>
- <20200920113808.22223-2-vichy.kuo@gmail.com>
- <CAOVJa8F+NZQM4H=1Y683g7DTZQ2z1YSH0pKRCVcN+JmQfEi81g@mail.gmail.com>
- <20201002134532.GA3419175@kroah.com>
- <CAOVJa8HZCmy0s-H7rPVTgi6X1uYZ82YjdPHe3-a4=D+qLgi7Uw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOVJa8HZCmy0s-H7rPVTgi6X1uYZ82YjdPHe3-a4=D+qLgi7Uw@mail.gmail.com>
+        id S1726141AbgJDQ72 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 4 Oct 2020 12:59:28 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:41121 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgJDQ71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 12:59:27 -0400
+Received: from marcel-macpro.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 077F1CED16;
+        Sun,  4 Oct 2020 19:06:25 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
+ whitelist"
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201004105124.GA2429@kroah.com>
+Date:   Sun, 4 Oct 2020 18:59:24 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Sathish Narsimman <sathish.narasimman@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
+References: <20201003135449.GA2691@kroah.com>
+ <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
+ <20201003160713.GA1512229@kroah.com>
+ <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
+ <20201004105124.GA2429@kroah.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 12:21:12AM +0800, pierre kuo wrote:
-> hi Greg:
-> > Please resend, I can't take patches off of a random web site.
-> > Now lore.kernel.org I could take them from :)
+Hi Greg,
+
+>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
+>>>>> breaks all bluetooth connections on my machine.
+>>>>> 
+>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
+>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
+>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
+>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>> ---
+>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
+>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
+>>>>> 
+>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
+>>>>> stopped working on my desktop system.  I finally got the time to do
+>>>>> bisection today, and it came down to this patch.  Reverting it on top of
+>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
+>>>>> work.
+>>>>> 
+>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
+>>>>> issue?
+>>>> 
+>>>> can you be specific what breaks since our guys and I also think the
+>>>> ChromeOS guys have been testing these series of patches heavily.
+>>> 
+>>> My bluetooth trackball does not connect at all.  With this reverted, it
+>>> all "just works".
+>>> 
+>>> Same I think for a Bluetooth headset, can check that again if you really
+>>> need me to, but the trackball is reliable here.
+>>> 
+>>>> When you run btmon does it indicate any errors?
+>>> 
+>>> How do I run it and where are the errors displayed?
+>> 
+>> you can do btmon -w trace.log and just let it run like tcdpump.
 > 
-> Please refer to the attachments and links on lore.kernel.org.
+> Ok, attached.
 > 
-> https://lore.kernel.org/lkml/20200920113808.22223-1-vichy.kuo@gmail.com
-> https://lore.kernel.org/lkml/20200920113808.22223-2-vichy.kuo@gmail.com
+> The device is not connecting, and then I open the gnome bluetooth dialog
+> and it scans for devices in the area, but does not connect to my
+> existing devices at all.
+> 
+> Any ideas?
 
-Why are you adding new functions but not actually calling them anywhere?
-We don't like adding infrastructure that no one uses, that's just
-wasteful.
+the trace file is from -rc7 or from -rc7 with this patch reverted?
 
-Please redo the series and include some conversions as well, so that we
-can see if these new functions are even needed or not.
+I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
 
-thanks,
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index e0269192f2e5..94c0daa9f28d 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
+                return -1;
+ 
+        /* White list can not be used with RPAs */
+-       if (!allow_rpa && !use_ll_privacy(hdev) &&
++       if (!allow_rpa &&
+            hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
+                return -1;
+        }
+@@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
+                }
+ 
+                /* White list can not be used with RPAs */
+-               if (!allow_rpa && !use_ll_privacy(hdev) &&
++               if (!allow_rpa &&
+                    hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
+                        return 0x00;
+                }
 
-greg k-h
+
+If you just do the above, does thing work for you again?
+
+My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
+
+Regards
+
+Marcel
+
