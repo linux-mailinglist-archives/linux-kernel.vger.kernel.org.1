@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BE0282E4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB152282E50
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbgJDXWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 19:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgJDXWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 19:22:02 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045A2C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 16:22:02 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o20so5418827pfp.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 16:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4oL2znr6LsSIkLcSKWov235WOf1EfUgHpIbLNjwTdEM=;
-        b=V5hDXA7Lu3qbEuROZq2ipYj0K+ZCKZ7rTKiD11nKdv87dxXIi6Gm9+97FS76QlwqlG
-         fCnMV6ZW9kBbQgpyq7+NOdKkzne4JlU20Zul3raozoRuMqnNWYw4TjGtLmmKEDh9tdXH
-         HtBBoMCsN4CDjRCebYCYy+GXUMjcccr0j/jhVgG8CxQqYPWtJTsE0LF9hPw3sxclWc3F
-         mD4qAFIT3nN+vq3dA0ESs9/8/JqfBX+41UyLhezbBKDqmMw0ONqKnCWDdesMWp+sLvMK
-         KsM3bdAeV8gxKZtv6Ys9Chrw+biKqJinCSdV25bM89tamRvU5NCZoMSbyWDO9utI7YLt
-         GWMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=4oL2znr6LsSIkLcSKWov235WOf1EfUgHpIbLNjwTdEM=;
-        b=cBShs0zNikkxY1j2lzG7c0Ttw8IVbTcWzgIn9hNzg6t+MnM2bGwXBnPZJR/PLfwKum
-         i8qk2Ls704YgodbMY9e0xz1iUvnTnGozWhIzvO0q1lW9PMId7UCCBtKc8DyytfGTDHQY
-         YJJ5eg9HmLia4cwoPQrykSR3QzG0JA03pb+EMFYxbf3iFz/VtTbzUwvp3uSpFI/oC8gP
-         RRWKm/F1DYqvxx58nhb5ltH534gljZ4tm7JfddW4/zX7CqvJ09wiFExh9cn9EssE9OT1
-         otOvKhpaWITELlZPQKJkeL8yt2cKLjmpL6dYMmmax7lX0Wid1bsJxp54ML2NJCOAv9tR
-         /EBg==
-X-Gm-Message-State: AOAM5321dcEkmKMEZIJJqczDUsaY/6suKRSwzIHlwTXqiwQ/E2Yi2xIL
-        YH1nrS1xJ7kWGQEUn/muBxzjLkugzbVFbXrK
-X-Google-Smtp-Source: ABdhPJw+aJqCbL831y3oSufm7WJkD4N53sPu7ikpVPcvaRYICkDSaFSLS3fkUBj4njIloL4iUsosvA==
-X-Received: by 2002:a63:1252:: with SMTP id 18mr12168100pgs.246.1601853721184;
-        Sun, 04 Oct 2020 16:22:01 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a1sm8284798pjh.2.2020.10.04.16.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 16:22:00 -0700 (PDT)
-Date:   Sun, 04 Oct 2020 16:22:00 -0700 (PDT)
-X-Google-Original-Date: Sun, 04 Oct 2020 16:21:58 PDT (-0700)
-Subject:     Re: [PATCH v3] RISC-V: Remove any memblock representing unusable memory area
-In-Reply-To: <20201001190557.2860741-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        rppt@linux.ibm.com, aou@eecs.berkeley.edu,
-        Anup Patel <Anup.Patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-ea11e9ee-62e2-4441-963f-63017f370845@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1725852AbgJDXbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 19:31:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgJDXbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 19:31:47 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E48B320678;
+        Sun,  4 Oct 2020 23:31:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601854306;
+        bh=Fr3NHWbNgrp1rVoCUSdjSwL4pUPYFn3xz34Odri2SUw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=2GBsAjMshWT992YJKYIwkPi4eQS67jBp64NpzPu68bibwF420bswIYIW3O4E9uCHW
+         1j7i10YKYcegDbumj7VVxtVWfRhiW8QU5E7qKd6SKI+jnx7gRZlxoFKisBeAlSN8Po
+         plMfuxdog7xdFZ2oOvY6updQ5i1YU4UqDyvgTJdw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id C413A35225F2; Sun,  4 Oct 2020 16:31:46 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 16:31:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
+        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
+        j.alglave@ucl.ac.uk, luc.maranget@inria.fr, akiyks@gmail.com,
+        dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201004233146.GP29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201003132212.GB318272@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 01 Oct 2020 12:05:57 PDT (-0700), Atish Patra wrote:
-> RISC-V limits the physical memory size by -PAGE_OFFSET. Any memory beyond
-> that size from DRAM start is unusable. Just remove any memblock pointing
-> to those memory region without worrying about computing the maximum size.
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
->
-> ---
-> Changes from v2->v3
-> Updated comment as per Mike's suggestion.
-> ---
->  arch/riscv/mm/init.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index ca03762a3733..564e0be677b7 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -146,8 +146,6 @@ static phys_addr_t dtb_early_pa __initdata;
->  void __init setup_bootmem(void)
->  {
->  	struct memblock_region *reg;
-> -	phys_addr_t mem_size = 0;
-> -	phys_addr_t total_mem = 0;
->  	phys_addr_t mem_start, end = 0;
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->  	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> @@ -155,21 +153,18 @@ void __init setup_bootmem(void)
->  	/* Find the memory region containing the kernel */
->  	for_each_memblock(memory, reg) {
->  		end = reg->base + reg->size;
-> -		if (!total_mem)
-> +		if (!mem_start)
->  			mem_start = reg->base;
->  		if (reg->base <= vmlinux_start && vmlinux_end <= end)
->  			BUG_ON(reg->size == 0);
-> -		total_mem = total_mem + reg->size;
->  	}
->
->  	/*
-> -	 * Remove memblock from the end of usable area to the
-> -	 * end of region
-> +	 * The maximal physical memory size is -PAGE_OFFSET.
-> +	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
-> +	 * as it is unusable by kernel.
->  	 */
-> -	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> -	if (mem_start + mem_size < end)
-> -		memblock_remove(mem_start + mem_size,
-> -				end - mem_start - mem_size);
-> +	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
->
->  	/* Reserve from the start of the kernel to the end of the kernel */
->  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+On Sat, Oct 03, 2020 at 09:22:12AM -0400, Alan Stern wrote:
+> To expand on my statement about the LKMM's weakness regarding control 
+> constructs, here is a litmus test to illustrate the issue.  You might 
+> want to add this to one of the archives.
+> 
+> Alan
+> 
+> C crypto-control-data
+> (*
+>  * LB plus crypto-control-data plus data
+>  *
+>  * Expected result: allowed
+>  *
+>  * This is an example of OOTA and we would like it to be forbidden.
+>  * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+>  * control-dependent on the preceding READ_ONCE.  But the dependencies are
+>  * hidden by the form of the conditional control construct, hence the 
+>  * name "crypto-control-data".  The memory model doesn't recognize them.
+>  *)
+> 
+> {}
+> 
+> P0(int *x, int *y)
+> {
+> 	int r1;
+> 
+> 	r1 = 1;
+> 	if (READ_ONCE(*x) == 0)
+> 		r1 = 0;
+> 	WRITE_ONCE(*y, r1);
+> }
+> 
+> P1(int *x, int *y)
+> {
+> 	WRITE_ONCE(*x, READ_ONCE(*y));
+> }
+> 
+> exists (0:r1=1)
 
-Thanks, this is on for-next.
+Nice simple example!  How about like this?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit c964f404eabe4d8ce294e59dda713d8c19d340cf
+Author: Alan Stern <stern@rowland.harvard.edu>
+Date:   Sun Oct 4 16:27:03 2020 -0700
+
+    manual/kernel: Add a litmus test with a hidden dependency
+    
+    This commit adds a litmus test that has a data dependency that can be
+    hidden by control flow.  In this test, both the taken and the not-taken
+    branches of an "if" statement must be accounted for in order to properly
+    analyze the litmus test.  But herd7 looks only at individual executions
+    in isolation, so fails to see the dependency.
+    
+    Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+new file mode 100644
+index 0000000..6baecf9
+--- /dev/null
++++ b/manual/kernel/crypto-control-data.litmus
+@@ -0,0 +1,31 @@
++C crypto-control-data
++(*
++ * LB plus crypto-control-data plus data
++ *
++ * Result: Sometimes
++ *
++ * This is an example of OOTA and we would like it to be forbidden.
++ * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
++ * control-dependent on the preceding READ_ONCE.  But the dependencies are
++ * hidden by the form of the conditional control construct, hence the 
++ * name "crypto-control-data".  The memory model doesn't recognize them.
++ *)
++
++{}
++
++P0(int *x, int *y)
++{
++	int r1;
++
++	r1 = 1;
++	if (READ_ONCE(*x) == 0)
++		r1 = 0;
++	WRITE_ONCE(*y, r1);
++}
++
++P1(int *x, int *y)
++{
++	WRITE_ONCE(*x, READ_ONCE(*y));
++}
++
++exists (0:r1=1)
