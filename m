@@ -2,36 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFF22829FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253F4282A00
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 11:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgJDJ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 05:58:56 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49770 "EHLO
+        id S1725978AbgJDJ71 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 4 Oct 2020 05:59:27 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49862 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDJ64 (ORCPT
+        with ESMTP id S1725825AbgJDJ71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 05:58:56 -0400
+        Sun, 4 Oct 2020 05:59:27 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 802831C0B79; Sun,  4 Oct 2020 11:58:54 +0200 (CEST)
-Date:   Sun, 4 Oct 2020 11:58:53 +0200
+        id 61A041C0B76; Sun,  4 Oct 2020 11:59:24 +0200 (CEST)
+Date:   Sun, 4 Oct 2020 11:59:23 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Marek Beh??n <marek.behun@nic.cz>
-Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        Ond??ej Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: Re: [PATCH net-next v1 2/3] net: phy: add API for LEDs controlled by
- ethernet PHY chips
-Message-ID: <20201004095852.GB1104@bug>
-References: <20200908000300.6982-1-marek.behun@nic.cz>
- <20200908000300.6982-3-marek.behun@nic.cz>
+To:     Metztli Information Technology <jose.r.r@metztli.com>
+Cc:     edward.shishkin@gmail.com, reiserfs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [ANNOUNCE] Reiser5: Selective File Migration - User Interface
+Message-ID: <20201004095922.GC1104@bug>
+References: <20200826205216.07BC868EF679@huitzilopochtli.metztli-it.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908000300.6982-3-marek.behun@nic.cz>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200826205216.07BC868EF679@huitzilopochtli.metztli-it.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -39,62 +34,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-> Many an ethernet PHY supports various HW control modes for LEDs
-> connected directly to the PHY chip.
-> 
-> This patch adds code for registering such LEDs when described in device
-> tree and also adds a new private LED trigger called phydev-hw-mode.
-> When this trigger is enabled for a LED, the various HW control modes
-> which are supported by the PHY for given LED cat be get/set via hw_mode
-> sysfs file.
-> 
-> A PHY driver wishing to utilize this API needs to implement all the
-> methods in the phy_device_led_ops structure.
-> 
-> Signed-off-by: Marek Beh??n <marek.behun@nic.cz>
+> > In particular, using this functionality, user is able to push out
+> > "hot" files on any high-performance device (e.g. proxy device) and pin
+> > them there.
 
+What permissions are normally required for file migration?
 
->  	select MDIO_I2C
->  
-> +config PHY_LEDS
-> +	bool
-> +	default y if LEDS_TRIGGERS
-> +
->  comment "MII PHY device drivers"
->  
->  config AMD_PHY
+> > COMMENT. After ioctl successful completion the file is not necessarily
+> > written to the target device! To make sure of it, call fsync(2) after
+> > successful ioctl completion, or open the file with O_SYNC flag before
+> > migration.
 
-> +/* drivers/net/phy/phy_hw_led_mode.c
-> + *
+Ok.
 
-Stale comment.
+> > COMMENT. File migration is a volume operation (like adding, removing a device to/from 
+> > a logical volumes), and all volume operations are serialized. So, any attempt to 
+> > migrate a file, while performing other operation on that volume will fail. If some 
+> > file migration procedure fails (with EBUSY, or other errors), or was interrupted by 
+> > user, then it should be repeated in the current mount session. File migration 
+> > procedures interrupted by system crash, hared reset, etc) should be repeated in the 
+> > next mount sessions.
 
-> +	init_data.fwnode = &np->fwnode;
-> +	init_data.devname_mandatory = true;
-> +	snprintf(devicename, sizeof(devicename), "phy%d", phydev->phyindex);
-> +	init_data.devicename = devicename;
-> +
-> +	ret = phydev->led_ops->led_init(phydev, led, &pdata);
-> +	if (ret < 0)
-> +		goto err_free;
-> +
-> +	ret = devm_led_classdev_register_ext(&phydev->mdio.dev, &led->cdev, &init_data);
-> +	if (ret < 0)
-> +		goto err_free;
-> +
-> +	led->flags |= PHY_DEVICE_LED_REGISTERED;
-> +
-> +	return 0;
-> +err_free:
-> +	devm_kfree(&phydev->mdio.dev, led);
-> +	return ret;
-
-devm should take care of freeing, right?
-
-Plus, format comments to 80 colums. checkpatch no longer warns, but rule still exists.
+Dunno. Returning -EBUSY is kind of "interesting" there. I'd expect kernel to queue
+the callers, because userland can't really do that easily.
 
 Best regards,
 									Pavel
+
+
 -- 
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
