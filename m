@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012D028292C
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B5328292E
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbgJDGbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 02:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S1725849AbgJDGf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 02:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgJDGbh (ORCPT
+        with ESMTP id S1725822AbgJDGf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 02:31:37 -0400
+        Sun, 4 Oct 2020 02:35:58 -0400
 Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7311C0613CE;
-        Sat,  3 Oct 2020 23:31:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9318C0613CE;
+        Sat,  3 Oct 2020 23:35:57 -0700 (PDT)
 Received: from ip4d14bc8c.dynamic.kabel-deutschland.de ([77.20.188.140] helo=[192.168.66.101]); authenticated
         by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kOxYR-00016V-TL; Sun, 04 Oct 2020 08:31:31 +0200
-Subject: Re: [RFC PATCH v1 20/26] docs: reporting-bugs: instructions for
- handling regressions
+        id 1kOxcg-0005cK-Sx; Sun, 04 Oct 2020 08:35:54 +0200
 To:     Randy Dunlap <rdunlap@infradead.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <cover.1601541165.git.linux@leemhuis.info>
- <7071ace5086f39ceaa2b1ffcc3bc774f362b4aa7.1601541165.git.linux@leemhuis.info>
- <06589a41-94c8-dc94-247f-71390a5d99c9@infradead.org>
+ <aac1d02c1ca7d4a20dfe47ae6f824e1091c654e3.1601541165.git.linux@leemhuis.info>
+ <3f495f9f-7daf-861f-6c84-e28eb91e7a4e@infradead.org>
 From:   Thorsten Leemhuis <linux@leemhuis.info>
 Autocrypt: addr=linux@leemhuis.info; prefer-encrypt=mutual; keydata=
  mQINBFJ4AQ0BEADCz16x4kl/YGBegAsYXJMjFRi3QOr2YMmcNuu1fdsi3XnM+xMRaukWby47
@@ -70,23 +68,49 @@ Autocrypt: addr=linux@leemhuis.info; prefer-encrypt=mutual; keydata=
  yc+mP1ya8uxIFEwcp6C1h4TTisVFC2DXxDi7pqUd9oTuI4Hg19/i07cdYUHDiraDXSXW5zH9
  5ZDV+rSqDU3ercoRd2qjGUOIXWOytHTeJhVOWqM0vOmXDUwwYHuEb0HFn3d/tz+idSrXUSXZ
  5iv6NKaV29GWHbY=
-Message-ID: <aeae333b-8e88-44ff-5bc4-da38ecdf2e13@leemhuis.info>
-Date:   Sun, 4 Oct 2020 08:31:31 +0200
+Subject: Re: [RFC PATCH v1 24/26] docs: reporting-bugs: explain why users
+ might get neither reply nor fix
+Message-ID: <1d03f885-aa9a-b531-de95-57b8c6e958ab@leemhuis.info>
+Date:   Sun, 4 Oct 2020 08:35:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <06589a41-94c8-dc94-247f-71390a5d99c9@infradead.org>
+In-Reply-To: <3f495f9f-7daf-861f-6c84-e28eb91e7a4e@infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601793096;44f608c3;
-X-HE-SMSGID: 1kOxYR-00016V-TL
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601793357;c8a080ea;
+X-HE-SMSGID: 1kOxcg-0005cK-Sx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many thx for you comments, all suggestions implemented.
+Many thx for you comments. Consider all the obvious spelling and
+
+grammatical mistakes you pointed out fixed, I won't mention all of them
+
+in this reply to keep things easier to follow.
 
 
+
+Am 04.10.20 um 06:03 schrieb Randy Dunlap:
+> On 10/1/20 1:50 AM, Thorsten Leemhuis wrote:
+
+>> +selling new hardware; quite a few of them hence are not investing much time and
+>> +energy in maintaining a Linux kernel driver for something they sold years ago.
+>> +Enterprise Linux distributors often care for a longer time period, but in new
+>> +version often leave support for old and rare hardware aside to limit the scope.
+>> +Often spare time contributors take over once a company leaves some orphan some
+>                                                                   drop last: some
+>> +code, 
+
+/me looks closer
+
+Changed to (that's what it was supposed to be):
+
+Often spare time contributors take over once a company orphans some
+code, […]
 
 Ciao, Thorsten
+
+
