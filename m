@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F880282C36
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB74282C5B
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgJDSEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 14:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S1726386AbgJDSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 14:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgJDSEt (ORCPT
+        with ESMTP id S1726085AbgJDSHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 14:04:49 -0400
+        Sun, 4 Oct 2020 14:07:19 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6F9C0613CE;
-        Sun,  4 Oct 2020 11:04:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D39C0613CE;
+        Sun,  4 Oct 2020 11:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=hHXBNNh8GCwSgw+uPZ85Ci+XmbkQmu/k8o+h/hk98Kk=; b=veCC9HEDjh1aEb0xwCHniSsssK
-        rxoZwcQQR7/1Hyhy5c7fkwubS/QkfkYDbMuBtLeD9o7N9JnFTFsOtp9F3XgzHAGBAEF35J5LOgyIm
-        SERnTO9t4KYd9RvIkC5YFKxnmQlOlH6iI1D7T4fbXO17ITNDsLipSH4XDHbiNjq+KEIxBhG4Dcz4o
-        2HMLC++nnLuDoAO3hl7tujf4tne5grK0gXIMVabNUxlf+0penSe+Gl3tmCm9t0rx0PDDUZeHm4CCq
-        UAAN9j58nGQegRS5QPKK3xDC83Z5Z/XXcN+iJIslIUfzQdppF4VVzrHWt8nHSR/9CqzX5d2yBJCUG
-        alkw/zdg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kP8N6-0003mw-Dx; Sun, 04 Oct 2020 18:04:32 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, ericvh@gmail.com,
-        lucho@ionkov.net, viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        idryomov@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-btrfs@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        stable@vger.kernel.org
-Subject: [PATCH 7/7] btrfs: Promote to unsigned long long before multiplying
-Date:   Sun,  4 Oct 2020 19:04:28 +0100
-Message-Id: <20201004180428.14494-8-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201004180428.14494-1-willy@infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=e633HPyalqTmd7b+XoszZ7GvqCcOvcsQIj4oVe+ALj4=; b=neJrcFQCzU1oiMKyl9Md8oa7Cg
+        kC3aWIZ8N/+ol10tDWz19MLQJ3+AsWgvpfQhBTFunUES/1LoCy7EUXR2UAON9hdlfonELxwONQKxB
+        VU9PA93CaGBnHeHoQVONdL5TuvUiLayWcHfvV5yRoL4ylY03sQ3M18jjasCyx3tTR2f6Wpl8lj28E
+        AIR3RwjjXoE/Bzap7BliCRti0fcf/JZfKUsRfLVoqg8sXIYZ9ybnYITfsxq6LrnSBEv56kS3AdgGT
+        RLwUVtM9RgWg8KdtXWC8r6ERXSNnm43eMO4M4aW1TxR1bZF4AB2SMNpgqyprrv/4EP4GQSBRht/5i
+        kWBvP8uA==;
+Received: from [2601:1c0:6280:3f0::2c9a]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kP8Ph-00044u-U5; Sun, 04 Oct 2020 18:07:14 +0000
+Subject: Re: [PATCH v2 2/6] fpga: m10bmc-sec: create max10 bmc security engine
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com
+References: <20201003012412.16831-1-russell.h.weight@intel.com>
+ <20201003012412.16831-3-russell.h.weight@intel.com>
+ <6854e626-e21b-d3b6-fa31-f150edba6f66@infradead.org>
+ <17d32b30-dab5-c8cd-9ce3-fafe847fa846@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d2be9811-d7f3-552f-124a-b50f1e82f444@infradead.org>
+Date:   Sun, 4 Oct 2020 11:07:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <17d32b30-dab5-c8cd-9ce3-fafe847fa846@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 32-bit systems, these shifts will overflow for files larger than 4GB.
-Add helper functions to avoid this problem coming back.
+On 10/4/20 11:01 AM, Russ Weight wrote:
+> 
+> 
+> On 10/2/20 8:15 PM, Randy Dunlap wrote:
+>> On 10/2/20 6:24 PM, Russ Weight wrote:
+>>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+>>> index c534cc80f398..2380d36b08c7 100644
+>>> --- a/drivers/fpga/Kconfig
+>>> +++ b/drivers/fpga/Kconfig
+>>> @@ -235,4 +235,15 @@ config IFPGA_SEC_MGR
+>>>  	  region and for the BMC. Select this option to enable
+>>>  	  updates for secure FPGA devices.
+>>>  
+>>> +config IFPGA_M10_BMC_SECURE
+>>> +        tristate "Intel MAX10 BMC security engine"
+>>> +	depends on MFD_INTEL_M10_BMC && IFPGA_SEC_MGR
+>>> +        help
+>>> +          Secure update support for the Intel MAX10 board management
+>>> +	  controller.
+>>> +
+>>> +	  This is a subdriver of the Intel MAX10 board management controller
+>>> +	  (BMC) and provides support for secure updates for the BMC image,
+>>> +	  the FPGA image, the Root Entry Hashes, etc.
+>>> +
+>>>  endif # FPGA
+>> Dagnabit, I need a bot to do this.
+>>
+>> Clean up the indentation in the Kconfig file.
+>>
+>> From Documentation/process/coding-style.rst, section 10:
+>>
+>> Lines under a ``config`` definition
+>> are indented with one tab, while help text is indented an additional two
+>> spaces.
+>>
+>> checkpatch should have found that issue. Did it not?
+> Sorry - I thought I had addressed the indentation errors after the first submission.
+> I'll fix it.
+> 
+> I am running checkpatch.pl --strict, and I did not see a warning/error for this.
 
-Cc: stable@vger.kernel.org
-Fixes: 73ff61dbe5ed ("Btrfs: fix device replace of a missing RAID 5/6 device")
-Fixes: be50a8ddaae1 ("Btrfs: Simplify scrub_setup_recheck_block()'s argument")
-Fixes: ff023aac3119 ("Btrfs: add code to scrub to copy read data to another disk")
-Fixes: b5d67f64f9bc ("Btrfs: change scrub to support big blocks")
-Fixes: a2de733c78fa ("btrfs: scrub")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/btrfs/scrub.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+OK, I looked at checkpatch.pl and I don't see any checks for that.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 354ab9985a34..ccbaf9c6e87a 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1262,12 +1262,17 @@ static inline void scrub_stripe_index_and_offset(u64 logical, u64 map_type,
- 	}
- }
- 
-+static u64 sblock_length(struct scrub_block *sblock)
-+{
-+	return (u64)sblock->page_count * PAGE_SIZE;
-+}
-+
- static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 				     struct scrub_block *sblocks_for_recheck)
- {
- 	struct scrub_ctx *sctx = original_sblock->sctx;
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
--	u64 length = original_sblock->page_count * PAGE_SIZE;
-+	u64 length = sblock_length(original_sblock);
- 	u64 logical = original_sblock->pagev[0]->logical;
- 	u64 generation = original_sblock->pagev[0]->generation;
- 	u64 flags = original_sblock->pagev[0]->flags;
-@@ -1610,6 +1615,11 @@ static void scrub_write_block_to_dev_replace(struct scrub_block *sblock)
- 	}
- }
- 
-+static u64 sbio_length(struct scrub_bio *sbio)
-+{
-+	return (u64)sbio->page_count * PAGE_SIZE;
-+}
-+
- static int scrub_write_page_to_dev_replace(struct scrub_block *sblock,
- 					   int page_num)
- {
-@@ -1659,10 +1669,9 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
- 		bio->bi_iter.bi_sector = sbio->physical >> 9;
- 		bio->bi_opf = REQ_OP_WRITE;
- 		sbio->status = 0;
--	} else if (sbio->physical + sbio->page_count * PAGE_SIZE !=
-+	} else if (sbio->physical + sbio_length(sbio) !=
- 		   spage->physical_for_dev_replace ||
--		   sbio->logical + sbio->page_count * PAGE_SIZE !=
--		   spage->logical) {
-+		   sbio->logical + sbio_length(sbio) != spage->logical) {
- 		scrub_wr_submit(sctx);
- 		goto again;
- 	}
-@@ -2005,10 +2014,8 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
- 		bio->bi_iter.bi_sector = sbio->physical >> 9;
- 		bio->bi_opf = REQ_OP_READ;
- 		sbio->status = 0;
--	} else if (sbio->physical + sbio->page_count * PAGE_SIZE !=
--		   spage->physical ||
--		   sbio->logical + sbio->page_count * PAGE_SIZE !=
--		   spage->logical ||
-+	} else if (sbio->physical + sbio_length(sbio) != spage->physical ||
-+		   sbio->logical + sbio_length(sbio) != spage->logical ||
- 		   sbio->dev != spage->dev) {
- 		scrub_submit(sctx);
- 		goto again;
-@@ -2094,7 +2101,7 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
- {
- 	struct scrub_ctx *sctx = sblock->sctx;
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
--	u64 length = sblock->page_count * PAGE_SIZE;
-+	u64 length = sblock_length(sblock);
- 	u64 logical = sblock->pagev[0]->logical;
- 	struct btrfs_bio *bbio = NULL;
- 	struct bio *bio;
+I'll just work on a pseudo-bot then.
+
+thanks.
+
 -- 
-2.28.0
+~Randy
 
