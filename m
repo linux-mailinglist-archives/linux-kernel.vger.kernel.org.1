@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99DA28292A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012D028292C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgJDGbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 02:31:05 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11143 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725819AbgJDGbE (ORCPT
+        id S1725871AbgJDGbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 02:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgJDGbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 02:31:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f796c1b0004>; Sat, 03 Oct 2020 23:30:51 -0700
-Received: from [10.21.180.76] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 4 Oct
- 2020 06:30:51 +0000
-Subject: Re: [PATCH net-next 02/16] devlink: Add reload action option to
- devlink reload command
-To:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
- <1601560759-11030-3-git-send-email-moshe@mellanox.com>
- <20201002151943.GB3159@nanopsycho.orion>
-From:   Moshe Shemesh <moshe@nvidia.com>
-Message-ID: <44621685-5356-c0c2-2947-15013b8f6d13@nvidia.com>
-Date:   Sun, 4 Oct 2020 09:30:48 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 4 Oct 2020 02:31:37 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7311C0613CE;
+        Sat,  3 Oct 2020 23:31:36 -0700 (PDT)
+Received: from ip4d14bc8c.dynamic.kabel-deutschland.de ([77.20.188.140] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kOxYR-00016V-TL; Sun, 04 Oct 2020 08:31:31 +0200
+Subject: Re: [RFC PATCH v1 20/26] docs: reporting-bugs: instructions for
+ handling regressions
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <7071ace5086f39ceaa2b1ffcc3bc774f362b4aa7.1601541165.git.linux@leemhuis.info>
+ <06589a41-94c8-dc94-247f-71390a5d99c9@infradead.org>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; prefer-encrypt=mutual; keydata=
+ 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
+ 5iv6NKaV29GWHbY=
+Message-ID: <aeae333b-8e88-44ff-5bc4-da38ecdf2e13@leemhuis.info>
+Date:   Sun, 4 Oct 2020 08:31:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201002151943.GB3159@nanopsycho.orion>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <06589a41-94c8-dc94-247f-71390a5d99c9@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601793051; bh=uu0CTyBqLF7KdJxyDrjGKEkyAj9kchNDjZPnpEmUIik=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=qoivaNDR67uZoGdfMvfOwhmLbAkBL2Fop3XS/Gs2ixEh29/8PQtRE/TRGEWrPPKhP
-         HW5EAU/2foUDWZjrHai+ZdNqyaT4kxnPG4pH5ZAI6Gs47Rg04ALFslApdIMqW3sU8s
-         9gdi7aiN0qdtH/zlnoUE9XTWupiPT+f/x+STu8i+mVZTdwBYQOPMq54I+xmqXf2m0G
-         7Sl3KuZ5uhVEXnw7vdqSd9gVlNXUBFN/TTmEVEzyxtKcBpoNNGDB78/fAlPNsYxhSB
-         t4BnVZLhFdf/wuzAIEyE1gZ1FYtFsPINgM7FLh3rAw7dQc/WaA42GBEH59jzQTK596
-         cRZqc/i4hPFQw==
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1601793096;44f608c3;
+X-HE-SMSGID: 1kOxYR-00016V-TL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/2/2020 6:19 PM, Jiri Pirko wrote:
-> Thu, Oct 01, 2020 at 03:59:05PM CEST, moshe@mellanox.com wrote:
->
-> [...]
->
->
->> diff --git a/include/net/devlink.h b/include/net/devlink.h
->> index 1c286e9a3590..ddba63bce7ad 100644
->> --- a/include/net/devlink.h
->> +++ b/include/net/devlink.h
->> @@ -1077,10 +1077,11 @@ struct devlink_ops {
->> 	 * implemementation.
->> 	 */
->> 	u32 supported_flash_update_params;
->> +	unsigned long reload_actions;
->> 	int (*reload_down)(struct devlink *devlink, bool netns_change,
->> -			   struct netlink_ext_ack *extack);
->> -	int (*reload_up)(struct devlink *devlink,
->> -			 struct netlink_ext_ack *extack);
->> +			   enum devlink_reload_action action, struct netlink_ext_ack *extack);
->> +	int (*reload_up)(struct devlink *devlink, enum devlink_reload_action action,
->> +			 struct netlink_ext_ack *extack, unsigned long *actions_performed);
-> Nit. Could you please push extack to be the last arg here? It is common
-> to have extack as the last arg + action and actions_performed are going
-> to be side by side.
+Many thx for you comments, all suggestions implemented.
 
 
-Sure.
 
-> Otherwise the patch looks fine.
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Ciao, Thorsten
