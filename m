@@ -2,119 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6F9282CDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD5E282CDD
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgJDTIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 15:08:09 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:57812 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgJDTII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 15:08:08 -0400
-X-Greylist: delayed 916 seconds by postgrey-1.27 at vger.kernel.org; Sun, 04 Oct 2020 15:08:07 EDT
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 094Iqc3F027724
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 4 Oct 2020 20:52:38 +0200
-Received: from [167.87.242.108] ([167.87.242.108])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 094Iqb1u011919;
-        Sun, 4 Oct 2020 20:52:38 +0200
-Subject: Re: scripts/gdb: issues when loading modules after lx-symbols
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, qemu-devel@nongnu.org
-References: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
-Date:   Sun, 4 Oct 2020 20:52:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726461AbgJDTFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 15:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgJDTFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 15:05:25 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D174FC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 12:05:23 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a200so242487pfa.10
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 12:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=1z+J4wleBAAXO8Bl0tTa8RpVW3ap9JtU1YI+9aeS5FU=;
+        b=InZd8HmK02jutziCPuhP9UDc1JbfyA8cpIVlh3jgdvcpb7Qd1HhzQQWcfQ8iYekSdr
+         quLt61btouooO/r20c6lOQRMRBt6yZmA5FbyH3bGVs+N1c+Kjr7ljsV05b13YIq0uvyK
+         cP8n3Pe+ux8/7wfGoAW/t8EjunERB6vjrhK84zGHTcacf9HK0uiH2KoWCdG2K/CyAIY0
+         V23nrUVDQPTfLpdVkrZ1RcJL5PatOlPirsioaPDJzVd8iz4jb46oDPVoB0gbyLB3+TAZ
+         IiGUFVnaxt+GU7jluveGbeRVAO0BSh81T34VRgmXpP6LZDJ4Dc0GpLoOmvafbmkeOay8
+         bFDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=1z+J4wleBAAXO8Bl0tTa8RpVW3ap9JtU1YI+9aeS5FU=;
+        b=PYz0XX9zsoU3rn3jmR1hhjI5z16BvZf7OVvnRMCSSNIoBQbvnkEa051HJPVoalEOn9
+         pHGas44zEGEeIQyXC3lfKWRaIYEYde0v4tiSTxKmD9saHTvwKWw7j6PI2+FSVrFzl2WQ
+         0mhEwDdCHgHqdQGfrW87Oq484MjvNfb06OO6x1ygzpwcZHOieWfI2Lqpx8qU1JTJu9Vn
+         oVKMjDLqWoZq5sNTTLofSHdfbVV4zx+EgFNLM1YkiykhfEOzkQ1iQ4rKs0damGnudpXn
+         Z8ZqSxc8C5VxqEp9C1nnPW7VHq0Py0knVS48BEIAHhpIxXaHQfjhg+ZDCETFI3634P0A
+         +QBg==
+X-Gm-Message-State: AOAM531/zW55Sa2QEQUKw1Otl6EhMwshy8s78VmTbhUIwLOgNi14Qsx0
+        X6A40Ss/zSA2ldbyTWdXAd0Evw==
+X-Google-Smtp-Source: ABdhPJxmDcsFVdMImmVw55h3IbhFPer7JQPAEH0H+IbA0yI+vF532Y3FbBOmBUgAGMahlwIFetQktQ==
+X-Received: by 2002:a62:be0a:0:b029:142:2501:35de with SMTP id l10-20020a62be0a0000b0290142250135demr13547405pff.62.1601838323148;
+        Sun, 04 Oct 2020 12:05:23 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id k4sm10144116pfp.189.2020.10.04.12.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 12:05:22 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 12:05:21 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     kernel test robot <rong.a.chen@intel.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Jeremy Cline <jcline@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [mm, thp] 85b9f46e8e: vm-scalability.throughput -8.7%
+ regression
+In-Reply-To: <20201004132838.GU393@shao2-debian>
+Message-ID: <alpine.DEB.2.23.453.2010041157270.3597796@chino.kir.corp.google.com>
+References: <20201004132838.GU393@shao2-debian>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-In-Reply-To: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="1482994552-888175115-1601838322=:3597796"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.10.20 16:31, Stefano Garzarella wrote:
-> Hi,
-> I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
-> 
-> If the modules are already loaded, and I do 'lx-symbols', all work fine.
-> But, if I load a kernel module after 'lx-symbols', I had this issue:
-> 
-> [ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
-> [ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
-> [ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-> [ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
-> [ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
-> [ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
-> [ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
-> [ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
-> [ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
-> [ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
-> [ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
-> [ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> [ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
-> [ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 5093.439689] Call Trace:
-> [ 5093.440954]  ? load_module+0x24b6/0x27d0
-> [ 5093.443212]  ? __kernel_read+0xd6/0x150
-> [ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
-> [ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
-> [ 5093.449098]  do_syscall_64+0x38/0x50
-> [ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 5093.456153] RIP: 0033:0x7f018f75c43d
-> [ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
-> [ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
-> [ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
-> [ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-> [ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-> [ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
-> [ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
-> [ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
-> 
-> Guest kernel: Linux 5.9-rc7
-> gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
-> I tried with QEMU 4.2.1 and the latest master branch: same issue.
-> 
-> 
-> I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
-> avoid the issue, but of course I don't have the symbols loaded:
-> 
->     diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
->     index 1be9763cf8bb..eadfaa4d4907 100644
->     --- a/scripts/gdb/linux/symbols.py
->     +++ b/scripts/gdb/linux/symbols.py
->     @@ -129,7 +129,7 @@ lx-symbols command."""
->                      filename=module_file,
->                      addr=module_addr,
->                      sections=self._section_arguments(module))
->     -            gdb.execute(cmdline, to_string=True)
->     +            #gdb.execute(cmdline, to_string=True)
->                  if module_name not in self.loaded_modules:
->                      self.loaded_modules.append(module_name)
->              else:
-> 
-> I tried several modules and this happens every time after '(gdb) lx-symbols'.
-> 
-> Do you have any hints?
-> 
-I assume you are debugging a kernel inside QEMU/KVM, right? Does it work
-without -enable-kvm?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Debugging guests in KVM mode at least was unstable for a long time. I
-avoided setting soft-BPs - which is what the script does for the sake of
-tracking modules loading -, falling back to hw-BPs, as I had no time to
-debug that further. /Maybe/ that's the issue here.
+--1482994552-888175115-1601838322=:3597796
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Jan
+On Sun, 4 Oct 2020, kernel test robot wrote:
 
--- 
-Siemens AG, Corporate Technology, CT RDA IOT SES-DE
-Corporate Competence Center Embedded Linux
+> Greeting,
+> 
+> FYI, we noticed a -8.7% regression of vm-scalability.throughput due to commit:
+> 
+> 
+> commit: 85b9f46e8ea451633ccd60a7d8cacbfff9f34047 ("mm, thp: track fallbacks due to failed memcg charges separately")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: vm-scalability
+> on test machine: 104 threads Skylake with 192G memory
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	size: 1T
+> 	test: lru-shm
+> 	cpufreq_governor: performance
+> 	ucode: 0x2006906
+> 
+> test-description: The motivation behind this suite is to exercise functions and regions of the mm/ of the Linux kernel which are of interest to us.
+> test-url: https://git.kernel.org/cgit/linux/kernel/git/wfg/vm-scalability.git/
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> 
+> Details are as below:
+> -------------------------------------------------------------------------------------------------->
+> 
+> 
+> To reproduce:
+> 
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         bin/lkp install job.yaml  # job file is attached in this email
+>         bin/lkp run     job.yaml
+> 
+> =========================================================================================
+> compiler/cpufreq_governor/kconfig/rootfs/runtime/size/tbox_group/test/testcase/ucode:
+>   gcc-9/performance/x86_64-rhel-8.3/debian-10.4-x86_64-20200603.cgz/300s/1T/lkp-skl-fpga01/lru-shm/vm-scalability/0x2006906
+> 
+> commit: 
+>   dcdf11ee14 ("mm, shmem: add vmstat for hugepage fallback")
+>   85b9f46e8e ("mm, thp: track fallbacks due to failed memcg charges separately")
+> 
+> dcdf11ee14413332 85b9f46e8ea451633ccd60a7d8c 
+> ---------------- --------------------------- 
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |    
+>           1:4           24%           2:4     perf-profile.calltrace.cycles-pp.sync_regs.error_entry.do_access
+>           3:4           53%           5:4     perf-profile.calltrace.cycles-pp.error_entry.do_access
+>           9:4          -27%           8:4     perf-profile.children.cycles-pp.error_entry
+>           4:4          -10%           4:4     perf-profile.self.cycles-pp.error_entry
+>          %stddev     %change         %stddev
+>              \          |                \  
+>     477291            -9.1%     434041        vm-scalability.median
+>   49791027            -8.7%   45476799        vm-scalability.throughput
+>     223.67            +1.6%     227.36        vm-scalability.time.elapsed_time
+>     223.67            +1.6%     227.36        vm-scalability.time.elapsed_time.max
+>      50364 ±  6%     +24.1%      62482 ± 10%  vm-scalability.time.involuntary_context_switches
+>       2237            +7.8%       2412        vm-scalability.time.percent_of_cpu_this_job_got
+>       3084           +18.2%       3646        vm-scalability.time.system_time
+>       1921            -4.2%       1839        vm-scalability.time.user_time
+>      13.68            +2.2       15.86        mpstat.cpu.all.sys%
+>      28535 ± 30%     -47.0%      15114 ± 79%  numa-numastat.node0.other_node
+>     142734 ± 11%     -19.4%     115000 ± 17%  numa-meminfo.node0.AnonPages
+>      11168 ±  3%      +8.8%      12150 ±  5%  numa-meminfo.node1.PageTables
+>      76.00            -1.6%      74.75        vmstat.cpu.id
+>       3626            -1.9%       3555        vmstat.system.cs
+>    2214928 ±166%     -96.6%      75321 ±  7%  cpuidle.C1.usage
+>     200981 ±  7%     -18.0%     164861 ±  7%  cpuidle.POLL.time
+>      52675 ±  3%     -16.7%      43866 ± 10%  cpuidle.POLL.usage
+>      35659 ± 11%     -19.4%      28754 ± 17%  numa-vmstat.node0.nr_anon_pages
+>    1248014 ±  3%     +10.9%    1384236        numa-vmstat.node1.nr_mapped
+>       2722 ±  4%     +10.6%       3011 ±  5%  numa-vmstat.node1.nr_page_table_pages
+
+I'm not sure that I'm reading this correctly, but I suspect that this just 
+happens because of NUMA: memory affinity will obviously impact 
+vm-scalability.throughput quite substantially, but I don't think the 
+bisected commit can be to be blame.  Commit 85b9f46e8ea4 ("mm, thp: track 
+fallbacks due to failed memcg charges separately") simply adds new 
+count_vm_event() calls in a couple areas to track thp fallback due to 
+memcg limits separate from fragmentation.
+
+It's likely a question about the testing methodology in general: for 
+memory intensive benchmarks, I suggest it is configured in a manner that 
+we can expect consistent memory access latency at the hardware level when 
+running on a NUMA system.
+--1482994552-888175115-1601838322=:3597796--
