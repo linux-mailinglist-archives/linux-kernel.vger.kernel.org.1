@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA61E282786
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 02:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA7628278C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 02:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgJDAJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 20:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgJDAJR (ORCPT
+        id S1726195AbgJDASP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 20:18:15 -0400
+Received: from smtprelay0152.hostedemail.com ([216.40.44.152]:58244 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726108AbgJDASP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 20:09:17 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5507C0613D0;
-        Sat,  3 Oct 2020 17:09:16 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1805D11E3E4CA;
-        Sat,  3 Oct 2020 16:52:28 -0700 (PDT)
-Date:   Sat, 03 Oct 2020 17:09:14 -0700 (PDT)
-Message-Id: <20201003.170914.694797784124863729.davem@davemloft.net>
-To:     colin.king@canonical.com
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, kuba@kernel.org,
-        dmurphy@ti.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: phy: dp83869: fix unsigned comparisons
- against less than zero values
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201002165422.94328-1-colin.king@canonical.com>
-References: <20201002165422.94328-1-colin.king@canonical.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sat, 03 Oct 2020 16:52:28 -0700 (PDT)
+        Sat, 3 Oct 2020 20:18:15 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id DF96F180A7FE1;
+        Sun,  4 Oct 2020 00:18:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:988:989:1260:1311:1314:1345:1437:1515:1534:1538:1567:1711:1714:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3871:3872:3876:4605:5007:6119:6261:6737:7903:8603:10004:10848:11026:11658:11914:12048:12297:12679:12895:13069:13311:13357:13894:14384:14394:21080:21451:21627:30054:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: hall06_1c073fd271b1
+X-Filterd-Recvd-Size: 1595
+Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  4 Oct 2020 00:18:11 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org, rcu@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] treewide: Make definitions of struct kernel_param_ops const
+Date:   Sat,  3 Oct 2020 17:18:05 -0700
+Message-Id: <cover.1601770305.git.joe@perches.com>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin King <colin.king@canonical.com>
-Date: Fri,  2 Oct 2020 17:54:22 +0100
+Using const is good as it reduces data size.
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the comparisons of u16 integers value and sopass_val with
-> less than zero for error checking is always false because the values
-> are unsigned. Fix this by making these variables int.  This does not
-> affect the shift and mask operations performed on these variables
-> 
-> Addresses-Coverity: ("Unsigned compared against zero")
-> Fixes: 49fc23018ec6 ("net: phy: dp83869: support Wake on LAN")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Joe Perches (4):
+  KVM: PPC: Book3S HV: Make struct kernel_param_ops definition const
+  kvm x86/mmu: Make struct kernel_param_ops definitions const
+  rcu/tree: Make struct kernel_param_ops definitions const
+  mm/zswap: Make struct kernel_param_ops definitions const
 
-Applied, thank you.
+ arch/powerpc/kvm/book3s_hv.c | 2 +-
+ arch/x86/kvm/mmu/mmu.c       | 4 ++--
+ kernel/rcu/tree.c            | 4 ++--
+ mm/zswap.c                   | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+-- 
+2.26.0
+
