@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B775282DFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4574282DE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgJDWKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 18:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        id S1726650AbgJDWFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 18:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbgJDWKU (ORCPT
+        with ESMTP id S1726398AbgJDWFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:10:20 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7142C0613CE;
-        Sun,  4 Oct 2020 15:10:20 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t7so4414185pjd.3;
-        Sun, 04 Oct 2020 15:10:20 -0700 (PDT)
+        Sun, 4 Oct 2020 18:05:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F1AC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 15:05:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id e10so4733241pfj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 15:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=OQzkxKGyzm6JFhBLiUsozBGoWcCHRGIABPwIBAlSRLE=;
-        b=k6k5GDo42aNXzh949rg/z30OVRag8e/ShW4sQJTZrjciBTIEh4ZuraWKz2JvdPd0Sg
-         pk48L6TwL9Shrfcpg+8C2Vkxdf8OKfoD+O4WZIZ9glSzbpMiabxC+mSNuhnhthE1qvKL
-         5F2ZnACOdOFTdF1LDWP9y5lXCkWP4JvGodLRUyqcyPXZMaDybCd8HdKb67Anqi82K2xu
-         kUNOr9dyIqPPw+PssCLcZ2txnTa66hl9YEo6ZwPtiDHT4rf67miZBKCtIV5zBQEqWGK8
-         22Tbzkoh2jUDUifQP4V6sjpSSrgDEuQz6/j+wbkR1VjrgAlb2gYtFb1NJ2SdyV+Hd5iO
-         tqGQ==
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=togLxEJv9rgoT2+f7/C3sCaigxFzV/7IORCr2allek8=;
+        b=toLrE7tMLOAn+F3vN6MtRBZfQf2ECnlgVH2SePhj3VuKlw2mUh50WMONvUhR3Kbz2l
+         ote01RqoFiqaef4v/aFTGlJAztjiPPHWSMFfT5tXaoys3Zn1o4HODnh9JdsFQdE3tyBP
+         dJB2RkF06r44e5XVa0ZzeGEEXyk77XNTckz4v5Lz7ES478BSeSTh/nmqNm/PJ0sylfLG
+         nPfS1CFSqA51s9RPYaT0uG9ZR3hC9vJi1/65aa0deLdSRc4MdunlO/94ixYeBEelHV1d
+         4/8LEO84qzvJ9C3e23MSnP2LvcMPplucvhk1am6tlHg9Ta8bHFca6PbhAWuEo/R3apFP
+         vsjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=OQzkxKGyzm6JFhBLiUsozBGoWcCHRGIABPwIBAlSRLE=;
-        b=ovI0Adu3ryHumyEK5j8JCsbnwtKVhskG8DUHpllYnCnuyZtzWsoNDsNp6KVvro8MwP
-         sf2h77rcsTTwVIgfrwdGMyh0fQLo483LBnMwxYG0yP2jdJwHJ6S45aWjSnmAmlTLeW9B
-         c1wuMDS/ytK8EN5b6ICvdBpS2tIK2Lhskd5B9zFO9a4h1Lg/G76Qv9fW3JbgZfJ4tsOd
-         5+y75g8k3+VQKd17n4+NB5UF+bDnQL7bsYFdl8BJw8lIEV7ER4GtA2PO8nE81VS1omas
-         fnKqgs+zywqteVIgw7ad/p2Tj9WJO6TurtUbUXQTHO3y8zqKWy+R4PDU29D/HE181YcV
-         4Spw==
-X-Gm-Message-State: AOAM530CUP19w2stVt4dlZHHLd59ugUvNENexVnsqmsneij0mX/roZbC
-        9MV4A2WKWXh7Aq/RCa8Hb5cZNBO/UQA=
-X-Google-Smtp-Source: ABdhPJxl/7t+gO+zB4kzamD4T5F4Dlp0mz8AG0ZxG1Bep95oYXElnMKKu29cQuEUDFQxlwVmEaN2HA==
-X-Received: by 2002:a17:90a:174e:: with SMTP id 14mr7111874pjm.124.1601849420319;
-        Sun, 04 Oct 2020 15:10:20 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id u6sm8153777pjy.37.2020.10.04.15.10.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 04 Oct 2020 15:10:19 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 15:04:00 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-Message-ID: <20201004220359.GB21420@Asurada-Nvidia>
-References: <20201003065947.18671-1-nicoleotsuka@gmail.com>
- <20201003065947.18671-3-nicoleotsuka@gmail.com>
- <97d69b0b-db32-08ff-0691-73cfa571f974@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=togLxEJv9rgoT2+f7/C3sCaigxFzV/7IORCr2allek8=;
+        b=i3K1+LDsQb4nb8yutZm2ZjrzQS2OOzlVAcZ4XFC6Gjur8cNFsUnaLeBApVUAx2qieI
+         aAU2dtaCippAklDmT881vmFdLeZiVsTC5zF1uNLPwovZmdwQLSNnGf+ewpr8Jl+Ugc9+
+         EDDkh0ueV5xtSYyXW++dLfryZ67qPEy9j3r3UDmCgjT4AQRM0hX18HGneFub5IuGzgYZ
+         kz+XOILmQ2XBXcBWx3xqKbBVz66qN0APcq8b4ywaafX56T/j3dpBePGyWc4Jmt71xxRq
+         SHlOwGOSCQ9pLRiylDA+y+sAqTuzNRJ5LvEMCo+UYHJ29h8qAKiZjW+WVXw75A1Bx/Ch
+         oiHg==
+X-Gm-Message-State: AOAM533KcmL46fcXysdYHQgciP3HDO88gklcPOKXfO+3sBSnQ1l9gURi
+        C7pX6oPtCrxRIxI7oim0coxMgQ==
+X-Google-Smtp-Source: ABdhPJwe+g0CsWIua0snBi6JmcX3/vEBTskQ11z/rDiv2ozn9h8ZAdUm4heqXRi1xzSr0TXMdeHT0Q==
+X-Received: by 2002:a62:1951:0:b029:152:6669:ac74 with SMTP id 78-20020a6219510000b02901526669ac74mr3588479pfz.36.1601849114787;
+        Sun, 04 Oct 2020 15:05:14 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id c9sm8367537pgl.92.2020.10.04.15.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 15:05:14 -0700 (PDT)
+Date:   Sun, 04 Oct 2020 15:05:14 -0700 (PDT)
+X-Google-Original-Date: Sun, 04 Oct 2020 15:05:12 PDT (-0700)
+Subject:     Re: [PATCH] crypto: jitterentropy - bind statically into kernel
+In-Reply-To: <CAMj1kXEnOh4MBiVVgkhd4P81eRPCVi3+y6JcD58jL45-eh324A@mail.gmail.com>
+CC:     smueller@chronox.de, Christoph Hellwig <hch@infradead.org>,
+        linux-riscv@lists.infradead.org, kernel-team@android.com,
+        lkp@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     ardb@kernel.org
+Message-ID: <mhng-bfca22db-02c7-4e71-9b83-00367c9a6bfb@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <97d69b0b-db32-08ff-0691-73cfa571f974@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 05:05:52PM +0300, Dmitry Osipenko wrote:
-> 03.10.2020 09:59, Nicolin Chen пишет:
-> >     ubuntu@jetson:~$ dmesg | grep iommu
-> >     iommu: Default domain type: Translated 
-> >     tegra-i2c 7000c400.i2c: Adding to iommu group 0
-> >     tegra-i2c 7000c500.i2c: Adding to iommu group 0
-> >     tegra-i2c 7000d000.i2c: Adding to iommu group 0
-> >     tegra-pcie 1003000.pcie: Adding to iommu group 1
-> 
-> Could you please explain how you got I2C into IOMMU?
-> 
-> Are you testing vanilla upstream kerne? Upstream DT doesn't assign AHB
-> group to I2C controllers, nor to APB DMA controller.
+On Sun, 04 Oct 2020 14:16:10 PDT (-0700), ardb@kernel.org wrote:
+> On Sun, 4 Oct 2020 at 20:48, Stephan Müller <smueller@chronox.de> wrote:
+>>
+>> The RISC-V architecture is about to implement the callback
+>> random_get_entropy with a function that is not exported to modules.
+>
+> Why is that? Wouldn't it be better to export the symbol instead?
 
-I have local DT changes adding iommus property in i2c/pcie nodes
-to test group_device() and pci device, yet neither of them is in
-vanilla kernel. The log is merely to show to people the sequence
-of iommu core prior to clients.
+It's static inline (in our timex.h), so I thought we didn't need to export the
+symbol?  Did this just arise because clint_time_val wasn't exported?  That was
+fixed before the random_get_entropy() change landed in Linus' tree, so as far
+as I know we should be OK here.
+
+If I broke something here it seem better to fix this in the RISC-V port than by
+just banning modular compilation of jitterentropy, as that seems like a useful
+feature to me.
+
+>> Thus, the Jitter RNG is changed to be only bound statically into the
+>> kernel removing the option to compile it as module.
+>>
+>> Reported-by: Christoph Hellwig <hch@infradead.org>
+>> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+>> ---
+>>  crypto/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/crypto/Kconfig b/crypto/Kconfig
+>> index 094ef56ab7b4..5b20087b117f 100644
+>> --- a/crypto/Kconfig
+>> +++ b/crypto/Kconfig
+>> @@ -1853,7 +1853,7 @@ config CRYPTO_DRBG
+>>  endif  # if CRYPTO_DRBG_MENU
+>>
+>>  config CRYPTO_JITTERENTROPY
+>> -       tristate "Jitterentropy Non-Deterministic Random Number Generator"
+>> +       bool "Jitterentropy Non-Deterministic Random Number Generator"
+>>         select CRYPTO_RNG
+>>         help
+>>           The Jitterentropy RNG is a noise that is intended
+>> --
+>> 2.26.2
+>>
+>>
+>>
+>>
