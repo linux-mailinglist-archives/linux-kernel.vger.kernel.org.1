@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315A02829B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 10:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1902829AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 10:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgJDIvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 04:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDIvc (ORCPT
+        id S1725914AbgJDImS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 04:42:18 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:34141 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDImS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 04:51:32 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC330C0613CE;
-        Sun,  4 Oct 2020 01:51:31 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y11so7316292lfl.5;
-        Sun, 04 Oct 2020 01:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aGFXgEn0SxcMT/ZVIS2GPg6RYOOumP/yUgc9Wla5ZPg=;
-        b=rY3enCRb75veRHBp+kAHxdqJ1uQgL+agHWoCVx8PfVHbG0SER7hrMqN17PQF9/7hLm
-         uRxkbJJISoZdMG469CdMGCtZW6oQLu2vfNJv0Tu4uoijSRxY8C5ugdS87FK32pZlp0WW
-         B/zRG60vL1OJcyHhbp1rGKRZSfjpWhFTk0Z5IduVFULhecqriUQ3xQdAj7azNHV2ORXI
-         7zKDpu2MenuWlKwCW+wMPiTe8avE4iY+BQD3iD30dxMFKtRm5KrbG05qE6rOqICmxy0M
-         2aFLBsSjywUorHIvPm0WJQkD5dmNH1seVLgTyjw7WwS6mcHNqATfJW4ta7z9YQroLMXm
-         En/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aGFXgEn0SxcMT/ZVIS2GPg6RYOOumP/yUgc9Wla5ZPg=;
-        b=PCpkEOlyN3u220RPva02kj0xi1lk7l3Yj5TfXVFW3vQ15EUfcLzwLooh5k+V+ksx0c
-         2vdKj9ZRfSF5wHPPougaOCsjyuIYmfp8nsANBteKV4u6LQrGGs+0dna/R1PeQRITTn2A
-         bHejGRE82v81dFuZt23NcRtFZ2oXHIya02ZwSLakqEAfgROlAWDYeHle466D7ZJbzEM/
-         ako3B5JeVW/BlOurcslaV3O1XmrOEE1hCRVAidCaGadoIiOL/yP+Rn6E5SY+kNxisu6Z
-         Iu24Ii16AYDV3GolVlwJOGqCKlyRC/eH3/0n9uLnMFYsz0h5dHMPTKG0jT52/NzXtyfj
-         5clA==
-X-Gm-Message-State: AOAM533x2wrhDFJ6pcEY4lsCUWnBxU0cpDN1FpztZGT/vdasGCoURhPI
-        OwejyCLvh8auSOtYFTC6gX0=
-X-Google-Smtp-Source: ABdhPJyrZUk6+g3LwOKj7ab51kOOSrFRJr34wnHpOVROSsjFcNR9RnsQ392UQDfE7KU9uw7ELqRFwQ==
-X-Received: by 2002:ac2:5e9b:: with SMTP id b27mr3425903lfq.312.1601801490314;
-        Sun, 04 Oct 2020 01:51:30 -0700 (PDT)
-Received: from localhost.localdomain (host-5-58-109-138.bitternet.ua. [5.58.109.138])
-        by smtp.gmail.com with ESMTPSA id u1sm2217468lfu.24.2020.10.04.01.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 01:51:29 -0700 (PDT)
-From:   Vladimir Lypak <junak.pub@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        Sun, 4 Oct 2020 04:42:18 -0400
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 88518200002;
+        Sun,  4 Oct 2020 08:42:09 +0000 (UTC)
+Date:   Sun, 4 Oct 2020 10:42:09 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
         Rob Herring <robh+dt@kernel.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Vladimir Lypak <junak.pub@gmail.com>
-Subject: [PATCH 2/2] dt-bindings: regulator: document pm8950 and pm8953 smd regulators
-Date:   Sun,  4 Oct 2020 11:34:13 +0300
-Message-Id: <20201004083413.324351-2-junak.pub@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201004083413.324351-1-junak.pub@gmail.com>
-References: <20201004083413.324351-1-junak.pub@gmail.com>
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 5/7] rtc: New driver for RTC in Netronix embedded
+ controller
+Message-ID: <20201004084209.GV2804081@piout.net>
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200924192455.2484005-6-j.neuschaefer@gmx.net>
+ <20200925054424.snlr3lggnsv575wu@pengutronix.de>
+ <20201004014323.GD500800@latitude>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201004014323.GD500800@latitude>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add list of regulators available on PM8953 and PM8950 PMICs. Also
-document compatible for PM8953.
+On 04/10/2020 03:43:23+0200, Jonathan Neuschäfer wrote:
+> > > +static int ntxec_set_time(struct device *dev, struct rtc_time *tm)
+> > > +{
+> > > +	struct ntxec_rtc *rtc = dev_get_drvdata(dev);
+> > > +	int res = 0;
+> > > +
+> > > +	res = regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_YEAR, ntxec_reg8(tm->tm_year - 100));
+> > > +	if (res)
+> > > +		return res;
+> > > +
+> > > +	res = regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MONTH, ntxec_reg8(tm->tm_mon + 1));
+> > > +	if (res)
+> > > +		return res;
+> > > +
+> > > +	res = regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_DAY, ntxec_reg8(tm->tm_mday));
+> > > +	if (res)
+> > > +		return res;
+> > > +
+> > > +	res = regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_HOUR, ntxec_reg8(tm->tm_hour));
+> > > +	if (res)
+> > > +		return res;
+> > > +
+> > > +	res = regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MINUTE, ntxec_reg8(tm->tm_min));
+> > > +	if (res)
+> > > +		return res;
+> > > +
+> > > +	return regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_SECOND, ntxec_reg8(tm->tm_sec));
+> > 
+> > I wonder: Is this racy? If you write minute, does the seconds reset to
+> > zero or something like that? Or can it happen, that after writing the
+> > minute register and before writing the second register the seconds
+> > overflow and you end up with the time set to a minute later than
+> > intended? If so it might be worth to set the seconds to 0 at the start
+> > of the function (with an explaining comment).
+> 
+> The setting the minutes does not reset the seconds, so I think this race
+> condition is possible. I'll add the workaround.
+> 
 
-Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
----
- .../bindings/regulator/qcom,smd-rpm-regulator.yaml           | 5 +++++
- 1 file changed, 5 insertions(+)
+Are you sure this happens? Usually, the seconds are not reset but the
+internal 32768kHz counter is so you have a full second to write all the
+registers.
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-index 8ef3033444b9..a35c6cb9bf97 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-@@ -33,6 +33,10 @@ description:
-   l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, lvs1, lvs2,
-   lvs3, 5vs1, 5vs2
- 
-+  For pm8950 and pm8953, s1, s2, s3, s4, s5, s6, s7, l1, l2, l3, l4, l5, l6,
-+  l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22,
-+  l23
-+
-   For pm8994, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3,
-   l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-   l20, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, lvs1, lvs2
-@@ -68,6 +72,7 @@ properties:
-       - qcom,rpm-pm8916-regulators
-       - qcom,rpm-pm8941-regulators
-       - qcom,rpm-pm8950-regulators
-+      - qcom,rpm-pm8953-regulators
-       - qcom,rpm-pm8994-regulators
-       - qcom,rpm-pm8998-regulators
-       - qcom,rpm-pm660-regulators
+> > .read_time has a similar race. What happens if minutes overflow between
+> > reading NTXEC_REG_READ_DH and NTXEC_REG_READ_MS?
+> 
+> Yes, we get read tearing in that case. It could even propagate all the
+> way to the year/month field, for example when the following time rolls
+> over:
+> 	   A   |  B  |  C
+> 	2020-10-31 23:59:59
+> 	2020-11-01 00:00:00
+> 
+> - If the increment happens after reading C, we get         2020-10-31 23:59:59
+> - If the increment happens between reading B and C, we get 2020-10-31 23:00:00
+> - If the increment happens between reading A and B, we get 2020-10-01 00:00:00
+> - If the increment happens before reading A, we get        2020-11-01 00:00:00
+> 
+> ... both of which are far from correct.
+> 
+> To mitigate this issue, I think something like the following is needed:
+> 
+> - Read year/month
+> - Read day/hour
+> - Read minute/second
+> - Read day/hour, compare with previously read value, restart on mismatch
+> - Read year/month, compare with previously read value, restart on mismatch
+> 
+> The order of the last two steps doesn't matter, as far as I can see, but
+> if I remove one of them, I can't catch all cases of read tearing.
+> 
+
+Are you also sure this happens?
+
+Only one comparison is necessary, the correct order would be:
+
+ - Read minute/second
+ - Read day/hour
+ - Read year/month
+ - Read minute/second, compare
+
+If day/hour changes but not minute/second, it would mean that it took at
+least an hour to read all the registers. At this point, I think you have
+other problems and the exact time doesn't matter anymore.
+
 -- 
-2.24.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
