@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAE828290F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 07:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0B028291C
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 07:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgJDFRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 01:17:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbgJDFRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 01:17:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 086392068E;
-        Sun,  4 Oct 2020 05:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601788650;
-        bh=3qVFkra62m6VKWNZU53WNA9U+ftgMpquElg1Cq2XFI4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NhqtuyIEe82i8G9Be4vStwUMAmBDPW0248OyC9SmUKeof71/woFRl5hKbhd/AgvA4
-         e9PxWYcnYONhtD4lSAixFMN/k6QedXA7gm/lEIo85eGpSHLC5bDP7P/ffk2+k1GgBI
-         8iW2wMTpGGkt6tHdKD39yGdu8jbN1qeKp1l9CSDo=
-Date:   Sun, 4 Oct 2020 07:17:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Byron Stanoszek <gandalf@winds.org>
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "M. Vefa Bicakci" <m.v.b@runbox.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: USBIP is claiming all my USB devices - Commit 7a2f2974f265 is
- broken
-Message-ID: <20201004051727.GA133949@kroah.com>
-References: <alpine.LNX.2.23.451.2010031259080.4257@winds.org>
- <20201003172738.GA1526548@kroah.com>
- <alpine.LNX.2.23.451.2010031353180.5043@winds.org>
+        id S1725843AbgJDFui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 01:50:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39660 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725819AbgJDFui (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 01:50:38 -0400
+X-UUID: 30dced02d66d411b88bb2734d2ad1759-20201004
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=R1eNNkVeR51W23UaO/9D2srShKgkSQlKxuAx45eQzEE=;
+        b=JN5Kf1it8RML7AQiqpfdrEha/XerUBDXU10DLO5QLjnuIFI1dgNXYK0mdJ6A0HxuKyYYlJ8iEBLZiu533OLJs0x1xpPbXdgqtwEQ5cz3ogNQg1nzjJeHXWEp+3VdkYPUjHK3NenIFk2coA5NgODLgIDbqz4e6HhqoD3B8ybpt8w=;
+X-UUID: 30dced02d66d411b88bb2734d2ad1759-20201004
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <phil.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1485577375; Sun, 04 Oct 2020 13:50:28 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 4 Oct 2020 13:50:27 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 4 Oct 2020 13:50:26 +0800
+From:   Phil Chang <phil.chang@mediatek.com>
+To:     <linux-arm-kernel@lists.infradead.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Phil Chang <phil.chang@mediatek.com>,
+        YJ Chiang <yj.chiang@mediatek.com>,
+        Alix Wu <alix.wu@mediatek.com>, Joe Liu <joe.liu@mediatek.com>
+Subject: [PATCH] [PATCH] of_reserved_mem: Increase the number of reserved regions
+Date:   Sun, 4 Oct 2020 13:50:24 +0800
+Message-ID: <20201004055024.23542-1-phil.chang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.23.451.2010031353180.5043@winds.org>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 01:54:46PM -0400, Byron Stanoszek wrote:
-> On Sat, 3 Oct 2020, Greg Kroah-Hartman wrote:
-> 
-> > On Sat, Oct 03, 2020 at 01:18:36PM -0400, Byron Stanoszek wrote:
-> > > All,
-> > > 
-> > > I was testing Linux 5.9-rc7 today when I realized that none of my USB devices
-> > > were responding anymore. For instance, my mouse does not respond and its usual
-> > > red LED is not on.
-> > > 
-> > > Reverting git commit 7a2f2974f265 solved the problem for me.
-> > 
-> > Can you try the patches listed here:
-> > 	https://lore.kernel.org/r/20201003142651.GA794077@kroah.com
-> > 
-> > As this issue should be solved with them.  Hopefully :)
-> 
-> I confirm this also solved the problem for me.
+Q2VydGFpbiBTb0NzIG5lZWQgdG8gc3VwcG9ydCBsYXJnZSBhbW91bnQgb2YgcmVzZXJ2ZWQgbWVt
+b3J5DQpyZWdpb25zLCBlc3BlY2lhbGx5IHRvIGZvbGxvdyB0aGUgR0tJIHJ1bGVzIGZyb20gR29v
+Z2xlLg0KSW4gTVRLIG5ldyBTb0MgcmVxdWlyZXMgbW9yZSB0aGFuIDY4IHJlZ2lvbnMgb2YgcmVz
+ZXJ2ZWQgbWVtb3J5DQpmb3IgZWFjaCBJUCdzIHVzYWdlLCBzdWNoIGFzIGxvYWQgZmlybXdhcmUg
+dG8gc3BlY2lmaWMgc2FwY2UsDQpzbyB0aGF0IG5lZWQgdG8gcmVzZXJ2ZSBtb3JlIHJlZ2lzaW9u
+cyANCg0KU2lnbmVkLW9mZi1ieTogSm9lIExpdSA8am9lLmxpdUBtZWRpYXRlay5jb20+DQpTaWdu
+ZWQtb2ZmLWJ5OiBZSiBDaGlhbmcgPHlqLmNoaWFuZ0BtZWRpYXRlay5jb20+DQpTaWduZWQtb2Zm
+LWJ5OiBBbGl4IFd1IDxhbGl4Lnd1QG1lZGlhdGVrLmNvbT4NClNpZ25lZC1vZmYtYnk6IFBoaWwg
+Q2hhbmcgPHBoaWwuY2hhbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9vZi9vZl9yZXNl
+cnZlZF9tZW0uYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVs
+ZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMgYi9k
+cml2ZXJzL29mL29mX3Jlc2VydmVkX21lbS5jDQppbmRleCA0NmI5MzcxYzhhMzMuLjU5NWYwNzQx
+ZGNlZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMNCisrKyBiL2Ry
+aXZlcnMvb2Yvb2ZfcmVzZXJ2ZWRfbWVtLmMNCkBAIC0yMiw3ICsyMiw3IEBADQogI2luY2x1ZGUg
+PGxpbnV4L3NsYWIuaD4NCiAjaW5jbHVkZSA8bGludXgvbWVtYmxvY2suaD4NCiANCi0jZGVmaW5l
+IE1BWF9SRVNFUlZFRF9SRUdJT05TCTY0DQorI2RlZmluZSBNQVhfUkVTRVJWRURfUkVHSU9OUwkx
+MjgNCiBzdGF0aWMgc3RydWN0IHJlc2VydmVkX21lbSByZXNlcnZlZF9tZW1bTUFYX1JFU0VSVkVE
+X1JFR0lPTlNdOw0KIHN0YXRpYyBpbnQgcmVzZXJ2ZWRfbWVtX2NvdW50Ow0KIA0KLS0gDQoyLjE4
+LjANCg==
 
-Great!  Those patches are now in Linus's tree so all should be good.
-
-thanks for testing and letting me know.
-
-greg k-h
