@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706A7282AC9
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 14:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA456282AD2
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 15:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgJDM6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 08:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726026AbgJDM6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 08:58:45 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A874C0613CE;
-        Sun,  4 Oct 2020 05:58:45 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h24so1452753ejg.9;
-        Sun, 04 Oct 2020 05:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PUKRKz2tpvOlgzU6T8LFm9id6xQAJB/MM9M3WUFXc+A=;
-        b=CnISbJkoNvxTd5jIBOUlg9+BwkmuM63uKyfAmzazkQPXDTqNIA93w1bVoM2LjX9rcP
-         oj8EpHnwqbDa3gONf7UUd83FE/mcIGUXIEphNUeP5ZdvxKQC/Mcqalfel8rl4eeoXDwV
-         zzWfgSGtpUbv/hnt60yCzn7DeKx7iEkuhYh1721A9nrnW08qOvQB52N857lNypvzsK77
-         8kV5CMdB5GI/65/AwAMlzexf8hxVxeGRw+U8uM/hFEUFHK7L0Gy2xQFXRv84seuGEv3/
-         qOrTHwvSxKMwSLLoKZO1agRRV2g2Zqag0ei6n6PbFQ6+QmJvvni0+o59qD1f0MfoTJvi
-         Upcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PUKRKz2tpvOlgzU6T8LFm9id6xQAJB/MM9M3WUFXc+A=;
-        b=Rc4HebiD2JUi6AMNQzB0q9rzqFUJdZDQ2HDegEIEPximEhzev63BNW9lFqsNIs1K+Y
-         4VXcD4OkGqO0ZrGsLM3J+LL3BkCq6Km0GLLYFdiIDH3WAdwEsEofNrB5WnNNvPWpO/VS
-         AR4LbiHgDb4iDSpSFArcrwDeTMaqQM4jCT482aSXpbkWCtGKb7EmPHIoKJFpWuFBCLnF
-         O8kTgI6o5TzsC4MzFHbKnMirsReyRitvfKU5u9/aaK/OiSv6oareBgQhlo0HKaOY5SGU
-         tioaq1dQkbfc8ojkHPaGudstCzjUoRg3c5slaBrUFSmVjc9Y9Rtyn9wtc4+LzNoPMp+B
-         p8Gg==
-X-Gm-Message-State: AOAM533Clfs4YrkCMqhk13IcHwjKZw1tLkffeQ3b8i6lLuif1cTUjKhn
-        1Y4DBs6/SeHdHVMB3e8uTrQ=
-X-Google-Smtp-Source: ABdhPJxNxrY0nIitVq0DwnUHIuVobxEYUgHoqu1kxAvSNcHLXGtq22k3XIW26iFfBBt4+NxCMI6YUw==
-X-Received: by 2002:a17:906:52d1:: with SMTP id w17mr10339057ejn.164.1601816324134;
-        Sun, 04 Oct 2020 05:58:44 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d26:f700:59a3:d1dd:4e61:fceb])
-        by smtp.gmail.com with ESMTPSA id a10sm2751747edu.78.2020.10.04.05.58.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 05:58:43 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] mm/vmscan: drop unneeded assignment in kswapd()
-Date:   Sun,  4 Oct 2020 14:58:27 +0200
-Message-Id: <20201004125827.17679-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726087AbgJDNFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 09:05:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725977AbgJDNFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 09:05:24 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32F1C206C1;
+        Sun,  4 Oct 2020 13:05:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601816723;
+        bh=b3VJELJHxJ+kqWcCs/bmj4n7ROvR4MBKkbSqU/Xk2ng=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S75llJuXkVhNsHZ9NWtMK4on87LqyYF/Iol5MUK9nXxATt9zimtt+R0/1e5tJxb6A
+         tUy7MhK5MtGrRV39paO+SOjzompHmL7LJgBbSP13hCTaaGEmuOqpa+TOkwgY3mDQp8
+         mJOHw1f0cHu1kYjM5SOBqDoZpTnWJK42au+cEfAo=
+Received: by mail-ed1-f45.google.com with SMTP id w1so6580461edr.3;
+        Sun, 04 Oct 2020 06:05:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533gzDEFEtTIiH1sTQ1NMuhOmdjKtbuECpMX3HPp5YC3fUdJj1Pp
+        0DMeknFOkmDnjzm/bOd3N/YXyF6ZkAaEatOv+g==
+X-Google-Smtp-Source: ABdhPJzRNV8rMjJitmmvOwtnDM7OTxut1f/+0PXkBKVhYNYUdoWjJXy+wH0JoZphp5SwJc6HEG+LVPNFmEUc31+vzrY=
+X-Received: by 2002:a05:6402:c12:: with SMTP id co18mr12243824edb.162.1601816721815;
+ Sun, 04 Oct 2020 06:05:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201004055024.23542-1-phil.chang@mediatek.com>
+In-Reply-To: <20201004055024.23542-1-phil.chang@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 4 Oct 2020 21:05:11 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
+Message-ID: <CAAOTY_8vCb-adkbpdmbTWLeOFt-+dHjr4HVonHX7XPkLkzy1yA@mail.gmail.com>
+Subject: Re: [PATCH] [PATCH] of_reserved_mem: Increase the number of reserved regions
+To:     Phil Chang <phil.chang@mediatek.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Alix Wu <alix.wu@mediatek.com>,
+        YJ Chiang <yj.chiang@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joe Liu <joe.liu@mediatek.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The refactoring to kswapd() in commit e716f2eb24de ("mm, vmscan: prevent
-kswapd sleeping prematurely due to mismatched classzone_idx") turned an
-assignment to reclaim_order into a dead store, as in all further paths,
-reclaim_order will be assigned again before it is used.
+Hi, Phil:
 
-make clang-analyzer on x86_64 tinyconfig caught my attention with:
+Phil Chang <phil.chang@mediatek.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=884=E6=
+=97=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=881:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Certain SoCs need to support large amount of reserved memory
+> regions, especially to follow the GKI rules from Google.
+> In MTK new SoC requires more than 68 regions of reserved memory
+> for each IP's usage, such as load firmware to specific sapce,
 
-  mm/vmscan.c: warning: Although the value stored to 'reclaim_order' is
-  used in the enclosing expression, the value is never actually read from
-  'reclaim_order' [clang-analyzer-deadcode.DeadStores]
+space
 
-Compilers will detect this unneeded assignment and optimize this anyway.
-So, the resulting binary is identical before and after this change.
+> so that need to reserve more regisions
 
-Simplify the code and remove unneeded assignment to make clang-analyzer
-happy.
+regions.
 
-No functional change. No change in binary code.
+I guess this requirement is from Mediatek SoC, but I find below device
+tree and just find one reserved memory region,
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master and next-20201002
+arch/arm64/boot/dts/mediatek/mt7622.dtsi
+arch/arm64/boot/dts/mediatek/mt8173.dtsi
+arch/arm64/boot/dts/mediatek/mt8516.dtsi
 
-Mel, please ack.
-Andrew, please pick this minor non-urgent clean-up patch.
+Could you show me the 68 regions?
 
-I quickly confirmed that the binary did not change with this change to the
-source code; The hash of mm/vmscan.o remained the same before and after
-the change.
+Regards,
+Chun-Kuang.
 
-So, in my setup:
-md5sum mm/vmscan.o
-7da4675477f186263e36b726cc2b859d  mm/vmscan.o
-
-linux-safety, please verify and validate this change.
-
- mm/vmscan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 466fc3144fff..130ee40c1255 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -3896,7 +3896,7 @@ static int kswapd(void *p)
- 					highest_zoneidx);
- 
- 		/* Read the new order and highest_zoneidx */
--		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
-+		alloc_order = READ_ONCE(pgdat->kswapd_order);
- 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
- 							highest_zoneidx);
- 		WRITE_ONCE(pgdat->kswapd_order, 0);
--- 
-2.17.1
-
+>
+> Signed-off-by: Joe Liu <joe.liu@mediatek.com>
+> Signed-off-by: YJ Chiang <yj.chiang@mediatek.com>
+> Signed-off-by: Alix Wu <alix.wu@mediatek.com>
+> Signed-off-by: Phil Chang <phil.chang@mediatek.com>
+> ---
+>  drivers/of/of_reserved_mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 46b9371c8a33..595f0741dcef 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -22,7 +22,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/memblock.h>
+>
+> -#define MAX_RESERVED_REGIONS   64
+> +#define MAX_RESERVED_REGIONS   128
+>  static struct reserved_mem reserved_mem[MAX_RESERVED_REGIONS];
+>  static int reserved_mem_count;
+>
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
