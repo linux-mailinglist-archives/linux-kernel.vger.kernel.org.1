@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3B3282DEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0578282DFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgJDWId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 18:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
+        id S1726674AbgJDWM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 18:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbgJDWId (ORCPT
+        with ESMTP id S1726398AbgJDWMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:08:33 -0400
+        Sun, 4 Oct 2020 18:12:25 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77117C0613CE;
-        Sun,  4 Oct 2020 15:08:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3E6C0613CE;
+        Sun,  4 Oct 2020 15:12:25 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B2A4D12782289;
-        Sun,  4 Oct 2020 14:51:44 -0700 (PDT)
-Date:   Sun, 04 Oct 2020 15:08:31 -0700 (PDT)
-Message-Id: <20201004.150831.1030602377050100130.davem@davemloft.net>
-To:     trix@redhat.com
-Cc:     thomas.petazzoni@bootlin.com, kuba@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        ezequiel.garcia@free-electrons.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] net: mvneta: fix double free of txq->buf
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id D33E712782CCF;
+        Sun,  4 Oct 2020 14:55:36 -0700 (PDT)
+Date:   Sun, 04 Oct 2020 15:12:23 -0700 (PDT)
+Message-Id: <20201004.151223.774106080631315758.davem@davemloft.net>
+To:     xie.he.0141@gmail.com
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, khc@pm.waw.pl,
+        stephen@networkplumber.org
+Subject: Re: [PATCH net-next] drivers/net/wan/hdlc_fr: Improvements to the
+ code of pvc_xmit
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201003185121.12370-1-trix@redhat.com>
-References: <20201003185121.12370-1-trix@redhat.com>
+In-Reply-To: <20201003224105.74234-1-xie.he.0141@gmail.com>
+References: <20201003224105.74234-1-xie.he.0141@gmail.com>
 X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 04 Oct 2020 14:51:45 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 04 Oct 2020 14:55:37 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: trix@redhat.com
-Date: Sat,  3 Oct 2020 11:51:21 -0700
+From: Xie He <xie.he.0141@gmail.com>
+Date: Sat,  3 Oct 2020 15:41:05 -0700
 
-> From: Tom Rix <trix@redhat.com>
+> 1. Keep the code for the normal (non-error) flow at the lowest
+> indentation level. And use "goto drop" for all error handling.
 > 
-> clang static analysis reports this problem:
+> 2. Replace code that pads short Ethernet frames with a "__skb_pad" call.
 > 
-> drivers/net/ethernet/marvell/mvneta.c:3465:2: warning:
->   Attempt to free released memory
->         kfree(txq->buf);
->         ^~~~~~~~~~~~~~~
+> 3. Change "dev_kfree_skb" to "kfree_skb" in error handling code.
+> "kfree_skb" is the correct function to call when dropping an skb due to
+> an error. "dev_kfree_skb", which is an alias of "consume_skb", is for
+> dropping skbs normally (not due to an error).
 > 
-> When mvneta_txq_sw_init() fails to alloc txq->tso_hdrs,
-> it frees without poisoning txq->buf.  The error is caught
-> in the mvneta_setup_txqs() caller which handles the error
-> by cleaning up all of the txqs with a call to
-> mvneta_txq_sw_deinit which also frees txq->buf.
-> 
-> Since mvneta_txq_sw_deinit is a general cleaner, all of the
-> partial cleaning in mvneta_txq_sw_deinit()'s error handling
-> is not needed.
-> 
-> Fixes: 2adb719d74f6 ("net: mvneta: Implement software TSO")
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Cc: Krzysztof Halasa <khc@pm.waw.pl>
+> Cc: Stephen Hemminger <stephen@networkplumber.org>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
-Applied and queued up for -stable, thank you.
+Applied, thank you.
