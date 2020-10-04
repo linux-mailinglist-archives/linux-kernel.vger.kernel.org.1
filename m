@@ -2,105 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33D2282E5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DFC282E5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbgJDXkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 19:40:10 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:36736 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgJDXkK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 19:40:10 -0400
-Received: by mail-pj1-f66.google.com with SMTP id b17so4305400pji.1;
-        Sun, 04 Oct 2020 16:40:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5RmC8lajvDc8JqqhpPvdF9cVFad8GQY7C5ZedFzF2D4=;
-        b=JmxdNQntLN03I9Vcw9bZquYFA74wnb16vYw/UpL7TNZsZjFLB5d0GJ21B9WtGYG0Yv
-         ZzARxCk6RqDIzFHfWooVWsBQezDB6RDexwbzBkWx0n8iFllsOnwIagtvL5qV8t/M40Qc
-         roPflBYqYR/+MGaVKjYrJm0Izn8n7/LMgiXKeyQH5ZkkXlqnFwBx08ouSr2a/EB4NWBa
-         OcUwpjdedVhnW7T6q2gJiRRm9VNf73/LGAWhKGV/T9pZ7mN1jSA4tDOQ+B/MNOV9JDHC
-         r1eg5jrzthUuWyjYyFrch4flqsNpWLsR/eIPoyVoVQgXZ+jfnAbuOY4T7pogfMmBKKiu
-         t/Fw==
-X-Gm-Message-State: AOAM531OMo5tDAEMsMBE9gox9hcjNFqz7lAqqRXX3e0Qs+zN54MfKra8
-        pmZfB4vt8qYwudOGGurtMNI=
-X-Google-Smtp-Source: ABdhPJwzpONdJUJJVy488Qvmo0+TrrapgrC7zUxvxXWZByizaGqJE/ZtWk2CB+oYu7/wLlyCfnG5JA==
-X-Received: by 2002:a17:90a:aa05:: with SMTP id k5mr13402380pjq.59.1601854809620;
-        Sun, 04 Oct 2020 16:40:09 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id x22sm7652583pfp.181.2020.10.04.16.40.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 16:40:09 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 16:40:08 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        hao.wu@intel.com, michal.simek@xilinx.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        russell.h.weight@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH 03/10] fpga: fpga-mgr: dfl-fme-mgr: Simplify registration
-Message-ID: <20201004234008.GB111357@epycbox.lan>
-References: <20201004051423.75879-1-mdf@kernel.org>
- <20201004051423.75879-4-mdf@kernel.org>
- <408267d9-1026-1a80-56c9-3a8beaaa2b82@redhat.com>
+        id S1725885AbgJDXmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 19:42:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:20869 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgJDXmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 19:42:09 -0400
+IronPort-SDR: R5Zpscd5C8uGdYaWjIKupHhcGZJb0yjG2oKenRgYERg7mJ9ON4q5XsMW21q11og/W0xTXM0ej8
+ LG+9/7zWSfcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="227448155"
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="227448155"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 16:42:07 -0700
+IronPort-SDR: seGpSuZbW+Slv1I+Z7lk0E2yUnPxGWRnioLNMY1aTZKPNE2VrS6ifA2Nh788vAzGFJ/MqBgfmE
+ NgF6YJL73RIw==
+X-IronPort-AV: E=Sophos;i="5.77,337,1596524400"; 
+   d="scan'208";a="522376134"
+Received: from avahldie-mobl.amr.corp.intel.com (HELO localhost) ([10.249.32.74])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 16:41:55 -0700
+Date:   Mon, 5 Oct 2020 02:41:53 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201004234153.GA49415@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003195440.GD20115@casper.infradead.org>
+ <20201004215049.GA43926@linux.intel.com>
+ <20201004222750.GI20115@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <408267d9-1026-1a80-56c9-3a8beaaa2b82@redhat.com>
+In-Reply-To: <20201004222750.GI20115@casper.infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 11:22:31AM -0700, Tom Rix wrote:
+On Sun, Oct 04, 2020 at 11:27:50PM +0100, Matthew Wilcox wrote:
+> On Mon, Oct 05, 2020 at 12:50:49AM +0300, Jarkko Sakkinen wrote:
+> > What is shoukd take is encl->lock.
+> > 
+> > The loop was pre-v36 like:
+> > 
+> > 	idx_start = PFN_DOWN(start);
+> > 	idx_end = PFN_DOWN(end - 1);
+> > 
+> > 	for (idx = idx_start; idx <= idx_end; ++idx) {
+> > 		mutex_lock(&encl->lock);
+> > 		page = radix_tree_lookup(&encl->page_tree, idx);
+> > 		mutex_unlock(&encl->lock);
+> > 
+> > 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> > 			return -EACCES;
+> > 	}
+> > 
+> > Looking at xarray.h and filemap.c, I'm thinking something along the
+> > lines of:
+> > 
+> > 	for (idx = idx_start; idx <= idx_end; ++idx) {
+> > 		mutex_lock(&encl->lock);
+> > 		page = xas_find(&xas, idx + 1);
+> > 		mutex_unlock(&encl->lock);
+> > 
+> > 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> > 			return -EACCES;
+> > 	}
+> > 
+> > Does this look about right?
 > 
-> On 10/3/20 10:14 PM, Moritz Fischer wrote:
-> > Simplify registration using new devm_fpga_mgr_register() API.
-> >
-> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> > ---
-> >  drivers/fpga/dfl-fme-mgr.c | 12 +-----------
-> >  1 file changed, 1 insertion(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
-> > index b3f7eee3c93f..3fc2be87d059 100644
-> > --- a/drivers/fpga/dfl-fme-mgr.c
-> > +++ b/drivers/fpga/dfl-fme-mgr.c
-> > @@ -316,16 +316,7 @@ static int fme_mgr_probe(struct platform_device *pdev)
-> >  	mgr->compat_id = compat_id;
-> >  	platform_set_drvdata(pdev, mgr);
+> Not really ...
 > 
-Nice catch. Will fix.
-> Is this call is still needed ?
+> 	int ret = 0;
 > 
-> Tom
-> 
-> >  
-> > -	return fpga_mgr_register(mgr);
-> > -}
-> > -
-> > -static int fme_mgr_remove(struct platform_device *pdev)
-> > -{
-> > -	struct fpga_manager *mgr = platform_get_drvdata(pdev);
-> > -
-> > -	fpga_mgr_unregister(mgr);
-> > -
-> > -	return 0;
-> > +	return devm_fpga_mgr_register(dev, mgr);
-> >  }
-> >  
-> >  static struct platform_driver fme_mgr_driver = {
-> > @@ -333,7 +324,6 @@ static struct platform_driver fme_mgr_driver = {
-> >  		.name    = DFL_FPGA_FME_MGR,
-> >  	},
-> >  	.probe   = fme_mgr_probe,
-> > -	.remove  = fme_mgr_remove,
-> >  };
-> >  
-> >  module_platform_driver(fme_mgr_driver);
-> 
+> 	mutex_lock(&encl->lock);
+> 	rcu_read_lock();
 
-Cheers,
-Moritz
+Right, so xa_*() take RCU lock implicitly and xas_* do not.
+
+> 	while (xas.index < idx_end) {
+> 		page = xas_next(&xas);
+
+It should iterate through every possible page index within the range,
+even the ones that do not have an entry, i.e. this loop also checks
+that there are no empty slots.
+
+Does xas_next() go through every possible index, or skip the non-empty
+ones?
+
+> 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> 			ret = -EACCESS;
+> 			break;
+> 		}
+> 	}
+> 	rcu_read_unlock();
+> 	mutex_unlock(&encl->lock);
+
+In my Geminilake NUC the maximum size of the address space is 64GB for
+an enclave, and it is not fixed but can grow in microarchitectures
+beyond that.
+
+That means that in (*artificial*) worst case the locks would be kept for
+64*1024*1024*1024/4096 = 16777216 iterations.
+
+I just realized that in sgx_encl_load_page ([1], the encl->lock is
+acquired by the caller) I have used xa_load(), which more or less would
+be compatible with the old radix_tree pattern, i.e.
+
+for (idx = idx_start; idx <= idx_end; ++idx) {
+	mutex_lock(&encl->lock);
+	page = xas_load(&encl->page_array, idx);
+	mutex_unlock(&encl->lock);
+
+	if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+		return -EACCES;
+}
+
+To make things stable again, I'll go with this for the immediate future.
+
+> 	return ret;
+> 
+> ... or you could rework to use the xa_lock instead of encl->lock.
+> I don't know how feasible that is for you.
+
+encl->lock is used to protect enclave state but it is true that
+page->vm_max_prort_bits is not modified through concurrent access, once
+the page is added (e.g. by the reclaimer, which gets pages through
+sgx_activate_page_list, not through xarray).
+
+It's an interesting idea, but before even considering it I want to fix
+the bug, even if the fix ought to be somehow unoptimal in terms of
+performance.
+
+Thanks for helping with this. xarray is still somewhat alien to me and
+most of the code I see just use the iterator macros excep mm/*, but
+I'm slowly adapting the concepts.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/kernel/cpu/sgx/encl.c
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/kernel/cpu/sgx/main.c
+
+/Jarkko
