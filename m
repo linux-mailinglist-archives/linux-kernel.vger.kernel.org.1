@@ -2,262 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBC5282B48
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5089282B4A
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgJDOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 10:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbgJDOcV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 10:32:21 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5409C0613CE;
-        Sun,  4 Oct 2020 07:32:21 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o25so4071753pgm.0;
-        Sun, 04 Oct 2020 07:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l4l4BMbBfwlgcXtffhl1zomi5ytcpiDRWVr7K7NRh9w=;
-        b=uuY92RYfjUtsh8Rjq75jZiFaTMLX68W8jDOh/Ce0/277DoxvAtphNtARmObLaIyxR9
-         L8KFx0sYATNiBxGnKZX+JPPyET9sI4zjHQm4FggsZ3PdSPidth95e/UQSl1LwCS65btT
-         gVyqS7EU2bMbwaWkygKlfiMAHzw7y1cODP6diUMGSGNNMa9e3CQ7eg7ymHNM/6MKxrhM
-         j2MU+wbSBtLvXI1TTWICZU9SbNoc0WnSxX4+3iTlalYeQUCnNYTyF2dxyNKeOo/90T4I
-         lWCizTeBHPcOnf8NXw1FGcAWw5buyLQzy53768HRxD2UMCMr11A5lMNlHH76/P70uKFr
-         KVNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l4l4BMbBfwlgcXtffhl1zomi5ytcpiDRWVr7K7NRh9w=;
-        b=LHPDl7upqN2HiPvzsG+8M/KgMbCjtGd02QyIX7ONPhT++5ShdU5UYgG0BUSE+jyDKV
-         45u3JWChMISJQoAjiMVhUyuRzupERPYAPZS7tE9JpwTMbLkOO/9oSzfjEUyFEqX0358F
-         w5AVGNjqd7JhOvr74Xv9ZirMuYF4jRAvOB04GaNQyZCigA+LG+lMPmivSlJ8V9yXwuxX
-         dy8kQv/vCgSLm6p3iFOaEnF6lsEsVmvBj4C1CDRt9OeX4ychJ7Aau/J65zl5Hx3bvvax
-         EW1sbvLhoaHghicQQMnhJmn/aSu4MZQ003DUeNw7HZVqR/j1GKpmhL3v/gMY3Os+LlEN
-         2RDw==
-X-Gm-Message-State: AOAM530pTlOFEENFs4xhoglCjmM7LFDN4FoHgz0ok5GdySDkfHncIvZA
-        2y+K09nKOykG+fSFtsSABP0=
-X-Google-Smtp-Source: ABdhPJweggjHR5yPF05JM4Xb60MCqk0KqkNcbvK7Yct6J8vJS00S8uEUSioM2smVuDvZqayZaCgacQ==
-X-Received: by 2002:a63:8f18:: with SMTP id n24mr10084595pgd.209.1601821941194;
-        Sun, 04 Oct 2020 07:32:21 -0700 (PDT)
-Received: from [192.168.1.5] ([110.77.216.3])
-        by smtp.googlemail.com with ESMTPSA id c127sm8918582pfa.165.2020.10.04.07.32.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 07:32:20 -0700 (PDT)
-Subject: Re: [PATCH] USB: serial: option: Add Telit FT980-KS composition
-From:   Lars Melin <larsm17@gmail.com>
-To:     Leonid Bloch <leonidb@asocscloud.com>,
-        Leonid Bloch <lb.workbox@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johan Hovold <johan@kernel.org>
-References: <20201004095703.2633-1-lb.workbox@gmail.com>
- <886eb499-4db4-1d61-2e67-0335423bf077@gmail.com>
- <ce86bc05-f4e2-b199-0cdc-792715e3f275@asocscloud.com>
- <bf28e522-be94-a6f7-ea44-9c954849fca6@gmail.com>
-Message-ID: <ab8c7550-19b9-f8a9-febb-9d2d558978e7@gmail.com>
-Date:   Sun, 4 Oct 2020 21:32:17 +0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1726064AbgJDOc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 10:32:58 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49353 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725827AbgJDOc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 10:32:58 -0400
+IronPort-SDR: ILKPSoNOsdJpnD0es5voKnDH875NR8YiImQDOL7Rhtpfw4Z/0BytQgvpzNV+hy7OzzC3BBsUXb
+ QYDitoVnMYQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9763"; a="248026200"
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; 
+   d="scan'208";a="248026200"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 07:32:56 -0700
+IronPort-SDR: 4Xvz+TMkm+Qpbjp+2v6pfbZheZBTQpWTrakW+HOcLN3bIvhBqiL/xddm00pP8FI7Js7AlcB83z
+ o/PbvDM8QrnA==
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; 
+   d="scan'208";a="520142122"
+Received: from pkozlov-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.35.250])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2020 07:32:48 -0700
+Date:   Sun, 4 Oct 2020 17:32:46 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201004143246.GA3561@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003143925.GB800720@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <bf28e522-be94-a6f7-ea44-9c954849fca6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201003143925.GB800720@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/2020 21:16, Lars Melin wrote:
-> On 10/4/2020 20:29, Leonid Bloch wrote:
->> On 10/4/20 1:58 PM, Lars Melin wrote:
->>> On 10/4/2020 16:57, Leonid Bloch wrote:
->>>> This commit adds the following Telit FT980-KS composition:
->>>>
->>>> 0x1054: rndis, diag, adb, nmea, modem, modem, aux
->>>>
->>>> AT commands can be sent to /dev/ttyUSB5.
->>>>
->>>
->>> Please submit a verbose lsusb listing for the device, I can't imagine
->>> that the adb interface should be handled by the option serial driver so
->>> there will never be a ttyUSB5.
->>
->> Please see below.
->>
->> Thanks,
->> Leonid.
->>
->> ```
->> Bus 001 Device 005: ID 1bc7:1054 Telit Wireless Solutions
->> Device Descriptor:
->>    bLength                18
->>    bDescriptorType         1
->>    bcdUSB               2.10
->>    bDeviceClass            0
->>    bDeviceSubClass         0
->>    bDeviceProtocol         0
->>    bMaxPacketSize0        64
->>    idVendor           0x1bc7 Telit Wireless Solutions
->>    idProduct          0x1054
->>    bcdDevice            4.14
->>    iManufacturer           1 Telit Wireless Solutions
->>    iProduct                2 FT980-KS
->>    iSerial                 3 cb42f61
->>    bNumConfigurations      1
->>    Configuration Descriptor:
->>      bLength                 9
->>      bDescriptorType         2
->>      wTotalLength       0x013d
->>      bNumInterfaces          8
->>      bConfigurationValue     1
->>      iConfiguration          4 RNDIS_DIAG_ADB_NMEA_DUN_DUN_SER
->>      bmAttributes         0xa0
->>        (Bus Powered)
->>        Remote Wakeup
->>      MaxPower              500mA
->>      Interface Association:
->>        bLength                 8
->>        bDescriptorType        11
->>        bFirstInterface         0
->>        bInterfaceCount         2
->>        bFunctionClass        239 Miscellaneous Device
->>        bFunctionSubClass       4
->>        bFunctionProtocol       1
->>        iFunction               7 RNDIS
->>      Interface Descriptor:
->>        bLength                 9
->>        bDescriptorType         4
->>        bInterfaceNumber        0
->>        bAlternateSetting       0
->>        bNumEndpoints           1
->>        bInterfaceClass       239 Miscellaneous Device
->>        bInterfaceSubClass      4
->>        bInterfaceProtocol      1
->>        iInterface              5 RNDIS Communications Control
->>        ** UNRECOGNIZED:  05 24 00 10 01
->>        ** UNRECOGNIZED:  05 24 01 00 01
->>        ** UNRECOGNIZED:  04 24 02 00
->>        ** UNRECOGNIZED:  05 24 06 00 01
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x81  EP 1 IN
->>          bmAttributes            3
->>            Transfer Type            Interrupt
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0008  1x 8 bytes
->>          bInterval               9
->>      Interface Descriptor:
->>        bLength                 9
->>        bDescriptorType         4
->>        bInterfaceNumber        1
->>        bAlternateSetting       0
->>        bNumEndpoints           2
->>        bInterfaceClass        10 CDC Data
->>        bInterfaceSubClass      0
->>        bInterfaceProtocol      0
->>        iInterface              6 RNDIS Ethernet Data
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x8e  EP 14 IN
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x0f  EP 15 OUT
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
->>      Interface Descriptor:
->>        bLength                 9
->>        bDescriptorType         4
->>        bInterfaceNumber        2
->>        bAlternateSetting       0
->>        bNumEndpoints           2
->>        bInterfaceClass       255 Vendor Specific Class
->>        bInterfaceSubClass    255 Vendor Specific Subclass
->>        bInterfaceProtocol     48
->>        iInterface              0
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x82  EP 2 IN
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x01  EP 1 OUT
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
->>      Interface Descriptor:
->>        bLength                 9
->>        bDescriptorType         4
->>        bInterfaceNumber        3
->>        bAlternateSetting       0
->>        bNumEndpoints           2
->>        bInterfaceClass       255 Vendor Specific Class
->>        bInterfaceSubClass     66
->>        bInterfaceProtocol      1
->>        iInterface              8 ADB Interface
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x02  EP 2 OUT
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
->>        Endpoint Descriptor:
->>          bLength                 7
->>          bDescriptorType         5
->>          bEndpointAddress     0x83  EP 3 IN
->>          bmAttributes            2
->>            Transfer Type            Bulk
->>            Synch Type               None
->>            Usage Type               Data
->>          wMaxPacketSize     0x0200  1x 512 bytes
->>          bInterval               0
+On Sat, Oct 03, 2020 at 04:39:25PM +0200, Greg KH wrote:
+> On Sat, Oct 03, 2020 at 07:50:46AM +0300, Jarkko Sakkinen wrote:
+> > Intel Software Guard eXtensions (SGX) is a set of CPU instructions that can
+> > be used by applications to set aside private regions of code and data. The
+> > code outside the SGX hosted software entity is prevented from accessing the
+> > memory inside the enclave by the CPU. We call these entities enclaves.
+> > 
+> > Add a driver that provides an ioctl API to construct and run enclaves.
+> > Enclaves are constructed from pages residing in reserved physical memory
+> > areas. The contents of these pages can only be accessed when they are
+> > mapped as part of an enclave, by a hardware thread running inside the
+> > enclave.
+> > 
+> > The starting state of an enclave consists of a fixed measured set of
+> > pages that are copied to the EPC during the construction process by
+> > using the opcode ENCLS leaf functions and Software Enclave Control
+> > Structure (SECS) that defines the enclave properties.
+> > 
+> > Enclaves are constructed by using ENCLS leaf functions ECREATE, EADD and
+> > EINIT. ECREATE initializes SECS, EADD copies pages from system memory to
+> > the EPC and EINIT checks a given signed measurement and moves the enclave
+> > into a state ready for execution.
+> > 
+> > An initialized enclave can only be accessed through special Thread Control
+> > Structure (TCS) pages by using ENCLU (ring-3 only) leaf EENTER.  This leaf
+> > function converts a thread into enclave mode and continues the execution in
+> > the offset defined by the TCS provided to EENTER. An enclave is exited
+> > through syscall, exception, interrupts or by explicitly calling another
+> > ENCLU leaf EEXIT.
+> > 
+> > The mmap() permissions are capped by the contained enclave page
+> > permissions. The mapped areas must also be populated, i.e. each page
+> > address must contain a page. This logic is implemented in
+> > sgx_encl_may_map().
+> > 
+> > Cc: linux-security-module@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Acked-by: Jethro Beekman <jethro@fortanix.com>
+> > Tested-by: Jethro Beekman <jethro@fortanix.com>
+> > Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> > Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> > Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> > Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> > Tested-by: Seth Moore <sethmo@google.com>
+> > Tested-by: Darren Kenny <darren.kenny@oracle.com>
+> > Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+> > Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> > Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/Makefile |   2 +
+> >  arch/x86/kernel/cpu/sgx/driver.c | 173 ++++++++++++++++
+> >  arch/x86/kernel/cpu/sgx/driver.h |  29 +++
+> >  arch/x86/kernel/cpu/sgx/encl.c   | 331 +++++++++++++++++++++++++++++++
+> >  arch/x86/kernel/cpu/sgx/encl.h   |  85 ++++++++
+> >  arch/x86/kernel/cpu/sgx/main.c   |  11 +
+> >  6 files changed, 631 insertions(+)
+> >  create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
+> >  create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
+> >  create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
+> >  create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
+> > 
+> > diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
+> > index 79510ce01b3b..3fc451120735 100644
+> > --- a/arch/x86/kernel/cpu/sgx/Makefile
+> > +++ b/arch/x86/kernel/cpu/sgx/Makefile
+> > @@ -1,2 +1,4 @@
+> >  obj-y += \
+> > +	driver.o \
+> > +	encl.o \
+> >  	main.o
+> > diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+> > new file mode 100644
+> > index 000000000000..f54da5f19c2b
+> > --- /dev/null
+> > +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> > @@ -0,0 +1,173 @@
+> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 > 
-> //snip
+> You use gpl-only header files in this file, so how in the world can it
+> be bsd-3 licensed?
 > 
-> Interface #3 for ADB must be blacklisted in the option entry for the 
-> device, by using .driver_info = RSVD(3)
+> Please get your legal department to agree with this, after you explain
+> to them how you are mixing gpl2-only code in with this file.
+
+I'll do what I already stated that I will do. Should I do something
+more?
+
+> > +// Copyright(c) 2016-18 Intel Corporation.
 > 
+> Dates are hard to get right :(
+
+Will fix.
+
+> 
+> > +
+> > +#include <linux/acpi.h>
+> > +#include <linux/miscdevice.h>
+> > +#include <linux/mman.h>
+> > +#include <linux/security.h>
+> > +#include <linux/suspend.h>
+> > +#include <asm/traps.h>
+> > +#include "driver.h"
+> > +#include "encl.h"
+> > +
+> > +u64 sgx_encl_size_max_32;
+> > +u64 sgx_encl_size_max_64;
+> > +u32 sgx_misc_reserved_mask;
+> > +u64 sgx_attributes_reserved_mask;
+> > +u64 sgx_xfrm_reserved_mask = ~0x3;
+> > +u32 sgx_xsave_size_tbl[64];
+> > +
+> > +static int sgx_open(struct inode *inode, struct file *file)
+> > +{
+> > +	struct sgx_encl *encl;
+> > +	int ret;
+> > +
+> > +	encl = kzalloc(sizeof(*encl), GFP_KERNEL);
+> > +	if (!encl)
+> > +		return -ENOMEM;
+> > +
+> > +	atomic_set(&encl->flags, 0);
+> > +	kref_init(&encl->refcount);
+> > +	xa_init(&encl->page_array);
+> > +	mutex_init(&encl->lock);
+> > +	INIT_LIST_HEAD(&encl->mm_list);
+> > +	spin_lock_init(&encl->mm_lock);
+> > +
+> > +	ret = init_srcu_struct(&encl->srcu);
+> > +	if (ret) {
+> > +		kfree(encl);
+> > +		return ret;
+> > +	}
+> > +
+> > +	file->private_data = encl;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sgx_release(struct inode *inode, struct file *file)
+> > +{
+> > +	struct sgx_encl *encl = file->private_data;
+> > +	struct sgx_encl_mm *encl_mm;
+> > +
+> > +	for ( ; ; )  {
+> > +		spin_lock(&encl->mm_lock);
+> > +
+> > +		if (list_empty(&encl->mm_list)) {
+> > +			encl_mm = NULL;
+> > +		} else {
+> > +			encl_mm = list_first_entry(&encl->mm_list,
+> > +						   struct sgx_encl_mm, list);
+> > +			list_del_rcu(&encl_mm->list);
+> > +		}
+> > +
+> > +		spin_unlock(&encl->mm_lock);
+> > +
+> > +		/* The list is empty, ready to go. */
+> > +		if (!encl_mm)
+> > +			break;
+> > +
+> > +		synchronize_srcu(&encl->srcu);
+> > +		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> > +		kfree(encl_mm);
+> > +	}
+> > +
+> > +	mutex_lock(&encl->lock);
+> > +	atomic_or(SGX_ENCL_DEAD, &encl->flags);
+> 
+> So you set a flag that this is dead, and then instantly delete it?  Why
+> does that matter?  I see you check for this flag elsewhere, but as you
+> are just about to delete this structure, how can this be an issue?
+
+It matters because ksgxswapd (sgx_reclaimer_*) might be processing it.
+
+It will use the flag to skip the operations that it would do to a victim
+page, when the enclave is still alive.
+
+> 
+> > +	mutex_unlock(&encl->lock);
+> > +
+> > +	kref_put(&encl->refcount, sgx_encl_release);
+> 
+> Don't you need to hold the lock across the put?  If not, what is
+> serializing this?
+> 
+> But an even larger comment, why is this reference count needed at all?
+> 
+> You never grab it except at init time, and you free it at close time.
+> Why not rely on the reference counting that the vfs ensures you?
+
+Because ksgxswapd needs the alive enclave instance while it is in the
+process of swapping a victim page. The reason for this is the
+hierarchical nature of the enclave pages.
+
+As an example, a write operation to main memory, EWB (SDM vol 3D 40-79)
+needs to access SGX Enclave Control Structure (SECS) page, which is
+contains global data for an enclave, like the unswapped child count.
 
 
-When looking at the entries for other Telit deices in the option driver 
-I see that their diag interface always has
-the NCTRL flag so it is likely that you need that for this device also.
-See the entry for PID 1052
+> > +	return 0;
+> > +}
+> > +
+> > +static int sgx_mmap(struct file *file, struct vm_area_struct *vma)
+> > +{
+> > +	struct sgx_encl *encl = file->private_data;
+> > +	int ret;
+> > +
+> > +	ret = sgx_encl_may_map(encl, vma->vm_start, vma->vm_end, vma->vm_flags);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = sgx_encl_mm_add(encl, vma->vm_mm);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	vma->vm_ops = &sgx_vm_ops;
+> > +	vma->vm_flags |= VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP | VM_IO;
+> > +	vma->vm_private_data = encl;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static unsigned long sgx_get_unmapped_area(struct file *file,
+> > +					   unsigned long addr,
+> > +					   unsigned long len,
+> > +					   unsigned long pgoff,
+> > +					   unsigned long flags)
+> > +{
+> > +	if ((flags & MAP_TYPE) == MAP_PRIVATE)
+> > +		return -EINVAL;
+> > +
+> > +	if (flags & MAP_FIXED)
+> > +		return addr;
+> > +
+> > +	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
+> > +}
+> > +
+> > +static const struct file_operations sgx_encl_fops = {
+> > +	.owner			= THIS_MODULE,
+> > +	.open			= sgx_open,
+> > +	.release		= sgx_release,
+> > +	.mmap			= sgx_mmap,
+> > +	.get_unmapped_area	= sgx_get_unmapped_area,
+> > +};
+> > +
+> > +static struct miscdevice sgx_dev_enclave = {
+> > +	.minor = MISC_DYNAMIC_MINOR,
+> > +	.name = "enclave",
+> > +	.nodename = "sgx/enclave",
+> 
+> A subdir for a single device node?  Ok, odd, but why not just
+> "sgx_enclave"?  How "special" is this device node?
 
+There is a patch that adds "sgx/provision".
 
-thanks
-Lars
+Either works for me. Should I flatten them to "sgx_enclave" and
+"sgx_provision", or keep them as they are?
+
+> thanks,
+> 
+> greg k-h
+
+/Jarkko
