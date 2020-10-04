@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB74282C5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC380282C61
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgJDSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 14:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S1726478AbgJDSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 14:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgJDSHT (ORCPT
+        with ESMTP id S1726313AbgJDSId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 14:07:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D39C0613CE;
-        Sun,  4 Oct 2020 11:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=e633HPyalqTmd7b+XoszZ7GvqCcOvcsQIj4oVe+ALj4=; b=neJrcFQCzU1oiMKyl9Md8oa7Cg
-        kC3aWIZ8N/+ol10tDWz19MLQJ3+AsWgvpfQhBTFunUES/1LoCy7EUXR2UAON9hdlfonELxwONQKxB
-        VU9PA93CaGBnHeHoQVONdL5TuvUiLayWcHfvV5yRoL4ylY03sQ3M18jjasCyx3tTR2f6Wpl8lj28E
-        AIR3RwjjXoE/Bzap7BliCRti0fcf/JZfKUsRfLVoqg8sXIYZ9ybnYITfsxq6LrnSBEv56kS3AdgGT
-        RLwUVtM9RgWg8KdtXWC8r6ERXSNnm43eMO4M4aW1TxR1bZF4AB2SMNpgqyprrv/4EP4GQSBRht/5i
-        kWBvP8uA==;
-Received: from [2601:1c0:6280:3f0::2c9a]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kP8Ph-00044u-U5; Sun, 04 Oct 2020 18:07:14 +0000
-Subject: Re: [PATCH v2 2/6] fpga: m10bmc-sec: create max10 bmc security engine
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        lee.jones@linaro.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-References: <20201003012412.16831-1-russell.h.weight@intel.com>
- <20201003012412.16831-3-russell.h.weight@intel.com>
- <6854e626-e21b-d3b6-fa31-f150edba6f66@infradead.org>
- <17d32b30-dab5-c8cd-9ce3-fafe847fa846@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d2be9811-d7f3-552f-124a-b50f1e82f444@infradead.org>
-Date:   Sun, 4 Oct 2020 11:07:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 4 Oct 2020 14:08:33 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1E4C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 11:08:31 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b12so8202268lfp.9
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 11:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xPAa0PwCL+R/4m3eXjRBJhAhCv7o5/mqYPfRFjTLnGg=;
+        b=M6RlgCZ5gbxyh0LuGCVU7rx08rpHawmOJPAeN6wnqB8RhOwogrcswDWcqaI+EGv4iK
+         UD5br9uNzrHjxpMfY386lkrsJth+5txvK2FM3VsMWKLX6kWBoeb/iRV08pFFOyyWi3Am
+         zMJLNiMgDG4x3awCC4zhCyxMQtrkF6oL0bNGM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xPAa0PwCL+R/4m3eXjRBJhAhCv7o5/mqYPfRFjTLnGg=;
+        b=sHH7olojEu0BiYqtHZWCuM3zM/yqioX+wFwEMoFIXdh7xbvUInzop0JcmEYzYOCcUS
+         6OlqknqyL8RC1t4mai+Uys/VR4P4UzYAIr+Xu/nmHbq9sgMrLi+ACVsAhn8mYFuaov2U
+         VB5cB2YnURI957F/eVzr9qgHo4+I4U4XKq8tQj6HdTR69NDL5f4cfa9GbRajT2uGn260
+         bQQ9nxprzEO6+090fkB+umlPVkjkOMKcen6OqmQoSkAVI32GckYAkLNf/Qmjz2kA0n4Z
+         uul4v/TjvIWs1j2VCyWqNkm8sFw3NfrmKxeQiha7s2OyJUJ/Ho7K1FIGpOjf/e0q/JBg
+         ZGEA==
+X-Gm-Message-State: AOAM5311/l76VHYf68vMVit98iSIu992aZY6fajATVpEht0VzNqnpspC
+        SJ3jw0F53+OLa5PfOsOE8ERFMtgL+iRvMg==
+X-Google-Smtp-Source: ABdhPJy+MXVi2hrHZlYQ+5CJSRkKeZS+qSZOI6LaSxAl1i8uJbpUVW2JB6mUaOFBr7QV4GudT5LQSg==
+X-Received: by 2002:ac2:4148:: with SMTP id c8mr3970785lfi.278.1601834909476;
+        Sun, 04 Oct 2020 11:08:29 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id r19sm1094829lfm.301.2020.10.04.11.08.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 11:08:28 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id w3so5322063ljo.5
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 11:08:28 -0700 (PDT)
+X-Received: by 2002:a2e:7819:: with SMTP id t25mr2979278ljc.371.1601834907754;
+ Sun, 04 Oct 2020 11:08:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <17d32b30-dab5-c8cd-9ce3-fafe847fa846@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201004023608.GM3421308@ZenIV.linux.org.uk>
+In-Reply-To: <20201004023608.GM3421308@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 4 Oct 2020 11:08:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjmrwNf65FZ7-S_3nJ3vEQYOruG4EoJ3Wcm2t-GvpVn4w@mail.gmail.com>
+Message-ID: <CAHk-=wjmrwNf65FZ7-S_3nJ3vEQYOruG4EoJ3Wcm2t-GvpVn4w@mail.gmail.com>
+Subject: Re: [RFC][PATCHSET] epoll cleanups
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/4/20 11:01 AM, Russ Weight wrote:
-> 
-> 
-> On 10/2/20 8:15 PM, Randy Dunlap wrote:
->> On 10/2/20 6:24 PM, Russ Weight wrote:
->>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
->>> index c534cc80f398..2380d36b08c7 100644
->>> --- a/drivers/fpga/Kconfig
->>> +++ b/drivers/fpga/Kconfig
->>> @@ -235,4 +235,15 @@ config IFPGA_SEC_MGR
->>>  	  region and for the BMC. Select this option to enable
->>>  	  updates for secure FPGA devices.
->>>  
->>> +config IFPGA_M10_BMC_SECURE
->>> +        tristate "Intel MAX10 BMC security engine"
->>> +	depends on MFD_INTEL_M10_BMC && IFPGA_SEC_MGR
->>> +        help
->>> +          Secure update support for the Intel MAX10 board management
->>> +	  controller.
->>> +
->>> +	  This is a subdriver of the Intel MAX10 board management controller
->>> +	  (BMC) and provides support for secure updates for the BMC image,
->>> +	  the FPGA image, the Root Entry Hashes, etc.
->>> +
->>>  endif # FPGA
->> Dagnabit, I need a bot to do this.
->>
->> Clean up the indentation in the Kconfig file.
->>
->> From Documentation/process/coding-style.rst, section 10:
->>
->> Lines under a ``config`` definition
->> are indented with one tab, while help text is indented an additional two
->> spaces.
->>
->> checkpatch should have found that issue. Did it not?
-> Sorry - I thought I had addressed the indentation errors after the first submission.
-> I'll fix it.
-> 
-> I am running checkpatch.pl --strict, and I did not see a warning/error for this.
+On Sat, Oct 3, 2020 at 7:36 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>         Locking and especially control flow in fs/eventpoll.c is
+> overcomplicated.  As the result, the code has been hard to follow
+> and easy to fuck up while modifying.
 
-OK, I looked at checkpatch.pl and I don't see any checks for that.
+Scanning through the patches they all look superficially ok to me, but
+I'm wondering how much test coverage you have (because I'm wondering
+how much test coverage we have in general for epoll).
 
-I'll just work on a pseudo-bot then.
+But I'm certainly not in the least against trying to make the epoll
+code more straightforward and understandable.
 
-thanks.
-
--- 
-~Randy
-
+                  Linus
