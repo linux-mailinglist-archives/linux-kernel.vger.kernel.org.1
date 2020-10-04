@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8CC282DAA
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEAF282DAD
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgJDVGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 17:06:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26898 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726313AbgJDVGu (ORCPT
+        id S1726578AbgJDVHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 17:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726313AbgJDVHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 17:06:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601845609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HOSd6fXQnXybQ36w4uIi1a1hr5nnmrxJ6QtsUC5yq7w=;
-        b=LcFPXwfKJQUU/FBMZlERCnQTY3fi9mlj2oN8iMBcKsLJcVcAci71sfw3+f5pJAIKF+rA8l
-        Jc7Q62z3D1J36MIxP12ma1VXXcdAuQcMnI8Vr+YPg9jD9uh19+vIRupAXaH1me1DkWChaA
-        ivnTPJXUSN8AbRQkN3Z9on+pz+xM8/o=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-JX16dPAUO6atoZP7ln1yHQ-1; Sun, 04 Oct 2020 17:06:47 -0400
-X-MC-Unique: JX16dPAUO6atoZP7ln1yHQ-1
-Received: by mail-qk1-f197.google.com with SMTP id a2so5272957qkg.19
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 14:06:47 -0700 (PDT)
+        Sun, 4 Oct 2020 17:07:51 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384B2C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 14:07:50 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id v123so9624592qkd.9
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 14:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AmeqHM8IDXYitzI0EgnxUl/gsEaL+uyJCislVPlifDE=;
+        b=s67vt7a3tmBSv1ugGD6TFAB2dlUtTioftfBWuRfSttQFSfgkoH0YxA2QMINdkGwgBD
+         ZB/m2NmL9E1Vmsq5y5sG9p0onnyzbu2dehbTkR08mFQ0+UNukbrRpl7aIWmk8LiNlp1T
+         YCzXBwUnXDmfVh5t+5GQlD0Kq/fFEFf7T/dmY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HOSd6fXQnXybQ36w4uIi1a1hr5nnmrxJ6QtsUC5yq7w=;
-        b=plSF0z7rOLkjKMmkc2pzuZvlL4AJm+vXzDAa+mdPewWCa6c5qB7EJACyM9kTdNzoMv
-         EQvgbMvUiwd7+BMKhXrXlTNJegUFKlnF2eAJUa2B0V+h/xc2yWwh3SQluZU19PIEpnFp
-         m6B0rBVHb9AKP6bSSWmW8FyptPmHkRteJUp/IwzO4p4semQyTqDyqg0ZGeNaHfnNndgk
-         L2NNXz5/65XFiDMV0qArmCq0jG28r0mdXbpLrjtuD2yj2JYjptf5FUx4RegQRO9VyNzx
-         dZpFN5cIGy0/SFyfLf/wq4uH9vdqfmFp+y/oL1YOYy34FkhGmtrV2ZLUhA3VM9UXMJip
-         A0Cg==
-X-Gm-Message-State: AOAM531hyrLryGUWSSYIigBQ3vayqzPN6kcfv9q4cRKFUc13WfCnJ20P
-        LwbA/pvOLjO2JSf/DX/rLDEZmUOcHmnCrk+kGabTjy/4hIes+LXSVf3uPkXaZCyOYlpVBNc9Jgn
-        SXD8bWro6w1yWQ5hIk4sHZvzE
-X-Received: by 2002:a05:620a:2213:: with SMTP id m19mr11339340qkh.472.1601845607333;
-        Sun, 04 Oct 2020 14:06:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8D6i/YlfAGtBLPSW3AvZb8V1G6iekhK4asTFJYCkHDkoCPbaqz94kc0BpVukahCdA3j7MSA==
-X-Received: by 2002:a05:620a:2213:: with SMTP id m19mr11339316qkh.472.1601845607108;
-        Sun, 04 Oct 2020 14:06:47 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w18sm6078127qtt.19.2020.10.04.14.06.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 14:06:46 -0700 (PDT)
-Subject: Re: [PATCH v2 4/7] fpga: sec-mgr: expose sec-mgr update errors
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20201002223701.1317-1-russell.h.weight@intel.com>
- <20201002223701.1317-5-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <70b5ec16-e252-b463-60f6-9a03fa654b34@redhat.com>
-Date:   Sun, 4 Oct 2020 14:06:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AmeqHM8IDXYitzI0EgnxUl/gsEaL+uyJCislVPlifDE=;
+        b=ZX4rKfja00gtb5B/B/9haJsSr+UooKjMjvFVuSsgqseKl5rfby6VgnoOE+Xia+Sg8x
+         TEyvi2ezVKPQKJlTwaR5dQ34De1Kp3/m5wREr4Nzogrs6m6YWF+mi54hmTNZKNrWsCkp
+         c+rWGYwKYSaLk95DgNR1iWKXdbnMRj0h+OqW4bKgenC4t4pkqRc9UJeaRp0MCWoyi+Q2
+         5VqGzM1P++b2Ur9CccS6HsDCK9Cs3HhXP0TtpqYAZoDBVb/1ZUI6VawU2FojFVSqe70C
+         Xb7zjNn4SSlm8yXxhvhWKtBwibEdJRuL5zXCszuCgBLmFPsY4ORnHfZYrsghaVN3IYe9
+         8gow==
+X-Gm-Message-State: AOAM532giDgZFv9bA8fhyKXlBdrv7m8cVBNObPiyUpszoXXfCXVGvO9b
+        wRvXSwZAVeLRNtikX5HF42UJzQ==
+X-Google-Smtp-Source: ABdhPJzJGyxbqmB3t1IJ2AjZ1Lmr3ha2xRe6WYWMIDN3x1lfvpV07MJX/c0dksabjyquHYbmTL7AjQ==
+X-Received: by 2002:a05:620a:13e8:: with SMTP id h8mr11508033qkl.322.1601845669322;
+        Sun, 04 Oct 2020 14:07:49 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id l25sm6410651qtf.18.2020.10.04.14.07.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 14:07:48 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 17:07:47 -0400
+From:   joel@joelfernandes.org
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, dlustig@nvidia.com, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH] tools: memory-model: Document that the LKMM can easily
+ miss control dependencies
+Message-ID: <20201004210747.GA4078883@google.com>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
+ <20201003171338.GA323226@rowland.harvard.edu>
+ <20201004014022.GA332600@rowland.harvard.edu>
 MIME-Version: 1.0
-In-Reply-To: <20201002223701.1317-5-russell.h.weight@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004014022.GA332600@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 03, 2020 at 09:40:22PM -0400, Alan Stern wrote:
+> Add a small section to the litmus-tests.txt documentation file for
+> the Linux Kernel Memory Model explaining that the memory model often
+> fails to recognize certain control dependencies.
+> 
+> Suggested-by: Akira Yokosawa <akiyks@gmail.com>
+> Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
 
-On 10/2/20 3:36 PM, Russ Weight wrote:
-> Extend Intel Security Manager class driver to include
-> an update/error sysfs node that can be read for error
-> information when a secure update fails.
->
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+thanks,
+
+ - Joel
+
+> 
 > ---
-> v2:
->   - Bumped documentation date and version
->   - Added warning to sec_progress() for invalid progress status
->   - Added sec_error() function (similar to sec_progress())
-> ---
->  .../ABI/testing/sysfs-class-ifpga-sec-mgr     | 17 ++++
->  drivers/fpga/ifpga-sec-mgr.c                  | 81 ++++++++++++++++---
->  include/linux/fpga/ifpga-sec-mgr.h            |  1 +
->  3 files changed, 89 insertions(+), 10 deletions(-)
-
-This is 08/12 of the old patchset.
-
-Also fine.
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
-
+> 
+>  tools/memory-model/Documentation/litmus-tests.txt |   17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> Index: usb-devel/tools/memory-model/Documentation/litmus-tests.txt
+> ===================================================================
+> --- usb-devel.orig/tools/memory-model/Documentation/litmus-tests.txt
+> +++ usb-devel/tools/memory-model/Documentation/litmus-tests.txt
+> @@ -946,6 +946,23 @@ Limitations of the Linux-kernel memory m
+>  	carrying a dependency, then the compiler can break that dependency
+>  	by substituting a constant of that value.
+>  
+> +	Conversely, LKMM sometimes doesn't recognize that a particular
+> +	optimization is not allowed, and as a result, thinks that a
+> +	dependency is not present (because the optimization would break it).
+> +	The memory model misses some pretty obvious control dependencies
+> +	because of this limitation.  A simple example is:
+> +
+> +		r1 = READ_ONCE(x);
+> +		if (r1 == 0)
+> +			smp_mb();
+> +		WRITE_ONCE(y, 1);
+> +
+> +	There is a control dependency from the READ_ONCE to the WRITE_ONCE,
+> +	even when r1 is nonzero, but LKMM doesn't realize this and thinks
+> +	that the write may execute before the read if r1 != 0.  (Yes, that
+> +	doesn't make sense if you think about it, but the memory model's
+> +	intelligence is limited.)
+> +
+>  2.	Multiple access sizes for a single variable are not supported,
+>  	and neither are misaligned or partially overlapping accesses.
+>  
