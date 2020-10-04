@@ -2,257 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4987928294F
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBAD282951
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 09:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgJDHIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 03:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDHIw (ORCPT
+        id S1725888AbgJDHJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 03:09:30 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15471 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDHJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 03:08:52 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEA1C0613CE;
-        Sun,  4 Oct 2020 00:08:52 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h6so3025242pgk.4;
-        Sun, 04 Oct 2020 00:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a995q0geAJRx5CQ3HidLlyV8bk3RpRdiLEvrfSZbfME=;
-        b=P/4cnQXYuzZkC3XNfB8SFptnBRqQP2WKnsGkGNl3kt1gkRVN+4SNfFsUxOaWNso3qp
-         C9o5dO/1Mqh//cuKuAszMQa0j7moBuN5AEhS7uCFz/0W4ZndX9j5A8f6AE+8G2vJnAmJ
-         BbnP3wmB4mpaTXlflzXMCF1HQ0KQgIzTqscmTFWl5wdkS2q1ImIW4yXHPxHvv0EVz998
-         RzCvWRYIpBQkVNftpWiWOdXpzsbgi0kSbiicFHa+75D5Qx6EELp8dx3S064PMuO9FQ7n
-         cSXy164RomRLS+jnioQzxv1upZXH52f9N5ooLy/aGrv19g7x2G2oVfdZB4LJjMCdTQgf
-         8TIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a995q0geAJRx5CQ3HidLlyV8bk3RpRdiLEvrfSZbfME=;
-        b=LVKK/ji5bv1OVlIRLFpr033RlNthI/FQ82x0FABx0XGI4Y0LQf0TFbS6KkrFBuqgM8
-         L4S/Y1IFvqVU7rVtTWhdKmD4iHepZz9HGT4dTN6aeOXl2P7z97sHasGQA3icueLLxKQZ
-         JX5NAbgv2Nctb/z1KfKUK5tm/u5w5vE7jSuplR5ocBOImJjrSoxSSRveQRp735xyET4u
-         ock02k96AljcwyWkcNemnvybyB1ttieRfBVwc0fAuqivIZDe6wCS9aSRopG3yvP6mOG6
-         Zb8TKOPj/u2OplOBXH/LqD1AoF0aWQDDm9U4vAfKNbdG/x0hG4d384/pGS2q75YO+5oD
-         meqw==
-X-Gm-Message-State: AOAM533Oq9lohV9lg9zYqUs2bq1r0gsJ1Ve2G+I/JytlH12/QSdmJy+c
-        9Lyy9NH/WStIGUjvjUTojiw=
-X-Google-Smtp-Source: ABdhPJwwHQfGVUU3DR4KgMUmgls/cIM6gipZdPBInckVUNrpe9OOsaHFQLdmRwJIWgb/jjxqkI58cA==
-X-Received: by 2002:a05:6a00:170a:b029:152:6881:5e2d with SMTP id h10-20020a056a00170ab029015268815e2dmr729153pfc.20.1601795331892;
-        Sun, 04 Oct 2020 00:08:51 -0700 (PDT)
-Received: from Ryzen-9-3900X.localdomain (ip68-3-136-221.ph.ph.cox.net. [68.3.136.221])
-        by smtp.gmail.com with ESMTPSA id a1sm6464335pjh.2.2020.10.04.00.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 00:08:50 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 00:08:47 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        George Popescu <georgepope@android.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] ubsan: Move cc-option tests into Kconfig
-Message-ID: <20201004070847.GA1650@Ryzen-9-3900X.localdomain>
-References: <20201002221527.177500-1-keescook@chromium.org>
- <20201002221527.177500-2-keescook@chromium.org>
+        Sun, 4 Oct 2020 03:09:29 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f79751c0001>; Sun, 04 Oct 2020 00:09:16 -0700
+Received: from [10.21.180.76] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 4 Oct
+ 2020 07:09:16 +0000
+Subject: Re: [PATCH net-next 05/16] devlink: Add remote reload stats
+To:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-6-git-send-email-moshe@mellanox.com>
+ <20201003090542.GF3159@nanopsycho.orion>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <9ea0e668-3613-18dc-e1e0-c6dfbd803906@nvidia.com>
+Date:   Sun, 4 Oct 2020 10:09:13 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002221527.177500-2-keescook@chromium.org>
+In-Reply-To: <20201003090542.GF3159@nanopsycho.orion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601795356; bh=pSkbc8yxgxfS1GYuuXbddIGvMz9dQZ/zYK37e902fN0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=g3ECC0mbYkQn5f+Ic2nAJ5GR6GyyVWj1lDJrB9yXmbFVA5tfCyjXxwzmuYAY3KpkX
+         UJHg4fjfua3j9MeQiNS7h3FaRtDtwoOArRFZeGr65ySZ7qv09uPDMq9mDnmAa0XhTp
+         gmRAInkcynpFe3ytIOWChokHI96NWZN+G/rR+KJtlAMvq+ToRnbBlwHmhbOzXtA8Ay
+         p0CSW6OE7kFZ9F2GzEo7KD5poQ0e1kSnLiVRHjhCQ1yPwFHPSYgOgsqSB02Lt1P6CL
+         esgS474L8HiPvsg6vnxBqDIIYsgBTROZOKaP+EJlghWmJdNGCVLvpMRhIxX8THRYUz
+         WQCvs2+K6p6bQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:15:24PM -0700, Kees Cook wrote:
-> Instead of doing if/endif blocks with cc-option calls in the UBSAN
-> Makefile, move all the tests into Kconfig and use the Makefile to
-> collect the results.
-> 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Link: https://lore.kernel.org/lkml/CAHk-=wjPasyJrDuwDnpHJS2TuQfExwe=px-SzLeN8GFMAQJPmQ@mail.gmail.com/
 
-I tested menuconfig to make sure all the flags when CONFIG_UBSAN_MISC is
-flipped.
+On 10/3/2020 12:05 PM, Jiri Pirko wrote:
+> Thu, Oct 01, 2020 at 03:59:08PM CEST, moshe@mellanox.com wrote:
+>> Add remote reload stats to hold the history of actions performed due
+>> devlink reload commands initiated by remote host. For example, in case
+>> firmware activation with reset finished successfully but was initiated
+>> by remote host.
+>>
+>> The function devlink_remote_reload_actions_performed() is exported to
+>> enable drivers update on remote reload actions performed as it was not
+>> initiated by their own devlink instance.
+>>
+>> Expose devlink remote reload stats to the user through devlink dev get
+>> command.
+>>
+>> Examples:
+>> $ devlink dev show
+>> pci/0000:82:00.0:
+>>   stats:
+>>       reload_stats:
+>>         driver_reinit 2
+>>         fw_activate 1
+>>         fw_activate_no_reset 0
+>>       remote_reload_stats:
+>>         driver_reinit 0
+>>         fw_activate 0
+>>         fw_activate_no_reset 0
+>> pci/0000:82:00.1:
+>>   stats:
+>>       reload_stats:
+>>         driver_reinit 1
+>>         fw_activate 0
+>>         fw_activate_no_reset 0
+>>       remote_reload_stats:
+>>         driver_reinit 1
+>>         fw_activate 1
+>>         fw_activate_no_reset 0
+>>
+>> $ devlink dev show -jp
+>> {
+>>     "dev": {
+>>         "pci/0000:82:00.0": {
+>>             "stats": {
+>>                 "reload_stats": [ {
+>>                         "driver_reinit": 2
+>>                     },{
+>>                         "fw_activate": 1
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ],
+>>                 "remote_reload_stats": [ {
+>>                         "driver_reinit": 0
+>>                     },{
+>>                         "fw_activate": 0
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ]
+>>             }
+>>         },
+>>         "pci/0000:82:00.1": {
+>>             "stats": {
+>>                 "reload_stats": [ {
+>>                         "driver_reinit": 1
+>>                     },{
+>>                         "fw_activate": 0
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ],
+>>                 "remote_reload_stats": [ {
+>>                         "driver_reinit": 1
+>>                     },{
+>>                         "fw_activate": 1
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ]
+>>             }
+>>         }
+>>     }
+>> }
+>>
+>> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>> ---
+>> RFCv5 -> v1:
+>> - Resplit this patch and the previous one by remote/local reload stats
+>> instead of set/get reload stats
+>> - Rename reload_action_stats to reload_stats
+>> RFCv4 -> RFCv5:
+>> - Add remote actions stats
+>> - If devlink reload is not supported, show only remote_stats
+>> RFCv3 -> RFCv4:
+>> - Renamed DEVLINK_ATTR_RELOAD_ACTION_CNT to
+>>   DEVLINK_ATTR_RELOAD_ACTION_STAT
+>> - Add stats per action per limit level
+>> RFCv2 -> RFCv3:
+>> - Add reload actions counters instead of supported reload actions
+>>   (reload actions counters are only for supported action so no need for
+>>    both)
+>> RFCv1 -> RFCv2:
+>> - Removed DEVLINK_ATTR_RELOAD_DEFAULT_LEVEL
+>> - Removed DEVLINK_ATTR_RELOAD_LEVELS_INFO
+>> - Have actions instead of levels
+>> ---
+>> include/net/devlink.h        |  1 +
+>> include/uapi/linux/devlink.h |  1 +
+>> net/core/devlink.c           | 49 +++++++++++++++++++++++++++++++-----
+>> 3 files changed, 45 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/include/net/devlink.h b/include/net/devlink.h
+>> index 0f3bd23b6c04..a4ccb83bbd2c 100644
+>> --- a/include/net/devlink.h
+>> +++ b/include/net/devlink.h
+>> @@ -42,6 +42,7 @@ struct devlink {
+>> 	const struct devlink_ops *ops;
+>> 	struct xarray snapshot_ids;
+>> 	u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+>> +	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+> Perhaps a nested struct  {} stats?
+I guess you mean struct that holds these two arrays.
+>
+>> 	struct device *dev;
+>> 	possible_net_t _net;
+>> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>> diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+>> index 97e0137f6201..f9887d8afdc7 100644
+>> --- a/include/uapi/linux/devlink.h
+>> +++ b/include/uapi/linux/devlink.h
+>> @@ -530,6 +530,7 @@ enum devlink_attr {
+>> 	DEVLINK_ATTR_RELOAD_STATS,		/* nested */
+>> 	DEVLINK_ATTR_RELOAD_STATS_ENTRY,	/* nested */
+>> 	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
+>> +	DEVLINK_ATTR_REMOTE_RELOAD_STATS,	/* nested */
+>>
+>> 	/* add new attributes above here, update the policy in devlink.c */
+>>
+>> diff --git a/net/core/devlink.c b/net/core/devlink.c
+>> index 05516f1e4c3e..3b6bd3b4d346 100644
+>> --- a/net/core/devlink.c
+>> +++ b/net/core/devlink.c
+>> @@ -523,28 +523,35 @@ static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_acti
+>> 	return -EMSGSIZE;
+>> }
+>>
+>> -static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
+>> +static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink, bool is_remote)
+>> {
+>> 	struct nlattr *reload_stats_attr;
+>> 	int i, j, stat_idx;
+>> 	u32 value;
+>>
+>> -	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>> +	if (!is_remote)
+>> +		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>> +	else
+>> +		reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_REMOTE_RELOAD_STATS);
+>>
+>> 	if (!reload_stats_attr)
+>> 		return -EMSGSIZE;
+>>
+>> 	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
+>> -		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+>> +		if (!is_remote && j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+> I don't follow the check "!is_remote" here,
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 
-One comment below.
+We agreed that remote stats should be shown also for non supported 
+actions and limits, because its remote. So it makes this condition 
+different for remote stats. Rethinking about it, maybe that's wrong. I 
+mean if we had here reload actions as a result of remote driver, they 
+have common device, so it has to be the same type of driver and support 
+same actions/limits, right ?
 
-> ---
->  lib/Kconfig.ubsan      | 48 +++++++++++++++++++++++++++++++++++++++-
->  scripts/Makefile.ubsan | 50 ++++++++++++++----------------------------
->  2 files changed, 64 insertions(+), 34 deletions(-)
-> 
-> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-> index 58f8d03d037b..c0b801871e0b 100644
-> --- a/lib/Kconfig.ubsan
-> +++ b/lib/Kconfig.ubsan
-> @@ -36,10 +36,17 @@ config UBSAN_KCOV_BROKEN
->  	  See https://bugs.llvm.org/show_bug.cgi?id=45831 for the status
->  	  in newer releases.
->  
-> +config CC_HAS_UBSAN_BOUNDS
-> +	def_bool $(cc-option,-fsanitize=bounds)
-> +
-> +config CC_HAS_UBSAN_ARRAY_BOUNDS
-> +	def_bool $(cc-option,-fsanitize=array-bounds)
-> +
->  config UBSAN_BOUNDS
->  	bool "Perform array index bounds checking"
->  	default UBSAN
->  	depends on !UBSAN_KCOV_BROKEN
-> +	depends on CC_HAS_UBSAN_ARRAY_BOUNDS || CC_HAS_UBSAN_BOUNDS
->  	help
->  	  This option enables detection of directly indexed out of bounds
->  	  array accesses, where the array size is known at compile time.
-> @@ -47,11 +54,17 @@ config UBSAN_BOUNDS
->  	  to the {str,mem}*cpy() family of functions (that is addressed
->  	  by CONFIG_FORTIFY_SOURCE).
->  
-> +config CC_ARG_UBSAN_BOUNDS
-> +	string
-> +	default "-fsanitize=array-bounds" if CC_HAS_UBSAN_ARRAY_BOUNDS
-> +	default "-fsanitize=bounds"
-> +	depends on UBSAN_BOUNDS
-> +
->  config UBSAN_LOCAL_BOUNDS
->  	bool "Perform array local bounds checking"
->  	depends on UBSAN_TRAP
-> -	depends on CC_IS_CLANG
->  	depends on !UBSAN_KCOV_BROKEN
-> +	depends on $(cc-option,-fsanitize=local-bounds)
->  	help
->  	  This option enables -fsanitize=local-bounds which traps when an
->  	  exception/error is detected. Therefore, it should be enabled only
-> @@ -69,6 +82,38 @@ config UBSAN_MISC
->  	  own Kconfig options. Disable this if you only want to have
->  	  individually selected checks.
->  
-> +config UBSAN_SHIFT
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=shift)
-> +
-> +config UBSAN_DIV_ZERO
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=integer-divide-by-zero)
-> +
-> +config UBSAN_UNREACHABLE
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=unreachable)
-> +
-> +config UBSAN_SIGNED_OVERFLOW
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=signed-integer-overflow)
-> +
-> +config UBSAN_UNSIGNED_OVERFLOW
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
-> +
-> +config UBSAN_OBJECT_SIZE
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=object-size)
-> +
-> +config UBSAN_BOOL
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=bool)
-> +
-> +config UBSAN_ENUM
-> +	def_bool UBSAN_MISC
-> +	depends on $(cc-option,-fsanitize=enum)
-> +
->  config UBSAN_SANITIZE_ALL
->  	bool "Enable instrumentation for the entire kernel"
->  	depends on ARCH_HAS_UBSAN_SANITIZE_ALL
-> @@ -89,6 +134,7 @@ config UBSAN_ALIGNMENT
->  	bool "Enable checks for pointers alignment"
->  	default !HAVE_EFFICIENT_UNALIGNED_ACCESS
->  	depends on !UBSAN_TRAP
-> +	depends on $(cc-option,-fsanitize=alignment)
->  	help
->  	  This option enables the check of unaligned memory accesses.
->  	  Enabling this option on architectures that support unaligned
-> diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
-> index 9716dab06bc7..72862da47baf 100644
-> --- a/scripts/Makefile.ubsan
-> +++ b/scripts/Makefile.ubsan
-> @@ -1,37 +1,21 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -export CFLAGS_UBSAN :=
-> +# -fsanitize=* options makes GCC less smart than usual and
-> +# increases the number of 'maybe-uninitialized' false-positives.
-> +ubsan-cflags-$(CONFIG_UBSAN) += $(call cc-disable-warning, maybe-uninitialized)
-
-Is this just to force -Wno-maybe-uninitialized even when W=2?
--Wmaybe-uninitialized is already disabled globally after
-commit 78a5255ffb6a ("Stop the ad-hoc games with
--Wno-maybe-initialized"). I feel like it might be worth a comment in
-case that changes in the future but maybe that is a bit much.
-
-> -ifdef CONFIG_UBSAN_ALIGNMENT
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=alignment)
-> -endif
-> +# Enable available and selected UBSAN features.
-> +ubsan-cflags-$(CONFIG_UBSAN_ALIGNMENT)		+= -fsanitize=alignment
-> +ubsan-cflags-$(CONFIG_UBSAN_BOUNDS)		+= $(CONFIG_CC_ARG_UBSAN_BOUNDS)
-> +ubsan-cflags-$(CONFIG_UBSAN_LOCAL_BOUNDS)	+= -fsanitize=local-bounds
-> +ubsan-cflags-$(CONFIG_UBSAN_SHIFT)		+= -fsanitize=shift
-> +ubsan-cflags-$(CONFIG_UBSAN_DIV_ZERO)		+= -fsanitize=integer-divide-by-zero
-> +ubsan-cflags-$(CONFIG_UBSAN_UNREACHABLE)	+= -fsanitize=unreachable
-> +ubsan-cflags-$(CONFIG_UBSAN_SIGNED_OVERFLOW)	+= -fsanitize=signed-integer-overflow
-> +ubsan-cflags-$(CONFIG_UBSAN_UNSIGNED_OVERFLOW)	+= -fsanitize=unsigned-integer-overflow
-> +ubsan-cflags-$(CONFIG_UBSAN_OBJECT_SIZE)	+= -fsanitize=object-size
-> +ubsan-cflags-$(CONFIG_UBSAN_BOOL)		+= -fsanitize=bool
-> +ubsan-cflags-$(CONFIG_UBSAN_ENUM)		+= -fsanitize=enum
-> +ubsan-cflags-$(CONFIG_UBSAN_TRAP)		+= -fsanitize-undefined-trap-on-error
->  
-> -ifdef CONFIG_UBSAN_BOUNDS
-> -      ifdef CONFIG_CC_IS_CLANG
-> -            CFLAGS_UBSAN += -fsanitize=array-bounds
-> -      else
-> -            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
-> -      endif
-> -endif
-> -
-> -ifdef CONFIG_UBSAN_LOCAL_BOUNDS
-> -      CFLAGS_UBSAN += -fsanitize=local-bounds
-> -endif
-> -
-> -ifdef CONFIG_UBSAN_MISC
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=shift)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=integer-divide-by-zero)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=unreachable)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=signed-integer-overflow)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=object-size)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bool)
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize=enum)
-> -endif
-> -
-> -ifdef CONFIG_UBSAN_TRAP
-> -      CFLAGS_UBSAN += $(call cc-option, -fsanitize-undefined-trap-on-error)
-> -endif
-> -
-> -      # -fsanitize=* options makes GCC less smart than usual and
-> -      # increase number of 'maybe-uninitialized false-positives
-> -      CFLAGS_UBSAN += $(call cc-option, -Wno-maybe-uninitialized)
-> +export CFLAGS_UBSAN := $(ubsan-cflags-y)
-> -- 
-> 2.25.1
+>> 		    !devlink_reload_limit_is_supported(devlink, j))
+>> 			continue;
+>> 		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
+>> -			if (!devlink_reload_action_is_supported(devlink, i) ||
+>> +			if ((!is_remote && !devlink_reload_action_is_supported(devlink, i)) ||
+> and here. Could you perhaps put in a comment to describe what are you
+> doing?
+>
+Yes, similar.
+>
+>> +			    i == DEVLINK_RELOAD_ACTION_UNSPEC ||
+>> 			    devlink_reload_combination_is_invalid(i, j))
+>> 				continue;
+>>
+>> 			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
+>> -			value = devlink->reload_stats[stat_idx];
+>> +			if (!is_remote)
+>> +				value = devlink->reload_stats[stat_idx];
+>> +			else
+>> +				value = devlink->remote_reload_stats[stat_idx];
+>> 			if (devlink_reload_stat_put(msg, i, j, value))
+>> 				goto nla_put_failure;
+>> 		}
+>> @@ -577,7 +584,9 @@ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+>> 	if (!dev_stats)
+>> 		goto nla_put_failure;
+>>
+>> -	if (devlink_reload_stats_put(msg, devlink))
+>> +	if (devlink_reload_stats_put(msg, devlink, false))
+>> +		goto dev_stats_nest_cancel;
+>> +	if (devlink_reload_stats_put(msg, devlink, true))
+>> 		goto dev_stats_nest_cancel;
+>>
+>> 	nla_nest_end(msg, dev_stats);
+>> @@ -3100,15 +3109,40 @@ devlink_reload_stats_update(struct devlink *devlink, enum devlink_reload_limit l
+>> 	__devlink_reload_stats_update(devlink, devlink->reload_stats, limit, actions_performed);
+>> }
+>>
+>> +/**
+>> + *	devlink_remote_reload_actions_performed - Update devlink on reload actions
+>> + *	  performed which are not a direct result of devlink reload call.
+>> + *
+>> + *	This should be called by a driver after performing reload actions in case it was not
+>> + *	a result of devlink reload call. For example fw_activate was performed as a result
+>> + *	of devlink reload triggered fw_activate on another host.
+>> + *	The motivation for this function is to keep data on reload actions performed on this
+>> + *	function whether it was done due to direct devlink reload call or not.
+>> + *
+>> + *	@devlink: devlink
+>> + *	@limit: reload limit
+>> + *	@actions_performed: bitmask of actions performed
+>> + */
+>> +void devlink_remote_reload_actions_performed(struct devlink *devlink,
+>> +					     enum devlink_reload_limit limit,
+>> +					     unsigned long actions_performed)
+>> +{
+>> +	__devlink_reload_stats_update(devlink, devlink->remote_reload_stats, limit,
+>> +				      actions_performed);
+>> +}
+>> +EXPORT_SYMBOL_GPL(devlink_remote_reload_actions_performed);
+>> +
+>> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> 			  enum devlink_reload_action action, enum devlink_reload_limit limit,
+>> 			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+>> {
+>> +	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+>> 	int err;
+>>
+>> 	if (!devlink->reload_enabled)
+>> 		return -EOPNOTSUPP;
+>>
+>> +	memcpy(remote_reload_stats, devlink->remote_reload_stats, sizeof(remote_reload_stats));
+>> 	err = devlink->ops->reload_down(devlink, !!dest_net, action, limit, extack);
+>> 	if (err)
+>> 		return err;
+>> @@ -3122,6 +3156,9 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> 		return err;
+>>
+>> 	WARN_ON(!test_bit(action, actions_performed));
+>> +	/* Catch driver on updating the remote action within devlink reload */
+>> +	WARN_ON(memcmp(remote_reload_stats, devlink->remote_reload_stats,
+>> +		       sizeof(remote_reload_stats)));
+>> 	devlink_reload_stats_update(devlink, limit, *actions_performed);
+>> 	return 0;
+>> }
+>> -- 
+>> 2.18.2
+>>
