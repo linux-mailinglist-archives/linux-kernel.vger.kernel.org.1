@@ -2,226 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E36282B45
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBC5282B48
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 16:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbgJDObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 10:31:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20975 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725991AbgJDObf (ORCPT
+        id S1726057AbgJDOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 10:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbgJDOcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 10:31:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601821892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hw35o/WV9m/qkw/LDsoZYoQnTAnjxF/Bj5J/yNL7Z08=;
-        b=g2YyhQr8imVnzoACe8BEuF7S7FtJkaYTmBD0z4C/RQwe8FMpEsX2GeMadcko1+hb85kcBo
-        YOKoQsr8TTIHNeEHAtf8VhUe1KumS6Ad6u6XHtqYA3wSUFp5F8o+tOuNHVIvy2xWKUOpZk
-        gLusedNiVFirTiFxPAaKxDhGRaqBI14=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-KukSRhPdPI-cSVqmNDrbfQ-1; Sun, 04 Oct 2020 10:31:30 -0400
-X-MC-Unique: KukSRhPdPI-cSVqmNDrbfQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBF9A107465A;
-        Sun,  4 Oct 2020 14:31:29 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-112-97.rdu2.redhat.com [10.10.112.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A5EC91972A;
-        Sun,  4 Oct 2020 14:31:19 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 19475222E37; Sun,  4 Oct 2020 10:31:19 -0400 (EDT)
-Date:   Sun, 4 Oct 2020 10:31:19 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Subject: Re: virtiofs: WARN_ON(out_sgs + in_sgs != total_sgs)
-Message-ID: <20201004143119.GA58616@redhat.com>
-References: <5ea77e9f6cb8c2db43b09fbd4158ab2d8c066a0a.camel@redhat.com>
- <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
+        Sun, 4 Oct 2020 10:32:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5409C0613CE;
+        Sun,  4 Oct 2020 07:32:21 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o25so4071753pgm.0;
+        Sun, 04 Oct 2020 07:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l4l4BMbBfwlgcXtffhl1zomi5ytcpiDRWVr7K7NRh9w=;
+        b=uuY92RYfjUtsh8Rjq75jZiFaTMLX68W8jDOh/Ce0/277DoxvAtphNtARmObLaIyxR9
+         L8KFx0sYATNiBxGnKZX+JPPyET9sI4zjHQm4FggsZ3PdSPidth95e/UQSl1LwCS65btT
+         gVyqS7EU2bMbwaWkygKlfiMAHzw7y1cODP6diUMGSGNNMa9e3CQ7eg7ymHNM/6MKxrhM
+         j2MU+wbSBtLvXI1TTWICZU9SbNoc0WnSxX4+3iTlalYeQUCnNYTyF2dxyNKeOo/90T4I
+         lWCizTeBHPcOnf8NXw1FGcAWw5buyLQzy53768HRxD2UMCMr11A5lMNlHH76/P70uKFr
+         KVNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l4l4BMbBfwlgcXtffhl1zomi5ytcpiDRWVr7K7NRh9w=;
+        b=LHPDl7upqN2HiPvzsG+8M/KgMbCjtGd02QyIX7ONPhT++5ShdU5UYgG0BUSE+jyDKV
+         45u3JWChMISJQoAjiMVhUyuRzupERPYAPZS7tE9JpwTMbLkOO/9oSzfjEUyFEqX0358F
+         w5AVGNjqd7JhOvr74Xv9ZirMuYF4jRAvOB04GaNQyZCigA+LG+lMPmivSlJ8V9yXwuxX
+         dy8kQv/vCgSLm6p3iFOaEnF6lsEsVmvBj4C1CDRt9OeX4ychJ7Aau/J65zl5Hx3bvvax
+         EW1sbvLhoaHghicQQMnhJmn/aSu4MZQ003DUeNw7HZVqR/j1GKpmhL3v/gMY3Os+LlEN
+         2RDw==
+X-Gm-Message-State: AOAM530pTlOFEENFs4xhoglCjmM7LFDN4FoHgz0ok5GdySDkfHncIvZA
+        2y+K09nKOykG+fSFtsSABP0=
+X-Google-Smtp-Source: ABdhPJweggjHR5yPF05JM4Xb60MCqk0KqkNcbvK7Yct6J8vJS00S8uEUSioM2smVuDvZqayZaCgacQ==
+X-Received: by 2002:a63:8f18:: with SMTP id n24mr10084595pgd.209.1601821941194;
+        Sun, 04 Oct 2020 07:32:21 -0700 (PDT)
+Received: from [192.168.1.5] ([110.77.216.3])
+        by smtp.googlemail.com with ESMTPSA id c127sm8918582pfa.165.2020.10.04.07.32.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 07:32:20 -0700 (PDT)
+Subject: Re: [PATCH] USB: serial: option: Add Telit FT980-KS composition
+From:   Lars Melin <larsm17@gmail.com>
+To:     Leonid Bloch <leonidb@asocscloud.com>,
+        Leonid Bloch <lb.workbox@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>
+References: <20201004095703.2633-1-lb.workbox@gmail.com>
+ <886eb499-4db4-1d61-2e67-0335423bf077@gmail.com>
+ <ce86bc05-f4e2-b199-0cdc-792715e3f275@asocscloud.com>
+ <bf28e522-be94-a6f7-ea44-9c954849fca6@gmail.com>
+Message-ID: <ab8c7550-19b9-f8a9-febb-9d2d558978e7@gmail.com>
+Date:   Sun, 4 Oct 2020 21:32:17 +0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2810c3a656115fab85fc173186f3e2c02a98182.camel@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <bf28e522-be94-a6f7-ea44-9c954849fca6@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:44:37PM -0400, Qian Cai wrote:
-> On Fri, 2020-10-02 at 12:28 -0400, Qian Cai wrote:
-> > Running some fuzzing on virtiofs from a non-privileged user could trigger a
-> > warning in virtio_fs_enqueue_req():
-> > 
-> > WARN_ON(out_sgs + in_sgs != total_sgs);
+On 10/4/2020 21:16, Lars Melin wrote:
+> On 10/4/2020 20:29, Leonid Bloch wrote:
+>> On 10/4/20 1:58 PM, Lars Melin wrote:
+>>> On 10/4/2020 16:57, Leonid Bloch wrote:
+>>>> This commit adds the following Telit FT980-KS composition:
+>>>>
+>>>> 0x1054: rndis, diag, adb, nmea, modem, modem, aux
+>>>>
+>>>> AT commands can be sent to /dev/ttyUSB5.
+>>>>
+>>>
+>>> Please submit a verbose lsusb listing for the device, I can't imagine
+>>> that the adb interface should be handled by the option serial driver so
+>>> there will never be a ttyUSB5.
+>>
+>> Please see below.
+>>
+>> Thanks,
+>> Leonid.
+>>
+>> ```
+>> Bus 001 Device 005: ID 1bc7:1054 Telit Wireless Solutions
+>> Device Descriptor:
+>>    bLength                18
+>>    bDescriptorType         1
+>>    bcdUSB               2.10
+>>    bDeviceClass            0
+>>    bDeviceSubClass         0
+>>    bDeviceProtocol         0
+>>    bMaxPacketSize0        64
+>>    idVendor           0x1bc7 Telit Wireless Solutions
+>>    idProduct          0x1054
+>>    bcdDevice            4.14
+>>    iManufacturer           1 Telit Wireless Solutions
+>>    iProduct                2 FT980-KS
+>>    iSerial                 3 cb42f61
+>>    bNumConfigurations      1
+>>    Configuration Descriptor:
+>>      bLength                 9
+>>      bDescriptorType         2
+>>      wTotalLength       0x013d
+>>      bNumInterfaces          8
+>>      bConfigurationValue     1
+>>      iConfiguration          4 RNDIS_DIAG_ADB_NMEA_DUN_DUN_SER
+>>      bmAttributes         0xa0
+>>        (Bus Powered)
+>>        Remote Wakeup
+>>      MaxPower              500mA
+>>      Interface Association:
+>>        bLength                 8
+>>        bDescriptorType        11
+>>        bFirstInterface         0
+>>        bInterfaceCount         2
+>>        bFunctionClass        239 Miscellaneous Device
+>>        bFunctionSubClass       4
+>>        bFunctionProtocol       1
+>>        iFunction               7 RNDIS
+>>      Interface Descriptor:
+>>        bLength                 9
+>>        bDescriptorType         4
+>>        bInterfaceNumber        0
+>>        bAlternateSetting       0
+>>        bNumEndpoints           1
+>>        bInterfaceClass       239 Miscellaneous Device
+>>        bInterfaceSubClass      4
+>>        bInterfaceProtocol      1
+>>        iInterface              5 RNDIS Communications Control
+>>        ** UNRECOGNIZED:  05 24 00 10 01
+>>        ** UNRECOGNIZED:  05 24 01 00 01
+>>        ** UNRECOGNIZED:  04 24 02 00
+>>        ** UNRECOGNIZED:  05 24 06 00 01
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x81  EP 1 IN
+>>          bmAttributes            3
+>>            Transfer Type            Interrupt
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0008  1x 8 bytes
+>>          bInterval               9
+>>      Interface Descriptor:
+>>        bLength                 9
+>>        bDescriptorType         4
+>>        bInterfaceNumber        1
+>>        bAlternateSetting       0
+>>        bNumEndpoints           2
+>>        bInterfaceClass        10 CDC Data
+>>        bInterfaceSubClass      0
+>>        bInterfaceProtocol      0
+>>        iInterface              6 RNDIS Ethernet Data
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x8e  EP 14 IN
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x0f  EP 15 OUT
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
+>>      Interface Descriptor:
+>>        bLength                 9
+>>        bDescriptorType         4
+>>        bInterfaceNumber        2
+>>        bAlternateSetting       0
+>>        bNumEndpoints           2
+>>        bInterfaceClass       255 Vendor Specific Class
+>>        bInterfaceSubClass    255 Vendor Specific Subclass
+>>        bInterfaceProtocol     48
+>>        iInterface              0
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x82  EP 2 IN
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x01  EP 1 OUT
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
+>>      Interface Descriptor:
+>>        bLength                 9
+>>        bDescriptorType         4
+>>        bInterfaceNumber        3
+>>        bAlternateSetting       0
+>>        bNumEndpoints           2
+>>        bInterfaceClass       255 Vendor Specific Class
+>>        bInterfaceSubClass     66
+>>        bInterfaceProtocol      1
+>>        iInterface              8 ADB Interface
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x02  EP 2 OUT
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
+>>        Endpoint Descriptor:
+>>          bLength                 7
+>>          bDescriptorType         5
+>>          bEndpointAddress     0x83  EP 3 IN
+>>          bmAttributes            2
+>>            Transfer Type            Bulk
+>>            Synch Type               None
+>>            Usage Type               Data
+>>          wMaxPacketSize     0x0200  1x 512 bytes
+>>          bInterval               0
 > 
-> Okay, I can reproduce this after running for a few hours:
+> //snip
 > 
-> out_sgs = 3, in_sgs = 2, total_sgs = 6
-
-Thanks. I can also reproduce it simply by calling.
-
-ioctl(fd, 0x5a004000, buf);
-
-I think following WARN_ON() is not correct.
-
-WARN_ON(out_sgs + in_sgs != total_sgs)
-
-toal_sgs should actually be max sgs. It looks at ap->num_pages and
-counts one sg for each page. And it assumes that same number of
-pages will be used both for input and output.
-
-But there are no such guarantees. With above ioctl() call, I noticed
-we are using 2 pages for input (out_sgs) and one page for output (in_sgs).
-
-So out_sgs=4, in_sgs=3 and total_sgs=8 and warning triggers.
-
-I think total sgs is actually max number of sgs and warning
-should probably be.
-
-WARN_ON(out_sgs + in_sgs >  total_sgs)
-
-Stefan, WDYT?
-
-I will send a patch for this.
-
-Thanks
-Vivek
-
-
-
-> 
-> and this time from flush_bg_queue() instead of fuse_simple_request().
-> 
-> From the log, the last piece of code is:
-> 
-> ftruncate(fd=186, length=4)
-> 
-> which is a test file on virtiofs:
-> 
-> [main]  testfile fd:186 filename:trinity-testfile3 flags:2 fopened:1 fcntl_flags:2000 global:1
-> [main]   start: 0x7f47c1199000 size:4KB  name: trinity-testfile3 global:1
-> 
-> 
-> [ 9863.468502] WARNING: CPU: 16 PID: 286083 at fs/fuse/virtio_fs.c:1152 virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
-> [ 9863.474442] Modules linked in: dlci 8021q garp mrp bridge stp llc ieee802154_socket ieee802154 vsock_loopback vmw_vsock_virtio_transport_common vmw_vsock_vmci_transport vsock mpls_router vmw_vmci ip_tunnel as
-> [ 9863.474555]  ata_piix fuse serio_raw libata e1000 sunrpc dm_mirror dm_region_hash dm_log dm_mod
-> [ 9863.535805] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
-> [ 9863.544368] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
-> [ 9863.550129] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
-> [ 9863.552998] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
-> [ 9863.561720] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
-> [ 9863.565420] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
-> [ 9863.568735] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
-> [ 9863.572037] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
-> [ 9863.575383] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
-> [ 9863.578668] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
-> [ 9863.581971] FS:  00007f47c12f5740(0000) GS:ffff888a7f800000(0000) knlGS:0000000000000000
-> [ 9863.585752] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 9863.590232] CR2: 0000000000000000 CR3: 0000000a63570005 CR4: 0000000000770ee0
-> [ 9863.594698] DR0: 00007f6642e43000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 9863.598521] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-> [ 9863.601861] PKRU: 55555540
-> [ 9863.603173] Call Trace:
-> [ 9863.604382]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
-> [ 9863.606838]  ? is_bpf_text_address+0x21/0x30
-> [ 9863.608869]  ? kernel_text_address+0x125/0x140
-> [ 9863.610962]  ? __kernel_text_address+0xe/0x30
-> [ 9863.613117]  ? unwind_get_return_address+0x5f/0xa0
-> [ 9863.615427]  ? create_prof_cpu_mask+0x20/0x20
-> [ 9863.617435]  ? _raw_write_lock_irqsave+0xe0/0xe0
-> [ 9863.619627]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
-> [ 9863.622638]  ? queue_request_and_unlock+0x115/0x280 [fuse]
-> [ 9863.625224]  flush_bg_queue+0x24c/0x3e0 [fuse]
-> [ 9863.627325]  fuse_simple_background+0x3d7/0x6c0 [fuse]
-> [ 9863.629735]  fuse_send_writepage+0x173/0x420 [fuse]
-> [ 9863.632031]  fuse_flush_writepages+0x1fe/0x330 [fuse]
-> [ 9863.634463]  ? make_kgid+0x13/0x20
-> [ 9863.636064]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
-> [ 9863.638850]  fuse_do_setattr+0xe84/0x13c0 [fuse]
-> [ 9863.641024]  ? migrate_swap_stop+0x8d1/0x920
-> [ 9863.643041]  ? fuse_flush_times+0x390/0x390 [fuse]
-> [ 9863.645347]  ? avc_has_perm_noaudit+0x390/0x390
-> [ 9863.647465]  fuse_setattr+0x197/0x400 [fuse]
-> [ 9863.649466]  notify_change+0x744/0xda0
-> [ 9863.651247]  ? __down_timeout+0x2a0/0x2a0
-> [ 9863.653125]  ? do_truncate+0xe2/0x180
-> [ 9863.654854]  do_truncate+0xe2/0x180
-> [ 9863.656509]  ? __x64_sys_openat2+0x1c0/0x1c0
-> [ 9863.658512]  ? alarm_setitimer+0xa0/0x110
-> [ 9863.660418]  do_sys_ftruncate+0x1ee/0x2c0
-> [ 9863.662311]  do_syscall_64+0x33/0x40
-> [ 9863.663980]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 9863.666384] RIP: 0033:0x7f47c0c0878d
-> [ 9863.668061] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
-> [ 9863.676717] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
-> [ 9863.680226] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
-> [ 9863.688055] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
-> [ 9863.693672] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
-> [ 9863.699423] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
-> [ 9863.708897] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
-> [ 9863.713106] CPU: 16 PID: 286083 Comm: trinity-c5 Kdump: loaded Not tainted 5.9.0-rc7-next-20201002+ #2
-> [ 9863.717465] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
-> [ 9863.721389] Call Trace:
-> [ 9863.722547]  dump_stack+0x7c/0xa2
-> [ 9863.724110]  __warn.cold.13+0xe/0x47
-> [ 9863.725804]  ? virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
-> [ 9863.728427]  report_bug+0x1af/0x260
-> [ 9863.730054]  handle_bug+0x44/0x80
-> [ 9863.731652]  exc_invalid_op+0x13/0x40
-> [ 9863.734911]  asm_exc_invalid_op+0x12/0x20
-> [ 9863.736940] RIP: 0010:virtio_fs_enqueue_req+0xd36/0xde0 [virtiofs]
-> [ 9863.739833] Code: 60 09 23 d9 e9 44 fa ff ff e8 56 09 23 d9 e9 70 fa ff ff 48 89 cf 48 89 4c 24 08 e8 44 09 23 d9 48 8b 4c 24 08 e9 7c fa ff ff <0f> 0b 48 c7 c7 c0 85 60 c0 44 89 e1 44 89 fa 44 89 ee e8 e3 b7
-> [ 9863.748519] RSP: 0018:ffff888a696ef6f8 EFLAGS: 00010202
-> [ 9863.750935] RAX: 0000000000000000 RBX: ffff88892e030008 RCX: 0000000000000000
-> [ 9863.754247] RDX: 0000000000000005 RSI: 0000000000000000 RDI: ffff888a696ef8ac
-> [ 9863.760885] RBP: ffff888a49d03d30 R08: ffffed114d2ddf18 R09: ffff888a696ef8a0
-> [ 9863.764814] R10: ffff888a696ef8bf R11: ffffed114d2ddf17 R12: 0000000000000006
-> [ 9863.768148] R13: 0000000000000003 R14: 0000000000000002 R15: 0000000000000002
-> [ 9863.771492]  ? virtio_fs_probe+0x13e0/0x13e0 [virtiofs]
-> [ 9863.773950]  ? is_bpf_text_address+0x21/0x30
-> [ 9863.775979]  ? kernel_text_address+0x125/0x140
-> [ 9863.778061]  ? __kernel_text_address+0xe/0x30
-> [ 9863.780124]  ? unwind_get_return_address+0x5f/0xa0
-> [ 9863.782395]  ? create_prof_cpu_mask+0x20/0x20
-> [ 9863.784451]  ? _raw_write_lock_irqsave+0xe0/0xe0
-> [ 9863.786602]  virtio_fs_wake_pending_and_unlock+0x1ea/0x610 [virtiofs]
-> [ 9863.789614]  ? queue_request_and_unlock+0x115/0x280 [fuse]
-> [ 9863.792178]  flush_bg_queue+0x24c/0x3e0 [fuse]
-> [ 9863.796678]  fuse_simple_background+0x3d7/0x6c0 [fuse]
-> [ 9863.802329]  fuse_send_writepage+0x173/0x420 [fuse]
-> [ 9863.808342]  fuse_flush_writepages+0x1fe/0x330 [fuse]
-> [ 9863.812086]  ? make_kgid+0x13/0x20
-> [ 9863.813681]  ? fuse_change_attributes_common+0x2de/0x940 [fuse]
-> [ 9863.816465]  fuse_do_setattr+0xe84/0x13c0 [fuse]
-> [ 9863.819633]  ? migrate_swap_stop+0x8d1/0x920
-> [ 9863.824285]  ? fuse_flush_times+0x390/0x390 [fuse]
-> [ 9863.827331]  ? avc_has_perm_noaudit+0x390/0x390
-> [ 9863.875278]  fuse_setattr+0x197/0x400 [fuse]
-> [ 9863.878496]  notify_change+0x744/0xda0
-> [ 9863.880640]  ? __down_timeout+0x2a0/0x2a0
-> [ 9863.882960]  ? do_truncate+0xe2/0x180
-> [ 9863.886311]  do_truncate+0xe2/0x180
-> [ 9863.888392]  ? __x64_sys_openat2+0x1c0/0x1c0
-> [ 9863.890418]  ? alarm_setitimer+0xa0/0x110
-> [ 9863.894430]  do_sys_ftruncate+0x1ee/0x2c0
-> [ 9863.896468]  do_syscall_64+0x33/0x40
-> [ 9863.898167]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 9863.901089] RIP: 0033:0x7f47c0c0878d
-> [ 9863.903447] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
-> [ 9863.914356] RSP: 002b:00007fff515c2598 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
-> [ 9863.917998] RAX: ffffffffffffffda RBX: 000000000000004d RCX: 00007f47c0c0878d
-> [ 9863.921364] RDX: 0000000000800000 RSI: 0000000000000004 RDI: 00000000000000ba
-> [ 9863.928285] RBP: 000000000000004d R08: 000000000000003a R09: 0000000000000001
-> [ 9863.932523] R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000002
-> [ 9863.935835] R13: 00007f47c12cb058 R14: 00007f47c12f56c0 R15: 00007f47c12cb000
-> [ 9863.939183] ---[ end trace f6f5d958c186bcee ]---
+> Interface #3 for ADB must be blacklisted in the option entry for the 
+> device, by using .driver_info = RSVD(3)
 > 
 
+
+When looking at the entries for other Telit deices in the option driver 
+I see that their diag interface always has
+the NCTRL flag so it is likely that you need that for this device also.
+See the entry for PID 1052
+
+
+thanks
+Lars
