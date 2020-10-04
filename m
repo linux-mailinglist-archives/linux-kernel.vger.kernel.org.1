@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0513D282C9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6F9282CDE
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgJDSsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 14:48:08 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:16199 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgJDSsI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 14:48:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1601837284;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=jb55CfmhnQCfrQYMa+E0GB6f9VItN2e0JBTcCBghgCo=;
-        b=nPs7V0/Fw1a7ovo1gu8+SDX28z/N4shbCN9/U/LNEoa8P8sS7sh6zoORlyQXRN56Pc
-        Bc4NjqlVkVsRQsBTimeVGf9IFeaKNejMlguMmfm17pah59lWaeNwufqdcfY7JeOdCYbF
-        GWX3ZTPCjZZb5mpk/ZB+HP0c4SMBXHVXlyaLXqdzggls7M+lyREk6D4++MazVna814to
-        r6Vd7rmR9o+8g6SbJ4samu7/9Oi62qvW5ARF3ZFQ/mYO3mTTwNF2ghlvGTVgHstuim3/
-        FQ9GeUZd+MVXfNMXr8uKDsfrRSQLitrxCBtyJyrH8VNsLemqm4V3s9CuKI1AXa9SI4RK
-        COLA==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZJfSYkOI="
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id C0b627w94Im39EY
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 4 Oct 2020 20:48:03 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-riscv@lists.infradead.org, kernel-team@android.com,
-        kernel test robot <lkp@intel.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: jitterentropy - bind statically into kernel
-Date:   Sun, 04 Oct 2020 20:48:06 +0200
-Message-ID: <5692716.lOV4Wx5bFT@positron.chronox.de>
-In-Reply-To: <20201002064905.GA27115@infradead.org>
-References: <20200930065617.934638-1-palmerdabbelt@google.com> <20201002064905.GA27115@infradead.org>
+        id S1726527AbgJDTIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 15:08:09 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:57812 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726085AbgJDTII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 15:08:08 -0400
+X-Greylist: delayed 916 seconds by postgrey-1.27 at vger.kernel.org; Sun, 04 Oct 2020 15:08:07 EDT
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 094Iqc3F027724
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 4 Oct 2020 20:52:38 +0200
+Received: from [167.87.242.108] ([167.87.242.108])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 094Iqb1u011919;
+        Sun, 4 Oct 2020 20:52:38 +0200
+Subject: Re: scripts/gdb: issues when loading modules after lx-symbols
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, qemu-devel@nongnu.org
+References: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <9e247182-2cc3-9fac-e12e-9743ef24ec43@siemens.com>
+Date:   Sun, 4 Oct 2020 20:52:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CAGxU2F7+Tf+hJxxadT_Rw01O43RU9RsasJiVLpukbhvo1w++fA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RISC-V architecture is about to implement the callback
-random_get_entropy with a function that is not exported to modules.
-Thus, the Jitter RNG is changed to be only bound statically into the
-kernel removing the option to compile it as module.
+On 01.10.20 16:31, Stefano Garzarella wrote:
+> Hi,
+> I had some issues with gdb scripts and kernel modules in Linux 5.9-rc7.
+> 
+> If the modules are already loaded, and I do 'lx-symbols', all work fine.
+> But, if I load a kernel module after 'lx-symbols', I had this issue:
+> 
+> [ 5093.393940] invalid opcode: 0000 [#1] SMP PTI
+> [ 5093.395134] CPU: 0 PID: 576 Comm: modprobe Not tainted 5.9.0-rc7-ste-00010-gf0b671d9608d-dirty #2
+> [ 5093.397566] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+> [ 5093.400761] RIP: 0010:do_init_module+0x1/0x270
+> [ 5093.402553] Code: ff ff e9 cf fe ff ff 0f 0b 49 c7 c4 f2 ff ff ff e9 c1 fe ff ff e8 5f b2 65 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 cc <1f> 44 00 00 55 ba 10 00 00 00 be c0 0c 00 00 48 89 e5 41 56 41 55
+> [ 5093.409505] RSP: 0018:ffffc90000563d18 EFLAGS: 00010246
+> [ 5093.412056] RAX: 0000000000000000 RBX: ffffffffc010a0c0 RCX: 0000000000004ee3
+> [ 5093.414472] RDX: 0000000000004ee2 RSI: ffffea0001efe188 RDI: ffffffffc010a0c0
+> [ 5093.416349] RBP: ffffc90000563e50 R08: 0000000000000000 R09: 0000000000000002
+> [ 5093.418044] R10: 0000000000000096 R11: 00000000000008a4 R12: ffff88807a0d1280
+> [ 5093.424721] R13: ffffffffc010a110 R14: ffff88807a0d1300 R15: ffffc90000563e70
+> [ 5093.427138] FS:  00007f018f632740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+> [ 5093.430037] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 5093.432279] CR2: 000055fbe282b239 CR3: 000000007922a006 CR4: 0000000000170ef0
+> [ 5093.435096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 5093.436765] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 5093.439689] Call Trace:
+> [ 5093.440954]  ? load_module+0x24b6/0x27d0
+> [ 5093.443212]  ? __kernel_read+0xd6/0x150
+> [ 5093.445140]  __do_sys_finit_module+0xd3/0xf0
+> [ 5093.446877]  __x64_sys_finit_module+0x1a/0x20
+> [ 5093.449098]  do_syscall_64+0x38/0x50
+> [ 5093.450877]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 5093.456153] RIP: 0033:0x7f018f75c43d
+> [ 5093.457728] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 6a 0c 00 f7 d8 64 89 01 48
+> [ 5093.466349] RSP: 002b:00007ffd7f080368 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [ 5093.470613] RAX: ffffffffffffffda RBX: 0000557e5c96f9c0 RCX: 00007f018f75c43d
+> [ 5093.474747] RDX: 0000000000000000 RSI: 0000557e5c964288 RDI: 0000000000000003
+> [ 5093.478049] RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
+> [ 5093.481298] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+> [ 5093.483725] R13: 0000557e5c964288 R14: 0000557e5c96f950 R15: 0000557e5c9775c0
+> [ 5093.485778] Modules linked in: virtio_vdpa(+) vdpa sunrpc kvm_intel kvm irqbypass virtio_blk virtio_rng rng_core [last unloaded: virtio_vdpa]
+> [ 5093.488695] ---[ end trace 23712ecebc11f53c ]---
+> 
+> Guest kernel: Linux 5.9-rc7
+> gdb: GNU gdb (GDB) Fedora 9.1-6.fc32
+> I tried with QEMU 4.2.1 and the latest master branch: same issue.
+> 
+> 
+> I did some digging, and skipping the gdb 'add-symbol-file' command in symbol.py
+> avoid the issue, but of course I don't have the symbols loaded:
+> 
+>     diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+>     index 1be9763cf8bb..eadfaa4d4907 100644
+>     --- a/scripts/gdb/linux/symbols.py
+>     +++ b/scripts/gdb/linux/symbols.py
+>     @@ -129,7 +129,7 @@ lx-symbols command."""
+>                      filename=module_file,
+>                      addr=module_addr,
+>                      sections=self._section_arguments(module))
+>     -            gdb.execute(cmdline, to_string=True)
+>     +            #gdb.execute(cmdline, to_string=True)
+>                  if module_name not in self.loaded_modules:
+>                      self.loaded_modules.append(module_name)
+>              else:
+> 
+> I tried several modules and this happens every time after '(gdb) lx-symbols'.
+> 
+> Do you have any hints?
+> 
+I assume you are debugging a kernel inside QEMU/KVM, right? Does it work
+without -enable-kvm?
 
-Reported-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- crypto/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Debugging guests in KVM mode at least was unstable for a long time. I
+avoided setting soft-BPs - which is what the script does for the sake of
+tracking modules loading -, falling back to hw-BPs, as I had no time to
+debug that further. /Maybe/ that's the issue here.
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 094ef56ab7b4..5b20087b117f 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1853,7 +1853,7 @@ config CRYPTO_DRBG
- endif	# if CRYPTO_DRBG_MENU
- 
- config CRYPTO_JITTERENTROPY
--	tristate "Jitterentropy Non-Deterministic Random Number Generator"
-+	bool "Jitterentropy Non-Deterministic Random Number Generator"
- 	select CRYPTO_RNG
- 	help
- 	  The Jitterentropy RNG is a noise that is intended
+Jan
+
 -- 
-2.26.2
-
-
-
-
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
