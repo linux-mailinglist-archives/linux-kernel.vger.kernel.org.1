@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21639282E14
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3D0282E17
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgJDWQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 18:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726431AbgJDWQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:16:48 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5EA3205CB;
-        Sun,  4 Oct 2020 22:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601849808;
-        bh=NBtE/81jZQ0RhL5a24FlrAYkRmb7yL18m82kiAglvQM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DfcNmrv3NW+V1zb3qDiCB+qk0ZoPRl6J8tjThoIABJK2c7DDyB8jNRzXo33CjJ7WD
-         nmq4zqGLQev/dLV54ieD6Xr93uMBCtx2eHvwJBLotBz+0Y/bSGMhQYN4MpCTUwoPCk
-         Ym0Dq8Yq0xvpYVpOg1PN1Wglv0M65+Aa+J+bEiSk=
-Received: by earth.universe (Postfix, from userid 1000)
-        id DE5003C0C87; Mon,  5 Oct 2020 00:16:45 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 00:16:45 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] test_power: add missing newlines when printing
- parameters by sysfs
-Message-ID: <20201004221645.nyaf7jhur4jixo6n@earth.universe>
-References: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
- <20201003212336.5et7erdf6fihqscu@earth.universe>
- <472008b94f4b20915425db4714fdb505cb0cbe5a.camel@perches.com>
- <20201003215029.jsugcgpgrmcmydr3@earth.universe>
- <9822843f764520e1076a92fd9120294aa393a085.camel@perches.com>
+        id S1725845AbgJDW17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 18:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgJDW17 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 18:27:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1CCC0613CE;
+        Sun,  4 Oct 2020 15:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f3LoEmiicIptti0tU7n5VZZ6rnPI7Ovsk8EdYqaxzlA=; b=Nx2xxKJ4AQxDT0QwzHgb9DrrY9
+        nqYxZVdMKZXln955bYkzFZBZ7BriQLzXGI9keTbK1JvglUx3ANoGMeMWI8huHQKHF3sQfxOWexMCo
+        0aZ/YV7D8Fe5KlwcQ687pbE5x169Uz89Dd0PtCjQFyyfenlAVXRPtUCSrmbdSnoaXPfUqZYlJfj+r
+        MX6x+g7kkRLDeBkDLSM/kTgOKNKLmGUUXyCwdSOtT2ZcaVOyDFfRmNDroZowJiTI2H9UM3LhYQSSI
+        bInQlK/hkD8mUkBsf23QpbEvvLdaBwuvS+5Ps+DMwtksvmHSXTEKUg+JKhJtjhaJBPj7AGcdzwmjU
+        0pI7nmMw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPCTu-0001J4-6l; Sun, 04 Oct 2020 22:27:50 +0000
+Date:   Sun, 4 Oct 2020 23:27:50 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201004222750.GI20115@casper.infradead.org>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003195440.GD20115@casper.infradead.org>
+ <20201004215049.GA43926@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vr4whwmim25ljj7f"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9822843f764520e1076a92fd9120294aa393a085.camel@perches.com>
+In-Reply-To: <20201004215049.GA43926@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 05, 2020 at 12:50:49AM +0300, Jarkko Sakkinen wrote:
+> What is shoukd take is encl->lock.
+> 
+> The loop was pre-v36 like:
+> 
+> 	idx_start = PFN_DOWN(start);
+> 	idx_end = PFN_DOWN(end - 1);
+> 
+> 	for (idx = idx_start; idx <= idx_end; ++idx) {
+> 		mutex_lock(&encl->lock);
+> 		page = radix_tree_lookup(&encl->page_tree, idx);
+> 		mutex_unlock(&encl->lock);
+> 
+> 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> 			return -EACCES;
+> 	}
+> 
+> Looking at xarray.h and filemap.c, I'm thinking something along the
+> lines of:
+> 
+> 	for (idx = idx_start; idx <= idx_end; ++idx) {
+> 		mutex_lock(&encl->lock);
+> 		page = xas_find(&xas, idx + 1);
+> 		mutex_unlock(&encl->lock);
+> 
+> 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> 			return -EACCES;
+> 	}
+> 
+> Does this look about right?
 
---vr4whwmim25ljj7f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Not really ...
 
-Hi,
+	int ret = 0;
 
-On Sat, Oct 03, 2020 at 02:55:41PM -0700, Joe Perches wrote:
-> On Sat, 2020-10-03 at 23:50 +0200, Sebastian Reichel wrote:
-> > Hi,
-> >=20
-> > On Sat, Oct 03, 2020 at 02:43:09PM -0700, Joe Perches wrote:
-> > > On Sat, 2020-10-03 at 23:23 +0200, Sebastian Reichel wrote:
-> > > > On Fri, Sep 04, 2020 at 02:09:58PM +0800, Xiongfeng Wang wrote:
-> > > > > When I cat some module parameters by sysfs, it displays as follow=
-s.
-> > > > > It's better to add a newline for easy reading.
-> > > []
-> > > > > root@syzkaller:~# cd /sys/module/test_power/parameters/
-> > > > > root@syzkaller:/sys/module/test_power/parameters# cat ac_online
-> > > > > onroot@syzkaller:/sys/module/test_power/parameters# cat battery_p=
-resent
-> > > > > trueroot@syzkaller:/sys/module/test_power/parameters# cat battery=
-_health
-> > > > > goodroot@syzkaller:/sys/module/test_power/parameters# cat battery=
-_status
-> > > > > dischargingroot@syzkaller:/sys/module/test_power/parameters# cat =
-battery_technology
-> > > > > LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_onl=
-ine
-> > > > > onroot@syzkaller:/sys/module/test_power/parameters#
-> > > > >=20
-> > > > > Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> > > > > ---
-> > > >=20
-> > > > Thanks, queued.
-> > > []
-> > > > > diff --git a/drivers/power/supply/test_power.c b/drivers/power/su=
-pply/test_power.c
-> > > []
-> > > > > @@ -353,6 +353,7 @@ static int param_set_ac_online(const char *ke=
-y, const struct kernel_param *kp)
-> > > > >  static int param_get_ac_online(char *buffer, const struct kernel=
-_param *kp)
-> > > > >  {
-> > > > >  	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown")=
-);
-> > > > > +	strcat(buffer, "\n");
-> > > > >  	return strlen(buffer);
-> > > > >  }
-> > >=20
-> > > All of these would be better as sprintf(buffer, "%s\n", <whatever>)
-> > > so the output is scanned just once instead of scanned three times.
-> >=20
-> > Agreed. Anybody willing to send a patch? :)
->=20
-> Well, you _are_ the maintainer. Why not you?
+	mutex_lock(&encl->lock);
+	rcu_read_lock();
+	while (xas.index < idx_end) {
+		page = xas_next(&xas);
+		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+			ret = -EACCESS;
+			break;
+		}
+	}
+	rcu_read_unlock();
+	mutex_unlock(&encl->lock);
 
-I prefer to have patches reviewed and when I sent out patches for
-my own subsystem I often do not get any reviews at all. From my
-experience people often like to increase their patch count anyways
-(e.g. because their employer wanting to see high patch count), so
-asking others to write the patch is an easy workaround for me. I
-then only do the leftovers.
+	return ret;
 
--- Sebastian
-
---vr4whwmim25ljj7f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl96SccACgkQ2O7X88g7
-+prN/hAAhvjucLG5mdmznzb+0h8DEKNMLC1kj95NZTvydXpmKbgWVbZbEe8vlKaG
-cd783d+/CZxnrOWUQ0G+vuAHDzfySno/rkJX3hIcCQUM4lTPG7gMwnjEEtGPB8FO
-oFWuMTDnKklpjgELckUg8hkZdA28HUr/QxMSBYI5sR+yJwqjGGV2ISE8LWJ+iTO+
-5gCgdeSLG1+jIqFE2CMFXNo5Hy263Zj5+pz+JoNgj06NzRlH72t52VNZzMvOA+Ku
-t+rHG+us35JlCbeYjJjeUOaSv3UwBS5/0LmfvXhcU+MDPMZQgFh5GDp1yfSSNF7M
-VSu9gGHNrxm1zzsjQXYy/5l4oeuJuMHhT8rIX5bOIcrOGtilSPMn3jAba+lMEDy3
-r/7B5sC0PWOx6k/NjJlVo4Qo/JKj1i6I9QIBqR0oxuJZW6KZcRccMFaf+ujvzz8B
-+vUxiM89fEM763dOc+aj5BpbcaT4FrFtiLYg11uV6VShmQKpcuwiUj+bbXhcckC0
-7p5UfeMLADdkzH/7Q7fextnZ2yoF6THNYQ1Ci3Vn/SSVTpAuKIFuQoqSGoXrnTiX
-vBi5+01TjXf8yNXjSjS8GcLZeaZcW6nnckZ2+YT2CNZzHq3xC70+0GIP7bBSRSso
-oEgDs8AsJTMxiAqtooDl2EwHLhh+dF33RDbOT+PZ5eyzCh4uZzo=
-=yD3h
------END PGP SIGNATURE-----
-
---vr4whwmim25ljj7f--
+... or you could rework to use the xa_lock instead of encl->lock.
+I don't know how feasible that is for you.
