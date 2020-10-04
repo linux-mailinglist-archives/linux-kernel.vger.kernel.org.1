@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56074282DC7
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09803282DC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 23:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgJDVca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 17:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726313AbgJDVca (ORCPT
+        id S1726476AbgJDVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 17:36:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:58944 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726313AbgJDVgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 17:32:30 -0400
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D5CC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 14:32:30 -0700 (PDT)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kPBcK-00EAGG-Iu
-        for linux-kernel@vger.kernel.org; Sun, 04 Oct 2020 23:32:28 +0200
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:1e1b:dff:fe91:1af5] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1kPBc7-00EAFT-Sx; Sun, 04 Oct 2020 23:32:15 +0200
-Received: from bert by sumner.biot.com with local (Exim 4.90_1)
-        (envelope-from <bert@biot.com>)
-        id 1kPBc7-00031a-KE; Sun, 04 Oct 2020 23:32:15 +0200
-From:   Bert Vermeulen <bert@biot.com>
-To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v2] mtd: spi-nor: Fix address width on flash chips > 16MB
-Date:   Sun,  4 Oct 2020 23:32:04 +0200
-Message-Id: <20201004213204.11584-1-bert@biot.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 4 Oct 2020 17:36:24 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-22-miBv3_8TPze0sLNho43zTg-1; Sun, 04 Oct 2020 22:36:21 +0100
+X-MC-Unique: miBv3_8TPze0sLNho43zTg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 4 Oct 2020 22:36:20 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 4 Oct 2020 22:36:20 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bert Vermeulen' <bert@biot.com>, Pratyush Yadav <p.yadav@ti.com>
+CC:     "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
+Thread-Topic: [PATCH] mtd: spi-nor: Fix 3-or-4 address byte mode logic
+Thread-Index: AQHWmEFme608aECbAkSNwPF3PIHq6KmD73IwgAP1ZgCAABS1AA==
+Date:   Sun, 4 Oct 2020 21:36:20 +0000
+Message-ID: <e41bb2d9ad144736b858b186acf2a47b@AcuMS.aculab.com>
+References: <20200930235611.6355-1-bert@biot.com>
+ <20201001063421.qcjdikj2tje3jn6k@ti.com>
+ <801445c9-4f59-5300-3a03-b48a3d631efe@biot.com>
+ <1c4ee46115854ce28b17935504f2fc78@AcuMS.aculab.com>
+ <2c7b03eb-58fa-73af-93d7-669bad2e57ef@biot.com>
+In-Reply-To: <2c7b03eb-58fa-73af-93d7-669bad2e57ef@biot.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a flash chip has more than 16MB capacity but its BFPT reports
-BFPT_DWORD1_ADDRESS_BYTES_3_OR_4, the spi-nor framework defaults to 3.
-
-The check in spi_nor_set_addr_width() doesn't catch it because addr_width
-did get set. This fixes that check.
-
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- drivers/mtd/spi-nor/core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0369d98b2d12..a2c35ad9645c 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3009,13 +3009,15 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
- 		/* already configured from SFDP */
- 	} else if (nor->info->addr_width) {
- 		nor->addr_width = nor->info->addr_width;
--	} else if (nor->mtd.size > 0x1000000) {
--		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_width = 4;
- 	} else {
- 		nor->addr_width = 3;
- 	}
- 
-+	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
-+		/* enable 4-byte addressing if the device exceeds 16MiB */
-+		nor->addr_width = 4;
-+	}
-+
- 	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
- 		dev_dbg(nor->dev, "address width is too large: %u\n",
- 			nor->addr_width);
--- 
-2.17.1
+RnJvbTogQmVydCBWZXJtZXVsZW4NCj4gU2VudDogMDQgT2N0b2JlciAyMDIwIDIyOjEyDQo+IA0K
+PiBPbiAxMC8yLzIwIDk6NTAgQU0sIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBCZXJ0
+IFZlcm1ldWxlbg0KPiA+PiBUaGUgU29DcyBJJ20gZGVhbGluZyB3aXRoIGhhdmUgYW4gU1BJX0FE
+RFJfU0VMIHBpbiwgaW5kaWNhdGluZyB3aGV0aGVyIGl0DQo+ID4+IHNob3VsZCBiZSBpbiAzIG9y
+IDQtYnl0ZSBtb2RlLiBUaGUgdmVuZG9yJ3MgaGFja2VkLXVwIFUtQm9vdCBzZXRzIHRoZSBtb2Rl
+DQo+ID4+IGFjY29yZGluZ2x5LCBhcyBkb2VzIHRoZWlyIEJTUC4gSXQgc2VlbXMgdG8gbWUgbGlr
+ZSBhIG1pc2ZlYXR1cmUsIGFuZCBJIHdhbnQNCj4gPj4gdG8ganVzdCBpZ25vcmUgaXQgYW5kIGRv
+IHJlYXNvbmFibGUgSkVERUMgdGhpbmdzLCBidXQgSSBoYXZlIHRoZSBwcm9ibGVtDQo+ID4+IHRo
+YXQgdGhlIGZsYXNoIGNoaXAgY2FuIGJlIGluIDQtYnl0ZSBtb2RlIGJ5IHRoZSB0aW1lIGl0IGdl
+dHMgdG8gbXkgc3BpLW5vcg0KPiA+PiBkcml2ZXIuDQo+ID4NCj4gPiBJZiB0aGVzZSBhcmUgdGhl
+IGRldmljZXMgSSB0aGluayB0aGV5IGFyZSwgY2FuJ3QgeW91IHJlYWQgdGhlDQo+ID4gbm9uLXZv
+bGF0aWxlIGNvbmZpZyB3b3JkIChiaXQgMCkgdG8gZmluZCBvdXQgd2hldGhlciB0aGUgZGV2aWNl
+DQo+ID4gZXhwZWN0cyBhIDMgb3IgNCBieXRlIGFkZHJlc3MgYW5kIGhvdyBtYW55ICdpZGxlJyBj
+bG9ja3MgdGhlcmUNCj4gPiBhcmUgYmVmb3JlIHRoZSByZWFkIGRhdGE/DQo+IA0KPiBJJ20gd29y
+a2luZyB3aXRoIFJlYWx0ZWsgUlRMODM4eC9SVEw4Mzl4IFNvQ3MuIFJlYWRpbmcgaXQgb3V0IGlz
+IGENCj4gcHJldHR5IGNvbnZvbHV0ZWQgcHJvY2VkdXJlIGludm9sdmluZyBkaWZmZXJlbnQgSS9P
+IHJlZ2lzdGVycyBkZXBlbmRpbmcNCj4gb24gdGhlIFNvQyBtb2RlbC4NCg0KSG93IGRvIHRoZXkg
+bWFuYWdlIHRvIGxldCB5b3UgZG8gcmVhZC93cml0ZSB3aXRob3V0ICdyZWFkIGNvbnRyb2wnLg0K
+QWN0dWFsbHkgSSBjYW4gaW1hZ2luZS4uLg0KDQpUaGUgcHJvYmxlbSB3ZSBoYWQgd2FzIGdldHRp
+bmcgdGhlIElPIHBpbnMgdG8gbGluayB1cCB0byB1c2VyDQpsb2dpYyBvbiBhbiBBbHRlcmEgQ3lj
+bG9uZS1WIGZwZ2EuDQpUaGVuIGl0IHdhcyBqdXN0IGEgJ1NNT1AnIHRvIGdldCByZWFkcyBhbmQg
+d3JpdGUgY29udmVydGVkIHRvDQpuaWJibGUgJ2JpdC1iYW5nJyB3aXRoIHRoZSBjaGlwc2VsZWN0
+IGFuZCBvdXRwdXQgZW5hYmxlIChJSVJDKQ0KY29udHJvbGxlZCBieSB0aGUgcmVnaXN0ZXIgYWRk
+cmVzcy4NCkkgZG91YnQgYW55ICdzdGFuZGFyZCcgaW50ZXJmYWNlIGlzIGFzIGVmZmljaWVudC4N
+Cg0KSSB0aGluayBJIGZvdW5kIGEgaGFyZHdhcmUgYnVnIGluIHRoZSBjaGlwcyB3ZSBhcmUgdXNp
+bmcuDQpUaGVyZSBzZWVtZWQgdG8gYmUgYSB0aW1pbmcgd2luZG93IGluIHdoaWNoIHRoZSAncmVh
+ZCBzdGF0dXMnDQpjb21tYW5kIChhZnRlciBhIHdyaXRlL2VyYXNlKSB3YXMgY29tcGxldGVseSBp
+Z25vcmVkIGJ5DQp0aGUgZGV2aWNlLg0KRXZlcnl0aGluZyBsb29rZWQgd3JpdGUgb24gYSBzY29w
+ZSAtIGJ1dCB0aGUgZGF0YSBsaW5lDQp3YXNuJ3QgZHJpdmVuLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
