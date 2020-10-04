@@ -2,91 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BCC282E22
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21750282E25
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 00:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725853AbgJDWpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1725866AbgJDWpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 4 Oct 2020 18:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgJDWpF (ORCPT
+        with ESMTP id S1725857AbgJDWpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:45:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7506EC0613CE;
-        Sun,  4 Oct 2020 15:45:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so4475900pjd.3;
-        Sun, 04 Oct 2020 15:45:05 -0700 (PDT)
+        Sun, 4 Oct 2020 18:45:06 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB1AC0613CE;
+        Sun,  4 Oct 2020 15:45:06 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x22so5326731pfo.12;
+        Sun, 04 Oct 2020 15:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=h8phoMKaggEIEEEPxyHYutFcrvSMoeO2oUCwixn9XkQ=;
-        b=H5qRpChowrqUrPNO9jerKTlh7wLcjgNFxw5NlFbza1sCA8YOkPIj8YTh9ZeEO9qPjJ
-         NH4j0QgEZJImfsA+AZWGs0NEK0oOFNYP9BIbGpTjmrvz42fgtD/1mRIzC/AR+4rc5itO
-         OI0OPAyLLTX5t+nl8Zj5PU+H6qYLWbSjvv+Hqlvu2NXsujbyLOdntWg0vJYCNH8ppn/S
-         sfMoBtH6KNqAB5MHzOJc5O+Md+1JKRRJLF2vkbMIxpBgWuIuh2Baqkyo8C8mMnjGVPp4
-         Nagr6URDVOxGNkCXsxZI6MMRnKlTDn7engf+bez3TYUyqmXC+kdVgXlp0hKL0MeqZY5+
-         ql5Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=Qf45Jazhnw0AWQkWquvjrDOvbvMExg67USrpZGI37ZQ=;
+        b=jW+udd2/4F14aVvfzcWbJlMOSrs29d/NsRoba0M2iNM8OvKRpPM7ivzeR1SjpywUrL
+         8vD359RzcgC1zDQry8L2yBd7Yrt+VO62WYfTFOVRqlcUIwMpUwrCcX/SwA7l9tPd/TrK
+         vHvbvWdOjEvxkNYi9t6bgFdnqVSjKZfTIKEKKvxmVeC7YaUExGyBhzGRL6kwxoWr6nFM
+         ey5fFiaMo1T9X0Wwn+tfWHxS1Aug1sNN3vy3d+kF+f6+z/LjYDk/RQWrUWs8owvFxvSK
+         gXlXCvY/YQDeBXiVH+q4swCpWaif7jJSPeJHQ9E97hs1zEBSSfClkMtK/DllJIxzPGw/
+         pnmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=h8phoMKaggEIEEEPxyHYutFcrvSMoeO2oUCwixn9XkQ=;
-        b=pY2+mcz3sBrwGNq6RY1/Wyo5osm5QR16+g8YvF2Wrp4MWqVG7OXapm6F7G3JSaqlmc
-         17wGJNoonLfGqTQC7V+8vuZ5elEX4AOqTIX+Iqp6oQSJoQQHj5WarVT3kYmVqcSb5yGM
-         BLvYGzRM6NfsGpeZF+mlJ9QrOQYb0cBQihn0GdGqERk7gRbBwLanW6lv35nO58wxMftL
-         s6zZz9Zpiqkv5mFju1my/yi1XVj2l7ZxpZyWawke6x131k5hhpzwwKYoFU9VAC0V4tmB
-         jfIjtyqNmJfbwhOmY1F4dC9wta+1eiDtQeGtc89WSS5hCJ4r/yu4tnvKoveAufi6ZfpY
-         ueKQ==
-X-Gm-Message-State: AOAM533/zIgZZ2GnQUzjWrZD/pYBrJN9+D/rTTkmXdV8MQRrDK5a+9Hd
-        y4EOqNx53mjfgpudbH0c3ggNgvm87nE=
-X-Google-Smtp-Source: ABdhPJwK2bJj/NFx8BvpkbmtQ4HQox+iyd40MIX6HZNd4DRlHyxZ5vfScAKJiaDThxCgKhL2C6PA7Q==
-X-Received: by 2002:a17:90a:1ce:: with SMTP id 14mr13439887pjd.209.1601851504816;
-        Sun, 04 Oct 2020 15:45:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=Qf45Jazhnw0AWQkWquvjrDOvbvMExg67USrpZGI37ZQ=;
+        b=CF4DBm18Z5CJ5ez8qkX1/FTLzsEcqDNHj6izGlh/zeeMxnQWPjC8XcIgPEyyy7a+97
+         184F568qUvFKEwY1dzbpjXLnSOzwFUU5TR1CQlLFRbEDMOczsvqSlP4IJXwM7ghB8+93
+         5Wgr7JKaU7phkJ08xH0dK9s1BKMDAcHC36y6JRHVWuszX++W9WHX/USxbLKwXiT/baWj
+         nIf3vvVaELQdVjrnONaWbTZ5m7EqT731+6sN8+D6uulgoljALnMPnlnJiyPda6jRujnj
+         KRh+8jyi8mk4ldMGVJxhIxL8zoQwh0RH6MoEscAA8GIbe4W9q/N2HagSXVFxGtYhO8Zw
+         5p3g==
+X-Gm-Message-State: AOAM533NCwOSi0jxCX7hfHGt/N3bDSzAzMHudQSBSKcJKG89pz90cOsJ
+        QtKPX8HRnfjjaIRjKAY/SOs=
+X-Google-Smtp-Source: ABdhPJwg1OstrsEfqzgNeEikSkjxOX/tqMbxN7Jr5u8AUcZlZkRbcrp2egWbxXa1TEHG1uLkevZhbA==
+X-Received: by 2002:aa7:8885:0:b029:142:2501:39ea with SMTP id z5-20020aa788850000b0290142250139eamr4427245pfe.57.1601851505561;
+        Sun, 04 Oct 2020 15:45:05 -0700 (PDT)
 Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
         by smtp.gmail.com with ESMTPSA id d129sm9073236pfc.161.2020.10.04.15.45.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 15:45:04 -0700 (PDT)
+        Sun, 04 Oct 2020 15:45:05 -0700 (PDT)
 From:   Nicolin Chen <nicoleotsuka@gmail.com>
 To:     thierry.reding@gmail.com, joro@8bytes.org, digetx@gmail.com
 Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
         linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 0/3] iommu/tegra-smmu: Add PCI support
-Date:   Sun,  4 Oct 2020 15:38:34 -0700
-Message-Id: <20201004223837.15303-1-nicoleotsuka@gmail.com>
+Subject: [PATCH v6 1/3] iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
+Date:   Sun,  4 Oct 2020 15:38:35 -0700
+Message-Id: <20201004223837.15303-2-nicoleotsuka@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201004223837.15303-1-nicoleotsuka@gmail.com>
+References: <20201004223837.15303-1-nicoleotsuka@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is to add PCI support in tegra-smmu driver.
+In tegra_smmu_(de)attach_dev() functions, we poll DTB for each
+client's iommus property to get swgroup ID in order to prepare
+"as" and enable smmu. Actually tegra_smmu_configure() prepared
+an fwspec for each client, and added to the fwspec all swgroup
+IDs of client DT node in DTB.
 
-Changelog (Detail in each patch)
-v5->v6
- * Dropped a NULL check, per Dmitry's comments
+So this patch uses fwspec in tegra_smmu_(de)attach_dev() so as
+to replace the redundant DT polling code.
+
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+
+Changelog
+v5->v6:
  * Added Dmitry's Reviewed-by and Tested-by
-v4->v5
- * PATCH-1 Cleaned two variables inits
- * PATCH-2 Fixed put() in ->of_xlate() and Updated commit message
- * PATCH-3 Added Dmitry's Reviewed-by
-v3->v4
- * Dropped helper function, per Thierry's comments
- * Found another way to get smmu pointer
-v2->v3
- * Replaced with devm_tegra_get_memory_controller
- * Updated changes by following Dmitry's comments
-v1->v2
- * Added PATCH-1 suggested by Dmitry
- * Reworked PATCH-2 to unify certain code
+v4->v5:
+ * Removed "index" and "err" assigning to 0
+v3->v4:
+ * Seperated the change, as a cleanup, from the rework patch
+v1->v3:
+ * N/A
 
-Nicolin Chen (3):
-  iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
-  iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-  iommu/tegra-smmu: Add PCI support
+ drivers/iommu/tegra-smmu.c | 56 ++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 33 deletions(-)
 
- drivers/iommu/tegra-smmu.c | 180 ++++++++++++-------------------------
- 1 file changed, 56 insertions(+), 124 deletions(-)
-
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 6a3ecc334481..297d49f3f80e 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -484,60 +484,50 @@ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
+ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+ 				 struct device *dev)
+ {
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+ 	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
+ 	struct tegra_smmu_as *as = to_smmu_as(domain);
+-	struct device_node *np = dev->of_node;
+-	struct of_phandle_args args;
+-	unsigned int index = 0;
+-	int err = 0;
+-
+-	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+-					   &args)) {
+-		unsigned int swgroup = args.args[0];
+-
+-		if (args.np != smmu->dev->of_node) {
+-			of_node_put(args.np);
+-			continue;
+-		}
++	unsigned int index;
++	int err;
+ 
+-		of_node_put(args.np);
++	if (!fwspec)
++		return -ENOENT;
+ 
++	for (index = 0; index < fwspec->num_ids; index++) {
+ 		err = tegra_smmu_as_prepare(smmu, as);
+-		if (err < 0)
+-			return err;
++		if (err)
++			goto disable;
+ 
+-		tegra_smmu_enable(smmu, swgroup, as->id);
+-		index++;
++		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
+ 	}
+ 
+ 	if (index == 0)
+ 		return -ENODEV;
+ 
+ 	return 0;
++
++disable:
++	while (index--) {
++		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
++		tegra_smmu_as_unprepare(smmu, as);
++	}
++
++	return err;
+ }
+ 
+ static void tegra_smmu_detach_dev(struct iommu_domain *domain, struct device *dev)
+ {
++	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+ 	struct tegra_smmu_as *as = to_smmu_as(domain);
+-	struct device_node *np = dev->of_node;
+ 	struct tegra_smmu *smmu = as->smmu;
+-	struct of_phandle_args args;
+-	unsigned int index = 0;
+-
+-	while (!of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
+-					   &args)) {
+-		unsigned int swgroup = args.args[0];
++	unsigned int index;
+ 
+-		if (args.np != smmu->dev->of_node) {
+-			of_node_put(args.np);
+-			continue;
+-		}
+-
+-		of_node_put(args.np);
++	if (!fwspec)
++		return;
+ 
+-		tegra_smmu_disable(smmu, swgroup, as->id);
++	for (index = 0; index < fwspec->num_ids; index++) {
++		tegra_smmu_disable(smmu, fwspec->ids[index], as->id);
+ 		tegra_smmu_as_unprepare(smmu, as);
+-		index++;
+ 	}
+ }
+ 
 -- 
 2.17.1
 
