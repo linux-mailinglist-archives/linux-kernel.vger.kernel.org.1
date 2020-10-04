@@ -2,130 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568202829AD
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 10:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6110D2829C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 11:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgJDIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 04:48:26 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:44731 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDIsZ (ORCPT
+        id S1725880AbgJDJS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 05:18:29 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:58218 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDJS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 04:48:25 -0400
-Received: by mail-il1-f197.google.com with SMTP id l16so4834547ils.11
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 01:48:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=HUrxEfrvGltaT0f64KMeac1neV4ySMf1wCAqKa4nV/A=;
-        b=BlH3DpIPYi7t1+VILCcx+3+Tc+o6dTRI6hWq/YG7S9N3gMQTwuUcQgOSJ6jqAdClvr
-         eNkTa3YmcVrHIyZnRR+SkXUzo/BPJJR9g6664+RYRxoUSItbDHDoTwRxAi1BVzug4++P
-         YaKz6ibngPTBSOt1iSps4HRM1XmEPBL6Grywvwswfvd/qJ993yruCEgnbfEP3r5dlwUU
-         R3/5lCWXrW7V9diDDdMHToEgZLel0qBaiJkfT/fqoGytY3UNmaJV0Sn1Hp32DyCVah0f
-         MQDOlZw8rJbOn7kGvmuJyuH1YGVQhqyLTmcaNzSNcyAP1XlAEHU5kYketv7zuRhJTm9r
-         c7kg==
-X-Gm-Message-State: AOAM533Sd8PBBdg9Zj04/bNEPKxE2CfMFwB2LoTora19NEqVoTxTLnEs
-        YhC7lxogDnYEQXkBQeaTybFeSYUZ+j1n43nW0mesTaLwUh47
-X-Google-Smtp-Source: ABdhPJzDl8C9Z7q03u+hEUQKs8tiSWla+HXZPH0qQl8tPWCwQbOln0XKy/CyZn4mKZsmBgAlIoRXmjbg2FbC7cY2cxWoNhQ2Q6L8
+        Sun, 4 Oct 2020 05:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601803108; x=1633339108;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mJB4PM3W0XuShCHCsKFfKvn4aRYMv9WtYMDh2EN4KAQ=;
+  b=yDGgT0k3NRsjt2MIbnLidrCzCzv06XvdKj4/ggimHWuTesC/bHnSEwfr
+   2u3Wwg+m+SVXn8nNgsFrcv8O0o6wf+ZFo5pG7vK6+6LYy18Z7cJmV6APG
+   cH72YS4qbI0N+r8cEDtFLneBWwc0VCt8IBePsXjYA2YGEgITJeUF9C9lO
+   4KmX19uQGtUCVTI6Z6IKLyf3XPxVLkgfoJqSritGip8aXPFgmZBxBpUrg
+   MdUqIQINdHz/hDAA17q3VjIfsd+XBSjz05VxQMYfuSEEiMY4y2wcBU530
+   muZF+0CJh0PCfD3FE4pUDhL8hkztWo3E45tAM+qK/WpFz1ysTdTyejUdF
+   A==;
+IronPort-SDR: QLQWuDl11RWXHKKAGVpBcDJOOYMq4XVZsRb0kIxvXe5q3AyqeGPjZYYfZHmnC+S/1lDdC/8KcM
+ cSEfw8FLzs+EFYOQTqduCXe8PnOdZoToxb8qyYC313yfIXjNFSC69KoABxX0WRku9UlAJ16PYw
+ rYhs/BIFzOf51iqfC15GgJKm9cB6udGFKXk62CwKwgJML+Yu9NKTbtwIMeVzMPGzYhPq4x2vm6
+ 9gqp/eZQc24hSWcV6ic9eBY5BtUOY6pd/Bnzqljp0C0bFbs6AO7p/Ty4CeAQtqxcieFn8q8UDM
+ VKc=
+X-IronPort-AV: E=Sophos;i="5.77,335,1596524400"; 
+   d="scan'208";a="28646518"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Oct 2020 02:18:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 4 Oct 2020 02:17:39 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Sun, 4 Oct 2020 02:18:22 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <wsa@kernel.org>, <rmk+kernel@armlinux.org.uk>,
+        <alpawi@amazon.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2] i2c: pxa: move to generic GPIO recovery
+Date:   Sun, 4 Oct 2020 12:16:56 +0300
+Message-ID: <20201004091656.1004575-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:b503:: with SMTP id f3mr7725977ile.23.1601801302683;
- Sun, 04 Oct 2020 01:48:22 -0700 (PDT)
-Date:   Sun, 04 Oct 2020 01:48:22 -0700
-In-Reply-To: <000000000000b3d57105b05ab856@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a5b86105b0d46d59@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in tcf_action_dump_terse
-From:   syzbot <syzbot+5f66662adc70969940fd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Starting with
+commit 75820314de26 ("i2c: core: add generic I2C GPIO recovery")
+GPIO bus recovery is supported by the I2C core, so we can remove the
+driver implementation and use that one instead.
 
-HEAD commit:    2172e358 Add linux-next specific files for 20201002
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12ba75ff900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=70698f530a7e856f
-dashboard link: https://syzkaller.appspot.com/bug?extid=5f66662adc70969940fd
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142fd4af900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ffcdeb900000
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5f66662adc70969940fd@syzkaller.appspotmail.com
+This patch is not tested.
 
-BUG: unable to handle page fault for address: fffffffffffffff0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD a291067 P4D a291067 PUD a293067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8162 Comm: syz-executor344 Not tainted 5.9.0-rc7-next-20201002-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:tcf_action_dump_terse+0x8c/0x4e0 net/sched/act_api.c:759
-Code: 3c 03 0f 8e 0a 03 00 00 48 89 da 44 8b ad b8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 10 04 00 00 <48> 8b 03 4c 8d 60 10 4c 89 e7 e8 55 5b 58 fd 4c 89 e1 be 01 00 00
-RSP: 0018:ffffc90009bff178 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff0 RCX: 0000000000000000
-RDX: 1ffffffffffffffe RSI: ffffffff867eb859 RDI: ffff888097102eb8
-RBP: ffff888097102e00 R08: 0000000000000000 R09: ffff88809ea92024
-R10: 0000000000000000 R11: 0000000000000000 R12: fffffffffffffff0
-R13: 0000000000000024 R14: ffff88809ea92000 R15: ffff888097102ec0
-FS:  00007f6bfe65f700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff0 CR3: 0000000096ec4000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- tcf_action_dump_1+0xd2/0x5a0 net/sched/act_api.c:788
- tcf_dump_walker net/sched/act_api.c:249 [inline]
- tcf_generic_walker+0x207/0xba0 net/sched/act_api.c:343
- tc_dump_action+0x6d5/0xe60 net/sched/act_api.c:1610
- netlink_dump+0x4df/0xba0 net/netlink/af_netlink.c:2268
- __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2373
- netlink_dump_start include/linux/netlink.h:246 [inline]
- rtnetlink_rcv_msg+0x70f/0xad0 net/core/rtnetlink.c:5526
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2362
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2416
- __sys_sendmmsg+0x196/0x4b0 net/socket.c:2506
- __do_sys_sendmmsg net/socket.c:2535 [inline]
- __se_sys_sendmmsg net/socket.c:2532 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2532
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44a569
-Code: e8 8c e7 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b 05 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f6bfe65ed98 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00000000006dfc48 RCX: 000000000044a569
-RDX: 010efe10675dec16 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 00000000006dfc40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dfc4c
-R13: 0000000000000005 R14: 00a3a20740000000 R15: 0507002400000038
-Modules linked in:
-CR2: fffffffffffffff0
----[ end trace c7fd3dfeaf54c122 ]---
-RIP: 0010:tcf_action_dump_terse+0x8c/0x4e0 net/sched/act_api.c:759
-Code: 3c 03 0f 8e 0a 03 00 00 48 89 da 44 8b ad b8 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 10 04 00 00 <48> 8b 03 4c 8d 60 10 4c 89 e7 e8 55 5b 58 fd 4c 89 e1 be 01 00 00
-RSP: 0018:ffffc90009bff178 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff0 RCX: 0000000000000000
-RDX: 1ffffffffffffffe RSI: ffffffff867eb859 RDI: ffff888097102eb8
-RBP: ffff888097102e00 R08: 0000000000000000 R09: ffff88809ea92024
-R10: 0000000000000000 R11: 0000000000000000 R12: fffffffffffffff0
-R13: 0000000000000024 R14: ffff88809ea92000 R15: ffff888097102ec0
-FS:  00007f6bfe65f700(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffff0 CR3: 0000000096ec4000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Changes in v2:
+ - readded the pinctrl state change to default from the
+   unprepare_recovery callback;
+
+ drivers/i2c/busses/i2c-pxa.c | 73 +++---------------------------------
+ 1 file changed, 6 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 35ca2c02c9b9..006cc1d5931f 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -264,9 +264,6 @@ struct pxa_i2c {
+ 	u32			hs_mask;
+ 
+ 	struct i2c_bus_recovery_info recovery;
+-	struct pinctrl		*pinctrl;
+-	struct pinctrl_state	*pinctrl_default;
+-	struct pinctrl_state	*pinctrl_recovery;
+ };
+ 
+ #define _IBMR(i2c)	((i2c)->reg_ibmr)
+@@ -1305,8 +1302,6 @@ static void i2c_pxa_prepare_recovery(struct i2c_adapter *adap)
+ 	 */
+ 	gpiod_set_value(i2c->recovery.scl_gpiod, ibmr & IBMR_SCLS);
+ 	gpiod_set_value(i2c->recovery.sda_gpiod, ibmr & IBMR_SDAS);
+-
+-	WARN_ON(pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery));
+ }
+ 
+ static void i2c_pxa_unprepare_recovery(struct i2c_adapter *adap)
+@@ -1347,76 +1342,20 @@ static int i2c_pxa_init_recovery(struct pxa_i2c *i2c)
+ 	if (IS_ENABLED(CONFIG_I2C_PXA_SLAVE))
+ 		return 0;
+ 
+-	i2c->pinctrl = devm_pinctrl_get(dev);
+-	if (PTR_ERR(i2c->pinctrl) == -ENODEV)
+-		i2c->pinctrl = NULL;
+-	if (IS_ERR(i2c->pinctrl))
+-		return PTR_ERR(i2c->pinctrl);
+-
+-	if (!i2c->pinctrl)
+-		return 0;
+-
+-	i2c->pinctrl_default = pinctrl_lookup_state(i2c->pinctrl,
+-						    PINCTRL_STATE_DEFAULT);
+-	i2c->pinctrl_recovery = pinctrl_lookup_state(i2c->pinctrl, "recovery");
+-
+-	if (IS_ERR(i2c->pinctrl_default) || IS_ERR(i2c->pinctrl_recovery)) {
+-		dev_info(dev, "missing pinmux recovery information: %ld %ld\n",
+-			 PTR_ERR(i2c->pinctrl_default),
+-			 PTR_ERR(i2c->pinctrl_recovery));
+-		return 0;
+-	}
+-
+-	/*
+-	 * Claiming GPIOs can influence the pinmux state, and may glitch the
+-	 * I2C bus. Do this carefully.
+-	 */
+-	bri->scl_gpiod = devm_gpiod_get(dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
+-	if (bri->scl_gpiod == ERR_PTR(-EPROBE_DEFER))
+-		return -EPROBE_DEFER;
+-	if (IS_ERR(bri->scl_gpiod)) {
+-		dev_info(dev, "missing scl gpio recovery information: %pe\n",
+-			 bri->scl_gpiod);
+-		return 0;
+-	}
+-
+-	/*
+-	 * We have SCL. Pull SCL low and wait a bit so that SDA glitches
+-	 * have no effect.
+-	 */
+-	gpiod_direction_output(bri->scl_gpiod, 0);
+-	udelay(10);
+-	bri->sda_gpiod = devm_gpiod_get(dev, "sda", GPIOD_OUT_HIGH_OPEN_DRAIN);
+-
+-	/* Wait a bit in case of a SDA glitch, and then release SCL. */
+-	udelay(10);
+-	gpiod_direction_output(bri->scl_gpiod, 1);
+-
+-	if (bri->sda_gpiod == ERR_PTR(-EPROBE_DEFER))
+-		return -EPROBE_DEFER;
+-
+-	if (IS_ERR(bri->sda_gpiod)) {
+-		dev_info(dev, "missing sda gpio recovery information: %pe\n",
+-			 bri->sda_gpiod);
++	bri->pinctrl = devm_pinctrl_get(dev);
++	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
++		bri->pinctrl = NULL;
+ 		return 0;
+ 	}
++	if (IS_ERR(bri->pinctrl))
++		return PTR_ERR(bri->pinctrl);
+ 
+ 	bri->prepare_recovery = i2c_pxa_prepare_recovery;
+ 	bri->unprepare_recovery = i2c_pxa_unprepare_recovery;
+-	bri->recover_bus = i2c_generic_scl_recovery;
+ 
+ 	i2c->adap.bus_recovery_info = bri;
+ 
+-	/*
+-	 * Claiming GPIOs can change the pinmux state, which confuses the
+-	 * pinctrl since pinctrl's idea of the current setting is unaffected
+-	 * by the pinmux change caused by claiming the GPIO. Work around that
+-	 * by switching pinctrl to the GPIO state here. We do it this way to
+-	 * avoid glitching the I2C bus.
+-	 */
+-	pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
+-
+-	return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
++	return 0;
+ }
+ 
+ static int i2c_pxa_probe(struct platform_device *dev)
+-- 
+2.25.1
 
