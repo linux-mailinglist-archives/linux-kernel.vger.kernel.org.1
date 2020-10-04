@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5796A282E52
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF80282E5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgJDXc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 19:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbgJDXc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 19:32:28 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B2B2206B6;
-        Sun,  4 Oct 2020 23:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601854348;
-        bh=YzpcxYAFA+eJp0cl8hwcxcJi+D+5TLeTPsAXUn92KwY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=t2teay/JnQ5b19qQc0wEnqJMTZHhT/onkMM/QrCtYWDQE/9PoM6eOIpF5vAwMUlRd
-         8Qi+lDP65X0DEbOm/D1CH8C7ZIeqIH85VLnsmwYPI5pHl1y2dETJdCnqun4WwvDr19
-         kL8/uAyH2U5PBJmU9hSez81fpWJHtTviQ5/GK33M=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C614035225F2; Sun,  4 Oct 2020 16:32:27 -0700 (PDT)
-Date:   Sun, 4 Oct 2020 16:32:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jon Masters <jcm@jonmasters.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: Litmus test for question from Al Viro
-Message-ID: <20201004233227.GQ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
- <20201001161529.GA251468@rowland.harvard.edu>
- <17935342-e927-284c-9a2b-ca75dd2398ad@jonmasters.org>
+        id S1725852AbgJDXjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 19:39:19 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:46928 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbgJDXjS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 19:39:18 -0400
+Received: by mail-pf1-f195.google.com with SMTP id y14so2224255pfp.13;
+        Sun, 04 Oct 2020 16:39:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i0z6tvnBKutMrc8NANVNxZ4vgDVqspXt5PjdV91Nld0=;
+        b=cghaDKIoCmc+tCUrZw5Pd5l7U1JlJghddEikRKw3N9SXlhWBsUITbQTt7XubxVGYeD
+         2wcssyKBUpjGiy/gZb/TF4qKh+qx1CTrdzbUVBR44bU4abDMCnDImWee1d4VKSvAYDwB
+         n+R7uiYecSvoNHl4KN5dLxAfYSeWTG8QP3sONiXpch68lO1fT19ZDg1bbsUIuJqT2COi
+         gbKyZoqy6wDfrTLs8xvpyjSNK/+3I5YPA7ADCAg63isknKDcLAUGkdv6uKQXfornQ6L1
+         2qcceqvlCQ2zRqy7PNgPvGNcByw3cumHvWzDuHRoW4uW/54gzSPtI+q+CUXrCHlY4Xdb
+         ncOw==
+X-Gm-Message-State: AOAM5302Zgx3TKrkJYFYQlRdu0VDlNnLjbU4NP0LPRp14WiWalIkUCPo
+        qaISOOOOaUmgCTrmGUxlm0E=
+X-Google-Smtp-Source: ABdhPJwDxjYqwd4SsWoA/szwThk1/VQI0lALPbyUXTRS6XaJ9gGayf2gFHtJoOZM9WEaaCOvTkyQ4A==
+X-Received: by 2002:a63:f006:: with SMTP id k6mr11547499pgh.88.1601854756304;
+        Sun, 04 Oct 2020 16:39:16 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id h12sm9786071pfo.68.2020.10.04.16.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Oct 2020 16:39:15 -0700 (PDT)
+Date:   Sun, 4 Oct 2020 16:39:14 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        hao.wu@intel.com, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        russell.h.weight@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH 10/10] fpga: fpga-mgr: altera-pr-ip: Simplify registration
+Message-ID: <20201004233914.GA111357@epycbox.lan>
+References: <20201004051423.75879-1-mdf@kernel.org>
+ <20201004051423.75879-11-mdf@kernel.org>
+ <a49b1d7c-9756-1059-f7a1-25dae460d659@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <17935342-e927-284c-9a2b-ca75dd2398ad@jonmasters.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a49b1d7c-9756-1059-f7a1-25dae460d659@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 10:35:45PM -0400, Jon Masters wrote:
-> On 10/1/20 12:15 PM, Alan Stern wrote:
-> > On Wed, Sep 30, 2020 at 09:51:16PM -0700, Paul E. McKenney wrote:
-> > > Hello!
-> > > 
-> > > Al Viro posted the following query:
-> > > 
-> > > ------------------------------------------------------------------------
-> > > 
-> > > <viro> fun question regarding barriers, if you have time for that
-> > > <viro>         V->A = V->B = 1;
-> > > <viro>
-> > > <viro> CPU1:
-> > > <viro>         to_free = NULL
-> > > <viro>         spin_lock(&LOCK)
-> > > <viro>         if (!smp_load_acquire(&V->B))
-> > > <viro>                 to_free = V
-> > > <viro>         V->A = 0
-> > > <viro>         spin_unlock(&LOCK)
-> > > <viro>         kfree(to_free)
-> > > <viro>
-> > > <viro> CPU2:
-> > > <viro>         to_free = V;
-> > > <viro>         if (READ_ONCE(V->A)) {
-> > > <viro>                 spin_lock(&LOCK)
-> > > <viro>                 if (V->A)
-> > > <viro>                         to_free = NULL
-> > > <viro>                 smp_store_release(&V->B, 0);
-> > > <viro>                 spin_unlock(&LOCK)
-> > > <viro>         }
-> > > <viro>         kfree(to_free);
-> > > <viro> 1) is it guaranteed that V will be freed exactly once and that
-> > > 	  no accesses to *V will happen after freeing it?
-> > > <viro> 2) do we need smp_store_release() there?  I.e. will anything
-> > > 	  break if it's replaced with plain V->B = 0?
-> > 
-> > Here are my answers to Al's questions:
-> > 
-> > 1) It is guaranteed that V will be freed exactly once.  It is not
-> > guaranteed that no accesses to *V will occur after it is freed, because
-> > the test contains a data race.  CPU1's plain "V->A = 0" write races with
-> > CPU2's READ_ONCE; if the plain write were replaced with
-> > "WRITE_ONCE(V->A, 0)" then the guarantee would hold.  Equally well,
-> > CPU1's smp_load_acquire could be replaced with a plain read while the
-> > plain write is replaced with smp_store_release.
-> > 
-> > 2) The smp_store_release in CPU2 is not needed.  Replacing it with a
-> > plain V->B = 0 will not break anything.
+On Sun, Oct 04, 2020 at 11:47:26AM -0700, Tom Rix wrote:
 > 
-> This was my interpretation also. I made the mistake of reading this right
-> before trying to go to bed the other night and ended up tweeting at Paul
-> that I'd regret it if he gave me scary dreams. Thought about it and read
-> your write up and it is still exactly how I see it.
+> On 10/3/20 10:14 PM, Moritz Fischer wrote:
+> > Simplify registration using new devm_fpga_mgr_register() API.
+> > Remove the now obsolete altera_pr_unregister() function.
+> >
+> > Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> > ---
+> >
+> > We should take another look at this, IIRC correctly the point of
+> > splitting this up into a separate driver was to make it useable by a
+> > different (pci?) driver later on.
+> >
+> > It doesn't seem like this happened, and I think we should just make this
+> > a platform driver?
+> >
+> > ---
+> >  drivers/fpga/altera-pr-ip-core-plat.c  | 10 ----------
+> >  drivers/fpga/altera-pr-ip-core.c       | 14 +-------------
+> >  include/linux/fpga/altera-pr-ip-core.h |  1 -
+> >  3 files changed, 1 insertion(+), 24 deletions(-)
+> >
+> > diff --git a/drivers/fpga/altera-pr-ip-core-plat.c b/drivers/fpga/altera-pr-ip-core-plat.c
+> > index 99b9cc0e70f0..b008a6b8d2d3 100644
+> > --- a/drivers/fpga/altera-pr-ip-core-plat.c
+> > +++ b/drivers/fpga/altera-pr-ip-core-plat.c
+> > @@ -28,15 +28,6 @@ static int alt_pr_platform_probe(struct platform_device *pdev)
+> >  	return alt_pr_register(dev, reg_base);
+> >  }
+> >  
+> > -static int alt_pr_platform_remove(struct platform_device *pdev)
+> > -{
+> > -	struct device *dev = &pdev->dev;
+> > -
+> > -	alt_pr_unregister(dev);
+> > -
+> > -	return 0;
+> > -}
+> > -
+> >  static const struct of_device_id alt_pr_of_match[] = {
+> >  	{ .compatible = "altr,a10-pr-ip", },
+> >  	{},
+> > @@ -46,7 +37,6 @@ MODULE_DEVICE_TABLE(of, alt_pr_of_match);
+> >  
+> >  static struct platform_driver alt_pr_platform_driver = {
+> >  	.probe = alt_pr_platform_probe,
+> > -	.remove = alt_pr_platform_remove,
+> >  	.driver = {
+> >  		.name	= "alt_a10_pr_ip",
+> >  		.of_match_table = alt_pr_of_match,
+> > diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera-pr-ip-core.c
+> > index 2cf25fd5e897..dfdf21ed34c4 100644
+> > --- a/drivers/fpga/altera-pr-ip-core.c
+> > +++ b/drivers/fpga/altera-pr-ip-core.c
+> > @@ -195,22 +195,10 @@ int alt_pr_register(struct device *dev, void __iomem *reg_base)
+> >  	if (!mgr)
+> >  		return -ENOMEM;
+> >  
+> > -	dev_set_drvdata(dev, mgr);
+> > -
+> > -	return fpga_mgr_register(mgr);
+> > +	return devm_fpga_mgr_register(dev, mgr);
+> >  }
+> >  EXPORT_SYMBOL_GPL(alt_pr_register);
+> >  
+> > -void alt_pr_unregister(struct device *dev)
+> > -{
+> > -	struct fpga_manager *mgr = dev_get_drvdata(dev);
+> > -
+> > -	dev_dbg(dev, "%s\n", __func__);
+> > -
+> > -	fpga_mgr_unregister(mgr);
+> > -}
+> > -EXPORT_SYMBOL_GPL(alt_pr_unregister);
+> 
+> Similar to the others, except for removing this symbol.
+> 
+> A patch should do one logical thing.
 
-Should I have added a "read at your own risk" disclaimer?  ;-)
+I was on the fence with this. Tbh, this driver should be a platform
+driver. I'll create a separate series for that.
 
-							Thanx, Paul
+> 
+> I'd rather this be split out of the patchset.
+> 
+> Tom
+> 
+> > -
+> >  MODULE_AUTHOR("Matthew Gerlach <matthew.gerlach@linux.intel.com>");
+> >  MODULE_DESCRIPTION("Altera Partial Reconfiguration IP Core");
+> >  MODULE_LICENSE("GPL v2");
+> > diff --git a/include/linux/fpga/altera-pr-ip-core.h b/include/linux/fpga/altera-pr-ip-core.h
+> > index 0b08ac20ab16..a6b4c07858cc 100644
+> > --- a/include/linux/fpga/altera-pr-ip-core.h
+> > +++ b/include/linux/fpga/altera-pr-ip-core.h
+> > @@ -13,6 +13,5 @@
+> >  #include <linux/io.h>
+> >  
+> >  int alt_pr_register(struct device *dev, void __iomem *reg_base);
+> > -void alt_pr_unregister(struct device *dev);
+> >  
+> >  #endif /* _ALT_PR_IP_CORE_H */
+> 
+
+Cheers,
+Moritz
