@@ -2,146 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76F4282857
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 05:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B00282859
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 05:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgJDDO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 23:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
+        id S1726348AbgJDDZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 23:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgJDDO4 (ORCPT
+        with ESMTP id S1726226AbgJDDZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 23:14:56 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EE4C0613E9
-        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 20:14:55 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id o9so3380943pgi.2
-        for <linux-kernel@vger.kernel.org>; Sat, 03 Oct 2020 20:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to;
-        bh=LhQBM6coR58Co/ZAPA0BFc3M4Mk5vH1MxVZJV9ls2vA=;
-        b=bAzh9QPy/8+oA04boCqNdkX9voAP/+Gg756k4vP8HjMlDBZ2nMYJSINilK52c1NBez
-         q31UZmbwzvjug2Q0mmo/iOB0pErHbhLKpnX7RpVvOUjq+adQfQHjzgPFvaNwzE8USvMZ
-         Guh8IPPr51x8M9+F6QYQjsbzHNOjGopcZaSZaur+vqIN53nJWpTlwkj73EXl9dcvbrTG
-         eqquSXE5F0qaVh8hIOxHPuOP7hhHirFxcXaWA7ovnvMdC3D1O8KhQUoLKFZhasL2iKtC
-         0WBHitfyKkreWL0ePFIGykj+vZuGJRaN8kvVoh3CneyY8Puw69/q9TcplQdVm9mMAqEa
-         InTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to;
-        bh=LhQBM6coR58Co/ZAPA0BFc3M4Mk5vH1MxVZJV9ls2vA=;
-        b=TLiDO//1ifvT/yMQQr7BTJVykiFZYFJS/DYaxnQLei7pdvtLo2S0PNZCvFfGAYeWWx
-         8INrhfqOl6i8nBkemjdlmWJ0p95RyHh95k/k325d6e8WBE/vUjxJVfc/tXN5yInRBy6e
-         KbRSxk5UPrzBVqf0XKc6vhDqOMz0dac666ZapwoyvDVLNc46G6VWHqTQbaLyxyMWaFdK
-         +FJDra5q5N89gl+LcwyonxFnmLUWNiLwUxotIVKk8n2prg1QHYBxl1c0GFfKuXX330G8
-         eNC90ZS+UnFzaD+3aMRisvWh6xay5+SbxJcdV/w+NFkmdNIV8OePFRQUc8rDQQ/6OnKp
-         TZnw==
-X-Gm-Message-State: AOAM533mWii6c6cM+vINiaZpaf4Ke5CzoGvRPxpmfe+EK+tCm2w02l2G
-        NmKtia5AruOVNvi0CviqiPHOzItrOpWUVk87
-X-Google-Smtp-Source: ABdhPJwzzMxNDTk6r9V6wNabUs9CJ15rB1Am55ZHxJYf8iqp+g/GkSnAUj9Ajd4XZxCWHO/XflZpBBlIIstATRSz
-Sender: "linchuyuan via sendgmr" <linchuyuan@chu-dev.c.googlers.com>
-X-Received: from chu-dev.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:3cfb])
- (user=linchuyuan job=sendgmr) by 2002:a17:90a:990c:: with SMTP id
- b12mr233850pjp.0.1601781294305; Sat, 03 Oct 2020 20:14:54 -0700 (PDT)
-Date:   Sun,  4 Oct 2020 03:14:45 +0000
-In-Reply-To: <20201004031445.2321090-1-linchuyuan@google.com>
-Message-Id: <20201004031445.2321090-3-linchuyuan@google.com>
-Mime-Version: 1.0
-References: <20201004031445.2321090-1-linchuyuan@google.com>
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v4 2/2] hwmon: pmbus: max20730: adjust the vout reading given
- voltage divider
-From:   Chu Lin <linchuyuan@google.com>
-To:     linchuyuan@google.com, jdelvare@suse.com, linux@roeck-us.net,
-        robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 3 Oct 2020 23:25:47 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FE2C0613D0
+        for <linux-kernel@vger.kernel.org>; Sat,  3 Oct 2020 20:25:47 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id B9B1027ED16
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     luto@kernel.org, tglx@linutronix.de
+Cc:     hch@lst.de, hpa@zytor.com, bp@alien8.de, rric@kernel.org,
+        peterz@infradead.org, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
+        sean.j.christopherson@intel.com,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v3 00/10] Reclaim TIF_IA32 and TIF_X32
+Date:   Sat,  3 Oct 2020 23:25:26 -0400
+Message-Id: <20201004032536.1229030-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
-We use voltage dividers so that the voltage presented at the voltage
-sense pins is confusing. We might need to convert these readings to more
-meaningful readings given the voltage divider.
+This is the third version of the patch to reclaim those TI flags.  The
+main difference from v2 is that it exports the elf32 headers in the
+macros in a proper way, instead of doing some magic to use them.
 
-Solution:
-Read the voltage divider resistance from dts and convert the voltage
-reading to a more meaningful reading.
+Andy, I didn't follow (my understanding of) your suggestion to expose
+the elf32 headers because by doing that in compat_start_thread would
+mean also doing it in start_thread, but the later is not ELF specific.
+The mechanism I used, which solves the issue and I hope is not
+over-complex is the same that SET_PERSONALITY does, so there is
+precedent.  It also has the benefit that we don't need to touch other
+architecture functions.  Do you think in this patch series is fine?
 
-Testing:
-max20730 with voltage divider
+This also drops the vmx patch, since that is being reworked by Sean and
+Andy, and my patch doesn't change its behavior.
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
----
-ChangeLog v1 -> v2
-  hwmon: pmbus: max20730:
-  - Don't do anything to the ret if an error is returned from pmbus_read_word
-  - avoid overflow when doing multiplication
+* original cover letter:
 
-ChangeLog v2 -> v3
-  dt-bindings: hwmon: max20730:
-  - Provide the binding documentation in yaml format
-  hwmon: pmbus: max20730:
-  - No change
+We are running out of TI flags for x86.  This patchset removes several
+usages of TIF_IA32 and TIF_x32 in preparation to reclaim these flags.
+After these cleanups, there is still one more user for both of them,
+which I need to take a better look before removing.
 
-ChangeLog v3 -> v4
-  dt-bindings: hwmon: max20730:
-  - Fix highefficiency to high efficiency in description
-  - Fix presents to present in vout-voltage-divider
-  - Add additionalProperties: false
-  hwmon: pmbus: max20730:
-  - No change
+Many of the ideas for this patchset came from Andy Lutomirski (Thank
+you!)
 
- drivers/hwmon/pmbus/max20730.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+These were tested by exercising these paths with x32 and ia32 binaries.
 
-diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-index a151a2b588a5..fbf2f1e6c969 100644
---- a/drivers/hwmon/pmbus/max20730.c
-+++ b/drivers/hwmon/pmbus/max20730.c
-@@ -31,6 +31,7 @@ struct max20730_data {
- 	struct pmbus_driver_info info;
- 	struct mutex lock;	/* Used to protect against parallel writes */
- 	u16 mfr_devset1;
-+	u32 vout_voltage_divider[2];
- };
- 
- #define to_max20730_data(x)  container_of(x, struct max20730_data, info)
-@@ -114,6 +115,14 @@ static int max20730_read_word_data(struct i2c_client *client, int page,
- 		max_c = max_current[data->id][(data->mfr_devset1 >> 5) & 0x3];
- 		ret = val_to_direct(max_c, PSC_CURRENT_OUT, info);
- 		break;
-+	case PMBUS_READ_VOUT:
-+		ret = pmbus_read_word_data(client, page, phase, reg);
-+		if (ret > 0 && data->vout_voltage_divider[0] && data->vout_voltage_divider[1]) {
-+			u64 temp = DIV_ROUND_CLOSEST_ULL((u64)ret * data->vout_voltage_divider[1],
-+							 data->vout_voltage_divider[0]);
-+			ret = clamp_val(temp, 0, 0xffff);
-+		}
-+		break;
- 	default:
- 		ret = -ENODATA;
- 		break;
-@@ -364,6 +373,15 @@ static int max20730_probe(struct i2c_client *client,
- 	data->id = chip_id;
- 	mutex_init(&data->lock);
- 	memcpy(&data->info, &max20730_info[chip_id], sizeof(data->info));
-+	if (of_property_read_u32_array(client->dev.of_node, "vout-voltage-divider",
-+				       data->vout_voltage_divider,
-+				       ARRAY_SIZE(data->vout_voltage_divider)) != 0)
-+		memset(data->vout_voltage_divider, 0, sizeof(data->vout_voltage_divider));
-+	if (data->vout_voltage_divider[1] < data->vout_voltage_divider[0]) {
-+		dev_err(dev,
-+			"The total resistance of voltage divider is less than output resistance\n");
-+		return -ENODEV;
-+	}
- 
- 	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_DEVSET1);
- 	if (ret < 0)
+Gabriel Krisman Bertazi (10):
+  x86: events: Avoid TIF_IA32 when checking 64bit mode
+  x86: Simplify compat syscall userspace allocation
+  x86: oprofile: Avoid TIF_IA32 when checking 64bit mode
+  x86: elf: Use e_machine to choose DLINFO in compat
+  elf: Expose ELF header in compat_start_thread
+  x86: elf: Use e_machine to select start_thread for x32
+  elf: Expose ELF header on arch_setup_additional_pages
+  x86: elf: Use e_machine to select additional_pages between x32
+  x86: Convert mmu context ia32_compat into a proper flags field
+  x86: Reclaim TIF_IA32 and TIF_X32
+
+ arch/x86/entry/vdso/vma.c             |  4 ++--
+ arch/x86/entry/vsyscall/vsyscall_64.c |  2 +-
+ arch/x86/events/core.c                |  2 +-
+ arch/x86/events/intel/ds.c            |  2 +-
+ arch/x86/events/intel/lbr.c           |  2 +-
+ arch/x86/include/asm/compat.h         | 15 +++++++-------
+ arch/x86/include/asm/elf.h            | 13 ++++++++-----
+ arch/x86/include/asm/mmu.h            |  6 ++++--
+ arch/x86/include/asm/mmu_context.h    |  2 +-
+ arch/x86/include/asm/thread_info.h    |  4 ----
+ arch/x86/kernel/perf_regs.c           |  2 +-
+ arch/x86/kernel/process_64.c          | 28 +++++++++++++--------------
+ arch/x86/oprofile/backtrace.c         |  2 +-
+ fs/binfmt_elf.c                       |  4 ++--
+ fs/compat_binfmt_elf.c                | 20 ++++++++++++++-----
+ include/linux/elf.h                   | 10 ++++++++++
+ 16 files changed, 68 insertions(+), 50 deletions(-)
+
 -- 
-2.28.0.806.g8561365e88-goog
+2.28.0
 
