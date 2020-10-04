@@ -2,84 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFC028286E
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 05:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4490C282874
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 05:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgJDDjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 23:39:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35212 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726263AbgJDDjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 23:39:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 491A0AC54;
-        Sun,  4 Oct 2020 03:39:01 +0000 (UTC)
-Subject: Re: [PATCH v10 0/7] Introduce sendpage_ok() to detect misused
- sendpage in network related drivers
-To:     David Miller <davem@davemloft.net>
-Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
-        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chaitanya.kulkarni@wdc.com,
-        cleech@redhat.com, hch@lst.de, amwang@redhat.com,
-        eric.dumazet@gmail.com, hare@suse.de, idryomov@gmail.com,
-        jack@suse.com, jlayton@kernel.org, axboe@kernel.dk,
-        lduncan@suse.com, michaelc@cs.wisc.edu,
-        mskorzhinskiy@solarflare.com, philipp.reisner@linbit.com,
-        sagi@grimberg.me, vvs@virtuozzo.com, vbabka@suse.com
-References: <20201002082734.13925-1-colyli@suse.de>
- <20201002.152829.1002796270145913943.davem@davemloft.net>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Message-ID: <e4482d6a-ee44-04e4-42d0-bb9ab6fc23c7@suse.de>
-Date:   Sun, 4 Oct 2020 11:38:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+        id S1726469AbgJDDwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 23:52:21 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56229 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726296AbgJDDwV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 3 Oct 2020 23:52:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UArvYLs_1601783536;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UArvYLs_1601783536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 04 Oct 2020 11:52:17 +0800
+Subject: Re: [PATCH] ocfs2: ratelimit the 'max lookup times reached' notice
+To:     Mauricio Faria de Oliveira <mfo@canonical.com>,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com
+Cc:     Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>
+References: <20201001224417.478263-1-mfo@canonical.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <85ab91b4-00c3-ce0f-2848-a19464337a56@linux.alibaba.com>
+Date:   Sun, 4 Oct 2020 11:52:16 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201002.152829.1002796270145913943.davem@davemloft.net>
+In-Reply-To: <20201001224417.478263-1-mfo@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -87,82 +35,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/10/3 06:28, David Miller wrote:
-> From: Coly Li <colyli@suse.de>
-> Date: Fri,  2 Oct 2020 16:27:27 +0800
+
+
+On 2020/10/2 06:44, Mauricio Faria de Oliveira wrote:
+> Running stress-ng on ocfs2 completely fills the kernel log with
+> 'max lookup times reached, filesystem may have nested directories.'
 > 
->> As Sagi Grimberg suggested, the original fix is refind to a more common
->> inline routine:
->>     static inline bool sendpage_ok(struct page *page)
->>     {
->>         return  (!PageSlab(page) && page_count(page) >= 1);
->>     }
->> If sendpage_ok() returns true, the checking page can be handled by the
->> concrete zero-copy sendpage method in network layer.
+> Let's ratelimit this message as done with others in the code.
 > 
-> Series applied.
+> Test-case:
 > 
->> The v10 series has 7 patches, fixes a WARN_ONCE() usage from v9 series,
->  ...
+>   # mkfs.ocfs2 --mount local $DEV
+>   # mount $DEV $MNT
+>   # cd $MNT
 > 
-> I still haven't heard from you how such a fundamental build failure
-> was even possible.
+>   # dmesg -C
+>   # stress-ng --dirdeep 1 --dirdeep-ops 1000
+>   # dmesg | grep -c 'max lookup times reached'
 > 
-
-Hi David,
-
-Here is the detail steps how I leaked this uncompleted patch to you,
-1) Add WARN_ONCE() as WARN_ON() to kernel_sendpage(). Maybe I was still
-hesitating when I typed WARN_ONCE() on keyboard.
-2) Generate the patches, prepare to post
-3) Hmm, compiling failed, oh it is WARN_ONCE(). Yeah, WARN_ONCE() might
-be more informative and better.
-4) Modify to use WARN_ONCE() and compile and try, looks fine.
-5) Re-generate the patches to overwrite the previous ones.
-6) Post the patches.
-
-The missing part was, before I post the patches, I should do rebase and
-commit the change, but (interrupted by other stuffs) it skipped in my
-mind. Although I regenerated the series but the change was not included.
-The result was, uncompleted patch posted and the second-half change
-still stayed in my local file.
-
-
-> If the v9 patch series did not even compile, how in the world did you
-> perform functional testing of these changes?
+> Before:
 > 
+>   # dmesg -C
+>   # stress-ng --dirdeep 1 --dirdeep-ops 1000
+>   ...
+>   stress-ng: info:  [11116] successful run completed in 3.03s
+> 
+>   # dmesg | grep -c 'max lookup times reached'
+>   967
+> 
+> After:
+> 
+>   # dmesg -C
+>   # stress-ng --dirdeep 1 --dirdeep-ops 1000
+>   ...
+>   stress-ng: info:  [739] successful run completed in 0.96s
+> 
+>   # dmesg | grep -c 'max lookup times reached'
+>   10
+> 
+>   # dmesg
+>   [  259.086086] ocfs2_check_if_ancestor: 1990 callbacks suppressed
+>   [  259.086092] (stress-ng-dirde,740,1):ocfs2_check_if_ancestor:1091 max lookup times reached, filesystem may have nested directories, src inode: 18007, dest inode: 17940.
+>   ...
+> 
+> Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
 
-Only 0002-net-add-WARN_ONCE-in-kernel_sendpage-for-improper-ze.patch was
-tested in v9 series, other tests were done in previous versions.
+Looks good to me.
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 
-> Please explain this to me, instead of just quietly fixing it and
-> posting an updated series.
-
-
-And not all the patches in the series were tested. Here is the testing
-coverage of the series:
-
-The following ones were tested and verified to break nothing and avoid
-the mm corruption and panic,
-0001-net-introduce-helper-sendpage_ok-in-include-linux-ne.patch
-0002-net-add-WARN_ONCE-in-kernel_sendpage-for-improper-ze.patch
-0003-nvme-tcp-check-page-by-sendpage_ok-before-calling-ke.patch
-0006-scsi-libiscsi-use-sendpage_ok-in-iscsi_tcp_segment_m.patch
-
-The following ones were not tested, due to complicated environment setup,
-0005-drbd-code-cleanup-by-using-sendpage_ok-to-check-page.patch
-0007-libceph-use-sendpage_ok-in-ceph_tcp_sendpage.patch
-
-This patch I didn't explicitly test, due to lack of knowledge to modify
-network code to trigger a buggy condition. It just went with other
-tested patches,
-0004-tcp-use-sendpage_ok-to-detect-misused-.sendpage.patch
-
-
-Back to the built failure, I don't have excuse for leaking this
-uncompleted version to you. Of cause I will try to avoid to
-inefficiently occupy maintainer's time by such silly mess up.
-
-Thanks for your review and the thorough maintenance.
-
-Coly Li
+> ---
+>  fs/ocfs2/namei.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+> index 3c908e9416af..0043eddabdb8 100644
+> --- a/fs/ocfs2/namei.c
+> +++ b/fs/ocfs2/namei.c
+> @@ -1095,8 +1095,8 @@ static int ocfs2_check_if_ancestor(struct ocfs2_super *osb,
+>  		child_inode_no = parent_inode_no;
+>  
+>  		if (++i >= MAX_LOOKUP_TIMES) {
+> -			mlog(ML_NOTICE, "max lookup times reached, filesystem "
+> -					"may have nested directories, "
+> +			mlog_ratelimited(ML_NOTICE, "max lookup times reached, "
+> +					"filesystem may have nested directories, "
+>  					"src inode: %llu, dest inode: %llu.\n",
+>  					(unsigned long long)src_inode_no,
+>  					(unsigned long long)dest_inode_no);
+> 
