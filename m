@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B01B282934
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCB8282939
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725866AbgJDGij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 02:38:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50463 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgJDGij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 02:38:39 -0400
-IronPort-SDR: oRkwN+tksBQpBG3gpnd9M1QRPwcYPWC/+Hlq/ricmBeU+ZYcweNWw4uExoto5WKwZK0NseLBZZ
- qMcF833tkoXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9763"; a="150898396"
-X-IronPort-AV: E=Sophos;i="5.77,334,1596524400"; 
-   d="scan'208";a="150898396"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2020 23:38:34 -0700
-IronPort-SDR: EIqaZYua/mXODrDO2YZWX+rDJErjwmrYUpwAUumB7CXC5SFCkeoTcnPNTy0qLmGdVpVTHb0jOs
- t3o05X+7hOnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,334,1596524400"; 
-   d="scan'208";a="295760758"
-Received: from lkp-server02.sh.intel.com (HELO b5ae2f167493) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Oct 2020 23:38:32 -0700
-Received: from kbuild by b5ae2f167493 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kOxfD-0000Mc-Ch; Sun, 04 Oct 2020 06:38:31 +0000
-Date:   Sun, 4 Oct 2020 14:37:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc:     kbuild-all@lists.01.org, linux-hwmon@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: fix ptr_ret.cocci warnings
-Message-ID: <20201004063755.GA47627@fe6c56ecaa6d>
-References: <202010041453.4f94XEJB-lkp@intel.com>
+        id S1725863AbgJDGm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 02:42:59 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12504 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgJDGm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 02:42:59 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f796ee60000>; Sat, 03 Oct 2020 23:42:46 -0700
+Received: from [10.21.180.76] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 4 Oct
+ 2020 06:42:50 +0000
+Subject: Re: [PATCH net-next 03/16] devlink: Add devlink reload limit option
+To:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-4-git-send-email-moshe@mellanox.com>
+ <20201003075100.GC3159@nanopsycho.orion>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <f91809cf-268d-64de-8a19-12305a3c11e0@nvidia.com>
+Date:   Sun, 4 Oct 2020 09:42:47 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202010041453.4f94XEJB-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201003075100.GC3159@nanopsycho.orion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601793766; bh=3f7ocMFDJGTXvJfoe+Ta4bX4ElhSzZUOdZHzS8aX3YE=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=keJ8HCRa6vbiWsfMsxMl8G3Qnll75cRUj+ASpcGL6P8MZzA/K9AbRPLZJn8TR39VS
+         wtDidiGt9ZBDDthhw/sG7ehpYCk4CjUqRLvV62qB0zw/E+Pr2VttE0AFaItLw00Mlk
+         vc1nSHQZ0hL97msUeh5/qPg37Ouie5lbVMS3kHbCkr5jLnBvrcK5VwZj84rK09DHrP
+         IMBeNpF98frICHzfBAo0troXigwmrFdlqyBWnKuNcGOerHiToP1cdfcZKYfDsiKIEF
+         xyCYQJvP1qzsPv9RsbCRUQWUUYkR9CYCQoNvCM0q3UD4JyslkQRjdB++WLGGmV+wkw
+         J8R9Xkn20RaQw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
 
-drivers/hwmon/amd_energy.c:302:1-3: WARNING: PTR_ERR_OR_ZERO can be used
+On 10/3/2020 10:51 AM, Jiri Pirko wrote:
+> Thu, Oct 01, 2020 at 03:59:06PM CEST, moshe@mellanox.com wrote:
+>
+> [...]
+>
+>> enum devlink_attr {
+>> 	/* don't change the order or add anything between, this is ABI! */
+>> 	DEVLINK_ATTR_UNSPEC,
+>> @@ -507,6 +524,7 @@ enum devlink_attr {
+>>
+>> 	DEVLINK_ATTR_RELOAD_ACTION,		/* u8 */
+>> 	DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,	/* u64 */
+>> +	DEVLINK_ATTR_RELOAD_LIMIT,	/* u8 */
+> Hmm, why there could be specified only single "limit"? I believe this
+> should be a bitfield. Same for the internal api to the driver.
 
 
- Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+Why bitfield ? Either the user asks for a specific limit or he doesn't 
+ask for any (unspecified).
 
-Generated by: scripts/coccinelle/api/ptr_ret.cocci
+If the user doesn't need limitation he will not specify a limit.
 
-Fixes: 911766432fd2 ("hwmon: (amd_energy) Improve the accumulation logic")
-CC: Naveen Krishna Chatradhi <nchatrad@amd.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-head:   78a28192e301da58ac408f2e98fa30aebafbfda0
-commit: 911766432fd2a6054d9813845ad3f48120bd649c [45/55] hwmon: (amd_energy) Improve the accumulation logic
-
- amd_energy.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
---- a/drivers/hwmon/amd_energy.c
-+++ b/drivers/hwmon/amd_energy.c
-@@ -299,10 +299,7 @@ static int amd_energy_probe(struct platf
- 
- 	data->wrap_accumulate = kthread_run(energy_accumulator, data,
- 					    "%s", dev_name(hwmon_dev));
--	if (IS_ERR(data->wrap_accumulate))
--		return PTR_ERR(data->wrap_accumulate);
--
--	return 0;
-+	return PTR_ERR_OR_ZERO(data->wrap_accumulate);
- }
- 
- static int amd_energy_remove(struct platform_device *pdev)
+> [...]
