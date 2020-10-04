@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E6B28A1D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Oct 2020 00:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0C0282C72
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 20:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbgJJWZF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Oct 2020 18:25:05 -0400
-Received: from jeimail.com ([121.170.180.13]:10376 "HELO jei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with SMTP
-        id S1730241AbgJJSr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Oct 2020 14:47:28 -0400
-X-Greylist: delayed 582 seconds by postgrey-1.27 at vger.kernel.org; Sat, 10 Oct 2020 14:47:27 EDT
-x-beehive-trace: aljawal@netvision.net.il linux-kernel@vger.kernel.org 197.234.219.39
-Received: from netvision.net.il
-        by vger.kernel.org with ESMTP (Beehive_jei.com) 
-        for linux-kernel@vger.kernel.org; Mon, 5 Oct 2020 03:15:01 +0900 (KST)
-x-beehive-kind: normal
-x-beehive-modified: received kind
-Reply-To: mrarmand.agbo@gmail.com
-From:   Armand Agbo <aljawal@netvision.net.il>
-To:     linux-kernel@vger.kernel.org
-Subject: De Mr Armand AGBO(Demande de Partenariat)
-Date:   04 Oct 2020 19:14:51 +0100
-Message-ID: <20201004191451.5714FB09877F1714@netvision.net.il>
+        id S1726317AbgJDSP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 14:15:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726085AbgJDSP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 4 Oct 2020 14:15:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601835356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mrSe+vZS53bNuwy2q7zYrWnCsVjNNKWA2YIO62AZBM0=;
+        b=B8voeDro2xW2yUh1rBtjOhMbKQhdECSYVmw5AENeBIzzmZjsfvPdJKJmpD0tRCbVqw4Yhz
+        RBtErKe2WvnsGoJTiLnvxeWVNCGJcFCuvGw1lAuQYTFBmLlzzAripJ9jTVMmC47qB8nEmo
+        cEXnjUZRpasluUASWSWPLfqpW/tKf84=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-lLoJOvajNIe9PLjMvsNM9A-1; Sun, 04 Oct 2020 14:15:55 -0400
+X-MC-Unique: lLoJOvajNIe9PLjMvsNM9A-1
+Received: by mail-qv1-f69.google.com with SMTP id h9so4444993qvr.3
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 11:15:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=mrSe+vZS53bNuwy2q7zYrWnCsVjNNKWA2YIO62AZBM0=;
+        b=LKcNS2AgaphMoZLZDwb5RqFdCxHiNPLGtkOL1fC3WrCVZ+RpN6pUwJ+Q7BqJubW8ib
+         B6elZKnOibZGEsCGJSTJpU+WFxDdvIWlAY8FNjFE4URkfyN7prLy0r+h86nXLeP8KHVc
+         b/UG3U+bfhosaudpjTkigkH0tjrJkn4TEFB41+IaZm8NG4OnSPvy6smHwSSoPAdKL2gR
+         khmyO48fxgcA8+MqFBwipvue5pY4DzpvjdWr5CNBzfUag2MTWz+ywb1usHtvGWNoq5IC
+         jgKJxS+ip4aN6LGRvQGsTpxJQRaL1zeyMUD4IloV+QAATB7NjXACqzXYTvzugRmua1bf
+         jIqA==
+X-Gm-Message-State: AOAM531qku6MVZhfa4frGjEZSSnhRhMPJJ++6H9flt6UE5VdY0fF/zOa
+        oTP6as4eCtIF02FYxUbJEbcJXKBkImr/vgkyfJSPkyX0Bq9CBVqhAPO7c6oabGdSVk2+GNbhV2B
+        DIOXScRIRvFZJqRMg8AHHdw2O
+X-Received: by 2002:a0c:ac44:: with SMTP id m4mr3186866qvb.50.1601835354673;
+        Sun, 04 Oct 2020 11:15:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVUr6M1R/Z6CyNz7FvpTQCknO+UlcbpcaFLyqCNcLT81JWrrTWR76EUxBVmoCbS2nhohE6gA==
+X-Received: by 2002:a0c:ac44:: with SMTP id m4mr3186853qvb.50.1601835354525;
+        Sun, 04 Oct 2020 11:15:54 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f12sm5760340qti.70.2020.10.04.11.15.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 11:15:53 -0700 (PDT)
+Subject: Re: [PATCH 02/10] fpga: fpga-mgr: altera-ps-spi: Simplify
+ registration
+To:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org
+Cc:     hao.wu@intel.com, michal.simek@xilinx.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        russell.h.weight@intel.com, matthew.gerlach@intel.com
+References: <20201004051423.75879-1-mdf@kernel.org>
+ <20201004051423.75879-3-mdf@kernel.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <828731c3-04ca-7c44-7686-863027993d55@redhat.com>
+Date:   Sun, 4 Oct 2020 11:15:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201004051423.75879-3-mdf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-De Mr Armand AGBO
 
-Je suis Mr Armand AGBO de nationalité béninoise, gestionnaire de 
-compte dans une institution bancaire. Je vous prie de m'excuser 
-pour cette intrusion inattendue de ma part car c'est suite à une 
-recherche via internet que j'ai trouvé votre contact et après 
-avoir parcouru votre profil, je suis convaincu que vous serez 
-mieux placé pour exécuter cette transaction commerciale avec moi.
+On 10/3/20 10:14 PM, Moritz Fischer wrote:
+> Simplify registration by using new devm_fpga_mgr_register() API.
+>
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> ---
+>  drivers/fpga/altera-ps-spi.c | 14 +-------------
+>  1 file changed, 1 insertion(+), 13 deletions(-)
 
-En effet, ceci concerne l’un de nos clients qui est décédé depuis 
-près de 5 ans et qui dispose un compte sans successeur ni 
-mandataire mentionné dans les fichiers ni dans les archives. Je 
-viens donc par ce message vous solliciter pour un partenariat 
-comme suit : Ce compte est actuellement inactif et est bloqué 
-mais c’est un compte physique lié à un compte en ligne. Je tiens 
-à avoir votre accord de collaboration afin d’inscrire votre nom 
-en tant que bénéficiaire de succession au codicille et dernier 
-testament de ce dernier dans nos fichiers et archives.
+Looks fine
 
-Cette transaction est 100% sans risque seulement une confiance 
-mutuelle car tous les documents juridiques qui seront utilisés 
-pour traiter ce dossier seront traités par moi, dans votre 
-acceptation de coopérer avec moi sur cette affaire. 
-
-Veuillez me faire parvenir votre lettre d'acceptation pour me 
-permettre de commencer à vous procurer tous les documents 
-juridiques pour la libération de ses fonds. Voici mon adresse e-
-mail personnelle: mrarmand.agbo@gmail.com
-
-Cordialement …
-Mr AGBO A
-
+Reviewed-by: Tom Rix <trix@redhat.com>
 
