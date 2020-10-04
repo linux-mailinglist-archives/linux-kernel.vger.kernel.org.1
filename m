@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4565282B62
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC4D282B69
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgJDPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 11:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S1726005AbgJDPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 11:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDPWh (ORCPT
+        with ESMTP id S1725825AbgJDPZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 11:22:37 -0400
+        Sun, 4 Oct 2020 11:25:37 -0400
 Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17490C0613CE;
-        Sun,  4 Oct 2020 08:22:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d6so4827938pfn.9;
-        Sun, 04 Oct 2020 08:22:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB3AC0613CE;
+        Sun,  4 Oct 2020 08:25:35 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y14so1588447pfp.13;
+        Sun, 04 Oct 2020 08:25:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pvroqbRx5SZxuMfn0fG0rh4X/fjh+1NFwkBq33dVcTw=;
-        b=teHOIbjDcZXuU0nUYWE4sWIOTDMmcgFzJolY1eVD1IqXtyQGdwIYNkjY5LSvLBVIfQ
-         9xxL8xeL637nIbZ2soBH425Zyrm4sU9FuhZMB4wdNDMQaoDob+lX8MkI2kSoz9p1hScT
-         KIwaDC4pX77y3n1Z2TRwd+4tktfnuc/DzrrdWiOhsEtFgyEBxZYDclGkWs4cRWplRCZP
-         9Vyu1dM+Mh3zXcKjk/zSS2tesdI4heh9I0LEwjW7h2Yhp08ei+jQRkRTcv4xAwjrVqft
-         CqXwd6MM8zutCWlCX3HPTxOTFA+63brlP0Q8LeDKYgQy3N89QbWpN8eu8bqJL+Gq+iaN
-         JxPw==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=61Y9XXa32aHa2HBH5bKa29Ys7Tpne59ThWARVK1VO5M=;
+        b=S/9vKvvNgK6Nw/O7vNDqpFYfPPRkGTRDHFm4Liv+pjE8n0McxtM9JKVieg6pvxyIAI
+         mg2fO1mmY3MaVzzQwu4WqZ8mHX3GFbPM9mLSsGaAayWu+euQzELw7Lg5wFPRibD6J0Bv
+         2zvSAWMfueSWaXeGuMNizP2MYcHzbtd046vnj09llBpIek/rJwpSYo5jcIAE/aHxky0V
+         sYrkKDCldPUTyGrlM4JU7MrrCpLxZizijbdNcZGehttMA58KX+sPtAPCKZN3GD125TCk
+         eWoh9RIVtDQYtV1hIiCSo6IacX0rLxYHbfHyhvnYj4ER3YFsZdKF7op6o3PhBum4dLDm
+         GE9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pvroqbRx5SZxuMfn0fG0rh4X/fjh+1NFwkBq33dVcTw=;
-        b=Sx9NsFSyjz7pxxUZQe/YK3eAcYlFguMeF90/JtURb6rlMlvOn2dLyWA6DAZ4Af+eSW
-         fd3v4Nq+XMs/ok//DVx7OUrdii+l3c5vhwCrIqzZlwH3Q2Oav4ouWDdMsgjOTM4T5z9M
-         GPrG0Q1xPJJWeiRgQIsjwEdKioxhu1sKithfGfH/tMhBD/TdLpMEILdiy56JxRDpFCYw
-         rhnfKAHMjhOyC4ZU/Ngd3xtvosnXXlLPuxysL2/3MjcRa2oFuAp50Vvrhb7qlP+AtL6S
-         8Osh1MQoCgvsjUgErl/bD7PcSd1C3UJ4wZHErkV4sRCjankWQzVYoOXNdmCd9WTaNLeK
-         IkbQ==
-X-Gm-Message-State: AOAM533Cg+kqJGudytaO//q4pzYa+n/A0sfaRZ4igCYgpWPLM0tlgB8S
-        IrupTUZivuUPDoOqt9GIJ3E=
-X-Google-Smtp-Source: ABdhPJxlmLJZr5oGfYIiPaxKycigStTVDD38XMWUV8QGirPUEWNx0KNkJOZKmxNloM2OnZcTwZ2hgQ==
-X-Received: by 2002:a63:a546:: with SMTP id r6mr10326072pgu.160.1601824955325;
-        Sun, 04 Oct 2020 08:22:35 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id c12sm9156251pfj.164.2020.10.04.08.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 08:22:34 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sun, 4 Oct 2020 23:22:30 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] staging: qlge: fix build breakage with dumping enabled
-Message-ID: <20201004152230.s2kxna2jl2uzlink@Rk>
-References: <20201002235941.77062-1-coiby.xu@gmail.com>
- <20201003055348.GA100061@f3>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=61Y9XXa32aHa2HBH5bKa29Ys7Tpne59ThWARVK1VO5M=;
+        b=Hd9RrEcIcQWYzhM6Ht++VUFKWDMkPS/sewc8IQ+eO0ouADznPl7/15oJBwE33jb/Sh
+         fJ+Od29OKWzkTC+Fb588xcr9JmuiKYJbBMQG38W3OOlertMM04/Psvb2wfEwwZUrLRaN
+         Gg2Qc9kJOIJ//4g++BHh5wKek4b+7O80z9wv7ys446/4TXfnuVfuYHGq2sLfIxPjyxNq
+         X7CIkTVLO+jMZEax1Ks3Z8Rm2Kw49RAMUuLgVCYLy/da/FSib6b2hwapS12hoAB9joN3
+         o4bEOXBQ2h7eliufYm0nffOgybokaxlaQ6OkJ+kqDDvCW+SD5TVxftsTMpU2BgqFa8tl
+         Tlfg==
+X-Gm-Message-State: AOAM532IiXAZA2azZb5IfN2eqS/g7mtOiInD0HGbP/0TDubK99UnYJa7
+        bsW81MFz5Lv38QlSsJ8O8LmSuC/e48n3Q4Ho2OY=
+X-Google-Smtp-Source: ABdhPJx97wWLfx3WjXcyASNCqXzkrzVfdDgRFx87Yag9PXstJOg4yR1urxl581eZE2Q9026h1+snWA==
+X-Received: by 2002:a65:644c:: with SMTP id s12mr1176142pgv.327.1601825134548;
+        Sun, 04 Oct 2020 08:25:34 -0700 (PDT)
+Received: from [192.168.0.104] ([49.207.217.69])
+        by smtp.gmail.com with ESMTPSA id v10sm7698991pjf.34.2020.10.04.08.25.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 08:25:33 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees] [PATCH] fs: fix KMSAN uninit-value bug by
+ initializing nd in do_file_open_root
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+References: <20200916052657.18683-1-anant.thazhemadam@gmail.com>
+ <20200916054157.GC825@sol.localdomain>
+ <20200917002238.GO3421308@ZenIV.linux.org.uk>
+ <20200919144451.GF2712238@kroah.com>
+ <20200919161727.GG3421308@ZenIV.linux.org.uk>
+ <20200919165558.GH3421308@ZenIV.linux.org.uk>
+ <26d881e5-f68a-b3b7-4cb0-04a3c6c384ac@gmail.com>
+ <e8b218d4-e64a-ac0a-ea53-567d07a58f42@gmail.com>
+Message-ID: <0537f532-1499-f644-2c91-ad91da7901df@gmail.com>
+Date:   Sun, 4 Oct 2020 20:55:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
+In-Reply-To: <e8b218d4-e64a-ac0a-ea53-567d07a58f42@gmail.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201003055348.GA100061@f3>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 02:53:48PM +0900, Benjamin Poirier wrote:
->On 2020-10-03 07:59 +0800, Coiby Xu wrote:
->> This fixes commit 0107635e15ac
->> ("staging: qlge: replace pr_err with netdev_err") which introduced an
->> build breakage of missing `struct ql_adapter *qdev` for some functions
->> and a warning of type mismatch with dumping enabled, i.e.,
->>
->> $ make CFLAGS_MODULE="-DQL_ALL_DUMP -DQL_OB_DUMP -DQL_CB_DUMP \
->>     -DQL_IB_DUMP -DQL_REG_DUMP -DQL_DEV_DUMP" M=drivers/staging/qlge
->>
->> qlge_dbg.c: In function ‘ql_dump_ob_mac_rsp’:
->> qlge_dbg.c:2051:13: error: ‘qdev’ undeclared (first use in this function); did you mean ‘cdev’?
->>  2051 |  netdev_err(qdev->ndev, "%s\n", __func__);
->>       |             ^~~~
->> qlge_dbg.c: In function ‘ql_dump_routing_entries’:
->> qlge_dbg.c:1435:10: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘int’ [-Wformat=]
->>  1435 |        "%s: Routing Mask %d = 0x%.08x\n",
->>       |         ~^
->>       |          |
->>       |          char *
->>       |         %d
->>  1436 |        i, value);
->>       |        ~
->>       |        |
->>       |        int
->> qlge_dbg.c:1435:37: warning: format ‘%x’ expects a matching ‘unsigned int’ argument [-Wformat=]
->>  1435 |        "%s: Routing Mask %d = 0x%.08x\n",
->>       |                                 ~~~~^
->>       |                                     |
->>       |                                     unsigned int
->>
->> Note that now ql_dump_rx_ring/ql_dump_tx_ring won't check if the passed
->> parameter is a null pointer.
->>
->> Fixes: 0107635e15ac ("staging: qlge: replace pr_err with netdev_err")
->> Reported-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
+
+On 20-09-2020 01:47, Anant Thazhemadam wrote:
+> On 19-09-2020 17:03, Anant Thazhemadam wrote:
+>> On 19-09-2020 22:25, Al Viro wrote:
+>>> On Sat, Sep 19, 2020 at 05:17:27PM +0100, Al Viro wrote:
+>>>
+>>>> Lovely...  That would get an empty path and non-directory for a starting
+>>>> point, but it should end up with LAST_ROOT in nd->last_type.  Which should
+>>>> not be able to reach the readers of those fields...  Which kernel had
+>>>> that been on?
+>>> Yecchhh...  I see what's going on; I suspect that this ought to be enough.
+>>> Folks, could somebody test it on the original reproducer setup?
+>> Sure. I can do that.
+> Looks like this patch actually fixes this bug.
+> I made syzbot test the patch, and no issues were triggered!
 >
->Reviewed-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+> Note:��� syzbot tested the patch with the KMSAN kernel, which
+> was recently rebased on v5.9-rc4.
+>
+> Thanks,
+> Anant
 
-Thank you! Btw, I guess when this patch is picked, the "Reviewed-by" tag
-will also be included. So I needn't to send another patch, am I right?
+Ping.
+Has the patch that was tested been applied to any tree yet?
+If yes, could someone please let me know the commit details, so we can close
+the issue? (Unfortunately, I was unable to find it. :( )
 
---
-Best regards,
-Coiby
+Thanks,
+Anant
+
