@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC4D282B69
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF38D282B72
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgJDPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 11:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S1725963AbgJDPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 11:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDPZh (ORCPT
+        with ESMTP id S1725825AbgJDPad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 11:25:37 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB3AC0613CE;
-        Sun,  4 Oct 2020 08:25:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y14so1588447pfp.13;
-        Sun, 04 Oct 2020 08:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=61Y9XXa32aHa2HBH5bKa29Ys7Tpne59ThWARVK1VO5M=;
-        b=S/9vKvvNgK6Nw/O7vNDqpFYfPPRkGTRDHFm4Liv+pjE8n0McxtM9JKVieg6pvxyIAI
-         mg2fO1mmY3MaVzzQwu4WqZ8mHX3GFbPM9mLSsGaAayWu+euQzELw7Lg5wFPRibD6J0Bv
-         2zvSAWMfueSWaXeGuMNizP2MYcHzbtd046vnj09llBpIek/rJwpSYo5jcIAE/aHxky0V
-         sYrkKDCldPUTyGrlM4JU7MrrCpLxZizijbdNcZGehttMA58KX+sPtAPCKZN3GD125TCk
-         eWoh9RIVtDQYtV1hIiCSo6IacX0rLxYHbfHyhvnYj4ER3YFsZdKF7op6o3PhBum4dLDm
-         GE9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=61Y9XXa32aHa2HBH5bKa29Ys7Tpne59ThWARVK1VO5M=;
-        b=Hd9RrEcIcQWYzhM6Ht++VUFKWDMkPS/sewc8IQ+eO0ouADznPl7/15oJBwE33jb/Sh
-         fJ+Od29OKWzkTC+Fb588xcr9JmuiKYJbBMQG38W3OOlertMM04/Psvb2wfEwwZUrLRaN
-         Gg2Qc9kJOIJ//4g++BHh5wKek4b+7O80z9wv7ys446/4TXfnuVfuYHGq2sLfIxPjyxNq
-         X7CIkTVLO+jMZEax1Ks3Z8Rm2Kw49RAMUuLgVCYLy/da/FSib6b2hwapS12hoAB9joN3
-         o4bEOXBQ2h7eliufYm0nffOgybokaxlaQ6OkJ+kqDDvCW+SD5TVxftsTMpU2BgqFa8tl
-         Tlfg==
-X-Gm-Message-State: AOAM532IiXAZA2azZb5IfN2eqS/g7mtOiInD0HGbP/0TDubK99UnYJa7
-        bsW81MFz5Lv38QlSsJ8O8LmSuC/e48n3Q4Ho2OY=
-X-Google-Smtp-Source: ABdhPJx97wWLfx3WjXcyASNCqXzkrzVfdDgRFx87Yag9PXstJOg4yR1urxl581eZE2Q9026h1+snWA==
-X-Received: by 2002:a65:644c:: with SMTP id s12mr1176142pgv.327.1601825134548;
-        Sun, 04 Oct 2020 08:25:34 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.217.69])
-        by smtp.gmail.com with ESMTPSA id v10sm7698991pjf.34.2020.10.04.08.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Oct 2020 08:25:33 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees] [PATCH] fs: fix KMSAN uninit-value bug by
- initializing nd in do_file_open_root
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-References: <20200916052657.18683-1-anant.thazhemadam@gmail.com>
- <20200916054157.GC825@sol.localdomain>
- <20200917002238.GO3421308@ZenIV.linux.org.uk>
- <20200919144451.GF2712238@kroah.com>
- <20200919161727.GG3421308@ZenIV.linux.org.uk>
- <20200919165558.GH3421308@ZenIV.linux.org.uk>
- <26d881e5-f68a-b3b7-4cb0-04a3c6c384ac@gmail.com>
- <e8b218d4-e64a-ac0a-ea53-567d07a58f42@gmail.com>
-Message-ID: <0537f532-1499-f644-2c91-ad91da7901df@gmail.com>
-Date:   Sun, 4 Oct 2020 20:55:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Sun, 4 Oct 2020 11:30:33 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03EFC0613CE;
+        Sun,  4 Oct 2020 08:30:32 -0700 (PDT)
+Received: from miraculix.mork.no (miraculix.mork.no [IPv6:2001:4641:0:2:7627:374e:db74:e353])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 094FTfgN022348
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Sun, 4 Oct 2020 17:29:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1601825382; bh=otlkCb4M1uogpYT/wrOGg/R30bdTqv6TKwIuGVESdeU=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=mdGzJrrpxRS+ybmc2gxees5gkDanuPK5BB6jUNJc/M6lLs/tXp8d/eE718pN+yTMJ
+         KRmn5IRiqa7ABXsOMA/Tc9CPDcmy9GwF7JAssYzdonA314uCudF3AG2I7At16rwTQY
+         Sl/V3NlsBoVxfdLvnSSICzLLnZxlh5GQM5UtTPHA=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1kP5xD-000lRZ-0n; Sun, 04 Oct 2020 17:29:39 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: serial: qmi_wwan: add Cellient MPL200 card
+Organization: m
+References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
+        <4688927cbf36fe0027340ea5e0c3aaf1445ba256.1601715478.git.wilken.gottwalt@mailbox.org>
+Date:   Sun, 04 Oct 2020 17:29:38 +0200
+In-Reply-To: <4688927cbf36fe0027340ea5e0c3aaf1445ba256.1601715478.git.wilken.gottwalt@mailbox.org>
+        (Wilken Gottwalt's message of "Sat, 3 Oct 2020 11:39:55 +0200")
+Message-ID: <87d01yovq5.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <e8b218d4-e64a-ac0a-ea53-567d07a58f42@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Wilken Gottwalt <wilken.gottwalt@mailbox.org> writes:
 
-On 20-09-2020 01:47, Anant Thazhemadam wrote:
-> On 19-09-2020 17:03, Anant Thazhemadam wrote:
->> On 19-09-2020 22:25, Al Viro wrote:
->>> On Sat, Sep 19, 2020 at 05:17:27PM +0100, Al Viro wrote:
->>>
->>>> Lovely...  That would get an empty path and non-directory for a starting
->>>> point, but it should end up with LAST_ROOT in nd->last_type.  Which should
->>>> not be able to reach the readers of those fields...  Which kernel had
->>>> that been on?
->>> Yecchhh...  I see what's going on; I suspect that this ought to be enough.
->>> Folks, could somebody test it on the original reproducer setup?
->> Sure. I can do that.
-> Looks like this patch actually fixes this bug.
-> I made syzbot test the patch, and no issues were triggered!
+> Add usb ids of the Cellient MPL200 card.
 >
-> Note:    syzbot tested the patch with the KMSAN kernel, which
-> was recently rebased on v5.9-rc4.
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+> ---
+>  drivers/net/usb/qmi_wwan.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> Thanks,
-> Anant
+> diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+> index 07c42c0719f5..0bf2b19d5d54 100644
+> --- a/drivers/net/usb/qmi_wwan.c
+> +++ b/drivers/net/usb/qmi_wwan.c
 
-Ping.
-Has the patch that was tested been applied to any tree yet?
-If yes, could someone please let me know the commit details, so we can close
-the issue? (Unfortunately, I was unable to find it. :( )
+This is not a 'usb: serial' driver. Please resend with a less confusing
+subject prefix.
 
-Thanks,
-Anant
+> @@ -1432,6 +1432,7 @@ static const struct usb_device_id products[] =3D {
+>  	{QMI_GOBI_DEVICE(0x1199, 0x901b)},	/* Sierra Wireless MC7770 */
+>  	{QMI_GOBI_DEVICE(0x12d1, 0x14f1)},	/* Sony Gobi 3000 Composite */
+>  	{QMI_GOBI_DEVICE(0x1410, 0xa021)},	/* Foxconn Gobi 3000 Modem device (N=
+ovatel E396) */
+> +	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},	/* Cellient MPL200 (rebranded Qual=
+comm 0x05c6) */
+>=20=20
+>  	{ }					/* END */
+>  };
 
+
+This table is supposed to be organized by device type.  The last section
+is for Gobi2k and Gobi3k devices.  Please try to put new devices into
+the correct section.
+
+Thanks
+
+
+
+Bj=C3=B8rn
