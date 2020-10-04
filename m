@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D1F2827D8
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 03:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56D22827DC
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 03:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgJDBgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 21:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgJDBgj (ORCPT
+        id S1726226AbgJDBkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 21:40:24 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36373 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726122AbgJDBkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 21:36:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52978C0613D0;
-        Sat,  3 Oct 2020 18:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NDQcs2sypgUb2kaljw/PLF9eyPJJqCCMKlV+6nk3qyA=; b=iVM81vLVhXohJ7qOoV+tDGUf5Y
-        SKtcp4UP39tB0Axj/fhnx76xM9UduT8h8NuuwmPPI2fW3v/mtptxbfO2tzewdHuO6lPpYW+Aj+hH7
-        ZH3++M4csNhhE5vPVviIUIkZY0/6PBnBvRx4AWYA0sinPAsWQDg9JvEp4gOFMrYXc0cSi33bRdc1l
-        T7NPCMiJaVpAuXiuuZFV2CF/pFefDvXY9sqmtI4qrV+ieA/rZlivPwk3qDmNUNhvQIXvZk4GRmNbt
-        VWblMIFSOQYERk6gOsg/lvRl3UCfj9tFR7whYVt5c62bFdmNc8L+Mv1u92CHPYlIqyQFgVn9Bx+ST
-        SBST4P7w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kOsws-00012u-Sq; Sun, 04 Oct 2020 01:36:27 +0000
-Date:   Sun, 4 Oct 2020 02:36:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm@vger.kernel.org, rcu@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: Where is the declaration of buffer used in kernel_param_ops .get
- functions?
-Message-ID: <20201004013626.GE20115@casper.infradead.org>
-References: <cover.1601770305.git.joe@perches.com>
- <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
+        Sat, 3 Oct 2020 21:40:23 -0400
+Received: (qmail 332975 invoked by uid 1000); 3 Oct 2020 21:40:22 -0400
+Date:   Sat, 3 Oct 2020 21:40:22 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Akira Yokosawa <akiyks@gmail.com>, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, dlustig@nvidia.com, joel@joelfernandes.org,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH] tools: memory-model: Document that the LKMM can easily miss
+ control dependencies
+Message-ID: <20201004014022.GA332600@rowland.harvard.edu>
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <045c643f-6a70-dfdf-2b1e-f369a667f709@gmail.com>
+ <20201003171338.GA323226@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <250919192de237dadf36218ee6b4dabf1bd4cbde.camel@perches.com>
+In-Reply-To: <20201003171338.GA323226@rowland.harvard.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 06:19:18PM -0700, Joe Perches wrote:
-> These patches came up because I was looking for
-> the location of the declaration of the buffer used
-> in kernel/params.c struct kernel_param_ops .get
-> functions.
-> 
-> I didn't find it.
-> 
-> I want to see if it's appropriate to convert the
-> sprintf family of functions used in these .get
-> functions to sysfs_emit.
-> 
-> Patches submitted here:
-> https://lore.kernel.org/lkml/5d606519698ce4c8f1203a2b35797d8254c6050a.1600285923.git.joe@perches.com/T/
-> 
-> Anyone know if it's appropriate to change the
-> sprintf-like uses in these functions to sysfs_emit
-> and/or sysfs_emit_at?
+Add a small section to the litmus-tests.txt documentation file for
+the Linux Kernel Memory Model explaining that the memory model often
+fails to recognize certain control dependencies.
 
-There's a lot of preprocessor magic to wade through.
+Suggested-by: Akira Yokosawa <akiyks@gmail.com>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
 
-I'm pretty sure this comes through include/linux/moduleparam.h
-and kernel/module.c.
+---
+
+ tools/memory-model/Documentation/litmus-tests.txt |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+Index: usb-devel/tools/memory-model/Documentation/litmus-tests.txt
+===================================================================
+--- usb-devel.orig/tools/memory-model/Documentation/litmus-tests.txt
++++ usb-devel/tools/memory-model/Documentation/litmus-tests.txt
+@@ -946,6 +946,23 @@ Limitations of the Linux-kernel memory m
+ 	carrying a dependency, then the compiler can break that dependency
+ 	by substituting a constant of that value.
+ 
++	Conversely, LKMM sometimes doesn't recognize that a particular
++	optimization is not allowed, and as a result, thinks that a
++	dependency is not present (because the optimization would break it).
++	The memory model misses some pretty obvious control dependencies
++	because of this limitation.  A simple example is:
++
++		r1 = READ_ONCE(x);
++		if (r1 == 0)
++			smp_mb();
++		WRITE_ONCE(y, 1);
++
++	There is a control dependency from the READ_ONCE to the WRITE_ONCE,
++	even when r1 is nonzero, but LKMM doesn't realize this and thinks
++	that the write may execute before the read if r1 != 0.  (Yes, that
++	doesn't make sense if you think about it, but the memory model's
++	intelligence is limited.)
++
+ 2.	Multiple access sizes for a single variable are not supported,
+ 	and neither are misaligned or partially overlapping accesses.
+ 
