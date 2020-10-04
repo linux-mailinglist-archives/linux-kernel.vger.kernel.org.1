@@ -2,155 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C98282945
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43F2282948
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 08:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgJDGyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 02:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgJDGyK (ORCPT
+        id S1725862AbgJDG7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 02:59:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3519 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgJDG7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 02:54:10 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF0C0613CE;
-        Sat,  3 Oct 2020 23:54:09 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n22so6124834edt.4;
-        Sat, 03 Oct 2020 23:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=EPLwvj5pya/JFWydy8L2Gp24s9uoCH6NbYu2uRRH6ik=;
-        b=UG4DnuWuqE6SNkZ5M9hwm9iv1P4o4gLy5ReBNtNlbStSNV/RfwSPM1CzXqSYuQHzDb
-         OiWhQQIBIvlUIuAv+4kKBcyLNIdnmTi/4+FXaCdwsW5NtFArKBHf0SgAR78thGCGYIty
-         1423smC0NAJevTWU4kHKW2+fPLrxM+OVMKp3O3QPmx2zw79B/x8wwM0z0AgUyIeBut5J
-         dTXu0AepR08jsr/AXzTLmplBGQr12f61wq+6dujLJlcAFhpxYUAyi+rC4oBi38W7lpJ4
-         PIy4987RpSSFAdYaeSFT+ezfRumdUfnX6UHQmhTxkt0Iu/AmvSpwuWd0ZOqark6tU9Yf
-         kySA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=EPLwvj5pya/JFWydy8L2Gp24s9uoCH6NbYu2uRRH6ik=;
-        b=ZCgRHC5J52AbCvOYdEqjIwOi700FA2kuaaD8Eq2KKzVPreOzmCw6r99wcXMdTIqdJ2
-         XyD6btXzcfyd6wAKNYsvRk5pVI/JHBwUxB7XsC6kUtbO14CdF4ov+OJcJOk/F2bRufC/
-         hyqrumHoK20THSVBFw2f7JvfnY8QC9nWA+zv+XO/s7N3qBF+akBX3i5ZNkB77SKm/RJL
-         KUr1nWjucslj0xMP3pNA4Jfian8T7sVd5IOEbhmkIcqjUGpKswbj7STAAFDGBJlFfNo1
-         TH3oy6NI/ldGMasKuU075cv3Lk3jK2lzuofRIO2Xc+nW7FAcl3OLAlPTDIRuL5AaayNh
-         E0FA==
-X-Gm-Message-State: AOAM530h27mVaunNCT6GB8JNiS5WS8wZmdOEk4tYnjnYTp4e67kpbqne
-        ltatn9P6mOApEwOxymAl3PQ=
-X-Google-Smtp-Source: ABdhPJzI48R2EuzLCKnqeLePDQ2Dv05WLcSgKkMSb9kmFpHlLInEpkzuSRIfJllzfN1l2U+/csG/Ww==
-X-Received: by 2002:a05:6402:b68:: with SMTP id cb8mr11568608edb.350.1601794447224;
-        Sat, 03 Oct 2020 23:54:07 -0700 (PDT)
-Received: from felia ([2001:16b8:2d26:f700:8d52:b46b:d125:e62a])
-        by smtp.gmail.com with ESMTPSA id k18sm4876538ejk.42.2020.10.03.23.54.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 23:54:06 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Sun, 4 Oct 2020 08:54:05 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH RFC 1/2] kconfig: use interpreters to invoke scripts
-In-Reply-To: <d398ec09-2146-1fef-c594-643a9c868b06@gmail.com>
-Message-ID: <alpine.DEB.2.21.2010040852150.28226@felia>
-References: <d398ec09-2146-1fef-c594-643a9c868b06@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Sun, 4 Oct 2020 02:59:20 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f79725d0000>; Sat, 03 Oct 2020 23:57:33 -0700
+Received: from [10.21.180.76] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 4 Oct
+ 2020 06:59:08 +0000
+Subject: Re: [PATCH net-next 04/16] devlink: Add reload stats
+To:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1601560759-11030-1-git-send-email-moshe@mellanox.com>
+ <1601560759-11030-5-git-send-email-moshe@mellanox.com>
+ <20201003090012.GE3159@nanopsycho.orion>
+From:   Moshe Shemesh <moshe@nvidia.com>
+Message-ID: <a4a08db2-885f-2200-34df-31a7aba2d1c8@nvidia.com>
+Date:   Sun, 4 Oct 2020 09:59:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201003090012.GE3159@nanopsycho.orion>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601794654; bh=Vee0yMTAb0jQVOlgoqYgwlFM1tY1/3yqMgQ2llZ+3rc=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=qoTNUDrn33XUHTxM9kTWLcux9ASfWkNX1BPsEgfMJ9jCk6q6T+4zYRGhfRBBG+1dR
+         L12/DJhHRVOh5OH7NBw/FNFXn81XDMNqesKk8AknlBE56pjE3VOBmLRZdve7PAeLdo
+         5ksp8L1kLdvcSRZS5b4X85wkUxF4VUGcfTV7gfB3u1fB2Ivn852eGr0qz42OSpgOLz
+         pjWxWvOpikt7leuyfhhaml6Loydj0ejhGbolYnVUJXyIxFiFWyhRRrBssZEo9aim0D
+         vA7rwSGucRSu/6J5CEUJSFSi+qFyQsi+wt6XOtwZeAboTgHGVw3vDE4N9Pah04KuqE
+         dFOEdes9mYj3g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On Sat, 3 Oct 2020, Ujjwal Kumar wrote:
-
-> We cannot rely on execute bits to be set on files in the repository.
-> The build script should use the explicit interpreter when invoking any
-> script from the repository.
-> 
-> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
-> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+On 10/3/2020 12:00 PM, Jiri Pirko wrote:
+> Thu, Oct 01, 2020 at 03:59:07PM CEST, moshe@mellanox.com wrote:
+>> Add reload stats to hold the history per reload action type and limit.
+>>
+>> For example, the number of times fw_activate has been performed on this
+>> device since the driver module was added or if the firmware activation
+>> was performed with or without reset.
+>>
+>> Add devlink notification on stats update.
+>>
+>> Expose devlink reload stats to the user through devlink dev get command.
+>>
+>> Examples:
+>> $ devlink dev show
+>> pci/0000:82:00.0:
+>>   stats:
+>>       reload_stats:
+>>         driver_reinit 2
+>>         fw_activate 1
+>>         fw_activate_no_reset 0
+>> pci/0000:82:00.1:
+>>   stats:
+>>       reload_stats:
+>>         driver_reinit 1
+>>         fw_activate 0
+>>         fw_activate_no_reset 0
+>>
+>> $ devlink dev show -jp
+>> {
+>>     "dev": {
+>>         "pci/0000:82:00.0": {
+>>             "stats": {
+>>                 "reload_stats": [ {
+> Just "reload". No need to repeat "stats" here.
+Ack.
+>
+>>                         "driver_reinit": 2
+>>                     },{
+>>                         "fw_activate": 1
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ]
+>>             }
+>>         },
+>>         "pci/0000:82:00.1": {
+>>             "stats": {
+>>                 "reload_stats": [ {
+>>                         "driver_reinit": 1
+>>                     },{
+>>                         "fw_activate": 0
+>>                     },{
+>>                         "fw_activate_no_reset": 0
+>>                     } ]
+>>             }
+>>         }
+>>     }
+>> }
+>>
+>> Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>> ---
+>> RFCv5 -> v1:
+>> - Changed the stats output structure, have 2 stats, one for local and
+>> one for remote
+>> - Resplit this patch and the next one by remote/local reload stast
+>> instead of set/get reload stats
+>> - Add helper function devlink_reload_stats_put()
+>> RFCv4 -> RFCv5:
+>> - Add separate reload action stats for updating on remote actions
+>> - Protect  from updating remote actions stats during reload_down()/up()
+>> RFCv3 -> RFCv4:
+>> - Renamed reload_actions_cnts to reload_action_stats
+>> - Add devlink notifications on stats update
+>> - Renamed devlink_reload_actions_implicit_actions_performed() and add
+>>   function comment in code
+>> RFCv2 -> RFCv3:
+>> - New patch
+>> ---
+>> include/net/devlink.h        |  7 +++
+>> include/uapi/linux/devlink.h |  5 ++
+>> net/core/devlink.c           | 97 ++++++++++++++++++++++++++++++++++++
+>> 3 files changed, 109 insertions(+)
+>>
+>> diff --git a/include/net/devlink.h b/include/net/devlink.h
+>> index 43dde69086e5..0f3bd23b6c04 100644
+>> --- a/include/net/devlink.h
+>> +++ b/include/net/devlink.h
+>> @@ -20,6 +20,9 @@
+>> #include <uapi/linux/devlink.h>
+>> #include <linux/xarray.h>
+>>
+>> +#define DEVLINK_RELOAD_STATS_ARRAY_SIZE \
+>> +	(__DEVLINK_RELOAD_LIMIT_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+>> +
+>> struct devlink_ops;
+>>
+>> struct devlink {
+>> @@ -38,6 +41,7 @@ struct devlink {
+>> 	struct list_head trap_policer_list;
+>> 	const struct devlink_ops *ops;
+>> 	struct xarray snapshot_ids;
+>> +	u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+>> 	struct device *dev;
+>> 	possible_net_t _net;
+>> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>> @@ -1470,6 +1474,9 @@ void
+>> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
+>>
+>> bool devlink_is_reload_failed(const struct devlink *devlink);
+>> +void devlink_remote_reload_actions_performed(struct devlink *devlink,
+>> +					     enum devlink_reload_limit limit,
+>> +					     unsigned long actions_performed);
+> Leftover, please remove/move.
 >
 
-Reproduced the setup described in the cover letter on next-20201002.
+Yes, should be in the next patch, I missed it while re-splitting these 
+two patches.
 
-The issue for make defconfig was resolved with this patch. So:
+>> void devlink_flash_update_begin_notify(struct devlink *devlink);
+>> void devlink_flash_update_end_notify(struct devlink *devlink);
+>> diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+>> index cc5dc4c07b4a..97e0137f6201 100644
+>> --- a/include/uapi/linux/devlink.h
+>> +++ b/include/uapi/linux/devlink.h
+>> @@ -526,6 +526,11 @@ enum devlink_attr {
+>> 	DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,	/* u64 */
+>> 	DEVLINK_ATTR_RELOAD_LIMIT,	/* u8 */
+>>
+>> +	DEVLINK_ATTR_DEV_STATS,			/* nested */
+>> +	DEVLINK_ATTR_RELOAD_STATS,		/* nested */
+>> +	DEVLINK_ATTR_RELOAD_STATS_ENTRY,	/* nested */
+>> +	DEVLINK_ATTR_RELOAD_STATS_VALUE,	/* u32 */
+>> +
+>> 	/* add new attributes above here, update the policy in devlink.c */
+>>
+>> 	__DEVLINK_ATTR_MAX,
+>> diff --git a/net/core/devlink.c b/net/core/devlink.c
+>> index 6de7d6aa6ed1..05516f1e4c3e 100644
+>> --- a/net/core/devlink.c
+>> +++ b/net/core/devlink.c
+>> @@ -500,10 +500,68 @@ devlink_reload_limit_is_supported(struct devlink *devlink, enum devlink_reload_l
+>> 	return test_bit(limit, &devlink->ops->reload_limits);
+>> }
+>>
+>> +static int devlink_reload_stat_put(struct sk_buff *msg, enum devlink_reload_action action,
+>> +				   enum devlink_reload_limit limit, u32 value)
+>> +{
+>> +	struct nlattr *reload_stats_entry;
+>> +
+>> +	reload_stats_entry = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS_ENTRY);
+>> +	if (!reload_stats_entry)
+>> +		return -EMSGSIZE;
+>> +
+>> +	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_ACTION, action))
+>> +		goto nla_put_failure;
+>> +	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_LIMIT, limit))
+>> +		goto nla_put_failure;
+>> +	if (nla_put_u32(msg, DEVLINK_ATTR_RELOAD_STATS_VALUE, value))
+>> +		goto nla_put_failure;
+>> +	nla_nest_end(msg, reload_stats_entry);
+>> +	return 0;
+>> +
+>> +nla_put_failure:
+>> +	nla_nest_cancel(msg, reload_stats_entry);
+>> +	return -EMSGSIZE;
+>> +}
+>> +
+>> +static int devlink_reload_stats_put(struct sk_buff *msg, struct devlink *devlink)
+>> +{
+>> +	struct nlattr *reload_stats_attr;
+>> +	int i, j, stat_idx;
+>> +	u32 value;
+>> +
+>> +	reload_stats_attr = nla_nest_start(msg, DEVLINK_ATTR_RELOAD_STATS);
+>> +
+>> +	if (!reload_stats_attr)
+>> +		return -EMSGSIZE;
+>> +
+>> +	for (j = 0; j <= DEVLINK_RELOAD_LIMIT_MAX; j++) {
+>> +		if (j != DEVLINK_RELOAD_LIMIT_UNSPEC &&
+> You should check limit_unspec during driver register, not here.
 
-Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+The thing is that now (change from RFCv5 to v1, see patch 3 change log) 
+driver does not need to register supported limits if it only supports 
+actions without any limitation. So I want to show stats of actions with 
+unspecified limit, though I don't expect driver to register it.
+
+>
+>> +		    !devlink_reload_limit_is_supported(devlink, j))
+>> +			continue;
+>> +		for (i = 0; i <= DEVLINK_RELOAD_ACTION_MAX; i++) {
+>> +			if (!devlink_reload_action_is_supported(devlink, i) ||
+>> +			    devlink_reload_combination_is_invalid(i, j))
+>> +				continue;
+>> +
+>> +			stat_idx = j * __DEVLINK_RELOAD_ACTION_MAX + i;
+>> +			value = devlink->reload_stats[stat_idx];
+>> +			if (devlink_reload_stat_put(msg, i, j, value))
+>> +				goto nla_put_failure;
+>> +		}
+>> +	}
+>> +	nla_nest_end(msg, reload_stats_attr);
+>> +	return 0;
+>> +
+>> +nla_put_failure:
+>> +	nla_nest_cancel(msg, reload_stats_attr);
+>> +	return -EMSGSIZE;
+>> +}
+>> +
+>> static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+>> 			   enum devlink_command cmd, u32 portid,
+>> 			   u32 seq, int flags)
+>> {
+>> +	struct nlattr *dev_stats;
+>> 	void *hdr;
+>>
+>> 	hdr = genlmsg_put(msg, portid, seq, &devlink_nl_family, flags, cmd);
+>> @@ -515,9 +573,19 @@ static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
+>> 	if (nla_put_u8(msg, DEVLINK_ATTR_RELOAD_FAILED, devlink->reload_failed))
+>> 		goto nla_put_failure;
+>>
+>> +	dev_stats = nla_nest_start(msg, DEVLINK_ATTR_DEV_STATS);
+> Avoid the "DEV". Just "DEVLINK_ATTR_STATS" is enough.
 
 
-Lukas
- 
-> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-> ---
->  init/Kconfig | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 91456ac0ef20..524f6b555945 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -30,12 +30,12 @@ config CC_IS_GCC
->  
->  config GCC_VERSION
->  	int
-> -	default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
-> +	default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
->  	default 0
->  
->  config LD_VERSION
->  	int
-> -	default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-> +	default $(shell,$(LD) --version | $(AWK) -f $(srctree)/scripts/ld-version.sh)
->  
->  config CC_IS_CLANG
->  	def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
-> @@ -45,20 +45,20 @@ config LD_IS_LLD
->  
->  config CLANG_VERSION
->  	int
-> -	default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
-> +	default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/clang-version.sh $(CC))
->  
->  config CC_CAN_LINK
->  	bool
-> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
-> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
-> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
-> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
->  
->  config CC_CAN_LINK_STATIC
->  	bool
-> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
-> -	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
-> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
-> +	default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
->  
->  config CC_HAS_ASM_GOTO
-> -	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
-> +	def_bool $(success,$(CONFIG_SHELL) $(srctree)/scripts/gcc-goto.sh $(CC))
->  
->  config CC_HAS_ASM_GOTO_OUTPUT
->  	depends on CC_HAS_ASM_GOTO
-> -- 
-> 2.26.2
-> 
-> 
+"DEVLINK_ATTR_STATS" is already used for something else (traps), I added 
+DEV as its dev get command stats.
+
+>
+>> +	if (!dev_stats)
+>> +		goto nla_put_failure;
+>> +
+>> +	if (devlink_reload_stats_put(msg, devlink))
+>> +		goto dev_stats_nest_cancel;
+>> +
+>> +	nla_nest_end(msg, dev_stats);
+>> 	genlmsg_end(msg, hdr);
+>> 	return 0;
+>>
+>> +dev_stats_nest_cancel:
+>> +	nla_nest_cancel(msg, dev_stats);
+>> nla_put_failure:
+>> 	genlmsg_cancel(msg, hdr);
+>> 	return -EMSGSIZE;
+>> @@ -3004,6 +3072,34 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+>> }
+>> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+>>
+>> +static void
+>> +__devlink_reload_stats_update(struct devlink *devlink, u32 *reload_stats,
+>> +			      enum devlink_reload_limit limit, unsigned long actions_performed)
+>> +{
+>> +	int stat_idx;
+>> +	int action;
+>> +
+>> +	if (!actions_performed)
+>> +		return;
+>> +
+>> +	if (WARN_ON(limit > DEVLINK_RELOAD_LIMIT_MAX))
+> I don't understand the reason for this check and warn on. You should
+> sanitize this in the caller (I think you already do that).
+
+
+That's because the next patch has a call to this function directly from 
+the driver. I should add this check on the caller in the next patch.
+
+>> +		return;
+>> +	for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
+>> +		if (!test_bit(action, &actions_performed))
+>> +			continue;
+>> +		stat_idx = limit * __DEVLINK_RELOAD_ACTION_MAX + action;
+>> +		reload_stats[stat_idx]++;
+>> +	}
+>> +	devlink_notify(devlink, DEVLINK_CMD_NEW);
+>> +}
+>> +
+>> +static void
+>> +devlink_reload_stats_update(struct devlink *devlink, enum devlink_reload_limit limit,
+>> +			    unsigned long actions_performed)
+>> +{
+>> +	__devlink_reload_stats_update(devlink, devlink->reload_stats, limit, actions_performed);
+>> +}
+>> +
+>> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> 			  enum devlink_reload_action action, enum devlink_reload_limit limit,
+>> 			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+>> @@ -3026,6 +3122,7 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+>> 		return err;
+>>
+>> 	WARN_ON(!test_bit(action, actions_performed));
+>> +	devlink_reload_stats_update(devlink, limit, *actions_performed);
+>> 	return 0;
+>> }
+>>
+>> -- 
+>> 2.18.2
+>>
