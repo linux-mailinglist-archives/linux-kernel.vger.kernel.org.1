@@ -2,158 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29480282B80
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E41282B94
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 17:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgJDPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 11:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S1726073AbgJDPpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 11:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgJDPns (ORCPT
+        with ESMTP id S1725825AbgJDPpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 11:43:48 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC2EC0613CE;
-        Sun,  4 Oct 2020 08:43:48 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id s66so6243639otb.2;
-        Sun, 04 Oct 2020 08:43:48 -0700 (PDT)
+        Sun, 4 Oct 2020 11:45:33 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10406C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 08:45:33 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a2so6221559otr.11
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 08:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Qi/VID7y2SIwzNo6dbcXrRRFn4NPp8vANshNlUq5tjo=;
-        b=VtNTfV/Iil1s0ncK/AIaMq0CZUfgkksUFTrZmoopKJqeydiAfRh1LxRy3mU9AvdwyB
-         SwR4I1yYJFHbCKdAmoA3s+b7WLhXSGYmpFVm86Q018c6ukf4CFRh+MOGo+t6OnYo2njW
-         waq4ClyvivyjTQiwu/5OwmRLlpo+sDZqiL5/2h0yTUJf3nUSd//EoThMISKR6IZstLhQ
-         /vUg3QlD3tqRapIuQzatP4qMSkc87tGdCIX05rOvmpDI061xPNUBgmLI0hTmnZJLrO5P
-         aR8w4xnJT6fSQYbiP1aF2ICGwejbvNQ7Gjk4v8syV43o4sgk9kmSUiMtgiq4JtaNSKnv
-         /i1Q==
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=xGAaZlULxRnETqUVWzjLk8Mz1WjD46DK8i9GWsNTs18=;
+        b=dV1gX4zqZmbJQOPTdUVdivyx029QwLokW0xCfS7wBE3/G7FyPDPNKL1vqvIVEUcX8t
+         lCk/u+BiBujGCpb9gEQ/3fTh1RYfcqi4Gnaswrg7qLAXlDJuoJKiyZERhtIx6I6xKUgA
+         FGlFvjGRDrgupoBKJwMuyKg6cia7A5Bln0NA9MlJmWap80a517wDdFSpJjOtMHSsSMUX
+         pwXo9+vrjQxypZ4U/T6RtpuQDLeyQ76u6Ume/i9a/PRI2qQx+QT3g8V3TervWV2jkIsO
+         F0V2HZ3l1U3su3ZuNhC40yaNqXw4GmW25NqJmSCl1az+/mUukNEEVoewaz9NMFV/YITT
+         +Sow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Qi/VID7y2SIwzNo6dbcXrRRFn4NPp8vANshNlUq5tjo=;
-        b=ZNVBIIDQfnADy7zsx9VTNZW+VESqwjBIHv1A3uCMSUTS+jWMwew2WY/QoNo+8ehIx4
-         41Go9JEfGmSTXicrrtoKd6jPW82vmyJNcK6eBAEYKLLZ9/5XSA06UAlf7wYY4NKJa64G
-         1j+Kp0KuuJZD7O1f+5Z63vq97KMuxMGpkVXgFbJoo/7O+Peg5qXv00jO4DUgLH0dfR69
-         1uoJKiV0l6+CftgQzic4P8pF34q4YDVSqPjFQuidyLnUzOgB29QphbhvWofcw2aPQQrx
-         xPRtGf1O0qH25hh7OWdW2EfONqOIqvQ+axjG+OIZKRU+0uKtUpd7AQz2NriXlR/6gB2I
-         WP3Q==
-X-Gm-Message-State: AOAM532SGfmVJxLHafQdxcsANFcAZvHMfwyrZG0uOynfnmmuV83OMAEw
-        cjLHyjWr6RFY7NMFb3ezi5ZTAFT9vBU=
-X-Google-Smtp-Source: ABdhPJzx3okC9Z9OkNWFurYFJS2tGuZYCIBr3zBqB1AEawXdWvHzkzaeEpxSorZ1sNZihSNqrrGXVQ==
-X-Received: by 2002:a05:6830:45b:: with SMTP id d27mr1816297otc.15.1601826227366;
-        Sun, 04 Oct 2020 08:43:47 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u15sm2083262otg.78.2020.10.04.08.43.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 04 Oct 2020 08:43:46 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 4 Oct 2020 08:43:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Chu Lin <linchuyuan@google.com>
-Cc:     jdelvare@suse.com, robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] hwmon: pmbus: max20730: adjust the vout reading
- given voltage divider
-Message-ID: <20201004154345.GA110630@roeck-us.net>
-References: <20201004031445.2321090-1-linchuyuan@google.com>
- <20201004031445.2321090-3-linchuyuan@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xGAaZlULxRnETqUVWzjLk8Mz1WjD46DK8i9GWsNTs18=;
+        b=ezp09An2edrTT8cZnitpAa7T+PNwtH+ibTWe8IbcqkkgQjsYsAHaVB00o13ZTISgml
+         yb40V68DtMmeQdDiZZb8JJTpp5mRadvqne0TXDCvsKRFLezojFl6yyECW9TKxBMdr/e/
+         YKbKLokUY4wiwuTWsxEt/Gc1LgT/5sNDBJnKWsLtTWgkX6XiMD4U5QrnpSBPLPoM7Hsv
+         KIuT0Buzb+9r7XCEldBSgWKbxVt1xEf35/LpWo5nb8PBYFkSKjiwTvbt7wDO96pCLcg1
+         Bhkt6hhMaypE7PCMKWP3/vZqzmfJMOQCdPcAAuEyCHUSmlw2qButm+unhqZBprYyHEI8
+         J78Q==
+X-Gm-Message-State: AOAM530aZoICX7ZOGQh3PEZte8GWgtdEc5rb7rFbT7NlIEvRyRt/rVcC
+        sOhNIoAVSREE72EmJFw6q7YpegojPKM3MpF6
+X-Google-Smtp-Source: ABdhPJzAkK7Ed/NxS+dDPERTzbQ+ASLKgaHlFbiIZmKavzA4g8BCHoJiOSZ5JsmCvp/tNE3z7OPMuw==
+X-Received: by 2002:a9d:5e8a:: with SMTP id f10mr8217883otl.242.1601826332190;
+        Sun, 04 Oct 2020 08:45:32 -0700 (PDT)
+Received: from Steevs-MBP.hackershack.net (cpe-173-175-113-3.satx.res.rr.com. [173.175.113.3])
+        by smtp.gmail.com with ESMTPSA id k73sm2209402otk.63.2020.10.04.08.45.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Oct 2020 08:45:31 -0700 (PDT)
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Add retries for link training
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20201002135920.1.I2adbc90b2db127763e2444bd5a4e5bf30e1db8e5@changeid>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <29cace9d-39e2-a5f5-dd2b-ab3eb7ad1622@kali.org>
+Date:   Sun, 4 Oct 2020 10:45:29 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004031445.2321090-3-linchuyuan@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201002135920.1.I2adbc90b2db127763e2444bd5a4e5bf30e1db8e5@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 03:14:45AM +0000, Chu Lin wrote:
-> Problem:
-> We use voltage dividers so that the voltage presented at the voltage
-> sense pins is confusing. We might need to convert these readings to more
-> meaningful readings given the voltage divider.
-> 
-> Solution:
-> Read the voltage divider resistance from dts and convert the voltage
-> reading to a more meaningful reading.
-> 
-> Testing:
-> max20730 with voltage divider
-> 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
+
+On 10/2/20 4:03 PM, Douglas Anderson wrote:
+> On some panels hooked up to the ti-sn65dsi86 bridge chip we found that
+> link training was failing.  Specifically, we'd see:
+>
+>   ti_sn65dsi86 2-002d: [drm:ti_sn_bridge_enable] *ERROR* Link training failed, link is off (-5)
+>
+> The panel was hooked up to a logic analyzer and it was found that, as
+> part of link training, the bridge chip was writing a 0x1 to DPCD
+> address 00600h and the panel responded NACK.  As can be seen in header
+> files, the write of 0x1 to DPCD address 0x600h means we were trying to
+> write the value DP_SET_POWER_D0 to the register DP_SET_POWER.  The
+> panel vendor says that a NACK in this case is not unexpected and means
+> "not ready, try again".
+>
+> In testing, we found that this panel would respond with a NACK in
+> about 1/25 times.  Adding the retry logic worked fine and the most
+> number of tries needed was 3.  Just to be safe, we'll add 10 tries
+> here and we'll add a little blurb to the logs if we ever need more
+> than 5.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
-> ChangeLog v1 -> v2
->   hwmon: pmbus: max20730:
->   - Don't do anything to the ret if an error is returned from pmbus_read_word
->   - avoid overflow when doing multiplication
-> 
-> ChangeLog v2 -> v3
->   dt-bindings: hwmon: max20730:
->   - Provide the binding documentation in yaml format
->   hwmon: pmbus: max20730:
->   - No change
-> 
-> ChangeLog v3 -> v4
->   dt-bindings: hwmon: max20730:
->   - Fix highefficiency to high efficiency in description
->   - Fix presents to present in vout-voltage-divider
->   - Add additionalProperties: false
->   hwmon: pmbus: max20730:
->   - No change
-
-You claim that there have been no changes since v2 of this patch,
-yet you dropped my Reviewed-by: tag. Any reason ?
-
-Guenter
-
-> 
->  drivers/hwmon/pmbus/max20730.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-> index a151a2b588a5..fbf2f1e6c969 100644
-> --- a/drivers/hwmon/pmbus/max20730.c
-> +++ b/drivers/hwmon/pmbus/max20730.c
-> @@ -31,6 +31,7 @@ struct max20730_data {
->  	struct pmbus_driver_info info;
->  	struct mutex lock;	/* Used to protect against parallel writes */
->  	u16 mfr_devset1;
-> +	u32 vout_voltage_divider[2];
->  };
+>
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 40 +++++++++++++++++++--------
+>  1 file changed, 29 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index ecdf9b01340f..6e12cda69b54 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -106,6 +106,8 @@
+>  #define SN_NUM_GPIOS			4
+>  #define SN_GPIO_PHYSICAL_OFFSET		1
 >  
->  #define to_max20730_data(x)  container_of(x, struct max20730_data, info)
-> @@ -114,6 +115,14 @@ static int max20730_read_word_data(struct i2c_client *client, int page,
->  		max_c = max_current[data->id][(data->mfr_devset1 >> 5) & 0x3];
->  		ret = val_to_direct(max_c, PSC_CURRENT_OUT, info);
->  		break;
-> +	case PMBUS_READ_VOUT:
-> +		ret = pmbus_read_word_data(client, page, phase, reg);
-> +		if (ret > 0 && data->vout_voltage_divider[0] && data->vout_voltage_divider[1]) {
-> +			u64 temp = DIV_ROUND_CLOSEST_ULL((u64)ret * data->vout_voltage_divider[1],
-> +							 data->vout_voltage_divider[0]);
-> +			ret = clamp_val(temp, 0, 0xffff);
+> +#define SN_LINK_TRAINING_TRIES		10
+> +
+>  /**
+>   * struct ti_sn_bridge - Platform data for ti-sn65dsi86 driver.
+>   * @dev:          Pointer to our device.
+> @@ -673,6 +675,7 @@ static int ti_sn_link_training(struct ti_sn_bridge *pdata, int dp_rate_idx,
+>  {
+>  	unsigned int val;
+>  	int ret;
+> +	int i;
+>  
+>  	/* set dp clk frequency value */
+>  	regmap_update_bits(pdata->regmap, SN_DATARATE_CONFIG_REG,
+> @@ -689,19 +692,34 @@ static int ti_sn_link_training(struct ti_sn_bridge *pdata, int dp_rate_idx,
+>  		goto exit;
+>  	}
+>  
+> -	/* Semi auto link training mode */
+> -	regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0x0A);
+> -	ret = regmap_read_poll_timeout(pdata->regmap, SN_ML_TX_MODE_REG, val,
+> -				       val == ML_TX_MAIN_LINK_OFF ||
+> -				       val == ML_TX_NORMAL_MODE, 1000,
+> -				       500 * 1000);
+> -	if (ret) {
+> -		*last_err_str = "Training complete polling failed";
+> -	} else if (val == ML_TX_MAIN_LINK_OFF) {
+> -		*last_err_str = "Link training failed, link is off";
+> -		ret = -EIO;
+> +	/*
+> +	 * We'll try to link train several times.  As part of link training
+> +	 * the bridge chip will write DP_SET_POWER_D0 to DP_SET_POWER.  If
+> +	 * the panel isn't ready quite it might respond NAK here which means
+> +	 * we need to try again.
+> +	 */
+> +	for (i = 0; i < SN_LINK_TRAINING_TRIES; i++) {
+> +		/* Semi auto link training mode */
+> +		regmap_write(pdata->regmap, SN_ML_TX_MODE_REG, 0x0A);
+> +		ret = regmap_read_poll_timeout(pdata->regmap, SN_ML_TX_MODE_REG, val,
+> +					val == ML_TX_MAIN_LINK_OFF ||
+> +					val == ML_TX_NORMAL_MODE, 1000,
+> +					500 * 1000);
+> +		if (ret) {
+> +			*last_err_str = "Training complete polling failed";
+> +		} else if (val == ML_TX_MAIN_LINK_OFF) {
+> +			*last_err_str = "Link training failed, link is off";
+> +			ret = -EIO;
+> +			continue;
 > +		}
+> +
 > +		break;
->  	default:
->  		ret = -ENODATA;
->  		break;
-> @@ -364,6 +373,15 @@ static int max20730_probe(struct i2c_client *client,
->  	data->id = chip_id;
->  	mutex_init(&data->lock);
->  	memcpy(&data->info, &max20730_info[chip_id], sizeof(data->info));
-> +	if (of_property_read_u32_array(client->dev.of_node, "vout-voltage-divider",
-> +				       data->vout_voltage_divider,
-> +				       ARRAY_SIZE(data->vout_voltage_divider)) != 0)
-> +		memset(data->vout_voltage_divider, 0, sizeof(data->vout_voltage_divider));
-> +	if (data->vout_voltage_divider[1] < data->vout_voltage_divider[0]) {
-> +		dev_err(dev,
-> +			"The total resistance of voltage divider is less than output resistance\n");
-> +		return -ENODEV;
-> +	}
+>  	}
 >  
->  	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_DEVSET1);
->  	if (ret < 0)
-> -- 
-> 2.28.0.806.g8561365e88-goog
-> 
+> +	/* If we saw quite a few retries, add a note about it */
+> +	if (!ret && i > SN_LINK_TRAINING_TRIES / 2)
+> +		DRM_DEV_INFO(pdata->dev, "Link training needed %d retries\n", i);
+> +
+>  exit:
+>  	/* Disable the PLL if we failed */
+>  	if (ret)
+
+
+Apologies for the previous HTML email, I was trying a new mail client
+and... will not be switching to it.
+
+Anyway.. again, this time in text..
+
+
+Tested on the Lenovo C630, and haven’t seen the message, although I
+hadn’t seen the described issue before either.
+
+Tested-By: Steev Klimaszewski <steev@kali.org>
+
+
