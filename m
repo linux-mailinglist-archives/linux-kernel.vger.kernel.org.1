@@ -2,152 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBA6282D4B
-	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3767C282D57
+	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 21:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgJDTcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 15:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
+        id S1726330AbgJDTru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 15:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgJDTcP (ORCPT
+        with ESMTP id S1726085AbgJDTrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 15:32:15 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BDCC0613CF;
-        Sun,  4 Oct 2020 12:32:15 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u8so8352072lff.1;
-        Sun, 04 Oct 2020 12:32:15 -0700 (PDT)
+        Sun, 4 Oct 2020 15:47:49 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD6C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 12:47:49 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 197so8331927lfo.11
+        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 12:47:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+fGqwF3n7Dljz+v5iSvveY+aywNUa6LLSGHXGvkFn30=;
-        b=L8BQAzdU/PSX9t+0NIlm1DCSDlyre77UWxfamqMy6zcHMEe1NYKccVk4lJIg4KxU1d
-         xkMFxt7dj2iwS5zg3cWKDZ1l07+Z1wTxKEz5JZawnzQl0xzZIZeQjkBoUJqRc3JI3LpY
-         DWPnVZaz8U8KJUzLfqkZhzD5tHRTIX4cgySko1h2J+zK1AB/fLLH6X23kd7v6Z78aorL
-         3HgwLUFAsdLAXlWt+6f4UygDM+gPhdko1tKn1W0N/VEZYg1B7DGp/WeMSiRAC/kHgm/d
-         r+Ev1YwOOmBqrn8FcGlSjRaByoCyU00Dn6OtUv4A8Unl8mF+XHteX0UnvZiRQAcj8TPi
-         yJ/A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XG1wTZsegfbn4qSMGTJS4ZJXmsnG2K3cv9FPUxyxcl0=;
+        b=tyvwm6vJeWvUG+YylyY192T8KZn8Qr5yrM6GStT9s5de2OxMteL5B7wGjth4sUWlJN
+         yeRtZ8fzQPLTP9l2wh0H4IA+OpTFu+WFAAplzJ8qc9EgqPbrd2PoM0mVI+iXrNmT75AN
+         zcroezNosDv86rT9OyuWus0A0/2KUpofl7Ic65A/DKOQSHF2ZxeFdfHeZIBk6XkKcUxP
+         HcSwGnU3K1N1pOubYNNMe+L1KRExsaA+TjbpHqxVxSIX365Uj2OrENw22Bctly0oE6hB
+         GdG+QQMsq0my+4UDQnJFFUrBuYSUf4kcP9liwUpC/a4Ob7vniiKdILK/bCPKjY49XOww
+         WnkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+fGqwF3n7Dljz+v5iSvveY+aywNUa6LLSGHXGvkFn30=;
-        b=L5/a4lqyby0SZy9q0L+7T1jiulJ8MR6EDM5vTmZWWBFBDP8Z85yzUNuU392mlxKlv2
-         Iyu90Fuec5q+9p1N5rS5KHb2XymKxoa2XHC6roJ5usB4pkyKqmYSZ9PCCYkaJU0g2tE7
-         iuBGblWah/IIfI8FTr3Y6r/ixRC4VGcMyt6lhUl/lGFV2Anii96ocH2Xehv7LWlRQZT5
-         PzLK5+mcCZbXPGk9j2bzHOk83poZZ61YjLN27qPhLPhmwoyeFNqwZ5ZuytHIx2u6tgkz
-         ulvehFOKr+JDlKtqXv2kTLRmr44+jtZhimIpFXkPp6M0TybwqUeXz4aLQU0RtCKfsFfX
-         nt+Q==
-X-Gm-Message-State: AOAM531GUKaALfNXst9anT/lDjUIEJ54mq29/yaqfl806Hya9+qH8Dtr
-        s8lasvi41IFG4QOkrlcDBYvITbBMlFs=
-X-Google-Smtp-Source: ABdhPJynug5cDd6macHoVGlfolPRJcnUlmFLf/4rvcGFZu8viUXm30zBlJt0MTNzeIjkn0JJDiqKZg==
-X-Received: by 2002:ac2:4433:: with SMTP id w19mr4675150lfl.548.1601839933622;
-        Sun, 04 Oct 2020 12:32:13 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-221-232.NA.cust.bahnhof.se. [155.4.221.232])
-        by smtp.gmail.com with ESMTPSA id h22sm2298220ljl.101.2020.10.04.12.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 12:32:12 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH 3/3] power: supply: Constify static w1_family_ops structs
-Date:   Sun,  4 Oct 2020 21:32:02 +0200
-Message-Id: <20201004193202.4044-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201004193202.4044-1-rikard.falkeborn@gmail.com>
-References: <20201004193202.4044-1-rikard.falkeborn@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XG1wTZsegfbn4qSMGTJS4ZJXmsnG2K3cv9FPUxyxcl0=;
+        b=dA1HaDcKexLYkmXRlhLOVy7Dd2K9k/GCp11ctk/8vahEBWzZF8RdJpp9E5Tb1uUInP
+         coucJrPq+wLulalY+hlKkC3CREc/eli1/NXpJYi9m88uoLarB+3JeNyoORlD1Bi3oecv
+         r+zAuHMtvlzJ6qkPUtdbf4kgPeY0CQQIGDcEIwY98wUr+5YuL/R+9H3Ck5OVrsAuZZtC
+         KvjypGu/rY/01zzHKbDjLRdv1EgWIXVhPzGmPeRJM0PwGA0hfTdEE0eBPhZwII6RghWS
+         Rmf111PgGSbc8U4D8fCYTB71FDiYhSH4ATUc/+on2M27gvoqS0pt+r67eJjUZWAnKtD2
+         mb8w==
+X-Gm-Message-State: AOAM53316HB+rSxQ0oP8kvUuLZo18azRN1Rpz295gqUfDvgcaWzTLVXy
+        Inb881b0yxTTfH0lYXTfxsUNKgdw8HJy/nnBnmf+HA==
+X-Google-Smtp-Source: ABdhPJyyPZraV7h6Tujv7YTcdF+DimoKQoWubCHdJkkJBqSwis5CluCtrWiab98vMgU9wcgCmJaaSrN9A56tCRbI6Eg=
+X-Received: by 2002:ac2:42d8:: with SMTP id n24mr3845234lfl.502.1601840867685;
+ Sun, 04 Oct 2020 12:47:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201003103335.23404-1-krzk@kernel.org>
+In-Reply-To: <20201003103335.23404-1-krzk@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 4 Oct 2020 21:47:36 +0200
+Message-ID: <CACRpkdYASOe+rRu+AcXX7bgb=+JZFT9asQNUJ4U7Mq4DPDAvEQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: vendor-prefixes: favor "gateworks" over "gw"
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linusw@kernel.org>,
+        Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of these structs is to assign their address to the fops
-field in the w1_family struct, which is a const pointer. Make them const
-to allow the compiler to put them in read-only memory.
+On Sat, Oct 3, 2020 at 12:33 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-This was done with the following Coccinelle semantic patch
-(http://coccinelle.lip6.fr/):
+> There are two vendor prefixes for Gateworks: "gw" and "gateworks".
+> Favor the longer one (more descriptive) and mark "gw" as deprecated so
+> it will not be used in new bindings.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-// <smpl>
-@r1 disable optional_qualifier @
-identifier i;
-position p;
-@@
-static struct w1_family_ops i@p = {...};
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-@ok1@
-identifier r1.i;
-position p;
-identifier s;
-@@
-static struct w1_family s = {
-	.fops=&i@p,
-};
-
-@bad1@
-position p!={r1.p,ok1.p};
-identifier r1.i;
-@@
-i@p
-
-@depends on !bad1 disable optional_qualifier@
-identifier r1.i;
-@@
-static
-+const
-struct w1_family_ops i={};
-// </smpl>
-
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/power/supply/bq27xxx_battery_hdq.c | 2 +-
- drivers/power/supply/ds2760_battery.c      | 2 +-
- drivers/power/supply/max1721x_battery.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/power/supply/bq27xxx_battery_hdq.c b/drivers/power/supply/bq27xxx_battery_hdq.c
-index 12b10dad77d3..922759ab2e04 100644
---- a/drivers/power/supply/bq27xxx_battery_hdq.c
-+++ b/drivers/power/supply/bq27xxx_battery_hdq.c
-@@ -97,7 +97,7 @@ static void bq27xxx_battery_hdq_remove_slave(struct w1_slave *sl)
- 	bq27xxx_battery_teardown(di);
- }
- 
--static struct w1_family_ops bq27xxx_battery_hdq_fops = {
-+static const struct w1_family_ops bq27xxx_battery_hdq_fops = {
- 	.add_slave	= bq27xxx_battery_hdq_add_slave,
- 	.remove_slave	= bq27xxx_battery_hdq_remove_slave,
- };
-diff --git a/drivers/power/supply/ds2760_battery.c b/drivers/power/supply/ds2760_battery.c
-index 11bed88a89fa..695bb6747400 100644
---- a/drivers/power/supply/ds2760_battery.c
-+++ b/drivers/power/supply/ds2760_battery.c
-@@ -795,7 +795,7 @@ static const struct of_device_id w1_ds2760_of_ids[] = {
- };
- #endif
- 
--static struct w1_family_ops w1_ds2760_fops = {
-+static const struct w1_family_ops w1_ds2760_fops = {
- 	.add_slave	= w1_ds2760_add_slave,
- 	.remove_slave	= w1_ds2760_remove_slave,
- 	.groups		= w1_ds2760_groups,
-diff --git a/drivers/power/supply/max1721x_battery.c b/drivers/power/supply/max1721x_battery.c
-index 9ca895b0dabb..1b1a36f8e929 100644
---- a/drivers/power/supply/max1721x_battery.c
-+++ b/drivers/power/supply/max1721x_battery.c
-@@ -431,7 +431,7 @@ static int devm_w1_max1721x_add_device(struct w1_slave *sl)
- 	return 0;
- }
- 
--static struct w1_family_ops w1_max1721x_fops = {
-+static const struct w1_family_ops w1_max1721x_fops = {
- 	.add_slave = devm_w1_max1721x_add_device,
- };
- 
--- 
-2.28.0
-
+Yours,
+Linus Walleij
