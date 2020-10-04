@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4477D28278D
+	by mail.lfdr.de (Postfix) with ESMTP id BB37028278E
 	for <lists+linux-kernel@lfdr.de>; Sun,  4 Oct 2020 02:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgJDASS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 3 Oct 2020 20:18:18 -0400
-Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:36478 "EHLO
+        id S1726231AbgJDASW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 3 Oct 2020 20:18:22 -0400
+Received: from smtprelay0098.hostedemail.com ([216.40.44.98]:50110 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726108AbgJDASS (ORCPT
+        by vger.kernel.org with ESMTP id S1726108AbgJDASV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 3 Oct 2020 20:18:18 -0400
+        Sat, 3 Oct 2020 20:18:21 -0400
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 821CB837F24A;
-        Sun,  4 Oct 2020 00:18:17 +0000 (UTC)
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 1B41D12DA;
+        Sun,  4 Oct 2020 00:18:21 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:973:988:989:1260:1311:1314:1345:1359:1437:1515:1534:1539:1567:1711:1714:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3865:3872:4250:4321:5007:6261:6742:10004:10848:11026:11473:11658:11914:12043:12297:12555:12895:13069:13311:13357:13894:14096:14181:14384:14394:14721:21080:21627:30054:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: chalk68_201509d271b1
-X-Filterd-Recvd-Size: 2027
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:973:988:989:1260:1311:1314:1345:1359:1515:1534:1541:1711:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3352:3872:3876:4321:5007:6120:6261:7901:10004:10848:11026:11657:11658:11914:12043:12048:12296:12297:12438:12555:12895:12986:13069:13161:13229:13311:13357:13894:14096:14181:14384:14394:14721:21080:21627,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bikes15_230bc94271b1
+X-Filterd-Recvd-Size: 2120
 Received: from joe-laptop.perches.com (unknown [47.151.133.149])
         (Authenticated sender: joe@perches.com)
         by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  4 Oct 2020 00:18:15 +0000 (UTC)
+        Sun,  4 Oct 2020 00:18:19 +0000 (UTC)
 From:   Joe Perches <joe@perches.com>
-To:     Paul Mackerras <paulus@ozlabs.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+To:     Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Davidlohr Bueso <dave@stgolabs.net>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] KVM: PPC: Book3S HV: Make struct kernel_param_ops definition const
-Date:   Sat,  3 Oct 2020 17:18:06 -0700
-Message-Id: <d130e88dd4c82a12d979da747cc0365c72c3ba15.1601770305.git.joe@perches.com>
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Ben Gardon <bgardon@google.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/4] kvm x86/mmu: Make struct kernel_param_ops definitions const
+Date:   Sat,  3 Oct 2020 17:18:07 -0700
+Message-Id: <ed95eef4f10fc1317b66936c05bc7dd8f943a6d5.1601770305.git.joe@perches.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <cover.1601770305.git.joe@perches.com>
 References: <cover.1601770305.git.joe@perches.com>
@@ -49,25 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should be const, so make it so.
+These should be const, so make it so.
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/powerpc/kvm/book3s_hv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 4ba06a2a306c..2b215852cdc9 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -111,7 +111,7 @@ module_param(one_vm_per_core, bool, S_IRUGO | S_IWUSR);
- MODULE_PARM_DESC(one_vm_per_core, "Only run vCPUs from the same VM on a core (requires indep_threads_mode=N)");
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 71aa3da2a0b7..6500dd681750 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -64,12 +64,12 @@ static uint __read_mostly nx_huge_pages_recovery_ratio = 60;
+ static int set_nx_huge_pages(const char *val, const struct kernel_param *kp);
+ static int set_nx_huge_pages_recovery_ratio(const char *val, const struct kernel_param *kp);
  
- #ifdef CONFIG_KVM_XICS
--static struct kernel_param_ops module_param_ops = {
-+static const struct kernel_param_ops module_param_ops = {
- 	.set = param_set_int,
- 	.get = param_get_int,
+-static struct kernel_param_ops nx_huge_pages_ops = {
++static const struct kernel_param_ops nx_huge_pages_ops = {
+ 	.set = set_nx_huge_pages,
+ 	.get = param_get_bool,
+ };
+ 
+-static struct kernel_param_ops nx_huge_pages_recovery_ratio_ops = {
++static const struct kernel_param_ops nx_huge_pages_recovery_ratio_ops = {
+ 	.set = set_nx_huge_pages_recovery_ratio,
+ 	.get = param_get_uint,
  };
 -- 
 2.26.0
