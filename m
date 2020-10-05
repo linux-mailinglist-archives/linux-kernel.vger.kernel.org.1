@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACFE2832B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248D42832B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgJEJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:03:41 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33716 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgJEJDl (ORCPT
+        id S1725915AbgJEJDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEJDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:03:41 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09593UqQ117722;
-        Mon, 5 Oct 2020 04:03:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601888610;
-        bh=34zB5rxU6oGZs0aqc0RCPFb2g/4HaIl26DX44jowZg0=;
-        h=From:To:CC:Subject:Date;
-        b=x0I55o1nHe4WURr1DGQW8EWhcmXIlf7fPM9nKXRuc78W6G/0s729Q4rPYQ5+AiJg2
-         zxdbpnulNKbby/quBIltos1z1155+vIBU7w6Q1gHz38+nyAWqjv9UP5Dz5lSfUKoHS
-         PvdqcjXh0EQuQdqFt4qvsTD9M1RKvsJQluLqs7Z0=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09593U7B075801
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 5 Oct 2020 04:03:30 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 5 Oct
- 2020 04:03:30 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 5 Oct 2020 04:03:30 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09593Rkr005614;
-        Mon, 5 Oct 2020 04:03:27 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Michael Walle <michael@walle.cc>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Revert "mtd: spi-nor: Prefer asynchronous probe"
-Date:   Mon, 5 Oct 2020 14:33:21 +0530
-Message-ID: <20201005090321.8724-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 5 Oct 2020 05:03:33 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E7CC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 02:03:32 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id 133so3688590ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 02:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TLsUgbOGOIJXvR28fJ8SOdwuYiauERcW1VexhlIihlU=;
+        b=osRu/0608bGzbyuCzkQ+bMc1pQIgNqGSKxssbdpT9mZ7GNp6aBeTpltAlFJD309zKb
+         9zt6wJyRcvTnBWM0YIGKrIa4bq9xxrDSHv53+WS0sOsq7K+yr5oQR+S/nFG+0M8Jq0XT
+         lFgdanyA38lE9mNhv3sKEiuVe09elhT0jI9/yh52G6E4WMpe1lm4m/RGrxQnSzik8sjb
+         aEShnDrU/p2f7RH1JFxBE0C6GA62Dtv/3cleoKVN/fMIwMTbLPMb1ABo18WXv3tmYqeO
+         lCkf194SCX2jpa6rL9/jkQBPzgbWFwz5DrLnJrbZ7UyV46ow/nLh8AsKqcHkqmMuhu/M
+         jiWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TLsUgbOGOIJXvR28fJ8SOdwuYiauERcW1VexhlIihlU=;
+        b=mApG53qCA/Z0SfND6nCGhRJV3halKTb8npop5iORHJMsQ4NXaQN0NQJZdt4KVUqs+A
+         Za75lAs38qCWcrRUAaDT+xMF4O6sFBip8bohHnPUiTxhZwJiz9MUBFr3+GB8hSPTcUDe
+         epY0X6ypGRUxUp+mksP6IoFJfLEb4nNpZetCZCmOu5R4Y4kwoR4CjKRki/Fsla1z2rbd
+         dAuziYEh2OvemHE+fIb/KmpMYCx/vOLR3m9MOBKYExbU6vxRKsIvgcLDJG9wjTflERyJ
+         Y/26Gw/NnTmEtRA34TnTIESKTNIfK8vKH7IEICvyuqL6VjwzTyeic+H46oDLuQTVPruE
+         yt5A==
+X-Gm-Message-State: AOAM532JVcBSuvtYKuY23+O+tgRk9nBaGzrdemfBWSeeySQtDzDpEVPk
+        fUkbpxBq5lOI8RaEAgzmc3yx642oWpM=
+X-Google-Smtp-Source: ABdhPJy3xtOS8DN1ediooShKqEXf4FSki/OPEzyl5SRbCslVwKUf2fMjHHVCTkmkrHc0OxFE3MXRcg==
+X-Received: by 2002:a2e:9ed5:: with SMTP id h21mr3855477ljk.178.1601888610742;
+        Mon, 05 Oct 2020 02:03:30 -0700 (PDT)
+Received: from [192.168.1.89] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id n26sm3300666lfq.120.2020.10.05.02.03.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 02:03:30 -0700 (PDT)
+Subject: Re: [PATCH] mm: optionally disable brk()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201002171921.3053-1-toiwoton@gmail.com>
+ <653873ef-2a57-37e0-1ac3-fba763652b35@redhat.com>
+ <2a0f5ade-d770-c36e-50bc-ff0c8e9dacbf@gmail.com>
+ <20201005061248.GN4555@dhcp22.suse.cz>
+ <7d7b1ac5-d6a7-5e43-8fb8-12b844d7f501@gmail.com>
+ <20201005082239.GQ4555@dhcp22.suse.cz>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <4f0b1f0e-ab26-cd4e-607c-2c5b9933f10a@gmail.com>
+Date:   Mon, 5 Oct 2020 12:03:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201005082239.GQ4555@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 03edda0e1edaa3c2e99239c66e3c14d749318fd6.
+On 5.10.2020 11.22, Michal Hocko wrote:
+> On Mon 05-10-20 11:11:35, Topi Miettinen wrote:
+> [...]
+>> I think hardened, security oriented systems should disable brk() completely
+>> because it will increase the randomization of the process address space
+>> (ASLR). This wouldn't be a good option to enable for systems where maximum
+>> compatibility with legacy software is more important than any hardening.
+> 
+> I believe we already do have means to filter syscalls from userspace for
+> security hardened environements. Or is there any reason to duplicate
+> that and control during the configuration time?
 
-This leads to warn dump like [1] on some platforms and reorders MTD
-devices thus may break user space expectations. So revert the change.
+This is true, but seccomp can't be used for cases where NoNewPrivileges 
+can't be enabled (setuid/setgid binaries present which sadly is still 
+often the case even in otherwise hardened system), so it's typically not 
+possible to install a filter for the whole system.
 
-[1]:
-
-[    1.849801] ------------[ cut here ]------------
-[    1.854271] mscc_felix 0000:00:00.5: device is disabled, skipping
-[    1.858753] WARNING: CPU: 1 PID: 7 at kernel/kmod.c:136 __request_module+0x3a4/0x568
-
-[...]
-
-Reported-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/mtd/spi-nor/core.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2add4a01fce2..0369d98b2d12 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3451,7 +3451,6 @@ static struct spi_mem_driver spi_nor_driver = {
- 		.driver = {
- 			.name = "spi-nor",
- 			.of_match_table = spi_nor_of_table,
--			.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		},
- 		.id_table = spi_nor_dev_ids,
- 	},
--- 
-2.28.0
-
+-Topi
