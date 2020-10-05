@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF132835EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D8C283626
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgJEMty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 08:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S1726073AbgJENEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgJEMtx (ORCPT
+        with ESMTP id S1725914AbgJENEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:49:53 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781D9C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:49:53 -0700 (PDT)
+        Mon, 5 Oct 2020 09:04:10 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED0EC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 05:50:53 -0700 (PDT)
 Received: from ramsan ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id cCpr2300d4C55Sk01CpsPl; Mon, 05 Oct 2020 14:49:52 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id cCqq2300S4C55Sk06CqqDh; Mon, 05 Oct 2020 14:50:51 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan with esmtp (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kPPw7-0006ZN-Tg; Mon, 05 Oct 2020 14:49:51 +0200
+        id 1kPPx4-0006Zp-Dg; Mon, 05 Oct 2020 14:50:50 +0200
 Received: from geert by rox.of.borg with local (Exim 4.90_1)
         (envelope-from <geert@linux-m68k.org>)
-        id 1kPPw7-0006z9-RL; Mon, 05 Oct 2020 14:49:51 +0200
+        id 1kPPx4-000711-C9; Mon, 05 Oct 2020 14:50:50 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Khalil Blaiech <kblaiech@mellanox.com>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] i2c: mlxbf: I2C_MLXBF should depend on MELLANOX_PLATFORM
-Date:   Mon,  5 Oct 2020 14:49:49 +0200
-Message-Id: <20201005124949.26810-1-geert+renesas@glider.be>
+Subject: [PATCH] pinctrl: visconti: PINCTRL_TMPV7700 should depend on ARCH_VISCONTI
+Date:   Mon,  5 Oct 2020 14:50:49 +0200
+Message-Id: <20201005125049.26926-1-geert+renesas@glider.be>
 X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Mellanox BlueField I2C controller is only present on Mellanox
-BlueField SoCs.  Hence add a dependency on MELLANOX_PLATFORM, to prevent
+The Toshiba Visconti TMPV7700 series pin controller is only present on
+Visconti SoCs.  Hence add a dependency on ARCH_VISCONTI, to prevent
 asking the user about this driver when configuring a kernel without
-Mellanox platform support.
+Visconti platform support.
 
-Fixes: b5b5b32081cd206b ("i2c: mlxbf: I2C SMBus driver for Mellanox BlueField SoC")
+Fixes: a68a7844264e4fb9 ("pinctrl: visconti: Add Toshiba Visconti SoCs pinctrl support")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/i2c/busses/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/visconti/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 96685b273f637176..424dee8b33600057 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -732,7 +732,7 @@ config I2C_LPC2K
- 
- config I2C_MLXBF
-         tristate "Mellanox BlueField I2C controller"
--        depends on ARM64
-+        depends on MELLANOX_PLATFORM && ARM64
-         help
-           Enabling this option will add I2C SMBus support for Mellanox BlueField
-           system.
+diff --git a/drivers/pinctrl/visconti/Kconfig b/drivers/pinctrl/visconti/Kconfig
+index 198ec33189cc4706..42653fc60413d203 100644
+--- a/drivers/pinctrl/visconti/Kconfig
++++ b/drivers/pinctrl/visconti/Kconfig
+@@ -9,6 +9,6 @@ config PINCTRL_VISCONTI
+ config PINCTRL_TMPV7700
+ 	bool "Toshiba Visconti TMPV7700 series pinctrl driver"
+ 	depends on OF
+-	depends on ARM64 || COMPILE_TEST
++	depends on ARCH_VISCONTI || COMPILE_TEST
+ 	select PINCTRL_VISCONTI
+-	default ARM64 && ARCH_VISCONTI
++	default ARCH_VISCONTI
 -- 
 2.17.1
 
