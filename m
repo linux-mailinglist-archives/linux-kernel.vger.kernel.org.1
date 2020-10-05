@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225B8283A5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D79F283B72
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgJEPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:33:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
+        id S1728616AbgJEPmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:42:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728116AbgJEPdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:33:14 -0400
+        id S1727351AbgJEP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:28:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D3942085B;
-        Mon,  5 Oct 2020 15:33:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0A6A208C7;
+        Mon,  5 Oct 2020 15:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911994;
-        bh=A8PD6xDF40objtvJUJyMlE2U+4W8efB+MIjHS+O9XvA=;
+        s=default; t=1601911691;
+        bh=X8dKLHRQ7wvx9JhgXQhCZ+B1UVaEvk1eOEJaGoEkhoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CtY8ZCCOfBMgYuXcCs8k38Yn2mqTMxrbD4uAFb95GSEa9oh0gtGmdKVd8TXL2SdFW
-         n9NjLYUP1ExJW0MTmccX35PRe6Zx0g3mmi1TkfXoTKd5j65wPRIhdmvOLKGBGDbR30
-         w+aFMaEHMsI6U0w4p0dhLCd0qXzz/lPAd9ptjqg8=
+        b=SeQJIaONQcsJFnNjOhkR7id3amhC1Ev5cdPXhVfWnaLgBaU6xPVt4cv52JyboJT8L
+         +UUWZxs6FYXbLsALHEwB54h8qiD2b6lb/jrpEZmEvkiTWVCEW0c+p/KfuGoBJXkEU6
+         XeiGMMsIITJ0BUs99qdtE9QUmz7kaxj3gTVMdSsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 59/85] clk: samsung: exynos4: mark chipid clock as CLK_IGNORE_UNUSED
+        stable@vger.kernel.org, Will McVicker <willmcvicker@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.19 38/38] netfilter: ctnetlink: add a range check for l3/l4 protonum
 Date:   Mon,  5 Oct 2020 17:26:55 +0200
-Message-Id: <20201005142117.562052572@linuxfoundation.org>
+Message-Id: <20201005142110.510691312@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142114.732094228@linuxfoundation.org>
-References: <20201005142114.732094228@linuxfoundation.org>
+In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
+References: <20201005142108.650363140@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Will McVicker <willmcvicker@google.com>
 
-[ Upstream commit f3bb0f796f5ffe32f0fbdce5b1b12eb85511158f ]
+commit 1cc5ef91d2ff94d2bf2de3b3585423e8a1051cb6 upstream.
 
-The ChipID IO region has it's own clock, which is being disabled while
-scanning for unused clocks. It turned out that some CPU hotplug, CPU idle
-or even SOC firmware code depends on the reads from that area. Fix the
-mysterious hang caused by entering deep CPU idle state by ignoring the
-'chipid' clock during unused clocks scan, as there are no direct clients
-for it which will keep it enabled.
+The indexes to the nf_nat_l[34]protos arrays come from userspace. So
+check the tuple's family, e.g. l3num, when creating the conntrack in
+order to prevent an OOB memory access during setup.  Here is an example
+kernel panic on 4.14.180 when userspace passes in an index greater than
+NFPROTO_NUMPROTO.
 
-Fixes: e062b571777f ("clk: exynos4: register clocks using common clock framework")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20200922124046.10496-1-m.szyprowski@samsung.com
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+Modules linked in:...
+Process poc (pid: 5614, stack limit = 0x00000000a3933121)
+CPU: 4 PID: 5614 Comm: poc Tainted: G S      W  O    4.14.180-g051355490483
+Hardware name: Qualcomm Technologies, Inc. SM8150 V2 PM8150 Google Inc. MSM
+task: 000000002a3dfffe task.stack: 00000000a3933121
+pc : __cfi_check_fail+0x1c/0x24
+lr : __cfi_check_fail+0x1c/0x24
+...
+Call trace:
+__cfi_check_fail+0x1c/0x24
+name_to_dev_t+0x0/0x468
+nfnetlink_parse_nat_setup+0x234/0x258
+ctnetlink_parse_nat_setup+0x4c/0x228
+ctnetlink_new_conntrack+0x590/0xc40
+nfnetlink_rcv_msg+0x31c/0x4d4
+netlink_rcv_skb+0x100/0x184
+nfnetlink_rcv+0xf4/0x180
+netlink_unicast+0x360/0x770
+netlink_sendmsg+0x5a0/0x6a4
+___sys_sendmsg+0x314/0x46c
+SyS_sendmsg+0xb4/0x108
+el0_svc_naked+0x34/0x38
+
+This crash is not happening since 5.4+, however, ctnetlink still
+allows for creating entries with unsupported layer 3 protocol number.
+
+Fixes: c1d10adb4a521 ("[NETFILTER]: Add ctnetlink port for nf_conntrack")
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+[pablo@netfilter.org: rebased original patch on top of nf.git]
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/samsung/clk-exynos4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netfilter/nf_conntrack_netlink.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/samsung/clk-exynos4.c b/drivers/clk/samsung/clk-exynos4.c
-index 51564fc23c639..f4086287bb71b 100644
---- a/drivers/clk/samsung/clk-exynos4.c
-+++ b/drivers/clk/samsung/clk-exynos4.c
-@@ -927,7 +927,7 @@ static const struct samsung_gate_clock exynos4210_gate_clks[] __initconst = {
- 	GATE(CLK_PCIE, "pcie", "aclk133", GATE_IP_FSYS, 14, 0, 0),
- 	GATE(CLK_SMMU_PCIE, "smmu_pcie", "aclk133", GATE_IP_FSYS, 18, 0, 0),
- 	GATE(CLK_MODEMIF, "modemif", "aclk100", GATE_IP_PERIL, 28, 0, 0),
--	GATE(CLK_CHIPID, "chipid", "aclk100", E4210_GATE_IP_PERIR, 0, 0, 0),
-+	GATE(CLK_CHIPID, "chipid", "aclk100", E4210_GATE_IP_PERIR, 0, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_SYSREG, "sysreg", "aclk100", E4210_GATE_IP_PERIR, 0,
- 			CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_HDMI_CEC, "hdmi_cec", "aclk100", E4210_GATE_IP_PERIR, 11, 0,
-@@ -969,7 +969,7 @@ static const struct samsung_gate_clock exynos4x12_gate_clks[] __initconst = {
- 		0),
- 	GATE(CLK_TSADC, "tsadc", "aclk133", E4X12_GATE_BUS_FSYS1, 16, 0, 0),
- 	GATE(CLK_MIPI_HSI, "mipi_hsi", "aclk133", GATE_IP_FSYS, 10, 0, 0),
--	GATE(CLK_CHIPID, "chipid", "aclk100", E4X12_GATE_IP_PERIR, 0, 0, 0),
-+	GATE(CLK_CHIPID, "chipid", "aclk100", E4X12_GATE_IP_PERIR, 0, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_SYSREG, "sysreg", "aclk100", E4X12_GATE_IP_PERIR, 1,
- 			CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_HDMI_CEC, "hdmi_cec", "aclk100", E4X12_GATE_IP_PERIR, 11, 0,
--- 
-2.25.1
-
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1129,6 +1129,8 @@ ctnetlink_parse_tuple(const struct nlatt
+ 	if (!tb[CTA_TUPLE_IP])
+ 		return -EINVAL;
+ 
++	if (l3num != NFPROTO_IPV4 && l3num != NFPROTO_IPV6)
++		return -EOPNOTSUPP;
+ 	tuple->src.l3num = l3num;
+ 
+ 	err = ctnetlink_parse_tuple_ip(tb[CTA_TUPLE_IP], tuple);
 
 
