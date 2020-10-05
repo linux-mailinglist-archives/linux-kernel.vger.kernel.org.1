@@ -2,179 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4B22834C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E400F2834CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgJELQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:16:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgJELQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:16:53 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1725974AbgJELTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgJELTi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:19:38 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30ED0C0613CE;
+        Mon,  5 Oct 2020 04:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ra1YPs5Ur9GmtKp6lL+9W2Oo4CFvG8xsosvNRMWmnLY=; b=V66/orP3bwMW/YEzkQN47EHpD0
+        ZHYBKXwFpZjN1JhOy9tkZOghvamu5T3Xn0IC3/1aT+Ov6tncf/sfxBH43pTa8WPtZ9mE6bv4Dpkrs
+        2ll0hJz5kXjlhB29PBgIL9r0MHsTl5moUvqWlCgs69PnX/c3lK2Mq1pXoB8WMUrmlouauK1PHtFSb
+        9ZIBHXKXEvl82+Tyy6wPJeNLYf1gPAFbY331j42cE1K5aZaFBJegF5nzybQs3ZqTdT5M35NKUSAzJ
+        uncFb5gRUMbtuwwcwEfLS/EI+pEaVfSJPsPTJWUBds9Kb1Z6FKddw+lVuhGZ6XPsNhf44tduhmXoh
+        NiQh4hmw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPOWZ-0006Pv-K0; Mon, 05 Oct 2020 11:19:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78D1A20774;
-        Mon,  5 Oct 2020 11:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601896612;
-        bh=Uccl5Nm1ZajLQ0TeZ2f06aGfK3thXV/ZGpiAw3a2Twg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=twh5Y5Zleu8c6pDwNuF8K6yERw6tFJVcNCjRcukj/vv+naTOoCECBNT3Oz8In9BP7
-         bxIvk7TtcY6jG0WzaRfLi6UTxQgscHMheqLqBz9c+VkMc2znj5M6Zb4g3tPOo2jlbr
-         E/W0yaEz3raxKB5TCtZl+7MLvVSJOz/KvNtXZYiE=
-Date:   Mon, 5 Oct 2020 13:17:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Lars Poeschel <poeschel@lemonage.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pwm: sysfs: Set class on pwm devices
-Message-ID: <20201005111738.GA367715@kroah.com>
-References: <20200930065726.fjcsm4pfh65medgl@pengutronix.de>
- <20200930092056.maz5biy2ugr6yc3p@lem-wkst-02.lemonage>
- <20200930094146.73s3qzvf5ekjeavc@pengutronix.de>
- <20201001090531.gubfwmznlto2ng6l@lem-wkst-02.lemonage>
- <20201001112449.GA2364834@kroah.com>
- <20201005093016.GD425362@ulmo>
- <20201005094530.GA154185@kroah.com>
- <20201005101721.GL425362@ulmo>
- <20201005104023.GB245520@kroah.com>
- <20201005110819.GP425362@ulmo>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C8C17300B22;
+        Mon,  5 Oct 2020 13:19:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AE5B020C19001; Mon,  5 Oct 2020 13:19:20 +0200 (CEST)
+Date:   Mon, 5 Oct 2020 13:19:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xi Wang <xii@google.com>
+Cc:     Paul Turner <pjt@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Don <joshdon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH] sched: watchdog: Touch kernel watchdog in sched code
+Message-ID: <20201005111920.GO2611@hirez.programming.kicks-ass.net>
+References: <20200304213941.112303-1-xii@google.com>
+ <20200305075742.GR2596@hirez.programming.kicks-ass.net>
+ <CAPM31RJdNtxmOi2eeRYFyvRKG9nofhqZfPgZGA5U7u8uZ2WXwA@mail.gmail.com>
+ <20200306084039.GC12561@hirez.programming.kicks-ass.net>
+ <CAOBoifiWWcodi9HddxVsKUahTSdAS5OiQOcapDJ-4p+HufRzeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201005110819.GP425362@ulmo>
+In-Reply-To: <CAOBoifiWWcodi9HddxVsKUahTSdAS5OiQOcapDJ-4p+HufRzeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 01:08:19PM +0200, Thierry Reding wrote:
-> On Mon, Oct 05, 2020 at 12:40:23PM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 05, 2020 at 12:17:21PM +0200, Thierry Reding wrote:
-> > > On Mon, Oct 05, 2020 at 11:45:30AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Mon, Oct 05, 2020 at 11:30:16AM +0200, Thierry Reding wrote:
-> > > > > On Thu, Oct 01, 2020 at 01:24:49PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > On Thu, Oct 01, 2020 at 11:05:31AM +0200, Lars Poeschel wrote:
-> > > > > > > On Wed, Sep 30, 2020 at 11:41:46AM +0200, Uwe Kleine-König wrote:
-> > > > > > > > Hello,
-> > > > > > > > 
-> > > > > > > > I added Greg Kroah-Hartman who I discussed this with via irc a bit to
-> > > > > > > > Cc:.
-> > > > > > > > 
-> > > > > > > > On Wed, Sep 30, 2020 at 11:20:56AM +0200, Lars Poeschel wrote:
-> > > > > > > > > thank you for your review!
-> > > > > > > > > 
-> > > > > > > > > On Wed, Sep 30, 2020 at 08:57:26AM +0200, Uwe Kleine-König wrote:
-> > > > > > > > > > On Tue, Sep 29, 2020 at 02:19:53PM +0200, poeschel@lemonage.de wrote:
-> > > > > > > > > > > From: Lars Poeschel <poeschel@lemonage.de>
-> > > > > > > > > > > 
-> > > > > > > > > > > This adds a class to exported pwm devices.
-> > > > > > > > > > > Exporting a pwm through sysfs did not yield udev events. The
-> > > > > > > > > > 
-> > > > > > > > > > I wonder what is your use-case here. This for sure also has a place to
-> > > > > > > > > > be mentioned in the commit log. I suspect there is a better way to
-> > > > > > > > > > accomplish you way.
-> > > > > > > > > 
-> > > > > > > > > Use-case is to be able to use a pwm from a non-root userspace process.
-> > > > > > > > > I use udev rules to adjust permissions.
-> > > > > > > > 
-> > > > > > > > Hmm, how do you trigger the export? Without being aware of all the
-> > > > > > > > details in the sysfs code I would expect that the exported stuff is
-> > > > > > > > available instantly once the write used to export the PWM is completed.
-> > > > > > > > So changing the permissions can be done directly after triggering the
-> > > > > > > > export in the same process.
-> > > > > > > 
-> > > > > > > The export is triggered through the userspace process itself. Why can it
-> > > > > > > do this ? Because there is another udev rule, that changes permissions
-> > > > > > > when a pwmchip appears.
-> > > > > > > Then I'd like to have the second udev rule, that changes permissions on
-> > > > > > > the freshly exported pwm. The userspace process can't do this.
-> > > > > > > You are right I could propably do everything from within udev: If a
-> > > > > > > pwmchip appears, export certain pwms and right away change their
-> > > > > > > permissions. It does not also not feel right. It'd require knowledge
-> > > > > > > from the userspace application to be mapped to udev.
-> > > > > > 
-> > > > > > The way the kernel code is now, yes, you will not have any way to
-> > > > > > trigger it by userspace as the kernel is creating a "raw" struct device
-> > > > > > that isn't assigned to anything.  That is what needs to be fixed here.
-> > > > > > 
-> > > > > > > > Out of interest: What do you use the pwm for? Isn't there a suitable
-> > > > > > > > kernel driver that can do the required stuff? Compared to the kernel-API
-> > > > > > > > the sysfs interface isn't atomic. Is this an annoyance?
-> > > > > > > 
-> > > > > > > Use-case is generating a voltage from the pwm. This voltage is used to
-> > > > > > > signal different states and does not change very often. This is
-> > > > > > > absolutely not annoying that this is not atomic. We just change the duty
-> > > > > > > cycle on the fly. Everything else is configured one time at startup.
-> > > > > > > I'd call what I need pwm-dac. I could not find a ready to use driver.
-> > > > > > > Maybe I could misuse some kernel driver for this. Maybe I could use
-> > > > > > > pwm-led or pwm-brightness or pwm-fan. Propably pwm-regulator could work,
-> > > > > > > there is even a userspace facing part for this, but this is not
-> > > > > > > devicetree ready.
-> > > > > > > ...and the worst, please don't blame me: The application is java, so
-> > > > > > > ioctl is a problem.
-> > > > > > 
-> > > > > > I thought java could do ioctls, otherwise how would it ever be able to
-> > > > > > talk to serial ports?
-> > > > > > 
-> > > > > > Anyway, this needs to be fixed in the kernel...
-> > > > > 
-> > > > > If atomicity was a problem, we could potentially add a mechanism to the
-> > > > > sysfs interface to enable that. I don't see a good way of doing that in
-> > > > > a single file, since that works against how sysfs is designed. But one
-> > > > > thing I could imagine is adding a file ("lock", or whatever you want to
-> > > > > call it) that you can use for atomic fencing:
-> > > > > 
-> > > > > 	$ echo 1 > lock # locks the hardware state
-> > > > > 	$ echo 100 > period
-> > > > > 	$ echo 50 > duty_cycle
-> > > > > 	$ echo 0 > lock # flushes state to hardware
-> > > > > 
-> > > > > But it sounds like that's not even a big issue.
-> > > > 
-> > > > That is exactly what configfs was designed for :)
-> > > 
-> > > Interesting... for some reason I had never thought about configfs in
-> > > this context. But it does indeed sound like it could solve this problem
-> > > in a better way.
-> > > 
-> > > My memory is a bit sketchy, but I think for USB device controllers this
-> > > works by exposing each controller in configfs and then configuring
-> > > things like endpoints within the controller's directory. So I wonder if
-> > > instead of requesting PWMs via sysfs, we should rather expose them via
-> > > configfs items.
-> > > 
-> > > Something like:
-> > > 
-> > > 	# mkdir /configfs/7000a000.pwm/0
-> > > 
-> > > could then be the equivalent of exporting PWM channel 0 of the given PWM
-> > > chip in sysfs, except that now you get a configfs directory with
-> > > attributes that you can use to inspect and reconfigure the PWM channel
-> > > and ultimately apply the changes atomically.
-> > > 
-> > > How does that work from a permissions point of view? How do we ensure
-> > > that people don't need root privileges to access these?
-> > 
-> > To change things in configfs, yes, I'm pretty sure you need root access.
-> > But to read things, sysfs is fine.  I don't really know what you are
-> > wanting to do here, both create a device and change the options over
-> > time?
+On Fri, Mar 06, 2020 at 02:34:20PM -0800, Xi Wang wrote:
+> On Fri, Mar 6, 2020 at 12:40 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Mar 05, 2020 at 02:11:49PM -0800, Paul Turner wrote:
+> > > The goal is to improve jitter since we're constantly periodically
+> > > preempting other classes to run the watchdog.   Even on a single CPU
+> > > this is measurable as jitter in the us range.  But, what increases the
+> > > motivation is this disruption has been recently magnified by CPU
+> > > "gifts" which require evicting the whole core when one of the siblings
+> > > schedules one of these watchdog threads.
+> > >
+> > > The majority outcome being asserted here is that we could actually
+> > > exercise pick_next_task if required -- there are other potential
+> > > things this will catch, but they are much more braindead generally
+> > > speaking (e.g. a bug in pick_next_task itself).
+> >
+> > I still utterly hate what the patch does though; there is no way I'll
+> > have watchdog code hook in the scheduler like this. That's just asking
+> > for trouble.
+> >
+> > Why isn't it sufficient to sample the existing context switch counters
+> > from the watchdog? And why can't we fix that?
 > 
-> Yes, I'm wondering if we should replace the write usages in sysfs with a
-> better configfs implementation. We obviously can't remove the existing
-> sysfs ABI, but for anything that's meant to be atomic we could point
-> people at the configfs interface.
+> We could go to pick next and repick the same task. There won't be a
+> context switch but we still want to hold the watchdog. I assume such a
+> counter also needs to be per cpu and inside the rq lock. There doesn't
+> seem to be an existing one that fits this purpose.
 
-How about fixing the sysfs interface so that it's usable, like the
-proposed patch does?  What you all have now is not working.
+Sorry, your reply got lost, but I just ran into something that reminded
+me of this.
 
-When the revised version is sent, not this version...
+There's sched_count. That's currently schedstat, but if you can find a
+spot in a hot cacheline (from schedule()'s perspective) then it
+should be cheap to incremenent unconditionally.
 
-thanks,
+If only someone were to write a useful cacheline perf tool (and no that
+c2c trainwreck doesn't count).
 
-greg k-h
