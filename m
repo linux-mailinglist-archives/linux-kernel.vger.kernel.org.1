@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A56283846
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29467283857
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgJEOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgJEOph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:45:37 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31EE8208A9;
-        Mon,  5 Oct 2020 14:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601909136;
-        bh=Wi7QxXgy94wOlaQDq/KWGfhyrMHjIhQDYdG5fCh7ss0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PCopsENNQcpCCPWj92wu5AKDqjWAk/bVkPHiJfdjmfefxWdibj6CbAyfFMlqlRXWc
-         AayHiOCx1QNfM40c6puA5GGACftmfMgsfSseHIGxqNY2ISbMRDPcS9UkqqxohsDTo3
-         QljSRyDuhsNsxOyyq9xNzO0NVOfP3/w8nwpTZMN0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Sasha Levin <sashal@kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4] epoll: do not insert into poll queues until all sanity checks are done
-Date:   Mon,  5 Oct 2020 10:45:34 -0400
-Message-Id: <20201005144535.2527911-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726871AbgJEOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:46:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57667 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726849AbgJEOqT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:46:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601909178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ptyKuh8WxjRCHezLemPMrH21hGCsiTIELZD7s9BSjQE=;
+        b=DPEHuD+womOA2lb1nwiAWYUp/aOvKZI7+QWIeQ8GJ107XzXcb2UJd9zmErhMapak6uSZ1R
+        wmTHdt5ZdqXZTmlcwQ9oVB4eWFGSHto5fNSYW9Z/sb0Krjt8NCPB0xbkQIvVqDc51QHmt3
+        8tAiaUte4s1Pvag06iBiMAY1on2B+M4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-YHgSlCVZMiidS94yKOrePg-1; Mon, 05 Oct 2020 10:46:16 -0400
+X-MC-Unique: YHgSlCVZMiidS94yKOrePg-1
+Received: by mail-qk1-f198.google.com with SMTP id w126so6794276qka.5
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 07:46:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ptyKuh8WxjRCHezLemPMrH21hGCsiTIELZD7s9BSjQE=;
+        b=RkO970RCpexkZAV7gHhE9duXic5Xd7kPZxahEcSOkTPrh2hExvy8aZ8mJycMYMAvF8
+         H3huYU/Pb/1mq25GPctqWjI2R2Ec3VVZdPelr0WZk+cXhUbsSyjKq6VOyC/qApJlArfx
+         AkBnOlEBhXrZI1pyrJXrhuyp70fmjxOs1uhSOQ3Dp046ZCCs1hUnEY9VjB6jALNGiU7A
+         YydRChCJgXaaOEtNgLLhr1stZOKEr4dnBgUxhjKFwNH5VNLyvdmpRRE5PXZ5bu4c0U6F
+         i9L7QrUejS9QawIEq9CnkQ+1bRx3favrOx0C7OM8awDlhZ4MgGbwQZ5v5md50u9Hkilz
+         TDGg==
+X-Gm-Message-State: AOAM530pS1eefzDNzfqOqna3bH8m3wHf+yiFeiuIlx8qFQI/MgP+Pkv0
+        V+Pt0UgmAYDx7796RxE+GPzeyWRwSWkAM3omn9DoU/pOXKehfKayYdxyI5X61qJLw9N4dgTGeRh
+        vJfx4h5pVavWQuN/HetPrZq8u
+X-Received: by 2002:a37:62d6:: with SMTP id w205mr289253qkb.229.1601909176252;
+        Mon, 05 Oct 2020 07:46:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRfTKS3+jTPIJZ4QlireY6tUWjq/ctyLnV1eg1G0RryjdqD9T03AY8QFV8BktptD3/3u4pFw==
+X-Received: by 2002:a37:62d6:: with SMTP id w205mr289222qkb.229.1601909175969;
+        Mon, 05 Oct 2020 07:46:15 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i90sm303450qtd.92.2020.10.05.07.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 07:46:15 -0700 (PDT)
+From:   trix@redhat.com
+To:     njavali@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, natechancellor@gmail.com,
+        ndesaulniers@google.com
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] scsi: qla2xxx: initialize value
+Date:   Mon,  5 Oct 2020 07:45:44 -0700
+Message-Id: <20201005144544.25335-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit f8d4f44df056c5b504b0d49683fb7279218fd207 ]
+clang static analysis reports this problem:
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+qla_nx2.c:694:3: warning: 6th function call argument is
+  an uninitialized value
+        ql_log(ql_log_fatal, vha, 0xb090,
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In qla8044_poll_reg(), when reading the reg fails, the
+error is reported by reusing the timeout error reporter.
+Because the value is unset, a garbage value will be
+reported.  So initialize the value.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- fs/eventpoll.c | 37 ++++++++++++++++++-------------------
- 1 file changed, 18 insertions(+), 19 deletions(-)
+ drivers/scsi/qla2xxx/qla_nx2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index e5324642023d6..f287ec04b9a99 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1304,6 +1304,22 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
- 		RCU_INIT_POINTER(epi->ws, NULL);
- 	}
- 
-+	/* Add the current item to the list of active epoll hook for this file */
-+	spin_lock(&tfile->f_lock);
-+	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
-+	spin_unlock(&tfile->f_lock);
-+
-+	/*
-+	 * Add the current item to the RB tree. All RB tree operations are
-+	 * protected by "mtx", and ep_insert() is called with "mtx" held.
-+	 */
-+	ep_rbtree_insert(ep, epi);
-+
-+	/* now check if we've created too many backpaths */
-+	error = -EINVAL;
-+	if (full_check && reverse_path_check())
-+		goto error_remove_epi;
-+
- 	/* Initialize the poll table using the queue callback */
- 	epq.epi = epi;
- 	init_poll_funcptr(&epq.pt, ep_ptable_queue_proc);
-@@ -1326,22 +1342,6 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
- 	if (epi->nwait < 0)
- 		goto error_unregister;
- 
--	/* Add the current item to the list of active epoll hook for this file */
--	spin_lock(&tfile->f_lock);
--	list_add_tail_rcu(&epi->fllink, &tfile->f_ep_links);
--	spin_unlock(&tfile->f_lock);
--
--	/*
--	 * Add the current item to the RB tree. All RB tree operations are
--	 * protected by "mtx", and ep_insert() is called with "mtx" held.
--	 */
--	ep_rbtree_insert(ep, epi);
--
--	/* now check if we've created too many backpaths */
--	error = -EINVAL;
--	if (full_check && reverse_path_check())
--		goto error_remove_epi;
--
- 	/* We have to drop the new item inside our item list to keep track of it */
- 	spin_lock_irqsave(&ep->lock, flags);
- 
-@@ -1367,6 +1367,8 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
- 
- 	return 0;
- 
-+error_unregister:
-+	ep_unregister_pollwait(ep, epi);
- error_remove_epi:
- 	spin_lock(&tfile->f_lock);
- 	list_del_rcu(&epi->fllink);
-@@ -1374,9 +1376,6 @@ static int ep_insert(struct eventpoll *ep, struct epoll_event *event,
- 
- 	rb_erase(&epi->rbn, &ep->rbr);
- 
--error_unregister:
--	ep_unregister_pollwait(ep, epi);
--
- 	/*
- 	 * We need to do this because an event could have been arrived on some
- 	 * allocated wait queue. Note that we don't care about the ep->ovflist
+diff --git a/drivers/scsi/qla2xxx/qla_nx2.c b/drivers/scsi/qla2xxx/qla_nx2.c
+index 3a415b12dcec..01ccd4526707 100644
+--- a/drivers/scsi/qla2xxx/qla_nx2.c
++++ b/drivers/scsi/qla2xxx/qla_nx2.c
+@@ -659,7 +659,7 @@ static int
+ qla8044_poll_reg(struct scsi_qla_host *vha, uint32_t addr,
+ 	int duration, uint32_t test_mask, uint32_t test_result)
+ {
+-	uint32_t value;
++	uint32_t value = 0;
+ 	int timeout_error;
+ 	uint8_t retries;
+ 	int ret_val = QLA_SUCCESS;
 -- 
-2.25.1
+2.18.1
 
