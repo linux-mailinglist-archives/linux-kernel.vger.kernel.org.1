@@ -2,138 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99D7283B4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA0B283B74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgJEPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:41:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37116 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728815AbgJEPlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:41:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601912461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oW1Tkgb2hG9B9FfQz5daexKC4SibgqnT1L43hD3UHvA=;
-        b=siWcipuHhenmrJBe4dP6lR4NDNs/vxNjersBOj8MtQm9jwo9L0ltIzZVEMnkDEO1X3mtCV
-        FwXv52jXmCS14xyXh6vwDL6FIT4gWiOKYSXWCoSbV0//9VHVe7cwUSl7vpuS2H+PaMMhOR
-        Yc03c3LV4OTJWB0l30q/7R9oyu4M2RE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 942C8AC97;
-        Mon,  5 Oct 2020 15:41:01 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 17:41:00 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20201005154100.GF4555@dhcp22.suse.cz>
-References: <20200918194817.48921-1-urezki@gmail.com>
- <20200918194817.48921-3-urezki@gmail.com>
- <38f42ca1-ffcd-04a6-bf11-618deffa897a@suse.cz>
- <20200929220742.GB8768@pc636>
- <795d6aea-1846-6e08-ac1b-dbff82dd7133@suse.cz>
- <20201001192626.GA29606@pc636>
- <20201002071123.GB20872@dhcp22.suse.cz>
- <20201002085014.GC3227@techsingularity.net>
- <20201002090507.GB4555@dhcp22.suse.cz>
- <20201005150801.GC17959@pc636>
+        id S1728544AbgJEPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728471AbgJEPlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:41:50 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F65FC0613A9;
+        Mon,  5 Oct 2020 08:41:50 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n14so7175421pff.6;
+        Mon, 05 Oct 2020 08:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3I3YPnoyymOLRxx7NqmAJMc0vgFbPicg2EYWrAW4obk=;
+        b=Z86Ht0eU1yisE3oMG6SG2tlX4a24PbFvi3SRXqojVHV/MlgAqqG0opJQw8QHEBnZaq
+         5NPvb35oXiXytNOMnb1khmoZIP2FBbsn25JA2Q5ns01tZU9MV0ZXV2U51j3TrU2STTs/
+         cLLxUGsOiODHfwZ23G5zT/evZ00bEkR+T+Dmr/oNngbLupwUfvSj+6PnD/7RwtV0gEVl
+         vBvzj9FH1FqdShEJly26maxRkRpg9sGL9xmIC4Kv4IwUv1eNaCzKvuanSV4ZRU5+GrHx
+         qcoqKPHb5iPOefMga6UG9LihesonAxG0yC+hCDkk6savd06QLZCLK4KIoUY3/4Rul+mJ
+         td3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3I3YPnoyymOLRxx7NqmAJMc0vgFbPicg2EYWrAW4obk=;
+        b=KH6HP+5tLhAHzt4EHqmd2gl2X4+6nvwKnfUMIyUSdyx/nikpal5r9wU1LKZzT2HvKI
+         CMZq+bFui4lTMZ6jux9GJpFIrqeFel5oc0hqDuBRyEF5PqwRRq0/CtwI6ppZCDnDJpKR
+         Zydgi2yoXUz1WgTDyJvB0kUMwMS+fB0iyfRzrkBDNowCS569HQxTK5MSNA4dilSp7wBO
+         8VRTHJvMFJrzWZUywPZ1We2J6NvE/0oCw1oUxIX5rtZcNi6uoBYuzd312nVYeVSnl+kZ
+         ghVtj6vGi7t2bYjTkYYKI+2RffxpNB4uUQHkAmboDXe1W4HCTcWUb4QfXAePdIF6O2UZ
+         ultA==
+X-Gm-Message-State: AOAM532kjU1PwB+pHufZ5/JEGBC+F/FvM0BfuBB33OsTwrC+lssXFj0J
+        ulHeskmNngtsZDGsR5Nd2DZsClVW05BV9Q==
+X-Google-Smtp-Source: ABdhPJy5bSB5n+nhhY0Q243U1PqqeZp1IL7gLCsqsuIVp/Wnfbn0+HrhKZtuYQo+4oWScknvqLZzUQ==
+X-Received: by 2002:a63:474b:: with SMTP id w11mr70023pgk.376.1601912509622;
+        Mon, 05 Oct 2020 08:41:49 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id c3sm294407pfo.120.2020.10.05.08.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 08:41:46 -0700 (PDT)
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200930174419.345cc9b4@xhacker.debian>
+ <20200930190911.GU3996795@lunn.ch>
+ <bab6c68f-8ed7-26b7-65ed-a65c7210e691@gmail.com>
+ <20200930201135.GX3996795@lunn.ch>
+ <379683c5-3ce5-15a6-20c4-53a698f0a3d0@gmail.com>
+ <20201005165356.7b34906a@xhacker.debian>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [RFC] net: phy: add shutdown hook to struct phy_driver
+Message-ID: <95121d4a-0a03-0012-a845-3a10aa31f253@gmail.com>
+Date:   Mon, 5 Oct 2020 08:41:44 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005150801.GC17959@pc636>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201005165356.7b34906a@xhacker.debian>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 05-10-20 17:08:01, Uladzislau Rezki wrote:
-> On Fri, Oct 02, 2020 at 11:05:07AM +0200, Michal Hocko wrote:
-> > On Fri 02-10-20 09:50:14, Mel Gorman wrote:
-> > > On Fri, Oct 02, 2020 at 09:11:23AM +0200, Michal Hocko wrote:
-> > > > On Thu 01-10-20 21:26:26, Uladzislau Rezki wrote:
-> > > > > > 
-> > > > > > No, I meant going back to idea of new gfp flag, but adjust the implementation in
-> > > > > > the allocator (different from what you posted in previous version) so that it
-> > > > > > only looks at the flag after it tries to allocate from pcplist and finds out
-> > > > > > it's empty. So, no inventing of new page allocator entry points or checks such
-> > > > > > as the one you wrote above, but adding the new gfp flag in a way that it doesn't
-> > > > > > affect existing fast paths.
-> > > > > >
-> > > > > OK. Now i see. Please have a look below at the patch, so we fully understand
-> > > > > each other. If that is something that is close to your view or not:
-> > > > > 
-> > > > > <snip>
-> > > > > t a/include/linux/gfp.h b/include/linux/gfp.h
-> > > > > index c603237e006c..7e613560a502 100644
-> > > > > --- a/include/linux/gfp.h
-> > > > > +++ b/include/linux/gfp.h
-> > > > > @@ -39,8 +39,9 @@ struct vm_area_struct;
-> > > > >  #define ___GFP_HARDWALL                0x100000u
-> > > > >  #define ___GFP_THISNODE                0x200000u
-> > > > >  #define ___GFP_ACCOUNT         0x400000u
-> > > > > +#define ___GFP_NO_LOCKS                0x800000u
-> > > > 
-> > > > Even if a new gfp flag gains a sufficient traction and support I am
-> > > > _strongly_ opposed against consuming another flag for that. Bit space is
-> > > > limited. 
-> > > 
-> > > That is definitely true. I'm not happy with the GFP flag at all, the
-> > > comment is at best a damage limiting move. It still would be better for
-> > > a memory pool to be reserved and sized for critical allocations.
-> > 
-> > Completely agreed. The only existing usecase is so special cased that a
-> > dedicated pool is not only easier to maintain but it should be also much
-> > better tuned for the specific workload. Something not really feasible
-> > with the allocator.
-> > 
-> > > > Besides that we certainly do not want to allow craziness like
-> > > > __GFP_NO_LOCK | __GFP_RECLAIM (and similar), do we?
-> > > 
-> > > That would deserve to be taken to a dumpster and set on fire. The flag
-> > > combination could be checked in the allocator but the allocator path fast
-> > > paths are bad enough already.
-> > 
-> > If a new allocation/gfp mode is absolutely necessary then I believe that
-> > the most reasoanble way forward would be
-> > #define GFP_NO_LOCK	((__force gfp_t)0)
-> > 
-> Agree. Even though i see that some code should be adjusted for it. There are
-> a few users of the __get_free_page(0); So, need to double check it:
 
-Yes, I believe I have pointed that out in the previous discussion.
 
-> <snip>
-> [    0.650351] BUG: kernel NULL pointer dereference, address: 0000000000000010
-> [    0.651083] #PF: supervisor read access in kernel mode
-> [    0.651639] #PF: error_code(0x0000) - not-present page
-> [    0.652200] PGD 0 P4D 0
-> [    0.652523] Oops: 0000 [#1] SMP NOPTI
-> [    0.652668] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc7-next-20200930+ #140
-> [    0.652668] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [    0.652668] RIP: 0010:__find_event_file+0x21/0x80
-> <snip>
+On 10/5/2020 1:53 AM, Jisheng Zhang wrote:
+> On Wed, 30 Sep 2020 13:23:29 -0700 Florian Fainelli wrote:
 > 
-> Apart of that. There is a post_alloc_hook(), that gets called from the prep_new_page().
-> If "debug page alloc enabled", it maps a page for debug purposes invoking kernel_map_pages().
-> __kernel_map_pages() is ARCH specific. For example, powerpc variant uses sleep-able locks
-> what can be easily converted to raw variant. 
+> 
+>>
+>> On 9/30/2020 1:11 PM, Andrew Lunn wrote:
+>>> On Wed, Sep 30, 2020 at 01:07:19PM -0700, Florian Fainelli wrote:
+>>>>
+>>>>
+>>>> On 9/30/2020 12:09 PM, Andrew Lunn wrote:
+>>>>> On Wed, Sep 30, 2020 at 05:47:43PM +0800, Jisheng Zhang wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> A GE phy supports pad isolation which can save power in WOL mode. But once the
+>>>>>> isolation is enabled, the MAC can't send/receive pkts to/from the phy because
+>>>>>> the phy is "isolated". To make the PHY work normally, I need to move the
+>>>>>> enabling isolation to suspend hook, so far so good. But the isolation isn't
+>>>>>> enabled in system shutdown case, to support this, I want to add shutdown hook
+>>>>>> to net phy_driver, then also enable the isolation in the shutdown hook. Is
+>>>>>> there any elegant solution?
+>>>>>   
+>>>>>> Or we can break the assumption: ethernet can still send/receive pkts after
+>>>>>> enabling WoL, no?
+>>>>>
+>>>>> That is not an easy assumption to break. The MAC might be doing WOL,
+>>>>> so it needs to be able to receive packets.
+>>>>>
+>>>>> What you might be able to assume is, if this PHY device has had WOL
+>>>>> enabled, it can assume the MAC does not need to send/receive after
+>>>>> suspend. The problem is, phy_suspend() will not call into the driver
+>>>>> is WOL is enabled, so you have no idea when you can isolate the MAC
+>>>>> from the PHY.
+>>>>>
+>>>>> So adding a shutdown in mdio_driver_register() seems reasonable.  But
+>>>>> you need to watch out for ordering. Is the MDIO bus driver still
+>>>>> running?
+>>>>
+>>>> If your Ethernet MAC controller implements a shutdown callback and that
+>>>> callback takes care of unregistering the network device which should also
+>>>> ensure that phy_disconnect() gets called, then your PHY's suspend function
+>>>> will be called.
+>>>
+>>> Hi Florian
+>>>
+>>> I could be missing something here, but:
+>>>
+>>> phy_suspend does not call into the PHY driver if WOL is enabled. So
+>>> Jisheng needs a way to tell the PHY it should isolate itself from the
+>>> MAC, and suspend is not that.
+>>
+>> I missed that part, that's right if WoL is enabled at the PHY level then
+>> the suspend callback is not called, how about we change that and we
+>> always call the PHY's suspend callback? This would require that we audit
+> 
+> Hi all,
+> 
+> The PHY's suspend callback usually calls genphy_suspend() which will set
+> BMCR_PDOWN bit, this may break WoL. I think this is one the reason why
+> we ignore the phydrv->suspend() when WoL is enabled. If we goes to this
+> directly, it looks like we need to change each phy's suspend implementation,
+> I.E if WoL is enabled, ignore genphy_suspend() and do possible isolation;
+> If WoL is disabled, keep the code path as is.
+> 
+> So compared with the shutdown hook, which direction is better?
 
-Yes, there are likely more surprises like that. I am not sure about
-kasan, page owner (which depens on the stack unwinder) and others which
-hook into this path.
+I believe you will have an easier time to add an argument to the PHY 
+driver suspend's function to indicate the WoL status, or to move down 
+the check for WoL being enabled/supported compared to adding support for 
+shutdown into the MDIO bus layer, and then PHY drivers.
 -- 
-Michal Hocko
-SUSE Labs
+Florian
