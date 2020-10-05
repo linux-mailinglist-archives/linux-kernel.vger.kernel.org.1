@@ -2,198 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1522831FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16417283211
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgJEI2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:28:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgJEI2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:28:49 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DBF520776;
-        Mon,  5 Oct 2020 08:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601886529;
-        bh=jCtswKiG459H2C8CPf5ZmeX+FMSWF0/Phzu2cqrkLTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=stauSqrp7dBUXk1Y7D+05A3YuE0VA5eGvHYqu9N9lN+ZD+y0pFuyBgn36rHY3Gynz
-         qgVprU1GUPIyEoH3Zf+ttW6Ryw4OhgAul0EQzkA6xyzv639R1lw1nVbQ7lJhhgpkEY
-         p8HisDzW4i5NtphO683Gui6/pA6Q+tZAX6k8Duik=
-Date:   Mon, 5 Oct 2020 10:29:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        id S1725915AbgJEIc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:32:28 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43207 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbgJEIc2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:32:28 -0400
+Received: by mail-wr1-f68.google.com with SMTP id g12so3074582wrp.10;
+        Mon, 05 Oct 2020 01:32:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zz3WlImvfp2NAnIr/XDX6IouF1AWeXqfFzQhs33xWTM=;
+        b=jYWN+oWkTWL5WQM/ctgeeRxUGq7TRrDOgDZuj3FC1OGjO7Y4swXXrPFGsG8i3QGD9p
+         uNwZLH7KR+IP4kvIQZUQ2qeQcg//QiKWuhuu5bmq/+ShkpDnYbEfoxvOq2RpaA1366zO
+         Lx77C/XDoTkEGF3tnIpTqq23Z7apjUva2w2m+NTwsKY/Kd177fj6uHvAEFWm9nyXFgVu
+         g04PTwwinjtICIoMSm/h+jFajjQkeM6KcypSU6oBQ1I7EGunnsYV+wv1IbBT2n1Lj0Kr
+         rGPshan82ifsWTwOyc6HpNnBeLGDEMzlmiLsuShu21pZql3Cxd232qeaCJkU1w71SwC+
+         4QqA==
+X-Gm-Message-State: AOAM531tC1d0NLo8OYQ1fxB1WeJjBhyWGiwSpUbLgbgpLAyT8PjhT1eY
+        pHMgsqLjLiCwNPH4+J1fUOI=
+X-Google-Smtp-Source: ABdhPJwzu68lk8dlJGQlye261/63dWD7++THnJ4WCF1bjzabn9KCHp1QGnBm4IyViA/cX9hLId3m+A==
+X-Received: by 2002:adf:e3ce:: with SMTP id k14mr1947757wrm.230.1601886746154;
+        Mon, 05 Oct 2020 01:32:26 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.194])
+        by smtp.googlemail.com with ESMTPSA id p3sm11596934wmm.40.2020.10.05.01.32.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 05 Oct 2020 01:32:24 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 10:32:22 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     dmitry.torokhov@gmail.com
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Kukjin Kim <kgene@kernel.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-iio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-Message-ID: <20201005082935.GA2448@kroah.com>
-References: <20201003135449.GA2691@kroah.com>
- <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
- <20201003160713.GA1512229@kroah.com>
- <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
- <20201004105124.GA2429@kroah.com>
- <04e0af8618f95a4483f5a72ba90d4f8b1d9094bd.camel@hadess.net>
- <20201004131844.GA185109@kroah.com>
- <457d516913ebf5b73d2b250516f3d9e9c59fdfe9.camel@hadess.net>
+Subject: Re: [PATCH] iio: adc: exynos: do not rely on 'users' counter in ISR
+Message-ID: <20201005083222.GA8300@kozik-lap>
+References: <20201005052420.GA3262631@dtor-ws>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <457d516913ebf5b73d2b250516f3d9e9c59fdfe9.camel@hadess.net>
+In-Reply-To: <20201005052420.GA3262631@dtor-ws>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On Sun, Oct 04, 2020 at 03:23:18PM +0200, Bastien Nocera wrote:
-> On Sun, 2020-10-04 at 15:18 +0200, Greg Kroah-Hartman wrote:
-> > On Sun, Oct 04, 2020 at 02:17:06PM +0200, Bastien Nocera wrote:
-> > > On Sun, 2020-10-04 at 12:51 +0200, Greg Kroah-Hartman wrote:
-> > > > On Sat, Oct 03, 2020 at 08:33:18PM +0200, Marcel Holtmann wrote:
-> > > > > Hi Greg,
-> > > > > 
-> > > > > > > > This reverts commit
-> > > > > > > > 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2
-> > > > > > > > as it
-> > > > > > > > breaks all bluetooth connections on my machine.
-> > > > > > > > 
-> > > > > > > > Cc: Marcel Holtmann <marcel@holtmann.org>
-> > > > > > > > Cc: Sathish Narsimman <sathish.narasimman@intel.com>
-> > > > > > > > Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list
-> > > > > > > > when
-> > > > > > > > updating whitelist")
-> > > > > > > > Signed-off-by: Greg Kroah-Hartman
-> > > > > > > > <gregkh@linuxfoundation.org>
-> > > > > > > > ---
-> > > > > > > > net/bluetooth/hci_request.c | 41 ++----------------------
-> > > > > > > > ----
-> > > > > > > > ---------
-> > > > > > > > 1 file changed, 2 insertions(+), 39 deletions(-)
-> > > > > > > > 
-> > > > > > > > This has been bugging me for since 5.9-rc1, when all
-> > > > > > > > bluetooth devices
-> > > > > > > > stopped working on my desktop system.  I finally got the
-> > > > > > > > time
-> > > > > > > > to do
-> > > > > > > > bisection today, and it came down to this patch. 
-> > > > > > > > Reverting
-> > > > > > > > it on top of
-> > > > > > > > 5.9-rc7 restored bluetooth devices and now my input
-> > > > > > > > devices
-> > > > > > > > properly
-> > > > > > > > work.
-> > > > > > > > 
-> > > > > > > > As it's almost 5.9-final, any chance this can be merged
-> > > > > > > > now
-> > > > > > > > to fix the
-> > > > > > > > issue?
-> > > > > > > 
-> > > > > > > can you be specific what breaks since our guys and I also
-> > > > > > > think
-> > > > > > > the
-> > > > > > > ChromeOS guys have been testing these series of patches
-> > > > > > > heavily.
-> > > > > > 
-> > > > > > My bluetooth trackball does not connect at all.  With this
-> > > > > > reverted, it
-> > > > > > all "just works".
-> > > > > > 
-> > > > > > Same I think for a Bluetooth headset, can check that again if
-> > > > > > you
-> > > > > > really
-> > > > > > need me to, but the trackball is reliable here.
-> > > > > > 
-> > > > > > > When you run btmon does it indicate any errors?
-> > > > > > 
-> > > > > > How do I run it and where are the errors displayed?
-> > > > > 
-> > > > > you can do btmon -w trace.log and just let it run like tcdpump.
-> > > > 
-> > > > Ok, attached.
-> > > > 
-> > > > The device is not connecting, and then I open the gnome bluetooth
-> > > > dialog
-> > > > and it scans for devices in the area, but does not connect to my
-> > > > existing devices at all.
-> > > > 
-> > > > Any ideas?
-> > > 
-> > > Use bluetoothctl instead, the Bluetooth Settings from GNOME also
-> > > run a
-> > > discovery the whole time the panel is opened, and this breaks a
-> > > fair
-> > > number of poor quality adapters. This is worked-around in the most
-> > > recent version, but using bluetoothctl is a better debugging option
-> > > in
-> > > all cases.
-> > 
-> > Ok, but how do I use that tool?  How do I shut down the gnome
-> > bluetooth
-> > stuff?
+On Sun, Oct 04, 2020 at 10:24:20PM -0700, dmitry.torokhov@gmail.com wrote:
+> The order in which 'users' counter is decremented vs calling drivers'
+> close() method is implementation specific, and we should not rely on
+> it. Let's introduce driver private flag and use it to signal ISR
+> to exit when device is being closed.
 > 
-> You close the settings window...
+> This has a side-effect of fixing issue of accessing inut->users
+> outside of input->mutex protection.
 > 
-> > I need newbie steps here please for what to run and what to show you.
-> 
-> bluetoothctl connect "bluetooth address"
-> eg.
-> bluetoothctl connect "12:34:56:78:90"
+> Reported-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>  drivers/iio/adc/exynos_adc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 
-Ok, here that is on a clean 5.9-rc8 release:
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-$ bluetoothctl connect F1:85:91:79:73:70
-Attempting to connect to F1:85:91:79:73:70
-Failed to connect: org.bluez.Error.Failed
-
-I've attached the trace log from that effort.
-
-I'll go try Marcel's proposed patch now as well...
-
-thanks,
-
-greg k-h
-
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="trace.log"
-Content-Transfer-Encoding: quoted-printable
-
-btsnoop=00=00=00=00=01=00=00=07=D1=00=00=00!=00=00=00!=FF=FF=00=0C=00=00=00=
-=00=00=E2=8E=9BM#=3D=CALinux version 5.9.0-rc8 (x86_64)=00=00=00=00!=00=00=
-=00!=FF=FF=00=0C=00=00=00=00=00=E2=8E=9BM#=3D=CCBluetooth subsystem version=
- 2.22=00=00=00=00=10=00=00=00=10=00=00=00=00=00=00=00=00=00=E2=8E=9BM#=3D=
-=CD=00=01pe=F6=85=E0Phci0=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=08=
-=00=00=00=00=00=E2=8E=9BM#=3D=CD=00=00=00=08=00=00=00=08=00=00=00
-=00=00=00=00=00=E2=8E=9BM#=3D=CEpe=F6=85=E0P=02=00=00=00=00=1E=00=00=00=1E=
-=FF=FF=00=0E=00=00=00=00=00=E2=8E=9BM#=3D=CE=01=00=00=00=02=00=01=12=00=01=
-=00=00=00=10bluetoothd=00=00=00=00=00=00=00=00=00	=00=00=00	=00=00=00=02=00=
-=00=00=00=00=E2=8E=9BN=12=13=FCB =06=00=00=00=00=00=00=00=00=00=06=00=00=00=
-=06=00=00=00=03=00=00=00=00=00=E2=8E=9BN=13=DDg=0E=04=02B =00=00=00=00=0B=
-=00=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=9BN=13=DD=8CA =08=00=01=01=00=
-`=00`=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=9BN=13=ED=
-t=0E=04=01A =00=00=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=9BN=13=
-=ED=A1B =06=01=01=00=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=
-=00=00=E2=8E=9BN=13=FD=19=0E=04=02B =00=00=00=00	=00=00=00	=00=00=00=02=00=
-=00=00=00=00=E2=8E=9BP=85.)B =06=00=00=00=00=00=00=00=00=00=06=00=00=00=06=
-=00=00=00=03=00=00=00=00=00=E2=8E=9BP=87 =B0=0E=04=02B =00=00=00=00=0B=00=
-=00=00=0B=00=00=00=02=00=00=00=00=00=E2=8E=9BP=87 =FFA =08=00=01=01=00`=000=
-=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=8E=9BP=87,N=0E=04=
-=01A =00=00=00=00	=00=00=00	=00=00=00=02=00=00=00=00=00=E2=8E=9BP=87,=8FB =
-=06=01=01=00=00=00=00=00=00=00=06=00=00=00=06=00=00=00=03=00=00=00=00=00=E2=
-=8E=9BP=87:`=0E=04=02B =00
---pf9I7BMVVzbSWLtt--
+Best regards,
+Krzysztof
