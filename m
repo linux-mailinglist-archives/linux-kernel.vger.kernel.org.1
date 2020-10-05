@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E945282EA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 03:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58279282EA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 03:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgJEBbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 21:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S1725907AbgJEBbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 21:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbgJEBbM (ORCPT
+        with ESMTP id S1725848AbgJEBbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 21:31:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9867C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 18:31:11 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dt13so145982ejb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 04 Oct 2020 18:31:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CD5SBm3/k0Ur4raQN8g9T0RxF/NmKyvFSpy4+yfD9sk=;
-        b=Y+H61gCLmfNTTS4JMK8PGWoMU16hNcXcQEEpS8zS8zPM/9eWzYk3EeXQwCP5MnkUe7
-         gNqa7sV3vWHsE4TA51zW7JFUYTynr5yAgiv6OTj3t+tpWcBLLLSQBo5UcUKjJpDkCMdM
-         MaUvwW+vapI037EuoBFnxBAu2KynoI3RLBiXdETKl5XzK18JRMSJr72DM5t7DLGaid89
-         rzHxxlqNkE+4vSxvvp2f1htj/e6D/bZPU3www+f5E+T0Sz/23lnfEZLpsBx9zD9WNXVK
-         aT/Y3cI8CKqK5mNSAofu3kVN1tVTg86RRre9dn6EDtGpqqL5tylmDc0ZbxAB3R5ATUgJ
-         rkfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CD5SBm3/k0Ur4raQN8g9T0RxF/NmKyvFSpy4+yfD9sk=;
-        b=X+RpxflN92jBlGNzxgPmInopiCk9Mbn1U43moUsqUIR2ETzD0/DDQadlRuYyBSLfDR
-         MUnEjS0KN+LasV7U5yIo5dM2Z4nS52hZ5bjxUlckoF2QzXBTc+1dKh7DXtMlFpPslo4x
-         bUDCjToqY+4mXNBXtVfaaUodsvjMxdDqTNGXWLELHsflYdaWwuCPmX9j/23m8ZUzgSOz
-         NhuZftOBOIfpeEqQNJF2w0+CjV0K9sgbNeCMAlU+YbpUy6MF1MKgl/kgy4lT0NI4ttoX
-         2kPPQ4LGmtJ5iHdjKP5fN+OFdUnb7QjeMjdoZ+O2D4Wd+ewQZdeP7d/e0gL6D77rh/Na
-         f0EA==
-X-Gm-Message-State: AOAM532AuE8kiwPXc5I166mXEWu2p0cG+1xRa4EocSdjyhqa9ysx1gLQ
-        ZMwn5lGsV2fZPFHtES2i/YN6WCFE1yFRmg+x7VIe5Q==
-X-Google-Smtp-Source: ABdhPJxa/HUBqDnJGQEr80nERMqxQKclVk7SauN1nvsVxGnJ+WoTz7RM0b1rJ8WuuhDeABsmfMQxhJfWHL1mB9XDYTo=
-X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr13108506eja.233.1601861470277;
- Sun, 04 Oct 2020 18:31:10 -0700 (PDT)
+        Sun, 4 Oct 2020 21:31:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76957C0613CE;
+        Sun,  4 Oct 2020 18:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0qSk/poAAlh1rgBkhNlRg8Se+ak0sbI4FbkVJHltdr8=; b=mLsD6Ikb8fCqRb4wFjxC2fwp7H
+        6AZNCciLtFbL3K6A/wkL/KkLBPZy63j6xad5I+eGexCvUSzAawRSWB0tAdmZ7ZjYWVMF3u1f4beLl
+        EbuXu14fMeGwt9DUP7PyljNUqC8MBZec4xbzRZSYz6ZN6GG5dYcqh1bJlJrWFT9cDzBmtFSPtlLJu
+        kIIBNzWc4yqOVkAo8+t3bFu9lVqUhmSdJJ+4WqfNVlVt1NZqh73O8P6aEucOpbm07TzfjFJ9w15hx
+        OCTIdqdw4YvYD+7ySVKJ8qdr7E4U+75LrjQl9Q7jSF/VaWMm5twQhGbPE9SWxKPX6+Og1NAIGU/Az
+        +viEtQWA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPFL3-00023F-T2; Mon, 05 Oct 2020 01:30:54 +0000
+Date:   Mon, 5 Oct 2020 02:30:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 11/24] x86/sgx: Add SGX enclave driver
+Message-ID: <20201005013053.GJ20115@casper.infradead.org>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-12-jarkko.sakkinen@linux.intel.com>
+ <20201003195440.GD20115@casper.infradead.org>
+ <20201004215049.GA43926@linux.intel.com>
+ <20201004222750.GI20115@casper.infradead.org>
+ <20201004234153.GA49415@linux.intel.com>
 MIME-Version: 1.0
-References: <CAG48ez1+ok5c5PK4DjA6-rYkg9qPeKoRrJmc5jsGf=TZZbShJg@mail.gmail.com>
- <CAG48ez1kMuPUW8VKp=9=KDLVisa-zuqp+DbYjc=A-kGUi_ik3A@mail.gmail.com>
- <CANN689H9hXzaV0_vpFfrvjQD6xAEaPnjok_17zWGHumRNs-ZWg@mail.gmail.com>
- <CAG48ez2LdreJtHcZBL=t010PghjVECcsat2e2kzgakDvR0ue5w@mail.gmail.com> <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
-In-Reply-To: <CANN689H6fQkSXL8U0M-MoSrw8b8cQFMDaTRKr2v8oacZJ_FhKA@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 5 Oct 2020 03:30:43 +0200
-Message-ID: <CAG48ez0LuG9nULaBF_3ofE--u=TBgbxVdACthpb8wtJhADO02w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mmap locking API: Order lock of nascent mm outside
- lock of live mm
-To:     Michel Lespinasse <walken@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201004234153.GA49415@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 3, 2020 at 11:30 PM Michel Lespinasse <walken@google.com> wrote:
-> Unrelated to the above: copy_from_user and copy_to_user should not be
-> called with mmap_lock held; it may be worth adding these assertions
-> too (probably in separate patches) ?
+On Mon, Oct 05, 2020 at 02:41:53AM +0300, Jarkko Sakkinen wrote:
+> On Sun, Oct 04, 2020 at 11:27:50PM +0100, Matthew Wilcox wrote:
+> > 	int ret = 0;
+> > 
+> > 	mutex_lock(&encl->lock);
+> > 	rcu_read_lock();
+> 
+> Right, so xa_*() take RCU lock implicitly and xas_* do not.
 
-We already have that: All (hopefully?) the userspace accessors call
-might_fault(), and that does might_lock_read(&current->mm->mmap_lock)
-(if we're not running in a lazytlb kernel thread or KERNEL_DS is on or
-we're in IRQ context or page faults have explicitly been disabled).
+Not necessarily the RCU lock ... I did document all this in xarray.rst:
 
+https://www.kernel.org/doc/html/latest/core-api/xarray.html
 
-But another place where lockdep asserts should be added is find_vma();
-there are currently several architectures that sometimes improperly
-call that with no lock held:
+> > 	while (xas.index < idx_end) {
+> > 		page = xas_next(&xas);
+> 
+> It should iterate through every possible page index within the range,
+> even the ones that do not have an entry, i.e. this loop also checks
+> that there are no empty slots.
+> 
+> Does xas_next() go through every possible index, or skip the non-empty
+> ones?
 
-SPARC's arch_validate_prot():
-https://lore.kernel.org/linux-mm/CAG48ez3YsfTfOFKa-Po58e4PNp7FK54MFbkK3aUPSRt3LWtxQA@mail.gmail.com/
+xas_next(), as its documentation says, will move to the next array
+index:
 
-nios2 sys_cacheflush():
-https://lore.kernel.org/linux-mm/CAG48ez3hxeXU29UGWRH-gRXX2jb5Lc==npbXFt8UDrWO4eHZdQ@mail.gmail.com/
+https://www.kernel.org/doc/html/latest/core-api/xarray.html#c.xas_next
 
-nds32 sys_cacheflush():
-https://lore.kernel.org/linux-mm/CAG48ez1UnQEMok9rqFQC4XHBaMmBe=eaedu8Z_RXdjFHTna_LA@mail.gmail.com/
+> > 		if (!page || (~page->vm_max_prot_bits & vm_prot_bits))
+> > 			ret = -EACCESS;
+> > 			break;
+> > 		}
+> > 	}
+> > 	rcu_read_unlock();
+> > 	mutex_unlock(&encl->lock);
+> 
+> In my Geminilake NUC the maximum size of the address space is 64GB for
+> an enclave, and it is not fixed but can grow in microarchitectures
+> beyond that.
+> 
+> That means that in (*artificial*) worst case the locks would be kept for
+> 64*1024*1024*1024/4096 = 16777216 iterations.
+
+Oh, there's support for that on the XArray API too.
+
+        xas_lock_irq(&xas);
+        xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+                xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+                if (++tagged % XA_CHECK_SCHED)
+                        continue;
+
+                xas_pause(&xas);
+                xas_unlock_irq(&xas);
+                cond_resched();
+                xas_lock_irq(&xas);
+        }
+        xas_unlock_irq(&xas);
+
