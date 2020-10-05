@@ -2,112 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF99283500
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C7D2834FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgJELbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:31:36 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37845 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbgJELbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:31:36 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id E255C5C00D0;
-        Mon,  5 Oct 2020 07:31:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:31:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ZIQmHdb/ZtkJpXvL4aNPLntGSaV
-        8oOLW2+hwiNNW+yQ=; b=cPUt+IEIUBnnrbU1fcJM3em4UWoMW3+YJhb2VMMPMY/
-        4FWf0iefoGz8Qxttz4WcXJ/3GIYcZVTcLxFDIHeY5IfilBSyud0r6pV7iDZKZLTX
-        N5oGlZdGDwgs0U87Egdea31wy8i5Nmy0ULzQOX+DtqTN2mmI9FIdRXh8k/8H/mHy
-        qvgIvLhBoA+3TA6fLt7RcYtfg8MHkGhe3g/eOt/I9QiCBbvClGwcC86EFAnYXwnd
-        vBUHopOcrDSJVAIWO6k8gML9zcp9RJuW2CgC3b47cPaeCzG3c46vZc+gXqSfGdaw
-        BHCdtuBUXimisUBo1EfWUQim9a/kwCFknpuFE5SYjiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZIQmHd
-        b/ZtkJpXvL4aNPLntGSaV8oOLW2+hwiNNW+yQ=; b=eIqwday2T1qbW2tZmsFpXn
-        VEXdLzcXiTp69kmYJs+zeK8PdABcexL2hBr5Nbnk1/f+decWSXPbJiTRqDrLQvb8
-        X0iaYuaS6uv29TMc87eQtyMCj/J/fj07V1n0ZlNUF9aD9YliuHf79R9TyTS5HQNM
-        X+3W7fC0/TgvzxRXYXaGUFBSPYNamB8pv4q4C+LMTQcO+BjEZIqhXLWL95WJsgU1
-        50xSpHzhFMn94HE+FqY8wB61HyzyNmLNWnbKeI+oaeJvu7TTPE4q286/NM7spe0w
-        xnHB1yDmkORcWw1NljvtwoBL0krmREM0cnj6QDqsn2FF2E5zuKjyexyem3Pm/tBQ
-        ==
-X-ME-Sender: <xms:FgR7X3gazs2SINpDUNy27biQpcllfLHk6yQ2alcMchCt3pAmd1OUJg>
-    <xme:FgR7X0AxH4s5srbXESHwSU3Kr8aFSsDyvcQPetpo1ETf-V-n3N8o_GteFICulZF68
-    X9qNGkCh77Vxy3o4U0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:FgR7X3HQ5yDcuhmRZP0sjRz-4vIMsKJvMnFmOvOSR1xT9uFCyKkwkQ>
-    <xmx:FgR7X0SyCLOXCfu_CuicQx3jt7OrIyg6szx_7UzuXtHMQJ5XTbJGmA>
-    <xmx:FgR7X0zD0JXr-WFFXJWzruqvjYC55MmYvYuwKCYXYPYBs4-R321f3A>
-    <xmx:FgR7X3yLt9Qx3uMrPJnGhwZXvOLxfrywy5lFqarDyKtcxXqdlJdARg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 631E83280059;
-        Mon,  5 Oct 2020 07:31:34 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 13:31:33 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/25] ASoC: sun8i-codec: Round up the LRCK divisor
-Message-ID: <20201005113133.vftzhf45ctzzmbdq@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-14-samuel@sholland.org>
+        id S1726143AbgJELbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725843AbgJELbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 07:31:04 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F502064C;
+        Mon,  5 Oct 2020 11:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601897463;
+        bh=FH9WYU8EUwbqVyg7R8YladPLPaMYFL3mG2J76fWdYdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SGzQ+pEBTHBOuMJqLi9vsd+UwkGtAtftY+efugpZWwNboJiUGo8hJA/8IMDsFcWP2
+         +gQBR3Og6KJXtoWxw7lWgdQMAnzv+hWaF3f3rEW8v2H6j6HT1xB//THno3Jv76XWpn
+         mrwJJMkuN5Vwhj+Cfd/sQB0IUzOzHV99SC78jHhg=
+Date:   Mon, 5 Oct 2020 13:31:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     minyard@acm.org, Jiri Slaby <jirislaby@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Corey Minyard <cminyard@mvista.com>
+Subject: Re: [PATCH v2] drivers:tty:pty: Fix a race causing data loss on close
+Message-ID: <20201005113149.GA444220@kroah.com>
+References: <20201002130304.16728-1-minyard@acm.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j7tj6ihkcu4iiffd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-14-samuel@sholland.org>
+In-Reply-To: <20201002130304.16728-1-minyard@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 02, 2020 at 08:03:04AM -0500, minyard@acm.org wrote:
+> From: Corey Minyard <cminyard@mvista.com>
+> 
+> If you write to a pty master an immediately close the pty master, the
+> receiver might get a chunk of data dropped, but then receive some later
+> data.  That's obviously something rather unexpected for a user.  It
+> certainly confused my test program.
+> 
+> It turns out that tty_vhangup() gets called from pty_close(), and that
+> causes the data on the slave side to be flushed, but due to races more
+> data can be copied into the slave side's buffer after that.  Consider
+> the following sequence:
+> 
+> thread1          thread2         thread3
+> -------          -------         -------
+>  |                |-write data into buffer,
+>  |                | n_tty buffer is filled
+>  |                | along with other buffers
+>  |                |-pty_close()
+>  |                |--tty_vhangup()
+>  |                |---tty_ldisc_hangup()
+>  |                |----n_tty_flush_buffer()
+>  |                |-----reset_buffer_flags()
+>  |-n_tty_read()   |
+>  |--up_read(&tty->termios_rwsem);
+>  |                |------down_read(&tty->termios_rwsem)
+>  |                |------clear n_tty buffer contents
+>  |                |------up_read(&tty->termios_rwsem)
+>  |--tty_buffer_flush_work()       |
+>  |--schedules work calling        |
+>  |  flush_to_ldisc()              |
+>  |                                |-flush_to_ldisc()
+>  |                                |--receive_buf()
+>  |                                |---tty_port_default_receive_buf()
+>  |                                |----tty_ldisc_receive_buf()
+>  |                                |-----n_tty_receive_buf2()
+>  |                                |------n_tty_receive_buf_common()
+>  |                                |-------down_read(&tty->termios_rwsem)
+>  |                                |-------__receive_buf()
+>  |                                |-------copies data into n_tty buffer
+>  |                                |-------up_read(&tty->termios_rwsem)
+>  |--down_read(&tty->termios_rwsem)
+>  |--copy buffer data to user
+> 
+> >From this sequence, you can see that thread2 writes to the buffer then
+> only clears the part of the buffer in n_tty.  The n_tty receive buffer
+> code then copies more data into the n_tty buffer.
+> 
+> This change checks to see if the tty is being hung up before copying
+> anything in n_tty_receive_buf_common().  It has to be done after the
+> tty->termios_rwsem semaphore is claimed, for reasons that should be
+> apparent from the sequence above.
+> 
+> Signed-off-by: Corey Minyard <cminyard@mvista.com>
+> ---
+> 
+> Changes since v1: Added lines to make the sequence diagram clearer.
+> 
+> I sent a program to reproduce this, I extended it to prove it wasn't the
+> test program that caused the issue, and I've uploaded it to:
+>   http://sourceforge.net/projects/ser2net/files/tmp/testpty.c
+> if you want to run it.  It has a lot of comments that explain what is
+> going on.
+> 
+> This is not a very satisfying fix, though.  It works reliably, but it
+> doesn't seem right to me.  My inclination was to remove the up and down
+> semaphore around tty_buffer_flush_work() in n_tty_read(), as it just
+> schedules some work, no need to unlock for that.  But that resulted
+> in a deadlock elsewhere, so that up/down on the semaphore is there for
+> another reason.
+> 
+> The locking in the tty code is really hard to follow.  I believe this is
+> actually a locking problem, but fixing it looks daunting to me.
+> 
+> Another way to fix this that occurred just occurred to me would be to
+> clear all the buffers in pty_close().
+> 
+> -corey
+> 
+> 
+>  drivers/tty/n_tty.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> index 1794d84e7bf6..1c33c26dc229 100644
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+> @@ -1704,6 +1704,9 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
+>  
+>  	down_read(&tty->termios_rwsem);
+>  
+> +	if (test_bit(TTY_HUPPING, &tty->flags))
+> +		goto out_upsem;
+> +
+>  	do {
+>  		/*
+>  		 * When PARMRK is set, each input char may take up to 3 chars
+> @@ -1760,6 +1763,7 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
+>  	} else
+>  		n_tty_check_throttle(tty);
+>  
+> +out_upsem:
+>  	up_read(&tty->termios_rwsem);
+>  
+>  	return rcvd;
+> -- 
+> 2.17.1
+> 
 
---j7tj6ihkcu4iiffd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Jiri, any thoughts about this?  At first glance, it looks sane to me,
+but a second review would be great.
 
-On Wed, Sep 30, 2020 at 09:11:36PM -0500, Samuel Holland wrote:
-> The codec supports only power-of-two BCLK/LRCK divisors. If either the
-> slot width or the number of slots is not a power of two, the LRCK
-> divisor must be rounded up to provide enough space. To do that, use
-> order_base_2 (instead of ilog2, which rounds down).
->=20
-> Since the rounded divisor is also needed for setting the SYSCLK/BCLK
-> divisor, return the order base 2 instead of fully calculating the
-> hardware register encoding.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+thanks,
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Maxime
-
---j7tj6ihkcu4iiffd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sEFQAKCRDj7w1vZxhR
-xRC4AP9cMQdx9DuUE6bytBFkzj2hACb3LUETn/mRypWtZtB3egEAk3UyKIzvUWNB
-U8VvDTubU4PKI/UIlKt28CTY5znGdA8=
-=ases
------END PGP SIGNATURE-----
-
---j7tj6ihkcu4iiffd--
+greg k-h
