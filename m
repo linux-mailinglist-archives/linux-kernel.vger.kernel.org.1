@@ -2,61 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF165283234
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF61283235
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgJEIiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:38:21 -0400
-Received: from verein.lst.de ([213.95.11.211]:58129 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgJEIiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:38:20 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5276867373; Mon,  5 Oct 2020 10:38:17 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 10:38:17 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Jens Axboe <axboe@kernel.dk>,
-        Keith Busch <kbusch@kernel.org>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH blk-next 1/2] blk-mq-rdma: Delete not-used multi-queue
- RDMA map queue code
-Message-ID: <20201005083817.GA14908@lst.de>
-References: <20200929091358.421086-1-leon@kernel.org> <20200929091358.421086-2-leon@kernel.org> <20200929102046.GA14445@lst.de> <20200929103549.GE3094@unreal> <879916e4-b572-16b9-7b92-94dba7e918a3@grimberg.me> <20201002064505.GA9593@lst.de> <14fab6a7-f7b5-2f9d-e01f-923b1c36816d@grimberg.me>
+        id S1726127AbgJEIiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:38:25 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:40995 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgJEIiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:38:24 -0400
+Received: by mail-il1-f208.google.com with SMTP id f10so6705807ilj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:38:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/X0hny45nTAJMYRYWT5kLxsV4E880MCOQ1NBrS8q5FA=;
+        b=g2xaheNFBmgEpOXkIS46vnpxJbrejhpDfbYaVPq+fs07YIumhEJTXj0p9RsJwC3/ga
+         rRL0Y1AoQrfCG/zPApMgLhItH0Gn4UGaQz6Vet9mHVouZNsatkmkOV9PdW7jceQxkwA3
+         ylhOI8yGQ+oSCrtg15GPxZM+YZ7L2l6Ow4Rb6cfQRJ3OV31TQqUUGm5h8Y7f6eCMOWPP
+         nn37jDRluStMjEU9CVYpq9VeglITFuDmt/UuH/VVNQAcm9gYdYmk51ZX7r/SxANZwaPp
+         qCKoQB1QRPSVkbRtvmTArwLyco/uE1Pqiph70FS/rokiUheg5JEKqmnZPAYdg66qxmXX
+         xlMA==
+X-Gm-Message-State: AOAM530vqX6Ao7gy6dA7ntmDljHy1SomCdMAjPmBzi07rpUkvUBwQhZE
+        +aemPwV7j29wbiVIuzokAvUfpHp1wK52lVDEFoXdO3foMDRl
+X-Google-Smtp-Source: ABdhPJyIyPhScsYqZWWyyWaEryIxyoXWd7m0pZF+x3CfI1nk/ejhYBvuelFHDDwWnfF5pMttNGsjus/AyYMPovd5FTWpeUmM24wC
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14fab6a7-f7b5-2f9d-e01f-923b1c36816d@grimberg.me>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a05:6e02:1392:: with SMTP id d18mr3017810ilo.196.1601887103768;
+ Mon, 05 Oct 2020 01:38:23 -0700 (PDT)
+Date:   Mon, 05 Oct 2020 01:38:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca5ab205b0e8675a@google.com>
+Subject: INFO: trying to register non-static key in clear_inode (2)
+From:   syzbot <syzbot+d8dcf068719ec73f6ea9@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 01:20:35PM -0700, Sagi Grimberg wrote:
->> Well, why would they change it?  The whole point of the infrastructure
->> is that there is a single sane affinity setting for a given setup. Now
->> that setting needed some refinement from the original series (e.g. the
->> current series about only using housekeeping cpus if cpu isolation is
->> in use).  But allowing random users to modify affinity is just a receipe
->> for a trainwreck.
->
-> Well allowing people to mangle irq affinity settings seem to be a hard
-> requirement from the discussions in the past.
->
->> So I think we need to bring this back ASAP, as doing affinity right
->> out of the box is an absolute requirement for sane performance without
->> all the benchmarketing deep magic.
->
-> Well, it's hard to say that setting custom irq affinity settings is
-> deemed non-useful to anyone and hence should be prevented. I'd expect
-> that irq settings have a sane default that works and if someone wants to
-> change it, it can but there should be no guarantees on optimal
-> performance. But IIRC this had some dependencies on drivers and some
-> more infrastructure to handle dynamic changes...
+Hello,
 
-The problem is that people change random settings.  We need to generalize
-it into a sane API (e.g. the housekeeping CPUs thing which totally makes
-sense).
+syzbot found the following issue on:
+
+HEAD commit:    549738f1 Linux 5.9-rc8
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=138b8993900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=d8dcf068719ec73f6ea9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d8dcf068719ec73f6ea9@syzkaller.appspotmail.com
+
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 7216 Comm: syz-executor.5 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894 [inline]
+ register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
+ __lock_acquire+0x101/0x5780 kernel/locking/lockdep.c:4320
+ lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+ _raw_spin_lock_irq+0x94/0xd0 kernel/locking/spinlock.c:167
+ spin_lock_irq include/linux/spinlock.h:379 [inline]
+ clear_inode+0x1b/0x1e0 fs/inode.c:529
+ shmem_evict_inode+0x240/0xbc0 mm/shmem.c:1182
+ evict+0x2ed/0x750 fs/inode.c:576
+ iput_final fs/inode.c:1652 [inline]
+ iput.part.0+0x424/0x850 fs/inode.c:1678
+ iput+0x58/0x70 fs/inode.c:1668
+ do_unlinkat+0x40b/0x660 fs/namei.c:3902
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f4f549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000090bed1c EFLAGS: 00000212 ORIG_RAX: 000000000000000a
+RAX: ffffffffffffffda RBX: 00000000090bedac RCX: 000000005f7aa726
+RDX: 0000000009908228 RSI: 0000000000000000 RDI: 00000000080d8a9e
+RBP: 00000000090bedac R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+------------[ cut here ]------------
+kernel BUG at fs/inode.c:533!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 7216 Comm: syz-executor.5 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:clear_inode+0x189/0x1e0 fs/inode.c:533
+Code: 75 38 e8 aa 5e ad ff 48 c7 83 d8 00 00 00 60 00 00 00 5b 5d 41 5c c3 e8 95 5e ad ff 0f 0b e8 8e 5e ad ff 0f 0b e8 87 5e ad ff <0f> 0b e8 80 5e ad ff 0f 0b e8 79 5e ad ff 0f 0b e8 72 5e ad ff 0f
+RSP: 0018:ffffc90006677c38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88800011c120 RCX: 0000000000000000
+RDX: ffff8880910aa380 RSI: ffffffff81c8e009 RDI: 0000000000000001
+RBP: ffff88800011c4c8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000031323754 R12: ffff88800011c350
+R13: ffff888086128878 R14: ffff88800011c0c8 R15: ffff88800011c0c8
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0063) knlGS:0000000009907900
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000002001d000 CR3: 00000000a4575000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ shmem_evict_inode+0x240/0xbc0 mm/shmem.c:1182
+ evict+0x2ed/0x750 fs/inode.c:576
+ iput_final fs/inode.c:1652 [inline]
+ iput.part.0+0x424/0x850 fs/inode.c:1678
+ iput+0x58/0x70 fs/inode.c:1668
+ do_unlinkat+0x40b/0x660 fs/namei.c:3902
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f4f549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000090bed1c EFLAGS: 00000212 ORIG_RAX: 000000000000000a
+RAX: ffffffffffffffda RBX: 00000000090bedac RCX: 000000005f7aa726
+RDX: 0000000009908228 RSI: 0000000000000000 RDI: 00000000080d8a9e
+RBP: 00000000090bedac R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 9126b3e9e9b64308 ]---
+RIP: 0010:clear_inode+0x189/0x1e0 fs/inode.c:533
+Code: 75 38 e8 aa 5e ad ff 48 c7 83 d8 00 00 00 60 00 00 00 5b 5d 41 5c c3 e8 95 5e ad ff 0f 0b e8 8e 5e ad ff 0f 0b e8 87 5e ad ff <0f> 0b e8 80 5e ad ff 0f 0b e8 79 5e ad ff 0f 0b e8 72 5e ad ff 0f
+RSP: 0018:ffffc90006677c38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88800011c120 RCX: 0000000000000000
+RDX: ffff8880910aa380 RSI: ffffffff81c8e009 RDI: 0000000000000001
+RBP: ffff88800011c4c8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000031323754 R12: ffff88800011c350
+R13: ffff888086128878 R14: ffff88800011c0c8 R15: ffff88800011c0c8
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0063) knlGS:0000000009907900
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000090c7850 CR3: 00000000a4575000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
