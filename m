@@ -2,271 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E290E2836F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0112836F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgJENwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:52:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42092 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725903AbgJENwd (ORCPT
+        id S1726317AbgJENwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJENwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:52:33 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 095DX3WC031074;
         Mon, 5 Oct 2020 09:52:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=5Tu85tMvxAfJtn3MRQVpZy6Rxyaa7xa4ANZfREPO0JU=;
- b=ISIc+mk7tYR1ygGthTa3gCdWWknPd7fkpubn1HBPXkyDSaRuMQjbpv11zmLUo2ldaFJs
- h24VtZYJykrtFMzE5aDKWfrCSc6cjZQjIZXkaMZECIZJoVnByG+TjhrQbv9uZP7QUfbO
- G5N+rX2AV2CKdt7priGfdJYTONoxkp9NgyR8MSGGP92lN+yPxXsmy+CxgbJVvAYECWov
- XAKxHh6rMM476eOM9it2CTsUfFQhvP8xTFGti8MF3Oy2+MW/5SWqaRFdAdc1QAXhNDkT
- e1Yn2wuTCgJ7YDhKB1WjFFNUuMWOjburW9Cr45tbs13g9/blMDbUDKWNQSSz9UHzHmKW LQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3403qwt7rr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 09:52:31 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 095DXc0W033785;
-        Mon, 5 Oct 2020 09:52:30 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3403qwt7ra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 09:52:30 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 095DlO3x011710;
-        Mon, 5 Oct 2020 13:52:29 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01dal.us.ibm.com with ESMTP id 33xgx93vf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 05 Oct 2020 13:52:29 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 095DqRY718415884
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 5 Oct 2020 13:52:28 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB014112061;
-        Mon,  5 Oct 2020 13:52:27 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47EDD112064;
-        Mon,  5 Oct 2020 13:52:26 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.60.106])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  5 Oct 2020 13:52:26 +0000 (GMT)
-Subject: Re: [PATCH v2 3/5] vfio-pci/zdev: define the vfio_zdev header
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     cohuck@redhat.com, schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1601668844-5798-1-git-send-email-mjrosato@linux.ibm.com>
- <1601668844-5798-4-git-send-email-mjrosato@linux.ibm.com>
- <20201002154417.20c2a7ef@x1.home>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <8a71af3b-f8fc-48b2-45c6-51222fd2455b@linux.ibm.com>
-Date:   Mon, 5 Oct 2020 09:52:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4A6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 06:52:31 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t9so1031287wrq.11
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BU4boLaeL27WfaueZ0RdQJHqbd/z9v+OnOYM/rLZ3Ow=;
+        b=DUZjBumV8JuqrnnyjcXwlYtvbycyKoyCydnmMpPQH9elgQIqVsFSVENOhXLSZQz0SY
+         2A1FxJuN/0Ixrdr3crtRgtSn7frljAGHGD8X+yx3hBOuw6YvXP1/UPBIobGscFEJry/7
+         uHb1Zqr3YsAjZ8yb6SNKV4aZt58w1WVzlhWqY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=BU4boLaeL27WfaueZ0RdQJHqbd/z9v+OnOYM/rLZ3Ow=;
+        b=RIsR4f8lbeZFO+0m/EZ+/KJFXQfH8luI5e6qPnXmnlkQ/eOMEC/tM69iQ8mZwdFuUy
+         YslEaFShbmGFn029Q/CLg3aDvSab7bKEpVtuPsXYDcfAFZi4YnduLrnQswlTmwFdechF
+         ynDVecW7033UrE6Hm6ox1iWE6Z3pL0i1cpPZuCHObcypQy/iUMzyYQQHCV+5hw0EQ4f2
+         8S+tODfv1apGEMa5RubfO3oeEHxacMGW5w7QKjluyUzYHh1ezewITOhfJD0isGeVRwgR
+         ju+cVp20yGbJAZs5ChzcNqOrNwxY8GMSGM5mbzcz+Yo6frTc53u6q/Glnam4aX0Vr63d
+         pBzA==
+X-Gm-Message-State: AOAM533pNbOBPyqF2xWr7bqebnTVPk/dFhqzq8FHkK0eN1nh6+8pFYkQ
+        vtvh13mV7HC2FkuRIgTx9NOMiA==
+X-Google-Smtp-Source: ABdhPJyUiqJQc9GEz3Iplb2FeLUKTW9rPq9dka/vnODNYjGEudIjUqb9RTp59xqSVAaBl2WFBOqzvw==
+X-Received: by 2002:adf:f6cd:: with SMTP id y13mr17676331wrp.161.1601905950163;
+        Mon, 05 Oct 2020 06:52:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a127sm6430302wmh.13.2020.10.05.06.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 06:52:29 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 15:52:27 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     trix@redhat.com
+Cc:     patrik.r.jakobsson@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        alan@linux.intel.com, airlied@redhat.com, yakui.zhao@intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] drm/gma500: fix double free of gma_connector
+Message-ID: <20201005135227.GQ438822@phenom.ffwll.local>
+Mail-Followup-To: trix@redhat.com, patrik.r.jakobsson@gmail.com,
+        airlied@linux.ie, natechancellor@gmail.com, ndesaulniers@google.com,
+        alan@linux.intel.com, airlied@redhat.com, yakui.zhao@intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20201003193928.18869-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201002154417.20c2a7ef@x1.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-05_07:2020-10-02,2020-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 bulkscore=0 adultscore=0 impostorscore=0
- mlxscore=0 suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010050098
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201003193928.18869-1-trix@redhat.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/20 5:44 PM, Alex Williamson wrote:
-> On Fri,  2 Oct 2020 16:00:42 -0400
-> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Sat, Oct 03, 2020 at 12:39:28PM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
->> We define a new device region in vfio.h to be able to get the ZPCI CLP
->> information by reading this region from userspace.
->>
->> We create a new file, vfio_zdev.h to define the structure of the new
->> region defined in vfio.h
->>
->> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
->> ---
->>   include/uapi/linux/vfio.h      |   5 ++
->>   include/uapi/linux/vfio_zdev.h | 118 +++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 123 insertions(+)
->>   create mode 100644 include/uapi/linux/vfio_zdev.h
->>
->> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
->> index 9204705..65eb367 100644
->> --- a/include/uapi/linux/vfio.h
->> +++ b/include/uapi/linux/vfio.h
->> @@ -326,6 +326,11 @@ struct vfio_region_info_cap_type {
->>    * to do TLB invalidation on a GPU.
->>    */
->>   #define VFIO_REGION_SUBTYPE_IBM_NVLINK2_ATSD	(1)
->> +/*
->> + * IBM zPCI specific hardware feature information for a devcie.  The contents
->> + * of this region are mapped by struct vfio_region_zpci_info.
->> + */
->> +#define VFIO_REGION_SUBTYPE_IBM_ZPCI_CLP	(2)
->>   
->>   /* sub-types for VFIO_REGION_TYPE_GFX */
->>   #define VFIO_REGION_SUBTYPE_GFX_EDID            (1)
->> diff --git a/include/uapi/linux/vfio_zdev.h b/include/uapi/linux/vfio_zdev.h
->> new file mode 100644
->> index 0000000..1c8fb62
->> --- /dev/null
->> +++ b/include/uapi/linux/vfio_zdev.h
->> @@ -0,0 +1,118 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->> +/*
->> + * Region definition for ZPCI devices
->> + *
->> + * Copyright IBM Corp. 2020
->> + *
->> + * Author(s): Pierre Morel <pmorel@linux.ibm.com>
->> + *            Matthew Rosato <mjrosato@linux.ibm.com>
->> + */
->> +
->> +#ifndef _VFIO_ZDEV_H_
->> +#define _VFIO_ZDEV_H_
->> +
->> +#include <linux/types.h>
->> +
->> +/**
->> + * struct vfio_region_zpci_info - ZPCI information
->> + *
->> + * This region provides zPCI specific hardware feature information for a
->> + * device.
->> + *
->> + * The ZPCI information structure is presented as a chain of CLP features
->> + * defined below. argsz provides the size of the entire region, and offset
->> + * provides the location of the first CLP feature in the chain.
->> + *
->> + */
->> +struct vfio_region_zpci_info {
->> +	__u32 argsz;		/* Size of entire payload */
->> +	__u32 offset;		/* Location of first entry */
->> +};
->> +
->> +/**
->> + * struct vfio_region_zpci_info_hdr - ZPCI header information
->> + *
->> + * This structure is included at the top of each CLP feature to define what
->> + * type of CLP feature is presented / the structure version. The next value
->> + * defines the offset of the next CLP feature, and is an offset from the very
->> + * beginning of the region (vfio_region_zpci_info).
->> + *
->> + * Each CLP feature must have it's own unique 'id'.
->> + */
->> +struct vfio_region_zpci_info_hdr {
->> +	__u16 id;		/* Identifies the CLP type */
->> +	__u16	version;	/* version of the CLP data */
->> +	__u32 next;		/* Offset of next entry */
->> +};
->> +
->> +/**
->> + * struct vfio_region_zpci_info_pci - Base PCI Function information
->> + *
->> + * This region provides a set of descriptive information about the associated
->> + * PCI function.
->> + */
->> +#define VFIO_REGION_ZPCI_INFO_BASE	1
->> +
->> +struct vfio_region_zpci_info_base {
->> +	struct vfio_region_zpci_info_hdr hdr;
->> +	__u64 start_dma;	/* Start of available DMA addresses */
->> +	__u64 end_dma;		/* End of available DMA addresses */
->> +	__u16 pchid;		/* Physical Channel ID */
->> +	__u16 vfn;		/* Virtual function number */
->> +	__u16 fmb_length;	/* Measurement Block Length (in bytes) */
->> +	__u8 pft;		/* PCI Function Type */
->> +	__u8 gid;		/* PCI function group ID */
->> +};
->> +
->> +
->> +/**
->> + * struct vfio_region_zpci_info_group - Base PCI Function Group information
->> + *
->> + * This region provides a set of descriptive information about the group of PCI
->> + * functions that the associated device belongs to.
->> + */
->> +#define VFIO_REGION_ZPCI_INFO_GROUP	2
->> +
->> +struct vfio_region_zpci_info_group {
->> +	struct vfio_region_zpci_info_hdr hdr;
->> +	__u64 dasm;		/* DMA Address space mask */
->> +	__u64 msi_addr;		/* MSI address */
->> +	__u64 flags;
->> +#define VFIO_PCI_ZDEV_FLAGS_REFRESH 1 /* Use program-specified TLB refresh */
->> +	__u16 mui;		/* Measurement Block Update Interval */
->> +	__u16 noi;		/* Maximum number of MSIs */
->> +	__u16 maxstbl;		/* Maximum Store Block Length */
->> +	__u8 version;		/* Supported PCI Version */
->> +};
->> +
->> +/**
->> + * struct vfio_region_zpci_info_util - Utility String
->> + *
->> + * This region provides the utility string for the associated device, which is
->> + * a device identifier string made up of EBCDID characters.  'size' specifies
->> + * the length of 'util_str'.
->> + */
->> +#define VFIO_REGION_ZPCI_INFO_UTIL	3
->> +
->> +struct vfio_region_zpci_info_util {
->> +	struct vfio_region_zpci_info_hdr hdr;
->> +	__u32 size;
->> +	__u8 util_str[];
->> +};
->> +
->> +/**
->> + * struct vfio_region_zpci_info_pfip - PCI Function Path
->> + *
->> + * This region provides the PCI function path string, which is an identifier
->> + * that describes the internal hardware path of the device. 'size' specifies
->> + * the length of 'pfip'.
->> + */
->> +#define VFIO_REGION_ZPCI_INFO_PFIP	4
->> +
->> +struct vfio_region_zpci_info_pfip {
->> +struct vfio_region_zpci_info_hdr hdr;
->> +	__u32 size;
->> +	__u8 pfip[];
->> +};
->> +
->> +#endif
+> clang static analysis reports this problem:
 > 
-> Can you discuss why a region with embedded capability chain is a better
-> solution than extending the VFIO_DEVICE_GET_INFO ioctl to support a
-> capability chain and providing this info there?  This all appears to be
-> read-only info, so what's the benefit of duplicating yet another
+> cdv_intel_dp.c:2101:2: warning: Attempt to free released memory
+>         kfree(gma_connector);
+>         ^~~~~~~~~~~~~~~~~~~~
+> 
+> In cdv_intel_dp_init() when the call to cdv_intel_edp_panel_vdd_off()
+> fails, the handler calls cdv_intel_dp_destroy(connector) which does
+> the first free of gma_connector. So adjust the goto label and skip
+> the second free.
+> 
+> Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-It is indeed read-only info, and the device region was defined as such.
+Thanks for your patch, queued in drm-misc-next for 5.11.
+-Daniel
 
-I would not necessarily be opposed to extending VFIO_DEVICE_GET_INFO 
-with these defined as capabilities; I'd say a primary motivating factor 
-to putting these in their own region was to avoid stuffing a bunch of 
-s390-specific capabilities into a general-purpose ioctl response.
+> ---
+>  drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+> index 720a767118c9..deb4fd13591d 100644
+> --- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
+> +++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+> @@ -2083,7 +2083,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+>  			DRM_INFO("failed to retrieve link info, disabling eDP\n");
+>  			drm_encoder_cleanup(encoder);
+>  			cdv_intel_dp_destroy(connector);
+> -			goto err_priv;
+> +			goto err_connector;
+>  		} else {
+>          		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
+>  				intel_dp->dpcd[0], intel_dp->dpcd[1], 
+> -- 
+> 2.18.1
+> 
 
-But if you're OK with that notion, I can give that a crack in v3.
-
-> capability chain in a region?  It would also be possible to define four
-> separate device specific regions, one for each of these capabilities
-> rather than creating this chain.  It just seems like a strange approach
-
-I'm not sure if creating separate regions would be the right approach 
-though; these are just the first 4.  There will definitely be additional 
-capabilities in support of new zPCI features moving forward, I'm not 
-sure how many regions we really want to end up with.  Some might be as 
-small as a single field, which seems more in-line with capabilities vs 
-an entire region.
-
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
