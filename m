@@ -2,93 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE73D2836CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269712836D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgJENoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:44:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbgJENoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:44:23 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C983207BC;
-        Mon,  5 Oct 2020 13:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601905463;
-        bh=Ib7GBdL7Wn9bocJo9NyhUcUy9MsfqzsQOqA6NxORkCs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b7vdGNYeBNhV5kCPpU9VCAAr6jQnSqGyHEL3iKdrOKtJIBiqbytO9h3rUZX6d0zrG
-         L2L0zizKezD2U3etwiBVc8DLLjWHXVlZ1pbobjbvzPTmXyxSrXST9oD/iWmykppjxk
-         /csmwNNMjYPw1A1qPlX76PJGkaEkGnhAA9sxku3U=
-Received: by mail-oi1-f182.google.com with SMTP id u126so8706344oif.13;
-        Mon, 05 Oct 2020 06:44:23 -0700 (PDT)
-X-Gm-Message-State: AOAM533E3PkQqQyPrROvDS3SapPUZP4QiLqE9JNH4fbv1Xzj+nySji+4
-        Rv86lWBr4fhBoW/JXV0jUnfYGBmXUbrHrNKdnA==
-X-Google-Smtp-Source: ABdhPJz+mQ/NS0sS4uvyu/c0LAt/s/xUYDXx+vCNQnX96Z0KUl55MOK1OCcrE3Hy8xpROafH3uekNkVrqfJk3kun5m4=
-X-Received: by 2002:aca:4c52:: with SMTP id z79mr9074939oia.147.1601905462390;
- Mon, 05 Oct 2020 06:44:22 -0700 (PDT)
+        id S1726131AbgJENo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgJENoy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:44:54 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE81C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 06:44:53 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id 67so6727215ybt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=mDU3NjQ+wfGR1xHjzGrV7JHcfcQ06j1rR+mmDUoauFo=;
+        b=dy9XLUbpbjVsQBNufbdqJNVl8sibATNndAALv81ErhyD9xzCE9pRMnmtfOohrV9y2M
+         nIWX/jRyCE0cF0NYmTcorVymYzvvcbNQpolnEL4c21YQjwQ5M+/Oj7e/19hC9RUUU8Bi
+         rWkfjbiYobNBR/n8PsVZ1rnBeKVm3vxVHcyYy4yW4K1FksjEOSylLg/pUvx/DORVf+q3
+         IieiUF51kGeCLjAmY31d9zwRE1t4d2nM4HHl5ZiU4pxpa3EhXDxfVBOG1f6zsBrLUDeR
+         NyPjvc1KignAm0qTFhnN5YYt8fSm0eIapCuXJWlhaVm7iMX3UaKqFTnS+XS6FP7ImpfH
+         AxfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=mDU3NjQ+wfGR1xHjzGrV7JHcfcQ06j1rR+mmDUoauFo=;
+        b=GWrlUJoztGS9WXkw/bV7r/snmgFfif+APl8Zgvl2f3A5kkWjgJ1SktNF70ITKhC5jH
+         kUtNkpJLaWH4EmwDFruzox0wRhzYGFr9u8yieOsd8lYuGtpcSsdsjrqu3MvqOf2b/T6C
+         cMdrIkJoZTPsHC2Eq7jyJsmMIawCtmhMo90DelJDHADP5naRnvwts5fOgEkiBICTFnGY
+         BXoeLCZMG7nT50TzTSbM2V6W8JAhdLllSB07LU+ybdrtFoXuVl/rfsnKr7zzWcLHdTyB
+         8VGxR5m/ggmqDeroimZN2uita8G5Zc1N5M/T6ZzkQmRHFbI5U1kfsLnpZM1Bt0yTQlVv
+         sGyg==
+X-Gm-Message-State: AOAM531fKPa2oAb863odfG343z1zor/gBRcdzG+0wezHlvH0McWIs08y
+        Y1BGVH9UGi6AzA/dveT9x8rFueWvFZtlOhdNR1U=
+X-Google-Smtp-Source: ABdhPJw96JLB4HoAYr+mRXANpkazyJpy9vTEYNG1M1Knkq/VH9/YM/7ehDnh8uR4gd9zEFAqQfstJVgnlwsWmK1B55g=
+X-Received: by 2002:a25:de49:: with SMTP id v70mr19168899ybg.367.1601905493249;
+ Mon, 05 Oct 2020 06:44:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201004055024.23542-1-phil.chang@mediatek.com>
-In-Reply-To: <20201004055024.23542-1-phil.chang@mediatek.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 5 Oct 2020 08:44:11 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJ4rTChMpn7F--fh1A6bOTZxR4rEM9bbA1rdetXmPDeVA@mail.gmail.com>
-Message-ID: <CAL_JsqJ4rTChMpn7F--fh1A6bOTZxR4rEM9bbA1rdetXmPDeVA@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH] of_reserved_mem: Increase the number of reserved regions
-To:     Phil Chang <phil.chang@mediatek.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        YJ Chiang <yj.chiang@mediatek.com>,
-        Alix Wu <alix.wu@mediatek.com>, Joe Liu <joe.liu@mediatek.com>
+Received: by 2002:a25:491:0:0:0:0:0 with HTTP; Mon, 5 Oct 2020 06:44:52 -0700 (PDT)
+From:   james duke <jm.jamesduke.dk09@gmail.com>
+Date:   Mon, 5 Oct 2020 13:44:52 +0000
+Message-ID: <CAFNA5BOcOkLyHMyoOvyem0Z2dq9s_9U514Y4EGFrux5ctpUv_A@mail.gmail.com>
+Subject: =?UTF-8?B?15TXkNedINen15nXkdec16og15DXqiDXlNeU15XXk9ei15Qg15TXp9eV15PXnteqINep?=
+        =?UTF-8?B?15zXmT8=?=
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 4, 2020 at 12:50 AM Phil Chang <phil.chang@mediatek.com> wrote:
->
-> Certain SoCs need to support large amount of reserved memory
-> regions, especially to follow the GKI rules from Google.
-> In MTK new SoC requires more than 68 regions of reserved memory
-> for each IP's usage, such as load firmware to specific sapce,
-
-typo
-
-> so that need to reserve more regisions
-
-typo. Missing punctuation.
-
->
-> Signed-off-by: Joe Liu <joe.liu@mediatek.com>
-> Signed-off-by: YJ Chiang <yj.chiang@mediatek.com>
-> Signed-off-by: Alix Wu <alix.wu@mediatek.com>
-> Signed-off-by: Phil Chang <phil.chang@mediatek.com>
-> ---
->  drivers/of/of_reserved_mem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> index 46b9371c8a33..595f0741dcef 100644
-> --- a/drivers/of/of_reserved_mem.c
-> +++ b/drivers/of/of_reserved_mem.c
-> @@ -22,7 +22,7 @@
->  #include <linux/slab.h>
->  #include <linux/memblock.h>
->
-> -#define MAX_RESERVED_REGIONS   64
-> +#define MAX_RESERVED_REGIONS   128
-
-At some point, this starts to feel like abuse of reserved regions.
-Please provide details on what the regions are.
-
-Also, this probably just needs to be dynamic. I think we're at that point.
-
-Rob
+-- 
+Best wish
