@@ -2,268 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39EF28387B
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D5328383E
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 16:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgJEOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 10:47:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:49416 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726989AbgJEOq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:46:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50B09106F;
-        Mon,  5 Oct 2020 07:46:57 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC1323F70D;
-        Mon,  5 Oct 2020 07:46:55 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        egranata@google.com, jbhayana@google.com,
-        peter.hilber@opensynergy.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com, cristian.marussi@arm.com
-Subject: [PATCH 6/6] firmware: arm_scmi: add SCMIv3.0 Sensor notifications
-Date:   Mon,  5 Oct 2020 15:45:18 +0100
-Message-Id: <20201005144518.31832-7-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201005144518.31832-1-cristian.marussi@arm.com>
-References: <20201005144518.31832-1-cristian.marussi@arm.com>
+        id S1726709AbgJEOpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 10:45:31 -0400
+Received: from sonic312-20.consmr.mail.bf2.yahoo.com ([74.6.128.82]:34690 "EHLO
+        sonic312-20.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726530AbgJEOpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:45:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601909123; bh=OCp2NQ1DG8WDrE2HT9ykXjnTFISlxhUILAf78oJl1As=; h=Date:From:Reply-To:Subject:References:From:Subject; b=HMlEWL/ut8sO4M8f6LaIFZCfqTRunIH2wPH4zzQtN8csFiNki9UVhcjIe1xs158Qjug1wvTQbHBkmi7sRNiNAfZWJ35iMgapqyp4MS6MYRqGl6jY43P5hqpXpbc2xFcAXOET94P7oIzdZTFZzZ7GrjL+2J/1K5nrfkwP5HS8WDxCIeKKHvq19ebsgpvTJSxAgMH6a4AIXKZey1hkQF4CD3Ebz5VZJUcyMu5IRBNXHspp/DAh8hHrqw18DgIX57G3GBlUXRySgwe6RvxBtuvIRnesgybj4bo9OUW0XzTe/a0liEjXE1PG1yWO8r5XhqanWjIsRJEVSh6G+8rE42khkg==
+X-YMail-OSG: dDaOVTQVM1l8_u4snJ_dc4KU7NTt8qHO689hz6yfkPrV.BLkpi3mZ1jvNO7bnV_
+ 1x2vE5q0LshbIkHj17.S.Sfam8bz4yjS9OH19UniJeik3Udh95b8dM7eJF4dSZUmVQiF3Jx.l9f2
+ BqB2c54EAq35l5IpALn.28PPysgt7FnBpKYb4trT4uP8_q.qI2hvRWvaPHY0zcvd.qK8sumBxqmy
+ _tJ6JIUHsYh3u6GUd8qWlhctJByxs5PMH5mAi2lvI.d3GCp.0PKj1vSpJwh20P5dPTTiwgdxb8iK
+ v3amw20fMLQZd1bA_.7rvwflCxF2nDugaQPomA2YWhgKyYW8JKCvUgAIyijQAV.AbtiPnXC78c10
+ xR_R5VryMv2pVpDE2MCAZMVcoh2uzAgmoFT_2olZDSE9yZ2CIvt2Ixk5ujf76Lv3afnwYb02T6SZ
+ FEDqiUXwfGSMH8zQYapKyaISgYeKO7eQA5I_yiZ6gvR.LaNvxFqAQdRbiTyvpaWk_QahROiVMUPo
+ bR9rEyOplrHOXq1jfRn3y2kBqJvUMjFwOSZiJn_LlucVLxBh0F0JJF80AjnzOULm736ZoUeBt0YB
+ 7h...hWhIHVmjFkeRzn3UnBoNwYTUWNykG52kKjO5UU6c10VQwa6jtkKWrfYntf77MizQpkfSb.e
+ Q0KxQM_M2ZaIgD6TiTsCDo6PArRFZQLieYhQ0gv21smp32OZmE_dzIrhGN6DwkRb5BWgocyEZkHp
+ g6cWzFo1qWNzW25S7AhoJyGUrDQcWjnEkncB56SQjTWWBtU7FMqvYtI2zYbeb6bYTqW5U09a1MTw
+ bAl6l3QfbvBPZxKJUiVvGkujNHV5C8pGn8PPITxkjPr.un3T3hRN9AO4W1uwaxnDp0Mqk_9AdNl7
+ _lZlgs8U.ltHSU9cZPpDj1YYTkJddy9U9v6QtuZPo2MU3WNCFvEWkK7e81_pNEMqYCU7j7bix189
+ vY3n6U3G5et6mWwmO0tO2KKTWqIRO7uNFuD8cgANuSoysnU6TNsshVFrP6Rd3q0T9a22rpqk0UO_
+ yHHJVmrL4NhhuW_58GZ21Qs9mGNZeLc1YgGW0VppqBYMECGI0Q_.dg_uhILyTua27cuikAk8AgFZ
+ 2UmXtQv3UmYJpKOSF2yvkGUFcmqm.KrMz5LvqPSalUzpbLLcWRRbFVh1OE6GfIpYtroFi8L43Itz
+ QN.n65BUPZ4EF.YfM1_aBFhE9OKj0v122hJql85DkRgsCQ5_vXE3.zaaVIiRur1eIQ9S11KUmRtx
+ Dtv7F4ACnhnjgll9wmwlrE5hZBWfCbQ6Lw_rvhV8rMz4ZIXEyM8sz3JzTpS_BcmzhIhnTePaYhEk
+ .7Z0ggpess2jeRYFMp9yl0NhmiIkgjqI7ZRHuHa7VSJPYtv3FK6THB6ogBOrTEO1S59Ted5eGiZB
+ 3ypMAaFPPsFP_tPQQVgB7jjZ1ekezRryAvxgXiItafHkS0ymCSQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Mon, 5 Oct 2020 14:45:23 +0000
+Date:   Mon, 5 Oct 2020 14:45:18 +0000 (UTC)
+From:   Mrs Elodie Antoine <mrselodieantoine@gmail.com>
+Reply-To: elodieantoin568744@yahoo.com
+Message-ID: <288198347.1895231.1601909118137@mail.yahoo.com>
+Subject: Greetings from Mrs Elodie Antoine,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <288198347.1895231.1601909118137.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:81.0) Gecko/20100101 Firefox/81.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for new SCMIv3.0 SENSOR_UPDATE notification.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/sensors.c | 124 ++++++++++++++++++++++++----
- include/linux/scmi_protocol.h       |   9 ++
- 2 files changed, 116 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-index 38e65e1042ec..1373759b2e6e 100644
---- a/drivers/firmware/arm_scmi/sensors.c
-+++ b/drivers/firmware/arm_scmi/sensors.c
-@@ -24,6 +24,7 @@ enum scmi_sensor_protocol_cmd {
- 	SENSOR_LIST_UPDATE_INTERVALS = 0x8,
- 	SENSOR_CONFIG_GET = 0x9,
- 	SENSOR_CONFIG_SET = 0xA,
-+	SENSOR_CONTINUOUS_UPDATE_NOTIFY = 0xB,
- };
- 
- struct scmi_msg_resp_sensor_attributes {
-@@ -133,10 +134,10 @@ struct scmi_msg_resp_sensor_list_update_intervals {
- 	__le32 intervals[];
- };
- 
--struct scmi_msg_sensor_trip_point_notify {
-+struct scmi_msg_sensor_request_notify {
- 	__le32 id;
- 	__le32 event_control;
--#define SENSOR_TP_NOTIFY_ALL	BIT(0)
-+#define SENSOR_NOTIFY_ALL	BIT(0)
- };
- 
- struct scmi_msg_set_sensor_trip_point {
-@@ -198,6 +199,17 @@ struct scmi_sensor_trip_notify_payld {
- 	__le32 trip_point_desc;
- };
- 
-+struct scmi_msg_sensor_continuous_update_notify {
-+	__le32 id;
-+	__le32 event_control;
-+};
-+
-+struct scmi_sensor_update_notify_payld {
-+	__le32 agent_id;
-+	__le32 sensor_id;
-+	struct scmi_sensor_reading_le readings[];
-+};
-+
- struct sensors_info {
- 	u32 version;
- 	int num_sensors;
-@@ -543,15 +555,16 @@ static int scmi_sensor_description_get(const struct scmi_handle *handle,
- 	return ret;
- }
- 
--static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
--					 u32 sensor_id, bool enable)
-+static inline int
-+scmi_sensor_request_notify(const struct scmi_handle *handle, u32 sensor_id,
-+			   u8 message_id, bool enable)
- {
- 	int ret;
--	u32 evt_cntl = enable ? SENSOR_TP_NOTIFY_ALL : 0;
-+	u32 evt_cntl = enable ? SENSOR_NOTIFY_ALL : 0;
- 	struct scmi_xfer *t;
--	struct scmi_msg_sensor_trip_point_notify *cfg;
-+	struct scmi_msg_sensor_request_notify *cfg;
- 
--	ret = scmi_xfer_get_init(handle, SENSOR_TRIP_POINT_NOTIFY,
-+	ret = scmi_xfer_get_init(handle, message_id,
- 				 SCMI_PROTOCOL_SENSOR, sizeof(*cfg), 0, &t);
- 	if (ret)
- 		return ret;
-@@ -566,6 +579,23 @@ static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
- 	return ret;
- }
- 
-+static int scmi_sensor_trip_point_notify(const struct scmi_handle *handle,
-+					 u32 sensor_id, bool enable)
-+{
-+	return scmi_sensor_request_notify(handle, sensor_id,
-+					  SENSOR_TRIP_POINT_NOTIFY,
-+					  enable);
-+}
-+
-+static int
-+scmi_sensor_continuous_update_notify(const struct scmi_handle *handle,
-+				     u32 sensor_id, bool enable)
-+{
-+	return scmi_sensor_request_notify(handle, sensor_id,
-+					  SENSOR_CONTINUOUS_UPDATE_NOTIFY,
-+					  enable);
-+}
-+
- static int
- scmi_sensor_trip_point_config(const struct scmi_handle *handle, u32 sensor_id,
- 			      u8 trip_id, u64 trip_value)
-@@ -817,7 +847,19 @@ static int scmi_sensor_set_notify_enabled(const struct scmi_handle *handle,
- {
- 	int ret;
- 
--	ret = scmi_sensor_trip_point_notify(handle, src_id, enable);
-+	switch (evt_id) {
-+	case SCMI_EVENT_SENSOR_TRIP_POINT_EVENT:
-+		ret = scmi_sensor_trip_point_notify(handle, src_id, enable);
-+		break;
-+	case SCMI_EVENT_SENSOR_UPDATE:
-+		ret = scmi_sensor_continuous_update_notify(handle, src_id,
-+							   enable);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
- 	if (ret)
- 		pr_debug("FAIL_ENABLED - evt[%X] dom[%d] - ret:%d\n",
- 			 evt_id, src_id, ret);
-@@ -830,20 +872,58 @@ static void *scmi_sensor_fill_custom_report(const struct scmi_handle *handle,
- 					    const void *payld, size_t payld_sz,
- 					    void *report, u32 *src_id)
- {
-+	void *rep = NULL;
- 	const struct scmi_sensor_trip_notify_payld *p = payld;
- 	struct scmi_sensor_trip_point_report *r = report;
- 
--	if (evt_id != SCMI_EVENT_SENSOR_TRIP_POINT_EVENT ||
--	    sizeof(*p) != payld_sz)
--		return NULL;
-+	switch (evt_id) {
-+	case SCMI_EVENT_SENSOR_TRIP_POINT_EVENT:
-+	{
-+		if (sizeof(*p) != payld_sz)
-+			break;
- 
--	r->timestamp = timestamp;
--	r->agent_id = le32_to_cpu(p->agent_id);
--	r->sensor_id = le32_to_cpu(p->sensor_id);
--	r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
--	*src_id = r->sensor_id;
-+		r->timestamp = timestamp;
-+		r->agent_id = le32_to_cpu(p->agent_id);
-+		r->sensor_id = le32_to_cpu(p->sensor_id);
-+		r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
-+		*src_id = r->sensor_id;
-+		rep = r;
-+		break;
-+	}
-+	case SCMI_EVENT_SENSOR_UPDATE:
-+	{
-+		int i;
-+		struct scmi_sensor_info *s;
-+		const struct scmi_sensor_update_notify_payld *p = payld;
-+		struct scmi_sensor_update_report *r = report;
-+		struct sensors_info *sinfo = handle->sensor_priv;
-+
-+		/* payld_sz is variable for this event */
-+		r->sensor_id = le32_to_cpu(p->sensor_id);
-+		if (r->sensor_id >= sinfo->num_sensors)
-+			break;
-+		r->timestamp = timestamp;
-+		r->agent_id = le32_to_cpu(p->agent_id);
-+		s = &sinfo->sensors[r->sensor_id];
-+		/*
-+		 * The generated report r (@struct scmi_sensor_update_report)
-+		 * was pre-allocated to contain up to SCMI_MAX_NUM_SENSOR_AXIS
-+		 * readings: here it is filled with the effective @num_axis
-+		 * readings defined for this sensor or 1 for scalar sensors.
-+		 */
-+		r->readings_count = s->num_axis ?: 1;
-+		for (i = 0; i < r->readings_count; i++)
-+			scmi_parse_sensor_readings(&r->readings[i],
-+						   &p->readings[i]);
-+		*src_id = r->sensor_id;
-+		rep = r;
-+		break;
-+	}
-+	default:
-+		break;
-+	}
- 
--	return r;
-+	return rep;
- }
- 
- static const struct scmi_event sensor_events[] = {
-@@ -852,6 +932,16 @@ static const struct scmi_event sensor_events[] = {
- 		.max_payld_sz = sizeof(struct scmi_sensor_trip_notify_payld),
- 		.max_report_sz = sizeof(struct scmi_sensor_trip_point_report),
- 	},
-+	{
-+		.id = SCMI_EVENT_SENSOR_UPDATE,
-+		.max_payld_sz =
-+			sizeof(struct scmi_sensor_update_notify_payld) +
-+			 SCMI_MAX_NUM_SENSOR_AXIS *
-+			 sizeof(struct scmi_sensor_reading_le),
-+		.max_report_sz = sizeof(struct scmi_sensor_update_report) +
-+				  SCMI_MAX_NUM_SENSOR_AXIS *
-+				  sizeof(struct scmi_sensor_reading),
-+	},
- };
- 
- static const struct scmi_event_ops sensor_event_ops = {
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index 6f39ffa638b7..f6f0199e85e4 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -654,6 +654,7 @@ enum scmi_notification_events {
- 	SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED = 0x0,
- 	SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED = 0x1,
- 	SCMI_EVENT_SENSOR_TRIP_POINT_EVENT = 0x0,
-+	SCMI_EVENT_SENSOR_UPDATE = 0x1,
- 	SCMI_EVENT_RESET_ISSUED = 0x0,
- 	SCMI_EVENT_BASE_ERROR_EVENT = 0x0,
- 	SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER = 0x0,
-@@ -695,6 +696,14 @@ struct scmi_sensor_trip_point_report {
- 	unsigned int	trip_point_desc;
- };
- 
-+struct scmi_sensor_update_report {
-+	ktime_t				timestamp;
-+	unsigned int			agent_id;
-+	unsigned int			sensor_id;
-+	unsigned int			readings_count;
-+	struct scmi_sensor_reading	readings[];
-+};
-+
- struct scmi_reset_issued_report {
- 	ktime_t		timestamp;
- 	unsigned int	agent_id;
--- 
-2.17.1
+Greetings from Mrs Elodie Antoine,
 
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS CHRIST the giver of every good thing. Good day,i know this letter will definitely come to you as a huge surprise, but I implore you to take the time to go through it carefully as the decision you make will go off a long way to determine my future and continued existence. I am Mrs Elodie Antoine
+aging widow of 59 years old suffering from long time illness. I have some funds I inherited from my late husband,
+
+The sum of (US$4.5 Million Dollars) and I needed a very honest and God fearing who can withdraw this money then use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR CHARITY WORKS. I found your email address from the internet after honest prayers to the LORD to bring me a helper and i decided to contact you if you may be willing and interested to handle these trust funds in good faith before anything happens to me.
+I accept this decision because I do not have any child who will inherit this money after I die. I want your urgent reply to me so that I will give you the deposit receipt which the COMPANY issued to me as next of kin for immediate transfer of the money to your account in your country, to start the good work of God, I want you to use the 15/percent of the total amount to help yourself in doing the project.
+
+
+I am desperately in keen need of assistance and I have summoned up courage to contact you for this task, you must not fail me and the millions of the poor people in our todays WORLD. This is no stolen money and there are no dangers involved,100% RISK FREE with full legal proof. Please if you would be able to use the funds for the Charity works kindly let me know immediately.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish. I want you to take 15 percent of the total money for your personal use while 85% of the money will go to charity.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish.
+
+
+kindly respond for further details.
+
+Thanks and God bless you,
+
+Mrs Elodie Antoine
