@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1B2283041
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C44D283046
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725895AbgJEGAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:00:34 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:64314 "EHLO z5.mailgun.us"
+        id S1725872AbgJEGFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:05:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35298 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgJEGAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:00:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601877633; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=vrdM/2wrNsHdYoObDsxyGdJFCClcRDod+TrwzKiL3Wc=; b=ITfYxu6vFjcm1BXP99DDSePq0AUWyKKyj4Owp7rmp02V4TRTwxSk6hrRknpvD3aqkgvE7fMs
- vXZmFT6MkbEfnMmpRiyv5HbxUXodIEMAgRIGSajcAolceFdmJ9a2rD5roPwlrMp3xWw/xdpi
- Vb/otmB6bY6i5q3IalT4jriqzz0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f7ab678a03b63d6733cd80d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 05 Oct 2020 06:00:24
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C74B4C433CA; Mon,  5 Oct 2020 06:00:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB40BC433CA;
-        Mon,  5 Oct 2020 06:00:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB40BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        ulf.hansson@linaro.org, swboyd@chromium.org, dianders@chromium.org,
-        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
-        John Stultz <john.stultz@linaro.org>,
-        Todd Kjos <tkjos@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [RESEND v2 2/2] soc: qcom: rpmh: Allow RPMH driver to be loaded as a module
-Date:   Mon,  5 Oct 2020 11:29:56 +0530
-Message-Id: <1601877596-32676-3-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601877596-32676-1-git-send-email-mkshah@codeaurora.org>
-References: <1601877596-32676-1-git-send-email-mkshah@codeaurora.org>
+        id S1725860AbgJEGFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 02:05:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601877943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H8PfrCBAkG4RHSNenftpNrKV45oZN++KpOv1lY8RxhI=;
+        b=AMSlD23DVkzj83p2mRqdOShIUP2CnlG0OuXztm6X6sOhuignShWgnHp41MVLkRkUNA9JTi
+        VFqh6BwQajMt+oH4+OV8IieUgyR6MWsaNrrdfS/nt4rKTqKZBN10RHMvPiYwr203frAZZA
+        2PALxEKSSGVm4wtsL15KHaot2kfgOqY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 15145ABD1;
+        Mon,  5 Oct 2020 06:05:43 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 08:05:42 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, John Hubbard <jhubbard@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm/vmstat: Add events for HugeTLB migration
+Message-ID: <20201005060542.GM4555@dhcp22.suse.cz>
+References: <1601445649-22163-1-git-send-email-anshuman.khandual@arm.com>
+ <20201002120422.GE4555@dhcp22.suse.cz>
+ <fa6a7ea8-df58-c692-0317-686227de54ca@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa6a7ea8-df58-c692-0317-686227de54ca@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+On Mon 05-10-20 07:59:12, Anshuman Khandual wrote:
+> 
+> 
+> On 10/02/2020 05:34 PM, Michal Hocko wrote:
+> > On Wed 30-09-20 11:30:49, Anshuman Khandual wrote:
+> >> Add following new vmstat events which will track HugeTLB page migration.
+> >>
+> >> 1. HUGETLB_MIGRATION_SUCCESS
+> >> 2. HUGETLB_MIGRATION_FAILURE
+> >>
+> >> It follows the existing semantics to accommodate HugeTLB subpages in total
+> >> page migration statistics. While here, this updates current trace event
+> >> 'mm_migrate_pages' to accommodate now available HugeTLB based statistics.
+> > What is the actual usecase? And how do you deal with the complexity
+> > introduced by many different hugetlb page sizes. Really, what is the
+> > point to having such a detailed view on hugetlb migration?
+> >
+> 
+> It helps differentiate various page migration events i.e normal, THP and
+> HugeTLB and gives us more reliable and accurate measurement. Current stats
+> as per PGMIGRATE_SUCCESS and PGMIGRATE_FAIL are misleading, as they contain
+> both normal and HugeTLB pages as single entities, which is not accurate.
 
-This patch allow the rpmh driver to be loaded as a permenent
-module. Meaning it can be loaded from a module, but then cannot
-be unloaded.
+Yes this is true. But why does it really matter? Do you have a specific
+example?
 
-Ideally, it would include a remove hook and related logic, but
-the rpmh driver is fairly core to the system, so once its loaded
-with almost anything else to get the system to go, the dependencies
-are not likely to ever also be removed.
+> After this change, PGMIGRATE_SUCCESS and PGMIGRATE_FAIL will contain page
+> migration statistics in terms of normal pages irrespective of whether any
+> previous migrations until that point involved normal pages, THP or HugeTLB
+> (any size) pages. At the least, this fixes existing misleading stats with
+> PGMIGRATE_SUCCESS and PGMIGRATE_FAIL.
+> 
+> Besides, it helps us understand HugeTLB migrations in more detail. Even
+> though HugeTLB can be of various sizes on a given platform, these new
+> stats HUGETLB_MIGRATION_SUCCESS and HUGETLB_MIGRATION_FAILURE give enough
+> overall insight into HugeTLB migration events.
 
-So making it a permanent module at least improves things slightly
-over requiring it to be a built in driver.
+While true this all is way too vague to add yet another imprecise
+counter.
 
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rajendra Nayak <rnayak@codeaurora.org>
-Cc: linux-arm-msm@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-[mkshah: Fix typos in commit message, send after removing _rcuidle trace]
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/soc/qcom/Kconfig    | 2 +-
- drivers/soc/qcom/rpmh-rsc.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 3dc3e3d..892bdc7 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -92,7 +92,7 @@ config QCOM_RMTFS_MEM
- 	  Say y here if you intend to boot the modem remoteproc.
- 
- config QCOM_RPMH
--	bool "Qualcomm RPM-Hardened (RPMH) Communication"
-+	tristate "Qualcomm RPM-Hardened (RPMH) Communication"
- 	depends on ARCH_QCOM || COMPILE_TEST
- 	help
- 	  Support for communication with the hardened-RPM blocks in
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index 35a7a50..37969dc 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -13,6 +13,7 @@
- #include <linux/iopoll.h>
- #include <linux/kernel.h>
- #include <linux/list.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-@@ -1018,6 +1019,7 @@ static const struct of_device_id rpmh_drv_match[] = {
- 	{ .compatible = "qcom,rpmh-rsc", },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, rpmh_drv_match);
- 
- static struct platform_driver rpmh_driver = {
- 	.probe = rpmh_rsc_probe,
-@@ -1033,3 +1035,6 @@ static int __init rpmh_driver_init(void)
- 	return platform_driver_register(&rpmh_driver);
- }
- arch_initcall(rpmh_driver_init);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. RPMh Driver");
-+MODULE_LICENSE("GPL v2");
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Michal Hocko
+SUSE Labs
