@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF8E2835BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D332835BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 14:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgJEMTh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 5 Oct 2020 08:19:37 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:49734 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJEMTf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 08:19:35 -0400
-Received: from marcel-macpro.fritz.box (p4fefc7f4.dip0.t-ipconnect.de [79.239.199.244])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 6F7CECED23;
-        Mon,  5 Oct 2020 14:26:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Revert "Bluetooth: Update resolving list when updating
- whitelist"
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201005083624.GA2442@kroah.com>
-Date:   Mon, 5 Oct 2020 14:19:32 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Sathish Narsimman <sathish.narasimman@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <220D3B4E-D73E-43AD-8FF8-887D1A628235@holtmann.org>
-References: <20201003135449.GA2691@kroah.com>
- <A1C95238-CBCB-4FD4-B46D-A62AED0C77E5@holtmann.org>
- <20201003160713.GA1512229@kroah.com>
- <AABC2831-4E88-41A2-8A20-1BFC88895686@holtmann.org>
- <20201004105124.GA2429@kroah.com>
- <3F7BDD50-DEA3-4CB0-A9A0-69E7EE2923D5@holtmann.org>
- <20201005083624.GA2442@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1726087AbgJEMU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 08:20:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48456 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725939AbgJEMU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 08:20:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601900457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHLYvBq08Dp/5b5Rah0VPUXLe/Yja1yVhx2g0QpEwYw=;
+        b=qG8L3zmUKXWbYbuY10SJtxMq0LOa5H2EQmlHvd/pR8kTjSF/TddFICAHXufkjCiklChQFl
+        /OX/1S616yMFJUCHumNO0HIDqI+3DYSfaE1Bv20le2c58gd1e3uWXITk2nXNFFOtTVel/B
+        g1/M1ArmXIR6+EkE/SgpzyNFBo2DbTI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 07D9FAC26;
+        Mon,  5 Oct 2020 12:20:57 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 14:20:56 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        tj@kernel.org, akpm@linux-foundation.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Zqiang <qiang.zhang@windriver.com>
+Subject: Re: [RFC PATCH] kthread: do not modify running work
+Message-ID: <20201005122056.GE3673@alley>
+References: <20200926040426.11936-1-hdanton@sina.com>
+ <20201001095151.5640-1-hdanton@sina.com>
+ <20201002023412.2276-1-hdanton@sina.com>
+ <20201004021213.14572-1-hdanton@sina.com>
+ <20201005102105.18272-1-hdanton@sina.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005102105.18272-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
->>>>>>> This reverts commit 0eee35bdfa3b472cc986ecc6ad76293fdcda59e2 as it
->>>>>>> breaks all bluetooth connections on my machine.
->>>>>>> 
->>>>>>> Cc: Marcel Holtmann <marcel@holtmann.org>
->>>>>>> Cc: Sathish Narsimman <sathish.narasimman@intel.com>
->>>>>>> Fixes: 0eee35bdfa3b ("Bluetooth: Update resolving list when updating whitelist")
->>>>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>>>>> ---
->>>>>>> net/bluetooth/hci_request.c | 41 ++-----------------------------------
->>>>>>> 1 file changed, 2 insertions(+), 39 deletions(-)
->>>>>>> 
->>>>>>> This has been bugging me for since 5.9-rc1, when all bluetooth devices
->>>>>>> stopped working on my desktop system.  I finally got the time to do
->>>>>>> bisection today, and it came down to this patch.  Reverting it on top of
->>>>>>> 5.9-rc7 restored bluetooth devices and now my input devices properly
->>>>>>> work.
->>>>>>> 
->>>>>>> As it's almost 5.9-final, any chance this can be merged now to fix the
->>>>>>> issue?
->>>>>> 
->>>>>> can you be specific what breaks since our guys and I also think the
->>>>>> ChromeOS guys have been testing these series of patches heavily.
->>>>> 
->>>>> My bluetooth trackball does not connect at all.  With this reverted, it
->>>>> all "just works".
->>>>> 
->>>>> Same I think for a Bluetooth headset, can check that again if you really
->>>>> need me to, but the trackball is reliable here.
->>>>> 
->>>>>> When you run btmon does it indicate any errors?
->>>>> 
->>>>> How do I run it and where are the errors displayed?
->>>> 
->>>> you can do btmon -w trace.log and just let it run like tcdpump.
->>> 
->>> Ok, attached.
->>> 
->>> The device is not connecting, and then I open the gnome bluetooth dialog
->>> and it scans for devices in the area, but does not connect to my
->>> existing devices at all.
->>> 
->>> Any ideas?
->> 
->> the trace file is from -rc7 or from -rc7 with this patch reverted?
->> 
->> I asked, because I see no hint that anything goes wrong. However I have a suspicion if you bisected it to this patch.
->> 
->> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
->> index e0269192f2e5..94c0daa9f28d 100644
->> --- a/net/bluetooth/hci_request.c
->> +++ b/net/bluetooth/hci_request.c
->> @@ -732,7 +732,7 @@ static int add_to_white_list(struct hci_request *req,
->>                return -1;
->> 
->>        /* White list can not be used with RPAs */
->> -       if (!allow_rpa && !use_ll_privacy(hdev) &&
->> +       if (!allow_rpa &&
->>            hci_find_irk_by_addr(hdev, &params->addr, params->addr_type)) {
->>                return -1;
->>        }
->> @@ -812,7 +812,7 @@ static u8 update_white_list(struct hci_request *req)
->>                }
->> 
->>                /* White list can not be used with RPAs */
->> -               if (!allow_rpa && !use_ll_privacy(hdev) &&
->> +               if (!allow_rpa &&
->>                    hci_find_irk_by_addr(hdev, &b->bdaddr, b->bdaddr_type)) {
->>                        return 0x00;
->>                }
->> 
->> 
->> If you just do the above, does thing work for you again?
+On Mon 2020-10-05 18:21:05, Hillf Danton wrote:
+> On Mon, 5 Oct 2020 10:38:29 Petr Mladek wrote:
+> > On Sun 2020-10-04 10:12:13, Hillf Danton wrote:
+> > > What is the difference of invoking kthread_queue_delayed_work() from the
+> > > callback from kthread_mod_delayed_work()?
+> > 
+> > kthread_queue_delayed_work() does nothing when the work is already
+> > queued. kthread_mod_delayed_work() removes the work from the queue
+> > if it is there and queue it again with the newly requested delay.
 > 
-> Corrupted white-space issues aside, yes, it works!
+> Can you let us know the reasons why we need to remove the work from
+> queue in callback?
 
-I just pasted it from a different terminal ;)
+Each work could get queued only once at the same time. It can be either
+in work_list or in delayed_work_list. But it must never be in both at
+the same time.
 
-> I am running 5.9-rc8 with just this change on it and my tracball works
-> just fine.
+Canceling the work solves race with the timer callback. We must be
+sure that is not running in parallel and will not try to shuffle
+the worker lists.
+
+Note that there is a difference between queued work and running work.
+Queued work is either in worker->work_list or in
+worker->delayed_work_list. While worker->current_work points
+to the currently running work.
+
+Now, the work can be running and queued at the same time be design.
+It is quite common usecase.
+
+> > > Given the queue method, it is no win to modify delayed work from callback
+> > > in any case because "we are not adding interfaces just because we can."
+> > 
+> > What about ipmi_kthread_worker_func()? It is delayed work that
+> > queues itself.
 > 
->> My suspicion is that the use_ll_privacy check is the wrong one here. It only checks if hardware feature is available, not if it is also enabled.
+> Can you shed some light on where I can find ipmi_kthread_worker_func()
+> in the mainline?
+
+Ah, the right name is mv88e6xxx_irq_poll().
+
+> > What is the motivation for this patch, please?
 > 
-> How would one go about enabling such a hardware feature if they wanted
-> to?  :)
-
-I need to understand what is going wrong for you. I have a suspicion, but first I need to understand what kind of device you have. I hope the trace file is enough.
-
-> Anyway, feel free to put:
+> See the subject line.
 > 
-> Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Does it solve some real problem?
 > 
-> on the above patch and hopefully get it to Linus for 5.9-final.
+> Once more
+> 1) avoid running a delayed work more than once if it is one-ff.
+>
+> 2) cut the risk of modifying a running one-off delayed work with
+> resources released in the callback.
 
-Sadly, it is a poor hot-needle fix.
+Do you have any real bug where this happen, please?
 
-Regards
+The API works this way be design. It makes it generic and usable
+for different use-cases. It is up to the caller to use it the correct
+way:
 
-Marcel
+   + queue the work only once when the work should be done only once
+   + make sure that the work is not queued when the service is being
+     stopped
 
+Note that it is not only about queuing the work from its own
+callback. It is also about races between queuing and running.
+
+There is no guarantee when the work will be running. It happens
+when the worker thread gets scheduled and the work is the first
+on the list. It is up to the API user to make sure that the work
+will get queued when needed and vice versa.
+
+It is possible that some other behavior might be more practical
+in some scenarios but it would complicate situation in others.
+
+
+If you need more details, please google the discussion when the API was
+developed.
+
+Best Regards,
+Petr
