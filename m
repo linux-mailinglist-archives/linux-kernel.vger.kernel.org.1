@@ -2,153 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D96283E2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E48283E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgJESUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJESUg (ORCPT
+        id S1727571AbgJESXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:23:31 -0400
+Received: from smtprelay0086.hostedemail.com ([216.40.44.86]:57194 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725960AbgJESXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:20:36 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B4DC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:20:34 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id m7so9669583oie.0
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kZPEXkmRFhKPxE4UsJ1anlhQ3+0vTVsGBvgPlUPbE7w=;
-        b=digCacwGUHn+oARFLUlEEiRTDoPXLO1xnxIuBum/VKhKQK7BCTulEUnSODFeCvDgqR
-         ONx+Ygs1zeRud/eBv0KktRHkZij8UcSubxt6fRsWSbSb5URyynq9bUJ9Z1mPNuVzys6O
-         B7+ktxEVlNZMJZvzGUecbDLxWpbn9fJMLuzr8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kZPEXkmRFhKPxE4UsJ1anlhQ3+0vTVsGBvgPlUPbE7w=;
-        b=Lxzatr1ArJVf8qIR8rJdbWhGcTFYUB579NSOupNPery1RdHcqra9I4uJBzt2sbLGNs
-         80lIG1oeIvBL6XxVTV8IZRIqrtEonm3OdzceTlj8qnRN0d7fwILBRCRAF1Tsvkpsoa70
-         gGgbIxwTgY8AgVOcscFw20Fdz5xdPQO0hXS6JidZ/BBzrnc9zslfvbSQ3EaEseXghGk9
-         XSQY4PWFhBQrvi5zKqvID2MaRuBoEuygY/xErosNelgMI95qt1fVSJAdZjfmKJIGmjtg
-         ZeqNgP1l/kFVLrHag/VEGkd0+Xv+1dA+taR0tU+YEnY4Am7D7Or2/KVc4spb8HHnHNnr
-         KHCw==
-X-Gm-Message-State: AOAM531faycEtpTEpurHoNVSOKJv3AXiyaJuJq/2tFN06umM/RSZvZfF
-        RtWvPiFN5obL13WYqh3VPhaMRQLgVMQxX7uKcrbbTw==
-X-Google-Smtp-Source: ABdhPJyJa7U8SQQEss3scNAd++32yQJ9inG+jtPNdgXpwnwGtNsOIHLVfEr4vMOsbMx/1Epql3rutItK4vq4Q/a+KbE=
-X-Received: by 2002:aca:6083:: with SMTP id u125mr418733oib.14.1601922033920;
- Mon, 05 Oct 2020 11:20:33 -0700 (PDT)
+        Mon, 5 Oct 2020 14:23:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A95871822384E;
+        Mon,  5 Oct 2020 18:23:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3870:3871:4321:5007:6119:7576:7903:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13095:13311:13357:13439:14181:14659:14721:14777:21080:21221:21433:21451:21627:21819:30003:30012:30022:30026:30029:30030:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: air50_3900439271c0
+X-Filterd-Recvd-Size: 1946
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  5 Oct 2020 18:23:29 +0000 (UTC)
+Message-ID: <14c9d8808feabe987e7fdac867d21ff88561011a.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add new warnings to author signoff
+ checks.
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 05 Oct 2020 11:23:28 -0700
+In-Reply-To: <20201005173933.171074-1-dwaipayanray1@gmail.com>
+References: <20201005173933.171074-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <20201004192152.3298573-1-robdclark@gmail.com> <CAOeoa-d4-KyuVjwPCBcau6yp6sxeeHN4K0cQzZ=H+OQVgHsLFw@mail.gmail.com>
-In-Reply-To: <CAOeoa-d4-KyuVjwPCBcau6yp6sxeeHN4K0cQzZ=H+OQVgHsLFw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 5 Oct 2020 20:20:22 +0200
-Message-ID: <CAKMK7uHeZptOKWKTanBB_c2ek2emNjs9fFCbTwgafS19rL1sww@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH 00/14] drm/msm: de-struct_mutex-ification
-To:     =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 6:24 PM Kristian H=C3=B8gsberg <hoegsberg@gmail.com>=
- wrote:
->
-> On Sun, Oct 4, 2020 at 9:21 PM Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > This doesn't remove *all* the struct_mutex, but it covers the worst
-> > of it, ie. shrinker/madvise/free/retire.  The submit path still uses
-> > struct_mutex, but it still needs *something* serialize a portion of
-> > the submit path, and lock_stat mostly just shows the lock contention
-> > there being with other submits.  And there are a few other bits of
-> > struct_mutex usage in less critical paths (debugfs, etc).  But this
-> > seems like a reasonable step in the right direction.
->
-> What a great patch set. Daniel has some good points and nothing that
-> requires big changes, but on the other hand, I'm not sure it's
-> something that needs to block this set either.
+On Mon, 2020-10-05 at 23:09 +0530, Dwaipayan Ray wrote:
+> The author signed-off-by checks are currently very vague.
+> Cases like same name or same address are not handled separately.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> +						if ($address1 =~ /(\S+)\+\S+(\@.*)/) {
+> +							$address1 = $1.$2;
 
-Personally I'd throw the lockdep priming on top to make sure this
-stays correct (it's 3 lines), but yes imo this is all good to go. Just
-figured I'll sprinkle the latest in terms of gem locking over the
-series while it's here :-)
--Daniel
+More common in this code is "$1" . "$2" not $1.$2
 
-> Either way, for the series
->
-> Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
->
-> > Rob Clark (14):
-> >   drm/msm: Use correct drm_gem_object_put() in fail case
-> >   drm/msm: Drop chatty trace
-> >   drm/msm: Move update_fences()
-> >   drm/msm: Add priv->mm_lock to protect active/inactive lists
-> >   drm/msm: Document and rename preempt_lock
-> >   drm/msm: Protect ring->submits with it's own lock
-> >   drm/msm: Refcount submits
-> >   drm/msm: Remove obj->gpu
-> >   drm/msm: Drop struct_mutex from the retire path
-> >   drm/msm: Drop struct_mutex in free_object() path
-> >   drm/msm: remove msm_gem_free_work
-> >   drm/msm: drop struct_mutex in madvise path
-> >   drm/msm: Drop struct_mutex in shrinker path
-> >   drm/msm: Don't implicit-sync if only a single ring
-> >
-> >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  4 +-
-> >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 12 +--
-> >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +-
-> >  drivers/gpu/drm/msm/msm_debugfs.c         |  7 ++
-> >  drivers/gpu/drm/msm/msm_drv.c             | 15 +---
-> >  drivers/gpu/drm/msm/msm_drv.h             | 19 +++--
-> >  drivers/gpu/drm/msm/msm_gem.c             | 76 ++++++------------
-> >  drivers/gpu/drm/msm/msm_gem.h             | 53 +++++++++----
-> >  drivers/gpu/drm/msm/msm_gem_shrinker.c    | 58 ++------------
-> >  drivers/gpu/drm/msm/msm_gem_submit.c      | 17 ++--
-> >  drivers/gpu/drm/msm/msm_gpu.c             | 96 ++++++++++++++---------
-> >  drivers/gpu/drm/msm/msm_gpu.h             |  5 +-
-> >  drivers/gpu/drm/msm/msm_ringbuffer.c      |  3 +-
-> >  drivers/gpu/drm/msm/msm_ringbuffer.h      | 13 ++-
-> >  14 files changed, 188 insertions(+), 194 deletions(-)
-> >
-> > --
-> > 2.26.2
-> >
-> > _______________________________________________
-> > Freedreno mailing list
-> > Freedreno@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/freedreno
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> @@ -6891,9 +6917,29 @@ sub process {
+[]
+> +			# 4 -> names match, addresses excuding mail extensions (subaddresses) match
+
+excluding
+
+perhaps "subaddress detail" instead of "mail extensions (subaddresses)"
+
+And maybe add "from RFC 5233"
+
+> +
+> +			my $sob_msg = "'From: $author' != 'Signed-off-by: $author_sob'";
+> +
+> +			if ($authorsignoff == 0) {
+> +				WARN("NO_AUTHOR_SIGN_OFF",
+> +				     "Missing Signed-off-by: line by nominal patch author '$author'\n");
+> +			} elsif ($authorsignoff == 2) {
+> +				WARN("NO_AUTHOR_SIGN_OFF",
+> +				     "From:/Signed-off-by: email name mismatch:\n$sob_msg\n");
 
 
+Still no need for a newline to separate the output message.
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
