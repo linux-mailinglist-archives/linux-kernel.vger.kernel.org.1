@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526C1283EE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C3A283FCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 21:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbgJESlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:41:01 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:48009 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgJESlB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:41:01 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4C4qDT3bBpz1qt4L;
-        Mon,  5 Oct 2020 20:40:56 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4C4qDS5R48z1r0lS;
-        Mon,  5 Oct 2020 20:40:56 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id dhxAh5FxZBrC; Mon,  5 Oct 2020 20:40:55 +0200 (CEST)
-X-Auth-Info: wToZBNEoEF1rWN+IPsWKDZkac8E1RIC382M0Q6fDxQgtEkwRSbB5xQed0w7uOL0i
-Received: from igel.home (ppp-46-244-175-195.dynamic.mnet-online.de [46.244.175.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon,  5 Oct 2020 20:40:55 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id E303C2C2982; Mon,  5 Oct 2020 20:40:54 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     guoren@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, tycho@tycho.ws,
-        nickhu@andestech.com, linux-riscv@lists.infradead.org,
-        guoren@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-References: <mhng-847e71cf-64bc-464b-8d09-3bcec40aa491@palmerdabbelt-glaptop1>
-X-Yow:  HOW could a GLASS be YELLING??
-Date:   Mon, 05 Oct 2020 20:40:54 +0200
-In-Reply-To: <mhng-847e71cf-64bc-464b-8d09-3bcec40aa491@palmerdabbelt-glaptop1>
-        (Palmer Dabbelt's message of "Mon, 05 Oct 2020 09:39:51 -0700 (PDT)")
-Message-ID: <87362stt1l.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1729486AbgJETlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 15:41:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:19752 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729302AbgJETlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 15:41:13 -0400
+IronPort-SDR: Bdw+cKsjTJ//04f6oh3Zxhgc3NQT9tb006m0ZwF7n152IAfu36hBoiNhk5O9q3DJ5F160QPfg0
+ ZQ3O4ZJiEfrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9765"; a="143832465"
+X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
+   d="scan'208";a="143832465"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP; 05 Oct 2020 12:26:06 -0700
+IronPort-SDR: lxF6D25Y207qlLNXScXhxkLPsDRbK1kc/MVlkM2tgjHEmEqB9WNJ8MI7ZEXXSbfyiX3amIf/dz
+ tc0QX9Ic3oBg==
+X-IronPort-AV: E=Sophos;i="5.77,340,1596524400"; 
+   d="scan'208";a="517163416"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 11:43:35 -0700
+Date:   Mon, 5 Oct 2020 11:43:20 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Graf <graf@amazon.com>, kvm list <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 6/8] KVM: x86: VMX: Prevent MSR passthrough when MSR
+ access is denied
+Message-ID: <20201005184320.GA15803@linux.intel.com>
+References: <20200925143422.21718-1-graf@amazon.com>
+ <20200925143422.21718-7-graf@amazon.com>
+ <20201002011139.GA5473@xz-x1>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002011139.GA5473@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Okt 05 2020, Palmer Dabbelt wrote:
+On Thu, Oct 01, 2020 at 09:11:39PM -0400, Peter Xu wrote:
+> Hi,
+> 
+> I reported in the v13 cover letter of kvm dirty ring series that this patch
+> seems to have been broken.  Today I tried to reproduce with a simplest vm, and
+> after a closer look...
+> 
+> On Fri, Sep 25, 2020 at 04:34:20PM +0200, Alexander Graf wrote:
+> > @@ -3764,15 +3859,14 @@ static u8 vmx_msr_bitmap_mode(struct kvm_vcpu *vcpu)
+> >  	return mode;
+> >  }
+> >  
+> > -static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu,
+> > -					 unsigned long *msr_bitmap, u8 mode)
+> > +static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
+> >  {
+> >  	int msr;
+> >  
+> > -	for (msr = 0x800; msr <= 0x8ff; msr += BITS_PER_LONG) {
+> > -		unsigned word = msr / BITS_PER_LONG;
+> > -		msr_bitmap[word] = (mode & MSR_BITMAP_MODE_X2APIC_APICV) ? 0 : ~0;
+> > -		msr_bitmap[word + (0x800 / sizeof(long))] = ~0;
+> > +	for (msr = 0x800; msr <= 0x8ff; msr++) {
+> > +		bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
+> > +
+> > +		vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
 
-> On Mon, 05 Oct 2020 01:25:22 PDT (-0700), schwab@linux-m68k.org wrote:
->> On Sep 14 2020, Aurelien Jarno wrote:
->>
->>> How should we proceed to get that fixed in time for 5.9? For the older
->>> branches where it has been backported (so far 5.7 and 5.8), should we
->>> just get that commit reverted instead?
->>
->> Why is this still broken?
->
-> Sorry, I hadn't seen this.  I'm not seeing a boot failure on 5.9-rc8 with just
-> CONFIG_HARDENED_USERCPOY=y in addition to defconfig (on QEMU, though I doubt
-> that's relevant here).
+Yeah, this is busted.
 
-I don't see a boot failure either, but eventually you will get crashes
-like this, and resources are not properly released:
+> >  	}
+> >  
+> >  	if (mode & MSR_BITMAP_MODE_X2APIC) {
+> 
+> ... I think we may want below change to be squashed:
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index d160aad59697..7d3f2815b04d 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3781,9 +3781,10 @@ static void vmx_update_msr_bitmap_x2apic(struct kvm_vcpu *vcpu, u8 mode)
+>         int msr;
+>  
+>         for (msr = 0x800; msr <= 0x8ff; msr++) {
+> -               bool intercepted = !!(mode & MSR_BITMAP_MODE_X2APIC_APICV);
+> +               bool apicv = mode & MSR_BITMAP_MODE_X2APIC_APICV;
+>  
+> -               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_RW, intercepted);
+> +               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_R, !apicv);
+> +               vmx_set_intercept_for_msr(vcpu, msr, MSR_TYPE_W, true);
 
-[ 4560.936645] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 241626, size 16)!
-[ 4560.945324] ------------[ cut here ]------------
-[ 4560.949954] kernel BUG at mm/usercopy.c:99!
-[ 4560.954030] Kernel BUG [#1]
-[ 4560.956805] Modules linked in: nfsv3 nfs_acl rfkill mmc_block sf_pdma i2c_ocores virt_dma spi_sifive uio_pdrv_genirq uio loop drm drm_panel_orientation_quirks rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache af_packet mscc macsec macb ptp pps_core phylink of_mdio fixed_phy libphy pwm_sifive mmc_spi crc_itu_t crc7 of_mmc_spi mmc_core spi_bitbang sunrpc sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua
-[ 4560.995103] CPU: 2 PID: 23806 Comm: nis Not tainted 5.8.10-1-default #1 openSUSE Tumbleweed (unreleased)
-[ 4561.004563] epc: ffffffe00036140e ra : ffffffe00036140e sp : ffffffe004bc7d60
-[ 4561.011679]  gp : ffffffe00127ee60 tp : ffffffe1b05d0000 t0 : ffffffe001297ca0
-[ 4561.018886]  t1 : ffffffe001297c30 t2 : 0000000000000000 s0 : ffffffe004bc7d80
-[ 4561.026093]  s1 : ffffffe00003afda a0 : 000000000000005b a1 : ffffffe1f7d67588
-[ 4561.033298]  a2 : ffffffe1f7d6c108 a3 : 0000000000000000 a4 : ffffffe000043e80
-[ 4561.040506]  a5 : ffffffe1f7d6be80 a6 : 0000000000000144 a7 : 0000000000000000
-[ 4561.047712]  s2 : 0000000000000010 s3 : 0000000000000000 s4 : ffffffe00003afea
-[ 4561.054918]  s5 : ffffffe1f7e00e80 s6 : 0000002af4a2c2e0 s7 : fffffffffffff000
-[ 4561.062124]  s8 : 0000003ffffff000 s9 : ffffffe19f985400 s10: 0000000000000010
-[ 4561.069329]  s11: ffffffe1f7e00e80 t3 : 0000000000038fa8 t4 : 0000000000038fa8
-[ 4561.076533]  t5 : 0000000000000001 t6 : ffffffe00128e062
-[ 4561.081832] status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[ 4561.089821] ---[ end trace a7c93e7595e9c2cc ]---
-[ 4561.095589] BUG: Bad rss-counter state mm:00000000c54f4c29 type:MM_ANONPAGES val:1
+I would prefer a full revert of sorts.  Allowing userspace to intercept reads
+to x2APIC MSRs when APICV is fully enabled for the guest simply can't work.
+The LAPIC and thus virtual APIC is in-kernel and cannot be directly accessed
+by userspace.  I doubt it actually affects real world performance, but
+resetting each MSR one-by-one bugs me.
 
-Andreas.
+Intercepting writes to TPR, EOI and SELF_IPI are somewhat plausible, but I
+just don't see how intercepting reads when APICV is active is a sane setup.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+I'll send a patch and we can go from there.
+
+>         }
+>  
+>         if (mode & MSR_BITMAP_MODE_X2APIC) {
+> 
+> This fixes my problem the same as having this patch reverted.
+> 
+> -- 
+> Peter Xu
+> 
