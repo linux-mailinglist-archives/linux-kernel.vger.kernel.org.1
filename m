@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EEB283677
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5564C28367A
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbgJENYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:24:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47104 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725931AbgJENYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:24:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601904286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AxNmOxhloOkNLG5z3f4ksZwozQa5YHSZyRWOBA5+GD8=;
-        b=XFAbO+ue/U0zs1Ggm0iNU7hZ4STznQoWd9hsElmUP60R2/UXDsq3r6mltEelEZE6WKPuTR
-        hpcYRmIoEJ4+aOZzkeupC4X20tdqsXQg+4QmCLSRziv1NyAze5n1+3yqDxMoh7z3c3QSD8
-        mMqdAsYiFxRL7biwarHNPzwvhORlQsM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 10BB6ADE4;
-        Mon,  5 Oct 2020 13:24:46 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 15:24:45 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH 5/9] mm, page_alloc: make per_cpu_pageset accessible only
- after init
-Message-ID: <20201005132445.GA4555@dhcp22.suse.cz>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-6-vbabka@suse.cz>
+        id S1726105AbgJENZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:25:42 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:36225 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgJENZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:25:42 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 60so8564019otw.3;
+        Mon, 05 Oct 2020 06:25:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VSm7gLjvoXVPW4MRbVep3VxyatFylcoxKzzruY+rFmA=;
+        b=InZFc1lYgCZygfhHYk2b4a3MLtsjfM/Kj6YzSOPfbBArMSXZ3yAV/CZ3yH87Amlj29
+         9frevE4Yn+Qmx5ldJq1EXqajAaHGNioDWg23yirns3JRk7jCse+ix9S//CwAj8kEFN+Q
+         /5nZfSaD8nkQrf+CuY9TabrfbOGHCYVpWBrU2PUYc4ewODK1Mk/lu9C5OzuTWJ0fww2r
+         8BR7fMBjWeoz11Z+cfB/SruBkKF+bS+ji+szgp9BFvrNMEDvVnAO90+xYle8Bqkbe8Bi
+         JBeJeKnCncCQExaR441NUNrQ/WrrKuF92R8EDnIyuqQ48sjzLtdX9LESwBb4Ifqlsip5
+         oYqA==
+X-Gm-Message-State: AOAM5329Fia7b/0RdgHWfoKbh+Me13zr47U03PnuHxHPq4VhGJAXCiku
+        Kb/pfhP1SbLgzNk4mvM2I6PyGuaobxnfXITkyj0=
+X-Google-Smtp-Source: ABdhPJzAhOvM/7gBRkLIamiQt5pp03piG1poAEdBabDBErML+QILbGXZKNRPjGnxftmzHcZgGjAR9Ak294uciO60TmU=
+X-Received: by 2002:a9d:734f:: with SMTP id l15mr5055320otk.260.1601904339903;
+ Mon, 05 Oct 2020 06:25:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922143712.12048-6-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1601884370.git.viresh.kumar@linaro.org>
+In-Reply-To: <cover.1601884370.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 5 Oct 2020 15:25:28 +0200
+Message-ID: <CAJZ5v0hLyF5G4QR=qQnmsnnjobmV0w62L2ZPLxjKA0dOtdcqkw@mail.gmail.com>
+Subject: Re: [PATCH V3 0/5] cpufreq: Record stats with fast-switching
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-09-20 16:37:08, Vlastimil Babka wrote:
-> setup_zone_pageset() replaces the boot_pageset by allocating and initializing a
-> proper percpu one. Currently it assigns zone->pageset with the newly allocated
-> one before initializing it. That's currently not an issue, because the zone
-> should not be in any zonelist, thus not visible to allocators at this point.
-> 
-> Memory ordering between the pcplist contents and its visibility is also not
-> guaranteed here, but that also shouldn't be an issue because online_pages()
-> does a spin_unlock(pgdat->node_size_lock) before building the zonelists.
-> 
-> However it's best that we don't silently rely on operations that can be changed
-> in the future. Make sure only properly initialized pcplists are visible, using
-> smp_store_release(). The read side has a data dependency via the zone->pageset
-> pointer instead of an explicit read barrier.
+On Mon, Oct 5, 2020 at 9:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Hi,
+>
+> We disabled recording cpufreq stats when fast switching was introduced
+> to the cpufreq core as the cpufreq stats required to take a spinlock and
+> that can't be allowed (for performance reasons) on scheduler's hot path.
+>
+> Here is an attempt to get rid of the lock and bring back the support.
+>
+> V2->V3:
+> - Use READ/WRITE_ONCE() for reset-time as well.
+> - Use unlikely for few conditionals in the hot path.
+> - Better changelogs.
+> - Rebase changes.
+>
+> V1-V2:
+> - Use READ_ONCE/WRITE_ONCE instead of atomic in the first patch.
+>
+> --
+> Viresh
+>
+> Viresh Kumar (5):
+>   cpufreq: stats: Defer stats update to
+>     cpufreq_stats_record_transition()
+>   cpufreq: stats: Remove locking
+>   cpufreq: stats: Mark few conditionals with unlikely()
+>   cpufreq: stats: Enable stats for fast-switch as well
+>   cpufreq: Move traces and update to policy->cur to cpufreq core
+>
+>  drivers/cpufreq/cpufreq.c        | 11 ++++
+>  drivers/cpufreq/cpufreq_stats.c  | 89 ++++++++++++++++++++------------
+>  kernel/sched/cpufreq_schedutil.c | 12 +----
+>  3 files changed, 69 insertions(+), 43 deletions(-)
+>
+> --
 
-Heh, this looks like inveting a similar trap the previous patch was
-removing. But more seriously considering that we need a locking for the
-whole setup, wouldn't it be better to simply document the locking
-requirements rather than adding scary looking barriers future ourselves
-or somebody else will need to scratch heads about. I am pretty sure we
-don't do anything like that when initializating numa node or other data
-structures that might be allocated during the memory hotadd.
-
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/page_alloc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 99b74c1c2b0a..de3b48bda45c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6246,15 +6246,17 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->  
->  void __meminit setup_zone_pageset(struct zone *zone)
->  {
-> +	struct per_cpu_pageset __percpu * new_pageset;
->  	struct per_cpu_pageset *p;
->  	int cpu;
->  
-> -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
-> +	new_pageset = alloc_percpu(struct per_cpu_pageset);
->  	for_each_possible_cpu(cpu) {
-> -		p = per_cpu_ptr(zone->pageset, cpu);
-> +		p = per_cpu_ptr(new_pageset, cpu);
->  		pageset_init(p);
->  	}
->  
-> +	smp_store_release(&zone->pageset, new_pageset);
->  	zone_set_pageset_high_and_batch(zone);
->  }
->  
-> -- 
-> 2.28.0
-
--- 
-Michal Hocko
-SUSE Labs
+The entire series applied as 5.10 material with some minor changelog
+edits in patch [1/5], thanks!
