@@ -2,162 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887E9283E1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3422F283EE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgJESSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:18:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:54990 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbgJESSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:18:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C62A1113E;
-        Mon,  5 Oct 2020 11:18:05 -0700 (PDT)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BCD2D3F71F;
-        Mon,  5 Oct 2020 11:18:05 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-crypto@vger.kernel.org, broonie@kernel.org, ardb@kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [BUG][PATCH] arm64: bti: fix BTI to handle local indirect branches
-Date:   Mon,  5 Oct 2020 13:18:04 -0500
-Message-Id: <20201005181804.1331237-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.25.4
+        id S1729186AbgJESlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:41:15 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:48876 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgJESlP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:41:15 -0400
+X-Greylist: delayed 1344 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 14:41:14 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=DocFb8exhfUXSoZBKE3Y45sf3gaeuZsjqUNzJjJ4OXQ=; b=ubzNNhWRXYmNL10IK204xrjoqE
+        Pn0xi7QMHXGykASr/hURFXjqqO3F3l7tnHrSOKNQmBRbNJwjbQMP4sPc0Wnf2wziEkkFnEtsRPfvs
+        eOxUJMwEzkmxdZuF9SM8DqXkUvo6/yy8fJ72lM2JJMNTBZzSLnpNUquhj1Jfv7uC1JPg=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1kPV4U-00043H-0E; Mon, 05 Oct 2020 18:18:50 +0000
+Received: from [54.239.6.186] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1kPV4T-0004A2-Gg; Mon, 05 Oct 2020 18:18:49 +0000
+Subject: Re: [PATCH] arm/arm64: xen: Fix to convert percpu address to gfn
+ correctly
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>,
+        takahiro.akashi@linaro.org
+References: <160190516028.40160.9733543991325671759.stgit@devnote2>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <b205ec9c-c307-2b67-c43a-cf2a67179484@xen.org>
+Date:   Mon, 5 Oct 2020 19:18:47 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <160190516028.40160.9733543991325671759.stgit@devnote2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AES code uses a 'br x7' as part of a function called by
-a macro, that ends up needing a BTI_J as a target. Lets
-define SYN_CODE_START_LOCAL() for this and replace the
-SYM_FUNC_START_LOCAL with a SYM_FUNC_CODE_LOCAL in the AES block.
+Hi Masami,
 
-Without this kernels compiled with the aes_neon_bs will OOPS
-at boot.
+On 05/10/2020 14:39, Masami Hiramatsu wrote:
+> Use per_cpu_ptr_to_phys() instead of virt_to_phys() for per-cpu
+> address conversion.
+> 
+> In xen_starting_cpu(), per-cpu xen_vcpu_info address is converted
+> to gfn by virt_to_gfn() macro. However, since the virt_to_gfn(v)
+> assumes the given virtual address is in contiguous kernel memory
+> area, it can not convert the per-cpu memory if it is allocated on
+> vmalloc area (depends on CONFIG_SMP).
 
-  Bad mode in Synchronous Abort handler detected on CPU1, code 0x34000003 -- BTI
-  CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
-  pstate: 20400c05 (nzCv daif +PAN -UAO BTYPE=j-)
-  pc : aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-  lr : aesbs_xts_encrypt+0x48/0xe0 [aes_neon_bs]
-  sp : ffff80001052b730
-  x29: ffff80001052b730 x28: 0000000000000001
-  x27: ffff0001ec8f4000 x26: ffff0001ec5d27b0
-  x25: ffff0001ec8f4000 x24: ffff80001052bc00
-  x23: 0000000000000018 x22: 000000000000000a
-  x21: ffff0001ec5d2100 x20: ffff0001ec8f4080
-  x19: ffff0001ec8f4000 x18: 0000000000000004
-  x17: 0000000000000000 x16: ffffadb4db85d310
-  x15: 0000000000000200 x14: 0000000000000010
-  x13: 0000000000000200 x12: ffff0001ec5d2100
-  x11: 000000000000000a x10: 0000020000200000
-  x9 : ffffadb4db7e7488 x8 : 0000000000000000
-  x7 : ffffadb4614fb110 x6 : 0000000000000000
-  x5 : ffff80001052bc00 x4 : 0000000000000020
-  x3 : 000000000000000a x2 : ffff0001ec5d2100
-  x1 : ffff0001ec8f4000 x0 : ffff0001ec8f4000
-  Kernel panic - not syncing: bad mode
-  CPU: 1 PID: 265 Comm: cryptomgr_test Not tainted 5.8.11-300.fc33.aarch64 #1
-  Call trace:
-   dump_backtrace+0x0/0x1c0
-   show_stack+0x24/0x30
-   dump_stack+0xc0/0x118
-   panic+0x144/0x358
-   arm64_serror_panic+0x0/0x98
-   el1_sync_handler+0x60/0x110
-   el1_sync+0xb4/0x180
-   aesbs_encrypt8+0x0/0x5f0 [aes_neon_bs]
-   __xts_crypt+0xb0/0x2dc [aes_neon_bs]
-   xts_encrypt+0x28/0x3c [aes_neon_bs]
-  crypto_skcipher_encrypt+0x50/0x84
-  simd_skcipher_encrypt+0xc8/0xe0
-  crypto_skcipher_encrypt+0x50/0x84
-  test_skcipher_vec_cfg+0x224/0x5f0
-  test_skcipher+0xbc/0x120
-  alg_test_skcipher+0xa0/0x1b0
-  alg_test+0x3dc/0x47c
-  cryptomgr_test+0x38/0x60
-  kthread+0x11c/0x120
-  ret_from_fork+0x10/0x18
- SMP: stopping secondary CPUs
- Kernel Offset: 0x2db4cb7e0000 from 0xffff800010000000
- PHYS_OFFSET: 0xffffcf2440000000
- CPU features: 0x7e0152,20c02020
- Memory Limit: none
- ---[ end Kernel panic - not syncing: bad mode ]---
+Are you sure about this? I have a .config with CONFIG_SMP=y where the 
+per-cpu region for CPU0 is allocated outside of vmalloc area.
 
-Fixes: commit 0e89640b640d ("crypto: arm64 - Use modern annotations for assembly functions")
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- arch/arm64/crypto/aes-neonbs-core.S | 8 ++++----
- arch/arm64/include/asm/linkage.h    | 6 +++++-
- 2 files changed, 9 insertions(+), 5 deletions(-)
+However, I was able to trigger the bug as soon as CONFIG_NUMA_BALANCING 
+was enabled.
 
-diff --git a/arch/arm64/crypto/aes-neonbs-core.S b/arch/arm64/crypto/aes-neonbs-core.S
-index b357164379f6..76de87ee80e1 100644
---- a/arch/arm64/crypto/aes-neonbs-core.S
-+++ b/arch/arm64/crypto/aes-neonbs-core.S
-@@ -428,7 +428,7 @@ SYM_FUNC_START(aesbs_convert_key)
- SYM_FUNC_END(aesbs_convert_key)
- 
- 	.align		4
--SYM_FUNC_START_LOCAL(aesbs_encrypt8)
-+SYM_CODE_START_LOCAL(aesbs_encrypt8)
- 	ldr		q9, [bskey], #16		// round 0 key
- 	ldr		q8, M0SR
- 	ldr		q24, SR
-@@ -488,10 +488,10 @@ SYM_FUNC_START_LOCAL(aesbs_encrypt8)
- 	eor		v2.16b, v2.16b, v12.16b
- 	eor		v5.16b, v5.16b, v12.16b
- 	ret
--SYM_FUNC_END(aesbs_encrypt8)
-+SYM_END(aesbs_encrypt8)
- 
- 	.align		4
--SYM_FUNC_START_LOCAL(aesbs_decrypt8)
-+SYM_CODE_START_LOCAL(aesbs_decrypt8)
- 	lsl		x9, rounds, #7
- 	add		bskey, bskey, x9
- 
-@@ -553,7 +553,7 @@ SYM_FUNC_START_LOCAL(aesbs_decrypt8)
- 	eor		v3.16b, v3.16b, v12.16b
- 	eor		v5.16b, v5.16b, v12.16b
- 	ret
--SYM_FUNC_END(aesbs_decrypt8)
-+SYM_END(aesbs_decrypt8)
- 
- 	/*
- 	 * aesbs_ecb_encrypt(u8 out[], u8 const in[], u8 const rk[], int rounds,
-diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
-index ba89a9af820a..92c81ae8ac1e 100644
---- a/arch/arm64/include/asm/linkage.h
-+++ b/arch/arm64/include/asm/linkage.h
-@@ -11,7 +11,8 @@
-  * set the architecture version to v8.5 we use the hint instruction
-  * instead.
-  */
--#define BTI_C hint 34 ;
-+#define BTI_C  hint 34 ;
-+#define BTI_JC hint 38 ;
- 
- /*
-  * When using in-kernel BTI we need to ensure that PCS-conformant assembly
-@@ -42,6 +43,9 @@
- 	SYM_START(name, SYM_L_WEAK, SYM_A_NONE)		\
- 	BTI_C
- 
-+#define SYM_CODE_START_LOCAL(name)			\
-+	SYM_START(name, SYM_L_LOCAL, SYM_A_ALIGN)       \
-+	BTI_JC
- #endif
- 
- /*
+[...]
+
+> Fixes: 250c9af3d831 ("arm/xen: Add support for 64KB page granularity")
+
+FWIW, I think the bug was already present before 250c9af3d831.
+
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>   arch/arm/xen/enlighten.c |    2 +-
+>   include/xen/arm/page.h   |    3 +++
+>   2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> index e93145d72c26..a6ab3689b2f4 100644
+> --- a/arch/arm/xen/enlighten.c
+> +++ b/arch/arm/xen/enlighten.c
+> @@ -150,7 +150,7 @@ static int xen_starting_cpu(unsigned int cpu)
+>   	pr_info("Xen: initializing cpu%d\n", cpu);
+>   	vcpup = per_cpu_ptr(xen_vcpu_info, cpu);
+>   
+> -	info.mfn = virt_to_gfn(vcpup);
+> +	info.mfn = percpu_to_gfn(vcpup);
+>   	info.offset = xen_offset_in_page(vcpup);
+>   
+>   	err = HYPERVISOR_vcpu_op(VCPUOP_register_vcpu_info, xen_vcpu_nr(cpu),
+> diff --git a/include/xen/arm/page.h b/include/xen/arm/page.h
+> index 39df751d0dc4..ac1b65470563 100644
+> --- a/include/xen/arm/page.h
+> +++ b/include/xen/arm/page.h
+> @@ -83,6 +83,9 @@ static inline unsigned long bfn_to_pfn(unsigned long bfn)
+>   	})
+>   #define gfn_to_virt(m)		(__va(gfn_to_pfn(m) << XEN_PAGE_SHIFT))
+>   
+> +#define percpu_to_gfn(v)	\
+> +	(pfn_to_gfn(per_cpu_ptr_to_phys(v) >> XEN_PAGE_SHIFT))
+> +
+>   /* Only used in PV code. But ARM guests are always HVM. */
+>   static inline xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+>   {
+> 
+
+Cheers,
+
 -- 
-2.25.4
-
+Julien Grall
