@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903EA283B57
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816F5283B6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgJEPlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54224 "EHLO mail.kernel.org"
+        id S1728884AbgJEPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:41:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727483AbgJEP27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:28:59 -0400
+        id S1727373AbgJEP2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 11:28:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85BE520FC3;
-        Mon,  5 Oct 2020 15:28:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4DAE2074F;
+        Mon,  5 Oct 2020 15:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601911739;
-        bh=EWXEi2ZgrbOhn/9KbwEircw+PZkTJ/3WJ6rfO0AxfG8=;
+        s=default; t=1601911704;
+        bh=PEntYgy3zPKWLs6qDtTuYLVAggIkX2FQwDO5O3lLVWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dvGof544de8gt1DGb54DX8HlSNtL9jTywx2mCe2+PtGFmIEJd1odE7osvGrS/MZLm
-         8l6eb0UYo5PGUsYaSS7ebiTYtYjlR9WvS/VA+euW4h+bOOs7qFEi/O7PQZ4/WFQ+RO
-         OGrgknyfQNrfhYpPocm8pSPo4FDINwhgPomHEu6E=
+        b=MrQa8dG0kZHxTnqM6ZDwAlzLRaMKc5OPLyjSwinsJW/1yzktA8W8O/jYorE+PhyeD
+         JU+ozW6nIqNK0FJziO8rA8Xq/hdgS/xSbEtE9PENZBB6fEDBGUX4ZMZfOUhjnoRcAA
+         NQ+KWDjAJDuB/FPGBrZvzqJx5FBxZuKYcpSUTAUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Moritz Fischer <mdf@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/57] net: dec: de2104x: Increase receive ring size for Tulip
+Subject: [PATCH 4.19 15/38] net: dec: de2104x: Increase receive ring size for Tulip
 Date:   Mon,  5 Oct 2020 17:26:32 +0200
-Message-Id: <20201005142110.761599924@linuxfoundation.org>
+Message-Id: <20201005142109.403385087@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201005142109.796046410@linuxfoundation.org>
-References: <20201005142109.796046410@linuxfoundation.org>
+In-Reply-To: <20201005142108.650363140@linuxfoundation.org>
+References: <20201005142108.650363140@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,7 +67,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index f1a2da15dd0a6..b14d93da242f1 100644
+index 13430f75496cc..b312cd9bce169 100644
 --- a/drivers/net/ethernet/dec/tulip/de2104x.c
 +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
 @@ -91,7 +91,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
