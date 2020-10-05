@@ -2,81 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B288D283C5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F599283C60
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 18:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgJEQWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 12:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        id S1728415AbgJEQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 12:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727149AbgJEQWu (ORCPT
+        with ESMTP id S1726638AbgJEQYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:22:50 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C7EC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:22:50 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id A0498261076
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        kernel test robot <lkp@intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] drm/mediatek: mtk_dpi: Fix unused variable 'mtk_dpi_encoder_funcs'
-Date:   Mon,  5 Oct 2020 18:22:41 +0200
-Message-Id: <20201005162241.172912-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 5 Oct 2020 12:24:34 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D74C0613CE;
+        Mon,  5 Oct 2020 09:24:33 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id z19so2705066uap.2;
+        Mon, 05 Oct 2020 09:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qBumfCmhAXhY6hDQgspF9hUMTgcwdq6ZvwLFthSZGKg=;
+        b=FqgucgTbGuny7Ms/SWPL4HahrbIIvGxOn4Zb1JCVFIdVq4oFzJnG9Lig/ZJD+lJ+s/
+         7z5Ew6VOel/j/DPaKaY8Jgffv6XMOZaMxJCjTrMXLNdF2CaHsuCV6nvK9fVzLtPe18k8
+         XsJEIS3GSofDUIgLWpDbum1ae6IhdzyjabIq3rnE+7canVicUVSzryoQIQhj5QzGc8/m
+         J+al3GNCZWv8cH4ug3+omqfo0SzAMOuN5lczBQb+eteSlN2bQlPdPGD+y9JpdQEkaLDX
+         pbE9eKwoz5hm3AFBibyPly+JHhDSawWQRCUH6CC/4UWeVpIl2mI4uoiI3KNB/AlGrQLL
+         wzyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qBumfCmhAXhY6hDQgspF9hUMTgcwdq6ZvwLFthSZGKg=;
+        b=EeTv7+D/6Bd8OxRsHYLhU5pWix21qEYNTa0ocESNrnClgyFrp6T0bxIhpjlg+pTKbS
+         eN13ZgpeeCt/2iPQXc18KK9TsFg+e27poqA5M5Gne6CLNcl5Poq9lYCSFkQ+UcopKWF+
+         hURgRiFsS2h0pcBSC4jRrJUA7x79CCTlhKUkymyrRefI60dJUcHaVXWSWbZAc2ywuPGr
+         +VYN6HMv8lnMs3NF6vwCrVopAGZLtaxQ9AQcXZZk2+2sgLiQ7Eg9TtDCDpIy6y5ZxmmJ
+         3aI5vwsV12SQJywc7tkPv160uQQp0juWw84z3hp/L51fjZMxNqMBxXxR4SLN2oSHk4Gg
+         ITmQ==
+X-Gm-Message-State: AOAM530+Bk58WWnqXZpyod4Q5L+B5lt+UTF7PeLolDYaou6aof8/4mkS
+        ZSpE8y3BN8hIXvMmav2rff7kH0biwdCEOqP1/I+PZg5QVuqCurHe
+X-Google-Smtp-Source: ABdhPJznyMapjDMGbUJSAUPrB5hWXc5IE1Vq0Zi5rWJZl03TsE1S3clOeekLVUiAwcemyucFJg5Cj3CY5Fd3yEzo76Y=
+X-Received: by 2002:a9f:3f46:: with SMTP id i6mr449424uaj.31.1601915072945;
+ Mon, 05 Oct 2020 09:24:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201004192152.3298573-1-robdclark@gmail.com>
+In-Reply-To: <20201004192152.3298573-1-robdclark@gmail.com>
+From:   =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>
+Date:   Mon, 5 Oct 2020 18:24:21 +0200
+Message-ID: <CAOeoa-d4-KyuVjwPCBcau6yp6sxeeHN4K0cQzZ=H+OQVgHsLFw@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 00/14] drm/msm: de-struct_mutex-ification
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Jonathan Marek <jonathan@marek.ca>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Eric Anholt <eric@anholt.net>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        Emil Velikov <emil.velikov@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
-introduced the following build warning with W=1
+On Sun, Oct 4, 2020 at 9:21 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> This doesn't remove *all* the struct_mutex, but it covers the worst
+> of it, ie. shrinker/madvise/free/retire.  The submit path still uses
+> struct_mutex, but it still needs *something* serialize a portion of
+> the submit path, and lock_stat mostly just shows the lock contention
+> there being with other submits.  And there are a few other bits of
+> struct_mutex usage in less critical paths (debugfs, etc).  But this
+> seems like a reasonable step in the right direction.
 
- drivers/gpu/drm/mediatek/mtk_dpi.c:530:39: warning: unused variable 'mtk_dpi_encoder_funcs' [-Wunused-const-variable]
- static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
+What a great patch set. Daniel has some good points and nothing that
+requires big changes, but on the other hand, I'm not sure it's
+something that needs to block this set either.
 
-This struct is and the 'mtk_dpi_encoder_destroy()' are not needed
-anymore, so remove them.
+Either way, for the series
 
-Fixes: f89c696e7f63 ("drm/mediatek: mtk_dpi: Convert to bridge driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
 
- drivers/gpu/drm/mediatek/mtk_dpi.c | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 589ef33a1780..2609d917e3f9 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -522,15 +522,6 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
--static void mtk_dpi_encoder_destroy(struct drm_encoder *encoder)
--{
--	drm_encoder_cleanup(encoder);
--}
--
--static const struct drm_encoder_funcs mtk_dpi_encoder_funcs = {
--	.destroy = mtk_dpi_encoder_destroy,
--};
--
- static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
--- 
-2.28.0
-
+> Rob Clark (14):
+>   drm/msm: Use correct drm_gem_object_put() in fail case
+>   drm/msm: Drop chatty trace
+>   drm/msm: Move update_fences()
+>   drm/msm: Add priv->mm_lock to protect active/inactive lists
+>   drm/msm: Document and rename preempt_lock
+>   drm/msm: Protect ring->submits with it's own lock
+>   drm/msm: Refcount submits
+>   drm/msm: Remove obj->gpu
+>   drm/msm: Drop struct_mutex from the retire path
+>   drm/msm: Drop struct_mutex in free_object() path
+>   drm/msm: remove msm_gem_free_work
+>   drm/msm: drop struct_mutex in madvise path
+>   drm/msm: Drop struct_mutex in shrinker path
+>   drm/msm: Don't implicit-sync if only a single ring
+>
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  4 +-
+>  drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 12 +--
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +-
+>  drivers/gpu/drm/msm/msm_debugfs.c         |  7 ++
+>  drivers/gpu/drm/msm/msm_drv.c             | 15 +---
+>  drivers/gpu/drm/msm/msm_drv.h             | 19 +++--
+>  drivers/gpu/drm/msm/msm_gem.c             | 76 ++++++------------
+>  drivers/gpu/drm/msm/msm_gem.h             | 53 +++++++++----
+>  drivers/gpu/drm/msm/msm_gem_shrinker.c    | 58 ++------------
+>  drivers/gpu/drm/msm/msm_gem_submit.c      | 17 ++--
+>  drivers/gpu/drm/msm/msm_gpu.c             | 96 ++++++++++++++---------
+>  drivers/gpu/drm/msm/msm_gpu.h             |  5 +-
+>  drivers/gpu/drm/msm/msm_ringbuffer.c      |  3 +-
+>  drivers/gpu/drm/msm/msm_ringbuffer.h      | 13 ++-
+>  14 files changed, 188 insertions(+), 194 deletions(-)
+>
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
