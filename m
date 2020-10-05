@@ -2,126 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E63283909
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BC028390F
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 17:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgJEPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 11:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45496 "EHLO
+        id S1726725AbgJEPJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 11:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJEPIX (ORCPT
+        with ESMTP id S1725970AbgJEPJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 11:08:23 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059FAC0613CE
-        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 08:08:23 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a200so2277206pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 08:08:23 -0700 (PDT)
+        Mon, 5 Oct 2020 11:09:04 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824C1C0613CE;
+        Mon,  5 Oct 2020 08:09:04 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id u126so8982038oif.13;
+        Mon, 05 Oct 2020 08:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=1S/FkXYTFn2oVLi29cIaAZFlPFb57vgrFD3svNFFhFE=;
-        b=NwHhgJZg6oIyqBZiAJHMCgsRAKWrCLIrSD/1NL2vxuXuH2+LWyo00AH7v4AEnJdvGk
-         fEoQodjkLw/LRrBW/+ptXC/s0GhTuHD84NsuoCDpCMul9ffo/WIc+h63rtncD6XQSD5J
-         TZATynjHjKIQCY00zPcVLUkqZfV0GukjQFbs8SSG0IzhIS68CglsZoeqX+6K/p82t68U
-         BCYzp4BX9O9cs5shPRqRHkwiMzAjXq8Z2dVcpRZ66B+Dx4Lu/ooo0dHSW5On9b5HIxdC
-         +rKL8DyUzKUUkbbE9RSsG5u/jRKDw8c1swue5mZ0srtRR/kg8ZS1GSsWqL4s4zEJBNZD
-         sMyQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5EyUBblOiDmWcpZQ14k8x7x0Ix+bWgSiATXrJ6A1d3s=;
+        b=b3PyHH92xAoIoTSb2WnNAxkFT6t1E3QWOESREMgJHHILdTqiM7tSbDT3NXRjaKlm48
+         Lb+yry5erSGfa35pCCyyrG9jXRzqD7lR/GUbme7dZHZmg9aO1E9lHk5zUFWOX7+RBCGU
+         c04wCRbsCoxbMLipk6AEYFX29BM2NmsbLdMhIhuoc8W6vly9F/IL3GGuuKpGfziU4K1d
+         mqdhLxufU+pV5NCPnfTJAXcHGmIceVa3nOjm2Ul7cAxgfVIyWiBRRX/cHgOBEVloYIvf
+         XLHQ15j3k/b1+lxRUfQHMXywX/p8RR6TTlyiQdc6KVxl/Rx22gJmAHTBH8fvmVffMsF/
+         BAFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=1S/FkXYTFn2oVLi29cIaAZFlPFb57vgrFD3svNFFhFE=;
-        b=gzNxU3GBBMqyPIA6GatiiIwc+YrmQfl3RTDbSPFPcCZt56ucwXLDDNPf9hWVFRqt8Z
-         +AB4e13ZENYu2hlVorF2Gkko9tDbt4uLbz2pj0PbP7QJuJ2CkKgrPMVSsxCQX0C8RZDR
-         88hpAriX+CnoAmlP4Ji3zFVYAQdGY8mCh6EiEFP6m92B472P4j68iEBWtjbawr9Q9fda
-         ZT+TrpdsLXrD0WNLPRG/SitrFTJm+JqFg56AReQ39nPV6FBxI9mXRQxKUOrvpmGIFdxj
-         Fn+ubWR2mLO6CgFMwVvBYLG4AU6Gi4pHuscNAUPqjeTrPSIhbZiw0zFVju2oa+hSpO0J
-         BwrQ==
-X-Gm-Message-State: AOAM532yqGDsHC2ZIfoCSf6w9SimwPk2734SK+Liy0NZ5dWy0mlff1ov
-        RFK7nc3WzTLeyRM2BXh00wHtXyEd2mQZ1ETUhmpkGg==
-X-Google-Smtp-Source: ABdhPJyHnO9QHIoG0zf/drGaDwjFyllVTYoa9Xo8ie4XOoCP9wjijxD4g1PK0MIzaT/mBobIZoLiNKs/EbUW9TvasVI=
-X-Received: by 2002:a63:d56:: with SMTP id 22mr15491292pgn.286.1601910502282;
- Mon, 05 Oct 2020 08:08:22 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=5EyUBblOiDmWcpZQ14k8x7x0Ix+bWgSiATXrJ6A1d3s=;
+        b=Tf30A6wV/tP0EvOn0FpD5yF5stQoB5fQhMwAZad4ndTHGgFYs/FFpxaffFJSUpdNhN
+         9RTkSjYshLfMJyDCU272mKh+URHShGM32RIWQwfKLLC2DuPSsxio9UoJdKvFs4nLB21C
+         j25HxJ0dUO1jrZboxTfP9pcI6e9j+F5ghUcc9sJvNrKrksqzqTbjh9HbMBTuCaCxh1BW
+         X/T9MjYY5KWW2nPKLYiZfjynsvmuXFIuR4yf2HUWrgO7aL6BUe7A/KpybJLlIfVUAYAV
+         5x9JR123N/Zf+Liex4kn3QhHXnWOeASx/Bs6CofDfOFfdDJWYNDDeYz/jXzfv8XgK6sP
+         SAgw==
+X-Gm-Message-State: AOAM530xvQZkYonD7KrGX2ik9Pdaip4qyp5YMuFpirgh30sjsezYX8Mk
+        xkGk85wUbizC5lsw0bcZ3KrOKA6s6GY=
+X-Google-Smtp-Source: ABdhPJy/q3Vh54Vq5544BqYSrD+mc8Cc55hhYcxBr5SxsY2ivMjpLddChO2mblKISOFUgkfLuFi0lA==
+X-Received: by 2002:aca:db42:: with SMTP id s63mr52169oig.4.1601910543966;
+        Mon, 05 Oct 2020 08:09:03 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k24sm53714oou.43.2020.10.05.08.09.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Oct 2020 08:09:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (pmbus/max34440) Fix/add missing break statements
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jdelvare@suse.com, foremans@google.com
+References: <20201005115041.1750626-1-alexandru.ardelean@analog.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <40cc33b8-1dcf-898d-42f1-53b4404a80b9@roeck-us.net>
+Date:   Mon, 5 Oct 2020 08:09:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 5 Oct 2020 17:08:11 +0200
-Message-ID: <CAAeHK+wb4k-LGTjK9F5YbJNviF_+yU+wE_=Vpo9Rn7KFN8vG6Q@mail.gmail.com>
-Subject: Is usb_hcd_giveback_urb() allowed in task context?
-To:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201005115041.1750626-1-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear USB and USB/IP maintainers,
+On 10/5/20 4:50 AM, Alexandru Ardelean wrote:
+> This one was caught by the compiler.
+> Adds missing break statements, which look omitted by accident.
+> 
+Most definitely.
 
-While fuzzing the USB/IP stack with syzkaller we've stumbled upon an issue.
+> Fixes: 599a5ac5f96c ("hwmon: (pmbus/max34440) Fix/add missing break statements")
 
-Currently kcov (the subsystem that is used for coverage collection)
-USB-related callbacks assume that usb_hcd_giveback_urb() can only be
-called from interrupt context, as indicated by the comment before the
-function definition. In the USB/IP code, however, it's called from the
-task context (see the stack trace below).
+This should point to the culprit.
 
-Is this something that is allowed and we need to fix kcov? Or is this
-a bug in USB/IP?
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+> 
+> Maybe the lkp bot also reported this [by now].
+> I just bumped into this now, trying to work on another driver.
+> Now whether this gets applied, or a V2 is created, is not important from my
+> side.
+> 
+Thanks, folded into the original patch.
 
-Thank you!
+Guenter
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 57 at kernel/kcov.c:834
-kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 2 PID: 57 Comm: kworker/2:1 Not tainted 5.9.0-rc7+ #45
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x14b/0x19d lib/dump_stack.c:118
- panic+0x319/0x765 kernel/panic.c:231
- __warn.cold+0x2f/0x2f kernel/panic.c:600
- report_bug+0x273/0x300 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:kcov_remote_start+0xa7/0x400 kernel/kcov.c:834
-Code: 84 26 03 00 00 fa 66 0f 1f 44 00 00 65 8b 05 50 13 93 7e a9 00
-01 ff 00 41 8b 94 24 50 0a 00 00 75 1a 81 e2 ff ff ff bf 74 12 <0f> 0b
-48 83 3d 17 c4 26 08 00 0f 85 62 01 00 00 0f 0b 65 8b 05 20
-RSP: 0018:ffffc9000030f600 EFLAGS: 00010002
-RAX: 0000000080000000 RBX: 0100000000000003 RCX: ffffc90014cd1000
-RDX: 0000000000000002 RSI: ffffffff85199fcc RDI: 0100000000000003
-RBP: 0000000000000282 R08: ffff88806d594640 R09: fffff52000061eca
-R10: 0000000000000003 R11: fffff52000061ec9 R12: ffff88806d594640
-R13: 0000000000000000 R14: 0100000000000003 R15: 0000000000000000
- kcov_remote_start_usb include/linux/kcov.h:52 [inline]
- __usb_hcd_giveback_urb+0x284/0x4b0 drivers/usb/core/hcd.c:1649
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
- vhci_urb_enqueue.cold+0x37f/0x4c5 drivers/usb/usbip/vhci_hcd.c:801
- usb_hcd_submit_urb+0x2b1/0x20d0 drivers/usb/core/hcd.c:1547
- usb_submit_urb+0x6e5/0x13b0 drivers/usb/core/urb.c:570
- usb_start_wait_urb+0x10f/0x2c0 drivers/usb/core/message.c:58
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- hub_set_address drivers/usb/core/hub.c:4472 [inline]
- hub_port_init+0x23f6/0x2d20 drivers/usb/core/hub.c:4748
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1cc9/0x38d0 drivers/usb/core/hub.c:5576
- process_one_work+0x7b6/0x1190 kernel/workqueue.c:2269
- worker_thread+0x94/0xdc0 kernel/workqueue.c:2415
- kthread+0x372/0x450 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 1 seconds..
+> This is a heads-up [from my side].
+> 
+>  drivers/hwmon/pmbus/max34440.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
+> index bdea52996580..f4cb196aaaf3 100644
+> --- a/drivers/hwmon/pmbus/max34440.c
+> +++ b/drivers/hwmon/pmbus/max34440.c
+> @@ -61,9 +61,11 @@ static int max34440_read_word_data(struct i2c_client *client, int page,
+>  	case PMBUS_IOUT_OC_FAULT_LIMIT:
+>  		ret = pmbus_read_word_data(client, page, phase,
+>  					   MAX34440_IOUT_OC_FAULT_LIMIT);
+> +		break;
+>  	case PMBUS_IOUT_OC_WARN_LIMIT:
+>  		ret = pmbus_read_word_data(client, page, phase,
+>  					   MAX34440_IOUT_OC_WARN_LIMIT);
+> +		break;
+>  	case PMBUS_VIRT_READ_VOUT_MIN:
+>  		ret = pmbus_read_word_data(client, page, phase,
+>  					   MAX34440_MFR_VOUT_MIN);
+> @@ -133,9 +135,11 @@ static int max34440_write_word_data(struct i2c_client *client, int page,
+>  	case PMBUS_IOUT_OC_FAULT_LIMIT:
+>  		ret = pmbus_write_word_data(client, page, MAX34440_IOUT_OC_FAULT_LIMIT,
+>  					    word);
+> +		break;
+>  	case PMBUS_IOUT_OC_WARN_LIMIT:
+>  		ret = pmbus_write_word_data(client, page, MAX34440_IOUT_OC_WARN_LIMIT,
+>  					    word);
+> +		break;
+>  	case PMBUS_VIRT_RESET_POUT_HISTORY:
+>  		ret = pmbus_write_word_data(client, page,
+>  					    MAX34446_MFR_POUT_PEAK, 0);
+> 
+
