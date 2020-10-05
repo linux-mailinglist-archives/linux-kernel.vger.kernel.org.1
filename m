@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1C82833A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBAF2833A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 11:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgJEJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 05:53:42 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:36569 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725930AbgJEJxl (ORCPT
+        id S1726019AbgJEJxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 05:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgJEJxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 05:53:41 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id BE5D75C00A8;
-        Mon,  5 Oct 2020 05:53:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 05:53:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=a3Kdh27qJh0L6hcJBNIfK8XDjWN
-        1U92ZxA5pBLTQkNQ=; b=RLVJ4IJRLOGpk+4jo7PUzRLm/3gU+V4Xxx6/IucSuD9
-        zqeTc3ftNPpBKSNzX2wpv3C8hOg1fC6DK5ptPMf1bODUIWoU4Puch/9rTNxl11bD
-        i6h3eIaX2WgdaVZPiIkYQCe/BDPakSBma85HkEXwpTVlvlXCqbWWl9p//y3ECsG5
-        jNN4BEwX6xn5CgomnpYPVO+LJfOGdH5G0QseQ0DtDWGovyfdVJrp7UfdttdC5ANf
-        uGrfwXaEENYUiKERnI02eYI/dGNoNV4U1wNqimwrZ3aJJNmWE4o3erz+VOkeiSkU
-        x/OiTvVRM/0X6s+FjnTsa1oH0Zn5zGpJ5q5EJMXaIuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=a3Kdh2
-        7qJh0L6hcJBNIfK8XDjWN1U92ZxA5pBLTQkNQ=; b=IfTt5C1EESiRAB5hH4okOj
-        LyXyyL+xSwHo/9Rf2OO7VlMIyuyBeWSDWOTA8kUC1dCBGSLj18NFycLmWzl6nIPu
-        PJs+xhCzNdCu5XCNL7YzhCPPWkzxTIv5I3AWobbU1KH1Gs+4azESwy1ozFBpEZK4
-        kWBaFegYKW/NSRo9ThrpgOMpkSbGLq8fmlGh2TJOHuJfTPejESghM4GAafWFZCLV
-        UulZHnffJs0ZqrSs/wUUj0lDEVjBbv2F8nHHNDoq3E4DzVlqSFE9dQxVYn9xkKQ9
-        VfGSJD3oaArY/YLg/5zCH5MFRVSSjfYW4AdLRxx00vM80C3WcKNXXxgLt7j/rPHw
-        ==
-X-ME-Sender: <xms:Iu16X8fIFhhZXtXT1g18RAqsFdOWuIdmZMeA0KSFc8VtXEapHUqP8g>
-    <xme:Iu16X-NigKuGwYkl2T7wEvc8T6NNq9H3H1Dy_pr8mmB-Om7usnljkm8vKpon3ovLe
-    mJvXJEx3KLv6CK_4f0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Iu16X9hkJln9mreZ0CtghMaEIC0ib4qXENAa30kah66Mqeq-VZ7CFA>
-    <xmx:Iu16Xx9s9v8tfXYKzhDcU3N8n9bI8upZ7QcWenJNV5msNwZ9VgGc5A>
-    <xmx:Iu16X4un5ys88qxhXIXgpQUu8M3rWQb5RMhJMjt1i4m-xr9aeDZwMA>
-    <xmx:JO16X99rpG3kxR5j6COCt-nKwhCxeWEG7yT1eHOIvK9kZR-l72wEzQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 68B80328005A;
-        Mon,  5 Oct 2020 05:53:38 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 11:53:36 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/25] ASoC: sun8i-codec: Set up clock tree at probe time
-Message-ID: <20201005095336.wzvdfjg7tyipiblc@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-2-samuel@sholland.org>
+        Mon, 5 Oct 2020 05:53:55 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40761C0613CE;
+        Mon,  5 Oct 2020 02:53:55 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id u21so11016048eja.2;
+        Mon, 05 Oct 2020 02:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tSNvIJ6n/8PydPpekJ3sBZyLSmyQXmedjUmwZXMurMo=;
+        b=WCC2gEffyxEhzVrQNJMtnmNTSoUUlpfjFkvf9eRqLzEJ9LA0ehw10XSgqvJx76A3ip
+         kUazxGYkWWM0N7bRnnWYWQlXKslfVFRf4wvmPEK2JSFJIEfYoHnv9wlqtT/5h8h1KDEj
+         qkxF1atxUk2xVIUzKvp0v+ORc4LYFEihJ+chWpuQtb3nFFQYZ8Lv1REbPLvp8jPlSM/o
+         JjTJyceLbPgYy3s3ae88L6ngca5cL88GCs6eBAVJ8+DatuXO6dQYoZkO8ksmKthOuA8k
+         d+wBWlESELfkIhwLFeIJYwRskd3V37LRuVyNmc5+OwBWpFN3r+vcYjH2eiMyniU4/PuM
+         hLcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tSNvIJ6n/8PydPpekJ3sBZyLSmyQXmedjUmwZXMurMo=;
+        b=ZJJacbcgznomMW0MRFdGKqv/HaDjTK4z7pFLMg0Os5YYZUS7/STY4X2Ap/ePUzV8ba
+         NVDF8iNUeMWM2ld5865HYRHCzJMh9xLZgfPIiN+IkDVjAP1Vq+JwGL+n7cQwvzKq8pNk
+         3hWZPleCWIFjhky6ych7PQCIm2GV2ab4mY7a+FFFyruz1//Ungwjc9r0eikUUCPbRu3W
+         YS8NSTJH4YSEpWE6a/d25YW6dHMKWGxPauSSDUBw+lkjwLINYGYkABA0gdyVRKB5c00/
+         +8y1r2Z7cHrR8OnEigNT5F6pbu89l0Pjre0lCOlbCqIxw0nC45Ju7GE9lSGxXQoFsY6L
+         btBA==
+X-Gm-Message-State: AOAM533sZnM2Y94oFScv5GLalLbNZyrkflMeBOU9b5PgY/u2nmd760Cm
+        2+arAxBR9/PpBxEoMd+mg/mUcxIBYnE=
+X-Google-Smtp-Source: ABdhPJxgzAOZ4Qeah+nCeFuiSWn88H4ILEdKN/5a6C7QNL1MKO0q6rEqKvyjihuNnGDqmUMjqS+F8g==
+X-Received: by 2002:a17:907:7215:: with SMTP id dr21mr14431042ejc.239.1601891633938;
+        Mon, 05 Oct 2020 02:53:53 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id x2sm8286307edr.65.2020.10.05.02.53.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 02:53:52 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 11:53:51 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+Message-ID: <20201005095351.GI425362@ulmo>
+References: <20201002060807.32138-1-nicoleotsuka@gmail.com>
+ <20201002060807.32138-3-nicoleotsuka@gmail.com>
+ <b1a195cf-0127-0531-f6d1-835367511f57@gmail.com>
+ <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bfbi64475avkiovi"
+        protocol="application/pgp-signature"; boundary="FUFe+yI/t+r3nyH4"
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-2-samuel@sholland.org>
+In-Reply-To: <0c66bab9-0132-d3fb-ea4e-de1278cf2b04@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---bfbi64475avkiovi
-Content-Type: text/plain; charset=us-ascii
+--FUFe+yI/t+r3nyH4
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 30, 2020 at 09:11:24PM -0500, Samuel Holland wrote:
-> The sun8i codec is effectively an on-die variant of the X-Powers AC100
-> codec. The AC100 can derive its clocks from either of two I2S master
-> clocks or an internal PLL. For the on-die variant, Allwinner replaced
-> the codec's own PLL with a connection to SoC's existing PLL_AUDIO, and
-> they connected both I2S MCLK inputs to the same source -- which happens
-> to be an integer divider from the same PLL_AUDIO.
+On Fri, Oct 02, 2020 at 05:50:08PM +0300, Dmitry Osipenko wrote:
+> 02.10.2020 17:22, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>  static int tegra_smmu_of_xlate(struct device *dev,
+> >>  			       struct of_phandle_args *args)
+> >>  {
+> >> +	struct platform_device *iommu_pdev =3D of_find_device_by_node(args->=
+np);
+> >> +	struct tegra_mc *mc =3D platform_get_drvdata(iommu_pdev);
+> >>  	u32 id =3D args->args[0];
+> >> =20
+> >> +	of_node_put(args->np);
+> >> +
+> >> +	if (!mc || !mc->smmu)
+> >> +		return -EPROBE_DEFER;
+> > platform_get_drvdata(NULL) will crash.
+> >=20
 >=20
-> So there's actually no clocking flexibility. To run SYSCLK at the
-> required rate, it must be run straight from the PLL. The only choice is
-> whether it goes through AIF1CLK or AIF2CLK. Since both run at the same
-> rate, the only effect of that choice is which field in SYS_SR_CTRL
-> (AIF1_FS or AIF2_FS) controls the system sample rate.
->=20
-> Since AIFnCLK is required to bring up the corresponding DAI, and AIF1
-> (connected to the CPU) is used most often, let's use AIF1CLK as the
-> SYSCLK parent. That means we no longer need to set AIF2_FS.
->=20
-> Since this clock tree never changes, we can program it from the
-> component probe function, instead of using DAPM widgets. The DAPM
-> widgets unnecessarily change clock parents when the codec goes in/out
-> of idle and the supply widgets are powered up/down.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Actually, platform_get_drvdata(NULL) can't happen. I overlooked this.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+How so? It's technically possible for the iommus property to reference a
+device tree node for which no platform device will ever be created, in
+which case of_find_device_by_node() will return NULL. That's very
+unlikely and perhaps worth just crashing on to make sure it gets fixed
+immediately.
 
-Maxime
+Thierry
 
---bfbi64475avkiovi
+--FUFe+yI/t+r3nyH4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rtIAAKCRDj7w1vZxhR
-xc8eAP0bXlNFAgDQHOBfRxm3VEecjJXH/Mon6DpSnsh19/gbFQD/ef2AX40M1Qvg
-8TTnjRMLXcsvCsCCrfP2ndB5hx0jjgU=
-=i7U6
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl967S8ACgkQ3SOs138+
+s6G50A/8CC2aziQWFWKu9/zGjy1UbL+zP8uXbPn3wZVQnWQ8kjRE5ip/HSI1QS+i
+sgafB0As25F0ajenDbidZFp0nJiZvFRlD3VQT6bj+5XwoxI7vA0Uzu5UiXLmxCXU
+CYA2NJZ/g6uCJ3ptk52YbG2gt1J49/GhgFuCPCaBxV2c8gIwo0eVs4daocjvK1mQ
+XqL7Nci3UcsY1oDgNnzzQAyUQ4ZEpEHdFzLUd9CSNZBxGDXA26d3J+RgJGXlnXbv
+eus6PtalK5okgodgvY60KLzyci/3Ph3k1aHJFNou0lmNxyJYW0PXTOVk5fn/wxY4
+E8rcGiUyNSmYxcZ9KVYr/EXhYW+ECM9drCGL1pM6InKeDtxa67vhOeW4RdbiGdzt
+/RjoUqPTUB4JYihBxpvkhUtYVZe4vtM+E3clPdKAqVig6pfZk5nacAPXj7KeJmNz
+2QNydAPLaBNiOclO7x1hneV9xHf0UBmp/Gp1P1OmaRe/eJ9bk8uymQVyG4QiX4MS
+dGPNMhW0lYgwy+a0K9omgh5RIInTaJpjIC5A9Z5N1um3sByGsk5HavPQHlZSqNjN
+CytLUR5MaSs0Zsfn/1OxszZtr1J/Kor3CC8Qxlv0pxQN1xSidAT7sWwL5ObEgHKt
+FoXOhaIeBvMp1DxmN6BHUDxA/p+Luf1GxGgZjsWIp4WUzw6XNNc=
+=0Ryz
 -----END PGP SIGNATURE-----
 
---bfbi64475avkiovi--
+--FUFe+yI/t+r3nyH4--
