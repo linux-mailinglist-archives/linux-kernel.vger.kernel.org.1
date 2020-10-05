@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF61283235
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF475283237
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgJEIiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:38:25 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:40995 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbgJEIiY (ORCPT
+        id S1726141AbgJEIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:38:28 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:35969 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726058AbgJEIi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:38:24 -0400
-Received: by mail-il1-f208.google.com with SMTP id f10so6705807ilj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:38:24 -0700 (PDT)
+        Mon, 5 Oct 2020 04:38:26 -0400
+Received: by mail-io1-f77.google.com with SMTP id q126so4331932iof.3
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 01:38:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/X0hny45nTAJMYRYWT5kLxsV4E880MCOQ1NBrS8q5FA=;
-        b=g2xaheNFBmgEpOXkIS46vnpxJbrejhpDfbYaVPq+fs07YIumhEJTXj0p9RsJwC3/ga
-         rRL0Y1AoQrfCG/zPApMgLhItH0Gn4UGaQz6Vet9mHVouZNsatkmkOV9PdW7jceQxkwA3
-         ylhOI8yGQ+oSCrtg15GPxZM+YZ7L2l6Ow4Rb6cfQRJ3OV31TQqUUGm5h8Y7f6eCMOWPP
-         nn37jDRluStMjEU9CVYpq9VeglITFuDmt/UuH/VVNQAcm9gYdYmk51ZX7r/SxANZwaPp
-         qCKoQB1QRPSVkbRtvmTArwLyco/uE1Pqiph70FS/rokiUheg5JEKqmnZPAYdg66qxmXX
-         xlMA==
-X-Gm-Message-State: AOAM530vqX6Ao7gy6dA7ntmDljHy1SomCdMAjPmBzi07rpUkvUBwQhZE
-        +aemPwV7j29wbiVIuzokAvUfpHp1wK52lVDEFoXdO3foMDRl
-X-Google-Smtp-Source: ABdhPJyIyPhScsYqZWWyyWaEryIxyoXWd7m0pZF+x3CfI1nk/ejhYBvuelFHDDwWnfF5pMttNGsjus/AyYMPovd5FTWpeUmM24wC
+        bh=fnx1lacPr4RD2lq8lO1WM//67u3yl76a9A5fDLAfxDU=;
+        b=syQeW6Qz8/RIMaPQlZ3+eAHC5Y6kDgM7g0tw9BzBqqeTWojJHDOf0tQLNt/sRzvdag
+         tMia1aofPA76oVue2l0cm0TVKMI6ZK+L83WYIsuJMW7k0U+WzmtQFKo2LyXWR+vbWH0D
+         vIMGw703ONpYvcy/jBEi2WMmOc0vZ4lO8mBfY/Y240VWdVnB9CrhIXWeabNQCM+DSeqn
+         LFDqsXIGhc/Hh4XF1P3Psm5/mXwvup4Kgg1EelK4FcHjF/ScL0sAI0vYFvjiEVu5NtR5
+         dJcg22Fx2tYnCv333mrhnEYFcSGG9jKAtE8IFpC941kccmtnJKyybAzXFxKaRpQBJua9
+         q32Q==
+X-Gm-Message-State: AOAM533PTkyOH+9IW4dxzCx7x5KEP3quqXJwDbdBQ6SlNmHYWQ7CAni8
+        BAAd7es4SiK4m1FBz/Edxjh8HLx+T4iY00S5b0yrW6YKMWW+
+X-Google-Smtp-Source: ABdhPJwKtlc5jFzYGJ999aLM/DCVdDqPAtjjrIZox5y6DsCL1kX5LRtjjyTVED5nf5waWgQaCuV5CcwzmXPEnMCnGGrlEWOWghLM
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1392:: with SMTP id d18mr3017810ilo.196.1601887103768;
+X-Received: by 2002:a92:d986:: with SMTP id r6mr10957051iln.302.1601887103032;
  Mon, 05 Oct 2020 01:38:23 -0700 (PDT)
 Date:   Mon, 05 Oct 2020 01:38:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca5ab205b0e8675a@google.com>
-Subject: INFO: trying to register non-static key in clear_inode (2)
-From:   syzbot <syzbot+d8dcf068719ec73f6ea9@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <000000000000bf21d705b0e8674c@google.com>
+Subject: WARNING in __ieee80211_beacon_get
+From:   syzbot <syzbot+18c783c5cf6a781e3e2c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, ramonreisfontes@gmail.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,105 +50,116 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    549738f1 Linux 5.9-rc8
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=138b8993900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=d8dcf068719ec73f6ea9
+HEAD commit:    456afe01 mptcp: ADD_ADDRs with echo bit are smaller
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16047c57900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e6c5266df853ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a68fdf900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ef31eb900000
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The issue was bisected to:
+
+commit 7dfd8ac327301f302b03072066c66eb32578e940
+Author: Ramon Fontes <ramonreisfontes@gmail.com>
+Date:   Thu Oct 10 18:13:07 2019 +0000
+
+    mac80211_hwsim: add support for OCB
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13c463a3900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=102463a3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c463a3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d8dcf068719ec73f6ea9@syzkaller.appspotmail.com
+Reported-by: syzbot+18c783c5cf6a781e3e2c@syzkaller.appspotmail.com
+Fixes: 7dfd8ac32730 ("mac80211_hwsim: add support for OCB")
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 1 PID: 7216 Comm: syz-executor.5 Not tainted 5.9.0-rc8-syzkaller #0
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6900 at net/mac80211/tx.c:4875 __ieee80211_beacon_get+0xb59/0x1aa0 net/mac80211/tx.c:4875
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6900 Comm: syz-executor345 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
+ <IRQ>
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x198/0x1fd lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:894 [inline]
- register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
- __lock_acquire+0x101/0x5780 kernel/locking/lockdep.c:4320
- lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
- _raw_spin_lock_irq+0x94/0xd0 kernel/locking/spinlock.c:167
- spin_lock_irq include/linux/spinlock.h:379 [inline]
- clear_inode+0x1b/0x1e0 fs/inode.c:529
- shmem_evict_inode+0x240/0xbc0 mm/shmem.c:1182
- evict+0x2ed/0x750 fs/inode.c:576
- iput_final fs/inode.c:1652 [inline]
- iput.part.0+0x424/0x850 fs/inode.c:1678
- iput+0x58/0x70 fs/inode.c:1668
- do_unlinkat+0x40b/0x660 fs/namei.c:3902
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f4f549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000090bed1c EFLAGS: 00000212 ORIG_RAX: 000000000000000a
-RAX: ffffffffffffffda RBX: 00000000090bedac RCX: 000000005f7aa726
-RDX: 0000000009908228 RSI: 0000000000000000 RDI: 00000000080d8a9e
-RBP: 00000000090bedac R08: 0000000000000000 R09: 0000000000000000
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:__ieee80211_beacon_get+0xb59/0x1aa0 net/mac80211/tx.c:4875
+Code: b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e fe 0c 00 00 41 83 4c 24 28 1a eb 0a e8 a7 15 9b f9 <0f> 0b 45 31 e4 e8 9d 15 9b f9 e8 e8 3e 5b 00 31 ff 89 c3 89 c6 e8
+RSP: 0018:ffffc90000da8b40 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff8880a96b5e18 RCX: ffffffff87db68e5
+RDX: ffff888091824540 RSI: ffffffff87db7209 RDI: 0000000000000005
+RBP: 000000000000000b R08: 0000000000000001 R09: ffffc90000da8c88
+R10: 0000000000000007 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff8880872c0c80 R14: 0000000000000000 R15: ffffc90000da8c88
+ ieee80211_beacon_get_tim+0x88/0x910 net/mac80211/tx.c:4939
+ ieee80211_beacon_get include/net/mac80211.h:4909 [inline]
+ mac80211_hwsim_beacon_tx+0x111/0x910 drivers/net/wireless/mac80211_hwsim.c:1729
+ __iterate_interfaces+0x1e5/0x520 net/mac80211/util.c:792
+ ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:828
+ mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1782
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1588
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+RIP: 0010:__sanitizer_cov_trace_pc+0x30/0x60 kernel/kcov.c:197
+Code: fe 01 00 65 8b 05 c0 76 8b 7e a9 00 01 ff 00 48 8b 34 24 74 0f f6 c4 01 74 35 8b 82 4c 14 00 00 85 c0 74 2b 8b 82 28 14 00 00 <83> f8 02 75 20 48 8b 8a 30 14 00 00 8b 92 2c 14 00 00 48 8b 01 48
+RSP: 0018:ffffc900048072d8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: ffff8880a96b4c00 RCX: ffffffff87dd0f8e
+RDX: ffff888091824540 RSI: ffffffff87dd0f61 RDI: ffff8880a96b5558
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff8880872c296f
 R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-------------[ cut here ]------------
-kernel BUG at fs/inode.c:533!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 7216 Comm: syz-executor.5 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:clear_inode+0x189/0x1e0 fs/inode.c:533
-Code: 75 38 e8 aa 5e ad ff 48 c7 83 d8 00 00 00 60 00 00 00 5b 5d 41 5c c3 e8 95 5e ad ff 0f 0b e8 8e 5e ad ff 0f 0b e8 87 5e ad ff <0f> 0b e8 80 5e ad ff 0f 0b e8 79 5e ad ff 0f 0b e8 72 5e ad ff 0f
-RSP: 0018:ffffc90006677c38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88800011c120 RCX: 0000000000000000
-RDX: ffff8880910aa380 RSI: ffffffff81c8e009 RDI: 0000000000000001
-RBP: ffff88800011c4c8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000031323754 R12: ffff88800011c350
-R13: ffff888086128878 R14: ffff88800011c0c8 R15: ffff88800011c0c8
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0063) knlGS:0000000009907900
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002001d000 CR3: 00000000a4575000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- shmem_evict_inode+0x240/0xbc0 mm/shmem.c:1182
- evict+0x2ed/0x750 fs/inode.c:576
- iput_final fs/inode.c:1652 [inline]
- iput.part.0+0x424/0x850 fs/inode.c:1678
- iput+0x58/0x70 fs/inode.c:1668
- do_unlinkat+0x40b/0x660 fs/namei.c:3902
- do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
- __do_fast_syscall_32+0x60/0x90 arch/x86/entry/common.c:137
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f4f549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000090bed1c EFLAGS: 00000212 ORIG_RAX: 000000000000000a
-RAX: ffffffffffffffda RBX: 00000000090bedac RCX: 000000005f7aa726
-RDX: 0000000009908228 RSI: 0000000000000000 RDI: 00000000080d8a9e
-RBP: 00000000090bedac R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 9126b3e9e9b64308 ]---
-RIP: 0010:clear_inode+0x189/0x1e0 fs/inode.c:533
-Code: 75 38 e8 aa 5e ad ff 48 c7 83 d8 00 00 00 60 00 00 00 5b 5d 41 5c c3 e8 95 5e ad ff 0f 0b e8 8e 5e ad ff 0f 0b e8 87 5e ad ff <0f> 0b e8 80 5e ad ff 0f 0b e8 79 5e ad ff 0f 0b e8 72 5e ad ff 0f
-RSP: 0018:ffffc90006677c38 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88800011c120 RCX: 0000000000000000
-RDX: ffff8880910aa380 RSI: ffffffff81c8e009 RDI: 0000000000000001
-RBP: ffff88800011c4c8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000031323754 R12: ffff88800011c350
-R13: ffff888086128878 R14: ffff88800011c0c8 R15: ffff88800011c0c8
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0063) knlGS:0000000009907900
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000090c7850 CR3: 00000000a4575000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+R13: ffff8880a7bbaa20 R14: dffffc0000000000 R15: 0000000000000000
+ ieee80211_chanctx_radar_detect+0x1f1/0x3a0 net/mac80211/util.c:4266
+ ieee80211_check_combinations+0x3b9/0x880 net/mac80211/util.c:4325
+ ieee80211_check_concurrent_iface+0x45b/0x670 net/mac80211/iface.c:309
+ ieee80211_runtime_change_iftype net/mac80211/iface.c:1672 [inline]
+ ieee80211_if_change_type+0x288/0x620 net/mac80211/iface.c:1712
+ ieee80211_change_iface+0x26/0x210 net/mac80211/cfg.c:157
+ rdev_change_virtual_intf net/wireless/rdev-ops.h:69 [inline]
+ cfg80211_change_iface+0x2ec/0xfe0 net/wireless/util.c:1032
+ nl80211_set_interface+0x65c/0x8d0 net/wireless/nl80211.c:3789
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2489
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4423d9
+Code: e8 ac 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffcf9989098 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004423d9
+RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
+RBP: 000000306e616c77 R08: 0000002000000000 R09: 0000002000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000080bde
+R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
@@ -155,3 +169,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
