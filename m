@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A9428371D
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E898D283721
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgJEN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:59:27 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:43549 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgJEN7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:59:20 -0400
-Received: by mail-io1-f79.google.com with SMTP id x13so4882507iom.10
-        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:59:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HjhcdI/QTm+zFD0fq5JEdhxBWDToFnhpbtIYaOozvDw=;
-        b=mZ40pUcu+u18Vu0FT3RRujY5ndfsr0DcC0E3CB59aS7ptBX22cY0KoT5dquYjmkMsO
-         Z0/UDj77G1PY10l6DPxQ6hynoyfIv84i4JAQ0mly9JHeAQmJBti2baX62SesgHrUrCwT
-         1PAdqHQ/JdqsVcuELo8cZpWN5EnUlk6r5hnxgY5QgKkGhPURWbpR5gfTPU+dED+Luele
-         iRtD2GK2yup6hI+Ps/EoqnfJ6s79ErVPIoczBhIoopEYy3jEfHyGkvbLm+Iz8YgSx/VB
-         /sspfinwoMdn4qETuP/D8ZhmNTY5UDp+hddd5oICbPdlvjJqe0W1AHzAX6mlVFUCGxKh
-         cBtQ==
-X-Gm-Message-State: AOAM532xfh2XwbKcRFM0Gzk8VOmr3OSNPUWHuG6ln2waH77m8jWNUDgG
-        9ORSwdaApCVxaGaNxqrElXXQkv4A68azK9jIPWa4vkJGQquT
-X-Google-Smtp-Source: ABdhPJxa1D+r9nJhKHMCIIocqjqBPXJ59f2NWe7MIkUbyJzSf5ZkxgQ3JlrZx8iYPEr0vh/G6acC6uTf12AgNT2nrC72JcUsjWNh
+        id S1726412AbgJEN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726017AbgJEN7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:59:46 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24CBB207BC;
+        Mon,  5 Oct 2020 13:59:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601906386;
+        bh=sRoRo8A4Y2/smESa5LnWt0wUfm835pdpnaNhpMiyvSI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Nx+/jHpZKjx8zUibPb3mTL/R6G6SJjWDpGw2qZ6LWujqbgEG1oo7vhEqPMz2Eg2Wd
+         vnP69DC3k/roVTFDC8GeVqqujPsE5M22U+6LVujr5E26DOsRy6yrV4HQ4XmqfsHVb5
+         NC2V1CYaJ/AN04SuCV26IWKtTT7J/W8QeS0qk3LU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E2624352301E; Mon,  5 Oct 2020 06:59:45 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 06:59:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "j.alglave@ucl.ac.uk" <j.alglave@ucl.ac.uk>,
+        "luc.maranget@inria.fr" <luc.maranget@inria.fr>,
+        "akiyks@gmail.com" <akiyks@gmail.com>,
+        "dlustig@nvidia.com" <dlustig@nvidia.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: Re: Litmus test for question from Al Viro
+Message-ID: <20201005135945.GU29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201001045116.GA5014@paulmck-ThinkPad-P72>
+ <20201001161529.GA251468@rowland.harvard.edu>
+ <20201001213048.GF29330@paulmck-ThinkPad-P72>
+ <20201003132212.GB318272@rowland.harvard.edu>
+ <20201004233146.GP29330@paulmck-ThinkPad-P72>
+ <5cf6b793978e4cd8ae10344336c13adb@AcuMS.aculab.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:d80d:: with SMTP id y13mr8011221iob.15.1601906359205;
- Mon, 05 Oct 2020 06:59:19 -0700 (PDT)
-Date:   Mon, 05 Oct 2020 06:59:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000810a4405b0ece316@google.com>
-Subject: KASAN: null-ptr-deref Write in event_handler
-From:   syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, shuah@kernel.org,
-        syzkaller-bugs@googlegroups.com, valentina.manea.m@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5cf6b793978e4cd8ae10344336c13adb@AcuMS.aculab.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Oct 05, 2020 at 08:36:51AM +0000, David Laight wrote:
+> From: Paul E. McKenney
+> > Sent: 05 October 2020 00:32
+> ...
+> >     manual/kernel: Add a litmus test with a hidden dependency
+> > 
+> >     This commit adds a litmus test that has a data dependency that can be
+> >     hidden by control flow.  In this test, both the taken and the not-taken
+> >     branches of an "if" statement must be accounted for in order to properly
+> >     analyze the litmus test.  But herd7 looks only at individual executions
+> >     in isolation, so fails to see the dependency.
+> > 
+> >     Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/manual/kernel/crypto-control-data.litmus b/manual/kernel/crypto-control-data.litmus
+> > new file mode 100644
+> > index 0000000..6baecf9
+> > --- /dev/null
+> > +++ b/manual/kernel/crypto-control-data.litmus
+> > @@ -0,0 +1,31 @@
+> > +C crypto-control-data
+> > +(*
+> > + * LB plus crypto-control-data plus data
+> > + *
+> > + * Result: Sometimes
+> > + *
+> > + * This is an example of OOTA and we would like it to be forbidden.
+> > + * The WRITE_ONCE in P0 is both data-dependent and (at the hardware level)
+> > + * control-dependent on the preceding READ_ONCE.  But the dependencies are
+> > + * hidden by the form of the conditional control construct, hence the
+> > + * name "crypto-control-data".  The memory model doesn't recognize them.
+> > + *)
+> > +
+> > +{}
+> > +
+> > +P0(int *x, int *y)
+> > +{
+> > +	int r1;
+> > +
+> > +	r1 = 1;
+> > +	if (READ_ONCE(*x) == 0)
+> > +		r1 = 0;
+> > +	WRITE_ONCE(*y, r1);
+> > +}
+> 
+> Hmmm.... the compiler will semi-randomly transform that to/from:
+> 	if (READ_ONCE(*x) == 0)
+> 		r1 = 0;
+> 	else
+> 		r1 = 1;
+> and
+> 	r1 = READ_ONCE(*x) != 0;
+> 
+> Both of which (probably) get correctly detected as a write to *y
+> that is dependant on *x - so is 'problematic' with P1() which
+> does the opposite assignment.
+> 
+> Which does rather imply that hurd is a bit broken.
 
-syzbot found the following issue on:
+I agree that herd7 does not match all compilers, but the intent was
+always to approximate them.  There has been some research work towards
+the goal of accurately modeling all possible compiler optimizations,
+and it gets extremely complex, and thus computationally infeasible,
+very quickly.  And we do need herd7 to stay strictly in the realm of
+the computationally feasible.
 
-HEAD commit:    d3d45f82 Merge tag 'pinctrl-v5.9-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15781d8f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=89ab6a0c48f30b49
-dashboard link: https://syzkaller.appspot.com/bug?extid=bf1a360e305ee719e364
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cbaa7d900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1364f367900000
+Hence, any use of control dependencies should follow up with something
+like klitmus7 (as Joel Fernandes did earlier in this thread) or KCSAN.
+These tools have their own limitations, for example, using a specific
+compiler rather than saying something about all possible compilers, but
+they do reflect what a specific real toolchain actually does.  They are
+also execution based, so have only some probability of finding problems.
+In contrast, herd7 does the moral equivalent of a full state-space search.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com
+It would be nice to be able to say that we have one tools that does
+everything, but that might be a long way down the road.
 
-vhci_hcd: stop threads
-vhci_hcd: release socket
-vhci_hcd: disconnect device
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
-BUG: KASAN: null-ptr-deref in refcount_add include/linux/refcount.h:201 [inline]
-BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:241 [inline]
-BUG: KASAN: null-ptr-deref in get_task_struct include/linux/sched/task.h:104 [inline]
-BUG: KASAN: null-ptr-deref in kthread_stop+0x90/0x7e0 kernel/kthread.c:591
-Write of size 4 at addr 000000000000001c by task kworker/u4:5/2519
-
-CPU: 1 PID: 2519 Comm: kworker/u4:5 Not tainted 5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usbip_event event_handler
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:517 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
- refcount_add include/linux/refcount.h:201 [inline]
- refcount_inc include/linux/refcount.h:241 [inline]
- get_task_struct include/linux/sched/task.h:104 [inline]
- kthread_stop+0x90/0x7e0 kernel/kthread.c:591
- vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
- event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 2519 Comm: kworker/u4:5 Tainted: G    B             5.9.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usbip_event event_handler
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- end_report+0x4d/0x53 mm/kasan/report.c:104
- __kasan_report mm/kasan/report.c:520 [inline]
- kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
- refcount_add include/linux/refcount.h:201 [inline]
- refcount_inc include/linux/refcount.h:241 [inline]
- get_task_struct include/linux/sched/task.h:104 [inline]
- kthread_stop+0x90/0x7e0 kernel/kthread.c:591
- vhci_shutdown_connection+0x170/0x2a0 drivers/usb/usbip/vhci_hcd.c:1015
- event_handler+0x1a5/0x450 drivers/usb/usbip/usbip_event.c:78
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+							Thanx, Paul
