@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F200283075
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0096C283079
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 08:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgJEGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 02:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        id S1725893AbgJEG4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 02:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbgJEGvh (ORCPT
+        with ESMTP id S1725869AbgJEG4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 02:51:37 -0400
+        Mon, 5 Oct 2020 02:56:51 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3CEC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun,  4 Oct 2020 23:51:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF42AC0613CE;
+        Sun,  4 Oct 2020 23:56:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cYk7Obp2ahObSK3QU4wsH0HwLm9yxaSVt/cZVZIJRRg=; b=Egux96ObWB5/g7c2+G+4yqlRkL
-        V05Rlh4LYcf8wi0KbCTnyvpS/wxR3IyM1OREFZHPAK/HbTCLZv6BpnHNM66UUd3KAQPIsagDjcGss
-        dr0G5c+DFHV+N6suh4eiB8uafFPbaX8uhzXweHsZMvxpMfzV5YbyZRJfN8DiAdl2VMVGwznQERQs+
-        hDN+kNXr/CQLR4G+hvffXjuwnCA5UV4DAkIIR75IUiXhM/O4JtAJ3zDYsoVcJDQG2pQjgIrtjFcNJ
-        1MUfCZXco40kE6LajhYaEBmxnnxsGrGjpPPGkeNaiLAhD1azd3bt/szW3su3ds0usHJlkdJEAnEfl
-        AS+ajliQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kPKKt-0002Te-FW; Mon, 05 Oct 2020 06:51:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F0AB130377D;
-        Mon,  5 Oct 2020 08:51:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DEFCC29E463CA; Mon,  5 Oct 2020 08:51:01 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 08:51:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com
-Subject: Re: [sched/fair] fcf0553db6: netperf.Throughput_Mbps -30.8%
- regression
-Message-ID: <20201005065101.GE2628@hirez.programming.kicks-ass.net>
-References: <20201004132716.GS393@shao2-debian>
- <20201004162108.GC3165@suse.de>
+        bh=JH0LA4ZuyggAVCTfAaYXHSoHoqqf3UMSAcaG4H8OYWQ=; b=ng9feSs+iOaagTDCS7GVS803UG
+        FYtJiDiazlMQbCOD7eSn/To5ES0cXenIsuYBC9zsl2M8eCCcF8vztyfDRaKMn20fLaPOxf3wG05DZ
+        QOHHQsDwG+RWnfXOYf15tRZDnQE4FvS1PpneP8X6muACi7I3brc0ZrLZu8w6PG0Z4Qr97L7G77e8L
+        i+HE7S6F/pSR1VIGaWf8mQxE5Rw27NM7JPcLy9Tlrq87GW/tdYoz+yN05tJIJWxC3GdBPc9nSca4W
+        hEWY8WkbcW/LHg4ZGsuGGwnKi7+Mh39JdBrJ4ZJ4co4pn2E2vgVZSfTclzV/HBw4pVLG5VvYwYhX0
+        1dY1sLbA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kPKQO-0002jS-Bx; Mon, 05 Oct 2020 06:56:44 +0000
+Date:   Mon, 5 Oct 2020 07:56:44 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Stephan Mueller <smueller@chronox.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] crypto: jitterentropy - bind statically into kernel
+Message-ID: <20201005065644.GB7462@infradead.org>
+References: <20200930065617.934638-1-palmerdabbelt@google.com>
+ <20201005061918.GB1856@infradead.org>
+ <CAMj1kXFC=6G1pqFAcjASrKJfzguO3k9Rv-7NsmTaX8qNre5TGw@mail.gmail.com>
+ <2588700.mWSkj6HvKX@tauon.chronox.de>
+ <CAMj1kXFL4gfrK1+zRG9sajTk62yRh3WzBG46KfKD=iM=VQMTAQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201004162108.GC3165@suse.de>
+In-Reply-To: <CAMj1kXFL4gfrK1+zRG9sajTk62yRh3WzBG46KfKD=iM=VQMTAQ@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 05:21:08PM +0100, Mel Gorman wrote:
-> On Sun, Oct 04, 2020 at 09:27:16PM +0800, kernel test robot wrote:
-> > Greeting,
-> > 
-> > FYI, we noticed a -30.8% regression of netperf.Throughput_Mbps due to commit:
-> > 
-> > 
-> > commit: fcf0553db6f4c79387864f6e4ab4a891601f395e ("sched/fair: Remove meaningless imbalance calculation")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
+On Mon, Oct 05, 2020 at 08:44:39AM +0200, Ard Biesheuvel wrote:
+> On Mon, 5 Oct 2020 at 08:40, Stephan Mueller <smueller@chronox.de> wrote:
+> >
+> > Am Montag, 5. Oktober 2020, 08:24:46 CEST schrieb Ard Biesheuvel:
+> >
+> > Hi Ard,
+> >
+> > > If jitterentropy is a special case, we could put a alternate
+> > > non-'static inline' version of random_get_entropy() in the core
+> > > kernel, and only export it if JITTER_ENTROPY is built as a module in
+> > > the first place. But I'd prefer it if jitterentropy switches to an API
+> > > that is suitable for driver consumption.
+> >
+> > Which API do you have in mind? In user space, I use
+> > clock_gettime(CLOCK_REALTIME) which also considers the clock source.
+> >
 > 
-> This commit was the start of a series that made large changes to load
-> balancing.  The series was not bisect-safe and has since been reconciled
-> with the NUMA balancing. Any workload with a potential load balancing
-> problem has to be checked against the latest kernel to see if the problem
-> persists there. If it does, then tip/sched/core should be checked or
-> 5.10-rc1 when it comes out as tip has a few more LB changes pending.
+> AFAICT, that call is backed by ktime_get_real_ts64(), which is already
+> being exported to modules.
 
-What Mel said ;-)
+Indeed. No need for my earlier idea..
