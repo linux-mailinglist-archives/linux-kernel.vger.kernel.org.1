@@ -2,193 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C503F283710
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56D6283708
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 15:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgJEN5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 09:57:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:40290 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgJEN5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 09:57:43 -0400
-IronPort-SDR: 9gzm7KT2732yrrmcDG+pZGUPjCflU+OQGWF0WPvKahMoFGjibFy64iY7m3iIFJSwKmMu4RdCeG
- rkoNsgRxDwoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="143522991"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="143522991"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 06:55:28 -0700
-IronPort-SDR: a1vc2Ay6wyFXOodi0nuSgFuCEwUHKEa3S2NYtFYc4rr0+/UFftHziNp+oWCh06h9CS8kEg/q8n
- hec4/R3fs7IA==
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="314390949"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 06:55:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kPQxV-004gYw-Ez; Mon, 05 Oct 2020 16:55:21 +0300
-Date:   Mon, 5 Oct 2020 16:55:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.9-2
-Message-ID: <20201005135521.GA1116903@smile.fi.intel.com>
+        id S1726070AbgJEN4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 09:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgJEN4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 09:56:08 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E77C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 06:56:07 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k10so9683142wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 06:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dg9PMrWuju7CtSiTsFc5fMoRQvaza8NEwASqcsZO++M=;
+        b=ly235/F88b9oFpiEVFMmSUjOC8USMQzMETnsmzx76Lvm8v00ci586LoMHUb+nsH97E
+         XFjKbLAbmz69pMf/mIhZb09OGmZRSkIgnHlmbtffx4wGcbRHihc5mIz0aNxtcFGPPvkl
+         Jndgm5PXC7Ua44LHVYAGe3JhL6wccQYFwljhI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Dg9PMrWuju7CtSiTsFc5fMoRQvaza8NEwASqcsZO++M=;
+        b=YwrgX1qr/q2nLfzV0DXS3RKCvZ61AmaHryzho/f623KJhemJpCEnAhrYulxGrJceEd
+         YtUdwQYmS+UOafD5nBuw7uGZfwvfUXOsV+aygUzPAL7DUAEoMUs5RlLEV1/2CGuPfr21
+         MGjUp0I8aB3an0zfcVnBzilAHcLMDPRbp5VEE4G7kFOPZlB/tW7UvEAKVEl+aeYj2CS2
+         42JvPlnk9Wb76EB27eWaN+lSSdZjPKftMzvPzpLhKmIqb8B9JR8qVf7HY2nOvHgXnU7H
+         CHeMo6SAS32XI79vGgX964mRNx27AN4XhjW0uZ9rEL2sf+yWAH1OwHXGUATaBioDZpmA
+         NUVA==
+X-Gm-Message-State: AOAM530hF/FeGRHTRt3o8pMtwTfDq5mthC9jecm4FKS/LRYNuH/Bmnfc
+        EwMHxX0amE1lvCQH+nKagI+TVQ==
+X-Google-Smtp-Source: ABdhPJwBjaQ/CDTdmzx2apJHF7WUmsHUVX+VJjGiGvqwPns7tfENfSADqpvErsjRzw1fJJVl2N6g3w==
+X-Received: by 2002:a5d:554c:: with SMTP id g12mr17893218wrw.294.1601906165661;
+        Mon, 05 Oct 2020 06:56:05 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 1sm31585wre.61.2020.10.05.06.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 06:56:04 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 15:56:02 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 07/14] drm/msm: Refcount submits
+Message-ID: <20201005135602.GR438822@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201004192152.3298573-1-robdclark@gmail.com>
+ <20201004192152.3298573-8-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201004192152.3298573-8-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Oct 04, 2020 at 12:21:39PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Before we remove dev->struct_mutex from the retire path, we have to deal
+> with the situation of a submit retiring before the submit ioctl returns.
+> 
+> To deal with this, ring->submits will hold a reference to the submit,
+> which is dropped when the submit is retired.  And the submit ioctl path
+> holds it's own ref, which it drops when it is done with the submit.
+> 
+> Also, add to submit list *after* getting/pinning bo's, to prevent badness
+> in case the completed fence is corrupted, and retire_worker mistakenly
+> believes the submit is done too early.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-I know that this is not the right time for the PR of such size, but we kinda
-have a force major situation. As you know Darren have been not having time to
-fulfil maintainer's responsibilities for some time already and now I have to
-step down as a maintainer as well. I will concentrate on the tasks that are
-closer to my area of responsibilities (GPIO and pin control drivers for Intel
-PCHs, SoCs and PMICs along with some standalone drivers here and there).
+Why not embed the dma_fence instead of pointer and use that refcount? i915
+does that, and imo kinda makes sense instead of more refcounted things.
+But might not make sense for msm.
+-Daniel
 
-Meanwhile PDx86 is not going to be abandoned or forgotten. We have got Hans and
-Mark to support and as you may see in the MAINTAINERS update the status of the
-subsystem becomes rather alive than dead. So, I welcome new maintainers and
-vive le sous-système PDx86!
-
-This is PR for v5.9 release as we have some troubles with Tablet Mode reporting
-and users are complaining a lot about.
-
-Thanks,
-
-With Best Regards,
-Andy Shevchenko
-
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-platform-drivers-x86.git tags/platform-drivers-x86-v5.9-2
-
-for you to fetch changes up to 720ef73d1a239e33c3ad8fac356b9b1348e68aaf:
-
-  platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse (2020-10-05 12:20:42 +0300)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.9-2
-
-* Attempt #3 of enabling Tablet Mode reporting w/o regressions
-* Improve battery recognition code in ASUS WMI driver
-* Fix Kconfig dependency warning for Fujitsu and LG laptop drivers
-* Add fixes in Thinkpad ACPI driver for _BCL method and NVRAM polling
-* Fix power supply extended topology in Mellanox driver
-* Fix memory leak in OLPC EC driver
-* Avoid static struct device in Intel PMC core driver
-* Add support for the touchscreen found in MPMAN Converter9 2-in-1
-* Update MAINTAINERS to reflect the real state of affairs
-
-The following is an automated git shortlog grouped by driver:
-
-asus-nb-wmi:
- -  Revert "Do not load on Asus T100TA and T200TA"
-
-asus-wmi:
- -  Add BATC battery name to the list of supported
-
-intel_pmc_core:
- -  do not create a static struct device
-
-intel-vbtn:
- -  Switch to an allow-list for SW_TABLET_MODE reporting
- -  Revert "Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360"
- -  Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360
-
-MAINTAINERS:
- -  Add Mark Gross and Hans de Goede as x86 platform drivers maintainers
-
-mlx-platform:
- -  Fix extended topology configuration for power supply units
-
-pcengines-apuv2:
- -  Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
-
-Platform:
- -  fix kconfig dependency warning for FUJITSU_LAPTOP
- -  fix kconfig dependency warning for LG_LAPTOP
- -  OLPC: Fix memleak in olpc_ec_probe
-
-thinkpad_acpi:
- -  re-initialize ACPI buffer size when reuse
- -  initialize tp_nvram_state variable
- -  fix underline length build warning
-
-touchscreen_dmi:
- -  Add info for the MPMAN Converter9 2-in-1
-
-----------------------------------------------------------------
-Aaron Ma (1):
-      platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
-
-Andy Shevchenko (1):
-      platform/x86: intel-vbtn: Revert "Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360"
-
-Dinghao Liu (1):
-      Platform: OLPC: Fix memleak in olpc_ec_probe
-
-Ed Wildgoose (1):
-      platform/x86: pcengines-apuv2: Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
-
-Greg Kroah-Hartman (1):
-      platform/x86: intel_pmc_core: do not create a static struct device
-
-Hans de Goede (5):
-      platform/x86: touchscreen_dmi: Add info for the MPMAN Converter9 2-in-1
-      platform/x86: asus-nb-wmi: Revert "Do not load on Asus T100TA and T200TA"
-      platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360
-      platform/x86: intel-vbtn: Switch to an allow-list for SW_TABLET_MODE reporting
-      MAINTAINERS: Add Mark Gross and Hans de Goede as x86 platform drivers maintainers
-
-Marius Iacob (1):
-      platform/x86: asus-wmi: Add BATC battery name to the list of supported
-
-Necip Fazil Yildiran (2):
-      platform/x86: fix kconfig dependency warning for LG_LAPTOP
-      platform/x86: fix kconfig dependency warning for FUJITSU_LAPTOP
-
-Randy Dunlap (1):
-      Documentation: laptops: thinkpad-acpi: fix underline length build warning
-
-Tom Rix (1):
-      platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
-
-Vadim Pasternak (1):
-      platform/x86: mlx-platform: Fix extended topology configuration for power supply units
-
- .../admin-guide/laptops/thinkpad-acpi.rst          |  2 +-
- MAINTAINERS                                        |  6 +--
- drivers/platform/olpc/olpc-ec.c                    |  4 +-
- drivers/platform/x86/Kconfig                       |  2 +
- drivers/platform/x86/asus-nb-wmi.c                 | 24 ----------
- drivers/platform/x86/asus-wmi.c                    |  1 +
- drivers/platform/x86/intel-vbtn.c                  | 52 ++++++++++++++++++----
- drivers/platform/x86/intel_pmc_core_pltdrv.c       | 26 +++++++----
- drivers/platform/x86/mlx-platform.c                | 18 +++++---
- drivers/platform/x86/pcengines-apuv2.c             |  2 +-
- drivers/platform/x86/thinkpad_acpi.c               |  6 ++-
- drivers/platform/x86/touchscreen_dmi.c             | 25 +++++++++++
- include/linux/platform_data/gpio/gpio-amd-fch.h    |  2 +-
- 13 files changed, 114 insertions(+), 56 deletions(-)
+> ---
+>  drivers/gpu/drm/msm/msm_drv.h        |  1 -
+>  drivers/gpu/drm/msm/msm_gem.h        | 13 +++++++++++++
+>  drivers/gpu/drm/msm/msm_gem_submit.c | 12 ++++++------
+>  drivers/gpu/drm/msm/msm_gpu.c        | 21 ++++++++++++++++-----
+>  4 files changed, 35 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 50978e5db376..535f9e718e2d 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -277,7 +277,6 @@ void msm_unregister_mmu(struct drm_device *dev, struct msm_mmu *mmu);
+>  
+>  bool msm_use_mmu(struct drm_device *dev);
+>  
+> -void msm_gem_submit_free(struct msm_gem_submit *submit);
+>  int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>  		struct drm_file *file);
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+> index a1bf741b9b89..e05b1530aca6 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.h
+> +++ b/drivers/gpu/drm/msm/msm_gem.h
+> @@ -136,6 +136,7 @@ void msm_gem_free_work(struct work_struct *work);
+>   * lasts for the duration of the submit-ioctl.
+>   */
+>  struct msm_gem_submit {
+> +	struct kref ref;
+>  	struct drm_device *dev;
+>  	struct msm_gpu *gpu;
+>  	struct msm_gem_address_space *aspace;
+> @@ -169,6 +170,18 @@ struct msm_gem_submit {
+>  	} bos[];
+>  };
+>  
+> +void __msm_gem_submit_destroy(struct kref *kref);
+> +
+> +static inline void msm_gem_submit_get(struct msm_gem_submit *submit)
+> +{
+> +	kref_get(&submit->ref);
+> +}
+> +
+> +static inline void msm_gem_submit_put(struct msm_gem_submit *submit)
+> +{
+> +	kref_put(&submit->ref, __msm_gem_submit_destroy);
+> +}
+> +
+>  /* helper to determine of a buffer in submit should be dumped, used for both
+>   * devcoredump and debugfs cmdstream dumping:
+>   */
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index e1d1f005b3d4..7d653bdc92dc 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -42,6 +42,7 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
+>  	if (!submit)
+>  		return NULL;
+>  
+> +	kref_init(&submit->ref);
+>  	submit->dev = dev;
+>  	submit->aspace = queue->ctx->aspace;
+>  	submit->gpu = gpu;
+> @@ -60,12 +61,12 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
+>  	return submit;
+>  }
+>  
+> -void msm_gem_submit_free(struct msm_gem_submit *submit)
+> +void __msm_gem_submit_destroy(struct kref *kref)
+>  {
+> +	struct msm_gem_submit *submit =
+> +			container_of(kref, struct msm_gem_submit, ref);
+> +
+>  	dma_fence_put(submit->fence);
+> -	spin_lock(&submit->ring->submit_lock);
+> -	list_del(&submit->node);
+> -	spin_unlock(&submit->ring->submit_lock);
+>  	put_pid(submit->pid);
+>  	msm_submitqueue_put(submit->queue);
+>  
+> @@ -805,8 +806,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>  	submit_cleanup(submit);
+>  	if (has_ww_ticket)
+>  		ww_acquire_fini(&submit->ticket);
+> -	if (ret)
+> -		msm_gem_submit_free(submit);
+> +	msm_gem_submit_put(submit);
+>  out_unlock:
+>  	if (ret && (out_fence_fd >= 0))
+>  		put_unused_fd(out_fence_fd);
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index 8d1e254f964a..fd3fc6f36ab1 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -712,7 +712,12 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>  
+>  	pm_runtime_mark_last_busy(&gpu->pdev->dev);
+>  	pm_runtime_put_autosuspend(&gpu->pdev->dev);
+> -	msm_gem_submit_free(submit);
+> +
+> +	spin_lock(&ring->submit_lock);
+> +	list_del(&submit->node);
+> +	spin_unlock(&ring->submit_lock);
+> +
+> +	msm_gem_submit_put(submit);
+>  }
+>  
+>  static void retire_submits(struct msm_gpu *gpu)
+> @@ -786,10 +791,6 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  
+>  	submit->seqno = ++ring->seqno;
+>  
+> -	spin_lock(&ring->submit_lock);
+> -	list_add_tail(&submit->node, &ring->submits);
+> -	spin_unlock(&ring->submit_lock);
+> -
+>  	msm_rd_dump_submit(priv->rd, submit, NULL);
+>  
+>  	update_sw_cntrs(gpu);
+> @@ -816,6 +817,16 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>  		msm_gem_active_get(drm_obj, gpu);
+>  	}
+>  
+> +	/*
+> +	 * ring->submits holds a ref to the submit, to deal with the case
+> +	 * that a submit completes before msm_ioctl_gem_submit() returns.
+> +	 */
+> +	msm_gem_submit_get(submit);
+> +
+> +	spin_lock(&ring->submit_lock);
+> +	list_add_tail(&submit->node, &ring->submits);
+> +	spin_unlock(&ring->submit_lock);
+> +
+>  	gpu->funcs->submit(gpu, submit);
+>  	priv->lastctx = submit->queue->ctx;
+>  
+> -- 
+> 2.26.2
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
