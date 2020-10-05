@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA2A283E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD480283E57
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 20:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbgJESbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 14:31:18 -0400
-Received: from w1.tutanota.de ([81.3.6.162]:35210 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726935AbgJESbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:31:18 -0400
-Received: from w3.tutanota.de (unknown [192.168.1.164])
-        by w1.tutanota.de (Postfix) with ESMTP id 9CDB6FA0400;
-        Mon,  5 Oct 2020 18:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1601922676;
-        s=s1; d=tutanota.com;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=FyGnVACqUfIMK6u5r4pLOucerf6LwFRTJg4C0HOGYDc=;
-        b=LPz0pzRVpMFFYJFbY7NhGduQgYIm4s54WWDLM+LuKF1m+dNJkNzfl0HalHEWFzqm
-        g3X8R1ESBEIn6Ewyp3IS+5aUNnlIui6UARYCAHbCQm4SFNOFojv3mzXwraVojnK8Irp
-        9tJ0oQXuY4X2C0Y/jJACEhxxhTboP00co9ejFbYi/8Qco6BFKaOOj05YZIZBtxwKau3
-        7AshDGb/pRyV59NIPCMmfhgvyzXdo+Apc9Ral6quuty392PPRXQTcwxvX8nhYcDFmzN
-        jp9/Wfh1q5vX4AhgEeBZnBI0ZtcA2MSxXI4755BZMT+ndmGsGcJLcVMBQnT0/yLisXR
-        DhywylX+mA==
-Date:   Mon, 5 Oct 2020 20:31:16 +0200 (CEST)
-From:   ultracoolguy@tutanota.com
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Alexander Dahl <post@lespocky.de>, Dmurphy <dmurphy@ti.com>,
-        Marek Behun <kabel@blackhole.sk>,
-        Linux Leds <linux-leds@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Message-ID: <MIu12FE--3-2@tutanota.com>
-In-Reply-To: <MIu0jNf--3-2@tutanota.com>
-References: <20201005141334.36d9441a@blackhole.sk> <MIt2NiS--3-2@tutanota.com> <3c5fce56-8604-a7d5-1017-8a075f67061e@ti.com> <MItBqjy--3-2@tutanota.com> <966c3f39-1310-dd60-6f33-0d9464ed2ff1@ti.com> <MItOR9Z--3-2@tutanota.com> <20201005164808.slrtmsvmw4pvwppm@falbala.internal.home.lespocky.de> <MItjEho--3-2@tutanota.com> <20201005173227.GA6431@duo.ucw.cz> <MIu0jNf--3-2@tutanota.com>
-Subject: Re: [PATCH] leds: lm3697: Fix out-of-bound access
+        id S1728246AbgJESb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726935AbgJESb7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 14:31:59 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EA6C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 11:31:57 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m7so9710250oie.0
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 11:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4XnFMEYBigHgCV+fVeaAcl7/OtU/VYKO/+UnYZ6KE4s=;
+        b=Yrzal8C//+9JYev4U13xMIp0iF4Qu+SG9pq5cGb8LrGlLgSBbQEFOGHXlRG4haURou
+         d4Todi8A/INa13CMHZAyqmZdIgpHAsLwOHDLcqFNQznQzBEBHL8ZSM1Clte8ji4d6TZx
+         6lkgihPPIwHlMvrBxFbg2bgQ3CklAsnA3KaP9mIwnPpmbanU+D12I8td67k4PhF8lCbi
+         rC0bYDV+sqzMUHu74LoTwOyqbXTUjSCrnW9+RApoIgJBKEGcpdTuhcYmDdkAMa69KNpE
+         llEsmPrkBDto1ELRfIz/L7dlTIpl3cCxlOW37pocX5n3Z+/biT9b3lJ3S8sk41Wlg6Gm
+         L7qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=4XnFMEYBigHgCV+fVeaAcl7/OtU/VYKO/+UnYZ6KE4s=;
+        b=KxLNmZBZI+tuwo+GlndA2MnECVtTdLG+UXtSBm0M2ZEh/exD0OJSOtqJ/OwC2wgUmG
+         C78J5JV74LqqoyZxWTZE7aZQBEyq4bnGYeDeQNGAC19a1HvIQmhp7Ma3yAom9p6fspcw
+         4Y8GXW6tW0MljY/svy9qHILtr53yQcSdu1KOssGYvopq6VPZR1J9zVXhvZTLuQI/m3aS
+         GFGtjaYp6c/5NxuSvuM4lv/tVq2NOPUK51VUK/BALm0xpjZJHpbixQ42Pm95FuKj+1kz
+         l8mM6YXd6MnWOa7SIcxwK7rtnXktbS5hDCzZKcHdM/HD+yRCMY/RZO03DC5+40VPrRbZ
+         +yYg==
+X-Gm-Message-State: AOAM531a4v4SRqnWsrhepLq5S/RQVciquRtFWkeATgMhCuuhiQfGkVjj
+        LQc7XMbv9puP+Kgy9a8p04QzdWSuhH0P
+X-Google-Smtp-Source: ABdhPJzvbPIUPxWLm0saT0hBXKv3OO0NTKt64qSAsrtuZ0CH5w6F7ca2KGeQ+INhrOgmoYbntyBrEg==
+X-Received: by 2002:a54:468f:: with SMTP id k15mr419522oic.121.1601922716983;
+        Mon, 05 Oct 2020 11:31:56 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.170.156])
+        by smtp.gmail.com with ESMTPSA id g26sm133142otn.77.2020.10.05.11.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 11:31:56 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:24ea:bc45:cb5c:17a1])
+        by serve.minyard.net (Postfix) with ESMTPSA id 759C7180056;
+        Mon,  5 Oct 2020 18:31:54 +0000 (UTC)
+Date:   Mon, 5 Oct 2020 13:31:53 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi_si: Fix wrong return value in try_smi_init()
+Message-ID: <20201005183153.GF3038@minyard.net>
+Reply-To: minyard@acm.org
+References: <20201005145212.84435-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005145212.84435-1-tianjia.zhang@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise everything works great :)
+On Mon, Oct 05, 2020 at 10:52:12PM +0800, Tianjia Zhang wrote:
+> On an error exit path, a negative error code should be returned
+> instead of a positive return value.
 
-(And sorry for sending two emails)
+Thanks!  In my tree for the next release.
 
+-corey
 
-Oct 5, 2020, 18:29 by ultracoolguy@tutanota.com:
-
-> This:=20
->
-> led->num_banks =3D count;=20
->
-> Has to be below devm_kzalloc. Else, it's NULL.
-> Oct 5, 2020, 17:32 by pavel@ucw.cz:
->
->> Hi!
->>
->>> Agh. I added the Signed-off-by in an earlier non-published version of t=
-he commit, but forgot to add it back. But that doesn't really excuses me.
->>>
->>> I attached the (hopefully) final version of this patch.=C2=A0 Pavel, I'=
-ll send the struct rename separately after I submit this.=20
->>>
->>
->> Thanks, I applied it with ... some tweaks. I hope I did not break it,
->> and would not mind testing.
->>
->> Best regards,
->> Pavel
->>
->>
->> --=20
->> (english) http://www.livejournal.com/~pavelmachek
->> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/=
-blog.html
->>
->
->
-
+> 
+> Fixes: 90b2d4f15ff7 ("ipmi_si: Remove hacks for adding a dummy platform devices")
+> Cc: Corey Minyard <cminyard@mvista.com>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  drivers/char/ipmi/ipmi_si_intf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+> index 77b8d551ae7f..dd559661c15b 100644
+> --- a/drivers/char/ipmi/ipmi_si_intf.c
+> +++ b/drivers/char/ipmi/ipmi_si_intf.c
+> @@ -1963,7 +1963,7 @@ static int try_smi_init(struct smi_info *new_smi)
+>  	/* Do this early so it's available for logs. */
+>  	if (!new_smi->io.dev) {
+>  		pr_err("IPMI interface added with no device\n");
+> -		rv = EIO;
+> +		rv = -EIO;
+>  		goto out_err;
+>  	}
+>  
+> -- 
+> 2.24.3 (Apple Git-128)
+> 
