@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290F12834DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01002834E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 13:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgJELYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 07:24:24 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37565 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725914AbgJELYX (ORCPT
+        id S1725970AbgJEL0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 07:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgJEL0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 07:24:23 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id B830D5C012B;
-        Mon,  5 Oct 2020 07:24:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 05 Oct 2020 07:24:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=SMknaWd59JlI04yMEv6mOREluuD
-        TBiqnWDc4DKpb+8s=; b=VAfQeAFQ7OVvpzTG+XmyFZCtakGWjOMKd2f9izr+Eyw
-        qM00vQkDnaw0njDu6uRN+qmQiWPcwmOQ2LW0Qnw5JBs9duHFItKWaCYUF7pMRuEb
-        9vQskD+ZuNKHcaLmokKIO+QmkrgmxppYHm1m0l3txVDc6yNjfNAMZN2Mv/2jD5iP
-        rDIXcxP5fSdUFOfzY0ZoTArNYz3gPqfw5msBpSHMEjhWwSeG4cNkSMbTXmaLAIS7
-        g2LaQNokdvmExks+QXh42U5RZ7j/GlRm16MB/pmXb4j4+s1cdXY4bumoTjrWA5gf
-        K7PlXjuwoW+HjoIjgzmYmQUhE0nXWok9CRpCqMUaBHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=SMknaW
-        d59JlI04yMEv6mOREluuDTBiqnWDc4DKpb+8s=; b=MUyRZIUt8ao9kblC67YX9K
-        8gvP++l1QAF/HVA4FoQQXZ5FFKpzgPfnKueotZPW9fHDH+QNuxJCiqfn3NQJVdKX
-        j+9BwRZl9uB7ceIm9PbvE6ioLGVCUgtJxbt6KR+RWtXJAngX0VvIhYnsNXl+QVqX
-        +qipy7re+Gv4WQmEk+jVuMLdUh3rgTMY0wWPh1cWdYgWjTx/YXlRwC4s84GZHS1d
-        653B2cVAdZJcuaR3tVEuq7RB72CUlxFoRI5svtlt5zN6AvD7nprm9TpVjJXEfaSG
-        WbdDz9kvRCfWHl7ysEdkSGafokb0TkWt4MQaiT+DRPkH3qiKRuZsHr+dtBwWYGpQ
-        ==
-X-ME-Sender: <xms:ZAJ7X4icet7ZnCxkzu8BFlfbAEciFTbv8-Eq2aTlU_MI24aVFDNPVA>
-    <xme:ZAJ7XxDyLGjvMFnH9MbMIjoaWtree5FTGyCtJE-F0VcGbz-oADKpZK8600BsxlViy
-    8aPYRaGkH6KfyKbVFE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:ZAJ7XwHJvbranP5vvhrbxJpPf62w6i55EOiSPehvHiX5f9CvUmW9mQ>
-    <xmx:ZAJ7X5TnNHXeKG0BO_CkvQhBfgGEJ6kZGVw25R7B_vS-LmcOLPAsOw>
-    <xmx:ZAJ7X1xWSYBMqma-n4rL5_awc45s8Ju6sYJPoaYSEu913GR7BIA4ww>
-    <xmx:ZQJ7X0wg926je3ase2E0YmQwkQ2C41HPK6uQEqXo6-MkX7cwxF1OJg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B86B6328005A;
-        Mon,  5 Oct 2020 07:24:19 -0400 (EDT)
-Date:   Mon, 5 Oct 2020 13:24:18 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/25] ASoC: sun8i-codec: Prepare to extend the DAI driver
-Message-ID: <20201005112418.gxxwrjnfnukmdvgy@gilmour.lan>
-References: <20201001021148.15852-1-samuel@sholland.org>
- <20201001021148.15852-10-samuel@sholland.org>
+        Mon, 5 Oct 2020 07:26:01 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB07C0613AA
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 04:25:57 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id 33so8859330edq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 05 Oct 2020 04:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dPmPVQgoIn6sm4yJEL6Gt5bZe3D8XUPMyhu5lemsH1w=;
+        b=JosLptL0NIYq+WTt2D0GcnMU8aGMTGaKjauLfSJh/SVg8Fre3RjwOL+f/2Qg5zcYBt
+         yycq3AmSW1jW+/cKoAFeJBtiQ2pPJYKD7TsXrW+AvAeW/VThIIijdDj3eD7cuBZOKPpE
+         FEeXT4yrqri3+HgiZxDuKbeQZwMpctrogyfI4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dPmPVQgoIn6sm4yJEL6Gt5bZe3D8XUPMyhu5lemsH1w=;
+        b=BFcQCLlX3hcqKOgfDM+JWb7KVYXHi8VwTuESay15Vt+RE8JcKLI7hgGsdueuKA92LH
+         KsfgL15CqKBLBgCFeqVqlc1+cprhKOYrVWGSsMGyJ6F96yu5r37n7zT64tzBovr+Myh0
+         XEvpLJhPKXInsJFcBl4BdXceYefwYVw3a+KL68L62G+HiSTcsh1z6N2sdx7NWP3V/qvB
+         ipkzAMLpRPoAO6AUSNN+OopKcqDm972Dl0JbBmrdPnfmmSJiFn93KkX47Gp3sr/Y8pZd
+         c7k3+ZG91an1UvkMH/935nImkoAG4tLcGtoCHpOr2wjHOosqv7LSOb8Nhi3SVDz3y47N
+         AvwA==
+X-Gm-Message-State: AOAM531V5fR8oISs6aiYPwR9uHyKYJ0J6JuAMY4V63hfLy19QM01yOzH
+        OrQv/3cAE5/TSDeMaETE7OOevg==
+X-Google-Smtp-Source: ABdhPJwEUfB3faVj/+aqL4T2iZayUJerxEobuZPlfEhjF4pUatcxjdChp6vol2nisp1EgAYCOwThVw==
+X-Received: by 2002:a50:9a86:: with SMTP id p6mr16361020edb.96.1601897156284;
+        Mon, 05 Oct 2020 04:25:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:b1f1])
+        by smtp.gmail.com with ESMTPSA id p17sm8712908edw.10.2020.10.05.04.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 04:25:55 -0700 (PDT)
+Date:   Mon, 5 Oct 2020 12:25:55 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Semenzato <semenzato@google.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH RFC v2] Opportunistic memory reclaim
+Message-ID: <20201005112555.GA108347@chrisdown.name>
+References: <20201005081313.732745-1-andrea.righi@canonical.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w4bavsivf5xoegl7"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201001021148.15852-10-samuel@sholland.org>
+In-Reply-To: <20201005081313.732745-1-andrea.righi@canonical.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Andrea Righi writes:
+>This feature has been successfully used to improve hibernation time of
+>cloud computing instances.
+>
+>Certain cloud providers allow to run "spot instances": low-priority
+>instances that run when there are spare resources available and can be
+>stopped at any time to prioritize other more privileged instances [2].
+>
+>Hibernation can be used to stop these low-priority instances nicely,
+>rather than losing state when the instance is shut down. Being able to
+>quickly stop low-priority instances can be critical to provide a better
+>quality of service in the overall cloud infrastructure [1].
+>
+>The main bottleneck of hibernation is represented by the I/O generated
+>to write all the main memory (hibernation image) to a persistent
+>storage.
+>
+>Opportunistic memory reclaimed can be used to reduce the size of the
+>hibernation image in advance, for example if the system is idle for a
+>certain amount of time, so if an hibernation request happens, the kernel
+>has already saved most of the memory to the swap device (caches have
+>been dropped, etc.) and hibernation can complete quickly.
 
---w4bavsivf5xoegl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Wed, Sep 30, 2020 at 09:11:32PM -0500, Samuel Holland wrote:
-> In preparation for adding additional DAIs to this component, convert the
-> DAI driver definition to an array. Since this changes all of the lines
-> in the definition anyway, let's move it closer to the ops function
-> definitions, instead of on the far side of the DAPM arrays. And while
-> moving the DAI driver ops, rename the set_fmt hook to match the usual
-> naming scheme.
->=20
-> Give the existing DAI an explicit ID and more meaningful stream names,
-> so it will remain unique as more DAIs are added. The AIF widget streams
-> must be updated to match.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  sound/soc/sunxi/sun8i-codec.c | 76 +++++++++++++++++++----------------
->  1 file changed, 42 insertions(+), 34 deletions(-)
->=20
-> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-> index 7590c4b04d14..346f699c2e86 100644
-> --- a/sound/soc/sunxi/sun8i-codec.c
-> +++ b/sound/soc/sunxi/sun8i-codec.c
-> @@ -90,16 +90,21 @@
->  #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
->  #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
->  #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
->  #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
->  #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
->  #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
->  #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT_MASK	GENMASK(3, 2)
-> =20
-> +enum {
-> +	AIF1,
-> +	NAIFS
-> +};
-> +
-
-It's a bit of a nitpick, but we should have less generic names for the
-enums here, maybe prefix it with sun8i_codec like the rest of the driver?
-
-Once fixed,
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Maxime
-
---w4bavsivf5xoegl7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3sCYQAKCRDj7w1vZxhR
-xbqiAQC0ysaCPi3YH7Tsq2y/aLzL91Nsz8t9RHusgPVOQAD11gEAiPFKoJZh1uw1
-Mnq8t+XP9zAHc6QsdYz3rCgLjHsdiAU=
-=mtg+
------END PGP SIGNATURE-----
-
---w4bavsivf5xoegl7--
+Hmm, why does this need to be implemented in kernelspace? We already have 
+userspace shrinkers using memory pressure information as part of PID control 
+already (eg. senpai). Using memory.high and pressure information looks a lot 
+easier to reason about than having to choose an absolute number ahead of time 
+and hoping it works.
