@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCC22831C9
+	by mail.lfdr.de (Postfix) with ESMTP id AB6EF2831CA
 	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgJEIUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726235AbgJEIUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 5 Oct 2020 04:20:53 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:34012 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgJEIUw (ORCPT
+Received: from outbound-smtp54.blacknight.com ([46.22.136.238]:41807 "EHLO
+        outbound-smtp54.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725917AbgJEIUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 5 Oct 2020 04:20:52 -0400
-Received: by mail-lj1-f194.google.com with SMTP id v23so6583079ljd.1;
-        Mon, 05 Oct 2020 01:20:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zy+RVKGXgvEDv9SWGZIt64ElwiOMLO61wV0TmNcr85s=;
-        b=Qdb9Q0ze6F6f4SReqvZUV1e8d2l2b3bfUogTr2ojE8n5VB3YLtg20KuZ+g+SLAc/4v
-         QN8if6VaDrSgLAlLt8YlCEPaHhT5d7EQzz5OuQjV/thK0levQga0b1+rMiEhjzFt84Se
-         TiS8TxfrqhcQpNCgFYgmLbD812hrB61oUa9PLCnYtkNBlA52rmM3C3U0rNdsHb6WjtzL
-         0/Mt1ikJptGjKCHL2ZWUNwcpnzsSHfkh1GqJlLMyPDAxeGbz9yJ/kFL4ZVW8t6Lcu6YM
-         LhX/GUaCplK0V6qhIL9N+3ZyMQLeJucB66ri4Qb1lVJommDUBqZ0T0Ey3SFiU9SNX1cm
-         K4UQ==
-X-Gm-Message-State: AOAM532jWAUvkbUXklPjxc4Z2BnzAaxCqbp2WwPLZ+qcpGb+1VFuObkx
-        5loGXLy8StXB8Cb2A+pJ8jI=
-X-Google-Smtp-Source: ABdhPJyZ1lf9ATP7ryn44YsTW33y6bjFLorhJ/Dn0x8l+17c4xIsroXx2/JzYuLTrFGAVO2S/9ZEhg==
-X-Received: by 2002:a2e:575d:: with SMTP id r29mr3952094ljd.183.1601886049672;
-        Mon, 05 Oct 2020 01:20:49 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id q5sm3234768lfo.200.2020.10.05.01.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 01:20:48 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kPLjh-0001Tb-Jj; Mon, 05 Oct 2020 10:20:45 +0200
-Date:   Mon, 5 Oct 2020 10:20:45 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: serial: option: add Cellient MPL200 card
-Message-ID: <20201005082045.GL5141@localhost>
-References: <cover.1601715478.git.wilken.gottwalt@mailbox.org>
- <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp54.blacknight.com (Postfix) with ESMTPS id 28837FB716
+        for <linux-kernel@vger.kernel.org>; Mon,  5 Oct 2020 09:20:51 +0100 (IST)
+Received: (qmail 11945 invoked from network); 5 Oct 2020 08:20:50 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Oct 2020 08:20:50 -0000
+Date:   Mon, 5 Oct 2020 09:20:49 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v1 3/5] mm/page_alloc: always move pages to the tail of
+ the freelist in unset_migratetype_isolate()
+Message-ID: <20201005082049.GI3227@techsingularity.net>
+References: <20200928182110.7050-1-david@redhat.com>
+ <20200928182110.7050-4-david@redhat.com>
+ <20201002132404.GI4555@dhcp22.suse.cz>
+ <df0c45bf-223f-1f0b-ce3d-f2b2e05626bd@redhat.com>
+ <20201005065648.GO4555@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <3db5418fe9e516f4b290736c5a199c9796025e3c.1601715478.git.wilken.gottwalt@mailbox.org>
+In-Reply-To: <20201005065648.GO4555@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 03, 2020 at 11:40:29AM +0200, Wilken Gottwalt wrote:
-> Add usb ids of the Cellient MPL200 card.
+On Mon, Oct 05, 2020 at 08:56:48AM +0200, Michal Hocko wrote:
+> On Fri 02-10-20 17:20:09, David Hildenbrand wrote:
+> > On 02.10.20 15:24, Michal Hocko wrote:
+> > > On Mon 28-09-20 20:21:08, David Hildenbrand wrote:
+> > >> Page isolation doesn't actually touch the pages, it simply isolates
+> > >> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
+> > >>
+> > >> We already place pages to the tail of the freelists when undoing
+> > >> isolation via __putback_isolated_page(), let's do it in any case
+> > >> (e.g., if order <= pageblock_order) and document the behavior.
+> > >>
+> > >> Add a "to_tail" parameter to move_freepages_block() but introduce a
+> > >> a new move_to_free_list_tail() - similar to add_to_free_list_tail().
+> > >>
+> > >> This change results in all pages getting onlined via online_pages() to
+> > >> be placed to the tail of the freelist.
+> > > 
+> > > Is there anything preventing to do this unconditionally? Or in other
+> > > words is any of the existing callers of move_freepages_block benefiting
+> > > from adding to the head?
+> > 
+> > 1. mm/page_isolation.c:set_migratetype_isolate()
+> > 
+> > We move stuff to the MIGRATE_ISOLATE list, we don't care about the order
+> > there.
+> > 
+> > 2. steal_suitable_fallback():
+> > 
+> > I don't think we care too much about the order when already stealing
+> > pageblocks ... and the freelist is empty I guess?
+> > 
+> > 3. reserve_highatomic_pageblock()/unreserve_highatomic_pageblock()
+> > 
+> > Not sure if we really care.
 > 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> ---
->  drivers/usb/serial/option.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 0c6f160a214a..a65e620b2277 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -528,6 +528,7 @@ static void option_instat_callback(struct urb *urb);
->  /* Cellient products */
->  #define CELLIENT_VENDOR_ID			0x2692
->  #define CELLIENT_PRODUCT_MEN200			0x9005
-> +#define CELLIENT_PRODUCT_MPL200			0x9025
->  
->  /* Hyundai Petatel Inc. products */
->  #define PETATEL_VENDOR_ID			0x1ff4
-> @@ -1982,6 +1983,8 @@ static const struct usb_device_id option_ids[] = {
->  	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x02, 0x01) },
->  	{ USB_DEVICE_AND_INTERFACE_INFO(MEDIATEK_VENDOR_ID, MEDIATEK_PRODUCT_DC_4COM2, 0xff, 0x00, 0x00) },
->  	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MEN200) },
-> +	{ USB_DEVICE(CELLIENT_VENDOR_ID, CELLIENT_PRODUCT_MPL200),
-> +	  .driver_info = RSVD(1) | RSVD(4) },
+> Honestly, I have no idea. I can imagine that some atomic high order
+> workloads (e.g. in net) might benefit from cache line hot pages but I am
+> not sure this is really observable.
 
-Would you mind posting the output of "lsusb -v" for this device?
+The highatomic reserve is more concerned that about the allocation
+succeeding than it is about cache hotness.
 
->  	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600A) },
->  	{ USB_DEVICE(PETATEL_VENDOR_ID, PETATEL_PRODUCT_NP10T_600E) },
->  	{ USB_DEVICE_AND_INTERFACE_INFO(TPLINK_VENDOR_ID, TPLINK_PRODUCT_LTE, 0xff, 0x00, 0x00) },	/* TP-Link LTE Module */
-
-Johan
+-- 
+Mel Gorman
+SUSE Labs
