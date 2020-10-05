@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3100728323A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F25283240
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725925AbgJEIig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:38:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50392 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725905AbgJEIic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:38:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601887110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5xo6Xa1W7ONWSL2XGLeIExaC4CCmZ5F3gMyPo8v1BHo=;
-        b=Luk9DWsf1G+5BOsvllVIrtazh36xpVqdIyI6HG/fEaUO2Jb3w4E6F2AyIzyqjfcbzYn6pT
-        udqLfkeWncMlu4wdqM4wbfCJd0UD6AtQgQTFDPYuMc8SWPAy6H7eZVHisG/9xf56MxzPUi
-        LoH7hnWmtNwp29As8JGDtRqkZamvEwg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2815AF34;
-        Mon,  5 Oct 2020 08:38:30 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 10:38:29 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        tj@kernel.org, akpm@linux-foundation.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Zqiang <qiang.zhang@windriver.com>
-Subject: Re: [RFC PATCH] kthread: do not modify running work
-Message-ID: <20201005083829.GA3673@alley>
-References: <20200926040426.11936-1-hdanton@sina.com>
- <20201001095151.5640-1-hdanton@sina.com>
- <20201002023412.2276-1-hdanton@sina.com>
- <20201004021213.14572-1-hdanton@sina.com>
+        id S1725919AbgJEIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:40:18 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:43705 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725880AbgJEIkS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:40:18 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2058358028D;
+        Mon,  5 Oct 2020 04:40:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 05 Oct 2020 04:40:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=TP+YDmeLPT4LYJGRAaDqcHNdlZQ
+        KtqTvNfpsMAMS4CQ=; b=Z+rHeB220VuirrOyCQDgK/LoVlcZ6b95vwcwoYsdp/2
+        grsDkChi+u+3WZqTppRq3GQLgtOgo/7xPOiiUCWK+HJb9RlnG2mTjmew1ARLnUuU
+        HwcMhDeZJO3bgbIij5rX2sIMZ+pbE87CfQTj/QxhLZtCj3vRld+n6VpMTlIPJbOK
+        7o2EWq4v0eFMC8elqU2JYuqTmhuxWb0Z67Zg5tv+4Op647ZYsDxJx6PgeDoyvl2q
+        /yS3L+5mR2GooasnddVzG/D3QgoGWeFZ3yxDMkojXfh2lEmU83MnWJ1hIciU2tQV
+        x1KqI73W3dEdEQ/a27W9tAq0WSB42POklTR27jkN1Fw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TP+YDm
+        eLPT4LYJGRAaDqcHNdlZQKtqTvNfpsMAMS4CQ=; b=M82nzWEoEQvxdYfOdMqZlu
+        xN4lvZ70N1UcF6yoUwvXwG1wG0x5Km0axhYV/mwCI7mGaH03no4TysgIh+U03P+1
+        +tDM38gu4uRHk0vLo83e9GRYruY6P/havXGZkCsrY37DeLq//oJoFtp5bVpwFlrO
+        ZUAgwf2yWRprng0sz76wF28QuWtf4egD+tbYjIiilWGFpgzQyW1/b5osJT1Pv2zz
+        kXk4WXgCmo9+IUfCQVbQ6ox8ae2h4A6dQN8YqAG0dn37uSbE2fz9CnjDO1T+OyW/
+        hScpsXpACmQEnn6XjJ4oUBMZ+l/+exeeVCZGlYuYelaOdfa4/WZ8RxflwQW+DWgw
+        ==
+X-ME-Sender: <xms:79t6X1SxatzoAeg6XUQsD3w1TUkBPphOEZfPWD2YJqglK55nKlVhEw>
+    <xme:79t6X-wUJU6yCtdwA5tas6Gnjwk96COOpIg2NYAJ0-3hUE4qW3-UZls_ZrHbx8ao7
+    51wRiWi2-wSTTT75Bg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrgedvgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:79t6X61Ihn82ejYMDMF1UMoaYXDSuOc-joH5PVN1NPastwT9JegY5g>
+    <xmx:79t6X9DL1ztmD654-sNP8SMt-HOvECPQK0_TSPDyfvzKiJHd5qSbNQ>
+    <xmx:79t6X-hrAtyRRvymEaTkS23wZ-4iv9s3cVQrD0rDCTqwWUu45eIkpg>
+    <xmx:8dt6X-74fpOHJB-sg4Wcl5A56NWIAR4QD7s0bmWZ9SCDRUn100cd9g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7472F3280063;
+        Mon,  5 Oct 2020 04:40:15 -0400 (EDT)
+Date:   Mon, 5 Oct 2020 10:40:13 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Guido =?utf-8?Q?G=C3=BAnther?= <agx@sigxcpu.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>
+Subject: Re: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI
+ controller schemas
+Message-ID: <20201005084013.loixl65nnvf4jl6f@gilmour.lan>
+References: <20201002225924.3513700-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i7kn4kgfo2uw7qjo"
 Content-Disposition: inline
-In-Reply-To: <20201004021213.14572-1-hdanton@sina.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201002225924.3513700-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2020-10-04 10:12:13, Hillf Danton wrote:
-> 
-> On Fri, 02 Oct 2020 10:32:32 Thomas Gleixner wrote:
-> > On Fri, Oct 02 2020 at 10:34, Hillf Danton wrote:
-> > > On Thu, 01 Oct 2020 15:59:38 +0200 Thomas Gleixner wrote:
-> > >> On Thu, Oct 01 2020 at 17:51, Hillf Danton wrote:
-> > >> Aside of that it's pretty irrelevant whether there is a user at the
-> > >> moment which reschedules work from the callback or not.
-> > >> 
-> > >> It's something which needs to work because its possible from regular
-> > >> work queues as well and makes a lot of sense.
-> > >
-> > > https://lore.kernel.org/lkml/87eemheay8.fsf@nanos.tec.linutronix.de/
-> > 
-> > That's a completely different thing, really. This adds new functionality
-> > without users and exports it.
-> > 
-> > kthread work is modeled after workqueue to address specific
-> > needs.
 
-Exactly.
+--i7kn4kgfo2uw7qjo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > delayed work can be rescheduled from the callback and all
-> > variants of timers support rearming the timer from the callback as well.
+On Fri, Oct 02, 2020 at 05:59:24PM -0500, Rob Herring wrote:
+> Some DSI controllers are missing a reference to the recently added
+> dsi-controller.yaml schema. Add it and we can drop the duplicate parts.
+>=20
+> Cc: Maxime Ripard <mripard@kernel.org>
 
-This might be a bit confusing here. The timer callback just moves
-the work to the list of works that are going to be proceed by the
-kthread. It neither runs the work nor rearms the timer.
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-But the timer can be set again by any parallel
-kthread_queue_delayed_work() or kthread_mod_delayed_work() call
-even the the timer callback is still running. Module that some code
-is serialized by the lock.
+Thanks!
+Maxime
 
+--i7kn4kgfo2uw7qjo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> What is the difference of invoking kthread_queue_delayed_work() from the
-> callback from kthread_mod_delayed_work()?
+-----BEGIN PGP SIGNATURE-----
 
-kthread_queue_delayed_work() does nothing when the work is already
-queued. kthread_mod_delayed_work() removes the work from the queue
-if it is there and queue it again with the newly requested delay.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3rb7QAKCRDj7w1vZxhR
+xTXCAP4vKIeUVcYrqfw55zeSps3KKtkhsNvW+sK9F9gjf7jBxQD/UMFRpPlAiasU
+MZTKaNAUJFV3UdU3iJE6ZjtiyfEQxgQ=
+=+3oG
+-----END PGP SIGNATURE-----
 
-
-> > So having a consistent behaviour accross all these facilities makes
-> > absolutely sense and I don't agree with your sentiment in the changelog
-> > at all.
-> > 
-> > Just because it does not make sense to you is not a justification for
-> > making stuff inconsistent. You still have not provided a technical
-> > reason why this change is needed.
-> 
-> Given the queue method, it is no win to modify delayed work from callback
-> in any case because "we are not adding interfaces just because we can."
-
-What about ipmi_kthread_worker_func()? It is delayed work that
-queues itself.
-
-
-> Nor does it help much in regard of a running work that is delayed two
-> minutes because for instance it is not clear that it is a one-off work
-> with resources released in the callback.
-
-This is up to the other API user to use the API the right way.
-
-As it has already been mentioned, kthread_worker() API should behave
-the same as work_queue API. It is needed for kthreads that have special
-needs, for example, real time priority. It should be easy to migrate
-between the two APIs. Different behavior would be just a call for
-problems.
-
-The dream is that all custom kthreads are converted into either
-the classic work_queues or kthread_worker API. People are really
-creative when doing the main loop and it is easy to do it wrong.
-It causes then problems, for example, with suspend/resume,
-livepatching.
-
-What is the motivation for this patch, please?
-Does it solve some real problem?
-
-Best Regards,
-Petr
+--i7kn4kgfo2uw7qjo--
