@@ -2,167 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0472833FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98794283404
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 12:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgJEK2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 06:28:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58894 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbgJEK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 06:28:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601893693;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6/JqGd6PalEdATCzl9yAiTh7H5Y1eBidoPeAq7PeqNM=;
-        b=Rr9JK0FaMCuS2y4bd4R/YOEGd+voVVRfYx8iRODdcq+ryBjTzQM3+LpUdtSB+dxUCCpV93
-        0H0im4IMg/ZYoh3tqRpLSwXgLaGaDDKEVY6Xgg/aqP1H7vkH2WE4922ouoL3NZt3OgfFEP
-        ZJzveXys+olPX8oJo9V7ODLWDh21jJw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 997A0AEEF;
-        Mon,  5 Oct 2020 10:28:13 +0000 (UTC)
-Subject: Re: [PATCH v2 06/12] soc: mediatek: pm-domains: Add SMI block as bus
- protection block
-To:     Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20201001160154.3587848-1-enric.balletbo@collabora.com>
- <20201001160154.3587848-7-enric.balletbo@collabora.com>
- <ee2b40c3-b565-22ed-34f4-4259d546a623@gmail.com>
- <CANMq1KDNKsE5oWxsg-zPS1L07dZySjoQc-fRWsXc5ngdi98Kgg@mail.gmail.com>
-From:   Matthias Brugger <mbrugger@suse.com>
-Message-ID: <8b007805-5fd5-aebe-2ac3-014514173263@suse.com>
-Date:   Mon, 5 Oct 2020 12:28:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725934AbgJEKfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 06:35:43 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2956 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725843AbgJEKfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:35:43 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 966FAD6551D65A98996D;
+        Mon,  5 Oct 2020 11:35:41 +0100 (IST)
+Received: from localhost (10.52.124.175) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
+ 11:35:41 +0100
+Date:   Mon, 5 Oct 2020 11:33:57 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 14/14] iommu/amd: Adopt IO page table framework
+Message-ID: <20201005103357.000062d9@Huawei.com>
+In-Reply-To: <20201004014549.16065-15-suravee.suthikulpanit@amd.com>
+References: <20201004014549.16065-1-suravee.suthikulpanit@amd.com>
+        <20201004014549.16065-15-suravee.suthikulpanit@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <CANMq1KDNKsE5oWxsg-zPS1L07dZySjoQc-fRWsXc5ngdi98Kgg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.175]
+X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 4 Oct 2020 01:45:49 +0000
+Suravee Suthikulpanit <suravee.suthikulpanit@amd.com> wrote:
+
+> Switch to using IO page table framework for AMD IOMMU v1 page table.
+> 
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+
+One minor thing inline.
 
 
-On 05/10/2020 03:48, Nicolas Boichat wrote:
-> On Fri, Oct 2, 2020 at 4:56 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
->>
->>
->>
->> On 01/10/2020 18:01, Enric Balletbo i Serra wrote:
->>> From: Matthias Brugger <mbrugger@suse.com>
->>>
->>> Apart from the infracfg block, the SMI block is used to enable the bus
->>> protection for some power domains. Add support for this block.
->>>
->>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>> ---
->>>
->>> Changes in v2: None
->>>
->>>    drivers/soc/mediatek/mtk-pm-domains.c | 64 ++++++++++++++++++++-------
->>>    include/linux/soc/mediatek/infracfg.h |  6 +++
->>>    2 files changed, 53 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
->>> index b5e7c9846c34..38f2630bdd0a 100644
->>> --- a/drivers/soc/mediatek/mtk-pm-domains.c
->>> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
->>> @@ -56,8 +56,25 @@
->>>
->>>    #define SPM_MAX_BUS_PROT_DATA               3
->>>
->>> +#define _BUS_PROT(_mask, _set, _clr, _sta, _update) {        \
->>> +             .bus_prot_mask = (_mask),               \
->>> +             .bus_prot_set = _set,                   \
->>> +             .bus_prot_clr = _clr,                   \
->>> +             .bus_prot_sta = _sta,                   \
->>> +             .bus_prot_reg_update = _update,         \
->>> +     }
->>> +
->>> +#define BUS_PROT_WR(_mask, _set, _clr, _sta)         \
->>> +             _BUS_PROT(_mask, _set, _clr, _sta, false)
->>> +
->>> +#define BUS_PROT_UPDATE(_mask, _set, _clr, _sta)             \
->>> +             _BUS_PROT(_mask, _set, _clr, _sta, true)
->>> +
->>>    struct scpsys_bus_prot_data {
->>>        u32 bus_prot_mask;
->>> +     u32 bus_prot_set;
->>> +     u32 bus_prot_clr;
->>> +     u32 bus_prot_sta;
->>>        bool bus_prot_reg_update;
->>>    };
->>>
->>> @@ -69,6 +86,7 @@ struct scpsys_bus_prot_data {
->>>     * @sram_pdn_ack_bits: The mask for sram power control acked bits.
->>>     * @caps: The flag for active wake-up action.
->>>     * @bp_infracfg: bus protection for infracfg subsystem
->>> + * @bp_smi: bus protection for smi subsystem
->>>     */
->>>    struct scpsys_domain_data {
->>>        u32 sta_mask;
->>> @@ -77,6 +95,7 @@ struct scpsys_domain_data {
->>>        u32 sram_pdn_ack_bits;
->>>        u8 caps;
->>>        const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
->>> +     const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
->>>    };
->>>
->>>    struct scpsys_domain {
->>> @@ -86,6 +105,7 @@ struct scpsys_domain {
->>>        int num_clks;
->>>        struct clk_bulk_data *clks;
->>>        struct regmap *infracfg;
->>> +     struct regmap *smi;
->>>    };
->>>
->>>    struct scpsys_soc_data {
->>> @@ -175,9 +195,9 @@ static int _scpsys_bus_protect_enable(const struct scpsys_bus_prot_data *bpd, st
->>>                if (bpd[i].bus_prot_reg_update)
->>>                        regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask);
->>>                else
->>> -                     regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_SET, mask);
->>> +                     regmap_write(regmap, bpd[i].bus_prot_set, mask);
->>>
->>> -             ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
->>> +             ret = regmap_read_poll_timeout(regmap, bpd[i].bus_prot_sta,
->>>                                               val, (val & mask) == mask,
->>>                                               MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
->>>                if (ret)
->>> @@ -193,7 +213,11 @@ static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
->>>        int ret;
->>>
->>>        ret = _scpsys_bus_protect_enable(bpd, pd->infracfg);
->>> -     return ret;
->>> +     if (ret)
->>> +             return ret;
->>> +
->>> +     bpd = pd->data->bp_smi;
->>> +     return _scpsys_bus_protect_enable(bpd, pd->smi);
+> ---
+>  drivers/iommu/amd/iommu.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> Not a huge fan or reusing bpd for 2 different things.
-> 
-> I think this is easier to follow:
-> 
-> _scpsys_bus_protect_enable(pd->data->bp_infracfg, pd->infracfg);
-> ...
-> _scpsys_bus_protect_enable(pd->data->bp_smi, pd->smi);
-> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index 77f44b927ae7..6f8316206fb8 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/irqdomain.h>
+>  #include <linux/percpu.h>
+>  #include <linux/iova.h>
+> +#include <linux/io-pgtable.h>
+>  #include <asm/irq_remapping.h>
+>  #include <asm/io_apic.h>
+>  #include <asm/apic.h>
+> @@ -1573,6 +1574,22 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
+>  	return ret;
+>  }
+>  
+> +struct io_pgtable_ops *
+> +amd_iommu_setup_io_pgtable_ops(struct iommu_dev_data *dev_data,
+> +			       struct protection_domain *domain)
+> +{
+> +	struct amd_iommu *iommu = amd_iommu_rlookup_table[dev_data->devid];
+> +
+> +	domain->iop.pgtbl_cfg = (struct io_pgtable_cfg) {
+> +		.pgsize_bitmap	= AMD_IOMMU_PGSIZES,
+> +		.ias		= IOMMU_IN_ADDR_BIT_SIZE,
+> +		.oas		= IOMMU_OUT_ADDR_BIT_SIZE,
+> +		.iommu_dev	= &iommu->dev->dev,
+> +	};
+> +
+> +	return alloc_io_pgtable_ops(AMD_IOMMU_V1, &domain->iop.pgtbl_cfg, domain);
+> +}
+> +
+>  /*
+>   * If a device is not yet associated with a domain, this function makes the
+>   * device visible in the domain
+> @@ -1580,6 +1597,7 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
+>  static int attach_device(struct device *dev,
+>  			 struct protection_domain *domain)
+>  {
+> +	struct io_pgtable_ops *pgtbl_ops;
+>  	struct iommu_dev_data *dev_data;
+>  	struct pci_dev *pdev;
+>  	unsigned long flags;
+> @@ -1623,6 +1641,12 @@ static int attach_device(struct device *dev,
+>  skip_ats_check:
+>  	ret = 0;
+>  
+> +	pgtbl_ops = amd_iommu_setup_io_pgtable_ops(dev_data, domain);
+> +	if (!pgtbl_ops) {
 
-Sounds reasonable, yes :)
+Perhaps cleaner to not store in a local variable if you aren't going to use it?
+
+	if (!amd_iommu_setup_io_pgtable_ops(dev_data, domain)) {
+
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+>  	do_attach(dev_data, domain);
+>  
+>  	/*
+> @@ -1958,6 +1982,8 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
+>  	if (domain->dev_cnt > 0)
+>  		cleanup_domain(domain);
+>  
+> +	free_io_pgtable_ops(&domain->iop.iop.ops);
+> +
+>  	BUG_ON(domain->dev_cnt != 0);
+>  
+>  	if (!dom)
+
+
