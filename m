@@ -2,123 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397BA282E6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 01:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4394A282E74
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 02:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgJDX7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 4 Oct 2020 19:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        id S1725862AbgJEAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 4 Oct 2020 20:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgJDX7X (ORCPT
+        with ESMTP id S1725836AbgJEAJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 4 Oct 2020 19:59:23 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B7AC0613CE;
-        Sun,  4 Oct 2020 16:59:23 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id x2so4345266pjk.0;
-        Sun, 04 Oct 2020 16:59:23 -0700 (PDT)
+        Sun, 4 Oct 2020 20:09:41 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FB4C0613CE;
+        Sun,  4 Oct 2020 17:09:41 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so7577409wrt.3;
+        Sun, 04 Oct 2020 17:09:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=D0XrjGNpHDFsmwtiuJ2IjixWsPGZ7fiNnf/mc72+SJU=;
-        b=KuhOwWCI11VVGNZg8HT8PDuLKMByoX64pq0TNg+CFYEhRcOWnY5scWFQi6a9HjuvFL
-         /byE5nFgjyXeRHP7lRDahUyKKs1dVx0anjOfYLTbna+zv4QYvmmiLuTEcS+4dNgmtZXl
-         2efgAj34C1uw4KNahhp7x1TeARbVkCklfu3Cy13jprAKzRY3cHcMzcSR62VxVv91PqKV
-         Bdb3JDvLO2wO20ZEekmxPI9zrxJ2TdOlFrVxh9uVHYTTB82FosIKFRp3aK29av8esAwu
-         ls2S7PpsDx3xmWewKu4hNhuiPVXeV/ukk5+b+4PT/aPDxdoQlfTShXI0gPnk/y6hEJEF
-         NP9A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1ANfg3S5CC8bE/UKRRj/hwXpqbswu89gsCaaWsI1hDQ=;
+        b=PxyPAEdNh2qvXFbWkKrPJ8KPmnWPmT2SKIgNwuRYb6MAJMExP204dfriEl7lNANvyM
+         kCCkSVC0jEhQ8FFZ9A3AfzgoVrxvx1zas1vgNuzUqMbbYW4ft+FAQaPT6zHxDkUtkOTP
+         BKLbMytpzm8gXlYZDx8qx1E7gRTrPNn2LzQLo1b+4rkh4RqoVIe6LrIrde3q+OyBUF0r
+         D2GDsBqQChiQCDKtNEY1CC8u9+WpHdh4jSUZW3znxLcEUgFmObnlWyn2MFSWd+cEN8+I
+         tcLnulGKwxsrUC0cMd2LIKC6Lla/3JlCEwaTC62nTsxY3+ynPHXC8si7l1P8g4zZPnOU
+         9+ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=D0XrjGNpHDFsmwtiuJ2IjixWsPGZ7fiNnf/mc72+SJU=;
-        b=fzbD9Nb+9G681TcWURBpD3pWKRXqyP+TwIEs4JY3c23waMcFqEv4BsBe2+WcOOf9DP
-         5G647t5DXnpD6aE0c5A4wSwJeXz4CyIpjUpcXKi5CHzidVrAUQGWd5AhHK9vbbmWb+dj
-         evhC3wA5NktbnQi4I0JUGgz/9Xc1EkBtW+xEcpgQXOgEnXNsqAtLgGaBAf/+PW/2t8iD
-         wTteqyhS1/rMIRTVzTt/rojuDinVmFLpx3ztHiKt4JcTrlD7cp5v8xQO3k6DT8srfh4d
-         dH6lTJvrMNxnOvKE4vXMpUs9smDbhExPH5bLTvx8cLqnPMLIAKHWHgu9uWOjhsR3yZXU
-         wHGg==
-X-Gm-Message-State: AOAM533GbhkCF2KD+zscC0ptK77NEaqBLFFhbBVCar22QXzCwOXOGHQ/
-        zF1RVjn1zJXxuaksYUfK+DDHFCMlLbBceQ==
-X-Google-Smtp-Source: ABdhPJwtD8zyZbhPPscEGsSFWHtWOYEBhXfXhLAAQiBnQRgXOALaJqiACd/JE/QYUzSvyC9WTYWrRA==
-X-Received: by 2002:a17:90a:b285:: with SMTP id c5mr13486274pjr.44.1601855963238;
-        Sun, 04 Oct 2020 16:59:23 -0700 (PDT)
-Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
-        by smtp.gmail.com with ESMTPSA id g4sm8623298pgg.75.2020.10.04.16.59.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Oct 2020 16:59:21 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 08:59:16 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] staging: qlge: fix build breakage with dumping enabled
-Message-ID: <20201004235916.GA25722@f3>
-References: <20201002235941.77062-1-coiby.xu@gmail.com>
- <20201003055348.GA100061@f3>
- <20201004152230.s2kxna2jl2uzlink@Rk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1ANfg3S5CC8bE/UKRRj/hwXpqbswu89gsCaaWsI1hDQ=;
+        b=WIxmj3Td+tDSdi0B9tpdA3leTOuWNJWS0jRu93Pweu95SYeJgFCTWEcUaujdeOInY0
+         nLY6nkHcYqgmxykRNo+0CzLb5WbK/t9/oT4xDZOTNccqOaHdfF996XyRLRCO31Tmp1Ul
+         Ex8FZR4HFpSpGbD/aO9+o91xhNIGPwa00W3EyiuljzWNdfQBL29teuOGf6tEtRYXkGJZ
+         ENRUUeFERfnD8/ogu0vPP2oObGn24VgUP51RKjXnGAoJl9b5MRYguAPbE/x1+CORNP7F
+         5ZcTlz+ExAxrWiKV0FA+p3WNbEtkBRGegvT8DaGzevZjkYjMdlGapcfB+0pibrROqLlG
+         dE7g==
+X-Gm-Message-State: AOAM533Mhrjwmv75o2XX22zVZ2a/rZw7LtjwuTMX1tzFvFOMX8B0Ylto
+        OWXkWCB1Ti3erMw6h1pyeMOWCHJ//iB29CyHypIs1EzifaDqfQ==
+X-Google-Smtp-Source: ABdhPJxwaxtwbgp9uz+hPQ7cBIRm3omXtyo+Lk87n93lkMddrksV668Q71MQgWfc2epKqbRNNChU/GIZ6VBDT0u7sBI=
+X-Received: by 2002:a5d:4bcf:: with SMTP id l15mr14775799wrt.132.1601856579631;
+ Sun, 04 Oct 2020 17:09:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201004152230.s2kxna2jl2uzlink@Rk>
+References: <20201004192152.3298573-1-robdclark@gmail.com> <20201004192152.3298573-5-robdclark@gmail.com>
+ <CAKMK7uHrP1ijVORpW0xvMX4M_0HQpfzUk2bE576gpzSPug-M6A@mail.gmail.com>
+In-Reply-To: <CAKMK7uHrP1ijVORpW0xvMX4M_0HQpfzUk2bE576gpzSPug-M6A@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sun, 4 Oct 2020 17:10:47 -0700
+Message-ID: <CAF6AEGv49O97YQXJeUYzxRDUTE8fhtRKeKT6RXaEcJUo79mXQw@mail.gmail.com>
+Subject: Re: [PATCH 04/14] drm/msm: Add priv->mm_lock to protect
+ active/inactive lists
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-04 23:22 +0800, Coiby Xu wrote:
-> On Sat, Oct 03, 2020 at 02:53:48PM +0900, Benjamin Poirier wrote:
-> > On 2020-10-03 07:59 +0800, Coiby Xu wrote:
-> > > This fixes commit 0107635e15ac
-> > > ("staging: qlge: replace pr_err with netdev_err") which introduced an
-> > > build breakage of missing `struct ql_adapter *qdev` for some functions
-> > > and a warning of type mismatch with dumping enabled, i.e.,
-> > > 
-> > > $ make CFLAGS_MODULE="-DQL_ALL_DUMP -DQL_OB_DUMP -DQL_CB_DUMP \
-> > >     -DQL_IB_DUMP -DQL_REG_DUMP -DQL_DEV_DUMP" M=drivers/staging/qlge
-> > > 
-> > > qlge_dbg.c: In function ‘ql_dump_ob_mac_rsp’:
-> > > qlge_dbg.c:2051:13: error: ‘qdev’ undeclared (first use in this function); did you mean ‘cdev’?
-> > >  2051 |  netdev_err(qdev->ndev, "%s\n", __func__);
-> > >       |             ^~~~
-> > > qlge_dbg.c: In function ‘ql_dump_routing_entries’:
-> > > qlge_dbg.c:1435:10: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘int’ [-Wformat=]
-> > >  1435 |        "%s: Routing Mask %d = 0x%.08x\n",
-> > >       |         ~^
-> > >       |          |
-> > >       |          char *
-> > >       |         %d
-> > >  1436 |        i, value);
-> > >       |        ~
-> > >       |        |
-> > >       |        int
-> > > qlge_dbg.c:1435:37: warning: format ‘%x’ expects a matching ‘unsigned int’ argument [-Wformat=]
-> > >  1435 |        "%s: Routing Mask %d = 0x%.08x\n",
-> > >       |                                 ~~~~^
-> > >       |                                     |
-> > >       |                                     unsigned int
-> > > 
-> > > Note that now ql_dump_rx_ring/ql_dump_tx_ring won't check if the passed
-> > > parameter is a null pointer.
-> > > 
-> > > Fixes: 0107635e15ac ("staging: qlge: replace pr_err with netdev_err")
-> > > Reported-by: Benjamin Poirier <benjamin.poirier@gmail.com>
-> > > Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
-> > > Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> > > ---
-> > 
-> > Reviewed-by: Benjamin Poirier <benjamin.poirier@gmail.com>
-> 
-> Thank you! Btw, I guess when this patch is picked, the "Reviewed-by" tag
-> will also be included. So I needn't to send another patch, am I right?
+On Sun, Oct 4, 2020 at 3:15 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Sun, Oct 4, 2020 at 9:21 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Rather than relying on the big dev->struct_mutex hammer, introduce a
+> > more specific lock for protecting the bo lists.
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/msm/msm_debugfs.c      |  7 +++++++
+> >  drivers/gpu/drm/msm/msm_drv.c          |  1 +
+> >  drivers/gpu/drm/msm/msm_drv.h          | 13 +++++++++++-
+> >  drivers/gpu/drm/msm/msm_gem.c          | 28 +++++++++++++++-----------
+> >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 12 +++++++++++
+> >  drivers/gpu/drm/msm/msm_gpu.h          |  5 ++++-
+> >  6 files changed, 52 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_debugfs.c b/drivers/gpu/drm/msm/msm_debugfs.c
+> > index ee2e270f464c..64afbed89821 100644
+> > --- a/drivers/gpu/drm/msm/msm_debugfs.c
+> > +++ b/drivers/gpu/drm/msm/msm_debugfs.c
+> > @@ -112,6 +112,11 @@ static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
+> >  {
+> >         struct msm_drm_private *priv = dev->dev_private;
+> >         struct msm_gpu *gpu = priv->gpu;
+> > +       int ret;
+> > +
+> > +       ret = mutex_lock_interruptible(&priv->mm_lock);
+> > +       if (ret)
+> > +               return ret;
+> >
+> >         if (gpu) {
+> >                 seq_printf(m, "Active Objects (%s):\n", gpu->name);
+> > @@ -121,6 +126,8 @@ static int msm_gem_show(struct drm_device *dev, struct seq_file *m)
+> >         seq_printf(m, "Inactive Objects:\n");
+> >         msm_gem_describe_objects(&priv->inactive_list, m);
+> >
+> > +       mutex_unlock(&priv->mm_lock);
+> > +
+> >         return 0;
+> >  }
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> > index 49685571dc0e..dc6efc089285 100644
+> > --- a/drivers/gpu/drm/msm/msm_drv.c
+> > +++ b/drivers/gpu/drm/msm/msm_drv.c
+> > @@ -441,6 +441,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
+> >         init_llist_head(&priv->free_list);
+> >
+> >         INIT_LIST_HEAD(&priv->inactive_list);
+> > +       mutex_init(&priv->mm_lock);
+>
+> I highly recommend you drop a
+>
+> fs_reclaim_acquire(GFP_KERNEL);
+> might_lock(&priv->mm_lock);
+> fs_reclaim_release(GFP_KERNEL);
+>
+> in here to teach lockdep about your ordering against the shrinker.
+> Gives you full testing every boot, even if your shrinker never gets
+> called.
 
-I think so. Maintainers usually take care of adding attribution tags
-from followup emails and that's what Greg has done for your previous
-qlge patch it looks like.
+Good idea..
+
+(tbf, I have tested this with android+lockdep which pretty is great
+shrinker exercise.. but immediate notification of future problems is a
+good plan)
+
+BR,
+-R
