@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69C92831E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C1C283286
+	for <lists+linux-kernel@lfdr.de>; Mon,  5 Oct 2020 10:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgJEI0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 5 Oct 2020 04:26:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:58080 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgJEI0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:26:32 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5D8DD67373; Mon,  5 Oct 2020 10:26:29 +0200 (CEST)
-Date:   Mon, 5 Oct 2020 10:26:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 8/8] WIP: add a dma_alloc_contiguous API
-Message-ID: <20201005082629.GA13850@lst.de>
-References: <20200930160917.1234225-1-hch@lst.de> <20200930160917.1234225-9-hch@lst.de> <20201002175040.GA1131147@chromium.org>
+        id S1726074AbgJEIuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 5 Oct 2020 04:50:10 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:46837 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgJEIuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 5 Oct 2020 04:50:10 -0400
+X-Greylist: delayed 1262 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 04:50:09 EDT
+Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
+        by twspam01.aspeedtech.com with ESMTP id 09589RWm047788
+        for <linux-kernel@vger.kernel.org>; Mon, 5 Oct 2020 16:09:27 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 09588T7v047497;
+        Mon, 5 Oct 2020 16:08:29 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 5 Oct
+ 2020 16:28:09 +0800
+From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <minyard@acm.org>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linus.walleij@linaro.org>,
+        <haiyue.wang@linux.intel.com>, <cyrilbur@gmail.com>,
+        <rlippert@google.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-gpio@vger.kernel.org>
+CC:     <ryan_chen@aspeedtech.com>
+Subject: [PATCH v2 0/5] Remove LPC register partitioning
+Date:   Mon, 5 Oct 2020 16:28:01 +0800
+Message-ID: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002175040.GA1131147@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 09588T7v047497
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 05:50:40PM +0000, Tomasz Figa wrote:
-> Hi Christoph,
-> 
-> On Wed, Sep 30, 2020 at 06:09:17PM +0200, Christoph Hellwig wrote:
-> > Add a new API that returns a virtually non-contigous array of pages
-> > and dma address.  This API is only implemented for dma-iommu and will
-> > not be implemented for non-iommu DMA API instances that have to allocate
-> > contiguous memory.  It is up to the caller to check if the API is
-> > available.
-> 
-> Would you mind scheding some more light on what made the previous attempt
-> not work well? I liked the previous API because it was more consistent with
-> the regular dma_alloc_coherent().
+The LPC controller has no concept of the BMC and the Host partitions.
+The incorrect partitioning can impose unnecessary range restrictions
+on register access through the syscon regmap interface.
 
-The problem is that with a dma_alloc_noncoherent that can return pages
-not in the kernel mapping we can't just use virt_to_page to fill in
-scatterlists or mmap the buffer to userspace, but would need new helpers
-and another two methods.
+For instance, HICRB contains the I/O port address configuration
+of KCS channel 1/2. However, the KCS#1/#2 drivers cannot access
+HICRB as it is located at the other LPC partition.
 
-> >  - no kernel mapping or only temporary kernel mappings are required.
-> >    That is as a better replacement for DMA_ATTR_NO_KERNEL_MAPPING
-> >  - a kernel mapping is required for cached and DMA mapped pages, but
-> >    the driver also needs the pages to e.g. map them to userspace.
-> >    In that sense it is a replacement for some aspects of the recently
-> >    removed and never fully implemented DMA_ATTR_NON_CONSISTENT
-> 
-> What's the expected allocation and mapping flow with the latter? Would that be
-> 
-> pages = dma_alloc_noncoherent(...)
-> vaddr = vmap(pages, ...);
-> 
-> ?
+In addition, to be backward compatible, the newly added HW control
+bits could be located at any reserved bits over the LPC addressing
+space.
 
-Yes.  Witht the vmap step optional for replacements of
-DMA_ATTR_NO_KERNEL_MAPPING, which is another nightmare to deal with.
+Thereby, this patch series aims to remove the LPC partitioning for
+better driver development and maintenance.
 
-> Would one just use the usual dma_sync_for_{cpu,device}() for cache
-> invallidate/clean, while keeping the mapping in place?
 
-Yes.  And make sure the API isn't implemented when VIVT caches are
-used, but that isn't really different from the current interface.
+Changes since v1:
+	- Add the fix to the aspeed-lpc binding documentation.
+
+Chia-Wei, Wang (5):
+  ARM: dts: Remove LPC BMC and Host partitions
+  soc: aspeed: Fix LPC register offsets
+  ipmi: kcs: aspeed: Fix LPC register offsets
+  pinctrl: aspeed-g5: Fix LPC register offsets
+  dt-bindings: aspeed-lpc: Remove LPC partitioning
+
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    |  85 ++---------
+ arch/arm/boot/dts/aspeed-g4.dtsi              |  74 ++++------
+ arch/arm/boot/dts/aspeed-g5.dtsi              | 135 ++++++++----------
+ arch/arm/boot/dts/aspeed-g6.dtsi              | 135 ++++++++----------
+ drivers/char/ipmi/kcs_bmc_aspeed.c            |  13 +-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c    |   2 +-
+ drivers/soc/aspeed/aspeed-lpc-ctrl.c          |   6 +-
+ drivers/soc/aspeed/aspeed-lpc-snoop.c         |  11 +-
+ 8 files changed, 176 insertions(+), 285 deletions(-)
+
+-- 
+2.17.1
+
